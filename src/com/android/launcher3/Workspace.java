@@ -80,7 +80,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LongArrayMap;
-import com.android.launcher3.util.MultiStateAlphaController;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.VerticalFlingDetector;
@@ -234,14 +233,6 @@ public class Workspace extends PagedView
      */
     private float[] mHotseatAlpha = new float[] {1, 1, 1};
 
-    public static final int QSB_ALPHA_INDEX_STATE_CHANGE = 0;
-    public static final int QSB_ALPHA_INDEX_Y_TRANSLATION = 1;
-    public static final int QSB_ALPHA_INDEX_PAGE_SCROLL = 2;
-    public static final int QSB_ALPHA_INDEX_OVERLAY_SCROLL = 3;
-
-
-    MultiStateAlphaController mQsbAlphaController;
-
     @ViewDebug.ExportedProperty(category = "launcher")
     private State mState = State.NORMAL;
     private boolean mIsSwitchingState = false;
@@ -323,7 +314,6 @@ public class Workspace extends PagedView
     private WorkspaceStateTransitionAnimation mStateTransitionAnimation;
 
     private AccessibilityDelegate mPagesAccessibilityDelegate;
-    private OnStateChangeListener mOnStateChangeListener;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -376,10 +366,6 @@ public class Workspace extends PagedView
                 ((Insettable) customContent).setInsets(mInsets);
             }
         }
-    }
-
-    public void setOnStateChangeListener(OnStateChangeListener listener) {
-        mOnStateChangeListener = listener;
     }
 
     /**
@@ -536,7 +522,6 @@ public class Workspace extends PagedView
     public void initParentViews(View parent) {
         super.initParentViews(parent);
         mPageIndicator.setAccessibilityDelegate(new OverviewAccessibilityDelegate());
-        mQsbAlphaController = new MultiStateAlphaController(mLauncher.getQsbContainer(), 4);
     }
 
     private int getDefaultPage() {
@@ -574,11 +559,6 @@ public class Workspace extends PagedView
 
     boolean isTouchActive() {
         return mTouchState != TOUCH_STATE_REST;
-    }
-
-    private int getEmbeddedQsbId() {
-        return mLauncher.getDeviceProfile().isVerticalBarLayout()
-                ? R.id.qsb_container : R.id.workspace_blocked_row;
     }
 
     /**
@@ -622,38 +602,14 @@ public class Workspace extends PagedView
         if (qsb == null) {
             // In transposed layout, we add the QSB in the Grid. As workspace does not touch the
             // edges, we do not need a full width QSB.
-            qsb = LayoutInflater.from(getContext()).inflate(
-                    mLauncher.getDeviceProfile().isVerticalBarLayout()
-                            ? R.layout.qsb_container : R.layout.qsb_blocker_view,
-                    firstPage, false);
+            qsb = LayoutInflater.from(getContext())
+                    .inflate(R.layout.qsb_container,firstPage, false);
         }
 
         CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, firstPage.getCountX(), 1);
         lp.canReorder = false;
-        if (!firstPage.addViewToCellLayout(qsb, 0, getEmbeddedQsbId(), lp, true)) {
+        if (!firstPage.addViewToCellLayout(qsb, 0, R.id.qsb_container, lp, true)) {
             Log.e(TAG, "Failed to add to item at (0, 0) to CellLayout");
-        }
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        // Update the QSB to match the cell height. This is treating the QSB essentially as a child
-        // of workspace despite that it's not a true child.
-        // Note that it relies on the strict ordering of measuring the workspace before the QSB
-        // at the dragLayer level.
-        // Only measure the QSB when the view is enabled
-        if (FeatureFlags.QSB_ON_FIRST_SCREEN && getChildCount() > 0) {
-            CellLayout firstPage = (CellLayout) getChildAt(0);
-            int cellHeight = firstPage.getCellHeight();
-
-            View qsbContainer = mLauncher.getQsbContainer();
-            ViewGroup.LayoutParams lp = qsbContainer.getLayoutParams();
-            if (cellHeight > 0 && lp.height != cellHeight) {
-                lp.height = cellHeight;
-                qsbContainer.setLayoutParams(lp);
-            }
         }
     }
 
@@ -670,7 +626,7 @@ public class Workspace extends PagedView
         }
 
         // Recycle the QSB widget
-        View qsb = findViewById(getEmbeddedQsbId());
+        View qsb = findViewById(R.id.qsb_container);
         if (qsb != null) {
             ((ViewGroup) qsb.getParent()).removeView(qsb);
         }
@@ -1406,17 +1362,9 @@ public class Workspace extends PagedView
         super.scrollTo(x, y);
     }
 
-    private void onWorkspaceOverallScrollChanged() {
-        if (!mIgnoreQsbScroll) {
-            mLauncher.getQsbContainer().setTranslationX(
-                    mOverlayTranslation + mFirstPageScrollX - getScrollX());
-        }
-    }
-
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
-        onWorkspaceOverallScrollChanged();
 
         // Update the page indicator progress.
         boolean isTransitioning = mIsSwitchingState
@@ -1497,9 +1445,6 @@ public class Workspace extends PagedView
         // device I've tried, translating the launcher causes things to get quite laggy.
         setWorkspaceTranslationAndAlpha(Direction.X, transX, alpha);
         setHotseatTranslationAndAlpha(Direction.X, transX, alpha);
-        onWorkspaceOverallScrollChanged();
-
-        mQsbAlphaController.setAlphaAtIndex(alpha, QSB_ALPHA_INDEX_OVERLAY_SCROLL);
     }
 
     /**
@@ -1509,9 +1454,6 @@ public class Workspace extends PagedView
      */
     public void setWorkspaceYTranslationAndAlpha(float translation, float alpha) {
         setWorkspaceTranslationAndAlpha(Direction.Y, translation, alpha);
-
-        mLauncher.getQsbContainer().setTranslationY(translation);
-        mQsbAlphaController.setAlphaAtIndex(alpha, QSB_ALPHA_INDEX_Y_TRANSLATION);
     }
 
     /**
@@ -1707,10 +1649,6 @@ public class Workspace extends PagedView
                     float scrollProgress = getScrollProgress(screenCenter, child, i);
                     float alpha = 1 - Math.abs(scrollProgress);
                     child.getShortcutsAndWidgets().setAlpha(alpha);
-
-                    if (isQsbContainerPage(i)) {
-                        mQsbAlphaController.setAlphaAtIndex(alpha, QSB_ALPHA_INDEX_PAGE_SCROLL);
-                    }
                 }
             }
         }
@@ -1805,7 +1743,6 @@ public class Workspace extends PagedView
         }
         super.onLayout(changed, left, top, right, bottom);
         mFirstPageScrollX = getScrollForPage(0);
-        onWorkspaceOverallScrollChanged();
 
         final LayoutTransition transition = getLayoutTransition();
         // If the transition is running defer updating max scroll, as some empty pages could
@@ -1827,7 +1764,6 @@ public class Workspace extends PagedView
                         mIgnoreQsbScroll = false;
                         transition.removeTransitionListener(this);
                         mFirstPageScrollX = getScrollForPage(0);
-                        onWorkspaceOverallScrollChanged();
                     }
                 }
             });
@@ -2068,10 +2004,6 @@ public class Workspace extends PagedView
 
         if (shouldNotifyWidgetChange) {
             mLauncher.notifyWidgetProvidersChanged();
-        }
-
-        if (mOnStateChangeListener != null) {
-            mOnStateChangeListener.prepareStateChange(toState, animated ? workspaceAnim : null);
         }
 
         onPrepareStateTransition(mState.hasMultipleVisiblePages);
@@ -4228,20 +4160,6 @@ public class Workspace extends PagedView
                 }
             });
         }
-    }
-
-    public interface OnStateChangeListener {
-
-        /**
-         * Called when the workspace state is changing.
-         * @param toState final state
-         * @param targetAnim animation which will be played during the transition or null.
-         */
-        void prepareStateChange(State toState, AnimatorSet targetAnim);
-    }
-
-    public static final boolean isQsbContainerPage(int pageNo) {
-        return pageNo == 0;
     }
 
     private class StateTransitionListener extends AnimatorListenerAdapter
