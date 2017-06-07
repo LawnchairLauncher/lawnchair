@@ -48,6 +48,8 @@ public abstract class BaseRecyclerView extends RecyclerView
     private int mDownY;
     private int mLastY;
 
+    private boolean mScrollBarVisible = true;
+
     public BaseRecyclerView(Context context) {
         this(context, null);
     }
@@ -199,8 +201,18 @@ public abstract class BaseRecyclerView extends RecyclerView
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
-        onUpdateScrollbar(0);
-        mScrollbar.draw(canvas);
+        if (mScrollBarVisible) {
+            onUpdateScrollbar(0);
+            mScrollbar.draw(canvas);
+        }
+    }
+
+    /**
+     * Sets the scrollbar visibility. The call does not refresh the UI, its the responsibility
+     * of the caller to call {@link #invalidate()}.
+     */
+    public void setScrollBarVisible(boolean visible) {
+        mScrollBarVisible = visible;
     }
 
     /**
