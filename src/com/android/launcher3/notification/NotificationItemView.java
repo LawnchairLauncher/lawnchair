@@ -99,7 +99,7 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
             if (mNotificationHeaderTextColor == Notification.COLOR_DEFAULT) {
                 mNotificationHeaderTextColor =
                         IconPalette.resolveContrastColor(getContext(), palette.dominantColor,
-                                Themes.getAttrColor(getContext(), R.attr.popupColorSecondary));
+                                Themes.getAttrColor(getContext(), R.attr.popupColorPrimary));
             }
             mHeaderCount.setTextColor(mNotificationHeaderTextColor);
         }
