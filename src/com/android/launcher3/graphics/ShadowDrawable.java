@@ -16,6 +16,8 @@
 
 package com.android.launcher3.graphics;
 
+import android.annotation.TargetApi;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -26,7 +28,9 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
 
 import com.android.launcher3.R;
@@ -40,6 +44,7 @@ import java.io.IOException;
 /**
  * A drawable which adds shadow around a child drawable.
  */
+@TargetApi(Build.VERSION_CODES.O)
 public class ShadowDrawable extends Drawable {
 
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
@@ -99,6 +104,24 @@ public class ShadowDrawable extends Drawable {
         return mState.mIntrinsicWidth;
     }
 
+    @Override
+    public boolean canApplyTheme() {
+        return mState.canApplyTheme();
+    }
+
+    @Override
+    public void applyTheme(Resources.Theme t) {
+        if (mState.canApplyTheme()) {
+            // Workaround since ColorStateList does not expose applyTheme method
+            ColorDrawable cd = new ColorDrawable();
+            cd.setTintList(mState.mTintColor);
+            cd.applyTheme(t);
+
+            mState.mLastDrawnBitmap = null;
+            invalidateSelf();
+        }
+    }
+
     private void regenerateBitmapCache() {
         Bitmap bitmap = Bitmap.createBitmap(mState.mIntrinsicWidth, mState.mIntrinsicHeight,
                 Bitmap.Config.ARGB_8888);
@@ -109,6 +132,9 @@ public class ShadowDrawable extends Drawable {
         d.setBounds(mState.mShadowSize, mState.mShadowSize,
                 mState.mIntrinsicWidth - mState.mShadowSize,
                 mState.mIntrinsicHeight - mState.mShadowSize);
+        if (mState.mTintColor != null) {
+            d.setTint(mState.mTintColor.getDefaultColor());
+        }
         d.draw(canvas);
 
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
@@ -146,6 +172,7 @@ public class ShadowDrawable extends Drawable {
                     R.styleable.ShadowDrawable_android_shadowColor, Color.BLACK);
             mState.mShadowSize = a.getDimensionPixelSize(
                     R.styleable.ShadowDrawable_android_elevation, 0);
+            mState.mTintColor = a.getColorStateList(R.styleable.ShadowDrawable_android_tint);
 
             mState.mIntrinsicHeight = d.getIntrinsicHeight() + 2 * mState.mShadowSize;
             mState.mIntrinsicWidth = d.getIntrinsicWidth() + 2 * mState.mShadowSize;
@@ -165,6 +192,7 @@ public class ShadowDrawable extends Drawable {
 
         int mShadowColor;
         int mShadowSize;
+        ColorStateList mTintColor;
 
         Bitmap mLastDrawnBitmap;
         ConstantState mChildState;
@@ -177,6 +205,11 @@ public class ShadowDrawable extends Drawable {
         @Override
         public int getChangingConfigurations() {
             return mChangingConfigurations;
+        }
+
+        @Override
+        public boolean canApplyTheme() {
+            return mTintColor != null;
         }
     }
 }

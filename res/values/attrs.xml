@@ -122,5 +122,6 @@
         <attr name="android:src" />
         <attr name="android:shadowColor" />
         <attr name="android:elevation" />
+        <attr name="android:tint" />
     </declare-styleable>
 </resources>
