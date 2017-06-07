@@ -65,10 +65,6 @@
         <include layout="@layout/page_indicator"
                  android:id="@+id/page_indicator" />
 
-        <include
-            layout="@layout/qsb_container"
-            android:id="@+id/qsb_container" />
-
         <include layout="@layout/widgets_view"
             android:id="@+id/widgets_view"
             android:layout_width="match_parent"
