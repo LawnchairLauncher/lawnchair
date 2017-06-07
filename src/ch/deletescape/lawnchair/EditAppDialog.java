@@ -108,7 +108,7 @@ public class EditAppDialog extends Dialog {
         }
         LauncherAppState app = LauncherAppState.getInstanceNoCreate();
         if (app != null) {
-            app.reloadAll();
+            app.reloadAll(false);
         }
         super.dismiss();
     }

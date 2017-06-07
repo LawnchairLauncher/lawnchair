@@ -1,5 +1,6 @@
 package ch.deletescape.lawnchair;
 
+import android.app.Notification;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 
@@ -35,10 +36,12 @@ public class NotificationListener extends NotificationListenerService {
             HAS_NOTI.put(key, false);
         }
         for(StatusBarNotification sbnn : getActiveNotifications()){
-            HAS_NOTI.put(sbnn.getPackageName(), true);
+            String key = sbnn.getPackageName();
+            boolean relevant = sbnn.isClearable() && sbnn.getNotification().priority > Notification.PRIORITY_LOW;
+            HAS_NOTI.put(key, relevant || hasNotifications(key));
         }
         if(reload){
-            LauncherAppState.getInstance().reloadAll();
+            LauncherAppState.getInstance().reloadAll(false);
         }
     }
 }
