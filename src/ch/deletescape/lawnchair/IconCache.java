@@ -425,14 +425,7 @@ public class IconCache {
     private Bitmap getNonNullIcon(CacheEntry entry, UserHandle user, boolean notificationBadge) {
         Bitmap b = entry.icon == null ? getDefaultIcon(user) : entry.icon;
         if(notificationBadge) {
-            Bitmap b2 = b.copy(Bitmap.Config.ARGB_8888, true);
-            Canvas c = new Canvas(b2);
-            Paint badgePaint = new Paint();
-            badgePaint.setStyle(Paint.Style.FILL);
-            badgePaint.setColor(Utilities.getColorAccent(LauncherAppState.getInstance().getContext()));
-            int radius = b2.getWidth() / 15;
-            c.drawCircle(b2.getWidth() - (radius + 10), radius + 10, radius, badgePaint);
-            return b2;
+            return Utilities.addNotificationBadgeToIcon(b);
         }
         return b;
     }

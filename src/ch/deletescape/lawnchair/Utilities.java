@@ -311,14 +311,7 @@ public final class Utilities {
             icon.setBounds(sOldBounds);
             canvas.setBitmap(null);
             if(notificationBadge) {
-                Bitmap b2 = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-                Canvas c = new Canvas(b2);
-                Paint badgePaint = new Paint();
-                badgePaint.setStyle(Paint.Style.FILL);
-                badgePaint.setColor(Utilities.getColorAccent(LauncherAppState.getInstance().getContext()));
-                int radius = b2.getWidth() / 15;
-                c.drawCircle(b2.getWidth() - (radius + 10), radius + 10, radius, badgePaint);
-                return b2;
+                return addNotificationBadgeToIcon(bitmap);
             }
             return bitmap;
         }
@@ -881,5 +874,16 @@ public final class Utilities {
 
     public static UserHandle myUserHandle(){
         return android.os.Process.myUserHandle();
+    }
+
+    public static Bitmap addNotificationBadgeToIcon(Bitmap icon){
+        Bitmap b = icon.copy(Bitmap.Config.ARGB_8888, true);
+        Canvas c = new Canvas(b);
+        Paint badgePaint = new Paint();
+        badgePaint.setStyle(Paint.Style.FILL);
+        badgePaint.setColor(Utilities.getColorAccent(LauncherAppState.getInstance().getContext()));
+        int radius = b.getWidth() / 12;
+        c.drawCircle(b.getWidth() - (radius + 15), radius + 15, radius, badgePaint);
+        return b;
     }
 }

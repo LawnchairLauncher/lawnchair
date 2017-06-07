@@ -7,43 +7,38 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class NotificationListener extends NotificationListenerService {
-    private final static Map<String, Integer> NOTI_COUNTS = new HashMap<>();
+    private final static Map<String, Boolean> HAS_NOTI = new HashMap<>();
 
     @Override
-    public void onNotificationPosted(StatusBarNotification sbn) {
-        if(sbn.getTag() != null) {
-            int num = getNotificationCount(sbn.getPackageName());
-            setNotificationCount(sbn.getPackageName(), num + 1);
-            LauncherAppState.getInstance().reloadAll();
-        }
+    public void onListenerConnected() {
+        super.onListenerConnected();
+        update(false);
     }
 
     @Override
-    public void onNotificationPosted(StatusBarNotification sbn, RankingMap rankingMap) {
-        onNotificationPosted(sbn);
+    public void onNotificationPosted(StatusBarNotification sbn) {
+        update(true);
     }
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
-        if(sbn.getTag() != null){
-            int num = getNotificationCount(sbn.getPackageName());
-            setNotificationCount(sbn.getPackageName(), num -1);
-            LauncherAppState.getInstance().reloadAll();
-        }
+        update(true);
     }
 
     public static boolean hasNotifications(String packageName){
-        Integer num = NOTI_COUNTS.get(packageName);
-        return num != null && num > 0;
+        Boolean tmp = HAS_NOTI.get(packageName);
+        return tmp != null && tmp;
     }
 
-    private static int getNotificationCount(String packageName){
-        Integer num = NOTI_COUNTS.get(packageName);
-        return num == null ? 0 : num;
-    }
-
-    private static void setNotificationCount(String packageName, int count){
-        if(count < 0) count = 0;
-        NOTI_COUNTS.put(packageName, count);
+    private void update(boolean reload) {
+        for(String key : HAS_NOTI.keySet()){
+            HAS_NOTI.put(key, false);
+        }
+        for(StatusBarNotification sbnn : getActiveNotifications()){
+            HAS_NOTI.put(sbnn.getPackageName(), true);
+        }
+        if(reload){
+            LauncherAppState.getInstance().reloadAll();
+        }
     }
 }
