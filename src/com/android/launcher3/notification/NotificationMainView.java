@@ -87,11 +87,11 @@ public class NotificationMainView extends FrameLayout implements SwipeHelper.Cal
         CharSequence title = mNotificationInfo.title;
         CharSequence text = mNotificationInfo.text;
         if (!TextUtils.isEmpty(title) && !TextUtils.isEmpty(text)) {
-            mTitleView.setText(title);
-            mTextView.setText(text);
+            mTitleView.setText(title.toString());
+            mTextView.setText(text.toString());
         } else {
             mTitleView.setMaxLines(2);
-            mTitleView.setText(TextUtils.isEmpty(title) ? text : title);
+            mTitleView.setText(TextUtils.isEmpty(title) ? text.toString() : title.toString());
             mTextView.setVisibility(GONE);
         }
         iconView.setBackground(mNotificationInfo.getIconForBackground(getContext(),
