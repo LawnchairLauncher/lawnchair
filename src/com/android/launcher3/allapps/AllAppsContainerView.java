@@ -20,7 +20,6 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.InsetDrawable;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
@@ -426,8 +425,11 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            if (mScrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                mSpringAnimationHandler.skipToEnd();
+            if (mScrollState == RecyclerView.SCROLL_STATE_DRAGGING
+                    || (dx == 0 && dy == 0)) {
+                if (mSpringAnimationHandler.isRunning()){
+                    mSpringAnimationHandler.skipToEnd();
+                }
                 return;
             }
 
@@ -436,7 +438,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
             // We only show the spring animation when at the top or bottom, so we wait until the
             // first or last row is visible to ensure that all animations run in sync.
-            if (first == 0 || last >= mAdapter.getItemCount() - mAdapter.getNumAppsPerRow()) {
+            if ((first == 0 && dy < 0) || (last == mAdapter.getItemCount() - 1 && dy > 0)) {
                 mSpringAnimationHandler.animateToFinalPosition(0);
             }
         }

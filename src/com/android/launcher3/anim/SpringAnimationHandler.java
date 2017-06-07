@@ -138,6 +138,11 @@ public class SpringAnimationHandler {
         reset();
     }
 
+    public boolean isRunning() {
+        // All the animations run at the same time so we can just check the first one.
+        return !mAnimations.isEmpty() && mAnimations.get(0).isRunning();
+    }
+
     public void skipToEnd() {
         if (DEBUG) Log.d(TAG, "setStartVelocity#skipToEnd");
         if (DEBUG) Log.v(TAG, "setStartVelocity#skipToEnd", new Exception());
