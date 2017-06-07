@@ -34,6 +34,7 @@ import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
 import com.android.launcher3.popup.PopupItemView;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.util.Themes;
 
 import java.util.List;
 
@@ -98,7 +99,7 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
             if (mNotificationHeaderTextColor == Notification.COLOR_DEFAULT) {
                 mNotificationHeaderTextColor =
                         IconPalette.resolveContrastColor(getContext(), palette.dominantColor,
-                            getResources().getColor(R.color.popup_header_background_color));
+                                Themes.getAttrColor(getContext(), R.attr.popupColorSecondary));
             }
             mHeaderCount.setTextColor(mNotificationHeaderTextColor);
         }
