@@ -143,6 +143,7 @@
     <PreferenceCategory android:title="@string/about_title"/>
 
     <Preference
+        android:key="about"
         android:summary="@string/about_text" />
 
 </PreferenceScreen>

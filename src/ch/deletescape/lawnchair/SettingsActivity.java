@@ -17,10 +17,14 @@
 package ch.deletescape.lawnchair;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceScreen;
 
 import java.util.Map;
 
@@ -64,6 +68,16 @@ public class SettingsActivity extends Activity {
             ListPreference iconPackPackagePreference = (ListPreference) findPreference("pref_iconPackPackage");
             iconPackPackagePreference.setEntries(entries);
             iconPackPackagePreference.setEntryValues(entryValues);
+        }
+
+        @Override
+        public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+            if(preference.getKey().equals("about")){
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/deletescape-media/lawnchair"));
+                startActivity(i);
+                return true;
+            }
+            return false;
         }
 
         @Override
