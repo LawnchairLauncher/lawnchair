@@ -130,11 +130,18 @@ public class LauncherAppState {
     }
 
     public void reloadAll() {
-        mModel.resetLoadedState(true, true);
-        mModel.startLoaderFromBackground();
-        mInvariantDeviceProfile.customizationHook(getContext());
-        mLauncher.getHotseat().refresh();
-        mLauncher.showWorkspace(true);
+        mLauncher.runOnUiThread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        mModel.resetLoadedState(true, true);
+                        mModel.startLoaderFromBackground();
+                        mInvariantDeviceProfile.customizationHook(getContext());
+                        mLauncher.getHotseat().refresh();
+                        mLauncher.showWorkspace(true);
+                    }
+                }
+        );
     }
 
     LauncherModel setLauncher(Launcher launcher) {
