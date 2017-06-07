@@ -30,7 +30,6 @@ public class LauncherClient {
     private boolean mDestroyed;
     private boolean mIsResumed;
     private boolean mIsServiceConnected;
-    private LauncherClientCallbacks mLauncherClientCallbacks;
     private ILauncherOverlay mOverlay;
     private OverlayServiceConnection mServiceConnection;
     private int mServiceConnectionOptions;
@@ -40,7 +39,7 @@ public class LauncherClient {
     private final BroadcastReceiver mUpdateReceiver;
     private WindowManager.LayoutParams mWindowAttrs;
 
-    public LauncherClient(Activity activity, LauncherClientCallbacks callbacks, String targetPackage, boolean overlayEnabled) {
+    public LauncherClient(Activity activity, String targetPackage, boolean overlayEnabled) {
         mUpdateReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -53,7 +52,6 @@ public class LauncherClient {
         mServiceStatus = -1;
         mActivity = activity;
         mServiceIntent = LauncherClient.getServiceIntent(activity, targetPackage);
-        mLauncherClientCallbacks = callbacks;
         mState = 0;
         mServiceConnection = new OverlayServiceConnection();
         mServiceConnectionOptions = overlayEnabled ? 3 : 2;
@@ -66,8 +64,8 @@ public class LauncherClient {
         reconnect();
     }
 
-    public LauncherClient(Activity activity, LauncherClientCallbacks callbacks, boolean overlayEnabled) {
-        this(activity, callbacks, "com.google.android.googlequicksearchbox", overlayEnabled);
+    public LauncherClient(Activity activity,  boolean overlayEnabled) {
+        this(activity, "com.google.android.googlequicksearchbox", overlayEnabled);
     }
 
     private void applyWindowToken() {
@@ -126,7 +124,6 @@ public class LauncherClient {
         }
 
         mServiceStatus = status;
-        mLauncherClientCallbacks.onServiceStateChanged((status & 1) != 0, true);
     }
 
     private void removeClient(boolean removeAppConnection) {
@@ -356,11 +353,6 @@ public class LauncherClient {
             }
 
             switch (msg.what) {
-                case 2:
-                    if ((mClient.mServiceStatus & 1) != 0) {
-                        mClient.mLauncherClientCallbacks.onOverlayScrollChanged((float) msg.obj);
-                    }
-                    return true;
                 case 3:
                     WindowManager.LayoutParams attrs = mWindow.getAttributes();
                     if ((boolean) msg.obj) {
