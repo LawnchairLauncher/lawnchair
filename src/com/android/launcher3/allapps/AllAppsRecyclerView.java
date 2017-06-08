@@ -97,6 +97,10 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         mFastScrollHelper = new AllAppsFastScrollHelper(this, apps);
     }
 
+    public AlphabeticalAppsList getApps() {
+        return mApps;
+    }
+
     /**
      * Sets the number of apps per row in this recycler view.
      */
