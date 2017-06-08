@@ -17,6 +17,8 @@ package com.android.launcher3.compat;
 
 import static android.app.WallpaperManager.FLAG_SYSTEM;
 
+import static com.android.launcher3.Utilities.getDevicePrefs;
+
 import android.app.IntentService;
 import android.app.WallpaperInfo;
 import android.app.WallpaperManager;
@@ -24,7 +26,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
@@ -41,7 +42,6 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.SparseIntArray;
 
-import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.Utilities;
 
 import java.io.IOException;
@@ -63,7 +63,7 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
     WallpaperManagerCompatVL(Context context) {
         mContext = context;
 
-        String colors = prefs(mContext).getString(KEY_COLORS, "");
+        String colors = getDevicePrefs(mContext).getString(KEY_COLORS, "");
         int wallpaperId = -1;
         if (colors.startsWith(VERSION_PREFIX)) {
             Pair<Integer, WallpaperColorsCompat> storedValue = parseValue(colors);
@@ -106,16 +106,11 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
     }
 
     private void handleResult(String result) {
-        prefs(mContext).edit().putString(KEY_COLORS, result).apply();
+        getDevicePrefs(mContext).edit().putString(KEY_COLORS, result).apply();
         mColorsCompat = parseValue(result).second;
         for (OnColorsChangedListenerCompat listener : mListeners) {
             listener.onColorsChanged(mColorsCompat, FLAG_SYSTEM);
         }
-    }
-
-    private static SharedPreferences prefs(Context context) {
-        return context.getSharedPreferences(
-                LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
     private static final int getWallpaperId(Context context) {

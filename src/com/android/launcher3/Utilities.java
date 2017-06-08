@@ -551,6 +551,11 @@ public final class Utilities {
                 LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
+    public static SharedPreferences getDevicePrefs(Context context) {
+        return context.getSharedPreferences(
+                LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
+    }
+
     public static boolean isPowerSaverOn(Context context) {
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         return powerManager.isPowerSaveMode();
