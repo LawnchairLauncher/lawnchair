@@ -139,11 +139,11 @@
         <item name="android:drawablePadding">7.5dp</item>
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textColor">?attr/workspaceTextColor</item>
         <item name="android:textSize">@dimen/drop_target_text_size</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:shadowColor">@color/default_shadow_color_no_alpha</item>
+        <item name="android:shadowColor">?attr/workspaceShadowColor</item>
         <item name="android:shadowDx">0.0</item>
         <item name="android:shadowDy">1.0</item>
         <item name="android:shadowRadius">4.0</item>
