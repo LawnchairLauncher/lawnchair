@@ -103,6 +103,9 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
             mState = 1;
             if (view == null || i != 1) {
                 inflate = LayoutInflater.from(getContext()).inflate(R.layout.date_widget, this, false);
+                if (FeatureFlags.useFullWidthSearchbar(getContext())) {
+                    inflate.setVisibility(GONE);
+                }
             } else {
                 inflate = view;
             }
