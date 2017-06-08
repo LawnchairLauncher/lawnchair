@@ -58,6 +58,7 @@ import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.LoggerUtils;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.widget.WidgetsBottomSheet;
@@ -451,7 +452,8 @@ public class DragLayer extends InsettableFrameLayout {
     @Override
     public void setInsets(Rect insets) {
         super.setInsets(insets);
-        setBackgroundResource(insets.top == 0 ? 0 : R.drawable.workspace_bg);
+        setBackground(insets.top == 0 ? null
+                : Themes.getAttrDrawable(getContext(), R.attr.workspaceStatusBarScrim));
     }
 
     @Override

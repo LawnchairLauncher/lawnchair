@@ -27,7 +27,7 @@
         android:id="@+id/drag_layer"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:background="@drawable/workspace_bg"
+        android:background="?attr/workspaceStatusBarScrim"
         android:importantForAccessibility="no"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
