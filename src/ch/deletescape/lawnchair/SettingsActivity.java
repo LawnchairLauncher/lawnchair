@@ -72,7 +72,7 @@ public class SettingsActivity extends Activity {
 
         @Override
         public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
-            if (preference.getKey().equals("about")) {
+            if (preference.getKey() != null && preference.getKey().equals("about")) {
                 Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/deletescape-media/lawnchair"));
                 startActivity(i);
                 return true;

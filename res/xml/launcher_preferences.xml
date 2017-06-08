@@ -13,142 +13,143 @@
      limitations under the License.
 -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="UI" />
+<PreferenceScreen android:title="Settings"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceScreen android:title="UI">
 
-    <ListPreference
-        android:defaultValue="@string/iconPackPackageDefault"
-        android:key="pref_iconPackPackage"
-        android:title="Icon Pack"
-        android:persistent="true" />
+        <ListPreference
+            android:defaultValue="@string/iconPackPackageDefault"
+            android:key="pref_iconPackPackage"
+            android:title="Icon Pack"
+            android:persistent="true" />
 
-    <SwitchPreference
-        android:key="pref_fullWidthSearchbar"
-        android:defaultValue="false"
-        android:title="Use wide searchbar"
-        android:persistent="true" />
+        <SwitchPreference
+            android:key="pref_fullWidthSearchbar"
+            android:defaultValue="false"
+            android:title="Use wide searchbar"
+            android:persistent="true" />
 
-    <SwitchPreference
-        android:key="pref_lightStatusBar"
-        android:title="Light StatusBar"
-        android:summaryOn="The status bar may show dark icons based on the wallpaper."
-        android:summaryOff="The status bar will always show light icons."
-        android:defaultValue="true"
-        android:persistent="true" />
+        <SwitchPreference
+            android:key="pref_lightStatusBar"
+            android:title="Light StatusBar"
+            android:summaryOn="The status bar may show dark icons based on the wallpaper."
+            android:summaryOff="The status bar will always show light icons."
+            android:defaultValue="true"
+            android:persistent="true" />
 
-    <SwitchPreference
-        android:key="pref_hotseatShouldUseExtractedColors"
-        android:title="Tray uses wallpaper colors"
-        android:summaryOn="The Tray will be colored with a color extracted from the wallpaper"
-        android:summaryOff="The Tray will be colored gray, but adjusted by the wallpaper brightness"
-        android:defaultValue="true"
-        android:persistent="true" />
+        <SwitchPreference
+            android:key="pref_hotseatShouldUseExtractedColors"
+            android:title="Tray uses wallpaper colors"
+            android:summaryOn="The Tray will be colored with a color extracted from the wallpaper"
+            android:summaryOff="The Tray will be colored gray, but adjusted by the wallpaper brightness"
+            android:defaultValue="true"
+            android:persistent="true" />
 
-    <ListPreference
-        android:key="pref_workspaceLabelColorHue"
-        android:title="Color of Icon Labels on Homescreen"
-        android:entries="@array/color_index_entries"
-        android:entryValues="@array/color_index_values"
-        android:defaultValue="-3"
-        android:persistent="true" />
+        <ListPreference
+            android:key="pref_workspaceLabelColorHue"
+            android:title="Color of Icon Labels on Homescreen"
+            android:entries="@array/color_index_entries"
+            android:entryValues="@array/color_index_values"
+            android:defaultValue="-3"
+            android:persistent="true" />
 
-    <ListPreference
-        android:key="pref_workspaceLabelColorVariation"
-        android:title="Color Variation of Icon Labels on Homescreen"
-        android:entries="@array/color_variation_entries"
-        android:entryValues="@array/color_variation_values"
-        android:defaultValue="5"
-        android:persistent="true" />
+        <ListPreference
+            android:key="pref_workspaceLabelColorVariation"
+            android:title="Color Variation of Icon Labels on Homescreen"
+            android:entries="@array/color_variation_entries"
+            android:entryValues="@array/color_variation_values"
+            android:defaultValue="5"
+            android:persistent="true" />
 
-    <ListPreference
-        android:key="pref_allAppsOpacity"
-        android:title="All apps opacity"
-        android:entries="@array/allAppsOpacityTexts"
-        android:entryValues="@array/allAppsOpacityValues"
-        android:defaultValue="@string/allAppsOpacityDefault"
-        android:persistent="true" />
+        <ListPreference
+            android:key="pref_allAppsOpacity"
+            android:title="All apps opacity"
+            android:entries="@array/allAppsOpacityTexts"
+            android:entryValues="@array/allAppsOpacityValues"
+            android:defaultValue="@string/allAppsOpacityDefault"
+            android:persistent="true" />
 
-    <ListPreference
-        android:key="pref_numCols"
-        android:title="Number of columns"
-        android:entries="@array/numColsTexts"
-        android:entryValues="@array/numColsValues"
-        android:defaultValue="@string/generalDefault"
-        android:persistent="true" />
+        <ListPreference
+            android:key="pref_numCols"
+            android:title="Number of columns"
+            android:entries="@array/numColsTexts"
+            android:entryValues="@array/numColsValues"
+            android:defaultValue="@string/generalDefault"
+            android:persistent="true" />
 
-    <ListPreference
-        android:key="pref_numRows"
-        android:title="Number of rows"
-        android:entryValues="@array/numRowsValues"
-        android:entries="@array/numRowsTexts"
-        android:defaultValue="@string/generalDefault"
-        android:persistent="true" />
+        <ListPreference
+            android:key="pref_numRows"
+            android:title="Number of rows"
+            android:entryValues="@array/numRowsValues"
+            android:entries="@array/numRowsTexts"
+            android:defaultValue="@string/generalDefault"
+            android:persistent="true" />
 
-    <ListPreference
-        android:key="pref_numHotseatIcons"
-        android:title="Number of icons in hotseat"
-        android:entryValues="@array/numHotseatIconsValues"
-        android:entries="@array/numHotseatIconsTexts"
-        android:defaultValue="@string/generalDefault"
-        android:persistent="true" />
+        <ListPreference
+            android:key="pref_numHotseatIcons"
+            android:title="Number of icons in hotseat"
+            android:entryValues="@array/numHotseatIconsValues"
+            android:entries="@array/numHotseatIconsTexts"
+            android:defaultValue="@string/generalDefault"
+            android:persistent="true" />
 
-    <ListPreference
-        android:key="pref_iconScale"
-        android:title="Icon scale"
-        android:entryValues="@array/iconScaleValues"
-        android:entries="@array/iconScaleTexts"
-        android:defaultValue="@string/defaultIconScale"
-        android:persistent="true" />
+        <ListPreference
+            android:key="pref_iconScale"
+            android:title="Icon scale"
+            android:entryValues="@array/iconScaleValues"
+            android:entries="@array/iconScaleTexts"
+            android:defaultValue="@string/defaultIconScale"
+            android:persistent="true" />
 
-    <ListPreference
-        android:key="pref_iconTextScale"
-        android:title="Icon text scale"
-        android:entryValues="@array/iconScaleValues"
-        android:entries="@array/iconScaleTexts"
-        android:defaultValue="@string/defaultIconScale"
-        android:persistent="true" />
+        <ListPreference
+            android:key="pref_iconTextScale"
+            android:title="Icon text scale"
+            android:entryValues="@array/iconScaleValues"
+            android:entries="@array/iconScaleTexts"
+            android:defaultValue="@string/defaultIconScale"
+            android:persistent="true" />
+    </PreferenceScreen>
+    <PreferenceScreen android:title="Behavior">
 
-    <PreferenceCategory android:title="Behavior" />
+        <SwitchPreference
+            android:key="pref_pinchToOverview"
+            android:title="Pinch to Overview"
+            android:summary="Pinch on the Homescreen to open the overview"
+            android:defaultValue="true"
+            android:persistent="true" />
 
-    <SwitchPreference
-        android:key="pref_pinchToOverview"
-        android:title="Pinch to Overview"
-        android:summary="Pinch on the Homescreen to open the overview"
-        android:defaultValue="true"
-        android:persistent="true" />
+        <SwitchPreference
+            android:key="pref_pulldownSearch"
+            android:title="Pulldown to Search"
+            android:summaryOn="Pulling down on the Homescreen will open search."
+            android:summaryOff="When enabled pulling down on the Homescreen will open search."
+            android:defaultValue="true"
+            android:persistent="true" />
 
-    <SwitchPreference
-        android:key="pref_pulldownSearch"
-        android:title="Pulldown to Search"
-        android:summaryOn="Pulling down on the Homescreen will open search."
-        android:summaryOff="When enabled pulling down on the Homescreen will open search."
-        android:defaultValue="true"
-        android:persistent="true" />
+        <SwitchPreference
+            android:key="pref_enableHapticFeedback"
+            android:title="Enable Haptic Feedback"
+            android:defaultValue="false"
+            android:persistent="true" />
 
-    <SwitchPreference
-        android:key="pref_enableHapticFeedback"
-        android:title="Enable Haptic Feedback"
-        android:defaultValue="false"
-        android:persistent="true" />
+        <SwitchPreference
+            android:key="pref_keepScrollState"
+            android:title="Save Scrolled State"
+            android:summary="Saves the scroll position in the app tray"
+            android:defaultValue="false"
+            android:persistent="true" />
 
-    <SwitchPreference
-        android:key="pref_keepScrollState"
-        android:title="Save Scrolled State"
-        android:summary="Saves the scroll position in the app tray"
-        android:defaultValue="false"
-        android:persistent="true" />
-
-    <SwitchPreference
-        android:key="pref_showHidden"
-        android:title="Show Hidden Apps"
-        android:summaryOn="Hidden apps will be shown to change visibility settings"
-        android:summaryOff="Hidden apps won't be visible"
-        android:defaultValue="false"
-        android:persistent="true" />
-
-    <PreferenceCategory android:title="@string/about_title" />
+        <SwitchPreference
+            android:key="pref_showHidden"
+            android:title="Show Hidden Apps"
+            android:summaryOn="Hidden apps will be shown to change visibility settings"
+            android:summaryOff="Hidden apps won't be visible"
+            android:defaultValue="false"
+            android:persistent="true" />
+    </PreferenceScreen>
 
     <Preference
+        android:title="@string/about_title"
         android:key="about"
         android:summary="@string/about_text" />
 
