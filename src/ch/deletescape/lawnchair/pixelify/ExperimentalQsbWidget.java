@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.R;
 
-public class ExperimentalQsbWidget extends C0276c {
+public class ExperimentalQsbWidget extends BaseQsbView {
     public ExperimentalQsbWidget(Context context) {
         this(context, null);
     }
@@ -23,28 +23,28 @@ public class ExperimentalQsbWidget extends C0276c {
     }
 
     @Override
-    protected int aK(boolean z) {
-        return z ? R.layout.qsb_wide_with_mic : R.layout.qsb_wide_without_mic;
+    protected int getQsbView(boolean withMic) {
+        return withMic ? R.layout.qsb_wide_with_mic : R.layout.qsb_wide_without_mic;
     }
 
     @Override
-    protected boolean aM(SharedPreferences sharedPreferences) {
+    protected boolean isMinusOneEnabled(SharedPreferences sharedPreferences) {
         return false;
     }
 
     @Override
     protected void onMeasure(int i, int i2) {
-        if (this.bB != null) {
-            DeviceProfile deviceProfile = this.bC.getDeviceProfile();
+        if (this.mQsbView != null) {
+            DeviceProfile deviceProfile = this.mLauncher.getDeviceProfile();
             int size = MeasureSpec.getSize(i);
-            ((LayoutParams) this.bB.getLayoutParams()).width = size - (DeviceProfile.calculateCellWidth(size, deviceProfile.inv.numColumns) - deviceProfile.iconSizePx);
+            ((LayoutParams) this.mQsbView.getLayoutParams()).width = size - (DeviceProfile.calculateCellWidth(size, deviceProfile.inv.numColumns) - deviceProfile.iconSizePx);
         }
         super.onMeasure(i, i2);
     }
 
     @Override
     protected void aL(Rect rect, Intent intent) {
-        if (!this.bD) {
+        if (!this.showMic) {
             intent.putExtra("source_mic_alpha", 0.0f);
         }
     }

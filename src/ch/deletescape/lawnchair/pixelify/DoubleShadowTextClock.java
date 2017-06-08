@@ -32,14 +32,14 @@ public class DoubleShadowTextClock extends TextClock {
         ambientShadowColor = obtainStyledAttributes.getColor(R.styleable.DoubleShadowTextClock_ambientShadowColor, 0);
         keyShadowColor = obtainStyledAttributes.getColor(R.styleable.DoubleShadowTextClock_keyShadowColor, 0);
         obtainStyledAttributes.recycle();
-        setShadowLayer(Math.max(this.keyShadowBlur + this.keyShadowOffset, this.ambientShadowBlur), 0.0f, 0.0f, this.keyShadowColor);
+        setShadowLayer(Math.max(keyShadowBlur + keyShadowOffset, ambientShadowBlur), 0.0f, 0.0f, keyShadowColor);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        getPaint().setShadowLayer(this.keyShadowBlur, 0.0f, this.keyShadowOffset, this.keyShadowColor);
+        getPaint().setShadowLayer(keyShadowBlur, 0.0f, keyShadowOffset, keyShadowColor);
         super.onDraw(canvas);
-        getPaint().setShadowLayer(this.ambientShadowBlur, 0.0f, 0.0f, this.ambientShadowColor);
+        getPaint().setShadowLayer(ambientShadowBlur, 0.0f, 0.0f, ambientShadowColor);
         super.onDraw(canvas);
     }
 

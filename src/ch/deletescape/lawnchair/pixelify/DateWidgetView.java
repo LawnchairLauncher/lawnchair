@@ -47,7 +47,7 @@ public class DateWidgetView extends LinearLayout implements TextWatcher {
             Rect rect = new Rect();
             paint.getTextBounds("x", 0, 1, rect);
             int height = rect.height();
-            this.dateText2.setPadding(0, 0, 0, ((int) (Math.abs(paint.getFontMetrics().ascent) - ((float) height))) / 2);
+            dateText2.setPadding(0, 0, 0, ((int) (Math.abs(paint.getFontMetrics().ascent) - ((float) height))) / 2);
         }
     }
 
@@ -87,7 +87,7 @@ public class DateWidgetView extends LinearLayout implements TextWatcher {
     }
 
     private void update() {
-        if (this.width > 0) {
+        if (width > 0) {
             String dateText1Text = dateText1.getText().toString();
             if (!text.equals(dateText1Text)) {
                 text = dateText1Text;
@@ -98,15 +98,15 @@ public class DateWidgetView extends LinearLayout implements TextWatcher {
                     for (int i = 0; i < 10; i++) {
                         paint.setTextSize(size);
                         float measureText = paint.measureText(dateText1Text);
-                        if (measureText <= ((float) this.width)) {
+                        if (measureText <= ((float) width)) {
                             break;
                         }
-                        size = (size * ((float) this.width)) / measureText;
+                        size = (size * ((float) width)) / measureText;
                     }
                     if (Float.compare(size, textSize) == 0) {
                         paint.setTextSize(textSize);
                     } else {
-                        this.dateText1.setTextSize(0, size);
+                        dateText1.setTextSize(0, size);
                         init();
                     }
                 }

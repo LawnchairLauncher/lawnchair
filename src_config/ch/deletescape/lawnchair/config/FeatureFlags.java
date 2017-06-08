@@ -33,6 +33,7 @@ public final class FeatureFlags {
     private static final String KEY_PREF_HOTSEAT_EXTRACTED_COLORS = "pref_hotseatShouldUseExtractedColors";
     private static final String KEY_PREF_HAPTIC_FEEDBACK = "pref_enableHapticFeedback";
     private static final String KEY_PREF_KEEP_SCROLL_STATE = "pref_keepScrollState";
+    private static final String KEY_FULL_WIDTH_SEARCHBAR = "pref_fullWidthSearchbar";
 
     private FeatureFlags() {
     }
@@ -43,7 +44,7 @@ public final class FeatureFlags {
         FirebaseAnalytics.getInstance(context).setUserProperty("pulldown_search_enabled", String.valueOf(enabled));
         return enabled;
     }
-    
+
     public static boolean pinchToOverview(Context context) {
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_PINCH_TO_OVERVIEW, true);
         FirebaseAnalytics.getInstance(context).setUserProperty("pinch_overview_enabled", String.valueOf(enabled));
@@ -72,6 +73,12 @@ public final class FeatureFlags {
     public static boolean keepScrollState(Context context) {
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_KEEP_SCROLL_STATE, false);
         FirebaseAnalytics.getInstance(context).setUserProperty("keep_scrollstate", String.valueOf(enabled));
+        return enabled;
+    }
+
+    public static boolean useFullWidthSearchbar(Context context) {
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_FULL_WIDTH_SEARCHBAR, false);
+        FirebaseAnalytics.getInstance(context).setUserProperty("full_width_searchbar", String.valueOf(enabled));
         return enabled;
     }
 }

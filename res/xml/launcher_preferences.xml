@@ -23,6 +23,12 @@
         android:persistent="true" />
 
     <SwitchPreference
+        android:key="pref_fullWidthSearchbar"
+        android:defaultValue="false"
+        android:title="Use wide searchbar"
+        android:persistent="true" />
+
+    <SwitchPreference
         android:key="pref_lightStatusBar"
         android:title="Light StatusBar"
         android:summaryOn="The status bar may show dark icons based on the wallpaper."

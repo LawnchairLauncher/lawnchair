@@ -21,10 +21,10 @@ import java.util.Arrays;
 import ch.deletescape.lawnchair.R;
 
 public class ShadowHostView extends FrameLayout {
-    private static final int bV = Math.round(38.25f);
-    private static final int bW = Math.round(89.25f);
+    private static final int bV = 38;
+    private static final int bW = 89;
     private Bitmap bX;
-    private final BlurMaskFilter bY;
+    private final BlurMaskFilter blurMaskFilter;
     private final int bZ;
     private long[] ca;
     private Bitmap cb;
@@ -43,34 +43,34 @@ public class ShadowHostView extends FrameLayout {
 
     public ShadowHostView(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
-        this.mCanvas = new Canvas();
-        this.mPaint = new Paint(3);
+        mCanvas = new Canvas();
+        mPaint = new Paint(3);
         setWillNotDraw(false);
-        this.cc = getResources().getDimensionPixelSize(R.dimen.qsb_shadow_blur_radius);
-        this.bZ = getResources().getDimensionPixelSize(R.dimen.qsb_key_shadow_offset);
-        this.bY = new BlurMaskFilter((float) this.cc, Blur.NORMAL);
+        cc = getResources().getDimensionPixelSize(R.dimen.qsb_shadow_blur_radius);
+        bZ = getResources().getDimensionPixelSize(R.dimen.qsb_key_shadow_offset);
+        blurMaskFilter = new BlurMaskFilter((float) cc, Blur.NORMAL);
     }
 
-    private boolean bH(C0280e c0280e) {
-        long[] jArr = new long[]{c0280e.bS, (long) c0280e.bR, (long) c0280e.bQ.getLayoutId()};
-        if (this.mView != null) {
-            if (Arrays.equals(this.ca, jArr)) {
+    private boolean applyView(GoogleSearchApp gsa) {
+        long[] jArr = new long[]{gsa.gsaUpdateTime, (long) gsa.gsaVersion, (long) gsa.mRemoteViews.getLayoutId()};
+        if (mView != null) {
+            if (Arrays.equals(ca, jArr)) {
                 try {
-                    c0280e.bQ.reapply(getContext(), this.mView);
+                    gsa.mRemoteViews.reapply(getContext(), mView);
                     invalidate();
                     return true;
                 } catch (Throwable e) {
                     Log.e("ShadowHostView", "View reapply failed", e);
                 }
             }
-            removeView(this.mView);
-            this.mView = null;
+            removeView(mView);
+            mView = null;
         }
         try {
-            this.mView = c0280e.bQ.apply(getContext(), this);
-            bI(this.mView);
-            this.ca = jArr;
-            addView(this.mView);
+            mView = gsa.mRemoteViews.apply(getContext(), this);
+            bI(mView);
+            ca = jArr;
+            addView(mView);
             return true;
         } catch (Throwable e2) {
             Log.e("ShadowHostView", "View apply failed", e2);
@@ -91,88 +91,83 @@ public class ShadowHostView extends FrameLayout {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (this.mView != null && this.mView.getWidth() > 0 && this.mView.getHeight() > 0) {
+        if (mView != null && mView.getWidth() > 0 && mView.getHeight() > 0) {
             int width;
             int height;
             float left;
             float top;
-            if (this.bX != null && this.bX.getHeight() == this.mView.getHeight()) {
-                if (this.bX.getWidth() != this.mView.getWidth()) {
+            if (bX != null && bX.getHeight() == mView.getHeight()) {
+                mCanvas.setBitmap(bX);
+                mCanvas.drawColor(0x1000000, Mode.CLEAR);
+                mView.draw(mCanvas);
+                width = (bX.getWidth() + cc) + cc;
+                height = (bX.getHeight() + cc) + cc;
+                if (cb != null && cb.getWidth() == width) {
+                    mCanvas.setBitmap(cb);
+                    mCanvas.drawColor(0x1000000, Mode.CLEAR);
+                    mPaint.setMaskFilter(blurMaskFilter);
+                    mPaint.setAlpha(100);
+                    mCanvas.drawBitmap(bX, (float) cc, (float) cc, mPaint);
+                    mCanvas.setBitmap(null);
+                    mPaint.setMaskFilter(null);
+                    left = (float) (mView.getLeft() - cc);
+                    top = (float) (mView.getTop() - cc);
+                    mPaint.setAlpha(bV);
+                    canvas.drawBitmap(cb, left, top, mPaint);
+                    mPaint.setAlpha(bW);
+                    canvas.drawBitmap(cb, left, top + ((float) bZ), mPaint);
                 }
-                this.mCanvas.setBitmap(this.bX);
-                this.mCanvas.drawColor(0x1000000, Mode.CLEAR);
-                this.mView.draw(this.mCanvas);
-                width = (this.bX.getWidth() + this.cc) + this.cc;
-                height = (this.bX.getHeight() + this.cc) + this.cc;
-                if (this.cb != null && this.cb.getWidth() == width) {
-                    if (this.cb.getHeight() != height) {
-                    }
-                    this.mCanvas.setBitmap(this.cb);
-                    this.mCanvas.drawColor(0x1000000, Mode.CLEAR);
-                    this.mPaint.setMaskFilter(this.bY);
-                    this.mPaint.setAlpha(100);
-                    this.mCanvas.drawBitmap(this.bX, (float) this.cc, (float) this.cc, this.mPaint);
-                    this.mCanvas.setBitmap(null);
-                    this.mPaint.setMaskFilter(null);
-                    left = (float) (this.mView.getLeft() - this.cc);
-                    top = (float) (this.mView.getTop() - this.cc);
-                    this.mPaint.setAlpha(bV);
-                    canvas.drawBitmap(this.cb, left, top, this.mPaint);
-                    this.mPaint.setAlpha(bW);
-                    canvas.drawBitmap(this.cb, left, top + ((float) this.bZ), this.mPaint);
-                }
-                this.cb = Bitmap.createBitmap(width, height, Config.ALPHA_8);
-                this.mCanvas.setBitmap(this.cb);
-                this.mCanvas.drawColor(0x1000000, Mode.CLEAR);
-                this.mPaint.setMaskFilter(this.bY);
-                this.mPaint.setAlpha(100);
-                this.mCanvas.drawBitmap(this.bX, (float) this.cc, (float) this.cc, this.mPaint);
-                this.mCanvas.setBitmap(null);
-                this.mPaint.setMaskFilter(null);
-                left = (float) (this.mView.getLeft() - this.cc);
-                top = (float) (this.mView.getTop() - this.cc);
-                this.mPaint.setAlpha(bV);
-                canvas.drawBitmap(this.cb, left, top, this.mPaint);
-                this.mPaint.setAlpha(bW);
-                canvas.drawBitmap(this.cb, left, top + ((float) this.bZ), this.mPaint);
+                cb = Bitmap.createBitmap(width, height, Config.ALPHA_8);
+                mCanvas.setBitmap(cb);
+                mCanvas.drawColor(0x1000000, Mode.CLEAR);
+                mPaint.setMaskFilter(blurMaskFilter);
+                mPaint.setAlpha(100);
+                mCanvas.drawBitmap(bX, (float) cc, (float) cc, mPaint);
+                mCanvas.setBitmap(null);
+                mPaint.setMaskFilter(null);
+                left = (float) (mView.getLeft() - cc);
+                top = (float) (mView.getTop() - cc);
+                mPaint.setAlpha(bV);
+                canvas.drawBitmap(cb, left, top, mPaint);
+                mPaint.setAlpha(bW);
+                canvas.drawBitmap(cb, left, top + ((float) bZ), mPaint);
             }
-            this.bX = Bitmap.createBitmap(this.mView.getWidth(), this.mView.getHeight(), Config.ALPHA_8);
-            this.mCanvas.setBitmap(this.bX);
-            this.mCanvas.drawColor(0x1000000, Mode.CLEAR);
-            this.mView.draw(this.mCanvas);
-            width = (this.bX.getWidth() + this.cc) + this.cc;
-            height = (this.bX.getHeight() + this.cc) + this.cc;
-            if (this.cb.getHeight() != height) {
-                this.cb = Bitmap.createBitmap(width, height, Config.ALPHA_8);
+            bX = Bitmap.createBitmap(mView.getWidth(), mView.getHeight(), Config.ALPHA_8);
+            mCanvas.setBitmap(bX);
+            mCanvas.drawColor(0x1000000, Mode.CLEAR);
+            mView.draw(mCanvas);
+            width = (bX.getWidth() + cc) + cc;
+            height = (bX.getHeight() + cc) + cc;
+            if (cb.getHeight() != height) {
+                cb = Bitmap.createBitmap(width, height, Config.ALPHA_8);
             }
-            this.mCanvas.setBitmap(this.cb);
-            this.mCanvas.drawColor(0x1000000, Mode.CLEAR);
-            this.mPaint.setMaskFilter(this.bY);
-            this.mPaint.setAlpha(100);
-            this.mCanvas.drawBitmap(this.bX, (float) this.cc, (float) this.cc, this.mPaint);
-            this.mCanvas.setBitmap(null);
-            this.mPaint.setMaskFilter(null);
-            left = (float) (this.mView.getLeft() - this.cc);
-            top = (float) (this.mView.getTop() - this.cc);
-            this.mPaint.setAlpha(bV);
-            canvas.drawBitmap(this.cb, left, top, this.mPaint);
-            this.mPaint.setAlpha(bW);
-            canvas.drawBitmap(this.cb, left, top + ((float) this.bZ), this.mPaint);
+            mCanvas.setBitmap(cb);
+            mCanvas.drawColor(0x1000000, Mode.CLEAR);
+            mPaint.setMaskFilter(blurMaskFilter);
+            mPaint.setAlpha(100);
+            mCanvas.drawBitmap(bX, (float) cc, (float) cc, mPaint);
+            mCanvas.setBitmap(null);
+            mPaint.setMaskFilter(null);
+            left = (float) (mView.getLeft() - cc);
+            top = (float) (mView.getTop() - cc);
+            mPaint.setAlpha(bV);
+            canvas.drawBitmap(cb, left, top, mPaint);
+            mPaint.setAlpha(bW);
+            canvas.drawBitmap(cb, left, top + ((float) bZ), mPaint);
         }
     }
 
-    public static View bG(C0280e c0280e, ViewGroup viewGroup, View view) {
-        if (c0280e == null || c0280e.bQ == null) {
+    public static View bG(GoogleSearchApp gsa, ViewGroup viewGroup, View view) {
+        if (gsa == null || gsa.mRemoteViews == null) {
             return null;
         }
-        View view2;
+        ShadowHostView view2;
         if (view instanceof ShadowHostView) {
-            view2 = view;
+            view2 = (ShadowHostView) view;
         } else {
-            view2 = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.shadow_host_view, viewGroup, false);
+            view2 = (ShadowHostView) LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.shadow_host_view, viewGroup, false);
         }
-        ShadowHostView view3 = (ShadowHostView) view2;
-        if (!view3.bH(c0280e)) {
+        if (!view2.applyView(gsa)) {
             view2 = null;
         }
         return view2;

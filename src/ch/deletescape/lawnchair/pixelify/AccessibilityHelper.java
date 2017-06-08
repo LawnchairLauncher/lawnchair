@@ -13,12 +13,12 @@ import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 
-public class C0281f extends AccessibilityDelegate {
+public class AccessibilityHelper extends AccessibilityDelegate {
     @Override
     public void onInitializeAccessibilityNodeInfo(View view, AccessibilityNodeInfo accessibilityNodeInfo) {
         super.onInitializeAccessibilityNodeInfo(view, accessibilityNodeInfo);
         if (Launcher.getLauncher(view.getContext()).isClientConnected()) {
-            accessibilityNodeInfo.addAction(new AccessibilityAction(R.string.title_show_google_app, C0281f.bQ(view.getContext())));
+            accessibilityNodeInfo.addAction(new AccessibilityAction(R.string.title_show_google_app, AccessibilityHelper.getShowGoogleAppText(view.getContext())));
         }
     }
 
@@ -31,13 +31,13 @@ public class C0281f extends AccessibilityDelegate {
         return true;
     }
 
-    public static final String bQ(Context context) {
+    public static final String getShowGoogleAppText(Context context) {
         try {
-            Resources resourcesForApplication = context.getPackageManager().getResourcesForApplication("com.google.android.googlequicksearchbox");
-            int identifier = resourcesForApplication.getIdentifier("title_google_home_screen", "string", "com.google.android.googlequicksearchbox");
-            if (identifier != 0) {
-                if (TextUtils.isEmpty(resourcesForApplication.getString(identifier))) {
-                    return context.getString(R.string.title_show_google_app, new Object[]{resourcesForApplication.getString(identifier)});
+            Resources res = context.getPackageManager().getResourcesForApplication("com.google.android.googlequicksearchbox");
+            int id = res.getIdentifier("title_google_home_screen", "string", "com.google.android.googlequicksearchbox");
+            if (id != 0) {
+                if (TextUtils.isEmpty(res.getString(id))) {
+                    return context.getString(R.string.title_show_google_app, res.getString(id));
                 }
             }
         } catch (NameNotFoundException e) {

@@ -10,9 +10,10 @@ import android.view.MotionEvent;
 import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.util.TransformingTouchDelegate;
 
-public class SuperGContainerView extends C0276c {
+public class SuperGContainerView extends BaseQsbView {
     private static final Rect sTempRect = new Rect();
     private final TransformingTouchDelegate bz;
 
@@ -27,23 +28,29 @@ public class SuperGContainerView extends C0276c {
 
     public SuperGContainerView(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
-        this.bz = new TransformingTouchDelegate(this);
-    }
-
-    @Override
-    public void bj(SharedPreferences sharedPreferences) {
-        super.bj(sharedPreferences);
-        if (this.bz != null) {
-            this.bz.setDelegateView(this.bB);
+        if (FeatureFlags.useFullWidthSearchbar(getContext())) {
+            bz = null;
+        } else {
+            bz = new TransformingTouchDelegate(this);
         }
     }
 
     @Override
-    protected int aK(boolean z) {
-        if (this.bz != null) {
+    public void applyOpaPreference(SharedPreferences prefs) {
+        if (!FeatureFlags.useFullWidthSearchbar(getContext())) {
+            super.applyOpaPreference(prefs);
+            if (bz != null) {
+                bz.setDelegateView(mQsbView);
+            }
+        }
+    }
+
+    @Override
+    protected int getQsbView(boolean withMic) {
+        if (bz != null) {
             float f;
-            TransformingTouchDelegate transformingTouchDelegate = this.bz;
-            if (z) {
+            TransformingTouchDelegate transformingTouchDelegate = bz;
+            if (withMic) {
                 f = 0.0f;
             } else {
                 f = getResources().getDimension(R.dimen.qsb_touch_extension);
@@ -51,7 +58,7 @@ public class SuperGContainerView extends C0276c {
             transformingTouchDelegate.extendTouchBounds(f);
         }
 
-        return z ? R.layout.qsb_with_mic : R.layout.qsb_without_mic;
+        return withMic ? R.layout.qsb_with_mic : R.layout.qsb_without_mic;
     }
 
     @Override
@@ -62,14 +69,14 @@ public class SuperGContainerView extends C0276c {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (this.bz != null) {
-            this.bC.getWorkspace().findViewById(R.id.workspace_blocked_row).setTouchDelegate(this.bz);
+        if (bz != null) {
+            mLauncher.getWorkspace().findViewById(R.id.workspace_blocked_row).setTouchDelegate(bz);
         }
     }
 
     @Override
-    protected boolean aM(SharedPreferences sharedPreferences) {
-        return super.aM(sharedPreferences);
+    protected boolean isMinusOneEnabled(SharedPreferences sharedPreferences) {
+        return !FeatureFlags.useFullWidthSearchbar(getContext()) && super.isMinusOneEnabled(sharedPreferences);
     }
 
     @Override
@@ -77,7 +84,7 @@ public class SuperGContainerView extends C0276c {
         int i3;
         LayoutParams layoutParams;
         int i4 = -getResources().getDimensionPixelSize(R.dimen.qsb_overlap_margin);
-        DeviceProfile deviceProfile = this.bC.getDeviceProfile();
+        DeviceProfile deviceProfile = mLauncher.getDeviceProfile();
         Rect workspacePadding = deviceProfile.getWorkspacePadding(sTempRect);
         int size = MeasureSpec.getSize(i) - i4;
         int i5 = (size - workspacePadding.left) - workspacePadding.right;
@@ -85,17 +92,17 @@ public class SuperGContainerView extends C0276c {
         i4 += workspacePadding.left + ((i5 - size) / 2);
         i3 = size;
         size = i4;
-        if (this.bB != null) {
-            layoutParams = (LayoutParams) this.bB.getLayoutParams();
+        if (mQsbView != null) {
+            layoutParams = (LayoutParams) mQsbView.getLayoutParams();
             layoutParams.width = i3 / deviceProfile.inv.numColumns;
-            if (this.bD) {
+            if (showMic) {
                 layoutParams.width = Math.max(layoutParams.width, getResources().getDimensionPixelSize(R.dimen.qsb_min_width_with_mic));
             }
             layoutParams.setMarginStart(size);
             layoutParams.resolveLayoutDirection(layoutParams.getLayoutDirection());
         }
-        if (this.bE != null) {
-            layoutParams = (LayoutParams) this.bE.getLayoutParams();
+        if (qsbConnector != null) {
+            layoutParams = (LayoutParams) qsbConnector.getLayoutParams();
             layoutParams.width = size + (layoutParams.height / 2);
         }
         super.onMeasure(i, i2);
@@ -105,18 +112,18 @@ public class SuperGContainerView extends C0276c {
     @Override
     protected void onLayout(boolean z, int i, int i2, int i3, int i4) {
         super.onLayout(z, i, i2, i3, i4);
-        if (this.bz != null) {
+        if (bz != null) {
             int i5 = 0;
             if (Utilities.isRtl(getResources())) {
-                i5 = this.bB.getLeft() - this.bC.getDeviceProfile().getWorkspacePadding(sTempRect).left;
+                i5 = mQsbView.getLeft() - mLauncher.getDeviceProfile().getWorkspacePadding(sTempRect).left;
             }
-            this.bz.setBounds(i5, this.bB.getTop(), this.bB.getWidth() + i5, this.bB.getBottom());
+            bz.setBounds(i5, mQsbView.getTop(), mQsbView.getWidth() + i5, mQsbView.getBottom());
         }
     }
 
     @Override
     protected void aL(Rect rect, Intent intent) {
-        int height = this.bB.getHeight() / 2;
+        int height = mQsbView.getHeight() / 2;
         if (Utilities.isRtl(getResources())) {
             rect.right = height + getRight();
         } else {
@@ -126,7 +133,7 @@ public class SuperGContainerView extends C0276c {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent motionEvent) {
-        if (this.bz != null) {
+        if (bz != null) {
             return false;
         }
         return super.dispatchTouchEvent(motionEvent);

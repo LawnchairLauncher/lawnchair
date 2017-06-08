@@ -11,9 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.pixelify.C0277b;
 import ch.deletescape.lawnchair.pixelify.C0278a;
-import ch.deletescape.lawnchair.pixelify.C0280e;
+import ch.deletescape.lawnchair.pixelify.GoogleSearchApp;
 import ch.deletescape.lawnchair.pixelify.ShadowHostView;
 
 public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener, C0277b {
@@ -24,9 +25,11 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
 
     public QsbBlockerView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
-        this.mBgPaint.setColor(-1);
-        this.mBgPaint.setAlpha(0);
-        //View.inflate(context, R.layout.qsb_wide_experiment, this);
+        mBgPaint.setColor(-1);
+        mBgPaint.setAlpha(0);
+        if (FeatureFlags.useFullWidthSearchbar(getContext())) {
+            View.inflate(context, R.layout.qsb_wide_experiment, this);
+        }
     }
 
 
@@ -38,22 +41,22 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-//        if (!C0279d.bv(getContext())) {
-        Workspace workspace = Launcher.getLauncher(getContext()).getWorkspace();
-        workspace.setOnStateChangeListener(this);
-        prepareStateChange(workspace.getState(), null);
-        C0280e aR = C0278a.aS(getContext()).aR(this);
-        if (aR != null) {
-            bb(aR);
+        if (!FeatureFlags.useFullWidthSearchbar(getContext())) {
+            Workspace workspace = Launcher.getLauncher(getContext()).getWorkspace();
+            workspace.setOnStateChangeListener(this);
+            prepareStateChange(workspace.getState(), null);
+            GoogleSearchApp aR = C0278a.aS(getContext()).aR(this);
+            if (aR != null) {
+                bb(aR);
+            }
         }
-//        }
     }
 
     @Override
     protected void onMeasure(int i, int i2) {
-        if (this.mView != null && this.mState == 2) {
+        if (mView != null && mState == 2) {
             DeviceProfile deviceProfile = Launcher.getLauncher(getContext()).getDeviceProfile();
-            LayoutParams layoutParams = (LayoutParams) this.mView.getLayoutParams();
+            LayoutParams layoutParams = (LayoutParams) mView.getLayoutParams();
             int size = ((MeasureSpec.getSize(i) / deviceProfile.inv.numColumns) - deviceProfile.iconSizePx) / 2;
             layoutParams.rightMargin = size;
             layoutParams.leftMargin = size;
@@ -63,9 +66,9 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
 
     @Override
     protected void onDetachedFromWindow() {
-//        if (!C0279d.bv(getContext())) {
-        C0278a.aS(getContext()).aY(this);
-//        }
+        if (!FeatureFlags.useFullWidthSearchbar(getContext())) {
+            C0278a.aS(getContext()).aY(this);
+        }
         super.onDetachedFromWindow();
     }
 
@@ -86,37 +89,37 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawPaint(this.mBgPaint);
+        canvas.drawPaint(mBgPaint);
     }
 
     @Override
-    public void bb(C0280e c0280e) {
-        View view = this.mView;
-        int i = this.mState;
-        this.mView = ShadowHostView.bG(c0280e, this, this.mView);
-        this.mState = 2;
-        if (this.mView == null) {
+    public void bb(GoogleSearchApp gsa) {
+        View view = mView;
+        int i = mState;
+        mView = ShadowHostView.bG(gsa, this, mView);
+        mState = 2;
+        if (mView == null) {
             View inflate;
-            this.mState = 1;
+            mState = 1;
             if (view == null || i != 1) {
                 inflate = LayoutInflater.from(getContext()).inflate(R.layout.date_widget, this, false);
             } else {
                 inflate = view;
             }
-            this.mView = inflate;
+            mView = inflate;
         }
-        if (i != this.mState) {
+        if (i != mState) {
             if (view != null) {
                 view.animate().setDuration(200).alpha(0.0f).withEndAction(new C0293r(this, view));
             }
-            addView(this.mView);
-            this.mView.setAlpha(0.0f);
-            this.mView.animate().setDuration(200).alpha(1.0f);
-        } else if (view != this.mView) {
+            addView(mView);
+            mView.setAlpha(0.0f);
+            mView.animate().setDuration(200).alpha(1.0f);
+        } else if (view != mView) {
             if (view != null) {
                 removeView(view);
             }
-            addView(this.mView);
+            addView(mView);
         }
     }
 
@@ -125,13 +128,13 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
         final /* synthetic */ View cw;
 
         C0293r(QsbBlockerView qsbBlockerView, View view) {
-            this.cv = qsbBlockerView;
-            this.cw = view;
+            cv = qsbBlockerView;
+            cw = view;
         }
 
         @Override
         public void run() {
-            this.cv.removeView(this.cw);
+            cv.removeView(cw);
         }
     }
 

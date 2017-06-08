@@ -33,22 +33,22 @@ public class QsbConnector extends View {
 
     public QsbConnector(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
-        this.by = new C0285j(this);
-        this.bv = 0;
-        this.bx = getResources().getColor(R.color.qsb_background) & 16777215;
+        by = new C0285j(this);
+        bv = 0;
+        bx = getResources().getColor(R.color.qsb_background) & 16777215;
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         be();
-        getContext().registerReceiver(this.by, C0330a.ca("android.intent.action.PACKAGE_ADDED", "android.intent.action.PACKAGE_CHANGED", "android.intent.action.PACKAGE_REMOVED"));
+        getContext().registerReceiver(by, Util.createIntentFilter("android.intent.action.PACKAGE_ADDED", "android.intent.action.PACKAGE_CHANGED", "android.intent.action.PACKAGE_REMOVED"));
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        getContext().unregisterReceiver(this.by);
+        getContext().unregisterReceiver(by);
     }
 
     private void be() {
@@ -71,8 +71,8 @@ public class QsbConnector extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (this.bv > 0) {
-            canvas.drawColor(ColorUtils.setAlphaComponent(this.bx, this.bv));
+        if (bv > 0) {
+            canvas.drawColor(ColorUtils.setAlphaComponent(bx, bv));
         }
     }
 
@@ -88,24 +88,24 @@ public class QsbConnector extends View {
         if (z) {
             bd();
             bf(255);
-            this.bw = ObjectAnimator.ofInt(this, bu, new int[]{0});
-            this.bw.setInterpolator(new AccelerateDecelerateInterpolator());
-            this.bw.start();
+            bw = ObjectAnimator.ofInt(this, bu, 0);
+            bw.setInterpolator(new AccelerateDecelerateInterpolator());
+            bw.start();
             return;
         }
         bf(0);
     }
 
     private void bd() {
-        if (this.bw != null) {
-            this.bw.end();
-            this.bw = null;
+        if (bw != null) {
+            bw.end();
+            bw = null;
         }
     }
 
     private void bf(int i) {
-        if (this.bv != i) {
-            this.bv = i;
+        if (bv != i) {
+            bv = i;
             invalidate();
         }
     }
@@ -114,12 +114,12 @@ public class QsbConnector extends View {
         final /* synthetic */ QsbConnector co;
 
         C0285j(QsbConnector qsbConnector) {
-            this.co = qsbConnector;
+            co = qsbConnector;
         }
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            this.co.be();
+            co.be();
         }
     }
 
