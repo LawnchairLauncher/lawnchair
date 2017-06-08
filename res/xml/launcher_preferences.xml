@@ -23,15 +23,6 @@
         android:persistent="true" />
 
     <SwitchPreference
-        android:key="pref_qsbOnFirstScreen"
-        android:title="[BROKEN] Show Quick Searchbar on the first screen"
-        android:summary="App restart required"
-        android:defaultValue="true"
-        android:persistent="true"
-        android:enabled="false"
-        android:visibility="gone"/>
-
-    <SwitchPreference
         android:key="pref_lightStatusBar"
         android:title="Light StatusBar"
         android:summaryOn="The status bar may show dark icons based on the wallpaper."

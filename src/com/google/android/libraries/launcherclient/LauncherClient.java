@@ -180,6 +180,18 @@ public class LauncherClient {
         }
     }
 
+    public void openOverlay() {
+        if (mOverlay == null) {
+            return;
+        }
+
+        try {
+            mOverlay.openOverlay(0);
+        } catch (RemoteException ignored) {
+            FirebaseCrash.report(ignored);
+        }
+    }
+
     public final void onAttachedToWindow() {
         if (mDestroyed) {
             return;
@@ -300,10 +312,12 @@ public class LauncherClient {
             packageName = pkg;
         }
 
+        @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
 
         }
 
+        @Override
         public void onServiceDisconnected(ComponentName name) {
             if (name.getPackageName().equals(packageName)) {
                 sApplicationConnection = null;
@@ -336,6 +350,7 @@ public class LauncherClient {
             mWindow = null;
         }
 
+        @Override
         public boolean handleMessage(Message msg) {
             if (mClient == null) {
                 return true;
@@ -358,6 +373,7 @@ public class LauncherClient {
             }
         }
 
+        @Override
         public void overlayScrollChanged(float progress) throws RemoteException {
             mUIHandler.removeMessages(2);
             Message.obtain(mUIHandler, 2, progress).sendToTarget();
@@ -367,6 +383,7 @@ public class LauncherClient {
             }
         }
 
+        @Override
         public void overlayStatusChanged(int status) {
             Message.obtain(mUIHandler, 4, status, 0).sendToTarget();
         }
@@ -384,6 +401,7 @@ public class LauncherClient {
     }
 
     private class OverlayServiceConnection implements ServiceConnection {
+        @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             mState = 1;
             mOverlay = ILauncherOverlay.Stub.asInterface(service);
@@ -392,6 +410,7 @@ public class LauncherClient {
             }
         }
 
+        @Override
         public void onServiceDisconnected(ComponentName name) {
             mState = 0;
             mOverlay = null;

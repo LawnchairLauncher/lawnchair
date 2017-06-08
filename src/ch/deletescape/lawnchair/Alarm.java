@@ -63,6 +63,7 @@ public class Alarm implements Runnable {
     }
 
     // this is called when our timer runs out
+    @Override
     public void run() {
         mWaitingForCallback = false;
         if (mAlarmPending) {
@@ -75,7 +76,7 @@ public class Alarm implements Runnable {
             } else {
                 mAlarmPending = false;
                 if (mAlarmListener != null) {
-                    mAlarmListener.onAlarm();
+                    mAlarmListener.onAlarm(this);
                 }
             }
         }

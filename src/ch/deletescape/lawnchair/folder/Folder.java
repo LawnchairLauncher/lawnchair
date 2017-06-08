@@ -251,17 +251,21 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             // We disable action mode in older OSes where floating selection menu is not yet
             // available.
             mFolderName.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+                @Override
                 public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                     return false;
                 }
 
+                @Override
                 public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                     return false;
                 }
 
+                @Override
                 public void onDestroyActionMode(ActionMode mode) {
                 }
 
+                @Override
                 public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
                     return false;
                 }
@@ -281,6 +285,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mFooterHeight = mFooter.getMeasuredHeight();
     }
 
+    @Override
     public void onClick(View v) {
         Object tag = v.getTag();
         if (tag instanceof ShortcutInfo) {
@@ -288,6 +293,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
     }
 
+    @Override
     public boolean onLongClick(View v) {
         // Return if global dragging is not enabled
         if (!mLauncher.isDraggingEnabled()) return true;
@@ -406,6 +412,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mIsEditingName = false;
     }
 
+    @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             dismissEditingName();
@@ -490,6 +497,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         // In case any children didn't come across during loading, clean up the folder accordingly
         mFolderIcon.post(new Runnable() {
+            @Override
             public void run() {
                 if (getItemCount() <= 1) {
                     replaceFolderWithFinalItem();
@@ -713,6 +721,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mState = STATE_SMALL;
     }
 
+    @Override
     public boolean acceptDrop(DragObject d) {
         final ItemInfo item = d.dragInfo;
         final int itemType = item.itemType;
@@ -721,6 +730,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT));
     }
 
+    @Override
     public void onDragEnter(DragObject d) {
         mPrevTargetRank = -1;
         mOnExitAlarm.cancelAlarm();
@@ -730,7 +740,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     OnAlarmListener mReorderAlarmListener = new OnAlarmListener() {
-        public void onAlarm() {
+        @Override
+        public void onAlarm(Alarm alarm) {
             mContent.realTimeReorder(mEmptyCellRank, mTargetRank);
             mEmptyCellRank = mTargetRank;
         }
@@ -808,7 +819,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     OnAlarmListener mOnExitAlarmListener = new OnAlarmListener() {
-        public void onAlarm() {
+        @Override
+        public void onAlarm(Alarm alarm) {
             completeDragExit();
         }
     };
@@ -830,6 +842,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mIsExternalDrag = false;
     }
 
+    @Override
     public void onDragExit(DragObject d) {
         // We only close the folder if this is a true drag exit, ie. not because
         // a drop has occurred above the folder.
@@ -855,15 +868,17 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     public void prepareAccessibilityDrop() {
         if (mReorderAlarm.alarmPending()) {
             mReorderAlarm.cancelAlarm();
-            mReorderAlarmListener.onAlarm();
+            mReorderAlarmListener.onAlarm(mReorderAlarm);
         }
     }
 
+    @Override
     public void onDropCompleted(final View target, final DragObject d,
                                 final boolean isFlingToDelete, final boolean success) {
         if (mDeferDropAfterUninstall) {
             Log.d(TAG, "Deferred handling drop because waiting for uninstall.");
             mDeferredAction = new Runnable() {
+                @Override
                 public void run() {
                     onDropCompleted(target, d, isFlingToDelete, success);
                     mDeferredAction = null;
@@ -992,6 +1007,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
     }
 
+    @Override
     public boolean isDropEnabled() {
         return true;
     }
@@ -1081,6 +1097,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         return getPaddingTop() + getPaddingBottom() + contentAreaHeight + mFooterHeight;
     }
 
+    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int contentWidth = getContentAreaWidth();
         int contentHeight = getContentAreaHeight();
@@ -1214,6 +1231,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
     }
 
+    @Override
     public void onDrop(DragObject d) {
         Runnable cleanUpRunnable = null;
 
@@ -1237,7 +1255,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mTargetRank = getTargetRank(d, null);
 
             // Rearrange items immediately.
-            mReorderAlarmListener.onAlarm();
+            mReorderAlarmListener.onAlarm(mReorderAlarm);
 
             mOnScrollHintAlarm.cancelAlarm();
             mScrollPauseAlarm.cancelAlarm();
@@ -1331,6 +1349,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 mLauncher, item, mInfo.id, 0, item.cellX, item.cellY);
     }
 
+    @Override
     public void onRemove(ShortcutInfo item) {
         mItemsInvalidated = true;
         View v = getViewForInfo(item);
@@ -1364,6 +1383,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         updateTextViewFocus();
     }
 
+    @Override
     public void onTitleChanged(CharSequence title) {
     }
 
@@ -1383,6 +1403,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         return mItemsInReadingOrder;
     }
 
+    @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (v == mFolderName) {
             if (hasFocus) {
@@ -1412,7 +1433,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
          * Scroll hint has been shown long enough. Now scroll to appropriate page.
          */
         @Override
-        public void onAlarm() {
+        public void onAlarm(Alarm alarm) {
             if (mCurrentScrollDir == DragController.SCROLL_LEFT) {
                 mContent.scrollLeft();
                 mScrollHintDir = DragController.SCROLL_NONE;
@@ -1443,7 +1464,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
          * Page scroll is complete.
          */
         @Override
-        public void onAlarm() {
+        public void onAlarm(Alarm alarm) {
             // Reorder immediately on page change.
             onDragOver(mDragObject);
         }

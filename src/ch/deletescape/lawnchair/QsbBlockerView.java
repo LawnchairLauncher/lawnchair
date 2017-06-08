@@ -1,90 +1,167 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package ch.deletescape.lawnchair;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Property;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.FrameLayout;
 
-import ch.deletescape.lawnchair.Workspace.State;
+import ch.deletescape.lawnchair.pixelify.C0277b;
+import ch.deletescape.lawnchair.pixelify.C0278a;
+import ch.deletescape.lawnchair.pixelify.C0280e;
+import ch.deletescape.lawnchair.pixelify.ShadowHostView;
 
-/**
- * A simple view used to show the region blocked by QSB during drag and drop.
- */
-public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener {
+public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener, C0277b {
+    public static final Property bU = new C0292q(Integer.TYPE, "bgAlpha");
+    private final Paint mBgPaint = new Paint(1);
+    private int mState = 0;
+    private View mView;
 
-    private static final int VISIBLE_ALPHA = 100;
+    public QsbBlockerView(Context context, AttributeSet attributeSet) {
+        super(context, attributeSet);
+        this.mBgPaint.setColor(-1);
+        this.mBgPaint.setAlpha(0);
+        //View.inflate(context, R.layout.qsb_wide_experiment, this);
+    }
 
-    private final Paint mBgPaint;
 
-    public QsbBlockerView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-
-        mBgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mBgPaint.setColor(Color.WHITE);
-        mBgPaint.setAlpha(0);
+    @Override
+    public void setPadding(int i, int i2, int i3, int i4) {
+        super.setPadding(0, 0, 0, 0);
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-
-        Workspace w = Launcher.getLauncher(getContext()).getWorkspace();
-        w.setOnStateChangeListener(this);
-        prepareStateChange(w.getState(), null);
+//        if (!C0279d.bv(getContext())) {
+        Workspace workspace = Launcher.getLauncher(getContext()).getWorkspace();
+        workspace.setOnStateChangeListener(this);
+        prepareStateChange(workspace.getState(), null);
+        C0280e aR = C0278a.aS(getContext()).aR(this);
+        if (aR != null) {
+            bb(aR);
+        }
+//        }
     }
 
     @Override
-    public void prepareStateChange(State toState, AnimatorSet targetAnim) {
-        int finalAlpha = getAlphaForState(toState);
-        if (targetAnim == null) {
-            mBgPaint.setAlpha(finalAlpha);
-            invalidate();
-        } else {
-            ObjectAnimator anim = ObjectAnimator.ofArgb(mBgPaint, "alpha", finalAlpha);
-            anim.addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    invalidate();
-                }
-            });
-            targetAnim.play(anim);
+    protected void onMeasure(int i, int i2) {
+        if (this.mView != null && this.mState == 2) {
+            DeviceProfile deviceProfile = Launcher.getLauncher(getContext()).getDeviceProfile();
+            LayoutParams layoutParams = (LayoutParams) this.mView.getLayoutParams();
+            int size = ((MeasureSpec.getSize(i) / deviceProfile.inv.numColumns) - deviceProfile.iconSizePx) / 2;
+            layoutParams.rightMargin = size;
+            layoutParams.leftMargin = size;
         }
+        super.onMeasure(i, i2);
     }
 
-    private static int getAlphaForState(State state) {
-        switch (state) {
-            case SPRING_LOADED:
-            case OVERVIEW:
-            case OVERVIEW_HIDDEN:
-                return VISIBLE_ALPHA;
+    @Override
+    protected void onDetachedFromWindow() {
+//        if (!C0279d.bv(getContext())) {
+        C0278a.aS(getContext()).aY(this);
+//        }
+        super.onDetachedFromWindow();
+    }
+
+    @Override
+    public void prepareStateChange(Workspace.State state, AnimatorSet animatorSet) {
+        int i;
+        if (state == Workspace.State.SPRING_LOADED) {
+            i = 60;
+        } else {
+            i = 0;
         }
-        return 0;
+        if (animatorSet == null) {
+            bU.set(this, Integer.valueOf(i));
+            return;
+        }
+        animatorSet.play(ObjectAnimator.ofInt(this, bU, new int[]{i}));
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawPaint(mBgPaint);
+        canvas.drawPaint(this.mBgPaint);
+    }
+
+    @Override
+    public void bb(C0280e c0280e) {
+        View view = this.mView;
+        int i = this.mState;
+        this.mView = ShadowHostView.bG(c0280e, this, this.mView);
+        this.mState = 2;
+        if (this.mView == null) {
+            View inflate;
+            this.mState = 1;
+            if (view == null || i != 1) {
+                inflate = LayoutInflater.from(getContext()).inflate(R.layout.date_widget, this, false);
+            } else {
+                inflate = view;
+            }
+            this.mView = inflate;
+        }
+        if (i != this.mState) {
+            if (view != null) {
+                view.animate().setDuration(200).alpha(0.0f).withEndAction(new C0293r(this, view));
+            }
+            addView(this.mView);
+            this.mView.setAlpha(0.0f);
+            this.mView.animate().setDuration(200).alpha(1.0f);
+        } else if (view != this.mView) {
+            if (view != null) {
+                removeView(view);
+            }
+            addView(this.mView);
+        }
+    }
+
+    final class C0293r implements Runnable {
+        final /* synthetic */ QsbBlockerView cv;
+        final /* synthetic */ View cw;
+
+        C0293r(QsbBlockerView qsbBlockerView, View view) {
+            this.cv = qsbBlockerView;
+            this.cw = view;
+        }
+
+        @Override
+        public void run() {
+            this.cv.removeView(this.cw);
+        }
+    }
+
+    static final class C0292q extends Property {
+        C0292q(Class cls, String str) {
+            super(cls, str);
+        }
+
+        @Override
+        public /* bridge */ /* synthetic */ void set(Object obj, Object obj2) {
+            bX((QsbBlockerView) obj, (Integer) obj2);
+        }
+
+        public void bX(QsbBlockerView qsbBlockerView, Integer num) {
+            boolean z = false;
+            qsbBlockerView.mBgPaint.setAlpha(num.intValue());
+            if (num.intValue() == 0) {
+                z = true;
+            }
+            qsbBlockerView.setWillNotDraw(z);
+            qsbBlockerView.invalidate();
+        }
+
+        @Override
+        public /* bridge */ /* synthetic */ Object get(Object obj) {
+            return bW((QsbBlockerView) obj);
+        }
+
+        public Integer bW(QsbBlockerView qsbBlockerView) {
+            return Integer.valueOf(qsbBlockerView.mBgPaint.getAlpha());
+        }
     }
 }

@@ -2896,7 +2896,7 @@ public class Workspace extends PagedView
                 mFolderCreationAlarm.setOnAlarmListener(listener);
                 mFolderCreationAlarm.setAlarm(FOLDER_CREATION_TIMEOUT);
             } else {
-                listener.onAlarm();
+                listener.onAlarm(mFolderCreationAlarm);
             }
 
             if (dragObject.stateAnnouncer != null) {
@@ -2953,7 +2953,7 @@ public class Workspace extends PagedView
         }
 
         @Override
-        public void onAlarm() {
+        public void onAlarm(Alarm alarm) {
             mFolderCreateBg = bg;
             mFolderCreateBg.animateToAccept(layout, cellX, cellY);
             layout.clearDragOutlines();
@@ -2977,7 +2977,7 @@ public class Workspace extends PagedView
         }
 
         @Override
-        public void onAlarm() {
+        public void onAlarm(Alarm alarm) {
             int[] resultSpan = new int[2];
             mTargetCell = findNearestArea((int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1], minSpanX, minSpanY, mDragTargetLayout,

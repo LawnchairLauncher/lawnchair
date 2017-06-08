@@ -140,7 +140,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     public static FolderIcon fromXml(int resId, Launcher launcher, ViewGroup group,
                                      FolderInfo folderInfo) {
-        @SuppressWarnings("all") // suppress dead code warning
+        // suppress dead code warning
         final boolean error = INITIAL_ITEM_ANIMATION_DURATION >= DROP_IN_ANIMATION_DURATION;
         if (error) {
             throw new IllegalStateException("DROP_IN_ANIMATION_DURATION must be greater than " +
@@ -227,7 +227,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     OnAlarmListener mOnOpenListener = new OnAlarmListener() {
-        public void onAlarm() {
+        @Override
+        public void onAlarm(Alarm alarm) {
             mFolder.beginExternalDrag();
             mLauncher.openFolder(FolderIcon.this);
         }
@@ -325,6 +326,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                     mDrawingParams.get(index) : null;
             if (params != null) params.hidden = true;
             postDelayed(new Runnable() {
+                @Override
                 public void run() {
                     if (params != null) params.hidden = false;
                     mFolder.showItem(item);
@@ -800,6 +802,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
             mValueAnimator = LauncherAnimUtils.ofFloat(0f, 1.0f);
             mValueAnimator.addUpdateListener(new AnimatorUpdateListener() {
+                @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     float progress = animation.getAnimatedFraction();
 
@@ -914,16 +917,19 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         requestLayout();
     }
 
+    @Override
     public void onAdd(ShortcutInfo item) {
         invalidate();
         requestLayout();
     }
 
+    @Override
     public void onRemove(ShortcutInfo item) {
         invalidate();
         requestLayout();
     }
 
+    @Override
     public void onTitleChanged(CharSequence title) {
         mFolderName.setText(title);
         setContentDescription(getContext().getString(R.string.folder_name_format, title));

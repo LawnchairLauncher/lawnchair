@@ -77,6 +77,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.libraries.launcherclient.LauncherClient;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
 
@@ -3705,6 +3706,10 @@ public class Launcher extends Activity
      */
     public void setLauncherOverlay(LauncherOverlay overlay) {
         mWorkspace.setLauncherOverlay(overlay);
+    }
+
+    public LauncherClient getClient() {
+        return mLauncherTab.getClient();
     }
 
     public boolean isClientConnected() {

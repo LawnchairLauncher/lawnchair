@@ -52,4 +52,8 @@
     <color name="accent_material_light">#00bcd4</color>
 
     <color name="wallpaper_picker_translucent_gray">#66212121</color>
+
+
+    <color name="qsb_connector">#fff2f2f2</color>
+    <color name="qsb_background">#ffffffff</color>
 </resources>

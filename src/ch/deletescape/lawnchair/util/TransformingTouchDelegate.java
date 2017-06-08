@@ -36,6 +36,8 @@ public class TransformingTouchDelegate extends TouchDelegate {
     private final RectF mTouchCheckBounds;
     private boolean mWasTouchOutsideBounds;
 
+
+    private float mTouchExtension;
     private View mDelegateView;
     private boolean mDelegateTargeted;
 
@@ -47,13 +49,23 @@ public class TransformingTouchDelegate extends TouchDelegate {
         mTouchCheckBounds = new RectF();
     }
 
-    public void setBounds(int left, int top, int right, int bottom) {
-        mBounds.set(left, top, right, bottom);
+    public void setDelegateView(View view) {
+        mDelegateView = view;
+    }
+
+    public void extendTouchBounds(float extension) {
+        mTouchExtension = extension;
         updateTouchBounds();
     }
 
     private void updateTouchBounds() {
         mTouchCheckBounds.set(mBounds);
+        mTouchCheckBounds.inset(-mTouchExtension, -mTouchExtension);
+    }
+
+    public void setBounds(int left, int top, int right, int bottom) {
+        mBounds.set(left, top, right, bottom);
+        updateTouchBounds();
     }
 
     /**
@@ -63,6 +75,7 @@ public class TransformingTouchDelegate extends TouchDelegate {
      * @param event The touch event to forward
      * @return True if the event was forwarded to the delegate, false otherwise.
      */
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         boolean sendToDelegate = false;
         switch (event.getAction()) {
