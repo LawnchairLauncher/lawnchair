@@ -111,6 +111,7 @@ public final class Utilities {
     public static final String EXTRA_WALLPAPER_OFFSET = "com.android.launcher3.WALLPAPER_OFFSET";
 
     public static final int COLOR_EXTRACTION_JOB_ID = 1;
+    public static final int WALLPAPER_COMPAT_JOB_ID = 2;
 
     // These values are same as that in {@link AsyncTask}.
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
