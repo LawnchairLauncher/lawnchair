@@ -43,7 +43,7 @@ public final class FeatureFlags {
         FirebaseAnalytics.getInstance(context).setUserProperty("pulldown_search_enabled", String.valueOf(enabled));
         return enabled;
     }
-
+    
     public static boolean pinchToOverview(Context context) {
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_PINCH_TO_OVERVIEW, true);
         FirebaseAnalytics.getInstance(context).setUserProperty("pinch_overview_enabled", String.valueOf(enabled));

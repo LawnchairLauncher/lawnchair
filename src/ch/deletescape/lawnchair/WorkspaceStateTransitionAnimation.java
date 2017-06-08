@@ -98,6 +98,7 @@ class ZInterpolator implements TimeInterpolator {
         focalLength = foc;
     }
 
+    @Override
     public float getInterpolation(float input) {
         return (1.0f - focalLength / (focalLength + input)) /
                 (1.0f - focalLength / (focalLength + 1.0f));
@@ -114,6 +115,7 @@ class InverseZInterpolator implements TimeInterpolator {
         zInterpolator = new ZInterpolator(foc);
     }
 
+    @Override
     public float getInterpolation(float input) {
         return 1 - zInterpolator.getInterpolation(1 - input);
     }
@@ -126,6 +128,7 @@ class ZoomInInterpolator implements TimeInterpolator {
     private final InverseZInterpolator inverseZInterpolator = new InverseZInterpolator(0.35f);
     private final DecelerateInterpolator decelerate = new DecelerateInterpolator(3.0f);
 
+    @Override
     public float getInterpolation(float input) {
         return decelerate.getInterpolation(inverseZInterpolator.getInterpolation(input));
     }
@@ -290,6 +293,7 @@ public class WorkspaceStateTransitionAnimation {
         float finalHotseatAlpha = (states.stateIsNormal || states.stateIsSpringLoaded ||
                 states.stateIsNormalHidden) ? 1f : 0f;
         float finalOverviewPanelAlpha = states.stateIsOverview ? 1f : 0f;
+        float finalQsbAlpha = (states.stateIsNormal || states.stateIsNormalHidden) ? 1f : 0f;
 
         float finalWorkspaceTranslationY = 0;
         if (states.stateIsOverview || states.stateIsOverviewHidden) {
@@ -353,9 +357,27 @@ public class WorkspaceStateTransitionAnimation {
                 cl.setBackgroundAlpha(finalBackgroundAlpha);
                 cl.setShortcutAndWidgetAlpha(finalAlpha);
             }
+
+            if (Workspace.isQsbContainerPage(i)) {
+                if (animated) {
+                    Animator anim = mWorkspace.mQsbAlphaController
+                            .animateAlphaAtIndex(finalAlpha, Workspace.QSB_ALPHA_INDEX_PAGE_SCROLL);
+                    anim.setDuration(duration);
+                    anim.setInterpolator(mZoomInInterpolator);
+                    mStateAnimator.play(anim);
+                } else {
+                    mWorkspace.mQsbAlphaController.setAlphaAtIndex(
+                            finalAlpha, Workspace.QSB_ALPHA_INDEX_PAGE_SCROLL);
+                }
+            }
         }
 
         final ViewGroup overviewPanel = mLauncher.getOverviewPanel();
+
+        final View qsbContainer = mLauncher.getQsbContainer();
+
+        Animator qsbAlphaAnimation = mWorkspace.mQsbAlphaController
+                .animateAlphaAtIndex(finalQsbAlpha, Workspace.QSB_ALPHA_INDEX_STATE_CHANGE);
 
         if (animated) {
             LauncherViewPropertyAnimator scale = new LauncherViewPropertyAnimator(mWorkspace);
@@ -375,6 +397,7 @@ public class WorkspaceStateTransitionAnimation {
             // For animation optimization, we may need to provide the Launcher transition
             // with a set of views on which to force build and manage layers in certain scenarios.
             layerViews.put(overviewPanel, LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
+            layerViews.put(qsbContainer, LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
             layerViews.put(mLauncher.getHotseat(),
                     LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
             layerViews.put(mWorkspace.getPageIndicator(),
@@ -390,9 +413,11 @@ public class WorkspaceStateTransitionAnimation {
 
             overviewPanelAlpha.setDuration(duration);
             hotseatAlpha.setDuration(duration);
+            qsbAlphaAnimation.setDuration(duration);
 
             mStateAnimator.play(overviewPanelAlpha);
             mStateAnimator.play(hotseatAlpha);
+            mStateAnimator.play(qsbAlphaAnimation);
             mStateAnimator.addListener(new AnimatorListenerAdapter() {
                 boolean canceled = false;
 
@@ -415,6 +440,7 @@ public class WorkspaceStateTransitionAnimation {
             overviewPanel.setAlpha(finalOverviewPanelAlpha);
             AlphaUpdateListener.updateVisibility(overviewPanel, accessibilityEnabled);
 
+            //qsbAlphaAnimation.end();
             mWorkspace.createHotseatAlphaAnimator(finalHotseatAlpha).end();
             mWorkspace.setScaleX(mNewScale);
             mWorkspace.setScaleY(mNewScale);

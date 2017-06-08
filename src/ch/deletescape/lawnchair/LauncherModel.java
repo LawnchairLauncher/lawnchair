@@ -341,6 +341,7 @@ public class LauncherModel extends BroadcastReceiver
                     if (!updates.isEmpty()) {
                         // Push changes to the callback.
                         Runnable r = new Runnable() {
+                            @Override
                             public void run() {
                                 Callbacks callbacks = getCallback();
                                 if (callbacks != null) {
@@ -407,8 +408,10 @@ public class LauncherModel extends BroadcastReceiver
 
         // Process the newly added applications and add them to the database first
         Runnable r = new Runnable() {
+            @Override
             public void run() {
                 runOnMainThread(new Runnable() {
+                    @Override
                     public void run() {
                         Callbacks cb = getCallback();
                         if (callbacks == cb && cb != null) {
@@ -519,6 +522,7 @@ public class LauncherModel extends BroadcastReceiver
         }
         // Process the newly added applications and add them to the database first
         Runnable r = new Runnable() {
+            @Override
             public void run() {
                 final ArrayList<ItemInfo> addedShortcutsFinal = new ArrayList<>();
                 final ArrayList<Long> addedWorkspaceScreensFinal = new ArrayList<>();
@@ -565,6 +569,7 @@ public class LauncherModel extends BroadcastReceiver
 
                 if (!addedShortcutsFinal.isEmpty()) {
                     runOnMainThread(new Runnable() {
+                        @Override
                         public void run() {
                             Callbacks cb = getCallback();
                             if (callbacks == cb && cb != null) {
@@ -648,6 +653,7 @@ public class LauncherModel extends BroadcastReceiver
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
         final long itemId = item.id;
         Runnable r = new Runnable() {
+            @Override
             public void run() {
                 synchronized (sBgLock) {
                     checkItemInfoLocked(itemId, item, stackTrace);
@@ -665,6 +671,7 @@ public class LauncherModel extends BroadcastReceiver
 
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
         Runnable r = new Runnable() {
+            @Override
             public void run() {
                 cr.update(uri, values, null, null);
                 updateItemArrays(item, itemId, stackTrace);
@@ -679,6 +686,7 @@ public class LauncherModel extends BroadcastReceiver
 
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
         Runnable r = new Runnable() {
+            @Override
             public void run() {
                 ArrayList<ContentProviderOperation> ops =
                         new ArrayList<>();
@@ -925,6 +933,7 @@ public class LauncherModel extends BroadcastReceiver
 
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
         Runnable r = new Runnable() {
+            @Override
             public void run() {
                 cr.insert(LauncherSettings.Favorites.CONTENT_URI, values);
 
@@ -1000,6 +1009,7 @@ public class LauncherModel extends BroadcastReceiver
     static void deleteItemsFromDatabase(Context context, final ArrayList<? extends ItemInfo> items) {
         final ContentResolver cr = context.getContentResolver();
         Runnable r = new Runnable() {
+            @Override
             public void run() {
                 for (ItemInfo item : items) {
                     final Uri uri = LauncherSettings.Favorites.getContentUri(item.id);
@@ -1129,6 +1139,7 @@ public class LauncherModel extends BroadcastReceiver
         final ContentResolver cr = context.getContentResolver();
 
         Runnable r = new Runnable() {
+            @Override
             public void run() {
                 cr.delete(LauncherSettings.Favorites.getContentUri(info.id), null, null);
                 // Lock on mBgLock *after* the db operation
@@ -1332,6 +1343,7 @@ public class LauncherModel extends BroadcastReceiver
                 final Callbacks oldCallbacks = mCallbacks.get();
                 // Clear any pending bind-runnables from the synchronized load process.
                 runOnMainThread(new Runnable() {
+                    @Override
                     public void run() {
                         oldCallbacks.clearPendingBinds();
                     }
@@ -1421,6 +1433,7 @@ public class LauncherModel extends BroadcastReceiver
             synchronized (LoaderTask.this) {
 
                 mHandler.postIdle(new Runnable() {
+                    @Override
                     public void run() {
                         synchronized (LoaderTask.this) {
                             mLoadAndBindStepFinished = true;
@@ -1479,6 +1492,7 @@ public class LauncherModel extends BroadcastReceiver
             bindDeepShortcuts();
         }
 
+        @Override
         public void run() {
             synchronized (mLock) {
                 if (mStopped) {
@@ -1619,6 +1633,11 @@ public class LauncherModel extends BroadcastReceiver
 
             if (!occupied.containsKey(item.screenId)) {
                 GridOccupancy screen = new GridOccupancy(countX + 1, countY + 1);
+                if (item.screenId == Workspace.FIRST_SCREEN_ID) {
+                    // Mark the first row as occupied (if the feature is enabled)
+                    // in order to account for the QSB.
+                    screen.markCells(0, 0, countX + 1, 1, true);
+                }
                 occupied.put(item.screenId, screen);
             }
             final GridOccupancy occupancy = occupied.get(item.screenId);
@@ -2450,6 +2469,7 @@ public class LauncherModel extends BroadcastReceiver
             for (int i = 0; i < N; i++) {
                 final LauncherAppWidgetInfo widget = appWidgets.get(i);
                 final Runnable r = new Runnable() {
+                    @Override
                     public void run() {
                         Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                         if (callbacks != null) {
@@ -2516,6 +2536,7 @@ public class LauncherModel extends BroadcastReceiver
 
             // Tell the workspace that we're about to start binding items
             r = new Runnable() {
+                @Override
                 public void run() {
                     Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                     if (callbacks != null) {
@@ -2555,6 +2576,7 @@ public class LauncherModel extends BroadcastReceiver
 
             // Tell the workspace that we're done binding items
             r = new Runnable() {
+                @Override
                 public void run() {
                     Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                     if (callbacks != null) {
@@ -2578,6 +2600,7 @@ public class LauncherModel extends BroadcastReceiver
 
             if (validFirstPage) {
                 r = new Runnable() {
+                    @Override
                     public void run() {
                         Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                         if (callbacks != null) {
@@ -2645,10 +2668,10 @@ public class LauncherModel extends BroadcastReceiver
             }
 
             // shallow copy
-            @SuppressWarnings("unchecked")
             final ArrayList<AppInfo> list
                     = (ArrayList<AppInfo>) mBgAllAppsList.data.clone();
             Runnable r = new Runnable() {
+                @Override
                 public void run() {
                     final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                     if (callbacks != null) {
@@ -2720,6 +2743,7 @@ public class LauncherModel extends BroadcastReceiver
 
             // Post callback on main thread
             mHandler.post(new Runnable() {
+                @Override
                 public void run() {
                     final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                     if (callbacks != null) {
@@ -2842,6 +2866,7 @@ public class LauncherModel extends BroadcastReceiver
         if (!updatedApps.isEmpty()) {
             mHandler.post(new Runnable() {
 
+                @Override
                 public void run() {
                     Callbacks cb = getCallback();
                     if (cb != null && callbacks == cb) {
@@ -2865,6 +2890,7 @@ public class LauncherModel extends BroadcastReceiver
             final Callbacks callbacks = getCallback();
             mHandler.post(new Runnable() {
 
+                @Override
                 public void run() {
                     Callbacks cb = getCallback();
                     if (cb != null && callbacks == cb) {
@@ -2937,6 +2963,7 @@ public class LauncherModel extends BroadcastReceiver
             mUser = user;
         }
 
+        @Override
         public void run() {
             if (!mHasLoaderCompletedOnce) {
                 // Loader has not yet run.
@@ -3037,6 +3064,7 @@ public class LauncherModel extends BroadcastReceiver
                 }
 
                 mHandler.post(new Runnable() {
+                    @Override
                     public void run() {
                         Callbacks cb = getCallback();
                         if (callbacks == cb && cb != null) {
@@ -3163,6 +3191,7 @@ public class LauncherModel extends BroadcastReceiver
                 if (!widgets.isEmpty()) {
                     final Callbacks callbacks = getCallback();
                     mHandler.post(new Runnable() {
+                        @Override
                         public void run() {
                             Callbacks cb = getCallback();
                             if (callbacks == cb && cb != null) {
@@ -3209,6 +3238,7 @@ public class LauncherModel extends BroadcastReceiver
                 // Call the components-removed callback
                 final Callbacks callbacks = getCallback();
                 mHandler.post(new Runnable() {
+                    @Override
                     public void run() {
                         Callbacks cb = getCallback();
                         if (callbacks == cb && cb != null) {
@@ -3223,6 +3253,7 @@ public class LauncherModel extends BroadcastReceiver
                 // Remove corresponding apps from All-Apps
                 final Callbacks callbacks = getCallback();
                 mHandler.post(new Runnable() {
+                    @Override
                     public void run() {
                         Callbacks cb = getCallback();
                         if (callbacks == cb && cb != null) {
@@ -3238,6 +3269,7 @@ public class LauncherModel extends BroadcastReceiver
                     (mOp == OP_ADD || mOp == OP_REMOVE || mOp == OP_UPDATE)) {
                 final Callbacks callbacks = getCallback();
                 mHandler.post(new Runnable() {
+                    @Override
                     public void run() {
                         Callbacks cb = getCallback();
                         if (callbacks == cb && cb != null) {

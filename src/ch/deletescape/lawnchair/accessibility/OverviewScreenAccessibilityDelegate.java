@@ -87,7 +87,7 @@ public class OverviewScreenAccessibilityDelegate extends AccessibilityDelegate {
             info.addAction(mActions.get(MOVE_FORWARD));
         }
 
-        int startIndex = 0;
+        int startIndex = 1;
         if (index > startIndex) {
             info.addAction(mActions.get(MOVE_BACKWARD));
         }

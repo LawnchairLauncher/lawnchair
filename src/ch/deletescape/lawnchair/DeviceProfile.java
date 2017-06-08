@@ -411,6 +411,11 @@ public class DeviceProfile {
                 workspacePadding.bottom);
         workspace.setPageSpacing(getWorkspacePageSpacing());
 
+        View qsbContainer = launcher.getQsbContainer();
+        lp = (FrameLayout.LayoutParams) qsbContainer.getLayoutParams();
+        lp.topMargin = mInsets.top + workspacePadding.top;
+        qsbContainer.setLayoutParams(lp);
+
         // Layout the hotseat
         Hotseat hotseat = (Hotseat) launcher.findViewById(R.id.hotseat);
         lp = (FrameLayout.LayoutParams) hotseat.getLayoutParams();
