@@ -20,9 +20,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.UserHandle;
 
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
-import android.os.UserHandle;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.util.ComponentKey;
 import ch.deletescape.lawnchair.util.PackageManagerHelper;

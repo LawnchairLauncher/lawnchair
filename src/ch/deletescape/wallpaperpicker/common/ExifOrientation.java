@@ -32,7 +32,7 @@ public class ExifOrientation {
     private static final String TAG = "ExifOrientation";
     private static final boolean DEBUG = false;
 
-    private static final short SOI =  (short) 0xFFD8;   // start of input
+    private static final short SOI = (short) 0xFFD8;   // start of input
     private static final short APP0 = (short) 0xFFE0;
     private static final short APPF = (short) 0xFFEF;
     private static final short APP1 = (short) 0xFFE1;
@@ -53,7 +53,7 @@ public class ExifOrientation {
         DataOutputStream tempOut = null;
 
         try {
-        DataInputStream din = new DataInputStream(in);
+            DataInputStream din = new DataInputStream(in);
             int pos = 0;
             if (din.readShort() == SOI) {
                 pos += 2;

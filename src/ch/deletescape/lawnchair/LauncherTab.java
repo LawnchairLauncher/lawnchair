@@ -16,10 +16,10 @@
 
 package ch.deletescape.lawnchair;
 
-import ch.deletescape.lawnchair.Launcher.LauncherOverlay;
-
 import com.google.android.libraries.launcherclient.LauncherClient;
 import com.google.firebase.analytics.FirebaseAnalytics;
+
+import ch.deletescape.lawnchair.Launcher.LauncherOverlay;
 
 public class LauncherTab {
 

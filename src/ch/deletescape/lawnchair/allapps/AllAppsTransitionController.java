@@ -6,7 +6,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
-import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
@@ -22,7 +21,6 @@ import ch.deletescape.lawnchair.LauncherAnimUtils;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
-import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.util.TouchController;
 
 /**
@@ -259,7 +257,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mAppsView.getContentView().setAlpha(alpha);
         mAppsView.setTranslationY(shiftCurrent);
         mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y, -mShiftRange + shiftCurrent,
-                    interpolation);
+                interpolation);
 
         if (mIsTranslateWithoutWorkspace) {
             return;

@@ -21,9 +21,9 @@ import android.graphics.Bitmap.Config;
 import android.opengl.GLUtils;
 import android.util.Pair;
 
-import ch.deletescape.wallpaperpicker.common.Utils;
-
 import java.util.HashMap;
+
+import ch.deletescape.wallpaperpicker.common.Utils;
 
 // UploadedTextures use a Bitmap for the content of the texture.
 //
@@ -120,6 +120,7 @@ public abstract class UploadedTexture extends BasicTexture {
 
     /**
      * Updates the content on GPU's memory.
+     *
      * @param canvas
      */
     public void updateContent(GLCanvas canvas) {

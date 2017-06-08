@@ -16,9 +16,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import ch.deletescape.lawnchair.R;
-import ch.deletescape.wallpaperpicker.WallpaperPickerActivity;
-
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -27,6 +24,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import ch.deletescape.lawnchair.R;
+import ch.deletescape.wallpaperpicker.WallpaperPickerActivity;
 
 public class LiveWallpaperInfo extends WallpaperTileInfo {
 

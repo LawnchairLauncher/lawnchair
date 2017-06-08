@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.UserHandle;
 import android.support.annotation.NonNull;
 
 import java.text.Collator;
@@ -13,7 +14,6 @@ import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherAppWidgetProviderInfo;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
-import android.os.UserHandle;
 import ch.deletescape.lawnchair.util.ComponentKey;
 
 /**

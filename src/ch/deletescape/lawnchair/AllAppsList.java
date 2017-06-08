@@ -18,6 +18,7 @@ package ch.deletescape.lawnchair;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.os.UserHandle;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,7 +26,6 @@ import java.util.List;
 
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
-import android.os.UserHandle;
 import ch.deletescape.lawnchair.util.FlagOp;
 import ch.deletescape.lawnchair.util.StringFilter;
 

@@ -36,6 +36,7 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.os.Process;
+import android.os.UserHandle;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -67,7 +68,6 @@ import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
 import ch.deletescape.lawnchair.compat.PackageInstallerCompat;
 import ch.deletescape.lawnchair.compat.PackageInstallerCompat.PackageInstallInfo;
-import android.os.UserHandle;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.dynamicui.ExtractionUtils;
 import ch.deletescape.lawnchair.folder.Folder;
@@ -1258,7 +1258,7 @@ public class LauncherModel extends BroadcastReceiver
                 }
             }
         } else if (Intent.ACTION_WALLPAPER_CHANGED.equals(action)) {
-            if(Utilities.isNycOrAbove()) {
+            if (Utilities.isNycOrAbove()) {
                 ExtractionUtils.startColorExtractionServiceIfNecessary(context);
             } else {
                 ExtractionUtils.startColorExtractionService(context);

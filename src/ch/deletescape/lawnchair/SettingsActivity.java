@@ -61,7 +61,7 @@ public class SettingsActivity extends Activity {
             entries[0] = "None";
             entryValues[0] = "";
             int i = 1;
-            for(String key : iconPackPackages.keySet()){
+            for (String key : iconPackPackages.keySet()) {
                 entryValues[i] = key;
                 entries[i++] = iconPackPackages.get(key);
             }
@@ -72,7 +72,7 @@ public class SettingsActivity extends Activity {
 
         @Override
         public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
-            if(preference.getKey().equals("about")){
+            if (preference.getKey().equals("about")) {
                 Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/deletescape-media/lawnchair"));
                 startActivity(i);
                 return true;

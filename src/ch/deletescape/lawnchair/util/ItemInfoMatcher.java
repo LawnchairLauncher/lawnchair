@@ -17,13 +17,13 @@
 package ch.deletescape.lawnchair.util;
 
 import android.content.ComponentName;
+import android.os.UserHandle;
 
 import java.util.HashSet;
 
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.LauncherSettings.Favorites;
 import ch.deletescape.lawnchair.ShortcutInfo;
-import android.os.UserHandle;
 import ch.deletescape.lawnchair.shortcuts.ShortcutKey;
 
 /**

@@ -25,6 +25,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.util.Log;
 import android.util.LongSparseArray;
 
@@ -40,7 +41,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
-import android.os.UserHandle;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.model.WidgetItem;
 import ch.deletescape.lawnchair.util.ComponentKey;

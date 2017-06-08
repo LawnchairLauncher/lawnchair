@@ -41,6 +41,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
+import android.os.UserHandle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Property;
@@ -64,10 +65,6 @@ import ch.deletescape.lawnchair.accessibility.OverviewAccessibilityDelegate;
 import ch.deletescape.lawnchair.accessibility.OverviewScreenAccessibilityDelegate;
 import ch.deletescape.lawnchair.accessibility.WorkspaceAccessibilityHelper;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
-import android.os.UserHandle;
-
-import com.google.android.libraries.launcherclient.LauncherClient;
-
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragController;
 import ch.deletescape.lawnchair.dragndrop.DragLayer;
@@ -1241,8 +1238,8 @@ public class Workspace extends PagedView
         boolean shouldScrollOverlay = mLauncherOverlay != null && mLauncher.isClientConnected() &&
                 ((amount <= 0 && !mIsRtl) || (amount >= 0 && mIsRtl));
 
-        boolean shouldZeroOverlay = mLauncherOverlay != null  && mLauncher.isClientConnected() &&
-         mLastOverlaySroll != 0 && ((amount >= 0 && !mIsRtl) || (amount <= 0 && mIsRtl));
+        boolean shouldZeroOverlay = mLauncherOverlay != null && mLauncher.isClientConnected() &&
+                mLastOverlaySroll != 0 && ((amount >= 0 && !mIsRtl) || (amount <= 0 && mIsRtl));
 
         if (shouldScrollOverlay) {
             if (!mStartedSendingScrollEvents && mScrollInteractionBegan) {

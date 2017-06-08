@@ -68,7 +68,7 @@ public class DrawableTileSource implements TiledImageRenderer.TileSource {
         if (mPreviewSize == 0) {
             return null;
         }
-        if (mPreview == null){
+        if (mPreview == null) {
             float width = getImageWidth();
             float height = getImageHeight();
             while (width > MAX_PREVIEW_SIZE || height > MAX_PREVIEW_SIZE) {

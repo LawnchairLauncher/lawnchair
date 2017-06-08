@@ -26,6 +26,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.UserHandle;
 import android.util.Log;
 
 import com.google.firebase.crash.FirebaseCrash;
@@ -38,7 +39,6 @@ import java.util.List;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.LauncherSettings;
 import ch.deletescape.lawnchair.Utilities;
-import android.os.UserHandle;
 
 /**
  * Performs operations related to deep shortcuts, such as querying for them, pinning them, etc.
@@ -197,7 +197,7 @@ public class DeepShortcutManager {
     private List<ShortcutInfoCompat> query(int flags, String packageName,
                                            ComponentName activity, List<String> shortcutIds, UserHandle user) {
         if (Utilities.isNycMR1OrAbove()) {
-            if(!hasHostPermission()){
+            if (!hasHostPermission()) {
                 mWasLastCallSuccess = false;
                 return Collections.emptyList();
             }

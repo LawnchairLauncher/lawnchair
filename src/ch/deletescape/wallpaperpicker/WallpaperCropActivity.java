@@ -36,18 +36,18 @@ import android.view.Display;
 import android.view.View;
 import android.widget.Toast;
 
-import ch.deletescape.lawnchair.R;
-import ch.deletescape.wallpaperpicker.common.CropAndSetWallpaperTask;
-import ch.deletescape.wallpaperpicker.common.Utils;
-import ch.deletescape.wallpaperpicker.BitmapRegionTileSource.BitmapSource;
-import ch.deletescape.wallpaperpicker.BitmapRegionTileSource.BitmapSource.InBitmapProvider;
-import ch.deletescape.wallpaperpicker.views.TiledImageRenderer.TileSource;
-import ch.deletescape.wallpaperpicker.common.DialogUtils;
-import ch.deletescape.wallpaperpicker.common.InputStreamProvider;
-
 import java.util.Collections;
 import java.util.Set;
 import java.util.WeakHashMap;
+
+import ch.deletescape.lawnchair.R;
+import ch.deletescape.wallpaperpicker.BitmapRegionTileSource.BitmapSource;
+import ch.deletescape.wallpaperpicker.BitmapRegionTileSource.BitmapSource.InBitmapProvider;
+import ch.deletescape.wallpaperpicker.common.CropAndSetWallpaperTask;
+import ch.deletescape.wallpaperpicker.common.DialogUtils;
+import ch.deletescape.wallpaperpicker.common.InputStreamProvider;
+import ch.deletescape.wallpaperpicker.common.Utils;
+import ch.deletescape.wallpaperpicker.views.TiledImageRenderer.TileSource;
 
 public class WallpaperCropActivity extends Activity implements Handler.Callback {
     private static final String LOGTAG = "WallpaperCropActivity";
@@ -288,8 +288,8 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
     }
 
     public final void setCropViewTileSource(BitmapSource bitmapSource, boolean touchEnabled,
-            boolean moveToLeft, CropViewScaleAndOffsetProvider scaleAndOffsetProvider,
-            Runnable postExecute) {
+                                            boolean moveToLeft, CropViewScaleAndOffsetProvider scaleAndOffsetProvider,
+                                            Runnable postExecute) {
         final LoadRequest req = new LoadRequest();
         req.moveToLeft = moveToLeft;
         req.src = bitmapSource;
@@ -315,8 +315,8 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
     }
 
     public void cropImageAndSetWallpaper(Uri uri,
-            CropAndSetWallpaperTask.OnBitmapCroppedHandler onBitmapCroppedHandler,
-            boolean shouldFadeOutOnFinish) {
+                                         CropAndSetWallpaperTask.OnBitmapCroppedHandler onBitmapCroppedHandler,
+                                         boolean shouldFadeOutOnFinish) {
         // Get the crop
         boolean ltr = mCropView.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR;
 
@@ -338,7 +338,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
 
         Matrix rotateMatrix = new Matrix();
         rotateMatrix.setRotate(cropRotation);
-        float[] rotatedInSize = new float[] { inSize.x, inSize.y };
+        float[] rotatedInSize = new float[]{inSize.x, inSize.y};
         rotateMatrix.mapPoints(rotatedInSize);
         rotatedInSize[0] = Math.abs(rotatedInSize[0]);
         rotatedInSize[1] = Math.abs(rotatedInSize[1]);
@@ -410,8 +410,8 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
 
         /**
          * @param shouldFadeOutOnFinish Whether the wallpaper picker should override the default
-         * exit animation to fade out instead. This should only be set to true if the wallpaper
-         * preview will exactly match the actual wallpaper on the page we are returning to.
+         *                              exit animation to fade out instead. This should only be set to true if the wallpaper
+         *                              preview will exactly match the actual wallpaper on the page we are returning to.
          */
         public CropAndFinishHandler(boolean shouldFadeOutOnFinish) {
             mShouldFadeOutOnFinish = shouldFadeOutOnFinish;
@@ -435,6 +435,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
 
     public interface CropViewScaleAndOffsetProvider {
         float getScale();
+
         float getParallaxOffset();
     }
 }

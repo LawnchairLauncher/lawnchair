@@ -104,7 +104,7 @@ public class ExtractedColors {
         decodeFromString(encodedString);
 
         //if (mColors[VERSION_INDEX] != VERSION) {
-         //   ExtractionUtils.startColorExtractionService(context);
+        //   ExtractionUtils.startColorExtractionService(context);
         //}
     }
 
@@ -156,24 +156,24 @@ public class ExtractedColors {
      */
     public void updateHotseatPalette(Context context, Palette hotseatPalette) {
         int hotseatColor;
-        if (hotseatPalette != null){
+        if (hotseatPalette != null) {
             boolean shouldUseExtractedColors = FeatureFlags.hotseatShouldUseExtractedColors(context);
-            if(ExtractionUtils.isSuperLight(hotseatPalette)) {
-                if (shouldUseExtractedColors){
+            if (ExtractionUtils.isSuperLight(hotseatPalette)) {
+                if (shouldUseExtractedColors) {
                     int baseColor = hotseatPalette.getDarkMutedColor(hotseatPalette.getDarkVibrantColor(Color.BLACK));
                     hotseatColor = ColorUtils.setAlphaComponent(baseColor, (int) (0.20f * 255));
                 } else {
                     hotseatColor = ColorUtils.setAlphaComponent(Color.BLACK, (int) (0.12f * 255));
                 }
             } else if (ExtractionUtils.isSuperDark(hotseatPalette)) {
-                if(shouldUseExtractedColors){
+                if (shouldUseExtractedColors) {
                     int baseColor = hotseatPalette.getLightMutedColor(hotseatPalette.getLightVibrantColor(Color.WHITE));
                     hotseatColor = ColorUtils.setAlphaComponent(baseColor, (int) (0.25f * 255));
                 } else {
                     hotseatColor = ColorUtils.setAlphaComponent(Color.WHITE, (int) (0.18f * 255));
                 }
             } else {
-                if(shouldUseExtractedColors){
+                if (shouldUseExtractedColors) {
                     int baseColor = hotseatPalette.getLightVibrantColor(hotseatPalette.getLightMutedColor(Color.WHITE));
                     hotseatColor = ColorUtils.setAlphaComponent(baseColor, (int) (0.40f * 255));
                 } else {

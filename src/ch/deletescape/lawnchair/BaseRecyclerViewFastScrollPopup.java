@@ -73,7 +73,7 @@ public class BaseRecyclerViewFastScrollPopup {
         mTextPaint.setAntiAlias(true);
         mTextPaint.setTextSize(res.getDimensionPixelSize(R.dimen.container_fastscroll_popup_text_size));
 
-        if(tint != -1){
+        if (tint != -1) {
             mBg.setTint(tint);
             mTextPaint.setColor(Utilities.getColor(rv.getContext(), ExtractedColors.VIBRANT_FOREGROUND_INDEX, Color.WHITE));
         }

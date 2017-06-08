@@ -15,18 +15,18 @@ import android.util.Log;
 
 import com.google.firebase.crash.FirebaseCrash;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import ch.deletescape.wallpaperpicker.WallpaperCropActivity.CropViewScaleAndOffsetProvider;
 import ch.deletescape.wallpaperpicker.WallpaperFiles;
 import ch.deletescape.wallpaperpicker.WallpaperPickerActivity;
 import ch.deletescape.wallpaperpicker.common.CropAndSetWallpaperTask;
 import ch.deletescape.wallpaperpicker.common.DialogUtils;
 import ch.deletescape.wallpaperpicker.common.WallpaperManagerCompat;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 public class DefaultWallpaperInfo extends DrawableThumbWallpaperInfo {
 

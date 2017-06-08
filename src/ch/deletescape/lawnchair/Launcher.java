@@ -53,6 +53,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
+import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
@@ -76,7 +77,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import ch.deletescape.lawnchair.LauncherTab;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
 
@@ -95,7 +95,6 @@ import ch.deletescape.lawnchair.allapps.AllAppsTransitionController;
 import ch.deletescape.lawnchair.allapps.DefaultAppSearchController;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
-import android.os.UserHandle;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragController;
@@ -422,7 +421,7 @@ public class Launcher extends Activity
         }
         if (newSystemUiFlags != oldSystemUiFlags) {
             final int systemUiFlags = newSystemUiFlags;
-            runOnUiThread(new Runnable(){
+            runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     getWindow().getDecorView().setSystemUiVisibility(systemUiFlags);
@@ -998,7 +997,7 @@ public class Launcher extends Activity
 
         // Bind wallpaper button actions
         View wallpaperButton = findViewById(R.id.wallpaper_button);
-        if(Utilities.isWallapaperAllowed(getApplicationContext())) {
+        if (Utilities.isWallapaperAllowed(getApplicationContext())) {
             wallpaperButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -1437,7 +1436,7 @@ public class Launcher extends Activity
             // If we are already on home, then just animate back to the workspace,
             // otherwise, just wait until onResume to set the state back to Workspace
             if (alreadyOnHome) {
-                if (mState != State.WORKSPACE || mWorkspace.getCurrentPage() != 0 || mOverviewPanel.getVisibility() == View.VISIBLE ) {
+                if (mState != State.WORKSPACE || mWorkspace.getCurrentPage() != 0 || mOverviewPanel.getVisibility() == View.VISIBLE) {
                     showWorkspace(true);
                 } else {
                     showAppsView(true, false);
@@ -3673,7 +3672,7 @@ public class Launcher extends Activity
         mWorkspace.setLauncherOverlay(overlay);
     }
 
-    public boolean isClientConnected(){
+    public boolean isClientConnected() {
         return mLauncherTab.getClient().isConnected();
     }
 

@@ -25,6 +25,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -42,7 +43,6 @@ import java.util.Set;
 
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
-import android.os.UserHandle;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.util.PackageManagerHelper;
 import ch.deletescape.lawnchair.util.Thunk;

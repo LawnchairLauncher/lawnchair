@@ -57,19 +57,19 @@ public final class FeatureFlags {
         return enabled;
     }
 
-    public static boolean hotseatShouldUseExtractedColors(Context context){
+    public static boolean hotseatShouldUseExtractedColors(Context context) {
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_HOTSEAT_EXTRACTED_COLORS, true);
         FirebaseAnalytics.getInstance(context).setUserProperty("hotseat_extract_enabled", String.valueOf(enabled));
         return enabled;
     }
 
-    public static boolean enableHapticFeedback(Context context){
+    public static boolean enableHapticFeedback(Context context) {
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_HAPTIC_FEEDBACK, false);
         FirebaseAnalytics.getInstance(context).setUserProperty("haptic_feedback_enabled", String.valueOf(enabled));
         return enabled;
     }
 
-    public static boolean keepScrollState(Context context){
+    public static boolean keepScrollState(Context context) {
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_KEEP_SCROLL_STATE, false);
         FirebaseAnalytics.getInstance(context).setUserProperty("keep_scrollstate", String.valueOf(enabled));
         return enabled;

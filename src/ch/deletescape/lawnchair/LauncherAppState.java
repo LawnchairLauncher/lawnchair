@@ -113,7 +113,7 @@ public class LauncherAppState {
         UserManagerCompat.getInstance(sContext).enableAndResetCache();
         new ConfigMonitor(sContext).register();
 
-        if(Utilities.isNycOrAbove()){
+        if (Utilities.isNycOrAbove()) {
             ExtractionUtils.startColorExtractionServiceIfNecessary(sContext);
         } else {
             ExtractionUtils.startColorExtractionService(sContext);
@@ -141,7 +141,7 @@ public class LauncherAppState {
                     }
                 }
         );
-        if(showWorkspace){
+        if (showWorkspace) {
             mLauncher.showWorkspace(true);
         }
     }

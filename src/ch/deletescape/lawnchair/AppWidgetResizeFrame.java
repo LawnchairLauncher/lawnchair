@@ -371,7 +371,7 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
         // Compute portrait size
         int portWidth = (int) ((spanX * sCellSize.x) / density);
         int portHeight = (int) ((spanY * sCellSize.y) / density);
-        rect.set(portWidth, portHeight, portWidth , portHeight);
+        rect.set(portWidth, portHeight, portWidth, portHeight);
         return rect;
     }
 

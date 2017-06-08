@@ -21,7 +21,7 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 25
-        if(System.getenv("TRAVIS") == "true"){
+        if (System.getenv("TRAVIS") == "true") {
             versionCode = Integer.valueOf(System.getenv("TRAVIS_BUILD_NUMBER"))
             versionName = "Travis-" + System.getenv("TRAVIS_BUILD_NUMBER")
         } else {
@@ -33,7 +33,7 @@ android {
     }
     buildTypes {
         debug {
-            if(System.getenv("TRAVIS") == "true") {
+            if (System.getenv("TRAVIS") == "true") {
                 minifyEnabled true
                 proguardFiles getDefaultProguardFile('proguard-android.txt'),
                         'proguard.flags'

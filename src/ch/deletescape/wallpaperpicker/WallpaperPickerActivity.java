@@ -41,6 +41,9 @@ import android.widget.LinearLayout;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.wallpaperpicker.tileinfo.LiveWallpaperInfo;
@@ -48,9 +51,6 @@ import ch.deletescape.wallpaperpicker.tileinfo.PickImageInfo;
 import ch.deletescape.wallpaperpicker.tileinfo.ThirdPartyWallpaperInfo;
 import ch.deletescape.wallpaperpicker.tileinfo.UriWallpaperInfo;
 import ch.deletescape.wallpaperpicker.tileinfo.WallpaperTileInfo;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class WallpaperPickerActivity extends WallpaperCropActivity
         implements OnClickListener, OnLongClickListener, ActionMode.Callback {
@@ -78,11 +78,12 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
 
     /**
      * shows the system wallpaper behind the window and hides the {@link #mCropView} if visible
+     *
      * @param visible should the system wallpaper be shown
      */
     protected void setSystemWallpaperVisiblity(final boolean visible) {
         // hide our own wallpaper preview if necessary
-        if(!visible) {
+        if (!visible) {
             mCropView.setVisibility(View.VISIBLE);
         } else {
             changeWallpaperFlags(visible);
@@ -92,7 +93,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
         mCropView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(!visible) {
+                if (!visible) {
                     changeWallpaperFlags(visible);
                 } else {
                     mCropView.setVisibility(View.INVISIBLE);
@@ -168,7 +169,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
         mCropView.addOnLayoutChangeListener(new OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                    int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 if ((right - left) > 0 && (bottom - top) > 0) {
                     if (mSelectedIndex >= 0 && mSelectedIndex < mWallpapersView.getChildCount()) {
                         onClick(mWallpapersView.getChildAt(mSelectedIndex));
@@ -278,7 +279,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
         // TODO: Remove this once the accessibility framework and
         // services have better support for selection state.
         v.announceForAccessibility(
-            getString(R.string.announce_selection, v.getContentDescription()));
+                getString(R.string.announce_selection, v.getContentDescription()));
     }
 
     private void initializeScrollForRtl() {
@@ -392,7 +393,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
     }
 
     private void populateWallpapers(ViewGroup parent, List<? extends WallpaperTileInfo> wallpapers,
-            boolean addLongPressHandler) {
+                                    boolean addLongPressHandler) {
         for (WallpaperTileInfo info : wallpapers) {
             parent.addView(createTileView(parent, info, addLongPressHandler));
         }
@@ -432,6 +433,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
     }
 
     // CAB for deleting items
+
     /**
      * Called when the action mode is created; startActionMode() was called
      */

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2014 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,11 +15,11 @@
 -->
 
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="#66FFFFFF" >
+    android:color="#66FFFFFF">
 
     <item
         android:id="@android:id/mask"
-        android:drawable="@android:color/white"/>
+        android:drawable="@android:color/white" />
     <item
         android:bottom="23.25dp"
         android:left="29.25dp"
@@ -29,10 +28,10 @@
         <selector>
             <item
                 android:drawable="@drawable/ic_tick"
-                android:state_selected="true"/>
+                android:state_selected="true" />
             <item
                 android:drawable="@drawable/ic_tick"
-                android:state_checked="true"/>
+                android:state_checked="true" />
         </selector>
     </item>
 

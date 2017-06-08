@@ -39,6 +39,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -55,7 +56,6 @@ import java.util.Stack;
 
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
-import android.os.UserHandle;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.model.PackageItemInfo;
 import ch.deletescape.lawnchair.util.ComponentKey;
@@ -424,7 +424,7 @@ public class IconCache {
 
     private Bitmap getNonNullIcon(CacheEntry entry, UserHandle user, boolean notificationBadge) {
         Bitmap b = entry.icon == null ? getDefaultIcon(user) : entry.icon;
-        if(notificationBadge) {
+        if (notificationBadge) {
             return Utilities.addNotificationBadgeToIcon(b);
         }
         return b;

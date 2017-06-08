@@ -81,14 +81,14 @@ public abstract class InputStreamProvider {
             cropBounds.roundOut(roundedTrueCrop);
             cropBounds.set(roundedTrueCrop);
 
-            float[] rotatedBounds = new float[] { bounds.x, bounds.y };
+            float[] rotatedBounds = new float[]{bounds.x, bounds.y};
             rotateMatrix.mapPoints(rotatedBounds);
             rotatedBounds[0] = Math.abs(rotatedBounds[0]);
             rotatedBounds[1] = Math.abs(rotatedBounds[1]);
 
-            cropBounds.offset(-rotatedBounds[0]/2, -rotatedBounds[1]/2);
+            cropBounds.offset(-rotatedBounds[0] / 2, -rotatedBounds[1] / 2);
             inverseRotateMatrix.mapRect(cropBounds);
-            cropBounds.offset(bounds.x/2, bounds.y/2);
+            cropBounds.offset(bounds.x / 2, bounds.y / 2);
         }
 
         cropBounds.roundOut(roundedTrueCrop);
@@ -174,7 +174,7 @@ public abstract class InputStreamProvider {
             return null;
         }
         if (outWidth > 0 && outHeight > 0 || rotation > 0) {
-            float[] dimsAfter = new float[] { crop.getWidth(), crop.getHeight() };
+            float[] dimsAfter = new float[]{crop.getWidth(), crop.getHeight()};
             rotateMatrix.mapPoints(dimsAfter);
             dimsAfter[0] = Math.abs(dimsAfter[0]);
             dimsAfter[1] = Math.abs(dimsAfter[1]);

@@ -31,7 +31,10 @@ package ch.deletescape.wallpaperpicker.glrenderer;
 //
 public interface Texture {
     int getWidth();
+
     int getHeight();
+
     void draw(GLCanvas canvas, int x, int y);
+
     void draw(GLCanvas canvas, int x, int y, int w, int h);
 }

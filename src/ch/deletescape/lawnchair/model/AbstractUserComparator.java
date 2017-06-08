@@ -16,12 +16,11 @@
 package ch.deletescape.lawnchair.model;
 
 import android.content.Context;
+import android.os.UserHandle;
 
 import java.util.Comparator;
 
 import ch.deletescape.lawnchair.ItemInfo;
-import android.os.UserHandle;
-
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 

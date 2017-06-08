@@ -56,8 +56,8 @@ public class PickImageInfo extends WallpaperTileInfo {
 
         Cursor cursor = MediaStore.Images.Media.query(context.getContentResolver(),
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                new String[] { MediaStore.Images.ImageColumns._ID,
-                    MediaStore.Images.ImageColumns.DATE_TAKEN},
+                new String[]{MediaStore.Images.ImageColumns._ID,
+                        MediaStore.Images.ImageColumns.DATE_TAKEN},
                 null, null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC LIMIT 1");
 
         Bitmap thumb = null;

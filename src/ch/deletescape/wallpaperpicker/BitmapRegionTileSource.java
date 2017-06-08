@@ -29,25 +29,28 @@ import android.util.Log;
 
 import com.google.firebase.crash.FirebaseCrash;
 
-import ch.deletescape.wallpaperpicker.common.ExifOrientation;
-import ch.deletescape.wallpaperpicker.common.Utils;
-import ch.deletescape.wallpaperpicker.glrenderer.BasicTexture;
-import ch.deletescape.wallpaperpicker.glrenderer.BitmapTexture;
-import ch.deletescape.wallpaperpicker.views.TiledImageRenderer;
-import ch.deletescape.wallpaperpicker.common.InputStreamProvider;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import ch.deletescape.wallpaperpicker.common.ExifOrientation;
+import ch.deletescape.wallpaperpicker.common.InputStreamProvider;
+import ch.deletescape.wallpaperpicker.common.Utils;
+import ch.deletescape.wallpaperpicker.glrenderer.BasicTexture;
+import ch.deletescape.wallpaperpicker.glrenderer.BitmapTexture;
+import ch.deletescape.wallpaperpicker.views.TiledImageRenderer;
+
 interface SimpleBitmapRegionDecoder {
     int getWidth();
+
     int getHeight();
+
     Bitmap decodeRegion(Rect wantRegion, BitmapFactory.Options options);
 }
 
 class SimpleBitmapRegionDecoderWrapper implements SimpleBitmapRegionDecoder {
     BitmapRegionDecoder mDecoder;
+
     private SimpleBitmapRegionDecoderWrapper(BitmapRegionDecoder decoder) {
         mDecoder = decoder;
     }
@@ -66,12 +69,15 @@ class SimpleBitmapRegionDecoderWrapper implements SimpleBitmapRegionDecoder {
         }
         return null;
     }
+
     public int getWidth() {
         return mDecoder.getWidth();
     }
+
     public int getHeight() {
         return mDecoder.getHeight();
     }
+
     public Bitmap decodeRegion(Rect wantRegion, BitmapFactory.Options options) {
         return mDecoder.decodeRegion(wantRegion, options);
     }
@@ -81,9 +87,11 @@ class DumbBitmapRegionDecoder implements SimpleBitmapRegionDecoder {
     Bitmap mBuffer;
     Canvas mTempCanvas;
     Paint mTempPaint;
+
     private DumbBitmapRegionDecoder(Bitmap b) {
         mBuffer = b;
     }
+
     public static DumbBitmapRegionDecoder newInstance(InputStream is) {
         Bitmap b = BitmapFactory.decodeStream(is);
         if (b != null) {
@@ -91,12 +99,15 @@ class DumbBitmapRegionDecoder implements SimpleBitmapRegionDecoder {
         }
         return null;
     }
+
     public int getWidth() {
         return mBuffer.getWidth();
     }
+
     public int getHeight() {
         return mBuffer.getHeight();
     }
+
     public Bitmap decodeRegion(Rect wantRegion, BitmapFactory.Options options) {
         if (mTempCanvas == null) {
             mTempCanvas = new Canvas();
@@ -135,10 +146,14 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
         private SimpleBitmapRegionDecoder mDecoder;
         private Bitmap mPreview;
         private int mRotation;
-        public enum State { NOT_LOADED, LOADED, ERROR_LOADING }
+
+        public enum State {NOT_LOADED, LOADED, ERROR_LOADING}
+
         private State mState = State.NOT_LOADED;
 
-        /** Returns whether loading was successful. */
+        /**
+         * Returns whether loading was successful.
+         */
         public boolean loadInBackground(InBitmapProvider bitmapProvider) {
             mRotation = getExifRotation();
             mDecoder = loadBitmapRegionDecoder();
@@ -211,7 +226,9 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
         }
 
         public abstract int getExifRotation();
+
         public abstract SimpleBitmapRegionDecoder loadBitmapRegionDecoder();
+
         public abstract Bitmap loadPreviewBitmap(BitmapFactory.Options options);
 
         public interface InBitmapProvider {
@@ -274,6 +291,7 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
 
     public static class FilePathBitmapSource extends InputStreamSource {
         private String mPath;
+
         public FilePathBitmapSource(File file, Context context) {
             super(context, Uri.fromFile(file));
             mPath = file.getAbsolutePath();
@@ -311,11 +329,11 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
             Bitmap preview = source.getPreviewBitmap();
             if (preview != null &&
                     preview.getWidth() <= GL_SIZE_LIMIT && preview.getHeight() <= GL_SIZE_LIMIT) {
-                    mPreview = new BitmapTexture(preview);
+                mPreview = new BitmapTexture(preview);
             } else {
                 Log.w(TAG, String.format(
                         "Failed to create preview of apropriate size! "
-                        + " in: %dx%d, out: %dx%d",
+                                + " in: %dx%d, out: %dx%d",
                         mWidth, mHeight,
                         preview == null ? -1 : preview.getWidth(),
                         preview == null ? -1 : preview.getHeight()));

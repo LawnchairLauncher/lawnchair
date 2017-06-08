@@ -46,8 +46,7 @@ public interface ILauncherOverlay extends IInterface {
             IInterface iin = obj.queryLocalInterface(ILauncherOverlay.class.getName());
             if (iin != null && iin instanceof ILauncherOverlay) {
                 return (ILauncherOverlay) iin;
-            }
-            else {
+            } else {
                 return new Proxy(obj);
             }
         }
@@ -78,9 +77,9 @@ public interface ILauncherOverlay extends IInterface {
                     }
 
                     windowAttached(
-                        layoutParams,
-                        ILauncherOverlayCallback.Stub.asInterface(data.readStrongBinder()),
-                        data.readInt()
+                            layoutParams,
+                            ILauncherOverlayCallback.Stub.asInterface(data.readStrongBinder()),
+                            data.readInt()
                     );
 
                     return true;

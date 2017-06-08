@@ -92,14 +92,14 @@ public class Utils {
         RectF cropRect = new RectF();
         // Get a crop rect that will fit this
         if (inWidth / (float) inHeight > outWidth / (float) outHeight) {
-             cropRect.top = 0;
-             cropRect.bottom = inHeight;
-             cropRect.left = (inWidth - (outWidth / (float) outHeight) * inHeight) / 2;
-             cropRect.right = inWidth - cropRect.left;
-             if (leftAligned) {
-                 cropRect.right -= cropRect.left;
-                 cropRect.left = 0;
-             }
+            cropRect.top = 0;
+            cropRect.bottom = inHeight;
+            cropRect.left = (inWidth - (outWidth / (float) outHeight) * inHeight) / 2;
+            cropRect.right = inWidth - cropRect.left;
+            if (leftAligned) {
+                cropRect.right -= cropRect.left;
+                cropRect.left = 0;
+            }
         } else {
             cropRect.left = 0;
             cropRect.right = inWidth;

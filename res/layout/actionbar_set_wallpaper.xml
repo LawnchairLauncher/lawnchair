@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 /*
 **
 ** Copyright 2013, The Android Open Source Project
@@ -18,8 +17,7 @@
 */
 -->
 
-<ch.deletescape.wallpaperpicker.AlphaDisableableButton
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ch.deletescape.wallpaperpicker.AlphaDisableableButton xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/ActionBarSetWallpaperStyle"
     android:id="@+id/set_wallpaper_button"
     android:layout_width="match_parent"

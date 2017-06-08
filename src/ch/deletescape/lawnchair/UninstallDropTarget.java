@@ -5,12 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.widget.Toast;
-
-import android.os.UserHandle;
 
 public class UninstallDropTarget extends ButtonDropTarget {
 

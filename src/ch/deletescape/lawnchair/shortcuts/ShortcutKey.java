@@ -2,9 +2,9 @@ package ch.deletescape.lawnchair.shortcuts;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.os.UserHandle;
 
 import ch.deletescape.lawnchair.ShortcutInfo;
-import android.os.UserHandle;
 import ch.deletescape.lawnchair.util.ComponentKey;
 
 /**

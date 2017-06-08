@@ -25,6 +25,7 @@ import android.widget.Button;
  */
 public class AlphaDisableableButton extends Button {
     public static float DISABLED_ALPHA_VALUE = 0.4f;
+
     public AlphaDisableableButton(Context context) {
         this(context, null);
     }
@@ -41,7 +42,7 @@ public class AlphaDisableableButton extends Button {
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        if(enabled) {
+        if (enabled) {
             setAlpha(1.0f);
         } else {
             setAlpha(DISABLED_ALPHA_VALUE);

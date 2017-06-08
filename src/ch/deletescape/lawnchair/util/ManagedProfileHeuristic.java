@@ -18,6 +18,7 @@ package ch.deletescape.lawnchair.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.UserHandle;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -33,7 +34,6 @@ import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.ShortcutInfo;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
-import android.os.UserHandle;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 

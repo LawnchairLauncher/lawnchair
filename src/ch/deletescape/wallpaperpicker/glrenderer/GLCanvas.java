@@ -85,8 +85,8 @@ public interface GLCanvas {
      * Initializes the texture to a size by calling texImage2D on it.
      *
      * @param texture The texture to initialize the size.
-     * @param format The texture format (e.g. GL_RGBA)
-     * @param type The texture type (e.g. GL_UNSIGNED_BYTE)
+     * @param format  The texture format (e.g. GL_RGBA)
+     * @param type    The texture type (e.g. GL_UNSIGNED_BYTE)
      */
     void initializeTextureSize(BasicTexture texture, int format, int type);
 
@@ -94,7 +94,7 @@ public interface GLCanvas {
      * Initializes the texture to a size by calling texImage2D on it.
      *
      * @param texture The texture to initialize the size.
-     * @param bitmap The bitmap to initialize the bitmap with.
+     * @param bitmap  The bitmap to initialize the bitmap with.
      */
     void initializeTexture(BasicTexture texture, Bitmap bitmap);
 
@@ -103,11 +103,11 @@ public interface GLCanvas {
      *
      * @param texture The target texture to write to.
      * @param xOffset Specifies a texel offset in the x direction within the
-     *            texture array.
+     *                texture array.
      * @param yOffset Specifies a texel offset in the y direction within the
-     *            texture array.
-     * @param format The texture format (e.g. GL_RGBA)
-     * @param type The texture type (e.g. GL_UNSIGNED_BYTE)
+     *                texture array.
+     * @param format  The texture format (e.g. GL_RGBA)
+     * @param type    The texture type (e.g. GL_UNSIGNED_BYTE)
      */
     void texSubImage2D(BasicTexture texture, int xOffset, int yOffset,
                        Bitmap bitmap,

@@ -18,10 +18,9 @@ package ch.deletescape.lawnchair.util;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.os.UserHandle;
 
 import java.util.Arrays;
-
-import android.os.UserHandle;
 
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;

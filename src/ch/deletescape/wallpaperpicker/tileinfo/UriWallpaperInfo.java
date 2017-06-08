@@ -9,11 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import ch.deletescape.wallpaperpicker.common.CropAndSetWallpaperTask;
+import ch.deletescape.lawnchair.R;
 import ch.deletescape.wallpaperpicker.BitmapRegionTileSource;
 import ch.deletescape.wallpaperpicker.BitmapRegionTileSource.BitmapSource;
-import ch.deletescape.lawnchair.R;
 import ch.deletescape.wallpaperpicker.WallpaperPickerActivity;
+import ch.deletescape.wallpaperpicker.common.CropAndSetWallpaperTask;
 import ch.deletescape.wallpaperpicker.common.InputStreamProvider;
 
 public class UriWallpaperInfo extends DrawableThumbWallpaperInfo {
@@ -55,13 +55,13 @@ public class UriWallpaperInfo extends DrawableThumbWallpaperInfo {
     public void onSave(final WallpaperPickerActivity a) {
         CropAndSetWallpaperTask.OnBitmapCroppedHandler h =
                 new CropAndSetWallpaperTask.OnBitmapCroppedHandler() {
-            public void onBitmapCropped(byte[] imageBytes) {
-                // rotation is set to 0 since imageBytes has already been correctly rotated
-                Bitmap thumb = createThumbnail(
-                        InputStreamProvider.fromBytes(imageBytes), a, 0, true);
-                a.getSavedImages().writeImage(thumb, imageBytes);
-            }
-        };
+                    public void onBitmapCropped(byte[] imageBytes) {
+                        // rotation is set to 0 since imageBytes has already been correctly rotated
+                        Bitmap thumb = createThumbnail(
+                                InputStreamProvider.fromBytes(imageBytes), a, 0, true);
+                        a.getSavedImages().writeImage(thumb, imageBytes);
+                    }
+                };
         boolean shouldFadeOutOnFinish = a.getWallpaperParallaxOffset() == 0f;
         a.cropImageAndSetWallpaper(mUri, h, shouldFadeOutOnFinish);
     }
@@ -79,7 +79,7 @@ public class UriWallpaperInfo extends DrawableThumbWallpaperInfo {
     public void loadThumbnaleAsync(final WallpaperPickerActivity activity) {
         mView.setVisibility(View.GONE);
         new AsyncTask<Void, Void, Bitmap>() {
-            protected Bitmap doInBackground(Void...args) {
+            protected Bitmap doInBackground(Void... args) {
                 try {
                     InputStreamProvider isp = InputStreamProvider.fromUri(activity, mUri);
                     int rotation = isp.getRotationFromExif(activity);
@@ -99,6 +99,7 @@ public class UriWallpaperInfo extends DrawableThumbWallpaperInfo {
                     return null;
                 }
             }
+
             protected void onPostExecute(Bitmap thumb) {
                 if (!isCancelled() && thumb != null) {
                     setThumb(new BitmapDrawable(activity.getResources(), thumb));

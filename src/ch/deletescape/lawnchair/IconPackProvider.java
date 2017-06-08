@@ -62,9 +62,9 @@ public class IconPackProvider {
     private static void clearCache(Context context, String packageName) {
         File cacheFolder = new File(context.getCacheDir(), "iconpack");
         File indicatorFile = new File(cacheFolder, packageName);
-        if(cacheFolder.exists()){
-            if(!indicatorFile.exists()){
-                for(File file : cacheFolder.listFiles()){
+        if (cacheFolder.exists()) {
+            if (!indicatorFile.exists()) {
+                for (File file : cacheFolder.listFiles()) {
                     file.delete();
                 }
             }

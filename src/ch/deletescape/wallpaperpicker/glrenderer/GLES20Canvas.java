@@ -307,7 +307,7 @@ public class GLES20Canvas implements GLCanvas {
     }
 
     private void draw(ShaderParameter[] params, int type, int count, float x, float y, float width,
-            float height) {
+                      float height) {
         setMatrix(params, x, y, width, height);
         int positionHandle = params[INDEX_POSITION].handle;
         GLES20.glEnableVertexAttribArray(positionHandle);
@@ -477,7 +477,7 @@ public class GLES20Canvas implements GLCanvas {
 
     @Override
     public void texSubImage2D(BasicTexture texture, int xOffset, int yOffset, Bitmap bitmap,
-            int format, int type) {
+                              int format, int type) {
         GLES20.glBindTexture(GL_TARGET, texture.getId());
         checkError();
         GLUtils.texSubImage2D(GL_TARGET, 0, xOffset, yOffset, bitmap, format, type);

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2008 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2008 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,19 +13,20 @@
      limitations under the License.
 -->
 
-<ch.deletescape.wallpaperpicker.CheckableFrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ch.deletescape.wallpaperpicker.CheckableFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/wallpaperThumbnailWidth"
     android:layout_height="@dimen/wallpaperThumbnailHeight"
     android:focusable="true"
     android:clickable="true"
     android:foreground="@drawable/wallpaper_tile_fg">
+
     <ImageView
         android:id="@+id/wallpaper_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/wallpaper_picker_translucent_gray"
         android:scaleType="centerCrop" />
+
     <TextView
         android:id="@+id/wallpaper_item_label"
         android:layout_width="wrap_content"
@@ -35,5 +35,5 @@
         android:gravity="center"
         android:layout_gravity="center"
         android:drawablePadding="4dp"
-        android:textColor="@android:color/white"/>
+        android:textColor="@android:color/white" />
 </ch.deletescape.wallpaperpicker.CheckableFrameLayout>

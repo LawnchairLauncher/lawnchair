@@ -65,9 +65,9 @@ class IconPack {
             return d;
         }
         File cachePath = new File(mContext.getCacheDir(), "iconpack/" + name);
-        if(cachePath.exists()){
+        if (cachePath.exists()) {
             Bitmap b = BitmapFactory.decodeFile(cachePath.toString());
-            if(b != null) {
+            if (b != null) {
                 Drawable d = new FastBitmapDrawable(b);
                 memoryCache.put(name, d);
                 trace.incrementCounter("filecache");
@@ -93,20 +93,20 @@ class IconPack {
         trace.stop();
         return null;
     }
+
     private boolean saveBitmapToFile(File imageFile, Bitmap bm) {
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(imageFile);
 
-            bm.compress(Bitmap.CompressFormat.PNG,100,fos);
+            bm.compress(Bitmap.CompressFormat.PNG, 100, fos);
 
             fos.close();
 
             return true;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             FirebaseCrash.report(e);
-            Log.e("IconPack",e.getMessage());
+            Log.e("IconPack", e.getMessage());
             if (fos != null) {
                 try {
                     fos.close();

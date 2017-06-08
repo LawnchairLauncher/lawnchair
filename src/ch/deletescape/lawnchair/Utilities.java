@@ -46,6 +46,7 @@ import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.os.UserHandle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -78,7 +79,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import android.os.UserHandle;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.graphics.ShadowGenerator;
 import ch.deletescape.lawnchair.util.IconNormalizer;
@@ -310,7 +310,7 @@ public final class Utilities {
             canvas.restore();
             icon.setBounds(sOldBounds);
             canvas.setBitmap(null);
-            if(notificationBadge) {
+            if (notificationBadge) {
                 return addNotificationBadgeToIcon(bitmap);
             }
             return bitmap;
@@ -810,9 +810,9 @@ public final class Utilities {
         }
     }
 
-    public static int getColor(Context context, String huePrefName, String defaultHue, String variationPrefName, String defaultVariation){
+    public static int getColor(Context context, String huePrefName, String defaultHue, String variationPrefName, String defaultVariation) {
         int hueId = Integer.valueOf(Utilities.getPrefs(context).getString(huePrefName, defaultHue));
-        if(hueId < 0){
+        if (hueId < 0) {
             switch (hueId) {
                 case -2:
                     return Color.BLACK;
@@ -826,9 +826,10 @@ public final class Utilities {
         int variation = Integer.valueOf(Utilities.getPrefs(context).getString(variationPrefName, defaultVariation));
         return Color.parseColor(hueArray[variation]);
     }
-    private static String[] getHueArray(int hueId, Context context){
+
+    private static String[] getHueArray(int hueId, Context context) {
         Resources res = context.getResources();
-        switch (hueId){
+        switch (hueId) {
             case 0:
                 return res.getStringArray(R.array.arr_red);
             case 1:
@@ -872,11 +873,11 @@ public final class Utilities {
         }
     }
 
-    public static UserHandle myUserHandle(){
+    public static UserHandle myUserHandle() {
         return android.os.Process.myUserHandle();
     }
 
-    public static Bitmap addNotificationBadgeToIcon(Bitmap icon){
+    public static Bitmap addNotificationBadgeToIcon(Bitmap icon) {
         Bitmap b = icon.copy(Bitmap.Config.ARGB_8888, true);
         Canvas c = new Canvas(b);
         Paint badgePaint = new Paint();

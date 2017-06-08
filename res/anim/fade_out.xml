@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2014 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2014 The Android Open Source Project
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,4 +19,4 @@
     android:startOffset="@android:integer/config_longAnimTime"
     android:duration="@android:integer/config_mediumAnimTime"
     android:fromAlpha="1"
-    android:toAlpha="0"/>
+    android:toAlpha="0" />

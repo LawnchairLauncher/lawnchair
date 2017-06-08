@@ -36,7 +36,7 @@ import ch.deletescape.lawnchair.Utilities;
 public class ExtractionUtils {
     public static final String EXTRACTED_COLORS_PREFERENCE_KEY = "pref_extractedColors";
     public static final String WALLPAPER_ID_PREFERENCE_KEY = "pref_wallpaperId";
-    
+
     private static final float MIN_CONTRAST_RATIO = 2f;
 
     /**
@@ -77,7 +77,7 @@ public class ExtractionUtils {
     }
 
     public static int getWallpaperId(WallpaperManager wallpaperManager) {
-        if(Utilities.isNycOrAbove()){
+        if (Utilities.isNycOrAbove()) {
             return wallpaperManager.getWallpaperId(WallpaperManager.FLAG_SYSTEM);
         } else {
             return -1;
@@ -117,18 +117,18 @@ public class ExtractionUtils {
         return ColorUtils.calculateContrast(foreground, background) >= MIN_CONTRAST_RATIO;
     }
 
-    private static boolean hasExtractionPreferencesChanged(Context context){
+    private static boolean hasExtractionPreferencesChanged(Context context) {
         SharedPreferences prefs = Utilities.getPrefs(context);
         boolean result = false;
         String hotseatColoringKey = "pref_hotseatShouldUseExtractedColors";
         boolean hotseatColoringValue = prefs.getBoolean(hotseatColoringKey, true);
         String lightStatusBarKey = "pref_lightStatusBar";
         boolean lightStatusBarValue = prefs.getBoolean(lightStatusBarKey, true);
-        if(prefs.getBoolean(hotseatColoringKey + "_cache", !hotseatColoringValue) != hotseatColoringValue) {
+        if (prefs.getBoolean(hotseatColoringKey + "_cache", !hotseatColoringValue) != hotseatColoringValue) {
             result = true;
             prefs.edit().putBoolean(hotseatColoringKey + "_cache", hotseatColoringValue).apply();
         }
-        if(prefs.getBoolean(lightStatusBarKey + "_cache", !lightStatusBarValue) != lightStatusBarValue){
+        if (prefs.getBoolean(lightStatusBarKey + "_cache", !lightStatusBarValue) != lightStatusBarValue) {
             result = true;
             prefs.edit().putBoolean(lightStatusBarKey + "_cache", lightStatusBarValue).apply();
         }

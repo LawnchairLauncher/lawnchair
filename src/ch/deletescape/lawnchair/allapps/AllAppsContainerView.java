@@ -229,7 +229,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
      */
     public void reset() {
         // Reset the search bar and base recycler view after transitioning home
-        if(!FeatureFlags.keepScrollState(getContext())){
+        if (!FeatureFlags.keepScrollState(getContext())) {
             scrollToTop();
         }
         mSearchBarController.reset();

@@ -29,13 +29,13 @@ import android.util.Log;
 
 import com.google.firebase.crash.FirebaseCrash;
 
-import ch.deletescape.wallpaperpicker.tileinfo.FileWallpaperInfo;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import ch.deletescape.wallpaperpicker.tileinfo.FileWallpaperInfo;
 
 public class SavedWallpaperImages {
 
@@ -72,9 +72,9 @@ public class SavedWallpaperImages {
 
         SQLiteDatabase db = mDb.getReadableDatabase();
         Cursor c = db.query(ImageDb.TABLE_NAME,
-                new String[] { ImageDb.COLUMN_ID,
-                    ImageDb.COLUMN_IMAGE_THUMBNAIL_FILENAME,
-                    ImageDb.COLUMN_IMAGE_FILENAME}, // cols to return
+                new String[]{ImageDb.COLUMN_ID,
+                        ImageDb.COLUMN_IMAGE_THUMBNAIL_FILENAME,
+                        ImageDb.COLUMN_IMAGE_FILENAME}, // cols to return
                 null, // select query
                 null, // args to select query
                 null,
@@ -101,10 +101,10 @@ public class SavedWallpaperImages {
         SQLiteDatabase db = mDb.getWritableDatabase();
 
         Cursor result = db.query(ImageDb.TABLE_NAME,
-                new String[] { ImageDb.COLUMN_IMAGE_THUMBNAIL_FILENAME,
-                    ImageDb.COLUMN_IMAGE_FILENAME }, // cols to return
+                new String[]{ImageDb.COLUMN_IMAGE_THUMBNAIL_FILENAME,
+                        ImageDb.COLUMN_IMAGE_FILENAME}, // cols to return
                 ImageDb.COLUMN_ID + " = ?", // select query
-                new String[] { Integer.toString(id) }, // args to select query
+                new String[]{Integer.toString(id)}, // args to select query
                 null,
                 null,
                 null,
@@ -117,8 +117,8 @@ public class SavedWallpaperImages {
 
         db.delete(ImageDb.TABLE_NAME,
                 ImageDb.COLUMN_ID + " = ?", // SELECT query
-                new String[] {
-                    Integer.toString(id) // args to SELECT query
+                new String[]{
+                        Integer.toString(id) // args to SELECT query
                 });
     }
 
@@ -163,12 +163,13 @@ public class SavedWallpaperImages {
             // We used to store the saved images in the cache directory, but that meant they'd get
             // deleted sometimes-- move them to the data directory
             File oldSavedImagesFile = new File(context.getCacheDir(),
-                  WallpaperFiles.WALLPAPER_IMAGES_DB);
+                    WallpaperFiles.WALLPAPER_IMAGES_DB);
             File savedImagesFile = context.getDatabasePath(WallpaperFiles.WALLPAPER_IMAGES_DB);
             if (oldSavedImagesFile.exists()) {
                 oldSavedImagesFile.renameTo(savedImagesFile);
             }
         }
+
         @Override
         public void onCreate(SQLiteDatabase database) {
             database.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +

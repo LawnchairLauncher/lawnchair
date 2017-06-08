@@ -218,7 +218,7 @@ public class PageIndicatorLineCaret extends PageIndicator {
             color = ColorUtils.setAlphaComponent(color, 255);
             int diffToWhite = Color.WHITE - color;
             int diffToBlack = Color.BLACK - color;
-            if (diffToBlack <= diffToWhite ) {
+            if (diffToBlack <= diffToWhite) {
                 mActiveAlpha = BLACK_ALPHA;
             } else {
                 mActiveAlpha = WHITE_ALPHA;

@@ -26,21 +26,21 @@ public class NotificationListener extends NotificationListenerService {
         update(true);
     }
 
-    public static boolean hasNotifications(String packageName){
+    public static boolean hasNotifications(String packageName) {
         Boolean tmp = HAS_NOTI.get(packageName);
         return tmp != null && tmp;
     }
 
     private void update(boolean reload) {
-        for(String key : HAS_NOTI.keySet()){
+        for (String key : HAS_NOTI.keySet()) {
             HAS_NOTI.put(key, false);
         }
-        for(StatusBarNotification sbnn : getActiveNotifications()){
+        for (StatusBarNotification sbnn : getActiveNotifications()) {
             String key = sbnn.getPackageName();
             boolean relevant = sbnn.isClearable() && sbnn.getNotification().priority > Notification.PRIORITY_LOW;
             HAS_NOTI.put(key, relevant || hasNotifications(key));
         }
-        if(reload){
+        if (reload) {
             LauncherAppState.getInstance().reloadAll(false);
         }
     }

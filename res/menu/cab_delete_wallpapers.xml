@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 /*
 **
 ** Copyright 2013, The Android Open Source Project
@@ -18,10 +17,10 @@
 */
 -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-  <item
-     android:id="@+id/menu_delete"
-     android:title="@string/wallpaper_delete"
-     android:showAsAction="always"
-     android:icon="@android:drawable/ic_menu_delete" />
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_delete"
+        android:title="@string/wallpaper_delete"
+        android:showAsAction="always"
+        android:icon="@android:drawable/ic_menu_delete" />
 </menu>

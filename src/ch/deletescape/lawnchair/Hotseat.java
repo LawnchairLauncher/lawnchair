@@ -97,7 +97,7 @@ public class Hotseat extends FrameLayout {
         resetLayout();
     }
 
-    public void refresh(){
+    public void refresh() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
         mContent.setGridSize(grid.inv.numHotseatIcons, 1);
     }

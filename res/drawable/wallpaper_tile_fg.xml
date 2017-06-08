@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2011 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2011 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,32 +14,26 @@
 -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_checked="true" >
+    <item android:state_checked="true">
         <shape>
-            <stroke
-                android:width="2dp"
-                android:color="#FFFFFFFF" />
-            <solid android:color="#33FFFFFF"/>
+            <stroke android:width="2dp" android:color="#FFFFFFFF" />
+            <solid android:color="#33FFFFFF" />
         </shape>
     </item>
-    <item android:state_focused="true" >
+    <item android:state_focused="true">
         <shape>
-            <stroke
-                android:width="2dp"
-                android:color="#FFFFFFFF" />
+            <stroke android:width="2dp" android:color="#FFFFFFFF" />
         </shape>
     </item>
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
-            <solid android:color="#33FFFFFF"/>
+            <solid android:color="#33FFFFFF" />
         </shape>
     </item>
-    <item android:state_selected="true" >
+    <item android:state_selected="true">
         <shape>
-            <stroke
-                android:width="2dp"
-                android:color="#FFFFFFFF" />
-            <solid android:color="#33FFFFFF"/>
+            <stroke android:width="2dp" android:color="#FFFFFFFF" />
+            <solid android:color="#33FFFFFF" />
         </shape>
     </item>
     <item android:drawable="@android:color/transparent" />

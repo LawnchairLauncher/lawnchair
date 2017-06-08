@@ -27,7 +27,7 @@
         android:layout_height="match_parent"
         android:focusable="true"
         android:background="@drawable/bg_pill_focused"
-        app:iconDisplay="deep_shortcut"/>
+        app:iconDisplay="deep_shortcut" />
 
     <View
         android:id="@+id/deep_shortcut_icon"

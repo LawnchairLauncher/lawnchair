@@ -10,24 +10,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import ch.deletescape.wallpaperpicker.common.Utils;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.wallpaperpicker.WallpaperPickerActivity;
 import ch.deletescape.wallpaperpicker.common.InputStreamProvider;
+import ch.deletescape.wallpaperpicker.common.Utils;
 
 public abstract class WallpaperTileInfo {
 
     protected View mView;
 
-    public void onClick(WallpaperPickerActivity a) {}
+    public void onClick(WallpaperPickerActivity a) {
+    }
 
-    public void onSave(WallpaperPickerActivity a) {}
+    public void onSave(WallpaperPickerActivity a) {
+    }
 
-    public void onDelete(WallpaperPickerActivity a) {}
+    public void onDelete(WallpaperPickerActivity a) {
+    }
 
-    public boolean isSelectable() { return false; }
+    public boolean isSelectable() {
+        return false;
+    }
 
-    public boolean isNamelessWallpaper() { return false; }
+    public boolean isNamelessWallpaper() {
+        return false;
+    }
 
     public void onIndexUpdated(CharSequence label) {
         if (isNamelessWallpaper()) {
@@ -44,7 +51,7 @@ public abstract class WallpaperTileInfo {
     }
 
     protected static Bitmap createThumbnail(InputStreamProvider streamProvider, Context context,
-            int rotation, boolean leftAligned) {
+                                            int rotation, boolean leftAligned) {
         Point size = getDefaultThumbSize(context.getResources());
         int width = size.x;
         int height = size.y;
@@ -55,7 +62,7 @@ public abstract class WallpaperTileInfo {
 
         Matrix rotateMatrix = new Matrix();
         rotateMatrix.setRotate(rotation);
-        float[] rotatedBounds = new float[] { bounds.x, bounds.y };
+        float[] rotatedBounds = new float[]{bounds.x, bounds.y};
         rotateMatrix.mapPoints(rotatedBounds);
         rotatedBounds[0] = Math.abs(rotatedBounds[0]);
         rotatedBounds[1] = Math.abs(rotatedBounds[1]);

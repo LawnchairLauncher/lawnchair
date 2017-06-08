@@ -64,7 +64,7 @@ public class LauncherClient {
         reconnect();
     }
 
-    public LauncherClient(Activity activity,  boolean overlayEnabled) {
+    public LauncherClient(Activity activity, boolean overlayEnabled) {
         this(activity, "com.google.android.googlequicksearchbox", overlayEnabled);
     }
 
@@ -83,12 +83,10 @@ public class LauncherClient {
 
             if (mIsResumed) {
                 mOverlay.onResume();
-            }
-            else {
+            } else {
                 mOverlay.onPause();
             }
-        }
-        catch (RemoteException ignored) {
+        } catch (RemoteException ignored) {
             FirebaseCrash.report(ignored);
         }
     }
@@ -96,8 +94,7 @@ public class LauncherClient {
     private boolean connectSafely(Context context, ServiceConnection conn, int flags) {
         try {
             return context.bindService(mServiceIntent, conn, flags | Context.BIND_AUTO_CREATE);
-        }
-        catch (SecurityException e) {
+        } catch (SecurityException e) {
             Log.e("DrawerOverlayClient", "Unable to connect to overlay service");
             FirebaseCrash.report(e);
             return false;
@@ -106,12 +103,12 @@ public class LauncherClient {
 
     static Intent getServiceIntent(Context context, String targetPackage) {
         Uri uri = Uri.parse("app://" + context.getPackageName() + ":" + Process.myUid()).buildUpon()
-            .appendQueryParameter("v", Integer.toString(0))
-            .build();
+                .appendQueryParameter("v", Integer.toString(0))
+                .build();
 
         return new Intent("com.android.launcher3.WINDOW_OVERLAY")
-            .setPackage(targetPackage)
-            .setData(uri);
+                .setPackage(targetPackage)
+                .setData(uri);
     }
 
     public boolean isConnected() {
@@ -149,12 +146,10 @@ public class LauncherClient {
         mWindowAttrs = windowAttrs;
         if (mWindowAttrs != null) {
             applyWindowToken();
-        }
-        else if (mOverlay != null) {
+        } else if (mOverlay != null) {
             try {
                 mOverlay.windowDetached(mActivity.isChangingConfigurations());
-            }
-            catch (RemoteException ignored) {
+            } catch (RemoteException ignored) {
                 FirebaseCrash.report(ignored);
             }
             mOverlay = null;
@@ -168,8 +163,7 @@ public class LauncherClient {
 
         try {
             mOverlay.endScroll();
-        }
-        catch (RemoteException ignored) {
+        } catch (RemoteException ignored) {
             FirebaseCrash.report(ignored);
         }
     }
@@ -181,8 +175,7 @@ public class LauncherClient {
 
         try {
             mOverlay.closeOverlay(animate ? 1 : 0);
-        }
-        catch (RemoteException ignored) {
+        } catch (RemoteException ignored) {
             FirebaseCrash.report(ignored);
         }
     }
@@ -216,8 +209,7 @@ public class LauncherClient {
         if (mOverlay != null && mWindowAttrs != null) {
             try {
                 mOverlay.onPause();
-            }
-            catch (RemoteException ignored) {
+            } catch (RemoteException ignored) {
                 FirebaseCrash.report(ignored);
             }
         }
@@ -233,8 +225,7 @@ public class LauncherClient {
         if (mOverlay != null && mWindowAttrs != null) {
             try {
                 mOverlay.onResume();
-            }
-            catch (RemoteException ignored) {
+            } catch (RemoteException ignored) {
                 FirebaseCrash.report(ignored);
             }
         }
@@ -284,8 +275,7 @@ public class LauncherClient {
 
         try {
             mOverlay.startScroll();
-        }
-        catch (RemoteException ignored) {
+        } catch (RemoteException ignored) {
             FirebaseCrash.report(ignored);
         }
     }
@@ -297,8 +287,7 @@ public class LauncherClient {
 
         try {
             mOverlay.onScroll(progressX);
-        }
-        catch (RemoteException ignored) {
+        } catch (RemoteException ignored) {
             FirebaseCrash.report(ignored);
         }
     }

@@ -132,8 +132,11 @@ public class TiledImageRenderer {
          * {@link TiledImageRenderer#suggestedTileSize(Context)}
          */
         int getTileSize();
+
         int getImageWidth();
+
         int getImageHeight();
+
         int getRotation();
 
         /**
@@ -148,11 +151,11 @@ public class TiledImageRenderer {
          * 0) - (width, height) and (x, y) - (x + tileSize, y + tileSize). If
          * in extending the region, we found some part of the region is outside
          * the image, those pixels are filled with black.
-         *
+         * <p>
          * If level > 0, it does the same operation on a down-scaled version of
          * the original image (down-scaled by a factor of 2^level), but (x, y)
          * still refers to the coordinate on the original image.
-         *
+         * <p>
          * The method would be called by the decoder thread.
          */
         Bitmap getTile(int level, int x, int y, Bitmap reuse);
@@ -167,7 +170,7 @@ public class TiledImageRenderer {
         WindowManager wm = (WindowManager)
                 context.getSystemService(Context.WINDOW_SERVICE);
         wm.getDefaultDisplay().getMetrics(metrics);
-        return metrics.heightPixels > 2048 ||  metrics.widthPixels > 2048;
+        return metrics.heightPixels > 2048 || metrics.widthPixels > 2048;
     }
 
     public TiledImageRenderer(View parent) {
@@ -194,7 +197,7 @@ public class TiledImageRenderer {
     private void calculateLevelCount() {
         if (mPreview != null) {
             mLevelCount = Math.max(0, Utils.ceilLog2(
-                mImageWidth / (float) mPreview.getWidth()));
+                    mImageWidth / (float) mPreview.getWidth()));
         } else {
             int levels = 1;
             int maxDim = Math.max(mImageWidth, mImageHeight);
@@ -349,7 +352,7 @@ public class TiledImageRenderer {
     // (cX, cY) is the point on the original bitmap which will be put in the
     // center of the ImageViewer.
     private void getRange(Rect out,
-            int cX, int cY, int level, float scale, int rotation) {
+                          int cX, int cY, int level, float scale, int rotation) {
 
         double radians = Math.toRadians(-rotation);
         double w = mViewWidth;
@@ -399,7 +402,8 @@ public class TiledImageRenderer {
         mActiveTiles.clear();
         mTileRange.set(0, 0, 0, 0);
 
-        while (sTilePool.acquire() != null) {}
+        while (sTilePool.acquire() != null) {
+        }
     }
 
     public boolean draw(GLCanvas canvas) {
@@ -468,15 +472,15 @@ public class TiledImageRenderer {
         }
     }
 
-   private void queueForDecode(Tile tile) {
-       synchronized (mQueueLock) {
-           if (tile.mTileState == STATE_ACTIVATED) {
-               tile.mTileState = STATE_IN_QUEUE;
-               if (mDecodeQueue.push(tile)) {
-                   mQueueLock.notifyAll();
-               }
-           }
-       }
+    private void queueForDecode(Tile tile) {
+        synchronized (mQueueLock) {
+            if (tile.mTileState == STATE_ACTIVATED) {
+                tile.mTileState = STATE_IN_QUEUE;
+                if (mDecodeQueue.push(tile)) {
+                    mQueueLock.notifyAll();
+                }
+            }
+        }
     }
 
     private void decodeTile(Tile tile) {
@@ -584,7 +588,7 @@ public class TiledImageRenderer {
     // Draw the tile to a square at canvas that locates at (x, y) and
     // has a side length of length.
     private void drawTile(GLCanvas canvas,
-            int tx, int ty, int level, float x, float y, float length) {
+                          int tx, int ty, int level, float x, float y, float length) {
         RectF source = mSourceRect;
         RectF target = mTargetRect;
         target.set(x, y, x + length, y + length);
@@ -600,7 +604,7 @@ public class TiledImageRenderer {
                     } else {
                         mRenderComplete = false;
                     }
-                } else if (tile.mTileState != STATE_DECODE_FAIL){
+                } else if (tile.mTileState != STATE_DECODE_FAIL) {
                     mRenderComplete = false;
                     queueForDecode(tile);
                 }

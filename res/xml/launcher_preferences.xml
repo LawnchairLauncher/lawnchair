@@ -140,7 +140,7 @@
         android:defaultValue="false"
         android:persistent="true" />
 
-    <PreferenceCategory android:title="@string/about_title"/>
+    <PreferenceCategory android:title="@string/about_title" />
 
     <Preference
         android:key="about"

@@ -18,9 +18,9 @@ package ch.deletescape.wallpaperpicker.glrenderer;
 
 import android.util.Log;
 
-import ch.deletescape.wallpaperpicker.common.Utils;
-
 import java.util.WeakHashMap;
+
+import ch.deletescape.wallpaperpicker.common.Utils;
 
 // BasicTexture is a Texture corresponds to a real GL texture.
 // The state of a BasicTexture indicates whether its data is loaded to GL memory.

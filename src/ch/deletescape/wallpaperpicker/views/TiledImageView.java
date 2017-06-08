@@ -24,12 +24,12 @@ import android.view.Choreographer;
 import android.view.Choreographer.FrameCallback;
 import android.widget.FrameLayout;
 
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
 import ch.deletescape.wallpaperpicker.glrenderer.BasicTexture;
 import ch.deletescape.wallpaperpicker.glrenderer.GLES20Canvas;
 import ch.deletescape.wallpaperpicker.views.TiledImageRenderer.TileSource;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
 
 /**
  * Shows an image using {@link TiledImageRenderer} using either {@link GLSurfaceView}.
@@ -113,7 +113,7 @@ public class TiledImageView extends FrameLayout {
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right,
-            int bottom) {
+                            int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         synchronized (mLock) {
             updateScaleIfNecessaryLocked(mRenderer);

@@ -9,18 +9,18 @@ import android.widget.Toast;
 
 import com.google.firebase.crash.FirebaseCrash;
 
-import ch.deletescape.wallpaperpicker.common.Utils;
-import ch.deletescape.wallpaperpicker.BitmapRegionTileSource;
-import ch.deletescape.wallpaperpicker.BitmapRegionTileSource.BitmapSource;
-import ch.deletescape.lawnchair.R;
-import ch.deletescape.wallpaperpicker.WallpaperPickerActivity;
-import ch.deletescape.wallpaperpicker.common.DialogUtils;
-import ch.deletescape.wallpaperpicker.common.InputStreamProvider;
-import ch.deletescape.wallpaperpicker.common.WallpaperManagerCompat;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+
+import ch.deletescape.lawnchair.R;
+import ch.deletescape.wallpaperpicker.BitmapRegionTileSource;
+import ch.deletescape.wallpaperpicker.BitmapRegionTileSource.BitmapSource;
+import ch.deletescape.wallpaperpicker.WallpaperPickerActivity;
+import ch.deletescape.wallpaperpicker.common.DialogUtils;
+import ch.deletescape.wallpaperpicker.common.InputStreamProvider;
+import ch.deletescape.wallpaperpicker.common.Utils;
+import ch.deletescape.wallpaperpicker.common.WallpaperManagerCompat;
 
 public class FileWallpaperInfo extends DrawableThumbWallpaperInfo {
     private static final String TAG = "FileWallpaperInfo";
