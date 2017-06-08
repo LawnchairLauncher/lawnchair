@@ -16,6 +16,8 @@
 
 package com.android.launcher3.provider;
 
+import static com.android.launcher3.Utilities.getDevicePrefs;
+
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Context;
@@ -36,7 +38,6 @@ import com.android.launcher3.AutoInstallsLayout.LayoutParserCallback;
 import com.android.launcher3.DefaultLayoutParser;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
-import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -375,10 +376,6 @@ public class ImportDataTask {
             }
         }
         return false;
-    }
-
-    private static SharedPreferences getDevicePrefs(Context c) {
-        return c.getSharedPreferences(LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
     private static final int getMyHotseatLayoutId(Context context) {
