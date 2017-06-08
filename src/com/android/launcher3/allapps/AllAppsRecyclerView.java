@@ -15,12 +15,14 @@
  */
 package com.android.launcher3.allapps;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Property;
 import android.util.SparseIntArray;
 import android.view.MotionEvent;
 import android.view.View;
@@ -54,6 +56,22 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     private int mEmptySearchBackgroundTopOffset;
 
     private SpringAnimationHandler mSpringAnimationHandler;
+    private OverScrollHelper mOverScrollHelper;
+    private VerticalPullDetector mPullDetector;
+
+    private float mContentTranslationY = 0;
+    public static final Property<AllAppsRecyclerView, Float> CONTENT_TRANS_Y =
+            new Property<AllAppsRecyclerView, Float>(Float.class, "appsRecyclerViewContentTransY") {
+                @Override
+                public Float get(AllAppsRecyclerView allAppsRecyclerView) {
+                    return allAppsRecyclerView.getContentTranslationY();
+                }
+
+                @Override
+                public void set(AllAppsRecyclerView allAppsRecyclerView, Float y) {
+                    allAppsRecyclerView.setContentTranslationY(y);
+                }
+            };
 
     public AllAppsRecyclerView(Context context) {
         this(context, null);
@@ -74,6 +92,12 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         addOnItemTouchListener(this);
         mEmptySearchBackgroundTopOffset = res.getDimensionPixelSize(
                 R.dimen.all_apps_empty_search_bg_top_offset);
+
+        mOverScrollHelper = new OverScrollHelper();
+        mPullDetector = new VerticalPullDetector(getContext());
+        mPullDetector.setListener(mOverScrollHelper);
+        mPullDetector.setDetectableScrollConditions(VerticalPullDetector.DIRECTION_UP
+                | VerticalPullDetector.DIRECTION_DOWN, true);
     }
 
     public void setSpringAnimationHandler(SpringAnimationHandler springAnimationHandler) {
@@ -81,7 +105,14 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     }
 
     @Override
+    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent ev) {
+        mPullDetector.onTouchEvent(ev);
+        return super.onInterceptTouchEvent(rv, ev) || mOverScrollHelper.isInOverScroll();
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent e) {
+        mPullDetector.onTouchEvent(e);
         if (FeatureFlags.LAUNCHER3_PHYSICS && mSpringAnimationHandler != null) {
             mSpringAnimationHandler.addMovement(e);
         }
@@ -168,12 +199,27 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
 
     @Override
     public void onDraw(Canvas c) {
+        c.translate(0, mContentTranslationY);
+
         // Draw the background
         if (mEmptySearchBackground != null && mEmptySearchBackground.getAlpha() > 0) {
             mEmptySearchBackground.draw(c);
         }
 
         super.onDraw(c);
+    }
+
+    public float getContentTranslationY() {
+        return mContentTranslationY;
+    }
+
+    /**
+     * Use this method instead of calling {@link #setTranslationY(float)}} directly to avoid drawing
+     * on top of other Views.
+     */
+    public void setContentTranslationY(float y) {
+        mContentTranslationY = y;
+        invalidate();
     }
 
     @Override
@@ -434,4 +480,84 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                 y + mEmptySearchBackground.getIntrinsicHeight());
     }
 
+    private class OverScrollHelper implements VerticalPullDetector.Listener {
+
+        private static final float MAX_RELEASE_VELOCITY = 5000; // px / s
+        private static final float MAX_OVERSCROLL_PERCENTAGE = 0.07f;
+
+        private boolean mIsInOverScroll;
+
+        @Override
+        public void onDragStart(boolean start) {
+        }
+
+        @Override
+        public boolean onDrag(float displacement, float velocity) {
+            // We are in overscroll iff we are trying to drag further down when we're already at
+            // the bottom of All Apps.
+            mIsInOverScroll = !canScrollVertically(1) && displacement < 0;
+
+            if (mIsInOverScroll) {
+                displacement = getDampedOverScroll(displacement);
+                setContentTranslationY(displacement);
+            }
+            return mIsInOverScroll;
+        }
+
+        @Override
+        public void onDragEnd(float velocity, boolean fling) {
+            float y = getContentTranslationY();
+            if (mIsInOverScroll && Float.compare(y, 0) != 0) {
+                if (FeatureFlags.LAUNCHER3_PHYSICS) {
+                    // We calculate our own velocity to give the springs the desired effect.
+                    velocity = y / getDampedOverScroll(getHeight()) * MAX_RELEASE_VELOCITY;
+                    mSpringAnimationHandler.animateToPositionWithVelocity(0, -velocity);
+                }
+
+                ObjectAnimator.ofFloat(AllAppsRecyclerView.this,
+                        AllAppsRecyclerView.CONTENT_TRANS_Y, 0)
+                        .setDuration(100)
+                        .start();
+            }
+            mIsInOverScroll = false;
+        }
+
+        public boolean isInOverScroll() {
+            return mIsInOverScroll;
+        }
+
+        private float getDampedOverScroll(float y) {
+            return dampedOverScroll(y, getHeight()) * MAX_OVERSCROLL_PERCENTAGE;
+        }
+
+        /**
+         * This curve determines how the effect of scrolling over the limits of the page diminishes
+         * as the user pulls further and further from the bounds
+         *
+         * @param f The percentage of how much the user has overscrolled.
+         * @return A transformed percentage based on the influence curve.
+         */
+        private float overScrollInfluenceCurve(float f) {
+            f -= 1.0f;
+            return f * f * f + 1.0f;
+        }
+
+        /**
+         * @param amount The original amount overscrolled.
+         * @param max The maximum amount that the View can overscroll.
+         * @return The dampened overscroll amount.
+         */
+        private float dampedOverScroll(float amount, float max) {
+            float f = amount / max;
+            if (Float.compare(f, 0) == 0) return 0;
+            f = f / (Math.abs(f)) * (overScrollInfluenceCurve(Math.abs(f)));
+
+            // Clamp this factor, f, to -1 < f < 1
+            if (Math.abs(f) >= 1) {
+                f /= Math.abs(f);
+            }
+
+            return Math.round(f * max);
+        }
+    }
 }
