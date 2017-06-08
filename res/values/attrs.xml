@@ -108,5 +108,12 @@
 
         <attr name="defaultLayoutId" format="reference" />
     </declare-styleable>
+    <declare-styleable name="DoubleShadowTextClock">
+        <attr name="ambientShadowColor" format="color" />
+        <attr name="keyShadowColor" format="color" />
+        <attr name="ambientShadowBlur" format="dimension" />
+        <attr name="keyShadowBlur" format="dimension" />
+        <attr name="keyShadowOffset" format="dimension" />
+    </declare-styleable>
 
 </resources>

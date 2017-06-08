@@ -169,4 +169,5 @@
     <dimen name="wallpaperThumbnailHeight">94.5dp</dimen>
     <dimen name="wallpaperItemIconSize">32dp</dimen>
 
+    <dimen name="qsb_min_width_with_mic">124.0dip</dimen>
 </resources>
