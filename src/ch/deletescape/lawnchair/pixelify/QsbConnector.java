@@ -134,7 +134,7 @@ public class QsbConnector extends View {
         }
 
         public Integer bR(QsbConnector qsbConnector) {
-            return Integer.valueOf(qsbConnector.bv);
+            return qsbConnector.bv;
         }
 
         @Override
@@ -143,7 +143,7 @@ public class QsbConnector extends View {
         }
 
         public void bS(QsbConnector qsbConnector, Integer num) {
-            qsbConnector.bf(num.intValue());
+            qsbConnector.bf(num);
         }
     }
 }

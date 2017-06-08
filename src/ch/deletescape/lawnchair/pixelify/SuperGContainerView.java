@@ -49,13 +49,12 @@ public class SuperGContainerView extends BaseQsbView {
     protected int getQsbView(boolean withMic) {
         if (bz != null) {
             float f;
-            TransformingTouchDelegate transformingTouchDelegate = bz;
             if (withMic) {
                 f = 0.0f;
             } else {
                 f = getResources().getDimension(R.dimen.qsb_touch_extension);
             }
-            transformingTouchDelegate.extendTouchBounds(f);
+            bz.extendTouchBounds(f);
         }
 
         return withMic ? R.layout.qsb_with_mic : R.layout.qsb_without_mic;
@@ -133,9 +132,6 @@ public class SuperGContainerView extends BaseQsbView {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent motionEvent) {
-        if (bz != null) {
-            return false;
-        }
-        return super.dispatchTouchEvent(motionEvent);
+        return bz == null && super.dispatchTouchEvent(motionEvent);
     }
 }

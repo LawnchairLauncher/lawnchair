@@ -38,16 +38,7 @@ public class GoogleSearchApp {
         mRemoteViews = bundle.getParcelable("views");
     }
 
-    public Bundle toBundle() {
-        Bundle bundle = new Bundle();
-        bundle.putInt("gsa_version", gsaVersion);
-        bundle.putLong("gsa_update_time", gsaUpdateTime);
-        bundle.putLong("publish_time", publishTime);
-        bundle.putParcelable("views", mRemoteViews);
-        return bundle;
-    }
-
-    public long bE() {
+    public long validity() {
         return (VALIDITY_DURATION + publishTime) - SystemClock.uptimeMillis();
     }
 }

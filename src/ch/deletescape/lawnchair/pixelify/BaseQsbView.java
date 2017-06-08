@@ -45,11 +45,7 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     }
 
     public void applyOpaPreference(SharedPreferences prefs) {
-        if (prefs.getBoolean("opa_enabled", true) || UserManagerCompat.getInstance(getContext()).isDemoUser()) {
-            showMic = false;
-        } else {
-            showMic = true;
-        }
+        showMic = !(prefs.getBoolean("opa_enabled", true) || UserManagerCompat.getInstance(getContext()).isDemoUser());
         int qsbView = getQsbView(showMic);
         if (qsbView != mQsbViewId) {
             mQsbViewId = qsbView;
@@ -111,11 +107,7 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     private void applyMinusOnePreference(SharedPreferences sharedPreferences) {
         boolean minusOneEnabled = isMinusOneEnabled(sharedPreferences);
         boolean hasQsbConnector;
-        if (qsbConnector != null) {
-            hasQsbConnector = true;
-        } else {
-            hasQsbConnector = false;
-        }
+        hasQsbConnector = qsbConnector != null;
         if (minusOneEnabled && !hasQsbConnector) {
             qsbConnector = (QsbConnector) mLauncher.getLayoutInflater().inflate(R.layout.qsb_connector, this, false);
             addView(qsbConnector, 0);

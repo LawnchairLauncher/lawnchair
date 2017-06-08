@@ -31,7 +31,7 @@ public class AccessibilityHelper extends AccessibilityDelegate {
         return true;
     }
 
-    public static final String getShowGoogleAppText(Context context) {
+    public static String getShowGoogleAppText(Context context) {
         try {
             Resources res = context.getPackageManager().getResourcesForApplication("com.google.android.googlequicksearchbox");
             int id = res.getIdentifier("title_google_home_screen", "string", "com.google.android.googlequicksearchbox");

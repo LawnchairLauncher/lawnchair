@@ -12,13 +12,13 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import ch.deletescape.lawnchair.config.FeatureFlags;
-import ch.deletescape.lawnchair.pixelify.C0277b;
 import ch.deletescape.lawnchair.pixelify.C0278a;
 import ch.deletescape.lawnchair.pixelify.GoogleSearchApp;
+import ch.deletescape.lawnchair.pixelify.OnGsaListener;
 import ch.deletescape.lawnchair.pixelify.ShadowHostView;
 
-public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener, C0277b {
-    public static final Property bU = new C0292q(Integer.TYPE, "bgAlpha");
+public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener, OnGsaListener {
+    public static final Property<QsbBlockerView, Integer> QSB_BLOCKER_VIEW_ALPHA = new QsbBlockerViewAlpha(Integer.TYPE, "bgAlpha");
     private final Paint mBgPaint = new Paint(1);
     private int mState = 0;
     private View mView;
@@ -45,9 +45,9 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
             Workspace workspace = Launcher.getLauncher(getContext()).getWorkspace();
             workspace.setOnStateChangeListener(this);
             prepareStateChange(workspace.getState(), null);
-            GoogleSearchApp aR = C0278a.aS(getContext()).aR(this);
-            if (aR != null) {
-                bb(aR);
+            GoogleSearchApp gsa = C0278a.aS(getContext()).getGoogleSearchAppAndAddListener(this);
+            if (gsa != null) {
+                onGsa(gsa);
             }
         }
     }
@@ -81,10 +81,10 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
             i = 0;
         }
         if (animatorSet == null) {
-            bU.set(this, Integer.valueOf(i));
+            QSB_BLOCKER_VIEW_ALPHA.set(this, i);
             return;
         }
-        animatorSet.play(ObjectAnimator.ofInt(this, bU, new int[]{i}));
+        animatorSet.play(ObjectAnimator.ofInt(this, QSB_BLOCKER_VIEW_ALPHA, i));
     }
 
     @Override
@@ -93,7 +93,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
     }
 
     @Override
-    public void bb(GoogleSearchApp gsa) {
+    public void onGsa(GoogleSearchApp gsa) {
         View view = mView;
         int i = mState;
         mView = ShadowHostView.bG(gsa, this, mView);
@@ -113,7 +113,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
         }
         if (i != mState) {
             if (view != null) {
-                view.animate().setDuration(200).alpha(0.0f).withEndAction(new C0293r(this, view));
+                view.animate().setDuration(200).alpha(0.0f).withEndAction(new QsbBlockerViewViewRemover(this, view));
             }
             addView(mView);
             mView.setAlpha(0.0f);
@@ -126,48 +126,38 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
         }
     }
 
-    final class C0293r implements Runnable {
-        final /* synthetic */ QsbBlockerView cv;
-        final /* synthetic */ View cw;
+    private final class QsbBlockerViewViewRemover implements Runnable {
+        final QsbBlockerView mQsbBlockerView;
+        final View mView;
 
-        C0293r(QsbBlockerView qsbBlockerView, View view) {
-            cv = qsbBlockerView;
-            cw = view;
+        QsbBlockerViewViewRemover(QsbBlockerView qsbBlockerView, View view) {
+            mQsbBlockerView = qsbBlockerView;
+            mView = view;
         }
 
         @Override
         public void run() {
-            cv.removeView(cw);
+            mQsbBlockerView.removeView(mView);
         }
     }
 
-    static final class C0292q extends Property {
-        C0292q(Class cls, String str) {
-            super(cls, str);
+    private static final class QsbBlockerViewAlpha extends Property<QsbBlockerView, Integer> {
+
+        public QsbBlockerViewAlpha(Class<Integer> type, String name) {
+            super(type, name);
         }
 
         @Override
-        public /* bridge */ /* synthetic */ void set(Object obj, Object obj2) {
-            bX((QsbBlockerView) obj, (Integer) obj2);
-        }
-
-        public void bX(QsbBlockerView qsbBlockerView, Integer num) {
-            boolean z = false;
-            qsbBlockerView.mBgPaint.setAlpha(num.intValue());
-            if (num.intValue() == 0) {
-                z = true;
-            }
-            qsbBlockerView.setWillNotDraw(z);
+        public void set(QsbBlockerView qsbBlockerView, Integer num) {
+            qsbBlockerView.mBgPaint.setAlpha(num);
+            qsbBlockerView.setWillNotDraw(num == 0);
             qsbBlockerView.invalidate();
         }
 
         @Override
-        public /* bridge */ /* synthetic */ Object get(Object obj) {
-            return bW((QsbBlockerView) obj);
+        public Integer get(QsbBlockerView obj) {
+            return obj.mBgPaint.getAlpha();
         }
 
-        public Integer bW(QsbBlockerView qsbBlockerView) {
-            return Integer.valueOf(qsbBlockerView.mBgPaint.getAlpha());
-        }
     }
 }

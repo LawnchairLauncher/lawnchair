@@ -11,14 +11,14 @@ import ch.deletescape.lawnchair.Alarm;
 import ch.deletescape.lawnchair.OnAlarmListener;
 
 public class C0278a extends BroadcastReceiver implements OnAlarmListener {
-    static long INITIAL_LOAD_TIMEOUT = 5000;
+    static long INITIAL_LOAD_TIMEOUT = 5;
     private static C0278a bt;
     private GoogleSearchApp gsa;
     private boolean bq = false;
     private final AppWidgetManagerHelper appWidgetManagerHelper;
     private final Alarm mAlarm;
     private final Context mContext;
-    private final ArrayList<C0277b> mListeners;
+    private final ArrayList<OnGsaListener> mListeners;
 
     public static C0278a aS(Context context) {
         if (bt == null) {
@@ -43,7 +43,7 @@ public class C0278a extends BroadcastReceiver implements OnAlarmListener {
         Bundle appWidgetOptions = appWidgetManagerHelper.getAppWidgetOptions();
         if (appWidgetOptions != null) {
             GoogleSearchApp gsa2 = new GoogleSearchApp(appWidgetOptions);
-            if (gsa2.mRemoteViews != null && gsa2.gsaVersion == gsa.gsaVersion && gsa2.gsaUpdateTime == gsa.gsaUpdateTime && gsa2.bE() > 0) {
+            if (gsa2.mRemoteViews != null && gsa2.gsaVersion == gsa.gsaVersion && gsa2.gsaUpdateTime == gsa.gsaUpdateTime && gsa2.validity() > 0) {
                 this.gsa = gsa2;
                 aX();
             }
@@ -58,12 +58,12 @@ public class C0278a extends BroadcastReceiver implements OnAlarmListener {
 
     private void aX() {
         bq = true;
-        for (C0277b bb : mListeners) {
-            bb.bb(gsa);
+        for (OnGsaListener bb : mListeners) {
+            bb.onGsa(gsa);
         }
         mAlarm.cancelAlarm();
         if (gsa.mRemoteViews != null) {
-            mAlarm.setAlarm(gsa.bE());
+            mAlarm.setAlarm(gsa.validity());
         }
     }
 
@@ -75,12 +75,12 @@ public class C0278a extends BroadcastReceiver implements OnAlarmListener {
         }
     }
 
-    public GoogleSearchApp aR(C0277b c0277b) {
-        mListeners.add(c0277b);
+    public GoogleSearchApp getGoogleSearchAppAndAddListener(OnGsaListener onGsaListener) {
+        mListeners.add(onGsaListener);
         return bq ? gsa : null;
     }
 
-    public void aY(C0277b c0277b) {
-        mListeners.remove(c0277b);
+    public void aY(OnGsaListener onGsaListener) {
+        mListeners.remove(onGsaListener);
     }
 }

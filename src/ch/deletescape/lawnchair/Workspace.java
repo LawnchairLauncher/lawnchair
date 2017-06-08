@@ -4018,7 +4018,7 @@ public class Workspace extends PagedView
         void prepareStateChange(State toState, AnimatorSet targetAnim);
     }
 
-    public static final boolean isQsbContainerPage(int pageNo) {
+    public static boolean isQsbContainerPage(int pageNo) {
         return pageNo == 0;
     }
 }
