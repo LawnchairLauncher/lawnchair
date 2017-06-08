@@ -51,6 +51,7 @@ import com.android.launcher3.graphics.HolographicOutlineHelper;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.PackageItemInfo;
+import com.android.launcher3.util.Themes;
 
 import java.text.NumberFormat;
 
@@ -65,8 +66,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
     private static final float AMBIENT_SHADOW_RADIUS = 2.5f;
     private static final float KEY_SHADOW_RADIUS = 1f;
     private static final float KEY_SHADOW_OFFSET = 0.5f;
-    private static final int AMBIENT_SHADOW_COLOR = 0x33000000;
-    private static final int KEY_SHADOW_COLOR = 0x66000000;
 
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
@@ -82,6 +81,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
     private final CheckLongPressHelper mLongPressHelper;
     private final HolographicOutlineHelper mOutlineHelper;
     private final StylusEventHelper mStylusEventHelper;
+    private final int mAmbientShadowColor;
+    private final int mKeyShadowColor;
 
     private boolean mBackgroundSizeChanged;
 
@@ -147,6 +148,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
         mLayoutHorizontal = a.getBoolean(R.styleable.BubbleTextView_layoutHorizontal, false);
         mDeferShadowGenerationOnTouch =
                 a.getBoolean(R.styleable.BubbleTextView_deferShadowGeneration, false);
+        mAmbientShadowColor = a.getColor(R.styleable.BubbleTextView_ambientShadowColor, 0x33000000);
+        mKeyShadowColor = a.getColor(R.styleable.BubbleTextView_keyShadowColor, 0x66000000);
 
         int display = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
         int defaultIconSize = grid.iconSizePx;
@@ -174,7 +177,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
 
             // Set shadow layer as the larger shadow to that the textView does not clip the shadow.
             float density = getResources().getDisplayMetrics().density;
-            setShadowLayer(density * AMBIENT_SHADOW_RADIUS, 0, 0, AMBIENT_SHADOW_COLOR);
+            setShadowLayer(density * AMBIENT_SHADOW_RADIUS, 0, 0, mAmbientShadowColor);
         } else {
             mBackground = null;
         }
@@ -435,14 +438,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
 
         // We enhance the shadow by drawing the shadow twice
         float density = getResources().getDisplayMetrics().density;
-        getPaint().setShadowLayer(density * AMBIENT_SHADOW_RADIUS, 0, 0, AMBIENT_SHADOW_COLOR);
+        getPaint().setShadowLayer(density * AMBIENT_SHADOW_RADIUS, 0, 0, mAmbientShadowColor);
         super.draw(canvas);
         canvas.save(Canvas.CLIP_SAVE_FLAG);
         canvas.clipRect(getScrollX(), getScrollY() + getExtendedPaddingTop(),
                 getScrollX() + getWidth(),
                 getScrollY() + getHeight(), Region.Op.INTERSECT);
         getPaint().setShadowLayer(
-                density * KEY_SHADOW_RADIUS, 0.0f, density * KEY_SHADOW_OFFSET, KEY_SHADOW_COLOR);
+                density * KEY_SHADOW_RADIUS, 0.0f, density * KEY_SHADOW_OFFSET, mKeyShadowColor);
         super.draw(canvas);
         canvas.restore();
 

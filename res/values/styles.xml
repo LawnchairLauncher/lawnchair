@@ -30,24 +30,38 @@
         <item name="popupColorPrimary">#FFF</item>
         <item name="popupColorSecondary">#F5F5F5</item> <!-- Gray 100 -->
         <item name="popupColorTertiary">#E0E0E0</item> <!-- Gray 300 -->
-        <item name="isPrimaryColorDark">false</item>
+        <item name="isMainColorDark">false</item>
+        <item name="isWorkspaceDarkText">false</item>
+        <item name="workspaceTextColor">?android:textColorPrimary</item>
+        <item name="workspaceShadowColor">#B0000000</item>
+        <item name="workspaceAmbientShadowColor">#22000000</item>
+        <item name="workspaceKeyShadowColor">#44000000</item>
+        <item name="workspaceStatusBarScrim">@drawable/workspace_bg</item>
     </style>
 
     <style name="LauncherTheme" parent="@style/BaseLauncherTheme"></style>
+
+    <style name="LauncherThemeDarkText" parent="@style/LauncherTheme">
+        <item name="workspaceTextColor">#FF212121</item>
+        <item name="workspaceShadowColor">@android:color/transparent</item>
+        <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
+        <item name="workspaceKeyShadowColor">@android:color/transparent</item>
+        <item name="isWorkspaceDarkText">true</item>
+        <item name="workspaceStatusBarScrim">@null</item>
+    </style>
 
     <style name="LauncherThemeDark" parent="@style/LauncherTheme">
         <item name="android:textColorPrimary">#FFFFFFFF</item>
         <item name="android:textColorSecondary">#FFFFFFFF</item>
         <item name="android:textColorTertiary">#CCFFFFFF</item>
         <item name="android:textColorHint">#A0FFFFFF</item>
-
         <item name="android:colorControlHighlight">#A0FFFFFF</item>
         <item name="android:colorPrimary">#FF333333</item>
         <item name="allAppsScrimColor">#33000000</item>
         <item name="popupColorPrimary">?android:attr/colorPrimary</item>
         <item name="popupColorSecondary">#424242</item> <!-- Gray 800 -->
         <item name="popupColorTertiary">#757575</item> <!-- Gray 600 -->
-        <item name="isPrimaryColorDark">true</item>
+        <item name="isMainColorDark">true</item>
     </style>
 
     <!--
@@ -55,7 +69,7 @@
     Various foreground colors are overridden to be white so that they are properly visible on
     various wallpapers
     -->
-    <style name="HomeScreenElementTheme" parent="@style/LauncherTheme">
+    <style name="HomeScreenElementTheme">
         <item name="android:colorEdgeEffect">@android:color/white</item>
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:textColorSecondary">@android:color/white</item>
@@ -110,6 +124,9 @@
         <item name="customShadows">true</item>
         <item name="android:shadowRadius">2.0</item>
         <item name="android:shadowColor">#B0000000</item>
+        <item name="android:textColor">?attr/workspaceTextColor</item>
+        <item name="keyShadowColor">?attr/workspaceKeyShadowColor</item>
+        <item name="ambientShadowColor">?attr/workspaceAmbientShadowColor</item>
     </style>
 
     <!-- Theme for the popup container -->

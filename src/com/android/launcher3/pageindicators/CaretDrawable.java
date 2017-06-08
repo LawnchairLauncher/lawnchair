@@ -45,7 +45,7 @@ public class CaretDrawable extends Drawable {
         final int strokeWidth = res.getDimensionPixelSize(R.dimen.all_apps_caret_stroke_width);
         final int shadowSpread = res.getDimensionPixelSize(R.dimen.all_apps_caret_shadow_spread);
 
-        mCaretPaint.setColor(Themes.getAttrColor(context, android.R.attr.textColorPrimary));
+        mCaretPaint.setColor(Themes.getAttrColor(context, R.attr.workspaceTextColor));
         mCaretPaint.setAntiAlias(true);
         mCaretPaint.setStrokeWidth(strokeWidth);
         mCaretPaint.setStyle(Paint.Style.STROKE);
