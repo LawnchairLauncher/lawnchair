@@ -38,6 +38,7 @@ public class CaretDrawable extends Drawable {
     private Paint mCaretPaint = new Paint();
     private Path mPath = new Path();
     private final int mCaretSizePx;
+    private final boolean mUseShadow;
 
     public CaretDrawable(Context context) {
         final Resources res = context.getResources();
@@ -60,6 +61,7 @@ public class CaretDrawable extends Drawable {
         mShadowPaint.setStrokeCap(Paint.Cap.ROUND);
         mShadowPaint.setStrokeJoin(Paint.Join.ROUND);
 
+        mUseShadow = !Themes.getAttrBoolean(context, R.attr.isWorkspaceDarkText);
         mCaretSizePx = res.getDimensionPixelSize(R.dimen.all_apps_caret_size);
     }
 
@@ -94,8 +96,9 @@ public class CaretDrawable extends Drawable {
         mPath.moveTo(left, top + caretHeight * (1 - getNormalizedCaretProgress()));
         mPath.lineTo(left + (width / 2), top + caretHeight * getNormalizedCaretProgress());
         mPath.lineTo(left + width, top + caretHeight * (1 - getNormalizedCaretProgress()));
-
-        canvas.drawPath(mPath, mShadowPaint);
+        if (mUseShadow) {
+            canvas.drawPath(mPath, mShadowPaint);
+        }
         canvas.drawPath(mPath, mCaretPaint);
     }
 
