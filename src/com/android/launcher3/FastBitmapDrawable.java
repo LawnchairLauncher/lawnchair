@@ -124,7 +124,7 @@ public class FastBitmapDrawable extends Drawable {
     public IconPalette getIconPalette() {
         if (mIconPalette == null) {
             mIconPalette = IconPalette.fromDominantColor(Utilities
-                    .findDominantColorByHue(mBitmap, 20), true /* desaturateBackground */);
+                    .findDominantColorByHue(mBitmap, 20));
         }
         return mIconPalette;
     }
