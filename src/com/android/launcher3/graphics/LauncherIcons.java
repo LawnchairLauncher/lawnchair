@@ -266,9 +266,10 @@ public class LauncherIcons {
 
             sOldBounds.set(icon.getBounds());
             if (Utilities.isAtLeastO() && icon instanceof AdaptiveIconDrawable) {
-                int offset = Math.min(left, top);
+                int offset = Math.max((int)(ShadowGenerator.BLUR_FACTOR * iconBitmapSize),
+                        Math.min(left, top));
                 int size = Math.max(width, height);
-                icon.setBounds(offset, offset, offset + size, offset + size);
+                icon.setBounds(offset, offset, size, size);
             } else {
                 icon.setBounds(left, top, left+width, top+height);
             }

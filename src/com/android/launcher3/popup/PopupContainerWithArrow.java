@@ -47,7 +47,6 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
-import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
@@ -579,9 +578,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         ItemInfo itemInfo = (ItemInfo) mOriginalIcon.getTag();
         BadgeInfo badgeInfo = mLauncher.getPopupDataProvider().getBadgeInfoForItem(itemInfo);
         if (mNotificationItemView != null && badgeInfo != null) {
-            IconPalette palette = mOriginalIcon.getIcon() instanceof FastBitmapDrawable
-                    ? ((FastBitmapDrawable) mOriginalIcon.getIcon()).getIconPalette()
-                    : null;
+            IconPalette palette = mOriginalIcon.getBadgePalette();
             mNotificationItemView.updateHeader(badgeInfo.getNotificationCount(), palette);
         }
     }
