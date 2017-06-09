@@ -21,7 +21,7 @@ import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
-import ch.deletescape.lawnchair.compat.UserManagerCompat;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.util.PackageManagerHelper;
 
 public abstract class BaseQsbView extends FrameLayout implements OnClickListener, OnSharedPreferenceChangeListener {
@@ -45,7 +45,7 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     }
 
     public void applyOpaPreference(SharedPreferences prefs) {
-        showMic = !(prefs.getBoolean("opa_enabled", true) || UserManagerCompat.getInstance(getContext()).isDemoUser());
+        showMic = FeatureFlags.showVoiceSearchButton(getContext());
         int qsbView = getQsbView(showMic);
         if (qsbView != mQsbViewId) {
             mQsbViewId = qsbView;

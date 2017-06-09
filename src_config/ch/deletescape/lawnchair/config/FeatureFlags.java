@@ -34,6 +34,7 @@ public final class FeatureFlags {
     private static final String KEY_PREF_HAPTIC_FEEDBACK = "pref_enableHapticFeedback";
     private static final String KEY_PREF_KEEP_SCROLL_STATE = "pref_keepScrollState";
     private static final String KEY_FULL_WIDTH_SEARCHBAR = "pref_fullWidthSearchbar";
+    private static final String KEY_SHOW_VOICE_SEARCH_BUTTON = "pref_showMic";
 
     private FeatureFlags() {
     }
@@ -79,6 +80,12 @@ public final class FeatureFlags {
     public static boolean useFullWidthSearchbar(Context context) {
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_FULL_WIDTH_SEARCHBAR, false);
         FirebaseAnalytics.getInstance(context).setUserProperty("full_width_searchbar", String.valueOf(enabled));
+        return enabled;
+    }
+
+    public static boolean showVoiceSearchButton(Context context) {
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_SHOW_VOICE_SEARCH_BUTTON, true);
+        FirebaseAnalytics.getInstance(context).setUserProperty("show_voice_search", String.valueOf(enabled));
         return enabled;
     }
 }
