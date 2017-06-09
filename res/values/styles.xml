@@ -150,4 +150,8 @@
     </style>
 
     <style name="DropTargetButton" parent="DropTargetButtonBase" />
+
+    <style name="TextTitle">
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
 </resources>
