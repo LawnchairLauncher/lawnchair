@@ -18,9 +18,8 @@ package com.android.launcher3.anim;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.util.ArrayMap;
 import android.view.View;
-
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -29,14 +28,14 @@ import java.util.Map;
  */
 public class AnimationLayerSet extends AnimatorListenerAdapter {
 
-    private final HashMap<View, Integer> mViewsToLayerTypeMap;
+    private final ArrayMap<View, Integer> mViewsToLayerTypeMap;
 
     public AnimationLayerSet() {
-        mViewsToLayerTypeMap = new HashMap<>();
+        mViewsToLayerTypeMap = new ArrayMap<>();
     }
 
     public AnimationLayerSet(View v) {
-        mViewsToLayerTypeMap = new HashMap<>(1);
+        mViewsToLayerTypeMap = new ArrayMap<>(1);
         addView(v);
     }
 
