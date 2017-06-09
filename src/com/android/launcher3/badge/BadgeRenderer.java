@@ -63,7 +63,6 @@ public class BadgeRenderer {
     private final Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG
             | Paint.FILTER_BITMAP_FLAG);
     private final SparseArray<Bitmap> mBackgroundsWithShadow;
-    private final IconPalette mIconPalette;
 
     public BadgeRenderer(Context context, int iconSizePx) {
         mContext = context;
@@ -83,25 +82,24 @@ public class BadgeRenderer {
         mTextHeight = tempTextHeight.height();
 
         mBackgroundsWithShadow = new SparseArray<>(3);
-
-        mIconPalette = IconPalette.fromDominantColor(context.getColor(R.color.badge_color));
     }
 
     /**
      * Draw a circle in the top right corner of the given bounds, and draw
      * {@link BadgeInfo#getNotificationCount()} on top of the circle.
+     * @param palette The colors (based on the icon) to use for the badge.
      * @param badgeInfo Contains data to draw on the badge. Could be null if we are animating out.
      * @param iconBounds The bounds of the icon being badged.
      * @param badgeScale The progress of the animation, from 0 to 1.
      * @param spaceForOffset How much space is available to offset the badge up and to the right.
      */
-    public void draw(Canvas canvas, @Nullable BadgeInfo badgeInfo,
+    public void draw(Canvas canvas, IconPalette palette, @Nullable BadgeInfo badgeInfo,
             Rect iconBounds, float badgeScale, Point spaceForOffset) {
-        mTextPaint.setColor(mIconPalette.textColor);
+        mTextPaint.setColor(palette.textColor);
         IconDrawer iconDrawer = badgeInfo != null && badgeInfo.isIconLarge()
                 ? mLargeIconDrawer : mSmallIconDrawer;
         Shader icon = badgeInfo == null ? null : badgeInfo.getNotificationIconForBadge(
-                mContext, mIconPalette.backgroundColor, mSize, iconDrawer.mPadding);
+                mContext, palette.backgroundColor, mSize, iconDrawer.mPadding);
         String notificationCount = badgeInfo == null ? "0"
                 : String.valueOf(badgeInfo.getNotificationCount());
         int numChars = notificationCount.length();
@@ -127,7 +125,7 @@ public class BadgeRenderer {
         canvas.translate(badgeCenterX + offsetX, badgeCenterY - offsetY);
         canvas.scale(badgeScale, badgeScale);
         // Prepare the background and shadow and possible stacking effect.
-        mBackgroundPaint.setColorFilter(mIconPalette.backgroundColorMatrixFilter);
+        mBackgroundPaint.setColorFilter(palette.backgroundColorMatrixFilter);
         int backgroundWithShadowSize = backgroundWithShadow.getHeight(); // Same as width.
         boolean shouldStack = !isDot && badgeInfo != null
                 && badgeInfo.getNotificationKeys().size() > 1;
@@ -149,7 +147,7 @@ public class BadgeRenderer {
                     -backgroundWithShadowSize / 2, mBackgroundPaint);
             iconDrawer.drawIcon(icon, canvas);
         } else if (isDot) {
-            mBackgroundPaint.setColorFilter(mIconPalette.saturatedBackgroundColorMatrixFilter);
+            mBackgroundPaint.setColorFilter(palette.saturatedBackgroundColorMatrixFilter);
             canvas.drawBitmap(backgroundWithShadow, -backgroundWithShadowSize / 2,
                     -backgroundWithShadowSize / 2, mBackgroundPaint);
         }

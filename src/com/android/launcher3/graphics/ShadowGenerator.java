@@ -35,7 +35,7 @@ public class ShadowGenerator {
 
     // Percent of actual icon size
     private static final float HALF_DISTANCE = 0.5f;
-    private static final float BLUR_FACTOR = 0.5f/48;
+    public static final float BLUR_FACTOR = 0.5f/48;
 
     // Percent of actual icon size
     private static final float KEY_SHADOW_DISTANCE = 1f/48;

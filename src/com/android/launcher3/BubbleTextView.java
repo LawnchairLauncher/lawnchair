@@ -96,7 +96,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
 
     private BadgeInfo mBadgeInfo;
     private BadgeRenderer mBadgeRenderer;
-    private IconPalette mIconPalette;
+    private IconPalette mBadgePalette;
     private float mBadgeScale;
     private boolean mForceHideBadge;
     private Point mTempSpaceForBadgeOffset = new Point();
@@ -453,7 +453,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
             final int scrollX = getScrollX();
             final int scrollY = getScrollY();
             canvas.translate(scrollX, scrollY);
-            mBadgeRenderer.draw(canvas, mBadgeInfo, mTempIconBounds, mBadgeScale,
+            mBadgeRenderer.draw(canvas, mBadgePalette, mBadgeInfo, mTempIconBounds, mBadgeScale,
                     mTempSpaceForBadgeOffset);
             canvas.translate(-scrollX, -scrollY);
         }
@@ -578,7 +578,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
             float newBadgeScale = isBadged ? 1f : 0;
             mBadgeRenderer = mLauncher.getDeviceProfile().mBadgeRenderer;
             if (wasBadged || isBadged) {
-                mIconPalette = ((FastBitmapDrawable) mIcon).getIconPalette();
+                mBadgePalette = IconPalette.getBadgePalette(getResources());
+                if (mBadgePalette == null) {
+                    mBadgePalette = ((FastBitmapDrawable) mIcon).getIconPalette();
+                }
                 // Animate when a badge is first added or when it is removed.
                 if (animate && (wasBadged ^ isBadged) && isShown()) {
                     ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, newBadgeScale).start();
@@ -588,6 +591,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
                 }
             }
         }
+    }
+
+    public IconPalette getBadgePalette() {
+        return mBadgePalette;
     }
 
     /**
