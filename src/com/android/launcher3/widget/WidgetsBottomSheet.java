@@ -21,7 +21,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -29,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
 
@@ -81,7 +81,8 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
         setWillNotDraw(false);
         mLauncher = Launcher.getLauncher(context);
         mOpenCloseAnimator = LauncherAnimUtils.ofPropertyValuesHolder(this);
-        mFastOutSlowInInterpolator = new FastOutSlowInInterpolator();
+        mFastOutSlowInInterpolator =
+                AnimationUtils.loadInterpolator(context, android.R.interpolator.fast_out_slow_in);
         mScrollInterpolator = new VerticalPullDetector.ScrollInterpolator();
         mInsets = new Rect();
         mVerticalPullDetector = new VerticalPullDetector(context);
