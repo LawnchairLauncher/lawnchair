@@ -2,7 +2,6 @@ package ch.deletescape.lawnchair.pixelify;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 
@@ -25,11 +24,6 @@ public class ExperimentalQsbWidget extends BaseQsbView {
     @Override
     protected int getQsbView(boolean withMic) {
         return withMic ? R.layout.qsb_wide_with_mic : R.layout.qsb_wide_without_mic;
-    }
-
-    @Override
-    protected boolean isMinusOneEnabled(SharedPreferences sharedPreferences) {
-        return false;
     }
 
     @Override

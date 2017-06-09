@@ -34,7 +34,7 @@ public final class FeatureFlags {
     private static final String KEY_PREF_HAPTIC_FEEDBACK = "pref_enableHapticFeedback";
     private static final String KEY_PREF_KEEP_SCROLL_STATE = "pref_keepScrollState";
     private static final String KEY_FULL_WIDTH_SEARCHBAR = "pref_fullWidthSearchbar";
-    private static final String KEY_SHOW_VOICE_SEARCH_BUTTON = "pref_showMic";
+    public static final String KEY_SHOW_VOICE_SEARCH_BUTTON = "pref_showMic";
 
     private FeatureFlags() {
     }

@@ -36,9 +36,9 @@ public class SuperGContainerView extends BaseQsbView {
     }
 
     @Override
-    public void applyOpaPreference(SharedPreferences prefs) {
+    public void applyVoiceSearchPreference(SharedPreferences prefs) {
         if (!FeatureFlags.useFullWidthSearchbar(getContext())) {
-            super.applyOpaPreference(prefs);
+            super.applyVoiceSearchPreference(prefs);
             if (bz != null) {
                 bz.setDelegateView(mQsbView);
             }
@@ -71,11 +71,6 @@ public class SuperGContainerView extends BaseQsbView {
         if (bz != null) {
             mLauncher.getWorkspace().findViewById(R.id.workspace_blocked_row).setTouchDelegate(bz);
         }
-    }
-
-    @Override
-    protected boolean isMinusOneEnabled(SharedPreferences sharedPreferences) {
-        return !FeatureFlags.useFullWidthSearchbar(getContext()) && super.isMinusOneEnabled(sharedPreferences);
     }
 
     @Override

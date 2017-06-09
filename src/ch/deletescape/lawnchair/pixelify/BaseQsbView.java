@@ -44,7 +44,7 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
         mLauncher = Launcher.getLauncher(context);
     }
 
-    public void applyOpaPreference(SharedPreferences prefs) {
+    public void applyVoiceSearchPreference(SharedPreferences prefs) {
         showMic = FeatureFlags.showVoiceSearchButton(getContext());
         int qsbView = getQsbView(showMic);
         if (qsbView != mQsbViewId) {
@@ -71,49 +71,33 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("ch.deletescape.lawnchair.device.prefs", 0);
-        applyOpaPreference(sharedPreferences);
+        SharedPreferences sharedPreferences = Utilities.getPrefs(getContext());
+        applyVoiceSearchPreference(sharedPreferences);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        sharedPreferences = Utilities.getPrefs(getContext());
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        applyMinusOnePreference(sharedPreferences);
         getContext().registerReceiver(packageChangedReciever, Util.createIntentFilter("android.intent.action.PACKAGE_CHANGED"));
+        initializeQsbConnector();
         applyVisibility();
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        getContext().getSharedPreferences("ch.deletescape.lawnchair.device.prefs", 0).unregisterOnSharedPreferenceChangeListener(this);
         Utilities.getPrefs(getContext()).unregisterOnSharedPreferenceChangeListener(this);
         getContext().unregisterReceiver(packageChangedReciever);
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String str) {
-        if ("opa_enabled".equals(str)) {
-            applyOpaPreference(sharedPreferences);
-            applyVisibility();
-        } else if ("pref_enable_minus_one".equals(str)) {
-            applyMinusOnePreference(sharedPreferences);
+        if (FeatureFlags.KEY_SHOW_VOICE_SEARCH_BUTTON.equals(str)) {
+            applyVoiceSearchPreference(sharedPreferences);
             applyVisibility();
         }
     }
 
-    protected boolean isMinusOneEnabled(SharedPreferences sharedPreferences) {
-        return sharedPreferences.getBoolean("pref_enable_minus_one", true);
-    }
-
-    private void applyMinusOnePreference(SharedPreferences sharedPreferences) {
-        boolean minusOneEnabled = isMinusOneEnabled(sharedPreferences);
-        boolean hasQsbConnector;
-        hasQsbConnector = qsbConnector != null;
-        if (minusOneEnabled && !hasQsbConnector) {
+    private void initializeQsbConnector() {
+        if (qsbConnector == null) {
             qsbConnector = (QsbConnector) mLauncher.getLayoutInflater().inflate(R.layout.qsb_connector, this, false);
             addView(qsbConnector, 0);
-        } else if (!minusOneEnabled && hasQsbConnector) {
-            removeView(qsbConnector);
-            qsbConnector = null;
         }
     }
 
@@ -137,7 +121,7 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
         if (micIcon != null) {
             intent.putExtra("source_mic_offset", bn(micIcon, rect));
         }
-        return intent.putExtra("source_round_left", true).putExtra("source_round_right", true).putExtra("source_logo_offset", bn(findViewById(R.id.g_icon), rect)).setPackage("com.google.android.googlequicksearchbox").addFlags(1342177280);
+        return intent.putExtra("source_round_left", true).putExtra("source_round_right", true).putExtra("source_logo_offset", bn(findViewById(R.id.g_icon), rect)).setPackage("com.google.android.googlequicksearchbox");//.addFlags(1342177280);
     }
 
     private Point bn(View view, Rect rect) {
