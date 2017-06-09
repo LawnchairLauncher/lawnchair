@@ -1,6 +1,5 @@
 package com.google.android.libraries.launcherclient;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -22,10 +21,12 @@ import android.view.WindowManager;
 
 import com.google.firebase.crash.FirebaseCrash;
 
+import ch.deletescape.lawnchair.Launcher;
+
 public class LauncherClient {
     private static AppServiceConnection sApplicationConnection;
 
-    private final Activity mActivity;
+    private final Launcher mLauncher;
     private OverlayCallbacks mCurrentCallbacks;
     private boolean mDestroyed;
     private boolean mIsResumed;
@@ -39,7 +40,7 @@ public class LauncherClient {
     private final BroadcastReceiver mUpdateReceiver;
     private WindowManager.LayoutParams mWindowAttrs;
 
-    public LauncherClient(Activity activity, String targetPackage, boolean overlayEnabled) {
+    public LauncherClient(Launcher launcher, String targetPackage, boolean overlayEnabled) {
         mUpdateReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -50,8 +51,8 @@ public class LauncherClient {
         mDestroyed = false;
         mIsServiceConnected = false;
         mServiceStatus = -1;
-        mActivity = activity;
-        mServiceIntent = LauncherClient.getServiceIntent(activity, targetPackage);
+        mLauncher = launcher;
+        mServiceIntent = LauncherClient.getServiceIntent(launcher, targetPackage);
         mState = 0;
         mServiceConnection = new OverlayServiceConnection();
         mServiceConnectionOptions = overlayEnabled ? 3 : 2;
@@ -59,13 +60,13 @@ public class LauncherClient {
         IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
         filter.addDataScheme("package");
         filter.addDataSchemeSpecificPart(targetPackage, PatternMatcher.PATTERN_LITERAL);
-        mActivity.registerReceiver(mUpdateReceiver, filter);
+        mLauncher.registerReceiver(mUpdateReceiver, filter);
 
         reconnect();
     }
 
-    public LauncherClient(Activity activity, boolean overlayEnabled) {
-        this(activity, "com.google.android.googlequicksearchbox", overlayEnabled);
+    public LauncherClient(Launcher launcher, boolean overlayEnabled) {
+        this(launcher, "com.google.android.googlequicksearchbox", overlayEnabled);
     }
 
     private void applyWindowToken() {
@@ -126,10 +127,10 @@ public class LauncherClient {
     private void removeClient(boolean removeAppConnection) {
         mDestroyed = true;
         if (mIsServiceConnected) {
-            mActivity.unbindService(mServiceConnection);
+            mLauncher.unbindService(mServiceConnection);
             mIsServiceConnected = false;
         }
-        mActivity.unregisterReceiver(mUpdateReceiver);
+        mLauncher.unregisterReceiver(mUpdateReceiver);
 
         if (mCurrentCallbacks != null) {
             mCurrentCallbacks.clear();
@@ -137,7 +138,7 @@ public class LauncherClient {
         }
 
         if (removeAppConnection && sApplicationConnection != null) {
-            mActivity.getApplicationContext().unbindService(sApplicationConnection);
+            mLauncher.getApplicationContext().unbindService(sApplicationConnection);
             sApplicationConnection = null;
         }
     }
@@ -148,7 +149,7 @@ public class LauncherClient {
             applyWindowToken();
         } else if (mOverlay != null) {
             try {
-                mOverlay.windowDetached(mActivity.isChangingConfigurations());
+                mOverlay.windowDetached(mLauncher.isChangingConfigurations());
             } catch (RemoteException ignored) {
                 FirebaseCrash.report(ignored);
             }
@@ -197,11 +198,11 @@ public class LauncherClient {
             return;
         }
 
-        setWindowAttrs(mActivity.getWindow().getAttributes());
+        setWindowAttrs(mLauncher.getWindow().getAttributes());
     }
 
     public void onDestroy() {
-        removeClient(!mActivity.isChangingConfigurations());
+        removeClient(!mLauncher.isChangingConfigurations());
     }
 
     public final void onDetachedFromWindow() {
@@ -249,13 +250,13 @@ public class LauncherClient {
         }
 
         if (sApplicationConnection != null && !sApplicationConnection.packageName.equals(mServiceIntent.getPackage())) {
-            mActivity.getApplicationContext().unbindService(sApplicationConnection);
+            mLauncher.getApplicationContext().unbindService(sApplicationConnection);
         }
 
         if (sApplicationConnection == null) {
             sApplicationConnection = new AppServiceConnection(mServiceIntent.getPackage());
 
-            if (!connectSafely(mActivity.getApplicationContext(), sApplicationConnection, Context.BIND_WAIVE_PRIORITY)) {
+            if (!connectSafely(mLauncher.getApplicationContext(), sApplicationConnection, Context.BIND_WAIVE_PRIORITY)) {
                 sApplicationConnection = null;
             }
         }
@@ -263,7 +264,7 @@ public class LauncherClient {
         if (sApplicationConnection != null) {
             mState = 2;
 
-            if (!connectSafely(mActivity, mServiceConnection, Context.BIND_ADJUST_WITH_ACTIVITY)) {
+            if (!connectSafely(mLauncher, mServiceConnection, Context.BIND_ADJUST_WITH_ACTIVITY)) {
                 mState = 0;
             } else {
                 mIsServiceConnected = true;
@@ -271,7 +272,7 @@ public class LauncherClient {
         }
 
         if (mState == 0) {
-            mActivity.runOnUiThread(new Runnable() {
+            mLauncher.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     notifyStatusChanged(0);
@@ -325,7 +326,7 @@ public class LauncherClient {
         }
     }
 
-    private static class OverlayCallbacks extends ILauncherOverlayCallback.Stub implements Handler.Callback {
+    private class OverlayCallbacks extends ILauncherOverlayCallback.Stub implements Handler.Callback {
         private LauncherClient mClient;
         private final Handler mUIHandler;
         private Window mWindow;
@@ -381,6 +382,8 @@ public class LauncherClient {
             if (progress > 0) {
                 hideActivityNonUI(false);
             }
+
+            mLauncher.getWorkspace().onOverlayScrollChanged(progress);
         }
 
         @Override
@@ -390,13 +393,13 @@ public class LauncherClient {
 
         public void setClient(LauncherClient client) {
             mClient = client;
-            mWindowManager = client.mActivity.getWindowManager();
+            mWindowManager = client.mLauncher.getWindowManager();
 
             Point p = new Point();
             mWindowManager.getDefaultDisplay().getRealSize(p);
             mWindowShift = Math.max(p.x, p.y);
 
-            mWindow = client.mActivity.getWindow();
+            mWindow = client.mLauncher.getWindow();
         }
     }
 
@@ -417,6 +420,4 @@ public class LauncherClient {
             notifyStatusChanged(0);
         }
     }
-
-
 }
