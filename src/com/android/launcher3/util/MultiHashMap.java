@@ -16,13 +16,13 @@
 
 package com.android.launcher3.util;
 
-import android.support.v4.util.ArrayMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A utility map from keys to an ArrayList of values.
  */
-public class MultiHashMap<K, V> extends ArrayMap<K, ArrayList<V>> {
+public class MultiHashMap<K, V> extends HashMap<K, ArrayList<V>> {
 
     public MultiHashMap() { }
 
