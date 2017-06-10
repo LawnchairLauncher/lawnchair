@@ -73,6 +73,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name="ch.deletescape.lawnchair.pixelify.WeatherUpdateReciever" android:permission="android.permission.CAPTURE_AUDIO_HOTWORD">
+            <intent-filter>
+                <action android:name="com.google.android.apps.nexuslauncher.updateweather"/>
+            </intent-filter>
+        </receiver>
+
         <service
             android:name="ch.deletescape.lawnchair.dynamicui.ColorExtractionService"
             android:exported="false"

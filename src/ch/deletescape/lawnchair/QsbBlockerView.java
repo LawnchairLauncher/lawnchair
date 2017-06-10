@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import ch.deletescape.lawnchair.config.FeatureFlags;
-import ch.deletescape.lawnchair.pixelify.C0278a;
+import ch.deletescape.lawnchair.pixelify.WeatherThing;
 import ch.deletescape.lawnchair.pixelify.GoogleSearchApp;
 import ch.deletescape.lawnchair.pixelify.OnGsaListener;
 import ch.deletescape.lawnchair.pixelify.ShadowHostView;
@@ -45,7 +45,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
             Workspace workspace = Launcher.getLauncher(getContext()).getWorkspace();
             workspace.setOnStateChangeListener(this);
             prepareStateChange(workspace.getState(), null);
-            GoogleSearchApp gsa = C0278a.aS(getContext()).getGoogleSearchAppAndAddListener(this);
+            GoogleSearchApp gsa = WeatherThing.getInstance(getContext()).getGoogleSearchAppAndAddListener(this);
             if (gsa != null) {
                 onGsa(gsa);
             }
@@ -67,7 +67,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
     @Override
     protected void onDetachedFromWindow() {
         if (!FeatureFlags.useFullWidthSearchbar(getContext())) {
-            C0278a.aS(getContext()).aY(this);
+            WeatherThing.getInstance(getContext()).aY(this);
         }
         super.onDetachedFromWindow();
     }
