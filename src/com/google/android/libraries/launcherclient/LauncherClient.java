@@ -375,7 +375,7 @@ public class LauncherClient {
         }
 
         @Override
-        public void overlayScrollChanged(float progress) throws RemoteException {
+        public void overlayScrollChanged(final float progress) throws RemoteException {
             mUIHandler.removeMessages(2);
             Message.obtain(mUIHandler, 2, progress).sendToTarget();
 
@@ -383,7 +383,12 @@ public class LauncherClient {
                 hideActivityNonUI(false);
             }
 
-            mLauncher.getWorkspace().onOverlayScrollChanged(progress);
+            mLauncher.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mLauncher.getWorkspace().onOverlayScrollChanged(progress);
+                }
+            });
         }
 
         @Override
