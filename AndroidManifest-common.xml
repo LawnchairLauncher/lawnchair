@@ -33,6 +33,11 @@
         android:label="@string/permlab_install_shortcut"
         android:description="@string/permdesc_install_shortcut" />
 
+    <permission android:name="ch.deletescape.lawnchair.permission.QSB"
+                android:protectionLevel="normal"
+                android:label="QSB" />
+
+    <uses-permission android:name="ch.deletescape.lawnchair.permission.QSB" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
