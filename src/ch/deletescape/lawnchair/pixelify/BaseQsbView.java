@@ -95,9 +95,11 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     }
 
     private void initializeQsbConnector() {
-        if (qsbConnector == null) {
+        if (qsbConnector == null && !FeatureFlags.useFullWidthSearchbar(getContext())) {
             qsbConnector = (QsbConnector) mLauncher.getLayoutInflater().inflate(R.layout.qsb_connector, this, false);
             addView(qsbConnector, 0);
+        } else if(FeatureFlags.useFullWidthSearchbar(getContext())) {
+            removeView(qsbConnector);
         }
     }
 
