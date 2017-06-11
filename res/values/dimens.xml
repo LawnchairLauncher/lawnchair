@@ -187,4 +187,13 @@
     <!-- Approximates the system status bar height. Not guaranteed to be always be correct. -->
     <dimen name="status_bar_height">24dp</dimen>
 
+    <!-- Pixel -->
+    <dimen name="qsb_overlap_margin">-50.0dip</dimen>
+    <dimen name="qsb_button_height">56.0dip</dimen>
+    <dimen name="qsb_min_width_with_mic">124.0dip</dimen>
+    <dimen name="qsb_button_elevation">3.0dip</dimen>
+    <dimen name="qsb_touch_extension">20.0dip</dimen>
+    <dimen name="qsb_shadow_blur_radius">1.0dip</dimen>
+    <dimen name="qsb_key_shadow_offset">1.0dip</dimen>
+
 </resources>

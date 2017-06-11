@@ -17,4 +17,5 @@
 <resources>
 <!-- Container -->
      <item name="container_margin" format="fraction" type="fraction">12%</item>
+     <dimen name="qsb_overlap_margin">0.0dip</dimen>
 </resources>

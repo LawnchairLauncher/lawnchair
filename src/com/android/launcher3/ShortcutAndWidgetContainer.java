@@ -126,7 +126,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
             lp.setup(cellWidth, cellHeight, mWidthGap, mHeightGap, invertLayoutHorizontally(),
                     mCountX);
 
-            if (child instanceof LauncherAppWidgetHostView) {
+            if (child instanceof LauncherAppWidgetHostView || child instanceof QsbBlockerView) {
                 // Widgets have their own padding, so skip
             } else {
                 // Otherwise, center the icon/folder

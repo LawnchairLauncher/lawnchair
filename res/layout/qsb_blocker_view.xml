@@ -16,5 +16,10 @@
 -->
 <com.android.launcher3.QsbBlockerView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="end|center"
+    android:layout_gravity="end"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent"
+    android:id="@+id/qsb_blocker_view" />

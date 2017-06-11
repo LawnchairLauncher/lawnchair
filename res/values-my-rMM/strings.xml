@@ -104,4 +104,7 @@
     <string name="widget_resized" msgid="9130327887929620">"Widget အား အကျယ် <xliff:g id="NUMBER_0">%1$s</xliff:g> အမြင့် <xliff:g id="NUMBER_1">%2$s</xliff:g> အရွယ်အစားပြန်လည်ချိန်ညှိပြီး၏"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ဖြတ်လမ်းများ"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g> အတွက် အမြန်နည်း <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> ခု"</string>
+    <string name="label_search">ရှာရန်</string>
+    <string name="label_voice_search">အသံဖြင့် ရှာဖွေရန်</string>
+    <string name="week_day_format">%1$s၊ %2$s</string>
 </resources>

@@ -14,17 +14,13 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.QsbContainerView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:id="@+id/qsb_container"
-        android:padding="0dp" >
-
-    <fragment
-        android:name="com.android.launcher3.QsbContainerView$QsbFragment"
-        android:layout_width="match_parent"
-        android:tag="qsb_view"
-        android:layout_height="match_parent"/>
-</com.android.launcher3.QsbContainerView>
+<com.android.launcher3.SuperGContainerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="top"
+    android:orientation="horizontal"
+    android:id="@id/qsb_container"
+    android:padding="0dp"
+    android:clipToPadding="false"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_marginStart="@dimen/qsb_overlap_margin" />

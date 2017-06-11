@@ -104,4 +104,6 @@
     <string name="widget_resized" msgid="9130327887929620">"Widgetens storlek har ändrats till: bredd <xliff:g id="NUMBER_0">%1$s</xliff:g>, höjd <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Genvägar"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> genvägar för <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="label_search">Sök</string>
+    <string name="week_day_format">%1$s, %2$s</string>
 </resources>

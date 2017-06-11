@@ -82,68 +82,35 @@
         />
 
     <profile
-        launcher:name="Nexus S"
-        launcher:minWidthDps="296"
-        launcher:minHeightDps="491.33"
+        launcher:name="Nexus G (Large Display Size)"
+        launcher:minWidthDps="296.0"
+        launcher:minHeightDps="496.0"
         launcher:numRows="4"
         launcher:numColumns="4"
-        launcher:numFolderRows="4"
+        launcher:numFolderRows="3"
         launcher:numFolderColumns="4"
         launcher:minAllAppsPredictionColumns="4"
-        launcher:iconSize="48"
+        launcher:numHotseatIcons="4"
+        launcher:iconSize="58.0"
         launcher:iconTextSize="13.0"
-        launcher:numHotseatIcons="5"
-        launcher:hotseatIconSize="48"
-        launcher:defaultLayoutId="@xml/default_workspace_4x4"
-        />
+        launcher:hotseatIconSize="58.0"
+        launcher:defaultLayoutId="@xml/default_workspace_4x4" />
 
     <profile
-        launcher:name="Nexus 4"
-        launcher:minWidthDps="359"
-        launcher:minHeightDps="567"
-        launcher:numRows="4"
-        launcher:numColumns="4"
-        launcher:numFolderRows="4"
-        launcher:numFolderColumns="4"
-        launcher:minAllAppsPredictionColumns="4"
-        launcher:iconSize="60"
-        launcher:iconTextSize="13.0"
-        launcher:numHotseatIcons="5"
-        launcher:hotseatIconSize="56"
-        launcher:defaultLayoutId="@xml/default_workspace_4x4"
-        />
-
-    <profile
-        launcher:name="Nexus 5"
-        launcher:minWidthDps="335"
-        launcher:minHeightDps="567"
-        launcher:numRows="4"
-        launcher:numColumns="4"
-        launcher:numFolderRows="4"
-        launcher:numFolderColumns="4"
-        launcher:minAllAppsPredictionColumns="4"
-        launcher:iconSize="60"
-        launcher:iconTextSize="13.0"
-        launcher:numHotseatIcons="5"
-        launcher:hotseatIconSize="56"
-        launcher:defaultLayoutId="@xml/default_workspace_4x4"
-        />
-
-    <profile
-        launcher:name="Large Phone"
-        launcher:minWidthDps="406"
-        launcher:minHeightDps="694"
+        launcher:name="Nexus G"
+        launcher:minWidthDps="387.0"
+        launcher:minHeightDps="659.0"
         launcher:numRows="5"
         launcher:numColumns="5"
         launcher:numFolderRows="4"
         launcher:numFolderColumns="4"
         launcher:minAllAppsPredictionColumns="4"
-        launcher:iconSize="60"
-        launcher:iconTextSize="13"
         launcher:numHotseatIcons="5"
-        launcher:hotseatIconSize="60"
-        launcher:defaultLayoutId="@xml/default_workspace_5x5"
-        />
+        launcher:iconSize="58.0"
+        launcher:iconTextSize="13.0"
+        launcher:hotseatIconSize="58.0"
+        launcher:defaultLayoutId="@xml/default_workspace_5x5" />
+
 
     <profile
         launcher:name="Nexus 7"

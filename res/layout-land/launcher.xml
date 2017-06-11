@@ -61,7 +61,7 @@
             android:id="@+id/page_indicator"
             android:layout_width="@dimen/dynamic_grid_page_indicator_height"
             android:layout_height="@dimen/dynamic_grid_page_indicator_height"
-            android:layout_gravity="bottom|left"/>
+            android:layout_gravity="bottom|center|left"/>
 
         <!-- A place holder view instead of the QSB in transposed layout -->
         <View

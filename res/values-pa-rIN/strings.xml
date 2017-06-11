@@ -104,4 +104,6 @@
     <string name="widget_resized" msgid="9130327887929620">"ਵਿਜੈਟ ਨੂੰ ਚੌੜਾਈ <xliff:g id="NUMBER_0">%1$s</xliff:g> ਉਂਚਾਈ <xliff:g id="NUMBER_1">%2$s</xliff:g> ਨੂੰ ਮੁੜ ਆਕਾਰ ਦਿੱਤਾ"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ਸ਼ਾਰਟਕੱਟ"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g> ਲਈ <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> ਸ਼ਾਰਟਕੱਟ"</string>
+    <string name="label_search">ਖੋਜ</string>
+    <string name="week_day_format">%1$s, %2$s</string>
 </resources>

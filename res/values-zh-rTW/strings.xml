@@ -104,4 +104,6 @@
     <string name="widget_resized" msgid="9130327887929620">"已將小工具的寬度和高度分別調整為 <xliff:g id="NUMBER_0">%1$s</xliff:g> 和 <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"捷徑"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"「<xliff:g id="APP_NAME">%2$s</xliff:g>」有 <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> 個捷徑"</string>
+    <string name="label_search">搜尋</string>
+    <string name="week_day_format">%2$s，%1$s</string>
 </resources>

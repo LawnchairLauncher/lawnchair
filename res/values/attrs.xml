@@ -111,4 +111,11 @@
         <attr name="defaultLayoutId" format="reference" />
     </declare-styleable>
 
+    <!-- Pixel -->
+    <attr name="ambientShadowColor" format="color" />
+    <attr name="keyShadowColor" format="color" />
+    <attr name="ambientShadowBlur" format="dimension" />
+    <attr name="keyShadowBlur" format="dimension" />
+    <attr name="keyShadowOffset" format="dimension" />
+
 </resources>

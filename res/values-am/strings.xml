@@ -104,4 +104,6 @@
     <string name="widget_resized" msgid="9130327887929620">"የመግብር መጠን ወደ ስፋት <xliff:g id="NUMBER_0">%1$s</xliff:g> ቁመት <xliff:g id="NUMBER_1">%2$s</xliff:g> ተለውጧል"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"አቋራጮች"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> የ<xliff:g id="APP_NAME">%2$s</xliff:g> አቋራጮች"</string>
+    <string name="label_search">ፈልግ</string>
+    <string name="week_day_format">%1$s፣ %2$s</string>
 </resources>
