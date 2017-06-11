@@ -116,8 +116,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             } else if (mLauncher.isAllAppsVisible() &&
                     !mAppsView.shouldContainerScroll(ev)) {
                 mNoIntercept = true;
-            } else if (!mLauncher.isAllAppsVisible() && !shouldPossiblyIntercept(ev)) {
-                mNoIntercept = true;
             } else {
                 // Now figure out which direction scroll events the controller will start
                 // calling the callbacks.
