@@ -18,9 +18,12 @@ package com.android.launcher3.graphics;
 
 import android.app.Notification;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 
@@ -35,10 +38,11 @@ public class IconPalette {
     private static final boolean DEBUG = false;
     private static final String TAG = "IconPalette";
 
-    public static final IconPalette FOLDER_ICON_PALETTE = new IconPalette(Color.parseColor("#BDC1C6"));
-
     private static final float MIN_PRELOAD_COLOR_SATURATION = 0.2f;
     private static final float MIN_PRELOAD_COLOR_LIGHTNESS = 0.6f;
+
+    private static IconPalette sBadgePalette;
+    private static IconPalette sFolderBadgePalette;
 
     public final int dominantColor;
     public final int backgroundColor;
@@ -47,15 +51,19 @@ public class IconPalette {
     public final int textColor;
     public final int secondaryColor;
 
-    private IconPalette(int color) {
+    private IconPalette(int color, boolean desaturateBackground) {
         dominantColor = color;
-        backgroundColor = dominantColor;
+        backgroundColor = desaturateBackground ? getMutedColor(dominantColor, 0.87f) : dominantColor;
         ColorMatrix backgroundColorMatrix = new ColorMatrix();
         Themes.setColorScaleOnMatrix(backgroundColor, backgroundColorMatrix);
         backgroundColorMatrixFilter = new ColorMatrixColorFilter(backgroundColorMatrix);
-        // Get slightly more saturated background color.
-        Themes.setColorScaleOnMatrix(getMutedColor(dominantColor, 0.54f), backgroundColorMatrix);
-        saturatedBackgroundColorMatrixFilter = new ColorMatrixColorFilter(backgroundColorMatrix);
+        if (!desaturateBackground) {
+            saturatedBackgroundColorMatrixFilter = backgroundColorMatrixFilter;
+        } else {
+            // Get slightly more saturated background color.
+            Themes.setColorScaleOnMatrix(getMutedColor(dominantColor, 0.54f), backgroundColorMatrix);
+            saturatedBackgroundColorMatrixFilter = new ColorMatrixColorFilter(backgroundColorMatrix);
+        }
         textColor = getTextColorForBackground(backgroundColor);
         secondaryColor = getLowContrastColor(backgroundColor);
     }
@@ -78,8 +86,35 @@ public class IconPalette {
         return result;
     }
 
-    public static IconPalette fromDominantColor(int dominantColor) {
-        return new IconPalette(dominantColor);
+    public static IconPalette fromDominantColor(int dominantColor, boolean desaturateBackground) {
+        return new IconPalette(dominantColor, desaturateBackground);
+    }
+
+    /**
+     * Returns an IconPalette based on the badge_color in colors.xml.
+     * If that color is Color.TRANSPARENT, then returns null instead.
+     */
+    public static @Nullable IconPalette getBadgePalette(Resources resources) {
+        int badgeColor = resources.getColor(R.color.badge_color);
+        if (badgeColor == Color.TRANSPARENT) {
+            // Colors will be extracted per app icon, so a static palette won't work.
+            return null;
+        }
+        if (sBadgePalette == null) {
+            sBadgePalette = fromDominantColor(badgeColor, false);
+        }
+        return sBadgePalette;
+    }
+
+    /**
+     * Returns an IconPalette based on the folder_badge_color in colors.xml.
+     */
+    public static @NonNull IconPalette getFolderBadgePalette(Resources resources) {
+        if (sFolderBadgePalette == null) {
+            int badgeColor = resources.getColor(R.color.folder_badge_color);
+            sFolderBadgePalette = fromDominantColor(badgeColor, false);
+        }
+        return sFolderBadgePalette;
     }
 
     /**
