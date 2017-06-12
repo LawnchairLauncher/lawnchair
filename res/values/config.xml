@@ -70,17 +70,17 @@
 
     <!-- Name of a subclass of com.android.launcher3.AppFilter used to
          filter the activities shown in the launcher. Can be empty. -->
-    <string name="app_filter_class" translatable="false"></string>
+    <string name="app_filter_class" translatable="false">com.android.launcher3.SuperNexusAppFilter</string>
 
     <!-- List of package names that com.android.launcher3.action.LAUNCH
      should be targeting. Can be empty. -->
     <array name="launch_broadcast_targets" translatable="false"></array>
 
     <!-- Name of an icon provider class. -->
-    <string name="icon_provider_class" translatable="false"></string>
+    <string name="icon_provider_class" translatable="false">com.android.launcher3.SuperDynamicIconProvider</string>
 
     <!-- Package name of the default wallpaper picker. -->
-    <string name="wallpaper_picker_package" translatable="false"></string>
+    <string name="wallpaper_picker_package" translatable="false">com.google.android.apps.wallpaper</string>
 
     <!-- View ID to use for QSB widget -->
     <item type="id" name="qsb_widget" />
