@@ -266,7 +266,6 @@ public class Launcher extends BaseActivity
     private Handler mHandler = new Handler();
     private boolean mIsResumeFromActionScreenOff;
     private boolean mHasFocus = false;
-    private boolean mAttached = false;
 
     private PopupDataProvider mPopupDataProvider;
 
@@ -456,6 +455,9 @@ public class Launcher extends BaseActivity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onCreate(savedInstanceState);
         }
+
+        // Listen for broadcasts screen off
+        registerReceiver(mReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
     }
 
     @Override
@@ -1592,13 +1594,7 @@ public class Launcher extends BaseActivity
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        // Listen for broadcasts related to user-presence
-        final IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_SCREEN_OFF);
-        registerReceiver(mReceiver, filter);
         FirstFrameAnimatorHelper.initializeDrawListener(getWindow().getDecorView());
-        mAttached = true;
-
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onAttachedToWindow();
         }
@@ -1607,10 +1603,6 @@ public class Launcher extends BaseActivity
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (mAttached) {
-            unregisterReceiver(mReceiver);
-            mAttached = false;
-        }
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onDetachedFromWindow();
@@ -1851,6 +1843,7 @@ public class Launcher extends BaseActivity
     public void onDestroy() {
         super.onDestroy();
 
+        unregisterReceiver(mReceiver);
         mWorkspace.removeCallbacks(mBuildLayersRunnable);
         mWorkspace.removeFolderListeners();
 
