@@ -40,10 +40,12 @@
 
     <style name="CustomOverscroll.Light" parent="@android:style/Theme.DeviceDefault.Light">
         <item name="android:colorEdgeEffect">@color/folder_edge_effect_color</item>
+        <item name="android:colorAccent">@color/accentColor</item>
     </style>
 
     <style name="CustomOverscroll.Dark">
         <item name="android:colorEdgeEffect">@color/workspace_edge_effect_color</item>
+        <item name="android:colorAccent">@color/accentColor</item>
     </style>
 
     <!-- Different icons -->

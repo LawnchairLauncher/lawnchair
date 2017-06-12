@@ -23,7 +23,7 @@
     android:paddingRight="@dimen/container_fastscroll_thumb_max_width"
     android:fontFamily="sans-serif-medium"
     android:textSize="14sp"
-    android:textColor="?android:attr/colorAccent"
+    android:textColor="@color/accentColor"
     android:text="@string/all_apps_search_market_message"
     android:textAllCaps="true"
     android:focusable="true"

@@ -54,4 +54,5 @@
     <!-- Pixel -->
     <color name="qsb_connector">#fff2f2f2</color>
     <color name="qsb_background">#ffffffff</color>
+    <color name="accentColor">#ff4286f4</color>
 </resources>
