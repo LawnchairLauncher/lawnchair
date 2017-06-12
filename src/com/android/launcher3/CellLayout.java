@@ -35,6 +35,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.v4.view.ViewCompat;
+import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
@@ -44,7 +45,6 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
-
 import com.android.launcher3.BubbleTextView.BubbleTextShadowHandler;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
@@ -59,14 +59,12 @@ import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.ParcelableSparseArray;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Stack;
 
 public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
@@ -76,7 +74,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     private static final String TAG = "CellLayout";
     private static final boolean LOGD = false;
 
-    private Launcher mLauncher;
+    private final Launcher mLauncher;
     @ViewDebug.ExportedProperty(category = "launcher")
     @Thunk int mCellWidth;
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -102,10 +100,10 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     private GridOccupancy mTmpOccupied;
 
     private OnTouchListener mInterceptTouchListener;
-    private StylusEventHelper mStylusEventHelper;
+    private final StylusEventHelper mStylusEventHelper;
 
-    private ArrayList<FolderIcon.PreviewBackground> mFolderBackgrounds = new ArrayList<FolderIcon.PreviewBackground>();
-    FolderIcon.PreviewBackground mFolderLeaveBehind = new FolderIcon.PreviewBackground();
+    private final ArrayList<FolderIcon.PreviewBackground> mFolderBackgrounds = new ArrayList<>();
+    final FolderIcon.PreviewBackground mFolderLeaveBehind = new FolderIcon.PreviewBackground();
 
     private float mBackgroundAlpha;
 
@@ -122,9 +120,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     // These arrays are used to implement the drag visualization on x-large screens.
     // They are used as circular arrays, indexed by mDragOutlineCurrent.
-    @Thunk Rect[] mDragOutlines = new Rect[4];
-    @Thunk float[] mDragOutlineAlphas = new float[mDragOutlines.length];
-    private InterruptibleInOutAnimator[] mDragOutlineAnims =
+    @Thunk final Rect[] mDragOutlines = new Rect[4];
+    @Thunk final float[] mDragOutlineAlphas = new float[mDragOutlines.length];
+    private final InterruptibleInOutAnimator[] mDragOutlineAnims =
             new InterruptibleInOutAnimator[mDragOutlines.length];
 
     // Used as an index into the above 3 arrays; indicates which is the most current value.
@@ -133,8 +131,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     private final ClickShadowView mTouchFeedbackView;
 
-    @Thunk HashMap<CellLayout.LayoutParams, Animator> mReorderAnimators = new HashMap<>();
-    @Thunk HashMap<View, ReorderPreviewAnimation> mShakeAnimators = new HashMap<>();
+    @Thunk final ArrayMap<LayoutParams, Animator> mReorderAnimators = new ArrayMap<>();
+    @Thunk final ArrayMap<View, ReorderPreviewAnimation> mShakeAnimators = new ArrayMap<>();
 
     private boolean mItemPlacementDirty = false;
 
@@ -143,8 +141,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     private boolean mDragging = false;
 
-    private TimeInterpolator mEaseOutInterpolator;
-    private ShortcutAndWidgetContainer mShortcutsAndWidgets;
+    private final TimeInterpolator mEaseOutInterpolator;
+    private final ShortcutAndWidgetContainer mShortcutsAndWidgets;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({WORKSPACE, HOTSEAT, FOLDER})
@@ -169,10 +167,10 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     private static final int REORDER_ANIMATION_DURATION = 150;
     @Thunk final float mReorderPreviewAnimationMagnitude;
 
-    private ArrayList<View> mIntersectingViews = new ArrayList<View>();
-    private Rect mOccupiedRect = new Rect();
-    private int[] mDirectionVector = new int[2];
-    int[] mPreviousReorderDirection = new int[2];
+    private final ArrayList<View> mIntersectingViews = new ArrayList<>();
+    private final Rect mOccupiedRect = new Rect();
+    private final int[] mDirectionVector = new int[2];
+    final int[] mPreviousReorderDirection = new int[2];
     private static final int INVALID_DIRECTION = -100;
 
     private final Rect mTempRect = new Rect();
@@ -1100,7 +1098,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 result, resultSpan);
     }
 
-    private final Stack<Rect> mTempRectStack = new Stack<Rect>();
+    private final Stack<Rect> mTempRectStack = new Stack<>();
     private void lazyInitTempRectStack() {
         if (mTempRectStack.isEmpty()) {
             for (int i = 0; i < mCountX * mCountY; i++) {
@@ -1145,7 +1143,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         final int[] bestXY = result != null ? result : new int[2];
         double bestDistance = Double.MAX_VALUE;
         final Rect bestRect = new Rect(-1, -1, -1, -1);
-        final Stack<Rect> validRegions = new Stack<Rect>();
+        final Stack<Rect> validRegions = new Stack<>();
 
         final int countX = mCountX;
         final int countY = mCountY;
@@ -1347,14 +1345,14 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         final static int RIGHT = 1 << 2;
         final static int BOTTOM = 1 << 3;
 
-        ArrayList<View> views;
-        ItemConfiguration config;
-        Rect boundingRect = new Rect();
+        final ArrayList<View> views;
+        final ItemConfiguration config;
+        final Rect boundingRect = new Rect();
 
-        int[] leftEdge = new int[mCountY];
-        int[] rightEdge = new int[mCountY];
-        int[] topEdge = new int[mCountX];
-        int[] bottomEdge = new int[mCountX];
+        final int[] leftEdge = new int[mCountY];
+        final int[] rightEdge = new int[mCountY];
+        final int[] topEdge = new int[mCountX];
+        final int[] bottomEdge = new int[mCountX];
         int dirtyEdges;
         boolean boundingRectDirty;
 
@@ -1494,7 +1492,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             return boundingRect;
         }
 
-        PositionComparator comparator = new PositionComparator();
+        final PositionComparator comparator = new PositionComparator();
         class PositionComparator implements Comparator<View> {
             int whichEdge = 0;
             public int compare(View left, View right) {
@@ -1794,7 +1792,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             }
         }
 
-        solution.intersectingViews = new ArrayList<View>(mIntersectingViews);
+        solution.intersectingViews = new ArrayList<>(mIntersectingViews);
 
         // First we try to find a solution which respects the push mechanic. That is,
         // we try to find a solution such that no displaced item travels through another item
@@ -1850,7 +1848,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         int result[] = new int[2];
         result = findNearestArea(pixelX, pixelY, spanX, spanY, result);
 
-        boolean success = false;
+        boolean success;
         // First we try the exact nearest position of the item being dragged,
         // we will then want to try to move this around to other neighbouring positions
         success = rearrangementExists(result[0], result[1], spanX, spanY, direction, dragView,
@@ -1958,14 +1956,14 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     // Class which represents the reorder preview animations. These animations show that an item is
     // in a temporary state, and hint at where the item will return to.
     class ReorderPreviewAnimation {
-        View child;
+        final View child;
         float finalDeltaX;
         float finalDeltaY;
         float initDeltaX;
         float initDeltaY;
-        float finalScale;
+        final float finalScale;
         float initScale;
-        int mode;
+        final int mode;
         boolean repeating = false;
         private static final int PREVIEW_DURATION = 300;
         private static final int HINT_DURATION = Workspace.REORDER_TIMEOUT;
@@ -2415,9 +2413,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     }
 
     private static class ItemConfiguration extends CellAndSpan {
-        HashMap<View, CellAndSpan> map = new HashMap<View, CellAndSpan>();
-        private HashMap<View, CellAndSpan> savedMap = new HashMap<View, CellAndSpan>();
-        ArrayList<View> sortedViews = new ArrayList<View>();
+        final ArrayMap<View, CellAndSpan> map = new ArrayMap<>();
+        private final ArrayMap<View, CellAndSpan> savedMap = new ArrayMap<>();
+        final ArrayList<View> sortedViews = new ArrayList<>();
         ArrayList<View> intersectingViews;
         boolean isSolution = false;
 
@@ -2467,7 +2465,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
      * @param pixelY The Y location at which you want to search for a vacant area.
      * @param spanX Horizontal span of the object.
      * @param spanY Vertical span of the object.
-     * @param ignoreView Considers space occupied by this view as unoccupied
      * @param result Previously returned value to possibly recycle.
      * @return The X, Y cell of a vacant area that can contain this object,
      *         nearest the requested location.
@@ -2779,9 +2776,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     //    cellX and cellY coordinates and which page was clicked. We then set this as a tag on
     //    the CellLayout that was long clicked
     public static final class CellInfo extends CellAndSpan {
-        public View cell;
-        long screenId;
-        long container;
+        public final View cell;
+        final long screenId;
+        final long container;
 
         public CellInfo(View v, ItemInfo info) {
             cellX = info.cellX;
