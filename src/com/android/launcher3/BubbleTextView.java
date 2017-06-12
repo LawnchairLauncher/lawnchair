@@ -51,7 +51,6 @@ import com.android.launcher3.graphics.HolographicOutlineHelper;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.PackageItemInfo;
-import com.android.launcher3.util.Themes;
 
 import java.text.NumberFormat;
 

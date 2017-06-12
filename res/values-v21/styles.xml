@@ -18,7 +18,7 @@
 -->
 <resources>
 
-    <style name="LauncherTheme" parent="@style/BaseLauncherTheme">
+    <style name="LauncherTheme" parent="@style/BaseLauncherThemeWithCustomAttrs">
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowTranslucentNavigation">false</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
