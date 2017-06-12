@@ -43,7 +43,7 @@
                 android:name=":settings:fragment_args_key"
                 android:value="notification_badging" />
         </intent>
-    </Preference>/>
+    </Preference>
 
     <SwitchPreference
         android:key="pref_allowRotation"
