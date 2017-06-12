@@ -26,20 +26,23 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:colorEdgeEffect">#FF757575</item>
         <item name="android:keyboardLayout">@layout/all_apps_search_container</item>
+    </style>
+
+    <style name="BaseLauncherThemeWithCustomAttrs" parent="@style/BaseLauncherTheme">
         <item name="allAppsScrimColor">#DDFFFFFF</item>
         <item name="popupColorPrimary">#FFF</item>
         <item name="popupColorSecondary">#F5F5F5</item> <!-- Gray 100 -->
         <item name="popupColorTertiary">#E0E0E0</item> <!-- Gray 300 -->
         <item name="isMainColorDark">false</item>
         <item name="isWorkspaceDarkText">false</item>
-        <item name="workspaceTextColor">?android:textColorPrimary</item>
+        <item name="workspaceTextColor">@android:color/white</item>
         <item name="workspaceShadowColor">#B0000000</item>
-        <item name="workspaceAmbientShadowColor">#22000000</item>
+        <item name="workspaceAmbientShadowColor">#33000000</item>
         <item name="workspaceKeyShadowColor">#44000000</item>
         <item name="workspaceStatusBarScrim">@drawable/workspace_bg</item>
     </style>
 
-    <style name="LauncherTheme" parent="@style/BaseLauncherTheme"></style>
+    <style name="LauncherTheme" parent="@style/BaseLauncherThemeWithCustomAttrs"></style>
 
     <style name="LauncherThemeDarkText" parent="@style/LauncherTheme">
         <item name="workspaceTextColor">#FF212121</item>
@@ -66,13 +69,13 @@
 
     <!--
     Theme overrides to element on homescreen, i.e., which are drawn on top on wallpaper.
-    Various foreground colors are overridden to be white so that they are properly visible on
-    various wallpapers
+    Various foreground colors are overridden to be workspaceTextColor so that they are properly
+    visible on various wallpapers.
     -->
     <style name="HomeScreenElementTheme">
-        <item name="android:colorEdgeEffect">@android:color/white</item>
-        <item name="android:textColorPrimary">@android:color/white</item>
-        <item name="android:textColorSecondary">@android:color/white</item>
+        <item name="android:colorEdgeEffect">?attr/workspaceTextColor</item>
+        <item name="android:textColorPrimary">?attr/workspaceTextColor</item>
+        <item name="android:textColorSecondary">?attr/workspaceTextColor</item>
     </style>
 
     <!-- Theme for the widget container. Overridden on API 26. -->
@@ -123,8 +126,7 @@
     <style name="BaseIcon.Workspace">
         <item name="customShadows">true</item>
         <item name="android:shadowRadius">2.0</item>
-        <item name="android:shadowColor">#B0000000</item>
-        <item name="android:textColor">?attr/workspaceTextColor</item>
+        <item name="android:shadowColor">?attr/workspaceShadowColor</item>
         <item name="keyShadowColor">?attr/workspaceKeyShadowColor</item>
         <item name="ambientShadowColor">?attr/workspaceAmbientShadowColor</item>
     </style>
