@@ -21,8 +21,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Process;
 import android.os.UserHandle;
+import android.util.ArrayMap;
 import android.util.Log;
-
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.IconCache;
@@ -45,11 +45,9 @@ import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -151,7 +149,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
 
         ArrayList<AppInfo> added = null;
         ArrayList<AppInfo> modified = null;
-        final ArrayList<AppInfo> removedApps = new ArrayList<AppInfo>();
+        final ArrayList<AppInfo> removedApps = new ArrayList<>();
 
         if (appsList.added.size() > 0) {
             added = new ArrayList<>(appsList.added);
@@ -166,7 +164,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
             appsList.removed.clear();
         }
 
-        final HashMap<ComponentName, AppInfo> addedOrUpdatedApps = new HashMap<>();
+        final ArrayMap<ComponentName, AppInfo> addedOrUpdatedApps = new ArrayMap<>();
 
         if (added != null) {
             final ArrayList<AppInfo> addedApps = added;
