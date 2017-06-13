@@ -14,33 +14,15 @@
 -->
 
 <PreferenceScreen android:title="Settings"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <PreferenceScreen android:title="UI">
 
         <ListPreference
             android:defaultValue="@string/iconPackPackageDefault"
             android:key="pref_iconPackPackage"
             android:title="Icon Pack"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_fullWidthSearchbar"
-            android:defaultValue="false"
-            android:title="Use wide searchbar"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_showMic"
-            android:defaultValue="true"
-            android:title="Show Voice Search Button"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_lightStatusBar"
-            android:title="Light StatusBar"
-            android:summaryOn="The status bar may show dark icons based on the wallpaper."
-            android:summaryOff="The status bar will always show light icons."
-            android:defaultValue="true"
             android:persistent="true" />
 
         <SwitchPreference
@@ -67,12 +49,14 @@
             android:defaultValue="5"
             android:persistent="true" />
 
-        <ListPreference
-            android:key="pref_allAppsOpacity"
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_allAppsOpacitySB"
             android:title="All apps opacity"
-            android:entries="@array/allAppsOpacityTexts"
-            android:entryValues="@array/allAppsOpacityValues"
-            android:defaultValue="@string/allAppsOpacityDefault"
+            app:minValue="0"
+            app:maxValue="1"
+            app:defaultValue="1"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100"
             android:persistent="true" />
 
         <ListPreference
@@ -93,28 +77,47 @@
 
         <ListPreference
             android:key="pref_numHotseatIcons"
-            android:title="Number of icons in hotseat"
+            android:title="Number of icons in tray"
             android:entryValues="@array/numHotseatIconsValues"
             android:entries="@array/numHotseatIconsTexts"
             android:defaultValue="@string/generalDefault"
             android:persistent="true" />
 
-        <ListPreference
-            android:key="pref_iconScale"
-            android:title="Icon scale"
-            android:entryValues="@array/iconScaleValues"
-            android:entries="@array/iconScaleTexts"
-            android:defaultValue="@string/defaultIconScale"
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_iconScaleSB"
+            android:title="Icon Scale"
+            app:minValue="0.3"
+            app:maxValue="1.5"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100"
+            app:defaultValue="1.0"
             android:persistent="true" />
 
-        <ListPreference
-            android:key="pref_iconTextScale"
-            android:title="Icon text scale"
-            android:entryValues="@array/iconScaleValues"
-            android:entries="@array/iconScaleTexts"
-            android:defaultValue="@string/defaultIconScale"
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_iconTextScaleSB"
+            android:title="Icon Text Scale"
+            app:minValue="0.3"
+            app:maxValue="1.5"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100"
+            app:defaultValue="1.0"
             android:persistent="true" />
     </PreferenceScreen>
+
+    <PreferenceScreen android:title="Pixel Style">
+        <SwitchPreference
+            android:key="pref_fullWidthSearchbar"
+            android:defaultValue="false"
+            android:title="Use Wide Searchbar"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_showMic"
+            android:defaultValue="true"
+            android:title="Show Voice Search Button"
+            android:persistent="true" />
+    </PreferenceScreen>
+
     <PreferenceScreen android:title="Behavior">
 
         <SwitchPreference
@@ -129,6 +132,14 @@
             android:title="Pulldown to Search"
             android:summaryOn="Pulling down on the Homescreen will open search."
             android:summaryOff="When enabled pulling down on the Homescreen will open search."
+            android:defaultValue="true"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_lightStatusBar"
+            android:title="Light StatusBar"
+            android:summaryOn="The status bar may show dark icons when using a light wallpaper."
+            android:summaryOff="The status bar will always show light icons."
             android:defaultValue="true"
             android:persistent="true" />
 

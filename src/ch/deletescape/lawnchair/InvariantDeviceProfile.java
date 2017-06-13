@@ -191,15 +191,15 @@ public class InvariantDeviceProfile {
             numHotseatIcons = Integer.valueOf(prefs.getString("pref_numHotseatIcons", ""));
         }
         mFirebaseAnalytic.setUserProperty("num_hotseat_icons", String.valueOf(numColumns));
-        if (!prefs.getString("pref_iconScale", valueDefault).equals(valueDefault)) {
-            float iconScale = Float.valueOf(prefs.getString("pref_iconScale", ""));
+        if (prefs.getFloat("pref_iconScaleSB", 1f) != 1f) {
+            float iconScale = prefs.getFloat("pref_iconScaleSB", 1f);
             iconSize *= iconScale;
             hotseatIconSize *= iconScale;
             iconBitmapSize = Utilities.pxFromDp(iconSize, dm);
             fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
         }
-        if (!prefs.getString("pref_iconTextScale", valueDefault).equals(valueDefault)) {
-            iconTextSize *= Float.valueOf(prefs.getString("pref_iconTextScale", ""));
+        if (prefs.getFloat("pref_iconTextScaleSB", 1f) != 1f) {
+            iconTextSize *= prefs.getFloat("pref_iconTextScaleSB", 1f);
         }
     }
 
@@ -278,6 +278,7 @@ public class InvariantDeviceProfile {
         // Sort the profiles by their closeness to the dimensions
         ArrayList<InvariantDeviceProfile> pointsByNearness = points;
         Collections.sort(pointsByNearness, new Comparator<InvariantDeviceProfile>() {
+            @Override
             public int compare(InvariantDeviceProfile a, InvariantDeviceProfile b) {
                 return Float.compare(dist(width, height, a.minWidthDps, a.minHeightDps),
                         dist(width, height, b.minWidthDps, b.minHeightDps));
