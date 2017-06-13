@@ -568,6 +568,7 @@ public class Workspace extends PagedView
      * @param qsb an exisitng qsb to recycle or null.
      */
     public void bindAndInitFirstWorkspaceScreen(View qsb) {
+
         // Add the first page
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, 0);
         if (FeatureFlags.pulldownSearch(getContext().getApplicationContext())) {
@@ -607,7 +608,7 @@ public class Workspace extends PagedView
 
         CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, firstPage.getCountX(), 1);
         lp.canReorder = false;
-        if (!firstPage.addViewToCellLayout(qsb, 0, getEmbeddedQsbId(), lp)) {
+        if (!firstPage.addViewToCellLayout(qsb, 0, getEmbeddedQsbId(), lp, FeatureFlags.showPixelBar(getContext()))) {
             Log.e(TAG, "Failed to add to item at (0, 0) to CellLayout");
         }
     }
@@ -912,7 +913,7 @@ public class Workspace extends PagedView
             long id = mWorkspaceScreens.keyAt(i);
             CellLayout cl = mWorkspaceScreens.valueAt(i);
             // FIRST_SCREEN_ID can never be removed.
-            if (id > FIRST_SCREEN_ID && cl.getShortcutsAndWidgets().getChildCount() == 0) {
+            if ((!FeatureFlags.showPixelBar(getContext()) || id != FIRST_SCREEN_ID) && cl.getShortcutsAndWidgets().getChildCount() == 0) {
                 removeScreens.add(id);
             }
         }
@@ -1051,7 +1052,7 @@ public class Workspace extends PagedView
         ItemInfo info = (ItemInfo) child.getTag();
         int childId = mLauncher.getViewIdForItem(info);
 
-        if (!layout.addViewToCellLayout(child, insert ? 0 : -1, childId, lp)) {
+        if (!layout.addViewToCellLayout(child, insert ? 0 : -1, childId, lp, true)) {
             // TODO: This branch occurs when the workspace is adding views
             // outside of the defined grid
             // maybe we should be deleting these items from the LauncherModel?
@@ -4020,5 +4021,19 @@ public class Workspace extends PagedView
 
     public static boolean isQsbContainerPage(int pageNo) {
         return pageNo == 0;
+    }
+
+    public void updateQsbVisibility() {
+        boolean visible = FeatureFlags.showPixelBar(getContext());
+        View qsb = findViewById(getEmbeddedQsbId());
+        if (qsb != null) {
+            qsb.setVisibility(visible ? View.VISIBLE : View.GONE);
+            CellLayout firstPage = mWorkspaceScreens.get(FIRST_SCREEN_ID);
+            if (!visible) {
+                firstPage.markCellsAsUnoccupiedForView(qsb);
+            } else {
+                firstPage.markCellsAsOccupiedForView(qsb);
+            }
+        }
     }
 }

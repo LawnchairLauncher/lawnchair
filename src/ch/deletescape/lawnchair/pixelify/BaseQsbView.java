@@ -71,6 +71,9 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        if (!FeatureFlags.showPixelBar(getContext())) {
+            return;
+        }
         SharedPreferences sharedPreferences = Utilities.getPrefs(getContext());
         applyVoiceSearchPreference(sharedPreferences);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
@@ -98,7 +101,7 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
         if (qsbConnector == null && !FeatureFlags.useFullWidthSearchbar(getContext())) {
             qsbConnector = (QsbConnector) mLauncher.getLayoutInflater().inflate(R.layout.qsb_connector, this, false);
             addView(qsbConnector, 0);
-        } else if(FeatureFlags.useFullWidthSearchbar(getContext())) {
+        } else if (FeatureFlags.useFullWidthSearchbar(getContext())) {
             removeView(qsbConnector);
         }
     }

@@ -34,6 +34,7 @@ import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
 import ch.deletescape.lawnchair.compat.PackageInstallerCompat;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.util.GridOccupancy;
 import ch.deletescape.lawnchair.util.LongArrayMap;
 
@@ -249,7 +250,7 @@ public class GridSizeMigrationTask {
      */
     protected void migrateScreen(long screenId) {
         // If we are migrating the first screen, do not touch the first row.
-        int startY = screenId == Workspace.FIRST_SCREEN_ID ? 1 : 0;
+        int startY = FeatureFlags.showPixelBar(LauncherAppState.getInstance().getContext()) && screenId == Workspace.FIRST_SCREEN_ID ? 1 : 0;
 
         ArrayList<DbEntry> items = loadWorkspaceEntries(screenId);
 

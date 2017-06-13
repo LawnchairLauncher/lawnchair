@@ -106,15 +106,23 @@
 
     <PreferenceScreen android:title="Pixel Style">
         <SwitchPreference
+            android:key="pref_showPixelBar"
+            android:title="Show Pixel Top Bar"
+            android:defaultValue="true"
+            android:persistent="true" />
+
+        <SwitchPreference
             android:key="pref_fullWidthSearchbar"
             android:defaultValue="false"
             android:title="Use Wide Searchbar"
+            android:dependency="pref_showPixelBar"
             android:persistent="true" />
 
         <SwitchPreference
             android:key="pref_showMic"
             android:defaultValue="true"
             android:title="Show Voice Search Button"
+            android:dependency="pref_showPixelBar"
             android:persistent="true" />
     </PreferenceScreen>
 

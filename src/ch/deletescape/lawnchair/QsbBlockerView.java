@@ -12,10 +12,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import ch.deletescape.lawnchair.config.FeatureFlags;
-import ch.deletescape.lawnchair.pixelify.WeatherThing;
 import ch.deletescape.lawnchair.pixelify.GoogleSearchApp;
 import ch.deletescape.lawnchair.pixelify.OnGsaListener;
 import ch.deletescape.lawnchair.pixelify.ShadowHostView;
+import ch.deletescape.lawnchair.pixelify.WeatherThing;
 
 public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener, OnGsaListener {
     public static final Property<QsbBlockerView, Integer> QSB_BLOCKER_VIEW_ALPHA = new QsbBlockerViewAlpha(Integer.TYPE, "bgAlpha");
@@ -94,6 +94,10 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
 
     @Override
     public void onGsa(GoogleSearchApp gsa) {
+        if (!FeatureFlags.showPixelBar(getContext())) {
+            removeAllViews();
+            return;
+        }
         View view = mView;
         int i = mState;
         mView = ShadowHostView.bG(gsa, this, mView);

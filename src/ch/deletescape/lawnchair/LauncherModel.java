@@ -69,6 +69,7 @@ import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
 import ch.deletescape.lawnchair.compat.PackageInstallerCompat;
 import ch.deletescape.lawnchair.compat.PackageInstallerCompat.PackageInstallInfo;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dynamicui.ExtractionUtils;
 import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.folder.FolderIcon;
@@ -1636,7 +1637,7 @@ public class LauncherModel extends BroadcastReceiver
                 if (item.screenId == Workspace.FIRST_SCREEN_ID) {
                     // Mark the first row as occupied (if the feature is enabled)
                     // in order to account for the QSB.
-                    screen.markCells(0, 0, countX + 1, 1, true);
+                    screen.markCells(0, 0, countX + 1, 1, FeatureFlags.showPixelBar(mContext));
                 }
                 occupied.put(item.screenId, screen);
             }

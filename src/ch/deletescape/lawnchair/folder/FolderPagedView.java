@@ -216,7 +216,7 @@ public class FolderPagedView extends PagedView {
         lp.cellX = item.cellX;
         lp.cellY = item.cellY;
         getPageAt(pageNo).addViewToCellLayout(
-                view, -1, mFolder.mLauncher.getViewIdForItem(item), lp);
+                view, -1, mFolder.mLauncher.getViewIdForItem(item), lp, true);
     }
 
     @SuppressLint("InflateParams")
@@ -340,7 +340,7 @@ public class FolderPagedView extends PagedView {
                 lp.cellX = info.cellX;
                 lp.cellY = info.cellY;
                 currentPage.addViewToCellLayout(
-                        v, -1, mFolder.mLauncher.getViewIdForItem(info), lp);
+                        v, -1, mFolder.mLauncher.getViewIdForItem(info), lp, true);
 
                 if (rank < FolderIcon.NUM_ITEMS_IN_PREVIEW && v instanceof BubbleTextView) {
                     ((BubbleTextView) v).verifyHighRes();
