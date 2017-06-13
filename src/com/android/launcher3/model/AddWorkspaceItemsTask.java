@@ -47,7 +47,7 @@ import java.util.List;
 /**
  * Task to add auto-created workspace items.
  */
-public class AddWorkspaceItemsTask extends ExtendedModelTask {
+public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
 
     private final Provider<List<Pair<ItemInfo, Object>>> mAppsProvider;
 

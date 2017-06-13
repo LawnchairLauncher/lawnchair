@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * Handles changes due to shortcut manager updates (deep shortcut changes)
  */
-public class ShortcutsChangedTask extends ExtendedModelTask {
+public class ShortcutsChangedTask extends BaseModelUpdateTask {
 
     private final String mPackageName;
     private final List<ShortcutInfoCompat> mShortcuts;
