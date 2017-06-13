@@ -26,10 +26,6 @@ import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.text.TextUtils;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import ch.deletescape.lawnchair.Utilities;
 
 /**
@@ -70,19 +66,6 @@ public class PackageManagerHelper {
         // ApplicationInfo.FLAG_PRIVILEGED prior to N, so only check for suspended flag on N
         // or later.
         return Utilities.isNycOrAbove() && (info.flags & FLAG_SUSPENDED) != 0;
-    }
-
-    public static Map<String, String> getIconPackPackages(PackageManager pm) {
-        List<ResolveInfo> list;
-        list = pm.queryIntentActivities(new Intent("com.novalauncher.THEME"), 0);
-        list.addAll(pm.queryIntentActivities(new Intent("org.adw.launcher.icons.ACTION_PICK_ICON"), 0));
-        list.addAll(pm.queryIntentActivities(new Intent("com.dlto.atom.launcher.THEME"), 0));
-        list.addAll(pm.queryIntentActivities(new Intent("android.intent.action.MAIN").addCategory("com.anddoes.launcher.THEME"), 0));
-        Map<String, String> iconPackPackages = new HashMap<>();
-        for (ResolveInfo info : list) {
-            iconPackPackages.put(info.activityInfo.packageName, info.activityInfo.loadLabel(pm).toString());
-        }
-        return iconPackPackages;
     }
 
     /**

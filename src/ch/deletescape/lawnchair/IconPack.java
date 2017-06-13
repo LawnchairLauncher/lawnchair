@@ -22,7 +22,7 @@ import java.util.Map;
 
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 
-class IconPack {
+public class IconPack {
     /*
     Useful Links:
     https://github.com/teslacoil/Example_NovaTheme
@@ -35,12 +35,14 @@ class IconPack {
     private Context mContext;
     private FirebaseAnalytics mFirebaseAnalytics;
 
+
     public IconPack(Map<String, String> icons, Context context, String packageName) {
         this.icons = icons;
         this.packageName = packageName;
         mContext = context;
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
     }
+
 
     public Drawable getIcon(LauncherActivityInfoCompat info) {
         return getIcon(info.getComponentName());

@@ -19,10 +19,10 @@
 
     <PreferenceScreen android:title="UI">
 
-        <ListPreference
-            android:defaultValue="@string/iconPackPackageDefault"
+        <ch.deletescape.lawnchair.preferences.IconPackPreference
             android:key="pref_iconPackPackage"
             android:title="Icon Pack"
+            android:summary="Select an icon Pack"
             android:persistent="true" />
 
         <SwitchPreference
