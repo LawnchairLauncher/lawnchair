@@ -31,12 +31,22 @@ public class UserManagerCompatVN extends UserManagerCompatVM {
 
     @Override
     public boolean isQuietModeEnabled(UserHandleCompat user) {
-        return mUserManager.isQuietModeEnabled(user.getUser());
+        try {
+            return mUserManager.isQuietModeEnabled(user.getUser());
+        }
+        catch (SecurityException ex) {
+            return false;
+        }
     }
 
     @Override
     public boolean isUserUnlocked(UserHandleCompat user) {
-        return mUserManager.isUserUnlocked(user.getUser());
+        try {
+            return mUserManager.isUserUnlocked(user.getUser());
+        }
+        catch (SecurityException ex) {
+            return false;
+        }
     }
 }
 
