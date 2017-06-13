@@ -105,6 +105,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             } else if (mLauncher.isAllAppsVisible() &&
                     !mAppsView.shouldContainerScroll(ev)) {
                 mNoIntercept = true;
+            } else if (!mLauncher.isAllAppsVisible() && !shouldPossiblyIntercept(ev)) {
+                mNoIntercept = true;
             } else {
                 // Now figure out which direction scroll events the controller will start
                 // calling the callbacks.
@@ -139,6 +141,11 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             return false;
         }
         return mDetector.isDraggingOrSettling();
+    }
+
+    private boolean shouldPossiblyIntercept(MotionEvent ev) {
+        return !mDetector.isIdleState() || mLauncher.getDragLayer().isEventOverHotseat(ev) ||
+                mLauncher.getDragLayer().isEventOverPageIndicator(ev);
     }
 
     @Override
@@ -465,7 +472,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             mSteeper = velocity > FAST_FLING_PX_MS;
         }
 
-        @Override
         public float getInterpolation(float t) {
             t -= 1.0f;
             float output = t * t * t;
