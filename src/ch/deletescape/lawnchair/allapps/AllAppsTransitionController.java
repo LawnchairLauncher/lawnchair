@@ -6,6 +6,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.graphics.Rect;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
@@ -15,10 +16,13 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
+import ch.deletescape.lawnchair.CellLayout;
 import ch.deletescape.lawnchair.Hotseat;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAnimUtils;
+import ch.deletescape.lawnchair.LauncherAppWidgetHostView;
 import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.ShortcutAndWidgetContainer;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.util.TouchController;
@@ -144,8 +148,24 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     private boolean shouldPossiblyIntercept(MotionEvent ev) {
-        return !mDetector.isIdleState() || mLauncher.getDragLayer().isEventOverHotseat(ev) ||
-                mLauncher.getDragLayer().isEventOverPageIndicator(ev);
+        CellLayout cl = mLauncher.getWorkspace().getCurrentDropLayout();
+        if (cl != null) {
+            ShortcutAndWidgetContainer c = cl.getShortcutsAndWidgets();
+            int x = (int) ev.getX();
+            int y = (int) ev.getY();
+            Rect outRect = new Rect();
+            int count = c.getChildCount();
+            for (int i = 0; i < count; i++) {
+                View v = c.getChildAt(i);
+                if (v instanceof LauncherAppWidgetHostView) {
+                    v.getGlobalVisibleRect(outRect);
+                    if (outRect.contains(x, y)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -472,6 +492,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             mSteeper = velocity > FAST_FLING_PX_MS;
         }
 
+        @Override
         public float getInterpolation(float t) {
             t -= 1.0f;
             float output = t * t * t;
