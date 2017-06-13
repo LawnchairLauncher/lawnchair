@@ -116,11 +116,11 @@ public class LoaderTask implements Runnable {
         mIconCache = mApp.getIconCache();
     }
 
-    private synchronized void waitForIdle() {
+    protected synchronized void waitForIdle() {
         // Wait until the either we're stopped or the other threads are done.
         // This way we don't start loading all apps until the workspace has settled
         // down.
-        LooperIdleLock idleLock = new LooperIdleLock(this, Looper.getMainLooper());
+        LooperIdleLock idleLock = mResults.newIdleLock(this);
         // Just in case mFlushingWorkerThread changes but we aren't woken up,
         // wait no longer than 1sec at a time
         while (!mStopped && idleLock.awaitLocked(1000));
@@ -202,7 +202,10 @@ public class LoaderTask implements Runnable {
 
             transaction.commit();
         } catch (CancellationException e) {
-          // Loader stopped, ignore
+            // Loader stopped, ignore
+            if (DEBUG_LOADERS) {
+                Log.d(TAG, "Loader cancelled", e);
+            }
         }
     }
 

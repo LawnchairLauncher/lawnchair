@@ -42,7 +42,7 @@ import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.model.AddWorkspaceItemsTask;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.CacheDataUpdatedTask;
-import com.android.launcher3.model.ExtendedModelTask;
+import com.android.launcher3.model.BaseModelUpdateTask;
 import com.android.launcher3.model.LoaderResults;
 import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.model.ModelWriter;
@@ -80,7 +80,6 @@ import java.util.concurrent.Executor;
  */
 public class LauncherModel extends BroadcastReceiver
         implements LauncherAppsCompat.OnAppsChangedCallbackCompat {
-    static final boolean DEBUG_TASKS = false;
     private static final boolean DEBUG_RECEIVER = false;
 
     static final String TAG = "Launcher.Model";
@@ -425,7 +424,7 @@ public class LauncherModel extends BroadcastReceiver
     public void forceReload() {
         synchronized (mLock) {
             // Stop any existing loaders first, so they don't set mModelLoaded to true later
-            stopLoaderLocked();
+            stopLoader();
             mModelLoaded = false;
         }
 
@@ -448,16 +447,6 @@ public class LauncherModel extends BroadcastReceiver
             if (!callbacks.setLoadOnResume()) {
                 startLoader(callbacks.getCurrentWorkspaceScreen());
             }
-        }
-    }
-
-    /**
-     * If there is already a loader task running, tell it to stop.
-     */
-    private void stopLoaderLocked() {
-        LoaderTask oldTask = mLoaderTask;
-        if (oldTask != null) {
-            oldTask.stopLocked();
         }
     }
 
@@ -484,12 +473,10 @@ public class LauncherModel extends BroadcastReceiver
                         });
 
                 // If there is already one running, tell it to stop.
-                stopLoaderLocked();
+                stopLoader();
                 LoaderResults loaderResults = new LoaderResults(mApp, sBgDataModel,
                         mBgAllAppsList, synchronousBindPage, mCallbacks);
-                if (synchronousBindPage != PagedView.INVALID_RESTORE_PAGE
-                        && mModelLoaded && !mIsLoaderTaskRunning) {
-
+                if (mModelLoaded && !mIsLoaderTaskRunning) {
                     // Divide the set of loaded items into those that we are binding synchronously,
                     // and everything else that is to be bound normally (asynchronously).
                     loaderResults.bindWorkspace();
@@ -500,19 +487,31 @@ public class LauncherModel extends BroadcastReceiver
                     loaderResults.bindWidgets();
                     return true;
                 } else {
-                    mLoaderTask = new LoaderTask(mApp, mBgAllAppsList, sBgDataModel, loaderResults);
-                    sWorker.post(mLoaderTask);
+                    startLoaderForResults(loaderResults);
                 }
             }
         }
         return false;
     }
 
+    /**
+     * If there is already a loader task running, tell it to stop.
+     */
     public void stopLoader() {
         synchronized (mLock) {
-            if (mLoaderTask != null) {
-                mLoaderTask.stopLocked();
+            LoaderTask oldTask = mLoaderTask;
+            mLoaderTask = null;
+            if (oldTask != null) {
+                oldTask.stopLocked();
             }
+        }
+    }
+
+    public void startLoaderForResults(LoaderResults results) {
+        synchronized (mLock) {
+            stopLoader();
+            mLoaderTask = new LoaderTask(mApp, mBgAllAppsList, sBgDataModel, results);
+            runOnWorkerThread(mLoaderTask);
         }
     }
 
@@ -529,7 +528,7 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     public void onInstallSessionCreated(final PackageInstallInfo sessionInfo) {
-        enqueueModelUpdateTask(new ExtendedModelTask() {
+        enqueueModelUpdateTask(new BaseModelUpdateTask() {
             @Override
             public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
                 apps.addPromiseApp(app.getContext(), sessionInfo);
@@ -607,8 +606,8 @@ public class LauncherModel extends BroadcastReceiver
                 CacheDataUpdatedTask.OP_CACHE_UPDATE, user, updatedPackages));
     }
 
-    public void enqueueModelUpdateTask(BaseModelUpdateTask task) {
-        task.init(this);
+    public void enqueueModelUpdateTask(ModelUpdateTask task) {
+        task.init(mApp, this, sBgDataModel, mBgAllAppsList, mUiExecutor);
         runOnWorkerThread(task);
     }
 
@@ -624,54 +623,14 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * A runnable which changes/updates the data model of the launcher based on certain events.
      */
-    public static abstract class BaseModelUpdateTask implements Runnable {
-
-        private LauncherModel mModel;
-        private Executor mUiExecutor;
-
-        /* package private */
-        void init(LauncherModel model) {
-            mModel = model;
-            mUiExecutor = mModel.mUiExecutor;
-        }
-
-        @Override
-        public final void run() {
-            if (!mModel.mModelLoaded) {
-                if (DEBUG_TASKS) {
-                    Log.d(TAG, "Ignoring model task since loader is pending=" + this);
-                }
-                // Loader has not yet run.
-                return;
-            }
-            execute(mModel.mApp, sBgDataModel, mModel.mBgAllAppsList);
-        }
+    public interface ModelUpdateTask extends Runnable {
 
         /**
-         * Execute the actual task. Called on the worker thread.
+         * Called before the task is posted to initialize the internal state.
          */
-        public abstract void execute(
-                LauncherAppState app, BgDataModel dataModel, AllAppsList apps);
+        void init(LauncherAppState app, LauncherModel model,
+                BgDataModel dataModel, AllAppsList allAppsList, Executor uiExecutor);
 
-        /**
-         * Schedules a {@param task} to be executed on the current callbacks.
-         */
-        public final void scheduleCallbackTask(final CallbackTask task) {
-            final Callbacks callbacks = mModel.getCallback();
-            mUiExecutor.execute(new Runnable() {
-                public void run() {
-                    Callbacks cb = mModel.getCallback();
-                    if (callbacks == cb && cb != null) {
-                        task.execute(callbacks);
-                    }
-                }
-            });
-        }
-
-        public ModelWriter getModelWriter() {
-            // Updates from model task, do not deal with icon position in hotseat.
-            return mModel.getWriter(false /* hasVerticalHotseat */);
-        }
     }
 
     public void updateAndBindShortcutInfo(final ShortcutInfo si, final ShortcutInfoCompat info) {
@@ -689,7 +648,7 @@ public class LauncherModel extends BroadcastReceiver
      * Utility method to update a shortcut on the background thread.
      */
     public void updateAndBindShortcutInfo(final Provider<ShortcutInfo> shortcutProvider) {
-        enqueueModelUpdateTask(new ExtendedModelTask() {
+        enqueueModelUpdateTask(new BaseModelUpdateTask() {
             @Override
             public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
                 ShortcutInfo info = shortcutProvider.get();
@@ -701,7 +660,7 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     public void refreshAndBindWidgetsAndShortcuts(@Nullable final PackageUserKey packageUser) {
-        enqueueModelUpdateTask(new ExtendedModelTask() {
+        enqueueModelUpdateTask(new BaseModelUpdateTask() {
             @Override
             public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
                 dataModel.widgetsModel.update(app, packageUser);

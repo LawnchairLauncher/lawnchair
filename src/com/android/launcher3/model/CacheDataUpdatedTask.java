@@ -34,7 +34,7 @@ import java.util.HashSet;
 /**
  * Handles changes due to cache updates.
  */
-public class CacheDataUpdatedTask extends ExtendedModelTask {
+public class CacheDataUpdatedTask extends BaseModelUpdateTask {
 
     public static final int OP_CACHE_UPDATE = 1;
     public static final int OP_SESSION_UPDATE = 2;
