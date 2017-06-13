@@ -76,9 +76,12 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Permiteți rotirea ecranului de pornire"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Când telefonul este rotit"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Setarea actuală a afișajului nu permite rotirea"</string>
-    <string name="icon_badging_title" msgid="4418239350706629417">"Aplicarea insignelor pentru pictograme"</string>
-    <string name="icon_badging_desc_on" msgid="6022379097717134764">"Activată pentru toate aplicațiile"</string>
-    <string name="icon_badging_desc_off" msgid="1574640601251590211">"Dezactivată pentru toate aplicațiile"</string>
+    <!-- no translation found for icon_badging_title (874121399231955394) -->
+    <skip />
+    <!-- no translation found for icon_badging_desc_on (2627952638544674079) -->
+    <skip />
+    <!-- no translation found for icon_badging_desc_off (5503319969924580241) -->
+    <skip />
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Adaugă pictograme în ecranul de pornire"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Pentru aplicații noi"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->

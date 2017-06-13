@@ -76,9 +76,12 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"允许旋转主屏幕"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"手机旋转时"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"当前的显示设置不允许旋转设备"</string>
-    <string name="icon_badging_title" msgid="4418239350706629417">"在图标上显示标记"</string>
-    <string name="icon_badging_desc_on" msgid="6022379097717134764">"已针对所有应用开启"</string>
-    <string name="icon_badging_desc_off" msgid="1574640601251590211">"已针对所有应用关闭"</string>
+    <!-- no translation found for icon_badging_title (874121399231955394) -->
+    <skip />
+    <!-- no translation found for icon_badging_desc_on (2627952638544674079) -->
+    <skip />
+    <!-- no translation found for icon_badging_desc_off (5503319969924580241) -->
+    <skip />
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"将图标添加到主屏幕"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"适用于新应用"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
