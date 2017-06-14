@@ -19,7 +19,7 @@
     android:id="@+id/widgets_cell_list_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/colorPrimary"
+    android:background="@color/primaryColor"
     android:orientation="vertical"
     android:focusable="true"
     android:descendantFocusability="afterDescendants">
@@ -30,7 +30,7 @@
         android:id="@+id/section"
         android:layout_width="match_parent"
         android:layout_height="@dimen/widget_section_height"
-        android:background="?attr/colorSecondary"
+        android:background="@color/secondaryColor"
         android:drawablePadding="@dimen/widget_section_horizontal_padding"
         android:ellipsize="end"
         android:focusable="true"

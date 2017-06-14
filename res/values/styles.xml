@@ -30,6 +30,10 @@
 
     <style name="Theme" parent="@style/LauncherTheme"></style>
 
+    <style name="SettingsTheme" parent="@android:style/Theme.Material.Light.DarkActionBar">
+        <item name="android:colorAccent">@color/accentColor</item>
+    </style>
+
     <!-- Theme for the widget container. Overridden on API 25. -->
     <style name="WidgetContainerTheme" parent="@android:style/Theme.DeviceDefault.Settings">
         <item name="colorSecondary">@color/fallback_secondary_color</item>
