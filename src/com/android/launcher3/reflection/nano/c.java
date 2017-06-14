@@ -26,15 +26,13 @@ public final class c extends MessageNano
     public static c[] emptyArray() {
         if (c.LQ == null) {
             while (true) {
-                while (true) {
-                    synchronized (b.KD) {
-                        if (c.LQ != null) {
-                            break;
-                        }
+                synchronized (b.KD) {
+                    if (c.LQ != null) {
+                        break;
                     }
-                    c.LQ = new c[0];
-                    continue;
                 }
+                c.LQ = new c[0];
+                continue;
             }
         }
         return c.LQ;

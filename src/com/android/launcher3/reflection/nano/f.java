@@ -20,15 +20,13 @@ public final class f extends MessageNano
     public static f[] emptyArray() {
         if (f.Mg == null) {
             while (true) {
-                while (true) {
-                    synchronized (b.KD) {
-                        if (f.Mg != null) {
-                            break;
-                        }
+                synchronized (b.KD) {
+                    if (f.Mg != null) {
+                        break;
                     }
-                    f.Mg = new f[0];
-                    continue;
                 }
+                f.Mg = new f[0];
+                continue;
             }
         }
         return f.Mg;
