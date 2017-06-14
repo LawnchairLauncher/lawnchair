@@ -31,7 +31,6 @@ import android.widget.TextView.OnEditorActionListener;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.discovery.AppDiscoveryItem;
 import com.android.launcher3.discovery.AppDiscoveryUpdateState;
 import com.android.launcher3.util.ComponentKey;
@@ -46,12 +45,11 @@ public class AllAppsSearchBarController
         implements TextWatcher, OnEditorActionListener, ExtendedEditText.OnBackKeyListener {
 
     protected Launcher mLauncher;
-    protected AlphabeticalAppsList mApps;
     protected Callbacks mCb;
     protected ExtendedEditText mInput;
     protected String mQuery;
 
-    protected DefaultAppSearchAlgorithm mSearchAlgorithm;
+    protected SearchAlgorithm mSearchAlgorithm;
     protected InputMethodManager mInputMethodManager;
 
     public void setVisibility(int visibility) {
@@ -61,9 +59,8 @@ public class AllAppsSearchBarController
      * Sets the references to the apps model and the search result callback.
      */
     public final void initialize(
-            AlphabeticalAppsList apps, ExtendedEditText input,
+            SearchAlgorithm searchAlgorithm, ExtendedEditText input,
             Launcher launcher, Callbacks cb) {
-        mApps = apps;
         mCb = cb;
         mLauncher = launcher;
 
@@ -75,22 +72,7 @@ public class AllAppsSearchBarController
         mInputMethodManager = (InputMethodManager)
                 mInput.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        mSearchAlgorithm = onInitializeSearch();
-
-        onInitialized();
-    }
-
-    /**
-     * You can override this method to perform custom initialization.
-     */
-    protected void onInitialized() {
-    }
-
-    /**
-     * This method will get called when the controller is set.
-     */
-    public DefaultAppSearchAlgorithm onInitializeSearch() {
-        return new DefaultAppSearchAlgorithm(mApps.getApps());
+        mSearchAlgorithm = searchAlgorithm;
     }
 
     @Override
