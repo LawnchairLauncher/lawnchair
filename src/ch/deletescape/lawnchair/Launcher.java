@@ -335,6 +335,7 @@ public class Launcher extends Activity
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         LauncherAppState app = LauncherAppState.getInstance();
+        app.setMLauncher(this);
 
         // Load configuration-specific DeviceProfile
         mDeviceProfile = app.getInvariantDeviceProfile().profile;

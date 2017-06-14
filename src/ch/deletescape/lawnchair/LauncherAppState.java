@@ -149,8 +149,12 @@ public class LauncherAppState {
     LauncherModel setLauncher(Launcher launcher) {
         sLauncherProvider.get().setLauncherProviderChangeListener(launcher);
         mModel.initialize(launcher);
-        mLauncher = launcher;
         return mModel;
+    }
+
+
+    public void setMLauncher(Launcher launcher) {
+        mLauncher = launcher;
     }
 
     public IconCache getIconCache() {
