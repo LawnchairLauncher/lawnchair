@@ -571,6 +571,24 @@ public class Workspace extends PagedView
 
         // Add the first page
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, 0);
+        initPullDownToSearch();
+        // Always add a QSB on the first screen.
+        if (qsb == null) {
+            // In transposed layout, we add the QSB in the Grid. As workspace does not touch the
+            // edges, we do not need a full width QSB.
+            qsb = mLauncher.getLayoutInflater().inflate(R.layout.qsb_blocker_view,
+                    firstPage, false);
+        }
+
+        CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, firstPage.getCountX(), 1);
+        lp.canReorder = false;
+        if (!firstPage.addViewToCellLayout(qsb, 0, getEmbeddedQsbId(), lp, FeatureFlags.showPixelBar(getContext()))) {
+            Log.e(TAG, "Failed to add to item at (0, 0) to CellLayout");
+        }
+    }
+
+    public void initPullDownToSearch() {
+        CellLayout firstPage = mWorkspaceScreens.get(FIRST_SCREEN_ID);
         if (FeatureFlags.pulldownSearch(getContext().getApplicationContext())) {
             firstPage.setOnTouchListener(new VerticalFlingDetector(mLauncher) {
                 // detect fling when touch started from empty space
@@ -597,19 +615,9 @@ public class Workspace extends PagedView
                     return false;
                 }
             });
-        }
-        // Always add a QSB on the first screen.
-        if (qsb == null) {
-            // In transposed layout, we add the QSB in the Grid. As workspace does not touch the
-            // edges, we do not need a full width QSB.
-            qsb = mLauncher.getLayoutInflater().inflate(R.layout.qsb_blocker_view,
-                    firstPage, false);
-        }
-
-        CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, firstPage.getCountX(), 1);
-        lp.canReorder = false;
-        if (!firstPage.addViewToCellLayout(qsb, 0, getEmbeddedQsbId(), lp, FeatureFlags.showPixelBar(getContext()))) {
-            Log.e(TAG, "Failed to add to item at (0, 0) to CellLayout");
+        } else {
+            firstPage.setOnTouchListener(null);
+            firstPage.setOnInterceptTouchListener(null);
         }
     }
 

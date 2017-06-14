@@ -27,7 +27,6 @@ import android.support.v7.graphics.Palette;
 import ch.deletescape.lawnchair.LauncherProvider;
 import ch.deletescape.lawnchair.LauncherSettings;
 import ch.deletescape.lawnchair.R;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 
 /**
  * Extracts colors from the wallpaper, and saves results to {@link LauncherProvider}.
@@ -51,7 +50,7 @@ public class ColorExtractionService extends IntentService {
         if (wallpaperManager.getWallpaperInfo() != null) {
             // We can't extract colors from live wallpapers, so just use the default color always.
             extractedColors.updatePalette(null);
-            extractedColors.updateHotseatPalette(getApplicationContext(), null);
+            extractedColors.updateHotseatPalette(null);
         } else {
             Bitmap wallpaper = ((BitmapDrawable) wallpaperManager.getDrawable()).getBitmap();
             Palette palette = Palette.from(wallpaper).generate();
@@ -63,17 +62,15 @@ public class ColorExtractionService extends IntentService {
                             wallpaper.getWidth(), wallpaper.getHeight())
                     .clearFilters()
                     .generate();
-            extractedColors.updateHotseatPalette(getApplicationContext(), hotseatPalette);
+            extractedColors.updateHotseatPalette(hotseatPalette);
 
-            if (FeatureFlags.lightStatusBar(getApplicationContext())) {
-                int statusBarHeight = getResources()
-                        .getDimensionPixelSize(R.dimen.status_bar_height);
-                Palette statusBarPalette = Palette.from(wallpaper)
-                        .setRegion(0, 0, wallpaper.getWidth(), statusBarHeight)
-                        .clearFilters()
-                        .generate();
-                extractedColors.updateStatusBarPalette(statusBarPalette);
-            }
+            int statusBarHeight = getResources()
+                    .getDimensionPixelSize(R.dimen.status_bar_height);
+            Palette statusBarPalette = Palette.from(wallpaper)
+                    .setRegion(0, 0, wallpaper.getWidth(), statusBarHeight)
+                    .clearFilters()
+                    .generate();
+            extractedColors.updateStatusBarPalette(statusBarPalette);
         }
 
         // Save the extracted colors and wallpaper id to LauncherProvider.

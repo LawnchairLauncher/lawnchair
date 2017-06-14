@@ -38,7 +38,7 @@ public class ExtractedColors {
     // These color profile indices should NOT be changed, since they are used when saving and
     // loading extracted colors. New colors should always be added at the end.
     public static final int VERSION_INDEX = 0;
-    public static final int HOTSEAT_INDEX = 1;
+    private static final int HOTSEAT_LIGHT_MUTED_INDEX = 1;
     public static final int STATUS_BAR_INDEX = 2;
     public static final int DOMINANT_INDEX = 3;
     public static final int VIBRANT_INDEX = 4;
@@ -49,9 +49,14 @@ public class ExtractedColors {
     public static final int MUTED_LIGHT_INDEX = 9;
     public static final int VIBRANT_FOREGROUND_INDEX = 10;
     public static final int DOMINANT_FOREGROUND_INDEX = 11;
+    private static final int HOTSEAT_DARK_MUTED_INDEX = 12;
+    private static final int HOTSEAT_LIGHT_VIBRANT_INDEX = 13;
+    private static final int HOTSEAT_DARK_VIBRANT_INDEX = 14;
+    private static final int IS_SUPER_LIGHT = 15;
+    private static final int IS_SUPER_DARK = 16;
 
-    public static final int NUM_COLOR_PROFILES = 11;
-    private static final int VERSION = 6;
+    public static final int NUM_COLOR_PROFILES = 16;
+    private static final int VERSION = 7;
 
     private static final String COLOR_SEPARATOR = ",";
 
@@ -148,42 +153,57 @@ public class ExtractedColors {
         }
     }
 
+    public void updateHotseatPalette(Palette hotseatPalette) {
+        if (hotseatPalette != null) {
+            if (ExtractionUtils.isSuperLight(hotseatPalette)) {
+                setColorAtIndex(IS_SUPER_LIGHT, 1);
+                setColorAtIndex(IS_SUPER_DARK, 0);
+            } else if (ExtractionUtils.isSuperDark(hotseatPalette)) {
+                setColorAtIndex(IS_SUPER_LIGHT, 0);
+                setColorAtIndex(IS_SUPER_DARK, 1);
+            } else {
+                setColorAtIndex(IS_SUPER_LIGHT, 0);
+                setColorAtIndex(IS_SUPER_DARK, 0);
+            }
+            setColorAtIndex(HOTSEAT_DARK_MUTED_INDEX, hotseatPalette.getDarkMutedColor(-1));
+            setColorAtIndex(HOTSEAT_DARK_VIBRANT_INDEX, hotseatPalette.getDarkVibrantColor(-1));
+            setColorAtIndex(HOTSEAT_LIGHT_MUTED_INDEX, hotseatPalette.getLightMutedColor(-1));
+            setColorAtIndex(HOTSEAT_LIGHT_VIBRANT_INDEX, hotseatPalette.getLightVibrantColor(-1));
+        }
+    }
+
     /**
      * The hotseat's color is defined as follows:
      * - 20% darkMuted or 12% black for super light wallpaper
      * - 25% lightMuted or 18% white for super dark
      * - 40% lightVibrant or 25% white otherwise
      */
-    public void updateHotseatPalette(Context context, Palette hotseatPalette) {
+    public int getHotseatColor(Context context) {
         int hotseatColor;
-        if (hotseatPalette != null) {
-            boolean shouldUseExtractedColors = FeatureFlags.hotseatShouldUseExtractedColors(context);
-            if (ExtractionUtils.isSuperLight(hotseatPalette)) {
-                if (shouldUseExtractedColors) {
-                    int baseColor = hotseatPalette.getDarkMutedColor(hotseatPalette.getDarkVibrantColor(Color.BLACK));
-                    hotseatColor = ColorUtils.setAlphaComponent(baseColor, (int) (0.20f * 255));
-                } else {
-                    hotseatColor = ColorUtils.setAlphaComponent(Color.BLACK, (int) (0.12f * 255));
-                }
-            } else if (ExtractionUtils.isSuperDark(hotseatPalette)) {
-                if (shouldUseExtractedColors) {
-                    int baseColor = hotseatPalette.getLightMutedColor(hotseatPalette.getLightVibrantColor(Color.WHITE));
-                    hotseatColor = ColorUtils.setAlphaComponent(baseColor, (int) (0.25f * 255));
-                } else {
-                    hotseatColor = ColorUtils.setAlphaComponent(Color.WHITE, (int) (0.18f * 255));
-                }
+        boolean shouldUseExtractedColors = FeatureFlags.hotseatShouldUseExtractedColors(context);
+        if (getColor(IS_SUPER_LIGHT, 0) == 1) {
+            if (shouldUseExtractedColors) {
+                int baseColor = getColor(HOTSEAT_DARK_MUTED_INDEX, getColor(HOTSEAT_DARK_VIBRANT_INDEX, Color.BLACK));
+                hotseatColor = ColorUtils.setAlphaComponent(baseColor, (int) (0.20f * 255));
             } else {
-                if (shouldUseExtractedColors) {
-                    int baseColor = hotseatPalette.getLightVibrantColor(hotseatPalette.getLightMutedColor(Color.WHITE));
-                    hotseatColor = ColorUtils.setAlphaComponent(baseColor, (int) (0.40f * 255));
-                } else {
-                    hotseatColor = ColorUtils.setAlphaComponent(Color.WHITE, (int) (0.25f * 255));
-                }
+                hotseatColor = ColorUtils.setAlphaComponent(Color.BLACK, (int) (0.12f * 255));
+            }
+        } else if (getColor(IS_SUPER_DARK, 0) == 1) {
+            if (shouldUseExtractedColors) {
+                int baseColor = getColor(HOTSEAT_LIGHT_MUTED_INDEX, getColor(HOTSEAT_LIGHT_VIBRANT_INDEX, Color.WHITE));
+                hotseatColor = ColorUtils.setAlphaComponent(baseColor, (int) (0.25f * 255));
+            } else {
+                hotseatColor = ColorUtils.setAlphaComponent(Color.WHITE, (int) (0.18f * 255));
             }
         } else {
-            hotseatColor = ColorUtils.setAlphaComponent(Color.WHITE, (int) (0.25f * 255));
+            if (shouldUseExtractedColors) {
+                int baseColor = getColor(HOTSEAT_LIGHT_VIBRANT_INDEX, getColor(HOTSEAT_LIGHT_MUTED_INDEX, Color.WHITE));
+                hotseatColor = ColorUtils.setAlphaComponent(baseColor, (int) (0.40f * 255));
+            } else {
+                hotseatColor = ColorUtils.setAlphaComponent(Color.WHITE, (int) (0.25f * 255));
+            }
         }
-        setColorAtIndex(HOTSEAT_INDEX, hotseatColor);
+        return hotseatColor;
     }
 
     public void updateStatusBarPalette(Palette statusBarPalette) {

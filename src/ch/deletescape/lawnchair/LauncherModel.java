@@ -2683,7 +2683,7 @@ public class LauncherModel extends BroadcastReceiver
             runOnMainThread(r);
         }
 
-        private void loadAllApps() {
+        public void loadAllApps() {
 
             final Callbacks oldCallbacks = mCallbacks.get();
             if (oldCallbacks == null) {

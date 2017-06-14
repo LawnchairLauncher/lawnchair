@@ -197,6 +197,7 @@ public class PageIndicatorLineCaret extends PageIndicator {
         }
     }
 
+    @Override
     public void setShouldAutoHide(boolean shouldAutoHide) {
         mShouldAutoHide = shouldAutoHide;
         if (shouldAutoHide && mLinePaint.getAlpha() > 0) {
@@ -211,9 +212,10 @@ public class PageIndicatorLineCaret extends PageIndicator {
      * - mostly opaque white if the hotseat is white (ignoring alpha)
      * - mostly opaque black if the hotseat is black (ignoring alpha)
      */
+    @Override
     public void updateColor(ExtractedColors extractedColors) {
         int originalLineAlpha = mLinePaint.getAlpha();
-        int color = extractedColors.getColor(ExtractedColors.HOTSEAT_INDEX, Color.TRANSPARENT);
+        int color = extractedColors.getHotseatColor(getContext());
         if (color != Color.TRANSPARENT) {
             color = ColorUtils.setAlphaComponent(color, 255);
             int diffToWhite = Color.WHITE - color;

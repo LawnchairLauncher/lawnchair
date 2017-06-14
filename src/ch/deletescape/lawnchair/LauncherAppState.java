@@ -129,6 +129,11 @@ public class LauncherAppState {
         mModel.startLoaderFromBackground();
     }
 
+    public void reloadAllApps() {
+        mModel.resetLoadedState(true, false);
+        mModel.startLoaderFromBackground();
+    }
+
     public void reloadAll(boolean showWorkspace) {
         mModel.resetLoadedState(true, true);
         mModel.startLoaderFromBackground();

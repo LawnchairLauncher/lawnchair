@@ -127,7 +127,7 @@ public class BubbleTextView extends TextView
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
             if (Utilities.getPrefs(getContext()).getFloat("pref_allAppsOpacitySB", 1f) < .5f) {
-                setTextColor(Utilities.getColor(getContext(), ExtractedColors.DOMINANT_FOREGROUND_INDEX, Color.WHITE));
+                setTextColor(Utilities.getColor(getContext(), ExtractedColors.VIBRANT_FOREGROUND_INDEX, Color.WHITE));
             }
         } else if (display == DISPLAY_FOLDER) {
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);

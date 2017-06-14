@@ -63,10 +63,6 @@ public class SettingsActivity extends Activity {
         @Override
         public void onDestroy() {
             super.onDestroy();
-            LauncherAppState app = LauncherAppState.getInstanceNoCreate();
-            if (app != null) {
-                app.reloadAll(true);
-            }
         }
     }
 }

@@ -23,7 +23,6 @@ import ch.deletescape.lawnchair.LauncherAnimUtils;
 import ch.deletescape.lawnchair.LauncherAppWidgetHostView;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.ShortcutAndWidgetContainer;
-import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.util.TouchController;
 
@@ -90,6 +89,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private boolean mIsTranslateWithoutWorkspace = false;
     private AnimatorSet mDiscoBounceAnimation;
 
+    private int allAppsAlpha;
+
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
         mDetector = new VerticalPullDetector(l);
@@ -98,6 +99,10 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mProgress = 1f;
         mEvaluator = new ArgbEvaluator();
         mAllAppsBackgroundColor = ContextCompat.getColor(l, R.color.all_apps_container_color);
+    }
+
+    public void setAllAppsAlpha(int allAppsAlpha) {
+        this.allAppsAlpha = allAppsAlpha;
     }
 
     @Override
@@ -269,8 +274,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         float alpha = 1f - progress;
         float interpolation = mAccelInterpolator.getInterpolation(progress);
 
-        int tmpAlpha = (int) (Utilities.getPrefs(mLauncher.getApplicationContext()).getFloat("pref_allAppsOpacitySB", 1f) * 255);
-        int allAppsBg = ColorUtils.setAlphaComponent(mAllAppsBackgroundColor, tmpAlpha);
+        int allAppsBg = ColorUtils.setAlphaComponent(mAllAppsBackgroundColor, allAppsAlpha);
         int color = (int) mEvaluator.evaluate(mDecelInterpolator.getInterpolation(alpha), mHotseatBackgroundColor, allAppsBg);
 
         mAppsView.setRevealDrawableColor(color);

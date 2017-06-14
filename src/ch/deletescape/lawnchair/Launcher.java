@@ -107,6 +107,7 @@ import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.keyboard.ViewGroupFocusHelper;
 import ch.deletescape.lawnchair.model.WidgetsModel;
+import ch.deletescape.lawnchair.settings.Settings;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutsContainer;
 import ch.deletescape.lawnchair.shortcuts.ShortcutKey;
@@ -391,6 +392,8 @@ public class Launcher extends Activity
         registerReceiver(mUiBroadcastReceiver, filter);
 
         mLauncherTab = new LauncherTab(this);
+
+        Settings.init(this);
     }
 
     @Override
@@ -405,6 +408,14 @@ public class Launcher extends Activity
         // It's possible that All Apps is visible when this is run,
         // so always use light status bar in that case.
         activateLightStatusBar(isAllAppsVisible());
+    }
+
+    public ExtractedColors getExtractedColors() {
+        return mExtractedColors;
+    }
+
+    public AllAppsTransitionController getAllAppsController() {
+        return mAllAppsController;
     }
 
     /**

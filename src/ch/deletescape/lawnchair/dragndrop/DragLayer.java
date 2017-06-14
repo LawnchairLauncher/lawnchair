@@ -135,6 +135,7 @@ public class DragLayer extends InsettableFrameLayout {
     private AllAppsTransitionController mAllAppsController;
 
     private TouchController mActiveController;
+    public boolean mIsAccesibilityEnabled;
 
     /**
      * Used to create a new DragLayer from XML.
@@ -179,6 +180,7 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     public void onAccessibilityStateChanged(boolean isAccessibilityEnabled) {
+        mIsAccesibilityEnabled = isAccessibilityEnabled;
         mPinchListener = !FeatureFlags.pinchToOverview(getContext().getApplicationContext()) || isAccessibilityEnabled
                 ? null : new PinchToOverviewListener(mLauncher);
     }
@@ -627,6 +629,7 @@ public class DragLayer extends InsettableFrameLayout {
         }
     }
 
+    @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         int count = getChildCount();
@@ -739,6 +742,7 @@ public class DragLayer extends InsettableFrameLayout {
         final int fromY = r.top;
         child.setVisibility(INVISIBLE);
         Runnable onCompleteRunnable = new Runnable() {
+            @Override
             public void run() {
                 child.setVisibility(VISIBLE);
                 if (onFinishAnimationRunnable != null) {
@@ -881,6 +885,7 @@ public class DragLayer extends InsettableFrameLayout {
         mDropAnim.setFloatValues(0f, 1f);
         mDropAnim.addUpdateListener(updateCb);
         mDropAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
             public void onAnimationEnd(Animator animation) {
                 if (onCompleteRunnable != null) {
                     onCompleteRunnable.run();
@@ -1043,6 +1048,7 @@ public class DragLayer extends InsettableFrameLayout {
         }
     }
 
+    @Override
     protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
         boolean ret = super.drawChild(canvas, child, drawingTime);
 

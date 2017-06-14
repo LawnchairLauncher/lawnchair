@@ -21,7 +21,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
@@ -115,7 +114,7 @@ public class Hotseat extends FrameLayout {
     }
 
     public void updateColor(ExtractedColors extractedColors, boolean animate) {
-        int color = extractedColors.getColor(ExtractedColors.HOTSEAT_INDEX, Color.TRANSPARENT);
+        int color = extractedColors.getHotseatColor(getContext());
         if (mBackgroundColorAnimator != null) {
             mBackgroundColorAnimator.cancel();
         }
