@@ -44,7 +44,7 @@ class SuperLauncherCallbacks implements LauncherCallbacks, SharedPreferences.OnS
 
     @Override
     public void onResume() {
-
+        this.cD.aF(0L);
     }
 
     @Override
@@ -134,7 +134,7 @@ class SuperLauncherCallbacks implements LauncherCallbacks, SharedPreferences.OnS
 
     @Override
     public void onLauncherProviderChange() {
-
+        this.cD.aF(1000L);
     }
 
     @Override
@@ -215,8 +215,7 @@ class SuperLauncherCallbacks implements LauncherCallbacks, SharedPreferences.OnS
     @Override
     public List<ComponentKey> getPredictedApps() {
         ArrayList<ComponentKey> list = new ArrayList<>();
-        if (mLauncher.getSharedPrefs().getBoolean("pref_show_predictions", true))
-        {
+        if (mLauncher.getSharedPrefs().getBoolean("pref_show_predictions", true)) {
             final String string = com.android.launcher3.reflection.m.aJ(mLauncher).getString("reflection_last_predictions", null);
             if (!TextUtils.isEmpty(string)) {
                 final String[] split = string.split(";");

@@ -99,7 +99,6 @@ public class l implements Handler.Callback, b
                     if (this.bd == null) {
                         this.bd = f.ah(this.mContext);
                         this.bc = UserManagerCompat.getInstance(this.mContext).getSerialNumberForUser(UserHandleCompat.myUserHandle());
-                        this.bd.aD("GEL");
                     }
                     return b;
                 }
