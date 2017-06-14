@@ -33,9 +33,10 @@
         android:label="@string/permlab_install_shortcut"
         android:description="@string/permdesc_install_shortcut" />
 
-    <permission android:name="ch.deletescape.lawnchair.permission.QSB"
-                android:protectionLevel="normal"
-                android:label="QSB" />
+    <permission
+        android:name="ch.deletescape.lawnchair.permission.QSB"
+        android:protectionLevel="normal"
+        android:label="QSB" />
 
     <uses-permission android:name="ch.deletescape.lawnchair.permission.QSB" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
@@ -44,6 +45,7 @@
     <uses-permission android:name="android.permission.BIND_APPWIDGET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS" />
 
     <application
         android:allowBackup="true"
@@ -73,9 +75,11 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name="ch.deletescape.lawnchair.pixelify.WeatherUpdateReciever" android:permission="android.permission.CAPTURE_AUDIO_HOTWORD">
+        <receiver
+            android:name="ch.deletescape.lawnchair.pixelify.WeatherUpdateReciever"
+            android:permission="android.permission.CAPTURE_AUDIO_HOTWORD">
             <intent-filter>
-                <action android:name="com.google.android.apps.nexuslauncher.updateweather"/>
+                <action android:name="com.google.android.apps.nexuslauncher.updateweather" />
             </intent-filter>
         </receiver>
 
