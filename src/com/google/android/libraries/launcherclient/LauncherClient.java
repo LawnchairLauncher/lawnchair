@@ -16,6 +16,7 @@ import android.os.Message;
 import android.os.PatternMatcher;
 import android.os.Process;
 import android.os.RemoteException;
+import android.provider.Telephony;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
@@ -105,7 +106,7 @@ public class LauncherClient {
 
     static Intent getServiceIntent(Context context, String targetPackage) {
         Uri uri = Uri.parse("app://" + context.getPackageName() + ":" + Process.myUid()).buildUpon()
-            .appendQueryParameter("v", Integer.toString(0))
+            .appendQueryParameter("v", Integer.toString(5))
             .build();
 
         return new Intent("com.android.launcher3.WINDOW_OVERLAY")
