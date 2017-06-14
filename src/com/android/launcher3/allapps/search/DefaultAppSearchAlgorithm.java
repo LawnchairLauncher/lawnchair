@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * The default search implementation.
  */
-public class DefaultAppSearchAlgorithm {
+public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
 
     private final List<AppInfo> mApps;
     protected final Handler mResultHandler;
@@ -36,12 +36,14 @@ public class DefaultAppSearchAlgorithm {
         mResultHandler = new Handler();
     }
 
+    @Override
     public void cancel(boolean interruptActiveRequests) {
         if (interruptActiveRequests) {
             mResultHandler.removeCallbacksAndMessages(null);
         }
     }
 
+    @Override
     public void doSearch(final String query,
             final AllAppsSearchBarController.Callbacks callback) {
         final ArrayList<ComponentKey> result = getTitleMatchResult(query);
@@ -54,7 +56,7 @@ public class DefaultAppSearchAlgorithm {
         });
     }
 
-    public ArrayList<ComponentKey> getTitleMatchResult(String query) {
+    private ArrayList<ComponentKey> getTitleMatchResult(String query) {
         // Do an intersection of the words in the query and each title, and filter out all the
         // apps that don't match all of the words in the query.
         final String queryTextLower = query.toLowerCase();
@@ -67,7 +69,7 @@ public class DefaultAppSearchAlgorithm {
         return result;
     }
 
-    public boolean matches(AppInfo info, String query) {
+    public static boolean matches(AppInfo info, String query) {
         int queryLength = query.length();
 
         String title = info.title.toString();
@@ -103,7 +105,7 @@ public class DefaultAppSearchAlgorithm {
      *      3) Any capital character after a digit or small character
      *      4) Any capital character before a small character
      */
-    protected boolean isBreak(int thisType, int prevType, int nextType) {
+    private static boolean isBreak(int thisType, int prevType, int nextType) {
         switch (thisType) {
             case Character.UPPERCASE_LETTER:
                 if (nextType == Character.UPPERCASE_LETTER) {
