@@ -37,7 +37,7 @@ public class ColorExtractionService extends IntentService {
     /**
      * The fraction of the wallpaper to extract colors for use on the hotseat.
      */
-    private static final float HOTSEAT_FRACTION = 1f / 2;
+    private static final float HOTSEAT_FRACTION = 0.5f;
 
     public ColorExtractionService() {
         super("ColorExtractionService");
@@ -59,7 +59,7 @@ public class ColorExtractionService extends IntentService {
             // We extract colors for the hotseat and status bar separately,
             // since they only consider part of the wallpaper.
             Palette hotseatPalette = Palette.from(wallpaper)
-                    .setRegion(0, (int) (wallpaper.getHeight() * (1f - HOTSEAT_FRACTION)),
+                    .setRegion(0, (int) (wallpaper.getHeight() * HOTSEAT_FRACTION),
                             wallpaper.getWidth(), wallpaper.getHeight())
                     .clearFilters()
                     .generate();
