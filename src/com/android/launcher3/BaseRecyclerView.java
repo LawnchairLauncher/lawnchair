@@ -185,13 +185,6 @@ public abstract class BaseRecyclerView extends RecyclerView
     }
 
     /**
-     * Returns the track color (ignoring alpha), can be overridden by each subclass.
-     */
-    public int getFastScrollerTrackColor(int defaultTrackColor) {
-        return defaultTrackColor;
-    }
-
-    /**
      * Returns the scrollbar for this recycler view.
      */
     public BaseRecyclerViewFastScrollBar getScrollBar() {
