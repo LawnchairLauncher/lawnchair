@@ -9,9 +9,6 @@ import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
-import com.google.firebase.perf.FirebasePerformance;
-import com.google.firebase.perf.metrics.AddTrace;
-import com.google.firebase.perf.metrics.Trace;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -39,7 +36,6 @@ public class IconPackProvider {
         return getIconPack(packageName);
     }
 
-    @AddTrace(name = "iconpack_load")
     public static void loadIconPack(Context context, String packageName) {
         if ("".equals(packageName)) {
             iconPacks.put("", null);
@@ -58,7 +54,6 @@ public class IconPackProvider {
         FirebaseAnalytics.getInstance(context).logEvent("iconpack_loaded", null);
     }
 
-    @AddTrace(name = "iconpack_cache_clear")
     private static void clearCache(Context context, String packageName) {
         File cacheFolder = new File(context.getCacheDir(), "iconpack");
         File indicatorFile = new File(cacheFolder, packageName);
@@ -80,8 +75,6 @@ public class IconPackProvider {
     }
 
     private static Map<String, String> parseAppFilter(XmlPullParser parser) throws Exception {
-        Trace trace = FirebasePerformance.getInstance().newTrace("iconpack_parse_appfilter");
-        trace.start();
         Map<String, String> entries = new ArrayMap<>();
         while (parser != null && parser.next() != XmlPullParser.END_DOCUMENT) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -93,11 +86,9 @@ public class IconPackProvider {
                 String drawable = parser.getAttributeValue(null, "drawable");
                 if (drawable != null && comp != null) {
                     entries.put(comp, drawable);
-                    trace.incrementCounter("icons");
                 }
             }
         }
-        trace.stop();
         return entries;
     }
 

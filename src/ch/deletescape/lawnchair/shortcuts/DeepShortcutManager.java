@@ -30,7 +30,6 @@ import android.os.UserHandle;
 import android.util.Log;
 
 import com.google.firebase.crash.FirebaseCrash;
-import com.google.firebase.perf.metrics.AddTrace;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -193,7 +192,6 @@ public class DeepShortcutManager {
      * <p>
      * TODO: Use the cache to optimize this so we don't make an RPC every time.
      */
-    @AddTrace(name = "shortcutmanager_query")
     private List<ShortcutInfoCompat> query(int flags, String packageName,
                                            ComponentName activity, List<String> shortcutIds, UserHandle user) {
         if (Utilities.isNycMR1OrAbove()) {

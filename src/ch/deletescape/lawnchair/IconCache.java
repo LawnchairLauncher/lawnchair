@@ -44,7 +44,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.firebase.crash.FirebaseCrash;
-import com.google.firebase.perf.metrics.AddTrace;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -675,7 +674,6 @@ public class IconCache {
         return entry;
     }
 
-    @AddTrace(name = "iconcache_getentryfromdb")
     private boolean getEntryFromDB(ComponentKey cacheKey, CacheEntry entry, boolean lowRes) {
         Cursor c = null;
         try {
@@ -839,7 +837,6 @@ public class IconCache {
     /**
      * Generates a new low-res icon given a high-res icon.
      */
-    @AddTrace(name = "generate_lowresicon")
     private Bitmap generateLowResIcon(Bitmap icon, int lowResBackgroundColor) {
         if (lowResBackgroundColor == Color.TRANSPARENT) {
             return Bitmap.createScaledBitmap(icon,

@@ -62,7 +62,6 @@ import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
 
 import com.google.firebase.crash.FirebaseCrash;
-import com.google.firebase.perf.metrics.AddTrace;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -258,7 +257,6 @@ public final class Utilities {
     /**
      * @param scale the scale to apply before drawing {@param icon} on the canvas
      */
-    @AddTrace(name = "create_iconbitmap")
     public static Bitmap createIconBitmap(Drawable icon, Context context, float scale, boolean notificationBadge) {
         synchronized (sCanvas) {
             final int iconBitmapSize = getIconBitmapSize();
@@ -487,7 +485,6 @@ public final class Utilities {
      * @param bitmap  The bitmap to scan
      * @param samples The approximate max number of samples to use.
      */
-    @AddTrace(name = "find_dominantcolor_byhue")
     static int findDominantColorByHue(Bitmap bitmap, int samples) {
         final int height = bitmap.getHeight();
         final int width = bitmap.getWidth();

@@ -24,9 +24,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
 
-import com.google.firebase.perf.FirebasePerformance;
-import com.google.firebase.perf.metrics.Trace;
-
 import ch.deletescape.lawnchair.LauncherProvider;
 import ch.deletescape.lawnchair.LauncherSettings;
 import ch.deletescape.lawnchair.R;
@@ -48,12 +45,10 @@ public class ColorExtractionService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Trace trace = FirebasePerformance.getInstance().newTrace("colorextraction");
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
         int wallpaperId = ExtractionUtils.getWallpaperId(wallpaperManager);
         ExtractedColors extractedColors = new ExtractedColors();
         if (wallpaperManager.getWallpaperInfo() != null) {
-            trace.incrementCounter("livewallpaper");
             // We can't extract colors from live wallpapers, so just use the default color always.
             extractedColors.updatePalette(null);
             extractedColors.updateHotseatPalette(getApplicationContext(), null);
@@ -90,6 +85,5 @@ public class ColorExtractionService extends IntentService {
                 LauncherSettings.Settings.CONTENT_URI,
                 LauncherSettings.Settings.METHOD_SET_EXTRACTED_COLORS_AND_WALLPAPER_ID,
                 null, extras);
-        trace.stop();
     }
 }
