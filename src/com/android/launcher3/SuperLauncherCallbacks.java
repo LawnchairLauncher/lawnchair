@@ -16,7 +16,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-class SuperLauncherCallbacks implements LauncherCallbacks {
+class SuperLauncherCallbacks implements LauncherCallbacks, SharedPreferences.OnSharedPreferenceChangeListener {
     private Launcher mLauncher;
     private com.android.launcher3.reflectionevents.a cF;
     private com.android.launcher3.reflection.l cD;
@@ -32,7 +32,9 @@ class SuperLauncherCallbacks implements LauncherCallbacks {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        SharedPreferences prefs = Utilities.getPrefs(mLauncher);
         this.cD = com.android.launcher3.reflection.l.getInstance(mLauncher);
+        prefs.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -213,11 +215,14 @@ class SuperLauncherCallbacks implements LauncherCallbacks {
     @Override
     public List<ComponentKey> getPredictedApps() {
         ArrayList<ComponentKey> list = new ArrayList<>();
-        final String string = com.android.launcher3.reflection.m.aJ(mLauncher).getString("reflection_last_predictions", null);
-        if (!TextUtils.isEmpty(string)) {
-            final String[] split = string.split(";");
-            for (int i = 0; i < split.length; ++i) {
-                list.add(new ComponentKey(mLauncher, split[i]));
+        if (mLauncher.getSharedPrefs().getBoolean("pref_show_predictions", true))
+        {
+            final String string = com.android.launcher3.reflection.m.aJ(mLauncher).getString("reflection_last_predictions", null);
+            if (!TextUtils.isEmpty(string)) {
+                final String[] split = string.split(";");
+                for (int i = 0; i < split.length; ++i) {
+                    list.add(new ComponentKey(mLauncher, split[i]));
+                }
             }
         }
         return list;
@@ -241,5 +246,10 @@ class SuperLauncherCallbacks implements LauncherCallbacks {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        mLauncher.tryAndUpdatePredictedApps();
     }
 }

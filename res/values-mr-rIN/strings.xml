@@ -106,4 +106,5 @@
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g> साठी <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> शॉर्टकट"</string>
     <string name="label_search">शोधा</string>
     <string name="week_day_format">%1$s, %2$s</string>
+    <string name="title_app_suggestions">अॅप सूचना</string>
 </resources>

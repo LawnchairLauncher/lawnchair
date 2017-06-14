@@ -107,4 +107,5 @@
     <string name="label_search">ရှာရန်</string>
     <string name="label_voice_search">အသံဖြင့် ရှာဖွေရန်</string>
     <string name="week_day_format">%1$s၊ %2$s</string>
+    <string name="title_app_suggestions">အက်ပ်အကြံပြုမှုများ</string>
 </resources>

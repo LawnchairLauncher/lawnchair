@@ -1,10 +1,11 @@
 package com.android.launcher3.reflection;
 
+import com.android.launcher3.Utilities;
 import com.google.protobuf.nano.InvalidProtocolBufferNanoException;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import android.os.Message;
-import com.google.protobuf.nano.MessageNano; //a
+import com.google.protobuf.nano.MessageNano;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import android.text.TextUtils;
 import android.content.Intent;
@@ -37,7 +38,7 @@ public class l implements Handler.Callback, b
     public static l getInstance(final Context context) {
         synchronized (l.LOCK) {
             if (l.bf == null) {
-                (l.bf = new l(context.getApplicationContext())).aI(true);
+                (l.bf = new l(context.getApplicationContext())).aI(Utilities.getPrefs(context).getBoolean("pref_show_predictions", true));
             }
             return l.bf;
         }

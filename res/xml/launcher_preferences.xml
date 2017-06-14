@@ -17,9 +17,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreference
-        android:title="@string/title_app_suggestions"
-        android:key="pref_show_predictions"
-        android:defaultValue="true"
+            android:key="pref_show_predictions"
+            android:title="@string/title_app_suggestions"
+            android:defaultValue="true"
+            android:persistent="true"
     />
 
     <SwitchPreference

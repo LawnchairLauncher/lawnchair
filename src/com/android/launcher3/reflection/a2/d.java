@@ -47,7 +47,5 @@ public class d implements c
             catch (SecurityException ex5) {}
         }
         catch (SecurityException ex6) {}*/
-
-        Log.d("a2.d", "Missing");
     }
 }

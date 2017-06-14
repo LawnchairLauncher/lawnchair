@@ -262,4 +262,5 @@
     <!-- Pixel -->
     <string name="label_search">Search</string>
     <string name="week_day_format">%1$s, %2$s</string>
+    <string name="title_app_suggestions">App suggestions</string>
 </resources>

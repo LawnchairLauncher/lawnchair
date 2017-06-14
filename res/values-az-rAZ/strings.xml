@@ -106,4 +106,5 @@
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> üçün <xliff:g id="APP_NAME">%2$s</xliff:g> qısa yolu"</string>
     <string name="label_search">Axtarış</string>
     <string name="label_voice_search">Səsli axtarış</string>
+    <string name="title_app_suggestions">Tətbiq təklifləri</string>
 </resources>

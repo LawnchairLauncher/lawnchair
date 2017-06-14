@@ -106,4 +106,5 @@
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> преки пътища за <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
     <string name="label_search">Търсене</string>
     <string name="week_day_format">%1$s, %2$s г.</string>
+    <string name="title_app_suggestions">Предложения за приложения</string>
 </resources>
