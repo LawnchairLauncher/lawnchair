@@ -168,6 +168,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
         int defaultIconSize = grid.iconSizePx;
         if (display == DISPLAY_WORKSPACE) {
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
+            setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
         } else if (display == DISPLAY_ALL_APPS) {
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
