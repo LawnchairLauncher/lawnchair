@@ -32,9 +32,8 @@ class SuperLauncherCallbacks implements LauncherCallbacks, SharedPreferences.OnS
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        SharedPreferences prefs = Utilities.getPrefs(mLauncher);
         this.cD = com.android.launcher3.reflection.l.getInstance(mLauncher);
-        prefs.registerOnSharedPreferenceChangeListener(this);
+        Utilities.getPrefs(mLauncher).registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -64,7 +63,7 @@ class SuperLauncherCallbacks implements LauncherCallbacks, SharedPreferences.OnS
 
     @Override
     public void onDestroy() {
-
+        Utilities.getPrefs(mLauncher).unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override

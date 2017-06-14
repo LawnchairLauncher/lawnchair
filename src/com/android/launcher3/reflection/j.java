@@ -142,7 +142,6 @@ public class j
         if (ProviderConfig.IS_DOGFOOD_BUILD && ab.size() == 0) {
             FileLog.d("Reflection.SvcHandler", "predictions.size() == 0. Are every applications on the firstpage/hotseat?");
         }
-        Log.d("j", "doing predictions");
         this.aX.U(ab);
         if (a != null) {
             this.aQ.J(a);

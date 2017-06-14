@@ -16,7 +16,6 @@ import android.os.Message;
 import android.os.PatternMatcher;
 import android.os.Process;
 import android.os.RemoteException;
-import android.provider.Telephony;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
