@@ -1685,6 +1685,19 @@ public class Workspace extends PagedView
         }
     }
 
+    public void refreshChildren() {
+        final int screenCount = getChildCount();
+        int x = mLauncher.getDeviceProfile().inv.numColumns;
+        int y = mLauncher.getDeviceProfile().inv.numRows;
+        for (int i = 0; i < screenCount; i++) {
+            final CellLayout layout = (CellLayout) getChildAt(i);
+            layout.setGridSize(x, y);
+        }
+        requestLayout();
+        updateQsbVisibility();
+    }
+
+
     @Thunk
     void updateChildrenLayersEnabled(boolean force) {
         boolean small = mState == State.OVERVIEW || mIsSwitchingState;

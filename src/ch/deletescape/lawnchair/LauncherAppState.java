@@ -137,15 +137,6 @@ public class LauncherAppState {
     public void reloadAll(boolean showWorkspace) {
         mModel.resetLoadedState(true, true);
         mModel.startLoaderFromBackground();
-        mInvariantDeviceProfile.customizationHook(getContext());
-        mLauncher.runOnUiThread(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        mLauncher.getHotseat().refresh();
-                    }
-                }
-        );
         if (showWorkspace) {
             mLauncher.showWorkspace(true);
         }

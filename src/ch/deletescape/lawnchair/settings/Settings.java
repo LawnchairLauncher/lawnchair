@@ -20,6 +20,11 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private static final String KEY_SHOW_VOICE_SEARCH_BUTTON = "pref_showMic";
     private static final String KEY_PREF_ALL_APPS_OPACITY = "pref_allAppsOpacitySB";
     private static final String KEY_PREF_SHOW_HIDDEN_APPS = "pref_showHidden";
+    private static final String KEY_PREF_NUM_COLS = "pref_numCols";
+    private static final String KEY_PREF_NUM_ROWS = "pref_numRows";
+    private static final String KEY_PREF_NUM_HOTSEAT_ICONS = "pref_numHotseatIcons";
+    private static final String KEY_PREF_ICON_SCALE = "pref_iconScaleSB";
+    private static final String KEY_PREF_ICON_TEXT_SCALE = "pref_iconTextScaleSB";
     private static Settings instance;
     private Launcher mLauncher;
 
@@ -45,6 +50,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         if (key.startsWith("pref_")) {
+            LauncherAppState las = LauncherAppState.getInstance();
             switch (key) {
                 case KEY_PREF_LIGHT_STATUS_BAR:
                     mLauncher.activateLightStatusBar(false);
@@ -68,14 +74,35 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                     applyAllAppsOpacity(prefs);
                     break;
                 case KEY_PREF_SHOW_HIDDEN_APPS:
-                    LauncherAppState.getInstance().reloadAllApps();
+                    las.reloadAllApps();
+                    break;
+                case KEY_PREF_NUM_COLS:
+                case KEY_PREF_NUM_ROWS:
+                    las.getInvariantDeviceProfile().customizationHook(mLauncher);
+                    mLauncher.getWorkspace().refreshChildren();
+                    break;
+                case KEY_PREF_NUM_HOTSEAT_ICONS:
+                    las.getInvariantDeviceProfile().customizationHook(mLauncher);
+                    mLauncher.runOnUiThread(
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    mLauncher.getHotseat().refresh();
+                                }
+                            }
+                    );
+                    break;
+                case KEY_SHOW_PIXEL_BAR:
+                    mLauncher.getWorkspace().updateQsbVisibility();
                     break;
                 case KEY_PREF_KEEP_SCROLL_STATE:
                 case KEY_SHOW_VOICE_SEARCH_BUTTON:
                     // Ignoring those as we do not need to apply anything special
                     break;
+                case KEY_PREF_ICON_SCALE:
+                case KEY_PREF_ICON_TEXT_SCALE:
                 default:
-                    LauncherAppState.getInstance().reloadAll(false);
+                    las.reloadAll(false);
             }
         }
     }
