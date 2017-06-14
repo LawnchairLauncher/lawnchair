@@ -72,6 +72,7 @@
     </resolve>
 
     <resolve
+        launcher:container="-101"
         launcher:screen="6"
         launcher:x="6"
         launcher:y="0">
