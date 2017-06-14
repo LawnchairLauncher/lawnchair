@@ -53,7 +53,6 @@ public class SuperWeatherListener extends BroadcastReceiver implements OnAlarmLi
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("SuperWeatherListener", "onReceive");
         gsa = new SuperGoogleSearchApp(mContext, null);
         mContext.sendBroadcast(new Intent("com.google.android.apps.gsa.weatherwidget.ENABLE_UPDATE").setPackage("com.google.android.googlequicksearchbox"));
     }

@@ -1,0 +1,108 @@
+package com.android.launcher3.reflection;
+
+import android.content.SharedPreferences;
+import com.android.launcher3.Utilities;
+import android.content.SharedPreferences;
+import com.android.launcher3.reflection.b2.d;
+import java.io.File;
+import java.util.regex.Pattern;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import com.android.launcher3.reflection.nano.a;
+import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.util.Preconditions;
+
+class h implements Runnable
+{
+    private e aN;
+    final /* synthetic */ g aO;
+
+    private h(final g ao) {
+        this.aO = ao;
+    }
+
+    private void au(long x) {
+        final int n = 1;
+        Preconditions.assertNonUiThread();
+        final long currentTimeMillis = System.currentTimeMillis();
+        FileLog.d("Reflection.StBatchTrain", "Start loading events from logs...");
+        return; /*
+        while (true) {
+            Object o = this.aO;
+            Object o2;
+            synchronized (o) {
+                if (this.aO.aI != this) {
+                    return;
+                }
+                o2 = this.aO.aJ.R(x, 1000);
+                // monitorexit(o)
+                if (o2 == null || ((com.google.android.apps.nexuslauncher.reflection.b.e)o2).W.isEmpty()) {
+                    o2 = new Object[n];
+                    o2[0] = System.currentTimeMillis() - currentTimeMillis;
+                    o = String.format("Retrain finished, total time including loading: %dms", (Object[])o2);
+                    FileLog.d("Reflection.StBatchTrain", (String)o);
+                    return;
+                }
+            }
+            final List w = ((com.google.android.apps.nexuslauncher.reflection.b.e)o2).W;
+            final Object[] array = { w.size(), null };
+            array[n] = System.currentTimeMillis() - currentTimeMillis;
+            FileLog.d("Reflection.StBatchTrain", String.format("Num events loaded: %d, time taken so far: %dms", array));
+            for (Object o3 : w) {
+                final a a = (a) o3;
+                synchronized (this.aO) {
+                    if (this.aO.aI == this) {
+                        this.aN.aa(a.LA, a);
+                        if (a.Ly.startsWith("/deleted_app/")) {
+                            continue;
+                        }
+                        final com.google.research.reflection.predictor.e z = this.aN.Z();
+                        if (z == null) {
+                            continue;
+                        }
+                        z.Sk(a);
+                        continue;
+                    }
+                    return;
+                }
+                break;
+            }
+            x = ((com.google.android.apps.nexuslauncher.reflection.b.e)o2).X;
+            final Locale us = Locale.US;
+            final Object[] array2 = new Object[n];
+            array2[0] = x;
+            final String format = String.format(us, "InProgress:%d", array2);
+            final Object[] array3 = new Object[n];
+            array3[0] = format;
+            o2 = String.format("Progress: %s", array3);
+            FileLog.d("Reflection.StBatchTrain", (String)o2);
+            synchronized (this.aO) {
+                o2 = this.aO;
+                o2 = ((g)o2).aI;
+                if (o2 != this) {
+                    return;
+                }
+                o2 = this.aO;
+                o2 = ((g)o2).aM;
+                o2 = ((SharedPreferences)o2).edit();
+                ((SharedPreferences$Editor)o2).putString("staged_batch_training_progress", format).apply();
+                this.aN.af();
+            }
+        }*/
+    }
+
+    private e av() {
+        return null;
+    }
+
+    public void run() {
+        try {
+            //this.aO.al(this.av(), this);
+        }
+        finally {
+            //final Throwable t;
+            //this.aO.ak(t, this);
+        }
+    }
+}

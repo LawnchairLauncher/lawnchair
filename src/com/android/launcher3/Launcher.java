@@ -388,6 +388,7 @@ public class Launcher extends Activity
             Trace.beginSection("Launcher-onCreate");
         }
 
+        mLauncherCallbacks = new SuperLauncherCallbacks(this);
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.preOnCreate();
         }
