@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.content.Context;
 import android.os.HandlerThread;
 import android.os.Handler;
+import android.util.Log;
+
 import com.android.launcher3.reflectionevents.b;
 
 public class l implements Handler.Callback, b
@@ -131,7 +133,12 @@ public class l implements Handler.Callback, b
                 }
                 case 3: {
                     if (this.bd != null) {
-                        this.bd.aD("GEL");
+                        try {
+                            this.bd.aD("GEL");
+                        }
+                        catch (Exception ex) {
+                            Log.w("SuggestionsRefresh", ex);
+                        }
                     }
                     return b;
                 }
