@@ -42,6 +42,8 @@ public final class FeatureFlags {
     public static boolean LAUNCHER3_GRADIENT_ALL_APPS = true;
     // When enabled allows use of physics based motions in the Launcher.
     public static boolean LAUNCHER3_PHYSICS = true;
+    // When enabled allows use of spring motions on the icons.
+    public static boolean LAUNCHER3_SPRING_ICONS = true;
 
     // Feature flag to enable moving the QSB on the 0th screen of the workspace.
     public static final boolean QSB_ON_FIRST_SCREEN = true;
