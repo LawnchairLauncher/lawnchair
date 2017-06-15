@@ -127,12 +127,8 @@ public class LauncherStateTransitionAnimation {
 
     /**
      * Starts an animation to the apps view.
-     *
-     * @param startSearchAfterTransition Immediately starts app search after the transition to
-     *                                   All Apps is completed.
      */
-    public void startAnimationToAllApps(
-            final boolean animated, final boolean startSearchAfterTransition) {
+    public void startAnimationToAllApps(final boolean animated) {
         final AllAppsContainerView toView = mLauncher.getAppsView();
         final View buttonView = mLauncher.getStartViewForAllAppsRevealAnimation();
         PrivateTransitionCallbacks cb = new PrivateTransitionCallbacks(1f) {
@@ -156,9 +152,6 @@ public class LauncherStateTransitionAnimation {
             @Override
             void onTransitionComplete() {
                 mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
-                if (startSearchAfterTransition) {
-                    toView.startAppsSearch();
-                }
             }
         };
         int animType = CIRCULAR_REVEAL;

@@ -44,18 +44,6 @@ public interface SearchUiManager {
      */
     void preDispatchKeyEvent(KeyEvent keyEvent);
 
-    /**
-     * Returns true if the IME should be brought back.
-     * TODO: Remove when removing support for opening all-apps in search mode.
-     */
-    boolean shouldRestoreImeState();
-
-    /**
-     * Starts the search UI
-     * TODO: Remove when removing support for opening all-apps in search mode.
-     */
-    void startAppsSearch();
-
     void addOnScrollRangeChangeListener(OnScrollRangeChangeListener listener);
 
     /**
