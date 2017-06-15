@@ -121,11 +121,11 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
         mTmpMatrix.setScale(
-                (bounds.width() - PROGRESS_WIDTH - 2 * PROGRESS_GAP) / PATH_SIZE,
-                (bounds.height() - PROGRESS_WIDTH - 2 * PROGRESS_GAP) / PATH_SIZE);
+                (bounds.width() - 2 * PROGRESS_WIDTH - 2 * PROGRESS_GAP) / PATH_SIZE,
+                (bounds.height() - 2 * PROGRESS_WIDTH - 2 * PROGRESS_GAP) / PATH_SIZE);
         mTmpMatrix.postTranslate(
-                bounds.left + PROGRESS_WIDTH / 2 + PROGRESS_GAP,
-                bounds.top + PROGRESS_WIDTH / 2 + PROGRESS_GAP);
+                bounds.left + PROGRESS_WIDTH + PROGRESS_GAP,
+                bounds.top + PROGRESS_WIDTH + PROGRESS_GAP);
 
         mProgressPath.transform(mTmpMatrix, mScaledTrackPath);
         float scale = bounds.width() / PATH_SIZE;
