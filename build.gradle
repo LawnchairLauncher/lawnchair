@@ -68,6 +68,7 @@ repositories {
 final String SUPPORT_LIBS_VERSION = '26.0.0-SNAPSHOT'
 dependencies {
     compile "com.android.support:support-v4:${SUPPORT_LIBS_VERSION}"
+    compile "com.android.support:support-dynamic-animation:${SUPPORT_LIBS_VERSION}"
     compile "com.android.support:recyclerview-v7:${SUPPORT_LIBS_VERSION}"
     compile "com.android.support:palette-v7:${SUPPORT_LIBS_VERSION}"
     compile 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-2'
