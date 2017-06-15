@@ -20,9 +20,9 @@ import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
 import android.os.Process;
 import android.os.UserHandle;
+import android.util.ArrayMap;
 import android.util.LongSparseArray;
 import android.util.Pair;
-
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
@@ -39,9 +39,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.ManagedProfileHeuristic.UserFolderInfo;
 import com.android.launcher3.util.Provider;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -68,7 +66,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
 
         final ArrayList<ItemInfo> addedItemsFinal = new ArrayList<>();
         final ArrayList<Long> addedWorkspaceScreensFinal = new ArrayList<>();
-        HashMap<UserHandle, UserFolderInfo> userFolderMap = new HashMap<>();
+        ArrayMap<UserHandle, UserFolderInfo> userFolderMap = new ArrayMap<>();
 
         // Get the list of workspace screens.  We need to append to this list and
         // can not use sBgWorkspaceScreens because loadWorkspace() may not have been
@@ -146,8 +144,8 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
             scheduleCallbackTask(new CallbackTask() {
                 @Override
                 public void execute(Callbacks callbacks) {
-                    final ArrayList<ItemInfo> addAnimated = new ArrayList<ItemInfo>();
-                    final ArrayList<ItemInfo> addNotAnimated = new ArrayList<ItemInfo>();
+                    final ArrayList<ItemInfo> addAnimated = new ArrayList<>();
+                    final ArrayList<ItemInfo> addNotAnimated = new ArrayList<>();
                     if (!addedItemsFinal.isEmpty()) {
                         ItemInfo info = addedItemsFinal.get(addedItemsFinal.size() - 1);
                         long lastScreenId = info.screenId;
