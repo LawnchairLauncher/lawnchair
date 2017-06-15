@@ -69,32 +69,29 @@ public class SuperDynamicIconProvider extends IconProvider
         return "com.google.android.calendar".equals(s);
     }
 
-    @Override
-    public Drawable getIcon(final LauncherActivityInfoCompat launcherActivityInfoCompat, int iconDpi) {
-        Drawable drawable = null;
-        String packageName = launcherActivityInfoCompat.getApplicationInfo().packageName;
-
+    private Drawable getRoundIcon(String packageName, int iconDpi) {
         try {
             Resources resourcesForApplication = mPackageManager.getResourcesForApplication(packageName);
             AssetManager assets = resourcesForApplication.getAssets();
             XmlResourceParser parseXml = assets.openXmlResourceParser("AndroidManifest.xml");
             int eventType;
-            while ((eventType = parseXml.nextToken()) != XmlPullParser.END_DOCUMENT) {
-                if (eventType == XmlPullParser.START_TAG && parseXml.getName().equals("application")) {
-                    for (int i = 0; i < parseXml.getAttributeCount(); i++) {
-                        if (parseXml.getAttributeName(i).equals("roundIcon")) {
-                            int roundIconId = Integer.parseInt(parseXml.getAttributeValue(i).substring(1));
-                            drawable = resourcesForApplication.getDrawableForDensity(roundIconId, iconDpi);
-                            break;
-                        }
-                    }
-                }
-            }
+            while ((eventType = parseXml.nextToken()) != XmlPullParser.END_DOCUMENT)
+                if (eventType == XmlPullParser.START_TAG && parseXml.getName().equals("application"))
+                    for (int i = 0; i < parseXml.getAttributeCount(); i++)
+                        if (parseXml.getAttributeName(i).equals("roundIcon"))
+                            return resourcesForApplication.getDrawableForDensity(Integer.parseInt(parseXml.getAttributeValue(i).substring(1)), iconDpi);
             parseXml.close();
         }
         catch (Exception ex) {
-            Log.w("parseRoundIcon", ex);
+            Log.w("getRoundIcon", ex);
         }
+        return null;
+    }
+
+    @Override
+    public Drawable getIcon(final LauncherActivityInfoCompat launcherActivityInfoCompat, int iconDpi) {
+        String packageName = launcherActivityInfoCompat.getApplicationInfo().packageName;
+        Drawable drawable = getRoundIcon(packageName, iconDpi);
 
         if (isCalendar(packageName)) {
             try {
