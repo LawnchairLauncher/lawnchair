@@ -69,7 +69,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     private static final int COLOR_TRACK = 0x77EEEEEE;
     private static final int COLOR_SHADOW = 0x55000000;
 
-    private static final float SMALL_SCALE = 0.75f;
+    private static final float SMALL_SCALE = 0.6f;
 
     private static final SparseArray<WeakReference<Bitmap>> sShadowCache = new SparseArray<>();
 
