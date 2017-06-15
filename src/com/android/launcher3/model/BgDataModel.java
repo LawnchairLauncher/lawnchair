@@ -152,7 +152,7 @@ public class BgDataModel {
             for (ArrayList<String> map : deepShortcutMap.values()) {
                 writer.print(prefix + "  ");
                 for (String str : map) {
-                    writer.print(str.toString() + ", ");
+                    writer.print(str + ", ");
                 }
                 writer.println();
             }
@@ -166,7 +166,7 @@ public class BgDataModel {
         DumpTargetWrapper hotseat = new DumpTargetWrapper(ContainerType.HOTSEAT, 0);
         LongArrayMap<DumpTargetWrapper> workspaces = new LongArrayMap<>();
         for (int i = 0; i < workspaceScreens.size(); i++) {
-            workspaces.put(new Long(workspaceScreens.get(i)),
+            workspaces.put(workspaceScreens.get(i),
                     new DumpTargetWrapper(ContainerType.WORKSPACE, i));
         }
         DumpTargetWrapper dtw;
@@ -183,7 +183,7 @@ public class BgDataModel {
             if (fInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                 hotseat.add(dtw);
             } else if (fInfo.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                workspaces.get(new Long(fInfo.screenId)).add(dtw);
+                workspaces.get(fInfo.screenId).add(dtw);
             }
         }
         // Add leaf nodes (L3): *Info
@@ -197,7 +197,7 @@ public class BgDataModel {
             if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                 hotseat.add(dtw);
             } else if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                workspaces.get(new Long(info.screenId)).add(dtw);
+                workspaces.get(info.screenId).add(dtw);
             }
         }
         for (int i = 0; i < appWidgets.size(); i++) {
@@ -207,7 +207,7 @@ public class BgDataModel {
             if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                 hotseat.add(dtw);
             } else if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                workspaces.get(new Long(info.screenId)).add(dtw);
+                workspaces.get(info.screenId).add(dtw);
             }
         }
 
