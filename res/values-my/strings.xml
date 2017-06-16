@@ -76,12 +76,9 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"ပင်မစာမျက်နှာလှည့်ခြင်းကို ခွင့်ပြုပါ"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ဖုန်းကိုလှည့်ထားစဉ်"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"လက်ရှိ မြင်ကွင်းဆက်တင်တွင် မြင်ကွင်းကို လှည့်ခွင့်မပေးပါ"</string>
-    <!-- no translation found for icon_badging_title (874121399231955394) -->
-    <skip />
-    <!-- no translation found for icon_badging_desc_on (2627952638544674079) -->
-    <skip />
-    <!-- no translation found for icon_badging_desc_off (5503319969924580241) -->
-    <skip />
+    <string name="icon_badging_title" msgid="874121399231955394">"အကြောင်းကြားချက်အမှတ်အသားများ"</string>
+    <string name="icon_badging_desc_on" msgid="2627952638544674079">"ဖွင့်ထားသည်"</string>
+    <string name="icon_badging_desc_off" msgid="5503319969924580241">"ပိတ်ထားသည်"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ပင်မစာမျက်နှာသို့ သင်္ကေတပုံ ထည့်ရန်"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"အက်ပ်အသစ်များအတွက်"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->

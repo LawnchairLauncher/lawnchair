@@ -76,12 +76,9 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"முகப்புத் திரை சுழற்சியை அனுமதி"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"மொபைலைச் சுழற்றும் போது"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"தற்போதைய திரை அமைப்பு சுழற்றுவதை அனுமதிக்கவில்லை"</string>
-    <!-- no translation found for icon_badging_title (874121399231955394) -->
-    <skip />
-    <!-- no translation found for icon_badging_desc_on (2627952638544674079) -->
-    <skip />
-    <!-- no translation found for icon_badging_desc_off (5503319969924580241) -->
-    <skip />
+    <string name="icon_badging_title" msgid="874121399231955394">"அறிவிப்புப் புள்ளிகள்"</string>
+    <string name="icon_badging_desc_on" msgid="2627952638544674079">"இயக்கப்பட்டுள்ளது"</string>
+    <string name="icon_badging_desc_off" msgid="5503319969924580241">"முடக்கப்பட்டுள்ளது"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"முகப்புத் திரையில் ஐகானைச் சேர்"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"புதிய பயன்பாடுகளுக்கு"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
