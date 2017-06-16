@@ -165,7 +165,7 @@ public class DragController implements DragDriver.EventListener, TouchController
                 ? res.getDimensionPixelSize(R.dimen.pre_drag_view_scale) : 0f;
         final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
                 registrationY, initialDragViewScale, scaleDps);
-
+        dragView.setItemInfo(dragInfo);
         mDragObject.dragComplete = false;
         if (mOptions.isAccessibleDrag) {
             // For an accessible drag, we assume the view is being dragged from the center.
