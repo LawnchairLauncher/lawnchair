@@ -227,9 +227,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                             Action.Direction.UP,
                             containerType);
                 }
-                mLauncher.showAppsView(true /* animated */,
-                        false /* updatePredictedApps */,
-                        false /* focusSearchBar */);
+                mLauncher.showAppsView(true /* animated */, false /* updatePredictedApps */);
                 if (hasSpringAnimationHandler()) {
                     mSpringAnimationHandler.animateToFinalPosition(0);
                 }
@@ -250,9 +248,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                             Action.Direction.UP,
                             containerType);
                 }
-                mLauncher.showAppsView(true, /* animated */
-                        false /* updatePredictedApps */,
-                        false /* focusSearchBar */);
+                mLauncher.showAppsView(true, /* animated */ false /* updatePredictedApps */);
             }
         }
     }

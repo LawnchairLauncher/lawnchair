@@ -979,8 +979,7 @@ public class Launcher extends BaseActivity
             // Don't update the predicted apps if the user is returning to launcher in the apps
             // view after launching an app, as they may be depending on the UI to be static to
             // switch to another app, otherwise, if it was
-            showAppsView(false /* animated */, !launchedFromApp /* updatePredictedApps */,
-                    mAppsView.shouldRestoreImeState() /* focusSearchBar */);
+            showAppsView(false /* animated */, !launchedFromApp /* updatePredictedApps */);
         } else if (mOnResumeState == State.WIDGETS) {
             showWidgetsView(false, false);
         }
@@ -2351,18 +2350,7 @@ public class Launcher extends BaseActivity
         if (!isAppsViewVisible()) {
             getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
                     ControlType.ALL_APPS_BUTTON);
-            showAppsView(true /* animated */, true /* updatePredictedApps */,
-                    false /* focusSearchBar */);
-        }
-    }
-
-    protected void onLongClickAllAppsButton(View v) {
-        if (LOGD) Log.d(TAG, "onLongClickAllAppsButton");
-        if (!isAppsViewVisible()) {
-            getUserEventDispatcher().logActionOnControl(Action.Touch.LONGPRESS,
-                    ControlType.ALL_APPS_BUTTON);
-            showAppsView(true /* animated */,
-                    true /* updatePredictedApps */, true /* focusSearchBar */);
+            showAppsView(true /* animated */, true /* updatePredictedApps */);
         }
     }
 
@@ -2750,13 +2738,6 @@ public class Launcher extends BaseActivity
         if (isWorkspaceLocked()) return false;
         if (mState != State.WORKSPACE) return false;
 
-        if ((FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && v instanceof PageIndicator) ||
-                (v == mAllAppsButton && mAllAppsButton != null)) {
-            onLongClickAllAppsButton(v);
-            return true;
-        }
-
-
         boolean ignoreLongPressToOverview =
                 mDeviceProfile.shouldIgnoreLongPressToOverview(mLastDispatchTouchEventX);
 
@@ -2956,13 +2937,12 @@ public class Launcher extends BaseActivity
     /**
      * Shows the apps view.
      */
-    public void showAppsView(boolean animated, boolean updatePredictedApps,
-            boolean focusSearchBar) {
+    public void showAppsView(boolean animated, boolean updatePredictedApps) {
         markAppsViewShown();
         if (updatePredictedApps) {
             tryAndUpdatePredictedApps();
         }
-        showAppsOrWidgets(State.APPS, animated, focusSearchBar);
+        showAppsOrWidgets(State.APPS, animated);
     }
 
     /**
@@ -2973,7 +2953,7 @@ public class Launcher extends BaseActivity
         if (resetPageToZero) {
             mWidgetsView.scrollToTop();
         }
-        showAppsOrWidgets(State.WIDGETS, animated, false);
+        showAppsOrWidgets(State.WIDGETS, animated);
 
         mWidgetsView.post(new Runnable() {
             @Override
@@ -2990,7 +2970,7 @@ public class Launcher extends BaseActivity
      */
     // TODO: calling method should use the return value so that when {@code false} is returned
     // the workspace transition doesn't fall into invalid state.
-    private boolean showAppsOrWidgets(State toState, boolean animated, boolean focusSearchBar) {
+    private boolean showAppsOrWidgets(State toState, boolean animated) {
         if (!(mState == State.WORKSPACE ||
                 mState == State.APPS_SPRING_LOADED ||
                 mState == State.WIDGETS_SPRING_LOADED ||
@@ -3008,7 +2988,7 @@ public class Launcher extends BaseActivity
         }
 
         if (toState == State.APPS) {
-            mStateTransitionAnimation.startAnimationToAllApps(animated, focusSearchBar);
+            mStateTransitionAnimation.startAnimationToAllApps(animated);
         } else {
             mStateTransitionAnimation.startAnimationToWidgets(animated);
         }
@@ -3081,8 +3061,7 @@ public class Launcher extends BaseActivity
 
     public void exitSpringLoadedDragMode() {
         if (mState == State.APPS_SPRING_LOADED) {
-            showAppsView(true /* animated */,
-                    false /* updatePredictedApps */, false /* focusSearchBar */);
+            showAppsView(true /* animated */, false /* updatePredictedApps */);
         } else if (mState == State.WIDGETS_SPRING_LOADED) {
             showWidgetsView(true, false);
         } else if (mState == State.WORKSPACE_SPRING_LOADED) {
@@ -4095,7 +4074,7 @@ public class Launcher extends BaseActivity
             switch (keyCode) {
                 case KeyEvent.KEYCODE_A:
                     if (mState == State.WORKSPACE) {
-                        showAppsView(true, true, false);
+                        showAppsView(true, true);
                         return true;
                     }
                     break;
