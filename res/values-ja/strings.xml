@@ -76,12 +76,9 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"ホーム画面の回転を許可"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"スマートフォンが回転したとき"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"現在の [ディスプレイ] 設定では回転を使用できません"</string>
-    <!-- no translation found for icon_badging_title (874121399231955394) -->
-    <skip />
-    <!-- no translation found for icon_badging_desc_on (2627952638544674079) -->
-    <skip />
-    <!-- no translation found for icon_badging_desc_off (5503319969924580241) -->
-    <skip />
+    <string name="icon_badging_title" msgid="874121399231955394">"通知ドット"</string>
+    <string name="icon_badging_desc_on" msgid="2627952638544674079">"ON"</string>
+    <string name="icon_badging_desc_off" msgid="5503319969924580241">"OFF"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ホーム画面にアイコンを追加"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"新しいアプリをダウンロードしたときに"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
