@@ -196,13 +196,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     }
 
     /**
-     * Focuses the search field and begins an app search.
-     */
-    public void startAppsSearch() {
-        mSearchUiManager.startAppsSearch();
-    }
-
-    /**
      * Resets the state of AllApps.
      */
     public void reset() {
@@ -370,10 +363,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     @Override
     public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
         targetParent.containerType = mAppsRecyclerView.getContainerType(v);
-    }
-
-    public boolean shouldRestoreImeState() {
-        return mSearchUiManager.shouldRestoreImeState();
     }
 
     @Override

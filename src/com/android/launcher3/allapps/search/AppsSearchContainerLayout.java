@@ -153,18 +153,6 @@ public class AppsSearchContainerLayout extends FrameLayout
     }
 
     @Override
-    public boolean shouldRestoreImeState() {
-        return !TextUtils.isEmpty(mSearchInput.getText());
-    }
-
-    @Override
-    public void startAppsSearch() {
-        if (mApps != null) {
-            mSearchBarController.focusSearchField();
-        }
-    }
-
-    @Override
     public void onSearchResult(String query, ArrayList<ComponentKey> apps) {
         if (apps != null) {
             mApps.setOrderedFilter(apps);
