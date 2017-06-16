@@ -76,12 +76,9 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Дазволіць паварот галоўнага экрана"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Пры павароце тэлефона"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Бягучая налада дысплэя не прадугледжвае паварот"</string>
-    <!-- no translation found for icon_badging_title (874121399231955394) -->
-    <skip />
-    <!-- no translation found for icon_badging_desc_on (2627952638544674079) -->
-    <skip />
-    <!-- no translation found for icon_badging_desc_off (5503319969924580241) -->
-    <skip />
+    <string name="icon_badging_title" msgid="874121399231955394">"Значкі апавяшчэнняў"</string>
+    <string name="icon_badging_desc_on" msgid="2627952638544674079">"Уключана"</string>
+    <string name="icon_badging_desc_off" msgid="5503319969924580241">"Выключана"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Дадаць значок на Галоўны экран"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Для новых праграм"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->

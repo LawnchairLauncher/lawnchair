@@ -76,12 +76,9 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Разрешаване на завъртането на началния екран"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"При завъртане на телефона"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Текущата настройка на екрана не разрешава завъртане"</string>
-    <!-- no translation found for icon_badging_title (874121399231955394) -->
-    <skip />
-    <!-- no translation found for icon_badging_desc_on (2627952638544674079) -->
-    <skip />
-    <!-- no translation found for icon_badging_desc_off (5503319969924580241) -->
-    <skip />
+    <string name="icon_badging_title" msgid="874121399231955394">"Точки за известия"</string>
+    <string name="icon_badging_desc_on" msgid="2627952638544674079">"Включено"</string>
+    <string name="icon_badging_desc_off" msgid="5503319969924580241">"Изключено"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Добавяне на икона към началния екран"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"За нови приложения"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
