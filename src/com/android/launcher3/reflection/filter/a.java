@@ -1,14 +1,13 @@
 package com.android.launcher3.reflection.filter;
 
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.reflection.b_research;
 import com.android.launcher3.reflection.c2.d;
 import com.android.launcher3.reflection.c2.c;
 import android.content.Intent;
 import android.database.Cursor;
 import android.util.Log;
 import android.net.Uri;
-import com.android.launcher3.LauncherSettings.Favorites;
+
 import java.util.Locale;
 import com.android.launcher3.util.Preconditions;
 import java.util.Iterator;
@@ -54,9 +53,9 @@ public class a
     }
 
     public void c(final List list, final List list2) {
-        final Iterator<b_research> iterator = list.iterator();
+        final Iterator<com.android.launcher3.reflection.predictor.b> iterator = list.iterator();
         while (iterator.hasNext()) {
-            final b_research b = iterator.next();
+            final com.android.launcher3.reflection.predictor.b b = iterator.next();
             if (this.e.contains(b.Ld)) {
                 if (list2 != null) {
                     list2.add(b);

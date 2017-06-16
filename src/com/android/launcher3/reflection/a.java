@@ -19,7 +19,7 @@ public class a
 
     public static String T(final List list) {
         final StringBuilder sb = new StringBuilder();
-        final Iterator<b_research> iterator = (Iterator<b_research>)list.iterator();
+        final Iterator<com.android.launcher3.reflection.predictor.b> iterator = (Iterator<com.android.launcher3.reflection.predictor.b>)list.iterator();
         while (iterator.hasNext()) {
             final Matcher matcher = m.bg.matcher(iterator.next().Ld);
             if (matcher.find()) {

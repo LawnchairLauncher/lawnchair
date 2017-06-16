@@ -44,8 +44,7 @@ public class e
                 if (n3 == n6) {
                     return n6;
                 }
-                //throw new Exception(n6 + "");
-                return n3;
+                throw new Exception(n6 + "");
             }
         }
         if (n3 < n) {

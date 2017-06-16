@@ -3,7 +3,6 @@ package com.android.launcher3.reflection.filter;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import java.util.Iterator;
-import com.android.launcher3.reflection.b_research;
 import java.util.List;
 import java.util.regex.Matcher;
 import com.android.launcher3.util.ComponentKey;
@@ -67,9 +66,9 @@ public class f
     }
 
     public void c(final List list, final List list2) {
-        final Iterator<b_research> iterator = list.iterator();
+        final Iterator<com.android.launcher3.reflection.predictor.b> iterator = list.iterator();
         while (iterator.hasNext()) {
-            final b_research b = iterator.next();
+            final com.android.launcher3.reflection.predictor.b b = iterator.next();
             if (!this.v(b.Ld)) {
                 if (list2 != null) {
                     list2.add(b);

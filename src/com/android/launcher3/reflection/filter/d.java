@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Calendar;
 import java.util.LinkedList;
 import com.android.launcher3.reflection.a2.b;
-import com.android.launcher3.reflection.b_research;
 
 import java.util.HashSet;
 
@@ -43,10 +42,10 @@ public class d
         float n = 1.0f;
         this.p();
         if (list.size() > 0) {
-            n += ((b_research) list.get(0)).Le;
+            n += ((com.android.launcher3.reflection.predictor.b) list.get(0)).Le;
         }
         this.s.clear();
-        final Iterator<b_research> iterator = list.iterator();
+        final Iterator<com.android.launcher3.reflection.predictor.b> iterator = list.iterator();
         while (iterator.hasNext()) {
             this.s.add(iterator.next().Ld);
         }
@@ -60,7 +59,7 @@ public class d
         int i = Math.max(list3.size() - d.r, 0);
         int n2 = 0;
         while (i < list3.size()) {
-            final b_research b = new b_research(list3.get(i), n2 + n);
+            final com.android.launcher3.reflection.predictor.b b = new com.android.launcher3.reflection.predictor.b(list3.get(i), n2 + n);
             list.add(0, b);
             if (list2 != null) {
                 list2.add(0, b);

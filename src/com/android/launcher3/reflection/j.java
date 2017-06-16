@@ -95,8 +95,8 @@ public class j
         final com.android.launcher3.reflection.c2.c[] array = new com.android.launcher3.reflection.c2.c[list.size()];
         for (int i = 0; i < list.size(); ++i) {
             final com.android.launcher3.reflection.c2.c c = new com.android.launcher3.reflection.c2.c();
-            c.ag = ((b_research) list.get(i)).Ld;
-            c.ah = ((b_research) list.get(i)).Le;
+            c.ag = ((com.android.launcher3.reflection.predictor.b) list.get(i)).Ld;
+            c.ah = ((com.android.launcher3.reflection.predictor.b) list.get(i)).Le;
             array[i] = c;
         }
         return array;
