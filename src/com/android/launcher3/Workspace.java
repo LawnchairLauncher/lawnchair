@@ -305,8 +305,6 @@ public class Workspace extends PagedView
     private boolean mForceDrawAdjacentPages = false;
     // Total over scrollX in the overlay direction.
     private float mOverlayTranslation;
-    private int mFirstPageScrollX;
-    private boolean mIgnoreQsbScroll;
 
     // Handles workspace state transitions
     private final WorkspaceStateTransitionAnimation mStateTransitionAnimation;
@@ -1739,32 +1737,6 @@ public class Workspace extends PagedView
             mWallpaperOffset.jumpToFinal();
         }
         super.onLayout(changed, left, top, right, bottom);
-        mFirstPageScrollX = getScrollForPage(0);
-
-        final LayoutTransition transition = getLayoutTransition();
-        // If the transition is running defer updating max scroll, as some empty pages could
-        // still be present, and a max scroll change could cause sudden jumps in scroll.
-        if (transition != null && transition.isRunning()) {
-            transition.addTransitionListener(new LayoutTransition.TransitionListener() {
-
-                @Override
-                public void startTransition(LayoutTransition transition, ViewGroup container,
-                                            View view, int transitionType) {
-                    mIgnoreQsbScroll = true;
-                }
-
-                @Override
-                public void endTransition(LayoutTransition transition, ViewGroup container,
-                                          View view, int transitionType) {
-                    // Wait until all transitions are complete.
-                    if (!transition.isRunning()) {
-                        mIgnoreQsbScroll = false;
-                        transition.removeTransitionListener(this);
-                        mFirstPageScrollX = getScrollForPage(0);
-                    }
-                }
-            });
-        }
         updatePageAlphaValues();
     }
 
@@ -3548,7 +3520,7 @@ public class Workspace extends PagedView
             }
         }
         if ((d.cancelled || (beingCalledAfterUninstall && !mUninstallSuccessful))
-                && mDragInfo.cell != null) {
+                && mDragInfo != null && mDragInfo.cell != null) {
             mDragInfo.cell.setVisibility(VISIBLE);
         }
         mDragInfo = null;
@@ -4121,8 +4093,8 @@ public class Workspace extends PagedView
 
         private boolean mRefreshPending;
 
-        public DeferredWidgetRefresh(ArrayList<LauncherAppWidgetInfo> infos,
-                LauncherAppWidgetHost host) {
+        DeferredWidgetRefresh(ArrayList<LauncherAppWidgetInfo> infos,
+            LauncherAppWidgetHost host) {
             mInfos = infos;
             mHost = host;
             mHandler = new Handler();
