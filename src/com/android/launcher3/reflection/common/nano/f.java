@@ -1,4 +1,4 @@
-package com.android.launcher3.reflection.nano;
+package com.android.launcher3.reflection.common.nano;
 
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.CodedOutputByteBufferNano;

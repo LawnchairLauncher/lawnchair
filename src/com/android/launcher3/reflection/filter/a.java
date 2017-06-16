@@ -22,17 +22,16 @@ import android.content.SharedPreferences;
 public class a
 {
     private final SharedPreferences c;
-    //private final com.google.android.apps.nexuslauncher.reflection.b.a d;
-    private final Object d = null;
+    private final com.android.launcher3.reflection.b2.a d;
     private Set e;
     private final FirstPageComponentsFilterIntentParser f;
     private final ContentResolver g;
     private final b h;
 
-    public a(final ContentResolver g, final SharedPreferences c, final Object d, final b h) {
+    public a(final ContentResolver g, final SharedPreferences c, final com.android.launcher3.reflection.b2.a d, final b h) {
         this.g = g;
         this.c = c;
-        //this.d = d;
+        this.d = d;
         this.h = h;
         this.f = new FirstPageComponentsFilterIntentParser();
         this.e = new HashSet();
@@ -68,65 +67,58 @@ public class a
     }
 
     public void e() {
-        String string = null;
-        Label_0350_Outer:
-        while (true) {
-            long long1 = 0L;
-            synchronized (this) {
-                Preconditions.assertNonUiThread();
-                this.e = new HashSet();
-                final Locale english = Locale.ENGLISH;
-                Object o = "(SELECT %s from %s ORDER BY %s ASC LIMIT 1)";
-                final String format = String.format(english, (String)o, "_id", "workspaceScreens", "screenRank");
-                o = Locale.ENGLISH;
-                final String format2 = String.format((Locale)o, "%s = %d AND (%s = %d OR (%s = %d AND %s = %s))", "itemType", 0, "container", -101, "container", -100, "screen", format);
-                final ContentResolver g = this.g;
-                o = LauncherSettings.Favorites.CONTENT_URI;
-                o = g.query((Uri)o, new String[] { "intent", "profileId" }, format2, null, null);
-                Label_0363: {
-                    if (!((Cursor)o).moveToFirst()) {
-                        break Label_0363;
+        String string;
+        long long1;
+        synchronized (this) {
+            Preconditions.assertNonUiThread();
+            this.e = new HashSet();
+            final Locale english = Locale.ENGLISH;
+            Object o = "(SELECT %s from %s ORDER BY %s ASC LIMIT 1)";
+            final String format = String.format(english, (String)o, "_id", "workspaceScreens", "screenRank");
+            o = Locale.ENGLISH;
+            final String format2 = String.format((Locale)o, "%s = %d AND (%s = %d OR (%s = %d AND %s = %s))", "itemType", 0, "container", -101, "container", -100, "screen", format);
+            final ContentResolver g = this.g;
+            o = LauncherSettings.Favorites.CONTENT_URI;
+            o = g.query((Uri)o, new String[] { "intent", "profileId" }, format2, null, null);
+            final Cursor cursor = (Cursor)o;
+
+            if (!cursor.moveToFirst()) {
+                return;
+            }
+
+            while (true) {
+                try {
+                    string = cursor.getString(0);
+                    long1 = ((Cursor)o).getLong(1);
+                    if (string != null) {
+                        final Intent i = this.f.i(string);
+                        if (i == null || i.getComponent() == null) {
+                            Log.e("Reflection.1stPFilter", "No component retrieved from intent.");
+                        } else {
+                            this.e.add(this.h.y(i.getComponent(), long1));
+                        }
                     }
-                    while (true) {
-                        final Cursor cursor = (Cursor)o;
-                        try {
-                            string = cursor.getString(0);
-                            long1 = ((Cursor)o).getLong(1);
-                            if (string != null) {
-                                break;
-                            }
-                            if (!((Cursor)o).moveToNext()) {
-                                ((Cursor)o).close();
-                                return;
-                            }
-                            continue Label_0350_Outer;
-                        }
-                        catch (Exception ex) {
-                            Log.e("Reflection.1stPFilter", "Error in reading intent from cursor", (Throwable)ex);
-                        }
+                    if (!((Cursor)o).moveToNext()) {
+                        ((Cursor)o).close();
+                        return;
                     }
                 }
+                catch (Exception ex) {
+                    Log.e("Reflection.1stPFilter", "Error in reading intent from cursor", (Throwable)ex);
+                }
             }
-            final Intent i = this.f.i(string);
-            if (i == null || i.getComponent() == null) {
-                Log.e("Reflection.1stPFilter", "No component retrieved from intent.");
-                continue;
-            }
-            this.e.add(this.h.y(i.getComponent(), long1));
-            //continue;
-            break;
         }
     }
 
     public boolean f() {
         synchronized (this) {
             Preconditions.assertNonUiThread();
-            final Set e = this.e;
+            final Set e = new HashSet(this.e);
             this.e();
             final boolean b = !this.e.equals(e);
             if (b) {
                 this.g();
-                /*if (this.d != null) {
+                if (this.d != null) {
                     final com.android.launcher3.reflection.c2.a a = new com.android.launcher3.reflection.c2.a();
                     a.Y = System.currentTimeMillis();
                     a.Z = "subtraction_changed";
@@ -145,7 +137,7 @@ public class a
                     aa.aj = aj;
                     a.aa = aa;
                     this.d.J(a);
-                }*/
+                }
             }
             return b;
         }

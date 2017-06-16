@@ -1,8 +1,14 @@
 package com.android.launcher3.reflection.b2;
 
+import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import com.android.launcher3.Utilities;
+
+import android.provider.ContactsContract;
 import android.util.Log;
+
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.EOFException;
 import com.google.protobuf.nano.CodedInputByteBufferNano;
@@ -12,6 +18,8 @@ import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.util.ArrayList;
 import com.android.launcher3.util.Preconditions;
+import com.google.protobuf.nano.ExtendableMessageNano;
+
 import java.util.Arrays;
 import java.util.List;
 import java.io.File;
@@ -105,5 +113,26 @@ public class a
     }
 
     void log(final List p0) {
+        Preconditions.assertNonUiThread();
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(R);
+            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+            DataOutputStream dataOutputStream = new DataOutputStream(bufferedOutputStream);
+
+            for (Object o : p0) {
+                com.android.launcher3.reflection.c2.a a = (com.android.launcher3.reflection.c2.a) o;
+                int size = a.getSerializedSize();
+                byte[] bytes = com.google.protobuf.nano.MessageNano.toByteArray(a);
+                dataOutputStream.writeInt(size);
+                dataOutputStream.write(bytes);
+            }
+
+            Utilities.closeSilently(dataOutputStream);
+            Utilities.closeSilently(bufferedOutputStream);
+            Utilities.closeSilently(fileOutputStream);
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

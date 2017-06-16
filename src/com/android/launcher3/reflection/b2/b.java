@@ -12,10 +12,12 @@ public class b extends SQLiteOpenHelper
 
     public void onCreate(final SQLiteDatabase sqLiteDatabase) {
         final String s = "CREATE TABLE reflection_event (_id INTEGER PRIMARY KEY AUTOINCREMENT,timestamp INTEGER,client TEXT,type TEXT,id TEXT,latLong BLOB,semanticPlace BLOB,proto BLOB)";
-        try {
-            sqLiteDatabase.execSQL(s);
-        }
-        finally {
+        synchronized (this) {
+            try {
+                sqLiteDatabase.execSQL(s);
+            }
+            finally {
+            }
         }
     }
 

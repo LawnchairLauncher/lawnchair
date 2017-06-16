@@ -3,8 +3,8 @@ package com.android.launcher3.reflection.a2;
 import android.app.usage.UsageEvents;
 import com.android.launcher3.reflection.m;
 import android.content.ComponentName;
-import android.app.usage.UsageEvents;
-import com.android.launcher3.reflection.nano.b;
+
+import com.android.launcher3.reflection.common.nano.b;
 import java.util.ArrayList;
 import java.util.List;
 import android.app.usage.UsageStatsManager;
@@ -35,7 +35,7 @@ public class a implements c
         return list;
     }
 
-    public void x(final com.android.launcher3.reflection.nano.a a) {
-        //com.google.research.reflection.common.a.Sz(a, "app_usage", this.w(600000L));
+    public void x(final com.android.launcher3.reflection.common.nano.a a) {
+        com.android.launcher3.reflection.common.a.Sz(a, "app_usage", this.w(600000L));
     }
 }

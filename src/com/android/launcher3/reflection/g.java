@@ -11,13 +11,13 @@ public class g
 {
     static final String PREF_KEY_BACKGROUND_MODEL_VERSION = "background_model_version";
     static final String PREF_KEY_PROGRESS = "staged_batch_training_progress";
-    private static final Pattern aG;
-    private final File aH;
-    private h aI;
-    private final d aJ;
-    private final a aK;
-    private final e aL;
-    private final SharedPreferences aM;
+    public static final Pattern aG;
+    public final File aH;
+    public h aI;
+    public final d aJ;
+    public final a aK;
+    public final e aL;
+    public final SharedPreferences aM;
 
     static {
         aG = Pattern.compile("^InProgress:(.+)$");
@@ -32,7 +32,7 @@ public class g
         this.aI = null;
     }
 
-    private void ak(final Throwable t, final h h) {
+    public void ak(final Throwable t, final h h) {
         synchronized (this) {
             if (this.aI == h) {
                 this.aM.edit().remove("background_model_version").remove("staged_batch_training_progress").apply();
@@ -42,7 +42,7 @@ public class g
         }
     }
 
-    private void al(final e e, final h h) {
+    public void al(final e e, final h h) {
         synchronized (this) {
             if (this.aI == h) {
                 this.aL.X(e);
@@ -67,7 +67,6 @@ public class g
     }
 
     public void am(final boolean b) {
-        // monitorenter(this)
         Label_0104: {
             if (!b) {
                 break Label_0104;
@@ -76,15 +75,13 @@ public class g
                 this.aM.edit().putString("staged_batch_training_progress", "New").putInt("background_model_version", 23).apply();
                 this.aH.delete();
                 Label_0068: {
-                    //this.aI = new h(this, null);
+                    this.aI = new h(this);
                 }
                 Utilities.THREAD_POOL_EXECUTOR.execute(this.aI);
                 return;
             }
-            // iftrue(Label_0068:, this.aI == null)
             finally {
             }
-            // monitorexit(this)
         }
     }
 }

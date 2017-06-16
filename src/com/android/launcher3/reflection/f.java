@@ -15,16 +15,12 @@ import android.content.Context;
 public class f
 {
     public static j ah(final Context context) {
-        final ArrayList list = new ArrayList();
+        final ArrayList<k> list = new ArrayList();
         final c c = new c(context);
-        final SharedPreferences prefs = Utilities.getPrefs(context);
         new n();
         final d d = new d(new com.android.launcher3.reflection.b2.b(context, "reflection.events"));
-        a a = null;
         final File file = new File(context.getCacheDir(), "client_actions");
-        if (file.exists()) {
-            file.delete();
-        }
+        a a = new a(file, 10485760L);
         final b b = new b(context);
         list.add(b);
         final SharedPreferences aj = m.aJ(context);

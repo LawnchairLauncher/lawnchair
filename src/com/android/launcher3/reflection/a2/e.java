@@ -2,14 +2,15 @@ package com.android.launcher3.reflection.a2;
 
 import android.content.Intent;
 import java.util.List;
+import com.android.launcher3.reflection.common.nano.b;
 import java.util.ArrayList;
 import java.util.Calendar;
 import android.media.AudioManager;
 import android.os.Handler;
 import android.content.IntentFilter;
 import android.content.Context;
+import com.android.launcher3.reflection.common.nano.a;
 import com.android.launcher3.reflection.k;
-import com.google.protobuf.nano.MessageNano;
 
 import android.content.BroadcastReceiver;
 
@@ -17,12 +18,12 @@ public class e extends BroadcastReceiver implements k
 {
     private boolean L;
     private long M;
-    private final MessageNano N;
+    private final a N;
     private boolean O;
     private long P;
     private final Context mContext;
 
-    public e(final MessageNano n, final Context mContext) {
+    public e(final a n, final Context mContext) {
         final long n2 = 0L;
         this.P = n2;
         this.M = n2;
@@ -47,7 +48,7 @@ public class e extends BroadcastReceiver implements k
     }
 
     public void H() {
-        /*final long n = 0L;
+        final long n = 0L;
         final ArrayList<b> list = new ArrayList<b>(4);
         if (this.P > n) {
             final b b = new b();
@@ -77,7 +78,7 @@ public class e extends BroadcastReceiver implements k
             b2.LK = lk2;
             list.add(b2);
         }
-        com.google.research.reflection.common.a.Sz(this.N, "headset", list);*/
+        com.android.launcher3.reflection.common.a.Sz(this.N, "headset", list);
     }
 
     protected void I(final boolean o) {

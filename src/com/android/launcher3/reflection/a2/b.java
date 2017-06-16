@@ -3,26 +3,26 @@ package com.android.launcher3.reflection.a2;
 import com.android.launcher3.reflection.m;
 import android.content.ComponentName;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.Calendar;
 import android.app.usage.UsageStatsManager;
 import android.os.Process;
 import android.app.AppOpsManager;
-import com.google.protobuf.nano.InvalidProtocolBufferNanoException;
-import android.util.Log;
+
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import android.content.Context;
 import java.util.List;
 import java.util.ArrayList;
 import com.android.launcher3.reflection.k;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 
 public class b implements k
 {
     private final ArrayList D;
-    private final a E;
-    private final com.android.launcher3.reflection.nano.a F;
+    private final GoogleApiClient E;
+    private final com.android.launcher3.reflection.common.nano.a F;
     private final long G;
     private final List H;
     private final List I;
@@ -30,13 +30,12 @@ public class b implements k
     public b(final Context context) {
         final int n = 4;
         this.D = new ArrayList();
-        this.F = new com.android.launcher3.reflection.nano.a();
+        this.F = new com.android.launcher3.reflection.common.nano.a();
         this.H = new ArrayList(n);
         this.I = new ArrayList(n);
         this.E = this.A(context);
         this.G = UserManagerCompat.getInstance(context).getSerialNumberForUser(UserHandleCompat.myUserHandle());
-        //this.H.add(new d(this.E, com.google.android.gms.location.b.Bj));
-        this.H.add(new d(null, null));
+        this.H.add(new d(this.E, LocationServices.FusedLocationApi));
         final e e = new e(this.F, context);
         this.I.add(e);
         this.D.add(e);
@@ -44,13 +43,13 @@ public class b implements k
         if (d != null) {
             this.H.add(d);
         }
-        //this.E.eo();
+        this.E.connect(); //eo
         this.E();
     }
 
     b(final List h, final List i, final long g) {
         this.D = new ArrayList();
-        this.F = new com.android.launcher3.reflection.nano.a();
+        this.F = new com.android.launcher3.reflection.common.nano.a();
         this.H = h;
         this.I = i;
         this.E = null;
@@ -58,17 +57,17 @@ public class b implements k
         this.E();
     }
 
-    private a A(final Context context) {
-        /*final com.google.android.gms.common.api.b b = new com.google.android.gms.common.api.b(context);
-        b.ev(com.google.android.gms.location.b.Bi);
-        b.ex();
-        return b.ez();*/ return null;
+    private GoogleApiClient A(final Context context) {
+        final com.google.android.gms.common.api.GoogleApiClient.Builder b = new com.google.android.gms.common.api.GoogleApiClient.Builder(context);
+        b.addApi(LocationServices.API);
+        b.useDefaultAccount();
+        return b.build();
     }
 
-    private com.android.launcher3.reflection.nano.a C() {
-        final com.android.launcher3.reflection.nano.a f = this.F;
+    private com.android.launcher3.reflection.common.nano.a C() {
+        final com.android.launcher3.reflection.common.nano.a f = this.F;
         final byte[] byteArray = com.google.protobuf.nano.MessageNano.toByteArray(f);
-        return com.android.launcher3.reflection.nano.a.parseFrom(byteArray);
+        return com.android.launcher3.reflection.common.nano.a.parseFrom(byteArray);
 
     }
 
@@ -83,8 +82,8 @@ public class b implements k
         return a;
     }
 
-    public com.android.launcher3.reflection.nano.a B(final String la, final String lz, final Calendar calendar, final long ld, final long le, final String ly) {
-        final com.android.launcher3.reflection.nano.a c = this.C();
+    public com.android.launcher3.reflection.common.nano.a B(final String la, final String lz, final Calendar calendar, final long ld, final long le, final String ly) {
+        final com.android.launcher3.reflection.common.nano.a c = this.C();
         c.LC = calendar.getTimeInMillis();
         c.LF = calendar.getTimeZone().getID();
         c.LG = calendar.getTimeZone().getOffset(c.LC);
@@ -109,7 +108,7 @@ public class b implements k
     }
 
     public void F() {
-        //this.E.ep();
+        this.E.disconnect(); // .ep();
         final Iterator iterator = this.D.iterator();
         while (iterator.hasNext()) {
             ((e)iterator.next()).F();
@@ -124,7 +123,7 @@ public class b implements k
         return s;
     }
 
-    public com.android.launcher3.reflection.nano.a z(final String s, final String s2, final Calendar calendar, final long n, final long n2, final String s3) {
+    public com.android.launcher3.reflection.common.nano.a z(final String s, final String s2, final Calendar calendar, final long n, final long n2, final String s3) {
         this.E();
         return this.B(s, s2, calendar, n, n2, s3);
     }

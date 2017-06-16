@@ -1,24 +1,28 @@
 package com.android.launcher3.reflection;
 
-import java.util.ArrayList;
-import java.io.Closeable;
-import com.android.launcher3.Utilities;
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import android.util.Log;
-//import com.android.launcher3.util.b;
+import java.util.ArrayList;
+
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Preconditions;
-//import com.google.research.reflection.predictor.g;
-//import com.google.research.reflection.predictor.c;
-import java.util.Map;
+import com.android.launcher3.reflection.predictor.g;
+import com.android.launcher3.reflection.predictor.c;
+
 import java.io.File;
 import android.content.SharedPreferences;
+import android.util.Log;
+
+import java.util.Calendar;
 import java.util.HashMap;
 import com.android.launcher3.reflection.filter.a;
 import com.android.launcher3.reflection.b2.d;
 
 public class e
 {
-    //private com.google.research.reflection.predictor.e aA;
+    private com.android.launcher3.reflection.predictor.e aA;
     private final d aB;
     private final a aC;
     private final HashMap aD;
@@ -35,7 +39,7 @@ public class e
         this.aE = ae;
         this.ay = ay;
         this.aF = af;
-        //this.aA = new com.google.research.reflection.predictor.e();
+        this.aA = new com.android.launcher3.reflection.predictor.e();
     }
 
     private String ac() {
@@ -57,6 +61,7 @@ public class e
     }
 
     public void X(final e e) {
+        if (e != null)
         synchronized (this) {
             synchronized (e) {
                 this.aD.clear();
@@ -69,38 +74,38 @@ public class e
         synchronized (this) {
             final String string = "/deleted_app/" + System.currentTimeMillis() + "/";
             final HashMap hashMap = new HashMap();
-            /*final c c = this.aD.get(s);
+            final c c = (c) this.aD.get(s);
             if (c != null) {
                 c.RR(s2, string, hashMap);
                 this.af();
-            }*/
+            }
             this.aB.Q(s2, string, hashMap);
         }
     }
 
-    /*com.google.research.reflection.predictor.e Z() {
+    com.android.launcher3.reflection.predictor.e Z() {
         return this.aA;
-    }*/
+    }
 
-    void aa(final String s, final com.android.launcher3.reflection.nano.a a) {
+    void aa(final String s, final com.android.launcher3.reflection.common.nano.a a) {
         synchronized (this) {
             if (!a.Ly.startsWith("/deleted_app/") && this.aC.h(a.Ly)) {
                 c c = (c) this.aD.get(s);
                 if (c == null) {
-                    //c = new c(new g());
-                    //c.RY(this.aA);
-                    //this.aD.put(s, c);
+                    c = new c(new g());
+                    c.RY(this.aA);
+                    this.aD.put(s, c);
                 }
-                //c.RN(a);
+                c.RN(a);
             }
         }
     }
 
     boolean ab() {
-        /*synchronized (this) {
+        synchronized (this) {
             Preconditions.assertNonUiThread();
             if (this.aE != null) {
-                //this.aA = com.google.research.reflection.predictor.e.Sr(this.aE.getString(this.ay, (String)null));
+                this.aA = com.android.launcher3.reflection.predictor.e.Sr(this.aE.getString(this.ay, (String)null));
             }
             if (this.az == null) {
                 return false;
@@ -108,71 +113,99 @@ public class e
             this.aD.clear();
             try {
                 final File az = this.az;
+                final byte[] ao = com.android.launcher3.reflection.util.b.aO(az);
+                final com.android.launcher3.reflection.common.nano.d from = com.android.launcher3.reflection.common.nano.d.parseFrom(ao);
+                final HashMap ad = this.aD;
                 try {
-                    final byte[] ao = b.aO(az);
-                    try {
-                        final com.android.launcher3.reflection.nano.d from = com.android.launcher3.reflection.nano.d.parseFrom(ao);
-                        try {
-                            final HashMap ad = this.aD;
-                            try {
-                                c.RV(from, ad, this.aA);
-                                return true;
-                            }
-                            catch (IOException ex) {
-                                Log.e("Reflection.Engine", "Failed to load models, starting a fresh model.", (Throwable)ex);
-                                return false;
-                            }
-                        }
-                        catch (IOException ex2) {}
-                    }
-                    catch (IOException ex3) {}
+                    c.RV(from, ad, this.aA);
+                    return true;
                 }
-                catch (IOException ex4) {}
+                catch (IOException ex) {
+                    Log.e("Reflection.Engine", "Failed to load models, starting a fresh model.", (Throwable)ex);
+                    return false;
+                }
             }
             catch (IOException ex5) {}
             finally {
                 Utilities.closeSilently(null);
             }
-        }*/ return false;
+        } return false;
     }
 
-    /*public com.google.research.reflection.predictor.a ad(final String s, final com.android.launcher3.reflection.nano.a a) {
+    public com.android.launcher3.reflection.predictor.a ad(final String s, final com.android.launcher3.reflection.common.nano.a a) {
         synchronized (this) {
-            final c c = this.aD.get(s);
+            final c c = (c) this.aD.get(s);
             if (c == null) {
-                final com.google.research.reflection.predictor.a a2 = new com.google.research.reflection.predictor.a();
+                final com.android.launcher3.reflection.predictor.a a2 = new com.android.launcher3.reflection.predictor.a();
                 a2.RJ(new ArrayList());
                 return a2;
             }
             if (c.RM().isEmpty()) {
-                final com.google.research.reflection.predictor.a a3 = new com.google.research.reflection.predictor.a();
+                final com.android.launcher3.reflection.predictor.a a3 = new com.android.launcher3.reflection.predictor.a();
                 a3.RJ(new ArrayList());
                 return a3;
             }
-            final com.google.research.reflection.predictor.a rp = c.RP(a);
+            final com.android.launcher3.reflection.predictor.a rp = c.RP(a);
             rp.RI();
             return rp;
         }
-    }*/
+    }
 
-    public void ae(final String s, final com.android.launcher3.reflection.nano.a a) {
+    public void ae(final String s, final com.android.launcher3.reflection.common.nano.a a) {
         final String s2 = "system";
         try {
             if (!s.equals(s2)) {
                 this.aa(s, a);
             }
-            //if (!a.Ly.startsWith("/deleted_app/") && this.aA != null) {
-                //this.aA.Sk(a);
-            //}
+            if (!a.Ly.startsWith("/deleted_app/") && this.aA != null) {
+                this.aA.Sk(a);
+            }
             this.aB.O(a.LC);
             this.aB.P(a);
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
         }
         finally {
         }
     }
 
     public boolean af() {
+        Preconditions.assertNonUiThread();
+        String str = com.android.launcher3.reflection.predictor.e.Ss(aA);
+        SharedPreferences.Editor edit = aE.edit();
+        edit.putString(ay, str);
+        edit.apply();
+
+        try {
+            com.android.launcher3.reflection.common.nano.d d = com.android.launcher3.reflection.predictor.c.RW(aD);
+            Calendar calendar = Calendar.getInstance();
+            d.Ma = calendar.getTimeInMillis();
+            d.Mb = 0;
+            if (aF != null) {
+                aF.run();
+            }
+            d.Mc = ac(); //app info
+
+            FileOutputStream fileOutputStream = new FileOutputStream(az);
+            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+            DataOutputStream dataOutputStream = new DataOutputStream(bufferedOutputStream);
+            dataOutputStream.write(com.google.protobuf.nano.MessageNano.toByteArray(d));
+            if (aF != null) {
+                aF.run();
+            }
+
+            Utilities.closeSilently(dataOutputStream);
+            Utilities.closeSilently(bufferedOutputStream);
+            Utilities.closeSilently(fileOutputStream);
+
+            return true;
+        }
+        catch (IOException ex) {
+            Log.d("Reflection.Engine", "Failed to save models");
+        }
         return false;
+
     }
 
     public void ag(final File az) {

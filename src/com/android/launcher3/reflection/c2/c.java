@@ -2,7 +2,6 @@ package com.android.launcher3.reflection.c2;
 
 import com.google.protobuf.nano.CodedOutputByteBufferNano;
 import com.google.protobuf.nano.WireFormatNano;
-import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.MessageNano;
 
 import java.io.IOException;
@@ -22,7 +21,7 @@ public final class c extends MessageNano
             if (c.ai != null) {
                 break Label_0035;
             }
-            synchronized (com.android.launcher3.reflection.nano.b.KD) {
+            synchronized (com.android.launcher3.reflection.common.nano.b.KD) {
                 if (c.ai == null) {
                     c.ai = new c[0];
                 }
