@@ -80,35 +80,22 @@ public class e
     }
 
     public void Sk(final a a) throws Exception {
-        final boolean lt = true;
         if (this.Sl(a)) {
-            Label_0028:
             while (this.Ls.SF() > 0) {
-                Label_0119: {
-                    try {
-                        final Object sg = this.Ls.SG(0);
-                        long sr = Long.MAX_VALUE;
-                        try {
-                            sr = com.android.launcher3.reflection.common.e.SR((a)sg, a);
-                        }
-                        catch (Exception ex) {
-                        }
-                        if (sr > this.Lq) {
-                            break Label_0119;
-                        }
-                        final int n = lt ? 1 : 0;
-                        if (n == 0) {
-                            this.Ls.SJ();
-                            break;
-                        }
-                        break Label_0028;
-                    }
-                    catch (Exception ex2) {}
+                final Object sg = this.Ls.SG(0);
+                long sr = Long.MAX_VALUE;
+                try {
+                    sr = com.android.launcher3.reflection.common.e.SR((a)sg, a);
                 }
-                continue;
+                catch (Exception ex) {
+                }
+                if (sr > this.Lq) {
+                    break;
+                }
+                this.Ls.SJ();
             }
             this.Ls.add(a);
-            this.Lt = lt;
+            this.Lt = true;
         }
     }
 

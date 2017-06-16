@@ -134,7 +134,7 @@ public class d extends b
             }
             else {
                 final String tg = this.Tg();
-                value = (Integer)this.Ms.get(tg);
+                value = this.Ms.get(tg);
                 final String[] array = new String[n2];
                 array[0] = tg;
                 this.SZ(Arrays.asList(array));
@@ -148,52 +148,29 @@ public class d extends b
 
     protected ArrayList Ti(final com.android.launcher3.reflection.common.b b, final a a, final long n, final int n2) {
         final ArrayList list = new ArrayList();
-        final HashMap<Object, com.android.launcher3.reflection.common.d> hashMap = new HashMap<Object, com.android.launcher3.reflection.common.d>();
+        final HashMap<Object, com.android.launcher3.reflection.common.d> hashMap = new HashMap<>();
         Label_0037:
         for (int i = b.SF() - 1; i >= 0; --i) {
-            a a2;
-            Object o;
-            long sr;
-            int n3;
-            int th = 0;
-            Label_0158_Outer:
-            while (true) {
-                o = (a2 = (a)b.SG(i));
-                while (true) {
-                    Label_0218:
-                    while (true) {
-                        try {
-                            sr = e.SR(a2, a);
-                            if (sr - ((a)o).LH <= n) {
-                                n3 = 1;
-                                if (n3 == 0) {
-                                    break Label_0037;
-                                }
-                                o = ((a)o).Ly;
-                                th = this.Th((String)o, a.LC);
-                                o = th;
-                                o = hashMap.get(o);
-                                if (o != null) {
-                                    ++((com.android.launcher3.reflection.common.d)o).Mo;
-                                    break;
-                                }
-                                break Label_0218;
-                            }
-                        }
-                        catch (Exception ex) {
-                            sr = Long.MAX_VALUE;
-                            continue Label_0158_Outer;
-                        }
-                        n3 = 0;
-                        continue Label_0158_Outer;
+            int th = -1;
+            a o = (a)b.SG(i);
+            try {
+                long sr = e.SR(o, a);
+                if (sr - o.LH <= n) {
+                    th = this.Th(o.Ly, a.LC);
+                    com.android.launcher3.reflection.common.d d = hashMap.get(th);
+                    if (d != null) {
+                        ++d.Mo;
                     }
-                    if (hashMap.size() < n2) {
-                        o = new com.android.launcher3.reflection.common.d(th);
-                        hashMap.put(th, (com.android.launcher3.reflection.common.d)o);
-                        continue;
-                    }
-                    break;
                 }
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            if (hashMap.size() < n2) {
+                if (th != -1)
+                    hashMap.put(th, new com.android.launcher3.reflection.common.d(th));
+            } else {
                 break Label_0037;
             }
         }
