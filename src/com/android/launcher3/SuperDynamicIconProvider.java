@@ -69,6 +69,25 @@ public class SuperDynamicIconProvider extends IconProvider
         return "com.google.android.calendar".equals(s);
     }
 
+    private Drawable getNormalIcon(String packageName, int iconDpi) {
+        try {
+            Resources resourcesForApplication = mPackageManager.getResourcesForApplication(packageName);
+            AssetManager assets = resourcesForApplication.getAssets();
+            XmlResourceParser parseXml = assets.openXmlResourceParser("AndroidManifest.xml");
+            int eventType;
+            while ((eventType = parseXml.nextToken()) != XmlPullParser.END_DOCUMENT)
+                if (eventType == XmlPullParser.START_TAG && parseXml.getName().equals("application"))
+                    for (int i = 0; i < parseXml.getAttributeCount(); i++)
+                        if (parseXml.getAttributeName(i).equals("icon"))
+                            return resourcesForApplication.getDrawableForDensity(Integer.parseInt(parseXml.getAttributeValue(i).substring(1)), iconDpi);
+            parseXml.close();
+        }
+        catch (Exception ex) {
+            Log.w("getNormalIcon", ex);
+        }
+        return null;
+    }
+
     private Drawable getRoundIcon(String packageName, int iconDpi) {
         try {
             Resources resourcesForApplication = mPackageManager.getResourcesForApplication(packageName);
@@ -92,6 +111,9 @@ public class SuperDynamicIconProvider extends IconProvider
     public Drawable getIcon(final LauncherActivityInfoCompat launcherActivityInfoCompat, int iconDpi) {
         String packageName = launcherActivityInfoCompat.getApplicationInfo().packageName;
         Drawable drawable = getRoundIcon(packageName, iconDpi);
+        if (drawable == null) {
+            drawable = getNormalIcon(packageName, iconDpi); //can clear overlays
+        }
 
         if (isCalendar(packageName)) {
             try {
