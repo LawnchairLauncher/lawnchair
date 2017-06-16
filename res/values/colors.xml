@@ -48,5 +48,5 @@
     <color name="system_shortcuts_icon_color">@android:color/tertiary_text_light</color>
 
     <color name="legacy_icon_background">#FFFFFF</color>
-    <color name="icon_background">#E0E0E0</color> <!-- Gray 300 -->
+    <color name="icon_background">#ff4285f4</color>
 </resources>
