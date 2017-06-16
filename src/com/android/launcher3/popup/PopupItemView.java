@@ -100,22 +100,24 @@ public abstract class PopupItemView extends FrameLayout {
         // Clip children to this item's rounded corners.
         int cornerWidth = mRoundedCornerBitmap.getWidth();
         int cornerHeight = mRoundedCornerBitmap.getHeight();
+        int cornerCenterX = Math.round(cornerWidth / 2f);
+        int cornerCenterY = Math.round(cornerHeight / 2f);
         if ((mRoundedCorners & ROUNDED_TOP_CORNERS) != 0) {
             // Clip top left corner.
             mMatrix.reset();
             canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
             // Clip top right corner.
-            mMatrix.setRotate(90, cornerWidth / 2, cornerHeight / 2);
+            mMatrix.setRotate(90, cornerCenterX, cornerCenterY);
             mMatrix.postTranslate(canvas.getWidth() - cornerWidth, 0);
             canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
         }
         if ((mRoundedCorners & ROUNDED_BOTTOM_CORNERS) != 0) {
             // Clip bottom right corner.
-            mMatrix.setRotate(180, cornerWidth / 2, cornerHeight / 2);
+            mMatrix.setRotate(180, cornerCenterX, cornerCenterY);
             mMatrix.postTranslate(canvas.getWidth() - cornerWidth, canvas.getHeight() - cornerHeight);
             canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
             // Clip bottom left corner.
-            mMatrix.setRotate(270, cornerWidth / 2, cornerHeight / 2);
+            mMatrix.setRotate(270, cornerCenterX, cornerCenterY);
             mMatrix.postTranslate(0, canvas.getHeight() - cornerHeight);
             canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
         }
