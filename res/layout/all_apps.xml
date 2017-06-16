@@ -54,8 +54,8 @@
             android:overScrollMode="never"
             android:descendantFocusability="afterDescendants"
             android:focusable="true"
-            android:paddingStart="@dimen/container_fastscroll_thumb_max_width"
-            android:paddingEnd="@dimen/container_fastscroll_thumb_max_width" />
+            android:paddingStart="@dimen/dynamic_grid_edge_margin"
+            android:paddingEnd="@dimen/dynamic_grid_edge_margin" />
 
         <!-- Fast scroller popup -->
         <TextView
@@ -63,7 +63,7 @@
             android:layout_alignTop="@+id/apps_list_view"
             android:id="@+id/fast_scroller_popup"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="@dimen/container_fastscroll_popup_margin" />
+            android:layout_marginEnd="@dimen/fastscroll_popup_margin" />
 
         <!-- Note: we are reusing/repurposing a system attribute for search layout, because of a
          platform bug, which prevents using custom attributes in <include> tag -->
