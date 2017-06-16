@@ -38,8 +38,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -421,11 +419,19 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         float newBadgeScale = isBadged ? 1f : 0f;
         // Animate when a badge is first added or when it is removed.
         if ((wasBadged ^ isBadged) && isShown()) {
-            ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, newBadgeScale).start();
+            createBadgeScaleAnimator(newBadgeScale).start();
         } else {
             mBadgeScale = newBadgeScale;
             invalidate();
         }
+    }
+
+    public Animator createBadgeScaleAnimator(float... badgeScales) {
+        return ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, badgeScales);
+    }
+
+    public boolean hasBadge() {
+        return mBadgeInfo != null && mBadgeInfo.hasBadge();
     }
 
     static class PreviewItemDrawingParams {
