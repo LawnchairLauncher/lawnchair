@@ -17,7 +17,7 @@ public class VerticalPullDetector {
     private static final boolean DBG = false;
     private static final String TAG = "VerticalPullDetector";
 
-    private float mTouchSlop;
+    private final float mTouchSlop;
 
     private int mScrollConditions;
     public static final int DIRECTION_UP = 1 << 0;
@@ -46,8 +46,6 @@ public class VerticalPullDetector {
         DRAGGING,      // onDragStart, onDrag
         SETTLING       // onDragEnd
     }
-
-    ;
 
     //------------------- ScrollState transition diagram -----------------------------------
     //
@@ -110,7 +108,7 @@ public class VerticalPullDetector {
     private boolean mIgnoreSlopWhenSettling;
 
     /* Client of this gesture detector can register a callback. */
-    Listener mListener;
+    private Listener mListener;
 
     public void setListener(Listener l) {
         mListener = l;
