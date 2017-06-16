@@ -86,11 +86,11 @@
     </style>
 
     <style name="FastScrollerPopup" >
-        <item name="android:background">@drawable/container_fastscroll_popup_bg</item>
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:minWidth">@dimen/container_fastscroll_popup_size</item>
-        <item name="android:layout_height">@dimen/container_fastscroll_popup_size</item>
-        <item name="android:textSize">@dimen/container_fastscroll_popup_text_size</item>
+        <item name="android:minWidth">@dimen/fastscroll_popup_width</item>
+        <item name="android:layout_height">@dimen/fastscroll_popup_height</item>
+        <item name="android:textSize">@dimen/fastscroll_popup_text_size</item>
+        <item name="android:paddingEnd">@dimen/fastscroll_popup_padding</item>
         <item name="android:gravity">center</item>
         <item name="android:alpha">0</item>
         <item name="android:elevation">3dp</item>

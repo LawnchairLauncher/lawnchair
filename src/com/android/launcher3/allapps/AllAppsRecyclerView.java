@@ -376,7 +376,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         if (position == NO_POSITION) {
             return -1;
         }
-        return getCurrentScrollY(position, getLayoutManager().getDecoratedTop(child));
+        return getPaddingTop() +
+                getCurrentScrollY(position, getLayoutManager().getDecoratedTop(child));
     }
 
     public int getCurrentScrollY(int position, int offset) {
@@ -406,8 +407,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
             }
             mCachedScrollPositions.put(position, y);
         }
-
-        return getPaddingTop() + y - offset;
+        return y - offset;
     }
 
     /**
@@ -416,7 +416,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
      */
     @Override
     protected int getAvailableScrollHeight() {
-        return getCurrentScrollY(mApps.getAdapterItems().size(), 0)
+        return getPaddingTop() + getCurrentScrollY(mApps.getAdapterItems().size(), 0)
                 - getHeight() + getPaddingBottom();
     }
 

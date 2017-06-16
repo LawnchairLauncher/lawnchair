@@ -53,7 +53,7 @@
             style="@style/FastScrollerPopup"
             android:id="@+id/fast_scroller_popup"
             android:layout_gravity="top|end"
-            android:layout_marginEnd="@dimen/container_fastscroll_popup_margin" />
+            android:layout_marginEnd="@dimen/fastscroll_popup_margin" />
 
         <ProgressBar
             android:layout_width="wrap_content"

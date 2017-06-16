@@ -59,10 +59,6 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
-    public int getFastScrollerTrackColor(int defaultTrackColor) {
-        return Color.WHITE;
-    }
-
     @Override
     public void setAdapter(Adapter adapter) {
         super.setAdapter(adapter);

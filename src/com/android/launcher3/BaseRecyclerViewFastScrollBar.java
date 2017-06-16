@@ -29,6 +29,7 @@ import android.view.ViewConfiguration;
 import android.widget.TextView;
 
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.FastScrollThumbDrawable;
 import com.android.launcher3.util.Themes;
 
 /**
@@ -52,7 +53,7 @@ public class BaseRecyclerViewFastScrollBar {
 
     private final static int MAX_TRACK_ALPHA = 30;
     private final static int SCROLL_BAR_VIS_DURATION = 150;
-    private static final float FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR = 1.5f;
+    private static final float FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR = 0.75f;
 
     private final Rect mTmpRect = new Rect();
     private final BaseRecyclerView mRv;
@@ -64,12 +65,12 @@ public class BaseRecyclerViewFastScrollBar {
 
     private final int mMinWidth;
     private final int mMaxWidth;
+    private final int mThumbPadding;
 
     // Current width of the track
     private int mWidth;
     private ObjectAnimator mWidthAnimator;
 
-    private final Path mThumbPath = new Path();
     private final Paint mThumbPaint;
     private final int mThumbHeight;
 
@@ -94,7 +95,7 @@ public class BaseRecyclerViewFastScrollBar {
     public BaseRecyclerViewFastScrollBar(BaseRecyclerView rv, Resources res) {
         mRv = rv;
         mTrackPaint = new Paint();
-        mTrackPaint.setColor(rv.getFastScrollerTrackColor(Color.BLACK));
+        mTrackPaint.setColor(Themes.getAttrColor(rv.getContext(), android.R.attr.textColorPrimary));
         mTrackPaint.setAlpha(MAX_TRACK_ALPHA);
 
         mThumbPaint = new Paint();
@@ -102,16 +103,19 @@ public class BaseRecyclerViewFastScrollBar {
         mThumbPaint.setColor(Themes.getColorAccent(rv.getContext()));
         mThumbPaint.setStyle(Paint.Style.FILL);
 
-        mWidth = mMinWidth = res.getDimensionPixelSize(R.dimen.container_fastscroll_thumb_min_width);
-        mMaxWidth = res.getDimensionPixelSize(R.dimen.container_fastscroll_thumb_max_width);
-        mThumbHeight = res.getDimensionPixelSize(R.dimen.container_fastscroll_thumb_height);
-        mTouchInset = res.getDimensionPixelSize(R.dimen.container_fastscroll_thumb_touch_inset);
+        mWidth = mMinWidth = res.getDimensionPixelSize(R.dimen.fastscroll_track_min_width);
+        mMaxWidth = res.getDimensionPixelSize(R.dimen.fastscroll_track_max_width);
+
+        mThumbPadding = res.getDimensionPixelSize(R.dimen.fastscroll_thumb_padding);
+        mThumbHeight = res.getDimensionPixelSize(R.dimen.fastscroll_thumb_height);
+
+        mTouchInset = res.getDimensionPixelSize(R.dimen.fastscroll_thumb_touch_inset);
         mIsRtl = Utilities.isRtl(res);
-        updateThumbPath();
     }
 
     public void setPopupView(View popup) {
         mPopupView = (TextView) popup;
+        mPopupView.setBackground(new FastScrollThumbDrawable(mThumbPaint, mIsRtl));
     }
 
     public void setDetachThumbOnFastScroll() {
@@ -154,24 +158,6 @@ public class BaseRecyclerViewFastScrollBar {
         mRv.invalidate(left, top, left + mMaxWidth, top + mRv.getScrollbarTrackHeight());
 
         mWidth = width;
-        updateThumbPath();
-    }
-
-    /**
-     * Updates the path for the thumb drawable.
-     */
-    private void updateThumbPath() {
-        int smallWidth = mIsRtl ? mWidth : -mWidth;
-        int largeWidth = mIsRtl ? mMaxWidth : -mMaxWidth;
-
-        mThumbPath.reset();
-        mThumbPath.moveTo(0, 0);
-        mThumbPath.lineTo(0, mThumbHeight);             // Left edge
-        mThumbPath.lineTo(smallWidth, mThumbHeight);    // bottom edge
-        mThumbPath.cubicTo(smallWidth, mThumbHeight,    // right edge
-                largeWidth, mThumbHeight / 2,
-                smallWidth, 0);
-        mThumbPath.close();
     }
 
     public int getThumbHeight() {
@@ -265,15 +251,16 @@ public class BaseRecyclerViewFastScrollBar {
         }
         int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
         if (!mIsRtl) {
-            canvas.translate(mRv.getWidth(), 0);
+            canvas.translate(mRv.getWidth() - mWidth, 0);
         }
         canvas.translate(0, mRv.getPaddingTop());
         // Draw the track
-        int thumbWidth = mIsRtl ? mWidth : -mWidth;
-        canvas.drawRect(0, 0, thumbWidth, mRv.getScrollbarTrackHeight(), mTrackPaint);
+        canvas.drawRoundRect(0, 0, mWidth, mRv.getScrollbarTrackHeight(),
+                mWidth, mWidth, mTrackPaint);
 
-        canvas.translate(0, mThumbOffsetY);
-        canvas.drawPath(mThumbPath, mThumbPaint);
+        canvas.translate(-mThumbPadding, mThumbOffsetY);
+        float r = mWidth + mThumbPadding + mThumbPadding;
+        canvas.drawRoundRect(0, 0, r, mThumbHeight, r, r, mThumbPaint);
         canvas.restoreToCount(saveCount);
     }
 
@@ -320,7 +307,8 @@ public class BaseRecyclerViewFastScrollBar {
     private void updatePopupY(int lastTouchY) {
         int height = mPopupView.getHeight();
         float top = lastTouchY - (FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR * height);
-        top = Math.max(mMaxWidth, Math.min(top, mRv.getScrollbarTrackHeight() - mMaxWidth - height));
+        top = Utilities.boundToRange(top,
+                mMaxWidth, mRv.getScrollbarTrackHeight() - mMaxWidth - height);
         mPopupView.setTranslationY(top);
     }
 }
