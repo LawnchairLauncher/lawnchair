@@ -16,10 +16,10 @@
 
 package com.android.launcher3;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -30,6 +30,7 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.util.TypedValue;
@@ -116,6 +117,19 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
         public void set(BubbleTextView bubbleTextView, Float value) {
             bubbleTextView.mBadgeScale = value;
             bubbleTextView.invalidate();
+        }
+    };
+
+    private static final Property<BubbleTextView, Integer> TEXT_ALPHA_PROPERTY
+            = new Property<BubbleTextView, Integer>(Integer.class, "textAlpha") {
+        @Override
+        public Integer get(BubbleTextView bubbleTextView) {
+            return bubbleTextView.getTextAlpha();
+        }
+
+        @Override
+        public void set(BubbleTextView bubbleTextView, Integer alpha) {
+            bubbleTextView.setTextAlpha(alpha);
         }
     };
 
@@ -533,12 +547,27 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
     }
 
     public void setTextVisibility(boolean visible) {
-        Resources res = getResources();
         if (visible) {
             super.setTextColor(mTextColor);
         } else {
-            super.setTextColor(res.getColor(android.R.color.transparent));
+            setTextAlpha(0);
         }
+    }
+
+    private void setTextAlpha(int alpha) {
+        super.setTextColor(ColorUtils.setAlphaComponent(mTextColor, alpha));
+    }
+
+    private int getTextAlpha() {
+        return Color.alpha(getCurrentTextColor());
+    }
+
+    /**
+     * Creates an animator to fade the text in or out.
+     * @param fadeIn Whether the text should fade in or fade out.
+     */
+    public Animator createTextAlphaAnimator(boolean fadeIn) {
+        return ObjectAnimator.ofInt(this, TEXT_ALPHA_PROPERTY, fadeIn ? Color.alpha(mTextColor) : 0);
     }
 
     @Override
