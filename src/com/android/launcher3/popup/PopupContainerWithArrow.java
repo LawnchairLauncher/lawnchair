@@ -827,6 +827,9 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         revealAnim.setDuration((long) res.getInteger(R.integer.config_popupOpenCloseDuration));
         revealAnim.setInterpolator(new AccelerateDecelerateInterpolator());
 
+        // Animate original icon's text back in.
+        closeAnim.play(mOriginalIcon.createTextAlphaAnimator(true /* fadeIn */));
+
         closeAnim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
