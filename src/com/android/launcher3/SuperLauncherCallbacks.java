@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SuperLauncherCallbacks implements LauncherCallbacks, SharedPreferences.OnSharedPreferenceChangeListener {
-    private Launcher mLauncher;
+    public static Launcher mLauncher;
     private com.android.launcher3.reflectionevents.a cF;
     public static com.android.launcher3.reflection.l cD;
 
@@ -45,7 +45,6 @@ public class SuperLauncherCallbacks implements LauncherCallbacks, SharedPreferen
     @Override
     public void onResume() {
         this.cD.aF(0L);
-        Log.d("Predictions", com.android.launcher3.reflection.m.aJ(mLauncher).getString("reflection_last_predictions", null));
     }
 
     @Override

@@ -22,7 +22,7 @@ public class b {
             in.close();
             file.close();
         }
-        catch (IOException ex) {
+        catch (Exception ex) {
             ex.printStackTrace();
             return new byte[0];
         }

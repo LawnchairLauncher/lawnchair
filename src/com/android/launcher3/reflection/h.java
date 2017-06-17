@@ -129,6 +129,13 @@ class h implements Runnable
             this.aO.ak(null, this);
         }
 
-        SuperLauncherCallbacks.cD.aF(0L);
+        if (SuperLauncherCallbacks.mLauncher != null){
+            SuperLauncherCallbacks.mLauncher.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    SuperLauncherCallbacks.cD.aF(0L);
+                }
+            });
+        }
     }
 }
