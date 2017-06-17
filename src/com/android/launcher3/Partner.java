@@ -61,7 +61,7 @@ public class Partner {
         if (!sSearched) {
             Pair<String, Resources> apkInfo = Utilities.findSystemApk(ACTION_PARTNER_CUSTOMIZATION, pm);
             if (apkInfo != null) {
-                sPartner = new Partner(apkInfo.first, apkInfo.second);
+                //sPartner = new Partner(apkInfo.first, apkInfo.second);
             }
             sSearched = true;
         }
