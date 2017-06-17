@@ -1,6 +1,7 @@
 package com.android.launcher3.reflection.b2;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.io.Serializable;
 
@@ -75,41 +76,73 @@ public class d
     }
 
     public void Q(final String p0, final String p1, final Map p2) {
-        Preconditions.assertNonUiThread();
-        SQLiteDatabase writableDatabase = this.V.getWritableDatabase();
-        writableDatabase.beginTransaction();
+        synchronized (this) {
+            Preconditions.assertNonUiThread();
+            SQLiteDatabase writableDatabase = this.V.getWritableDatabase();
+            writableDatabase.beginTransaction();
 
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(p0);
-        stringBuilder.append("%");
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(p0);
+            stringBuilder.append("%");
 
-        Cursor cursor = writableDatabase.query("reflection_event", new String[] { "id", "_id" }, stringBuilder.toString(), new String[] { "id like ?" }, null, null, null, null);
+            Cursor cursor = writableDatabase.query("reflection_event", new String[]{"id", "_id"}, "id like ?", new String[]{stringBuilder.toString()}, null, null, null, null);
 
-        SQLiteStatement sqLiteStatement = writableDatabase.compileStatement("UPDATE reflection_event SET id = ? WHERE _id = ?");
+            SQLiteStatement sqLiteStatement = writableDatabase.compileStatement("UPDATE reflection_event SET id = ? WHERE _id = ?");
 
-        int columnIndex10 = cursor.getColumnIndex("_id");
-        int columnIndex14 = cursor.getColumnIndexOrThrow("id");
-        while (cursor.moveToNext()) {
-            Long l = cursor.getLong(columnIndex10);
-            String s16 = cursor.getString(columnIndex14);
-            String s6 = (String) p2.get(s16);
-            s6 = new StringBuilder().append(p2).append("_").append(p2.size()).toString();
-            p2.put(s16, s6);
+            int columnIndex10 = cursor.getColumnIndex("_id");
+            int columnIndex14 = cursor.getColumnIndexOrThrow("id");
+            while (cursor.moveToNext()) {
+                Long l = cursor.getLong(columnIndex10);
+                String s16 = cursor.getString(columnIndex14);
+                String s6 = (String) p2.get(s16);
+                if (s6 == null) {
+                    s6 = new StringBuilder().append(p1).append("_").append(p2.size()).toString();
+                    p2.put(s16, s6);
+                }
 
-            sqLiteStatement.bindString(0, s6);
-            sqLiteStatement.bindLong(2, l);
-            sqLiteStatement.executeUpdateDelete();
+                sqLiteStatement.bindString(1, s6);
+                sqLiteStatement.bindLong(2, l);
+                sqLiteStatement.executeUpdateDelete();
+            }
+
+            sqLiteStatement.close();
+            cursor.close();
+
+            writableDatabase.endTransaction();
         }
-
-        sqLiteStatement.close();
-        cursor.close();
-
-        writableDatabase.endTransaction();
     }
 
     public e R(final long p0, final int p1) {
 
-        return null;
+        SQLiteDatabase a4 = V.getReadableDatabase();
+        ArrayList a5 = new ArrayList();
+
+        Cursor a12 = a4.query("reflection_event", null, String.format(Locale.US, "%s > ?", new String[] { "_id" }), new String[] { Long.toString(p0) }, null, null, "_id ASC", Integer.toString(p1));
+
+        int i22 = a12.getColumnIndex("_id");
+        int i14 = a12.getColumnIndex("proto");
+        int i19 = a12.getColumnIndex("id");
+        int i17 = a12.getColumnIndex("latLong");
+        int i23 = a12.getColumnIndex("semanticPlace");
+
+        long l24 = 0;
+        while (a12.moveToNext()) {
+            com.android.launcher3.reflection.common.nano.a a21 = com.android.launcher3.reflection.common.nano.a.parseFrom(a12.getBlob(i14));
+            a21.Ly = a12.getString(i19);
+            if (!a12.isNull(i17)) {
+                com.android.launcher3.reflection.common.nano.b a10 = com.android.launcher3.reflection.common.nano.b.parseFrom(a12.getBlob(i17));
+                com.android.launcher3.reflection.common.a.Sy(a21, a10);
+            }
+            if (!a12.isNull(i23)) {
+                com.android.launcher3.reflection.common.nano.b a10 = com.android.launcher3.reflection.common.nano.b.parseFrom(a12.getBlob(i23));
+                com.android.launcher3.reflection.common.a.Sy(a21, a10);
+            }
+            a5.add(a21);
+            l24 = a12.getLong(i22);
+        }
+
+        a12.close();
+        return new e(l24, a5);
 
     }
 }

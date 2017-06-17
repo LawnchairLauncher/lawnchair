@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import com.android.launcher3.Utilities;
+import com.android.launcher3.reflection.common.*;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.reflection.predictor.g;
 import com.android.launcher3.reflection.predictor.c;
@@ -22,7 +23,7 @@ import com.android.launcher3.reflection.b2.d;
 
 public class e
 {
-    private com.android.launcher3.reflection.predictor.e aA;
+    public com.android.launcher3.reflection.predictor.e aA;
     private final d aB;
     private final a aC;
     private final HashMap aD;
@@ -61,7 +62,6 @@ public class e
     }
 
     public void X(final e e) {
-        if (e != null)
         synchronized (this) {
             synchronized (e) {
                 this.aD.clear();
@@ -134,8 +134,11 @@ public class e
 
     public com.android.launcher3.reflection.predictor.a ad(final String s, final com.android.launcher3.reflection.common.nano.a a) {
         synchronized (this) {
-            final c c = (c) this.aD.get(s);
+            c c = (c) this.aD.get(s);
             if (c == null) {
+                //c = new c(new g());
+                //c.RY(this.aA);
+
                 final com.android.launcher3.reflection.predictor.a a2 = new com.android.launcher3.reflection.predictor.a();
                 a2.RJ(new ArrayList());
                 return a2;
@@ -182,9 +185,6 @@ public class e
             Calendar calendar = Calendar.getInstance();
             d.Ma = calendar.getTimeInMillis();
             d.Mb = 0;
-            if (aF != null) {
-                aF.run();
-            }
             d.Mc = ac(); //app info
 
             FileOutputStream fileOutputStream = new FileOutputStream(az);

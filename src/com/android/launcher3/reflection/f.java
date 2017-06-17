@@ -28,7 +28,7 @@ public class f
         final com.android.launcher3.reflection.filter.f f = new com.android.launcher3.reflection.filter.f(context);
         final com.android.launcher3.reflection.filter.b b2 = new com.android.launcher3.reflection.filter.b(context);
         final com.android.launcher3.reflection.filter.d d2 = new com.android.launcher3.reflection.filter.d(b);
-        final e e = new e(a2, d, aj, "foreground_evt_buf.properties", null);
+        e e = new e(a2, d, aj, "foreground_evt_buf.properties", null);
         final File file2 = new File(context.getFilesDir(), "reflection.engine");
         final g g = new g(d, aj, new File(context.getFilesDir(), "reflection.engine.background"), e, a2);
         new i().aw(aj, file2, e, d, g);

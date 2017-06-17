@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 
@@ -16,10 +17,10 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-class SuperLauncherCallbacks implements LauncherCallbacks, SharedPreferences.OnSharedPreferenceChangeListener {
+public class SuperLauncherCallbacks implements LauncherCallbacks, SharedPreferences.OnSharedPreferenceChangeListener {
     private Launcher mLauncher;
     private com.android.launcher3.reflectionevents.a cF;
-    private com.android.launcher3.reflection.l cD;
+    public static com.android.launcher3.reflection.l cD;
 
     public SuperLauncherCallbacks(Launcher launcher) {
         mLauncher = launcher;
@@ -32,7 +33,7 @@ class SuperLauncherCallbacks implements LauncherCallbacks, SharedPreferences.OnS
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        this.cD = com.android.launcher3.reflection.l.getInstance(mLauncher);
+        cD = com.android.launcher3.reflection.l.getInstance(mLauncher);
         Utilities.getPrefs(mLauncher).registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -44,6 +45,7 @@ class SuperLauncherCallbacks implements LauncherCallbacks, SharedPreferences.OnS
     @Override
     public void onResume() {
         this.cD.aF(0L);
+        Log.d("Predictions", com.android.launcher3.reflection.m.aJ(mLauncher).getString("reflection_last_predictions", null));
     }
 
     @Override

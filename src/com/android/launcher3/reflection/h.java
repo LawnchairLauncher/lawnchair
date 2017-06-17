@@ -1,8 +1,11 @@
 package com.android.launcher3.reflection;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.android.launcher3.Launcher;
+import com.android.launcher3.SuperLauncherCallbacks;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.reflection.common.nano.a;
@@ -13,7 +16,7 @@ import java.util.regex.Matcher;
 
 class h implements Runnable
 {
-    private e aN;
+    public e aN;
     final /* synthetic */ g aO;
 
     public h(final g ao) {
@@ -84,7 +87,8 @@ class h implements Runnable
                 o2 = ((g)o2).aM;
                 o2 = ((SharedPreferences)o2).edit();
                 ((SharedPreferences.Editor)o2).putString("staged_batch_training_progress", format).apply();
-                this.aN.af();
+                //this.aN.af();
+                return;
             }
         }
     }
@@ -99,16 +103,19 @@ class h implements Runnable
             aO.aK.f();
             if (!status.equals("New")) {
                 Matcher matcher = g.aG.matcher(status);
-                if (!matcher.find()) {
-                    Long result = Long.parseLong(matcher.group());
-                    aN.ab();
+                if (matcher.find()) {
+                    Long result = Long.parseLong(matcher.group(1));
                     au(result);
                     if (aO.aI == null) {
                         aO.aM.edit().putString("staged_batch_training_progress", "Success").apply();
                     }
                 } else {
                     Log.e("Reflection.StBatchTrain", "Invalid progress string.");
+                    aN.ab();
                 }
+            } else {
+                aN.ab();
+                au(0);
             }
         }
         return aN;
@@ -121,5 +128,7 @@ class h implements Runnable
         finally {
             this.aO.ak(null, this);
         }
+
+        SuperLauncherCallbacks.cD.aF(0L);
     }
 }

@@ -17,7 +17,7 @@ public class e
 {
     private long Lq;
     private int Lr;
-    private b Ls;
+    public b Ls;
     private boolean Lt;
 
     public e() {
@@ -93,6 +93,7 @@ public class e
                     break;
                 }
                 this.Ls.SJ();
+                break;
             }
             this.Ls.add(a);
             this.Lt = true;

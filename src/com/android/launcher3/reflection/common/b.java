@@ -6,7 +6,7 @@ public class b
 {
     private int Mi;
     private int Mj;
-    private Object[] Mk;
+    public Object[] Mk;
     private LinkedList Ml;
     private int Mm;
 

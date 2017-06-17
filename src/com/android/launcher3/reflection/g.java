@@ -16,7 +16,7 @@ public class g
     public h aI;
     public final d aJ;
     public final a aK;
-    public final e aL;
+    public e aL;
     public final SharedPreferences aM;
 
     static {
@@ -62,7 +62,7 @@ public class g
     public boolean aj() {
         synchronized (this) {
             final String string = this.aM.getString("staged_batch_training_progress", (String)null);
-            return string != null && g.aG.matcher(string).find();
+            return string != null && g.aG.matcher(string).find() && false; //CHANGE BACK..?
         }
     }
 
@@ -74,9 +74,7 @@ public class g
             try {
                 this.aM.edit().putString("staged_batch_training_progress", "New").putInt("background_model_version", 23).apply();
                 this.aH.delete();
-                Label_0068: {
-                    this.aI = new h(this);
-                }
+                this.aI = new h(this);
                 Utilities.THREAD_POOL_EXECUTOR.execute(this.aI);
                 return;
             }
