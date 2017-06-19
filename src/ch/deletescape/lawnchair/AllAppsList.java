@@ -33,7 +33,7 @@ import ch.deletescape.lawnchair.util.StringFilter;
 /**
  * Stores the list of all applications for the all apps view.
  */
-class AllAppsList {
+public class AllAppsList {
     public static final int DEFAULT_APPLICATIONS_NUMBER = 42;
 
     /**

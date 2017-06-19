@@ -114,7 +114,7 @@ public class IconCache {
     private final int mPackageBgColor;
     private final BitmapFactory.Options mLowResOptions;
 
-    private PixelIconProvider pip;
+    public PixelIconProvider pip;
 
     private Canvas mLowResCanvas;
     private Paint mLowResPaint;
@@ -221,6 +221,16 @@ public class IconCache {
     }
 
     /**
+     * Updates the entries related to all packages in memory and persistent DB.
+     */
+    public void updateIconsForAll(final UserHandle user) {
+        long userSerial = mUserManager.getSerialNumberForUser(user);
+        for (LauncherActivityInfoCompat app : mLauncherApps.getActivityList(null, user)) {
+            updateIconInDBAndMemCache(app, userSerial);
+        }
+    }
+
+    /**
      * Removes the entries related to the given package in memory and persistent DB.
      */
     public synchronized void removeIconsForPkg(String packageName, UserHandle user) {
@@ -239,9 +249,12 @@ public class IconCache {
             // Query for the set of apps
             final List<LauncherActivityInfoCompat> apps = mLauncherApps.getActivityList(null, user);
             // Fail if we don't have any apps
-            // TODO: Fix this. Only fail for the current user.
             if (apps == null || apps.isEmpty()) {
-                return;
+                if (user.equals(Utilities.myUserHandle())) {
+                    return;
+                } else {
+                    continue;
+                }
             }
 
             // Update icon cache. This happens in segments and {@link #onPackageIconsUpdated}
@@ -351,6 +364,27 @@ public class IconCache {
         addIconToDB(values, app.getComponentName(), info, userSerial);
     }
 
+    @Thunk
+    void updateIconInDBAndMemCache(LauncherActivityInfoCompat app, long userSerial) {
+        // Reuse the existing entry if it already exists in the DB. This ensures that we do not
+        // create bitmap if it was already created during loader.
+        final ComponentKey key = new ComponentKey(app.getComponentName(), app.getUser());
+        CacheEntry entry;
+        entry = mCache.get(key);
+        Bitmap tmp = entry.icon;
+        entry.icon = Utilities.createBadgedIconBitmap(
+                pip.getIcon(app, mIconDpi), app.getUser(),
+                mContext);
+        if (tmp.equals(entry.icon)) {
+            return;
+        }
+        mCache.put(key, entry);
+
+        Bitmap lowResIcon = generateLowResIcon(entry.icon, mActivityBgColor);
+        ContentValues values = newContentValues(entry.icon, lowResIcon, entry.title.toString());
+        mIconDb.update(values, "componentName = ? AND profileID = ?", new String[]{app.getComponentName().flattenToString(), "" + userSerial});
+    }
+
     /**
      * Updates {@param values} to contain versoning information and adds it to the DB.
      *
@@ -446,10 +480,8 @@ public class IconCache {
         String key = "alias_" + application.componentName.flattenToString();
         application.title = Utilities.getPrefs(mContext).getString(key, application.originalTitle.toString());
         application.contentDescription = entry.contentDescription;
-        IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
-        Drawable icon = iconPack == null ? null : iconPack.getIcon(application.componentName);
         boolean hasNotifications = NotificationListener.hasNotifications(application.componentName.getPackageName());
-        application.iconBitmap = icon == null ? getNonNullIcon(entry, user, hasNotifications) : Utilities.createIconBitmap(icon, mContext, hasNotifications);
+        application.iconBitmap = getNonNullIcon(entry, user, hasNotifications);
         application.usingLowResIcon = entry.isLowResIcon;
     }
 
@@ -464,10 +496,7 @@ public class IconCache {
             String key = "alias_" + application.componentName.flattenToString();
             application.title = Utilities.getPrefs(mContext).getString(key, application.originalTitle.toString());
             application.contentDescription = entry.contentDescription;
-            IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
-            Drawable icon = iconPack == null ? null : iconPack.getIcon(application.componentName);
-            boolean hasNotifications = NotificationListener.hasNotifications(application.componentName.getPackageName());
-            application.iconBitmap = icon == null ? entry.icon : Utilities.createIconBitmap(icon, mContext, hasNotifications);
+            application.iconBitmap = entry.icon;
             application.usingLowResIcon = entry.isLowResIcon;
         }
     }
@@ -516,10 +545,8 @@ public class IconCache {
             ShortcutInfo shortcutInfo, ComponentName component, LauncherActivityInfoCompat info,
             UserHandle user, boolean usePkgIcon, boolean useLowResIcon) {
         CacheEntry entry = cacheLocked(component, info, user, usePkgIcon, useLowResIcon);
-        IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
-        Drawable icon = iconPack == null ? null : iconPack.getIcon(component);
         boolean hasNotifications = NotificationListener.hasNotifications(component.getPackageName());
-        Bitmap iBitmap = icon == null ? getNonNullIcon(entry, user, hasNotifications) : Utilities.createIconBitmap(icon, mContext, hasNotifications);
+        Bitmap iBitmap = getNonNullIcon(entry, user, hasNotifications);
         shortcutInfo.setIcon(iBitmap);
         String title = Utilities.trim(entry.title);
         String key = "alias_" + component.flattenToString();

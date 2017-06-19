@@ -63,6 +63,19 @@ public abstract class SQLiteCacheHelper {
         }
     }
 
+    public void update(ContentValues values, String whereClause, String[] whereArgs) {
+        if (mIgnoreWrites) {
+            return;
+        }
+        try {
+            mOpenHelper.getWritableDatabase().update(mTableName, values, whereClause, whereArgs);
+        } catch (SQLiteFullException e) {
+            onDiskFull(e);
+        } catch (SQLiteException e) {
+            Log.d(TAG, "Ignoring sqlite exception", e);
+        }
+    }
+
     private void onDiskFull(SQLiteFullException e) {
         Log.e(TAG, "Disk full, all write operations will be ignored", e);
         FirebaseCrash.report(e);

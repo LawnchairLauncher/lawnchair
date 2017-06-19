@@ -276,6 +276,10 @@ public class LauncherModel extends BroadcastReceiver
         mUserManager = UserManagerCompat.getInstance(context);
     }
 
+    public AllAppsList getAllAppsList() {
+        return mBgAllAppsList;
+    }
+
     /**
      * Runs the specified runnable immediately if called from the main thread, otherwise it is
      * posted on the main thread handler.

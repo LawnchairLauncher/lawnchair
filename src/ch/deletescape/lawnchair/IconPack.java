@@ -8,14 +8,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.util.ArrayMap;
-import android.util.Log;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.crash.FirebaseCrash;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Map;
 
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
@@ -28,7 +23,6 @@ public class IconPack {
     http://stackoverflow.com/questions/3890012/how-to-access-string-resource-from-another-application
      */
     private Map<String, String> icons = new ArrayMap<>();
-    private Map<String, Drawable> memoryCache = new ArrayMap<>();
     private String packageName;
     private Context mContext;
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -56,56 +50,16 @@ public class IconPack {
     }
 
     private Drawable getDrawable(String name) {
-        if (memoryCache.containsKey(name)) {
-            Drawable d = memoryCache.get(name);
-            return d;
-        }
-        File cachePath = new File(mContext.getCacheDir(), "iconpack/" + name);
-        if (cachePath.exists()) {
-            Bitmap b = BitmapFactory.decodeFile(cachePath.toString());
-            if (b != null) {
-                Drawable d = new FastBitmapDrawable(b);
-                memoryCache.put(name, d);
-                return d;
-            }
-        }
         Resources res;
         try {
             res = mContext.getPackageManager().getResourcesForApplication(packageName);
             int resourceId = res.getIdentifier(name, "drawable", packageName);
             if (0 != resourceId) {
                 Bitmap b = BitmapFactory.decodeResource(res, resourceId);
-                saveBitmapToFile(cachePath, b);
-                Drawable drawable = new FastBitmapDrawable(b);
-                memoryCache.put(name, drawable);
-                return drawable;
+                return new FastBitmapDrawable(b);
             }
         } catch (Exception ignored) {
         }
         return null;
-    }
-
-    private boolean saveBitmapToFile(File imageFile, Bitmap bm) {
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(imageFile);
-
-            bm.compress(Bitmap.CompressFormat.PNG, 100, fos);
-
-            fos.close();
-
-            return true;
-        } catch (IOException e) {
-            FirebaseCrash.report(e);
-            Log.e("IconPack", e.getMessage());
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e1) {
-                    FirebaseCrash.report(e1);
-                }
-            }
-        }
-        return false;
     }
 }

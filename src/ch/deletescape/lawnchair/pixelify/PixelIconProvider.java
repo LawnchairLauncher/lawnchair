@@ -21,6 +21,8 @@ import org.xmlpull.v1.XmlPullParser;
 import java.util.Calendar;
 import java.util.List;
 
+import ch.deletescape.lawnchair.IconPack;
+import ch.deletescape.lawnchair.IconPackProvider;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherModel;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
@@ -29,6 +31,8 @@ import ch.deletescape.lawnchair.compat.UserManagerCompat;
 public class PixelIconProvider {
     private BroadcastReceiver mBroadcastReceiver;
     private PackageManager mPackageManager;
+    private IconPack sIconPack;
+    private Context mContext;
 
     public PixelIconProvider(Context context) {
         mBroadcastReceiver = new DynamicIconProviderReceiver(this);
@@ -37,6 +41,8 @@ public class PixelIconProvider {
         intentFilter.addAction("android.intent.action.TIMEZONE_CHANGED");
         context.registerReceiver(mBroadcastReceiver, intentFilter, null, new Handler(LauncherModel.getWorkerLooper()));
         mPackageManager = context.getPackageManager();
+        sIconPack = IconPackProvider.loadAndGetIconPack(context);
+        mContext = context;
     }
 
     private int dayOfMonth() {
@@ -82,27 +88,32 @@ public class PixelIconProvider {
         return null;
     }
 
-    public Drawable getIcon(final LauncherActivityInfoCompat info, int iconDpi) {
-        Drawable drawable = getRoundIcon(info.getComponentName().getPackageName(), iconDpi);
-        String packageName = info.getApplicationInfo().packageName;
+    public void updateIconPack() {
+        sIconPack = IconPackProvider.loadAndGetIconPack(mContext);
+    }
 
-        if (isCalendar(packageName)) {
-            try {
-                ActivityInfo activityInfo = mPackageManager.getActivityInfo(info.getComponentName(), PackageManager.GET_META_DATA | PackageManager.MATCH_UNINSTALLED_PACKAGES);
-                Bundle metaData = activityInfo.metaData;
-                Resources resourcesForApplication = mPackageManager.getResourcesForApplication(packageName);
-                int shape = getCorrectShape(metaData, resourcesForApplication);
-                if (shape != 0) {
-                    drawable = resourcesForApplication.getDrawableForDensity(shape, iconDpi);
+    public Drawable getIcon(final LauncherActivityInfoCompat info, int iconDpi) {
+        Drawable drawable = sIconPack == null ? null : sIconPack.getIcon(info);
+        if (drawable == null) {
+            drawable = getRoundIcon(info.getComponentName().getPackageName(), iconDpi);
+            String packageName = info.getApplicationInfo().packageName;
+            if (isCalendar(packageName)) {
+                try {
+                    ActivityInfo activityInfo = mPackageManager.getActivityInfo(info.getComponentName(), PackageManager.GET_META_DATA | PackageManager.MATCH_UNINSTALLED_PACKAGES);
+                    Bundle metaData = activityInfo.metaData;
+                    Resources resourcesForApplication = mPackageManager.getResourcesForApplication(packageName);
+                    int shape = getCorrectShape(metaData, resourcesForApplication);
+                    if (shape != 0) {
+                        drawable = resourcesForApplication.getDrawableForDensity(shape, iconDpi);
+                    }
+                } catch (PackageManager.NameNotFoundException ex3) {
                 }
-            } catch (PackageManager.NameNotFoundException ex3) {
+            }
+
+            if (drawable == null) {
+                drawable = info.getIcon(iconDpi);
             }
         }
-
-        if (drawable == null) {
-            drawable = info.getIcon(iconDpi);
-        }
-
         return drawable;
     }
 

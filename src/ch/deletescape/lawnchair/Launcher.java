@@ -264,6 +264,7 @@ public class Launcher extends Activity
     private boolean mAttached;
 
     private boolean kill;
+    private boolean reloadIcons;
 
     /**
      * Maps launcher activity components to their list of shortcut ids.
@@ -395,11 +396,19 @@ public class Launcher extends Activity
 
         mLauncherTab = new LauncherTab(this);
 
+        if (mSharedPrefs.getBoolean("requiresIconCacheReload", true)) {
+            mSharedPrefs.edit().putBoolean("requiresIconCacheReload", false).apply();
+            reloadIcons();
+        }
         Settings.init(this);
     }
 
     public void scheduleKill() {
         kill = true;
+    }
+
+    public void scheduleReloadIcons() {
+        reloadIcons = true;
     }
 
     @Override
@@ -753,12 +762,6 @@ public class Launcher extends Activity
     protected void onResume() {
         super.onResume();
 
-        if (kill) {
-            kill = false;
-            Log.v("Settings", "Die Motherf*cker!");
-            android.os.Process.killProcess(android.os.Process.myPid());
-        }
-
         // Restore the previous launcher state
         if (mOnResumeState == State.WORKSPACE) {
             showWorkspace(false);
@@ -814,6 +817,24 @@ public class Launcher extends Activity
         mIsResumeFromActionScreenOff = false;
 
         mLauncherTab.getClient().onResume();
+
+        if (reloadIcons) {
+            reloadIcons = false;
+            reloadIcons();
+        }
+
+        if (kill) {
+            kill = false;
+            Log.v("Settings", "Die Motherf*cker!");
+            android.os.Process.killProcess(android.os.Process.myPid());
+        }
+    }
+
+    private void reloadIcons() {
+        UserHandle user = Utilities.myUserHandle();
+        mIconCache.pip.updateIconPack();
+        mIconCache.updateIconsForAll(user);
+        LauncherAppState.getInstance().reloadAll(true);
     }
 
     @Override
@@ -1519,6 +1540,10 @@ public class Launcher extends Activity
                 });
             }
         }
+    }
+
+    public IconCache getIconCache() {
+        return mIconCache;
     }
 
     @Override
