@@ -15,29 +15,40 @@
  */
 package com.android.launcher3.compat;
 
-import android.util.SparseIntArray;
-
 /**
  * A compatibility layer around platform implementation of WallpaperColors
  */
 public class WallpaperColorsCompat {
 
-    private final SparseIntArray mColors;
-    private final boolean mSupportsDarkText;
+    public static final int HINT_SUPPORTS_DARK_TEXT = 0x1;
 
-    public WallpaperColorsCompat(SparseIntArray colors, boolean supportsDarkText) {
-        mColors = colors;
-        mSupportsDarkText = supportsDarkText;
+    private final int mPrimaryColor;
+    private final int mSecondaryColor;
+    private final int mTertiaryColor;
+    private final int mColorHints;
+
+    public WallpaperColorsCompat(int primaryColor, int secondaryColor, int tertiaryColor,
+            int colorHints) {
+        mPrimaryColor = primaryColor;
+        mSecondaryColor = secondaryColor;
+        mTertiaryColor = tertiaryColor;
+        mColorHints = colorHints;
     }
 
-    /**
-     * A map of color code to their occurrences. The bigger the int, the more relevant the color.
-     */
-    public SparseIntArray getColors() {
-        return mColors;
+    public int getPrimaryColor() {
+        return mPrimaryColor;
     }
 
-    public boolean supportsDarkText() {
-        return mSupportsDarkText;
+    public int getSecondaryColor() {
+        return mSecondaryColor;
     }
+
+    public int getTertiaryColor() {
+        return mTertiaryColor;
+    }
+
+    public int getColorHints() {
+        return mColorHints;
+    }
+
 }
