@@ -25,6 +25,8 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private static final String KEY_PREF_NUM_HOTSEAT_ICONS = "pref_numHotseatIcons";
     private static final String KEY_PREF_ICON_SCALE = "pref_iconScaleSB";
     private static final String KEY_PREF_ICON_TEXT_SCALE = "pref_iconTextScaleSB";
+    private float prevIconScale;
+    private float prevIconTextScale;
     private static Settings instance;
     private Launcher mLauncher;
 
@@ -33,6 +35,8 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
         SharedPreferences prefs = Utilities.getPrefs(launcher);
         prefs.registerOnSharedPreferenceChangeListener(this);
         init(prefs);
+        prevIconScale = prefs.getFloat(KEY_PREF_ICON_SCALE, 1f);
+        prevIconTextScale = prefs.getFloat(KEY_PREF_ICON_TEXT_SCALE, 1f);
     }
 
     public static void init(Launcher launcher) {
@@ -101,6 +105,8 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                     break;
                 case KEY_PREF_ICON_SCALE:
                 case KEY_PREF_ICON_TEXT_SCALE:
+                    mLauncher.scheduleKill();
+                    break;
                 default:
                     las.reloadAll(false);
             }

@@ -263,6 +263,8 @@ public class Launcher extends Activity
     private boolean mHasFocus;
     private boolean mAttached;
 
+    private boolean kill;
+
     /**
      * Maps launcher activity components to their list of shortcut ids.
      */
@@ -394,6 +396,10 @@ public class Launcher extends Activity
         mLauncherTab = new LauncherTab(this);
 
         Settings.init(this);
+    }
+
+    public void scheduleKill() {
+        kill = true;
     }
 
     @Override
@@ -746,6 +752,12 @@ public class Launcher extends Activity
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (kill) {
+            kill = false;
+            Log.v("Settings", "Die Motherf*cker!");
+            android.os.Process.killProcess(android.os.Process.myPid());
+        }
 
         // Restore the previous launcher state
         if (mOnResumeState == State.WORKSPACE) {
