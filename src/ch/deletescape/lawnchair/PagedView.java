@@ -1222,7 +1222,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             // We need to make sure to cancel our long press if
             // a scrollable widget takes over touch events
             final View currentPage = getPageAt(mCurrentPage);
-            currentPage.cancelLongPress();
+            if (currentPage != null) {
+                currentPage.cancelLongPress();
+            }
         }
         super.requestDisallowInterceptTouchEvent(disallowIntercept);
     }
@@ -1903,6 +1905,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         public ScrollInterpolator() {
         }
 
+        @Override
         public float getInterpolation(float t) {
             t -= 1.0f;
             return t * t * t * t * t + 1;
@@ -2127,6 +2130,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         };
 
         mPostReorderingPreZoomInRunnable = new Runnable() {
+            @Override
             public void run() {
                 onCompleteRunnable.run();
                 enableFreeScroll();
@@ -2142,7 +2146,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     /* Accessibility */
-    @SuppressWarnings("deprecation")
     @Override
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
