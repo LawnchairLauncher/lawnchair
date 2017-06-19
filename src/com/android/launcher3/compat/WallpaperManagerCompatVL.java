@@ -15,10 +15,6 @@
  */
 package com.android.launcher3.compat;
 
-import static android.app.WallpaperManager.FLAG_SYSTEM;
-
-import static com.android.launcher3.Utilities.getDevicePrefs;
-
 import android.app.WallpaperInfo;
 import android.app.WallpaperManager;
 import android.app.job.JobInfo;
@@ -45,12 +41,17 @@ import android.support.annotation.Nullable;
 import android.support.v7.graphics.Palette;
 import android.util.Log;
 import android.util.Pair;
-import android.util.SparseIntArray;
 
 import com.android.launcher3.Utilities;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import static android.app.WallpaperManager.FLAG_SYSTEM;
+import static com.android.launcher3.Utilities.getDevicePrefs;
 
 public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
 
@@ -154,11 +155,12 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
             return Pair.create(wallpaperId, null);
         }
 
-        SparseIntArray colorsToOccurrences = new SparseIntArray((parts.length - 2) / 2);
-        for (int i = 2; i < parts.length; i += 2) {
-            colorsToOccurrences.put(Integer.parseInt(parts[i]), Integer.parseInt(parts[i + 1]));
-        }
-        return Pair.create(wallpaperId, new WallpaperColorsCompat(colorsToOccurrences, false));
+        int primary = parts.length > 2 ? Integer.parseInt(parts[2]) : 0;
+        int secondary = parts.length > 3 ? Integer.parseInt(parts[3]) : 0;
+        int tertiary = parts.length > 4 ? Integer.parseInt(parts[4]) : 0;
+
+        return Pair.create(wallpaperId, new WallpaperColorsCompat(primary, secondary, tertiary,
+                0 /* hints */));
     }
 
     /**
@@ -262,12 +264,22 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
                 bitmap.recycle();
 
                 StringBuilder builder = new StringBuilder(value);
+                List<Pair<Integer,Integer>> colorsToOccurrences = new ArrayList<>();
                 for (Palette.Swatch swatch : palette.getSwatches()) {
-                    builder.append(',')
-                            .append(swatch.getRgb())
-                            .append(',')
-                            .append(swatch.getPopulation());
+                    colorsToOccurrences.add(new Pair(swatch.getRgb(), swatch.getPopulation()));
                 }
+
+                Collections.sort(colorsToOccurrences, new Comparator<Pair<Integer, Integer>>() {
+                    @Override
+                    public int compare(Pair<Integer, Integer> a, Pair<Integer, Integer> b) {
+                        return b.second - a.second;
+                    }
+                });
+
+                for (int i=0; i < Math.min(3, colorsToOccurrences.size()); i++) {
+                    builder.append(',').append(colorsToOccurrences.get(i).first);
+                }
+
                 value = builder.toString();
             }
 

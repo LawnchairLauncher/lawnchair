@@ -24,15 +24,12 @@ import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.util.Range;
-import android.util.SparseIntArray;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.WallpaperColorsCompat;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -52,20 +49,18 @@ public class ColorExtractionAlgorithm {
     private static final float FIT_WEIGHT_S = 1.0f;
     private static final float FIT_WEIGHT_L = 10.0f;
 
-    // When extracting the main color, only consider colors
-    // present in at least MIN_COLOR_OCCURRENCE of the image
-    private static final float MIN_COLOR_OCCURRENCE = 0.1f;
-
     // Temporary variable to avoid allocations
-    private final float[] mTmpHSL = new float[3];
+    private float[] mTmpHSL = new float[3];
 
-    public @Nullable Pair<Integer, Integer> extractInto(WallpaperColorsCompat wallpaperColors) {
-        if (wallpaperColors == null) {
+    public @Nullable Pair<Integer, Integer> extractInto(WallpaperColorsCompat inWallpaperColors) {
+        if (inWallpaperColors == null) {
             return null;
         }
 
-        SparseIntArray colorsArray = wallpaperColors.getColors();
-        if (colorsArray.size() == 0) {
+        final List<Integer> mainColors = getMainColors(inWallpaperColors);
+        final int mainColorsSize = mainColors.size();
+
+        if (mainColorsSize == 0) {
             return null;
         }
         // Tonal is not really a sort, it takes a color from the extracted
@@ -73,35 +68,17 @@ public class ColorExtractionAlgorithm {
         // palettes. The best fit is tweaked to be closer to the source color
         // and replaces the original palette
 
-        List<Pair<Integer, Integer>> colors = new ArrayList<>(colorsArray.size());
-        for (int i = colorsArray.size() - 1; i >= 0; i--) {
-            colors.add(Pair.create(colorsArray.keyAt(i), colorsArray.valueAt(i)));
-        }
-
-        // First find the most representative color in the image
-        populationSort(colors);
-        // Calculate total
-        int total = 0;
-        for (Pair<Integer, Integer> weightedColor : colors) {
-            total += weightedColor.second;
-        }
-
-        // Get bright colors that occur often enough in this image
-        Pair<Integer, Integer> bestColor = null;
-        float[] hsl = new float[3];
-        for (Pair<Integer, Integer> weightedColor : colors) {
-            float colorOccurrence = weightedColor.second / (float) total;
-            if (colorOccurrence < MIN_COLOR_OCCURRENCE) {
-                break;
-            }
-
-            int colorValue = weightedColor.first;
+        // Get the most preeminent, non-blacklisted color.
+        Integer bestColor = 0;
+        final float[] hsl = new float[3];
+        for (int i = 0; i < mainColorsSize; i++) {
+            final int colorValue = mainColors.get(i);
             ColorUtils.RGBToHSL(Color.red(colorValue), Color.green(colorValue),
                     Color.blue(colorValue), hsl);
 
             // Stop when we find a color that meets our criteria
             if (!isBlacklisted(hsl)) {
-                bestColor = weightedColor;
+                bestColor = colorValue;
                 break;
             }
         }
@@ -111,7 +88,7 @@ public class ColorExtractionAlgorithm {
             return null;
         }
 
-        int colorValue = bestColor.first;
+        int colorValue = bestColor;
         ColorUtils.RGBToHSL(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue),
                 hsl);
 
@@ -121,7 +98,6 @@ public class ColorExtractionAlgorithm {
 
         // Find the palette that contains the closest color
         TonalPalette palette = findTonalPalette(hsl[0]);
-
         if (palette == null) {
             Log.w(TAG, "Could not find a tonal palette!");
             return null;
@@ -140,8 +116,7 @@ public class ColorExtractionAlgorithm {
         float[] s = fit(palette.s, hsl[1], fitIndex, 0.0f, 1.0f);
         float[] l = fit(palette.l, hsl[2], fitIndex, 0.0f, 1.0f);
 
-        final int textInversionIndex = h.length - 3;
-
+        // Normal colors:
         // best fit + a 2 colors offset
         int primaryIndex = fitIndex;
         int secondaryIndex = primaryIndex + (primaryIndex >= 2 ? -2 : 2);
@@ -170,15 +145,6 @@ public class ColorExtractionAlgorithm {
             }
         }
         return false;
-    }
-
-    private static void populationSort(@NonNull List<Pair<Integer, Integer>> wallpaperColors) {
-        Collections.sort(wallpaperColors, new Comparator<Pair<Integer, Integer>>() {
-            @Override
-            public int compare(Pair<Integer, Integer> a, Pair<Integer, Integer> b) {
-                return b.second - a.second;
-            }
-        });
     }
 
     /**
@@ -234,7 +200,9 @@ public class ColorExtractionAlgorithm {
         TonalPalette best = null;
         float error = Float.POSITIVE_INFINITY;
 
-        for (TonalPalette candidate : TONAL_PALETTES) {
+        for (int i = 0; i < TONAL_PALETTES.length; i++) {
+            final TonalPalette candidate = TONAL_PALETTES[i];
+
             if (h >= candidate.minHue && h <= candidate.maxHue) {
                 best = candidate;
                 break;
@@ -755,6 +723,20 @@ public class ColorExtractionAlgorithm {
         public String toString() {
             return String.format("H: %s, S: %s, L %s", mHue, mSaturation, mLightness);
         }
+    }
+
+    private static List<Integer> getMainColors(WallpaperColorsCompat wallpaperColors) {
+        LinkedList<Integer> colors = new LinkedList<>();
+        if (wallpaperColors.getPrimaryColor() != 0) {
+            colors.add(wallpaperColors.getPrimaryColor());
+        }
+        if (wallpaperColors.getSecondaryColor() != 0) {
+            colors.add(wallpaperColors.getSecondaryColor());
+        }
+        if (wallpaperColors.getTertiaryColor() != 0) {
+            colors.add(wallpaperColors.getTertiaryColor());
+        }
+        return colors;
     }
 
 }

@@ -22,13 +22,10 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.util.Pair;
-import android.util.SparseIntArray;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.List;
 
 @TargetApi(Build.VERSION_CODES.O)
 public class WallpaperManagerCompatVOMR1 extends WallpaperManagerCompat {
@@ -41,8 +38,10 @@ public class WallpaperManagerCompatVOMR1 extends WallpaperManagerCompat {
     private final Method mAddOCLMethod;
 
     private final Method mWCGetMethod;
-    private final Method mWCGetColorsMethod;
-    private final Method mWCSupportsDarkTextMethod;
+    private final Method mWCGetPrimaryColorMethod;
+    private final Method mWCGetSecondaryColorMethod;
+    private final Method mWCGetTertiaryColorMethod;
+    private final Method mWCColorHintsMethod;
 
     WallpaperManagerCompatVOMR1(Context context) throws Exception {
         mWm = context.getSystemService(WallpaperManager.class);
@@ -53,8 +52,10 @@ public class WallpaperManagerCompatVOMR1 extends WallpaperManagerCompat {
 
         mWCGetMethod = WallpaperManager.class.getDeclaredMethod("getWallpaperColors", int.class);
         Class wallpaperColorsClass = mWCGetMethod.getReturnType();
-        mWCGetColorsMethod = wallpaperColorsClass.getDeclaredMethod("getColors");
-        mWCSupportsDarkTextMethod = wallpaperColorsClass.getDeclaredMethod("supportsDarkText");
+        mWCGetPrimaryColorMethod = wallpaperColorsClass.getDeclaredMethod("getPrimaryColor");
+        mWCGetSecondaryColorMethod = wallpaperColorsClass.getDeclaredMethod("getSecondaryColor");
+        mWCGetTertiaryColorMethod = wallpaperColorsClass.getDeclaredMethod("getTertiaryColor");
+        mWCColorHintsMethod = wallpaperColorsClass.getDeclaredMethod("getColorHints");
     }
 
     @Nullable
@@ -98,12 +99,13 @@ public class WallpaperManagerCompatVOMR1 extends WallpaperManagerCompat {
         if (colors == null) {
             return null;
         }
-        List<Pair<Color, Integer>> list = (List) mWCGetColorsMethod.invoke(colors);
-        boolean supportsDarkText = (Boolean) mWCSupportsDarkTextMethod.invoke(colors);
-        SparseIntArray colorMap = new SparseIntArray(list.size());
-        for (Pair<Color, Integer> color : list) {
-            colorMap.put(color.first.toArgb(), color.second);
-        }
-        return new WallpaperColorsCompat(colorMap, supportsDarkText);
+        Color primary = (Color) mWCGetPrimaryColorMethod.invoke(colors);
+        Color secondary = (Color) mWCGetSecondaryColorMethod.invoke(colors);
+        Color tertiary = (Color) mWCGetTertiaryColorMethod.invoke(colors);
+        int primaryVal = primary != null ? primary.toArgb() : 0;
+        int secondaryVal = secondary != null ? secondary.toArgb() : 0;
+        int tertiaryVal = tertiary != null ? tertiary.toArgb() : 0;
+        int colorHints = (Integer) mWCColorHintsMethod.invoke(colors);
+        return new WallpaperColorsCompat(primaryVal, secondaryVal, tertiaryVal, colorHints);
     }
 }
