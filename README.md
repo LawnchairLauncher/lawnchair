@@ -1,4 +1,5 @@
-# Lawnchair - [![Build Status](https://travis-ci.org/Deletescape-Media/Lawnchair.svg?branch=master)](https://travis-ci.org/Deletescape-Media/Lawnchair)
+# Lawnchair - [![Travis](https://img.shields.io/travis/Deletescape-Media/Lawnchair.svg)](https://travis-ci.org/Deletescape-Media/Lawnchair) - [![Github All Releases](https://img.shields.io/github/downloads/Deletescape-Media/Lawnchair/total.svg)](https://github.com/Deletescape-Media/Lawnchair/releases)
+
 
 ![What in launcher creation?](meme.jpg)
 

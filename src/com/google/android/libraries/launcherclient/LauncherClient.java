@@ -104,7 +104,7 @@ public class LauncherClient {
 
     static Intent getServiceIntent(Context context, String targetPackage) {
         Uri uri = Uri.parse("app://" + context.getPackageName() + ":" + Process.myUid()).buildUpon()
-                .appendQueryParameter("v", Integer.toString(0))
+                .appendQueryParameter("v", Integer.toString(5))
                 .build();
 
         return new Intent("com.android.launcher3.WINDOW_OVERLAY")
