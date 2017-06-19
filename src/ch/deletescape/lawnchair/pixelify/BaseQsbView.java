@@ -85,7 +85,11 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        Utilities.getPrefs(getContext()).unregisterOnSharedPreferenceChangeListener(this);
+        try {
+            Utilities.getPrefs(getContext()).unregisterOnSharedPreferenceChangeListener(this);
+        } catch (IllegalArgumentException ignored) {
+            // Not supposed to happen but we'll ignore it
+        }
         getContext().unregisterReceiver(packageChangedReciever);
     }
 
