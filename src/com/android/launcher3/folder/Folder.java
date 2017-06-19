@@ -356,12 +356,13 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
 
     @Override
     public boolean onBackKey() {
-        mFolderName.setHint(sHintText);
         // Convert to a string here to ensure that no other state associated with the text field
         // gets saved.
         String newTitle = mFolderName.getText().toString();
         mInfo.setTitle(newTitle);
         mLauncher.getModelWriter().updateItemInDatabase(mInfo);
+
+        mFolderName.setHint(sDefaultFolderName.contentEquals(newTitle) ? sHintText : null);
 
         Utilities.sendCustomAccessibilityEvent(
                 this, AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
@@ -459,8 +460,10 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
 
         if (!sDefaultFolderName.contentEquals(mInfo.title)) {
             mFolderName.setText(mInfo.title);
+            mFolderName.setHint(null);
         } else {
             mFolderName.setText("");
+            mFolderName.setHint(sHintText);
         }
 
         // In case any children didn't come across during loading, clean up the folder accordingly
