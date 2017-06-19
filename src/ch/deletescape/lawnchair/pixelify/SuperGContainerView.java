@@ -109,7 +109,7 @@ public class SuperGContainerView extends BaseQsbView {
     @Override
     protected void onLayout(boolean z, int i, int i2, int i3, int i4) {
         super.onLayout(z, i, i2, i3, i4);
-        if (bz != null && FeatureFlags.showPixelBar(getContext())) {
+        if (bz != null && mQsbView != null && FeatureFlags.showPixelBar(getContext())) {
             int i5 = 0;
             if (Utilities.isRtl(getResources())) {
                 i5 = mQsbView.getLeft() - mLauncher.getDeviceProfile().getWorkspacePadding(sTempRect).left;
