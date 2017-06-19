@@ -120,6 +120,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private int mPrevTopPadding = -1;
 
     PreviewBackground mBackground = new PreviewBackground();
+    private boolean mBackgroundIsVisible = true;
 
     private PreviewLayoutRule mPreviewLayoutRule;
 
@@ -883,9 +884,16 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mBackground.setInvalidateDelegate(this);
     }
 
+    public void setBackgroundVisible(boolean visible) {
+        mBackgroundIsVisible = visible;
+        invalidate();
+    }
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
+
+        if (!mBackgroundIsVisible) return;
 
         if (mReferenceDrawable != null) {
             computePreviewDrawingParams(mReferenceDrawable);

@@ -60,7 +60,6 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LogDecelerateInterpolator;
 import com.android.launcher3.OnAlarmListener;
 import com.android.launcher3.PagedView;
-import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.UninstallDropTarget.DropTargetSource;
@@ -637,7 +636,9 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             @Override
             public void onAnimationStart(Animator animation) {
                 if (FeatureFlags.LAUNCHER3_NEW_FOLDER_ANIMATION) {
+                    mFolderIcon.setBackgroundVisible(false);
                     mFolderIcon.drawLeaveBehindIfExists();
+                } else {
                     mFolderIcon.setVisibility(INVISIBLE);
                 }
 
@@ -790,6 +791,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         mDragController.removeDropTarget(this);
         clearFocus();
         if (mFolderIcon != null) {
+            mFolderIcon.setBackgroundVisible(true);
             mFolderIcon.setVisibility(View.VISIBLE);
             if (wasAnimated) {
                 mFolderIcon.mBackground.animateBackgroundStroke();
