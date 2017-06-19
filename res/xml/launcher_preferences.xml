@@ -165,6 +165,13 @@
             android:persistent="true" />
 
         <SwitchPreference
+            android:key="pref_homeOpensDrawer"
+            android:title="Home Button Opens App Drawer"
+            android:summary="Pressing the home button while on the homescreen will open the app drawer"
+            android:defaultValue="true"
+            android:persistent="true" />
+
+        <SwitchPreference
             android:key="pref_showHidden"
             android:title="Show Hidden Apps"
             android:summaryOn="Hidden apps will be shown to change visibility settings"

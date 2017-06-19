@@ -35,6 +35,7 @@ public final class FeatureFlags {
     private static final String KEY_PREF_KEEP_SCROLL_STATE = "pref_keepScrollState";
     private static final String KEY_FULL_WIDTH_SEARCHBAR = "pref_fullWidthSearchbar";
     private static final String KEY_SHOW_PIXEL_BAR = "pref_showPixelBar";
+    private static final String KEY_HOME_OPENS_DRAWER = "pref_homeOpensDrawer";
     public static final String KEY_SHOW_VOICE_SEARCH_BUTTON = "pref_showMic";
 
     private FeatureFlags() {
@@ -93,6 +94,12 @@ public final class FeatureFlags {
     public static boolean showPixelBar(Context context) {
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_SHOW_PIXEL_BAR, true);
         FirebaseAnalytics.getInstance(context).setUserProperty("show_pixel_bar", String.valueOf(enabled));
+        return enabled;
+    }
+
+    public static boolean homeOpensDrawer(Context context) {
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_HOME_OPENS_DRAWER, true);
+        FirebaseAnalytics.getInstance(context).setUserProperty("home_opens_drawer", String.valueOf(enabled));
         return enabled;
     }
 }
