@@ -124,6 +124,13 @@
             android:title="Show Voice Search Button"
             android:dependency="pref_showPixelBar"
             android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_pixelStyleIcons"
+            android:title="Use Pixel Icons"
+            android:summary="When enabled circular icons will be used where possible"
+            android:defaultValue="true"
+            android:persistent="true" />
     </PreferenceScreen>
 
     <PreferenceScreen android:title="Behavior">

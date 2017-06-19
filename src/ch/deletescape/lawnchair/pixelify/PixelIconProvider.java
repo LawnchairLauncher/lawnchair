@@ -27,6 +27,7 @@ import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherModel;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 
 public class PixelIconProvider {
     private BroadcastReceiver mBroadcastReceiver;
@@ -94,7 +95,7 @@ public class PixelIconProvider {
 
     public Drawable getIcon(final LauncherActivityInfoCompat info, int iconDpi) {
         Drawable drawable = sIconPack == null ? null : sIconPack.getIcon(info);
-        if (drawable == null) {
+        if (drawable == null && FeatureFlags.usePixelIcons(mContext)) {
             drawable = getRoundIcon(info.getComponentName().getPackageName(), iconDpi);
             String packageName = info.getApplicationInfo().packageName;
             if (isCalendar(packageName)) {
@@ -106,13 +107,13 @@ public class PixelIconProvider {
                     if (shape != 0) {
                         drawable = resourcesForApplication.getDrawableForDensity(shape, iconDpi);
                     }
-                } catch (PackageManager.NameNotFoundException ex3) {
+                } catch (PackageManager.NameNotFoundException ignored) {
                 }
             }
+        }
 
-            if (drawable == null) {
-                drawable = info.getIcon(iconDpi);
-            }
+        if (drawable == null) {
+            drawable = info.getIcon(iconDpi);
         }
         return drawable;
     }

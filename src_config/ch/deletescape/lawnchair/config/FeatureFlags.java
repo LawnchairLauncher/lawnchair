@@ -37,6 +37,7 @@ public final class FeatureFlags {
     private static final String KEY_SHOW_PIXEL_BAR = "pref_showPixelBar";
     private static final String KEY_HOME_OPENS_DRAWER = "pref_homeOpensDrawer";
     public static final String KEY_SHOW_VOICE_SEARCH_BUTTON = "pref_showMic";
+    private static final String KEY_PREF_PIXEL_STYLE_ICONS = "pref_pixelStyleIcons";
 
     private FeatureFlags() {
     }
@@ -100,6 +101,12 @@ public final class FeatureFlags {
     public static boolean homeOpensDrawer(Context context) {
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_HOME_OPENS_DRAWER, true);
         FirebaseAnalytics.getInstance(context).setUserProperty("home_opens_drawer", String.valueOf(enabled));
+        return enabled;
+    }
+
+    public static boolean usePixelIcons(Context context) {
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_PIXEL_STYLE_ICONS, true);
+        FirebaseAnalytics.getInstance(context).setUserProperty("pixel_style_icons", String.valueOf(enabled));
         return enabled;
     }
 }

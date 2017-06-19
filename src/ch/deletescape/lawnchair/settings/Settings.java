@@ -26,6 +26,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private static final String KEY_PREF_ICON_SCALE = "pref_iconScaleSB";
     private static final String KEY_PREF_ICON_TEXT_SCALE = "pref_iconTextScaleSB";
     private static final String KEY_PREF_ICON_PACK_PACKAGE = "pref_iconPackPackage";
+    private static final String KEY_PREF_PIXEL_STYLE_ICONS = "pref_pixelStyleIcons";
     private static Settings instance;
     private Launcher mLauncher;
 
@@ -105,6 +106,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                     mLauncher.scheduleKill();
                     break;
                 case KEY_PREF_ICON_PACK_PACKAGE:
+                case KEY_PREF_PIXEL_STYLE_ICONS:
                     mLauncher.scheduleReloadIcons();
                     break;
                 default:
