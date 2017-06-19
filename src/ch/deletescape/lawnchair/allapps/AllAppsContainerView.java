@@ -358,7 +358,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         Rect insets = mLauncher.getDragLayer().getInsets();
         getContentView().setPadding(0, 0, 0, 0);
-        int height = insets.top + grid.hotseatCellHeightPx;
+        int height = insets.top + grid.inv.searchHeightAddition;
 
         mlp.topMargin = height;
         mAppsRecyclerView.setLayoutParams(mlp);

@@ -72,6 +72,7 @@ public class InvariantDeviceProfile {
     public int iconBitmapSize;
     public int fillResIconDpi;
     public float iconTextSize;
+    public int searchHeightAddition;
 
     /**
      * Number of icons inside the hotseat area.
@@ -111,7 +112,6 @@ public class InvariantDeviceProfile {
         numHotseatIcons = hs;
         hotseatIconSize = his;
         defaultLayoutId = dlId;
-        customizationHook(context);
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -145,6 +145,7 @@ public class InvariantDeviceProfile {
 
         iconSize = interpolatedDeviceProfileOut.iconSize;
         iconBitmapSize = Utilities.pxFromDp(iconSize, dm);
+        searchHeightAddition = iconBitmapSize;
         iconTextSize = interpolatedDeviceProfileOut.iconTextSize;
         hotseatIconSize = interpolatedDeviceProfileOut.hotseatIconSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
