@@ -838,13 +838,13 @@ public class IconCache {
      * Generates a new low-res icon given a high-res icon.
      */
     private Bitmap generateLowResIcon(Bitmap icon, int lowResBackgroundColor) {
+        int dstWidth = Math.max(1, icon.getWidth() / LOW_RES_SCALE_FACTOR);
+        int dstHeight = Math.max(1, icon.getHeight() / LOW_RES_SCALE_FACTOR);
         if (lowResBackgroundColor == Color.TRANSPARENT) {
-            return Bitmap.createScaledBitmap(icon,
-                    icon.getWidth() / LOW_RES_SCALE_FACTOR,
-                    icon.getHeight() / LOW_RES_SCALE_FACTOR, true);
+            return Bitmap.createScaledBitmap(icon, dstWidth, dstHeight, true);
         } else {
-            Bitmap lowResIcon = Bitmap.createBitmap(icon.getWidth() / LOW_RES_SCALE_FACTOR,
-                    icon.getHeight() / LOW_RES_SCALE_FACTOR, Bitmap.Config.RGB_565);
+            Bitmap lowResIcon = Bitmap.createBitmap(dstWidth,
+                    dstHeight, Bitmap.Config.RGB_565);
             synchronized (this) {
                 mLowResCanvas.setBitmap(lowResIcon);
                 mLowResCanvas.drawColor(lowResBackgroundColor);
