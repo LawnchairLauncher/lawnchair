@@ -371,6 +371,9 @@ public class IconCache {
         final ComponentKey key = new ComponentKey(app.getComponentName(), app.getUser());
         CacheEntry entry;
         entry = mCache.get(key);
+        if (entry == null) {
+            return;
+        }
         Bitmap tmp = entry.icon;
         entry.icon = Utilities.createBadgedIconBitmap(
                 pip.getIcon(app, mIconDpi), app.getUser(),
