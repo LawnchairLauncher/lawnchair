@@ -32,7 +32,6 @@ import android.widget.FrameLayout;
 
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.badge.BadgeRenderer;
-import com.android.launcher3.config.FeatureFlags;
 
 import java.util.ArrayList;
 
@@ -181,7 +180,8 @@ public class DeviceProfile {
         overviewModeMaxIconZoneHeightPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_max_icon_zone_height);
         overviewModeBarItemWidthPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_bar_item_width);
+                (int) (res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_bar_item_width)
+                        * (isLandscape ? 1.5f : 1f));
         overviewModeBarSpacerWidthPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_bar_spacer_width);
         overviewModeIconZoneRatio =
