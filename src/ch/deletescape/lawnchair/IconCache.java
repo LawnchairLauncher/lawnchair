@@ -57,6 +57,7 @@ import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.model.PackageItemInfo;
+import ch.deletescape.lawnchair.pixelify.PixelIconProvider;
 import ch.deletescape.lawnchair.util.ComponentKey;
 import ch.deletescape.lawnchair.util.SQLiteCacheHelper;
 import ch.deletescape.lawnchair.util.Thunk;
@@ -113,6 +114,8 @@ public class IconCache {
     private final int mPackageBgColor;
     private final BitmapFactory.Options mLowResOptions;
 
+    private PixelIconProvider pip;
+
     private Canvas mLowResCanvas;
     private Paint mLowResPaint;
 
@@ -125,6 +128,8 @@ public class IconCache {
         mIconDb = new IconDB(context, inv.iconBitmapSize);
         mLowResCanvas = new Canvas();
         mLowResPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
+
+        pip = new PixelIconProvider(context);
 
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
 
@@ -375,7 +380,7 @@ public class IconCache {
         if (entry == null) {
             entry = new CacheEntry();
             entry.icon = Utilities.createBadgedIconBitmap(
-                    app.getIcon(mIconDpi), app.getUser(),
+                    pip.getIcon(app, mIconDpi), app.getUser(),
                     mContext);
         }
         entry.title = app.getLabel();
@@ -565,7 +570,7 @@ public class IconCache {
             if (!getEntryFromDB(cacheKey, entry, useLowResIcon)) {
                 if (info != null) {
                     entry.icon = Utilities.createBadgedIconBitmap(
-                            info.getIcon(mIconDpi), info.getUser(),
+                            pip.getIcon(info, mIconDpi), info.getUser(),
                             mContext);
                 } else {
                     if (usePackageIcon) {
