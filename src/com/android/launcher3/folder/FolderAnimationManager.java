@@ -208,6 +208,7 @@ public class FolderAnimationManager {
         play(a, getAnimator(mFolder, SCALE_PROPERTY, initialScale, finalScale));
         play(a, getAnimator(items, ITEMS_TEXT_COLOR_PROPERTY, Color.TRANSPARENT, finalTextColor));
         play(a, getAnimator(mFolderBackground, "color", initialColor, finalColor));
+        play(a, mFolderIcon.mFolderName.createTextAlphaAnimator(!mIsOpening));
         play(a, new RoundedRectRevealOutlineProvider(initialRadius, finalRadius, startRect,
                 endRect).createRevealAnimator(mFolder, !mIsOpening));
 
