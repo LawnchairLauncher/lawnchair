@@ -22,10 +22,18 @@
     android:elevation="@dimen/deep_shortcuts_elevation">
 
     <LinearLayout
-        android:id="@+id/deep_shortcuts"
+        android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <!-- The shortcuts header is added at runtime when necessary. -->
+
+        <LinearLayout
+            android:id="@+id/shortcuts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" />
     </LinearLayout>
 
 </com.android.launcher3.shortcuts.ShortcutsItemView>
