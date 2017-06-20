@@ -53,9 +53,7 @@
             android:clipToPadding="false"
             android:overScrollMode="never"
             android:descendantFocusability="afterDescendants"
-            android:focusable="true"
-            android:paddingStart="@dimen/dynamic_grid_edge_margin"
-            android:paddingEnd="@dimen/dynamic_grid_edge_margin" />
+            android:focusable="true" />
 
         <!-- Fast scroller popup -->
         <TextView

@@ -753,7 +753,7 @@ public class IconCache {
     }
 
     private static final class IconDB extends SQLiteCacheHelper {
-        private final static int DB_VERSION = 15;
+        private final static int DB_VERSION = 16;
 
         private final static int RELEASE_VERSION = DB_VERSION +
                 (FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ? 0 : 1);
