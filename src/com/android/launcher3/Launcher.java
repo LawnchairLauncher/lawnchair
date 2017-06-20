@@ -126,6 +126,7 @@ import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.PendingRequestArgs;
+import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.TestingUtils;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
@@ -470,9 +471,8 @@ public class Launcher extends BaseActivity
         // Listen for broadcasts screen off
         registerReceiver(mReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
 
-        if (Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText)) {
-            activateLightSystemBars(true, true, true);
-        }
+        getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
+                Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
     }
 
     @Override
@@ -516,36 +516,6 @@ public class Launcher extends BaseActivity
             mExtractedColors.load(this);
             mHotseat.updateColor(mExtractedColors, !mPaused);
             mWorkspace.getPageIndicator().updateColor(mExtractedColors);
-        }
-    }
-
-    /**
-     * Sets the status and/or nav bar to be light or not. Light status bar means dark icons.
-     * @param isLight make sure the system bar is light.
-     * @param statusBar if true, make the status bar theme match the isLight param.
-     * @param navBar if true, make the nav bar theme match the isLight param.
-     */
-    public void activateLightSystemBars(boolean isLight, boolean statusBar, boolean navBar) {
-        int oldSystemUiFlags = getWindow().getDecorView().getSystemUiVisibility();
-        int newSystemUiFlags = oldSystemUiFlags;
-        if (isLight) {
-            if (statusBar) {
-                newSystemUiFlags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            }
-            if (navBar && Utilities.isAtLeastO()) {
-                newSystemUiFlags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
-            }
-        } else {
-            if (statusBar) {
-                newSystemUiFlags &= ~(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            }
-            if (navBar && Utilities.isAtLeastO()) {
-                newSystemUiFlags &= ~(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-            }
-        }
-
-        if (newSystemUiFlags != oldSystemUiFlags) {
-            getWindow().getDecorView().setSystemUiVisibility(newSystemUiFlags);
         }
     }
 

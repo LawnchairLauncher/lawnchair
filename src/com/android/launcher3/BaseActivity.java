@@ -22,11 +22,13 @@ import android.content.ContextWrapper;
 import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.util.SystemUiController;
 
 public abstract class BaseActivity extends Activity {
 
     protected DeviceProfile mDeviceProfile;
     protected UserEventDispatcher mUserEventDispatcher;
+    protected SystemUiController mSystemUiController;
 
     public DeviceProfile getDeviceProfile() {
         return mDeviceProfile;
@@ -53,5 +55,12 @@ public abstract class BaseActivity extends Activity {
             return (BaseActivity) context;
         }
         return ((BaseActivity) ((ContextWrapper) context).getBaseContext());
+    }
+
+    public SystemUiController getSystemUiController() {
+        if (mSystemUiController == null) {
+            mSystemUiController = new SystemUiController(getWindow());
+        }
+        return mSystemUiController;
     }
 }

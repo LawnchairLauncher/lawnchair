@@ -61,7 +61,7 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
 
     @Override
     public void onColorsChanged(WallpaperColorsCompat colors, int which) {
-        if (which == FLAG_SYSTEM) {
+        if ((which & FLAG_SYSTEM) != 0) {
             boolean wasDarkTheme = mIsDark;
             boolean didSupportDarkText = mSupportsDarkText;
             update(colors);
