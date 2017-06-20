@@ -120,7 +120,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
                 // Center the icon/folder
                 int cHeight = getCellContentHeight();
                 int cellPaddingY = (int) Math.max(0, ((lp.height - cHeight) / 2f));
-                int cellPaddingX = (int) (profile.edgeMarginPx / 2f);
+                int cellPaddingX = profile.cellPaddingXPx;
                 child.setPadding(cellPaddingX, cellPaddingY, cellPaddingX, 0);
             }
         } else {
