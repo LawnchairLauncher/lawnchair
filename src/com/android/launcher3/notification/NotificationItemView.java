@@ -86,11 +86,16 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
         return getHeight() - footerHeight;
     }
 
-    public Animator animateHeightRemoval(int heightToRemove) {
+    public Animator animateHeightRemoval(int heightToRemove, boolean shouldRemoveFromTop) {
+        Rect startRect = new Rect(mPillRect);
         Rect endRect = new Rect(mPillRect);
-        endRect.bottom -= heightToRemove;
+        if (shouldRemoveFromTop) {
+            endRect.top += heightToRemove;
+        } else {
+            endRect.bottom -= heightToRemove;
+        }
         return new RoundedRectRevealOutlineProvider(getBackgroundRadius(), getBackgroundRadius(),
-                mPillRect, endRect, mRoundedCorners).createRevealAnimator(this, false);
+                startRect, endRect, mRoundedCorners).createRevealAnimator(this, false);
     }
 
     public void updateHeader(int notificationCount, @Nullable IconPalette palette) {

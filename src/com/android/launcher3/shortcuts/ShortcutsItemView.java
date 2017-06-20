@@ -16,8 +16,12 @@
 
 package com.android.launcher3.shortcuts;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -28,7 +32,9 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
@@ -50,12 +56,15 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
         View.OnTouchListener, LogContainerProvider {
 
     private Launcher mLauncher;
+    private LinearLayout mContent;
     private LinearLayout mShortcutsLayout;
     private LinearLayout mSystemShortcutIcons;
     private final Point mIconShift = new Point();
     private final Point mIconLastTouchPos = new Point();
     private final List<DeepShortcutView> mDeepShortcutViews = new ArrayList<>();
     private final List<View> mSystemShortcutViews = new ArrayList<>();
+
+    private int mHiddenShortcutsHeight;
 
     public ShortcutsItemView(Context context) {
         this(context, null, 0);
@@ -74,7 +83,8 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mShortcutsLayout = findViewById(R.id.deep_shortcuts);
+        mContent = findViewById(R.id.content);
+        mShortcutsLayout = findViewById(R.id.shortcuts);
     }
 
     @Override
@@ -130,17 +140,18 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
             // System shortcut icons are added to a header that is separate from the full shortcuts.
             if (mSystemShortcutIcons == null) {
                 mSystemShortcutIcons = (LinearLayout) mLauncher.getLayoutInflater().inflate(
-                        R.layout.system_shortcut_icons, mShortcutsLayout, false);
+                        R.layout.system_shortcut_icons, mContent, false);
 
                 View divider = LayoutInflater.from(getContext()).inflate(
                         R.layout.horizontal_divider, this, false);
 
-                if (mShortcutsLayout.getChildCount() > 0) {
-                    mShortcutsLayout.addView(divider);
-                }
-                mShortcutsLayout.addView(mSystemShortcutIcons);
-                if (mShortcutsLayout.getChildCount() == 1) {
-                    mShortcutsLayout.addView(divider);
+                boolean iconsAreBelowShortcuts = mShortcutsLayout.getChildCount() > 0;
+                if (iconsAreBelowShortcuts) {
+                    mContent.addView(divider);
+                    mContent.addView(mSystemShortcutIcons);
+                } else {
+                    mContent.addView(divider, 0);
+                    mContent.addView(mSystemShortcutIcons, 0);
                 }
             }
             mSystemShortcutIcons.addView(shortcutView, index);
@@ -169,6 +180,84 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
             Collections.reverse(mSystemShortcutViews);
         }
         return mSystemShortcutViews;
+    }
+
+    /**
+     * Hides shortcuts until only {@param maxShortcuts} are showing.
+     */
+    public void hideShortcuts(boolean hideFromTop, int maxShortcuts) {
+        int numToHide = mShortcutsLayout.getChildCount() - maxShortcuts;
+        if (numToHide <= 0) {
+            return;
+        }
+        mHiddenShortcutsHeight = 0;
+        final int numShortcuts = mShortcutsLayout.getChildCount();
+        final int dir = hideFromTop ? 1 : -1;
+        for (int i = hideFromTop ? 0 : numShortcuts - 1; 0 <= i && i < numShortcuts; i += dir) {
+            View child = mShortcutsLayout.getChildAt(i);
+            if (child instanceof DeepShortcutView) {
+                mHiddenShortcutsHeight += child.getLayoutParams().height;
+                child.setVisibility(GONE);
+                int prev = i + dir;
+                if (!hideFromTop && 0 <= prev && prev < numShortcuts) {
+                    // When hiding views from the bottom, make sure to hide the last divider.
+                    mShortcutsLayout.getChildAt(prev).findViewById(R.id.divider).setVisibility(GONE);
+                }
+                numToHide--;
+                if (numToHide == 0) {
+                    break;
+                }
+            }
+        }
+    }
+
+    public int getHiddenShortcutsHeight() {
+        return mHiddenShortcutsHeight;
+    }
+
+    /**
+     * Sets all shortcuts in {@link #mShortcutsLayout} to VISIBLE, then creates an
+     * animation to reveal the newly shown shortcuts.
+     *
+     * @see #hideShortcuts(boolean, int)
+     */
+    public Animator showAllShortcuts(boolean showFromTop) {
+        // First set all the shortcuts to VISIBLE.
+        final int numShortcuts = mShortcutsLayout.getChildCount();
+        for (int i = 0; i < numShortcuts; i++) {
+            DeepShortcutView view = (DeepShortcutView) mShortcutsLayout.getChildAt(i);
+            view.setVisibility(VISIBLE);
+            if (i < numShortcuts - 1) {
+                view.findViewById(R.id.divider).setVisibility(VISIBLE);
+            }
+        }
+
+        // Now reveal the newly shown shortcuts.
+        AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
+
+        if (showFromTop) {
+            // The new shortcuts pushed the original shortcuts down, but we want to animate them
+            // to that position. So we revert the translation and animate to the new.
+            animation.play(ObjectAnimator.ofFloat(mShortcutsLayout, TRANSLATION_Y,
+                    mShortcutsLayout.getTranslationY() - mHiddenShortcutsHeight,
+                    mShortcutsLayout.getTranslationY()));
+        } else if (mSystemShortcutIcons != null) {
+            // When adding the shortcuts from the bottom, things are a little trickier, since
+            // that means they push the icons header down. To account for this, we do the same
+            // translation trick as above, but on the header. Since this means leaving behind
+            // a blank area where the header was, we also need to clip the background.
+            animation.play(ObjectAnimator.ofFloat(mSystemShortcutIcons, TRANSLATION_Y,
+                    mSystemShortcutIcons.getTranslationY() - mHiddenShortcutsHeight,
+                    mSystemShortcutIcons.getTranslationY()));
+            // mPillRect is the bounds of this view before the new shortcuts were shown.
+            Rect backgroundStartRect = new Rect(mPillRect);
+            Rect backgroundEndRect = new Rect(mPillRect);
+            backgroundEndRect.bottom += mHiddenShortcutsHeight;
+            animation.play(new RoundedRectRevealOutlineProvider(getBackgroundRadius(),
+                    getBackgroundRadius(), backgroundStartRect, backgroundEndRect, mRoundedCorners)
+                    .createRevealAnimator(this, false));
+        }
+        return animation;
     }
 
     /**
