@@ -156,4 +156,15 @@
     <style name="TextTitle">
         <item name="android:fontFamily">sans-serif</item>
     </style>
+
+    <style name="AllAppsEmptySearchBackground">
+        <item name="android:colorPrimary">#E0E0E0</item>
+        <item name="android:colorControlHighlight">#BDBDBD</item>
+        <item name="android:colorForeground">@color/all_apps_bg_hand_fill</item>
+    </style>
+    <style name="AllAppsEmptySearchBackground.Dark">
+        <item name="android:colorPrimary">#9AA0A6</item>
+        <item name="android:colorControlHighlight">#DFE1E5</item>
+        <item name="android:colorForeground">@color/all_apps_bg_hand_fill_dark</item>
+    </style>
 </resources>

@@ -39,4 +39,5 @@
     <color name="legacy_icon_background">#FFFFFF</color>
 
     <color name="all_apps_bg_hand_fill">#E5E5E5</color>
+    <color name="all_apps_bg_hand_fill_dark">#9AA0A6</color>
 </resources>

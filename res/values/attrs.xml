@@ -130,6 +130,6 @@
         <attr name="android:src" />
         <attr name="android:shadowColor" />
         <attr name="android:elevation" />
-        <attr name="android:tint" />
+        <attr name="darkTintColor" format="color"/>
     </declare-styleable>
 </resources>

@@ -17,7 +17,6 @@
 package com.android.launcher3.graphics;
 
 import android.annotation.TargetApi;
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -28,7 +27,6 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -111,12 +109,11 @@ public class ShadowDrawable extends Drawable {
 
     @Override
     public void applyTheme(Resources.Theme t) {
-        if (mState.canApplyTheme()) {
-            // Workaround since ColorStateList does not expose applyTheme method
-            ColorDrawable cd = new ColorDrawable();
-            cd.setTintList(mState.mTintColor);
-            cd.applyTheme(t);
-
+        TypedArray ta = t.obtainStyledAttributes(new int[] {R.attr.isWorkspaceDarkText});
+        boolean isDark = ta.getBoolean(0, false);
+        ta.recycle();
+        if (mState.mIsDark != isDark) {
+            mState.mIsDark = isDark;
             mState.mLastDrawnBitmap = null;
             invalidateSelf();
         }
@@ -132,21 +129,22 @@ public class ShadowDrawable extends Drawable {
         d.setBounds(mState.mShadowSize, mState.mShadowSize,
                 mState.mIntrinsicWidth - mState.mShadowSize,
                 mState.mIntrinsicHeight - mState.mShadowSize);
-        if (mState.mTintColor != null) {
-            d.setTint(mState.mTintColor.getDefaultColor());
+        d.setTint(mState.mIsDark ? mState.mDarkTintColor : Color.WHITE);
+        d.draw(canvas);
+
+        // Do not draw shadow on dark theme
+        if (!mState.mIsDark) {
+            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+            paint.setMaskFilter(new BlurMaskFilter(mState.mShadowSize, BlurMaskFilter.Blur.NORMAL));
+            int[] offset = new int[2];
+            Bitmap shadow = bitmap.extractAlpha(paint, offset);
+
+            paint.setMaskFilter(null);
+            paint.setColor(mState.mShadowColor);
+            bitmap.eraseColor(Color.TRANSPARENT);
+            canvas.drawBitmap(shadow, offset[0], offset[1], paint);
+            d.draw(canvas);
         }
-        d.draw(canvas);
-
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-        paint.setMaskFilter(new BlurMaskFilter(mState.mShadowSize, BlurMaskFilter.Blur.NORMAL));
-        int[] offset = new int[2];
-        Bitmap shadow = bitmap.extractAlpha(paint, offset);
-
-        paint.setMaskFilter(null);
-        paint.setColor(mState.mShadowColor);
-        bitmap.eraseColor(Color.TRANSPARENT);
-        canvas.drawBitmap(shadow, offset[0], offset[1], paint);
-        d.draw(canvas);
 
         if (Utilities.isAtLeastO()) {
             bitmap = bitmap.copy(Bitmap.Config.HARDWARE, false);
@@ -162,7 +160,6 @@ public class ShadowDrawable extends Drawable {
         final TypedArray a = theme == null
                 ? r.obtainAttributes(attrs, R.styleable.ShadowDrawable)
                 : theme.obtainStyledAttributes(attrs, R.styleable.ShadowDrawable, 0, 0);
-
         try {
             Drawable d = a.getDrawable(R.styleable.ShadowDrawable_android_src);
             if (d == null) {
@@ -172,7 +169,8 @@ public class ShadowDrawable extends Drawable {
                     R.styleable.ShadowDrawable_android_shadowColor, Color.BLACK);
             mState.mShadowSize = a.getDimensionPixelSize(
                     R.styleable.ShadowDrawable_android_elevation, 0);
-            mState.mTintColor = a.getColorStateList(R.styleable.ShadowDrawable_android_tint);
+            mState.mDarkTintColor = a.getColor(
+                    R.styleable.ShadowDrawable_darkTintColor, Color.BLACK);
 
             mState.mIntrinsicHeight = d.getIntrinsicHeight() + 2 * mState.mShadowSize;
             mState.mIntrinsicWidth = d.getIntrinsicWidth() + 2 * mState.mShadowSize;
@@ -192,8 +190,9 @@ public class ShadowDrawable extends Drawable {
 
         int mShadowColor;
         int mShadowSize;
-        ColorStateList mTintColor;
+        int mDarkTintColor;
 
+        boolean mIsDark;
         Bitmap mLastDrawnBitmap;
         ConstantState mChildState;
 
@@ -209,7 +208,7 @@ public class ShadowDrawable extends Drawable {
 
         @Override
         public boolean canApplyTheme() {
-            return mTintColor != null;
+            return true;
         }
     }
 }
