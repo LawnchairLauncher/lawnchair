@@ -32,6 +32,7 @@ import android.widget.FrameLayout;
 
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.badge.BadgeRenderer;
+import com.android.launcher3.config.FeatureFlags;
 
 import java.util.ArrayList;
 
@@ -92,6 +93,7 @@ public class DeviceProfile {
 
     public int cellWidthPx;
     public int cellHeightPx;
+    public int cellPaddingXPx;
 
     // Folder
     public int folderBackgroundOffset;
@@ -192,6 +194,8 @@ public class DeviceProfile {
         workspaceSpringLoadedBottomSpace =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_min_spring_loaded_space);
 
+        cellPaddingXPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_padding_x);
+
         hotseatBarTopPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
         hotseatBarBottomPaddingPx =
@@ -264,36 +268,34 @@ public class DeviceProfile {
     }
 
     private void updateAvailableDimensions(DisplayMetrics dm, Resources res) {
-        updateIconSize(1f, iconDrawablePaddingOriginalPx, res, dm);
+        updateIconSize(1f, res, dm);
 
         // Check to see if the icons fit within the available height.  If not, then scale down.
         float usedHeight = (cellHeightPx * inv.numRows);
         int maxHeight = (availableHeightPx - getTotalWorkspacePadding().y);
         if (usedHeight > maxHeight) {
             float scale = maxHeight / usedHeight;
-            updateIconSize(scale, 0, res, dm);
+            updateIconSize(scale, res, dm);
         }
-
         updateAvailableFolderCellDimensions(dm, res);
     }
 
-    private void updateIconSize(float scale, int drawablePadding, Resources res,
-                                DisplayMetrics dm) {
+    private void updateIconSize(float scale, Resources res, DisplayMetrics dm) {
         iconSizePx = (int) (Utilities.pxFromDp(inv.iconSize, dm) * scale);
         iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
-        iconDrawablePaddingPx = drawablePadding;
+        iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
         hotseatIconSizePx = (int) (Utilities.pxFromDp(inv.hotseatIconSize, dm) * scale);
         allAppsIconSizePx = iconSizePx;
         allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
         allAppsIconTextSizePx = iconTextSizePx;
 
-        cellWidthPx = iconSizePx;
+        cellWidthPx = iconSizePx + iconDrawablePaddingPx;
         cellHeightPx = iconSizePx + iconDrawablePaddingPx
                 + Utilities.calculateTextHeight(iconTextSizePx);
 
         // Hotseat
-        hotseatCellWidthPx = iconSizePx;
-        hotseatCellHeightPx = iconSizePx;
+        hotseatCellWidthPx = cellWidthPx;
+        hotseatCellHeightPx = iconSizePx + iconDrawablePaddingPx;
 
         if (!isVerticalBarLayout()) {
             int expectedWorkspaceHeight = availableHeightPx - hotseatBarHeightPx
@@ -308,7 +310,7 @@ public class DeviceProfile {
         }
 
         // Folder icon
-        folderBackgroundOffset = -edgeMarginPx;
+        folderBackgroundOffset = -iconDrawablePaddingPx;
         folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
         folderIconPreviewPadding = res.getDimensionPixelSize(R.dimen.folder_preview_padding);
     }
@@ -522,7 +524,7 @@ public class DeviceProfile {
         lp = (FrameLayout.LayoutParams) searchBar.getLayoutParams();
         lp.width = searchBarBounds.x;
         lp.height = searchBarBounds.y;
-        lp.topMargin = mInsets.top + edgeMarginPx;
+        lp.topMargin = mInsets.top + edgeMarginPx / 2;
         searchBar.setLayoutParams(lp);
 
         // Layout the workspace
