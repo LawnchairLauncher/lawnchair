@@ -84,46 +84,6 @@ public class ShadowGenerator {
         return result;
     }
 
-    public static Bitmap createPillWithShadow(int rectColor, int width, int height) {
-        float shadowRadius = height * 1f / 32;
-        float shadowYOffset = height * 1f / 16;
-        return createPillWithShadow(rectColor, width, height, shadowRadius, shadowYOffset,
-                new RectF());
-    }
-
-    public static Bitmap createPillWithShadow(int rectColor, int width, int height,
-            float shadowRadius, float shadowYOffset, RectF outRect) {
-        int radius = height / 2;
-
-        int centerX = Math.round(width / 2 + shadowRadius);
-        int centerY = Math.round(radius + shadowRadius + shadowYOffset);
-        int center = Math.max(centerX, centerY);
-        int size = center * 2;
-        Bitmap result = Bitmap.createBitmap(size, size, Config.ARGB_8888);
-
-        outRect.set(0, 0, width, height);
-        outRect.offsetTo(center - width / 2, center - height / 2);
-
-        drawShadow(new Canvas(result), outRect, rectColor, shadowRadius, shadowYOffset, radius);
-        return result;
-    }
-
-    public static void drawShadow(Canvas c, RectF bounds, int color,
-            float shadowBlur, float keyShadowDistance, float radius) {
-        Paint p = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-        p.setColor(color);
-
-        // Key shadow
-        p.setShadowLayer(shadowBlur, 0, keyShadowDistance,
-                ColorUtils.setAlphaComponent(Color.BLACK, KEY_SHADOW_ALPHA));
-        c.drawRoundRect(bounds, radius, radius, p);
-
-        // Ambient shadow
-        p.setShadowLayer(shadowBlur, 0, 0,
-                ColorUtils.setAlphaComponent(Color.BLACK, AMBIENT_SHADOW_ALPHA));
-        c.drawRoundRect(bounds, radius, radius, p);
-    }
-
     public static ShadowGenerator getInstance(Context context) {
         // TODO: This currently fails as the system default icon also needs a shadow as it
         // uses adaptive icon.
@@ -154,5 +114,59 @@ public class ShadowGenerator {
             scale = Math.min(scale, (HALF_DISTANCE - bottomSpace) / (HALF_DISTANCE - bounds.bottom));
         }
         return scale;
+    }
+
+    public static class Builder {
+
+        public final RectF bounds = new RectF();
+        public final int color;
+
+        public int ambientShadowAlpha = AMBIENT_SHADOW_ALPHA;
+
+        public float shadowBlur;
+
+        public float keyShadowDistance;
+        public int keyShadowAlpha = KEY_SHADOW_ALPHA;
+        public float radius;
+
+        public Builder(int color) {
+            this.color = color;
+        }
+
+        public Builder setupBlurForSize(int height) {
+            shadowBlur = height * 1f / 32;
+            keyShadowDistance = height * 1f / 16;
+            return this;
+        }
+
+        public Bitmap createPill(int width, int height) {
+            radius = height / 2;
+
+            int centerX = Math.round(width / 2 + shadowBlur);
+            int centerY = Math.round(radius + shadowBlur + keyShadowDistance);
+            int center = Math.max(centerX, centerY);
+            bounds.set(0, 0, width, height);
+            bounds.offsetTo(center - width / 2, center - height / 2);
+
+            int size = center * 2;
+            Bitmap result = Bitmap.createBitmap(size, size, Config.ARGB_8888);
+            drawShadow(new Canvas(result));
+            return result;
+        }
+
+        public void drawShadow(Canvas c) {
+            Paint p = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+            p.setColor(color);
+
+            // Key shadow
+            p.setShadowLayer(shadowBlur, 0, keyShadowDistance,
+                    ColorUtils.setAlphaComponent(Color.BLACK, keyShadowAlpha));
+            c.drawRoundRect(bounds, radius, radius, p);
+
+            // Ambient shadow
+            p.setShadowLayer(shadowBlur, 0, 0,
+                    ColorUtils.setAlphaComponent(Color.BLACK, ambientShadowAlpha));
+            c.drawRoundRect(bounds, radius, radius, p);
+        }
     }
 }

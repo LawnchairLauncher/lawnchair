@@ -432,14 +432,17 @@ public class WidgetPreviewLoader {
 
     private RectF drawBoxWithShadow(Canvas c, int width, int height) {
         Resources res = mContext.getResources();
-        float shadowBlur = res.getDimension(R.dimen.widget_preview_shadow_blur);
-        float keyShadowDistance = res.getDimension(R.dimen.widget_preview_key_shadow_distance);
-        float corner = res.getDimension(R.dimen.widget_preview_corner_radius);
 
-        RectF bounds = new RectF(shadowBlur, shadowBlur,
-                width - shadowBlur, height - shadowBlur - keyShadowDistance);
-        ShadowGenerator.drawShadow(c, bounds, Color.WHITE, shadowBlur, keyShadowDistance, corner);
-        return bounds;
+        ShadowGenerator.Builder builder = new ShadowGenerator.Builder(Color.WHITE);
+        builder.shadowBlur = res.getDimension(R.dimen.widget_preview_shadow_blur);
+        builder.radius = res.getDimension(R.dimen.widget_preview_corner_radius);
+        builder.keyShadowDistance = res.getDimension(R.dimen.widget_preview_key_shadow_distance);
+
+        builder.bounds.set(builder.shadowBlur, builder.shadowBlur,
+                width - builder.shadowBlur,
+                height - builder.shadowBlur - builder.keyShadowDistance);
+        builder.drawShadow(c);
+        return builder.bounds;
     }
 
     private Bitmap generateShortcutPreview(BaseActivity launcher, ShortcutConfigActivityInfo info,
