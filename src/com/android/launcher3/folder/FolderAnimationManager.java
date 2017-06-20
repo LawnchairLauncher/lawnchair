@@ -221,6 +221,12 @@ public class FolderAnimationManager {
                 mFolder.setTranslationY(0.0f);
                 mFolder.setScaleX(1f);
                 mFolder.setScaleY(1f);
+
+                if (mIsOpening) {
+                    getAnimator(mFolder, View.TRANSLATION_Z, -mFolder.getElevation(), 0)
+                            .setDuration(150)
+                            .start();
+                }
             }
         });
 
