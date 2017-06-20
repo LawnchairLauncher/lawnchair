@@ -378,7 +378,7 @@ public class IconCache {
         entry.icon = Utilities.createBadgedIconBitmap(
                 pip.getIcon(app, mIconDpi), app.getUser(),
                 mContext);
-        if (tmp.equals(entry.icon)) {
+        if (entry.icon.equals(tmp)) {
             return;
         }
         mCache.put(key, entry);
