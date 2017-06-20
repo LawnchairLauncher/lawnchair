@@ -555,6 +555,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         private int mBgColor;
         private float mStrokeWidth;
         private int mStrokeAlpha = MAX_BG_OPACITY;
+        private int mShadowAlpha = 255;
         private View mInvalidateDelegate;
 
         public int previewSize;
@@ -580,6 +581,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
         ValueAnimator mScaleAnimator;
         ObjectAnimator mStrokeAlphaAnimator;
+        ObjectAnimator mShadowAnimator;
 
         private static final Property<PreviewBackground, Integer> STROKE_ALPHA =
                 new Property<PreviewBackground, Integer>(Integer.class, "strokeAlpha") {
@@ -591,6 +593,20 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                     @Override
                     public void set(PreviewBackground previewBackground, Integer alpha) {
                         previewBackground.mStrokeAlpha = alpha;
+                        previewBackground.invalidate();
+                    }
+                };
+
+        private static final Property<PreviewBackground, Integer> SHADOW_ALPHA =
+                new Property<PreviewBackground, Integer>(Integer.class, "shadowAlpha") {
+                    @Override
+                    public Integer get(PreviewBackground previewBackground) {
+                        return previewBackground.mShadowAlpha;
+                    }
+
+                    @Override
+                    public void set(PreviewBackground previewBackground, Integer alpha) {
+                        previewBackground.mShadowAlpha = alpha;
                         previewBackground.invalidate();
                     }
                 };
@@ -692,10 +708,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             mShaderMatrix.setScale(shadowRadius, shadowRadius);
             mShaderMatrix.postTranslate(radius + offsetX, shadowRadius + offsetY);
             mShadowShader.setLocalMatrix(mShaderMatrix);
+            mPaint.setAlpha(mShadowAlpha);
             mPaint.setShader(mShadowShader);
             canvas.drawPaint(mPaint);
+            mPaint.setAlpha(255);
             mPaint.setShader(null);
-
             if (canvas.isHardwareAccelerated()) {
                 mPaint.setXfermode(mShadowPorterDuffXfermode);
                 canvas.drawCircle(radius + offsetX, radius + offsetY, radius, mPaint);
@@ -703,6 +720,22 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             }
 
             canvas.restoreToCount(saveCount);
+        }
+
+        public void fadeInBackgroundShadow() {
+            if (mShadowAnimator != null) {
+                mShadowAnimator.cancel();
+            }
+            mShadowAnimator = ObjectAnimator
+                    .ofInt(this, SHADOW_ALPHA, 0, 255)
+                    .setDuration(100);
+            mShadowAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mShadowAnimator = null;
+                }
+            });
+            mShadowAnimator.start();
         }
 
         public void animateBackgroundStroke() {
