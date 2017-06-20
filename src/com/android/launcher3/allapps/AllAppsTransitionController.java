@@ -28,6 +28,7 @@ import com.android.launcher3.graphics.GradientView;
 import com.android.launcher3.graphics.ScrimView;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TouchController;
 
@@ -71,7 +72,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private final VerticalPullDetector mDetector;
     private final ArgbEvaluator mEvaluator;
     private final boolean mIsDarkTheme;
-    private final boolean mIsWorkspaceDarkText;
 
     // Animation in this class is controlled by a single variable {@link mProgress}.
     // Visually, it represents top y coordinate of the all apps container if multiplied with
@@ -114,7 +114,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mEvaluator = new ArgbEvaluator();
         mAllAppsBackgroundColor = Themes.getAttrColor(l, android.R.attr.colorPrimary);
         mIsDarkTheme = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
-        mIsWorkspaceDarkText = Themes.getAttrBoolean(mLauncher, R.attr.isWorkspaceDarkText);
     }
 
     @Override
@@ -278,15 +277,21 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     private void updateLightStatusBar(float shift) {
-        // Do not modify status bar in dark theme or on landscape as all apps is not full bleed.
-        if (mIsDarkTheme || mIsWorkspaceDarkText || (!FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS
-                && mLauncher.getDeviceProfile().isVerticalBarLayout())) {
+        // Do not modify status bar on landscape as all apps is not full bleed.
+        if (!FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS
+                && mLauncher.getDeviceProfile().isVerticalBarLayout()) {
             return;
         }
-        // Use a light status bar (dark icons) if all apps is behind at least half of the status
-        // bar. If the status bar is already light due to wallpaper extraction, keep it that way.
-        boolean forceLight = shift <= mStatusBarHeight / 2;
-        mLauncher.activateLightSystemBars(forceLight, true /* statusBar */, true /* navBar */);
+
+        // Use a light system UI (dark icons) if all apps is behind at least half of the status bar.
+        boolean forceChange = shift <= mStatusBarHeight / 2;
+        if (forceChange) {
+            mLauncher.getSystemUiController().updateUiState(
+                    SystemUiController.UI_STATE_ALL_APPS, !mIsDarkTheme);
+        } else {
+            mLauncher.getSystemUiController().updateUiState(
+                    SystemUiController.UI_STATE_ALL_APPS, 0);
+        }
     }
 
     private void updateAllAppsBg(float progress) {
