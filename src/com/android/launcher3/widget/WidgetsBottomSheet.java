@@ -48,6 +48,7 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.TouchController;
 
 import java.util.List;
@@ -69,7 +70,6 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
     private Interpolator mFastOutSlowInInterpolator;
     private VerticalPullDetector.ScrollInterpolator mScrollInterpolator;
     private Rect mInsets;
-    private boolean mWasNavBarLight;
     private VerticalPullDetector mVerticalPullDetector;
 
     public WidgetsBottomSheet(Context context, AttributeSet attrs) {
@@ -103,8 +103,6 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
 
         onWidgetsBound();
 
-        mWasNavBarLight = (mLauncher.getWindow().getDecorView().getSystemUiVisibility()
-                & View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR) != 0;
         mLauncher.getDragLayer().addView(this);
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         setTranslationY(mTranslationYClosed);
@@ -180,7 +178,8 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
             return;
         }
         mIsOpen = true;
-        setLightNavBar(true);
+        mLauncher.getSystemUiController().updateUiState(
+                SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, SystemUiController.FLAG_LIGHT_NAV);
         if (animate) {
             mOpenCloseAnimator.setValues(new PropertyListBuilder()
                     .translationY(mTranslationYOpen).build());
@@ -211,7 +210,8 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
                     mIsOpen = false;
                     mVerticalPullDetector.finishedScrolling();
                     ((ViewGroup) getParent()).removeView(WidgetsBottomSheet.this);
-                    setLightNavBar(mWasNavBarLight);
+                    mLauncher.getSystemUiController().updateUiState(
+                            SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, 0);
                 }
             });
             mOpenCloseAnimator.setInterpolator(mVerticalPullDetector.isIdleState()
@@ -219,13 +219,10 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
             mOpenCloseAnimator.start();
         } else {
             setTranslationY(mTranslationYClosed);
-            setLightNavBar(mWasNavBarLight);
+            mLauncher.getSystemUiController().updateUiState(
+                    SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, 0);
             mIsOpen = false;
         }
-    }
-
-    private void setLightNavBar(boolean lightNavBar) {
-        mLauncher.activateLightSystemBars(lightNavBar, false /* statusBar */, true /* navBar */);
     }
 
     @Override
