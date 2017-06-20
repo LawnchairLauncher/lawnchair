@@ -6,8 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Point;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -29,8 +32,8 @@ public class LauncherClient {
     private final Launcher mLauncher;
     private OverlayCallbacks mCurrentCallbacks;
     private boolean mDestroyed;
-    private boolean mIsResumed;
     private boolean mIsServiceConnected;
+    private int activityState;
     private ILauncherOverlay mOverlay;
     private OverlayServiceConnection mServiceConnection;
     private int mServiceConnectionOptions;
@@ -40,6 +43,8 @@ public class LauncherClient {
     private final BroadcastReceiver mUpdateReceiver;
     private WindowManager.LayoutParams mWindowAttrs;
 
+    private static int version = -1;
+
     public LauncherClient(Launcher launcher, String targetPackage, boolean overlayEnabled) {
         mUpdateReceiver = new BroadcastReceiver() {
             @Override
@@ -47,12 +52,11 @@ public class LauncherClient {
                 reconnect();
             }
         };
-        mIsResumed = false;
         mDestroyed = false;
         mIsServiceConnected = false;
         mServiceStatus = -1;
         mLauncher = launcher;
-        mServiceIntent = LauncherClient.getServiceIntent(launcher, targetPackage);
+        mServiceIntent = LauncherClient.getServiceIntent(launcher);
         mState = 0;
         mServiceConnection = new OverlayServiceConnection();
         mServiceConnectionOptions = overlayEnabled ? 3 : 2;
@@ -62,6 +66,10 @@ public class LauncherClient {
         filter.addDataSchemeSpecificPart(targetPackage, PatternMatcher.PATTERN_LITERAL);
         mLauncher.registerReceiver(mUpdateReceiver, filter);
 
+        if (version < 1) {
+            LauncherClient.Pb(launcher);
+        }
+
         reconnect();
     }
 
@@ -70,7 +78,7 @@ public class LauncherClient {
     }
 
     private void applyWindowToken() {
-        if (mOverlay == null) {
+        if (!isConnected()) {
             return;
         }
 
@@ -80,12 +88,21 @@ public class LauncherClient {
             }
 
             mCurrentCallbacks.setClient(this);
-            mOverlay.windowAttached(mWindowAttrs, mCurrentCallbacks, mServiceConnectionOptions);
-
-            if (mIsResumed) {
-                mOverlay.onResume();
+            if (version >= 3) {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("layout_params", mWindowAttrs);
+                bundle.putParcelable("configuration", mLauncher.getResources().getConfiguration());
+                bundle.putInt("client_options", mServiceConnectionOptions);
+                mOverlay.windowAttached2(bundle, mCurrentCallbacks);
             } else {
+                mOverlay.windowAttached(mWindowAttrs, mCurrentCallbacks, mServiceConnectionOptions);
+            }
+            if (version >= 4) {
+                mOverlay.setActivityState(activityState);
+            } else if ((activityState & 2) == 0) {
                 mOverlay.onPause();
+            } else {
+                mOverlay.onResume();
             }
         } catch (RemoteException ignored) {
             FirebaseCrash.report(ignored);
@@ -102,14 +119,24 @@ public class LauncherClient {
         }
     }
 
-    static Intent getServiceIntent(Context context, String targetPackage) {
+    static Intent getServiceIntent(Context context) {
         Uri uri = Uri.parse("app://" + context.getPackageName() + ":" + Process.myUid()).buildUpon()
                 .appendQueryParameter("v", Integer.toString(5))
                 .build();
 
         return new Intent("com.android.launcher3.WINDOW_OVERLAY")
-                .setPackage(targetPackage)
+                .setPackage("com.google.android.googlequicksearchbox")
                 .setData(uri);
+    }
+
+    private static void Pb(Context context) {
+        ResolveInfo resolveService = context.getPackageManager().resolveService(LauncherClient.getServiceIntent(context), PackageManager.GET_META_DATA);
+        if (resolveService == null || resolveService.serviceInfo.metaData == null) {
+            version = 1;
+        } else {
+            version = resolveService.serviceInfo.metaData.getInt("service.api.version", 1);
+        }
+        Log.v("LauncherClient", "version: " + version);
     }
 
     public boolean isConnected() {
@@ -170,7 +197,7 @@ public class LauncherClient {
     }
 
     public void hideOverlay(boolean animate) {
-        if (mOverlay == null) {
+        if (!isConnected()) {
             return;
         }
 
@@ -181,24 +208,22 @@ public class LauncherClient {
         }
     }
 
-    public void openOverlay() {
-        if (mOverlay == null) {
+    public void openOverlay(boolean animate) {
+        if (!isConnected()) {
             return;
         }
 
         try {
-            mOverlay.openOverlay(0);
+            mOverlay.openOverlay(animate ? 1 : 0);
         } catch (RemoteException ignored) {
             FirebaseCrash.report(ignored);
         }
     }
 
     public final void onAttachedToWindow() {
-        if (mDestroyed) {
-            return;
+        if (!mDestroyed) {
+            setWindowAttrs(mLauncher.getWindow().getAttributes());
         }
-
-        setWindowAttrs(mLauncher.getWindow().getAttributes());
     }
 
     public void onDestroy() {
@@ -206,19 +231,42 @@ public class LauncherClient {
     }
 
     public final void onDetachedFromWindow() {
-        if (mDestroyed) {
-            return;
+        if (!mDestroyed) {
+            setWindowAttrs(null);
         }
+    }
 
-        setWindowAttrs(null);
+    public void onStart() {
+        if (!mDestroyed) {
+            activityState |= 1;
+            if (mOverlay != null && mWindowAttrs != null) {
+                try {
+                    mOverlay.setActivityState(activityState);
+                } catch (RemoteException e) {
+                    FirebaseCrash.report(e);
+                }
+            }
+        }
+    }
+
+    public void onStop() {
+        if (!mDestroyed) {
+            activityState &= -2;
+            if (mOverlay != null && mWindowAttrs != null) {
+                try {
+                    mOverlay.setActivityState(activityState);
+                } catch (RemoteException e) {
+                    FirebaseCrash.report(e);
+                }
+            }
+        }
     }
 
     public void onPause() {
         if (mDestroyed) {
             return;
         }
-
-        mIsResumed = false;
+        activityState &= -3;
         if (mOverlay != null && mWindowAttrs != null) {
             try {
                 mOverlay.onPause();
@@ -233,8 +281,8 @@ public class LauncherClient {
             return;
         }
 
+        activityState |= 2;
         reconnect();
-        mIsResumed = true;
         if (mOverlay != null && mWindowAttrs != null) {
             try {
                 mOverlay.onResume();

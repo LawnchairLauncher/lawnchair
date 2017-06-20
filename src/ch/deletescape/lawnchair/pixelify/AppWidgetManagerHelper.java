@@ -12,29 +12,29 @@ import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.Utilities;
 
 public class AppWidgetManagerHelper {
-    private final int cA;
+    private final int mAppWidgetID;
     private final AppWidgetManager mAppWidgetManager;
 
     public AppWidgetManagerHelper(Context context) {
         mAppWidgetManager = AppWidgetManager.getInstance(context);
-        cA = getAppWidgetId(context);
+        mAppWidgetID = getAppWidgetId(context);
     }
 
     public Bundle getAppWidgetOptions() {
-        return cA != -1 ? mAppWidgetManager.getAppWidgetOptions(cA) : null;
+        return mAppWidgetID != -1 ? mAppWidgetManager.getAppWidgetOptions(mAppWidgetID) : null;
     }
 
     public void updateAppWidgetOptions(Bundle bundle) {
-        if (cA != -1) {
-            mAppWidgetManager.updateAppWidgetOptions(cA, bundle);
+        if (mAppWidgetID != -1) {
+            mAppWidgetManager.updateAppWidgetOptions(mAppWidgetID, bundle);
         }
     }
 
     private int getAppWidgetId(Context context) {
-        Object obj = 1;
+        Integer obj = 1;
         SharedPreferences prefs = Utilities.getPrefs(context);
         int i = prefs.getInt("bundle_store_widget_id", -1);
-        Object obj2 = i == -1 ? 1 : null;
+        Integer obj2 = i == -1 ? 1 : null;
         ComponentName provider = new ComponentName(context, Launcher.class);
         if (obj2 == null) {
             AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(i);

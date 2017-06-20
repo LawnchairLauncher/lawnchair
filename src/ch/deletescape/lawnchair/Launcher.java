@@ -746,6 +746,8 @@ public class Launcher extends Activity
         if (Utilities.isNycMR1OrAbove()) {
             mAppWidgetHost.stopListening();
         }
+
+        mLauncherTab.getClient().onStop();
     }
 
     @Override
@@ -756,6 +758,8 @@ public class Launcher extends Activity
         if (Utilities.isNycMR1OrAbove()) {
             mAppWidgetHost.startListening();
         }
+
+        mLauncherTab.getClient().onStart();
     }
 
     @Override

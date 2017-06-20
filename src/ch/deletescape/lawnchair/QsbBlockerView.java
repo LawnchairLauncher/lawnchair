@@ -10,18 +10,20 @@ import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import ch.deletescape.lawnchair.config.FeatureFlags;
-import ch.deletescape.lawnchair.pixelify.GoogleSearchApp;
-import ch.deletescape.lawnchair.pixelify.OnGsaListener;
+import ch.deletescape.lawnchair.pixelify.OnWeatherInfoListener;
 import ch.deletescape.lawnchair.pixelify.ShadowHostView;
+import ch.deletescape.lawnchair.pixelify.WeatherInfo;
 import ch.deletescape.lawnchair.pixelify.WeatherThing;
 
-public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener, OnGsaListener {
+public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener, OnWeatherInfoListener {
     public static final Property<QsbBlockerView, Integer> QSB_BLOCKER_VIEW_ALPHA = new QsbBlockerViewAlpha(Integer.TYPE, "bgAlpha");
     private final Paint mBgPaint = new Paint(1);
     private int mState = 0;
     private View mView;
+    private static final boolean DEBUG = false;
 
     public QsbBlockerView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
@@ -45,9 +47,9 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
             Workspace workspace = Launcher.getLauncher(getContext()).getWorkspace();
             workspace.setOnStateChangeListener(this);
             prepareStateChange(workspace.getState(), null);
-            GoogleSearchApp gsa = WeatherThing.getInstance(getContext()).getGoogleSearchAppAndAddListener(this);
+            WeatherInfo gsa = WeatherThing.getInstance(getContext()).getWeatherInfoAndAddListener(this);
             if (gsa != null) {
-                onGsa(gsa);
+                onWeatherInfo(gsa);
             }
         }
     }
@@ -67,7 +69,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
     @Override
     protected void onDetachedFromWindow() {
         if (!FeatureFlags.useFullWidthSearchbar(getContext())) {
-            WeatherThing.getInstance(getContext()).aY(this);
+            WeatherThing.getInstance(getContext()).removeListener(this);
         }
         super.onDetachedFromWindow();
     }
@@ -93,20 +95,26 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
     }
 
     @Override
-    public void onGsa(GoogleSearchApp gsa) {
+    public void onWeatherInfo(WeatherInfo weatherInfo) {
         if (!FeatureFlags.showPixelBar(getContext())) {
             removeAllViews();
             return;
         }
         View view = mView;
         int i = mState;
-        mView = ShadowHostView.bG(gsa, this, mView);
+        mView = ShadowHostView.bG(weatherInfo, this, mView);
         mState = 2;
         if (mView == null) {
             View inflate;
             mState = 1;
             if (view == null || i != 1) {
-                inflate = LayoutInflater.from(getContext()).inflate(R.layout.date_widget, this, false);
+                if (DEBUG) {
+                    inflate = LayoutInflater.from(getContext()).inflate(R.layout.weather_widget, this, false);
+                    TextView temperature = (TextView) inflate.findViewById(R.id.weather_widget_temperature);
+                    temperature.setText("20°C");
+                } else {
+                    inflate = LayoutInflater.from(getContext()).inflate(R.layout.date_widget, this, false);
+                }
                 if (FeatureFlags.useFullWidthSearchbar(getContext())) {
                     inflate.setVisibility(GONE);
                 }

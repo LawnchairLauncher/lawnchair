@@ -27,7 +27,7 @@ public class AccessibilityHelper extends AccessibilityDelegate {
         if (i != R.string.title_show_google_app) {
             return super.performAccessibilityAction(view, i, bundle);
         }
-        Launcher.getLauncher(view.getContext()).getClient().openOverlay();
+        Launcher.getLauncher(view.getContext()).getClient().openOverlay(true);
         return true;
     }
 

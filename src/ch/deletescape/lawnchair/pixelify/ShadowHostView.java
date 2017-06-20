@@ -51,7 +51,7 @@ public class ShadowHostView extends FrameLayout {
         blurMaskFilter = new BlurMaskFilter((float) cc, Blur.NORMAL);
     }
 
-    private boolean applyView(GoogleSearchApp gsa) {
+    private boolean applyView(WeatherInfo gsa) {
         long[] jArr = new long[]{gsa.gsaUpdateTime, (long) gsa.gsaVersion, (long) gsa.mRemoteViews.getLayoutId()};
         if (mView != null) {
             if (Arrays.equals(ca, jArr)) {
@@ -157,7 +157,7 @@ public class ShadowHostView extends FrameLayout {
         }
     }
 
-    public static View bG(GoogleSearchApp gsa, ViewGroup viewGroup, View view) {
+    public static View bG(WeatherInfo gsa, ViewGroup viewGroup, View view) {
         if (gsa == null || gsa.mRemoteViews == null) {
             return null;
         }

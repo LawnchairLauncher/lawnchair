@@ -1,6 +1,7 @@
 package com.google.android.libraries.launcherclient;
 
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
@@ -23,6 +24,10 @@ public interface ILauncherOverlay extends IInterface {
     void startScroll() throws RemoteException;
 
     void windowAttached(WindowManager.LayoutParams attrs, ILauncherOverlayCallback callbacks, int options) throws RemoteException;
+
+    void windowAttached2(Bundle bundle, ILauncherOverlayCallback iLauncherOverlayCallback) throws RemoteException;
+
+    void setActivityState(int activityState) throws RemoteException;
 
     void windowDetached(boolean isChangingConfigurations) throws RemoteException;
 
@@ -51,6 +56,7 @@ public interface ILauncherOverlay extends IInterface {
             }
         }
 
+        @Override
         public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
             switch (code) {
                 case INTERFACE_TRANSACTION:
@@ -103,6 +109,18 @@ public interface ILauncherOverlay extends IInterface {
                     data.enforceInterface(ILauncherOverlay.class.getName());
                     openOverlay(data.readInt());
                     return true;
+                case 14:
+                    data.enforceInterface(ILauncherOverlay.class.getName());
+                    Bundle bundle = null;
+                    if (data.readInt() != 0) {
+                        bundle = Bundle.CREATOR.createFromParcel(data);
+                    }
+                    windowAttached2(bundle, com.google.android.libraries.launcherclient.ILauncherOverlayCallback.Stub.asInterface(data.readStrongBinder()));
+                    return true;
+                case 16:
+                    data.enforceInterface(ILauncherOverlay.class.getName());
+                    setActivityState(data.readInt());
+                    return true;
                 default:
                     return super.onTransact(code, data, reply, flags);
             }
@@ -115,10 +133,12 @@ public interface ILauncherOverlay extends IInterface {
                 mRemote = remote;
             }
 
+            @Override
             public IBinder asBinder() {
                 return mRemote;
             }
 
+            @Override
             public void closeOverlay(int options) throws RemoteException {
                 Parcel data = Parcel.obtain();
                 try {
@@ -131,6 +151,7 @@ public interface ILauncherOverlay extends IInterface {
                 }
             }
 
+            @Override
             public void endScroll() throws RemoteException {
                 Parcel data = Parcel.obtain();
                 try {
@@ -223,6 +244,40 @@ public interface ILauncherOverlay extends IInterface {
                     mRemote.transact(WINDOW_ATTACHED_TRANSACTION, data, null, FLAG_ONEWAY);
                 } finally {
                     data.recycle();
+                }
+            }
+
+            @Override
+            public void windowAttached2(Bundle bundle, ILauncherOverlayCallback iLauncherOverlayCallback) throws RemoteException {
+                IBinder iBinder = null;
+                Parcel obtain = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.libraries.launcherclient.ILauncherOverlay");
+                    if (bundle == null) {
+                        obtain.writeInt(0);
+                    } else {
+                        obtain.writeInt(1);
+                        bundle.writeToParcel(obtain, 0);
+                    }
+                    if (iLauncherOverlayCallback != null) {
+                        iBinder = iLauncherOverlayCallback.asBinder();
+                    }
+                    obtain.writeStrongBinder(iBinder);
+                    this.mRemote.transact(14, obtain, null, FLAG_ONEWAY);
+                } finally {
+                    obtain.recycle();
+                }
+            }
+
+            @Override
+            public void setActivityState(int activityState) throws RemoteException {
+                Parcel obtain = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken("com.google.android.libraries.launcherclient.ILauncherOverlay");
+                    obtain.writeInt(activityState);
+                    this.mRemote.transact(16, obtain, null, FLAG_ONEWAY);
+                } finally {
+                    obtain.recycle();
                 }
             }
 
