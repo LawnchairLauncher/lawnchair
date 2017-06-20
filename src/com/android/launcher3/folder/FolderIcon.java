@@ -75,6 +75,7 @@ import com.android.launcher3.badge.FolderBadgeInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.util.Thunk;
@@ -511,7 +512,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         if (d != null) {
             mTempBounds.set(d.getBounds());
             d.setBounds(0, 0, mIntrinsicIconSize, mIntrinsicIconSize);
-            if (d instanceof FastBitmapDrawable) {
+            boolean isPreloadIcon = d instanceof PreloadIconDrawable;
+            if (!isPreloadIcon && d instanceof FastBitmapDrawable) {
                 FastBitmapDrawable fd = (FastBitmapDrawable) d;
                 fd.drawWithBrightness(canvas, params.overlayAlpha);
             } else {

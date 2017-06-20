@@ -180,6 +180,14 @@ public class FolderPagedView extends PagedView {
         super.dispatchDraw(canvas);
     }
 
+    public void onIconInvalidated(BubbleTextView icon) {
+        FolderIcon folderIcon = mFolder.mFolderIcon;
+        if (icon.getTag() instanceof ItemInfo
+                && folderIcon.mPreviewVerifier.isItemInPreview(((ItemInfo) icon.getTag()).rank)) {
+            folderIcon.invalidate();
+        }
+    }
+
     /**
      * Binds items to the layout.
      * @return list of items that could not be bound, probably because we hit the max size limit.
