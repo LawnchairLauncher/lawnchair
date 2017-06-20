@@ -28,7 +28,6 @@ import android.graphics.RectF;
 import android.support.v4.graphics.ColorUtils;
 
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.util.Preconditions;
 
 /**
  * Utility class to add shadows to bitmaps.
@@ -126,7 +125,9 @@ public class ShadowGenerator {
     }
 
     public static ShadowGenerator getInstance(Context context) {
-        Preconditions.assertNonUiThread();
+        // TODO: This currently fails as the system default icon also needs a shadow as it
+        // uses adaptive icon.
+        // Preconditions.assertNonUiThread();
         synchronized (LOCK) {
             if (sShadowGenerator == null) {
                 sShadowGenerator = new ShadowGenerator(context);

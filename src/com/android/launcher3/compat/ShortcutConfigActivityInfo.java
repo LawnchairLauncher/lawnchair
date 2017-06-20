@@ -125,7 +125,7 @@ public abstract class ShortcutConfigActivityInfo {
     }
 
     @TargetApi(26)
-    static class ShortcutConfigActivityInfoVO extends ShortcutConfigActivityInfo {
+    public static class ShortcutConfigActivityInfoVO extends ShortcutConfigActivityInfo {
 
         private final LauncherActivityInfo mInfo;
 
