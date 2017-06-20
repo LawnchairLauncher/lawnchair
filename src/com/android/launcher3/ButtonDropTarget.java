@@ -102,8 +102,8 @@ public abstract class ButtonDropTarget extends TextView
     protected void setDrawable(int resId) {
         // We do not set the drawable in the xml as that inflates two drawables corresponding to
         // drawableLeft and drawableStart.
-        mDrawable = getResources().getDrawable(resId);
-        setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null);
+        setCompoundDrawablesRelativeWithIntrinsicBounds(resId, 0, 0, 0);
+        mDrawable = getCompoundDrawablesRelative()[0];
     }
 
     public void setDropTargetBar(DropTargetBar dropTargetBar) {
