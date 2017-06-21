@@ -510,6 +510,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         Drawable d = params.drawable;
 
         if (d != null) {
+            // Remove the callback to prevent invalidate as a result of property changes
+            Drawable.Callback cb = d.getCallback();
+            d.setCallback(null);
+
             mTempBounds.set(d.getBounds());
             d.setBounds(0, 0, mIntrinsicIconSize, mIntrinsicIconSize);
             boolean isPreloadIcon = d instanceof PreloadIconDrawable;
@@ -523,6 +527,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 d.clearColorFilter();
             }
             d.setBounds(mTempBounds);
+            d.setCallback(cb);
         }
         canvas.restore();
     }
