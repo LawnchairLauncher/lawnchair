@@ -87,6 +87,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import ch.deletescape.lawnchair.DropTarget.DragObject;
 import ch.deletescape.lawnchair.LauncherSettings.Favorites;
@@ -105,17 +106,23 @@ import ch.deletescape.lawnchair.dragndrop.DragView;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.folder.FolderIcon;
+import ch.deletescape.lawnchair.keyboard.CustomActionsPopup;
 import ch.deletescape.lawnchair.keyboard.ViewGroupFocusHelper;
 import ch.deletescape.lawnchair.model.WidgetsModel;
+import ch.deletescape.lawnchair.notification.NotificationListener;
+import ch.deletescape.lawnchair.pageindicators.PageIndicator;
+import ch.deletescape.lawnchair.popup.PopupContainerWithArrow;
+import ch.deletescape.lawnchair.popup.PopupDataProvider;
 import ch.deletescape.lawnchair.settings.Settings;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
-import ch.deletescape.lawnchair.shortcuts.DeepShortcutsContainer;
 import ch.deletescape.lawnchair.shortcuts.ShortcutKey;
+import ch.deletescape.lawnchair.shortcuts.ShortcutsItemView;
 import ch.deletescape.lawnchair.util.ActivityResultInfo;
 import ch.deletescape.lawnchair.util.ComponentKey;
 import ch.deletescape.lawnchair.util.ItemInfoMatcher;
 import ch.deletescape.lawnchair.util.MultiHashMap;
 import ch.deletescape.lawnchair.util.PackageManagerHelper;
+import ch.deletescape.lawnchair.util.PackageUserKey;
 import ch.deletescape.lawnchair.util.PendingRequestArgs;
 import ch.deletescape.lawnchair.util.Thunk;
 import ch.deletescape.lawnchair.util.ViewOnDrawExecutor;
@@ -223,6 +230,9 @@ public class Launcher extends Activity
 
     private DropTargetBar mDropTargetBar;
 
+    private MultiHashMap mAllWidgets;
+    private Runnable mBindAllWidgetsRunnable = new BindAllWidgetsRunnable();
+
     // Main container view for the all apps screen.
     @Thunk
     AllAppsContainerView mAppsView;
@@ -313,6 +323,8 @@ public class Launcher extends Activity
 
     private LauncherTab mLauncherTab;
 
+    private PopupDataProvider mPopupDataProvider;
+
     @Thunk
     Runnable mBuildLayersRunnable = new Runnable() {
         @Override
@@ -370,7 +382,7 @@ public class Launcher extends Activity
         mDeviceProfile.layout(this, false /* notifyListeners */);
         mExtractedColors = new ExtractedColors();
         loadExtractedColorsAndColorItems();
-
+        mPopupDataProvider = new PopupDataProvider(this);
         ((AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE))
                 .addAccessibilityStateChangeListener(this);
 
@@ -401,6 +413,10 @@ public class Launcher extends Activity
             reloadIcons();
         }
         Settings.init(this);
+    }
+
+    public PopupDataProvider getPopupDataProvider() {
+        return mPopupDataProvider;
     }
 
     public void scheduleKill() {
@@ -759,6 +775,10 @@ public class Launcher extends Activity
             mAppWidgetHost.startListening();
         }
 
+        if (!isWorkspaceLoading()) {
+            NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
+        }
+
         mLauncherTab.getClient().onStart();
     }
 
@@ -925,6 +945,32 @@ public class Launcher extends Activity
             return true;
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyShortcut(int keyCode, KeyEvent event) {
+        if (event.hasModifiers(4096)) {
+            switch (keyCode) {
+                case 29:
+                    if (this.mState == State.WORKSPACE) {
+                        showAppsView(true, true);
+                        return true;
+                    }
+                    break;
+                case 43:
+                    if (new CustomActionsPopup(this, getCurrentFocus()).show()) {
+                        return true;
+                    }
+                    break;
+                case 47:
+                    View currentFocus = getCurrentFocus();
+                    if ((currentFocus instanceof BubbleTextView) && (currentFocus.getTag() instanceof ItemInfo) && this.mAccessibilityDelegate.performAction(currentFocus, (ItemInfo) currentFocus.getTag(), R.id.action_deep_shortcuts)) {
+                        PopupContainerWithArrow.getOpen(this).requestFocus();
+                        return true;
+                    }
+            }
+        }
+        return super.onKeyShortcut(keyCode, event);
     }
 
     private String getTypedText() {
@@ -1129,7 +1175,7 @@ public class Launcher extends Activity
     public View createShortcut(ViewGroup parent, ShortcutInfo info) {
         BubbleTextView favorite = (BubbleTextView) getLayoutInflater().inflate(R.layout.app_icon,
                 parent, false);
-        favorite.applyFromShortcutInfo(info, mIconCache);
+        favorite.applyFromShortcutInfo(info);
         favorite.setCompoundDrawablePadding(mDeviceProfile.iconDrawablePaddingPx);
         favorite.setOnClickListener(this);
         favorite.setOnFocusChangeListener(mFocusHandler);
@@ -1265,6 +1311,23 @@ public class Launcher extends Activity
             }
         }
     };
+
+    public void updateIconBadges(final Set set) {
+        Runnable anonymousClass13 = new Runnable() {
+            @Override
+            public void run() {
+                Launcher.this.mWorkspace.updateIconBadges(set);
+                Launcher.this.mAppsView.updateIconBadges(set);
+                PopupContainerWithArrow open = PopupContainerWithArrow.getOpen(Launcher.this);
+                if (open != null) {
+                    open.updateNotificationHeader(set);
+                }
+            }
+        };
+        if (!waitUntilResume(anonymousClass13)) {
+            anonymousClass13.run();
+        }
+    }
 
     @Override
     public void onAttachedToWindow() {
@@ -1475,7 +1538,7 @@ public class Launcher extends Activity
 
         // Check this condition before handling isActionMain, as this will get reset.
         boolean shouldMoveToDefaultScreen = alreadyOnHome &&
-                mState == State.WORKSPACE && getTopFloatingView() == null;
+                mState == State.WORKSPACE && AbstractFloatingView.getTopOpenView(this) == null;
 
         boolean isActionMain = Intent.ACTION_MAIN.equals(intent.getAction());
         if (isActionMain) {
@@ -1934,8 +1997,13 @@ public class Launcher extends Activity
             return;
         }
 
-        if (getOpenShortcutsContainer() != null) {
-            closeShortcutsContainer();
+        AbstractFloatingView topOpenView = AbstractFloatingView.getTopOpenView(this);
+        if (topOpenView != null) {
+            if (topOpenView.getActiveTextView() != null) {
+                topOpenView.getActiveTextView().dispatchBackKey();
+            } else {
+                topOpenView.close(true);
+            }
         } else if (isAppsViewVisible()) {
             showWorkspace(true);
         } else if (isWidgetsViewVisible()) {
@@ -2276,7 +2344,7 @@ public class Launcher extends Activity
                 if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                     String id = ((ShortcutInfo) info).getDeepShortcutId();
                     String packageName = intent.getPackage();
-                    LauncherAppState.getInstance().getShortcutManager().startShortcut(
+                    DeepShortcutManager.getInstance(this).startShortcut(
                             packageName, id, intent.getSourceBounds(), optsBundle, info.user);
                 } else {
                     // Could be launching some bookkeeping activity
@@ -2305,7 +2373,7 @@ public class Launcher extends Activity
         }
     }
 
-    private Bundle getActivityLaunchOptions(View v) {
+    public Bundle getActivityLaunchOptions(View v) {
         if (Utilities.ATLEAST_MARSHMALLOW) {
             int left = 0, top = 0;
             int width = v.getMeasuredWidth(), height = v.getMeasuredHeight();
@@ -2331,7 +2399,7 @@ public class Launcher extends Activity
         return null;
     }
 
-    private Rect getViewBounds(View v) {
+    public Rect getViewBounds(View v) {
         int[] pos = new int[2];
         v.getLocationOnScreen(pos);
         return new Rect(pos[0], pos[1], pos[0] + v.getWidth(), pos[1] + v.getHeight());
@@ -2571,14 +2639,14 @@ public class Launcher extends Activity
     }
 
     public void closeShortcutsContainer(boolean animate) {
-        DeepShortcutsContainer deepShortcutsContainer = getOpenShortcutsContainer();
+        /*DeepShortcutsContainer deepShortcutsContainer = getOpenShortcutsContainer();
         if (deepShortcutsContainer != null) {
             if (animate) {
                 deepShortcutsContainer.animateClose();
             } else {
                 deepShortcutsContainer.close();
             }
-        }
+        }*/
         mFirebaseAnalytics.logEvent("close_shortcutscontainer", null);
     }
 
@@ -2593,84 +2661,63 @@ public class Launcher extends Activity
     /**
      * @return The open shortcuts container, or null if there is none
      */
-    public DeepShortcutsContainer getOpenShortcutsContainer() {
+    public ShortcutsItemView getOpenShortcutsContainer() {
         // Iterate in reverse order. Shortcuts container is added later to the dragLayer,
         // and will be one of the last views.
         for (int i = mDragLayer.getChildCount() - 1; i >= 0; i--) {
             View child = mDragLayer.getChildAt(i);
-            if (child instanceof DeepShortcutsContainer
-                    && ((DeepShortcutsContainer) child).isOpen()) {
-                return (DeepShortcutsContainer) child;
+            if (child instanceof ShortcutsItemView
+                    && ((ShortcutsItemView) child).isOpenOrOpening()) {
+                return (ShortcutsItemView) child;
             }
         }
         return null;
     }
 
     @Override
-    public boolean onLongClick(View v) {
-        if (!isDraggingEnabled()) return false;
-        if (isWorkspaceLocked()) return false;
-        if (mState != State.WORKSPACE) return false;
-
-        if (v == mAllAppsHandle && mAllAppsHandle != null) {
-            onLongClickAllAppsHandle();
-            return true;
+    public boolean onLongClick(View view) {
+        CellLayout.CellInfo cellInfo = null;
+        if (!isDraggingEnabled() || isWorkspaceLocked() || this.mState != State.WORKSPACE) {
+            return false;
         }
-
-        if (v instanceof Workspace) {
-            if (!mWorkspace.isInOverviewMode()) {
-                if (!mWorkspace.isTouchActive()) {
-                    showOverviewMode(true);
-                    mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
-                            HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                    return true;
+        if (!(view instanceof PageIndicator)) {
+            if (!(view instanceof Workspace)) {
+                View view2;
+                if (view.getTag() instanceof ItemInfo) {
+                    CellLayout.CellInfo cellInfo2 = new CellLayout.CellInfo(view, (ItemInfo) view.getTag());
+                    view2 = cellInfo2.cell;
+                    this.mPendingRequestArgs = null;
+                    cellInfo = cellInfo2;
                 } else {
-                    return false;
+                    view2 = null;
                 }
-            } else {
-                return false;
-            }
-        }
-
-        CellLayout.CellInfo longClickCellInfo = null;
-        View itemUnderLongClick = null;
-        if (v.getTag() instanceof ItemInfo) {
-            ItemInfo info = (ItemInfo) v.getTag();
-            longClickCellInfo = new CellLayout.CellInfo(v, info);
-            itemUnderLongClick = longClickCellInfo.cell;
-            mPendingRequestArgs = null;
-        }
-
-        // The hotseat touch handling does not go through Workspace, and we always allow long press
-        // on hotseat items.
-        if (!mDragController.isDragging()) {
-            if (itemUnderLongClick == null) {
-                // User long pressed on empty space
-                mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
-                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                if (mWorkspace.isInOverviewMode()) {
-                    mWorkspace.startReordering(v);
-                } else {
-                    showOverviewMode(true);
-                }
-            } else {
-                if (!(itemUnderLongClick instanceof Folder)) {
-                    // User long pressed on an item
-                    DragOptions dragOptions = new DragOptions();
-                    if (itemUnderLongClick instanceof BubbleTextView) {
-                        BubbleTextView icon = (BubbleTextView) itemUnderLongClick;
-                        if (icon.hasDeepShortcuts()) {
-                            DeepShortcutsContainer dsc = DeepShortcutsContainer.showForIcon(icon);
-                            if (dsc != null) {
-                                dragOptions.deferDragCondition = dsc.createDeferDragCondition(null);
-                            }
+                if (!this.mDragController.isDragging()) {
+                    if (view2 == null) {
+                        if (this.mWorkspace.isInOverviewMode()) {
+                            this.mWorkspace.startReordering(view);
+                        } else {
+                            showOverviewMode(true);
+                        }
+                        this.mWorkspace.performHapticFeedback(0, 1);
+                    } else {
+                        boolean z = view2 instanceof Folder;
+                        if (!z) {
+                            this.mWorkspace.startDrag(cellInfo, new DragOptions());
                         }
                     }
-                    mWorkspace.startDrag(longClickCellInfo, dragOptions);
                 }
+                return true;
+            } else if (this.mWorkspace.isInOverviewMode() || this.mWorkspace.isTouchActive()) {
+                return false;
+            } else {
+                showOverviewMode(true);
+                this.mWorkspace.performHapticFeedback(0, 1);
+                return true;
             }
         }
+        onLongClickAllAppsHandle();
         return true;
+
     }
 
     boolean isHotseatLayout(View layout) {
@@ -3458,6 +3505,8 @@ public class Launcher extends Activity
             mPendingActivityResult = null;
         }
 
+
+        NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
         InstallShortcutReceiver.disableAndFlushInstallQueue(this);
     }
 
@@ -3505,13 +3554,29 @@ public class Launcher extends Activity
         }
     }
 
+    @Override
+    public void bindAllWidgets(MultiHashMap multiHashMap) {
+        if (waitUntilResume(mBindAllWidgetsRunnable, true)) {
+            mAllWidgets = multiHashMap;
+            return;
+        }
+        if (!(mWidgetsView == null || multiHashMap == null)) {
+            mWidgetsView.setWidgets(multiHashMap);
+            mAllWidgets = null;
+        }
+        AbstractFloatingView topOpenView = AbstractFloatingView.getTopOpenView(this);
+        if (topOpenView != null) {
+            topOpenView.onWidgetsBound();
+        }
+    }
+
     /**
      * Copies LauncherModel's map of activities to shortcut ids to Launcher's. This is necessary
      * because LauncherModel's map is updated in the background, while Launcher runs on the UI.
      */
     @Override
     public void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMapCopy) {
-        mDeepShortcutMap = deepShortcutMapCopy;
+        mPopupDataProvider.setDeepShortcutMap(deepShortcutMapCopy);
     }
 
     public List<String> getShortcutIdsForItem(ItemInfo info) {
@@ -3575,42 +3640,36 @@ public class Launcher extends Activity
     @Override
     public void bindShortcutsChanged(final ArrayList<ShortcutInfo> updated,
                                      final ArrayList<ShortcutInfo> removed, final UserHandle user) {
-        Runnable r = new Runnable() {
+        if (!waitUntilResume(new Runnable() {
             @Override
             public void run() {
-                bindShortcutsChanged(updated, removed, user);
+                Launcher.this.bindShortcutsChanged(updated, removed, user);
             }
-        };
-        if (waitUntilResume(r)) {
-            return;
-        }
-
-        if (!updated.isEmpty()) {
-            mWorkspace.updateShortcuts(updated);
-        }
-
-        if (!removed.isEmpty()) {
-            HashSet<ComponentName> removedComponents = new HashSet<>();
-            HashSet<ShortcutKey> removedDeepShortcuts = new HashSet<>();
-
-            for (ShortcutInfo si : removed) {
-                if (si.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-                    removedDeepShortcuts.add(ShortcutKey.fromShortcutInfo(si));
-                } else {
-                    removedComponents.add(si.getTargetComponent());
+        })) {
+            if (!updated.isEmpty()) {
+                this.mWorkspace.updateShortcuts(updated);
+            }
+            if (!removed.isEmpty()) {
+                ItemInfoMatcher ofComponents;
+                HashSet hashSet = new HashSet();
+                HashSet hashSet2 = new HashSet();
+                for (ShortcutInfo shortcutInfo : removed) {
+                    if (shortcutInfo.itemType == 6) {
+                        hashSet2.add(ShortcutKey.fromItemInfo(shortcutInfo));
+                    } else {
+                        hashSet.add(shortcutInfo.getTargetComponent());
+                    }
                 }
-            }
-
-            if (!removedComponents.isEmpty()) {
-                ItemInfoMatcher matcher = ItemInfoMatcher.ofComponents(removedComponents, user);
-                mWorkspace.removeItemsByMatcher(matcher);
-                mDragController.onAppsRemoved(matcher);
-            }
-
-            if (!removedDeepShortcuts.isEmpty()) {
-                ItemInfoMatcher matcher = ItemInfoMatcher.ofShortcutKeys(removedDeepShortcuts);
-                mWorkspace.removeItemsByMatcher(matcher);
-                mDragController.onAppsRemoved(matcher);
+                if (!hashSet.isEmpty()) {
+                    ofComponents = ItemInfoMatcher.ofComponents(hashSet, user);
+                    this.mWorkspace.removeItemsByMatcher(ofComponents);
+                    this.mDragController.onAppsRemoved(ofComponents);
+                }
+                if (!hashSet2.isEmpty()) {
+                    ofComponents = ItemInfoMatcher.ofShortcutKeys(hashSet2);
+                    this.mWorkspace.removeItemsByMatcher(ofComponents);
+                    this.mDragController.onAppsRemoved(ofComponents);
+                }
             }
         }
     }
@@ -3701,17 +3760,31 @@ public class Launcher extends Activity
         }
 
         if (mWidgetsView != null && model != null) {
-            mWidgetsView.addWidgets(model);
+            mWidgetsView.setWidgets(model.getWidgetsMap());
             mWidgetsModel = null;
         }
+
+        AbstractFloatingView topOpenView = AbstractFloatingView.getTopOpenView(this);
+        if (topOpenView != null) {
+            topOpenView.onWidgetsBound();
+        }
+    }
+
+    public List getWidgetsForPackageUser(PackageUserKey packageUserKey) {
+        return mWidgetsView.getWidgetsForPackageUser(packageUserKey);
     }
 
     @Override
     public void notifyWidgetProvidersChanged() {
         if (mWorkspace.getState().shouldUpdateWidget) {
-            mModel.refreshAndBindWidgetsAndShortcuts(this, mWidgetsView.isEmpty());
+            refreshAndBindWidgetsForPackageUser(null);
         }
     }
+
+    public void refreshAndBindWidgetsForPackageUser(PackageUserKey packageUserKey) {
+        this.mModel.refreshAndBindWidgetsAndShortcuts(this, this.mWidgetsView.isEmpty(), packageUserKey);
+    }
+
 
     private void markAppsViewShown() {
         if (mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false)) {
@@ -3787,5 +3860,12 @@ public class Launcher extends Activity
          * screen (or in the case of RTL, the rightmost screen).
          */
         void onScrollChange(float progress, boolean rtl);
+    }
+
+    private class BindAllWidgetsRunnable implements Runnable {
+        @Override
+        public void run() {
+            Launcher.this.bindAllWidgets(Launcher.this.mAllWidgets);
+        }
     }
 }

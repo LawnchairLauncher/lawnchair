@@ -36,6 +36,7 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import ch.deletescape.lawnchair.AppInfo;
 import ch.deletescape.lawnchair.BaseContainerView;
@@ -57,8 +58,8 @@ import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.graphics.TintedDrawableSpan;
 import ch.deletescape.lawnchair.keyboard.FocusedItemDecorator;
-import ch.deletescape.lawnchair.shortcuts.DeepShortcutsContainer;
 import ch.deletescape.lawnchair.util.ComponentKey;
+import ch.deletescape.lawnchair.util.PackageUserKey;
 
 
 /**
@@ -424,27 +425,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         // Start the drag
         DragOptions dragOptions = new DragOptions();
-        if (v instanceof BubbleTextView) {
-            final BubbleTextView icon = (BubbleTextView) v;
-            if (icon.hasDeepShortcuts()) {
-                DeepShortcutsContainer dsc = DeepShortcutsContainer.showForIcon(icon);
-                if (dsc != null) {
-                    dragOptions.deferDragCondition = dsc.createDeferDragCondition(new Runnable() {
-                        @Override
-                        public void run() {
-                            icon.setVisibility(VISIBLE);
-                        }
-                    });
-                }
-            }
-        }
         mLauncher.getWorkspace().beginDragShared(v, this, dragOptions);
         return false;
-    }
-
-    @Override
-    public boolean supportsFlingToDelete() {
-        return true;
     }
 
     @Override
@@ -461,13 +443,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     public float getIntrinsicIconScaleFactor() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
         return (float) grid.allAppsIconSizePx / grid.iconSizePx;
-    }
-
-    @Override
-    public void onFlingToDeleteCompleted() {
-        // We just dismiss the drag when we fling, so cleanup here
-        mLauncher.exitSpringLoadedDragModeDelayed(true,
-                Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
     }
 
     @Override
@@ -599,4 +574,20 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     public boolean shouldRestoreImeState() {
         return !TextUtils.isEmpty(mSearchInput.getText());
     }
+
+
+    public void updateIconBadges(Set set) {
+        PackageUserKey packageUserKey = new PackageUserKey(null, null);
+        int childCount = this.mAppsRecyclerView.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View childAt = this.mAppsRecyclerView.getChildAt(i);
+            if ((childAt instanceof BubbleTextView) && childAt.getTag() instanceof ItemInfo) {
+                ItemInfo itemInfo = (ItemInfo) childAt.getTag();
+                if (packageUserKey.updateFromItemInfo(itemInfo) && set.contains(packageUserKey)) {
+                    ((BubbleTextView) childAt).applyBadgeState(itemInfo, true);
+                }
+            }
+        }
+    }
+
 }

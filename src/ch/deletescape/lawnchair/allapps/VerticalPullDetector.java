@@ -103,7 +103,7 @@ public class VerticalPullDetector {
         mListener = l;
     }
 
-    interface Listener {
+    public interface Listener {
         void onDragStart(boolean start);
 
         boolean onDrag(float displacement, float velocity);
@@ -244,5 +244,9 @@ public class VerticalPullDetector {
      */
     private static float interpolate(float from, float to, float alpha) {
         return (1.0f - alpha) * from + alpha * to;
+    }
+
+    public long calculateDuration(float f, float f2) {
+        return (long) Math.max(100.0f, (1200.0f / Math.max(2.0f, Math.abs(0.5f * f))) * Math.max(0.2f, f2));
     }
 }

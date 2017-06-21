@@ -89,5 +89,6 @@
         android:layout_gravity="bottom"
         android:background="@color/all_apps_navbar_color"
         android:focusable="false"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        style="@style/AllAppsNavBarProtection" />
 </ch.deletescape.lawnchair.allapps.AllAppsContainerView>

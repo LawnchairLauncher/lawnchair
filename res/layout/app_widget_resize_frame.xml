@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ch.deletescape.lawnchair.AppWidgetResizeFrame xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/widget_resize_shadow"
+    android:foreground="@drawable/widget_resize_frame"
+    android:padding="0.0dip">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|left"
+        android:layout_marginLeft="@dimen/widget_handle_margin"
+        android:src="@drawable/ic_widget_resize_handle" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|top"
+        android:layout_marginTop="@dimen/widget_handle_margin"
+        android:src="@drawable/ic_widget_resize_handle" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|right"
+        android:layout_marginRight="@dimen/widget_handle_margin"
+        android:src="@drawable/ic_widget_resize_handle" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="@dimen/widget_handle_margin"
+        android:src="@drawable/ic_widget_resize_handle" />
+</ch.deletescape.lawnchair.AppWidgetResizeFrame>

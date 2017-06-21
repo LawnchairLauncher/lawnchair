@@ -3,7 +3,6 @@ package ch.deletescape.lawnchair;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -15,8 +14,6 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
@@ -26,6 +23,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.UserHandle;
+import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
 
@@ -41,7 +39,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
+import ch.deletescape.lawnchair.compat.ShortcutConfigActivityInfo;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
+import ch.deletescape.lawnchair.graphics.LauncherIcons;
 import ch.deletescape.lawnchair.model.WidgetItem;
 import ch.deletescape.lawnchair.util.ComponentKey;
 import ch.deletescape.lawnchair.util.SQLiteCacheHelper;
@@ -409,48 +409,48 @@ public class WidgetPreviewLoader {
         return mWidgetManager.getBadgeBitmap(info, preview, imageWidth, imageHeight);
     }
 
+    private RectF drawBoxWithShadow(Canvas canvas, Paint paint, int i, int i2) {
+        Resources resources = this.mContext.getResources();
+        float dimension = resources.getDimension(R.dimen.widget_preview_shadow_blur);
+        float dimension2 = resources.getDimension(R.dimen.widget_preview_key_shadow_distance);
+        float dimension3 = resources.getDimension(R.dimen.widget_preview_corner_radius);
+        RectF rectF = new RectF(dimension, dimension, ((float) i) - dimension, (((float) i2) - dimension) - dimension2);
+        paint.setColor(-1);
+        paint.setShadowLayer(dimension, 0.0f, dimension2, 1023410176);
+        canvas.drawRoundRect(rectF, dimension3, dimension3, paint);
+        paint.setShadowLayer(dimension, 0.0f, 0.0f, ColorUtils.setAlphaComponent(0x1000000, 30));
+        canvas.drawRoundRect(rectF, dimension3, dimension3, paint);
+        paint.clearShadowLayer();
+        return rectF;
+    }
+
     private Bitmap generateShortcutPreview(
-            Launcher launcher, ActivityInfo info, int maxWidth, int maxHeight, Bitmap preview) {
-        final Canvas c = new Canvas();
-        if (preview == null) {
-            preview = Bitmap.createBitmap(maxWidth, maxHeight, Config.ARGB_8888);
-            c.setBitmap(preview);
-        } else if (preview.getWidth() != maxWidth || preview.getHeight() != maxHeight) {
-            throw new RuntimeException("Improperly sized bitmap passed as argument");
-        } else {
-            // Reusing bitmap. Clear it.
-            c.setBitmap(preview);
-            c.drawColor(0, PorterDuff.Mode.CLEAR);
+            Launcher launcher, ShortcutConfigActivityInfo info, int maxWidth, int maxHeight, Bitmap preview) {
+        int i3 = launcher.getDeviceProfile().iconSizePx;
+        int dimensionPixelSize = launcher.getResources().getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
+        int i4 = (dimensionPixelSize * 2) + i3;
+        if (maxHeight < i4 || maxWidth < i4) {
+            throw new RuntimeException("Max size is too small for preview");
         }
-
-        Drawable icon = mutateOnMainThread(mIconCache.getFullResIcon(info));
-        icon.setFilterBitmap(true);
-
-        // Draw a desaturated/scaled version of the icon in the background as a watermark
-        ColorMatrix colorMatrix = new ColorMatrix();
-        colorMatrix.setSaturation(0);
-        icon.setColorFilter(new ColorMatrixColorFilter(colorMatrix));
-        icon.setAlpha((int) (255 * 0.06f));
-
-        Resources res = mContext.getResources();
-        int paddingTop = res.getDimensionPixelOffset(R.dimen.shortcut_preview_padding_top);
-        int paddingLeft = res.getDimensionPixelOffset(R.dimen.shortcut_preview_padding_left);
-        int paddingRight = res.getDimensionPixelOffset(R.dimen.shortcut_preview_padding_right);
-        int scaledIconWidth = (maxWidth - paddingLeft - paddingRight);
-        icon.setBounds(paddingLeft, paddingTop,
-                paddingLeft + scaledIconWidth, paddingTop + scaledIconWidth);
-        icon.draw(c);
-
-        // Draw the final icon at top left corner.
-        // TODO: use top right for RTL
-        int appIconSize = launcher.getDeviceProfile().iconSizePx;
-
-        icon.setAlpha(255);
-        icon.setColorFilter(null);
-        icon.setBounds(0, 0, appIconSize, appIconSize);
-        icon.draw(c);
-
-        c.setBitmap(null);
+        Canvas canvas = new Canvas();
+        if (preview == null || preview.getWidth() < i4 || preview.getHeight() < i4) {
+            preview = Bitmap.createBitmap(i4, i4, Config.ARGB_8888);
+            canvas.setBitmap(preview);
+        } else {
+            if (preview.getWidth() > i4 || preview.getHeight() > i4) {
+                preview.reconfigure(i4, i4, preview.getConfig());
+            }
+            canvas.setBitmap(preview);
+            canvas.drawColor(0, PorterDuff.Mode.CLEAR);
+        }
+        Paint paint = new Paint(3);
+        RectF drawBoxWithShadow = drawBoxWithShadow(canvas, paint, i4, i4);
+        Bitmap createScaledBitmapWithoutShadow = LauncherIcons.createScaledBitmapWithoutShadow(mutateOnMainThread(info.getFullResIcon(this.mIconCache)), this.mContext, 26);
+        Rect rect = new Rect(0, 0, createScaledBitmapWithoutShadow.getWidth(), createScaledBitmapWithoutShadow.getHeight());
+        drawBoxWithShadow.set(0.0f, 0.0f, (float) i3, (float) i3);
+        drawBoxWithShadow.offset((float) dimensionPixelSize, (float) dimensionPixelSize);
+        canvas.drawBitmap(createScaledBitmapWithoutShadow, rect, drawBoxWithShadow, paint);
+        canvas.setBitmap(null);
         return preview;
     }
 
@@ -527,6 +527,10 @@ public class WidgetPreviewLoader {
                     }
                 });
             }
+        }
+
+        public void cancel() {
+            mTask.cancel(true);
         }
     }
 

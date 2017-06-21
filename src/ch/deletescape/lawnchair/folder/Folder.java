@@ -54,7 +54,6 @@ import java.util.Comparator;
 
 import ch.deletescape.lawnchair.Alarm;
 import ch.deletescape.lawnchair.AppInfo;
-import ch.deletescape.lawnchair.BubbleTextView;
 import ch.deletescape.lawnchair.CellLayout;
 import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.DragSource;
@@ -74,13 +73,12 @@ import ch.deletescape.lawnchair.ShortcutInfo;
 import ch.deletescape.lawnchair.UninstallDropTarget.DropTargetSource;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace.ItemOperator;
-import ch.deletescape.lawnchair.accessibility.AccessibileDragListenerAdapter;
+import ch.deletescape.lawnchair.accessibility.AccessibleDragListenerAdapter;
 import ch.deletescape.lawnchair.dragndrop.DragController;
 import ch.deletescape.lawnchair.dragndrop.DragController.DragListener;
 import ch.deletescape.lawnchair.dragndrop.DragLayer;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.pageindicators.PageIndicatorDots;
-import ch.deletescape.lawnchair.shortcuts.DeepShortcutsContainer;
 import ch.deletescape.lawnchair.util.CircleRevealOutlineProvider;
 import ch.deletescape.lawnchair.util.Thunk;
 
@@ -295,19 +293,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     @Override
     public boolean onLongClick(View v) {
-        // Return if global dragging is not enabled
-        if (!mLauncher.isDraggingEnabled()) return true;
-        DragOptions dragOptions = new DragOptions();
-        if (v instanceof BubbleTextView) {
-            BubbleTextView icon = (BubbleTextView) v;
-            if (icon.hasDeepShortcuts()) {
-                DeepShortcutsContainer dsc = DeepShortcutsContainer.showForIcon(icon);
-                if (dsc != null) {
-                    dragOptions.deferDragCondition = dsc.createDeferDragCondition(null);
-                }
-            }
+        if (this.mLauncher.isDraggingEnabled()) {
+            return startDrag(v, new DragOptions());
         }
-        return startDrag(v, dragOptions);
+        return true;
     }
 
     public boolean startDrag(View v, DragOptions options) {
@@ -323,7 +312,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
             mDragController.addDragListener(this);
             if (options.isAccessibleDrag) {
-                mDragController.addDragListener(new AccessibileDragListenerAdapter(
+                mDragController.addDragListener(new AccessibleDragListenerAdapter(
                         mContent, CellLayout.FOLDER_ACCESSIBILITY_DRAG) {
 
                     @Override
@@ -964,11 +953,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     @Override
-    public boolean supportsFlingToDelete() {
-        return true;
-    }
-
-    @Override
     public boolean supportsAppInfoDropTarget() {
         return true;
     }
@@ -980,11 +964,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     @Override
     public void onFlingToDelete(DragObject d, PointF vec) {
-        // Do nothing
-    }
-
-    @Override
-    public void onFlingToDeleteCompleted() {
         // Do nothing
     }
 

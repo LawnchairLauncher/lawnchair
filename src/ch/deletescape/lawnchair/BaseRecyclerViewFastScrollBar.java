@@ -37,6 +37,10 @@ import ch.deletescape.lawnchair.util.Thunk;
  */
 public class BaseRecyclerViewFastScrollBar {
 
+    public void setThumbOffsetY(int thumbOffsetY) {
+        this.mThumbOffset.y = thumbOffsetY;
+    }
+
     public interface FastScrollFocusableView {
         void setFastScrollFocusState(final FastBitmapDrawable.State focusState, boolean animated);
     }

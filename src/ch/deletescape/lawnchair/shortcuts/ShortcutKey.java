@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.os.UserHandle;
 
+import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.ShortcutInfo;
 import ch.deletescape.lawnchair.util.ComponentKey;
 
@@ -34,5 +35,9 @@ public class ShortcutKey extends ComponentKey {
 
     public static ShortcutKey fromShortcutInfo(ShortcutInfo info) {
         return fromIntent(info.getPromisedIntent(), info.user);
+    }
+
+    public static ShortcutKey fromItemInfo(ItemInfo itemInfo) {
+        return fromIntent(itemInfo.getIntent(), itemInfo.user);
     }
 }

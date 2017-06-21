@@ -304,6 +304,9 @@
     <string name="title_show_google_app_default">Show Google app</string>
     <string name="label_search">Search</string>
     <string name="label_voice_search">Voice search</string>
+    <string name="shortcuts_menu_with_notifications_description">%1$d shortcuts and %2$d notifications for %3$s</string>
+    <string name="notifications_header">Notifications</string>
+    <string name="widgets_bottom_sheet_title">%1$s widgets</string>
 
     <!-- About Lawnchair -->
     <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>

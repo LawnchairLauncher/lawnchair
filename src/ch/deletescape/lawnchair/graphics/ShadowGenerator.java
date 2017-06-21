@@ -90,6 +90,32 @@ public class ShadowGenerator {
         return sShadowGenerator;
     }
 
+
+    public static Bitmap createPillWithShadow(int i, int i2, int i3) {
+        float f = (((float) i3) * 1.0f) / 32.0f;
+        float f2 = (((float) i3) * 1.0f) / 16.0f;
+        int i4 = i3 / 2;
+        Canvas canvas = new Canvas();
+        Paint paint = new Paint(3);
+        paint.setMaskFilter(new BlurMaskFilter(f, Blur.NORMAL));
+        int max = Math.max(Math.round(((float) (i2 / 2)) + f), Math.round((f + ((float) i4)) + f2));
+        int i5 = max * 2;
+        Bitmap createBitmap = Bitmap.createBitmap(i5, i5, Config.ARGB_8888);
+        canvas.setBitmap(createBitmap);
+        int i6 = max - (i2 / 2);
+        int i7 = max - (i3 / 2);
+        int i8 = max + (i2 / 2);
+        int i9 = max + (i3 / 2);
+        paint.setAlpha(30);
+        canvas.drawRoundRect((float) i6, (float) i7, (float) i8, (float) i9, (float) i4, (float) i4, paint);
+        paint.setAlpha(61);
+        canvas.drawRoundRect((float) i6, ((float) i7) + f2, (float) i8, ((float) i9) + f2, (float) i4, (float) i4, paint);
+        paint = new Paint(3);
+        paint.setColor(i);
+        canvas.drawRoundRect((float) i6, (float) i7, (float) i8, (float) i9, (float) i4, (float) i4, paint);
+        return createBitmap;
+    }
+
     /**
      * Returns the minimum amount by which an icon with {@param bounds} should be scaled
      * so that the shadows do not get clipped.

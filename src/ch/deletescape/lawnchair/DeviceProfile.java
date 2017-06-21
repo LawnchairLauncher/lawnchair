@@ -31,6 +31,8 @@ import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 
+import ch.deletescape.lawnchair.badge.BadgeRenderer;
+
 public class DeviceProfile {
 
     public interface LauncherLayoutChangeListener {
@@ -111,6 +113,9 @@ public class DeviceProfile {
     // Drop Target
     public int dropTargetBarSizePx;
 
+
+    public BadgeRenderer mBadgeRenderer;
+
     // Insets
     private Rect mInsets = new Rect();
 
@@ -174,6 +179,7 @@ public class DeviceProfile {
         // Calculate the remaining vars
         updateAvailableDimensions(dm, res);
         computeAllAppsButtonSize(context);
+        mBadgeRenderer = new BadgeRenderer(context, iconSizePx);
     }
 
     public void addLauncherLayoutChangedListener(LauncherLayoutChangeListener listener) {

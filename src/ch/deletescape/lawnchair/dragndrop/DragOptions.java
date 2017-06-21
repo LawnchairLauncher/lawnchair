@@ -37,6 +37,8 @@ public class DragOptions {
      * Determines when a deferred drag should start. By default, drags aren't deferred at all.
      */
     public DeferDragCondition deferDragCondition = new DeferDragCondition();
+    public DeferDragCondition deferDragCondition2 = new DeferDragCondition();
+
 
     /**
      * Specifies a condition that must be met before DragListener#onDragStart() is called.

@@ -154,4 +154,23 @@
         <item name="android:textColor">#ffffffff</item>
         <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
+
+    <style name="AllAppsNavBarProtection">
+        <item name="android:background">@color/default_shadow_color_no_alpha</item>
+        <item name="android:alpha">?android:spotShadowAlpha</item>
+    </style>
+
+    <style name="FastScrollerPopup">
+        <item name="android:textSize">@dimen/container_fastscroll_popup_text_size</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/container_fastscroll_popup_bg</item>
+        <item name="android:saveEnabled">false</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/container_fastscroll_popup_size</item>
+        <item name="android:minWidth">@dimen/container_fastscroll_popup_size</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:alpha">0.0</item>
+        <item name="android:elevation">3.0dip</item>
+    </style>
 </resources>

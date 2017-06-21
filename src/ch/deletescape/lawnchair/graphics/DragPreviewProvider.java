@@ -26,7 +26,9 @@ import android.widget.TextView;
 
 import ch.deletescape.lawnchair.HolographicOutlineHelper;
 import ch.deletescape.lawnchair.Launcher;
+import ch.deletescape.lawnchair.LauncherAppWidgetHostView;
 import ch.deletescape.lawnchair.PreloadIconDrawable;
+import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 
@@ -44,11 +46,13 @@ public class DragPreviewProvider {
     // The padding added to the drag view during the preview generation.
     public final int previewPadding;
 
+    protected final int blurSizeOutline;
+
     public Bitmap gerenatedDragOutline;
 
     public DragPreviewProvider(View view) {
         mView = view;
-
+        blurSizeOutline = view.getContext().getResources().getDimensionPixelSize(R.dimen.blur_size_medium_outline);
         if (mView instanceof TextView) {
             Drawable d = Workspace.getTextViewIcon((TextView) mView);
             Rect bounds = getDrawableBounds(d);
@@ -63,33 +67,26 @@ public class DragPreviewProvider {
      */
     private void drawDragView(Canvas destCanvas) {
         destCanvas.save();
-        if (mView instanceof TextView) {
-            Drawable d = Workspace.getTextViewIcon((TextView) mView);
-            Rect bounds = getDrawableBounds(d);
-            destCanvas.translate(DRAG_BITMAP_PADDING / 2 - bounds.left,
-                    DRAG_BITMAP_PADDING / 2 - bounds.top);
-            d.draw(destCanvas);
+        if (this.mView instanceof TextView) {
+            Drawable textViewIcon = Workspace.getTextViewIcon((TextView) this.mView);
+            Rect drawableBounds = getDrawableBounds(textViewIcon);
+            destCanvas.translate((float) ((this.blurSizeOutline / 2) - drawableBounds.left), (float) ((this.blurSizeOutline / 2) - drawableBounds.top));
+            textViewIcon.draw(destCanvas);
         } else {
-            final Rect clipRect = mTempRect;
-            mView.getDrawingRect(clipRect);
-
-            boolean textVisible = false;
-            if (mView instanceof FolderIcon) {
-                // For FolderIcons the text can bleed into the icon area, and so we need to
-                // hide the text completely (which can't be achieved by clipping).
-                if (((FolderIcon) mView).getTextVisible()) {
-                    ((FolderIcon) mView).setTextVisible(false);
-                    textVisible = true;
-                }
+            boolean z;
+            Rect rect = this.mTempRect;
+            this.mView.getDrawingRect(rect);
+            if ((this.mView instanceof FolderIcon) && ((FolderIcon) this.mView).getTextVisible()) {
+                ((FolderIcon) this.mView).setTextVisible(false);
+                z = true;
+            } else {
+                z = false;
             }
-            destCanvas.translate(-mView.getScrollX() + DRAG_BITMAP_PADDING / 2,
-                    -mView.getScrollY() + DRAG_BITMAP_PADDING / 2);
-            destCanvas.clipRect(clipRect, Op.REPLACE);
-            mView.draw(destCanvas);
-
-            // Restore text visibility of FolderIcon if necessary
-            if (textVisible) {
-                ((FolderIcon) mView).setTextVisible(true);
+            destCanvas.translate((float) ((-this.mView.getScrollX()) + (this.blurSizeOutline / 2)), (float) ((-this.mView.getScrollY()) + (this.blurSizeOutline / 2)));
+            destCanvas.clipRect(rect, Op.REPLACE);
+            this.mView.draw(destCanvas);
+            if (z) {
+                ((FolderIcon) this.mView).setTextVisible(true);
             }
         }
         destCanvas.restore();
@@ -100,23 +97,26 @@ public class DragPreviewProvider {
      * Responsibility for the bitmap is transferred to the caller.
      */
     public Bitmap createDragBitmap(Canvas canvas) {
-        Bitmap b;
-
-        if (mView instanceof TextView) {
-            Drawable d = Workspace.getTextViewIcon((TextView) mView);
-            Rect bounds = getDrawableBounds(d);
-            b = Bitmap.createBitmap(bounds.width() + DRAG_BITMAP_PADDING,
-                    bounds.height() + DRAG_BITMAP_PADDING, Bitmap.Config.ARGB_8888);
-        } else {
-            b = Bitmap.createBitmap(mView.getWidth() + DRAG_BITMAP_PADDING,
-                    mView.getHeight() + DRAG_BITMAP_PADDING, Bitmap.Config.ARGB_8888);
+        float f = 1.0f;
+        int width = this.mView.getWidth();
+        int height = this.mView.getHeight();
+        if (this.mView instanceof TextView) {
+            Rect drawableBounds = getDrawableBounds(Workspace.getTextViewIcon((TextView) this.mView));
+            width = drawableBounds.width();
+            height = drawableBounds.height();
+        } else if (this.mView instanceof LauncherAppWidgetHostView) {
+            f = ((LauncherAppWidgetHostView) this.mView).getScaleToFit();
+            width = (int) (((float) this.mView.getWidth()) * f);
+            height = (int) (((float) this.mView.getHeight()) * f);
         }
-
-        canvas.setBitmap(b);
+        Bitmap createBitmap = Bitmap.createBitmap(width + this.blurSizeOutline, height + this.blurSizeOutline, Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(createBitmap);
+        canvas.save();
+        canvas.scale(f, f);
         drawDragView(canvas);
+        canvas.restore();
         canvas.setBitmap(null);
-
-        return b;
+        return createBitmap;
     }
 
     public final void generateDragOutline(Canvas canvas) {
@@ -128,14 +128,23 @@ public class DragPreviewProvider {
      * Responsibility for the bitmap is transferred to the caller.
      */
     public Bitmap createDragOutline(Canvas canvas) {
-        final Bitmap b = Bitmap.createBitmap(mView.getWidth() + DRAG_BITMAP_PADDING,
-                mView.getHeight() + DRAG_BITMAP_PADDING, Bitmap.Config.ALPHA_8);
-        canvas.setBitmap(b);
+        float f = 1.0f;
+        int width = this.mView.getWidth();
+        int height = this.mView.getHeight();
+        if (this.mView instanceof LauncherAppWidgetHostView) {
+            f = ((LauncherAppWidgetHostView) this.mView).getScaleToFit();
+            width = (int) Math.floor((double) (((float) this.mView.getWidth()) * f));
+            height = (int) Math.floor((double) (((float) this.mView.getHeight()) * f));
+        }
+        Bitmap createBitmap = Bitmap.createBitmap(width + this.blurSizeOutline, height + this.blurSizeOutline, Bitmap.Config.ALPHA_8);
+        canvas.setBitmap(createBitmap);
+        canvas.save();
+        canvas.scale(f, f);
         drawDragView(canvas);
-        HolographicOutlineHelper.obtain(mView.getContext())
-                .applyExpensiveOutlineWithBlur(b, canvas);
+        canvas.restore();
+        HolographicOutlineHelper.obtain(this.mView.getContext()).applyExpensiveOutlineWithBlur(createBitmap, canvas);
         canvas.setBitmap(null);
-        return b;
+        return createBitmap;
     }
 
     protected static Rect getDrawableBounds(Drawable d) {
@@ -154,10 +163,15 @@ public class DragPreviewProvider {
     }
 
     public float getScaleAndPosition(Bitmap preview, int[] outPos) {
-        float scale = Launcher.getLauncher(mView.getContext())
-                .getDragLayer().getLocationInDragLayer(mView, outPos);
-        outPos[0] = Math.round(outPos[0] - (preview.getWidth() - scale * mView.getWidth()) / 2);
-        outPos[1] = Math.round(outPos[1] - (1 - scale) * preview.getHeight() / 2 - previewPadding / 2);
-        return scale;
+        float scaleToFit;
+        float locationInDragLayer = Launcher.getLauncher(this.mView.getContext()).getDragLayer().getLocationInDragLayer(this.mView, outPos);
+        if (this.mView instanceof LauncherAppWidgetHostView) {
+            scaleToFit = locationInDragLayer / ((LauncherAppWidgetHostView) this.mView).getScaleToFit();
+        } else {
+            scaleToFit = locationInDragLayer;
+        }
+        outPos[0] = Math.round(((float) outPos[0]) - ((((float) preview.getWidth()) - ((((float) this.mView.getWidth()) * scaleToFit) * this.mView.getScaleX())) / 2.0f));
+        outPos[1] = Math.round((((float) outPos[1]) - (((1.0f - scaleToFit) * ((float) preview.getHeight())) / 2.0f)) - ((float) (this.previewPadding / 2)));
+        return scaleToFit;
     }
 }
