@@ -335,6 +335,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         if (mIsExternalDrag && mDragInProgress) {
             completeDragExit();
         }
+        mDragInProgress = false;
         mDragController.removeDragListener(this);
     }
 
