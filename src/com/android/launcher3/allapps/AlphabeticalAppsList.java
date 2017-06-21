@@ -621,6 +621,10 @@ public class AlphabeticalAppsList {
         return result;
     }
 
+    public AppInfo findApp(ComponentKey key) {
+        return mComponentToAppMap.get(key);
+    }
+
     /**
      * Returns the cached section name for the given title, recomputing and updating the cache if
      * the title has no cached section name.
