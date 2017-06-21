@@ -329,7 +329,10 @@ public class LauncherIcons {
             return unbadgedBitmap;
         }
         unbadgedBitmap = LauncherIcons.addShadowToIcon(unbadgedBitmap, context);
+        return badgeWithBitmap(unbadgedBitmap, getShortcutInfoBadge(shortcutInfo, cache), context);
+    }
 
+    public static Bitmap getShortcutInfoBadge(ShortcutInfoCompat shortcutInfo, IconCache cache) {
         final Bitmap badgeBitmap;
         ComponentName cn = shortcutInfo.getActivity();
         if (cn != null) {
@@ -347,7 +350,7 @@ public class LauncherIcons {
             cache.getTitleAndIconForApp(pkgInfo, false);
             badgeBitmap = pkgInfo.iconBitmap;
         }
-        return badgeWithBitmap(unbadgedBitmap, badgeBitmap, context);
+        return badgeBitmap;
     }
 
     /**
