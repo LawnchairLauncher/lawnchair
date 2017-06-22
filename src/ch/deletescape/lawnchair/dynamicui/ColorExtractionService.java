@@ -72,7 +72,7 @@ public class ColorExtractionService extends IntentService {
                     .clearFilters()
                     .generate();
             extractedColors.updateStatusBarPalette(statusBarPalette);
-        }
+        
 
         // Save the extracted colors and wallpaper id to LauncherProvider.
         String colorsString = extractedColors.encodeAsString();
