@@ -198,8 +198,14 @@ public class FolderAnimationManager {
         play(a, getAnimator(mFolder, SCALE_PROPERTY, initialScale, finalScale));
         play(a, getAnimator(mFolderBackground, "color", initialColor, finalColor));
         play(a, mFolderIcon.mFolderName.createTextAlphaAnimator(!mIsOpening));
-        play(a, new RoundedRectRevealOutlineProvider(initialRadius, finalRadius, startRect,
-                endRect).createRevealAnimator(mFolder, !mIsOpening));
+        RoundedRectRevealOutlineProvider outlineProvider = new RoundedRectRevealOutlineProvider(
+                initialRadius, finalRadius, startRect, endRect) {
+            @Override
+            public boolean shouldRemoveElevationDuringAnimation() {
+                return true;
+            }
+        };
+        play(a, outlineProvider.createRevealAnimator(mFolder, !mIsOpening));
 
         // Animate the elevation midway so that the shadow is not noticeable in the background.
         int midDuration = mDuration / 2;

@@ -285,9 +285,11 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 int roundedCorners = ROUNDED_TOP_CORNERS | ROUNDED_BOTTOM_CORNERS;
                 if (shouldUnroundTopCorners) {
                     roundedCorners &= ~ROUNDED_TOP_CORNERS;
+                    mNotificationItemView.findViewById(R.id.gutter_top).setVisibility(VISIBLE);
                 }
                 if (shouldUnroundBottomCorners) {
                     roundedCorners &= ~ROUNDED_BOTTOM_CORNERS;
+                    mNotificationItemView.findViewById(R.id.gutter_bottom).setVisibility(VISIBLE);
                 }
                 int backgroundColor = Themes.getAttrColor(mLauncher, R.attr.popupColorTertiary);
                 mNotificationItemView.setBackgroundWithCorners(backgroundColor, roundedCorners);
@@ -308,9 +310,15 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 }
                 if (itemTypeToPopulate != PopupPopulator.Item.SYSTEM_SHORTCUT_ICON
                         && numNotifications > 0) {
+                    int prevHeight = item.getLayoutParams().height;
                     // Condense shortcuts height when there are notifications.
                     item.getLayoutParams().height = res.getDimensionPixelSize(
                             R.dimen.bg_popup_item_condensed_height);
+                    if (item instanceof DeepShortcutView) {
+                        float iconScale = (float) item.getLayoutParams().height / prevHeight;
+                        ((DeepShortcutView) item).getIconView().setScaleX(iconScale);
+                        ((DeepShortcutView) item).getIconView().setScaleY(iconScale);
+                    }
                 }
                 mShortcutsItemView.addShortcutView(item, itemTypeToPopulate);
                 if (shouldUnroundBottomCorners) {
@@ -320,8 +328,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 addView(item);
             }
         }
-        int backgroundColor = Themes.getAttrColor(mLauncher, mNotificationItemView == null
-                ? R.attr.popupColorPrimary : R.attr.popupColorSecondary);
+        int backgroundColor = Themes.getAttrColor(mLauncher, R.attr.popupColorPrimary);
         mShortcutsItemView.setBackgroundWithCorners(backgroundColor, shortcutsItemRoundedCorners);
         if (numNotifications > 0) {
             mShortcutsItemView.hideShortcuts(mIsAboveIcon, MAX_SHORTCUTS_IF_NOTIFICATIONS);
@@ -864,11 +871,14 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         }
         final ValueAnimator revealAnim = new RoundedRectRevealOutlineProvider(
                 radius, radius, mStartRect, mEndRect).createRevealAnimator(this, true);
-        revealAnim.setDuration((long) res.getInteger(R.integer.config_popupOpenCloseDuration));
+        long revealDuration = (long) res.getInteger(R.integer.config_popupOpenCloseDuration);
+        revealAnim.setDuration(revealDuration);
         revealAnim.setInterpolator(new AccelerateDecelerateInterpolator());
 
         // Animate original icon's text back in.
-        closeAnim.play(mOriginalIcon.createTextAlphaAnimator(true /* fadeIn */));
+        Animator fadeText = mOriginalIcon.createTextAlphaAnimator(true /* fadeIn */);
+        fadeText.setDuration(revealDuration);
+        closeAnim.play(fadeText);
 
         closeAnim.addListener(new AnimatorListenerAdapter() {
             @Override
