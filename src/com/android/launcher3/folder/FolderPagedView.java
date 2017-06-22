@@ -19,6 +19,7 @@ package com.android.launcher3.folder;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -27,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.animation.DecelerateInterpolator;
+
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
@@ -44,6 +46,7 @@ import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.util.Thunk;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -176,14 +179,6 @@ public class FolderPagedView extends PagedView {
     protected void dispatchDraw(Canvas canvas) {
         mFocusIndicatorHelper.draw(canvas);
         super.dispatchDraw(canvas);
-    }
-
-    public void onIconInvalidated(BubbleTextView icon) {
-        FolderIcon folderIcon = mFolder.mFolderIcon;
-        if (icon.getTag() instanceof ItemInfo
-                && folderIcon.mPreviewVerifier.isItemInPreview(((ItemInfo) icon.getTag()).rank)) {
-            folderIcon.invalidate();
-        }
     }
 
     /**
@@ -562,7 +557,14 @@ public class FolderPagedView extends PagedView {
         if (page != null) {
             ShortcutAndWidgetContainer parent = page.getShortcutsAndWidgets();
             for (int i = parent.getChildCount() - 1; i >= 0; i--) {
-                ((BubbleTextView) parent.getChildAt(i)).verifyHighRes();
+                BubbleTextView icon = ((BubbleTextView) parent.getChildAt(i));
+                icon.verifyHighRes();
+                // Set the callback back to the actual icon, in case
+                // it was captured by the FolderIcon
+                Drawable d = icon.getCompoundDrawables()[1];
+                if (d != null) {
+                    d.setCallback(icon);
+                }
             }
         }
     }
