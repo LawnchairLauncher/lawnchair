@@ -272,7 +272,7 @@ public class DragView extends FrameLayout {
                     .resolveActivity(info.getIntent(), info.user);
             outObj[0] = activityInfo;
             return (activityInfo != null) ? appState.getIconCache()
-                    .getFullResIcon(activityInfo) : null;
+                    .getFullResIcon(activityInfo, false) : null;
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             if (info instanceof PendingAddShortcutInfo) {
                 ShortcutConfigActivityInfo activityInfo =
