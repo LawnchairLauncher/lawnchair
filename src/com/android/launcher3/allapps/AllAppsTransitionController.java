@@ -49,7 +49,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private static final boolean DBG = false;
 
     private final Interpolator mWorkspaceAccelnterpolator = new AccelerateInterpolator(2f);
-    private final Interpolator mHotseatAccelInterpolator = new AccelerateInterpolator(.5f);
+    private final Interpolator mHotseatAccelInterpolator = new AccelerateInterpolator(1.5f);
     private final Interpolator mDecelInterpolator = new DecelerateInterpolator(3f);
     private final Interpolator mFastOutSlowInInterpolator = new FastOutSlowInInterpolator();
     private final VerticalPullDetector.ScrollInterpolator mScrollInterpolator
