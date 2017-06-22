@@ -24,8 +24,8 @@ import android.os.Message;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.support.annotation.Nullable;
-import android.support.v4.util.Pair;
 import android.text.TextUtils;
+import android.util.Pair;
 
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.config.FeatureFlags;
