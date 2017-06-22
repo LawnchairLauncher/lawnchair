@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2015 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@ package com.android.launcher3.folder;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -26,7 +27,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.animation.DecelerateInterpolator;
-
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
@@ -44,9 +44,7 @@ import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.util.Thunk;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -72,7 +70,7 @@ public class FolderPagedView extends PagedView {
     private final LayoutInflater mInflater;
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
 
-    @Thunk final HashMap<View, Runnable> mPendingAnimations = new HashMap<>();
+    @Thunk final ArrayMap<View, Runnable> mPendingAnimations = new ArrayMap<>();
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private final int mMaxCountX;
@@ -111,7 +109,7 @@ public class FolderPagedView extends PagedView {
     public void setFolder(Folder folder) {
         mFolder = folder;
         mKeyListener = new PagedFolderKeyEventListener(folder);
-        mPageIndicator = (PageIndicator) folder.findViewById(R.id.folder_page_indicator);
+        mPageIndicator = folder.findViewById(R.id.folder_page_indicator);
         initParentViews(folder);
     }
 
@@ -193,8 +191,8 @@ public class FolderPagedView extends PagedView {
      * @return list of items that could not be bound, probably because we hit the max size limit.
      */
     public ArrayList<ShortcutInfo> bindItems(ArrayList<ShortcutInfo> items) {
-        ArrayList<View> icons = new ArrayList<View>();
-        ArrayList<ShortcutInfo> extra = new ArrayList<ShortcutInfo>();
+        ArrayList<View> icons = new ArrayList<>();
+        ArrayList<ShortcutInfo> extra = new ArrayList<>();
 
         for (ShortcutInfo item : items) {
             if (!ALLOW_FOLDER_SCROLL && icons.size() >= mMaxItemsPerPage) {
@@ -328,7 +326,7 @@ public class FolderPagedView extends PagedView {
 
     @SuppressLint("RtlHardcoded")
     private void arrangeChildren(ArrayList<View> list, int itemCount, boolean saveChanges) {
-        ArrayList<CellLayout> pages = new ArrayList<CellLayout>();
+        ArrayList<CellLayout> pages = new ArrayList<>();
         for (int i = 0; i < getChildCount(); i++) {
             CellLayout page = (CellLayout) getChildAt(i);
             page.removeAllViews();
@@ -535,7 +533,7 @@ public class FolderPagedView extends PagedView {
      */
     public void completePendingPageChanges() {
         if (!mPendingAnimations.isEmpty()) {
-            HashMap<View, Runnable> pendingViews = new HashMap<>(mPendingAnimations);
+            ArrayMap<View, Runnable> pendingViews = new ArrayMap<>(mPendingAnimations);
             for (Map.Entry<View, Runnable> e : pendingViews.entrySet()) {
                 e.getKey().animate().cancel();
                 e.getValue().run();
