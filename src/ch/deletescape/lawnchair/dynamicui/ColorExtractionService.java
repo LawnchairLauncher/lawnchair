@@ -47,13 +47,14 @@ public class ColorExtractionService extends IntentService {
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
         int wallpaperId = ExtractionUtils.getWallpaperId(wallpaperManager);
         ExtractedColors extractedColors = new ExtractedColors();
+        PackageManager pm = getApplicationContext().getPackageManager();
+        Bitmap wallpaper;
         if (wallpaperManager.getWallpaperInfo() != null) {
-            // We can't extract colors from live wallpapers, so just use the default color always.
-            extractedColors.updatePalette(null);
-            extractedColors.updateHotseatPalette(null);
+            wallpaper = ((BitmapDrawable) wallpaperManager.getWallpaperInfo().loadThumbnail(pm)).getBitmap();
         } else {
-            Bitmap wallpaper = ((BitmapDrawable) wallpaperManager.getDrawable()).getBitmap();
-            Palette palette = Palette.from(wallpaper).generate();
+            wallpaper = ((BitmapDrawable) wallpaperManager.getDrawable()).getBitmap();
+        }
+         Palette palette = Palette.from(wallpaper).generate();
             extractedColors.updatePalette(palette);
             // We extract colors for the hotseat and status bar separately,
             // since they only consider part of the wallpaper.
@@ -71,7 +72,7 @@ public class ColorExtractionService extends IntentService {
                     .clearFilters()
                     .generate();
             extractedColors.updateStatusBarPalette(statusBarPalette);
-        }
+        
 
         // Save the extracted colors and wallpaper id to LauncherProvider.
         String colorsString = extractedColors.encodeAsString();
