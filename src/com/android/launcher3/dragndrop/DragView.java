@@ -29,6 +29,7 @@ import android.content.pm.LauncherActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
@@ -245,6 +246,15 @@ public class DragView extends FrameLayout {
                             addView(mBgImageView);
                             addView(mFgImageView);
                             setWillNotDraw(true);
+
+                            if (info.isDisabled()) {
+                                FastBitmapDrawable d = new FastBitmapDrawable(null);
+                                d.setIsDisabled(true);
+                                ColorFilter cf = d.getColorFilter();
+                                mBgImageView.setColorFilter(cf);
+                                mFgImageView.setColorFilter(cf);
+                                mBadge.setColorFilter(cf);
+                            }
                         }
                     });
                 }
