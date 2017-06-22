@@ -20,7 +20,7 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
     private float mBaselineIconScale;
 
     @Override
-    public void init(int availableSpace, int intrinsicIconSize, boolean rtl) {
+    public void init(int availableSpace, float intrinsicIconSize, boolean rtl) {
         mAvailableSpace = availableSpace;
         mRadius = ITEM_RADIUS_SCALE_FACTOR * availableSpace / 2f;
         mIconSize = intrinsicIconSize;

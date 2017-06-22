@@ -178,7 +178,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
         Rect bounds = getBounds();
 
         canvas.scale(mIconScale, mIconScale, bounds.exactCenterX(), bounds.exactCenterY());
-        drawInternal(canvas);
+        super.draw(canvas);
         canvas.restoreToCount(saveCount);
     }
 

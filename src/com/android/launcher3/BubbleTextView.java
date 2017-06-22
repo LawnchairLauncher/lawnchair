@@ -30,7 +30,6 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.util.Property;
@@ -48,7 +47,6 @@ import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.badge.BadgeRenderer;
 import com.android.launcher3.folder.FolderIconPreviewVerifier;
-import com.android.launcher3.folder.FolderPagedView;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.HolographicOutlineHelper;
 import com.android.launcher3.graphics.IconPalette;
@@ -207,17 +205,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
 
     public void applyFromShortcutInfo(ShortcutInfo info) {
         applyFromShortcutInfo(info, false);
-    }
-
-    @Override
-    public void invalidateDrawable(@NonNull Drawable drawable) {
-        super.invalidateDrawable(drawable);
-
-        if (getParent() != null
-                && getParent().getParent() != null
-                && getParent().getParent().getParent() instanceof FolderPagedView) {
-            ((FolderPagedView) getParent().getParent().getParent()).onIconInvalidated(this);
-        }
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info, boolean promiseStateChanged) {

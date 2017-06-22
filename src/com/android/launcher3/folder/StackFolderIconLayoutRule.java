@@ -35,7 +35,7 @@ public class StackFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
     private float mMaxPerspectiveShift;
 
     @Override
-    public void init(int availableSpace, int intrinsicIconSize, boolean rtl) {
+    public void init(int availableSpace, float intrinsicIconSize, boolean rtl) {
         mAvailableSpaceInPreview = availableSpace;
 
         // cos(45) = 0.707  + ~= 0.1) = 0.8f
