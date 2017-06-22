@@ -459,7 +459,9 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         x += mIsLeftAligned ? xOffset : -xOffset;
 
         // Open above icon if there is room.
-        int iconHeight = icon.getIcon().getBounds().height();
+        int iconHeight = icon.getIcon() != null
+                ? icon.getIcon().getBounds().height()
+                : icon.getHeight();
         int y = mTempRect.top + icon.getPaddingTop() - height;
         mIsAboveIcon = y > dragLayer.getTop() + insets.top;
         if (!mIsAboveIcon) {
