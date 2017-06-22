@@ -84,6 +84,8 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     private int mPendingBindWidgetId;
     private Bundle mWidgetOptions;
 
+    private boolean mFinishOnPause = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,6 +165,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
 
         startActivity(homeIntent,
                 ActivityOptions.makeCustomAnimation(this, 0, android.R.anim.fade_out).toBundle());
+        mFinishOnPause = true;
 
         // Start a system drag and drop. We use a transparent bitmap as preview for system drag
         // as the preview is handled internally by launcher.
@@ -180,6 +183,14 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
             }
         }, null, View.DRAG_FLAG_GLOBAL);
         return false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mFinishOnPause) {
+            finish();
+        }
     }
 
     private void setupShortcut() {
