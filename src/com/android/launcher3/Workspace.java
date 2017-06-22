@@ -2098,11 +2098,6 @@ public class Workspace extends PagedView
     public void startDrag(CellLayout.CellInfo cellInfo, DragOptions options) {
         View child = cellInfo.cell;
 
-        // Make sure the drag was started by a long press as opposed to a long click.
-        if (!child.isInTouchMode()) {
-            return;
-        }
-
         mDragInfo = cellInfo;
         child.setVisibility(INVISIBLE);
 
