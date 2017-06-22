@@ -29,23 +29,22 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Process;
 import android.os.UserHandle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
+import android.util.ArrayMap;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVL;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.PackageUserKey;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
     protected final LauncherApps mLauncherApps;
     protected final Context mContext;
 
-    private Map<OnAppsChangedCallbackCompat, WrappedCallback> mCallbacks = new HashMap<>();
+    private final ArrayMap<OnAppsChangedCallbackCompat, WrappedCallback> mCallbacks =
+        new ArrayMap<>();
 
     LauncherAppsCompatVL(Context context) {
         mContext = context;
@@ -131,43 +130,52 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
     }
 
     private static class WrappedCallback extends LauncherApps.Callback {
-        private LauncherAppsCompat.OnAppsChangedCallbackCompat mCallback;
+        private final LauncherAppsCompat.OnAppsChangedCallbackCompat mCallback;
 
         public WrappedCallback(LauncherAppsCompat.OnAppsChangedCallbackCompat callback) {
             mCallback = callback;
         }
 
+        @Override
         public void onPackageRemoved(String packageName, UserHandle user) {
             mCallback.onPackageRemoved(packageName, user);
         }
 
+        @Override
         public void onPackageAdded(String packageName, UserHandle user) {
             mCallback.onPackageAdded(packageName, user);
         }
 
+        @Override
         public void onPackageChanged(String packageName, UserHandle user) {
             mCallback.onPackageChanged(packageName, user);
         }
 
+        @Override
         public void onPackagesAvailable(String[] packageNames, UserHandle user, boolean replacing) {
             mCallback.onPackagesAvailable(packageNames, user, replacing);
         }
 
+        @Override
         public void onPackagesUnavailable(String[] packageNames, UserHandle user,
                 boolean replacing) {
             mCallback.onPackagesUnavailable(packageNames, user, replacing);
         }
 
+        @Override
         public void onPackagesSuspended(String[] packageNames, UserHandle user) {
             mCallback.onPackagesSuspended(packageNames, user);
         }
 
+        @Override
         public void onPackagesUnsuspended(String[] packageNames, UserHandle user) {
             mCallback.onPackagesUnsuspended(packageNames, user);
         }
 
-        public void onShortcutsChanged(String packageName, List<ShortcutInfo> shortcuts,
-                UserHandle user) {
+        @Override
+        public void onShortcutsChanged(@NonNull String packageName,
+            @NonNull List<ShortcutInfo> shortcuts,
+            @NonNull UserHandle user) {
             List<ShortcutInfoCompat> shortcutInfoCompats = new ArrayList<>(shortcuts.size());
             for (ShortcutInfo shortcutInfo : shortcuts) {
                 shortcutInfoCompats.add(new ShortcutInfoCompat(shortcutInfo));
