@@ -105,17 +105,6 @@ public class FastBitmapDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        drawInternal(canvas);
-    }
-
-    public void drawWithBrightness(Canvas canvas, float brightness) {
-        float oldBrightness = getBrightness();
-        setBrightness(brightness);
-        drawInternal(canvas);
-        setBrightness(oldBrightness);
-    }
-
-    protected void drawInternal(Canvas canvas) {
         canvas.drawBitmap(mBitmap, null, getBounds(), mPaint);
     }
 

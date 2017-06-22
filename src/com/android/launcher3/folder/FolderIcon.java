@@ -36,6 +36,7 @@ import android.graphics.Region;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.util.Property;
@@ -116,7 +117,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     // These variables are all associated with the drawing of the preview; they are stored
     // as member variables for shared usage and to avoid computation on each frame
-    private int mIntrinsicIconSize = -1;
+    private float mIntrinsicIconSize = -1;
     private int mTotalWidth = -1;
     private int mPrevTopPadding = -1;
 
@@ -132,7 +133,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     FolderIconPreviewVerifier mPreviewVerifier;
     private PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0, 0);
-    private ArrayList<PreviewItemDrawingParams> mDrawingParams = new ArrayList<PreviewItemDrawingParams>();
+    private ArrayList<PreviewItemDrawingParams> mDrawingParams = new ArrayList<>();
     private Drawable mReferenceDrawable = null;
 
     private Alarm mOpenAlarm = new Alarm();
@@ -510,24 +511,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         Drawable d = params.drawable;
 
         if (d != null) {
-            // Remove the callback to prevent invalidate as a result of property changes
-            Drawable.Callback cb = d.getCallback();
-            d.setCallback(null);
-
-            mTempBounds.set(d.getBounds());
-            d.setBounds(0, 0, mIntrinsicIconSize, mIntrinsicIconSize);
-            boolean isPreloadIcon = d instanceof PreloadIconDrawable;
-            if (!isPreloadIcon && d instanceof FastBitmapDrawable) {
-                FastBitmapDrawable fd = (FastBitmapDrawable) d;
-                fd.drawWithBrightness(canvas, params.overlayAlpha);
-            } else {
-                d.setColorFilter(Color.argb((int) (params.overlayAlpha * 255), 255, 255, 255),
-                        PorterDuff.Mode.SRC_ATOP);
-                d.draw(canvas);
-                d.clearColorFilter();
-            }
-            d.setBounds(mTempBounds);
-            d.setCallback(cb);
+            Rect bounds = d.getBounds();
+            canvas.save();
+            canvas.translate(-bounds.left, -bounds.top);
+            canvas.scale(mIntrinsicIconSize / bounds.width(), mIntrinsicIconSize / bounds.height());
+            d.draw(canvas);
+            canvas.restore();
         }
         canvas.restore();
     }
@@ -1112,6 +1101,16 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         return itemsToDisplay;
     }
 
+    @Override
+    protected boolean verifyDrawable(@NonNull Drawable who) {
+        for (int i = 0; i < mDrawingParams.size(); i++) {
+            if (mDrawingParams.get(i).drawable == who) {
+                return true;
+            }
+        }
+        return super.verifyDrawable(who);
+    }
+
     private void updateItemDrawingParams(boolean animate) {
         List<BubbleTextView> items = getItemsToDisplay();
         int nItemsInPreview = items.size();
@@ -1129,6 +1128,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         for (int i = 0; i < mDrawingParams.size(); i++) {
             PreviewItemDrawingParams p = mDrawingParams.get(i);
             p.drawable = items.get(i).getCompoundDrawables()[1];
+
+            if (p.drawable != null && !mFolder.isOpen()) {
+                // Set the callback to FolderIcon as it is responsible to drawing the icon. The
+                // callback will be release when the folder is opened.
+                p.drawable.setCallback(this);
+            }
 
             if (!animate || FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON) {
                 computePreviewItemDrawingParams(i, nItemsInPreview, p);
@@ -1300,7 +1305,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     public interface PreviewLayoutRule {
         PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
             PreviewItemDrawingParams params);
-        void init(int availableSpace, int intrinsicIconSize, boolean rtl);
+        void init(int availableSpace, float intrinsicIconSize, boolean rtl);
         float scaleForItem(int index, int totalNumItems);
         float getIconSize();
         int maxNumItems();
