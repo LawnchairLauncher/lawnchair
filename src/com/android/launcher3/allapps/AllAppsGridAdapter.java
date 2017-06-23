@@ -18,7 +18,6 @@ package com.android.launcher3.allapps;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Point;
 import android.support.animation.DynamicAnimation;
 import android.support.animation.SpringAnimation;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
@@ -298,8 +297,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 icon.setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
                 icon.setOnFocusChangeListener(mIconFocusListener);
 
-                // Ensure the all apps icon height matches the workspace icons
-                icon.getLayoutParams().height = getCellSize().y;
+                // Ensure the all apps icon height matches the workspace icons in portrait mode.
+                icon.getLayoutParams().height = mLauncher.getDeviceProfile().allAppsCellHeightPx;
                 return new ViewHolder(icon);
             case VIEW_TYPE_DISCOVERY_ITEM:
                 AppDiscoveryItemView appDiscoveryItemView = (AppDiscoveryItemView) mLayoutInflater
@@ -334,10 +333,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             default:
                 throw new RuntimeException("Unexpected view type");
         }
-    }
-
-    private Point getCellSize() {
-        return mLauncher.getDeviceProfile().getCellSize();
     }
 
     @Override

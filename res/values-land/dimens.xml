@@ -24,4 +24,15 @@
     <dimen name="fastscroll_popup_padding">10dp</dimen>
     <dimen name="fastscroll_popup_text_size">24dp</dimen>
 
+    <!-- Dynamic grid -->
+    <dimen name="dynamic_grid_overview_bar_item_width">120dp</dimen>
+    <dimen name="dynamic_grid_page_indicator_size">24dp</dimen>
+    <dimen name="dynamic_grid_icon_drawable_padding">8dp</dimen>
+    <dimen name="dynamic_grid_cell_padding_x">8dp</dimen>
+
+    <!-- Hotseat -->
+    <dimen name="dynamic_grid_hotseat_land_left_nav_bar_right_padding">18dp</dimen>
+    <dimen name="dynamic_grid_hotseat_land_right_nav_bar_right_padding">6dp</dimen>
+    <dimen name="dynamic_grid_hotseat_land_left_nav_bar_gutter_width">24dp</dimen>
+    <dimen name="dynamic_grid_hotseat_land_right_nav_bar_gutter_width">32dp</dimen>
 </resources>
