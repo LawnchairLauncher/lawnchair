@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -70,7 +69,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
     private final Launcher mLauncher;
     private Drawable mIcon;
     private final boolean mCenterVertically;
-    private OnLongClickListener mOnLongClickListener;
+
     private final CheckLongPressHelper mLongPressHelper;
     private final HolographicOutlineHelper mOutlineHelper;
     private final StylusEventHelper mStylusEventHelper;
@@ -107,7 +106,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
         }
     };
 
-    private static final Property<BubbleTextView, Integer> TEXT_ALPHA_PROPERTY
+    public static final Property<BubbleTextView, Integer> TEXT_ALPHA_PROPERTY
             = new Property<BubbleTextView, Integer>(Integer.class, "textAlpha") {
         @Override
         public Integer get(BubbleTextView bubbleTextView) {
@@ -262,21 +261,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
     /** Returns the icon for this view. */
     public Drawable getIcon() {
         return mIcon;
-    }
-
-    /** Returns whether the layout is horizontal. */
-    public boolean isLayoutHorizontal() {
-        return mLayoutHorizontal;
-    }
-
-    @Override
-    public void setOnLongClickListener(OnLongClickListener l) {
-        super.setOnLongClickListener(l);
-        mOnLongClickListener = l;
-    }
-
-    public OnLongClickListener getOnLongClickListener() {
-        return mOnLongClickListener;
     }
 
     @Override
@@ -474,7 +458,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
      * Creates an animator to fade the text in or out.
      * @param fadeIn Whether the text should fade in or fade out.
      */
-    public Animator createTextAlphaAnimator(boolean fadeIn) {
+    public ObjectAnimator createTextAlphaAnimator(boolean fadeIn) {
         return ObjectAnimator.ofInt(this, TEXT_ALPHA_PROPERTY, fadeIn ? Color.alpha(mTextColor) : 0);
     }
 

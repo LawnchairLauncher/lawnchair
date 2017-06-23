@@ -37,6 +37,7 @@ import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.PropertyResetListener;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.Themes;
@@ -84,23 +85,6 @@ public class FolderAnimationManager {
                 public void set(View view, Float scale) {
                     view.setScaleX(scale);
                     view.setScaleY(scale);
-                }
-            };
-
-    private static final Property<List<BubbleTextView>, Integer> ITEMS_TEXT_COLOR_PROPERTY =
-            new Property<List<BubbleTextView>, Integer>(Integer.class, "textColor") {
-                @Override
-                public Integer get(List<BubbleTextView> items) {
-                    return items.get(0).getCurrentTextColor();
-                }
-
-                @Override
-                public void set(List<BubbleTextView> items, Integer color) {
-                    int size = items.size();
-
-                    for (int i = 0; i < size; ++i) {
-                        items.get(i).setTextColor(color);
-                    }
                 }
             };
 
@@ -183,12 +167,6 @@ public class FolderAnimationManager {
                 ColorUtils.setAlphaComponent(finalColor, mPreviewBackground.getBackgroundAlpha());
         mFolderBackground.setColor(mIsOpening ? initialColor : finalColor);
 
-        // Initialize the Folder items' text.
-        final List<BubbleTextView> items = mFolder.getItemsOnCurrentPage();
-        final int finalTextColor = Themes.getAttrColor(mContext, android.R.attr.textColorSecondary);
-        ITEMS_TEXT_COLOR_PROPERTY.set(items, mIsOpening ? Color.TRANSPARENT
-                : finalTextColor);
-
         // Set up the reveal animation that clips the Folder.
         int totalOffsetX = paddingOffsetX + previewItemOffsetX;
         Rect startRect = new Rect(
@@ -203,10 +181,22 @@ public class FolderAnimationManager {
         // Create the animators.
         AnimatorSet a = LauncherAnimUtils.createAnimatorSet();
 
+        // Initialize the Folder items' text.
+        PropertyResetListener colorResetListener = new PropertyResetListener(
+                BubbleTextView.TEXT_ALPHA_PROPERTY,
+                Color.alpha(Themes.getAttrColor(mContext, android.R.attr.textColorSecondary)));
+        for (BubbleTextView icon : mFolder.getItemsOnCurrentPage()) {
+            if (mIsOpening) {
+                icon.setTextVisibility(false);
+            }
+            ObjectAnimator anim = icon.createTextAlphaAnimator(mIsOpening);
+            anim.addListener(colorResetListener);
+            play(a, anim);
+        }
+
         play(a, getAnimator(mFolder, View.TRANSLATION_X, xDistance, 0f));
         play(a, getAnimator(mFolder, View.TRANSLATION_Y, yDistance, 0f));
         play(a, getAnimator(mFolder, SCALE_PROPERTY, initialScale, finalScale));
-        play(a, getAnimator(items, ITEMS_TEXT_COLOR_PROPERTY, Color.TRANSPARENT, finalTextColor));
         play(a, getAnimator(mFolderBackground, "color", initialColor, finalColor));
         play(a, mFolderIcon.mFolderName.createTextAlphaAnimator(!mIsOpening));
         play(a, new RoundedRectRevealOutlineProvider(initialRadius, finalRadius, startRect,
@@ -216,7 +206,6 @@ public class FolderAnimationManager {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                ITEMS_TEXT_COLOR_PROPERTY.set(items, finalTextColor);
                 mFolder.setTranslationX(0.0f);
                 mFolder.setTranslationY(0.0f);
                 mFolder.setScaleX(1f);
