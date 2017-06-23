@@ -119,16 +119,17 @@
 
         <!-- No shadows in the base theme -->
         <item name="android:shadowRadius">0</item>
-        <item name="customShadows">false</item>
     </style>
 
     <!-- Icon displayed on the worksapce -->
     <style name="BaseIcon.Workspace">
-        <item name="customShadows">true</item>
         <item name="android:shadowRadius">2.0</item>
         <item name="android:shadowColor">?attr/workspaceShadowColor</item>
-        <item name="keyShadowColor">?attr/workspaceKeyShadowColor</item>
         <item name="ambientShadowColor">?attr/workspaceAmbientShadowColor</item>
+        <item name="ambientShadowBlur">2.5dp</item>
+        <item name="keyShadowColor">?attr/workspaceKeyShadowColor</item>
+        <item name="keyShadowBlur">1dp</item>
+        <item name="keyShadowOffset">.5dp</item>
     </style>
 
     <!-- Theme for the popup container -->

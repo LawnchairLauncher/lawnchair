@@ -27,7 +27,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.Region;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.ColorUtils;
@@ -62,11 +61,6 @@ import java.text.NumberFormat;
  */
 public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
 
-    // Dimensions in DP
-    private static final float AMBIENT_SHADOW_RADIUS = 2.5f;
-    private static final float KEY_SHADOW_RADIUS = 1f;
-    private static final float KEY_SHADOW_OFFSET = 0.5f;
-
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
     private static final int DISPLAY_FOLDER = 2;
@@ -76,22 +70,15 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
     private final Launcher mLauncher;
     private Drawable mIcon;
     private final boolean mCenterVertically;
-    private final Drawable mBackground;
     private OnLongClickListener mOnLongClickListener;
     private final CheckLongPressHelper mLongPressHelper;
     private final HolographicOutlineHelper mOutlineHelper;
     private final StylusEventHelper mStylusEventHelper;
-    private final int mAmbientShadowColor;
-    private final int mKeyShadowColor;
-
-    private boolean mBackgroundSizeChanged;
+    private final float mSlop;
 
     private Bitmap mPressedBackground;
 
-    private float mSlop;
-
     private final boolean mDeferShadowGenerationOnTouch;
-    private final boolean mCustomShadowsEnabled;
     private final boolean mLayoutHorizontal;
     private final int mIconSize;
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -154,15 +141,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
         super(context, attrs, defStyle);
         mLauncher = Launcher.getLauncher(context);
         DeviceProfile grid = mLauncher.getDeviceProfile();
+        mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BubbleTextView, defStyle, 0);
-        mCustomShadowsEnabled = a.getBoolean(R.styleable.BubbleTextView_customShadows, false);
         mLayoutHorizontal = a.getBoolean(R.styleable.BubbleTextView_layoutHorizontal, false);
         mDeferShadowGenerationOnTouch =
                 a.getBoolean(R.styleable.BubbleTextView_deferShadowGeneration, false);
-        mAmbientShadowColor = a.getColor(R.styleable.BubbleTextView_ambientShadowColor, 0x33000000);
-        mKeyShadowColor = a.getColor(R.styleable.BubbleTextView_keyShadowColor, 0x66000000);
 
         int display = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
         int defaultIconSize = grid.iconSizePx;
@@ -184,23 +169,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
                 defaultIconSize);
         a.recycle();
 
-        if (mCustomShadowsEnabled) {
-            // Draw the background itself as the parent is drawn twice.
-            mBackground = getBackground();
-            setBackground(null);
-
-            // Set shadow layer as the larger shadow to that the textView does not clip the shadow.
-            float density = getResources().getDisplayMetrics().density;
-            setShadowLayer(density * AMBIENT_SHADOW_RADIUS, 0, 0, mAmbientShadowColor);
-        } else {
-            mBackground = null;
-        }
-
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
         mOutlineHelper = HolographicOutlineHelper.getInstance(getContext());
         setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
+
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info) {
@@ -259,19 +233,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
      */
     public void setLongPressTimeout(int longPressTimeout) {
         mLongPressHelper.setLongPressTimeout(longPressTimeout);
-    }
-
-    @Override
-    protected boolean setFrame(int left, int top, int right, int bottom) {
-        if (getLeft() != left || getRight() != right || getTop() != top || getBottom() != bottom) {
-            mBackgroundSizeChanged = true;
-        }
-        return super.setFrame(left, top, right, bottom);
-    }
-
-    @Override
-    protected boolean verifyDrawable(Drawable who) {
-        return who == mBackground || super.verifyDrawable(who);
     }
 
     @Override
@@ -415,54 +376,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
         return result;
     }
 
+    @SuppressWarnings("wrongcall")
+    protected void drawWithoutBadge(Canvas canvas) {
+        super.onDraw(canvas);
+    }
+
     @Override
-    public void draw(Canvas canvas) {
-        if (!mCustomShadowsEnabled) {
-            super.draw(canvas);
-            drawBadgeIfNecessary(canvas);
-            return;
-        }
-
-        final Drawable background = mBackground;
-        if (background != null) {
-            final int scrollX = getScrollX();
-            final int scrollY = getScrollY();
-
-            if (mBackgroundSizeChanged) {
-                background.setBounds(0, 0,  getRight() - getLeft(), getBottom() - getTop());
-                mBackgroundSizeChanged = false;
-            }
-
-            if ((scrollX | scrollY) == 0) {
-                background.draw(canvas);
-            } else {
-                canvas.translate(scrollX, scrollY);
-                background.draw(canvas);
-                canvas.translate(-scrollX, -scrollY);
-            }
-        }
-
-        // If text is transparent, don't draw any shadow
-        if ((getCurrentTextColor() >> 24) == 0) {
-            getPaint().clearShadowLayer();
-            super.draw(canvas);
-            drawBadgeIfNecessary(canvas);
-            return;
-        }
-
-        // We enhance the shadow by drawing the shadow twice
-        float density = getResources().getDisplayMetrics().density;
-        getPaint().setShadowLayer(density * AMBIENT_SHADOW_RADIUS, 0, 0, mAmbientShadowColor);
-        super.draw(canvas);
-        canvas.save(Canvas.CLIP_SAVE_FLAG);
-        canvas.clipRect(getScrollX(), getScrollY() + getExtendedPaddingTop(),
-                getScrollX() + getWidth(),
-                getScrollY() + getHeight(), Region.Op.INTERSECT);
-        getPaint().setShadowLayer(
-                density * KEY_SHADOW_RADIUS, 0.0f, density * KEY_SHADOW_OFFSET, mKeyShadowColor);
-        super.draw(canvas);
-        canvas.restore();
-
+    public void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
         drawBadgeIfNecessary(canvas);
     }
 
@@ -470,7 +391,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
      * Draws the icon badge in the top right corner of the icon bounds.
      * @param canvas The canvas to draw to.
      */
-    private void drawBadgeIfNecessary(Canvas canvas) {
+    protected void drawBadgeIfNecessary(Canvas canvas) {
         if (!mForceHideBadge && (hasBadge() || mBadgeScale > 0)) {
             getIconBounds(mTempIconBounds);
             mTempSpaceForBadgeOffset.set((getWidth() - mIconSize) / 2, getPaddingTop());
@@ -509,14 +430,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-
-        if (mBackground != null) mBackground.setCallback(this);
-        mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-    }
-
-    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (mCenterVertically) {
             Paint.FontMetrics fm = getPaint().getFontMetrics();
@@ -527,12 +440,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
                     getPaddingBottom());
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (mBackground != null) mBackground.setCallback(null);
     }
 
     @Override
