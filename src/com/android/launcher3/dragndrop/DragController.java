@@ -210,13 +210,13 @@ public class DragController implements DragDriver.EventListener, TouchController
     }
 
     private void callOnDragStart() {
-        for (DragListener listener : new ArrayList<>(mListeners)) {
-            listener.onDragStart(mDragObject, mOptions);
-        }
         if (mOptions.preDragCondition != null) {
             mOptions.preDragCondition.onPreDragEnd(mDragObject, true /* dragStarted*/);
         }
         mIsInPreDrag = false;
+        for (DragListener listener : new ArrayList<>(mListeners)) {
+            listener.onDragStart(mDragObject, mOptions);
+        }
     }
 
     /**
