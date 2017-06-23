@@ -43,10 +43,15 @@
             <enum name="shortcut_popup" value="4" />
         </attr>
         <attr name="deferShadowGeneration" format="boolean" />
-        <attr name="customShadows" format="boolean" />
         <attr name="centerVertically" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="ShadowInfo">
         <attr name="ambientShadowColor" format="color" />
+        <attr name="ambientShadowBlur" format="dimension" />
         <attr name="keyShadowColor" format="color" />
+        <attr name="keyShadowBlur" format="dimension" />
+        <attr name="keyShadowOffset" format="dimension" />
     </declare-styleable>
 
     <!-- PagedView specific attributes. These attributes are used to customize
