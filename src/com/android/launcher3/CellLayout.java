@@ -53,6 +53,7 @@ import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.util.CellAndSpan;
 import com.android.launcher3.util.GridOccupancy;
@@ -102,8 +103,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     private OnTouchListener mInterceptTouchListener;
     private final StylusEventHelper mStylusEventHelper;
 
-    private final ArrayList<FolderIcon.PreviewBackground> mFolderBackgrounds = new ArrayList<>();
-    final FolderIcon.PreviewBackground mFolderLeaveBehind = new FolderIcon.PreviewBackground();
+    private final ArrayList<PreviewBackground> mFolderBackgrounds = new ArrayList<>();
+    final PreviewBackground mFolderLeaveBehind = new PreviewBackground();
 
     private float mBackgroundAlpha;
 
@@ -495,7 +496,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         }
 
         for (int i = 0; i < mFolderBackgrounds.size(); i++) {
-            FolderIcon.PreviewBackground bg = mFolderBackgrounds.get(i);
+            PreviewBackground bg = mFolderBackgrounds.get(i);
             cellToPoint(bg.delegateCellX, bg.delegateCellY, mTempLocation);
             canvas.save();
             canvas.translate(mTempLocation[0], mTempLocation[1]);
@@ -521,7 +522,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         super.dispatchDraw(canvas);
 
         for (int i = 0; i < mFolderBackgrounds.size(); i++) {
-            FolderIcon.PreviewBackground bg = mFolderBackgrounds.get(i);
+            PreviewBackground bg = mFolderBackgrounds.get(i);
             if (bg.isClipping) {
                 cellToPoint(bg.delegateCellX, bg.delegateCellY, mTempLocation);
                 canvas.save();
@@ -532,10 +533,10 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         }
     }
 
-    public void addFolderBackground(FolderIcon.PreviewBackground bg) {
+    public void addFolderBackground(PreviewBackground bg) {
         mFolderBackgrounds.add(bg);
     }
-    public void removeFolderBackground(FolderIcon.PreviewBackground bg) {
+    public void removeFolderBackground(PreviewBackground bg) {
         mFolderBackgrounds.remove(bg);
     }
 
