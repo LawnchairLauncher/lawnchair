@@ -216,9 +216,9 @@ public class Launcher extends BaseActivity
     private static final int ACTIVITY_START_DELAY = 1000;
 
     // How long to wait before the new-shortcut animation automatically pans the workspace
-    private static int NEW_APPS_PAGE_MOVE_DELAY = 500;
-    private static int NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS = 5;
-    @Thunk static int NEW_APPS_ANIMATION_DELAY = 500;
+    private static final int NEW_APPS_PAGE_MOVE_DELAY = 500;
+    private static final int NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS = 5;
+    @Thunk static final int NEW_APPS_ANIMATION_DELAY = 500;
 
     private final ExtractedColors mExtractedColors = new ExtractedColors();
 
@@ -232,7 +232,7 @@ public class Launcher extends BaseActivity
     private AppWidgetManagerCompat mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
 
-    private int[] mTmpAddItemCellCoordinates = new int[2];
+    private final int[] mTmpAddItemCellCoordinates = new int[2];
 
     @Thunk Hotseat mHotseat;
     private ViewGroup mOverviewPanel;
@@ -262,15 +262,15 @@ public class Launcher extends BaseActivity
     private boolean mPaused = true;
     private boolean mOnResumeNeedsLoad;
 
-    private ArrayList<Runnable> mBindOnResumeCallbacks = new ArrayList<Runnable>();
-    private ArrayList<Runnable> mOnResumeCallbacks = new ArrayList<Runnable>();
+    private final ArrayList<Runnable> mBindOnResumeCallbacks = new ArrayList<>();
+    private final ArrayList<Runnable> mOnResumeCallbacks = new ArrayList<>();
     private ViewOnDrawExecutor mPendingExecutor;
 
     private LauncherModel mModel;
     private ModelWriter mModelWriter;
     private IconCache mIconCache;
     private LauncherAccessibilityDelegate mAccessibilityDelegate;
-    private Handler mHandler = new Handler();
+    private final Handler mHandler = new Handler();
     private boolean mIsResumeFromActionScreenOff;
     private boolean mHasFocus = false;
 
@@ -284,7 +284,7 @@ public class Launcher extends BaseActivity
     // match the sensor state.
     private static final int RESTORE_SCREEN_ORIENTATION_DELAY = 500;
 
-    private final ArrayList<Integer> mSynchronouslyBoundPages = new ArrayList<Integer>();
+    private final ArrayList<Integer> mSynchronouslyBoundPages = new ArrayList<>();
 
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
@@ -297,8 +297,8 @@ public class Launcher extends BaseActivity
     // the press state and keep this reference to reset the press state when we return to launcher.
     private BubbleTextView mWaitingForResume;
 
-    protected static HashMap<String, CustomAppWidget> sCustomAppWidgets =
-            new HashMap<String, CustomAppWidget>();
+    protected static final HashMap<String, CustomAppWidget> sCustomAppWidgets =
+        new HashMap<>();
 
     static {
         if (TestingUtils.ENABLE_CUSTOM_WIDGET_TEST) {
@@ -311,7 +311,7 @@ public class Launcher extends BaseActivity
     // simply unregister this runnable.
     private Runnable mExitSpringLoadedModeRunnable;
 
-    @Thunk Runnable mBuildLayersRunnable = new Runnable() {
+    @Thunk final Runnable mBuildLayersRunnable = new Runnable() {
         public void run() {
             if (mWorkspace != null) {
                 mWorkspace.buildPageHardwareLayers();
@@ -1063,13 +1063,13 @@ public class Launcher extends BaseActivity
     public interface CustomContentCallbacks {
         // Custom content is completely shown. {@code fromResume} indicates whether this was caused
         // by a onResume or by scrolling otherwise.
-        public void onShow(boolean fromResume);
+        void onShow(boolean fromResume);
 
         // Custom content is completely hidden
-        public void onHide();
+        void onHide();
 
         // Custom content scroll progress changed. From 0 (not showing) to 1 (fully showing).
-        public void onScrollProgressChanged(float progress);
+        void onScrollProgressChanged(float progress);
 
         // Indicates whether the user is allowed to scroll away from the custom content.
         boolean isScrollingAllowed();
@@ -1080,28 +1080,28 @@ public class Launcher extends BaseActivity
         /**
          * Touch interaction leading to overscroll has begun
          */
-        public void onScrollInteractionBegin();
+        void onScrollInteractionBegin();
 
         /**
          * Touch interaction related to overscroll has ended
          */
-        public void onScrollInteractionEnd();
+        void onScrollInteractionEnd();
 
         /**
          * Scroll progress, between 0 and 100, when the user scrolls beyond the leftmost
          * screen (or in the case of RTL, the rightmost screen).
          */
-        public void onScrollChange(float progress, boolean rtl);
+        void onScrollChange(float progress, boolean rtl);
 
         /**
          * Called when the launcher is ready to use the overlay
          * @param callbacks A set of callbacks provided by Launcher in relation to the overlay
          */
-        public void setOverlayCallbacks(LauncherOverlayCallbacks callbacks);
+        void setOverlayCallbacks(LauncherOverlayCallbacks callbacks);
     }
 
     public interface LauncherOverlayCallbacks {
-        public void onScrollChanged(float progress);
+        void onScrollChanged(float progress);
     }
 
     class LauncherOverlayCallbacksImpl implements LauncherOverlayCallbacks {
@@ -1285,7 +1285,7 @@ public class Launcher extends BaseActivity
         mDragController.addDragListener(mWorkspace);
 
         // Get the search/delete/uninstall bar
-        mDropTargetBar = (DropTargetBar) mDragLayer.findViewById(R.id.drop_target_bar);
+        mDropTargetBar = mDragLayer.findViewById(R.id.drop_target_bar);
 
         // Setup Apps and Widgets
         mAppsView = (AllAppsContainerView) findViewById(R.id.apps_view);
@@ -1607,7 +1607,6 @@ public class Launcher extends BaseActivity
                                 }
                             }
                         });
-                        return;
                     }
                 });
             }
@@ -1744,8 +1743,9 @@ public class Launcher extends BaseActivity
         // as slow logic in the callbacks eat into the time the scroller expects for the snapToPage
         // animation.
         if (isActionMain) {
-            boolean callbackAllowsMoveToDefaultScreen = mLauncherCallbacks != null ?
-                    mLauncherCallbacks.shouldMoveToDefaultScreenOnHomeIntent() : true;
+            boolean callbackAllowsMoveToDefaultScreen =
+                mLauncherCallbacks == null || mLauncherCallbacks
+                    .shouldMoveToDefaultScreenOnHomeIntent();
             if (shouldMoveToDefaultScreen && !mWorkspace.isTouchActive()
                     && callbackAllowsMoveToDefaultScreen) {
 
@@ -3196,7 +3196,7 @@ public class Launcher extends BaseActivity
                 orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != 0) {
             orderedScreenIds.remove(Workspace.FIRST_SCREEN_ID);
             orderedScreenIds.add(0, Workspace.FIRST_SCREEN_ID);
-            mModel.updateWorkspaceScreenOrder(this, orderedScreenIds);
+            LauncherModel.updateWorkspaceScreenOrder(this, orderedScreenIds);
         } else if (!FeatureFlags.QSB_ON_FIRST_SCREEN && orderedScreenIds.isEmpty()) {
             // If there are no screens, we need to have an empty screen
             mWorkspace.addExtraEmptyScreen();
@@ -3283,7 +3283,7 @@ public class Launcher extends BaseActivity
 
         // Get the list of added items and intersect them with the set of items here
         final AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
-        final Collection<Animator> bounceAnims = new ArrayList<Animator>();
+        final Collection<Animator> bounceAnims = new ArrayList<>();
         final boolean animateIcons = forceAnimateIcons && canRunNewAppsAnimation();
         Workspace workspace = mWorkspace;
         long newItemsScreenId = -1;
@@ -3667,7 +3667,7 @@ public class Launcher extends BaseActivity
      * multiple calls to bind the same list.)
      */
     @Thunk ArrayList<AppInfo> mTmpAppsList;
-    private Runnable mBindAllApplicationsRunnable = new Runnable() {
+    private final Runnable mBindAllApplicationsRunnable = new Runnable() {
         public void run() {
             bindAllApplications(mTmpAppsList);
             mTmpAppsList = null;
@@ -3871,7 +3871,7 @@ public class Launcher extends BaseActivity
         }
     }
 
-    private Runnable mBindAllWidgetsRunnable = new Runnable() {
+    private final Runnable mBindAllWidgetsRunnable = new Runnable() {
             public void run() {
                 bindAllWidgets(mAllWidgets);
             }
@@ -3942,7 +3942,7 @@ public class Launcher extends BaseActivity
     }
 
     private boolean shouldShowDiscoveryBounce() {
-        if (mState != mState.WORKSPACE) {
+        if (mState != State.WORKSPACE) {
             return false;
         }
         if (mLauncherCallbacks != null && mLauncherCallbacks.shouldShowDiscoveryBounce()) {
@@ -3951,10 +3951,7 @@ public class Launcher extends BaseActivity
         if (!mIsResumeFromActionScreenOff) {
             return false;
         }
-        if (mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false)) {
-            return false;
-        }
-        return true;
+        return !mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false);
     }
 
     protected void moveWorkspaceToDefaultScreen() {
