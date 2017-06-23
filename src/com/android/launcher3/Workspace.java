@@ -71,6 +71,7 @@ import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.SpringLoadedDragController;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.popup.PopupContainerWithArrow;
@@ -254,7 +255,7 @@ public class Workspace extends PagedView
     public static final int REORDER_TIMEOUT = 350;
     private final Alarm mFolderCreationAlarm = new Alarm();
     private final Alarm mReorderAlarm = new Alarm();
-    private FolderIcon.PreviewBackground mFolderCreateBg;
+    private PreviewBackground mFolderCreateBg;
     private FolderIcon mDragOverFolderIcon = null;
     private boolean mCreateUserFolderOnDrop = false;
     private boolean mAddToExistingFolderOnDrop = false;
@@ -2374,7 +2375,7 @@ public class Workspace extends PagedView
                 // In order to keep everything continuous, we hand off the currently rendered
                 // folder background to the newly created icon. This preserves animation state.
                 fi.setFolderBackground(mFolderCreateBg);
-                mFolderCreateBg = new FolderIcon.PreviewBackground();
+                mFolderCreateBg = new PreviewBackground();
                 fi.performCreateAnimation(destInfo, v, sourceInfo, dragView, folderLocation, scale,
                         postAnimationRunnable);
             } else {
@@ -3055,7 +3056,7 @@ public class Workspace extends PagedView
         final int cellX;
         final int cellY;
 
-        final FolderIcon.PreviewBackground bg = new FolderIcon.PreviewBackground();
+        final PreviewBackground bg = new PreviewBackground();
 
         public FolderCreationAlarmListener(CellLayout layout, int cellX, int cellY) {
             this.layout = layout;

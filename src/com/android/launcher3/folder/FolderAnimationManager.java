@@ -57,7 +57,7 @@ public class FolderAnimationManager {
     private GradientDrawable mFolderBackground;
 
     private FolderIcon mFolderIcon;
-    private FolderIcon.PreviewBackground mPreviewBackground;
+    private PreviewBackground mPreviewBackground;
 
     private Context mContext;
     private Launcher mLauncher;
