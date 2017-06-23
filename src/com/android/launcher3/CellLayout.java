@@ -154,7 +154,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     @ContainerType private final int mContainerType;
 
-    private final float mChildScale;
+    private final float mChildScale = 1f;
 
     public static final int MODE_SHOW_REORDER_HINT = 0;
     public static final int MODE_DRAG_OVER = 1;
@@ -217,8 +217,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
         mFolderLeaveBehind.delegateCellX = -1;
         mFolderLeaveBehind.delegateCellY = -1;
-
-        mChildScale = mContainerType == HOTSEAT ? grid.inv.hotseatScale : 1f;
 
         setAlwaysDrawnWithCacheEnabled(false);
         final Resources res = getResources();
