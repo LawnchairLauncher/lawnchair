@@ -24,8 +24,11 @@ public class IconProvider {
         return mSystemState;
     }
 
-
-    public Drawable getIcon(LauncherActivityInfo info, int iconDpi) {
+    /**
+     * @param flattenDrawable true if the caller does not care about the specification of the
+     *                        original icon as long as the flattened version looks the same.
+     */
+    public Drawable getIcon(LauncherActivityInfo info, int iconDpi, boolean flattenDrawable) {
         return info.getIcon(iconDpi);
     }
 }
