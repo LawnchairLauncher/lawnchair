@@ -170,7 +170,11 @@ public class IconCache {
     }
 
     public Drawable getFullResIcon(LauncherActivityInfo info) {
-        return mIconProvider.getIcon(info, mIconDpi);
+        return getFullResIcon(info, true);
+    }
+
+    public Drawable getFullResIcon(LauncherActivityInfo info, boolean flattenDrawable) {
+        return mIconProvider.getIcon(info, mIconDpi, flattenDrawable);
     }
 
     protected Bitmap makeDefaultIcon(UserHandle user) {
