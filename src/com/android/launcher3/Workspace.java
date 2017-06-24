@@ -301,8 +301,7 @@ public class Workspace extends PagedView
     boolean mScrollInteractionBegan;
     boolean mStartedSendingScrollEvents;
     float mLastOverlayScroll = 0;
-    // Total over scrollX in the overlay direction.
-    private int mUnboundedScrollX;
+
     private boolean mForceDrawAdjacentPages = false;
     // Total over scrollX in the overlay direction.
     private float mOverlayTranslation;
@@ -1322,18 +1321,10 @@ public class Workspace extends PagedView
         onOverlayScrollChanged(0);
     }
 
-    @Override
-    protected int getUnboundedScrollX() {
-        if (isScrollingOverlay()) {
-            return mUnboundedScrollX;
-        }
-
-        return super.getUnboundedScrollX();
-    }
 
     private boolean isScrollingOverlay() {
         return mLauncherOverlay != null &&
-                ((mIsRtl && mUnboundedScrollX > mMaxScrollX) || (!mIsRtl && mUnboundedScrollX < 0));
+                ((mIsRtl && getUnboundedScrollX() > mMaxScrollX) || (!mIsRtl && getUnboundedScrollX() < 0));
     }
 
     @Override
@@ -1350,12 +1341,6 @@ public class Workspace extends PagedView
         } else {
             super.snapToDestination();
         }
-    }
-
-    @Override
-    public void scrollTo(int x, int y) {
-        mUnboundedScrollX = x;
-        super.scrollTo(x, y);
     }
 
     @Override
@@ -1528,13 +1513,6 @@ public class Workspace extends PagedView
                     new AlphaUpdateListener(mPageIndicator, accessibilityEnabled));
             return animator;
         }
-    }
-
-    @Override
-    protected void getEdgeVerticalPosition(int[] pos) {
-        View child = getChildAt(getPageCount() - 1);
-        pos[0] = child.getTop();
-        pos[1] = child.getBottom();
     }
 
     @Override

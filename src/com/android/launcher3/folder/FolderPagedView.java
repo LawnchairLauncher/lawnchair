@@ -701,10 +701,4 @@ public class FolderPagedView extends PagedView {
     public int itemsPerPage() {
         return mMaxItemsPerPage;
     }
-
-    @Override
-    protected void getEdgeVerticalPosition(int[] pos) {
-        pos[0] = 0;
-        pos[1] = getViewportHeight();
-    }
 }
