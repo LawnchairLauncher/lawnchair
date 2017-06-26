@@ -51,7 +51,6 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.Launcher.LauncherOverlay;
@@ -2083,19 +2082,6 @@ public class Workspace extends PagedView
         }
     }
 
-    /**
-     * Returns the drawable for the given text view.
-     */
-    public static Drawable getTextViewIcon(TextView tv) {
-        final Drawable[] drawables = tv.getCompoundDrawables();
-        for (int i = 0; i < drawables.length; i++) {
-            if (drawables[i] != null) {
-                return drawables[i];
-            }
-        }
-        return null;
-    }
-
     public void startDrag(CellLayout.CellInfo cellInfo, DragOptions options) {
         View child = cellInfo.cell;
 
@@ -3865,7 +3851,7 @@ public class Workspace extends PagedView
                         updates.contains(info)) {
                     ShortcutInfo si = (ShortcutInfo) info;
                     BubbleTextView shortcut = (BubbleTextView) v;
-                    Drawable oldIcon = getTextViewIcon(shortcut);
+                    Drawable oldIcon = shortcut.getIcon();
                     boolean oldPromiseState = (oldIcon instanceof PreloadIconDrawable)
                             && ((PreloadIconDrawable) oldIcon).hasNotCompleted();
                     shortcut.applyFromShortcutInfo(si, si.isPromise() != oldPromiseState);
