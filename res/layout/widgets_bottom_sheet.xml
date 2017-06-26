@@ -22,7 +22,8 @@
     android:paddingTop="28dp"
     android:background="?android:attr/colorPrimary"
     android:elevation="@dimen/deep_shortcuts_elevation"
-    android:layout_gravity="bottom">
+    android:layout_gravity="bottom"
+    android:theme="?attr/widgetsTheme">
 
     <TextView
         style="@style/TextTitle"

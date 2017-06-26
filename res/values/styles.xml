@@ -40,6 +40,7 @@
         <item name="workspaceAmbientShadowColor">#33000000</item>
         <item name="workspaceKeyShadowColor">#44000000</item>
         <item name="workspaceStatusBarScrim">@drawable/workspace_bg</item>
+        <item name="widgetsTheme">@style/WidgetContainerTheme</item>
     </style>
 
     <style name="LauncherTheme" parent="@style/BaseLauncherThemeWithCustomAttrs"></style>
@@ -64,6 +65,7 @@
         <item name="popupColorPrimary">?android:attr/colorPrimary</item>
         <item name="popupColorSecondary">#424242</item> <!-- Gray 800 -->
         <item name="popupColorTertiary">#757575</item> <!-- Gray 600 -->
+        <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
         <item name="isMainColorDark">true</item>
     </style>
 
@@ -84,6 +86,8 @@
         <item name="android:textColorPrimary">?android:attr/textColorPrimaryInverse</item>
         <item name="android:textColorSecondary">?android:attr/textColorSecondaryInverse</item>
     </style>
+
+    <style name="WidgetContainerTheme.Dark" />
 
     <style name="FastScrollerPopup" >
         <item name="android:layout_width">wrap_content</item>

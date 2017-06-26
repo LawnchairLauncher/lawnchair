@@ -30,6 +30,7 @@
     <attr name="workspaceAmbientShadowColor" format="color"/>
     <attr name="workspaceKeyShadowColor" format="color" />
     <attr name="workspaceStatusBarScrim" format="reference" />
+    <attr name="widgetsTheme" format="reference" />
 
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="BubbleTextView">
