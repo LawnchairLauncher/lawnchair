@@ -16,8 +16,6 @@
 
 package com.android.launcher3.folder;
 
-import com.android.launcher3.folder.FolderIcon.PreviewItemDrawingParams;
-
 public class StackFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
 
     static final int MAX_NUM_ITEMS_IN_PREVIEW = 3;

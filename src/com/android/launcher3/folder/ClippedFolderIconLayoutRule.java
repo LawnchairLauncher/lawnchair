@@ -29,8 +29,8 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
     }
 
     @Override
-    public FolderIcon.PreviewItemDrawingParams computePreviewItemDrawingParams(int index,
-            int curNumItems, FolderIcon.PreviewItemDrawingParams params) {
+    public PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
+            PreviewItemDrawingParams params) {
 
         float totalScale = scaleForItem(index, curNumItems);
         float transX;
@@ -47,7 +47,7 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
         }
 
         if (params == null) {
-            params = new FolderIcon.PreviewItemDrawingParams(transX, transY, totalScale, overlayAlpha);
+            params = new PreviewItemDrawingParams(transX, transY, totalScale, overlayAlpha);
         } else {
             params.update(transX, transY, totalScale);
             params.overlayAlpha = overlayAlpha;

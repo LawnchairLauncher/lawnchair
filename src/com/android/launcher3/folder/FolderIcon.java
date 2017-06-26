@@ -19,8 +19,6 @@ package com.android.launcher3.folder;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -227,8 +225,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public boolean acceptDrop(ItemInfo dragInfo) {
-        final ItemInfo item = dragInfo;
-        return !mFolder.isDestroyed() && willAcceptItem(item);
+        return !mFolder.isDestroyed() && willAcceptItem(dragInfo);
     }
 
     public void addItem(ShortcutInfo item) {
@@ -423,39 +420,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         return mBadgeInfo != null && mBadgeInfo.hasBadge();
     }
 
-    static class PreviewItemDrawingParams {
-        PreviewItemDrawingParams(float transX, float transY, float scale, float overlayAlpha) {
-            this.transX = transX;
-            this.transY = transY;
-            this.scale = scale;
-            this.overlayAlpha = overlayAlpha;
-        }
-
-        public void update(float transX, float transY, float scale) {
-            // We ensure the update will not interfere with an animation on the layout params
-            // If the final values differ, we cancel the animation.
-            if (anim != null) {
-                if (anim.finalTransX == transX || anim.finalTransY == transY
-                        || anim.finalScale == scale) {
-                    return;
-                }
-                anim.cancel();
-            }
-
-            this.transX = transX;
-            this.transY = transY;
-            this.scale = scale;
-        }
-
-        float transX;
-        float transY;
-        float scale;
-        public float overlayAlpha;
-        boolean hidden;
-        FolderPreviewItemAnim anim;
-        Drawable drawable;
-    }
-
     private float getLocalCenterForIndex(int index, int curNumItems, int[] center) {
         mTmpParams = computePreviewItemDrawingParams(
                 Math.min(mPreviewLayoutRule.maxNumItems(), index), curNumItems, mTmpParams);
@@ -465,12 +429,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         float offsetX = mTmpParams.transX + (mTmpParams.scale * mIntrinsicIconSize) / 2;
         float offsetY = mTmpParams.transY + (mTmpParams.scale * mIntrinsicIconSize) / 2;
 
-        center[0] = (int) Math.round(offsetX);
-        center[1] = (int) Math.round(offsetY);
+        center[0] = Math.round(offsetX);
+        center[1] = Math.round(offsetY);
         return mTmpParams.scale;
     }
 
-    private PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
+    PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
             PreviewItemDrawingParams params) {
         // We use an index of -1 to represent an icon on the workspace for the destroy and
         // create animations
@@ -582,89 +546,14 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         }
     }
 
-    class FolderPreviewItemAnim {
-        ValueAnimator mValueAnimator;
-        float finalScale;
-        float finalTransX;
-        float finalTransY;
-
-        /**
-         *
-         * @param params layout params to animate
-         * @param index0 original index of the item to be animated
-         * @param nItems0 original number of items in the preview
-         * @param index1 new index of the item to be animated
-         * @param nItems1 new number of items in the preview
-         * @param duration duration in ms of the animation
-         * @param onCompleteRunnable runnable to execute upon animation completion
-         */
-        public FolderPreviewItemAnim(final PreviewItemDrawingParams params, int index0, int nItems0,
-                int index1, int nItems1, int duration, final Runnable onCompleteRunnable) {
-
-            computePreviewItemDrawingParams(index1, nItems1, mTmpParams);
-
-            finalScale = mTmpParams.scale;
-            finalTransX = mTmpParams.transX;
-            finalTransY = mTmpParams.transY;
-
-            computePreviewItemDrawingParams(index0, nItems0, mTmpParams);
-
-            final float scale0 = mTmpParams.scale;
-            final float transX0 = mTmpParams.transX;
-            final float transY0 = mTmpParams.transY;
-
-            mValueAnimator = LauncherAnimUtils.ofFloat(0f, 1.0f);
-            mValueAnimator.addUpdateListener(new AnimatorUpdateListener(){
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    float progress = animation.getAnimatedFraction();
-
-                    params.transX = transX0 + progress * (finalTransX - transX0);
-                    params.transY = transY0 + progress * (finalTransY - transY0);
-                    params.scale = scale0 + progress * (finalScale - scale0);
-                    invalidate();
-                }
-            });
-
-            mValueAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    if (onCompleteRunnable != null) {
-                        onCompleteRunnable.run();
-                    }
-                    params.anim = null;
-                }
-            });
-            mValueAnimator.setDuration(duration);
-        }
-
-        public void start() {
-            mValueAnimator.start();
-        }
-
-        public void cancel() {
-            mValueAnimator.cancel();
-        }
-
-        public boolean hasEqualFinalState(FolderPreviewItemAnim anim) {
-            return finalTransY == anim.finalTransY && finalTransX == anim.finalTransX &&
-                    finalScale == anim.finalScale;
-
-        }
-    }
-
     private void animateFirstItem(final Drawable d, int duration, final boolean reverse,
             final Runnable onCompleteRunnable) {
-
         FolderPreviewItemAnim anim;
         if (!reverse) {
-            anim = new FolderPreviewItemAnim(mDrawingParams.get(0), -1, -1, 0, 2, duration,
+            anim = new FolderPreviewItemAnim(this, mDrawingParams.get(0), -1, -1, 0, 2, duration,
                     onCompleteRunnable);
         } else {
-            anim = new FolderPreviewItemAnim(mDrawingParams.get(0), 0, 2, -1, -1, duration,
+            anim = new FolderPreviewItemAnim(this, mDrawingParams.get(0), 0, 2, -1, -1, duration,
                     onCompleteRunnable);
         }
         anim.start();
@@ -740,7 +629,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                     mReferenceDrawable = p.drawable;
                 }
             } else {
-                FolderPreviewItemAnim anim = new FolderPreviewItemAnim(p, i, prevNumItems, i,
+                FolderPreviewItemAnim anim = new FolderPreviewItemAnim(this, p, i, prevNumItems, i,
                         nItemsInPreview, DROP_IN_ANIMATION_DURATION, null);
 
                 if (p.anim != null) {
@@ -901,7 +790,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         }
     }
 
-    public interface PreviewLayoutRule {
+    interface PreviewLayoutRule {
         PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
             PreviewItemDrawingParams params);
         void init(int availableSpace, float intrinsicIconSize, boolean rtl);

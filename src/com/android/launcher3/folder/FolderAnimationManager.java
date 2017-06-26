@@ -71,8 +71,7 @@ public class FolderAnimationManager {
     private final TimeInterpolator mFolderInterpolator;
     private final TimeInterpolator mLargeFolderPreviewItemInterpolator;
 
-    private final FolderIcon.PreviewItemDrawingParams mTmpParams =
-            new FolderIcon.PreviewItemDrawingParams(0, 0, 0, 0);
+    private final PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0, 0);
 
     private static final Property<View, Float> SCALE_PROPERTY =
             new Property<View, Float>(Float.class, "scale") {
@@ -342,12 +341,6 @@ public class FolderAnimationManager {
         return mIsOpening
                 ? ObjectAnimator.ofFloat(view, property, v1, v2)
                 : ObjectAnimator.ofFloat(view, property, v2, v1);
-    }
-
-    private Animator getAnimator(List<BubbleTextView> items, Property property, int v1, int v2) {
-        return mIsOpening
-                ? ObjectAnimator.ofArgb(items, property, v1, v2)
-                : ObjectAnimator.ofArgb(items, property, v2, v1);
     }
 
     private Animator getAnimator(GradientDrawable drawable, String property, int v1, int v2) {
