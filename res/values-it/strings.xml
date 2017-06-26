@@ -114,4 +114,20 @@
     <string name="pick_image" msgid="3189640419551368385">"Le mie foto"</string>
     <string name="pick_wallpaper" msgid="4628969645948454559">"Sfondi"</string>
     <string name="crop_wallpaper" msgid="4882870800623585836">"Ritaglia sfondo"</string>
+ 
+    <string name="which_wallpaper_option_home_screen">Schermata home</string>
+    <!-- Option for setting the wallpaper only on the lock screen. -->
+    <string name="which_wallpaper_option_lock_screen">Schermata di blocco</string>
+    <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
+    <string name="which_wallpaper_option_home_screen_and_lock_screen">Schermata home e Schermata di blocco</string>
+
+
+    <string name="title_show_google_app">Mostra %1$s</string>
+    <string name="title_show_google_app_default">Mostra l\'app Google</string>
+    <string name="label_search">Ricerca</string>
+    <string name="label_voice_search">Ricerca vocale</string>
+
+    <!-- About Lawnchair -->
+    <string name="about_text">Lawnchair è un Launcher creato da Till Kottmann (aka deletescape). E\' basato su Launcher3 da AOSP.</string>
+    <string name="about_title">Info</string>
 </resources>
