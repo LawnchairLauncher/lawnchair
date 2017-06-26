@@ -201,20 +201,20 @@ public class FolderAnimationManager {
         play(a, new RoundedRectRevealOutlineProvider(initialRadius, finalRadius, startRect,
                 endRect).createRevealAnimator(mFolder, !mIsOpening));
 
+        // Animate the elevation midway so that the shadow is not noticeable in the background.
+        int midDuration = mDuration / 2;
+        Animator z = getAnimator(mFolder, View.TRANSLATION_Z, -mFolder.getElevation(), 0);
+        play(a, z, midDuration, midDuration);
+
         a.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 mFolder.setTranslationX(0.0f);
                 mFolder.setTranslationY(0.0f);
+                mFolder.setTranslationZ(0.0f);
                 mFolder.setScaleX(1f);
                 mFolder.setScaleY(1f);
-
-                if (mIsOpening) {
-                    getAnimator(mFolder, View.TRANSLATION_Z, -mFolder.getElevation(), 0)
-                            .setDuration(150)
-                            .start();
-                }
             }
         });
 
@@ -323,7 +323,12 @@ public class FolderAnimationManager {
     }
 
     private void play(AnimatorSet as, Animator a) {
-        a.setDuration(mDuration);
+        play(as, a, a.getStartDelay(), mDuration);
+    }
+
+    private void play(AnimatorSet as, Animator a, long startDelay, int duration) {
+        a.setStartDelay(startDelay);
+        a.setDuration(duration);
         as.play(a);
     }
 
