@@ -19,7 +19,9 @@ package com.android.launcher3.views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Region;
+import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 
 import com.android.launcher3.BubbleTextView;
@@ -45,18 +47,20 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
         mShadowInfo = new ShadowInfo(context, attrs, defStyle);
         setShadowLayer(mShadowInfo.ambientShadowBlur, 0, 0, mShadowInfo.ambientShadowColor);
     }
+
     @Override
     public void onDraw(Canvas canvas) {
         // If text is transparent, don't draw any shadow
-        if ((getCurrentTextColor() >> 24) == 0) {
+        int alpha = Color.alpha(getCurrentTextColor());
+        if (alpha == 0) {
             getPaint().clearShadowLayer();
             super.onDraw(canvas);
             return;
         }
 
         // We enhance the shadow by drawing the shadow twice
-        getPaint().setShadowLayer(
-                mShadowInfo.ambientShadowBlur, 0, 0, mShadowInfo.ambientShadowColor);
+        getPaint().setShadowLayer(mShadowInfo.ambientShadowBlur, 0, 0,
+                ColorUtils.setAlphaComponent(mShadowInfo.ambientShadowColor, alpha));
 
         drawWithoutBadge(canvas);
         canvas.save(Canvas.CLIP_SAVE_FLAG);
@@ -64,8 +68,8 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
                 getScrollX() + getWidth(),
                 getScrollY() + getHeight(), Region.Op.INTERSECT);
 
-        getPaint().setShadowLayer(mShadowInfo.keyShadowBlur, 0.0f,
-                mShadowInfo.keyShadowOffset, mShadowInfo.keyShadowColor);
+        getPaint().setShadowLayer(mShadowInfo.keyShadowBlur, 0.0f, mShadowInfo.keyShadowOffset,
+                ColorUtils.setAlphaComponent(mShadowInfo.keyShadowColor, alpha));
         drawWithoutBadge(canvas);
         canvas.restore();
 
