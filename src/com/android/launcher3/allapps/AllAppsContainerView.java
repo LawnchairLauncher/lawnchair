@@ -171,19 +171,19 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
      * Returns whether the view itself will handle the touch event or not.
      */
     public boolean shouldContainerScroll(MotionEvent ev) {
-        int[] point = new int[2];
-        point[0] = (int) ev.getX();
-        point[1] = (int) ev.getY();
-        Utilities.mapCoordInSelfToDescendant(mAppsRecyclerView, this, point);
-
         // IF the MotionEvent is inside the search box, and the container keeps on receiving
         // touch input, container should move down.
         if (mLauncher.getDragLayer().isEventOverView(mSearchContainer, ev)) {
             return true;
         }
 
+        int[] point = new int[2];
+        point[0] = (int) ev.getX();
+        point[1] = (int) ev.getY();
+        Utilities.mapCoordInSelfToDescendant(
+                mAppsRecyclerView.getScrollBar(), mLauncher.getDragLayer(), point);
         // IF the MotionEvent is inside the thumb, container should not be pulled down.
-        if (mAppsRecyclerView.getScrollBar().isNearThumb(point[0], point[1])) {
+        if (mAppsRecyclerView.getScrollBar().shouldBlockIntercept(point[0], point[1])) {
             return false;
         }
 

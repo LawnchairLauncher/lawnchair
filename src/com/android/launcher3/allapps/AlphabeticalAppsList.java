@@ -138,13 +138,6 @@ public class AlphabeticalAppsList {
             return item;
         }
 
-        public static AdapterItem asSearchDivider(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER;
-            item.position = pos;
-            return item;
-        }
-
         public static AdapterItem asMarketDivider(int pos) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER;
@@ -194,8 +187,6 @@ public class AlphabeticalAppsList {
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
     private int mNumAppRowsInAdapter;
-
-    private boolean mHasSearchDivider = true;
 
     public AlphabeticalAppsList(Context context) {
         mLauncher = Launcher.getLauncher(context);
@@ -352,10 +343,6 @@ public class AlphabeticalAppsList {
         onAppsUpdated();
     }
 
-    public void disableSearchDivider() {
-        mHasSearchDivider = false;
-    }
-
     /**
      * Updates internals when the set of apps are updated.
      */
@@ -440,11 +427,6 @@ public class AlphabeticalAppsList {
                 mPredictedAppComponents.add(new ComponentKey(mApps.get(0).componentName,
                         Process.myUserHandle()));
             }
-        }
-
-        if (mHasSearchDivider) {
-            // Add the search divider
-            mAdapterItems.add(AdapterItem.asSearchDivider(position++));
         }
 
         // Process the predicted app components
