@@ -79,7 +79,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.launcher3.DropTarget.DragObject;
@@ -2626,9 +2625,9 @@ public class Launcher extends BaseActivity
         if (Utilities.ATLEAST_MARSHMALLOW) {
             int left = 0, top = 0;
             int width = v.getMeasuredWidth(), height = v.getMeasuredHeight();
-            if (v instanceof TextView) {
+            if (v instanceof BubbleTextView) {
                 // Launch from center of icon, not entire view
-                Drawable icon = Workspace.getTextViewIcon((TextView) v);
+                Drawable icon = ((BubbleTextView) v).getIcon();
                 if (icon != null) {
                     Rect bounds = icon.getBounds();
                     left = (width - bounds.width()) / 2;
