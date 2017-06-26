@@ -54,12 +54,13 @@ public class AppsSearchContainerLayout extends FrameLayout
     private final int mSearchBoxHeight;
     private final AllAppsSearchBarController mSearchBarController;
     private final SpannableStringBuilder mSearchQueryBuilder;
-    private final HeaderElevationController mElevationController;
 
     private ExtendedEditText mSearchInput;
     private AlphabeticalAppsList mApps;
     private AllAppsRecyclerView mAppsRecyclerView;
     private AllAppsGridAdapter mAdapter;
+    private View mDivider;
+    private HeaderElevationController mElevationController;
 
     public AppsSearchContainerLayout(Context context) {
         this(context, null);
@@ -77,7 +78,6 @@ public class AppsSearchContainerLayout extends FrameLayout
         mSearchBoxHeight = getResources()
                 .getDimensionPixelSize(R.dimen.all_apps_search_bar_field_height);
         mSearchBarController = new AllAppsSearchBarController();
-        mElevationController = new HeaderElevationController(this);
 
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
@@ -87,6 +87,8 @@ public class AppsSearchContainerLayout extends FrameLayout
     protected void onFinishInflate() {
         super.onFinishInflate();
         mSearchInput = findViewById(R.id.search_box_input);
+        mDivider = findViewById(R.id.search_divider);
+        mElevationController = new HeaderElevationController(mDivider);
 
         // Update the hint to contain the icon.
         // Prefix the original hint with two spaces. The first space gets replaced by the icon
@@ -96,6 +98,12 @@ public class AppsSearchContainerLayout extends FrameLayout
         spanned.setSpan(new TintedDrawableSpan(getContext(), R.drawable.ic_allapps_search),
                 0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         mSearchInput.setHint(spanned);
+
+        DeviceProfile dp = mLauncher.getDeviceProfile();
+        if (!dp.isVerticalBarLayout()) {
+            LayoutParams lp = (LayoutParams) mDivider.getLayoutParams();
+            lp.leftMargin = lp.rightMargin = dp.edgeMarginPx;
+        }
     }
 
     @Override

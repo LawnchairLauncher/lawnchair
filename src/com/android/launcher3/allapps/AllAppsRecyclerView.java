@@ -72,7 +72,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         super(context, attrs, defStyleAttr);
         Resources res = getResources();
         addOnItemTouchListener(this);
-        mScrollbar.setDetachThumbOnFastScroll();
         mEmptySearchBackgroundTopOffset = res.getDimensionPixelSize(
                 R.dimen.all_apps_empty_search_bg_top_offset);
     }
@@ -110,7 +109,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         RecyclerView.RecycledViewPool pool = getRecycledViewPool();
         int approxRows = (int) Math.ceil(grid.availableHeightPx / grid.allAppsIconSizePx);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH, 1);
-        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ICON, approxRows * mNumAppsPerRow);
@@ -137,8 +135,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                 AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER,
                 AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER);
         putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
-                AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER);
-        putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
                 AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET);
         putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
                 AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH);
@@ -164,7 +160,9 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
      */
     public void scrollToTop() {
         // Ensure we reattach the scrollbar if it was previously detached while fast-scrolling
-        mScrollbar.reattachThumbToScroll();
+        if (mScrollbar != null) {
+            mScrollbar.reattachThumbToScroll();
+        }
         scrollToPosition(0);
     }
 
@@ -356,7 +354,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     }
 
     @Override
-    protected boolean supportsFastScrolling() {
+    public boolean supportsFastScrolling() {
         // Only allow fast scrolling when the user is not searching, since the results are not
         // grouped in a meaningful order
         return !mApps.hasFilter();

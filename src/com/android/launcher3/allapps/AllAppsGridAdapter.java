@@ -69,16 +69,13 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
     // A divider that separates the apps list and the search market button
     public static final int VIEW_TYPE_SEARCH_MARKET_DIVIDER = 1 << 5;
-    // The divider under the search field
-    public static final int VIEW_TYPE_SEARCH_DIVIDER = 1 << 6;
     // The divider that separates prediction icons from the app list
-    public static final int VIEW_TYPE_PREDICTION_DIVIDER = 1 << 7;
-    public static final int VIEW_TYPE_APPS_LOADING_DIVIDER = 1 << 8;
-    public static final int VIEW_TYPE_DISCOVERY_ITEM = 1 << 9;
+    public static final int VIEW_TYPE_PREDICTION_DIVIDER = 1 << 6;
+    public static final int VIEW_TYPE_APPS_LOADING_DIVIDER = 1 << 7;
+    public static final int VIEW_TYPE_DISCOVERY_ITEM = 1 << 8;
 
     // Common view type masks
-    public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_SEARCH_DIVIDER
-            | VIEW_TYPE_SEARCH_MARKET_DIVIDER
+    public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_SEARCH_MARKET_DIVIDER
             | VIEW_TYPE_PREDICTION_DIVIDER;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON
             | VIEW_TYPE_PREDICTION_ICON;
@@ -319,9 +316,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                     }
                 });
                 return new ViewHolder(searchMarketView);
-            case VIEW_TYPE_SEARCH_DIVIDER:
-                return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.all_apps_search_divider, parent, false));
             case VIEW_TYPE_APPS_LOADING_DIVIDER:
                 View loadingDividerView = mLayoutInflater.inflate(
                         R.layout.all_apps_discovery_loading_divider, parent, false);

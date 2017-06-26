@@ -16,7 +16,8 @@
 <!-- The top and bottom paddings are defined in this container, but since we want
      the list view to span the full width (for touch interception purposes), we
      will bake the left/right padding into that view's background itself. -->
-<com.android.launcher3.allapps.AllAppsContainerView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher3.allapps.AllAppsContainerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/apps_view"
     android:layout_width="match_parent"
@@ -39,6 +40,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:focusable="true"
+        android:clipToPadding="false"
+        android:clipChildren="true"
         android:focusableInTouchMode="true"
         android:saveEnabled="false"
         android:visibility="gone">
@@ -55,19 +58,13 @@
             android:descendantFocusability="afterDescendants"
             android:focusable="true" />
 
-        <!-- Fast scroller popup -->
-        <TextView
-            style="@style/FastScrollerPopup"
-            android:layout_alignTop="@+id/apps_list_view"
-            android:id="@+id/fast_scroller_popup"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="@dimen/fastscroll_popup_margin" />
-
         <!-- Note: we are reusing/repurposing a system attribute for search layout, because of a
          platform bug, which prevents using custom attributes in <include> tag -->
         <include
             layout="?android:attr/keyboardLayout"
             android:id="@+id/search_container" />
+
+        <include layout="@layout/all_apps_fast_scroller" />
 
     </com.android.launcher3.allapps.AllAppsRecyclerViewContainerView>
     <View

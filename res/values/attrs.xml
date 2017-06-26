@@ -138,4 +138,8 @@
         <attr name="android:elevation" />
         <attr name="darkTintColor" format="color"/>
     </declare-styleable>
+
+    <declare-styleable name="RecyclerViewFastScroller">
+        <attr name="canThumbDetach" format="boolean" />
+    </declare-styleable>
 </resources>

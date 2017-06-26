@@ -4,11 +4,11 @@ import android.content.res.Resources;
 import android.graphics.Outline;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 
 /**
  * Helper class for controlling the header elevation in response to RecyclerView scroll.
@@ -16,6 +16,7 @@ import com.android.launcher3.Utilities;
 public class HeaderElevationController extends RecyclerView.OnScrollListener {
 
     private final View mHeader;
+    private final View mHeaderChild;
     private final float mMaxElevation;
     private final float mScrollToElevation;
 
@@ -28,23 +29,27 @@ public class HeaderElevationController extends RecyclerView.OnScrollListener {
         mScrollToElevation = res.getDimension(R.dimen.all_apps_header_scroll_to_elevation);
 
         // We need to provide a custom outline so the shadow only appears on the bottom edge.
-        // The top, left and right edges are all extended out, and the shadow is clipped
-        // by the parent.
+        // The top, left and right edges are all extended out to match parent's edge, so that
+        // the shadow is clipped by the parent.
         final ViewOutlineProvider vop = new ViewOutlineProvider() {
             @Override
             public void getOutline(View view, Outline outline) {
-                final View parent = (View) mHeader.getParent();
+                // Set the left and top to be at the parents edge. Since the coordinates are
+                // relative to this view,
+                //    (x = -view.getLeft()) for this view => (x = 0) for parent
+                final int left = -view.getLeft();
+                final int top = -view.getTop();
 
-                final int left = parent.getLeft(); // Use the parent to account for offsets
-                final int top = view.getTop();
-                final int right = left + view.getWidth();
-                final int bottom = view.getBottom();
-
-                final int offset = Utilities.pxFromDp(mMaxElevation, res.getDisplayMetrics());
+                // Since the view is centered align, the spacing on left and right are same.
+                // Add same spacing on the right to reach parent's edge.
+                final int right = view.getWidth() - left;
+                final int bottom = view.getHeight();
+                final int offset = (int) mMaxElevation;
                 outline.setRect(left - offset, top - offset, right + offset, bottom);
             }
         };
         mHeader.setOutlineProvider(vop);
+        mHeaderChild = ((ViewGroup) mHeader).getChildAt(0);
     }
 
     public void reset() {
@@ -63,6 +68,13 @@ public class HeaderElevationController extends RecyclerView.OnScrollListener {
         float newElevation = mMaxElevation * elevationPct;
         if (Float.compare(mHeader.getElevation(), newElevation) != 0) {
             mHeader.setElevation(newElevation);
+
+            // To simulate a scrolling effect for the header, we translate the header down, and
+            // its content up by the same amount, so that it gets clipped by the parent, making it
+            // look like the content was scrolled out of the view.
+            int shift = Math.min(mHeader.getHeight(), scrollY);
+            mHeader.setTranslationY(-shift);
+            mHeaderChild.setTranslationY(shift);
         }
     }
 
