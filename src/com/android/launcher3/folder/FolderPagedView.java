@@ -201,18 +201,29 @@ public class FolderPagedView extends PagedView {
     }
 
     public void allocateSpaceForRank(int rank) {
-        ArrayList<View> views = new ArrayList<>(mFolder.getItemsInReadingOrder());
+        ArrayList<View> views = new ArrayList<>(mFolder.getItemsInRankOrder());
         views.add(rank, null);
         arrangeChildren(views, views.size(), false);
     }
 
+    private ArrayList<View> createListWithViewAtPos(ArrayList<View> list, View v, int position) {
+        ArrayList<View> newList = new ArrayList<>(list.size() + 1);
+        newList.addAll(list);
+        newList.add(position, v);
+        return newList;
+    }
+
     /**
-     * Create space for a new item at the end, and returns the rank for that item.
+     * Create space for a new item and returns the rank for that item.
      * Also sets the current page to the last page.
      */
     public int allocateRankForNewItem() {
-        int rank = getItemCount();
-        allocateSpaceForRank(rank);
+        ArrayList<View> rankOrder = mFolder.getItemsInRankOrder();
+        int rank = rankOrder.size();
+
+        ArrayList<View> views = createListWithViewAtPos(rankOrder, null, rank);
+        arrangeChildren(views, views.size(), false);
+
         setCurrentPage(rank / mMaxItemsPerPage);
         return rank;
     }
@@ -229,18 +240,57 @@ public class FolderPagedView extends PagedView {
      * related attributes. It assumes that {@param item} is already attached to the view.
      */
     public void addViewForRank(View view, ShortcutInfo item, int rank) {
-        int pagePos = rank % mMaxItemsPerPage;
-        int pageNo = rank / mMaxItemsPerPage;
+        updateShortcutInfoWithRank(item, rank);
 
-        item.rank = rank;
-        item.cellX = pagePos % mGridCountX;
-        item.cellY = pagePos / mGridCountX;
+        ArrayList<View> views = createListWithViewAtPos(mFolder.getItemsInRankOrder(), view, rank);
+        arrangeChildren(views, views.size(), false);
+    }
+
+    /**
+     * Similar to {@link #addViewForRank(View, ShortcutInfo, int)}}, but specific to real time
+     * reorder.
+     *
+     * The difference here is that during real time reorder, we are moving the Views in a contained
+     * order.
+     */
+    public void addViewForRankDuringReorder(View view, ShortcutInfo item, int rank) {
+        updateShortcutInfoWithRank(item, rank);
 
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
         lp.cellX = item.cellX;
         lp.cellY = item.cellY;
+
+        int pageNo = rank / mMaxItemsPerPage;
         getPageAt(pageNo).addViewToCellLayout(
                 view, -1, mFolder.mLauncher.getViewIdForItem(item), lp, true);
+    }
+
+    /**
+     * Similar to {@link #addViewForRank(View, ShortcutInfo, int)}, but specific to drag and drop.
+     *
+     * The difference is that we handle the drag and drop by adjusting the reading order of the
+     * children, rather than based on their rank.
+     */
+    public void addViewForRankDuringDragAndDrop(View view, ShortcutInfo item, int readingRank) {
+        updateShortcutInfoWithRank(item, readingRank);
+
+        ArrayList<View> views = createListWithViewAtPos(mFolder.getItemsInReadingOrder(), view,
+                readingRank);
+
+        int numItems = views.size();
+        ArrayList<View> rankOrder = new ArrayList<>(numItems);
+        for (int i = 0; i < numItems; ++i) {
+            rankOrder.add(views.get(getReadingOrderPosForRank(i)));
+        }
+
+        arrangeChildren(rankOrder, numItems, false);
+    }
+
+    private void updateShortcutInfoWithRank(ShortcutInfo info, int rank) {
+        info.rank = rank;
+        getCellXYPositionForRank(rank, sTmpArray);
+        info.cellX = sTmpArray[0];
+        info.cellY = sTmpArray[1];
     }
 
     @SuppressLint("InflateParams")
@@ -310,18 +360,19 @@ public class FolderPagedView extends PagedView {
      * It essentially removes all views from all the pages and then adds them again in appropriate
      * page.
      *
-     * @param list the ordered list of children.
+     * @param rankOrderedList the rank-ordered list of children.
      * @param itemCount if greater than the total children count, empty spaces are left
      * at the end, otherwise it is ignored.
      *
      */
-    public void arrangeChildren(ArrayList<View> list, int itemCount) {
-        arrangeChildren(list, itemCount, true);
+    public void arrangeChildren(ArrayList<View> rankOrderedList, int itemCount) {
+        arrangeChildren(rankOrderedList, itemCount, true);
     }
 
     @SuppressLint("RtlHardcoded")
-    private void arrangeChildren(ArrayList<View> list, int itemCount, boolean saveChanges) {
-        ArrayList<CellLayout> pages = new ArrayList<>();
+    private void arrangeChildren(ArrayList<View> rankOrderedList, int itemCount,
+            boolean saveChanges) {
+        ArrayList<CellLayout> pages = new ArrayList<CellLayout>();
         for (int i = 0; i < getChildCount(); i++) {
             CellLayout page = (CellLayout) getChildAt(i);
             page.removeAllViews();
@@ -339,7 +390,7 @@ public class FolderPagedView extends PagedView {
                 Launcher.getLauncher(getContext()).getDeviceProfile().inv);
         rank = 0;
         for (int i = 0; i < itemCount; i++) {
-            View v = list.size() > i ? list.get(i) : null;
+            View v = rankOrderedList.size() > i ? rankOrderedList.get(i) : null;
             if (currentPage == null || position >= mMaxItemsPerPage) {
                 // Next page
                 if (pageItr.hasNext()) {
@@ -352,8 +403,10 @@ public class FolderPagedView extends PagedView {
 
             if (v != null) {
                 CellLayout.LayoutParams lp = (CellLayout.LayoutParams) v.getLayoutParams();
-                newX = position % mGridCountX;
-                newY = position / mGridCountX;
+                getCellXYPositionForRank(rank, sTmpArray);
+                newX = sTmpArray[0];
+                newY = sTmpArray[1];
+
                 ItemInfo info = (ItemInfo) v.getTag();
                 if (info.cellX != newX || info.cellY != newY || info.rank != rank) {
                     info.cellX = newX;
@@ -651,7 +704,7 @@ public class FolderPagedView extends PagedView {
             if (v != null) {
                 if (pageToAnimate != p) {
                     page.removeView(v);
-                    addViewForRank(v, (ShortcutInfo) v.getTag(), moveStart);
+                    addViewForRankDuringReorder(v, (ShortcutInfo) v.getTag(), moveStart);
                 } else {
                     // Do a fake animation before removing it.
                     final int newRank = moveStart;
@@ -664,14 +717,14 @@ public class FolderPagedView extends PagedView {
                             mPendingAnimations.remove(v);
                             v.setTranslationX(oldTranslateX);
                             ((CellLayout) v.getParent().getParent()).removeView(v);
-                            addViewForRank(v, (ShortcutInfo) v.getTag(), newRank);
+                            addViewForRankDuringReorder(v, (ShortcutInfo) v.getTag(), newRank);
                         }
                     };
                     v.animate()
-                        .translationXBy((direction > 0 ^ mIsRtl) ? -v.getWidth() : v.getWidth())
-                        .setDuration(REORDER_ANIMATION_DURATION)
-                        .setStartDelay(0)
-                        .withEndAction(endAction);
+                            .translationXBy((direction > 0 ^ mIsRtl) ? -v.getWidth() : v.getWidth())
+                            .setDuration(REORDER_ANIMATION_DURATION)
+                            .setStartDelay(0)
+                            .withEndAction(endAction);
                     mPendingAnimations.put(v, endAction);
                 }
             }
@@ -700,5 +753,89 @@ public class FolderPagedView extends PagedView {
 
     public int itemsPerPage() {
         return mMaxItemsPerPage;
+    }
+
+    /**
+     * Returns the reading order position for a given rank.
+     *
+     * ie. For the permutation below, rank 0 returns 0, rank 1 returns 1, rank 4 returns 2,
+     *                                rank 2 returns 3, rank 3 returns 4, rank 5 returns 5.
+     *
+     *     R0 R1 R4
+     *     R2 R3 R5
+     */
+    public int getReadingOrderPosForRank(int rank) {
+        if (rank >= mMaxItemsPerPage) {
+            return rank;
+        }
+
+        getCellXYPositionForRank(rank, sTmpArray);
+        return sTmpArray[0] + (mGridCountX * sTmpArray[1]);
+    }
+
+    /**
+     * Returns the cell XY position for a Folder item with the given rank.
+     */
+    public void getCellXYPositionForRank(int rank, int[] outXY) {
+        boolean onFirstPage = rank < mMaxItemsPerPage;
+
+        if (onFirstPage && mGridCountX == 3) {
+            outXY[0] = FolderPermutation.THREE_COLS[rank][0];
+            outXY[1] = FolderPermutation.THREE_COLS[rank][1];
+        } else if (onFirstPage && mGridCountX == 4) {
+            outXY[0] = FolderPermutation.FOUR_COLS[rank][0];
+            outXY[1] = FolderPermutation.FOUR_COLS[rank][1];
+        } else if (onFirstPage && mGridCountX == 5) {
+            outXY[0] = FolderPermutation.FIVE_COLS[rank][0];
+            outXY[1] = FolderPermutation.FIVE_COLS[rank][1];
+        } else {
+            outXY[0] = (rank % mMaxItemsPerPage) % mGridCountX;
+            outXY[1] = (rank % mMaxItemsPerPage) / mGridCountX;
+        }
+    }
+
+    /**
+     * Provides the mapping between a folder item's rank and its cell location, based on the
+     * number of columns.
+     *
+     * We use this mapping, rather than the regular reading order, to preserve the items in the
+     * upper left quadrant of the Folder. This allows a smooth transition between the FolderIcon
+     * and the opened Folder.
+     *
+     * TODO: We will replace these hard coded tables with an algorithm b/62986680
+     */
+    private static class FolderPermutation {
+        /**
+         *  R0 R1 R4
+         *  R2 R3 R5
+         *  R6 R7 R8
+         */
+        static final int[][] THREE_COLS = new int[][] {
+                {0, 0}, {1, 0}, {0, 1}, {1, 1}, {2, 0}, {2, 1}, {0, 2}, {1, 2}, {2, 2}
+        };
+
+        /**
+         * R0  R1  R4  R6
+         * R2  R3  R5  R7
+         * R8  R9  R10 R11
+         * R12 R13 R14 R15
+         */
+        static final int[][] FOUR_COLS = new int[][] {
+                {0, 0}, {1, 0}, {0, 1}, {1, 1}, {2, 0}, {2, 1}, {3, 0}, {3, 1}, {0, 2}, {1, 2},
+                {2, 2}, {3, 2}, {0, 3}, {1, 3}, {2, 3}, {3, 3}
+        };
+
+        /**
+         * R0  R1  R4  R6  R12
+         * R2  R3  R5  R7  R13
+         * R8  R9  R10 R11 R14
+         * R15 R16 R17 R18 R19
+         * R20 R21 R22 R23 R24
+         */
+        static final int[][] FIVE_COLS = new int[][] {
+                {0, 0}, {1, 0}, {0, 1}, {1, 1}, {2, 0}, {2, 1}, {3, 0}, {3, 1}, {0, 2}, {1, 2},
+                {2, 2}, {3, 2}, {4, 0}, {4, 1}, {4, 2}, {0, 3}, {1, 3}, {2, 3}, {3, 3}, {4, 3},
+                {0, 4}, {1, 4}, {2, 4}, {3, 4}, {4, 4}
+        };
     }
 }
