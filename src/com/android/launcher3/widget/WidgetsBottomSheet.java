@@ -22,7 +22,6 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -77,7 +76,7 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
     }
 
     public WidgetsBottomSheet(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(new ContextThemeWrapper(context, R.style.WidgetContainerTheme), attrs, defStyleAttr);
+        super(context, attrs, defStyleAttr);
         setWillNotDraw(false);
         mLauncher = Launcher.getLauncher(context);
         mOpenCloseAnimator = LauncherAnimUtils.ofPropertyValuesHolder(this);
