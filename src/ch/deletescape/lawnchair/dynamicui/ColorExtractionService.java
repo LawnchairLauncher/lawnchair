@@ -23,6 +23,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
+import android.content.pm.PackageManager;
 
 import ch.deletescape.lawnchair.LauncherProvider;
 import ch.deletescape.lawnchair.LauncherSettings;
