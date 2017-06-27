@@ -10,7 +10,9 @@ android:
     - extra-google-m2repository
     - extra-android-m2repository
 before_install: openssl enc -d -aes-256-cbc -in google-services.json.enc -out google-services.json -k $ENC_PASS
-script: ./gradlew assembleDebug check
+script:
+  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./gradlew assembleDebug check; fi'
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./gradlew assembleDebug check; fi'
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -20,16 +22,23 @@ cache:
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.android/build-cache"
 after_success:
-  - mv build/outputs/apk/Lawnchair-aosp-debug.apk Lawnchair-$TRAVIS_BUILD_NUMBER.apk
+  - cp build/outputs/apk/Lawnchair-aosp-debug.apk Lawnchair-$TRAVIS_BUILD_NUMBER.apk
+  - cp build/outputs/mapping/aosp/debug/mapping.txt proguard-$TRAVIS_BUILD_NUMBER.txt
   - curl -F chat_id="-1001083653933" -F document=@"Lawnchair-$TRAVIS_BUILD_NUMBER.apk" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
-  - mv build/outputs/mapping/aosp/debug/mapping.txt proguard-$TRAVIS_BUILD_NUMBER.txt
   - curl -F chat_id="152559768" -F document=@"proguard-$TRAVIS_BUILD_NUMBER.txt" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
-  - curl -F "status=2" -F "notify=1" -F "notes_type=0" -F "ipa=@app/build/outputs/apk/Lawnchair-aosp-debug.apk" -H "X-HockeyAppToken: $HOCKEYAPP_TOKEN" https://rink.hockeyapp.net/api/2/apps/upload
 deploy:
-  provider: releases
-  api_key: $GITHUB_OAUTH_TOKEN
-  file:
-    - "Lawnchair-$TRAVIS_BUILD_NUMBER.apk"
-  skip_cleanup: true
-  on:
-    tags: true
+  - provider: releases
+    api_key: $GITHUB_OAUTH_TOKEN
+    file:
+      - "Lawnchair-$TRAVIS_BUILD_NUMBER.apk"
+    skip_cleanup: true
+    on:
+      tags: true
+  - provider: script
+    script: curl -F "status=2" -F "notify=1" -F "tags=beta" -F "dsym=@proguard-$TRAVIS_BUILD_NUMBER.txt" -F "ipa=@Lawnchair-$TRAVIS_BUILD_NUMBER.apk" -H "X-HockeyAppToken: $HOCKEYAPP_TOKEN" https://rink.hockeyapp.net/api/2/apps/$HOCKEYAPP_APPID/app_versions/upload
+    on:
+      branch: master
+  - provider: script
+    script: curl -F "status=2" -F "notify=1" -F "tags=release" -F "dsym=@proguard-$TRAVIS_BUILD_NUMBER.txt" -F "ipa=@Lawnchair-$TRAVIS_BUILD_NUMBER.apk" -H "X-HockeyAppToken: $HOCKEYAPP_TOKEN" https://rink.hockeyapp.net/api/2/apps/$HOCKEYAPP_APPID/app_versions/upload
+    on:
+      tags: true
