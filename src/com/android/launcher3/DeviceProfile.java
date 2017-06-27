@@ -344,7 +344,7 @@ public class DeviceProfile {
         updateFolderCellSize(1f, dm, res);
 
         // Don't let the folder get too close to the edges of the screen.
-        int folderMargin = 4 * edgeMarginPx;
+        int folderMargin = edgeMarginPx;
 
         // Check if the icons fit within the available height.
         float usedHeight = folderCellHeightPx * inv.numFolderRows + folderBottomPanelSize;
@@ -497,7 +497,7 @@ public class DeviceProfile {
             // In portrait, we want the pages spaced such that there is no
             // overhang of the previous / next page into the current page viewport.
             // We assume symmetrical padding in portrait mode.
-            return Math.max(defaultPageSpacingPx, getWorkspacePadding(null).left + 1);
+            return Math.max(defaultPageSpacingPx, getWorkspacePadding(null).left / 2 + 1);
         }
     }
 
