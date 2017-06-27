@@ -127,6 +127,19 @@ public class SpringAnimationHandler<T> {
         reset();
     }
 
+    /**
+     * Similar to {@link #animateToFinalPosition(float)}, but used in cases where we want to
+     * manually set the velocity.
+     */
+    public void animateToPositionWithVelocity(float position, float velocity) {
+        if (DEBUG) Log.d(TAG, "animateToPosition#velocity=" + velocity);
+
+        setStartVelocity(velocity);
+        mShouldComputeVelocity = false;
+        animateToFinalPosition(position);
+    }
+
+
     public boolean isRunning() {
         // All the animations run at the same time so we can just check the first one.
         return !mAnimations.isEmpty() && mAnimations.get(0).isRunning();
@@ -153,6 +166,8 @@ public class SpringAnimationHandler<T> {
     }
 
     private void setStartVelocity(float velocity) {
+        if (DEBUG) Log.d(TAG, "setStartVelocity=" + velocity);
+
         int size = mAnimations.size();
         for (int i = 0; i < size; ++i) {
             mAnimations.get(i).setStartVelocity(velocity);
