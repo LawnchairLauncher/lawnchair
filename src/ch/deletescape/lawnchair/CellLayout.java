@@ -1426,28 +1426,28 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             switch (whichEdge) {
                 case LEFT:
                     for (int i = cs.cellY; i < cs.cellY + cs.spanY; i++) {
-                        if (leftEdge[i] == cs.cellX + cs.spanX) {
+                        if (i > leftEdge.length || leftEdge[i] == cs.cellX + cs.spanX) {
                             return true;
                         }
                     }
                     break;
                 case RIGHT:
                     for (int i = cs.cellY; i < cs.cellY + cs.spanY; i++) {
-                        if (rightEdge[i] == cs.cellX) {
+                        if (i > rightEdge.length || rightEdge[i] == cs.cellX) {
                             return true;
                         }
                     }
                     break;
                 case TOP:
                     for (int i = cs.cellX; i < cs.cellX + cs.spanX; i++) {
-                        if (topEdge[i] == cs.cellY + cs.spanY) {
+                        if (i > topEdge.length || topEdge[i] == cs.cellY + cs.spanY) {
                             return true;
                         }
                     }
                     break;
                 case BOTTOM:
                     for (int i = cs.cellX; i < cs.cellX + cs.spanX; i++) {
-                        if (bottomEdge[i] == cs.cellY) {
+                        if (i > bottomEdge.length || bottomEdge[i] == cs.cellY) {
                             return true;
                         }
                     }
@@ -2568,7 +2568,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         if (x < mCountX && y < mCountY) {
             return mOccupied.cells[x][y];
         } else {
-            throw new RuntimeException("Position exceeds the bound of this CellLayout");
+            return true;
+            //throw new RuntimeException("Position exceeds the bound of this CellLayout");
         }
     }
 

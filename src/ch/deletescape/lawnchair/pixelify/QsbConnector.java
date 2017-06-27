@@ -48,7 +48,11 @@ public class QsbConnector extends View {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        getContext().unregisterReceiver(by);
+        try {
+            getContext().unregisterReceiver(by);
+        } catch (IllegalArgumentException ignored) {
+            // Not supposed to happen but we'll ignore it
+        }
     }
 
     private void be() {
