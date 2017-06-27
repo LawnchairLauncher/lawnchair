@@ -481,19 +481,17 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
          *     5 6 7 8 9
          */
         private int getAppPosition(int position, int numPredictedApps, int appsPerRow) {
-            int appPosition = position;
-            int numDividerViews = 1 + (numPredictedApps == 0 ? 0 : 1);
-
-            int allAppsStartAt = numDividerViews + numPredictedApps;
-            if (numDividerViews == 1 || position < allAppsStartAt) {
-                appPosition -= 1;
-            } else {
-                // We cannot assume that the predicted row will always be full.
-                int numPredictedAppsOffset = appsPerRow - numPredictedApps;
-                appPosition = position + numPredictedAppsOffset - numDividerViews;
+            if (position < numPredictedApps) {
+                // Predicted apps are first in the adapter.
+                return position;
             }
 
-            return appPosition;
+            // There is at most 1 divider view between the predicted apps and the alphabetical apps.
+            int numDividerViews = numPredictedApps == 0 ? 0 : 1;
+
+            // This offset takes into consideration an incomplete row of predicted apps.
+            int numPredictedAppsOffset = appsPerRow - numPredictedApps;
+            return position + numPredictedAppsOffset - numDividerViews;
         }
 
         /**
