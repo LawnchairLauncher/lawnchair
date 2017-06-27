@@ -598,12 +598,12 @@ public class Workspace extends PagedView
             // In transposed layout, we add the QSB in the Grid. As workspace does not touch the
             // edges, we do not need a full width QSB.
             qsb = LayoutInflater.from(getContext())
-                    .inflate(R.layout.qsb_container,firstPage, false);
+                    .inflate(R.layout.search_container_workspace,firstPage, false);
         }
 
         CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, firstPage.getCountX(), 1);
         lp.canReorder = false;
-        if (!firstPage.addViewToCellLayout(qsb, 0, R.id.qsb_container, lp, true)) {
+        if (!firstPage.addViewToCellLayout(qsb, 0, R.id.search_container_workspace, lp, true)) {
             Log.e(TAG, "Failed to add to item at (0, 0) to CellLayout");
         }
     }
@@ -621,7 +621,7 @@ public class Workspace extends PagedView
         }
 
         // Recycle the QSB widget
-        View qsb = findViewById(R.id.qsb_container);
+        View qsb = findViewById(R.id.search_container_workspace);
         if (qsb != null) {
             ((ViewGroup) qsb.getParent()).removeView(qsb);
         }
