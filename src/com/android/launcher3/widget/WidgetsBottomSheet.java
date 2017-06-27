@@ -48,6 +48,7 @@ import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.SystemUiController;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TouchController;
 
 import java.util.List;
@@ -178,8 +179,10 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
             return;
         }
         mIsOpen = true;
+        boolean isSheetDark = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
         mLauncher.getSystemUiController().updateUiState(
-                SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, SystemUiController.FLAG_LIGHT_NAV);
+                SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET,
+                isSheetDark ? SystemUiController.FLAG_DARK_NAV : SystemUiController.FLAG_LIGHT_NAV);
         if (animate) {
             mOpenCloseAnimator.setValues(new PropertyListBuilder()
                     .translationY(mTranslationYOpen).build());
