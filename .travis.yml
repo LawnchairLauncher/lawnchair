@@ -9,7 +9,8 @@ android:
     - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
-before_install: openssl enc -d -aes-256-cbc -in google-services.json.enc -out google-services.json -k $ENC_PASS
+before_install: 
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then openssl enc -d -aes-256-cbc -in google-services.json.enc -out google-services.json -k $ENC_PASS; fi'
 script:
   - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./gradlew assembleDebug check; fi'
   - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./gradlew assembleDebug check; fi'
