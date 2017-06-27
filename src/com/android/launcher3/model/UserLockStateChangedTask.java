@@ -21,7 +21,6 @@ import android.os.UserHandle;
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.compat.UserManagerCompat;
@@ -39,7 +38,7 @@ import java.util.List;
 /**
  * Task to handle changing of lock state of the user
  */
-public class UserLockStateChangedTask extends ExtendedModelTask {
+public class UserLockStateChangedTask extends BaseModelUpdateTask {
 
     private final UserHandle mUser;
 

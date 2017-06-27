@@ -1,0 +1,20 @@
+{
+  // Note: Comments are not supported in JSON schema, but android parser is lenient.
+
+  // Maximum DB version supported by this schema
+  "version" : 27,
+
+  // Downgrade from 27 to 26. Empty array indicates, the DB is compatible
+  "downgrade_to_26" : [],
+  "downgrade_to_25" : [],
+  "downgrade_to_24" : [],
+  "downgrade_to_23" : [],
+  "downgrade_to_22" : [
+    "ALTER TABLE favorites RENAME TO temp_favorites;",
+    "CREATE TABLE favorites(_id INTEGER PRIMARY KEY, title TEXT, intent TEXT, container INTEGER, screen INTEGER, cellX INTEGER, cellY INTEGER, spanX INTEGER, spanY INTEGER, itemType INTEGER, appWidgetId INTEGER NOT NULL DEFAULT - 1, iconPackage TEXT, iconResource TEXT, icon BLOB, appWidgetProvider TEXT, modified INTEGER NOT NULL DEFAULT 0, restored INTEGER NOT NULL DEFAULT 0, profileId INTEGER DEFAULT 0, rank INTEGER NOT NULL DEFAULT 0);",
+    "INSERT INTO favorites SELECT _id, title, intent, container, screen, cellX, cellY, spanX, spanY, itemType, appWidgetId, iconPackage, iconResource, icon, appWidgetProvider, modified, restored, profileId, rank FROM temp_favorites;",
+    "DROP TABLE temp_favorites;"
+  ]
+
+  // Missing values indicate the DB is not compatible
+}

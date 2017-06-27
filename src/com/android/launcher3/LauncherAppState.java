@@ -26,7 +26,7 @@ import android.util.Log;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.Preconditions;
@@ -37,7 +37,7 @@ import java.util.concurrent.ExecutionException;
 
 public class LauncherAppState {
 
-    public static final boolean PROFILE_STARTUP = ProviderConfig.IS_DOGFOOD_BUILD;
+    public static final boolean PROFILE_STARTUP = FeatureFlags.IS_DOGFOOD_BUILD;
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     private static LauncherAppState INSTANCE;
@@ -93,9 +93,7 @@ public class LauncherAppState {
         mInvariantDeviceProfile = new InvariantDeviceProfile(mContext);
         mIconCache = new IconCache(mContext, mInvariantDeviceProfile);
         mWidgetCache = new WidgetPreviewLoader(mContext, mIconCache);
-
-        mModel = new LauncherModel(this, mIconCache,
-                Utilities.getOverrideObject(AppFilter.class, mContext, R.string.app_filter_class));
+        mModel = new LauncherModel(this, mIconCache, AppFilter.newInstance(mContext));
 
         LauncherAppsCompat.getInstance(mContext).addOnAppsChangedCallback(mModel);
 

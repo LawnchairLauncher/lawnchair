@@ -72,7 +72,9 @@ public class Hotseat extends FrameLayout
         mBackgroundColor = ColorUtils.setAlphaComponent(
                 Themes.getAttrColor(context, android.R.attr.colorPrimary), 0);
         mBackground = new ColorDrawable(mBackgroundColor);
-        setBackground(mBackground);
+        if (!FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+            setBackground(mBackground);
+        }
     }
 
     public CellLayout getLayout() {
@@ -149,7 +151,6 @@ public class Hotseat extends FrameLayout
                 mLauncher.setAllAppsButton(allAppsButton);
                 allAppsButton.setOnTouchListener(mLauncher.getHapticFeedbackTouchListener());
                 allAppsButton.setOnClickListener(mLauncher);
-                allAppsButton.setOnLongClickListener(mLauncher);
                 allAppsButton.setOnFocusChangeListener(mLauncher.mFocusHandler);
             }
 
@@ -179,8 +180,12 @@ public class Hotseat extends FrameLayout
     }
 
     public void updateColor(ExtractedColors extractedColors, boolean animate) {
+        if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+            // not hotseat visible
+            return;
+        }
         if (!mHasVerticalHotseat) {
-            int color = extractedColors.getColor(ExtractedColors.HOTSEAT_INDEX, Color.TRANSPARENT);
+            int color = extractedColors.getColor(ExtractedColors.HOTSEAT_INDEX);
             if (mBackgroundColorAnimator != null) {
                 mBackgroundColorAnimator.cancel();
             }

@@ -27,16 +27,14 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.config.ProviderConfig;
-import com.android.launcher3.logging.LoggerUtils;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.DumpTargetWrapper;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
-import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.model.nano.LauncherDumpProto;
 import com.android.launcher3.model.nano.LauncherDumpProto.ContainerType;
 import com.android.launcher3.model.nano.LauncherDumpProto.DumpTarget;
-import com.android.launcher3.model.nano.LauncherDumpProto.ItemType;
+import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.shortcuts.ShortcutInfoCompat;
+import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.MultiHashMap;
@@ -93,9 +91,19 @@ public class BgDataModel {
     public final Map<ShortcutKey, MutableInt> pinnedShortcutCounts = new HashMap<>();
 
     /**
+     * True if the launcher has permission to access deep shortcuts.
+     */
+    public boolean hasShortcutHostPermission;
+
+    /**
      * Maps all launcher activities to the id's of their shortcuts (if they have any).
      */
     public final MultiHashMap<ComponentKey, String> deepShortcutMap = new MultiHashMap<>();
+
+    /**
+     * Entire list of widgets.
+     */
+    public final WidgetsModel widgetsModel = new WidgetsModel();
 
     /**
      * Clears all the data
@@ -144,7 +152,7 @@ public class BgDataModel {
             for (ArrayList<String> map : deepShortcutMap.values()) {
                 writer.print(prefix + "  ");
                 for (String str : map) {
-                    writer.print(str.toString() + ", ");
+                    writer.print(str + ", ");
                 }
                 writer.println();
             }
@@ -158,7 +166,7 @@ public class BgDataModel {
         DumpTargetWrapper hotseat = new DumpTargetWrapper(ContainerType.HOTSEAT, 0);
         LongArrayMap<DumpTargetWrapper> workspaces = new LongArrayMap<>();
         for (int i = 0; i < workspaceScreens.size(); i++) {
-            workspaces.put(new Long(workspaceScreens.get(i)),
+            workspaces.put(workspaceScreens.get(i),
                     new DumpTargetWrapper(ContainerType.WORKSPACE, i));
         }
         DumpTargetWrapper dtw;
@@ -175,7 +183,7 @@ public class BgDataModel {
             if (fInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                 hotseat.add(dtw);
             } else if (fInfo.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                workspaces.get(new Long(fInfo.screenId)).add(dtw);
+                workspaces.get(fInfo.screenId).add(dtw);
             }
         }
         // Add leaf nodes (L3): *Info
@@ -189,7 +197,7 @@ public class BgDataModel {
             if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                 hotseat.add(dtw);
             } else if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                workspaces.get(new Long(info.screenId)).add(dtw);
+                workspaces.get(info.screenId).add(dtw);
             }
         }
         for (int i = 0; i < appWidgets.size(); i++) {
@@ -199,7 +207,7 @@ public class BgDataModel {
             if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                 hotseat.add(dtw);
             } else if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                workspaces.get(new Long(info.screenId)).add(dtw);
+                workspaces.get(info.screenId).add(dtw);
             }
         }
 
@@ -242,7 +250,7 @@ public class BgDataModel {
             switch (item.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                     folders.remove(item.id);
-                    if (ProviderConfig.IS_DOGFOOD_BUILD) {
+                    if (FeatureFlags.IS_DOGFOOD_BUILD) {
                         for (ItemInfo info : itemsIdMap) {
                             if (info.container == item.id) {
                                 // We are deleting a folder which still contains items that

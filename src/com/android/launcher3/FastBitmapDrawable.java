@@ -36,8 +36,6 @@ import com.android.launcher3.graphics.IconPalette;
 
 public class FastBitmapDrawable extends Drawable {
 
-    private static final int[] STATE_PRESSED = new int[] {android.R.attr.state_pressed};
-
     private static final float PRESSED_BRIGHTNESS = 100f / 255f;
     private static final float DISABLED_DESATURATION = 1f;
     private static final float DISABLED_BRIGHTNESS = 0.5f;
@@ -107,17 +105,6 @@ public class FastBitmapDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        drawInternal(canvas);
-    }
-
-    public void drawWithBrightness(Canvas canvas, float brightness) {
-        float oldBrightness = getBrightness();
-        setBrightness(brightness);
-        drawInternal(canvas);
-        setBrightness(oldBrightness);
-    }
-
-    protected void drawInternal(Canvas canvas) {
         canvas.drawBitmap(mBitmap, null, getBounds(), mPaint);
     }
 
@@ -182,6 +169,11 @@ public class FastBitmapDrawable extends Drawable {
     @Override
     public boolean isStateful() {
         return true;
+    }
+
+    @Override
+    public ColorFilter getColorFilter() {
+        return mPaint.getColorFilter();
     }
 
     @Override

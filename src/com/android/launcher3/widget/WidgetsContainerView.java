@@ -139,8 +139,6 @@ public class WidgetsContainerView extends BaseContainerView
         if (LOGD) {
             Log.d(TAG, String.format("onLongClick [v=%s]", v));
         }
-        // Return early if this is not initiated from a touch
-        if (!v.isInTouchMode()) return false;
         // When we  are in transition, disregard long clicks
         if (mLauncher.getWorkspace().isSwitchingState()) return false;
         // Return if global dragging is not enabled

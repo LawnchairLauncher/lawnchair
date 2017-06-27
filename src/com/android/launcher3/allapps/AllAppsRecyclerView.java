@@ -28,8 +28,8 @@ import android.view.View;
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -53,7 +53,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     private AllAppsBackgroundDrawable mEmptySearchBackground;
     private int mEmptySearchBackgroundTopOffset;
 
-    private HeaderElevationController mElevationController;
+    private SpringAnimationHandler mSpringAnimationHandler;
 
     public AllAppsRecyclerView(Context context) {
         this(context, null);
@@ -72,9 +72,20 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         super(context, attrs, defStyleAttr);
         Resources res = getResources();
         addOnItemTouchListener(this);
-        mScrollbar.setDetachThumbOnFastScroll();
         mEmptySearchBackgroundTopOffset = res.getDimensionPixelSize(
                 R.dimen.all_apps_empty_search_bg_top_offset);
+    }
+
+    public void setSpringAnimationHandler(SpringAnimationHandler springAnimationHandler) {
+        mSpringAnimationHandler = springAnimationHandler;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent e) {
+        if (FeatureFlags.LAUNCHER3_PHYSICS && mSpringAnimationHandler != null) {
+            mSpringAnimationHandler.addMovement(e);
+        }
+        return super.onTouchEvent(e);
     }
 
     /**
@@ -85,8 +96,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         mFastScrollHelper = new AllAppsFastScrollHelper(this, apps);
     }
 
-    public void setElevationController(HeaderElevationController elevationController) {
-        mElevationController = elevationController;
+    public AlphabeticalAppsList getApps() {
+        return mApps;
     }
 
     /**
@@ -98,7 +109,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         RecyclerView.RecycledViewPool pool = getRecycledViewPool();
         int approxRows = (int) Math.ceil(grid.availableHeightPx / grid.allAppsIconSizePx);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH, 1);
-        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ICON, approxRows * mNumAppsPerRow);
@@ -125,8 +135,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                 AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER,
                 AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER);
         putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
-                AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER);
-        putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
                 AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET);
         putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
                 AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH);
@@ -152,13 +160,10 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
      */
     public void scrollToTop() {
         // Ensure we reattach the scrollbar if it was previously detached while fast-scrolling
-        if (mScrollbar.isThumbDetached()) {
+        if (mScrollbar != null) {
             mScrollbar.reattachThumbToScroll();
         }
         scrollToPosition(0);
-        if (mElevationController != null) {
-            mElevationController.reset();
-        }
     }
 
     @Override
@@ -349,7 +354,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     }
 
     @Override
-    protected boolean supportsFastScrolling() {
+    public boolean supportsFastScrolling() {
         // Only allow fast scrolling when the user is not searching, since the results are not
         // grouped in a meaningful order
         return !mApps.hasFilter();
@@ -369,7 +374,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         if (position == NO_POSITION) {
             return -1;
         }
-        return getCurrentScrollY(position, getLayoutManager().getDecoratedTop(child));
+        return getPaddingTop() +
+                getCurrentScrollY(position, getLayoutManager().getDecoratedTop(child));
     }
 
     public int getCurrentScrollY(int position, int offset) {
@@ -399,14 +405,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
             }
             mCachedScrollPositions.put(position, y);
         }
-
-        return getPaddingTop() + y - offset;
-    }
-
-    @Override
-    protected int getScrollbarTrackHeight() {
-        return super.getScrollbarTrackHeight()
-                - Launcher.getLauncher(getContext()).getDragLayer().getInsets().bottom;
+        return y - offset;
     }
 
     /**
@@ -415,9 +414,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
      */
     @Override
     protected int getAvailableScrollHeight() {
-        int paddedHeight = getCurrentScrollY(mApps.getAdapterItems().size(), 0);
-        int totalHeight = paddedHeight + getPaddingBottom();
-        return totalHeight - getScrollbarTrackHeight();
+        return getPaddingTop() + getCurrentScrollY(mApps.getAdapterItems().size(), 0)
+                - getHeight() + getPaddingBottom();
     }
 
     /**

@@ -69,7 +69,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     private static final int COLOR_TRACK = 0x77EEEEEE;
     private static final int COLOR_SHADOW = 0x55000000;
 
-    private static final float SMALL_SCALE = 0.75f;
+    private static final float SMALL_SCALE = 0.6f;
 
     private static final SparseArray<WeakReference<Bitmap>> sShadowCache = new SparseArray<>();
 
@@ -121,11 +121,11 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
         mTmpMatrix.setScale(
-                (bounds.width() - PROGRESS_WIDTH - 2 * PROGRESS_GAP) / PATH_SIZE,
-                (bounds.height() - PROGRESS_WIDTH - 2 * PROGRESS_GAP) / PATH_SIZE);
+                (bounds.width() - 2 * PROGRESS_WIDTH - 2 * PROGRESS_GAP) / PATH_SIZE,
+                (bounds.height() - 2 * PROGRESS_WIDTH - 2 * PROGRESS_GAP) / PATH_SIZE);
         mTmpMatrix.postTranslate(
-                bounds.left + PROGRESS_WIDTH / 2 + PROGRESS_GAP,
-                bounds.top + PROGRESS_WIDTH / 2 + PROGRESS_GAP);
+                bounds.left + PROGRESS_WIDTH + PROGRESS_GAP,
+                bounds.top + PROGRESS_WIDTH + PROGRESS_GAP);
 
         mProgressPath.transform(mTmpMatrix, mScaledTrackPath);
         float scale = bounds.width() / PATH_SIZE;
@@ -178,7 +178,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
         Rect bounds = getBounds();
 
         canvas.scale(mIconScale, mIconScale, bounds.exactCenterX(), bounds.exactCenterY());
-        drawInternal(canvas);
+        super.draw(canvas);
         canvas.restoreToCount(saveCount);
     }
 

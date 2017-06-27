@@ -26,11 +26,13 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_STATIC_JAVA_LIBRARIES := \
     android-support-v4 \
     android-support-v7-recyclerview \
-    android-support-v7-palette
+    android-support-v7-palette \
+    android-support-dynamic-animation
 
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
     $(call all-java-files-under, src_config) \
+    $(call all-java-files-under, src_flags) \
     $(call all-proto-files-under, protos)
 
 LOCAL_RESOURCE_DIR := \

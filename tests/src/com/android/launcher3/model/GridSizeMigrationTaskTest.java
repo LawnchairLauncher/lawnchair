@@ -1,7 +1,6 @@
 package com.android.launcher3.model;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Point;
@@ -10,9 +9,9 @@ import android.test.suitebuilder.annotation.MediumTest;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherModel;
+import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.model.GridSizeMigrationTask.MultiStepMigrationTask;
 import com.android.launcher3.util.TestLauncherProvider;
 
@@ -40,7 +39,7 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
     private InvariantDeviceProfile mIdp;
 
     public GridSizeMigrationTaskTest() {
-        super(TestLauncherProvider.class, ProviderConfig.AUTHORITY);
+        super(TestLauncherProvider.class, LauncherProvider.AUTHORITY);
     }
 
     @Override

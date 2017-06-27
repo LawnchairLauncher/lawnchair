@@ -21,7 +21,6 @@ import android.app.Notification;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,11 +29,12 @@ import android.widget.TextView;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.anim.PillHeightRevealOutlineProvider;
+import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
 import com.android.launcher3.popup.PopupItemView;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.util.Themes;
 
 import java.util.List;
 
@@ -86,10 +86,16 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
         return getHeight() - footerHeight;
     }
 
-    public Animator animateHeightRemoval(int heightToRemove) {
-        final int newHeight = getHeight() - heightToRemove;
-        return new PillHeightRevealOutlineProvider(mPillRect,
-                getBackgroundRadius(), newHeight).createRevealAnimator(this, true /* isReversed */);
+    public Animator animateHeightRemoval(int heightToRemove, boolean shouldRemoveFromTop) {
+        Rect startRect = new Rect(mPillRect);
+        Rect endRect = new Rect(mPillRect);
+        if (shouldRemoveFromTop) {
+            endRect.top += heightToRemove;
+        } else {
+            endRect.bottom -= heightToRemove;
+        }
+        return new RoundedRectRevealOutlineProvider(getBackgroundRadius(), getBackgroundRadius(),
+                startRect, endRect, mRoundedCorners).createRevealAnimator(this, false);
     }
 
     public void updateHeader(int notificationCount, @Nullable IconPalette palette) {
@@ -98,7 +104,7 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
             if (mNotificationHeaderTextColor == Notification.COLOR_DEFAULT) {
                 mNotificationHeaderTextColor =
                         IconPalette.resolveContrastColor(getContext(), palette.dominantColor,
-                            getResources().getColor(R.color.popup_header_background_color));
+                                Themes.getAttrColor(getContext(), R.attr.popupColorPrimary));
             }
             mHeaderCount.setTextColor(mNotificationHeaderTextColor);
         }
@@ -160,13 +166,6 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
         } else {
             mFooter.trimNotifications(notificationKeys);
         }
-    }
-
-    @Override
-    public int getArrowColor(boolean isArrowAttachedToBottom) {
-        return ContextCompat.getColor(getContext(), isArrowAttachedToBottom
-                ? R.color.popup_background_color
-                : R.color.popup_header_background_color);
     }
 
     @Override

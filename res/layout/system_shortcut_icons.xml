@@ -21,4 +21,7 @@
     android:layout_height="@dimen/system_shortcut_header_height"
     android:orientation="horizontal"
     android:gravity="end|center_vertical"
-    android:background="@color/popup_header_background_color" />
+    android:background="?attr/popupColorSecondary"
+    android:elevation="1dp"
+    android:outlineProvider="none" />
+    <!-- We have elevation so this is drawn on top, but no outline provider to remove shadow -->

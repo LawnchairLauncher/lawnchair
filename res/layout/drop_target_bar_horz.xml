@@ -17,8 +17,10 @@
 <com.android.launcher3.DropTargetBar
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:theme="@style/HomeScreenElementTheme"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dynamic_grid_drop_target_size"
+    android:visibility="invisible"
     android:layout_gravity="center_horizontal|top"
     android:focusable="false">
 

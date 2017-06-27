@@ -322,14 +322,16 @@ public class LauncherIcons {
         IconCache cache = app.getIconCache();
         Bitmap unbadgedBitmap = unbadgedDrawable == null
                 ? cache.getDefaultIcon(Process.myUserHandle())
-                : LauncherIcons.createScaledBitmapWithoutShadow(unbadgedDrawable, context,
-                Build.VERSION_CODES.O);
+                : LauncherIcons.createScaledBitmapWithoutShadow(unbadgedDrawable, context, 0);
 
         if (!badged) {
             return unbadgedBitmap;
         }
         unbadgedBitmap = LauncherIcons.addShadowToIcon(unbadgedBitmap, context);
+        return badgeWithBitmap(unbadgedBitmap, getShortcutInfoBadge(shortcutInfo, cache), context);
+    }
 
+    public static Bitmap getShortcutInfoBadge(ShortcutInfoCompat shortcutInfo, IconCache cache) {
         final Bitmap badgeBitmap;
         ComponentName cn = shortcutInfo.getActivity();
         if (cn != null) {
@@ -347,7 +349,7 @@ public class LauncherIcons {
             cache.getTitleAndIconForApp(pkgInfo, false);
             badgeBitmap = pkgInfo.iconBitmap;
         }
-        return badgeWithBitmap(unbadgedBitmap, badgeBitmap, context);
+        return badgeBitmap;
     }
 
     /**
