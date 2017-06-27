@@ -54,6 +54,7 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -593,7 +594,7 @@ public class Workspace extends PagedView
 
     public void initPullDownToSearch() {
         CellLayout firstPage = mWorkspaceScreens.get(FIRST_SCREEN_ID);
-        if (FeatureFlags.pulldownSearch(getContext().getApplicationContext())) {
+        if (FeatureFlags.pulldownOpensNotifications(getContext())) {
             firstPage.setOnTouchListener(new VerticalFlingDetector(mLauncher) {
                 // detect fling when touch started from empty space
                 @Override
@@ -601,7 +602,7 @@ public class Workspace extends PagedView
                     if (workspaceInModalState()) return false;
                     if (shouldConsumeTouch(v)) return true;
                     if (super.onTouch(v, ev)) {
-                        mLauncher.startSearch("", false, null, false);
+                        expandStatusbar();
                         return true;
                     }
                     return false;
@@ -613,7 +614,7 @@ public class Workspace extends PagedView
                 public boolean onTouch(View v, MotionEvent ev) {
                     if (shouldConsumeTouch(v)) return true;
                     if (super.onTouch(v, ev)) {
-                        mLauncher.startSearch("", false, null, false);
+                        expandStatusbar();
                         return true;
                     }
                     return false;
@@ -622,6 +623,17 @@ public class Workspace extends PagedView
         } else {
             firstPage.setOnTouchListener(null);
             firstPage.setOnInterceptTouchListener(null);
+        }
+    }
+
+    private void expandStatusbar() {
+        try {
+            Class StatusBarManager = Class.forName("android.app.StatusBarManager");
+            Object o = StatusBarManager.cast(getContext().getSystemService("statusbar"));
+            StatusBarManager.getDeclaredMethod("expandNotificationsPanel", null).invoke(o, null);
+        } catch (Exception ignored) {
+            Log.e("expandStatusbar", "", ignored);
+            Toast.makeText(getContext(), ignored.toString(), Toast.LENGTH_LONG);
         }
     }
 

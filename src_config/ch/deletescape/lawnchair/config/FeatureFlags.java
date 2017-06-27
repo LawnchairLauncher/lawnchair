@@ -29,7 +29,7 @@ public final class FeatureFlags {
 
     private static final String KEY_PREF_LIGHT_STATUS_BAR = "pref_lightStatusBar";
     private static final String KEY_PREF_PINCH_TO_OVERVIEW = "pref_pinchToOverview";
-    private static final String KEY_PREF_PULLDOWN_SEARCH = "pref_pulldownSearch";
+    private static final String KEY_PREF_PULLDOWN_NOTIS = "pref_pulldownNotis";
     private static final String KEY_PREF_HOTSEAT_EXTRACTED_COLORS = "pref_hotseatShouldUseExtractedColors";
     private static final String KEY_PREF_HAPTIC_FEEDBACK = "pref_enableHapticFeedback";
     private static final String KEY_PREF_KEEP_SCROLL_STATE = "pref_keepScrollState";
@@ -43,9 +43,9 @@ public final class FeatureFlags {
     }
 
     // When enabled fling down gesture on the first workspace triggers search.
-    public static boolean pulldownSearch(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_PULLDOWN_SEARCH, true);
-        FirebaseAnalytics.getInstance(context).setUserProperty("pulldown_search_enabled", String.valueOf(enabled));
+    public static boolean pulldownOpensNotifications(Context context) {
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_PULLDOWN_NOTIS, true);
+        FirebaseAnalytics.getInstance(context).setUserProperty("pulldown_notifis_enabled", String.valueOf(enabled));
         return enabled;
     }
 

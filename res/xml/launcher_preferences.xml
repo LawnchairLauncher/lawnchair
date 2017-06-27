@@ -143,10 +143,10 @@
             android:persistent="true" />
 
         <SwitchPreference
-            android:key="pref_pulldownSearch"
-            android:title="Pulldown to Search"
-            android:summaryOn="Pulling down on the Homescreen will open search."
-            android:summaryOff="When enabled pulling down on the Homescreen will open search."
+            android:key="pref_pulldownNotis"
+            android:title="Pulling down opens Notifications"
+            android:summaryOn="Pulling down on the Homescreen will expand the statusbar."
+            android:summaryOff="When enabled pulling down on the Homescreen expand the statusbar."
             android:defaultValue="true"
             android:persistent="true" />
 
