@@ -21,11 +21,6 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.android/build-cache"
-after_success:
-  - cp build/outputs/apk/Lawnchair-aosp-debug.apk Lawnchair-$TRAVIS_BUILD_NUMBER.apk
-  - cp build/outputs/mapping/aosp/debug/mapping.txt proguard-$TRAVIS_BUILD_NUMBER.txt
-  - curl -F chat_id="-1001083653933" -F document=@"Lawnchair-$TRAVIS_BUILD_NUMBER.apk" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
-  - curl -F chat_id="152559768" -F document=@"proguard-$TRAVIS_BUILD_NUMBER.txt" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
 deploy:
   - provider: releases
     api_key: $GITHUB_OAUTH_TOKEN
@@ -35,10 +30,10 @@ deploy:
     on:
       tags: true
   - provider: script
-    script: curl -F "status=2" -F "notify=1" -F "tags=beta" -F "dsym=@proguard-$TRAVIS_BUILD_NUMBER.txt" -F "ipa=@Lawnchair-$TRAVIS_BUILD_NUMBER.apk" -H "X-HockeyAppToken: $HOCKEYAPP_TOKEN" https://rink.hockeyapp.net/api/2/apps/$HOCKEYAPP_APPID/app_versions/upload
+    script: scripts/deploy-hockeyapp.sh beta
     on:
       branch: master
   - provider: script
-    script: curl -F "status=2" -F "notify=1" -F "tags=release" -F "dsym=@proguard-$TRAVIS_BUILD_NUMBER.txt" -F "ipa=@Lawnchair-$TRAVIS_BUILD_NUMBER.apk" -H "X-HockeyAppToken: $HOCKEYAPP_TOKEN" https://rink.hockeyapp.net/api/2/apps/$HOCKEYAPP_APPID/app_versions/upload
+    script: scripts/deploy-hockeyapp.sh release
     on:
       tags: true
