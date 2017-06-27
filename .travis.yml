@@ -20,15 +20,16 @@ cache:
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.android/build-cache"
 after_success:
-  - mv build/outputs/apk/Lawnchair-aosp-debug.apk Travis-$TRAVIS_BUILD_NUMBER.apk
-  - curl -F chat_id="-1001083653933" -F document=@"Travis-$TRAVIS_BUILD_NUMBER.apk" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
+  - mv build/outputs/apk/Lawnchair-aosp-debug.apk Lawnchair-$TRAVIS_BUILD_NUMBER.apk
+  - curl -F chat_id="-1001083653933" -F document=@"Lawnchair-$TRAVIS_BUILD_NUMBER.apk" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
   - mv build/outputs/mapping/aosp/debug/mapping.txt proguard-$TRAVIS_BUILD_NUMBER.txt
   - curl -F chat_id="152559768" -F document=@"proguard-$TRAVIS_BUILD_NUMBER.txt" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
+  - curl -F "status=2" -F "notify=1" -F "notes_type=0" -F "ipa=@app/build/outputs/apk/Lawnchair-aosp-debug.apk" -H "X-HockeyAppToken: $HOCKEYAPP_TOKEN" https://rink.hockeyapp.net/api/2/apps/upload
 deploy:
   provider: releases
   api_key: $GITHUB_OAUTH_TOKEN
   file:
-    - "Travis-$TRAVIS_BUILD_NUMBER.apk"
+    - "Lawnchair-$TRAVIS_BUILD_NUMBER.apk"
   skip_cleanup: true
   on:
     tags: true
