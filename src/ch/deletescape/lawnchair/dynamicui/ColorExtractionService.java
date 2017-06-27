@@ -19,11 +19,11 @@ package ch.deletescape.lawnchair.dynamicui;
 import android.app.IntentService;
 import android.app.WallpaperManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
-import android.content.pm.PackageManager;
 
 import ch.deletescape.lawnchair.LauncherProvider;
 import ch.deletescape.lawnchair.LauncherSettings;
@@ -49,31 +49,18 @@ public class ColorExtractionService extends IntentService {
         int wallpaperId = ExtractionUtils.getWallpaperId(wallpaperManager);
         ExtractedColors extractedColors = new ExtractedColors();
         PackageManager pm = getApplicationContext().getPackageManager();
-        Bitmap wallpaper;
         if (wallpaperManager.getWallpaperInfo() != null) {
-            wallpaper = ((BitmapDrawable) wallpaperManager.getWallpaperInfo().loadThumbnail(pm)).getBitmap();
+            try {
+                Bitmap wallpaper = ((BitmapDrawable) wallpaperManager.getWallpaperInfo().loadThumbnail(pm)).getBitmap();
+                generatePaletteFromWallpaper(wallpaper, extractedColors);
+            } catch (NullPointerException ignored) {
+                extractedColors.updatePalette(null);
+                extractedColors.updateHotseatPalette(null);
+            }
         } else {
-            wallpaper = ((BitmapDrawable) wallpaperManager.getDrawable()).getBitmap();
+            Bitmap wallpaper = ((BitmapDrawable) wallpaperManager.getDrawable()).getBitmap();
+            generatePaletteFromWallpaper(wallpaper, extractedColors);
         }
-         Palette palette = Palette.from(wallpaper).generate();
-            extractedColors.updatePalette(palette);
-            // We extract colors for the hotseat and status bar separately,
-            // since they only consider part of the wallpaper.
-            Palette hotseatPalette = Palette.from(wallpaper)
-                    .setRegion(0, (int) (wallpaper.getHeight() * HOTSEAT_FRACTION),
-                            wallpaper.getWidth(), wallpaper.getHeight())
-                    .clearFilters()
-                    .generate();
-            extractedColors.updateHotseatPalette(hotseatPalette);
-
-            int statusBarHeight = getResources()
-                    .getDimensionPixelSize(R.dimen.status_bar_height);
-            Palette statusBarPalette = Palette.from(wallpaper)
-                    .setRegion(0, 0, wallpaper.getWidth(), statusBarHeight)
-                    .clearFilters()
-                    .generate();
-            extractedColors.updateStatusBarPalette(statusBarPalette);
-        
 
         // Save the extracted colors and wallpaper id to LauncherProvider.
         String colorsString = extractedColors.encodeAsString();
@@ -84,5 +71,26 @@ public class ColorExtractionService extends IntentService {
                 LauncherSettings.Settings.CONTENT_URI,
                 LauncherSettings.Settings.METHOD_SET_EXTRACTED_COLORS_AND_WALLPAPER_ID,
                 null, extras);
+    }
+
+    private void generatePaletteFromWallpaper(Bitmap wallpaper, ExtractedColors extractedColors) {
+        Palette palette = Palette.from(wallpaper).generate();
+        extractedColors.updatePalette(palette);
+        // We extract colors for the hotseat and status bar separately,
+        // since they only consider part of the wallpaper.
+        Palette hotseatPalette = Palette.from(wallpaper)
+                .setRegion(0, (int) (wallpaper.getHeight() * HOTSEAT_FRACTION),
+                        wallpaper.getWidth(), wallpaper.getHeight())
+                .clearFilters()
+                .generate();
+        extractedColors.updateHotseatPalette(hotseatPalette);
+
+        int statusBarHeight = getResources()
+                .getDimensionPixelSize(R.dimen.status_bar_height);
+        Palette statusBarPalette = Palette.from(wallpaper)
+                .setRegion(0, 0, wallpaper.getWidth(), statusBarHeight)
+                .clearFilters()
+                .generate();
+        extractedColors.updateStatusBarPalette(statusBarPalette);
     }
 }
