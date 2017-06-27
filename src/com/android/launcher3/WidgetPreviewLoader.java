@@ -111,7 +111,7 @@ public class WidgetPreviewLoader {
      * sizes (landscape vs portrait).
      */
     private static class CacheDb extends SQLiteCacheHelper {
-        private static final int DB_VERSION = 8;
+        private static final int DB_VERSION = 9;
 
         private static final String TABLE_NAME = "shortcut_and_widget_previews";
         private static final String COLUMN_COMPONENT = "componentName";
