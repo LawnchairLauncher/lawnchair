@@ -15,11 +15,9 @@
  */
 package ch.deletescape.lawnchair.widget;
 
-import android.content.ComponentName;
-import android.content.pm.ActivityInfo;
-
 import ch.deletescape.lawnchair.LauncherSettings;
 import ch.deletescape.lawnchair.PendingAddItemInfo;
+import ch.deletescape.lawnchair.compat.ShortcutConfigActivityInfo;
 
 /**
  * Meta data used for late binding of the short cuts.
@@ -28,11 +26,12 @@ import ch.deletescape.lawnchair.PendingAddItemInfo;
  */
 public class PendingAddShortcutInfo extends PendingAddItemInfo {
 
-    ActivityInfo activityInfo;
+    ShortcutConfigActivityInfo activityInfo;
 
-    public PendingAddShortcutInfo(ActivityInfo activityInfo) {
+    public PendingAddShortcutInfo(ShortcutConfigActivityInfo activityInfo) {
         this.activityInfo = activityInfo;
-        componentName = new ComponentName(activityInfo.packageName, activityInfo.name);
+        componentName = activityInfo.getComponent();
+        user = activityInfo.getUser();
         itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
     }
 }

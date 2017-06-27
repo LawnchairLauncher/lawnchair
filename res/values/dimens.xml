@@ -66,19 +66,6 @@
 
     <dimen name="all_apps_divider_margin_vertical">8dp</dimen>
 
-    <!-- Widget tray -->
-    <dimen name="widget_preview_label_vertical_padding">8dp</dimen>
-    <dimen name="widget_preview_label_horizontal_padding">8dp</dimen>
-
-    <dimen name="widget_section_height">56dp</dimen>
-    <dimen name="widget_section_icon_size">40dp</dimen>
-    <dimen name="widget_section_vertical_padding">8dp</dimen>
-    <dimen name="widget_section_horizontal_padding">16dp</dimen>
-    <dimen name="widget_section_indent">0dp</dimen>
-
-    <dimen name="widget_row_padding">8dp</dimen>
-    <dimen name="widget_row_divider">2dp</dimen>
-
     <!-- Padding applied to shortcut previews -->
     <dimen name="shortcut_preview_padding_left">0dp</dimen>
     <dimen name="shortcut_preview_padding_right">0dp</dimen>
@@ -176,4 +163,59 @@
     <dimen name="qsb_shadow_blur_radius">1.0dip</dimen>
     <dimen name="qsb_key_shadow_offset">1.0dip</dimen>
     <dimen name="qsb_touch_extension">20.0dip</dimen>
+    <dimen name="notification_padding_start">16.0dip</dimen>
+    <dimen name="notification_padding_end">12.0dip</dimen>
+    <dimen name="notification_footer_icon_row_padding">15.0dip</dimen>
+    <dimen name="notification_header_height">32.0dip</dimen>
+    <dimen name="notification_main_height">80.0dip</dimen>
+    <dimen name="notification_footer_height">32.0dip</dimen>
+    <dimen name="notification_header_text_size">13.0sp</dimen>
+    <dimen name="notification_header_count_text_size">12.0sp</dimen>
+    <dimen name="notification_main_text_size">14.0sp</dimen>
+    <dimen name="notification_icon_size">24.0dip</dimen>
+    <dimen name="notification_footer_icon_size">18.0dip</dimen>
+    <dimen name="notification_main_text_padding_end">52.0dip</dimen>
+    <dimen name="notification_elevation">2.0dip</dimen>
+    <dimen name="badge_small_padding">0.0dip</dimen>
+    <dimen name="badge_large_padding">3.0dip</dimen>
+    <dimen name="bg_round_rect_radius">12.0dip</dimen>
+    <dimen name="system_shortcut_icon_size">24.0dip</dimen>
+    <dimen name="system_shortcut_margin_start">16.0dip</dimen>
+    <dimen name="system_shortcut_header_height">40.0dip</dimen>
+    <dimen name="system_shortcut_header_icon_touch_size">48.0dip</dimen>
+    <dimen name="system_shortcut_header_icon_padding">12.0dip</dimen>
+    <dimen name="popup_item_divider_height">0.5dip</dimen>
+    <dimen name="popup_padding_start">10.0dip</dimen>
+    <dimen name="popup_padding_end">16.0dip</dimen>
+    <dimen name="popup_arrow_width">10.0dip</dimen>
+    <dimen name="popup_arrow_height">8.0dip</dimen>
+    <dimen name="popup_arrow_vertical_offset">-2.0dip</dimen>
+    <dimen name="popup_arrow_horizontal_center_start">28.0dip</dimen>
+    <dimen name="popup_arrow_horizontal_center_end">24.0dip</dimen>
+    <dimen name="popup_arrow_horizontal_offset_start">23.0dip</dimen>
+    <dimen name="popup_arrow_horizontal_offset_end">19.0dip</dimen>
+    <dimen name="popup_arrow_corner_radius">2.0dip</dimen>
+    <dimen name="bg_popup_item_width">220.0dip</dimen>
+    <dimen name="bg_popup_item_height">56.0dip</dimen>
+    <dimen name="popup_items_spacing">4.0dip</dimen>
+    <dimen name="horizontal_ellipsis_size">18.0dip</dimen>
+    <dimen name="horizontal_ellipsis_offset">19.0dip</dimen>
+    <dimen name="swipe_helper_falsing_threshold">70.0dip</dimen>
+    <dimen name="deep_shortcuts_text_padding_start">56.0dip</dimen>
+    <dimen name="deep_shortcuts_divider_width">164.0dip</dimen>
+    <dimen name="container_fastscroll_popup_margin">18.0dip</dimen>
+    <dimen name="widget_preview_label_vertical_padding">8.0dip</dimen>
+    <dimen name="widget_preview_label_horizontal_padding">16.0dip</dimen>
+    <dimen name="widget_preview_shadow_blur">0.5dip</dimen>
+    <dimen name="widget_preview_key_shadow_distance">1.0dip</dimen>
+    <dimen name="widget_preview_corner_radius">2.0dip</dimen>
+    <dimen name="widget_preview_cell_divider_width">0.5dip</dimen>
+    <dimen name="widget_preview_shortcut_padding">8.0dip</dimen>
+    <dimen name="widget_section_height">56.0dip</dimen>
+    <dimen name="widget_section_icon_size">40.0dip</dimen>
+    <dimen name="widget_section_vertical_padding">8.0dip</dimen>
+    <dimen name="widget_section_horizontal_padding">16.0dip</dimen>
+    <dimen name="widget_section_indent">0.0dip</dimen>
+    <dimen name="widget_row_padding">8.0dip</dimen>
+    <dimen name="widget_row_divider">2.0dip</dimen>
 </resources>

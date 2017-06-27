@@ -43,6 +43,7 @@ public class DragView extends View {
 
     @Thunk
     static float sDragAlpha = 1f;
+    private final float mInitialScale;
 
     private Bitmap mBitmap;
     private Bitmap mCrossFadeBitmap;
@@ -74,6 +75,8 @@ public class DragView extends View {
     private int mLastTouchY;
     private int mAnimatedShiftX;
     private int mAnimatedShiftY;
+    private final int[] mTempLoc = new int[2];
+
 
     /**
      * Construct the drag view.
@@ -131,6 +134,7 @@ public class DragView extends View {
         mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
 
         setElevation(getResources().getDimension(R.dimen.drag_elevation));
+        mInitialScale = initialScale;
     }
 
     /**
@@ -255,6 +259,12 @@ public class DragView extends View {
         mFilterAnimator.start();
     }
 
+    public void animateTo(int i, int i2, Runnable runnable, int i3) {
+        this.mTempLoc[0] = i - this.mRegistrationX;
+        this.mTempLoc[1] = i2 - this.mRegistrationY;
+        this.mDragLayer.animateViewIntoPosition(this, this.mTempLoc, 1.0f, this.mInitialScale, this.mInitialScale, 0, runnable, i3);
+    }
+
     public boolean hasDrawn() {
         return mHasDrawn;
     }
@@ -284,6 +294,7 @@ public class DragView extends View {
         move(touchX, touchY);
         // Post the animation to skip other expensive work happening on the first frame
         post(new Runnable() {
+            @Override
             public void run() {
                 mAnim.start();
             }

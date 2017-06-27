@@ -87,6 +87,13 @@ public class ExtendedEditText extends EditText {
         }
     }
 
+    public void dispatchBackKey() {
+        ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(getWindowToken(), 0);
+        if (this.mBackKeyListener != null) {
+            this.mBackKeyListener.onBackKey();
+        }
+    }
+
     public void showKeyboard() {
         mShowImeAfterFirstLayout = !showSoftInput();
     }

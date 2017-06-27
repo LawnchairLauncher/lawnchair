@@ -1,39 +1,38 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2016 The Android Open Source Project
-
-     Licensed under the Apache License, Version 2.0 (the "License");
-     you may not use this file except in compliance with the License.
-     You may obtain a copy of the License at
-
-          http://www.apache.org/licenses/LICENSE-2.0
-
-     Unless required by applicable law or agreed to in writing, software
-     distributed under the License is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     See the License for the specific language governing permissions and
-     limitations under the License.
--->
-
+<?xml version="1.0" encoding="utf-8"?>
 <ch.deletescape.lawnchair.shortcuts.DeepShortcutView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/bg_pill_width"
-    android:layout_height="@dimen/bg_pill_height"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:elevation="@dimen/deep_shortcuts_elevation"
-    android:background="@drawable/bg_white_pill">
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:layout_width="@dimen/bg_popup_item_width"
+    android:layout_height="@dimen/bg_popup_item_height">
 
     <ch.deletescape.lawnchair.shortcuts.DeepShortcutTextView
-        android:id="@+id/deep_shortcut"
-        style="@style/Icon.DeepShortcut"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusable="true"
-        android:background="@drawable/bg_pill_focused"
-        app:iconDisplay="deep_shortcut" />
+        android:id="@+id/bubble_text"
+        style="@style/Icon"
+        android:background="?android:selectableItemBackground"
+        android:drawableEnd="@drawable/deep_shortcuts_drag_handle"
+        android:drawablePadding="@dimen/deep_shortcut_drawable_padding"
+        android:fontFamily="sans-serif"
+        android:gravity="start|center"
+        android:paddingEnd="@dimen/popup_padding_end"
+        android:paddingStart="@dimen/deep_shortcuts_text_padding_start"
+        android:textAlignment="viewStart"
+        android:textColor="?android:textColorPrimary"
+        android:textSize="14.0sp"
+        launcher:iconDisplay="deep_shortcut"
+        launcher:iconSizeOverride="@dimen/deep_shortcut_icon_size"
+        launcher:layoutHorizontal="true" />
 
     <View
-        android:id="@+id/deep_shortcut_icon"
+        android:id="@+id/icon"
         android:layout_width="@dimen/deep_shortcut_icon_size"
         android:layout_height="@dimen/deep_shortcut_icon_size"
-        android:layout_margin="@dimen/deep_shortcut_padding_start"
-        android:layout_gravity="start" />
+        android:layout_gravity="start|center"
+        android:layout_marginStart="@dimen/popup_padding_start" />
 
+    <View
+        android:id="@+id/divider"
+        android:layout_width="@dimen/deep_shortcuts_divider_width"
+        android:layout_height="@dimen/popup_item_divider_height"
+        android:layout_gravity="end|bottom|center"
+        android:background="?android:listDivider"
+        android:visibility="gone" />
 </ch.deletescape.lawnchair.shortcuts.DeepShortcutView>

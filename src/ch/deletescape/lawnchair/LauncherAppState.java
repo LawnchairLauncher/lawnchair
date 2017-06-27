@@ -36,7 +36,6 @@ public class LauncherAppState {
     final LauncherModel mModel;
     private final IconCache mIconCache;
     private final WidgetPreviewLoader mWidgetCache;
-    private final DeepShortcutManager mDeepShortcutManager;
 
     @Thunk
     boolean mWallpaperChangedSinceLastCheck;
@@ -88,9 +87,8 @@ public class LauncherAppState {
         mInvariantDeviceProfile = new InvariantDeviceProfile(sContext);
         mIconCache = new IconCache(sContext, mInvariantDeviceProfile);
         mWidgetCache = new WidgetPreviewLoader(sContext, mIconCache);
-        mDeepShortcutManager = new DeepShortcutManager(sContext);
 
-        mModel = new LauncherModel(this, mIconCache, new StringSetAppFilter(), mDeepShortcutManager);
+        mModel = new LauncherModel(this, mIconCache, new StringSetAppFilter(), DeepShortcutManager.getInstance(getContext()));
 
         LauncherAppsCompat.getInstance(sContext).addOnAppsChangedCallback(mModel);
 
@@ -165,10 +163,6 @@ public class LauncherAppState {
         return mWidgetCache;
     }
 
-    public DeepShortcutManager getShortcutManager() {
-        return mDeepShortcutManager;
-    }
-
     public boolean hasWallpaperChangedSinceLastCheck() {
         boolean result = mWallpaperChangedSinceLastCheck;
         mWallpaperChangedSinceLastCheck = false;
@@ -177,5 +171,9 @@ public class LauncherAppState {
 
     public InvariantDeviceProfile getInvariantDeviceProfile() {
         return mInvariantDeviceProfile;
+    }
+
+    public Launcher getLauncher() {
+        return mLauncher;
     }
 }

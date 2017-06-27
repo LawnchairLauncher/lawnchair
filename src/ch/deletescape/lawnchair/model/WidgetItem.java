@@ -1,19 +1,16 @@
 package ch.deletescape.lawnchair.model;
 
-import android.content.ComponentName;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
 
 import java.text.Collator;
 
 import ch.deletescape.lawnchair.InvariantDeviceProfile;
-import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherAppWidgetProviderInfo;
 import ch.deletescape.lawnchair.Utilities;
-import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
+import ch.deletescape.lawnchair.compat.ShortcutConfigActivityInfo;
 import ch.deletescape.lawnchair.util.ComponentKey;
 
 /**
@@ -27,30 +24,27 @@ public class WidgetItem extends ComponentKey implements Comparable<WidgetItem> {
     private static Collator sCollator;
 
     public final LauncherAppWidgetProviderInfo widgetInfo;
-    public final ActivityInfo activityInfo;
+    public final ShortcutConfigActivityInfo activityInfo;
 
     public final String label;
     public final int spanX, spanY;
 
-    public WidgetItem(LauncherAppWidgetProviderInfo info, AppWidgetManagerCompat widgetManager) {
-        super(info.provider, widgetManager.getUser(info));
-
-        label = Utilities.trim(widgetManager.loadLabel(info));
-        widgetInfo = info;
-        activityInfo = null;
-
-        InvariantDeviceProfile idv = LauncherAppState.getInstance().getInvariantDeviceProfile();
-        spanX = Math.min(info.spanX, idv.numColumns);
-        spanY = Math.min(info.spanY, idv.numRows);
+    public WidgetItem(LauncherAppWidgetProviderInfo launcherAppWidgetProviderInfo, PackageManager packageManager, InvariantDeviceProfile invariantDeviceProfile) {
+        super(launcherAppWidgetProviderInfo.provider, launcherAppWidgetProviderInfo.getProfile());
+        this.label = Utilities.trim(launcherAppWidgetProviderInfo.getLabel(packageManager));
+        this.widgetInfo = launcherAppWidgetProviderInfo;
+        this.activityInfo = null;
+        this.spanX = Math.min(launcherAppWidgetProviderInfo.spanX, invariantDeviceProfile.numColumns);
+        this.spanY = Math.min(launcherAppWidgetProviderInfo.spanY, invariantDeviceProfile.numRows);
     }
 
-    public WidgetItem(ResolveInfo info, PackageManager pm) {
-        super(new ComponentName(info.activityInfo.packageName, info.activityInfo.name),
-                Utilities.myUserHandle());
-        label = Utilities.trim(info.loadLabel(pm));
-        widgetInfo = null;
-        activityInfo = info.activityInfo;
-        spanX = spanY = 1;
+    public WidgetItem(ShortcutConfigActivityInfo shortcutConfigActivityInfo) {
+        super(shortcutConfigActivityInfo.getComponent(), shortcutConfigActivityInfo.getUser());
+        this.label = Utilities.trim(shortcutConfigActivityInfo.getLabel());
+        this.widgetInfo = null;
+        this.activityInfo = shortcutConfigActivityInfo;
+        this.spanY = 1;
+        this.spanX = 1;
     }
 
     @Override

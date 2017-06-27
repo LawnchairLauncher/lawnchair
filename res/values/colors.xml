@@ -57,4 +57,13 @@
     <color name="qsb_connector">#fff2f2f2</color>
     <color name="qsb_background">#ffffffff</color>
     <color name="weather_widget_text_color">#ffffffff</color>
+    <color name="default_shadow_color_no_alpha">#ff000000</color>
+    <color name="popup_header_background_color">#ffeeeeee</color>
+    <color name="popup_background_color">#ffffffff</color>
+    <color name="notification_icon_default_color">#ff757575</color>
+    <color name="notification_color_beneath">#ffe0e0e0</color>
+    <color name="badge_color">#ff40c4ff</color>
+    <color name="system_shortcuts_icon_color">@android:color/tertiary_text_light</color>
+    <color name="legacy_icon_background">#ffffffff</color>
+    <color name="icon_background">#ff4285f4</color>
 </resources>

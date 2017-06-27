@@ -28,7 +28,7 @@ import ch.deletescape.lawnchair.dragndrop.DragOptions;
  * Utility listener to enable/disable accessibility drag flags for a ViewGroup
  * containing CellLayouts
  */
-public class AccessibileDragListenerAdapter implements DragListener {
+public class AccessibleDragListenerAdapter implements DragListener {
 
     private final ViewGroup mViewGroup;
     private final int mDragType;
@@ -38,7 +38,7 @@ public class AccessibileDragListenerAdapter implements DragListener {
      * @param dragType either {@link CellLayout#WORKSPACE_ACCESSIBILITY_DRAG} or
      *                 {@link CellLayout#FOLDER_ACCESSIBILITY_DRAG}
      */
-    public AccessibileDragListenerAdapter(ViewGroup parent, int dragType) {
+    public AccessibleDragListenerAdapter(ViewGroup parent, int dragType) {
         mViewGroup = parent;
         mDragType = dragType;
     }

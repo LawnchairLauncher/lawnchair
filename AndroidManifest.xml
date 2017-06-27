@@ -122,7 +122,7 @@
         </activity>
 
         <service
-            android:name=".NotificationListener"
+            android:name=".notification.NotificationListener"
             android:label="Notification Badges"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>

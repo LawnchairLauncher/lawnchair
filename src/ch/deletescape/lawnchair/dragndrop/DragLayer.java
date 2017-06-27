@@ -50,9 +50,11 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import ch.deletescape.lawnchair.AbstractFloatingView;
 import ch.deletescape.lawnchair.AppWidgetResizeFrame;
 import ch.deletescape.lawnchair.CellLayout;
 import ch.deletescape.lawnchair.DropTargetBar;
+import ch.deletescape.lawnchair.ExtendedEditText;
 import ch.deletescape.lawnchair.InsettableFrameLayout;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAppWidgetHostView;
@@ -67,7 +69,6 @@ import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.keyboard.ViewGroupFocusHelper;
-import ch.deletescape.lawnchair.shortcuts.DeepShortcutsContainer;
 import ch.deletescape.lawnchair.util.Thunk;
 import ch.deletescape.lawnchair.util.TouchController;
 
@@ -229,23 +230,25 @@ public class DragLayer extends InsettableFrameLayout {
             }
         }
 
-        // Remove the shortcuts container when touching outside of it.
-        DeepShortcutsContainer deepShortcutsContainer = mLauncher.getOpenShortcutsContainer();
-        if (deepShortcutsContainer != null) {
-            if (isEventOverView(deepShortcutsContainer, ev)) {
-                // Let the container handle the event.
-                return false;
-            } else {
-                if (isInAccessibleDrag()) {
-                    // Do not close the container if in drag and drop.
-                    if (!isEventOverDropTargetBar(ev)) {
-                        return true;
+        boolean z2 = true;
+        AbstractFloatingView topOpenView = AbstractFloatingView.getTopOpenView(this.mLauncher);
+        if (topOpenView != null && intercept) {
+            ExtendedEditText activeTextView = topOpenView.getActiveTextView();
+            if (activeTextView != null) {
+                if (!isEventOverView(activeTextView, ev)) {
+                    activeTextView.dispatchBackKey();
+                    return true;
+                }
+            } else if (!isEventOverView(topOpenView, ev)) {
+                if (!isInAccessibleDrag()) {
+                    topOpenView.close(true);
+                    View extendedTouchView = topOpenView.getExtendedTouchView();
+                    if (extendedTouchView != null) {
+                        z2 = !isEventOverView(extendedTouchView, ev);
                     }
-                } else {
-                    mLauncher.closeShortcutsContainer();
-                    // We let touches on the original icon go through so that users can launch
-                    // the app with one tap if they don't find a shortcut they want.
-                    return !isEventOverView(deepShortcutsContainer.getDeferredDragIcon(), ev);
+                    return z2;
+                } else if (!isEventOverDropTargetBar(ev)) {
+                    return true;
                 }
             }
         }
@@ -369,7 +372,7 @@ public class DragLayer extends InsettableFrameLayout {
     @Override
     public boolean onRequestSendAccessibilityEvent(View child, AccessibilityEvent event) {
         // Shortcuts can appear above folder
-        View topView = mLauncher.getTopFloatingView();
+        View topView = AbstractFloatingView.getTopOpenView(mLauncher);
         if (topView != null) {
             if (child == topView) {
                 return super.onRequestSendAccessibilityEvent(child, event);
@@ -386,7 +389,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     @Override
     public void addChildrenForAccessibility(ArrayList<View> childrenForAccessibility) {
-        View topView = mLauncher.getTopFloatingView();
+        View topView = AbstractFloatingView.getTopOpenView(mLauncher);
         if (topView != null) {
             // Only add the top view as a child for accessibility when it is open
             childrenForAccessibility.add(topView);
@@ -555,7 +558,7 @@ public class DragLayer extends InsettableFrameLayout {
     @Override
     public boolean dispatchUnhandledMove(View focused, int direction) {
         // Consume the unhandled move if a container is open, to avoid switching pages underneath.
-        boolean isContainerOpen = mLauncher.getTopFloatingView() != null;
+        boolean isContainerOpen = AbstractFloatingView.getTopOpenView(mLauncher) != null;
         return isContainerOpen || mDragController.dispatchUnhandledMove(focused, direction);
     }
 
@@ -1072,7 +1075,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     @Override
     protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
-        View topView = mLauncher.getTopFloatingView();
+        View topView = AbstractFloatingView.getTopOpenView(mLauncher);
         if (topView != null) {
             return topView.requestFocus(direction, previouslyFocusedRect);
         } else {
@@ -1082,7 +1085,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     @Override
     public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
-        View topView = mLauncher.getTopFloatingView();
+        View topView = AbstractFloatingView.getTopOpenView(mLauncher);
         if (topView != null) {
             topView.addFocusables(views, direction);
         } else {

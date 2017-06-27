@@ -16,16 +16,15 @@
 
 package ch.deletescape.lawnchair;
 
-import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.graphics.Rect;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.Toast;
-
-import com.google.firebase.crash.FirebaseCrash;
 
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
 
@@ -57,37 +56,42 @@ public class InfoDropTarget extends UninstallDropTarget {
         startDetailsActivityForInfo(d.dragInfo, mLauncher, callback);
     }
 
-    /**
-     * @return Whether the activity was started.
-     */
-    public static boolean startDetailsActivityForInfo(
-            ItemInfo info, Launcher launcher, DropTargetResultCallback callback) {
-        boolean result = false;
-        ComponentName componentName = null;
-        if (info instanceof ShortcutInfo) {
-            componentName = ((ShortcutInfo) info).intent.getComponent();
-        } else if (info instanceof PendingAddItemInfo) {
-            componentName = ((PendingAddItemInfo) info).componentName;
-        } else if (info instanceof LauncherAppWidgetInfo) {
-            componentName = ((LauncherAppWidgetInfo) info).providerName;
+    public static boolean startDetailsActivityForInfo(ItemInfo itemInfo, Launcher launcher, DropTargetResultCallback dropTargetResultCallback) {
+        return startDetailsActivityForInfo(itemInfo, launcher, dropTargetResultCallback, null, null);
+    }
+
+    public static boolean startDetailsActivityForInfo(ItemInfo itemInfo, Launcher launcher, DropTargetResultCallback dropTargetResultCallback, Rect rect, Bundle bundle) {
+        ComponentName componentName;
+        boolean z;
+        if (itemInfo instanceof AppInfo) {
+            componentName = ((AppInfo) itemInfo).componentName;
+        } else if (itemInfo instanceof ShortcutInfo) {
+            componentName = ((ShortcutInfo) itemInfo).intent.getComponent();
+        } else if (itemInfo instanceof PendingAddItemInfo) {
+            componentName = ((PendingAddItemInfo) itemInfo).componentName;
+        } else if (itemInfo instanceof LauncherAppWidgetInfo) {
+            componentName = ((LauncherAppWidgetInfo) itemInfo).providerName;
+        } else {
+            componentName = null;
         }
         if (componentName != null) {
             try {
-                LauncherAppsCompat.getInstance(launcher)
-                        .showAppDetailsForProfile(componentName, info.user);
-                result = true;
-            } catch (SecurityException | ActivityNotFoundException e) {
+                LauncherAppsCompat.getInstance(launcher).showAppDetailsForProfile(componentName, itemInfo.user/*, rect, bundle*/);
+                z = true;
+            } catch (Throwable e) {
                 Toast.makeText(launcher, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "Unable to launch settings", e);
-                FirebaseCrash.report(e);
+                Log.e("InfoDropTarget", "Unable to launch settings", e);
+                z = false;
             }
+        } else {
+            z = false;
         }
-
-        if (callback != null) {
-            sendUninstallResult(launcher, result, componentName, info.user, callback);
+        if (dropTargetResultCallback != null) {
+            UninstallDropTarget.sendUninstallResult(launcher, z, componentName, itemInfo.user, dropTargetResultCallback);
         }
-        return result;
+        return z;
     }
+
 
     @Override
     protected boolean supportsDrop(DragSource source, ItemInfo info) {

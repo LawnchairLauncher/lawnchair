@@ -30,7 +30,7 @@ import ch.deletescape.lawnchair.util.PackageManagerHelper;
 /**
  * Represents an app in AllAppsView.
  */
-public class AppInfo extends ItemInfo {
+public class AppInfo extends ItemInfoWithIcon {
 
     /**
      * The intent used to start the application.

@@ -34,6 +34,8 @@ import android.support.annotation.NonNull;
 import android.util.SparseArray;
 import android.view.animation.DecelerateInterpolator;
 
+import ch.deletescape.lawnchair.graphics.IconPalette;
+
 public class FastBitmapDrawable extends Drawable {
 
     /**
@@ -108,6 +110,8 @@ public class FastBitmapDrawable extends Drawable {
     // Animators for the fast bitmap drawable's properties
     private AnimatorSet mPropertyAnimator;
 
+    private IconPalette mIconPalette;
+
     public FastBitmapDrawable(Bitmap b) {
         mBitmap = b;
         setBounds(0, 0, b.getWidth(), b.getHeight());
@@ -116,6 +120,13 @@ public class FastBitmapDrawable extends Drawable {
     @Override
     public void draw(@NonNull Canvas canvas) {
         canvas.drawBitmap(mBitmap, null, getBounds(), mPaint);
+    }
+
+    public IconPalette getIconPalette() {
+        if (this.mIconPalette == null) {
+            this.mIconPalette = IconPalette.fromDominantColor(Utilities.findDominantColorByHue(this.mBitmap, 20));
+        }
+        return this.mIconPalette;
     }
 
     @Override
@@ -140,6 +151,7 @@ public class FastBitmapDrawable extends Drawable {
         mPaint.setAntiAlias(filterBitmap);
     }
 
+    @Override
     public int getAlpha() {
         return mAlpha;
     }

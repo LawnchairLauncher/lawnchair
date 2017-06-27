@@ -28,6 +28,7 @@ import ch.deletescape.lawnchair.LauncherModel;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
+import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 
 public class PixelIconProvider {
     private BroadcastReceiver mBroadcastReceiver;
@@ -130,7 +131,7 @@ public class PixelIconProvider {
             for (UserHandle userHandle : UserManagerCompat.getInstance(context).getUserProfiles()) {
                 LauncherAppState instance = LauncherAppState.getInstance();
                 instance.getModel().onPackageChanged("com.google.android.calendar", userHandle);
-                List queryForPinnedShortcuts = instance.getShortcutManager().queryForPinnedShortcuts("com.google.android.calendar", userHandle);
+                List queryForPinnedShortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts("com.google.android.calendar", userHandle);
                 if (!queryForPinnedShortcuts.isEmpty()) {
                     instance.getModel().updatePinnedShortcuts("com.google.android.calendar", queryForPinnedShortcuts, userHandle);
                 }

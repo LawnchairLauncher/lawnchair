@@ -1,258 +1,116 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package ch.deletescape.lawnchair.widget;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
+import android.graphics.Point;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.util.List;
+
 import ch.deletescape.lawnchair.BaseContainerView;
-import ch.deletescape.lawnchair.CellLayout;
 import ch.deletescape.lawnchair.DeleteDropTarget;
 import ch.deletescape.lawnchair.DragSource;
-import ch.deletescape.lawnchair.DropTarget.DragObject;
-import ch.deletescape.lawnchair.IconCache;
-import ch.deletescape.lawnchair.ItemInfo;
+import ch.deletescape.lawnchair.DropTarget;
 import ch.deletescape.lawnchair.Launcher;
-import ch.deletescape.lawnchair.LauncherAppState;
-import ch.deletescape.lawnchair.NotificationListener;
-import ch.deletescape.lawnchair.PendingAddItemInfo;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
-import ch.deletescape.lawnchair.WidgetPreviewLoader;
-import ch.deletescape.lawnchair.Workspace;
-import ch.deletescape.lawnchair.dragndrop.DragController;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.folder.Folder;
-import ch.deletescape.lawnchair.model.WidgetsModel;
-import ch.deletescape.lawnchair.util.Thunk;
-import ch.deletescape.lawnchair.util.TransformingTouchDelegate;
+import ch.deletescape.lawnchair.util.MultiHashMap;
+import ch.deletescape.lawnchair.util.PackageUserKey;
 
-/**
- * The widgets list view container.
- */
-public class WidgetsContainerView extends BaseContainerView
-        implements View.OnLongClickListener, View.OnClickListener, DragSource {
-    private static final String TAG = "WidgetsContainerView";
-
-    /* Global instances that are used inside this container. */
-    @Thunk
-    Launcher mLauncher;
-    private DragController mDragController;
-    private IconCache mIconCache;
-
-    private final Rect mTmpBgPaddingRect = new Rect();
-
-    /* Recycler view related member variables */
-    private WidgetsRecyclerView mRecyclerView;
+public class WidgetsContainerView extends BaseContainerView implements OnLongClickListener, OnClickListener, DragSource {
     private WidgetsListAdapter mAdapter;
-    private TransformingTouchDelegate mRecyclerViewTouchDelegate;
-
-    /* Touch handling related member variables. */
+    Launcher mLauncher;
+    private WidgetsRecyclerView mRecyclerView;
     private Toast mWidgetInstructionToast;
-
-    /* Rendering related. */
-    private WidgetPreviewLoader mWidgetPreviewLoader;
 
     public WidgetsContainerView(Context context) {
         this(context, null);
     }
 
-    public WidgetsContainerView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+    public WidgetsContainerView(Context context, AttributeSet attributeSet) {
+        this(context, attributeSet, 0);
     }
 
-    public WidgetsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        mLauncher = Launcher.getLauncher(context);
-        mDragController = mLauncher.getDragController();
-        mAdapter = new WidgetsListAdapter(this, this, context);
-        mIconCache = (LauncherAppState.getInstance()).getIconCache();
+    public WidgetsContainerView(Context context, AttributeSet attributeSet, int i) {
+        super(context, attributeSet, i);
+        this.mLauncher = Launcher.getLauncher(context);
+        this.mAdapter = new WidgetsListAdapter(this, this, context);
     }
 
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        getRevealView().getBackground().getPadding(mTmpBgPaddingRect);
-        mRecyclerViewTouchDelegate.setBounds(
-                mRecyclerView.getLeft() - mTmpBgPaddingRect.left,
-                mRecyclerView.getTop() - mTmpBgPaddingRect.top,
-                mRecyclerView.getRight() + mTmpBgPaddingRect.right,
-                mRecyclerView.getBottom() + mTmpBgPaddingRect.bottom);
+    public View getTouchDelegateTargetView() {
+        return this.mRecyclerView;
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mRecyclerView = (WidgetsRecyclerView) getContentView().findViewById(R.id.widgets_list_view);
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecyclerViewTouchDelegate = new TransformingTouchDelegate(mRecyclerView);
+        this.mRecyclerView = (WidgetsRecyclerView) getContentView().findViewById(R.id.widgets_list_view);
+        this.mRecyclerView.setAdapter(this.mAdapter);
+        this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        ((View) mRecyclerView.getParent()).setTouchDelegate(mRecyclerViewTouchDelegate);
-    }
-
-    //
-    // Returns views used for launcher transitions.
-    //
 
     public void scrollToTop() {
-        mRecyclerView.scrollToPosition(0);
-    }
-
-    //
-    // Touch related handling.
-    //
-
-    @Override
-    public void onClick(View v) {
-        // When we have exited widget tray or are in transition, disregard clicks
-        if (!mLauncher.isWidgetsViewVisible()
-                || mLauncher.getWorkspace().isSwitchingState()
-                || !(v instanceof WidgetCell)) return;
-
-        // Let the user know that they have to long press to add a widget
-        if (mWidgetInstructionToast != null) {
-            mWidgetInstructionToast.cancel();
-        }
-
-        CharSequence msg = Utilities.wrapForTts(
-                getContext().getText(R.string.long_press_widget_to_add),
-                getContext().getString(R.string.long_accessible_way_to_add));
-        mWidgetInstructionToast = Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT);
-        mWidgetInstructionToast.show();
+        this.mRecyclerView.scrollToPosition(0);
     }
 
     @Override
-    public boolean onLongClick(View v) {
-        // Return early if this is not initiated from a touch
-        if (!v.isInTouchMode()) return false;
-        // When we have exited all apps or are in transition, disregard long clicks
-        if (!mLauncher.isWidgetsViewVisible() ||
-                mLauncher.getWorkspace().isSwitchingState()) return false;
-        // Return if global dragging is not enabled
-        if (!mLauncher.isDraggingEnabled()) return false;
-
-        boolean status = beginDragging(v);
-        if (status && v.getTag() instanceof PendingAddWidgetInfo) {
-            WidgetHostViewLoader hostLoader = new WidgetHostViewLoader(mLauncher, v);
-            boolean preloadStatus = hostLoader.preloadWidget();
-            mLauncher.getDragController().addDragListener(hostLoader);
+    public void onClick(View view) {
+        if (this.mLauncher.isWidgetsViewVisible() && !this.mLauncher.getWorkspace().isSwitchingState() && view instanceof WidgetCell) {
+            handleClick();
         }
-        return status;
     }
 
-    private boolean beginDragging(View v) {
-        if (v instanceof WidgetCell) {
-            if (!beginDraggingWidget((WidgetCell) v)) {
-                return false;
-            }
-        } else {
-            Log.e(TAG, "Unexpected dragging view: " + v);
+    public void handleClick() {
+        if (this.mWidgetInstructionToast != null) {
+            this.mWidgetInstructionToast.cancel();
         }
-
-        // We don't enter spring-loaded mode if the drag has been cancelled
-        if (mLauncher.getDragController().isDragging()) {
-            // Go into spring loaded mode (must happen before we startDrag())
-            mLauncher.enterSpringLoadedDragMode();
-        }
-
-        return true;
+        this.mWidgetInstructionToast = Toast.makeText(getContext(), Utilities.wrapForTts(getContext().getText(R.string.long_press_widget_to_add), getContext().getString(R.string.long_accessible_way_to_add)), Toast.LENGTH_SHORT);
+        this.mWidgetInstructionToast.show();
     }
 
-    private boolean beginDraggingWidget(WidgetCell v) {
-        // Get the widget preview as the drag representation
-        WidgetImageView image = (WidgetImageView) v.findViewById(R.id.widget_preview);
-        PendingAddItemInfo createItemInfo = (PendingAddItemInfo) v.getTag();
+    @Override
+    public boolean onLongClick(View view) {
+        if (this.mLauncher.isWidgetsViewVisible()) {
+            return handleLongClick(view);
+        }
+        return false;
+    }
 
-        // If the ImageView doesn't have a drawable yet, the widget preview hasn't been loaded and
-        // we abort the drag.
-        if (image.getBitmap() == null) {
+    public boolean handleLongClick(View view) {
+        if (view.isInTouchMode() && !this.mLauncher.getWorkspace().isSwitchingState() && this.mLauncher.isDraggingEnabled()) {
+            return beginDragging(view);
+        }
+        return false;
+    }
+
+    private boolean beginDragging(View view) {
+        if (!(view instanceof WidgetCell)) {
+            Log.e("WidgetsContainerView", "Unexpected dragging view: " + view);
+        } else if (!beginDraggingWidget((WidgetCell) view)) {
             return false;
         }
-
-        // Compose the drag image
-        Bitmap preview;
-        final float scale;
-        final Rect bounds = image.getBitmapBounds();
-
-        if (createItemInfo instanceof PendingAddWidgetInfo) {
-            // This can happen in some weird cases involving multi-touch. We can't start dragging
-            // the widget if this is null, so we break out.
-
-            PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) createItemInfo;
-            int[] size = mLauncher.getWorkspace().estimateItemSize(createWidgetInfo, true);
-
-            Bitmap icon = image.getBitmap();
-            float minScale = 1.25f;
-            int maxWidth = Math.min((int) (icon.getWidth() * minScale), size[0]);
-
-            int[] previewSizeBeforeScale = new int[1];
-            preview = getWidgetPreviewLoader().generateWidgetPreview(mLauncher,
-                    createWidgetInfo.info, maxWidth, null, previewSizeBeforeScale);
-
-            if (previewSizeBeforeScale[0] < icon.getWidth()) {
-                // The icon has extra padding around it.
-                int padding = (icon.getWidth() - previewSizeBeforeScale[0]) / 2;
-                if (icon.getWidth() > image.getWidth()) {
-                    padding = padding * image.getWidth() / icon.getWidth();
-                }
-
-                bounds.left += padding;
-                bounds.right -= padding;
-            }
-            scale = bounds.width() / (float) preview.getWidth();
-        } else {
-            PendingAddShortcutInfo createShortcutInfo = (PendingAddShortcutInfo) v.getTag();
-            Drawable icon = mIconCache.getFullResIcon(createShortcutInfo.activityInfo);
-            boolean hasNotifications = NotificationListener.hasNotifications(createShortcutInfo.componentName.getPackageName());
-            preview = Utilities.createIconBitmap(icon, mLauncher, hasNotifications);
-            createItemInfo.spanX = createItemInfo.spanY = 1;
-            scale = ((float) mLauncher.getDeviceProfile().iconSizePx) / preview.getWidth();
+        if (this.mLauncher.getDragController().isDragging()) {
+            this.mLauncher.enterSpringLoadedDragMode();
         }
-
-        // Since we are not going through the workspace for starting the drag, set drag related
-        // information on the workspace before starting the drag.
-        mLauncher.getWorkspace().prepareDragWithProvider(
-                new PendingItemPreviewProvider(v, createItemInfo, preview));
-
-        // Start the drag
-        mDragController.startDrag(image, preview, this, createItemInfo,
-                bounds, scale, new DragOptions());
         return true;
     }
 
-    //
-    // Drag related handling methods that implement {@link DragSource} interface.
-    //
-
-    @Override
-    public boolean supportsFlingToDelete() {
+    private boolean beginDraggingWidget(WidgetCell widgetCell) {
+        WidgetImageView widgetImageView = (WidgetImageView) widgetCell.findViewById(R.id.widget_preview);
+        if (widgetImageView.getBitmap() == null) {
+            return false;
+        }
+        int[] iArr = new int[2];
+        this.mLauncher.getDragLayer().getLocationInDragLayer(widgetImageView, iArr);
+        new PendingItemDragHelper(widgetCell).startDrag(widgetImageView.getBitmapBounds(), widgetImageView.getBitmap().getWidth(), widgetImageView.getWidth(), new Point(iArr[0], iArr[1]), this, new DragOptions());
         return true;
     }
 
@@ -261,10 +119,6 @@ public class WidgetsContainerView extends BaseContainerView
         return true;
     }
 
-    /*
-     * Both this method and {@link #supportsFlingToDelete} has to return {@code false} for the
-     * {@link DeleteDropTarget} to be invisible.)
-     */
     @Override
     public boolean supportsDeleteDropTarget() {
         return false;
@@ -272,70 +126,33 @@ public class WidgetsContainerView extends BaseContainerView
 
     @Override
     public float getIntrinsicIconScaleFactor() {
-        return 0;
+        return 0.0f;
     }
 
     @Override
-    public void onFlingToDeleteCompleted() {
-        // We just dismiss the drag when we fling, so cleanup here
-        mLauncher.exitSpringLoadedDragModeDelayed(true,
-                Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
-    }
-
-    @Override
-    public void onDropCompleted(View target, DragObject d, boolean isFlingToDelete,
-                                boolean success) {
-        if (isFlingToDelete || !success || (target != mLauncher.getWorkspace() &&
-                !(target instanceof DeleteDropTarget) && !(target instanceof Folder))) {
-            // Exit spring loaded mode if we have not successfully dropped or have not handled the
-            // drop in Workspace
-            mLauncher.exitSpringLoadedDragModeDelayed(true,
-                    Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
+    public void onDropCompleted(View view, DropTarget.DragObject dragObject, boolean z, boolean z2) {
+        if (!(!z && z2 && (view == this.mLauncher.getWorkspace() || view instanceof DeleteDropTarget || view instanceof Folder))) {
+            this.mLauncher.exitSpringLoadedDragModeDelayed(true, 500, null);
         }
-
-        // Display an error message if the drag failed due to there not being enough space on the
-        // target layout we were dropping on.
-        if (!success) {
-            boolean showOutOfSpaceMessage = false;
-            if (target instanceof Workspace) {
-                int currentScreen = mLauncher.getCurrentWorkspaceScreen();
-                Workspace workspace = (Workspace) target;
-                CellLayout layout = (CellLayout) workspace.getChildAt(currentScreen);
-                ItemInfo itemInfo = d.dragInfo;
-                if (layout != null) {
-                    showOutOfSpaceMessage =
-                            !layout.findCellForSpan(null, itemInfo.spanX, itemInfo.spanY);
-                }
-            }
-            if (showOutOfSpaceMessage) {
-                mLauncher.showOutOfSpaceMessage(false);
-            }
-            d.deferDragViewCleanupPostAnimation = false;
+        if (!z2) {
+            dragObject.deferDragViewCleanupPostAnimation = false;
         }
     }
 
-    /**
-     * Initialize the widget data model.
-     */
-    public void addWidgets(WidgetsModel model) {
-        mRecyclerView.setWidgets(model);
-        mAdapter.setWidgetsModel(model);
-        mAdapter.notifyDataSetChanged();
-
-        View loader = getContentView().findViewById(R.id.loader);
-        if (loader != null) {
-            ((ViewGroup) getContentView()).removeView(loader);
+    public void setWidgets(MultiHashMap multiHashMap) {
+        this.mAdapter.setWidgets(multiHashMap);
+        this.mAdapter.notifyDataSetChanged();
+        View findViewById = getContentView().findViewById(R.id.loader);
+        if (findViewById != null) {
+            ((ViewGroup) getContentView()).removeView(findViewById);
         }
     }
 
     public boolean isEmpty() {
-        return mAdapter.getItemCount() == 0;
+        return this.mAdapter.getItemCount() == 0;
     }
 
-    private WidgetPreviewLoader getWidgetPreviewLoader() {
-        if (mWidgetPreviewLoader == null) {
-            mWidgetPreviewLoader = LauncherAppState.getInstance().getWidgetCache();
-        }
-        return mWidgetPreviewLoader;
+    public List getWidgetsForPackageUser(PackageUserKey packageUserKey) {
+        return this.mAdapter.copyWidgetsForPackageUser(packageUserKey);
     }
 }

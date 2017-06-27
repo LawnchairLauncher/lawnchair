@@ -60,11 +60,13 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
         mPinchDetector = new ScaleGestureDetector(mLauncher, this);
     }
 
+    @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         mPinchDetector.onTouchEvent(ev);
         return mPinchStarted;
     }
 
+    @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (mPinchStarted) {
             if (ev.getPointerCount() > 2) {
@@ -101,7 +103,7 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
             // once the state switching animation is complete.
             return false;
         }
-        if (mLauncher.getTopFloatingView() != null) {
+        if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
             // Don't listen for the pinch gesture if a floating view is open.
             return false;
         }

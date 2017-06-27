@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -173,6 +174,10 @@ public class IconCache {
             }
         }
         return getFullResDefaultActivityIcon();
+    }
+
+    public Drawable getFullResIcon(LauncherActivityInfo info) {
+        return info.getIcon(mIconDpi);
     }
 
     private Bitmap makeDefaultIcon(UserHandle user) {
@@ -463,11 +468,8 @@ public class IconCache {
         return new IconLoadRequest(request, mWorkerHandler);
     }
 
-    private Bitmap getNonNullIcon(CacheEntry entry, UserHandle user, boolean notificationBadge) {
+    private Bitmap getNonNullIcon(CacheEntry entry, UserHandle user) {
         Bitmap b = entry.icon == null ? getDefaultIcon(user) : entry.icon;
-        if (notificationBadge) {
-            return Utilities.addNotificationBadgeToIcon(b);
-        }
         return b;
     }
 
@@ -483,8 +485,7 @@ public class IconCache {
         String key = "alias_" + application.componentName.flattenToString();
         application.title = Utilities.getPrefs(mContext).getString(key, application.originalTitle.toString());
         application.contentDescription = entry.contentDescription;
-        boolean hasNotifications = NotificationListener.hasNotifications(application.componentName.getPackageName());
-        application.iconBitmap = getNonNullIcon(entry, user, hasNotifications);
+        application.iconBitmap = getNonNullIcon(entry, user);
         application.usingLowResIcon = entry.isLowResIcon;
     }
 
@@ -548,8 +549,7 @@ public class IconCache {
             ShortcutInfo shortcutInfo, ComponentName component, LauncherActivityInfoCompat info,
             UserHandle user, boolean usePkgIcon, boolean useLowResIcon) {
         CacheEntry entry = cacheLocked(component, info, user, usePkgIcon, useLowResIcon);
-        boolean hasNotifications = NotificationListener.hasNotifications(component.getPackageName());
-        Bitmap iBitmap = getNonNullIcon(entry, user, hasNotifications);
+        Bitmap iBitmap = getNonNullIcon(entry, user);
         shortcutInfo.setIcon(iBitmap);
         String title = Utilities.trim(entry.title);
         String key = "alias_" + component.flattenToString();
@@ -568,8 +568,7 @@ public class IconCache {
                 infoInOut.packageName, infoInOut.user, useLowResIcon);
         infoInOut.title = Utilities.trim(entry.title);
         infoInOut.contentDescription = entry.contentDescription;
-        boolean hasNotifications = NotificationListener.hasNotifications(infoInOut.packageName);
-        infoInOut.iconBitmap = getNonNullIcon(entry, infoInOut.user, hasNotifications);
+        infoInOut.iconBitmap = getNonNullIcon(entry, infoInOut.user);
         infoInOut.usingLowResIcon = entry.isLowResIcon;
     }
 

@@ -46,7 +46,7 @@ public class PackageItemInfo extends ItemInfo {
      */
     public String titleSectionName;
 
-    PackageItemInfo(String packageName) {
+    public PackageItemInfo(String packageName) {
         this.packageName = packageName;
     }
 

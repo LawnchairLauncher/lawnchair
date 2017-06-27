@@ -38,7 +38,6 @@ import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.dragndrop.DragController.DragListener;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.folder.Folder;
-import ch.deletescape.lawnchair.shortcuts.DeepShortcutsContainer;
 import ch.deletescape.lawnchair.util.Thunk;
 
 public class LauncherAccessibilityDelegate extends AccessibilityDelegate implements DragListener {
@@ -103,7 +102,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         if (!(host.getTag() instanceof ItemInfo)) return;
         ItemInfo item = (ItemInfo) host.getTag();
 
-        if (host instanceof BubbleTextView && ((BubbleTextView) host).hasDeepShortcuts()) {
+        if (host instanceof BubbleTextView) {
             info.addAction(mActions.get(DEEP_SHORTCUTS));
         }
 
@@ -228,7 +227,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                     .show();
             return true;
         } else if (action == DEEP_SHORTCUTS) {
-            return DeepShortcutsContainer.showForIcon((BubbleTextView) host) != null;
+            return false;
         }
         return false;
     }
