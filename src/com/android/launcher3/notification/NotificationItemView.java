@@ -48,6 +48,7 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
 
     private static final Rect sTempRect = new Rect();
 
+    private TextView mHeaderText;
     private TextView mHeaderCount;
     private NotificationMainView mMainView;
     private NotificationFooterLayout mFooter;
@@ -70,6 +71,7 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mHeaderText = (TextView) findViewById(R.id.notification_text);
         mHeaderCount = (TextView) findViewById(R.id.notification_count);
         mMainView = (NotificationMainView) findViewById(R.id.main_view);
         mFooter = (NotificationFooterLayout) findViewById(R.id.footer);
@@ -106,6 +108,7 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
                         IconPalette.resolveContrastColor(getContext(), palette.dominantColor,
                                 Themes.getAttrColor(getContext(), R.attr.popupColorPrimary));
             }
+            mHeaderText.setTextColor(mNotificationHeaderTextColor);
             mHeaderCount.setTextColor(mNotificationHeaderTextColor);
         }
     }

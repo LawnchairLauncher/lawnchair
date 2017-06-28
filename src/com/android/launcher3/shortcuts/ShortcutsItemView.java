@@ -35,6 +35,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
@@ -280,6 +281,9 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
             // Make sure the text and icon stay centered in the shortcut.
             animation.play(translateYFrom(shortcut.getBubbleText(), heightDiff / 2 * fromDir));
             animation.play(translateYFrom(shortcut.getIconView(), heightDiff / 2 * fromDir));
+            // Scale icons back up to full size.
+            animation.play(LauncherAnimUtils.ofPropertyValuesHolder(shortcut.getIconView(),
+                    new PropertyListBuilder().scale(1f).build()));
         }
         return animation;
     }

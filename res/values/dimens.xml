@@ -213,6 +213,7 @@
     <dimen name="notification_footer_height">32dp</dimen>
     <dimen name="notification_header_text_size">13sp</dimen>
     <dimen name="notification_header_count_text_size">12sp</dimen>
+    <dimen name="notification_main_title_size">16sp</dimen>
     <dimen name="notification_main_text_size">14sp</dimen>
     <dimen name="notification_icon_size">24dp</dimen>
     <dimen name="notification_footer_icon_size">18dp</dimen>
