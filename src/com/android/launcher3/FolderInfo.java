@@ -45,6 +45,12 @@ public class FolderInfo extends ItemInfo {
      */
     public static final int FLAG_MULTI_PAGE_ANIMATION = 0x00000004;
 
+    /**
+     * The folder items ranks have been updated such that they appear unchanged with the new
+     * permutation display logic.
+     */
+    public static final int FLAG_ITEM_RANKS_UPDATED = 0x00000008;
+
     public int options;
 
     /**
