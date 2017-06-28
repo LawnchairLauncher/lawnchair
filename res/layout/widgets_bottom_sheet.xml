@@ -22,14 +22,15 @@
     android:paddingTop="28dp"
     android:background="?android:attr/colorPrimary"
     android:elevation="@dimen/deep_shortcuts_elevation"
-    android:layout_gravity="bottom">
+    android:layout_gravity="bottom"
+    android:theme="?attr/widgetsTheme">
 
     <TextView
+        style="@style/TextTitle"
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:fontFamily="sans-serif"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="24sp"/>
 

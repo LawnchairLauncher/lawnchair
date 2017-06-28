@@ -16,25 +16,25 @@
 
 package com.android.launcher3.notification;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.support.annotation.Nullable;
-import android.support.v4.util.Pair;
 import android.text.TextUtils;
-
+import android.util.ArraySet;
+import android.util.Pair;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.PackageUserKey;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -44,6 +44,7 @@ import java.util.Set;
  * as well and when this service first connects. An instance of NotificationListener,
  * and its methods for getting notifications, can be obtained via {@link #getInstanceIfConnected()}.
  */
+@TargetApi(Build.VERSION_CODES.O)
 public class NotificationListener extends NotificationListenerService {
 
     private static final int MSG_NOTIFICATION_POSTED = 1;
@@ -57,9 +58,9 @@ public class NotificationListener extends NotificationListenerService {
     private final Handler mWorkerHandler;
     private final Handler mUiHandler;
 
-    private Ranking mTempRanking = new Ranking();
+    private final Ranking mTempRanking = new Ranking();
 
-    private Handler.Callback mWorkerCallback = new Handler.Callback() {
+    private final Handler.Callback mWorkerCallback = new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
             switch (message.what) {
@@ -80,7 +81,7 @@ public class NotificationListener extends NotificationListenerService {
         }
     };
 
-    private Handler.Callback mUiCallback = new Handler.Callback() {
+    private final Handler.Callback mUiCallback = new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
             switch (message.what) {
@@ -163,9 +164,9 @@ public class NotificationListener extends NotificationListenerService {
      * An object containing data to send to MSG_NOTIFICATION_POSTED targets.
      */
     private class NotificationPostedMsg {
-        PackageUserKey packageUserKey;
-        NotificationKeyData notificationKey;
-        boolean shouldBeFilteredOut;
+        final PackageUserKey packageUserKey;
+        final NotificationKeyData notificationKey;
+        final boolean shouldBeFilteredOut;
 
         NotificationPostedMsg(StatusBarNotification sbn) {
             packageUserKey = PackageUserKey.fromNotification(sbn);
@@ -189,7 +190,8 @@ public class NotificationListener extends NotificationListenerService {
         StatusBarNotification[] notifications = NotificationListener.this
                 .getActiveNotifications(NotificationKeyData.extractKeysOnly(keys)
                         .toArray(new String[keys.size()]));
-        return notifications == null ? Collections.EMPTY_LIST : Arrays.asList(notifications);
+        return notifications == null
+            ? Collections.<StatusBarNotification>emptyList() : Arrays.asList(notifications);
     }
 
     /**
@@ -201,7 +203,7 @@ public class NotificationListener extends NotificationListenerService {
     private List<StatusBarNotification> filterNotifications(
             StatusBarNotification[] notifications) {
         if (notifications == null) return null;
-        Set<Integer> removedNotifications = new HashSet<>();
+        Set<Integer> removedNotifications = new ArraySet<>();
         for (int i = 0; i < notifications.length; i++) {
             if (shouldBeFilteredOut(notifications[i])) {
                 removedNotifications.add(i);

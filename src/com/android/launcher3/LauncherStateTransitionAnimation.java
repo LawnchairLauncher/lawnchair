@@ -31,8 +31,8 @@ import android.view.animation.AccelerateInterpolator;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimationLayerSet;
+import com.android.launcher3.anim.CircleRevealOutlineProvider;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.util.CircleRevealOutlineProvider;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.WidgetsContainerView;
 
@@ -127,12 +127,8 @@ public class LauncherStateTransitionAnimation {
 
     /**
      * Starts an animation to the apps view.
-     *
-     * @param startSearchAfterTransition Immediately starts app search after the transition to
-     *                                   All Apps is completed.
      */
-    public void startAnimationToAllApps(
-            final boolean animated, final boolean startSearchAfterTransition) {
+    public void startAnimationToAllApps(final boolean animated) {
         final AllAppsContainerView toView = mLauncher.getAppsView();
         final View buttonView = mLauncher.getStartViewForAllAppsRevealAnimation();
         PrivateTransitionCallbacks cb = new PrivateTransitionCallbacks(1f) {
@@ -156,9 +152,6 @@ public class LauncherStateTransitionAnimation {
             @Override
             void onTransitionComplete() {
                 mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
-                if (startSearchAfterTransition) {
-                    toView.startAppsSearch();
-                }
             }
         };
         int animType = CIRCULAR_REVEAL;

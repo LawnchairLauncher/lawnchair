@@ -21,7 +21,6 @@ import android.os.UserHandle;
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.graphics.LauncherIcons;
@@ -35,7 +34,7 @@ import java.util.List;
 /**
  * Handles changes due to shortcut manager updates (deep shortcut changes)
  */
-public class ShortcutsChangedTask extends ExtendedModelTask {
+public class ShortcutsChangedTask extends BaseModelUpdateTask {
 
     private final String mPackageName;
     private final List<ShortcutInfoCompat> mShortcuts;

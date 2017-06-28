@@ -1,12 +1,5 @@
 package com.android.launcher3.folder;
 
-import android.view.View;
-
-import com.android.launcher3.config.FeatureFlags;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
 
     static final int MAX_NUM_ITEMS_IN_PREVIEW = 4;
@@ -27,7 +20,7 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
     private float mBaselineIconScale;
 
     @Override
-    public void init(int availableSpace, int intrinsicIconSize, boolean rtl) {
+    public void init(int availableSpace, float intrinsicIconSize, boolean rtl) {
         mAvailableSpace = availableSpace;
         mRadius = ITEM_RADIUS_SCALE_FACTOR * availableSpace / 2f;
         mIconSize = intrinsicIconSize;
@@ -36,8 +29,8 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
     }
 
     @Override
-    public FolderIcon.PreviewItemDrawingParams computePreviewItemDrawingParams(int index,
-            int curNumItems, FolderIcon.PreviewItemDrawingParams params) {
+    public PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
+            PreviewItemDrawingParams params) {
 
         float totalScale = scaleForItem(index, curNumItems);
         float transX;
@@ -54,7 +47,7 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
         }
 
         if (params == null) {
-            params = new FolderIcon.PreviewItemDrawingParams(transX, transY, totalScale, overlayAlpha);
+            params = new PreviewItemDrawingParams(transX, transY, totalScale, overlayAlpha);
         } else {
             params.update(transX, transY, totalScale);
             params.overlayAlpha = overlayAlpha;
@@ -121,6 +114,11 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
     }
 
     @Override
+    public float getIconSize() {
+        return mIconSize;
+    }
+
+    @Override
     public int maxNumItems() {
         return MAX_NUM_ITEMS_IN_PREVIEW;
     }
@@ -128,25 +126,5 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
     @Override
     public boolean clipToBackground() {
         return true;
-    }
-
-    @Override
-    public List<View> getItemsToDisplay(Folder folder) {
-        List<View> items = new ArrayList<>(folder.getItemsInReadingOrder());
-        int numItems = items.size();
-        if (FeatureFlags.LAUNCHER3_NEW_FOLDER_ANIMATION && numItems > MAX_NUM_ITEMS_IN_PREVIEW) {
-            // We match the icons in the preview with the layout of the opened folder (b/27944225),
-            // but we still need to figure out how we want to handle updating the preview when the
-            // upper left quadrant changes.
-            int appsPerRow = folder.mContent.getPageAt(0).getCountX();
-            int appsToDelete = appsPerRow - MAX_NUM_ITEMS_PER_ROW;
-
-            // We only display the upper left quadrant.
-            while (appsToDelete > 0) {
-                items.remove(MAX_NUM_ITEMS_PER_ROW);
-                appsToDelete--;
-            }
-        }
-        return items.subList(0, Math.min(numItems, MAX_NUM_ITEMS_IN_PREVIEW));
     }
 }

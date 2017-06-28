@@ -24,23 +24,20 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.graphics.RectF;
 import android.os.Handler;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
-
 import com.android.launcher3.R;
-
-import java.util.HashMap;
 
 /**
  * This class was copied from com.android.systemui.
  */
 public class SwipeHelper {
-    static final String TAG = "SwipeHelper";
-    private static final boolean DEBUG = false;
+    private static final String TAG = "SwipeHelper";
     private static final boolean DEBUG_INVALIDATE = false;
     private static final boolean SLOW_ANIMATIONS = false; // DEBUG;
     private static final boolean CONSTRAIN_SWIPE = true;
@@ -50,10 +47,10 @@ public class SwipeHelper {
     public static final int X = 0;
     public static final int Y = 1;
 
-    private float SWIPE_ESCAPE_VELOCITY = 100f; // dp/sec
-    private int DEFAULT_ESCAPE_ANIMATION_DURATION = 200; // ms
-    private int MAX_ESCAPE_ANIMATION_DURATION = 400; // ms
-    private int MAX_DISMISS_VELOCITY = 4000; // dp/sec
+    private static final float SWIPE_ESCAPE_VELOCITY = 100f; // dp/sec
+    private static final int DEFAULT_ESCAPE_ANIMATION_DURATION = 200; // ms
+    private static final int MAX_ESCAPE_ANIMATION_DURATION = 400; // ms
+    private static final int MAX_DISMISS_VELOCITY = 4000; // dp/sec
     private static final int SNAP_ANIM_LEN = SLOW_ANIMATIONS ? 1000 : 150; // ms
 
     static final float SWIPE_PROGRESS_FADE_END = 0.5f; // fraction of thumbnail width
@@ -61,12 +58,12 @@ public class SwipeHelper {
     private float mMinSwipeProgress = 0f;
     private float mMaxSwipeProgress = 1f;
 
-    private FlingAnimationUtils mFlingAnimationUtils;
+    private final FlingAnimationUtils mFlingAnimationUtils;
     private float mPagingTouchSlop;
-    private Callback mCallback;
-    private Handler mHandler;
-    private int mSwipeDirection;
-    private VelocityTracker mVelocityTracker;
+    private final Callback mCallback;
+    private final Handler mHandler;
+    private final int mSwipeDirection;
+    private final VelocityTracker mVelocityTracker;
 
     private float mInitialTouchPos;
     private float mPerpendicularInitialTouchPos;
@@ -80,14 +77,14 @@ public class SwipeHelper {
     private boolean mLongPressSent;
     private LongPressListener mLongPressListener;
     private Runnable mWatchLongPress;
-    private long mLongPressTimeout;
+    private final long mLongPressTimeout;
 
     final private int[] mTmpPos = new int[2];
-    private int mFalsingThreshold;
+    private final int mFalsingThreshold;
     private boolean mTouchAboveFalsingThreshold;
     private boolean mDisableHwLayers;
 
-    private HashMap<View, Animator> mDismissPendingMap = new HashMap<>();
+    private final ArrayMap<View, Animator> mDismissPendingMap = new ArrayMap<>();
 
     public SwipeHelper(int swipeDirection, Callback callback, Context context) {
         mCallback = callback;

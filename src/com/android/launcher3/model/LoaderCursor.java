@@ -219,7 +219,7 @@ public class LoaderCursor extends CursorWrapper {
             if (!TextUtils.isEmpty(title)) {
                 info.title = Utilities.trim(title);
             }
-        } else if  (hasRestoreFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
+        } else if  (hasRestoreFlag(ShortcutInfo.FLAG_AUTOINSTALL_ICON)) {
             if (TextUtils.isEmpty(info.title)) {
                 info.title = getTitle();
             }

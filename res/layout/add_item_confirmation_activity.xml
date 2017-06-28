@@ -17,57 +17,73 @@
 */
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="20dp"
-        android:text="@string/add_item_request_drag_hint"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false">
 
-    <FrameLayout
-        android:theme="@style/WidgetContainerTheme"
-        android:layout_width="match_parent"
-        android:background="?android:attr/colorPrimaryDark"
-        android:layout_height="wrap_content">
-
-        <com.android.launcher3.dragndrop.LivePreviewWidgetCell
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:focusable="true"
-            android:background="?android:attr/colorPrimaryDark"
-            android:gravity="center_horizontal"
-            android:id="@+id/widget_cell"
-            android:layout_gravity="center_horizontal" >
+            android:orientation="vertical">
 
-            <include layout="@layout/widget_cell_content"  />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="20dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingTop="4dp"
+                android:text="@string/add_item_request_drag_hint" />
 
-        </com.android.launcher3.dragndrop.LivePreviewWidgetCell>
-    </FrameLayout>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/colorPrimaryDark"
+                android:theme="@style/WidgetContainerTheme">
+
+                <com.android.launcher3.dragndrop.LivePreviewWidgetCell
+                    android:id="@+id/widget_cell"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:background="?android:attr/colorPrimaryDark"
+                    android:focusable="true"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical" >
+
+                    <include layout="@layout/widget_cell_content"  />
+
+                </com.android.launcher3.dragndrop.LivePreviewWidgetCell>
+            </FrameLayout>
+        </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
+        style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="?android:attr/buttonBarStyle"
-        android:gravity="end" >
+        android:gravity="end"
+        android:paddingBottom="4dp"
+        android:paddingEnd="12dp"
+        android:paddingStart="12dp"
+        android:paddingTop="4dp" >
         <Button
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@android:string/cancel"
             android:onClick="onCancelClick"
-            style="?android:attr/buttonBarButtonStyle" />
+            android:text="@android:string/cancel" />
         <Button
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/place_automatically"
             android:onClick="onPlaceAutomaticallyClick"
-            style="?android:attr/buttonBarButtonStyle" />
+            android:text="@string/place_automatically" />
     </LinearLayout>
 </LinearLayout>

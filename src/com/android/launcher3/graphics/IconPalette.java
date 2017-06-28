@@ -169,43 +169,40 @@ public class IconPalette {
      * This was copied from com.android.internal.util.NotificationColorUtil.
      */
     private static int ensureTextContrast(int color, int bg) {
-        return findContrastColor(color, bg, true, 4.5);
+        return findContrastColor(color, bg, 4.5);
     }
     /**
      * Finds a suitable color such that there's enough contrast.
      *
-     * @param color the color to start searching from.
-     * @param other the color to ensure contrast against. Assumed to be lighter than {@param color}
-     * @param findFg if true, we assume {@param color} is a foreground, otherwise a background.
+     * @param fg the color to start searching from.
+     * @param bg the color to ensure contrast against.
      * @param minRatio the minimum contrast ratio required.
      * @return a color with the same hue as {@param color}, potentially darkened to meet the
      *          contrast ratio.
      *
      * This was copied from com.android.internal.util.NotificationColorUtil.
      */
-    private static int findContrastColor(int color, int other, boolean findFg, double minRatio) {
-        int fg = findFg ? color : other;
-        int bg = findFg ? other : color;
+    private static int findContrastColor(int fg, int bg, double minRatio) {
         if (ColorUtils.calculateContrast(fg, bg) >= minRatio) {
-            return color;
+            return fg;
         }
 
         double[] lab = new double[3];
-        ColorUtils.colorToLAB(findFg ? fg : bg, lab);
+        ColorUtils.colorToLAB(bg, lab);
+        double bgL = lab[0];
+        ColorUtils.colorToLAB(fg, lab);
+        double fgL = lab[0];
+        boolean isBgDark = bgL < 50;
 
-        double low = 0, high = lab[0];
+        double low = isBgDark ? fgL : 0, high = isBgDark ? 100 : fgL;
         final double a = lab[1], b = lab[2];
         for (int i = 0; i < 15 && high - low > 0.00001; i++) {
             final double l = (low + high) / 2;
-            if (findFg) {
-                fg = ColorUtils.LABToColor(l, a, b);
-            } else {
-                bg = ColorUtils.LABToColor(l, a, b);
-            }
+            fg = ColorUtils.LABToColor(l, a, b);
             if (ColorUtils.calculateContrast(fg, bg) > minRatio) {
-                low = l;
+                if (isBgDark) high = l; else low = l;
             } else {
-                high = l;
+                if (isBgDark) low = l; else high = l;
             }
         }
         return ColorUtils.LABToColor(low, a, b);

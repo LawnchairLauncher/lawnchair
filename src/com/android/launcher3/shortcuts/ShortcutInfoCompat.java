@@ -18,14 +18,10 @@ package com.android.launcher3.shortcuts;
 
 import android.annotation.TargetApi;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.os.Build;
 import android.os.UserHandle;
-
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.compat.UserManagerCompat;
 
 /**
  * Wrapper class for {@link android.content.pm.ShortcutInfo}, representing deep shortcuts into apps.

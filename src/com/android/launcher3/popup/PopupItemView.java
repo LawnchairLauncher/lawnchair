@@ -16,38 +16,34 @@
 
 package com.android.launcher3.popup;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RoundRectShape;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.android.launcher3.LogAccelerateInterpolator;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.util.PillRevealOutlineProvider;
+import com.android.launcher3.popup.PopupContainerWithArrow.RoundedCornerFlags;
+
+import static com.android.launcher3.popup.PopupContainerWithArrow.ROUNDED_BOTTOM_CORNERS;
+import static com.android.launcher3.popup.PopupContainerWithArrow.ROUNDED_TOP_CORNERS;
 
 /**
- * An abstract {@link FrameLayout} that supports animating an item's content
- * (e.g. icon and text) separate from the item's background.
+ * An abstract {@link FrameLayout} that contains content for {@link PopupContainerWithArrow}.
  */
-public abstract class PopupItemView extends FrameLayout
-        implements ValueAnimator.AnimatorUpdateListener {
-
-    protected static final Point sTempPoint = new Point();
+public abstract class PopupItemView extends FrameLayout {
 
     protected final Rect mPillRect;
-    private float mOpenAnimationProgress;
+    protected  @RoundedCornerFlags int mRoundedCorners;
     protected final boolean mIsRtl;
     protected View mIconView;
 
@@ -93,164 +89,57 @@ public abstract class PopupItemView extends FrameLayout
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        if (mRoundedCorners == 0) {
+            super.dispatchDraw(canvas);
+            return;
+        }
+
         int saveCount = canvas.saveLayer(0, 0, getWidth(), getHeight(), null);
         super.dispatchDraw(canvas);
 
+        // Clip children to this item's rounded corners.
         int cornerWidth = mRoundedCornerBitmap.getWidth();
         int cornerHeight = mRoundedCornerBitmap.getHeight();
-        // Clip top left corner.
-        mMatrix.reset();
-        canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
-        // Clip top right corner.
-        mMatrix.setRotate(90, cornerWidth / 2, cornerHeight / 2);
-        mMatrix.postTranslate(canvas.getWidth() - cornerWidth, 0);
-        canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
-        // Clip bottom right corner.
-        mMatrix.setRotate(180, cornerWidth / 2, cornerHeight / 2);
-        mMatrix.postTranslate(canvas.getWidth() - cornerWidth, canvas.getHeight() - cornerHeight);
-        canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
-        // Clip bottom left corner.
-        mMatrix.setRotate(270, cornerWidth / 2, cornerHeight / 2);
-        mMatrix.postTranslate(0, canvas.getHeight() - cornerHeight);
-        canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
+        int cornerCenterX = Math.round(cornerWidth / 2f);
+        int cornerCenterY = Math.round(cornerHeight / 2f);
+        if ((mRoundedCorners & ROUNDED_TOP_CORNERS) != 0) {
+            // Clip top left corner.
+            mMatrix.reset();
+            canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
+            // Clip top right corner.
+            mMatrix.setRotate(90, cornerCenterX, cornerCenterY);
+            mMatrix.postTranslate(canvas.getWidth() - cornerWidth, 0);
+            canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
+        }
+        if ((mRoundedCorners & ROUNDED_BOTTOM_CORNERS) != 0) {
+            // Clip bottom right corner.
+            mMatrix.setRotate(180, cornerCenterX, cornerCenterY);
+            mMatrix.postTranslate(canvas.getWidth() - cornerWidth, canvas.getHeight() - cornerHeight);
+            canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
+            // Clip bottom left corner.
+            mMatrix.setRotate(270, cornerCenterX, cornerCenterY);
+            mMatrix.postTranslate(0, canvas.getHeight() - cornerHeight);
+            canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
+        }
 
         canvas.restoreToCount(saveCount);
     }
 
     /**
-     * Creates an animator to play when the shortcut container is being opened.
+     * Creates a round rect drawable (with the specified corners unrounded)
+     * and sets it as this View's background.
      */
-    public Animator createOpenAnimation(boolean isContainerAboveIcon, boolean pivotLeft) {
-        Point center = getIconCenter();
-        int arrowCenter = getResources().getDimensionPixelSize(pivotLeft ^ mIsRtl ?
-                R.dimen.popup_arrow_horizontal_center_start:
-                R.dimen.popup_arrow_horizontal_center_end);
-        ValueAnimator openAnimator =  new ZoomRevealOutlineProvider(center.x, center.y,
-                mPillRect, this, mIconView, isContainerAboveIcon, pivotLeft, arrowCenter)
-                        .createRevealAnimator(this, false);
-        mOpenAnimationProgress = 0f;
-        openAnimator.addUpdateListener(this);
-        return openAnimator;
-    }
-
-    @Override
-    public void onAnimationUpdate(ValueAnimator valueAnimator) {
-        mOpenAnimationProgress = valueAnimator.getAnimatedFraction();
-    }
-
-    public boolean isOpenOrOpening() {
-        return mOpenAnimationProgress > 0;
-    }
-
-    /**
-     * Creates an animator to play when the shortcut container is being closed.
-     */
-    public Animator createCloseAnimation(boolean isContainerAboveIcon, boolean pivotLeft,
-            long duration) {
-        Point center = getIconCenter();
-        int arrowCenter = getResources().getDimensionPixelSize(pivotLeft ^ mIsRtl ?
-                R.dimen.popup_arrow_horizontal_center_start :
-                R.dimen.popup_arrow_horizontal_center_end);
-        ValueAnimator closeAnimator = new ZoomRevealOutlineProvider(center.x, center.y,
-                mPillRect, this, mIconView, isContainerAboveIcon, pivotLeft, arrowCenter)
-                        .createRevealAnimator(this, true);
-        // Scale down the duration and interpolator according to the progress
-        // that the open animation was at when the close started.
-        closeAnimator.setDuration((long) (duration * mOpenAnimationProgress));
-        closeAnimator.setInterpolator(new CloseInterpolator(mOpenAnimationProgress));
-        closeAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mOpenAnimationProgress = 0;
-            }
-        });
-        return closeAnimator;
-    }
-
-    /**
-     * Returns the position of the center of the icon relative to the container.
-     */
-    public Point getIconCenter() {
-        sTempPoint.y = getMeasuredHeight() / 2;
-        sTempPoint.x = getResources().getDimensionPixelSize(R.dimen.bg_popup_item_height) / 2;
-        if (Utilities.isRtl(getResources())) {
-            sTempPoint.x = getMeasuredWidth() - sTempPoint.x;
-        }
-        return sTempPoint;
+    public void setBackgroundWithCorners(int color, @RoundedCornerFlags int roundedCorners) {
+        mRoundedCorners = roundedCorners;
+        float rTop = (roundedCorners & ROUNDED_TOP_CORNERS) == 0 ? 0 : getBackgroundRadius();
+        float rBot = (roundedCorners & ROUNDED_BOTTOM_CORNERS) == 0 ? 0 : getBackgroundRadius();
+        float[] radii = new float[] {rTop, rTop, rTop, rTop, rBot, rBot, rBot, rBot};
+        ShapeDrawable roundRectBackground = new ShapeDrawable(new RoundRectShape(radii, null, null));
+        roundRectBackground.getPaint().setColor(color);
+        setBackground(roundRectBackground);
     }
 
     protected float getBackgroundRadius() {
         return getResources().getDimensionPixelSize(R.dimen.bg_round_rect_radius);
-    }
-
-    public abstract int getArrowColor(boolean isArrowAttachedToBottom);
-
-    /**
-     * Extension of {@link PillRevealOutlineProvider} which scales the icon based on the height.
-     */
-    private static class ZoomRevealOutlineProvider extends PillRevealOutlineProvider {
-
-        private final View mTranslateView;
-        private final View mZoomView;
-
-        private final float mFullHeight;
-        private final float mTranslateYMultiplier;
-
-        private final boolean mPivotLeft;
-        private final float mTranslateX;
-        private final float mArrowCenter;
-
-        public ZoomRevealOutlineProvider(int x, int y, Rect pillRect, PopupItemView translateView,
-                View zoomView, boolean isContainerAboveIcon, boolean pivotLeft, float arrowCenter) {
-            super(x, y, pillRect, translateView.getBackgroundRadius());
-            mTranslateView = translateView;
-            mZoomView = zoomView;
-            mFullHeight = pillRect.height();
-
-            mTranslateYMultiplier = isContainerAboveIcon ? 0.5f : -0.5f;
-
-            mPivotLeft = pivotLeft;
-            mTranslateX = pivotLeft ? arrowCenter : pillRect.right - arrowCenter;
-            mArrowCenter = arrowCenter;
-        }
-
-        @Override
-        public void setProgress(float progress) {
-            super.setProgress(progress);
-
-            if (mZoomView != null) {
-                mZoomView.setScaleX(progress);
-                mZoomView.setScaleY(progress);
-            }
-
-            float height = mOutline.height();
-            mTranslateView.setTranslationY(mTranslateYMultiplier * (mFullHeight - height));
-
-            float offsetX = Math.min(mOutline.width(), mArrowCenter);
-            float pivotX = mPivotLeft ? (mOutline.left + offsetX) : (mOutline.right - offsetX);
-            mTranslateView.setTranslationX(mTranslateX - pivotX);
-        }
-    }
-
-    /**
-     * An interpolator that reverses the current open animation progress.
-     */
-    private static class CloseInterpolator extends LogAccelerateInterpolator {
-        private float mStartProgress;
-        private float mRemainingProgress;
-
-        /**
-         * @param openAnimationProgress The progress that the open interpolator ended at.
-         */
-        public CloseInterpolator(float openAnimationProgress) {
-            super(100, 0);
-            mStartProgress = 1f - openAnimationProgress;
-            mRemainingProgress = openAnimationProgress;
-        }
-
-        @Override
-        public float getInterpolation(float v) {
-            return mStartProgress + super.getInterpolation(v) * mRemainingProgress;
-        }
     }
 }

@@ -23,25 +23,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability="afterDescendants"
-    launcher:revealBackground="@drawable/round_rect_primary"
-    android:theme="@style/WidgetContainerTheme">
+    android:theme="?attr/widgetsTheme"
+    launcher:revealBackground="@drawable/round_rect_primary">
 
     <View
         android:id="@+id/reveal_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:focusable="false"
         android:elevation="2dp"
+        android:focusable="false"
         android:visibility="invisible" />
 
     <FrameLayout
         android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:elevation="15dp"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:visibility="gone">
 
         <com.android.launcher3.widget.WidgetsRecyclerView
             android:id="@+id/widgets_list_view"
@@ -50,18 +50,24 @@
 
         <!-- Fast scroller popup -->
         <TextView
-            style="@style/FastScrollerPopup"
-            android:layout_below="@+id/search_container"
             android:id="@+id/fast_scroller_popup"
+            style="@style/FastScrollerPopup"
             android:layout_gravity="top|end"
-            android:layout_marginEnd="@dimen/container_fastscroll_popup_margin" />
+            android:layout_marginEnd="@dimen/fastscroll_popup_margin" />
 
         <ProgressBar
+            android:id="@+id/loader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/loader"
             android:layout_gravity="center" />
-    </FrameLayout>
 
+        <com.android.launcher3.views.RecyclerViewFastScroller
+            android:id="@+id/fast_scroller"
+            android:layout_width="@dimen/fastscroll_width"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:layout_marginEnd="@dimen/fastscroll_end_margin" />
+
+    </FrameLayout>
 
 </com.android.launcher3.widget.WidgetsContainerView>

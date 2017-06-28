@@ -16,12 +16,10 @@
 
 package com.android.launcher3.util;
 
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnAttachStateChangeListener;
 import android.view.ViewTreeObserver.OnDrawListener;
 
-import com.android.launcher3.DeferredHandler;
 import com.android.launcher3.Launcher;
 
 import java.util.ArrayList;
@@ -34,7 +32,7 @@ public class ViewOnDrawExecutor implements Executor, OnDrawListener, Runnable,
         OnAttachStateChangeListener {
 
     private final ArrayList<Runnable> mTasks = new ArrayList<>();
-    private final DeferredHandler mHandler;
+    private final Executor mExecutor;
 
     private Launcher mLauncher;
     private View mAttachedView;
@@ -43,8 +41,8 @@ public class ViewOnDrawExecutor implements Executor, OnDrawListener, Runnable,
     private boolean mLoadAnimationCompleted;
     private boolean mFirstDrawCompleted;
 
-    public ViewOnDrawExecutor(DeferredHandler handler) {
-        mHandler = handler;
+    public ViewOnDrawExecutor(Executor executor) {
+        mExecutor = executor;
     }
 
     public void attachTo(Launcher launcher) {
@@ -92,7 +90,7 @@ public class ViewOnDrawExecutor implements Executor, OnDrawListener, Runnable,
         // Post the pending tasks after both onDraw and onLoadAnimationCompleted have been called.
         if (mLoadAnimationCompleted && mFirstDrawCompleted && !mCompleted) {
             for (final Runnable r : mTasks) {
-                mHandler.post(r);
+                mExecutor.execute(r);
             }
             markCompleted();
         }

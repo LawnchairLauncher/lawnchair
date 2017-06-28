@@ -19,9 +19,8 @@ package com.android.launcher3.shortcuts;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.UserHandle;
+import android.util.ArrayMap;
 import android.util.LruCache;
-
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -31,18 +30,15 @@ import java.util.List;
  */
 @TargetApi(Build.VERSION_CODES.N)
 public class ShortcutCache {
-    private static final String TAG = "ShortcutCache";
-    private static final boolean LOGD = false;
-
     private static final int CACHE_SIZE = 30; // Max number shortcuts we cache.
 
-    private LruCache<ShortcutKey, ShortcutInfoCompat> mCachedShortcuts;
+    private final LruCache<ShortcutKey, ShortcutInfoCompat> mCachedShortcuts;
     // We always keep pinned shortcuts in the cache.
-    private HashMap<ShortcutKey, ShortcutInfoCompat> mPinnedShortcuts;
+    private final ArrayMap<ShortcutKey, ShortcutInfoCompat> mPinnedShortcuts;
 
     public ShortcutCache() {
         mCachedShortcuts = new LruCache<>(CACHE_SIZE);
-        mPinnedShortcuts = new HashMap<>();
+        mPinnedShortcuts = new ArrayMap<>();
     }
 
     /**

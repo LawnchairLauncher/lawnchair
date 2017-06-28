@@ -30,9 +30,11 @@ import android.os.UserHandle;
 import android.text.TextUtils;
 
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 
+import java.net.URISyntaxException;
 import java.util.List;
 
 /**
@@ -148,5 +150,21 @@ public class PackageManagerHelper {
                         .authority("details")
                         .appendQueryParameter("id", packageName)
                         .build());
+    }
+
+    /**
+     * Creates a new market search intent.
+     */
+    public static Intent getMarketSearchIntent(Context context, String query) {
+        try {
+            Intent intent = Intent.parseUri(context.getString(R.string.market_search_intent), 0);
+            if (!TextUtils.isEmpty(query)) {
+                intent.setData(
+                        intent.getData().buildUpon().appendQueryParameter("q", query).build());
+            }
+            return intent;
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

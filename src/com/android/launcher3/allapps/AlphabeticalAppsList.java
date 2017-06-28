@@ -24,7 +24,7 @@ import android.util.Log;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
-import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.discovery.AppDiscoveryAppInfo;
 import com.android.launcher3.discovery.AppDiscoveryItem;
 import com.android.launcher3.discovery.AppDiscoveryUpdateState;
@@ -138,13 +138,6 @@ public class AlphabeticalAppsList {
             return item;
         }
 
-        public static AdapterItem asSearchDivider(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER;
-            item.position = pos;
-            return item;
-        }
-
         public static AdapterItem asMarketDivider(int pos) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER;
@@ -223,6 +216,13 @@ public class AlphabeticalAppsList {
      */
     public List<AppInfo> getApps() {
         return mApps;
+    }
+
+    /**
+     * Returns the predicted apps.
+     */
+    public List<AppInfo> getPredictedApps() {
+        return mPredictedApps;
     }
 
     /**
@@ -429,9 +429,6 @@ public class AlphabeticalAppsList {
             }
         }
 
-        // Add the search divider
-        mAdapterItems.add(AdapterItem.asSearchDivider(position++));
-
         // Process the predicted app components
         mPredictedApps.clear();
         if (mPredictedAppComponents != null && !mPredictedAppComponents.isEmpty() && !hasFilter()) {
@@ -440,7 +437,7 @@ public class AlphabeticalAppsList {
                 if (info != null) {
                     mPredictedApps.add(info);
                 } else {
-                    if (ProviderConfig.IS_DOGFOOD_BUILD) {
+                    if (FeatureFlags.IS_DOGFOOD_BUILD) {
                         Log.e(TAG, "Predicted app not found: " + ck);
                     }
                 }
@@ -604,6 +601,10 @@ public class AlphabeticalAppsList {
             Collections.sort(result, mAppNameComparator);
         }
         return result;
+    }
+
+    public AppInfo findApp(ComponentKey key) {
+        return mComponentToAppMap.get(key);
     }
 
     /**

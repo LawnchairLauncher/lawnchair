@@ -70,20 +70,24 @@
     <string name="folder_name_format" msgid="6629239338071103179">"ថត៖ <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"ធាតុ​ក្រាហ្វិក"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ផ្ទាំង​រូបភាព"</string>
-    <string name="settings_button_text" msgid="8119458837558863227">"ការកំណត់"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"ការកំណត់​ទំព័រដើម"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"បានបិទដំណើរការដោយអ្នកគ្រប់គ្រងរបស់អ្នក"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"សង្ខេប"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"អនុញ្ញាតការបងិ្វលអេក្រង់ដើម"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"នៅពេលដែលបង្វិលទូរស័ព្ទរបស់អ្នក"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"ការកំណត់អេក្រង់បច្ចុប្បន្នមិនអនុញ្ញាតការបង្វិលទេ"</string>
-    <string name="icon_badging_title" msgid="4418239350706629417">"ការដាក់ស្លាក​សញ្ញារូបតំណាង"</string>
-    <string name="icon_badging_desc_on" msgid="6022379097717134764">"បើក​សម្រាប់​កម្មវិធីទាំងអស់"</string>
-    <string name="icon_badging_desc_off" msgid="1574640601251590211">"បិទសម្រាប់កម្មវិធីទាំងអស់"</string>
+    <string name="icon_badging_title" msgid="874121399231955394">"ស្លាកជូនដំណឹង"</string>
+    <string name="icon_badging_desc_on" msgid="2627952638544674079">"បើក"</string>
+    <string name="icon_badging_desc_off" msgid="5503319969924580241">"បិទ"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"បញ្ចូល​រូបតំណាង​ទៅ​អេក្រង់​ដើម"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"សម្រាប់កម្មវិធីថ្មី"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
     <skip />
     <string name="icon_shape_system_default" msgid="1709762974822753030">"ប្រើលំនាំដើមរបស់ប្រព័ន្ធ"</string>
+    <string name="icon_shape_square" msgid="633575066111622774">"ការ៉េ"</string>
+    <string name="icon_shape_squircle" msgid="5658049910802669495">"ការ៉េជ្រុងកោង"</string>
+    <string name="icon_shape_circle" msgid="6550072265930144217">"រង្វង់"</string>
+    <string name="icon_shape_teardrop" msgid="4525869388200835463">"តំណក់​ទឹកភ្នែក"</string>
     <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
     <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"មិន​ស្គាល់"</string>

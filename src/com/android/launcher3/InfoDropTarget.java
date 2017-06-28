@@ -42,12 +42,10 @@ public class InfoDropTarget extends UninstallDropTarget {
     }
 
     @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
+    protected void setupUi() {
         // Get the hover color
         mHoverColor = Themes.getColorAccent(getContext());
-
-        setDrawable(R.drawable.ic_info_launcher);
+        setDrawable(R.drawable.ic_info_shadow);
     }
 
     @Override
@@ -67,6 +65,11 @@ public class InfoDropTarget extends UninstallDropTarget {
 
     public static boolean startDetailsActivityForInfo(ItemInfo info, Launcher launcher,
             DropTargetResultCallback callback, Rect sourceBounds, Bundle opts) {
+        if (info instanceof PromiseAppInfo) {
+            PromiseAppInfo promiseAppInfo = (PromiseAppInfo) info;
+            launcher.startActivity(promiseAppInfo.getMarketIntent());
+            return true;
+        }
         boolean result = false;
         ComponentName componentName = null;
         if (info instanceof AppInfo) {

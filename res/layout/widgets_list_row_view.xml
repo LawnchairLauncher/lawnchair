@@ -41,7 +41,7 @@
         android:singleLine="true"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="16sp"
-        launcher:customShadows="false"
+        android:textAlignment="viewStart"
         launcher:deferShadowGeneration="true"
         launcher:iconDisplay="widget_section"
         launcher:iconSizeOverride="@dimen/widget_section_icon_size"

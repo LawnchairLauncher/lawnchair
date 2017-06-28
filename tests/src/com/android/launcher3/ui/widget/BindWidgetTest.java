@@ -39,13 +39,12 @@ import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.ui.LauncherInstrumentationTestCase;
 import com.android.launcher3.util.ContentWriter;
-import com.android.launcher3.util.LooperExecuter;
+import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -340,7 +339,7 @@ public class BindWidgetTest extends LauncherInstrumentationTestCase {
      * Blocks the current thread until all the jobs in the main worker thread are complete.
      */
     private void waitUntilLoaderIdle() throws Exception {
-        new LooperExecuter(LauncherModel.getWorkerLooper())
+        new LooperExecutor(LauncherModel.getWorkerLooper())
                 .submit(new Runnable() {
                     @Override
                     public void run() { }

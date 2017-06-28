@@ -21,13 +21,11 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.UserHandle;
 import android.os.UserManager;
-
-import com.android.launcher3.Utilities;
+import android.util.ArrayMap;
 import com.android.launcher3.util.LongArrayMap;
-
+import com.android.launcher3.util.ManagedProfileHeuristic;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 public class UserManagerCompatVL extends UserManagerCompat {
@@ -40,7 +38,7 @@ public class UserManagerCompatVL extends UserManagerCompat {
     protected LongArrayMap<UserHandle> mUsers;
     // Create a separate reverse map as LongArrayMap.indexOfValue checks if objects are same
     // and not {@link Object#equals}
-    protected HashMap<UserHandle, Long> mUserToSerialMap;
+    protected ArrayMap<UserHandle, Long> mUserToSerialMap;
 
     UserManagerCompatVL(Context context) {
         mUserManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
@@ -88,7 +86,7 @@ public class UserManagerCompatVL extends UserManagerCompat {
     public void enableAndResetCache() {
         synchronized (this) {
             mUsers = new LongArrayMap<>();
-            mUserToSerialMap = new HashMap<>();
+            mUserToSerialMap = new ArrayMap<>();
             List<UserHandle> users = mUserManager.getUserProfiles();
             if (users != null) {
                 for (UserHandle user : users) {
@@ -122,7 +120,7 @@ public class UserManagerCompatVL extends UserManagerCompat {
 
     @Override
     public long getUserCreationTime(UserHandle user) {
-        SharedPreferences prefs = Utilities.getPrefs(mContext);
+        SharedPreferences prefs = ManagedProfileHeuristic.prefs(mContext);
         String key = USER_CREATION_TIME_KEY + getSerialNumberForUser(user);
         if (!prefs.contains(key)) {
             prefs.edit().putLong(key, System.currentTimeMillis()).apply();

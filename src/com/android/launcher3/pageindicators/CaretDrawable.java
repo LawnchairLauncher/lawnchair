@@ -22,11 +22,10 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
 
 import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
-
-import android.graphics.drawable.Drawable;
 
 public class CaretDrawable extends Drawable {
     public static final float PROGRESS_CARET_POINTING_UP = -1f;
@@ -39,6 +38,7 @@ public class CaretDrawable extends Drawable {
     private Paint mCaretPaint = new Paint();
     private Path mPath = new Path();
     private final int mCaretSizePx;
+    private final boolean mUseShadow;
 
     public CaretDrawable(Context context) {
         final Resources res = context.getResources();
@@ -46,12 +46,12 @@ public class CaretDrawable extends Drawable {
         final int strokeWidth = res.getDimensionPixelSize(R.dimen.all_apps_caret_stroke_width);
         final int shadowSpread = res.getDimensionPixelSize(R.dimen.all_apps_caret_shadow_spread);
 
-        mCaretPaint.setColor(res.getColor(R.color.workspace_icon_text_color));
+        mCaretPaint.setColor(Themes.getAttrColor(context, R.attr.workspaceTextColor));
         mCaretPaint.setAntiAlias(true);
         mCaretPaint.setStrokeWidth(strokeWidth);
         mCaretPaint.setStyle(Paint.Style.STROKE);
-        mCaretPaint.setStrokeCap(Paint.Cap.SQUARE);
-        mCaretPaint.setStrokeJoin(Paint.Join.MITER);
+        mCaretPaint.setStrokeCap(Paint.Cap.ROUND);
+        mCaretPaint.setStrokeJoin(Paint.Join.ROUND);
 
         mShadowPaint.setColor(res.getColor(R.color.default_shadow_color_no_alpha));
         mShadowPaint.setAlpha(Themes.getAlpha(context, android.R.attr.spotShadowAlpha));
@@ -61,6 +61,7 @@ public class CaretDrawable extends Drawable {
         mShadowPaint.setStrokeCap(Paint.Cap.ROUND);
         mShadowPaint.setStrokeJoin(Paint.Join.ROUND);
 
+        mUseShadow = !Themes.getAttrBoolean(context, R.attr.isWorkspaceDarkText);
         mCaretSizePx = res.getDimensionPixelSize(R.dimen.all_apps_caret_size);
     }
 
@@ -95,8 +96,9 @@ public class CaretDrawable extends Drawable {
         mPath.moveTo(left, top + caretHeight * (1 - getNormalizedCaretProgress()));
         mPath.lineTo(left + (width / 2), top + caretHeight * getNormalizedCaretProgress());
         mPath.lineTo(left + width, top + caretHeight * (1 - getNormalizedCaretProgress()));
-
-        canvas.drawPath(mPath, mShadowPaint);
+        if (mUseShadow) {
+            canvas.drawPath(mPath, mShadowPaint);
+        }
         canvas.drawPath(mPath, mCaretPaint);
     }
 

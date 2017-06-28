@@ -19,15 +19,16 @@ package com.android.launcher3.provider;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.WorkspaceScreens;
-import com.android.launcher3.logging.FileLog;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * A set of utility methods for Launcher DB used for DB updates and migration.
@@ -44,14 +45,14 @@ public class LauncherDbUtils {
      * items are simply deleted.
      */
     public static boolean prepareScreenZeroToHostQsb(Context context, SQLiteDatabase db) {
-        db.beginTransaction();
-        try {
+        try (SQLiteTransaction t = new SQLiteTransaction(db)) {
             // Get the existing screens
             ArrayList<Long> screenIds = getScreenIdsFromCursor(db.query(WorkspaceScreens.TABLE_NAME,
                     null, null, null, null, null, WorkspaceScreens.SCREEN_RANK));
 
             if (screenIds.isEmpty()) {
                 // No update needed
+                t.commit();
                 return true;
             }
             if (screenIds.get(0) != 0) {
@@ -68,23 +69,20 @@ public class LauncherDbUtils {
             }
 
             // Check if the first row is empty
-            try (Cursor c = db.query(Favorites.TABLE_NAME, null,
-                    "container = -100 and screen = 0 and cellY = 0", null, null, null, null)) {
-                if (c.getCount() == 0) {
-                    // First row is empty, no need to migrate.
-                    return true;
-                }
+            if (DatabaseUtils.queryNumEntries(db, Favorites.TABLE_NAME,
+                    "container = -100 and screen = 0 and cellY = 0") == 0) {
+                // First row is empty, no need to migrate.
+                t.commit();
+                return true;
             }
 
             new LossyScreenMigrationTask(context, LauncherAppState.getIDP(context), db)
                     .migrateScreen0();
-            db.setTransactionSuccessful();
+            t.commit();
             return true;
         } catch (Exception e) {
             Log.e(TAG, "Failed to update workspace size", e);
             return false;
-        } finally {
-            db.endTransaction();
         }
     }
 
@@ -104,19 +102,40 @@ public class LauncherDbUtils {
      * Parses the cursor containing workspace screens table and returns the list of screen IDs
      */
     public static ArrayList<Long> getScreenIdsFromCursor(Cursor sc) {
-        ArrayList<Long> screenIds = new ArrayList<Long>();
         try {
-            final int idIndex = sc.getColumnIndexOrThrow(WorkspaceScreens._ID);
-            while (sc.moveToNext()) {
-                try {
-                    screenIds.add(sc.getLong(idIndex));
-                } catch (Exception e) {
-                    FileLog.d(TAG, "Invalid screen id", e);
-                }
-            }
+            return iterateCursor(sc,
+                    sc.getColumnIndexOrThrow(WorkspaceScreens._ID),
+                    new ArrayList<Long>());
         } finally {
             sc.close();
         }
-        return screenIds;
+    }
+
+    public static <T extends Collection<Long>> T iterateCursor(Cursor c, int columnIndex, T out) {
+        while (c.moveToNext()) {
+            out.add(c.getLong(columnIndex));
+        }
+        return out;
+    }
+
+    /**
+     * Utility class to simplify managing sqlite transactions
+     */
+    public static class SQLiteTransaction implements AutoCloseable {
+        private final SQLiteDatabase mDb;
+
+        public SQLiteTransaction(SQLiteDatabase db) {
+            mDb = db;
+            db.beginTransaction();
+        }
+
+        public void commit() {
+            mDb.setTransactionSuccessful();
+        }
+
+        @Override
+        public void close() {
+            mDb.endTransaction();
+        }
     }
 }

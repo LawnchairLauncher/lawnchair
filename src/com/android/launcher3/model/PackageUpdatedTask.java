@@ -18,12 +18,11 @@ package com.android.launcher3.model;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.os.Process;
 import android.os.UserHandle;
+import android.util.ArrayMap;
 import android.util.Log;
-
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.IconCache;
@@ -31,32 +30,31 @@ import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.ItemInfoMatcher;
-import com.android.launcher3.util.ManagedProfileHeuristic;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 
 /**
  * Handles updates due to changes in package manager (app installed/updated/removed)
  * or when a user availability changes.
  */
-public class PackageUpdatedTask extends ExtendedModelTask {
+public class PackageUpdatedTask extends BaseModelUpdateTask {
 
     private static final boolean DEBUG = false;
     private static final String TAG = "PackageUpdatedTask";
@@ -95,12 +93,15 @@ public class PackageUpdatedTask extends ExtendedModelTask {
                 for (int i = 0; i < N; i++) {
                     if (DEBUG) Log.d(TAG, "mAllAppsList.addPackage " + packages[i]);
                     iconCache.updateIconsForPkg(packages[i], mUser);
+                    if (FeatureFlags.LAUNCHER3_PROMISE_APPS_IN_ALL_APPS) {
+                        appsList.removePackage(packages[i], Process.myUserHandle());
+                    }
                     appsList.addPackage(context, packages[i], mUser);
-                }
 
-                ManagedProfileHeuristic heuristic = ManagedProfileHeuristic.get(context, mUser);
-                if (heuristic != null) {
-                    heuristic.processPackageAdd(mPackages);
+                    // Automatically add homescreen icon for work profile apps for below O device.
+                    if (!Utilities.isAtLeastO() && !Process.myUserHandle().equals(mUser)) {
+                        SessionCommitReceiver.queueAppIconAddition(context, packages[i], mUser);
+                    }
                 }
                 break;
             }
@@ -115,10 +116,6 @@ public class PackageUpdatedTask extends ExtendedModelTask {
                 flagOp = FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE);
                 break;
             case OP_REMOVE: {
-                ManagedProfileHeuristic heuristic = ManagedProfileHeuristic.get(context, mUser);
-                if (heuristic != null) {
-                    heuristic.processPackageRemoved(mPackages);
-                }
                 for (int i = 0; i < N; i++) {
                     iconCache.removeIconsForPkg(packages[i], mUser);
                 }
@@ -152,7 +149,7 @@ public class PackageUpdatedTask extends ExtendedModelTask {
 
         ArrayList<AppInfo> added = null;
         ArrayList<AppInfo> modified = null;
-        final ArrayList<AppInfo> removedApps = new ArrayList<AppInfo>();
+        final ArrayList<AppInfo> removedApps = new ArrayList<>();
 
         if (appsList.added.size() > 0) {
             added = new ArrayList<>(appsList.added);
@@ -167,7 +164,7 @@ public class PackageUpdatedTask extends ExtendedModelTask {
             appsList.removed.clear();
         }
 
-        final HashMap<ComponentName, AppInfo> addedOrUpdatedApps = new HashMap<>();
+        final ArrayMap<ComponentName, AppInfo> addedOrUpdatedApps = new ArrayMap<>();
 
         if (added != null) {
             final ArrayList<AppInfo> addedApps = added;
@@ -222,18 +219,17 @@ public class PackageUpdatedTask extends ExtendedModelTask {
                         if (cn != null && matcher.matches(si, cn)) {
                             AppInfo appInfo = addedOrUpdatedApps.get(cn);
 
-                            if (si.isPromise() && mOp == OP_ADD) {
-                                if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
+                            // For system apps, package manager send OP_UPDATE when an
+                            // app is enabled.
+                            if (si.isPromise() && (mOp == OP_ADD || mOp == OP_UPDATE)) {
+                                if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINSTALL_ICON)) {
                                     // Auto install icon
-                                    PackageManager pm = context.getPackageManager();
-                                    ResolveInfo matched = pm.resolveActivity(
-                                            new Intent(Intent.ACTION_MAIN)
-                                                    .setComponent(cn).addCategory(Intent.CATEGORY_LAUNCHER),
-                                            PackageManager.MATCH_DEFAULT_ONLY);
-                                    if (matched == null) {
+                                    LauncherAppsCompat launcherApps
+                                            = LauncherAppsCompat.getInstance(context);
+                                    if (!launcherApps.isActivityEnabledForProfile(cn, mUser)) {
                                         // Try to find the best match activity.
-                                        Intent intent = pm.getLaunchIntentForPackage(
-                                                cn.getPackageName());
+                                        Intent intent = new PackageManagerHelper(context)
+                                                .getAppLaunchIntent(cn.getPackageName(), mUser);
                                         if (intent != null) {
                                             cn = intent.getComponent();
                                             appInfo = addedOrUpdatedApps.get(cn);
@@ -374,11 +370,9 @@ public class PackageUpdatedTask extends ExtendedModelTask {
         } else if (Utilities.isAtLeastO() && mOp == OP_ADD) {
             // Load widgets for the new package.
             for (int i = 0; i < N; i++) {
-                LauncherModel model = app.getModel();
-                model.refreshAndBindWidgetsAndShortcuts(
-                        model.getCallback(), false /* bindFirst */,
-                        new PackageUserKey(packages[i], mUser) /* packageUser */);
+                dataModel.widgetsModel.update(app, new PackageUserKey(packages[i], mUser));
             }
+            bindUpdatedWidgets(dataModel);
         }
     }
 }

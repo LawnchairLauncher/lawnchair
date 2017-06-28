@@ -29,6 +29,7 @@ import android.support.v4.graphics.ColorUtils;
 import android.support.v7.graphics.Palette;
 
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 
 import java.util.List;
 
@@ -47,6 +48,9 @@ public class ExtractionUtils {
      * Launcher will be notified in Launcher#onSettingsChanged(String, String).
      */
     public static void startColorExtractionServiceIfNecessary(final Context context) {
+        if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+            return;
+        }
         // Run on a background thread, since the service is asynchronous anyway.
         Utilities.THREAD_POOL_EXECUTOR.execute(new Runnable() {
             @Override
@@ -60,6 +64,9 @@ public class ExtractionUtils {
 
     /** Starts the {@link ColorExtractionService} without checking the wallpaper id */
     public static void startColorExtractionService(Context context) {
+        if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+            return;
+        }
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(
                 Context.JOB_SCHEDULER_SERVICE);
         jobScheduler.schedule(new JobInfo.Builder(Utilities.COLOR_EXTRACTION_JOB_ID,

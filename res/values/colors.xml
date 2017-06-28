@@ -25,28 +25,19 @@
 
     <color name="focused_background">#80c6c5c5</color>
 
-    <color name="workspace_icon_text_color">#FFF</color>
-    <color name="workspace_edge_effect_color">#FFFFFFFF</color>
-
     <color name="default_shadow_color_no_alpha">#FF000000</color>
-
-    <color name="outline_color">#FFFFFFFF</color>
 
     <color name="spring_loaded_panel_color">#40FFFFFF</color>
     <color name="spring_loaded_highlighted_panel_border_color">#FFF</color>
 
     <!-- Popup container -->
-    <color name="popup_header_background_color">#EEEEEE</color> <!-- Gray 200 -->
-    <color name="popup_background_color">#FFF</color>
     <color name="notification_icon_default_color">#757575</color> <!-- Gray 600 -->
-    <color name="notification_color_beneath">#E0E0E0</color> <!-- Gray 300 -->
-
     <color name="badge_color">#1DE9B6</color> <!-- Teal A400 -->
     <color name="folder_badge_color">#1DE9B6</color> <!-- Teal A400 -->
 
-    <!-- System shortcuts -->
-    <color name="system_shortcuts_icon_color">@android:color/tertiary_text_light</color>
-
-    <color name="legacy_icon_background">#FFFFFF</color>
     <color name="icon_background">#E0E0E0</color> <!-- Gray 300 -->
+    <color name="legacy_icon_background">#FFFFFF</color>
+
+    <color name="all_apps_bg_hand_fill">#E5E5E5</color>
+    <color name="all_apps_bg_hand_fill_dark">#9AA0A6</color>
 </resources>
