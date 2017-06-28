@@ -133,7 +133,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     private final Alarm mOnScrollHintAlarm = new Alarm();
     @Thunk final Alarm mScrollPauseAlarm = new Alarm();
 
-    @Thunk final ArrayList<View> mItemsInReadingOrder = new ArrayList<View>();
+    @Thunk final ArrayList<View> mItemsInRankOrder = new ArrayList<>();
 
     private AnimatorSet mCurrentAnimator;
 
@@ -284,7 +284,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         if (tag instanceof ShortcutInfo) {
             ShortcutInfo item = (ShortcutInfo) tag;
 
-            mEmptyCellRank = item.rank;
+            mEmptyCellRank = mContent.getReadingOrderPosForRank(item.rank);
             mCurrentDragView = v;
 
             mDragController.addDragListener(this);
@@ -705,7 +705,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     }
 
     public void beginExternalDrag() {
-        mEmptyCellRank = mContent.allocateRankForNewItem();
+        mEmptyCellRank = mContent.getReadingOrderPosForRank(mContent.allocateRankForNewItem());
         mIsExternalDrag = true;
         mDragInProgress = true;
 
@@ -997,7 +997,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             ShortcutInfo info = (ShortcutInfo) d.dragInfo;
             View icon = (mCurrentDragView != null && mCurrentDragView.getTag() == info)
                     ? mCurrentDragView : mContent.createNewView(info);
-            ArrayList<View> views = getItemsInReadingOrder();
+            ArrayList<View> views = getItemsInRankOrder();
             views.add(info.rank, icon);
             mContent.arrangeChildren(views, views.size());
             mItemsInvalidated = true;
@@ -1072,7 +1072,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     }
 
     private void updateItemLocationsInDatabaseBatch() {
-        ArrayList<View> list = getItemsInReadingOrder();
+        ArrayList<View> list = getItemsInRankOrder();
         ArrayList<ItemInfo> items = new ArrayList<ItemInfo>();
         for (int i = 0; i < list.size(); i++) {
             View v = list.get(i);
@@ -1231,7 +1231,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
      * otherwise it is ignored.
      */
     public void rearrangeChildren(int itemCount) {
-        ArrayList<View> views = getItemsInReadingOrder();
+        ArrayList<View> views = getItemsInRankOrder();
         mContent.arrangeChildren(views, Math.max(itemCount, views.size()));
         mItemsInvalidated = true;
     }
@@ -1376,23 +1376,19 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
 
             View currentDragView;
             if (mIsExternalDrag) {
-                currentDragView = mContent.createAndAddViewForRank(si, mEmptyCellRank);
-
                 // Actually move the item in the database if it was an external drag. Call this
                 // before creating the view, so that ShortcutInfo is updated appropriately.
-                mLauncher.getModelWriter().addOrMoveItemInDatabase(
-                        si, mInfo.id, 0, si.cellX, si.cellY);
-
-                // We only need to update the locations if it doesn't get handled in
-                // #onDropCompleted.
-                if (d.dragSource != this) {
-                    updateItemLocationsInDatabaseBatch();
-                }
-                mIsExternalDrag = false;
-            } else {
-                currentDragView = mCurrentDragView;
-                mContent.addViewForRank(currentDragView, si, mEmptyCellRank);
+                mLauncher.getModelWriter().addOrMoveItemInDatabase(si, mInfo.id, 0, si.cellX, si.cellY);
             }
+
+            currentDragView = mIsExternalDrag
+                    ? mContent.createNewView(si)
+                    : mCurrentDragView;
+            mIsExternalDrag = false;
+
+            // Note: addViewForRankDuringDragAndDrop handles rearranging the children.
+            mContent.addViewForRankDuringDragAndDrop(currentDragView, si, mEmptyCellRank);
+            mItemsInvalidated = true;
 
             if (d.dragView.hasDrawn()) {
                 // Temporarily reset the scale such that the animation target gets calculated
@@ -1409,9 +1405,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
                 d.deferDragViewCleanupPostAnimation = false;
                 currentDragView.setVisibility(VISIBLE);
             }
-
-            mItemsInvalidated = true;
-            rearrangeChildren();
 
             // Temporarily suppress the listener, as we did all the work already here.
             try (SuppressInfoChanges s = new SuppressInfoChanges()) {
@@ -1450,7 +1443,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         mLauncher.getModelWriter().addOrMoveItemInDatabase(item, mInfo.id, 0, item.cellX,
                 item.cellY);
 
-        ArrayList<View> items = new ArrayList<>(getItemsInReadingOrder());
+        ArrayList<View> items = new ArrayList<>(getItemsInRankOrder());
         items.add(rank, view);
         mContent.arrangeChildren(items, items.size());
         mItemsInvalidated = true;
@@ -1497,24 +1490,34 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     public void onTitleChanged(CharSequence title) {
     }
 
-    public ArrayList<View> getItemsInReadingOrder() {
+    public ArrayList<View> getItemsInRankOrder() {
         if (mItemsInvalidated) {
-            mItemsInReadingOrder.clear();
-            mContent.iterateOverItems(new ItemOperator() {
+            mItemsInRankOrder.clear();
+            mItemsInRankOrder.addAll(getItemsInReadingOrder());
+            mItemsInRankOrder.sort(VIEW_RANK_COMPARATOR);
 
-                @Override
-                public boolean evaluate(ItemInfo info, View view) {
-                    mItemsInReadingOrder.add(view);
-                    return false;
-                }
-            });
             mItemsInvalidated = false;
         }
-        return mItemsInReadingOrder;
+        return mItemsInRankOrder;
+    }
+
+    /**
+     * This is an expensive call. Consider using {@link #getItemsInRankOrder()} instead.
+     */
+    public ArrayList<View> getItemsInReadingOrder() {
+        final ArrayList<View> itemsInReadingOrder = new ArrayList<>();
+        mContent.iterateOverItems(new ItemOperator() {
+            @Override
+            public boolean evaluate(ItemInfo info, View view) {
+                itemsInReadingOrder.add(view);
+                return false;
+            }
+        });
+        return itemsInReadingOrder;
     }
 
     public List<BubbleTextView> getItemsOnCurrentPage() {
-        ArrayList<View> allItems = getItemsInReadingOrder();
+        ArrayList<View> allItems = getItemsInRankOrder();
         int currentPage = mContent.getCurrentPage();
         int lastPage = mContent.getPageCount() - 1;
         int totalItemsInFolder = allItems.size();
@@ -1619,6 +1622,13 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             } else {
                 return lhs.cellX - rhs.cellX;
             }
+        }
+    };
+
+    public static final Comparator<View> VIEW_RANK_COMPARATOR = new Comparator<View>() {
+        @Override
+        public int compare(View lhs, View rhs) {
+            return ITEM_POS_COMPARATOR.compare((ItemInfo) lhs.getTag(), (ItemInfo) rhs.getTag());
         }
     };
 

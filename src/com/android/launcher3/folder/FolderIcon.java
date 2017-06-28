@@ -575,7 +575,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mPreviewVerifier.setFolderInfo(mFolder.getInfo());
 
         List<BubbleTextView> itemsToDisplay = new ArrayList<>();
-        List<View> allItems = mFolder.getItemsInReadingOrder();
+        List<View> allItems = mFolder.getItemsInRankOrder();
         int numItems = allItems.size();
         for (int rank = 0; rank < numItems; ++rank) {
             if (mPreviewVerifier.isItemInPreview(rank)) {

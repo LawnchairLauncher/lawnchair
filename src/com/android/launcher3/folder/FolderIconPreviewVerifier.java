@@ -25,40 +25,15 @@ import com.android.launcher3.config.FeatureFlags;
  */
 public class FolderIconPreviewVerifier {
 
-    private final int mMaxGridCountX;
-    private final int mMaxGridCountY;
-    private final int mMaxItemsPerPage;
-    private final int[] mGridSize = new int[2];
-
-    private int mGridCountX;
-    private boolean mDisplayingUpperLeftQuadrant = false;
-
     public FolderIconPreviewVerifier(InvariantDeviceProfile profile) {
-        mMaxGridCountX = profile.numFolderColumns;
-        mMaxGridCountY = profile.numFolderRows;
-        mMaxItemsPerPage = mMaxGridCountX * mMaxGridCountY;
+        // b/37570804
     }
 
     public void setFolderInfo(FolderInfo info) {
-        int numItemsInFolder = info.contents.size();
-        mDisplayingUpperLeftQuadrant = FeatureFlags.LAUNCHER3_NEW_FOLDER_ANIMATION
-                && !FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON
-                && numItemsInFolder > FolderIcon.NUM_ITEMS_IN_PREVIEW;
-
-        if (mDisplayingUpperLeftQuadrant) {
-            FolderPagedView.calculateGridSize(info.contents.size(), 0, 0, mMaxGridCountX,
-                    mMaxGridCountY, mMaxItemsPerPage, mGridSize);
-            mGridCountX = mGridSize[0];
-        }
+        // b/37570804
     }
 
     public boolean isItemInPreview(int rank) {
-        if (mDisplayingUpperLeftQuadrant) {
-            // Returns true iff the icon is in the 2x2 upper left quadrant of the Folder.
-            int col = rank % mGridCountX;
-            int row = rank / mGridCountX;
-            return col < 2 && row < 2;
-        }
         return rank < FolderIcon.NUM_ITEMS_IN_PREVIEW;
     }
 }
