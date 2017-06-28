@@ -53,7 +53,6 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
@@ -907,9 +906,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         }
         mIsOpen = false;
         mDeferContainerRemoval = false;
-        boolean isInHotseat = ((ItemInfo) mOriginalIcon.getTag()).container
-                == LauncherSettings.Favorites.CONTAINER_HOTSEAT;
-        mOriginalIcon.setTextVisibility(!isInHotseat);
+        mOriginalIcon.setTextVisibility(mOriginalIcon.shouldTextBeVisible());
         mOriginalIcon.forceHideBadge(false);
         mLauncher.getDragController().removeDragListener(this);
         mLauncher.getDragLayer().removeView(this);
