@@ -44,6 +44,7 @@ import com.android.launcher3.allapps.VerticalPullDetector;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.graphics.GradientView;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.PackageUserKey;
@@ -71,6 +72,7 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
     private VerticalPullDetector.ScrollInterpolator mScrollInterpolator;
     private Rect mInsets;
     private VerticalPullDetector mVerticalPullDetector;
+    private GradientView mGradientBackground;
 
     public WidgetsBottomSheet(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -87,6 +89,7 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
         mInsets = new Rect();
         mVerticalPullDetector = new VerticalPullDetector(context);
         mVerticalPullDetector.setListener(this);
+        mGradientBackground = (GradientView) mLauncher.findViewById(R.id.gradient_bg);
     }
 
     @Override
@@ -267,6 +270,13 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
         setTranslationY(Utilities.boundToRange(displacement, mTranslationYOpen,
                 mTranslationYClosed));
         return true;
+    }
+
+    @Override
+    public void setTranslationY(float translationY) {
+        super.setTranslationY(translationY);
+        if (mGradientBackground == null) return;
+        mGradientBackground.setProgress((mTranslationYClosed - translationY) / mTranslationYRange);
     }
 
     @Override
