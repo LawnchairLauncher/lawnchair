@@ -111,6 +111,16 @@ public class CaretDrawable extends Drawable {
     }
 
     /**
+     * Returns the caret progress
+     *
+     * @return The progress
+     */
+    @SuppressWarnings("unused") // This is actually used by the caret animator
+    public float getCaretProgress() {
+        return mCaretProgress;
+    }
+
+    /**
      * Returns the caret progress normalized to [0..1]
      *
      * @return The normalized progress
