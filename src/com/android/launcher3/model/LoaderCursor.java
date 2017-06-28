@@ -184,8 +184,12 @@ public class LoaderCursor extends CursorWrapper {
                 icon = LauncherIcons.createIconBitmap(
                         BitmapFactory.decodeByteArray(data, 0, data.length), mContext);
             } catch (Exception e) {
+                Log.e(TAG, "Failed to load icon for info " + info, e);
                 return null;
             }
+        }
+        if (icon == null) {
+            Log.e(TAG, "Failed to load icon for info " + info);
         }
         return icon;
     }
