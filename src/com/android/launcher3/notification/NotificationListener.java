@@ -127,8 +127,9 @@ public class NotificationListener extends NotificationListenerService {
         }
         sNotificationsChangedListener = listener;
 
-        if (sNotificationListenerInstance != null) {
-            sNotificationListenerInstance.onNotificationFullRefresh();
+        NotificationListener notificationListener = getInstanceIfConnected();
+        if (notificationListener != null) {
+            notificationListener.onNotificationFullRefresh();
         }
     }
 
