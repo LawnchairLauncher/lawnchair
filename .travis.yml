@@ -24,17 +24,18 @@ cache:
   - "$HOME/.android/build-cache"
 deploy:
   - provider: releases
-    api_key: $GITHUB_OAUTH_TOKEN
-    file:
-      - "Lawnchair-$TRAVIS_BUILD_NUMBER.apk"
     skip_cleanup: true
+    api_key: $GITHUB_OAUTH_TOKEN
+    file: "Lawnchair-$TRAVIS_BUILD_NUMBER.apk"
     on:
       tags: true
   - provider: script
+    skip_cleanup: true
     script: scripts/deploy-hockeyapp.sh beta
     on:
       branch: master
   - provider: script
+    skip_cleanup: true
     script: scripts/deploy-hockeyapp.sh release
     on:
       tags: true
