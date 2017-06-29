@@ -511,7 +511,9 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                 if (FeatureFlags.LAUNCHER3_PHYSICS) {
                     // We calculate our own velocity to give the springs the desired effect.
                     velocity = y / getDampedOverScroll(getHeight()) * MAX_RELEASE_VELOCITY;
-                    mSpringAnimationHandler.animateToPositionWithVelocity(0, -velocity);
+                    // We want to negate the velocity because we are moving to 0 from -1 due to the
+                    // downward motion. (y-axis -1 is above 0).
+                    mSpringAnimationHandler.animateToPositionWithVelocity(0, -1, -velocity);
                 }
 
                 ObjectAnimator.ofFloat(AllAppsRecyclerView.this,

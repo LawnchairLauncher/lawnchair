@@ -228,7 +228,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 }
                 mLauncher.showAppsView(true /* animated */, false /* updatePredictedApps */);
                 if (hasSpringAnimationHandler()) {
-                    mSpringAnimationHandler.animateToFinalPosition(0);
+                    // The icons are moving upwards, so we go to 0 from 1. (y-axis 1 is below 0.)
+                    mSpringAnimationHandler.animateToFinalPosition(0 /* pos */, 1 /* startValue */);
                 }
             } else {
                 calculateDuration(velocity, Math.abs(mShiftRange - mAppsView.getTranslationY()));
