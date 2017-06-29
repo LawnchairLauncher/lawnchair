@@ -408,9 +408,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (getChildCount() == 0) {
             return;
         }
+        int prevPage = mCurrentPage;
         mCurrentPage = validateNewPage(currentPage);
         updateCurrentPageScroll();
-        notifyPageSwitchListener();
+        notifyPageSwitchListener(prevPage);
         invalidate();
     }
 
@@ -418,7 +419,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
      * Should be called whenever the page changes. In the case of a scroll, we wait until the page
      * has settled.
      */
-    protected void notifyPageSwitchListener() {
+    protected void notifyPageSwitchListener(int prevPage) {
         updatePageIndicator();
     }
 
@@ -585,9 +586,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         } else if (mNextPage != INVALID_PAGE && shouldInvalidate) {
             sendScrollAccessibilityEvent();
 
+            int prevPage = mCurrentPage;
             mCurrentPage = validateNewPage(mNextPage);
             mNextPage = INVALID_PAGE;
-            notifyPageSwitchListener();
+            notifyPageSwitchListener(prevPage);
 
             // We don't want to trigger a page end moving unless the page has settled
             // and the user has stopped scrolling
