@@ -20,5 +20,5 @@
 <pathInterpolator xmlns:android="http://schemas.android.com/apk/res/android"
     android:controlX1="0"
     android:controlY1="1"
-    android:controlX2="0"
+    android:controlX2="0.5"
     android:controlY2="1"/>
