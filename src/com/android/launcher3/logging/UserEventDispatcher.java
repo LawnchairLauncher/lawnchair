@@ -20,7 +20,6 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -132,20 +131,14 @@ public class UserEventDispatcher {
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
                 newItemTarget(v), newTarget(Target.Type.CONTAINER));
 
-        String serial;
-        if (Utilities.isAtLeastO()) {
-            serial = Build.getSerial();
-        } else {
-            serial = Build.SERIAL;
-        }
         // TODO: make idx percolate up the view hierarchy if needed.
         int idx = 0;
         if (fillInLogContainerData(event, v)) {
             ItemInfo itemInfo = (ItemInfo) v.getTag();
             event.srcTarget[idx].intentHash = intentHashCode;
             if (cn != null) {
-                event.srcTarget[idx].packageNameHash = (cn.getPackageName() + serial).hashCode();
-                event.srcTarget[idx].componentHash = (cn.flattenToString() + serial).hashCode();
+                event.srcTarget[idx].packageNameHash = cn.getPackageName().hashCode();
+                event.srcTarget[idx].componentHash = cn.hashCode();
                 if (mPredictedApps != null) {
                     event.srcTarget[idx].predictedRank = mPredictedApps.indexOf(
                             new ComponentKey(cn, itemInfo.user));
