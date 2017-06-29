@@ -576,7 +576,6 @@ public class Workspace extends PagedView
 
         // Add the first page
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, 0);
-        initPullDownToSearch();
         // Always add a QSB on the first screen.
         if (qsb == null) {
             // In transposed layout, we add the QSB in the Grid. As workspace does not touch the
@@ -592,10 +591,15 @@ public class Workspace extends PagedView
         }
     }
 
-    public void initPullDownToSearch() {
-        CellLayout firstPage = mWorkspaceScreens.get(FIRST_SCREEN_ID);
+    public void initPullDown() {
+        for (CellLayout layout : mWorkspaceScreens) {
+            initPullDown(layout);
+        }
+    }
+
+    public void initPullDown(CellLayout layout) {
         if (FeatureFlags.pulldownOpensNotifications(getContext())) {
-            firstPage.setOnTouchListener(new VerticalFlingDetector(mLauncher) {
+            layout.setOnTouchListener(new VerticalFlingDetector(mLauncher) {
                 // detect fling when touch started from empty space
                 @Override
                 public boolean onTouch(View v, MotionEvent ev) {
@@ -608,7 +612,7 @@ public class Workspace extends PagedView
                     return false;
                 }
             });
-            firstPage.setOnInterceptTouchListener(new VerticalFlingDetector(mLauncher) {
+            layout.setOnInterceptTouchListener(new VerticalFlingDetector(mLauncher) {
                 // detect fling when touch started from on top of the icons
                 @Override
                 public boolean onTouch(View v, MotionEvent ev) {
@@ -621,8 +625,8 @@ public class Workspace extends PagedView
                 }
             });
         } else {
-            firstPage.setOnTouchListener(null);
-            firstPage.setOnInterceptTouchListener(null);
+            layout.setOnTouchListener(null);
+            layout.setOnInterceptTouchListener(null);
         }
     }
 
@@ -714,6 +718,8 @@ public class Workspace extends PagedView
         if (mLauncher.getAccessibilityDelegate().isInAccessibleDrag()) {
             newScreen.enableAccessibleDrag(true, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
         }
+
+        initPullDown(newScreen);
 
         return newScreen;
     }
