@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -353,6 +354,8 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
         final AnimatorSet openAnim = LauncherAnimUtils.createAnimatorSet();
         final Resources res = getResources();
+        final long revealDuration = (long) res.getInteger(R.integer.config_popupOpenCloseDuration);
+        final TimeInterpolator revealInterpolator = new AccelerateDecelerateInterpolator();
 
         // Rectangular reveal.
         int itemsTotalHeight = 0;
@@ -366,8 +369,13 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         mEndRect.set(0, top, getMeasuredWidth(), top + itemsTotalHeight);
         final ValueAnimator revealAnim = new RoundedRectRevealOutlineProvider
                 (radius, radius, mStartRect, mEndRect).createRevealAnimator(this, false);
-        revealAnim.setDuration((long) res.getInteger(R.integer.config_popupOpenCloseDuration));
-        revealAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+        revealAnim.setDuration(revealDuration);
+        revealAnim.setInterpolator(revealInterpolator);
+
+        Animator fadeIn = ObjectAnimator.ofFloat(this, ALPHA, 0, 1);
+        fadeIn.setDuration(revealDuration);
+        fadeIn.setInterpolator(revealInterpolator);
+        openAnim.play(fadeIn);
 
         // Animate the arrow.
         mArrow.setScaleX(0);
@@ -851,10 +859,8 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
         final AnimatorSet closeAnim = LauncherAnimUtils.createAnimatorSet();
         final Resources res = getResources();
-
-        // Animate the arrow.
-        Animator arrowScale = createArrowScaleAnim(0).setDuration(res.getInteger(
-                R.integer.config_popupArrowOpenDuration));
+        final long revealDuration = (long) res.getInteger(R.integer.config_popupOpenCloseDuration);
+        final TimeInterpolator revealInterpolator = new AccelerateDecelerateInterpolator();
 
         // Rectangular reveal (reversed).
         int itemsTotalHeight = 0;
@@ -870,9 +876,14 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         }
         final ValueAnimator revealAnim = new RoundedRectRevealOutlineProvider(
                 radius, radius, mStartRect, mEndRect).createRevealAnimator(this, true);
-        long revealDuration = (long) res.getInteger(R.integer.config_popupOpenCloseDuration);
         revealAnim.setDuration(revealDuration);
-        revealAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+        revealAnim.setInterpolator(revealInterpolator);
+        closeAnim.play(revealAnim);
+
+        Animator fadeOut = ObjectAnimator.ofFloat(this, ALPHA, 0);
+        fadeOut.setDuration(revealDuration);
+        fadeOut.setInterpolator(revealInterpolator);
+        closeAnim.play(fadeOut);
 
         // Animate original icon's text back in.
         Animator fadeText = mOriginalIcon.createTextAlphaAnimator(true /* fadeIn */);
@@ -891,7 +902,6 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             }
         });
         mOpenCloseAnimator = closeAnim;
-        closeAnim.playSequentially(arrowScale, revealAnim);
         closeAnim.start();
         mOriginalIcon.forceHideBadge(false);
     }
