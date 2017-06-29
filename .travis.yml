@@ -10,10 +10,15 @@ android:
     - extra-google-m2repository
     - extra-android-m2repository
 before_install: 
-  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then openssl enc -d -aes-256-cbc -in google-services.json.enc -out google-services.json -k $ENC_PASS; fi'
+  - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then 
+      openssl enc -d -aes-256-cbc -in google-services.json.enc -out google-services.json -k $ENC_PASS; 
+    fi
 script:
-  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash ./gradlew assembleDebug check; fi'
-  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./gradlew assembleDebug check; fi'
+  - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then 
+      bash ./gradlew assembleDebug check; 
+    else
+      bash ./gradlew assembleDebug check;
+    fi
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
