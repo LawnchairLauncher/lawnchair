@@ -18,11 +18,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:theme="@style/HomeScreenElementTheme"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dynamic_grid_page_indicator_size">
+    android:layout_height="@dimen/dynamic_grid_min_page_indicator_size">
         <ImageView
             android:id="@+id/all_apps_handle"
             android:layout_width="48dp"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/dynamic_grid_min_page_indicator_size"
             android:layout_gravity="top|center"
             android:scaleType="centerInside"/>
 </com.android.launcher3.pageindicators.PageIndicatorLineCaret>
