@@ -52,6 +52,7 @@ import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.graphics.IconPalette;
 import ch.deletescape.lawnchair.model.PackageItemInfo;
+import ch.deletescape.lawnchair.shortcuts.DeepShortcutTextView;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
@@ -424,7 +425,7 @@ public class BubbleTextView extends TextView
 
     @Override
     public void draw(Canvas canvas) {
-        if (!mCustomShadowsEnabled) {
+        if (!mCustomShadowsEnabled || this instanceof DeepShortcutTextView) {
             super.draw(canvas);
             drawBadgeIfNecessary(canvas);
             return;

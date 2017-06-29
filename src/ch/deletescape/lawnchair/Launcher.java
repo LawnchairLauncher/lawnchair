@@ -2639,6 +2639,10 @@ public class Launcher extends Activity
     }
 
     public void closeShortcutsContainer(boolean animate) {
+        AbstractFloatingView topOpenView = AbstractFloatingView.getTopOpenView(this);
+        if (topOpenView instanceof PopupContainerWithArrow) {
+            topOpenView.close(animate);
+        }
         /*DeepShortcutsContainer deepShortcutsContainer = getOpenShortcutsContainer();
         if (deepShortcutsContainer != null) {
             if (animate) {

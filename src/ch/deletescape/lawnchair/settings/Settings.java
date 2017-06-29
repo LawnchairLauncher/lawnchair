@@ -62,7 +62,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                     dragLayer.onAccessibilityStateChanged(dragLayer.mIsAccesibilityEnabled);
                     break;
                 case KEY_PREF_PULLDOWN_SEARCH:
-                    mLauncher.getWorkspace().initPullDownToSearch();
+                    mLauncher.getWorkspace().initPullDown();
                     break;
                 case KEY_PREF_HOTSEAT_EXTRACTED_COLORS:
                     ExtractedColors ec = mLauncher.getExtractedColors();
