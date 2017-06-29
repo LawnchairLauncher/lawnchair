@@ -423,8 +423,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
             // We only show the spring animation when at the top or bottom, so we wait until the
             // first or last row is visible to ensure that all animations run in sync.
-            if ((first == 0 && dy < 0) || (last == mAdapter.getItemCount() - 1 && dy > 0)) {
-                mSpringAnimationHandler.animateToFinalPosition(0);
+            boolean scrollUp = dy < 0;
+            if ((first == 0 && scrollUp) || (last == mAdapter.getItemCount() - 1 && dy > 0)) {
+                mSpringAnimationHandler.animateToFinalPosition(0, scrollUp ? 1 : -1);
             }
         }
 
