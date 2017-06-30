@@ -547,8 +547,8 @@ public class FolderPagedView extends PagedView {
     }
 
     @Override
-    protected void notifyPageSwitchListener() {
-        super.notifyPageSwitchListener();
+    protected void notifyPageSwitchListener(int prevPage) {
+        super.notifyPageSwitchListener(prevPage);
         if (mFolder != null) {
             mFolder.updateTextViewFocus();
         }

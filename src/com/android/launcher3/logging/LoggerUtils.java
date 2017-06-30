@@ -66,8 +66,14 @@ public class LoggerUtils {
     }
 
     public static String getActionStr(Action action) {
+        String str = "";
         switch (action.type) {
-            case Action.Type.TOUCH: return getFieldName(action.touch, Action.Touch.class);
+            case Action.Type.TOUCH:
+                str += getFieldName(action.touch, Action.Touch.class);
+                if (action.touch == Action.Touch.SWIPE) {
+                    str += " direction=" + getFieldName(action.dir, Action.Direction.class);
+                }
+                return str;
             case Action.Type.COMMAND: return getFieldName(action.command, Action.Command.class);
             default: return UNKNOWN;
         }
