@@ -75,6 +75,7 @@ import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -300,6 +301,7 @@ public class Workspace extends PagedView
     boolean mScrollInteractionBegan;
     boolean mStartedSendingScrollEvents;
     float mLastOverlayScroll = 0;
+    boolean mOverlayShown = false;
 
     private boolean mForceDrawAdjacentPages = false;
     // Total over scrollX in the overlay direction.
@@ -1405,6 +1407,20 @@ public class Workspace extends PagedView
      * The overlay scroll is being controlled locally, just update our overlay effect
      */
     public void onOverlayScrollChanged(float scroll) {
+
+        if (Float.compare(scroll, 1f) == 0) {
+            if (!mOverlayShown) {
+                mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.SWIPE,
+                        Action.Direction.LEFT, ContainerType.WORKSPACE, 0);
+            }
+            mOverlayShown = true;
+        } else if (Float.compare(scroll, 0f) == 0) {
+            if (mOverlayShown) {
+                mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.SWIPE,
+                        Action.Direction.RIGHT, ContainerType.WORKSPACE, -1);
+            }
+            mOverlayShown = false;
+        }
         float offset = 0f;
         float slip = 0f;
 
@@ -1515,9 +1531,13 @@ public class Workspace extends PagedView
     }
 
     @Override
-    protected void notifyPageSwitchListener() {
-        super.notifyPageSwitchListener();
-
+    protected void notifyPageSwitchListener(int prevPage) {
+        super.notifyPageSwitchListener(prevPage);
+        if (prevPage != mCurrentPage) {
+            int swipeDirection = (prevPage < mCurrentPage) ? Action.Direction.RIGHT : Action.Direction.LEFT;
+            mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.SWIPE,
+                    swipeDirection, ContainerType.WORKSPACE, prevPage);
+        }
         if (hasCustomContent() && getNextPage() == 0 && !mCustomContentShowing) {
             mCustomContentShowing = true;
             if (mCustomContentCallbacks != null) {
@@ -1867,13 +1887,20 @@ public class Workspace extends PagedView
             return;
         }
 
+        ArrayList<Long> prevScreenOrder = (ArrayList<Long>) mScreenOrder.clone();
         mScreenOrder.clear();
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             CellLayout cl = ((CellLayout) getChildAt(i));
             mScreenOrder.add(getIdForScreen(cl));
         }
-        mLauncher.getUserEventDispatcher().logOverviewReorder();
+
+        for (int i = 0; i < prevScreenOrder.size(); i++) {
+            if (mScreenOrder.get(i) != prevScreenOrder.get(i)) {
+                mLauncher.getUserEventDispatcher().logOverviewReorder();
+                break;
+            }
+        }
         LauncherModel.updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
 
         // Re-enable auto layout transitions for page deletion.
