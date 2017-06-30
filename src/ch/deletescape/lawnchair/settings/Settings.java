@@ -103,6 +103,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                     break;
                 case KEY_PREF_ICON_SCALE:
                 case KEY_PREF_ICON_TEXT_SCALE:
+                case KEY_FULL_WIDTH_SEARCHBAR:
                     mLauncher.scheduleKill();
                     break;
                 case KEY_PREF_ICON_PACK_PACKAGE:
