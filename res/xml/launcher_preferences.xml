@@ -33,12 +33,20 @@
             android:defaultValue="true"
             android:persistent="true" />
 
+        <SwitchPreference
+            android:key="pref_hideAppLabels"
+            android:title="Hide Icon Labels on Homescreen"
+            android:defaultValue="false"
+            android:disableDependentsState="true"
+            android:persistent="true" />
+
         <ListPreference
             android:key="pref_workspaceLabelColorHue"
             android:title="Color of Icon Labels on Homescreen"
             android:entries="@array/color_index_entries"
             android:entryValues="@array/color_index_values"
             android:defaultValue="-3"
+            android:dependency="pref_hideAppLabels"
             android:persistent="true" />
 
         <ListPreference
@@ -47,6 +55,7 @@
             android:entries="@array/color_variation_entries"
             android:entryValues="@array/color_variation_values"
             android:defaultValue="5"
+            android:dependency="pref_hideAppLabels"
             android:persistent="true" />
 
         <ch.deletescape.lawnchair.preferences.SeekbarPreference

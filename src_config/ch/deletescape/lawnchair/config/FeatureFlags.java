@@ -38,6 +38,7 @@ public final class FeatureFlags {
     private static final String KEY_HOME_OPENS_DRAWER = "pref_homeOpensDrawer";
     public static final String KEY_SHOW_VOICE_SEARCH_BUTTON = "pref_showMic";
     private static final String KEY_PREF_PIXEL_STYLE_ICONS = "pref_pixelStyleIcons";
+    private static final String KEY_PREF_HIDE_APP_LABELS = "pref_hideAppLabels";
 
     private FeatureFlags() {
     }
@@ -107,6 +108,12 @@ public final class FeatureFlags {
     public static boolean usePixelIcons(Context context) {
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_PIXEL_STYLE_ICONS, true);
         FirebaseAnalytics.getInstance(context).setUserProperty("pixel_style_icons", String.valueOf(enabled));
+        return enabled;
+    }
+
+    public static boolean hideAppLabels(Context context) {
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_HIDE_APP_LABELS, false);
+        FirebaseAnalytics.getInstance(context).setUserProperty("hide_app_labels", String.valueOf(enabled));
         return enabled;
     }
 }
