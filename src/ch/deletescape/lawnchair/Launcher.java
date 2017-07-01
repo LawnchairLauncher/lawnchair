@@ -2684,7 +2684,7 @@ public class Launcher extends Activity
         if (!isDraggingEnabled() || isWorkspaceLocked() || this.mState != State.WORKSPACE) {
             return false;
         }
-        if (!(view instanceof PageIndicator)) {
+        if (view != mAllAppsHandle) {
             if (!(view instanceof Workspace)) {
                 View view2;
                 if (view.getTag() instanceof ItemInfo) {

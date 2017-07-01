@@ -23,6 +23,7 @@ import ch.deletescape.lawnchair.LauncherAnimUtils;
 import ch.deletescape.lawnchair.LauncherAppWidgetHostView;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.ShortcutAndWidgetContainer;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.util.TouchController;
 
@@ -257,10 +258,14 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     private void updateLightStatusBar(float shift) {
-        // Use a light status bar (dark icons) if all apps is behind at least half of the status
-        // bar. If the status bar is already light due to wallpaper extraction, keep it that way.
-        boolean forceLight = shift <= mStatusBarHeight / 2;
-        mLauncher.activateLightStatusBar(forceLight);
+        if (Utilities.ATLEAST_MARSHMALLOW) {
+            // Use a light status bar (dark icons) if all apps is behind at least half of the status
+            // bar. If the status bar is already light due to wallpaper extraction, keep it that way.
+            boolean forceLight = shift <= mStatusBarHeight / 2;
+            mLauncher.activateLightStatusBar(forceLight);
+        } else {
+            mAppsView.setStatusBarHeight(Math.max(mStatusBarHeight - shift, 0));
+        }
     }
 
     /**
