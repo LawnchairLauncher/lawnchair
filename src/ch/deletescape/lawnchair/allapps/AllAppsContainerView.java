@@ -104,6 +104,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     // This coordinate is relative to this container view
     private final Point mBoundsCheckLastTouchDownPos = new Point(-1, -1);
 
+    private StatusBarScrimView mStatusBarScrimView;
+
     public AllAppsContainerView(Context context) {
         this(context, null);
     }
@@ -286,6 +288,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         getRevealView().setVisibility(View.VISIBLE);
         getContentView().setVisibility(View.VISIBLE);
         getContentView().setBackground(null);
+
+        mStatusBarScrimView = (StatusBarScrimView) getRevealView();
     }
 
     @Override
@@ -590,4 +594,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         }
     }
 
+    public void setStatusBarHeight(float height) {
+        mStatusBarScrimView.setStatusBarHeight(height);
+    }
 }

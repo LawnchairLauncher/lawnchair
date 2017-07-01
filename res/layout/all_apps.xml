@@ -22,7 +22,7 @@
     android:orientation="vertical"
     launcher:revealBackground="@drawable/quantum_panel_shape">
 
-    <View
+    <ch.deletescape.lawnchair.allapps.StatusBarScrimView
         android:id="@+id/reveal_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
