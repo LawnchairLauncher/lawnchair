@@ -21,7 +21,7 @@ android {
     signingConfigs {
         debug {
             storeFile file("debug.jks")
-            storePassword System.getenv("STORE_PSSWORD")
+            storePassword System.getenv("STORE_PASSWORD")
             keyAlias "Lawnchair"
             keyPassword System.getenv("KEY_PASSWORD")
         }
