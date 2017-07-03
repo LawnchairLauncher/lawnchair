@@ -46,7 +46,7 @@ android {
                 minifyEnabled true
                 proguardFiles getDefaultProguardFile('proguard-android.txt'),
                         'proguard.flags'
-                if (System.getenv("$TRAVIS_PULL_REQUEST") == "false") {
+                if (System.getenv("TRAVIS_PULL_REQUEST") == "false") {
                     signingConfig signingConfigs.debug
                 }
             } else {
