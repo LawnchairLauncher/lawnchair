@@ -454,6 +454,7 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
             ObjectAnimator topOa = LauncherAnimUtils.ofFloat(mTopHandle, ALPHA, 1.0f);
             ObjectAnimator bottomOa = LauncherAnimUtils.ofFloat(mBottomHandle, ALPHA, 1.0f);
             oa.addUpdateListener(new AnimatorUpdateListener() {
+                @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     requestLayout();
                 }

@@ -123,9 +123,12 @@ public class DeviceProfile {
     // Listeners
     private ArrayList<LauncherLayoutChangeListener> mListeners = new ArrayList<>();
 
+    private Context mContext;
+
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
                          Point minSize, Point maxSize,
                          int width, int height) {
+        mContext = context;
 
         this.inv = inv;
 
@@ -178,7 +181,7 @@ public class DeviceProfile {
         availableHeightPx = maxSize.y;
 
         // Calculate the remaining vars
-        updateAvailableDimensions(dm, res);
+        updateAvailableDimensions(dm, res, context);
         computeAllAppsButtonSize(context);
         mBadgeRenderer = new BadgeRenderer(context, iconSizePx);
     }
@@ -206,7 +209,7 @@ public class DeviceProfile {
                 .getDimensionPixelSize(R.dimen.all_apps_button_scale_down);
     }
 
-    private void updateAvailableDimensions(DisplayMetrics dm, Resources res) {
+    private void updateAvailableDimensions(DisplayMetrics dm, Resources res, Context context) {
         // Check to see if the icons fit in the new available height.  If not, then we need to
         // shrink the icon size.
         float scale = 1f;
@@ -321,7 +324,9 @@ public class DeviceProfile {
     public Rect getWorkspacePadding(Rect recycle) {
         Rect padding = recycle == null ? new Rect() : recycle;
         int paddingBottom = hotseatBarHeightPx + pageIndicatorHeightPx;
-        if (isTablet) {
+        if (FeatureFlags.allowFullWidthWidgets(mContext)) {
+            padding.set(0, 0, 0, paddingBottom);
+        } else if (isTablet) {
             // Pad the left and right of the workspace to ensure consistent spacing
             // between all icons
             float gapScale = 1f + (dragViewScale - 1f) / 2f;
@@ -358,8 +363,8 @@ public class DeviceProfile {
                         edgeMarginPx);
     }
 
-    private int getWorkspacePageSpacing(Context context) {
-        if (FeatureFlags.isContinousPaging(context)) {
+    private int getWorkspacePageSpacing() {
+        if (FeatureFlags.isContinousPaging(mContext)) {
             return 0;
         }
         if (isLargeTablet) {
@@ -419,7 +424,7 @@ public class DeviceProfile {
         Rect workspacePadding = getWorkspacePadding(null);
         workspace.setPadding(workspacePadding.left, workspacePadding.top, workspacePadding.right,
                 workspacePadding.bottom);
-        workspace.setPageSpacing(getWorkspacePageSpacing(launcher));
+        workspace.setPageSpacing(getWorkspacePageSpacing());
 
         View qsbContainer = launcher.getQsbContainer();
         lp = (FrameLayout.LayoutParams) qsbContainer.getLayoutParams();

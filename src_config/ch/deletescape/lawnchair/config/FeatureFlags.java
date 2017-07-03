@@ -40,6 +40,7 @@ public final class FeatureFlags {
     private static final String KEY_PREF_PIXEL_STYLE_ICONS = "pref_pixelStyleIcons";
     private static final String KEY_PREF_HIDE_APP_LABELS = "pref_hideAppLabels";
     private static final String KEY_PREF_CONTINOUS_PAGING = "pref_continousPaging";
+    private static final String KEY_PREF_FULL_WIDTH_WIDGETS = "pref_fullWidthWidgets";
 
     private FeatureFlags() {
     }
@@ -121,6 +122,12 @@ public final class FeatureFlags {
     public static boolean isContinousPaging(Context context) {
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_CONTINOUS_PAGING, true);
         FirebaseAnalytics.getInstance(context).setUserProperty("continous_paging", String.valueOf(enabled));
+        return enabled;
+    }
+
+    public static boolean allowFullWidthWidgets(Context context) {
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_FULL_WIDTH_WIDGETS, false);
+        FirebaseAnalytics.getInstance(context).setUserProperty("full_width_widgets", String.valueOf(enabled));
         return enabled;
     }
 }
