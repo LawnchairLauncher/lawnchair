@@ -2,7 +2,7 @@
 
 ./scripts/deploy-telegram.sh
 
-BRANCH=$0
+BRANCH=$1
 
 curl \
     -F status="2" \
