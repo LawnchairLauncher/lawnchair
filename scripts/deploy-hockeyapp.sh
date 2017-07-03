@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
 
-./scripts/deploy-telegram.sh
-
 BRANCH=$1
 
 curl \

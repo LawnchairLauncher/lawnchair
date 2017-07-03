@@ -28,6 +28,7 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.android/build-cache"
+before_deploy: ./scripts/deploy-telegram.sh
 deploy:
   - provider: releases
     skip_cleanup: true
