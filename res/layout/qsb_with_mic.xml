@@ -30,5 +30,5 @@
         android:contentDescription="@string/label_voice_search"
         android:elevation="@dimen/qsb_button_elevation"
         android:scaleType="center"
-        android:src="@drawable/ic_mic_color" />
+        android:src="@drawable/opa_assistant_logo" />
 </LinearLayout>

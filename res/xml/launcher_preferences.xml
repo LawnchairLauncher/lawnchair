@@ -143,8 +143,8 @@
 
         <SwitchPreference
             android:key="pref_showMic"
-            android:defaultValue="true"
-            android:title="Show Voice Search Button"
+            android:defaultValue="false"
+            android:title="Show Google Assistant Button"
             android:dependency="pref_showPixelBar"
             android:persistent="true" />
 

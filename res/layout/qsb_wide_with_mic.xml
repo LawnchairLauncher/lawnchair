@@ -24,5 +24,5 @@
         android:background="?android:selectableItemBackgroundBorderless"
         android:contentDescription="@string/label_voice_search"
         android:scaleType="center"
-        android:src="@drawable/ic_mic_color" />
+        android:src="@drawable/opa_assistant_logo" />
 </FrameLayout>

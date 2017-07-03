@@ -26,7 +26,7 @@ import ch.deletescape.lawnchair.util.PackageManagerHelper;
 
 public abstract class BaseQsbView extends FrameLayout implements OnClickListener, OnSharedPreferenceChangeListener {
     private static final String TEXT_ASSIST = "com.google.android.googlequicksearchbox.TEXT_ASSIST";
-    private static final String VOICE_ASSIST = "android.intent.action.VOICE_ASSIST";
+    private static final String VOICE_ASSIST = Intent.ACTION_VOICE_COMMAND;
     protected View mQsbView;
     protected final Launcher mLauncher;
     protected boolean showMic;

@@ -90,7 +90,7 @@ public final class FeatureFlags {
     }
 
     public static boolean showVoiceSearchButton(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_SHOW_VOICE_SEARCH_BUTTON, true);
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_SHOW_VOICE_SEARCH_BUTTON, false);
         FirebaseAnalytics.getInstance(context).setUserProperty("show_voice_search", String.valueOf(enabled));
         return enabled;
     }
