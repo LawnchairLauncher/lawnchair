@@ -631,16 +631,16 @@ public class LauncherModel extends BroadcastReceiver
             if (modelItem instanceof ShortcutInfo && item instanceof ShortcutInfo) {
                 ShortcutInfo modelShortcut = (ShortcutInfo) modelItem;
                 ShortcutInfo shortcut = (ShortcutInfo) item;
-                if (modelShortcut.title.toString().equals(shortcut.title.toString()) &&
+                if (/*modelShortcut.title.toString().equals(shortcut.title.toString()) &&*/
                         modelShortcut.intent.filterEquals(shortcut.intent) &&
-                        modelShortcut.id == shortcut.id &&
-                        modelShortcut.itemType == shortcut.itemType &&
-                        modelShortcut.container == shortcut.container &&
-                        modelShortcut.screenId == shortcut.screenId &&
-                        modelShortcut.cellX == shortcut.cellX &&
-                        modelShortcut.cellY == shortcut.cellY &&
-                        modelShortcut.spanX == shortcut.spanX &&
-                        modelShortcut.spanY == shortcut.spanY) {
+                                modelShortcut.id == shortcut.id &&
+                                modelShortcut.itemType == shortcut.itemType &&
+                                modelShortcut.container == shortcut.container &&
+                                modelShortcut.screenId == shortcut.screenId &&
+                                modelShortcut.cellX == shortcut.cellX &&
+                                modelShortcut.cellY == shortcut.cellY &&
+                                modelShortcut.spanX == shortcut.spanX &&
+                                modelShortcut.spanY == shortcut.spanY) {
                     // For all intents and purposes, this is the same object
                     return;
                 }
