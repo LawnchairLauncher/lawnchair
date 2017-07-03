@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-./deploy-telegram.sh
+./scripts/deploy-telegram.sh
 
 BRANCH=$0
 
