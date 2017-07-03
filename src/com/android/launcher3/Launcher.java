@@ -209,10 +209,8 @@ public class Launcher extends BaseActivity
 
     private boolean mIsSafeModeEnabled;
 
-    public static final int APPWIDGET_HOST_ID = 1024;
     public static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 500;
     private static final int ON_ACTIVITY_RESULT_ANIMATION_DELAY = 500;
-    private static final int ACTIVITY_START_DELAY = 1000;
 
     // How long to wait before the new-shortcut animation automatically pans the workspace
     private static final int NEW_APPS_PAGE_MOVE_DELAY = 500;
@@ -397,7 +395,10 @@ public class Launcher extends BaseActivity
 
         mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
 
-        mAppWidgetHost = new LauncherAppWidgetHost(this, APPWIDGET_HOST_ID);
+        mAppWidgetHost = new LauncherAppWidgetHost(this);
+        if (Utilities.ATLEAST_MARSHMALLOW) {
+            mAppWidgetHost.addProviderChangeListener(this);
+        }
         mAppWidgetHost.startListening();
 
         // If we are getting an onCreate, we can actually preempt onResume and unset mPaused here,
@@ -788,7 +789,7 @@ public class Launcher extends BaseActivity
     }
 
     @Override
-    protected void onActivityResult(
+    public void onActivityResult(
             final int requestCode, final int resultCode, final Intent data) {
         handleActivityResult(requestCode, resultCode, data);
         if (mLauncherCallbacks != null) {

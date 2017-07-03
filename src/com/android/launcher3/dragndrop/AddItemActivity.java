@@ -16,14 +16,8 @@
 
 package com.android.launcher3.dragndrop;
 
-import static com.android.launcher3.logging.LoggerUtils.newCommandAction;
-import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
-import static com.android.launcher3.logging.LoggerUtils.newItemTarget;
-import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
-
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
-import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.content.ClipData;
 import android.content.ClipDescription;
@@ -45,8 +39,8 @@ import android.view.View.OnTouchListener;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherAppWidgetHost;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -60,6 +54,11 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetImageView;
+
+import static com.android.launcher3.logging.LoggerUtils.newCommandAction;
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+import static com.android.launcher3.logging.LoggerUtils.newItemTarget;
+import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
 
 @TargetApi(Build.VERSION_CODES.O)
 public class AddItemActivity extends BaseActivity implements OnLongClickListener, OnTouchListener {
@@ -78,7 +77,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     private LivePreviewWidgetCell mWidgetCell;
 
     // Widget request specific options.
-    private AppWidgetHost mAppWidgetHost;
+    private LauncherAppWidgetHost mAppWidgetHost;
     private AppWidgetManagerCompat mAppWidgetManager;
     private PendingAddWidgetInfo mPendingWidgetInfo;
     private int mPendingBindWidgetId;
@@ -212,7 +211,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         mWidgetCell.setPreview(PinItemDragListener.getPreview(mRequest));
 
         mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
-        mAppWidgetHost = new AppWidgetHost(this, Launcher.APPWIDGET_HOST_ID);
+        mAppWidgetHost = new LauncherAppWidgetHost(this);
 
         mPendingWidgetInfo = new PendingAddWidgetInfo(widgetInfo);
         mPendingWidgetInfo.spanX = Math.min(mIdp.numColumns, widgetInfo.spanX);
@@ -256,13 +255,8 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         }
 
         // request bind widget
-        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mPendingBindWidgetId);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER,
-                mPendingWidgetInfo.componentName);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE,
-                mRequest.getAppWidgetProviderInfo(this).getProfile());
-        startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
+        mAppWidgetHost.startBindFlow(this, mPendingBindWidgetId,
+                mRequest.getAppWidgetProviderInfo(this), REQUEST_BIND_APPWIDGET);
     }
 
     private void acceptWidget(int widgetId) {
@@ -280,7 +274,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_BIND_APPWIDGET) {
             int widgetId = data != null
                     ? data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mPendingBindWidgetId)

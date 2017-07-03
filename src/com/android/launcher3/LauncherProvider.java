@@ -1031,7 +1031,7 @@ public class LauncherProvider extends ContentProvider {
         }
 
         public AppWidgetHost newLauncherWidgetHost() {
-            return new AppWidgetHost(mContext, Launcher.APPWIDGET_HOST_ID);
+            return new LauncherAppWidgetHost(mContext);
         }
 
         @Override
