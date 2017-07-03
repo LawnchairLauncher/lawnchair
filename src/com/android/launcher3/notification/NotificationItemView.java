@@ -17,6 +17,8 @@
 package com.android.launcher3.notification;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Notification;
 import android.content.Context;
 import android.graphics.Rect;
@@ -28,7 +30,9 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.PropertyResetListener;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
@@ -89,6 +93,8 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
     }
 
     public Animator animateHeightRemoval(int heightToRemove, boolean shouldRemoveFromTop) {
+        AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
+
         Rect startRect = new Rect(mPillRect);
         Rect endRect = new Rect(mPillRect);
         if (shouldRemoveFromTop) {
@@ -96,8 +102,18 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
         } else {
             endRect.bottom -= heightToRemove;
         }
-        return new RoundedRectRevealOutlineProvider(getBackgroundRadius(), getBackgroundRadius(),
-                startRect, endRect, mRoundedCorners).createRevealAnimator(this, false);
+        anim.play(new RoundedRectRevealOutlineProvider(getBackgroundRadius(), getBackgroundRadius(),
+                startRect, endRect, mRoundedCorners).createRevealAnimator(this, false));
+
+        View bottomGutter = findViewById(R.id.gutter_bottom);
+        if (bottomGutter != null && bottomGutter.getVisibility() == VISIBLE) {
+            Animator translateGutter = ObjectAnimator.ofFloat(bottomGutter, TRANSLATION_Y,
+                    -heightToRemove);
+            translateGutter.addListener(new PropertyResetListener<>(TRANSLATION_Y, 0f));
+            anim.play(translateGutter);
+        }
+
+        return anim;
     }
 
     public void updateHeader(int notificationCount, @Nullable IconPalette palette) {
