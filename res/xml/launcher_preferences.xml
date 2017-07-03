@@ -118,6 +118,11 @@
             android:title="Full width widgets"
             android:defaultValue="false"
             android:summary="Allow widgets to span over the whole width without padding" />
+
+        <Preference
+            android:key="notification_access"
+            android:title="Notification Badges and Preview"
+            android:summary="Allow Lawnchair to access your notification to enable this features" />
     </PreferenceScreen>
 
     <PreferenceScreen android:title="Pixel Style">

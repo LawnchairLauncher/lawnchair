@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
+import android.provider.Settings;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
@@ -55,6 +56,10 @@ public class SettingsActivity extends Activity {
             if (preference.getKey() != null && preference.getKey().equals("about")) {
                 Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/deletescape-media/lawnchair"));
                 startActivity(i);
+                return true;
+            }
+            if (preference.getKey() != null && preference.getKey().equals("notification_access")) {
+                startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
                 return true;
             }
             return false;
