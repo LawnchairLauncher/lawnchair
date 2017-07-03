@@ -364,9 +364,6 @@ public class DeviceProfile {
     }
 
     private int getWorkspacePageSpacing() {
-        if (FeatureFlags.isContinousPaging(mContext)) {
-            return 0;
-        }
         if (isLargeTablet) {
             // In landscape mode the page spacing is set to the default.
             return defaultPageSpacingPx;
