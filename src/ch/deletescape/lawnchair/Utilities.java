@@ -891,4 +891,12 @@ public final class Utilities {
         hashSet.add(obj);
         return hashSet;
     }
+
+    public static void setAppVisibility(Context context, String key, boolean visible) {
+        getPrefs(context).edit().putBoolean("visibility_" + key, visible).apply();
+    }
+
+    public static boolean isAppHidden(Context context, String key) {
+        return !getPrefs(context).getBoolean("visibility_" + key, true);
+    }
 }
