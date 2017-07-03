@@ -18,6 +18,15 @@ android {
     compileSdkVersion 25
     buildToolsVersion '25.0.3'
 
+    signingConfigs {
+        debug {
+            storeFile file("debug.jks")
+            storePassword System.getenv("STORE_PSSWORD")
+            keyAlias "Lawnchair"
+            keyPassword System.getenv("KEY_PASSWORD")
+        }
+    }
+
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 25
@@ -37,6 +46,9 @@ android {
                 minifyEnabled true
                 proguardFiles getDefaultProguardFile('proguard-android.txt'),
                         'proguard.flags'
+                if (System.getenv("$TRAVIS_PULL_REQUEST") == "false") {
+                    signingConfig signingConfigs.debug
+                }
             } else {
                 minifyEnabled false
             }
