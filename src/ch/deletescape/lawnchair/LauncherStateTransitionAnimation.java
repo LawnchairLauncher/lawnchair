@@ -152,10 +152,12 @@ public class LauncherStateTransitionAnimation {
             public AnimatorListenerAdapter getMaterialRevealViewAnimatorListener(
                     final View revealView, final View allAppsButtonView) {
                 return new AnimatorListenerAdapter() {
+                    @Override
                     public void onAnimationStart(Animator animation) {
                         allAppsButtonView.setVisibility(View.INVISIBLE);
                     }
 
+                    @Override
                     public void onAnimationEnd(Animator animation) {
                         allAppsButtonView.setVisibility(View.VISIBLE);
                     }
@@ -360,6 +362,7 @@ public class LauncherStateTransitionAnimation {
 
             final AnimatorSet stateAnimation = animation;
             final Runnable startAnimRunnable = new Runnable() {
+                @Override
                 public void run() {
                     // Check that mCurrentAnimation hasn't changed while
                     // we waited for a layout/draw pass
@@ -373,7 +376,7 @@ public class LauncherStateTransitionAnimation {
                         if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
                             v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                         }
-                        if (v.isAttachedToWindow()) {
+                        if (v.isAttachedToWindow() && v.getVisibility() == View.VISIBLE) {
                             v.buildLayer();
                         }
                     }
@@ -416,6 +419,7 @@ public class LauncherStateTransitionAnimation {
 
             final AnimatorSet stateAnimation = animation;
             final Runnable startAnimRunnable = new Runnable() {
+                @Override
                 public void run() {
                     // Check that mCurrentAnimation hasn't changed while
                     // we waited for a layout/draw pass
@@ -430,7 +434,7 @@ public class LauncherStateTransitionAnimation {
                         if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
                             v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                         }
-                        if (v.isAttachedToWindow()) {
+                        if (v.isAttachedToWindow() && v.getVisibility() == View.VISIBLE) {
                             v.buildLayer();
                         }
                     }
@@ -507,6 +511,7 @@ public class LauncherStateTransitionAnimation {
             public AnimatorListenerAdapter getMaterialRevealViewAnimatorListener(
                     final View revealView, final View allAppsButtonView) {
                 return new AnimatorListenerAdapter() {
+                    @Override
                     public void onAnimationStart(Animator animation) {
                         // We set the alpha instead of visibility to ensure that the focus does not
                         // get taken from the all apps view
@@ -514,6 +519,7 @@ public class LauncherStateTransitionAnimation {
                         allAppsButtonView.setAlpha(0f);
                     }
 
+                    @Override
                     public void onAnimationEnd(Animator animation) {
                         // Hide the reveal view
                         revealView.setVisibility(View.INVISIBLE);
@@ -543,6 +549,7 @@ public class LauncherStateTransitionAnimation {
                     public AnimatorListenerAdapter getMaterialRevealViewAnimatorListener(
                             final View revealView, final View widgetsButtonView) {
                         return new AnimatorListenerAdapter() {
+                            @Override
                             public void onAnimationEnd(Animator animation) {
                                 // Hide the reveal view
                                 revealView.setVisibility(View.INVISIBLE);
@@ -578,6 +585,7 @@ public class LauncherStateTransitionAnimation {
 
             final AnimatorSet stateAnimation = animation;
             final Runnable startAnimRunnable = new Runnable() {
+                @Override
                 public void run() {
                     // Check that mCurrentAnimation hasn't changed while
                     // we waited for a layout/draw pass
@@ -591,7 +599,7 @@ public class LauncherStateTransitionAnimation {
                         if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
                             v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                         }
-                        if (v.isAttachedToWindow()) {
+                        if (v.isAttachedToWindow() && v.getVisibility() == View.VISIBLE) {
                             v.buildLayer();
                         }
                     }
@@ -816,6 +824,7 @@ public class LauncherStateTransitionAnimation {
 
             final AnimatorSet stateAnimation = animation;
             final Runnable startAnimRunnable = new Runnable() {
+                @Override
                 public void run() {
                     // Check that mCurrentAnimation hasn't changed while
                     // we waited for a layout/draw pass
@@ -830,7 +839,7 @@ public class LauncherStateTransitionAnimation {
                         if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
                             v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                         }
-                        if (v.isAttachedToWindow()) {
+                        if (v.isAttachedToWindow() && v.getVisibility() == View.VISIBLE) {
                             v.buildLayer();
                         }
                     }
@@ -881,6 +890,7 @@ public class LauncherStateTransitionAnimation {
 
             final AnimatorSet stateAnimation = animation;
             final Runnable startAnimRunnable = new Runnable() {
+                @Override
                 public void run() {
                     // Check that mCurrentAnimation hasn't changed while
                     // we waited for a layout/draw pass
@@ -895,7 +905,7 @@ public class LauncherStateTransitionAnimation {
                         if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
                             v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                         }
-                        if (v.isAttachedToWindow()) {
+                        if (v.isAttachedToWindow() && v.getVisibility() == View.VISIBLE) {
                             v.buildLayer();
                         }
                     }

@@ -110,7 +110,6 @@ import ch.deletescape.lawnchair.keyboard.CustomActionsPopup;
 import ch.deletescape.lawnchair.keyboard.ViewGroupFocusHelper;
 import ch.deletescape.lawnchair.model.WidgetsModel;
 import ch.deletescape.lawnchair.notification.NotificationListener;
-import ch.deletescape.lawnchair.pageindicators.PageIndicator;
 import ch.deletescape.lawnchair.popup.PopupContainerWithArrow;
 import ch.deletescape.lawnchair.popup.PopupDataProvider;
 import ch.deletescape.lawnchair.settings.Settings;

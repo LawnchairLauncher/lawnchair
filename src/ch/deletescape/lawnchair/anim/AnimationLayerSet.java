@@ -28,8 +28,8 @@ public class AnimationLayerSet extends AnimatorListenerAdapter {
         for (Entry<View, Integer> entry : mViewsToLayerTypeMap.entrySet()) {
             View view = entry.getKey();
             entry.setValue(view.getLayerType());
-            view.setLayerType(2, null);
-            if (view.isAttachedToWindow() && view.getVisibility() == 0) {
+            view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            if (view.isAttachedToWindow() && view.getVisibility() == View.VISIBLE) {
                 view.buildLayer();
             }
         }
