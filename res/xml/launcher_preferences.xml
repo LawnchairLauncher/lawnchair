@@ -34,6 +34,12 @@
             android:persistent="true" />
 
         <SwitchPreference
+            android:key="pref_isHotseatTransparent"
+            android:title="Transparent Tray"
+            android:defaultValue="false"
+            android:persistent="true" />
+
+        <SwitchPreference
             android:key="pref_hideAppLabels"
             android:title="Hide Icon Labels on Homescreen"
             android:defaultValue="false"

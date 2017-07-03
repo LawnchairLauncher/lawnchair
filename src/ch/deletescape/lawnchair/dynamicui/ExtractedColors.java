@@ -179,6 +179,9 @@ public class ExtractedColors {
      * - 40% lightVibrant or 25% white otherwise
      */
     public int getHotseatColor(Context context) {
+        if (FeatureFlags.isTransparentHotseat(context)) {
+            return Color.TRANSPARENT;
+        }
         int hotseatColor;
         boolean shouldUseExtractedColors = FeatureFlags.hotseatShouldUseExtractedColors(context);
         if (getColor(IS_SUPER_LIGHT, 0) == 1) {

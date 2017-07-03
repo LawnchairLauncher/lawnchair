@@ -30,6 +30,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private static final String KEY_PREF_HIDE_APP_LABELS = "pref_hideAppLabels";
     private static final String KEY_PREF_FULL_WIDTH_WIDGETS = "pref_fullWidthWidgets";
     private static final String KEY_PREF_SHOW_NOW_TAB = "pref_showGoogleNowTab";
+    private static final String KEY_PREF_TRANSPARENT_HOTSEAT = "pref_isHotseatTransparent";
     private static Settings instance;
     private Launcher mLauncher;
 
