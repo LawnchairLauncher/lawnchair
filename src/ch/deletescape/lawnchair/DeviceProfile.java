@@ -32,6 +32,7 @@ import android.widget.FrameLayout;
 import java.util.ArrayList;
 
 import ch.deletescape.lawnchair.badge.BadgeRenderer;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 
 public class DeviceProfile {
 
@@ -357,7 +358,10 @@ public class DeviceProfile {
                         edgeMarginPx);
     }
 
-    private int getWorkspacePageSpacing() {
+    private int getWorkspacePageSpacing(Context context) {
+        if (FeatureFlags.isContinousPaging(context)) {
+            return 0;
+        }
         if (isLargeTablet) {
             // In landscape mode the page spacing is set to the default.
             return defaultPageSpacingPx;
@@ -415,7 +419,7 @@ public class DeviceProfile {
         Rect workspacePadding = getWorkspacePadding(null);
         workspace.setPadding(workspacePadding.left, workspacePadding.top, workspacePadding.right,
                 workspacePadding.bottom);
-        workspace.setPageSpacing(getWorkspacePageSpacing());
+        workspace.setPageSpacing(getWorkspacePageSpacing(launcher));
 
         View qsbContainer = launcher.getQsbContainer();
         lp = (FrameLayout.LayoutParams) qsbContainer.getLayoutParams();

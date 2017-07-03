@@ -111,6 +111,13 @@
             app:summaryMultiplier="100"
             app:defaultValue="1.0"
             android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_continousPaging"
+            android:persistent="true"
+            android:title="Continous Paging"
+            android:defaultValue="true"
+            android:summary="When enabled there will be no gap between pages" />
     </PreferenceScreen>
 
     <PreferenceScreen android:title="Pixel Style">
