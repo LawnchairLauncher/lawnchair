@@ -24,8 +24,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInstaller;
+import android.graphics.Bitmap;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Process;
 import android.os.SystemClock;
 import android.os.Trace;
@@ -66,6 +66,7 @@ import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.Provider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -459,8 +460,18 @@ public class LoaderTask implements Runnable {
                                         continue;
                                     }
                                     info = new ShortcutInfo(pinnedShortcut, context);
+                                    final ShortcutInfo finalInfo = info;
+                                    Provider<Bitmap> fallbackIconProvider = new Provider<Bitmap>() {
+                                        @Override
+                                        public Bitmap get() {
+                                            // If the pinned deep shortcut is no longer published,
+                                            // use the last saved icon instead of the default.
+                                            return c.loadIcon(finalInfo);
+                                        }
+                                    };
                                     info.iconBitmap = LauncherIcons
-                                            .createShortcutIcon(pinnedShortcut, context);
+                                            .createShortcutIcon(pinnedShortcut, context,
+                                                    true /* badged */, fallbackIconProvider);
                                     if (pmHelper.isAppSuspended(
                                             pinnedShortcut.getPackage(), info.user)) {
                                         info.isDisabled |= ShortcutInfo.FLAG_DISABLED_SUSPENDED;
