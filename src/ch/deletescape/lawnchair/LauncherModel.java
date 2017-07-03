@@ -626,7 +626,7 @@ public class LauncherModel extends BroadcastReceiver
     static void checkItemInfoLocked(
             final long itemId, final ItemInfo item, StackTraceElement[] stackTrace) {
         ItemInfo modelItem = sBgItemsIdMap.get(itemId);
-        if (modelItem != null && item != modelItem) {
+        if (modelItem != null && item != modelItem && !(item instanceof FolderInfo)) {
             // check all the data is consistent
             if (modelItem instanceof ShortcutInfo && item instanceof ShortcutInfo) {
                 ShortcutInfo modelShortcut = (ShortcutInfo) modelItem;
