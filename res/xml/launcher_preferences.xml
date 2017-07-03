@@ -147,6 +147,12 @@
             android:summary="When enabled circular icons will be used where possible"
             android:defaultValue="true"
             android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_showGoogleNowTab"
+            android:persistent="true"
+            android:title="Show Google Now Page"
+            android:defaultValue="true" />
     </PreferenceScreen>
 
     <PreferenceScreen android:title="Behavior">

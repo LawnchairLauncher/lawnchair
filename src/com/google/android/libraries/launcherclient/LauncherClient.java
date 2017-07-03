@@ -25,6 +25,7 @@ import android.view.WindowManager;
 import com.google.firebase.crash.FirebaseCrash;
 
 import ch.deletescape.lawnchair.Launcher;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 
 public class LauncherClient {
     private static AppServiceConnection sApplicationConnection;
@@ -78,7 +79,7 @@ public class LauncherClient {
     }
 
     private void applyWindowToken() {
-        if (!isConnected()) {
+        if (!isConnected() || !FeatureFlags.showGoogleNowTab(mLauncher)) {
             return;
         }
 
@@ -185,7 +186,7 @@ public class LauncherClient {
     }
 
     public void endMove() {
-        if (!isConnected()) {
+        if (!isConnected() || !FeatureFlags.showGoogleNowTab(mLauncher)) {
             return;
         }
 
@@ -197,7 +198,7 @@ public class LauncherClient {
     }
 
     public void hideOverlay(boolean animate) {
-        if (!isConnected()) {
+        if (!isConnected() || !FeatureFlags.showGoogleNowTab(mLauncher)) {
             return;
         }
 
@@ -209,7 +210,7 @@ public class LauncherClient {
     }
 
     public void openOverlay(boolean animate) {
-        if (!isConnected()) {
+        if (!isConnected() || !FeatureFlags.showGoogleNowTab(mLauncher)) {
             return;
         }
 
@@ -221,23 +222,29 @@ public class LauncherClient {
     }
 
     public final void onAttachedToWindow() {
-        if (!mDestroyed) {
+        if (!mDestroyed && FeatureFlags.showGoogleNowTab(mLauncher)) {
             setWindowAttrs(mLauncher.getWindow().getAttributes());
         }
     }
 
     public void onDestroy() {
-        removeClient(!mLauncher.isChangingConfigurations());
+        if (FeatureFlags.showGoogleNowTab(mLauncher)) {
+            removeClient(!mLauncher.isChangingConfigurations());
+        }
+    }
+
+    public void remove() {
+        removeClient(true);
     }
 
     public final void onDetachedFromWindow() {
-        if (!mDestroyed) {
+        if (!mDestroyed && FeatureFlags.showGoogleNowTab(mLauncher)) {
             setWindowAttrs(null);
         }
     }
 
     public void onStart() {
-        if (!mDestroyed) {
+        if (!mDestroyed && FeatureFlags.showGoogleNowTab(mLauncher)) {
             activityState |= 1;
             if (mOverlay != null && mWindowAttrs != null) {
                 try {
@@ -250,7 +257,7 @@ public class LauncherClient {
     }
 
     public void onStop() {
-        if (!mDestroyed) {
+        if (!mDestroyed && FeatureFlags.showGoogleNowTab(mLauncher)) {
             activityState &= -2;
             if (mOverlay != null && mWindowAttrs != null) {
                 try {
@@ -263,7 +270,7 @@ public class LauncherClient {
     }
 
     public void onPause() {
-        if (mDestroyed) {
+        if (mDestroyed || !FeatureFlags.showGoogleNowTab(mLauncher)) {
             return;
         }
         activityState &= -3;
@@ -277,7 +284,7 @@ public class LauncherClient {
     }
 
     public void onResume() {
-        if (mDestroyed) {
+        if (mDestroyed || !FeatureFlags.showGoogleNowTab(mLauncher)) {
             return;
         }
 
@@ -293,7 +300,7 @@ public class LauncherClient {
     }
 
     public void reconnect() {
-        if (mDestroyed || mState != 0) {
+        if (mDestroyed || mState != 0 || !FeatureFlags.showGoogleNowTab(mLauncher)) {
             return;
         }
 
@@ -330,7 +337,7 @@ public class LauncherClient {
     }
 
     public void startMove() {
-        if (!isConnected()) {
+        if (!isConnected() || !FeatureFlags.showGoogleNowTab(mLauncher)) {
             return;
         }
 
@@ -342,7 +349,7 @@ public class LauncherClient {
     }
 
     public void updateMove(float progressX) {
-        if (!isConnected()) {
+        if (!isConnected() || !FeatureFlags.showGoogleNowTab(mLauncher)) {
             return;
         }
 

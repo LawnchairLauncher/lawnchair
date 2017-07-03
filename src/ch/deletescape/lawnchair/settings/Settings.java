@@ -29,6 +29,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private static final String KEY_PREF_PIXEL_STYLE_ICONS = "pref_pixelStyleIcons";
     private static final String KEY_PREF_HIDE_APP_LABELS = "pref_hideAppLabels";
     private static final String KEY_PREF_FULL_WIDTH_WIDGETS = "pref_fullWidthWidgets";
+    private static final String KEY_PREF_SHOW_NOW_TAB = "pref_showGoogleNowTab";
     private static Settings instance;
     private Launcher mLauncher;
 
@@ -116,6 +117,12 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case KEY_PREF_HIDE_APP_LABELS:
                     las.reloadWorkspace();
                     break;
+                case KEY_PREF_SHOW_NOW_TAB:
+                    if (!prefs.getBoolean(key, true)) {
+                        mLauncher.getClient().remove();
+                    } else {
+                        mLauncher.scheduleKill();
+                    }
                 default:
                     las.reloadAll(false);
             }

@@ -40,6 +40,7 @@ public final class FeatureFlags {
     private static final String KEY_PREF_PIXEL_STYLE_ICONS = "pref_pixelStyleIcons";
     private static final String KEY_PREF_HIDE_APP_LABELS = "pref_hideAppLabels";
     private static final String KEY_PREF_FULL_WIDTH_WIDGETS = "pref_fullWidthWidgets";
+    private static final String KEY_PREF_SHOW_NOW_TAB = "pref_showGoogleNowTab";
 
     private FeatureFlags() {
     }
@@ -121,6 +122,12 @@ public final class FeatureFlags {
     public static boolean allowFullWidthWidgets(Context context) {
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_FULL_WIDTH_WIDGETS, false);
         FirebaseAnalytics.getInstance(context).setUserProperty("full_width_widgets", String.valueOf(enabled));
+        return enabled;
+    }
+
+    public static boolean showGoogleNowTab(Context context) {
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_SHOW_NOW_TAB, true);
+        FirebaseAnalytics.getInstance(context).setUserProperty("google_now_tab", String.valueOf(enabled));
         return enabled;
     }
 }
