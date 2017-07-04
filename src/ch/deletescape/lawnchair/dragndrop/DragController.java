@@ -242,7 +242,7 @@ public class DragController implements DragDriver.EventListener, TouchController
         mDragObject = new DropTarget.DragObject();
 
         mIsDragDeferred = !mOptions.deferDragCondition.shouldStartDeferredDrag(0);
-        mIsInPreDrag = !mOptions.preDragCondition.shouldStartDrag(0);
+        mIsInPreDrag = mOptions.preDragCondition != null && !mOptions.preDragCondition.shouldStartDrag(0);
 
         final Resources res = mLauncher.getResources();
         final float scaleDps = mIsInPreDrag
