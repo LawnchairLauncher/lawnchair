@@ -348,7 +348,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     }
 
     public void buildHardwareLayer() {
-        mShortcutsAndWidgets.buildLayer();
+        if (mShortcutsAndWidgets.getVisibility() == VISIBLE) {
+            mShortcutsAndWidgets.buildLayer();
+        }
     }
 
     public float getChildrenScale() {
