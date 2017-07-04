@@ -75,6 +75,13 @@ public class SettingsActivity extends Activity {
                         DumbImportExportTask.importDB(getActivity());
                         LauncherAppState.getInstance().getLauncher().scheduleKill();
                         break;
+                    case "export_prefs":
+                        DumbImportExportTask.exportPrefs(getActivity());
+                        break;
+                    case "import_prefs":
+                        DumbImportExportTask.importPrefs(getActivity());
+                        LauncherAppState.getInstance().getLauncher().scheduleKill();
+                        break;
                     default:
                         return false;
                 }

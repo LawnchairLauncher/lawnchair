@@ -237,6 +237,12 @@
         <Preference
             android:key="import_db"
             android:title="Import Database" />
+        <Preference
+            android:key="export_prefs"
+            android:title="Export Settings" />
+        <Preference
+            android:key="import_prefs"
+            android:title="Import Settings" />
     </PreferenceScreen>
 
     <Preference

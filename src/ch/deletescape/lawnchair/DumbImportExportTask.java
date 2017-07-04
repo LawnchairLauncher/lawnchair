@@ -3,12 +3,15 @@ package ch.deletescape.lawnchair;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ContextWrapper;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.google.firebase.crash.FirebaseCrash;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,6 +30,20 @@ public class DumbImportExportTask {
         importFile(db, activity);
     }
 
+    public static void exportPrefs(Activity activity) {
+        ApplicationInfo info = activity.getApplicationInfo();
+        String dir = new ContextWrapper(activity).getCacheDir().getParent();
+        File prefs = new File(dir, "shared_prefs/" + info.packageName + ".prefs.xml");
+        exportFile(prefs, activity);
+    }
+
+    public static void importPrefs(Activity activity) {
+        ApplicationInfo info = activity.getApplicationInfo();
+        String dir = new ContextWrapper(activity).getCacheDir().getParent();
+        File prefs = new File(dir, "shared_prefs/" + info.packageName + ".prefs.xml");
+        importFile(prefs, activity);
+    }
+
     private static void exportFile(File file, Activity activity) {
         if (!isExternalStorageWritable() || !canWriteStorage(activity)) {
             Toast.makeText(activity, "External Storage is not writable (grant Permission in settings)", Toast.LENGTH_LONG).show();
@@ -36,8 +53,11 @@ public class DumbImportExportTask {
         if (backup.exists()) {
             backup.delete();
         }
-        copy(file, backup);
-        Toast.makeText(activity, "Success!", Toast.LENGTH_LONG).show();
+        if (copy(file, backup)) {
+            Toast.makeText(activity, "Success!", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(activity, "Error: Failed to copy file", Toast.LENGTH_LONG).show();
+        }
     }
 
     private static void importFile(File file, Activity activity) {
@@ -53,8 +73,11 @@ public class DumbImportExportTask {
         if (file.exists()) {
             file.delete();
         }
-        copy(backup, file);
-        Toast.makeText(activity, "Success!", Toast.LENGTH_LONG).show();
+        if (copy(backup, file)) {
+            Toast.makeText(activity, "Success!", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(activity, "Error: Failed to copy file", Toast.LENGTH_LONG).show();
+        }
     }
 
     @NonNull
@@ -71,7 +94,7 @@ public class DumbImportExportTask {
         return ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
-    private static void copy(File inFile, File outFile) {
+    private static boolean copy(File inFile, File outFile) {
         FileInputStream in;
         FileOutputStream out;
         try {
@@ -87,10 +110,12 @@ public class DumbImportExportTask {
             // write the output file
             out.flush();
             out.close();
+            return true;
         } catch (Exception e) {
-            //FirebaseCrash.report(e);
-            Log.e("Rip", e.getMessage());
+            FirebaseCrash.report(e);
+            Log.e("copy", e.getMessage(), e);
         }
+        return false;
     }
 
     /* Checks if external storage is available for read and write */
