@@ -220,6 +220,16 @@
             android:persistent="true" />
     </PreferenceScreen>
 
+    <PreferenceScreen android:title="Debug">
+        <Preference
+            android:key="kill"
+            android:title="Restart Lawnchair"
+            android:summary="Can be helpful if some settings are not properly applied" />
+        <Preference
+            android:key="rebuild_icondb"
+            android:title="Rebuild Icon Database" />
+    </PreferenceScreen>
+
     <Preference
         android:title="@string/about_title"
         android:key="about"

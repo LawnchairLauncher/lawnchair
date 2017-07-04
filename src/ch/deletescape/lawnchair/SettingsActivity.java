@@ -53,15 +53,27 @@ public class SettingsActivity extends Activity {
 
         @Override
         public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
-            if (preference.getKey() != null && preference.getKey().equals("about")) {
-                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/deletescape-media/lawnchair"));
-                startActivity(i);
+            if (preference.getKey() != null) {
+                switch (preference.getKey()) {
+                    case "about":
+                        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/deletescape-media/lawnchair"));
+                        startActivity(i);
+                        break;
+                    case "notification_access":
+                        startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
+                        break;
+                    case "kill":
+                        LauncherAppState.getInstance().getLauncher().scheduleKill();
+                        break;
+                    case "rebuild_icondb":
+                        LauncherAppState.getInstance().getLauncher().scheduleReloadIcons();
+                        break;
+                    default:
+                        return false;
+                }
                 return true;
             }
-            if (preference.getKey() != null && preference.getKey().equals("notification_access")) {
-                startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
-                return true;
-            }
+
             return false;
         }
 
