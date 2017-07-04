@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="fadeinAnimTime">200</integer>
+    <integer name="fadeoutAnimTime">200</integer>
+</resources>

@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package ch.deletescape.lawnchair;
+package ch.deletescape.lawnchair.settings.ui;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,19 +26,58 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.provider.Settings;
+import android.view.MenuItem;
+
+import ch.deletescape.lawnchair.DumbImportExportTask;
+import ch.deletescape.lawnchair.LauncherAppState;
+import ch.deletescape.lawnchair.LauncherFiles;
+import ch.deletescape.lawnchair.R;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
  */
-public class SettingsActivity extends Activity {
+public class SettingsActivity extends Activity implements PreferenceFragment.OnPreferenceStartFragmentCallback {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Display the fragment as the main content.
-        getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new LauncherSettingsFragment())
-                .commit();
+        if (savedInstanceState == null) {
+            // Display the fragment as the main content.
+            getFragmentManager().beginTransaction()
+                    .replace(android.R.id.content, new LauncherSettingsFragment())
+                    .commit();
+        }
+    }
+
+    @Override
+    public boolean onPreferenceStartFragment(PreferenceFragment caller, Preference pref) {
+        if (pref instanceof SubPreference) {
+            Fragment fragment = SubSettingsFragment.newInstance(((SubPreference) pref));
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            setTitle(pref.getTitle());
+            transaction.setCustomAnimations(R.animator.fly_in, R.animator.fade_out, R.animator.fade_in, R.animator.fly_out);
+            transaction.replace(android.R.id.content, fragment);
+            transaction.addToBackStack("PreferenceFragment");
+            transaction.commit();
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        getActionBar().setDisplayHomeAsUpEnabled(getFragmentManager().getBackStackEntryCount() != 0);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -49,6 +90,25 @@ public class SettingsActivity extends Activity {
             super.onCreate(savedInstanceState);
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
             addPreferencesFromResource(R.xml.launcher_preferences);
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            getActivity().setTitle(R.string.settings_button_text);
+        }
+    }
+
+    public static class SubSettingsFragment extends PreferenceFragment {
+
+        private static final String TITLE = "title";
+        private static final String CONTENT_RES_ID = "content_res_id";
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
+            addPreferencesFromResource(getContent());
         }
 
         @Override
@@ -90,9 +150,23 @@ public class SettingsActivity extends Activity {
             return false;
         }
 
+        private int getContent() {
+            return getArguments().getInt(CONTENT_RES_ID);
+        }
+
         @Override
-        public void onDestroy() {
-            super.onDestroy();
+        public void onResume() {
+            super.onResume();
+            getActivity().setTitle(getArguments().getString(TITLE));
+        }
+
+        public static SubSettingsFragment newInstance(SubPreference preference) {
+            SubSettingsFragment fragment = new SubSettingsFragment();
+            Bundle b = new Bundle(2);
+            b.putString(TITLE, (String) preference.getTitle());
+            b.putInt(CONTENT_RES_ID, preference.getContent());
+            fragment.setArguments(b);
+            return fragment;
         }
     }
 }

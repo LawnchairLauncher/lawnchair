@@ -30,7 +30,7 @@
 
     <style name="Theme" parent="@style/LauncherTheme" />
 
-    <style name="SettingsTheme" parent="@android:style/Theme.DeviceDefault.Light">
+    <style name="SettingsTheme" parent="@android:style/Theme.Material.Light.DarkActionBar">
         <item name="android:colorAccent">@color/accent_material_light</item>
     </style>
 
