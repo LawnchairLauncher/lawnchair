@@ -146,7 +146,7 @@ public class DragController implements DragDriver.EventListener, TouchController
     private VelocityTracker mVelocityTracker;
 
     private boolean mIsDragDeferred;
-    private boolean mIsDragDeferred2;
+    private boolean mIsInPreDrag;
 
     /**
      * Interface to receive notifications when a drag starts or stops
@@ -218,7 +218,7 @@ public class DragController implements DragDriver.EventListener, TouchController
     public DragView startDrag(Bitmap b, int dragLayerX, int dragLayerY,
                               DragSource source, ItemInfo dragInfo, Point dragOffset, Rect dragRegion,
                               float initialDragViewScale, DragOptions options) {
-
+        boolean waitWithDrag = false;
         // Hide soft keyboard, if visible
         if (mInputMethodManager == null) {
             mInputMethodManager = (InputMethodManager)
@@ -243,10 +243,10 @@ public class DragController implements DragDriver.EventListener, TouchController
         mDragObject = new DropTarget.DragObject();
 
         mIsDragDeferred = !mOptions.deferDragCondition.shouldStartDeferredDrag(0);
-        mIsDragDeferred2 = !mOptions.deferDragCondition2.shouldStartDeferredDrag(0);
+        mIsInPreDrag = !mOptions.preDragCondition.shouldStartDrag(0);
 
         final Resources res = mLauncher.getResources();
-        final float scaleDps = mIsDragDeferred
+        final float scaleDps = mIsInPreDrag
                 ? res.getDimensionPixelSize(R.dimen.deferred_drag_view_scale)
                 : 0f;
         final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
@@ -281,15 +281,14 @@ public class DragController implements DragDriver.EventListener, TouchController
         mLauncher.getDragLayer().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
         dragView.show(mMotionDownX, mMotionDownY);
         mDistanceSinceScroll = 0;
-
-        if (!mIsDragDeferred && !mIsDragDeferred2) {
+        if (!mIsDragDeferred && !mIsInPreDrag) {
             startDeferredDrag();
         } else {
+            if (mIsInPreDrag) {
+                mOptions.preDragCondition.onPreDragStart(this.mDragObject);
+            }
             if (mIsDragDeferred) {
                 mOptions.deferDragCondition.onDeferredDragStart();
-            }
-            if (!mIsDragDeferred && mIsDragDeferred2) {
-                mOptions.deferDragCondition2.onDeferredDragStart();
             }
         }
 
@@ -300,16 +299,20 @@ public class DragController implements DragDriver.EventListener, TouchController
     }
 
     public boolean isDeferringDrag() {
-        return mIsDragDeferred || mIsDragDeferred2;
+        return mIsDragDeferred || mIsInPreDrag;
     }
+
 
     public void startDeferredDrag() {
         for (DragListener listener : new ArrayList<>(mListeners)) {
             listener.onDragStart(mDragObject, mOptions);
         }
+        if (mOptions.preDragCondition != null) {
+            mOptions.preDragCondition.onPreDragEnd(mDragObject);
+        }
         mOptions.deferDragCondition.onDragStart();
         mIsDragDeferred = false;
-        mIsDragDeferred2 = false;
+        mIsInPreDrag = false;
     }
 
     /**
@@ -345,7 +348,9 @@ public class DragController implements DragDriver.EventListener, TouchController
             mDragObject.deferDragViewCleanupPostAnimation = false;
             mDragObject.cancelled = true;
             mDragObject.dragComplete = true;
-            mDragObject.dragSource.onDropCompleted(null, mDragObject, false, false);
+            if (!mIsInPreDrag) {
+                mDragObject.dragSource.onDropCompleted(null, mDragObject, false, false);
+            }
         }
         endDrag();
     }
@@ -373,6 +378,8 @@ public class DragController implements DragDriver.EventListener, TouchController
                 isDeferred = mDragObject.deferDragViewCleanupPostAnimation;
                 if (!isDeferred) {
                     mDragObject.dragView.remove();
+                } else if (mIsInPreDrag) {
+                    animateDragViewToOriginalPosition(null, null, -1);
                 }
                 mDragObject.dragView.setVisibility(View.VISIBLE);
                 mDragObject.dragView = null;
@@ -380,14 +387,38 @@ public class DragController implements DragDriver.EventListener, TouchController
 
             // Only end the drag if we are not deferred
             if (!isDeferred) {
-                for (DragListener listener : new ArrayList<>(mListeners)) {
-                    listener.onDragEnd();
-                }
+                callOnDragEnd();
             }
         }
 
         releaseVelocityTracker();
     }
+
+    public void animateDragViewToOriginalPosition(final Runnable runnable, final View view, int i) {
+        this.mDragObject.dragView.animateTo(this.mMotionDownX, this.mMotionDownY, new Runnable() {
+            @Override
+            public void run() {
+                if (view != null) {
+                    view.setVisibility(View.VISIBLE);
+                }
+                if (runnable != null) {
+                    runnable.run();
+                }
+            }
+        }, i);
+    }
+
+    private void callOnDragEnd() {
+        if (this.mIsInPreDrag && this.mOptions.preDragCondition != null) {
+            this.mOptions.preDragCondition.onPreDragEnd(this.mDragObject);
+        }
+        this.mIsInPreDrag = false;
+        this.mOptions = null;
+        for (DragListener onDragEnd : this.mListeners) {
+            onDragEnd.onDragEnd();
+        }
+    }
+
 
     /**
      * This only gets called as a result of drag view cleanup being deferred in endDrag();
@@ -546,7 +577,7 @@ public class DragController implements DragDriver.EventListener, TouchController
         checkScrollState(x, y);
 
         double hypot = Math.hypot(x - mMotionDownX, y - mMotionDownY);
-        if ((mIsDragDeferred && mOptions.deferDragCondition.shouldStartDeferredDrag(hypot)) || (mIsDragDeferred2 && mOptions.deferDragCondition2.shouldStartDeferredDrag(hypot))) {
+        if ((mIsDragDeferred && mOptions.deferDragCondition.shouldStartDeferredDrag(hypot)) || (mIsInPreDrag && mOptions.preDragCondition.shouldStartDrag(hypot))) {
             startDeferredDrag();
         }
     }
@@ -744,9 +775,6 @@ public class DragController implements DragDriver.EventListener, TouchController
                 dropTargetAsView, mDragObject, flingVel != null, accepted);
         if (mIsDragDeferred) {
             mOptions.deferDragCondition.onDropBeforeDeferredDrag();
-        }
-        if (mIsDragDeferred2) {
-            mOptions.deferDragCondition2.onDropBeforeDeferredDrag();
         }
     }
 

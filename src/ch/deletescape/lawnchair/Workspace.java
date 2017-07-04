@@ -2088,7 +2088,7 @@ public class Workspace extends PagedView
         if ((child instanceof BubbleTextView) && (!dragOptions.isAccessibleDrag)) {
             PopupContainerWithArrow showForIcon = PopupContainerWithArrow.showForIcon((BubbleTextView) child);
             if (showForIcon != null) {
-                dragOptions.deferDragCondition2 = showForIcon.createDeferDragCondition();
+                dragOptions.preDragCondition = showForIcon.createPreDragCondition();
             }
         }
         DragView startDrag = this.mDragController.startDrag(createDragBitmap, i2, i3, source, dragObject, point, rect, scaleAndPosition, dragOptions);

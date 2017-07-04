@@ -423,20 +423,20 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         return mOriginalIcon;
     }
 
-    public DragOptions.DeferDragCondition createDeferDragCondition() {
-        return new DragOptions.DeferDragCondition() {
+    public DragOptions.PreDragCondition createPreDragCondition() {
+        return new DragOptions.PreDragCondition() {
             @Override
-            public boolean shouldStartDeferredDrag(double d) {
+            public boolean shouldStartDrag(double d) {
                 return d > ((double) PopupContainerWithArrow.this.mStartDragThreshold);
             }
 
             @Override
-            public void onDragStart() {
+            public void onPreDragStart(DropTarget.DragObject dragObject) {
                 PopupContainerWithArrow.this.mOriginalIcon.setVisibility(INVISIBLE);
             }
 
             @Override
-            public void onDropBeforeDeferredDrag() {
+            public void onPreDragEnd(DropTarget.DragObject dragObject) {
                 PopupContainerWithArrow.this.mOriginalIcon.setVisibility(VISIBLE);
                 if (!PopupContainerWithArrow.this.mIsAboveIcon) {
                     PopupContainerWithArrow.this.mOriginalIcon.setTextVisibility(false);
