@@ -218,7 +218,6 @@ public class DragController implements DragDriver.EventListener, TouchController
     public DragView startDrag(Bitmap b, int dragLayerX, int dragLayerY,
                               DragSource source, ItemInfo dragInfo, Point dragOffset, Rect dragRegion,
                               float initialDragViewScale, DragOptions options) {
-        boolean waitWithDrag = false;
         // Hide soft keyboard, if visible
         if (mInputMethodManager == null) {
             mInputMethodManager = (InputMethodManager)
@@ -371,7 +370,6 @@ public class DragController implements DragDriver.EventListener, TouchController
     private void endDrag() {
         if (isDragging()) {
             mDragDriver = null;
-            mOptions = null;
             clearScrollRunnable();
             boolean isDeferred = false;
             if (mDragObject.dragView != null) {
@@ -412,7 +410,6 @@ public class DragController implements DragDriver.EventListener, TouchController
             this.mOptions.preDragCondition.onPreDragEnd(this.mDragObject, true);
         }
         this.mIsInPreDrag = false;
-        this.mOptions = null;
         for (DragListener onDragEnd : this.mListeners) {
             onDragEnd.onDragEnd();
         }
