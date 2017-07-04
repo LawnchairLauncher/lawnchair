@@ -222,11 +222,11 @@ public class DragView extends FrameLayout {
                     int w = mBitmap.getWidth();
                     int h = mBitmap.getHeight();
                     AdaptiveIconDrawable adaptiveIcon = (AdaptiveIconDrawable) dr;
-                    adaptiveIcon.setBounds(0, 0, w, h);
                     float blurSizeOutline = mLauncher.getResources()
                             .getDimension(R.dimen.blur_size_medium_outline);
                     float normalizationScale = IconNormalizer.getInstance(mLauncher)
                             .getScale(adaptiveIcon, null, null, null) * ((w - blurSizeOutline) / w);
+                    adaptiveIcon.setBounds(0, 0, w, h);
 
                     final Path mask = getMaskPath(adaptiveIcon, normalizationScale);
                     mFgImageView = setupImageView(adaptiveIcon.getForeground(), normalizationScale);
