@@ -2289,8 +2289,7 @@ public class Launcher extends Activity
         float offset = mWorkspace.mWallpaperOffset.wallpaperOffsetForScroll(pageScroll);
 
         setWaitingForResult(new PendingRequestArgs(new ItemInfo()));
-        Intent intent = getWallpaperPickerIntent(v, offset);
-        startActivityForResult(intent, REQUEST_PICK_WALLPAPER, getActivityLaunchOptions(v));
+        startActivityForResult(getWallpaperPickerIntent(v, offset), REQUEST_PICK_WALLPAPER, getActivityLaunchOptions(v));
     }
 
     @NonNull

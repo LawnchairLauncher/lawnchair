@@ -23,6 +23,12 @@
         android:persistent="true" />
 
     <SwitchPreference
+        android:key="pref_enableDynamicUi"
+        android:title="Extract accent color from wallpaper"
+        android:defaultValue="false"
+        android:persistent="true" />
+
+    <SwitchPreference
         android:key="pref_hideAppLabels"
         android:title="Hide Icon Labels on Homescreen"
         android:defaultValue="false"

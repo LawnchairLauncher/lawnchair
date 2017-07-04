@@ -79,6 +79,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.graphics.ShadowGenerator;
 import ch.deletescape.lawnchair.util.IconNormalizer;
@@ -901,6 +902,7 @@ public final class Utilities {
     }
 
     public static int getDynamicAccent(Context context) {
-        return getColor(context, ExtractedColors.VIBRANT_INDEX, Utilities.getColorAccent(context));
+        if (!FeatureFlags.isDynamicUiEnabled(context)) return getColorAccent(context);
+        return getColor(context, ExtractedColors.VIBRANT_INDEX, getColorAccent(context));
     }
 }
