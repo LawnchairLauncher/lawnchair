@@ -42,7 +42,7 @@ public class DragOptions {
     public PreDragCondition preDragCondition = null;
 
     public interface PreDragCondition {
-        void onPreDragEnd(DropTarget.DragObject dragObject);
+        void onPreDragEnd(DropTarget.DragObject dragObject, boolean makeOriginalVisible);
 
         void onPreDragStart(DropTarget.DragObject dragObject);
 

@@ -423,7 +423,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         return mOriginalIcon;
     }
 
-    public DragOptions.PreDragCondition createPreDragCondition() {
+    public DragOptions.PreDragCondition createPreDragCondition(final boolean originIsAllApps) {
         return new DragOptions.PreDragCondition() {
             @Override
             public boolean shouldStartDrag(double d) {
@@ -436,10 +436,12 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             }
 
             @Override
-            public void onPreDragEnd(DropTarget.DragObject dragObject) {
-                PopupContainerWithArrow.this.mOriginalIcon.setVisibility(VISIBLE);
-                if (!PopupContainerWithArrow.this.mIsAboveIcon) {
-                    PopupContainerWithArrow.this.mOriginalIcon.setTextVisibility(false);
+            public void onPreDragEnd(DropTarget.DragObject dragObject, boolean makeOriginalVisible) {
+                if (makeOriginalVisible || originIsAllApps) {
+                    PopupContainerWithArrow.this.mOriginalIcon.setVisibility(VISIBLE);
+                    if (!PopupContainerWithArrow.this.mIsAboveIcon) {
+                        PopupContainerWithArrow.this.mOriginalIcon.setTextVisibility(false);
+                    }
                 }
             }
         };

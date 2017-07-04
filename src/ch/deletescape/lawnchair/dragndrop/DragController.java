@@ -308,7 +308,7 @@ public class DragController implements DragDriver.EventListener, TouchController
             listener.onDragStart(mDragObject, mOptions);
         }
         if (mOptions.preDragCondition != null) {
-            mOptions.preDragCondition.onPreDragEnd(mDragObject);
+            mOptions.preDragCondition.onPreDragEnd(mDragObject, false);
         }
         mOptions.deferDragCondition.onDragStart();
         mIsDragDeferred = false;
@@ -381,7 +381,6 @@ public class DragController implements DragDriver.EventListener, TouchController
                 } else if (mIsInPreDrag) {
                     animateDragViewToOriginalPosition(null, null, -1);
                 }
-                mDragObject.dragView.setVisibility(View.VISIBLE);
                 mDragObject.dragView = null;
             }
 
@@ -410,7 +409,7 @@ public class DragController implements DragDriver.EventListener, TouchController
 
     private void callOnDragEnd() {
         if (this.mIsInPreDrag && this.mOptions.preDragCondition != null) {
-            this.mOptions.preDragCondition.onPreDragEnd(this.mDragObject);
+            this.mOptions.preDragCondition.onPreDragEnd(this.mDragObject, true);
         }
         this.mIsInPreDrag = false;
         this.mOptions = null;
