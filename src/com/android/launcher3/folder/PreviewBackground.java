@@ -306,6 +306,7 @@ public class PreviewBackground {
     // It is the callers responsibility to save and restore the canvas layers.
     void clipCanvasHardware(Canvas canvas) {
         mPaint.setColor(Color.BLACK);
+        mPaint.setStyle(Paint.Style.FILL);
         mPaint.setXfermode(mClipPorterDuffXfermode);
 
         float radius = getScaledRadius();
@@ -336,6 +337,7 @@ public class PreviewBackground {
         }
 
         mDrawingDelegate = null;
+        isClipping = true;
         invalidate();
     }
 
