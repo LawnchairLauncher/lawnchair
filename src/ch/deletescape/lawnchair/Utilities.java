@@ -899,4 +899,8 @@ public final class Utilities {
     public static boolean isAppHidden(Context context, String key) {
         return !getPrefs(context).getBoolean("visibility_" + key, true);
     }
+
+    public static int getDynamicAccent(Context context) {
+        return getColor(context, ExtractedColors.VIBRANT_INDEX, Utilities.getColorAccent(context));
+    }
 }
