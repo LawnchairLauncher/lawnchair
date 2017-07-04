@@ -37,7 +37,6 @@
     <string-array name="color_index_entries">
         <item>White</item>
         <item>Black</item>
-        <item>Transparent</item>
         <item>Red</item>
         <item>Pink</item>
         <item>Purple</item>
@@ -62,7 +61,6 @@
     <string-array name="color_index_values">
         <item>-3</item>
         <item>-2</item>
-        <item>-1</item>
         <item>0</item>
         <item>1</item>
         <item>2</item>
