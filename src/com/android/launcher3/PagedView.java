@@ -926,6 +926,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     @Override
     public void onChildViewRemoved(View parent, View child) {
         updateFreescrollBounds();
+        mCurrentPage = validateNewPage(mCurrentPage);
         invalidate();
     }
 
