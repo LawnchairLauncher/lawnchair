@@ -68,12 +68,18 @@ public class SettingsActivity extends Activity {
                     case "rebuild_icondb":
                         LauncherAppState.getInstance().getLauncher().scheduleReloadIcons();
                         break;
+                    case "export_db":
+                        DumbImportExportTask.exportDB(getActivity());
+                        break;
+                    case "import_db":
+                        DumbImportExportTask.importDB(getActivity());
+                        LauncherAppState.getInstance().getLauncher().scheduleKill();
+                        break;
                     default:
                         return false;
                 }
                 return true;
             }
-
             return false;
         }
 

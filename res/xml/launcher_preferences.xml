@@ -230,6 +230,15 @@
             android:title="Rebuild Icon Database" />
     </PreferenceScreen>
 
+    <PreferenceScreen android:title="Import/Export">
+        <Preference
+            android:key="export_db"
+            android:title="Export Database" />
+        <Preference
+            android:key="import_db"
+            android:title="Import Database" />
+    </PreferenceScreen>
+
     <Preference
         android:title="@string/about_title"
         android:key="about"
