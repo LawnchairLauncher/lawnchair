@@ -230,7 +230,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             mAppsRecyclerView.addOnScrollListener(new SpringMotionOnScrollListener());
         }
 
-        mSearchContainer = findViewById(R.id.search_container);
+        mSearchContainer = findViewById(R.id.search_container_all_apps);
         mSearchUiManager = (SearchUiManager) mSearchContainer;
         mSearchUiManager.initialize(mApps, mAppsRecyclerView);
 

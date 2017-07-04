@@ -15,7 +15,7 @@
 -->
 <com.android.launcher3.allapps.search.AppsSearchContainerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/search_container"
+    android:id="@id/search_container_all_apps"
     android:layout_width="match_parent"
     android:layout_height="@dimen/all_apps_search_bar_height"
     android:layout_gravity="center|top"

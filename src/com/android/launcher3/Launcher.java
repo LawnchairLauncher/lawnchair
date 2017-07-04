@@ -488,7 +488,7 @@ public class Launcher extends BaseActivity
     }
 
     @Override
-    public View findViewById(int id) {
+    public <T extends View> T findViewById(int id) {
         return mLauncherView.findViewById(id);
     }
 
