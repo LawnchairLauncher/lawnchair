@@ -15,10 +15,9 @@
 <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
     android:importantForAccessibility="no"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="9dp"
     android:paddingBottom="@dimen/all_apps_divider_margin_vertical"
     android:paddingLeft="@dimen/container_fastscroll_thumb_max_width"
     android:paddingRight="@dimen/container_fastscroll_thumb_max_width"
-    android:src="@drawable/all_apps_search_divider"
     android:scaleType="fitXY"
     android:focusable="false" />
