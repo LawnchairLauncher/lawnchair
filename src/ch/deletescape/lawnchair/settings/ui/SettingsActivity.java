@@ -97,6 +97,16 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
             super.onResume();
             getActivity().setTitle(R.string.settings_button_text);
         }
+
+        @Override
+        public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+            if (preference.getKey() != null && preference.getKey().equals("about")) {
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/deletescape-media/lawnchair"));
+                startActivity(i);
+                return true;
+            }
+            return super.onPreferenceTreeClick(preferenceScreen, preference);
+        }
     }
 
     public static class SubSettingsFragment extends PreferenceFragment {
@@ -115,10 +125,6 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
         public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
             if (preference.getKey() != null) {
                 switch (preference.getKey()) {
-                    case "about":
-                        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/deletescape-media/lawnchair"));
-                        startActivity(i);
-                        break;
                     case "notification_access":
                         startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
                         break;
