@@ -18,7 +18,7 @@
 
 <resources>
     <!-- Launcher theme -->
-    <style name="BaseLauncherTheme" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
+    <style name="BaseLauncherTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowShowWallpaper">true</item>
@@ -30,8 +30,9 @@
 
     <style name="Theme" parent="@style/LauncherTheme" />
 
-    <style name="SettingsTheme" parent="@android:style/Theme.DeviceDefault.Light">
+    <style name="SettingsTheme" parent="@android:style/Theme.Material.Light">
         <item name="android:colorAccent">@color/accent_material_light</item>
+        <item name="android:titleTextColor">#3780f4</item>
     </style>
 
     <!-- Theme for the widget container. -->
@@ -40,7 +41,7 @@
     </style>
 
     <!-- Overscroll effect -->
-    <style name="CustomOverscroll.Light" parent="@android:style/Theme.DeviceDefault.Light">
+    <style name="CustomOverscroll.Light" parent="@android:style/Theme.Material.Light">
         <item name="android:colorEdgeEffect">@color/folder_edge_effect_color</item>
         <item name="android:colorAccent">@color/accent_material_light</item>
     </style>
@@ -132,7 +133,7 @@
         <item name="ringOutset">4dp</item>
     </style>
 
-    <style name="WallpaperTheme" parent="@android:style/Theme.DeviceDefault.Light">
+    <style name="WallpaperTheme" parent="@android:style/Theme.Material.Light">
         <item name="android:actionBarStyle">@style/WallpaperCropperActionBar</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowActionBarOverlay">true</item>
@@ -145,12 +146,12 @@
         <item name="android:windowShowWallpaper">true</item>
     </style>
 
-    <style name="WallpaperCropperActionBar" parent="@android:style/Widget.DeviceDefault.Light.ActionBar">
+    <style name="WallpaperCropperActionBar" parent="@android:style/Widget.Material.Light.ActionBar">
         <item name="android:displayOptions">showCustom</item>
         <item name="android:background">#88212121</item>
     </style>
 
-    <style name="ActionBarSetWallpaperStyle" parent="@android:style/Widget.DeviceDefault.Light.ActionButton">
+    <style name="ActionBarSetWallpaperStyle" parent="@android:style/Widget.Material.Light.ActionButton">
         <item name="android:textColor">#ffffffff</item>
         <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
