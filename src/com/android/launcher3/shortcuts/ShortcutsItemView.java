@@ -24,7 +24,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -145,18 +144,8 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
             if (mSystemShortcutIcons == null) {
                 mSystemShortcutIcons = (LinearLayout) mLauncher.getLayoutInflater().inflate(
                         R.layout.system_shortcut_icons, mContent, false);
-
-                View divider = LayoutInflater.from(getContext()).inflate(
-                        R.layout.horizontal_divider, this, false);
-
                 boolean iconsAreBelowShortcuts = mShortcutsLayout.getChildCount() > 0;
-                if (iconsAreBelowShortcuts) {
-                    mContent.addView(divider);
-                    mContent.addView(mSystemShortcutIcons);
-                } else {
-                    mContent.addView(divider, 0);
-                    mContent.addView(mSystemShortcutIcons, 0);
-                }
+                mContent.addView(mSystemShortcutIcons, iconsAreBelowShortcuts ? -1 : 0);
             }
             mSystemShortcutIcons.addView(shortcutView, index);
         } else {
