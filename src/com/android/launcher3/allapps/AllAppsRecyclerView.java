@@ -495,7 +495,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         public boolean onDrag(float displacement, float velocity) {
             // We are in overscroll iff we are trying to drag further down when we're already at
             // the bottom of All Apps.
-            mIsInOverScroll = !canScrollVertically(1) && displacement < 0;
+            mIsInOverScroll = !canScrollVertically(1) && displacement < 0
+                    && !mScrollbar.isDraggingThumb();
 
             if (mIsInOverScroll) {
                 displacement = getDampedOverScroll(displacement);
