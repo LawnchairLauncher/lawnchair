@@ -96,8 +96,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         mOverScrollHelper = new OverScrollHelper();
         mPullDetector = new VerticalPullDetector(getContext());
         mPullDetector.setListener(mOverScrollHelper);
-        mPullDetector.setDetectableScrollConditions(VerticalPullDetector.DIRECTION_UP
-                | VerticalPullDetector.DIRECTION_DOWN, true);
+        mPullDetector.setDetectableScrollConditions(VerticalPullDetector.DIRECTION_BOTH, true);
     }
 
     public void setSpringAnimationHandler(SpringAnimationHandler springAnimationHandler) {
@@ -487,28 +486,53 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
 
         private boolean mIsInOverScroll;
 
+        // We use this value to calculate the actual amount the user has overscrolled.
+        private float mFirstDisplacement = 0;
+
+        private boolean mAlreadyScrollingUp;
+        private int mFirstScrollYOnScrollUp;
+
         @Override
         public void onDragStart(boolean start) {
         }
 
         @Override
         public boolean onDrag(float displacement, float velocity) {
-            // We are in overscroll iff we are trying to drag further down when we're already at
-            // the bottom of All Apps.
-            mIsInOverScroll = !canScrollVertically(1) && displacement < 0
-                    && !mScrollbar.isDraggingThumb();
+            boolean isScrollingUp = displacement > 0;
+            if (isScrollingUp) {
+                if (!mAlreadyScrollingUp) {
+                    mFirstScrollYOnScrollUp = getCurrentScrollY();
+                    mAlreadyScrollingUp = true;
+                }
+            } else {
+                mAlreadyScrollingUp = false;
+            }
+
+            // Only enter overscroll if the user is interacting with the RecyclerView directly
+            // and if one of the following criteria are met:
+            // - User scrolls down when they're already at the bottom.
+            // - User starts scrolling up, hits the top, and continues scrolling up.
+            mIsInOverScroll = !mScrollbar.isDraggingThumb() &&
+                    ((!canScrollVertically(1) && displacement < 0) ||
+                    (!canScrollVertically(-1) && isScrollingUp && mFirstScrollYOnScrollUp != 0));
 
             if (mIsInOverScroll) {
-                displacement = getDampedOverScroll(displacement);
-                setContentTranslationY(displacement);
+                if (Float.compare(mFirstDisplacement, 0) == 0) {
+                    // Because users can scroll before entering overscroll, we need to
+                    // subtract the amount where the user was not in overscroll.
+                    mFirstDisplacement = displacement;
+                }
+                float overscrollY = displacement - mFirstDisplacement;
+                setContentTranslationY(getDampedOverScroll(overscrollY));
             }
+
             return mIsInOverScroll;
         }
 
         @Override
         public void onDragEnd(float velocity, boolean fling) {
             float y = getContentTranslationY();
-            if (mIsInOverScroll && Float.compare(y, 0) != 0) {
+            if (Float.compare(y, 0) != 0) {
                 if (FeatureFlags.LAUNCHER3_PHYSICS) {
                     // We calculate our own velocity to give the springs the desired effect.
                     velocity = y / getDampedOverScroll(getHeight()) * MAX_RELEASE_VELOCITY;
@@ -523,6 +547,9 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                         .start();
             }
             mIsInOverScroll = false;
+            mFirstDisplacement = 0;
+            mFirstScrollYOnScrollUp = 0;
+            mAlreadyScrollingUp = false;
         }
 
         public boolean isInOverScroll() {
