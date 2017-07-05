@@ -96,18 +96,18 @@ public class WidgetsModel {
                     }
                 }
             }
-            //if (this.mAppFilter.shouldShowApp(widgetItem2.componentName)) {
-            String packageName = widgetItem2.componentName.getPackageName();
-            PackageItemInfo obj = hashMap.get(packageName);
-            if (obj == null) {
-                obj = new PackageItemInfo(packageName);
-                obj.user = widgetItem2.user;
-                hashMap.put(packageName, obj);
-            } else if (!myUserHandle.equals(obj.user)) {
-                obj.user = widgetItem2.user;
+            if (this.mAppFilter.shouldShowApp(widgetItem2.componentName, context)) {
+                String packageName = widgetItem2.componentName.getPackageName();
+                PackageItemInfo obj = hashMap.get(packageName);
+                if (obj == null) {
+                    obj = new PackageItemInfo(packageName);
+                    obj.user = widgetItem2.user;
+                    hashMap.put(packageName, obj);
+                } else if (!myUserHandle.equals(obj.user)) {
+                    obj.user = widgetItem2.user;
+                }
+                this.mWidgetsList.addToList(obj, widgetItem2);
             }
-            this.mWidgetsList.addToList(obj, widgetItem2);
-            //}
         }
         for (PackageItemInfo packageItemInfo22 : hashMap.values()) {
             this.mIconCache.getTitleAndIconForApp(packageItemInfo22, true);
