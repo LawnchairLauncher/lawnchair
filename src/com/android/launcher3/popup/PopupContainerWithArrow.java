@@ -44,7 +44,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.FrameLayout;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
@@ -118,6 +117,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     private boolean mIsLeftAligned;
     protected boolean mIsAboveIcon;
     private View mArrow;
+    private int mGravity;
 
     protected Animator mOpenCloseAnimator;
     private boolean mDeferContainerRemoval;
@@ -490,9 +490,10 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         }
         y -= insets.top;
 
-        if (y < dragLayer.getTop() || y + height > dragLayer.getBottom()) {
+        mGravity = 0;
+        if (y + height > dragLayer.getBottom() - insets.bottom) {
             // The container is opening off the screen, so just center it in the drag layer instead.
-            ((FrameLayout.LayoutParams) getLayoutParams()).gravity = Gravity.CENTER_VERTICAL;
+            mGravity = Gravity.CENTER_VERTICAL;
             // Put the container next to the icon, preferring the right side in ltr (left in rtl).
             int rightSide = leftAlignedX + iconWidth - insets.left;
             int leftSide = rightAlignedX - iconWidth - insets.left;
@@ -518,14 +519,17 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
         if (x < dragLayer.getLeft() || x + width > dragLayer.getRight()) {
             // If we are still off screen, center horizontally too.
-            ((FrameLayout.LayoutParams) getLayoutParams()).gravity |= Gravity.CENTER_HORIZONTAL;
+            mGravity |= Gravity.CENTER_HORIZONTAL;
         }
 
-        int gravity = ((FrameLayout.LayoutParams) getLayoutParams()).gravity;
-        if (!Gravity.isHorizontal(gravity)) {
+        if (Gravity.isHorizontal(mGravity)) {
+            setX(dragLayer.getWidth() / 2 - getMeasuredWidth() / 2);
+        } else {
             setX(x);
         }
-        if (!Gravity.isVertical(gravity)) {
+        if (Gravity.isVertical(mGravity)) {
+            setY(dragLayer.getHeight() / 2 - getMeasuredHeight() / 2);
+        } else {
             setY(y);
         }
     }
@@ -555,7 +559,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         }
 
         View arrowView = new View(getContext());
-        if (Gravity.isVertical(((FrameLayout.LayoutParams) getLayoutParams()).gravity)) {
+        if (Gravity.isVertical(mGravity)) {
             // This is only true if there wasn't room for the container next to the icon,
             // so we centered it instead. In that case we don't want to show the arrow.
             arrowView.setVisibility(INVISIBLE);
