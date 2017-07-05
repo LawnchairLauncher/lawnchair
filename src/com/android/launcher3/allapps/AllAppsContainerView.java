@@ -410,22 +410,19 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            if (mScrollState == RecyclerView.SCROLL_STATE_DRAGGING
-                    || (dx == 0 && dy == 0)) {
+            if (mScrollState == RecyclerView.SCROLL_STATE_DRAGGING || (dx == 0 && dy == 0)) {
                 if (mSpringAnimationHandler.isRunning()){
                     mSpringAnimationHandler.skipToEnd();
                 }
                 return;
             }
 
-            int first = mLayoutManager.findFirstVisibleItemPosition();
-            int last = mLayoutManager.findLastVisibleItemPosition();
-
-            // We only show the spring animation when at the top or bottom, so we wait until the
-            // first or last row is visible to ensure that all animations run in sync.
-            boolean scrollUp = dy < 0;
-            if ((first == 0 && scrollUp) || (last == mAdapter.getItemCount() - 1 && dy > 0)) {
-                mSpringAnimationHandler.animateToFinalPosition(0, scrollUp ? 1 : -1);
+            // We only start the spring animation when we fling and hit the top/bottom, to ensure
+            // that all of the animations start at the same time.
+            if (dy < 0 && !mAppsRecyclerView.canScrollVertically(-1)) {
+                mSpringAnimationHandler.animateToFinalPosition(0, 1);
+            } else if (dy > 0 && !mAppsRecyclerView.canScrollVertically(1)) {
+                mSpringAnimationHandler.animateToFinalPosition(0, -1);
             }
         }
 
