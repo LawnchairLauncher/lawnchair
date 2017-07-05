@@ -577,6 +577,11 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params, boolean markCells) {
         final LayoutParams lp = params;
 
+        if (child instanceof BubbleTextView) {
+            BubbleTextView view = (BubbleTextView) child;
+            view.setTextVisibility(!mIsHotseat);
+        }
+
         child.setScaleX(getChildrenScale());
         child.setScaleY(getChildrenScale());
 
