@@ -484,7 +484,8 @@ public class BubbleTextView extends TextView
                 int scrollX = getScrollX();
                 int scrollY = getScrollY();
                 canvas.translate((float) scrollX, (float) scrollY);
-                mBadgeRenderer.draw(canvas, mBadgeInfo, mTempIconBounds, mBadgeScale, mTempSpaceForBadgeOffset);
+                mIconPalette = ((FastBitmapDrawable) this.mIcon).getIconPalette();
+                mBadgeRenderer.draw(canvas, mBadgeInfo, mTempIconBounds, mBadgeScale, mTempSpaceForBadgeOffset, mIconPalette);
                 canvas.translate((float) (-scrollX), (float) (-scrollY));
             }
         }
@@ -604,23 +605,18 @@ public class BubbleTextView extends TextView
 
     public void applyBadgeState(ItemInfo itemInfo, boolean z) {
         if (this.mIcon instanceof FastBitmapDrawable) {
-            int i;
-            int i2 = this.mBadgeInfo != null ? 1 : 0;
+            boolean i2 = this.mBadgeInfo != null;
             this.mBadgeInfo = this.mLauncher.getPopupDataProvider().getBadgeInfoForItem(itemInfo);
-            if (this.mBadgeInfo != null) {
-                i = 1;
-            } else {
-                i = 0;
-            }
-            float f = i != 0 ? 1.0f : 0.0f;
+            boolean i = this.mBadgeInfo != null;
+            float badgeScale = i ? 1.0f : 0.0f;
             this.mBadgeRenderer = this.mLauncher.getDeviceProfile().mBadgeRenderer;
-            if (i2 != 0 || i != 0) {
+            if (i2 || i) {
                 this.mIconPalette = ((FastBitmapDrawable) this.mIcon).getIconPalette();
-                if (z && (i2 ^ i) != 0 && isShown()) {
-                    ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, new float[]{f}).start();
+                if (z && (i2 ^ i) && isShown()) {
+                    ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, new float[]{badgeScale}).start();
                     return;
                 }
-                this.mBadgeScale = f;
+                this.mBadgeScale = badgeScale;
                 invalidate();
             }
         }

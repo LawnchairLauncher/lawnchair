@@ -71,11 +71,15 @@ public class BadgeRenderer {
     }
 
     public void draw(Canvas canvas, BadgeInfo badgeInfo, Rect rect, float f, Point point) {
+        draw(canvas, badgeInfo, rect, f, point, mIconPalette);
+    }
+
+    public void draw(Canvas canvas, BadgeInfo badgeInfo, Rect rect, float f, Point point, IconPalette iconPalette) {
         String str;
-        mTextPaint.setColor(mIconPalette.textColor);
+        mTextPaint.setColor(iconPalette.textColor);
         IconDrawer iconDrawer = (badgeInfo == null || !badgeInfo.isIconLarge()) ? mSmallIconDrawer : mLargeIconDrawer;
         if (badgeInfo != null) {
-            badgeInfo.getNotificationIconForBadge(mContext, mIconPalette.backgroundColor, mSize, iconDrawer.mPadding);
+            badgeInfo.getNotificationIconForBadge(mContext, iconPalette.backgroundColor, mSize, iconDrawer.mPadding);
         }
         if (badgeInfo == null) {
             str = "0";
@@ -89,13 +93,13 @@ public class BadgeRenderer {
             bitmap = ShadowGenerator.createPillWithShadow(-1, i, mSize);
             mBackgroundsWithShadow.put(length, bitmap);
         }
-        canvas.save(1);
+        canvas.save(Canvas.MATRIX_SAVE_FLAG);
         f *= 0.6f;
         canvas.translate((float) ((rect.right - (i / 2)) + Math.min(mOffset, point.x)), (float) ((rect.top + (mSize / 2)) - Math.min(mOffset, point.y)));
         canvas.scale(f, f);
-        mBackgroundPaint.setColorFilter(mIconPalette.backgroundColorMatrixFilter);
+        mBackgroundPaint.setColorFilter(iconPalette.backgroundColorMatrixFilter);
         length = bitmap.getHeight();
-        mBackgroundPaint.setColorFilter(mIconPalette.saturatedBackgroundColorMatrixFilter);
+        mBackgroundPaint.setColorFilter(iconPalette.saturatedBackgroundColorMatrixFilter);
         canvas.drawBitmap(bitmap, (float) ((-length) / 2), (float) ((-length) / 2), mBackgroundPaint);
         canvas.restore();
     }
