@@ -905,4 +905,10 @@ public final class Utilities {
         if (!FeatureFlags.isDynamicUiEnabled(context)) return getColorAccent(context);
         return getColor(context, ExtractedColors.VIBRANT_INDEX, getColorAccent(context));
     }
+
+    public static int getDynamicBadgeColor(Context context) {
+        int defaultColor = context.getResources().getColor(R.color.badge_color);
+        if (!FeatureFlags.isDynamicUiEnabled(context)) return defaultColor;
+        return getColor(context, ExtractedColors.VIBRANT_INDEX, defaultColor);
+    }
 }

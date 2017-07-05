@@ -10,6 +10,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 
 import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.graphics.IconPalette;
 import ch.deletescape.lawnchair.graphics.ShadowGenerator;
 
@@ -44,7 +45,7 @@ public class BadgeRenderer {
         mOffset = (int) (((float) i) * 0.02f);
         mLargeIconDrawer = new IconDrawer(resources.getDimensionPixelSize(R.dimen.badge_small_padding));
         mSmallIconDrawer = new IconDrawer(resources.getDimensionPixelSize(R.dimen.badge_large_padding));
-        mIconPalette = IconPalette.fromDominantColor(context.getResources().getColor(R.color.badge_color));
+        mIconPalette = IconPalette.fromDominantColor(Utilities.getDynamicBadgeColor(context));
         mBackgroundWithShadow = ShadowGenerator.createPillWithShadow(-1, mSize, mSize);
     }
 
