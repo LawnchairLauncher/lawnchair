@@ -60,7 +60,6 @@ public class DragView extends View {
     private boolean mHasDrawn = false;
     @Thunk
     float mCrossFadeProgress = 0f;
-    private boolean mAnimationCancelled = false;
 
     ValueAnimator mAnim;
     // The intrinsic icon scale factor is the scale factor for a drag icon over the workspace
@@ -302,7 +301,6 @@ public class DragView extends View {
     }
 
     public void cancelAnimation() {
-        mAnimationCancelled = true;
         if (mAnim != null && mAnim.isRunning()) {
             mAnim.cancel();
         }

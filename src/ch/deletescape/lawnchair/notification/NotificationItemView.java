@@ -32,7 +32,7 @@ public class NotificationItemView extends PopupItemView {
         public void onIconAnimationEnd(NotificationInfo notificationInfo) {
             if (notificationInfo != null) {
                 NotificationItemView.this.mMainView.applyNotificationInfo(notificationInfo, NotificationItemView.this.mIconView, true);
-                NotificationItemView.this.mMainView.setVisibility(0);
+                NotificationItemView.this.mMainView.setVisibility(VISIBLE);
             }
             NotificationItemView.this.mAnimatingNextIcon = false;
         }
@@ -116,7 +116,7 @@ public class NotificationItemView extends PopupItemView {
             return;
         }
         mAnimatingNextIcon = true;
-        mMainView.setVisibility(4);
+        mMainView.setVisibility(INVISIBLE);
         mMainView.setTranslationX(0.0f);
         mIconView.getGlobalVisibleRect(sTempRect);
         mFooter.animateFirstNotificationTo(sTempRect, new C04621());

@@ -186,9 +186,9 @@ public class BubbleTextView extends TextView
             ShortcutInfo shortcutInfo = (ShortcutInfo) getTag();
             int installProgress = shortcutInfo.isPromise() ? shortcutInfo.hasStatusFlag(4) ? shortcutInfo.getInstallProgress() : 0 : 100;
             if (installProgress > 0) {
-                string = getContext().getString(R.string.app_downloading_title, new Object[]{shortcutInfo.title, NumberFormat.getPercentInstance().format(((double) installProgress) * 0.01d)});
+                string = getContext().getString(R.string.app_downloading_title, shortcutInfo.title, NumberFormat.getPercentInstance().format(((double) installProgress) * 0.01d));
             } else {
-                string = getContext().getString(R.string.app_waiting_download_title, new Object[]{shortcutInfo.title});
+                string = getContext().getString(R.string.app_waiting_download_title, shortcutInfo.title);
             }
             setContentDescription(string);
             if (this.mIcon != null) {
@@ -786,12 +786,12 @@ public class BubbleTextView extends TextView
 
         @Override
         public Float get(BubbleTextView bubbleTextView) {
-            return Float.valueOf(bubbleTextView.mBadgeScale);
+            return bubbleTextView.mBadgeScale;
         }
 
         @Override
         public void set(BubbleTextView bubbleTextView, Float f) {
-            bubbleTextView.mBadgeScale = f.floatValue();
+            bubbleTextView.mBadgeScale = f;
             bubbleTextView.invalidate();
         }
     }

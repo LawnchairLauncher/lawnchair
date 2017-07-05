@@ -83,7 +83,6 @@ import com.google.firebase.crash.FirebaseCrash;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -3593,19 +3592,6 @@ public class Launcher extends Activity
     @Override
     public void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMapCopy) {
         mPopupDataProvider.setDeepShortcutMap(deepShortcutMapCopy);
-    }
-
-    public List<String> getShortcutIdsForItem(ItemInfo info) {
-        if (!DeepShortcutManager.supportsShortcuts(info)) {
-            return Collections.emptyList();
-        }
-        ComponentName component = info.getTargetComponent();
-        if (component == null) {
-            return Collections.emptyList();
-        }
-
-        List<String> ids = mDeepShortcutMap.get(new ComponentKey(component, info.user));
-        return ids == null ? Collections.<String>emptyList() : ids;
     }
 
     /**

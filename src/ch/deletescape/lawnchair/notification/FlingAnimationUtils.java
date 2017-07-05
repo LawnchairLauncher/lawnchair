@@ -7,14 +7,9 @@ import android.view.animation.PathInterpolator;
 
 public class FlingAnimationUtils {
     private AnimatorProperties mAnimatorProperties;
-    private float mCachedStartGradient;
-    private float mCachedVelocityFactor;
     private float mHighVelocityPxPerSecond;
-    private float mLinearOutSlowInX2;
     private float mMaxLengthSeconds;
     private float mMinVelocityPxPerSecond;
-    private final float mSpeedUpFactor;
-    private final float mY2;
 
     class AnimatorProperties {
         long duration;
@@ -69,16 +64,10 @@ public class FlingAnimationUtils {
 
     public FlingAnimationUtils(Context context, float f, float f2, float f3, float f4) {
         mAnimatorProperties = new AnimatorProperties();
-        mCachedStartGradient = -1.0f;
-        mCachedVelocityFactor = -1.0f;
         mMaxLengthSeconds = f;
-        mSpeedUpFactor = f2;
         if (f3 < 0.0f) {
-            mLinearOutSlowInX2 = interpolate(0.35f, 0.68f, mSpeedUpFactor);
         } else {
-            mLinearOutSlowInX2 = f3;
         }
-        mY2 = f4;
         mMinVelocityPxPerSecond = context.getResources().getDisplayMetrics().density * 250.0f;
         mHighVelocityPxPerSecond = context.getResources().getDisplayMetrics().density * 3000.0f;
     }

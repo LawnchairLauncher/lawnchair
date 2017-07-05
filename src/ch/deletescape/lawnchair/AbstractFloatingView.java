@@ -12,8 +12,6 @@ import ch.deletescape.lawnchair.dragndrop.DragLayer;
 public abstract class AbstractFloatingView extends LinearLayout {
     protected boolean mIsOpen;
 
-    public abstract int getLogContainerType();
-
     protected abstract void handleClose(boolean z);
 
     protected abstract boolean isOfType(int i);

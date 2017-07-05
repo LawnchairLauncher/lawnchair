@@ -70,7 +70,7 @@ public class WidgetsListAdapter extends RecyclerView.Adapter<WidgetsRowViewHolde
     }
 
     public String getSectionName(int i) {
-        return ((WidgetListRowEntry) this.mEntries.get(i)).titleSectionName;
+        return this.mEntries.get(i).titleSectionName;
     }
 
     public List copyWidgetsForPackageUser(PackageUserKey packageUserKey) {
@@ -94,7 +94,7 @@ public class WidgetsListAdapter extends RecyclerView.Adapter<WidgetsRowViewHolde
 
     @Override
     public void onBindViewHolder(WidgetsRowViewHolder widgetsRowViewHolder, int i) {
-        WidgetListRowEntry widgetListRowEntry = (WidgetListRowEntry) this.mEntries.get(i);
+        WidgetListRowEntry widgetListRowEntry = this.mEntries.get(i);
         List list = widgetListRowEntry.widgets;
         ViewGroup viewGroup = widgetsRowViewHolder.cellContainer;
         int max = Math.max(0, list.size() - 1) + list.size();

@@ -29,7 +29,6 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
-import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.util.Thunk;
 
 /**

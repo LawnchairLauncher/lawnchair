@@ -172,7 +172,7 @@ public class IconPackPreference extends Preference {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
-                convertView = mLayoutInflater.inflate(R.layout.iconpack_dialog, null);
+                convertView = mLayoutInflater.inflate(R.layout.iconpack_dialog, parent);
             }
             IconPackInfo info = mSupportedPackages.get(position);
             TextView txtView = (TextView) convertView.findViewById(R.id.title);

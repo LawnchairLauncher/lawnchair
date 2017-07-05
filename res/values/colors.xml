@@ -45,8 +45,6 @@
     <color name="spring_loaded_highlighted_panel_border_color">#FFF</color>
 
     <!-- Widgets view -->
-    <color name="widgets_view_section_header_color">#01579B</color>
-    <color name="widgets_view_section_text_color">#FFFFFF</color>
     <color name="widgets_view_item_text_color">#C4C4C4</color>
 
     <color name="secondary_color">#0277BD</color>
@@ -64,7 +62,4 @@
     <color name="notification_icon_default_color">#ff757575</color>
     <color name="notification_color_beneath">#ffe0e0e0</color>
     <color name="badge_color">#ff40c4ff</color>
-    <color name="system_shortcuts_icon_color">@android:color/tertiary_text_light</color>
-    <color name="legacy_icon_background">#ffffffff</color>
-    <color name="icon_background">#ff4285f4</color>
 </resources>

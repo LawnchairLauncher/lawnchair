@@ -29,7 +29,6 @@
             android:id="@+id/widget_dims"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5.0dip"
             android:layout_marginStart="5.0dip"
             android:alpha="0.8"
             android:fontFamily="sans-serif-condensed"

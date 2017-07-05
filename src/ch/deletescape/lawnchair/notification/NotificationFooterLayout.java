@@ -105,7 +105,7 @@ public class NotificationFooterLayout extends FrameLayout {
         view.setBackground(notificationInfo.getIconForBackground(getContext(), mBackgroundColor));
         view.setOnClickListener(notificationInfo);
         view.setTag(notificationInfo);
-        view.setImportantForAccessibility(2);
+        view.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
         mIconRow.addView(view, 0, mIconLayoutParams);
         return view;
     }

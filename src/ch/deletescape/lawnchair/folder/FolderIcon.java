@@ -1049,12 +1049,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
         @Override
         public Float get(FolderIcon folderIcon) {
-            return Float.valueOf(folderIcon.mBadgeScale);
+            return folderIcon.mBadgeScale;
         }
 
         @Override
         public void set(FolderIcon folderIcon, Float f) {
-            folderIcon.mBadgeScale = f.floatValue();
+            folderIcon.mBadgeScale = f;
             folderIcon.invalidate();
         }
     }
