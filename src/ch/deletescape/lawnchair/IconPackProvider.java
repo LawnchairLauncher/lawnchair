@@ -43,15 +43,13 @@ public class IconPackProvider {
         clearCache(context, packageName);
         Map<String, String> appFilter;
         try {
-            appFilter = parseAppFilter(getAppFilter(context, packageName));
+            iconPacks.put(packageName, parseAppFilter(context, packageName));
+            FirebaseAnalytics.getInstance(context).logEvent("iconpack_loaded", null);
         } catch (Exception e) {
             FirebaseCrash.report(e);
             Toast.makeText(context, "Invalid IconPack", Toast.LENGTH_SHORT).show();
             iconPacks.put(packageName, null);
-            return;
         }
-        iconPacks.put(packageName, new IconPack(appFilter, context, packageName));
-        FirebaseAnalytics.getInstance(context).logEvent("iconpack_loaded", null);
     }
 
     private static void clearCache(Context context, String packageName) {
@@ -74,22 +72,39 @@ public class IconPackProvider {
         FirebaseAnalytics.getInstance(context).logEvent("iconpack_clearcache", null);
     }
 
-    private static Map<String, String> parseAppFilter(XmlPullParser parser) throws Exception {
+    private static IconPack parseAppFilter(Context context, String packageName) throws Exception {
+        XmlPullParser parser = getAppFilter(context, packageName);
+        float scale = 1f;
+        String iconBack = null;
+        String iconUpon = null;
+        String iconMask = null;
         Map<String, String> entries = new ArrayMap<>();
         while (parser != null && parser.next() != XmlPullParser.END_DOCUMENT) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
             String name = parser.getName();
-            if (name.equals("item")) {
-                String comp = parser.getAttributeValue(null, "component");
-                String drawable = parser.getAttributeValue(null, "drawable");
-                if (drawable != null && comp != null) {
-                    entries.put(comp, drawable);
+            try {
+                if (name.equals("item")) {
+                    String comp = parser.getAttributeValue(null, "component");
+                    String drawable = parser.getAttributeValue(null, "drawable");
+                    if (drawable != null && comp != null) {
+                        entries.put(comp, drawable);
+                    }
+                } else if (name.equals("iconback")) {
+                    iconBack = parser.getAttributeValue(null, "img1");
+                } else if (name.equals("iconupon")) {
+                    iconUpon = parser.getAttributeValue(null, "img1");
+                } else if (name.equals("iconmask")) {
+                    iconMask = parser.getAttributeValue(null, "img");
+                } else if (name.equals("scale")) {
+                    scale = Float.parseFloat(parser.getAttributeValue(null, "factor"));
                 }
+            } catch (Exception ignored) {
+
             }
         }
-        return entries;
+        return new IconPack(entries, context, packageName, iconBack, iconUpon, iconMask, scale);
     }
 
     private static XmlPullParser getAppFilter(Context context, String packageName) {
