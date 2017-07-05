@@ -16,6 +16,8 @@ import ch.deletescape.lawnchair.InvariantDeviceProfile;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherAppWidgetProviderInfo;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
+import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
+import ch.deletescape.lawnchair.compat.ShortcutConfigActivityInfo;
 import ch.deletescape.lawnchair.util.MultiHashMap;
 import ch.deletescape.lawnchair.util.PackageUserKey;
 
@@ -45,9 +47,9 @@ public class WidgetsModel {
             for (AppWidgetProviderInfo fromProviderInfo : AppWidgetManagerCompat.getInstance(context).getAllProviders(/*packageUserKey*/)) {
                 arrayList.add(new WidgetItem(LauncherAppWidgetProviderInfo.fromProviderInfo(fromProviderInfo), packageManager, idp));
 
-            /*for (ShortcutConfigActivityInfo widgetItem : LauncherAppsCompat.getInstance(context).getCustomShortcutActivityList(packageUserKey)) {
-                arrayList.add(new WidgetItem(widgetItem));
-            }*/
+                for (ShortcutConfigActivityInfo widgetItem : LauncherAppsCompat.getInstance(context).getCustomShortcutActivityList(packageUserKey)) {
+                    arrayList.add(new WidgetItem(widgetItem));
+                }
                 setWidgetsAndShortcuts(arrayList, context, packageUserKey);
             }
         } catch (Exception e) {

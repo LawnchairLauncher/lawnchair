@@ -25,7 +25,7 @@ public abstract class ShortcutConfigActivityInfo {
     private final ComponentName mCn;
     private final UserHandle mUser;
 
-    class ShortcutConfigActivityInfoVL extends ShortcutConfigActivityInfo {
+    static class ShortcutConfigActivityInfoVL extends ShortcutConfigActivityInfo {
         private final ActivityInfo mInfo;
         private final PackageManager mPm;
 

@@ -21,6 +21,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -33,19 +35,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
+import ch.deletescape.lawnchair.util.PackageUserKey;
 
 public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
     protected LauncherApps mLauncherApps;
+    private Context mContext;
 
     private Map<OnAppsChangedCallbackCompat, WrappedCallback> mCallbacks
             = new HashMap<>();
 
     LauncherAppsCompatVL(Context context) {
+        mContext = context;
         mLauncherApps = (LauncherApps) context.getSystemService("launcherapps");
     }
 
+    @Override
     public List<LauncherActivityInfoCompat> getActivityList(String packageName,
                                                             UserHandle user) {
         List<LauncherActivityInfo> list = mLauncherApps.getActivityList(packageName,
@@ -61,6 +68,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
         return compatList;
     }
 
+    @Override
     public LauncherActivityInfoCompat resolveActivity(Intent intent, UserHandle user) {
         LauncherActivityInfo activity = mLauncherApps.resolveActivity(intent, user);
         if (activity != null) {
@@ -70,15 +78,18 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
         }
     }
 
+    @Override
     public void startActivityForProfile(ComponentName component, UserHandle user,
                                         Rect sourceBounds, Bundle opts) {
         mLauncherApps.startMainActivity(component, user, sourceBounds, opts);
     }
 
+    @Override
     public void showAppDetailsForProfile(ComponentName component, UserHandle user) {
         mLauncherApps.startAppDetailsActivity(component, user, null, null);
     }
 
+    @Override
     public void addOnAppsChangedCallback(LauncherAppsCompat.OnAppsChangedCallbackCompat callback) {
         WrappedCallback wrappedCallback = new WrappedCallback(callback);
         synchronized (mCallbacks) {
@@ -87,6 +98,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
         mLauncherApps.registerCallback(wrappedCallback);
     }
 
+    @Override
     public void removeOnAppsChangedCallback(
             LauncherAppsCompat.OnAppsChangedCallbackCompat callback) {
         WrappedCallback wrappedCallback;
@@ -98,16 +110,34 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
         }
     }
 
+    @Override
     public boolean isPackageEnabledForProfile(String packageName, UserHandle user) {
         return mLauncherApps.isPackageEnabled(packageName, user);
     }
 
+    @Override
     public boolean isActivityEnabledForProfile(ComponentName component, UserHandle user) {
         return mLauncherApps.isActivityEnabled(component, user);
     }
 
+    @Override
     public boolean isPackageSuspendedForProfile() {
         return false;
+    }
+
+    @Override
+    public List<ShortcutConfigActivityInfo> getCustomShortcutActivityList(PackageUserKey packageUserKey) {
+        List<ShortcutConfigActivityInfo> arrayList = new ArrayList<>();
+        if (packageUserKey != null && (!packageUserKey.mUser.equals(Utilities.myUserHandle()))) {
+            return arrayList;
+        }
+        PackageManager packageManager = this.mContext.getPackageManager();
+        for (ResolveInfo resolveInfo : packageManager.queryIntentActivities(new Intent("android.intent.action.CREATE_SHORTCUT"), 0)) {
+            if (packageUserKey == null || packageUserKey.mPackageName.equals(resolveInfo.activityInfo.packageName)) {
+                arrayList.add(new ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVL(resolveInfo.activityInfo, packageManager));
+            }
+        }
+        return arrayList;
     }
 
     private static class WrappedCallback extends LauncherApps.Callback {
@@ -117,32 +147,39 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
             mCallback = callback;
         }
 
+        @Override
         public void onPackageRemoved(String packageName, UserHandle user) {
             mCallback.onPackageRemoved(packageName, user);
         }
 
+        @Override
         public void onPackageAdded(String packageName, UserHandle user) {
             mCallback.onPackageAdded(packageName, user);
         }
 
+        @Override
         public void onPackageChanged(String packageName, UserHandle user) {
             mCallback.onPackageChanged(packageName, user);
         }
 
+        @Override
         public void onPackagesAvailable(String[] packageNames, UserHandle user, boolean replacing) {
             mCallback.onPackagesAvailable(packageNames, user);
         }
 
+        @Override
         public void onPackagesUnavailable(String[] packageNames, UserHandle user,
                                           boolean replacing) {
             mCallback.onPackagesUnavailable(packageNames, user,
                     replacing);
         }
 
+        @Override
         public void onPackagesSuspended(String[] packageNames, UserHandle user) {
             mCallback.onPackagesSuspended(packageNames, user);
         }
 
+        @Override
         public void onPackagesUnsuspended(String[] packageNames, UserHandle user) {
             mCallback.onPackagesUnsuspended(packageNames, user);
         }

@@ -26,6 +26,7 @@ import android.os.UserHandle;
 import java.util.List;
 
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
+import ch.deletescape.lawnchair.util.PackageUserKey;
 
 public abstract class LauncherAppsCompat {
 
@@ -84,4 +85,6 @@ public abstract class LauncherAppsCompat {
                                                         UserHandle user);
 
     public abstract boolean isPackageSuspendedForProfile();
+
+    public abstract List<ShortcutConfigActivityInfo> getCustomShortcutActivityList(PackageUserKey packageUserKey);
 }
