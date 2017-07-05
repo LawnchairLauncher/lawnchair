@@ -31,6 +31,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private static final String KEY_PREF_FULL_WIDTH_WIDGETS = "pref_fullWidthWidgets";
     private static final String KEY_PREF_SHOW_NOW_TAB = "pref_showGoogleNowTab";
     private static final String KEY_PREF_TRANSPARENT_HOTSEAT = "pref_isHotseatTransparent";
+    private static final String KEY_PREF_ENABLE_DYNAMIC_UI = "pref_enableDynamicUi";
     private static Settings instance;
     private Launcher mLauncher;
 
@@ -109,6 +110,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case KEY_PREF_ICON_TEXT_SCALE:
                 case KEY_FULL_WIDTH_SEARCHBAR:
                 case KEY_PREF_FULL_WIDTH_WIDGETS:
+                case KEY_PREF_ENABLE_DYNAMIC_UI:
                     mLauncher.scheduleKill();
                     break;
                 case KEY_PREF_ICON_PACK_PACKAGE:

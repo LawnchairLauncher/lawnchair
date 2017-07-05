@@ -17,233 +17,25 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceScreen android:title="UI">
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
+        android:title="UI"
+        app:content="@xml/launcher_ui_preferences" />
 
-        <ch.deletescape.lawnchair.preferences.IconPackPreference
-            android:key="pref_iconPackPackage"
-            android:title="Icon Pack"
-            android:summary="Select an icon Pack"
-            android:persistent="true" />
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
+        android:title="Pixel Style"
+        app:content="@xml/launcher_pixel_style_preferences" />
 
-        <SwitchPreference
-            android:key="pref_hotseatShouldUseExtractedColors"
-            android:title="Tray uses wallpaper colors"
-            android:summaryOn="The Tray will be colored with a color extracted from the wallpaper"
-            android:summaryOff="The Tray will be colored gray, but adjusted by the wallpaper brightness"
-            android:defaultValue="true"
-            android:persistent="true" />
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
+        android:title="Behavior"
+        app:content="@xml/launcher_behavior_preferences" />
 
-        <SwitchPreference
-            android:key="pref_isHotseatTransparent"
-            android:title="Transparent Tray"
-            android:defaultValue="false"
-            android:persistent="true" />
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
+        android:title="Debug"
+        app:content="@xml/launcher_debug_preferences" />
 
-        <SwitchPreference
-            android:key="pref_hideAppLabels"
-            android:title="Hide Icon Labels on Homescreen"
-            android:defaultValue="false"
-            android:disableDependentsState="true"
-            android:persistent="true" />
-
-        <ListPreference
-            android:key="pref_workspaceLabelColorHue"
-            android:title="Color of Icon Labels on Homescreen"
-            android:entries="@array/color_index_entries"
-            android:entryValues="@array/color_index_values"
-            android:defaultValue="-3"
-            android:dependency="pref_hideAppLabels"
-            android:persistent="true" />
-
-        <ListPreference
-            android:key="pref_workspaceLabelColorVariation"
-            android:title="Color Variation of Icon Labels on Homescreen"
-            android:entries="@array/color_variation_entries"
-            android:entryValues="@array/color_variation_values"
-            android:defaultValue="5"
-            android:dependency="pref_hideAppLabels"
-            android:persistent="true" />
-
-        <ch.deletescape.lawnchair.preferences.SeekbarPreference
-            android:key="pref_allAppsOpacitySB"
-            android:title="All apps opacity"
-            app:minValue="0"
-            app:maxValue="1"
-            app:defaultValue="1"
-            app:summaryFormat="%.0f%%"
-            app:summaryMultiplier="100"
-            android:persistent="true" />
-
-        <ListPreference
-            android:key="pref_numCols"
-            android:title="Number of columns"
-            android:entries="@array/numColsTexts"
-            android:entryValues="@array/numColsValues"
-            android:defaultValue="@string/generalDefault"
-            android:persistent="true" />
-
-        <ListPreference
-            android:key="pref_numRows"
-            android:title="Number of rows"
-            android:entryValues="@array/numRowsValues"
-            android:entries="@array/numRowsTexts"
-            android:defaultValue="@string/generalDefault"
-            android:persistent="true" />
-
-        <ListPreference
-            android:key="pref_numHotseatIcons"
-            android:title="Number of icons in tray"
-            android:entryValues="@array/numHotseatIconsValues"
-            android:entries="@array/numHotseatIconsTexts"
-            android:defaultValue="@string/generalDefault"
-            android:persistent="true" />
-
-        <ch.deletescape.lawnchair.preferences.SeekbarPreference
-            android:key="pref_iconScaleSB"
-            android:title="Icon Scale"
-            app:minValue="0.3"
-            app:maxValue="1.5"
-            app:summaryFormat="%.0f%%"
-            app:summaryMultiplier="100"
-            app:defaultValue="1.0"
-            android:persistent="true" />
-
-        <ch.deletescape.lawnchair.preferences.SeekbarPreference
-            android:key="pref_iconTextScaleSB"
-            android:title="Icon Text Scale"
-            app:minValue="0.3"
-            app:maxValue="1.5"
-            app:summaryFormat="%.0f%%"
-            app:summaryMultiplier="100"
-            app:defaultValue="1.0"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_fullWidthWidgets"
-            android:persistent="true"
-            android:title="Full width widgets"
-            android:defaultValue="false"
-            android:summary="Allow widgets to span over the whole width without padding" />
-
-        <Preference
-            android:key="notification_access"
-            android:title="Notification Badges and Preview"
-            android:summary="Allow Lawnchair to access your notification to enable this features" />
-    </PreferenceScreen>
-
-    <PreferenceScreen android:title="Pixel Style">
-        <SwitchPreference
-            android:key="pref_showPixelBar"
-            android:title="Show Pixel Top Bar"
-            android:defaultValue="true"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_fullWidthSearchbar"
-            android:defaultValue="false"
-            android:title="Use Wide Searchbar"
-            android:dependency="pref_showPixelBar"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_showMic"
-            android:defaultValue="false"
-            android:title="Show Google Assistant Button"
-            android:dependency="pref_showPixelBar"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_pixelStyleIcons"
-            android:title="Use Pixel Icons"
-            android:summary="When enabled circular icons will be used where possible"
-            android:defaultValue="true"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_showGoogleNowTab"
-            android:persistent="true"
-            android:title="Show Google Now Page"
-            android:defaultValue="true" />
-    </PreferenceScreen>
-
-    <PreferenceScreen android:title="Behavior">
-
-        <SwitchPreference
-            android:key="pref_pinchToOverview"
-            android:title="Pinch to Overview"
-            android:summary="Pinch on the Homescreen to open the overview"
-            android:defaultValue="true"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_pulldownNotis"
-            android:title="Pulling down opens Notifications"
-            android:summaryOn="Pulling down on the Homescreen will expand the statusbar."
-            android:summaryOff="When enabled pulling down on the Homescreen expand the statusbar."
-            android:defaultValue="true"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_lightStatusBar"
-            android:title="Light StatusBar"
-            android:summaryOn="The status bar may show dark icons when using a light wallpaper."
-            android:summaryOff="The status bar will always show light icons."
-            android:defaultValue="true"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_enableHapticFeedback"
-            android:title="Enable Haptic Feedback"
-            android:defaultValue="false"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_keepScrollState"
-            android:title="Save Scrolled State"
-            android:summary="Saves the scroll position in the app tray"
-            android:defaultValue="false"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_homeOpensDrawer"
-            android:title="Home Button Opens App Drawer"
-            android:summary="Pressing the home button while on the homescreen will open the app drawer"
-            android:defaultValue="true"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_showHidden"
-            android:title="Show Hidden Apps"
-            android:summaryOn="Hidden apps will be shown to change visibility settings"
-            android:summaryOff="Hidden apps won't be visible"
-            android:defaultValue="false"
-            android:persistent="true" />
-    </PreferenceScreen>
-
-    <PreferenceScreen android:title="Debug">
-        <Preference
-            android:key="kill"
-            android:title="Restart Lawnchair"
-            android:summary="Can be helpful if some settings are not properly applied" />
-        <Preference
-            android:key="rebuild_icondb"
-            android:title="Rebuild Icon Database" />
-    </PreferenceScreen>
-
-    <PreferenceScreen android:title="Import/Export">
-        <Preference
-            android:key="export_db"
-            android:title="Export Database" />
-        <Preference
-            android:key="import_db"
-            android:title="Import Database" />
-        <Preference
-            android:key="export_prefs"
-            android:title="Export Settings" />
-        <Preference
-            android:key="import_prefs"
-            android:title="Import Settings" />
-    </PreferenceScreen>
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
+        android:title="Import/Export"
+        app:content="@xml/launcher_backup_preferences" />
 
     <Preference
         android:title="@string/about_title"

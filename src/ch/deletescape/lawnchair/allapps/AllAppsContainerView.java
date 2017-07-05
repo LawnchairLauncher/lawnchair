@@ -256,6 +256,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         mSearchContainer = findViewById(R.id.search_container);
         mSearchInput = (ExtendedEditText) findViewById(R.id.search_box_input);
+        mSearchInput.setHintTextColor(Utilities.getDynamicAccent(getContext()));
 
         // Update the hint to contain the icon.
         // Prefix the original hint with two spaces. The first space gets replaced by the icon

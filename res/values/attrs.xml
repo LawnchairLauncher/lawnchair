@@ -123,4 +123,8 @@
         <attr name="defaultValue" format="float" />
     </declare-styleable>
 
+    <declare-styleable name="SubPreference">
+        <attr name="content" format="reference"/>
+    </declare-styleable>
+
 </resources>

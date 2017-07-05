@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <objectAnimator
+        android:interpolator="@android:interpolator/accelerate_quad"
+        android:valueFrom="1"
+        android:valueTo="0"
+        android:propertyName="alpha"
+        android:duration="0" />
+</set>
