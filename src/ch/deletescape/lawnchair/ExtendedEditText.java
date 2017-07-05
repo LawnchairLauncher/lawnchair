@@ -16,11 +16,20 @@
 package ch.deletescape.lawnchair;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorInt;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
+
+import java.lang.reflect.Field;
 
 
 /**
@@ -29,6 +38,7 @@ import android.widget.EditText;
 public class ExtendedEditText extends EditText {
 
     private boolean mShowImeAfterFirstLayout;
+    private int mHintTextColor;
 
     /**
      * Implemented by listeners of the back key.
@@ -102,5 +112,49 @@ public class ExtendedEditText extends EditText {
         return requestFocus() &&
                 ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE))
                         .showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+    }
+
+    public void setCursorColor(@ColorInt int color) {
+        try {
+            // Get the cursor resource id
+            Field field = TextView.class.getDeclaredField("mCursorDrawableRes");
+            field.setAccessible(true);
+            int drawableResId = field.getInt(this);
+
+            // Get the editor
+            field = TextView.class.getDeclaredField("mEditor");
+            field.setAccessible(true);
+            Object editor = field.get(this);
+
+            // Get the drawable and set a color filter
+            Drawable drawable = ContextCompat.getDrawable(getContext(), drawableResId);
+            drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+            Drawable[] drawables = {drawable, drawable};
+
+            // Set the drawables
+            field = editor.getClass().getDeclaredField("mCursorDrawable");
+            field.setAccessible(true);
+            field.set(editor, drawables);
+        } catch (Exception ignored) {
+        }
+    }
+
+    @Override
+    protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+        super.onFocusChanged(focused, direction, previouslyFocusedRect);
+        if (focused) {
+            if (getCurrentHintTextColor() != Color.TRANSPARENT) {
+                mHintTextColor = getCurrentHintTextColor();
+                setHintTextColor(Color.TRANSPARENT);
+            }
+        } else {
+            setHintTextColor(mHintTextColor);
+        }
     }
 }
