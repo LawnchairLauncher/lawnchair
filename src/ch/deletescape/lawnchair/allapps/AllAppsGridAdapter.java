@@ -21,7 +21,6 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.ShapeDrawable;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.support.v4.view.accessibility.AccessibilityRecordCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -266,8 +265,9 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search,
                         parent, false));
             case VIEW_TYPE_SEARCH_MARKET:
-                View searchMarketView = mLayoutInflater.inflate(R.layout.all_apps_search_market,
+                TextView searchMarketView = (TextView) mLayoutInflater.inflate(R.layout.all_apps_search_market,
                         parent, false);
+                searchMarketView.setTextColor(Utilities.getDynamicAccent(mLauncher));
                 searchMarketView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
