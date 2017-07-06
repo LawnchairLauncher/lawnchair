@@ -206,7 +206,10 @@ public class NotificationFooterLayout extends FrameLayout {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         ((ViewGroup) getParent()).findViewById(R.id.divider).setVisibility(GONE);
-                        ((ViewGroup) getParent()).removeView(NotificationFooterLayout.this);
+                        // Keep view around because gutter is aligned to it, but remove height to
+                        // both hide the view and keep calculations correct for last dismissal.
+                        getLayoutParams().height = 0;
+                        requestLayout();
                     }
                 });
                 collapseFooter.start();
