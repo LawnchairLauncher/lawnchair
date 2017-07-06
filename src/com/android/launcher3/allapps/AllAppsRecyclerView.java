@@ -34,6 +34,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.DrawableFactory;
+import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 import java.util.List;
@@ -57,7 +58,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
 
     private SpringAnimationHandler mSpringAnimationHandler;
     private OverScrollHelper mOverScrollHelper;
-    private VerticalPullDetector mPullDetector;
+    private SwipeDetector mPullDetector;
 
     private float mContentTranslationY = 0;
     public static final Property<AllAppsRecyclerView, Float> CONTENT_TRANS_Y =
@@ -94,9 +95,9 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                 R.dimen.all_apps_empty_search_bg_top_offset);
 
         mOverScrollHelper = new OverScrollHelper();
-        mPullDetector = new VerticalPullDetector(getContext());
+        mPullDetector = new SwipeDetector(getContext());
         mPullDetector.setListener(mOverScrollHelper);
-        mPullDetector.setDetectableScrollConditions(VerticalPullDetector.DIRECTION_BOTH, true);
+        mPullDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_BOTH, true);
     }
 
     public void setSpringAnimationHandler(SpringAnimationHandler springAnimationHandler) {
@@ -479,7 +480,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                 y + mEmptySearchBackground.getIntrinsicHeight());
     }
 
-    private class OverScrollHelper implements VerticalPullDetector.Listener {
+    private class OverScrollHelper implements SwipeDetector.Listener {
 
         private static final float MAX_RELEASE_VELOCITY = 5000; // px / s
         private static final float MAX_OVERSCROLL_PERCENTAGE = 0.07f;

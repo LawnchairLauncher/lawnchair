@@ -1,4 +1,4 @@
-package com.android.launcher3.allapps;
+package com.android.launcher3.touch;
 
 import android.content.Context;
 import android.util.Log;
@@ -7,15 +7,12 @@ import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
 
 /**
- * One dimensional scroll gesture detector for all apps container pull up interaction.
- * Client (e.g., AllAppsTransitionController) of this class can register a listener.
- * <p/>
- * Features that this gesture detector can support.
+ * One dimensional scroll/drag/swipe gesture detector.
  */
-public class VerticalPullDetector {
+public class SwipeDetector {
 
     private static final boolean DBG = false;
-    private static final String TAG = "VerticalPullDetector";
+    private static final String TAG = "SwipeDetector";
 
     private final float mTouchSlop;
 
@@ -122,7 +119,7 @@ public class VerticalPullDetector {
         void onDragEnd(float velocity, boolean fling);
     }
 
-    public VerticalPullDetector(Context context) {
+    public SwipeDetector(Context context) {
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
     }
 
