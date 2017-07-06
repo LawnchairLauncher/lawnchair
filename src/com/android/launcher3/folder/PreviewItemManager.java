@@ -16,6 +16,9 @@
 
 package com.android.launcher3.folder;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -48,9 +51,18 @@ public class PreviewItemManager {
 
     // These hold the first page preview items
     private ArrayList<PreviewItemDrawingParams> mFirstPageParams = new ArrayList<>();
+    // These hold the current page preview items. It is empty if the current page is the first page.
+    private ArrayList<PreviewItemDrawingParams> mCurrentPageParams = new ArrayList<>();
+
+    private float mCurrentPageItemsTransX = 0;
+    private boolean mShouldSlideInFirstPage;
 
     static final int INITIAL_ITEM_ANIMATION_DURATION = 350;
     private static final int FINAL_ITEM_ANIMATION_DURATION = 200;
+
+    private static final int SLIDE_IN_FIRST_PAGE_ANIMATION_DURATION_DELAY = 200;
+    private static final int SLIDE_IN_FIRST_PAGE_ANIMATION_DURATION = 300;
+    private static final int ITEM_SLIDE_IN_OUT_DISTANCE_PX = 200;
 
     public PreviewItemManager(FolderIcon icon) {
         mIcon = icon;
@@ -116,15 +128,30 @@ public class PreviewItemManager {
         return params;
     }
 
-    public void draw(Canvas canvas) {
-        computePreviewDrawingParams(mReferenceDrawable);
+    public void drawParams(Canvas canvas, ArrayList<PreviewItemDrawingParams> params,
+            float transX) {
+        canvas.translate(transX, 0);
         // The first item should be drawn last (ie. on top of later items)
-        for (int i = mFirstPageParams.size() - 1; i >= 0; i--) {
-            PreviewItemDrawingParams p = mFirstPageParams.get(i);
+        for (int i = params.size() - 1; i >= 0; i--) {
+            PreviewItemDrawingParams p = params.get(i);
             if (!p.hidden) {
                 drawPreviewItem(canvas, p);
             }
         }
+        canvas.translate(-transX, 0);
+    }
+
+    public void draw(Canvas canvas) {
+        computePreviewDrawingParams(mReferenceDrawable);
+
+        float firstPageItemsTransX = 0;
+        if (mShouldSlideInFirstPage) {
+            drawParams(canvas, mCurrentPageParams, mCurrentPageItemsTransX);
+
+            firstPageItemsTransX = -ITEM_SLIDE_IN_OUT_DISTANCE_PX + mCurrentPageItemsTransX;
+        }
+
+        drawParams(canvas, mFirstPageParams, firstPageItemsTransX);
     }
 
     public void onParamsChanged() {
@@ -156,21 +183,21 @@ public class PreviewItemManager {
         }
     }
 
-    void updateItemDrawingParams(boolean animate) {
-        List<BubbleTextView> items = mIcon.getItemsToDisplay();
-        int numItemsInPreview = items.size();
-        int prevNumItems = mFirstPageParams.size();
+    void buildParamsForPage(int page, ArrayList<PreviewItemDrawingParams> params, boolean animate) {
+        List<BubbleTextView> items = mIcon.getPreviewItemsOnPage(page);
+        int prevNumItems = params.size();
 
-        // We adjust the size of the list to match the number of items in the preview
-        while (numItemsInPreview < mFirstPageParams.size()) {
-            mFirstPageParams.remove(mFirstPageParams.size() - 1);
+        // We adjust the size of the list to match the number of items in the preview.
+        while (items.size() < params.size()) {
+            params.remove(params.size() - 1);
         }
-        while (numItemsInPreview > mFirstPageParams.size()) {
-            mFirstPageParams.add(new PreviewItemDrawingParams(0, 0, 0, 0));
+        while (items.size() > params.size()) {
+            params.add(new PreviewItemDrawingParams(0, 0, 0, 0));
         }
 
-        for (int i = 0; i < mFirstPageParams.size(); i++) {
-            PreviewItemDrawingParams p = mFirstPageParams.get(i);
+        int numItemsInFirstPagePreview = page == 0 ? items.size() : FolderIcon.NUM_ITEMS_IN_PREVIEW;
+        for (int i = 0; i < params.size(); i++) {
+            PreviewItemDrawingParams p = params.get(i);
             p.drawable = items.get(i).getCompoundDrawables()[1];
 
             if (p.drawable != null && !mIcon.mFolder.isOpen()) {
@@ -180,13 +207,13 @@ public class PreviewItemManager {
             }
 
             if (!animate || FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON) {
-                computePreviewItemDrawingParams(i, numItemsInPreview, p);
+                computePreviewItemDrawingParams(i, numItemsInFirstPagePreview, p);
                 if (mReferenceDrawable == null) {
                     mReferenceDrawable = p.drawable;
                 }
             } else {
                 FolderPreviewItemAnim anim = new FolderPreviewItemAnim(this, p, i, prevNumItems, i,
-                        numItemsInPreview, DROP_IN_ANIMATION_DURATION, null);
+                        numItemsInFirstPagePreview, DROP_IN_ANIMATION_DURATION, null);
 
                 if (p.anim != null) {
                     if (p.anim.hasEqualFinalState(anim)) {
@@ -199,6 +226,39 @@ public class PreviewItemManager {
                 p.anim.start();
             }
         }
+    }
+
+    void onFolderClose(int currentPage) {
+        // If we are not closing on the first page, we animate the current page preview items
+        // out, and animate the first page preview items in.
+        mShouldSlideInFirstPage = currentPage != 0;
+        if (mShouldSlideInFirstPage) {
+            mCurrentPageItemsTransX = 0;
+            buildParamsForPage(currentPage, mCurrentPageParams, false);
+            onParamsChanged();
+
+            ValueAnimator slideAnimator = ValueAnimator.ofFloat(0, ITEM_SLIDE_IN_OUT_DISTANCE_PX);
+            slideAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    mCurrentPageItemsTransX = (float) valueAnimator.getAnimatedValue();
+                    onParamsChanged();
+                }
+            });
+            slideAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mCurrentPageParams.clear();
+                }
+            });
+            slideAnimator.setStartDelay(SLIDE_IN_FIRST_PAGE_ANIMATION_DURATION_DELAY);
+            slideAnimator.setDuration(SLIDE_IN_FIRST_PAGE_ANIMATION_DURATION);
+            slideAnimator.start();
+        }
+    }
+
+    void updateItemDrawingParams(boolean animate) {
+        buildParamsForPage(0, mFirstPageParams, animate);
     }
 
     boolean verifyDrawable(@NonNull Drawable who) {

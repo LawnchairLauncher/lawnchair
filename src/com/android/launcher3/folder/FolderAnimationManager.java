@@ -119,7 +119,7 @@ public class FolderAnimationManager {
     public AnimatorSet getAnimator() {
         final DragLayer.LayoutParams lp = (DragLayer.LayoutParams) mFolder.getLayoutParams();
         FolderIcon.PreviewLayoutRule rule = mFolderIcon.getLayoutRule();
-        final List<BubbleTextView> itemsInPreview = mFolderIcon.getItemsToDisplay();
+        final List<BubbleTextView> itemsInPreview = mFolderIcon.getPreviewItems();
 
         // Match position of the FolderIcon
         final Rect folderIconPos = new Rect();
@@ -186,7 +186,7 @@ public class FolderAnimationManager {
         PropertyResetListener colorResetListener = new PropertyResetListener<>(
                 BubbleTextView.TEXT_ALPHA_PROPERTY,
                 Color.alpha(Themes.getAttrColor(mContext, android.R.attr.textColorSecondary)));
-        for (BubbleTextView icon : mFolder.getItemsOnCurrentPage()) {
+        for (BubbleTextView icon : mFolder.getItemsOnPage(mFolder.mContent.getCurrentPage())) {
             if (mIsOpening) {
                 icon.setTextVisibility(false);
             }
@@ -237,13 +237,19 @@ public class FolderAnimationManager {
     }
 
     /**
-     * Animate the items that are displayed in the preview.
+     * Animate the items on the current page.
      */
     private void addPreviewItemAnimators(AnimatorSet animatorSet, final float folderScale,
             int previewItemOffsetX) {
         FolderIcon.PreviewLayoutRule rule = mFolderIcon.getLayoutRule();
-        final List<BubbleTextView> itemsInPreview = mFolderIcon.getItemsToDisplay();
+        boolean isOnFirstPage = mFolder.mContent.getCurrentPage() == 0;
+        final List<BubbleTextView> itemsInPreview = isOnFirstPage
+                ? mFolderIcon.getPreviewItems()
+                : mFolderIcon.getPreviewItemsOnPage(mFolder.mContent.getCurrentPage());
         final int numItemsInPreview = itemsInPreview.size();
+        final int numItemsInFirstPagePreview = isOnFirstPage
+                ? numItemsInPreview
+                : FolderIcon.NUM_ITEMS_IN_PREVIEW;
 
         TimeInterpolator previewItemInterpolator = getPreviewItemInterpolator();
 
@@ -256,8 +262,8 @@ public class FolderAnimationManager {
             btvLp.isLockedToGrid = true;
             cwc.setupLp(btv);
 
-            // Match scale of icons in the preview.
-            float previewScale = rule.scaleForItem(i, numItemsInPreview);
+            // Match scale of icons in the preview of the items on the first page.
+            float previewScale = rule.scaleForItem(i, numItemsInFirstPagePreview);
             float previewSize = rule.getIconSize() * previewScale;
             float iconScale = previewSize / itemsInPreview.get(i).getIconSize();
 
@@ -268,7 +274,7 @@ public class FolderAnimationManager {
             btv.setScaleY(scale);
 
             // Match positions of the icons in the folder with their positions in the preview
-            rule.computePreviewItemDrawingParams(i, numItemsInPreview, mTmpParams);
+            rule.computePreviewItemDrawingParams(i, numItemsInFirstPagePreview, mTmpParams);
             // The PreviewLayoutRule assumes that the icon size takes up the entire width so we
             // offset by the actual size.
             int iconOffsetX = (int) ((btvLp.width - btv.getIconSize()) * iconScale) / 2;
