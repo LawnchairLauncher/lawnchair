@@ -40,7 +40,7 @@ import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.allapps.VerticalPullDetector;
+import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -58,7 +58,7 @@ import java.util.List;
  * Bottom sheet for the "Widgets" system shortcut in the long-press popup.
  */
 public class WidgetsBottomSheet extends AbstractFloatingView implements Insettable, TouchController,
-        VerticalPullDetector.Listener, View.OnClickListener, View.OnLongClickListener,
+        SwipeDetector.Listener, View.OnClickListener, View.OnLongClickListener,
         DragController.DragListener {
 
     private int mTranslationYOpen;
@@ -69,9 +69,9 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
     private ItemInfo mOriginalItemInfo;
     private ObjectAnimator mOpenCloseAnimator;
     private Interpolator mFastOutSlowInInterpolator;
-    private VerticalPullDetector.ScrollInterpolator mScrollInterpolator;
+    private SwipeDetector.ScrollInterpolator mScrollInterpolator;
     private Rect mInsets;
-    private VerticalPullDetector mVerticalPullDetector;
+    private SwipeDetector mSwipeDetector;
     private GradientView mGradientBackground;
 
     public WidgetsBottomSheet(Context context, AttributeSet attrs) {
@@ -85,10 +85,10 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
         mOpenCloseAnimator = LauncherAnimUtils.ofPropertyValuesHolder(this);
         mFastOutSlowInInterpolator =
                 AnimationUtils.loadInterpolator(context, android.R.interpolator.fast_out_slow_in);
-        mScrollInterpolator = new VerticalPullDetector.ScrollInterpolator();
+        mScrollInterpolator = new SwipeDetector.ScrollInterpolator();
         mInsets = new Rect();
-        mVerticalPullDetector = new VerticalPullDetector(context);
-        mVerticalPullDetector.setListener(this);
+        mSwipeDetector = new SwipeDetector(context);
+        mSwipeDetector.setListener(this);
         mGradientBackground = (GradientView) mLauncher.findViewById(R.id.gradient_bg);
     }
 
@@ -192,7 +192,7 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
             mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mVerticalPullDetector.finishedScrolling();
+                    mSwipeDetector.finishedScrolling();
                 }
             });
             mOpenCloseAnimator.setInterpolator(mFastOutSlowInInterpolator);
@@ -214,13 +214,13 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mIsOpen = false;
-                    mVerticalPullDetector.finishedScrolling();
+                    mSwipeDetector.finishedScrolling();
                     ((ViewGroup) getParent()).removeView(WidgetsBottomSheet.this);
                     mLauncher.getSystemUiController().updateUiState(
                             SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, 0);
                 }
             });
-            mOpenCloseAnimator.setInterpolator(mVerticalPullDetector.isIdleState()
+            mOpenCloseAnimator.setInterpolator(mSwipeDetector.isIdleState()
                     ? mFastOutSlowInInterpolator : mScrollInterpolator);
             mOpenCloseAnimator.start();
         } else {
@@ -259,7 +259,7 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
                 getPaddingRight() + rightInset, getPaddingBottom() + bottomInset);
     }
 
-    /* VerticalPullDetector.Listener */
+    /* SwipeDetector.Listener */
 
     @Override
     public void onDragStart(boolean start) {
@@ -283,12 +283,12 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
     public void onDragEnd(float velocity, boolean fling) {
         if ((fling && velocity > 0) || getTranslationY() > (mTranslationYRange) / 2) {
             mScrollInterpolator.setVelocityAtZero(velocity);
-            mOpenCloseAnimator.setDuration(mVerticalPullDetector.calculateDuration(velocity,
+            mOpenCloseAnimator.setDuration(mSwipeDetector.calculateDuration(velocity,
                     (mTranslationYClosed - getTranslationY()) / mTranslationYRange));
             close(true);
         } else {
             mIsOpen = false;
-            mOpenCloseAnimator.setDuration(mVerticalPullDetector.calculateDuration(velocity,
+            mOpenCloseAnimator.setDuration(mSwipeDetector.calculateDuration(velocity,
                     (getTranslationY() - mTranslationYOpen) / mTranslationYRange));
             open(true);
         }
@@ -296,17 +296,17 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
 
     @Override
     public boolean onControllerTouchEvent(MotionEvent ev) {
-        return mVerticalPullDetector.onTouchEvent(ev);
+        return mSwipeDetector.onTouchEvent(ev);
     }
 
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-        int directionsToDetectScroll = mVerticalPullDetector.isIdleState() ?
-                VerticalPullDetector.DIRECTION_DOWN : 0;
-        mVerticalPullDetector.setDetectableScrollConditions(
+        int directionsToDetectScroll = mSwipeDetector.isIdleState() ?
+                SwipeDetector.DIRECTION_DOWN : 0;
+        mSwipeDetector.setDetectableScrollConditions(
                 directionsToDetectScroll, false);
-        mVerticalPullDetector.onTouchEvent(ev);
-        return mVerticalPullDetector.isDraggingOrSettling();
+        mSwipeDetector.onTouchEvent(ev);
+        return mSwipeDetector.isDraggingOrSettling();
     }
 
     /* DragListener */

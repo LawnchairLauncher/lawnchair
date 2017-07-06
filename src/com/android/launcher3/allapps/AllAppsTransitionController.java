@@ -26,6 +26,7 @@ import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.GradientView;
 import com.android.launcher3.graphics.ScrimView;
+import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.SystemUiController;
@@ -42,7 +43,7 @@ import com.android.launcher3.util.TouchController;
  * If release velocity < THRES1, snap according to either top or bottom depending on whether it's
  * closer to top or closer to the page indicator.
  */
-public class AllAppsTransitionController implements TouchController, VerticalPullDetector.Listener,
+public class AllAppsTransitionController implements TouchController, SwipeDetector.Listener,
          SearchUiManager.OnScrollRangeChangeListener {
 
     private static final String TAG = "AllAppsTrans";
@@ -52,8 +53,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private final Interpolator mHotseatAccelInterpolator = new AccelerateInterpolator(1.5f);
     private final Interpolator mDecelInterpolator = new DecelerateInterpolator(3f);
     private final Interpolator mFastOutSlowInInterpolator = new FastOutSlowInInterpolator();
-    private final VerticalPullDetector.ScrollInterpolator mScrollInterpolator
-            = new VerticalPullDetector.ScrollInterpolator();
+    private final SwipeDetector.ScrollInterpolator mScrollInterpolator
+            = new SwipeDetector.ScrollInterpolator();
 
     private static final float PARALLAX_COEFFICIENT = .125f;
     private static final int SINGLE_FRAME_MS = 16;
@@ -69,7 +70,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private float mStatusBarHeight;
 
     private final Launcher mLauncher;
-    private final VerticalPullDetector mDetector;
+    private final SwipeDetector mDetector;
     private final ArgbEvaluator mEvaluator;
     private final boolean mIsDarkTheme;
 
@@ -106,7 +107,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
-        mDetector = new VerticalPullDetector(l);
+        mDetector = new SwipeDetector(l);
         mDetector.setListener(this);
         mShiftRange = DEFAULT_SHIFT_RANGE;
         mProgress = 1f;
@@ -136,17 +137,17 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
                 if (mDetector.isIdleState()) {
                     if (mLauncher.isAllAppsVisible()) {
-                        directionsToDetectScroll |= VerticalPullDetector.DIRECTION_DOWN;
+                        directionsToDetectScroll |= SwipeDetector.DIRECTION_DOWN;
                     } else {
-                        directionsToDetectScroll |= VerticalPullDetector.DIRECTION_UP;
+                        directionsToDetectScroll |= SwipeDetector.DIRECTION_UP;
                     }
                 } else {
                     if (isInDisallowRecatchBottomZone()) {
-                        directionsToDetectScroll |= VerticalPullDetector.DIRECTION_UP;
+                        directionsToDetectScroll |= SwipeDetector.DIRECTION_UP;
                     } else if (isInDisallowRecatchTopZone()) {
-                        directionsToDetectScroll |= VerticalPullDetector.DIRECTION_DOWN;
+                        directionsToDetectScroll |= SwipeDetector.DIRECTION_DOWN;
                     } else {
-                        directionsToDetectScroll |= VerticalPullDetector.DIRECTION_BOTH;
+                        directionsToDetectScroll |= SwipeDetector.DIRECTION_BOTH;
                         ignoreSlopWhenSettling = true;
                     }
                 }
