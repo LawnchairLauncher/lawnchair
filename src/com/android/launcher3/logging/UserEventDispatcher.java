@@ -20,6 +20,7 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -40,6 +41,7 @@ import com.android.launcher3.util.LogConfig;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import static com.android.launcher3.logging.LoggerUtils.newCommandAction;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
@@ -62,13 +64,21 @@ public class UserEventDispatcher {
     private static final String TAG = "UserEvent";
     private static final boolean IS_VERBOSE =
             FeatureFlags.IS_DOGFOOD_BUILD && Utilities.isPropertyEnabled(LogConfig.USEREVENT);
+    private static final String UUID_STORAGE = "uuid";
 
     public static UserEventDispatcher newInstance(Context context, boolean isInLandscapeMode,
             boolean isInMultiWindowMode) {
+        SharedPreferences sharedPrefs = Utilities.getDevicePrefs(context);
+        String uuidStr = sharedPrefs.getString(UUID_STORAGE, null);
+        if (uuidStr == null) {
+            uuidStr = UUID.randomUUID().toString();
+            sharedPrefs.edit().putString(UUID_STORAGE, uuidStr).apply();
+        }
         UserEventDispatcher ued = Utilities.getOverrideObject(UserEventDispatcher.class,
                 context.getApplicationContext(), R.string.user_event_dispatcher_class);
         ued.mIsInLandscapeMode = isInLandscapeMode;
         ued.mIsInMultiWindowMode = isInMultiWindowMode;
+        ued.mUuidStr = uuidStr;
         return ued;
     }
 
@@ -116,6 +126,7 @@ public class UserEventDispatcher {
     private long mActionDurationMillis;
     private boolean mIsInMultiWindowMode;
     private boolean mIsInLandscapeMode;
+    private String mUuidStr;
 
     // Used for filling in predictedRank on {@link Target}s.
     private List<ComponentKey> mPredictedApps;
@@ -137,8 +148,8 @@ public class UserEventDispatcher {
             ItemInfo itemInfo = (ItemInfo) v.getTag();
             event.srcTarget[idx].intentHash = intentHashCode;
             if (cn != null) {
-                event.srcTarget[idx].packageNameHash = cn.getPackageName().hashCode();
-                event.srcTarget[idx].componentHash = cn.hashCode();
+                event.srcTarget[idx].packageNameHash = (mUuidStr + cn.getPackageName()).hashCode();
+                event.srcTarget[idx].componentHash = (mUuidStr + cn.flattenToString()).hashCode();
                 if (mPredictedApps != null) {
                     event.srcTarget[idx].predictedRank = mPredictedApps.indexOf(
                             new ComponentKey(cn, itemInfo.user));
