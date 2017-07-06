@@ -137,7 +137,18 @@ public class ItemInfo {
     }
 
     public ComponentName getTargetComponent() {
-        return getIntent() == null ? null : getIntent().getComponent();
+        Intent intent = getIntent();
+        if (intent == null) {
+            return null;
+        }
+        ComponentName cn = intent.getComponent();
+        if (itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT && cn == null) {
+            // Legacy shortcuts may not have a componentName but just a packageName. In that case
+            // create a dummy componentName instead of adding additional check everywhere.
+            String pkg = intent.getPackage();
+            return pkg == null ? null : new ComponentName(pkg, IconCache.EMPTY_CLASS_NAME);
+        }
+        return cn;
     }
 
     public void writeToValues(ContentWriter writer) {
