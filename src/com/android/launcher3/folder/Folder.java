@@ -1280,7 +1280,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         };
         View finalChild = mContent.getLastItem();
         if (finalChild != null) {
-            mFolderIcon.performDestroyAnimation(finalChild, onCompleteRunnable);
+            mFolderIcon.performDestroyAnimation(onCompleteRunnable);
         } else {
             onCompleteRunnable.run();
         }
