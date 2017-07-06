@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ch.deletescape.lawnchair.preferences.IconPackPreference
+        android:key="pref_iconPackPackage"
+        android:title="图标包"
+        android:summary="选择图标包"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_hotseatShouldUseExtractedColors"
+        android:title="托盘使用壁纸颜色"
+        android:summaryOn="托盘使用从壁纸中提取的颜色"
+        android:summaryOff="托盘使用灰色，但会根据壁纸亮度自动调整"
+        android:defaultValue="true"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_isHotseatTransparent"
+        android:title="透明托盘"
+        android:defaultValue="false"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_enableDynamicUi"
+        android:title="从壁纸提取强调色"
+        android:defaultValue="false"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_hideAppLabels"
+        android:title="主屏幕隐藏图标文字"
+        android:defaultValue="false"
+        android:disableDependentsState="true"
+        android:persistent="true" />
+
+    <ListPreference
+        android:key="pref_workspaceLabelColorHue"
+        android:title="主屏幕图标文字颜色"
+        android:entries="@array/color_index_entries"
+        android:entryValues="@array/color_index_values"
+        android:defaultValue="-3"
+        android:dependency="pref_hideAppLabels"
+        android:persistent="true" />
+
+    <ListPreference
+        android:key="pref_workspaceLabelColorVariation"
+        android:title="主屏幕图标文字色差"
+        android:entries="@array/color_variation_entries"
+        android:entryValues="@array/color_variation_values"
+        android:defaultValue="5"
+        android:dependency="pref_hideAppLabels"
+        android:persistent="true" />
+
+    <ch.deletescape.lawnchair.preferences.SeekbarPreference
+        android:key="pref_allAppsOpacitySB"
+        android:title="应用抽屉不透明度"
+        app:minValue="0"
+        app:maxValue="1"
+        app:defaultValue="1"
+        app:summaryFormat="%.0f%%"
+        app:summaryMultiplier="100"
+        android:persistent="true" />
+
+    <ListPreference
+        android:key="pref_numCols"
+        android:title="图标列数"
+        android:entries="@array/numColsTexts"
+        android:entryValues="@array/numColsValues"
+        android:defaultValue="@string/generalDefault"
+        android:persistent="true" />
+
+    <ListPreference
+        android:key="pref_numRows"
+        android:title="图标行数"
+        android:entryValues="@array/numRowsValues"
+        android:entries="@array/numRowsTexts"
+        android:defaultValue="@string/generalDefault"
+        android:persistent="true" />
+
+    <ListPreference
+        android:key="pref_numHotseatIcons"
+        android:title="托盘图标数"
+        android:entryValues="@array/numHotseatIconsValues"
+        android:entries="@array/numHotseatIconsTexts"
+        android:defaultValue="@string/generalDefault"
+        android:persistent="true" />
+
+    <ch.deletescape.lawnchair.preferences.SeekbarPreference
+        android:key="pref_iconScaleSB"
+        android:title="图标大小"
+        app:minValue="0.3"
+        app:maxValue="1.5"
+        app:summaryFormat="%.0f%%"
+        app:summaryMultiplier="100"
+        app:defaultValue="1.0"
+        android:persistent="true" />
+
+    <ch.deletescape.lawnchair.preferences.SeekbarPreference
+        android:key="pref_iconTextScaleSB"
+        android:title="图标文字大小"
+        app:minValue="0.3"
+        app:maxValue="1.5"
+        app:summaryFormat="%.0f%%"
+        app:summaryMultiplier="100"
+        app:defaultValue="1.0"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_fullWidthWidgets"
+        android:persistent="true"
+        android:title="全宽小部件"
+        android:defaultValue="false"
+        android:summary="允许小部件无边距跨越整个屏幕" />
+
+    <Preference
+        android:key="notification_access"
+        android:title="通知角标与预览"
+        android:summary="许可 Lawnchair 访问您的通知以启用此特性" />
+</PreferenceScreen>

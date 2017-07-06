@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:key="kill"
+        android:title="重启 Lawnchair"
+        android:summary="若某些设置没有正确应用，此操作可能会有帮助" />
+    <Preference
+        android:key="rebuild_icondb"
+        android:title="重建图标数据库" />
+</PreferenceScreen>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:key="export_db"
+        android:title="导出数据库" />
+    <Preference
+        android:key="import_db"
+        android:title="导入数据库" />
+    <Preference
+        android:key="export_prefs"
+        android:title="导出设置" />
+    <Preference
+        android:key="import_prefs"
+        android:title="导入设置" />
+</PreferenceScreen>
