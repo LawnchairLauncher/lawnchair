@@ -68,7 +68,7 @@ public class IconCache {
     private static final int INITIAL_ICON_CACHE_CAPACITY = 50;
 
     // Empty class name is used for storing package default entry.
-    private static final String EMPTY_CLASS_NAME = ".";
+    public static final String EMPTY_CLASS_NAME = ".";
 
     private static final boolean DEBUG = false;
     private static final boolean DEBUG_IGNORE_CACHE = false;
