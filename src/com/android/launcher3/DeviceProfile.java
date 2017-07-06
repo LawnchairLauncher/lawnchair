@@ -80,7 +80,7 @@ public class DeviceProfile {
     public final int workspaceSpringLoadedBottomSpace;
 
     // Page indicator
-    private final int pageIndicatorSizePx;
+    private int pageIndicatorSizePx;
     private final int pageIndicatorLandGutterPx;
     private final int pageIndicatorLandWorkspaceOffsetPx;
 
@@ -172,7 +172,8 @@ public class DeviceProfile {
         defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
         desiredWorkspaceLeftRightMarginPx = edgeMarginPx;
-        pageIndicatorSizePx = res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_size);
+        pageIndicatorSizePx = res.getDimensionPixelSize(
+                R.dimen.dynamic_grid_min_page_indicator_size);
         pageIndicatorLandGutterPx = res.getDimensionPixelSize(
                 R.dimen.dynamic_grid_page_indicator_gutter_width);
         pageIndicatorLandWorkspaceOffsetPx =
@@ -228,8 +229,23 @@ public class DeviceProfile {
             availableHeightPx = maxSize.y;
         }
 
-        // Calculate the remaining vars
+        // Calculate all of the remaining variables.
         updateAvailableDimensions(dm, res);
+
+        // Now that we have all of the variables calculated, we can tune certain sizes.
+        if (!isVerticalBarLayout()) {
+            // We increase the page indicator size when there is extra space.
+            // ie. For a display with a large aspect ratio, we can keep the icons on the workspace
+            // in portrait mode closer together by increasing the page indicator size.
+            int newPageIndicatorSizePx = getCellSize().y - iconSizePx - iconTextSizePx
+                    - iconDrawablePaddingOriginalPx;
+            if (newPageIndicatorSizePx > pageIndicatorSizePx) {
+                pageIndicatorSizePx = newPageIndicatorSizePx;
+                // Recalculate the available dimensions using the new page indicator size.
+                updateAvailableDimensions(dm, res);
+            }
+        }
+
         computeAllAppsButtonSize(context);
 
         // This is done last, after iconSizePx is calculated above.
@@ -484,8 +500,8 @@ public class DeviceProfile {
             return new Rect(mInsets.left,
                     mInsets.top + dropTargetBarSizePx + edgeMarginPx,
                     mInsets.left + availableWidthPx,
-                    mInsets.top + availableHeightPx - hotseatBarHeightPx - pageIndicatorSizePx -
-                            edgeMarginPx);
+                    mInsets.top + availableHeightPx - hotseatBarHeightPx
+                            - pageIndicatorSizePx - edgeMarginPx);
         }
     }
 
