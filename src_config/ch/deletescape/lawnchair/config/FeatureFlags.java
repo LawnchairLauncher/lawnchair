@@ -43,6 +43,7 @@ public final class FeatureFlags {
     private static final String KEY_PREF_SHOW_NOW_TAB = "pref_showGoogleNowTab";
     private static final String KEY_PREF_TRANSPARENT_HOTSEAT = "pref_isHotseatTransparent";
     private static final String KEY_PREF_ENABLE_DYNAMIC_UI = "pref_enableDynamicUi";
+    private static final String KEY_PREF_ENABLE_BLUR = "pref_enableBlur";
 
     private FeatureFlags() {
     }
@@ -142,6 +143,12 @@ public final class FeatureFlags {
     public static boolean isDynamicUiEnabled(Context context) {
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_ENABLE_DYNAMIC_UI, false);
         FirebaseAnalytics.getInstance(context).setUserProperty("dynamic_ui_enabled", String.valueOf(enabled));
+        return enabled;
+    }
+
+    public static boolean isBlurEnabled(Context context) {
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_ENABLE_BLUR, false);
+        FirebaseAnalytics.getInstance(context).setUserProperty("blur_enabled", String.valueOf(enabled));
         return enabled;
     }
 }

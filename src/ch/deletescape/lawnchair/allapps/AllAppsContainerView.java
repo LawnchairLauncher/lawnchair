@@ -28,6 +28,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -53,6 +54,8 @@ import ch.deletescape.lawnchair.LauncherTransitionable;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
+import ch.deletescape.lawnchair.blur.BlurDrawable;
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.folder.Folder;
@@ -104,7 +107,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     // This coordinate is relative to this container view
     private final Point mBoundsCheckLastTouchDownPos = new Point(-1, -1);
 
-    private StatusBarScrimView mStatusBarScrimView;
+    private AllAppsBackground mAllAppsBackground;
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -292,7 +295,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         getContentView().setVisibility(View.VISIBLE);
         getContentView().setBackground(null);
 
-        mStatusBarScrimView = (StatusBarScrimView) getRevealView();
+        mAllAppsBackground = (AllAppsBackground) getRevealView();
     }
 
     @Override
@@ -598,6 +601,21 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     }
 
     public void setStatusBarHeight(float height) {
-        mStatusBarScrimView.setStatusBarHeight(height);
+        mAllAppsBackground.setStatusBarHeight(height);
+    }
+
+    @Override
+    protected void updatePaddings() {
+        mContainerPaddingLeft = mContainerPaddingRight = 0;
+        mContainerPaddingTop = mContainerPaddingBottom = 0;
+    }
+
+    @Override
+    public void setRevealDrawableColor(int color) {
+        mAllAppsBackground.setBackgroundColor(color);
+    }
+
+    public void setWallpaperTranslation(float translation) {
+        mAllAppsBackground.setWallpaperTranslation(translation);
     }
 }

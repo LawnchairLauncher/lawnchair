@@ -9,6 +9,7 @@ import android.view.animation.Interpolator;
 
 import com.google.firebase.crash.FirebaseCrash;
 
+import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
 
@@ -62,6 +63,8 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
             mWaitingForUpdate = false;
             if (computeScrollOffset() && mWindowToken != null) {
                 try {
+                    LauncherAppState.getInstance().getLauncher().getBlurWallpaperProvider()
+                            .setWallpaperOffset(getCurrX());
                     mWallpaperManager.setWallpaperOffsets(mWindowToken, getCurrX(), 0.5f);
                     setWallpaperOffsetSteps();
                 } catch (IllegalArgumentException e) {

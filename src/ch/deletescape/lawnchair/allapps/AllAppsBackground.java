@@ -4,37 +4,55 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
+import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.blur.BlurDrawable;
 
-public class StatusBarScrimView extends View {
+public class AllAppsBackground extends View {
 
     private final Paint mScrimPaint;
     private final Path mScrimPath;
+    private final BlurDrawable mBlurDrawable;
     private float mStatusBarHeight;
     private boolean mShowingScrim;
 
-    public StatusBarScrimView(Context context) {
+    public AllAppsBackground(Context context) {
         this(context, null, 0);
     }
 
-    public StatusBarScrimView(Context context, @Nullable AttributeSet attrs) {
+    public AllAppsBackground(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public StatusBarScrimView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public AllAppsBackground(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         int scrimColor = ContextCompat.getColor(context, R.color.all_apps_statusbar_color);
 
         mScrimPaint = new Paint();
         mScrimPaint.setColor(scrimColor);
-
         mScrimPath = new Path();
+
+        mBlurDrawable = LauncherAppState.getInstance().getLauncher().getBlurWallpaperProvider().createDrawable();
+        setBackground(mBlurDrawable);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mBlurDrawable.startListening();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mBlurDrawable.stopListening();
     }
 
     public void setStatusBarHeight(float height) {
@@ -61,5 +79,10 @@ public class StatusBarScrimView extends View {
         mScrimPath.lineTo(0, mStatusBarHeight);
 
         canvas.drawPath(mScrimPath, mScrimPaint);
+    }
+
+    public void setWallpaperTranslation(float translation) {
+        setBackground(mBlurDrawable);
+        mBlurDrawable.setTranslation(translation);
     }
 }

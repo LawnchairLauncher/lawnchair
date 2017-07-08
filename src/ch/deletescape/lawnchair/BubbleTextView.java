@@ -48,6 +48,7 @@ import java.text.NumberFormat;
 import ch.deletescape.lawnchair.IconCache.IconLoadRequest;
 import ch.deletescape.lawnchair.badge.BadgeInfo;
 import ch.deletescape.lawnchair.badge.BadgeRenderer;
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.folder.FolderIcon;
@@ -151,7 +152,8 @@ public class BubbleTextView extends TextView
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
-            if (Utilities.getPrefs(getContext()).getFloat("pref_allAppsOpacitySB", 1f) < .5f) {
+            if (Utilities.getPrefs(getContext()).getFloat("pref_allAppsOpacitySB", 1f) < .5f ||
+                    BlurWallpaperProvider.isEnabled()) {
                 setTextColor(Utilities.getColor(getContext(), ExtractedColors.VIBRANT_FOREGROUND_INDEX, Color.WHITE));
             }
         } else if (display == DISPLAY_FOLDER) {
