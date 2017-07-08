@@ -16,8 +16,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.DisplayMetrics;
 
-public class MaskedIconDrawable extends Drawable {
+import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
+
+public class CustomIconDrawable extends Drawable {
 
     private final Context mContext;
     private final IconPack mIconPack;
@@ -28,12 +31,12 @@ public class MaskedIconDrawable extends Drawable {
     private Bitmap mIconMask = null;
     private float mScale = 1f;
 
-    public MaskedIconDrawable(Context context, IconPack iconPack, ComponentName name)
+    public CustomIconDrawable(Context context, IconPack iconPack, LauncherActivityInfoCompat info)
             throws PackageManager.NameNotFoundException {
         mContext = context;
         mIconPack = iconPack;
         mResources = context.getPackageManager().getResourcesForApplication(iconPack.getPackageName());
-        mOriginalIcon = context.getPackageManager().getActivityIcon(name);
+        mOriginalIcon = info.getIcon(DisplayMetrics.DENSITY_XXXHIGH);
 
         if (iconPack.getIconBack() != null) {
             mIconBack = getDrawable(iconPack.getIconBack());
@@ -59,29 +62,46 @@ public class MaskedIconDrawable extends Drawable {
     @Override
     public void draw(@NonNull Canvas canvas) {
         int width = canvas.getWidth(), height = canvas.getHeight();
+
+        // draw iconBack
         if (mIconBack != null) {
             mIconBack.setBounds(0, 0, width, height);
             mIconBack.draw(canvas);
         }
-        float scaledWidth = width * mScale, scaledHeight = height * mScale;
-        float horizontalPadding = (width - scaledWidth) / 2;
-        float verticalPadding = (height - scaledHeight) / 2;
-        mOriginalIcon.setBounds((int) horizontalPadding, (int) verticalPadding,
-                (int) (scaledWidth + horizontalPadding), (int) (scaledHeight + horizontalPadding));
-        mOriginalIcon.draw(canvas);
+
+        // mask the original icon to iconMask and then draw it
+        Drawable maskedIcon = getMaskedIcon(width, height);
+        maskedIcon.setBounds(0, 0, width, height);
+        maskedIcon.draw(canvas);
+
+        // draw iconUpon
         if (mIconUpon != null) {
             mIconUpon.setBounds(0, 0, width, height);
             mIconUpon.draw(canvas);
         }
+    }
 
-        // TODO: icon masking
-        /*
+    private Drawable getMaskedIcon(int width, int height) {
+        Bitmap bitmap =  Bitmap.createBitmap(width, height,
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas();
+        canvas.setBitmap(bitmap);
+
+        float scaledWidth = width * mScale, scaledHeight = height * mScale;
+        float horizontalPadding = (width - scaledWidth) / 2;
+        float verticalPadding = (height - scaledHeight) / 2;
+
+        mOriginalIcon.setBounds((int) horizontalPadding, (int) verticalPadding,
+                (int) (scaledWidth + horizontalPadding), (int) (scaledHeight + horizontalPadding));
+        mOriginalIcon.draw(canvas);
+
         Paint clearPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         clearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
 
         Bitmap scaledMask = Bitmap.createScaledBitmap(mIconMask, width, height, false);
         canvas.drawBitmap(scaledMask, 0, 0, clearPaint);
-        */
+
+        return new BitmapDrawable(mContext.getResources(), bitmap);
     }
 
     @Override

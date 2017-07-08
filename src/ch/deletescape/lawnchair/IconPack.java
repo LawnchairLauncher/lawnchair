@@ -43,28 +43,19 @@ public class IconPack {
         mScale = scale;
     }
 
-
     public Drawable getIcon(LauncherActivityInfoCompat info) {
-        return getIcon(info.getComponentName());
-    }
-
-    public Drawable getIcon(ActivityInfo info) {
-        return getIcon(new ComponentName(info.packageName, info.name));
-    }
-
-    public Drawable getIcon(ComponentName name) {
         mFirebaseAnalytics.logEvent("iconpack_icon_get", null);
-        String iconName = icons.get(name.toString());
+        String iconName = icons.get(info.getComponentName().toString());
         if (iconName != null)
             return getDrawable(iconName);
         else if (mIconBack != null || mIconUpon != null || mIconMask != null || mScale != 1f)
-            return getMaskedDrawable(name);
+            return getMaskedDrawable(info);
         return null;
     }
 
-    private Drawable getMaskedDrawable(ComponentName name) {
+    private Drawable getMaskedDrawable(LauncherActivityInfoCompat info) {
         try {
-            return new MaskedIconDrawable(mContext, this, name);
+            return new CustomIconDrawable(mContext, this, info);
         } catch (Exception ignored) {
             return null;
         }
