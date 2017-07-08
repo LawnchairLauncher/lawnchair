@@ -20,6 +20,7 @@
         android:key="pref_isHotseatTransparent"
         android:title="Transparent Tray"
         android:defaultValue="false"
+        android:disableDependentsState="true"
         android:persistent="true" />
 
     <SwitchPreference
@@ -32,16 +33,24 @@
         android:key="pref_enableBlur"
         android:title="Enable blur"
         android:defaultValue="false"
+        android:dependency="pref_isHotseatTransparent"
         android:persistent="true" />
 
     <ch.deletescape.lawnchair.preferences.SeekbarPreference
         android:key="pref_blurRadius"
-        android:title="All apps Blur radius"
+        android:title="Blur radius"
         android:dependency="pref_enableBlur"
         app:minValue="0"
         app:maxValue="150"
         app:defaultValue="75"
         app:summaryFormat="%.0fpx"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_enableWhiteGoogleIcon"
+        android:title="Use white Google icon"
+        android:dependency="pref_enableBlur"
+        android:defaultValue="false"
         android:persistent="true" />
 
     <SwitchPreference
