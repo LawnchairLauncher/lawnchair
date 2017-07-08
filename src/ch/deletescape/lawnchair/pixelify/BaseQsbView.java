@@ -36,6 +36,7 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     private boolean qsbHidden;
     private int mQsbViewId = 0;
     private boolean bM;
+    private boolean mUseWhiteLogo;
 
     protected abstract int getQsbView(boolean withMic);
 
@@ -46,9 +47,11 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
 
     public void applyVoiceSearchPreference(SharedPreferences prefs) {
         showMic = FeatureFlags.showVoiceSearchButton(getContext());
+        boolean useWhiteLogo = FeatureFlags.useWhiteGoogleIcon(getContext());
         int qsbView = getQsbView(showMic);
-        if (qsbView != mQsbViewId) {
+        if (qsbView != mQsbViewId || mUseWhiteLogo != useWhiteLogo) {
             mQsbViewId = qsbView;
+            mUseWhiteLogo = useWhiteLogo;
             if (mQsbView != null) {
                 removeView(mQsbView);
             }
@@ -100,7 +103,8 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String str) {
-        if (FeatureFlags.KEY_SHOW_VOICE_SEARCH_BUTTON.equals(str)) {
+        if (FeatureFlags.KEY_SHOW_VOICE_SEARCH_BUTTON.equals(str) ||
+                FeatureFlags.KEY_PREF_WHITE_GOOGLE_ICON.equals(str)) {
             applyVoiceSearchPreference(sharedPreferences);
             applyVisibility();
         }

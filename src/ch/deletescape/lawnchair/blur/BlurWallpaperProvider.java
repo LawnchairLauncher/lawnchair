@@ -98,11 +98,11 @@ public class BlurWallpaperProvider {
     }
 
     public BlurDrawable createDrawable() {
-        return new BlurDrawable(this, 0);
+        return new BlurDrawable(this, 0, false);
     }
 
-    public BlurDrawable createDrawable(float radius) {
-        return new BlurDrawable(this, radius);
+    public BlurDrawable createDrawable(float radius, boolean allowTransparencyMode) {
+        return new BlurDrawable(this, radius, allowTransparencyMode);
     }
 
     public Bitmap getWallpaper() {
@@ -126,10 +126,17 @@ public class BlurWallpaperProvider {
         }
     }
 
+    public void setUseTransparency(boolean useTransparency) {
+        for (Listener listener : mListeners) {
+            listener.setUseTransparency(useTransparency);
+        }
+    }
+
     interface Listener {
 
         void onWallpaperChanged();
         void onOffsetChanged(float offset);
+        void setUseTransparency(boolean useTransparency);
     }
 
     private static boolean sEnabled;

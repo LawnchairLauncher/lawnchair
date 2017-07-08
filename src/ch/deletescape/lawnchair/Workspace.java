@@ -1948,6 +1948,7 @@ public class Workspace extends PagedView
                 && toState.shouldUpdateWidget;
         // Update the current state
         mState = toState;
+        updateBlurMode();
         updateAccessibilityFlags();
 
         if (shouldNotifyWidgetChange) {
@@ -1959,6 +1960,10 @@ public class Workspace extends PagedView
         }
 
         return workspaceAnim;
+    }
+
+    private void updateBlurMode() {
+        mLauncher.getBlurWallpaperProvider().setUseTransparency(isInOverviewMode());
     }
 
     public State getState() {

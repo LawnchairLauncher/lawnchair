@@ -44,6 +44,7 @@ public final class FeatureFlags {
     private static final String KEY_PREF_TRANSPARENT_HOTSEAT = "pref_isHotseatTransparent";
     private static final String KEY_PREF_ENABLE_DYNAMIC_UI = "pref_enableDynamicUi";
     private static final String KEY_PREF_ENABLE_BLUR = "pref_enableBlur";
+    public static final String KEY_PREF_WHITE_GOOGLE_ICON = "pref_enableWhiteGoogleIcon";
 
     private FeatureFlags() {
     }
@@ -149,6 +150,12 @@ public final class FeatureFlags {
     public static boolean isBlurEnabled(Context context) {
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_ENABLE_BLUR, false);
         FirebaseAnalytics.getInstance(context).setUserProperty("blur_enabled", String.valueOf(enabled));
+        return enabled;
+    }
+
+    public static boolean useWhiteGoogleIcon(Context context) {
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_WHITE_GOOGLE_ICON, false);
+        FirebaseAnalytics.getInstance(context).setUserProperty("white_google_icon", String.valueOf(enabled));
         return enabled;
     }
 

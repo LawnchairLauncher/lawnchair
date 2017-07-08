@@ -2,9 +2,11 @@ package ch.deletescape.lawnchair.pixelify;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 
 import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.LauncherRootView;
@@ -49,7 +51,7 @@ public class ExperimentalQsbWidget extends BaseQsbView {
 
         mBlurEnabled = BlurWallpaperProvider.isEnabled();
         if (mBlurEnabled) {
-            mBlurDrawable = mLauncher.getBlurWallpaperProvider().createDrawable(100);
+            mBlurDrawable = mLauncher.getBlurWallpaperProvider().createDrawable(100, true);
         }
     }
 
@@ -64,6 +66,12 @@ public class ExperimentalQsbWidget extends BaseQsbView {
         if (mBlurEnabled) {
             mQsbView.setBackground(mBlurDrawable);
             mQsbView.setLayerType(LAYER_TYPE_SOFTWARE, null);
+            if (FeatureFlags.useWhiteGoogleIcon(getContext())) {
+                ((ImageView) findViewById(R.id.g_icon)).setColorFilter(Color.WHITE);
+                if (FeatureFlags.showVoiceSearchButton(getContext())) {
+                    ((ImageView) findViewById(R.id.mic_icon)).setColorFilter(Color.WHITE);
+                }
+            }
         }
     }
 
