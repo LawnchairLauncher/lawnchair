@@ -32,6 +32,9 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private static final String KEY_PREF_SHOW_NOW_TAB = "pref_showGoogleNowTab";
     private static final String KEY_PREF_TRANSPARENT_HOTSEAT = "pref_isHotseatTransparent";
     private static final String KEY_PREF_ENABLE_DYNAMIC_UI = "pref_enableDynamicUi";
+    private static final String KEY_PREF_ENABLE_BLUR = "pref_enableBlur";
+    private static final String KEY_PREF_BLUR_RADIUS = "pref_blurRadius";
+    private static final String KEY_PREF_WHITE_GOOGLE_ICON = "pref_enableWhiteGoogleIcon";
     private static Settings instance;
     private Launcher mLauncher;
 
@@ -104,7 +107,12 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                     break;
                 case KEY_PREF_KEEP_SCROLL_STATE:
                 case KEY_SHOW_VOICE_SEARCH_BUTTON:
+                case KEY_PREF_WHITE_GOOGLE_ICON:
                     // Ignoring those as we do not need to apply anything special
+                    break;
+                case KEY_PREF_ENABLE_BLUR:
+                case KEY_PREF_BLUR_RADIUS:
+                    mLauncher.scheduleUpdateWallpaper();
                     break;
                 case KEY_PREF_ICON_SCALE:
                 case KEY_PREF_ICON_TEXT_SCALE:

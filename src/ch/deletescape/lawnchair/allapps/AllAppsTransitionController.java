@@ -25,6 +25,8 @@ import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.ShortcutAndWidgetContainer;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
+import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.util.TouchController;
 
 /**
@@ -258,13 +260,16 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     private void updateLightStatusBar(float shift) {
+        boolean darkStatusBar = BlurWallpaperProvider.isEnabled() &&
+                !mLauncher.getExtractedColors().isLightStatusBar();
+
         if (Utilities.ATLEAST_MARSHMALLOW) {
             // Use a light status bar (dark icons) if all apps is behind at least half of the status
             // bar. If the status bar is already light due to wallpaper extraction, keep it that way.
-            boolean forceLight = shift <= mStatusBarHeight / 2;
+            boolean forceLight = !darkStatusBar && shift <= mStatusBarHeight / 2;
             mLauncher.activateLightStatusBar(forceLight);
         } else {
-            mAppsView.setStatusBarHeight(Math.max(mStatusBarHeight - shift, 0));
+            mAppsView.setStatusBarHeight(darkStatusBar ? 0 : Math.max(mStatusBarHeight - shift, 0));
         }
     }
 
@@ -279,10 +284,14 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         float alpha = 1f - progress;
         float interpolation = mAccelInterpolator.getInterpolation(progress);
 
-        int allAppsBg = ColorUtils.setAlphaComponent(mAllAppsBackgroundColor, allAppsAlpha);
-        int color = (int) mEvaluator.evaluate(mDecelInterpolator.getInterpolation(alpha), mHotseatBackgroundColor, allAppsBg);
-
-        mAppsView.setRevealDrawableColor(color);
+        if (BlurWallpaperProvider.isEnabled()) {
+            mAppsView.setWallpaperTranslation(shiftCurrent);
+            mHotseat.setWallpaperTranslation(shiftCurrent);
+        } else {
+            int allAppsBg = ColorUtils.setAlphaComponent(mAllAppsBackgroundColor, allAppsAlpha);
+            int color = (int) mEvaluator.evaluate(mDecelInterpolator.getInterpolation(alpha), mHotseatBackgroundColor, allAppsBg);
+            mAppsView.setRevealDrawableColor(color);
+        }
         mAppsView.getContentView().setAlpha(alpha);
         mAppsView.setTranslationY(shiftCurrent);
         mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y, -mShiftRange + shiftCurrent,

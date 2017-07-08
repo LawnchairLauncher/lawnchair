@@ -108,7 +108,7 @@ public abstract class BaseContainerView extends FrameLayout
         return mRevealView;
     }
 
-    private void updatePaddings() {
+    protected void updatePaddings() {
         Context context = getContext();
         Launcher launcher = Launcher.getLauncher(context);
 

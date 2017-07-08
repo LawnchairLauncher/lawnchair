@@ -103,6 +103,8 @@ public class DropTargetBar extends LinearLayout implements DragController.DragLi
         if (mVisible != isVisible) {
             mVisible = isVisible;
 
+            LauncherAppState.getInstance().getLauncher().getBlurWallpaperProvider().setUseTransparency(isVisible);
+
             // Cancel any existing animation
             if (mCurrentAnimation != null) {
                 mCurrentAnimation.cancel();

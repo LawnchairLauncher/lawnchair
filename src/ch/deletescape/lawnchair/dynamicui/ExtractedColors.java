@@ -213,4 +213,8 @@ public class ExtractedColors {
         setColorAtIndex(STATUS_BAR_INDEX, ExtractionUtils.isSuperLight(statusBarPalette) ?
                 DEFAULT_LIGHT : DEFAULT_DARK);
     }
+
+    public boolean isLightStatusBar() {
+        return getColor(STATUS_BAR_INDEX, DEFAULT_LIGHT) == DEFAULT_LIGHT;
+    }
 }

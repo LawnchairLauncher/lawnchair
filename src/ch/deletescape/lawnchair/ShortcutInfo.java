@@ -159,6 +159,8 @@ public class ShortcutInfo extends ItemInfoWithIcon {
      */
     Intent promisedIntent;
 
+    private Bitmap mUnbadgedIcon;
+
     public ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
@@ -239,6 +241,13 @@ public class ShortcutInfo extends ItemInfoWithIcon {
             updateIcon(iconCache);
         }
         return mIcon;
+    }
+
+    public Bitmap getUnbadgedIcon(IconCache iconCache) {
+        if (mUnbadgedIcon == null) {
+            return getIcon(iconCache);
+        }
+        return mUnbadgedIcon;
     }
 
     public void updateIcon(IconCache iconCache, boolean useLowRes) {
@@ -330,6 +339,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         Bitmap unbadgedBitmap = unbadgedDrawable == null
                 ? cache.getDefaultIcon(Utilities.myUserHandle())
                 : Utilities.createScaledBitmapWithoutShadow(unbadgedDrawable, context);
+        mUnbadgedIcon = unbadgedBitmap;
         setIcon(getBadgedIcon(unbadgedBitmap, shortcutInfo, cache, context));
     }
 

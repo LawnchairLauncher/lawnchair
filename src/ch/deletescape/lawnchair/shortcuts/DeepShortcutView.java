@@ -71,7 +71,7 @@ public class DeepShortcutView extends FrameLayout {
         Object obj = null;
         this.mInfo = shortcutInfo;
         this.mDetail = shortcutInfoCompat;
-        this.mBubbleText.applyFromShortcutInfo(shortcutInfo);
+        this.mBubbleText.applyFromShortcutInfo(shortcutInfo, false, false);
         this.mIconView.setBackground(this.mBubbleText.getIcon());
         CharSequence longLabel = this.mDetail.getLongLabel();
         int width = (this.mBubbleText.getWidth() - this.mBubbleText.getTotalPaddingLeft()) - this.mBubbleText.getTotalPaddingRight();

@@ -78,6 +78,7 @@ import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.graphics.DragPreviewProvider;
+import ch.deletescape.lawnchair.pixelify.ExperimentalQsbWidget;
 import ch.deletescape.lawnchair.popup.PopupContainerWithArrow;
 import ch.deletescape.lawnchair.shortcuts.ShortcutDragPreviewProvider;
 import ch.deletescape.lawnchair.util.ItemInfoMatcher;
@@ -117,6 +118,7 @@ public class Workspace extends PagedView
     public static final long FIRST_SCREEN_ID = 0;
 
     private static final int DEFAULT_PAGE = 0;
+    private final boolean mBlurQsb;
 
     private LayoutTransition mLayoutTransition;
     @Thunk
@@ -181,6 +183,9 @@ public class Workspace extends PagedView
 
     private SpringLoadedDragController mSpringLoadedDragController;
     private float mOverviewModeShrinkFactor;
+    private View mQsbView;
+    private ExperimentalQsbWidget mSearchBar;
+    private int mLastScrollX;
 
     // State variable that indicates whether the pages are small (ie when you're
     // in all apps or customize mode)
@@ -358,6 +363,8 @@ public class Workspace extends PagedView
         mWallpaperOffset = new WallpaperOffsetInterpolator(this);
         mOverviewModeShrinkFactor =
                 res.getInteger(R.integer.config_workspaceOverviewShrinkPercentage) / 100f;
+
+        mBlurQsb = FeatureFlags.isBlurEnabled(context) && FeatureFlags.useFullWidthSearchbar(context);
 
         setOnHierarchyChangeListener(this);
         setHapticFeedbackEnabled(false);
@@ -582,6 +589,7 @@ public class Workspace extends PagedView
             qsb = mLauncher.getLayoutInflater().inflate(R.layout.qsb_blocker_view,
                     firstPage, false);
         }
+        mQsbView = qsb;
 
         CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, firstPage.getCountX(), 1);
         lp.canReorder = false;
@@ -1315,6 +1323,8 @@ public class Workspace extends PagedView
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
         onWorkspaceOverallScrollChanged();
+        mLastScrollX = l;
+        translateBlurX((int) (l - mOverlayTranslation));
 
         // Update the page indicator progress.
         boolean isTransitioning = mIsSwitchingState
@@ -1322,6 +1332,30 @@ public class Workspace extends PagedView
         if (!isTransitioning) {
             showPageIndicatorAtCurrentScroll();
         }
+    }
+
+    private void translateBlurX(int translationX) {
+        if (!mBlurQsb) return;
+
+        ExperimentalQsbWidget searchBar = getSearchBar();
+        if (searchBar != null)
+            searchBar.translateBlurX(translationX);
+    }
+
+    private void translateBlurY(int translationY) {
+        if (!mBlurQsb) return;
+
+        ExperimentalQsbWidget searchBar = getSearchBar();
+        if (searchBar != null)
+            searchBar.translateBlurY(translationY);
+    }
+
+    private ExperimentalQsbWidget getSearchBar() {
+        if (mSearchBar == null) {
+            if (mQsbView == null) return null;
+            mSearchBar = (ExperimentalQsbWidget) ((ViewGroup) mQsbView).getChildAt(0);
+        }
+        return mSearchBar;
     }
 
     private void showPageIndicatorAtCurrentScroll() {
@@ -1380,6 +1414,7 @@ public class Workspace extends PagedView
         // TODO(adamcohen): figure out a final effect here. We may need to recommend
         // different effects based on device performance. On at least one relatively high-end
         // device I've tried, translating the launcher causes things to get quite laggy.
+        translateBlurX((int) -transX + mLastScrollX);
         setWorkspaceTranslationAndAlpha(Direction.X, transX, alpha);
         setHotseatTranslationAndAlpha(Direction.X, transX, alpha);
         onWorkspaceOverallScrollChanged();
@@ -1394,6 +1429,7 @@ public class Workspace extends PagedView
      * @param alpha       the alpha for the workspace page
      */
     public void setWorkspaceYTranslationAndAlpha(float translation, float alpha) {
+        translateBlurY((int) -translation);
         setWorkspaceTranslationAndAlpha(Direction.Y, translation, alpha);
 
         mLauncher.getQsbContainer().setTranslationY(translation);
@@ -1912,6 +1948,7 @@ public class Workspace extends PagedView
                 && toState.shouldUpdateWidget;
         // Update the current state
         mState = toState;
+        updateBlurMode();
         updateAccessibilityFlags();
 
         if (shouldNotifyWidgetChange) {
@@ -1923,6 +1960,10 @@ public class Workspace extends PagedView
         }
 
         return workspaceAnim;
+    }
+
+    private void updateBlurMode() {
+        mLauncher.getBlurWallpaperProvider().setUseTransparency(isInOverviewMode());
     }
 
     public State getState() {

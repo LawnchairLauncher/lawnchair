@@ -21,14 +21,19 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewDebug;
 import android.widget.FrameLayout;
 
+import ch.deletescape.lawnchair.blur.BlurDrawable;
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 
 public class Hotseat extends FrameLayout {
@@ -40,8 +45,9 @@ public class Hotseat extends FrameLayout {
     @ViewDebug.ExportedProperty(category = "launcher")
     private int mBackgroundColor;
     @ViewDebug.ExportedProperty(category = "launcher")
-    private ColorDrawable mBackground;
+    private Drawable mBackground;
     private ValueAnimator mBackgroundColorAnimator;
+    private final Rect mBoundsRect = new Rect();
 
     public Hotseat(Context context) {
         this(context, null);
@@ -56,7 +62,8 @@ public class Hotseat extends FrameLayout {
         mLauncher = Launcher.getLauncher(context);
         mBackgroundColor = ColorUtils.setAlphaComponent(
                 ContextCompat.getColor(context, R.color.all_apps_container_color), 0);
-        mBackground = new ColorDrawable(mBackgroundColor);
+        mBackground = BlurWallpaperProvider.isEnabled() ?
+                mLauncher.getBlurWallpaperProvider().createDrawable(): new ColorDrawable(mBackgroundColor);
         setBackground(mBackground);
     }
 
@@ -114,6 +121,7 @@ public class Hotseat extends FrameLayout {
     }
 
     public void updateColor(ExtractedColors extractedColors, boolean animate) {
+        if (!(mBackground instanceof ColorDrawable)) return;
         int color = extractedColors.getHotseatColor(getContext());
         if (mBackgroundColorAnimator != null) {
             mBackgroundColorAnimator.cancel();
@@ -126,7 +134,7 @@ public class Hotseat extends FrameLayout {
             mBackgroundColorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    mBackground.setColor((Integer) animation.getAnimatedValue());
+                    ((ColorDrawable) mBackground).setColor((Integer) animation.getAnimatedValue());
                 }
             });
             mBackgroundColorAnimator.addListener(new AnimatorListenerAdapter() {
@@ -150,5 +158,47 @@ public class Hotseat extends FrameLayout {
 
     public int getBackgroundDrawableColor() {
         return mBackgroundColor;
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        mBoundsRect.set(0, 0, right - left, bottom - top);
+        setClipBounds(mBoundsRect);
+        if (mBackground instanceof BlurDrawable) {
+            ((BlurDrawable) mBackground).setTranslation(top);
+        }
+    }
+
+    public void setWallpaperTranslation(float translation) {
+        ((BlurDrawable) mBackground).setTranslation(translation);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (mBackground instanceof BlurDrawable) {
+            ((BlurDrawable) mBackground).startListening();
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mBackground instanceof BlurDrawable) {
+            ((BlurDrawable) mBackground).stopListening();
+        }
+    }
+
+    public void setOverscroll(float progress) {
+        if (mBackground instanceof BlurDrawable) {
+            ((BlurDrawable) mBackground).setOverscroll(progress);
+        }
+    }
+
+    @Override
+    public void setTranslationX(float translationX) {
+        super.setTranslationX(translationX);
+        LauncherAppState.getInstance().getLauncher().mHotseat.setOverscroll(translationX);
     }
 }

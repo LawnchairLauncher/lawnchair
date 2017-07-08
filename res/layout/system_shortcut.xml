@@ -14,8 +14,9 @@
         android:paddingEnd="@dimen/popup_padding_end"
         android:paddingStart="@dimen/deep_shortcuts_text_padding_start"
         android:textAlignment="viewStart"
-        android:textColor="?android:textColorPrimary"
+        android:textColor="?android:textColorSecondary"
         android:textSize="14.0sp"
+        launcher:disableShadows="true"
         launcher:iconDisplay="deep_shortcut"
         launcher:layoutHorizontal="true" />
 

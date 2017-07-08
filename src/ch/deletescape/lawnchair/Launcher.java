@@ -94,6 +94,7 @@ import ch.deletescape.lawnchair.accessibility.LauncherAccessibilityDelegate;
 import ch.deletescape.lawnchair.allapps.AllAppsContainerView;
 import ch.deletescape.lawnchair.allapps.AllAppsTransitionController;
 import ch.deletescape.lawnchair.allapps.DefaultAppSearchController;
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
@@ -273,6 +274,7 @@ public class Launcher extends Activity
 
     private boolean kill;
     private boolean reloadIcons;
+    private boolean updateWallpaper;
 
     /**
      * Maps launcher activity components to their list of shortcut ids.
@@ -343,6 +345,8 @@ public class Launcher extends Activity
 
     public ViewGroupFocusHelper mFocusHandler;
 
+    private BlurWallpaperProvider mBlurWallpaperProvider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -361,6 +365,7 @@ public class Launcher extends Activity
         mAccessibilityDelegate = new LauncherAccessibilityDelegate(this);
 
         mDragController = new DragController(this);
+        mBlurWallpaperProvider = new BlurWallpaperProvider(this);
         mAllAppsController = new AllAppsTransitionController(this);
         mStateTransitionAnimation = new LauncherStateTransitionAnimation(this, mAllAppsController);
 
@@ -418,7 +423,14 @@ public class Launcher extends Activity
     }
 
     public void scheduleKill() {
-        kill = true;
+        if (mPaused)
+            kill = true;
+        else
+            android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
+    public void scheduleUpdateWallpaper() {
+        updateWallpaper = true;
     }
 
     public void scheduleReloadIcons() {
@@ -849,6 +861,11 @@ public class Launcher extends Activity
             kill = false;
             Log.v("Settings", "Die Motherf*cker!");
             android.os.Process.killProcess(android.os.Process.myPid());
+        }
+
+        if (updateWallpaper) {
+            updateWallpaper = false;
+            mBlurWallpaperProvider.updateWallpaper();
         }
     }
 
@@ -3843,6 +3860,10 @@ public class Launcher extends Activity
 
     public boolean isClientConnected() {
         return mLauncherTab.getClient().isConnected();
+    }
+
+    public BlurWallpaperProvider getBlurWallpaperProvider() {
+        return mBlurWallpaperProvider;
     }
 
     public interface LauncherOverlay {
