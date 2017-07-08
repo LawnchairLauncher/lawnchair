@@ -48,7 +48,7 @@ public class IconPack {
         String iconName = icons.get(info.getComponentName().toString());
         if (iconName != null)
             return getDrawable(iconName);
-        else if (mIconBack != null || mIconUpon != null || mIconMask != null || mScale != 1f)
+        else if (mIconBack != null || mIconUpon != null || mIconMask != null)
             return getMaskedDrawable(info);
         return null;
     }

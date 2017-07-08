@@ -95,11 +95,13 @@ public class CustomIconDrawable extends Drawable {
                 (int) (scaledWidth + horizontalPadding), (int) (scaledHeight + horizontalPadding));
         mOriginalIcon.draw(canvas);
 
-        Paint clearPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        clearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+        if (mIconMask != null) {
+            Paint clearPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            clearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
 
-        Bitmap scaledMask = Bitmap.createScaledBitmap(mIconMask, width, height, false);
-        canvas.drawBitmap(scaledMask, 0, 0, clearPaint);
+            Bitmap scaledMask = Bitmap.createScaledBitmap(mIconMask, width, height, false);
+            canvas.drawBitmap(scaledMask, 0, 0, clearPaint);
+        }
 
         return new BitmapDrawable(mContext.getResources(), bitmap);
     }
