@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.BitmapDrawable;
 
 import java.util.ArrayList;
@@ -79,6 +81,7 @@ public class BlurWallpaperProvider {
         mPath.lineTo(0, height);
         mPath.lineTo(width, height);
         mPath.lineTo(width, 0);
+        mColorPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.LIGHTEN));
         mColorPaint.setColor(color);
         canvas.drawPath(mPath, mColorPaint);
 
@@ -95,7 +98,11 @@ public class BlurWallpaperProvider {
     }
 
     public BlurDrawable createDrawable() {
-        return new BlurDrawable(this);
+        return new BlurDrawable(this, 0);
+    }
+
+    public BlurDrawable createDrawable(float radius) {
+        return new BlurDrawable(this, radius);
     }
 
     public Bitmap getWallpaper() {
@@ -104,6 +111,7 @@ public class BlurWallpaperProvider {
 
     public void setWallpaperOffset(float offset) {
         if (!isEnabled()) return;
+        if (mWallpaper == null) return;
 
         final int availw = mContext.getResources().getDisplayMetrics().widthPixels - mWallpaper.getWidth();
         int xPixels = availw / 2;

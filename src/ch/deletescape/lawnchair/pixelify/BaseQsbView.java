@@ -65,7 +65,12 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
             if (showMic) {
                 mQsbView.findViewById(R.id.mic_icon).setOnClickListener(this);
             }
+            setupViews();
         }
+    }
+
+    protected void setupViews() {
+
     }
 
     @Override
