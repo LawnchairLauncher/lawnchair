@@ -103,6 +103,7 @@ public class BubbleTextView extends TextView
 
     private final boolean mDeferShadowGenerationOnTouch;
     private final boolean mCustomShadowsEnabled;
+    private final boolean mShadowsDisabled;
     private final boolean mLayoutHorizontal;
     private final int mIconSize;
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -135,6 +136,7 @@ public class BubbleTextView extends TextView
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BubbleTextView, defStyle, 0);
         mCustomShadowsEnabled = a.getBoolean(R.styleable.BubbleTextView_customShadows, true);
+        mShadowsDisabled = a.getBoolean(R.styleable.BubbleTextView_disableShadows, false);
         mLayoutHorizontal = a.getBoolean(R.styleable.BubbleTextView_layoutHorizontal, false);
         mDeferShadowGenerationOnTouch =
                 a.getBoolean(R.styleable.BubbleTextView_deferShadowGeneration, false);
@@ -435,7 +437,10 @@ public class BubbleTextView extends TextView
 
     @Override
     public void draw(Canvas canvas) {
-        if (!mCustomShadowsEnabled || this instanceof DeepShortcutTextView) {
+        if (!mCustomShadowsEnabled || mShadowsDisabled) {
+            if (mShadowsDisabled) {
+                getPaint().clearShadowLayer();
+            }
             super.draw(canvas);
             drawBadgeIfNecessary(canvas);
             return;
