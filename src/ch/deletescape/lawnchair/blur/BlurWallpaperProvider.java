@@ -3,6 +3,9 @@ package ch.deletescape.lawnchair.blur;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.drawable.BitmapDrawable;
 
 import java.util.ArrayList;
@@ -29,6 +32,11 @@ public class BlurWallpaperProvider {
         }
     };
 
+    private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
+    private final Paint mColorPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+    private final Path mPath = new Path();
+
     public BlurWallpaperProvider(Context context) {
         mContext = context;
 
@@ -51,8 +59,30 @@ public class BlurWallpaperProvider {
 
         mWallpaper = null;
         launcher.runOnUiThread(mNotifyRunnable);
-        mWallpaper = blur(((BitmapDrawable) mWallpaperManager.getDrawable()).getBitmap());
+        Bitmap wallpaper = ((BitmapDrawable) mWallpaperManager.getDrawable()).getBitmap();
+        if (FeatureFlags.isVibrancyEnabled(mContext)) {
+            wallpaper = applyVibrancy(wallpaper, 0x45FFFFFF);
+        }
+        mWallpaper = blur(wallpaper);
         launcher.runOnUiThread(mNotifyRunnable);
+    }
+
+    private Bitmap applyVibrancy(Bitmap wallpaper, int color) {
+        int width = wallpaper.getWidth(), height = wallpaper.getHeight();
+
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas();
+        canvas.setBitmap(bitmap);
+        canvas.drawBitmap(wallpaper, 0, 0, mPaint);
+
+        mPath.moveTo(0, 0);
+        mPath.lineTo(0, height);
+        mPath.lineTo(width, height);
+        mPath.lineTo(width, 0);
+        mColorPaint.setColor(color);
+        canvas.drawPath(mPath, mColorPaint);
+
+        return bitmap;
     }
 
     public void addListener(Listener listener) {

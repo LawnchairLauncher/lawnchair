@@ -151,4 +151,8 @@ public final class FeatureFlags {
         FirebaseAnalytics.getInstance(context).setUserProperty("blur_enabled", String.valueOf(enabled));
         return enabled;
     }
+
+    public static boolean isVibrancyEnabled(Context context) {
+        return true;
+    }
 }
