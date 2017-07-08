@@ -864,6 +864,7 @@ public class Launcher extends Activity
         }
 
         if (updateWallpaper) {
+            updateWallpaper = false;
             mBlurWallpaperProvider.updateWallpaper();
         }
     }
