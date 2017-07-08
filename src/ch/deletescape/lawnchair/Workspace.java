@@ -185,6 +185,7 @@ public class Workspace extends PagedView
     private float mOverviewModeShrinkFactor;
     private View mQsbView;
     private ExperimentalQsbWidget mSearchBar;
+    private int mLastScrollX;
 
     // State variable that indicates whether the pages are small (ie when you're
     // in all apps or customize mode)
@@ -1322,7 +1323,8 @@ public class Workspace extends PagedView
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
         onWorkspaceOverallScrollChanged();
-        translateBlurX(l);
+        mLastScrollX = l;
+        translateBlurX((int) (l - mOverlayTranslation));
 
         // Update the page indicator progress.
         boolean isTransitioning = mIsSwitchingState
@@ -1412,7 +1414,7 @@ public class Workspace extends PagedView
         // TODO(adamcohen): figure out a final effect here. We may need to recommend
         // different effects based on device performance. On at least one relatively high-end
         // device I've tried, translating the launcher causes things to get quite laggy.
-        translateBlurX((int) -transX);
+        translateBlurX((int) -transX + mLastScrollX);
         setWorkspaceTranslationAndAlpha(Direction.X, transX, alpha);
         setHotseatTranslationAndAlpha(Direction.X, transX, alpha);
         onWorkspaceOverallScrollChanged();
