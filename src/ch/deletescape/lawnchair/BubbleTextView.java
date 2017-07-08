@@ -209,11 +209,17 @@ public class BubbleTextView extends TextView
 
 
     public void applyFromShortcutInfo(ShortcutInfo shortcutInfo) {
-        applyFromShortcutInfo(shortcutInfo, false);
+        applyFromShortcutInfo(shortcutInfo, false, true);
     }
 
     public void applyFromShortcutInfo(ShortcutInfo shortcutInfo, boolean z) {
-        Bitmap iconBitmap = shortcutInfo.getIcon(mLauncher.getIconCache());
+        applyFromShortcutInfo(shortcutInfo, z, true);
+    }
+
+    public void applyFromShortcutInfo(ShortcutInfo shortcutInfo, boolean z, boolean badged) {
+        Bitmap iconBitmap = badged ?
+                shortcutInfo.getIcon(mLauncher.getIconCache()) :
+                shortcutInfo.getUnbadgedIcon(mLauncher.getIconCache());
         if (iconBitmap == null) {
             iconBitmap = mLauncher.getIconCache().getDefaultIcon(Utilities.myUserHandle());
         }
