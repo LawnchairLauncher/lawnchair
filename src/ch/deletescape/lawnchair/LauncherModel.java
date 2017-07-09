@@ -63,6 +63,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
@@ -1332,6 +1333,7 @@ public class LauncherModel extends BroadcastReceiver
             } else {
                 ExtractionUtils.startColorExtractionService(context);
             }
+            BlurWallpaperProvider.getInstance().updateAsync();
         }
     }
 

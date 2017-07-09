@@ -274,7 +274,7 @@ public class Launcher extends Activity
 
     private boolean kill;
     private boolean reloadIcons;
-    private boolean updateWallpaper;
+    private boolean updateWallpaper = true;
 
     /**
      * Maps launcher activity components to their list of shortcut ids.
@@ -865,7 +865,7 @@ public class Launcher extends Activity
 
         if (updateWallpaper) {
             updateWallpaper = false;
-            mBlurWallpaperProvider.updateWallpaper();
+            mBlurWallpaperProvider.updateAsync();
         }
     }
 

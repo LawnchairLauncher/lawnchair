@@ -15,7 +15,6 @@ import android.support.annotation.Nullable;
 public class BlurDrawable extends Drawable implements BlurWallpaperProvider.Listener {
 
     private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
-    private final Paint mTransparentPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
     private final Paint mClipPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final RectF mRect = new RectF();
 
@@ -25,38 +24,39 @@ public class BlurDrawable extends Drawable implements BlurWallpaperProvider.List
     private float mTranslation;
     private float mOffset;
     private Bitmap mWallpaper;
+    private Bitmap mPlaceholder;
     private boolean mShouldDraw = true;
     private float mOverscroll;
     private boolean mUseTransparency;
 
-    public BlurDrawable(BlurWallpaperProvider provider, float radius, boolean allowTransparencyMode) {
+    BlurDrawable(BlurWallpaperProvider provider, float radius, boolean allowTransparencyMode) {
         mProvider = provider;
         mRadius = radius;
         mAllowTransparencyMode = allowTransparencyMode;
 
         if (radius > 0) {
             mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-            mTransparentPaint.setColor(0x45FFFFFF);
-            mTransparentPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         }
-
-        onWallpaperChanged();
     }
 
     @Override
     public void draw(@NonNull Canvas canvas) {
-        if (!mShouldDraw || mWallpaper == null) return;
+        Bitmap toDraw = getBitmap();
+        if (!mShouldDraw || toDraw == null) return;
 
         mRect.set(0, 0, canvas.getWidth(), canvas.getHeight());
         if (mRadius > 0) {
             canvas.drawRoundRect(mRect, mRadius, mRadius, mClipPaint);
         }
 
-        if (mUseTransparency) {
-            canvas.drawRect(mRect, mTransparentPaint);
-        } else {
-            canvas.drawBitmap(mWallpaper, - mOffset - mOverscroll, -mTranslation, mPaint);
-        }
+        canvas.drawBitmap(toDraw, - mOffset - mOverscroll, -mTranslation, mPaint);
+    }
+
+    public Bitmap getBitmap() {
+        if (mWallpaper == null || (mUseTransparency && mAllowTransparencyMode))
+            return mPlaceholder;
+        else
+            return mWallpaper;
     }
 
     @Override
@@ -83,8 +83,9 @@ public class BlurDrawable extends Drawable implements BlurWallpaperProvider.List
     }
 
     @Override
-    public void onWallpaperChanged() {
-        mWallpaper = mProvider.getWallpaper();
+    public void onWallpaperChanged(Bitmap wallpaper, Bitmap placeholder) {
+        mWallpaper = wallpaper;
+        mPlaceholder = placeholder;
         if (!mUseTransparency)
             invalidateSelf();
     }

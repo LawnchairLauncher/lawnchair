@@ -63,7 +63,6 @@ public class ExtractionUtils {
      */
     public static void startColorExtractionService(Context context) {
         context.startService(new Intent(context, ColorExtractionService.class));
-        LauncherAppState.getInstance().getLauncher().getBlurWallpaperProvider().updateWallpaper();
         FirebaseAnalytics.getInstance(context).logEvent("start_colorextractionservice", null);
     }
 

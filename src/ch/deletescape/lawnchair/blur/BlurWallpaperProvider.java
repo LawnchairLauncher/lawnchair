@@ -23,13 +23,14 @@ public class BlurWallpaperProvider {
     private final WallpaperManager mWallpaperManager;
     private final List<Listener> mListeners = new ArrayList<>();
     private Bitmap mWallpaper;
+    private Bitmap mPlaceholder;
     private float mOffset;
     private int mBlurRadius = 75;
     private Runnable mNotifyRunnable = new Runnable() {
         @Override
         public void run() {
             for (Listener listener : mListeners) {
-                listener.onWallpaperChanged();
+                listener.onWallpaperChanged(mWallpaper, mPlaceholder);
             }
         }
     };
@@ -38,6 +39,13 @@ public class BlurWallpaperProvider {
     private final Paint mColorPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private final Path mPath = new Path();
+
+    private final Runnable mUpdateRunnable = new Runnable() {
+        @Override
+        public void run() {
+            updateWallpaper();
+        }
+    };
 
     public BlurWallpaperProvider(Context context) {
         mContext = context;
@@ -59,14 +67,39 @@ public class BlurWallpaperProvider {
 
         mBlurRadius = (int) Utilities.getPrefs(mContext).getFloat("pref_blurRadius", 75f);
 
-        mWallpaper = null;
-        launcher.runOnUiThread(mNotifyRunnable);
         Bitmap wallpaper = ((BitmapDrawable) mWallpaperManager.getDrawable()).getBitmap();
+        mWallpaper = null;
+        mPlaceholder = createPlaceholder(wallpaper.getWidth(), wallpaper.getHeight());
+        launcher.runOnUiThread(mNotifyRunnable);
         if (FeatureFlags.isVibrancyEnabled(mContext)) {
-            wallpaper = applyVibrancy(wallpaper, 0x45FFFFFF);
+            wallpaper = applyVibrancy(wallpaper, getTintColor());
         }
         mWallpaper = blur(wallpaper);
         launcher.runOnUiThread(mNotifyRunnable);
+    }
+
+    private Bitmap createPlaceholder(int width, int height) {
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas();
+        canvas.setBitmap(bitmap);
+
+        mPath.moveTo(0, 0);
+        mPath.lineTo(0, height);
+        mPath.lineTo(width, height);
+        mPath.lineTo(width, 0);
+        mColorPaint.setXfermode(null);
+        mColorPaint.setColor(getTintColor());
+        canvas.drawPath(mPath, mColorPaint);
+
+        return bitmap;
+    }
+
+    private int getTintColor() {
+        return 0x45FFFFFF;
+    }
+
+    public void updateAsync() {
+        Utilities.THREAD_POOL_EXECUTOR.execute(mUpdateRunnable);
     }
 
     private Bitmap applyVibrancy(Bitmap wallpaper, int color) {
@@ -105,10 +138,6 @@ public class BlurWallpaperProvider {
         return new BlurDrawable(this, radius, allowTransparencyMode);
     }
 
-    public Bitmap getWallpaper() {
-        return mWallpaper;
-    }
-
     public void setWallpaperOffset(float offset) {
         if (!isEnabled()) return;
         if (mWallpaper == null) return;
@@ -134,7 +163,7 @@ public class BlurWallpaperProvider {
 
     interface Listener {
 
-        void onWallpaperChanged();
+        void onWallpaperChanged(Bitmap wallpaper, Bitmap placeholder);
         void onOffsetChanged(float offset);
         void setUseTransparency(boolean useTransparency);
     }
@@ -143,6 +172,10 @@ public class BlurWallpaperProvider {
 
     public static boolean isEnabled() {
         return sEnabled;
+    }
+
+    public static BlurWallpaperProvider getInstance() {
+        return LauncherAppState.getInstance().getLauncher().getBlurWallpaperProvider();
     }
 
     public Bitmap blur(Bitmap image) {
