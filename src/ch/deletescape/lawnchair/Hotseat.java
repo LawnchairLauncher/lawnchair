@@ -61,7 +61,7 @@ public class Hotseat extends FrameLayout {
         super(context, attrs, defStyle);
         mLauncher = Launcher.getLauncher(context);
         mBackgroundColor = ColorUtils.setAlphaComponent(
-                ContextCompat.getColor(context, R.color.all_apps_container_color), 0);
+                Utilities.resolveAttributeData(context, R.attr.allAppsContainerColor), 0);
         mBackground = BlurWallpaperProvider.isEnabled() ?
                 mLauncher.getBlurWallpaperProvider().createDrawable(): new ColorDrawable(mBackgroundColor);
         setBackground(mBackground);

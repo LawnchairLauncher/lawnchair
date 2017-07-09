@@ -120,14 +120,12 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case KEY_FULL_WIDTH_SEARCHBAR:
                 case KEY_PREF_FULL_WIDTH_WIDGETS:
                 case KEY_PREF_ENABLE_DYNAMIC_UI:
+                case KEY_PREF_DARK_THEME:
                     mLauncher.scheduleKill();
                     break;
                 case KEY_PREF_ICON_PACK_PACKAGE:
                 case KEY_PREF_PIXEL_STYLE_ICONS:
                     mLauncher.scheduleReloadIcons();
-                    break;
-                case KEY_PREF_DARK_THEME:
-                    mLauncher.scheduleRecreate();
                     break;
                 case KEY_PREF_HIDE_APP_LABELS:
                     las.reloadWorkspace();
