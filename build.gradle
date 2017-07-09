@@ -4,15 +4,11 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
-        //classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
-        //classpath 'com.google.gms:google-services:3.1.0'
-        //classpath 'com.google.firebase:firebase-plugins:1.1.0'
+        classpath 'com.android.tools.build:gradle:3.0.0-alpha4'
     }
 }
 
 apply plugin: 'com.android.application'
-//apply plugin: 'com.google.firebase.firebase-perf'
 
 android {
     compileSdkVersion 25
@@ -30,6 +26,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 25
+        applicationId 'ch.deletescape.lawnchair'
+        buildConfigField "String", "MOBILE_CENTER_KEY", "\"" + System.getenv("MOBILE_CENTER_KEY") + "\""
         if (System.getenv("TRAVIS") == "true") {
             versionCode = Integer.valueOf(System.getenv("TRAVIS_BUILD_NUMBER"))
             versionName = "Travis-" + System.getenv("TRAVIS_BUILD_NUMBER")
@@ -40,12 +38,12 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         debug {
             if (System.getenv("TRAVIS") == "true") {
                 minifyEnabled true
-                proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                        'proguard.flags'
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.flags'
                 if (System.getenv("TRAVIS_EVENT_TYPE") != "pull_request") {
                     signingConfig signingConfigs.travis
                 }
@@ -55,19 +53,14 @@ android {
         }
     }
 
-    productFlavors {
-        aosp {
-            applicationId 'ch.deletescape.lawnchair'
-            testApplicationId 'ch.deletescape.lawnchair.tests'
-        }
-    }
     sourceSets {
         main {
             res.srcDirs = ['res']
             java.srcDirs = ['src', 'src_config']
-            manifest.srcFile 'AndroidManifest-common.xml'
+            manifest.srcFile "AndroidManifest.xml" //'AndroidManifest-common.xml'
         }
 
+        /*
         androidTest {
             java.srcDirs = ['tests/src']
             manifest.srcFile "tests/AndroidManifest.xml"
@@ -75,7 +68,7 @@ android {
 
         aosp {
             manifest.srcFile "AndroidManifest.xml"
-        }
+        }*/
     }
     lintOptions {
         abortOnError false
@@ -84,19 +77,16 @@ android {
 
 repositories {
     mavenCentral()
+    google()
+    jcenter()
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.android.support:recyclerview-v7:25.3.1'
-    compile 'com.android.support:palette-v7:25.3.1'
-    //compile 'com.google.firebase:firebase-core:10.2.6'
-    //compile 'com.google.firebase:firebase-crash:10.2.6'
-    //compile 'com.google.firebase:firebase-perf:10.2.6'
-
-    //testCompile 'junit:junit:4.12'
-    //androidTestCompile 'com.android.support.test:runner:0.5'
-    //androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
-    //androidTestCompile 'com.android.support:support-annotations:25.3.1'
+    def mobileCenterSdkVersion = '0.10.0'
+    def supportLibVersion = '25.4.0'
+    compile "com.microsoft.azure.mobile:mobile-center-analytics:${mobileCenterSdkVersion}"
+    compile "com.microsoft.azure.mobile:mobile-center-crashes:${mobileCenterSdkVersion}"
+    compile "com.android.support:support-v4:${supportLibVersion}"
+    compile "com.android.support:recyclerview-v7:${supportLibVersion}"
+    compile "com.android.support:palette-v7:${supportLibVersion}"
 }
-//apply plugin: 'com.google.gms.google-services'
