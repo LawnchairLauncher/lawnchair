@@ -6,10 +6,12 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -261,7 +263,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private void updateLightStatusBar(float shift) {
         boolean darkStatusBar = BlurWallpaperProvider.isEnabled() &&
-                !mLauncher.getExtractedColors().isLightStatusBar();
+                !mLauncher.getExtractedColors().isLightStatusBar() &&
+                allAppsAlpha < 52;
 
         if (Utilities.ATLEAST_MARSHMALLOW) {
             // Use a light status bar (dark icons) if all apps is behind at least half of the status
@@ -284,13 +287,16 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         float alpha = 1f - progress;
         float interpolation = mAccelInterpolator.getInterpolation(progress);
 
+        int allAppsBg = ColorUtils.setAlphaComponent(mAllAppsBackgroundColor, allAppsAlpha);
+        int color = (int) mEvaluator.evaluate(
+                mDecelInterpolator.getInterpolation(alpha),
+                BlurWallpaperProvider.isEnabled() ? 0xFFFFFF : mHotseatBackgroundColor,
+                BlurWallpaperProvider.isEnabled() ? 0xFFFFFF + (allAppsAlpha << 24) : allAppsBg);
+        Log.d("AATC", "color: " + Integer.toHexString(color));
+        mAppsView.setRevealDrawableColor(color);
         if (BlurWallpaperProvider.isEnabled()) {
             mAppsView.setWallpaperTranslation(shiftCurrent);
             mHotseat.setWallpaperTranslation(shiftCurrent);
-        } else {
-            int allAppsBg = ColorUtils.setAlphaComponent(mAllAppsBackgroundColor, allAppsAlpha);
-            int color = (int) mEvaluator.evaluate(mDecelInterpolator.getInterpolation(alpha), mHotseatBackgroundColor, allAppsBg);
-            mAppsView.setRevealDrawableColor(color);
         }
         mAppsView.getContentView().setAlpha(alpha);
         mAppsView.setTranslationY(shiftCurrent);
