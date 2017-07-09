@@ -23,6 +23,42 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">#00000000</item>
         <item name="android:navigationBarColor">#00000000</item>
+
+        <item name="materialPanelBgColor">@color/quantum_panel_bg_color</item>
+        <item name="folderIconTextColor">@color/quantum_panel_text_color</item>
+        <item name="folderNameTextColor">#EE777777</item>
+        <item name="folderBgIntensity">245</item>
+        <item name="deepShortcutsHandleColor">?android:textColorSecondary</item>
+        <item name="appPopupTextColor">?android:textColorSecondary</item>
+        <item name="appPopupHeaderBgColor">@color/popup_header_background_color</item>
+        <item name="appPopupBgColor">@color/popup_background_color</item>
+        <item name="allAppsContainerColor">@color/all_apps_container_color</item>
+        <item name="allAppsContainerColorBlur">#00ffffff</item>
+        <item name="blurTintColor">#45ffffff</item>
+        <item name="notificationBeneathColor">@color/notification_color_beneath</item>
+        <item name="qsbBgColor">@android:color/white</item>
+    </style>
+
+    <style name="LauncherTheme.Dark" parent="@style/BaseLauncherTheme.Dark">
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">#00000000</item>
+        <item name="android:navigationBarColor">#00000000</item>
+
+        <item name="materialPanelBgColor">@color/quantum_panel_bg_color_dark</item>
+        <item name="folderIconTextColor">@color/quantum_panel_text_color_dark</item>
+        <item name="folderNameTextColor">#EEEEEEEE</item>
+        <item name="folderBgIntensity">75</item>
+        <item name="deepShortcutsHandleColor">?android:textColorSecondary</item>
+        <item name="appPopupTextColor">?android:textColorSecondary</item>
+        <item name="appPopupHeaderBgColor">#ff101010</item>
+        <item name="appPopupBgColor">#ff212121</item>
+        <item name="allAppsContainerColor">#ff212121</item>
+        <item name="allAppsContainerColorBlur">#00000000</item>
+        <item name="blurTintColor">#45000000</item>
+        <item name="notificationBeneathColor">#ff252525</item>
+        <item name="qsbBgColor">@color/quantum_panel_bg_color_dark</item>
     </style>
 
     <style name="WallpaperCropperActionBar" parent="@android:style/Widget.DeviceDefault.Light.ActionBar">

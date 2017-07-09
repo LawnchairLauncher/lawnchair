@@ -20,6 +20,8 @@ import android.content.Context;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import ch.deletescape.lawnchair.Launcher;
+import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 
 /**
@@ -45,6 +47,7 @@ public final class FeatureFlags {
     private static final String KEY_PREF_ENABLE_DYNAMIC_UI = "pref_enableDynamicUi";
     private static final String KEY_PREF_ENABLE_BLUR = "pref_enableBlur";
     public static final String KEY_PREF_WHITE_GOOGLE_ICON = "pref_enableWhiteGoogleIcon";
+    private static final String KEY_PREF_DARK_THEME = "pref_enableDarkTheme";
 
     private FeatureFlags() {
     }
@@ -157,6 +160,15 @@ public final class FeatureFlags {
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_WHITE_GOOGLE_ICON, false);
         FirebaseAnalytics.getInstance(context).setUserProperty("white_google_icon", String.valueOf(enabled));
         return enabled;
+    }
+
+    public static boolean useDarkTheme = true;
+
+    public static void applyDarkThemePreference(Launcher launcher) {
+        useDarkTheme = Utilities.getPrefs(launcher).getBoolean(KEY_PREF_DARK_THEME, false);
+        FirebaseAnalytics.getInstance(launcher).setUserProperty("use_dark_theme", String.valueOf(useDarkTheme));
+        if (useDarkTheme)
+            launcher.setTheme(R.style.LauncherTheme_Dark);
     }
 
     public static boolean isVibrancyEnabled(Context context) {

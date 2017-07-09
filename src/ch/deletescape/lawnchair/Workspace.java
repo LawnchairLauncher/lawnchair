@@ -3007,7 +3007,7 @@ public class Workspace extends PagedView
             DeviceProfile grid = mLauncher.getDeviceProfile();
             BubbleTextView cell = (BubbleTextView) layout.getChildAt(cellX, cellY);
 
-            bg.setup(getResources().getDisplayMetrics(), grid, null,
+            bg.setup(getContext(), getResources().getDisplayMetrics(), grid, null,
                     cell.getMeasuredWidth(), cell.getPaddingTop());
 
             // The full preview background should appear behind the icon

@@ -31,7 +31,9 @@
     <color name="page_indicator_dot_color">#FFDDDDDD</color>
 
     <color name="quantum_panel_text_color">#FF666666</color>
+    <color name="quantum_panel_text_color_dark">@color/workspace_icon_text_color</color>
     <color name="quantum_panel_bg_color">#FFF5F5F5</color>
+    <color name="quantum_panel_bg_color_dark">#ff212121</color>
 
     <color name="outline_color">#FFFFFFFF</color>
     <color name="all_apps_divider_color">#1E000000</color>
@@ -51,7 +53,6 @@
     <color name="accent_material_light">#4286f4</color>
 
     <color name="wallpaper_picker_translucent_gray">#66212121</color>
-
 
     <color name="qsb_connector">#fff2f2f2</color>
     <color name="qsb_background">#ffffffff</color>

@@ -3,6 +3,6 @@
     android:id="@+id/system_shortcut_icons"
     android:layout_width="fill_parent"
     android:layout_height="@dimen/system_shortcut_header_height"
-    android:background="@color/popup_header_background_color"
+    android:background="?attr/appPopupHeaderBgColor"
     android:gravity="end|center"
     android:orientation="horizontal" />

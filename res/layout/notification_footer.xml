@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_gravity="center_vertical"
-    android:background="@color/popup_background_color"
+    android:background="?attr/appPopupBgColor"
     android:clipChildren="false"
     android:elevation="@dimen/notification_elevation">
 

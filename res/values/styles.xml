@@ -26,6 +26,14 @@
         <item name="android:colorAccent">@color/accent_material_light</item>
     </style>
 
+    <style name="BaseLauncherTheme.Dark" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:colorAccent">@color/accent_material_light</item>
+    </style>
+
     <style name="LauncherTheme" parent="@style/BaseLauncherTheme" />
 
     <style name="Theme" parent="@style/LauncherTheme" />
@@ -77,7 +85,7 @@
 
     <style name="Icon.Folder">
         <item name="android:background">@null</item>
-        <item name="android:textColor">@color/quantum_panel_text_color</item>
+        <item name="android:textColor">?attr/folderIconTextColor</item>
         <item name="android:shadowRadius">0</item>
         <item name="android:textSize">@dimen/folder_child_text_size</item>
         <item name="android:gravity">center_horizontal</item>

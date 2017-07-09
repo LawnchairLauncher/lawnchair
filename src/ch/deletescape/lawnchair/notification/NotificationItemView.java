@@ -6,11 +6,13 @@ import android.graphics.Rect;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.TextView;
 
 import java.util.List;
 
 import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.anim.PillHeightRevealOutlineProvider;
 import ch.deletescape.lawnchair.graphics.IconPalette;
 import ch.deletescape.lawnchair.popup.PopupItemView;
@@ -20,6 +22,7 @@ public class NotificationItemView extends PopupItemView {
     private boolean mAnimatingNextIcon;
     private NotificationFooterLayout mFooter;
     private TextView mHeaderCount;
+    private View mDivider;
     private NotificationMainView mMainView;
     private int mNotificationHeaderTextColor;
     private SwipeHelper mSwipeHelper;
@@ -56,6 +59,7 @@ public class NotificationItemView extends PopupItemView {
         super.onFinishInflate();
         mHeaderCount = (TextView) findViewById(R.id.notification_count);
         mMainView = (NotificationMainView) findViewById(R.id.main_view);
+        mDivider = findViewById(R.id.divider);
         mFooter = (NotificationFooterLayout) findViewById(R.id.footer);
         mSwipeHelper = new SwipeHelper(0, mMainView, getContext());
         mSwipeHelper.setDisableHardwareLayers(true);
@@ -77,7 +81,8 @@ public class NotificationItemView extends PopupItemView {
         mHeaderCount.setText(i <= 1 ? "" : String.valueOf(i));
         if (iconPalette != null) {
             if (mNotificationHeaderTextColor == 0) {
-                mNotificationHeaderTextColor = IconPalette.resolveContrastColor(getContext(), iconPalette.dominantColor, getResources().getColor(R.color.popup_header_background_color));
+                mNotificationHeaderTextColor = IconPalette.resolveContrastColor(getContext(),
+                        iconPalette.dominantColor, getResources().getColor(R.color.popup_header_background_color));
             }
             mHeaderCount.setTextColor(mNotificationHeaderTextColor);
         }
@@ -103,6 +108,7 @@ public class NotificationItemView extends PopupItemView {
     public void applyNotificationInfos(List list) {
         if (!list.isEmpty()) {
             mMainView.applyNotificationInfo((NotificationInfo) list.get(0), mIconView);
+            mDivider.setVisibility(list.size() > 1 ? VISIBLE : INVISIBLE);
             for (int i = 1; i < list.size(); i++) {
                 mFooter.addNotificationInfo((NotificationInfo) list.get(i));
             }
@@ -124,13 +130,11 @@ public class NotificationItemView extends PopupItemView {
 
     @Override
     public int getArrowColor(boolean z) {
-        int i;
         Context context = getContext();
         if (z) {
-            i = R.color.popup_background_color;
+            return Utilities.resolveAttributeData(context, R.attr.appPopupBgColor);
         } else {
-            i = R.color.popup_header_background_color;
+            return Utilities.resolveAttributeData(context, R.attr.appPopupHeaderBgColor);
         }
-        return ContextCompat.getColor(context, i);
     }
 }

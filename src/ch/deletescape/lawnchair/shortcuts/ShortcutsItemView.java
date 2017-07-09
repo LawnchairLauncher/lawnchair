@@ -23,6 +23,7 @@ import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAnimUtils;
 import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.anim.PropertyListBuilder;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.dragndrop.DragView;
@@ -218,13 +219,11 @@ public class ShortcutsItemView extends PopupItemView implements OnLongClickListe
 
     @Override
     public int getArrowColor(boolean z) {
-        int i;
         Context context = getContext();
-        if (z || mSystemShortcutIcons == null) {
-            i = R.color.popup_background_color;
+        if (z) {
+            return Utilities.resolveAttributeData(context, R.attr.appPopupBgColor);
         } else {
-            i = R.color.popup_header_background_color;
+            return Utilities.resolveAttributeData(context, R.attr.appPopupHeaderBgColor);
         }
-        return ContextCompat.getColor(context, i);
     }
 }

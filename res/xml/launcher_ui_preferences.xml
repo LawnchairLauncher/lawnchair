@@ -30,6 +30,12 @@
         android:persistent="true" />
 
     <SwitchPreference
+        android:key="pref_enableDarkTheme"
+        android:title="Enable dark theme"
+        android:defaultValue="false"
+        android:persistent="true" />
+
+    <SwitchPreference
         android:key="pref_enableBlur"
         android:title="Enable blur"
         android:defaultValue="false"

@@ -9,7 +9,7 @@
         android:id="@+id/text_and_background"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@color/popup_background_color"
+        android:background="?attr/appPopupBgColor"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:paddingEnd="@dimen/notification_main_text_padding_end"

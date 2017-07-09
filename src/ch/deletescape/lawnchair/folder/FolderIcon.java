@@ -373,7 +373,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             mTotalWidth = totalSize;
             mPrevTopPadding = getPaddingTop();
 
-            mBackground.setup(getResources().getDisplayMetrics(), grid, this, mTotalWidth,
+            mBackground.setup(getContext(), getResources().getDisplayMetrics(), grid, this, mTotalWidth,
                     getPaddingTop());
             mPreviewLayoutRule.init(mBackground.previewSize, mIntrinsicIconSize,
                     Utilities.isRtl(getResources()));
@@ -525,13 +525,15 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         // Expressed on a scale from 0 to 255.
         private static final int BG_OPACITY = 160;
         private static final int MAX_BG_OPACITY = 225;
-        private static final int BG_INTENSITY = 245;
         private static final int SHADOW_OPACITY = 80;
+        private static int BG_INTENSITY = 245;
 
         ValueAnimator mScaleAnimator;
 
-        public void setup(DisplayMetrics dm, DeviceProfile grid, View invalidateDelegate,
+        public void setup(Context context, DisplayMetrics dm, DeviceProfile grid, View invalidateDelegate,
                           int availableSpace, int topPadding) {
+            BG_INTENSITY = Utilities.resolveAttributeData(context, R.attr.folderBgIntensity);
+
             mInvalidateDelegate = invalidateDelegate;
 
             final int previewSize = grid.folderIconSizePx;

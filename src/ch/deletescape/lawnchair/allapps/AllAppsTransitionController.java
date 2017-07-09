@@ -6,12 +6,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -28,7 +26,7 @@ import ch.deletescape.lawnchair.ShortcutAndWidgetContainer;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
-import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.util.TouchController;
 
 /**
@@ -56,6 +54,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private AllAppsContainerView mAppsView;
     private int mAllAppsBackgroundColor;
+    private int mAllAppsBackgroundColorBlur;
     private Workspace mWorkspace;
     private Hotseat mHotseat;
     private int mHotseatBackgroundColor;
@@ -103,7 +102,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mShiftRange = DEFAULT_SHIFT_RANGE;
         mProgress = 1f;
         mEvaluator = new ArgbEvaluator();
-        mAllAppsBackgroundColor = ContextCompat.getColor(l, R.color.all_apps_container_color);
+        mAllAppsBackgroundColor = Utilities.resolveAttributeData(l, R.attr.allAppsContainerColor);
+        mAllAppsBackgroundColorBlur = Utilities.resolveAttributeData(l, R.attr.allAppsContainerColorBlur);
     }
 
     public void setAllAppsAlpha(int allAppsAlpha) {
@@ -262,9 +262,10 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     private void updateLightStatusBar(float shift) {
-        boolean darkStatusBar = BlurWallpaperProvider.isEnabled() &&
+        boolean darkStatusBar = FeatureFlags.useDarkTheme ||
+                (BlurWallpaperProvider.isEnabled() &&
                 !mLauncher.getExtractedColors().isLightStatusBar() &&
-                allAppsAlpha < 52;
+                allAppsAlpha < 52);
 
         if (Utilities.ATLEAST_MARSHMALLOW) {
             // Use a light status bar (dark icons) if all apps is behind at least half of the status
@@ -290,9 +291,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         int allAppsBg = ColorUtils.setAlphaComponent(mAllAppsBackgroundColor, allAppsAlpha);
         int color = (int) mEvaluator.evaluate(
                 mDecelInterpolator.getInterpolation(alpha),
-                BlurWallpaperProvider.isEnabled() ? 0xFFFFFF : mHotseatBackgroundColor,
-                BlurWallpaperProvider.isEnabled() ? 0xFFFFFF + (allAppsAlpha << 24) : allAppsBg);
-        Log.d("AATC", "color: " + Integer.toHexString(color));
+                BlurWallpaperProvider.isEnabled() ? mAllAppsBackgroundColorBlur : mHotseatBackgroundColor,
+                BlurWallpaperProvider.isEnabled() ? mAllAppsBackgroundColorBlur + (allAppsAlpha << 24) : allAppsBg);
         mAppsView.setRevealDrawableColor(color);
         if (BlurWallpaperProvider.isEnabled()) {
             mAppsView.setWallpaperTranslation(shiftCurrent);
