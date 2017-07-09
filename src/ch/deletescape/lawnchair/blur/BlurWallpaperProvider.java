@@ -9,6 +9,9 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.BitmapDrawable;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.WindowManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,14 +25,16 @@ public class BlurWallpaperProvider {
     private final Context mContext;
     private final WallpaperManager mWallpaperManager;
     private final List<Listener> mListeners = new ArrayList<>();
+    private DisplayMetrics mDisplayMetrics = new DisplayMetrics();
     private Bitmap mWallpaper;
+    private Bitmap mPlaceholder;
     private float mOffset;
     private int mBlurRadius = 75;
     private Runnable mNotifyRunnable = new Runnable() {
         @Override
         public void run() {
             for (Listener listener : mListeners) {
-                listener.onWallpaperChanged();
+                listener.onWallpaperChanged(mWallpaper, mPlaceholder);
             }
         }
     };
@@ -39,16 +44,21 @@ public class BlurWallpaperProvider {
 
     private final Path mPath = new Path();
 
+    private final Runnable mUpdateRunnable = new Runnable() {
+        @Override
+        public void run() {
+            updateWallpaper();
+        }
+    };
+
     public BlurWallpaperProvider(Context context) {
         mContext = context;
 
         mWallpaperManager = WallpaperManager.getInstance(context);
         sEnabled = mWallpaperManager.getWallpaperInfo() == null && FeatureFlags.isBlurEnabled(mContext);
-
-        updateWallpaper();
     }
 
-    public void updateWallpaper() {
+    private void updateWallpaper() {
         Launcher launcher = LauncherAppState.getInstance().getLauncher();
         boolean enabled = mWallpaperManager.getWallpaperInfo() == null && FeatureFlags.isBlurEnabled(mContext);
         if (enabled != sEnabled) {
@@ -59,14 +69,80 @@ public class BlurWallpaperProvider {
 
         mBlurRadius = (int) Utilities.getPrefs(mContext).getFloat("pref_blurRadius", 75f);
 
+        Bitmap wallpaper = upscaleToScreenSize(((BitmapDrawable) mWallpaperManager.getDrawable()).getBitmap());
         mWallpaper = null;
+        mPlaceholder = createPlaceholder(wallpaper.getWidth(), wallpaper.getHeight());
         launcher.runOnUiThread(mNotifyRunnable);
-        Bitmap wallpaper = ((BitmapDrawable) mWallpaperManager.getDrawable()).getBitmap();
         if (FeatureFlags.isVibrancyEnabled(mContext)) {
-            wallpaper = applyVibrancy(wallpaper, 0x45FFFFFF);
+            wallpaper = applyVibrancy(wallpaper, getTintColor());
         }
         mWallpaper = blur(wallpaper);
         launcher.runOnUiThread(mNotifyRunnable);
+    }
+
+    private Bitmap upscaleToScreenSize(Bitmap bitmap) {
+        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        display.getRealMetrics(mDisplayMetrics);
+
+        int width = mDisplayMetrics.widthPixels, height = mDisplayMetrics.heightPixels;
+
+        float widthFactor = 0f, heightFactor = 0f;
+        if (width > bitmap.getWidth()) {
+            widthFactor = ((float) width) / bitmap.getWidth();
+        }
+        if (height > bitmap.getHeight()) {
+            heightFactor = ((float) height) / bitmap.getHeight();
+        }
+
+        float upscaleFactor = Math.max(widthFactor, heightFactor);
+        if (upscaleFactor <= 0) {
+            return bitmap;
+        }
+
+        int scaledWidth = (int) (bitmap.getWidth() * upscaleFactor);
+        int scaledHeight = (int) (bitmap.getHeight() * upscaleFactor);
+        Bitmap scaled = Bitmap.createScaledBitmap(
+                bitmap,
+                scaledWidth,
+                scaledHeight, false);
+
+        Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas();
+        canvas.setBitmap(result);
+
+        Paint paint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
+        if (widthFactor > heightFactor) {
+            canvas.drawBitmap(scaled, 0, (height - scaledHeight) / 2, paint);
+        } else {
+            canvas.drawBitmap(scaled, (width - scaledWidth) / 2, 0, paint);
+        }
+
+        return result;
+    }
+
+    private Bitmap createPlaceholder(int width, int height) {
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas();
+        canvas.setBitmap(bitmap);
+
+        mPath.moveTo(0, 0);
+        mPath.lineTo(0, height);
+        mPath.lineTo(width, height);
+        mPath.lineTo(width, 0);
+        mColorPaint.setXfermode(null);
+        mColorPaint.setColor(getTintColor());
+        canvas.drawPath(mPath, mColorPaint);
+
+        return bitmap;
+    }
+
+    private int getTintColor() {
+        return 0x45FFFFFF;
+    }
+
+    public void updateAsync() {
+        Utilities.THREAD_POOL_EXECUTOR.execute(mUpdateRunnable);
     }
 
     private Bitmap applyVibrancy(Bitmap wallpaper, int color) {
@@ -105,15 +181,11 @@ public class BlurWallpaperProvider {
         return new BlurDrawable(this, radius, allowTransparencyMode);
     }
 
-    public Bitmap getWallpaper() {
-        return mWallpaper;
-    }
-
     public void setWallpaperOffset(float offset) {
         if (!isEnabled()) return;
         if (mWallpaper == null) return;
 
-        final int availw = mContext.getResources().getDisplayMetrics().widthPixels - mWallpaper.getWidth();
+        final int availw = mDisplayMetrics.widthPixels - mWallpaper.getWidth();
         int xPixels = availw / 2;
 
         if (availw < 0)
@@ -134,7 +206,7 @@ public class BlurWallpaperProvider {
 
     interface Listener {
 
-        void onWallpaperChanged();
+        void onWallpaperChanged(Bitmap wallpaper, Bitmap placeholder);
         void onOffsetChanged(float offset);
         void setUseTransparency(boolean useTransparency);
     }
@@ -143,6 +215,10 @@ public class BlurWallpaperProvider {
 
     public static boolean isEnabled() {
         return sEnabled;
+    }
+
+    public static BlurWallpaperProvider getInstance() {
+        return LauncherAppState.getInstance().getLauncher().getBlurWallpaperProvider();
     }
 
     public Bitmap blur(Bitmap image) {

@@ -641,7 +641,7 @@ public class Workspace extends PagedView
         try {
             Class StatusBarManager = Class.forName("android.app.StatusBarManager");
             Object o = StatusBarManager.cast(getContext().getSystemService("statusbar"));
-            StatusBarManager.getDeclaredMethod("expandNotificationsPanel", null).invoke(o, null);
+            StatusBarManager.getDeclaredMethod("expandNotificationsPanel").invoke(o);
         } catch (Exception ignored) {
             Log.e("expandStatusbar", "", ignored);
         }
