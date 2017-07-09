@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 public class BlurDrawable extends Drawable implements BlurWallpaperProvider.Listener {
 
     private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
+    private final Paint mColorPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mClipPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final RectF mRect = new RectF();
 
@@ -28,6 +29,7 @@ public class BlurDrawable extends Drawable implements BlurWallpaperProvider.List
     private boolean mShouldDraw = true;
     private float mOverscroll;
     private boolean mUseTransparency;
+    private int mOverlayColor;
 
     BlurDrawable(BlurWallpaperProvider provider, float radius, boolean allowTransparencyMode) {
         mProvider = provider;
@@ -35,7 +37,16 @@ public class BlurDrawable extends Drawable implements BlurWallpaperProvider.List
         mAllowTransparencyMode = allowTransparencyMode;
 
         if (radius > 0) {
+            mColorPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
             mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        }
+    }
+
+    public void setOverlayColor(int color) {
+        if (mOverlayColor != color) {
+            mOverlayColor = color;
+            mColorPaint.setColor(color);
+            invalidateSelf();
         }
     }
 
@@ -50,6 +61,9 @@ public class BlurDrawable extends Drawable implements BlurWallpaperProvider.List
         }
 
         canvas.drawBitmap(toDraw, - mOffset - mOverscroll, -mTranslation, mPaint);
+        if (mOverlayColor != 0) {
+            canvas.drawRect(mRect, mColorPaint);
+        }
     }
 
     public Bitmap getBitmap() {

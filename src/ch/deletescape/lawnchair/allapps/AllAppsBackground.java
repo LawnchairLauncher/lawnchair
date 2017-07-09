@@ -13,12 +13,14 @@ import android.view.View;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.blur.BlurDrawable;
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 
 public class AllAppsBackground extends View {
 
     private final Paint mScrimPaint;
     private final Path mScrimPath;
     private final BlurDrawable mBlurDrawable;
+    private final boolean mBlurEnabled;
     private float mStatusBarHeight;
     private boolean mShowingScrim;
 
@@ -38,6 +40,8 @@ public class AllAppsBackground extends View {
         mScrimPaint = new Paint();
         mScrimPaint.setColor(scrimColor);
         mScrimPath = new Path();
+
+        mBlurEnabled = BlurWallpaperProvider.isEnabled();
 
         mBlurDrawable = LauncherAppState.getInstance().getLauncher().getBlurWallpaperProvider().createDrawable();
         setBackground(mBlurDrawable);
@@ -84,5 +88,14 @@ public class AllAppsBackground extends View {
     public void setWallpaperTranslation(float translation) {
         setBackground(mBlurDrawable);
         mBlurDrawable.setTranslation(translation);
+    }
+
+    @Override
+    public void setBackgroundColor(int color) {
+        if (mBlurEnabled) {
+            mBlurDrawable.setOverlayColor(color);
+        } else {
+            super.setBackgroundColor(color);
+        }
     }
 }
