@@ -34,8 +34,6 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.Patterns;
 
-import com.google.firebase.crash.FirebaseCrash;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -195,7 +193,6 @@ public class AutoInstallsLayout {
         try {
             return parseLayout(mLayoutId, screenIds);
         } catch (Exception e) {
-            FirebaseCrash.report(e);
             Log.w(TAG, "Got exception parsing layout.", e);
             return -1;
         }
@@ -362,7 +359,6 @@ public class AutoInstallsLayout {
                     return addShortcut(info.loadLabel(mPackageManager).toString(),
                             intent, Favorites.ITEM_TYPE_APPLICATION);
                 } catch (PackageManager.NameNotFoundException e) {
-                    FirebaseCrash.report(e);
                     Log.e(TAG, "Unable to add favorite: " + packageName + "/" + className, e);
                 }
                 return -1;

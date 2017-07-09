@@ -13,8 +13,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
 
-import com.google.firebase.crash.FirebaseCrash;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -96,7 +94,6 @@ public class DefaultWallpaperInfo extends DrawableThumbWallpaperInfo {
                                 true, WallpaperManagerCompat.FLAG_SET_LOCK);
             }
         } catch (IOException e) {
-            FirebaseCrash.report(e);
             Log.w(TAG, "Setting wallpaper to default threw exception", e);
             succeeded = false;
         }
@@ -108,7 +105,6 @@ public class DefaultWallpaperInfo extends DrawableThumbWallpaperInfo {
         try {
             WallpaperManagerCompat.getInstance(a.getApplicationContext()).clear(whichWallpaper);
         } catch (IOException e) {
-            FirebaseCrash.report(e);
             Log.w(TAG, "Setting wallpaper to default threw exception", e);
             succeeded = false;
         } catch (SecurityException e) {
@@ -190,7 +186,6 @@ public class DefaultWallpaperInfo extends DrawableThumbWallpaperInfo {
             thumbFileStream.close();
             return true;
         } catch (IOException e) {
-            FirebaseCrash.report(e);
             Log.e(TAG, "Error while writing bitmap to file " + e);
             f.delete();
             return false;

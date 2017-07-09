@@ -13,8 +13,6 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.util.Log;
 
-import com.google.firebase.crash.FirebaseCrash;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -35,7 +33,6 @@ public abstract class InputStreamProvider {
         try {
             return newStreamNotNull();
         } catch (IOException e) {
-            FirebaseCrash.report(e);
             return null;
         }
     }
@@ -107,7 +104,6 @@ public abstract class InputStreamProvider {
             is = newStreamNotNull();
             decoder = BitmapRegionDecoder.newInstance(is, false);
         } catch (IOException e) {
-            FirebaseCrash.report(e);
             Log.w(TAG, "cannot open region decoder", e);
         } finally {
             Utils.closeSilently(is);
@@ -226,7 +222,6 @@ public abstract class InputStreamProvider {
             is = newStreamNotNull();
             return ExifOrientation.readRotation(new BufferedInputStream(is), context);
         } catch (IOException | NullPointerException e) {
-            FirebaseCrash.report(e);
             Log.w(TAG, "Getting exif data failed", e);
         } finally {
             Utils.closeSilently(is);

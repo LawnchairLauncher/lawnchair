@@ -19,8 +19,6 @@ import android.content.Context;
 import android.media.ExifInterface;
 import android.util.Log;
 
-import com.google.firebase.crash.FirebaseCrash;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -108,7 +106,6 @@ public class ExifOrientation {
                 }
             }
         } catch (IOException e) {
-            FirebaseCrash.report(e);
             if (DEBUG) {
                 Log.d(TAG, "Error parsing input stream", e);
             }
@@ -139,7 +136,6 @@ public class ExifOrientation {
                     return 0;
             }
         } catch (IOException e) {
-            FirebaseCrash.report(e);
             if (DEBUG) {
                 Log.d(TAG, "Error reading file", e);
             }
