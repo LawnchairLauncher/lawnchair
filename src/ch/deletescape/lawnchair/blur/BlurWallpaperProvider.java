@@ -9,6 +9,9 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.BitmapDrawable;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.WindowManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +25,7 @@ public class BlurWallpaperProvider {
     private final Context mContext;
     private final WallpaperManager mWallpaperManager;
     private final List<Listener> mListeners = new ArrayList<>();
+    private DisplayMetrics mDisplayMetrics = new DisplayMetrics();
     private Bitmap mWallpaper;
     private Bitmap mPlaceholder;
     private float mOffset;
@@ -52,11 +56,9 @@ public class BlurWallpaperProvider {
 
         mWallpaperManager = WallpaperManager.getInstance(context);
         sEnabled = mWallpaperManager.getWallpaperInfo() == null && FeatureFlags.isBlurEnabled(mContext);
-
-        updateWallpaper();
     }
 
-    public void updateWallpaper() {
+    private void updateWallpaper() {
         Launcher launcher = LauncherAppState.getInstance().getLauncher();
         boolean enabled = mWallpaperManager.getWallpaperInfo() == null && FeatureFlags.isBlurEnabled(mContext);
         if (enabled != sEnabled) {
@@ -67,7 +69,7 @@ public class BlurWallpaperProvider {
 
         mBlurRadius = (int) Utilities.getPrefs(mContext).getFloat("pref_blurRadius", 75f);
 
-        Bitmap wallpaper = ((BitmapDrawable) mWallpaperManager.getDrawable()).getBitmap();
+        Bitmap wallpaper = upscaleToScreenSize(((BitmapDrawable) mWallpaperManager.getDrawable()).getBitmap());
         mWallpaper = null;
         mPlaceholder = createPlaceholder(wallpaper.getWidth(), wallpaper.getHeight());
         launcher.runOnUiThread(mNotifyRunnable);
@@ -76,6 +78,47 @@ public class BlurWallpaperProvider {
         }
         mWallpaper = blur(wallpaper);
         launcher.runOnUiThread(mNotifyRunnable);
+    }
+
+    private Bitmap upscaleToScreenSize(Bitmap bitmap) {
+        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        display.getRealMetrics(mDisplayMetrics);
+
+        int width = mDisplayMetrics.widthPixels, height = mDisplayMetrics.heightPixels;
+
+        float widthFactor = 0f, heightFactor = 0f;
+        if (width > bitmap.getWidth()) {
+            widthFactor = ((float) width) / bitmap.getWidth();
+        }
+        if (height > bitmap.getHeight()) {
+            heightFactor = ((float) height) / bitmap.getHeight();
+        }
+
+        float upscaleFactor = Math.max(widthFactor, heightFactor);
+        if (upscaleFactor <= 0) {
+            return bitmap;
+        }
+
+        int scaledWidth = (int) (bitmap.getWidth() * upscaleFactor);
+        int scaledHeight = (int) (bitmap.getHeight() * upscaleFactor);
+        Bitmap scaled = Bitmap.createScaledBitmap(
+                bitmap,
+                scaledWidth,
+                scaledHeight, false);
+
+        Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas();
+        canvas.setBitmap(result);
+
+        Paint paint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
+        if (widthFactor > heightFactor) {
+            canvas.drawBitmap(scaled, 0, (height - scaledHeight) / 2, paint);
+        } else {
+            canvas.drawBitmap(scaled, (width - scaledWidth) / 2, 0, paint);
+        }
+
+        return result;
     }
 
     private Bitmap createPlaceholder(int width, int height) {
@@ -142,7 +185,7 @@ public class BlurWallpaperProvider {
         if (!isEnabled()) return;
         if (mWallpaper == null) return;
 
-        final int availw = mContext.getResources().getDisplayMetrics().widthPixels - mWallpaper.getWidth();
+        final int availw = mDisplayMetrics.widthPixels - mWallpaper.getWidth();
         int xPixels = availw / 2;
 
         if (availw < 0)
