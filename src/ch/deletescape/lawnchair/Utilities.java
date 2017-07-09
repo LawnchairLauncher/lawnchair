@@ -911,4 +911,10 @@ public final class Utilities {
         if (!FeatureFlags.isDynamicUiEnabled(context)) return defaultColor;
         return getColor(context, ExtractedColors.VIBRANT_INDEX, defaultColor);
     }
+
+    public static int resolveAttributeData(Context context, int attr) {
+        TypedValue typedValue = new TypedValue();
+        context.getTheme().resolveAttribute(attr, typedValue, true);
+        return typedValue.data;
+    }
 }

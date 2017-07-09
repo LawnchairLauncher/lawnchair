@@ -18,6 +18,7 @@ import java.util.List;
 
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAppState;
+import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 
@@ -138,7 +139,7 @@ public class BlurWallpaperProvider {
     }
 
     private int getTintColor() {
-        return 0x45FFFFFF;
+        return Utilities.resolveAttributeData(mContext, R.attr.blurTintColor);
     }
 
     public void updateAsync() {
@@ -157,7 +158,8 @@ public class BlurWallpaperProvider {
         mPath.lineTo(0, height);
         mPath.lineTo(width, height);
         mPath.lineTo(width, 0);
-        mColorPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.LIGHTEN));
+        mColorPaint.setXfermode(new PorterDuffXfermode(
+                FeatureFlags.useDarkTheme ? PorterDuff.Mode.DARKEN : PorterDuff.Mode.LIGHTEN));
         mColorPaint.setColor(color);
         canvas.drawPath(mPath, mColorPaint);
 

@@ -512,7 +512,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         DeviceProfile grid = mLauncher.getDeviceProfile();
         View child = getChildAt(x, y);
 
-        mFolderLeaveBehind.setup(getResources().getDisplayMetrics(), grid, null,
+        mFolderLeaveBehind.setup(getContext(), getResources().getDisplayMetrics(), grid, null,
                 child.getMeasuredWidth(), child.getPaddingTop());
 
         mFolderLeaveBehind.delegateCellX = x;

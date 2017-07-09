@@ -273,6 +273,7 @@ public class Launcher extends Activity
     private boolean mAttached;
 
     private boolean kill;
+    private boolean recreate;
     private boolean reloadIcons;
     private boolean updateWallpaper = true;
 
@@ -349,6 +350,7 @@ public class Launcher extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FeatureFlags.applyDarkThemePreference(this);
         super.onCreate(savedInstanceState);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
@@ -427,6 +429,10 @@ public class Launcher extends Activity
             kill = true;
         else
             android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
+    public void scheduleRecreate() {
+        recreate = true;
     }
 
     public void scheduleUpdateWallpaper() {
@@ -861,6 +867,11 @@ public class Launcher extends Activity
             kill = false;
             Log.v("Settings", "Die Motherf*cker!");
             android.os.Process.killProcess(android.os.Process.myPid());
+        }
+
+        if (recreate) {
+            recreate = false;
+            recreate();
         }
 
         if (updateWallpaper) {

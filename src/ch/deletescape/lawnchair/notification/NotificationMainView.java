@@ -42,7 +42,7 @@ public class NotificationMainView extends FrameLayout implements SwipeHelper.Cal
         super.onFinishInflate();
         this.mTextAndBackground = (ViewGroup) findViewById(R.id.text_and_background);
         ColorDrawable colorDrawable = (ColorDrawable) this.mTextAndBackground.getBackground();
-        this.mBackgroundColor = colorDrawable.getColor();
+        this.mBackgroundColor = getResources().getColor(R.color.popup_background_color);
         this.mTextAndBackground.setBackground(new RippleDrawable(ColorStateList.valueOf(Themes.getAttrColor(getContext(), 16843820)), colorDrawable, null));
         this.mTitleView = (TextView) this.mTextAndBackground.findViewById(R.id.title);
         this.mTextView = (TextView) this.mTextAndBackground.findViewById(R.id.text);

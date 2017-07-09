@@ -35,6 +35,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private static final String KEY_PREF_ENABLE_BLUR = "pref_enableBlur";
     private static final String KEY_PREF_BLUR_RADIUS = "pref_blurRadius";
     private static final String KEY_PREF_WHITE_GOOGLE_ICON = "pref_enableWhiteGoogleIcon";
+    private static final String KEY_PREF_DARK_THEME = "pref_enableDarkTheme";
     private static Settings instance;
     private Launcher mLauncher;
 
@@ -124,6 +125,9 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case KEY_PREF_ICON_PACK_PACKAGE:
                 case KEY_PREF_PIXEL_STYLE_ICONS:
                     mLauncher.scheduleReloadIcons();
+                    break;
+                case KEY_PREF_DARK_THEME:
+                    mLauncher.scheduleRecreate();
                     break;
                 case KEY_PREF_HIDE_APP_LABELS:
                     las.reloadWorkspace();
