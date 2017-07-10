@@ -53,6 +53,15 @@ android {
         }
     }
 
+    flavorDimensions "variant"
+
+    productFlavors {
+        aosp {
+            applicationId 'ch.deletescape.lawnchair'
+            testApplicationId 'ch.deletescape.lawnchair.tests'
+            dimension "variant"
+        }
+    }
     sourceSets {
         main {
             res.srcDirs = ['res']

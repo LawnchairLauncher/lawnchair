@@ -13,7 +13,7 @@
      limitations under the License.
 -->
 
-<favorites xmlns:launcher="http://schemas.android.com/apk/res-auto/ch.deletescape.lawnchair">
+<favorites xmlns:launcher="http://schemas.android.com/apk/res-auto">
 
     <!-- Hotseat -->
     <include launcher:workspace="@xml/dw_tablet_hotseat" />
