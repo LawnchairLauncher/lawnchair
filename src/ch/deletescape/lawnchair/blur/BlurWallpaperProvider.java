@@ -49,7 +49,7 @@ public class BlurWallpaperProvider {
 
     private final Path mPath = new Path();
 
-    private int mDownsampleFactor = 10;
+    private int mDownsampleFactor = 8;
     private int mWallpaperWidth;
     private Canvas sCanvas = new Canvas();
 
