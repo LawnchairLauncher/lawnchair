@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<favorites xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3">
+<favorites xmlns:launcher="http://schemas.android.com/apk/res-auto">
     <!-- Hotseat (We use the screen as the position of the item in the hotseat) -->
     <!-- Messaging, Email, Browser, [All Apps], Music, Gallery, Camera -->
     <resolve
