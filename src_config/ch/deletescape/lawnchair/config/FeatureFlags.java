@@ -144,9 +144,13 @@ public final class FeatureFlags {
     public static boolean useDarkTheme = true;
 
     public static void applyDarkThemePreference(Launcher launcher) {
-        useDarkTheme = Utilities.getPrefs(launcher).getBoolean(KEY_PREF_DARK_THEME, false);
+        loadDarkThemePreference(launcher);
         if (useDarkTheme)
             launcher.setTheme(R.style.LauncherTheme_Dark);
+    }
+
+    public static void loadDarkThemePreference(Context context) {
+        useDarkTheme = Utilities.getPrefs(context).getBoolean(KEY_PREF_DARK_THEME, false);
     }
 
     public static boolean isVibrancyEnabled(Context context) {
