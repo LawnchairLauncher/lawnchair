@@ -24,8 +24,6 @@ public class BlurDrawable extends Drawable implements BlurWallpaperProvider.List
     private final boolean mAllowTransparencyMode;
     private float mTranslation;
     private float mOffset;
-    private Bitmap mWallpaper;
-    private Bitmap mPlaceholder;
     private boolean mShouldDraw = true;
     private float mOverscroll;
     private boolean mUseTransparency;
@@ -67,10 +65,11 @@ public class BlurDrawable extends Drawable implements BlurWallpaperProvider.List
     }
 
     public Bitmap getBitmap() {
-        if (mWallpaper == null || (mUseTransparency && mAllowTransparencyMode))
-            return mPlaceholder;
+        Bitmap wallpaper = mProvider.getWallpaper();
+        if (wallpaper == null || (mUseTransparency && mAllowTransparencyMode))
+            return mProvider.getPlaceholder();
         else
-            return mWallpaper;
+            return wallpaper;
     }
 
     @Override
@@ -97,9 +96,7 @@ public class BlurDrawable extends Drawable implements BlurWallpaperProvider.List
     }
 
     @Override
-    public void onWallpaperChanged(Bitmap wallpaper, Bitmap placeholder) {
-        mWallpaper = wallpaper;
-        mPlaceholder = placeholder;
+    public void onWallpaperChanged() {
         if (!mUseTransparency)
             invalidateSelf();
     }
