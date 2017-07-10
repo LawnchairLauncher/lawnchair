@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:key="pref_showPixelBar"
+        android:title="显示 Pixel 顶栏"
+        android:defaultValue="true"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_fullWidthSearchbar"
+        android:defaultValue="false"
+        android:title="使用宽搜索栏"
+        android:dependency="pref_showPixelBar"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_showMic"
+        android:defaultValue="false"
+        android:title="显示 Google Assistant 按钮"
+        android:dependency="pref_showPixelBar"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_pixelStyleIcons"
+        android:title="使用 Pixel 图标"
+        android:summary="启用后在可能时将使用圆角图标"
+        android:defaultValue="true"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_showGoogleNowTab"
+        android:persistent="true"
+        android:title="显示 Google Now 页面"
+        android:defaultValue="true" />
+</PreferenceScreen>

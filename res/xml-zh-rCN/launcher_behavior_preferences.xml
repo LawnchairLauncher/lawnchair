@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:key="pref_pinchToOverview"
+        android:title="捏合预览"
+        android:summary="在主屏幕捏合以打开预览"
+        android:defaultValue="true"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_pulldownNotis"
+        android:title="下拉打开通知"
+        android:summaryOn="在主屏幕下拉会展开状态栏"
+        android:summaryOff="启用后在主屏幕下拉会展开状态栏"
+        android:defaultValue="true"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_lightStatusBar"
+        android:title="浅色状态栏"
+        android:summaryOn="使用浅色壁纸时状态栏可能会显示深色图标"
+        android:summaryOff="状态栏总是显示浅色图标"
+        android:defaultValue="true"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_enableHapticFeedback"
+        android:title="启用触觉反馈"
+        android:defaultValue="false"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_keepScrollState"
+        android:title="保存滑动状态"
+        android:summary="保存应用抽屉的滑动位置"
+        android:defaultValue="false"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_homeOpensDrawer"
+        android:title="主页键打开应用抽屉"
+        android:summary="在主屏幕按主页键会打开应用抽屉"
+        android:defaultValue="true"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_showHidden"
+        android:title="显示隐藏应用"
+        android:summaryOn="显示隐藏应用以更改可见性设置"
+        android:summaryOff="不显示隐藏应用"
+        android:defaultValue="false"
+        android:persistent="true" />
+</PreferenceScreen>

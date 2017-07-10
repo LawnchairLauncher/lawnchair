@@ -114,4 +114,10 @@
     <string name="pick_image" msgid="3189640419551368385">"我的照片"</string>
     <string name="pick_wallpaper" msgid="4628969645948454559">"壁纸"</string>
     <string name="crop_wallpaper" msgid="4882870800623585836">"剪裁壁纸"</string>
+
+    <!-- About Lawnchair -->
+    <string name="about_text">Lawnchair 是由 Till Kottmann(deletescape) 创建的启动器应用，基于来自 AOSP 的 Launcher3</string>
+    <string name="about_title">关于</string>
+    <string name="week_day_format">%1$s, %2$s</string>
+
 </resources>
