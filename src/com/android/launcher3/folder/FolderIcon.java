@@ -471,15 +471,25 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         return mFolderName.getVisibility() == VISIBLE;
     }
 
-    public List<BubbleTextView> getItemsToDisplay() {
+    /**
+     * Returns the list of preview items displayed in the icon.
+     */
+    public List<BubbleTextView> getPreviewItems() {
+        return getPreviewItemsOnPage(0);
+    }
+
+    /**
+     * Returns the list of "preview items" on {@param page}.
+     */
+    public List<BubbleTextView> getPreviewItemsOnPage(int page) {
         mPreviewVerifier.setFolderInfo(mFolder.getInfo());
 
         List<BubbleTextView> itemsToDisplay = new ArrayList<>();
-        List<View> allItems = mFolder.getItemsInRankOrder();
-        int numItems = allItems.size();
+        List<BubbleTextView> itemsOnPage = mFolder.getItemsOnPage(page);
+        int numItems = itemsOnPage.size();
         for (int rank = 0; rank < numItems; ++rank) {
-            if (mPreviewVerifier.isItemInPreview(rank)) {
-                itemsToDisplay.add((BubbleTextView) allItems.get(rank));
+            if (mPreviewVerifier.isItemInPreview(page, rank)) {
+                itemsToDisplay.add(itemsOnPage.get(rank));
             }
 
             if (itemsToDisplay.size() == FolderIcon.NUM_ITEMS_IN_PREVIEW) {
@@ -637,6 +647,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             previewImageView.setPivotY(mFolder.getPivotYForIconAnimation());
             mFolder.bringToFront();
         }
+    }
+
+    public void onFolderClose(int currentPage) {
+        mPreviewItemManager.onFolderClose(currentPage);
     }
 
     interface PreviewLayoutRule {
