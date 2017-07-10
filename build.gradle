@@ -12,8 +12,8 @@ buildscript {
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.3'
+    compileSdkVersion 26
+    buildToolsVersion '26.0.0'
 
     signingConfigs {
         travis {
@@ -26,7 +26,7 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 25
+        targetSdkVersion 26
         applicationId 'ch.deletescape.lawnchair'
         buildConfigField "String", "MOBILE_CENTER_KEY", "\"" + System.getenv("MOBILE_CENTER_KEY") + "\""
         if (System.getenv("TRAVIS") == "true") {
@@ -83,7 +83,7 @@ repositories {
 
 dependencies {
     def mobileCenterSdkVersion = '0.10.0'
-    def supportLibVersion = '25.4.0'
+    def supportLibVersion = '26.0.0-beta2'
     compile "com.microsoft.azure.mobile:mobile-center-analytics:${mobileCenterSdkVersion}"
     compile "com.microsoft.azure.mobile:mobile-center-crashes:${mobileCenterSdkVersion}"
     compile "com.microsoft.azure.mobile:mobile-center-distribute:${mobileCenterSdkVersion}"
