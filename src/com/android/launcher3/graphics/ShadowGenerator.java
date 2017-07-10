@@ -63,9 +63,15 @@ public class ShadowGenerator {
     }
 
     public synchronized Bitmap recreateIcon(Bitmap icon) {
+        return recreateIcon(icon, true);
+    }
+
+    public synchronized Bitmap recreateIcon(Bitmap icon, boolean resize) {
+        int width = resize ? mIconSize : icon.getWidth();
+        int height = resize ? mIconSize : icon.getHeight();
         int[] offset = new int[2];
         Bitmap shadow = icon.extractAlpha(mBlurPaint, offset);
-        Bitmap result = Bitmap.createBitmap(mIconSize, mIconSize, Config.ARGB_8888);
+        Bitmap result = Bitmap.createBitmap(width, height, Config.ARGB_8888);
         mCanvas.setBitmap(result);
 
         // Draw ambient shadow
