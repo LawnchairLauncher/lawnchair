@@ -230,6 +230,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mBlurDrawable = BlurWallpaperProvider.getInstance().createDrawable(
                     res.getDimensionPixelSize(R.dimen.folder_background_radius), false);
             mBlurDrawable.setBlurredView(mLauncher.getWorkspace());
+            mBlurDrawable.setShouldProvideOutline(true);
             setBackground(mBlurDrawable);
         }
     }

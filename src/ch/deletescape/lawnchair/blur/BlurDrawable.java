@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
+import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
@@ -54,6 +55,7 @@ public class BlurDrawable extends Drawable implements BlurWallpaperProvider.List
     private boolean mBlurInvalid;
 
     private float mBlurredX, mBlurredY;
+    private boolean mShouldProvideOutline;
 
     BlurDrawable(BlurWallpaperProvider provider, float radius, boolean allowTransparencyMode) {
         mProvider = provider;
@@ -252,6 +254,16 @@ public class BlurDrawable extends Drawable implements BlurWallpaperProvider.List
         if (!mAllowTransparencyMode) return;
         mUseTransparency = useTransparency;
         invalidateSelf();
+    }
+
+    @Override
+    public void getOutline(@NonNull Outline outline) {
+        if (mShouldProvideOutline)
+            outline.setRoundRect(getBounds(), mRadius);
+    }
+
+    public void setShouldProvideOutline(boolean shouldProvideOutline) {
+        mShouldProvideOutline = shouldProvideOutline;
     }
 
     public void setTranslation(float translation) {
