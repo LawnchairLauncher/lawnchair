@@ -5,8 +5,12 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.util.ArrayMap;
+import android.util.Xml;
 import android.widget.Toast;
+
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -105,8 +109,13 @@ public class IconPackProvider {
             int resourceId = res.getIdentifier("appfilter", "xml", packageName);
             if (0 != resourceId) {
                 return context.getPackageManager().getXml(packageName, resourceId, null);
+            } else {
+                XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+                XmlPullParser parser = factory.newPullParser();
+                parser.setInput(res.getAssets().open("appfilter.xml"), Xml.Encoding.UTF_8.toString());
+                return parser;
             }
-        } catch (PackageManager.NameNotFoundException e) {
+        } catch (PackageManager.NameNotFoundException | IOException | XmlPullParserException e) {
             Toast.makeText(context, "Failed to get AppFilter", Toast.LENGTH_SHORT).show();
         }
         return null;
