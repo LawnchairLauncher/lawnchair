@@ -9,8 +9,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.util.ArrayMap;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-
 import java.util.Map;
 
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
@@ -29,14 +27,12 @@ public class IconPack {
     private Map<String, String> icons = new ArrayMap<>();
     private String packageName;
     private Context mContext;
-    private FirebaseAnalytics mFirebaseAnalytics;
 
     public IconPack(Map<String, String> icons, Context context, String packageName,
                     String iconBack, String iconUpon, String iconMask, float scale) {
         this.icons = icons;
         this.packageName = packageName;
         mContext = context;
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
         mIconBack = iconBack;
         mIconUpon = iconUpon;
         mIconMask = iconMask;
@@ -44,7 +40,6 @@ public class IconPack {
     }
 
     public Drawable getIcon(LauncherActivityInfoCompat info) {
-        mFirebaseAnalytics.logEvent("iconpack_icon_get", null);
         String iconName = icons.get(info.getComponentName().toString());
         if (iconName != null)
             return getDrawable(iconName);

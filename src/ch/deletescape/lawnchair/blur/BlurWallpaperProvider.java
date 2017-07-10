@@ -35,7 +35,7 @@ public class BlurWallpaperProvider {
         @Override
         public void run() {
             for (Listener listener : mListeners) {
-                listener.onWallpaperChanged(mWallpaper, mPlaceholder);
+                listener.onWallpaperChanged();
             }
         }
     };
@@ -206,9 +206,17 @@ public class BlurWallpaperProvider {
         }
     }
 
+    public Bitmap getWallpaper() {
+        return mWallpaper;
+    }
+
+    public Bitmap getPlaceholder() {
+        return mPlaceholder;
+    }
+
     interface Listener {
 
-        void onWallpaperChanged(Bitmap wallpaper, Bitmap placeholder);
+        void onWallpaperChanged();
         void onOffsetChanged(float offset);
         void setUseTransparency(boolean useTransparency);
     }

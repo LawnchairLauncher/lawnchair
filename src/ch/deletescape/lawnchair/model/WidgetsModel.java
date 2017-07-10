@@ -47,11 +47,11 @@ public class WidgetsModel {
             for (AppWidgetProviderInfo fromProviderInfo : AppWidgetManagerCompat.getInstance(context).getAllProviders(/*packageUserKey*/)) {
                 arrayList.add(new WidgetItem(LauncherAppWidgetProviderInfo.fromProviderInfo(fromProviderInfo), packageManager, idp));
 
-                for (ShortcutConfigActivityInfo widgetItem : LauncherAppsCompat.getInstance(context).getCustomShortcutActivityList(packageUserKey)) {
-                    arrayList.add(new WidgetItem(widgetItem));
-                }
-                setWidgetsAndShortcuts(arrayList, context, packageUserKey);
             }
+            for (ShortcutConfigActivityInfo widgetItem : LauncherAppsCompat.getInstance(context).getCustomShortcutActivityList(packageUserKey)) {
+                arrayList.add(new WidgetItem(widgetItem));
+            }
+            setWidgetsAndShortcuts(arrayList, context, packageUserKey);
         } catch (Exception e) {
             /*if (!Utilities.isBinderSizeError(e)) {
                 throw e;

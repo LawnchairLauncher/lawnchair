@@ -28,8 +28,6 @@ import android.util.Xml;
 import android.view.Display;
 import android.view.WindowManager;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -85,8 +83,6 @@ public class InvariantDeviceProfile {
 
     public Point defaultWallpaperSize;
 
-    private FirebaseAnalytics mFirebaseAnalytic;
-
     public InvariantDeviceProfile() {
     }
 
@@ -99,7 +95,6 @@ public class InvariantDeviceProfile {
 
     InvariantDeviceProfile(Context context, String n, float w, float h, int r, int c, int fr, int fc,
                            float is, float its, int hs, float his, int dlId) {
-        mFirebaseAnalytic = FirebaseAnalytics.getInstance(context);
         name = n;
         minWidthDps = w;
         minHeightDps = h;
@@ -116,7 +111,6 @@ public class InvariantDeviceProfile {
 
     @TargetApi(Build.VERSION_CODES.M)
     InvariantDeviceProfile(Context context) {
-        mFirebaseAnalytic = FirebaseAnalytics.getInstance(context);
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics dm = new DisplayMetrics();
@@ -183,15 +177,12 @@ public class InvariantDeviceProfile {
         if (!prefs.getString("pref_numRows", valueDefault).equals(valueDefault)) {
             numRows = Integer.valueOf(prefs.getString("pref_numRows", ""));
         }
-        mFirebaseAnalytic.setUserProperty("num_rows", String.valueOf(numRows));
         if (!prefs.getString("pref_numCols", valueDefault).equals(valueDefault)) {
             numColumns = Integer.valueOf(prefs.getString("pref_numCols", ""));
         }
-        mFirebaseAnalytic.setUserProperty("num_cols", String.valueOf(numColumns));
         if (!prefs.getString("pref_numHotseatIcons", valueDefault).equals(valueDefault)) {
             numHotseatIcons = Integer.valueOf(prefs.getString("pref_numHotseatIcons", ""));
         }
-        mFirebaseAnalytic.setUserProperty("num_hotseat_icons", String.valueOf(numColumns));
         if (prefs.getFloat("pref_iconScaleSB", 1f) != 1f) {
             float iconScale = prefs.getFloat("pref_iconScaleSB", 1f);
             iconSize *= iconScale;

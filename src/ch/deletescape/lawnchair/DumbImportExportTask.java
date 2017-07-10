@@ -11,8 +11,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.firebase.crash.FirebaseCrash;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -112,7 +110,6 @@ public class DumbImportExportTask {
             out.close();
             return true;
         } catch (Exception e) {
-            FirebaseCrash.report(e);
             Log.e("copy", e.getMessage(), e);
         }
         return false;

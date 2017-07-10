@@ -27,8 +27,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
-import com.google.firebase.crash.FirebaseCrash;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -142,7 +140,6 @@ public class SavedWallpaperImages {
             values.put(ImageDb.COLUMN_IMAGE_FILENAME, imageFile.getName());
             db.insert(ImageDb.TABLE_NAME, null, values);
         } catch (IOException e) {
-            FirebaseCrash.report(e);
             Log.e(TAG, "Failed writing images to storage " + e);
         }
     }

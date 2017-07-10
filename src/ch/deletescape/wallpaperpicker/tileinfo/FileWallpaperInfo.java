@@ -7,8 +7,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.firebase.crash.FirebaseCrash;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -66,7 +64,6 @@ public class FileWallpaperInfo extends DrawableThumbWallpaperInfo {
                     WallpaperManagerCompat.getInstance(a).setStream(is, null, true, params[0]);
                     return bounds;
                 } catch (IOException e) {
-                    FirebaseCrash.report(e);
                     Log.w(TAG, "cannot write stream to wallpaper", e);
                 } finally {
                     Utils.closeSilently(is);

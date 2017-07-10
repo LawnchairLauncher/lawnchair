@@ -4,8 +4,8 @@ android:
   components:
     - tools
     - platform-tools
-    - build-tools-25.0.3
-    - android-25
+    - build-tools-26.0.0
+    - android-26
     - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
@@ -38,11 +38,16 @@ deploy:
       tags: true
   - provider: script
     skip_cleanup: true
-    script: scripts/deploy-hockeyapp.sh beta
+    script: scripts/deploy-vsmc.sh Beta
     on:
-      branch: master
+      branch: beta
   - provider: script
     skip_cleanup: true
-    script: scripts/deploy-hockeyapp.sh release
+    script: scripts/deploy-vsmc.sh Alpha
+    on:
+      branch: alpha
+  - provider: script
+    skip_cleanup: true
+    script: scripts/deploy-vsmc.sh Release
     on:
       tags: true

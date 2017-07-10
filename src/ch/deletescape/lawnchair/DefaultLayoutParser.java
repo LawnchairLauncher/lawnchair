@@ -15,8 +15,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.google.firebase.crash.FirebaseCrash;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -111,7 +109,6 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
             try {
                 metaIntent = Intent.parseUri(uri, 0);
             } catch (URISyntaxException e) {
-                FirebaseCrash.report(e);
                 Log.e(TAG, "Unable to add meta-favorite: " + uri, e);
                 return -1;
             }
@@ -272,7 +269,6 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
                 try {
                     mPackageManager.getReceiverInfo(cn, 0);
                 } catch (Exception e1) {
-                    FirebaseCrash.report(e1);
                     Log.d(TAG, "Can't find widget provider: " + cn.getClassName());
                     return -1;
                 }
@@ -307,7 +303,6 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
                     mContext.sendBroadcast(intent);
                 }
             } catch (RuntimeException ex) {
-                FirebaseCrash.report(ex);
                 Log.e(TAG, "Problem allocating appWidgetId", ex);
             }
             return insertedId;

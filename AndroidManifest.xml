@@ -1,54 +1,45 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-/*
-**
-** Copyright 2008, The Android Open Source Project
-**
-** Licensed under the Apache License, Version 2.0 (the "License");
-** you may not use this file except in compliance with the License.
-** You may obtain a copy of the License at
-**
-**     http://www.apache.org/licenses/LICENSE-2.0
-**
-** Unless required by applicable law or agreed to in writing, software
-** distributed under the License is distributed on an "AS IS" BASIS,
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-** See the License for the specific language governing permissions and
-** limitations under the License.
-*/
--->
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ch.deletescape.lawnchair">
-    <!--
-    Manifest entries specific to Launcher3. This is merged with AndroidManifest-common.xml.
-    Refer comments around specific entries on how to extend individual components.
-    -->
 
-    <!--
-    Permissions required for read/write access to the workspace data. These permission name
-    should not conflict with that defined in other apps, as such an app should embed its package
-    name in the permissions. eq com.mypackage.permission.READ_SETTINGS
-    -->
+    <permission
+        android:name="com.android.launcher.permission.INSTALL_SHORTCUT"
+        android:description="@string/permdesc_install_shortcut"
+        android:label="@string/permlab_install_shortcut"
+        android:protectionLevel="dangerous" />
+    <permission
+        android:name="ch.deletescape.lawnchair.permission.QSB"
+        android:label="QSB"
+        android:protectionLevel="normal" />
     <permission
         android:name="ch.deletescape.lawnchair.permission.READ_SETTINGS"
-        android:protectionLevel="normal"
+        android:description="@string/permdesc_read_settings"
         android:label="@string/permlab_read_settings"
-        android:description="@string/permdesc_read_settings" />
+        android:protectionLevel="normal" />
     <permission
         android:name="ch.deletescape.lawnchair.permission.WRITE_SETTINGS"
-        android:protectionLevel="signatureOrSystem"
+        android:description="@string/permdesc_write_settings"
         android:label="@string/permlab_write_settings"
-        android:description="@string/permdesc_write_settings" />
+        android:protectionLevel="signatureOrSystem" />
 
-    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
-    <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
+
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
+    <uses-permission android:name="android.permission.BIND_APPWIDGET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="ch.deletescape.lawnchair.permission.READ_SETTINGS" />
     <uses-permission android:name="ch.deletescape.lawnchair.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="ch.deletescape.lawnchair.permission.QSB" />
 
     <application
+        android:name=".App"
         android:backupAgent="ch.deletescape.lawnchair.LauncherBackupAgent"
-        android:fullBackupOnly="true"
         android:fullBackupContent="@xml/backupscheme"
+        android:fullBackupOnly="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher_home"
         android:label="@string/derived_app_name"
@@ -56,23 +47,19 @@
         android:restoreAnyVersion="true"
         android:supportsRtl="true">
 
-        <!--
-        Main launcher activity. When extending only change the name, and keep all the
-        attributes and intent filters the same
-        -->
         <activity
             android:name="ch.deletescape.lawnchair.Launcher"
-            android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
-            android:stateNotNeeded="true"
-            android:theme="@style/LauncherTheme"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait"
             android:configChanges="keyboard|keyboardHidden|navigation"
-            android:resumeWhilePausing="true"
-            android:taskAffinity=""
+            android:enabled="true"
             android:excludeFromRecents="true"
-            android:enabled="true">
+            android:launchMode="singleTask"
+            android:resumeWhilePausing="true"
+            android:screenOrientation="portrait"
+            android:stateNotNeeded="true"
+            android:taskAffinity=""
+            android:theme="@style/LauncherTheme"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -82,14 +69,11 @@
             </intent-filter>
         </activity>
 
-        <!--
-        The settings activity. When extending keep the intent filter present
-        -->
         <activity
             android:name="ch.deletescape.lawnchair.settings.ui.SettingsActivity"
+            android:autoRemoveFromRecents="true"
             android:label="@string/settings_button_text"
-            android:theme="@style/SettingsTheme"
-            android:autoRemoveFromRecents="true">
+            android:theme="@style/SettingsTheme">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -98,10 +82,10 @@
 
         <activity
             android:name="ch.deletescape.wallpaperpicker.WallpaperPickerActivity"
-            android:theme="@style/WallpaperTheme.Picker"
+            android:finishOnCloseSystemDialogs="true"
             android:label="@string/pick_wallpaper"
             android:screenOrientation="portrait"
-            android:finishOnCloseSystemDialogs="true">
+            android:theme="@style/WallpaperTheme.Picker">
             <intent-filter>
                 <action android:name="android.intent.action.SET_WALLPAPER" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -110,16 +94,45 @@
 
         <activity
             android:name="ch.deletescape.wallpaperpicker.WallpaperCropActivity"
-            android:theme="@style/WallpaperTheme"
-            android:screenOrientation="portrait"
+            android:finishOnCloseSystemDialogs="true"
             android:label="@string/crop_wallpaper"
-            android:finishOnCloseSystemDialogs="true">
+            android:screenOrientation="portrait"
+            android:theme="@style/WallpaperTheme">
             <intent-filter>
                 <action android:name="android.service.wallpaper.CROP_AND_SET_WALLPAPER" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name="ch.deletescape.lawnchair.LauncherProvider"
+            android:authorities="ch.deletescape.lawnchair.settings"
+            android:exported="true"
+            android:readPermission="ch.deletescape.lawnchair.permission.READ_SETTINGS"
+            android:writePermission="ch.deletescape.lawnchair.permission.WRITE_SETTINGS" />
+
+        <receiver
+            android:name="ch.deletescape.lawnchair.InstallShortcutReceiver"
+            android:permission="com.android.launcher.permission.INSTALL_SHORTCUT">
+            <intent-filter>
+                <action android:name="com.android.launcher.action.INSTALL_SHORTCUT" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="ch.deletescape.lawnchair.AppWidgetsRestoredReceiver">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_HOST_RESTORED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="ch.deletescape.lawnchair.pixelify.WeatherUpdateReciever"
+            android:permission="android.permission.CAPTURE_AUDIO_HOTWORD">
+            <intent-filter>
+                <action android:name="com.google.android.apps.nexuslauncher.updateweather" />
+            </intent-filter>
+        </receiver>
 
         <service
             android:name=".notification.NotificationListener"
@@ -130,17 +143,14 @@
             </intent-filter>
         </service>
 
-        <!--
-        The settings provider contains Home's data, like the workspace favorites. The permissions
-        should be changed to what is defined above. The authorities should also be changed to
-        represent the package name.
-        -->
-        <provider
-            android:name="ch.deletescape.lawnchair.LauncherProvider"
-            android:authorities="ch.deletescape.lawnchair.settings"
-            android:exported="true"
-            android:writePermission="ch.deletescape.lawnchair.permission.WRITE_SETTINGS"
-            android:readPermission="ch.deletescape.lawnchair.permission.READ_SETTINGS" />
+        <service
+            android:name="ch.deletescape.lawnchair.dynamicui.ColorExtractionService"
+            android:exported="false"
+            android:process=":color_extraction" />
+
+        <meta-data
+            android:name="android.nfc.disable_beam_default"
+            android:value="true" />
 
     </application>
 </manifest>

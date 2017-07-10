@@ -39,8 +39,6 @@ import android.view.WindowManager;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,7 +72,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
     private SavedWallpaperImages mSavedImages;
     private int mSelectedIndex = -1;
     private float mWallpaperParallaxOffset;
-    private FirebaseAnalytics mFirebaseAnalytics;
 
     /**
      * shows the system wallpaper behind the window and hides the {@link #mCropView} if visible
@@ -124,7 +121,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
      * called by onCreate; this is sub-classed to overwrite WallpaperCropActivity
      */
     protected void init() {
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         setContentView(R.layout.wallpaper_picker);
 
         mCropView = (CropView) findViewById(R.id.cropView);
@@ -223,7 +219,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
      */
     @Override
     public void onClick(View v) {
-        mFirebaseAnalytics.logEvent("click_wallpapertile", null);
         if (mActionMode != null) {
             // When CAB is up, clicking toggles the item instead
             if (v.isLongClickable()) {

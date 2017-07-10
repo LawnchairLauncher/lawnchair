@@ -61,8 +61,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
 
-import com.google.firebase.crash.FirebaseCrash;
-
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
@@ -448,7 +446,6 @@ public final class Utilities {
             Log.e(TAG, "Launcher does not have the permission to launch " + intent +
                     ". Make sure to create a MAIN intent-filter for the corresponding activity " +
                     "or use the exported attribute for this activity.", e);
-            FirebaseCrash.report(e);
         }
     }
 
@@ -593,7 +590,6 @@ public final class Utilities {
             out.close();
             return out.toByteArray();
         } catch (IOException e) {
-            FirebaseCrash.report(e);
             Log.w(TAG, "Could not write bitmap");
             return null;
         }

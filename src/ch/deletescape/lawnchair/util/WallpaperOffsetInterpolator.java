@@ -7,8 +7,6 @@ import android.view.Choreographer;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
-import com.google.firebase.crash.FirebaseCrash;
-
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
@@ -69,7 +67,6 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
                     setWallpaperOffsetSteps();
                 } catch (IllegalArgumentException e) {
                     Log.e(TAG, "Error updating wallpaper offset: " + e);
-                    FirebaseCrash.report(e);
                 }
             }
         }
