@@ -3979,8 +3979,9 @@ public class Workspace extends PagedView
         }
     }
 
-    private void moveToScreen(int page, boolean animate) {
-        if (!workspaceInModalState()) {
+    void moveToDefaultScreen(boolean animate) {
+        int page = getDefaultPage();
+        if (!workspaceInModalState() && getCurrentPage() != page) {
             if (animate) {
                 snapToPage(page);
             } else {
@@ -3991,10 +3992,6 @@ public class Workspace extends PagedView
         if (child != null) {
             child.requestFocus();
         }
-    }
-
-    void moveToDefaultScreen(boolean animate) {
-        moveToScreen(getDefaultPage(), animate);
     }
 
     void moveToCustomContentScreen(boolean animate) {
