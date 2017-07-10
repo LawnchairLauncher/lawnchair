@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import ch.deletescape.lawnchair.LauncherModel;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.util.PackageUserKey;
 
 public class NotificationListener extends NotificationListenerService {
@@ -187,11 +188,11 @@ public class NotificationListener extends NotificationListenerService {
         boolean z = true;
         boolean z2 = false;
         getCurrentRanking().getRanking(statusBarNotification.getKey(), mTempRanking);
-        /*if (!mTempRanking.canShowBadge()) {
+        if (Utilities.isAtLeastO() && !mTempRanking.canShowBadge()) {
             return true;
-        }*/
+        }
         Notification notification = statusBarNotification.getNotification();
-        if (/*mTempRanking.getChannel().getId().equals("miscellaneous") &&*/ (notification.flags & 2) != 0) {
+        if ((!Utilities.isAtLeastO() || mTempRanking.getChannel().getId().equals("miscellaneous")) && (notification.flags & 2) != 0) {
             return true;
         }
         boolean z3;
