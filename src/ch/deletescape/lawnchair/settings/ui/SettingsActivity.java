@@ -32,6 +32,7 @@ import ch.deletescape.lawnchair.DumbImportExportTask;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherFiles;
 import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
@@ -39,6 +40,10 @@ import ch.deletescape.lawnchair.R;
 public class SettingsActivity extends Activity implements PreferenceFragment.OnPreferenceStartFragmentCallback {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FeatureFlags.loadDarkThemePreference(this);
+        if (FeatureFlags.useDarkTheme)
+            setTheme(R.style.SettingsTheme_Dark);
+
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {
