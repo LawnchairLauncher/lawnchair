@@ -54,7 +54,6 @@ import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.graphics.IconPalette;
 import ch.deletescape.lawnchair.model.PackageItemInfo;
-import ch.deletescape.lawnchair.shortcuts.DeepShortcutTextView;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
@@ -153,10 +152,11 @@ public class BubbleTextView extends TextView
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
             float allAppsOpacity = Utilities.getPrefs(getContext()).getFloat("pref_allAppsOpacitySB", 1f);
-            if (FeatureFlags.useDarkTheme ||
-                    (allAppsOpacity < .5f && !BlurWallpaperProvider.isEnabled()) ||
-                    allAppsOpacity < .2f) {
-                setTextColor(Utilities.getColor(getContext(), ExtractedColors.VIBRANT_FOREGROUND_INDEX, Color.WHITE));
+            if (FeatureFlags.useDarkTheme) {
+                setTextColor(Color.WHITE);
+            }
+            if ((allAppsOpacity < .5f && !BlurWallpaperProvider.isEnabled()) || allAppsOpacity < .2f) {
+                setTextColor(Utilities.getColor(getContext(), ExtractedColors.DOMINANT_FOREGROUND_INDEX, Color.WHITE));
             }
         } else if (display == DISPLAY_FOLDER) {
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
