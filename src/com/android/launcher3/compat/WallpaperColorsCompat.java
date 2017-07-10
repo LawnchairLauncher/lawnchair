@@ -21,6 +21,7 @@ package com.android.launcher3.compat;
 public class WallpaperColorsCompat {
 
     public static final int HINT_SUPPORTS_DARK_TEXT = 0x1;
+    public static final int HINT_SUPPORTS_DARK_THEME = 0x2;
 
     private final int mPrimaryColor;
     private final int mSecondaryColor;
