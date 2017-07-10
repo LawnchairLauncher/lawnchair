@@ -203,4 +203,6 @@
     <dimen name="widget_section_horizontal_padding">16.0dip</dimen>
     <dimen name="widget_section_indent">0.0dip</dimen>
     <dimen name="widget_row_divider">2.0dip</dimen>
+    <dimen name="folder_background_radius">2dp</dimen>
+    <dimen name="folder_label_shadow_radius">2dp</dimen>
 </resources>

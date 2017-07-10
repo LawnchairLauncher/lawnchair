@@ -160,6 +160,11 @@ public class BubbleTextView extends TextView
             }
         } else if (display == DISPLAY_FOLDER) {
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
+            if (BlurWallpaperProvider.isEnabled() && !FeatureFlags.useDarkTheme) {
+                setShadowLayer(getResources().getDimensionPixelSize(R.dimen.folder_label_shadow_radius),
+                        0, 0, getResources().getColor(R.color.folder_label_shadow_color));
+                setTextColor(Color.WHITE);
+            }
         }
         mCenterVertically = a.getBoolean(R.styleable.BubbleTextView_centerVertically, false);
 
