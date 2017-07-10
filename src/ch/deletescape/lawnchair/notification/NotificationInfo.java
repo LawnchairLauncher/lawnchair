@@ -15,6 +15,7 @@ import android.view.View.OnClickListener;
 
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAppState;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.graphics.IconPalette;
 import ch.deletescape.lawnchair.popup.PopupContainerWithArrow;
 import ch.deletescape.lawnchair.util.PackageUserKey;
@@ -41,24 +42,27 @@ public class NotificationInfo implements OnClickListener {
         Notification notification = statusBarNotification.getNotification();
         title = notification.extras.getCharSequence("android.title");
         text = notification.extras.getCharSequence("android.text");
-        mBadgeIcon = 1; //notification.getBadgeIconType(); // We need some kind of compat for this
-        //if (mBadgeIcon != 1) {
-        //    icon = notification.getLargeIcon();
-        //}
+        mBadgeIcon = Utilities.isAtLeastO() ? notification.getBadgeIconType() : 1; // We need some kind of compat for this
+        if (mBadgeIcon != 1 && Utilities.ATLEAST_MARSHMALLOW) {
+            icon = notification.getLargeIcon();
+        }
         if (icon == null) {
             try {
                 Resources res = context.getPackageManager().getResourcesForApplication(statusBarNotification.getPackageName());
-                mIconDrawable = res.getDrawable(notification.icon);
-                //mIconDrawable = notification.getSmallIcon().loadDrawable(context);
+                if (Utilities.ATLEAST_MARSHMALLOW) {
+                    mIconDrawable = notification.getSmallIcon().loadDrawable(context);
+                } else {
+                    mIconDrawable = res.getDrawable(notification.icon);
+                }
                 mIconColor = statusBarNotification.getNotification().color;
                 mIsIconLarge = false;
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
-        } //else {
-        //  mIconDrawable = icon.loadDrawable(context);
-        //  mIsIconLarge = true;
-        //}
+        } else if (Utilities.ATLEAST_MARSHMALLOW) {
+            mIconDrawable = icon.loadDrawable(context);
+            mIsIconLarge = true;
+        }
         if (mIconDrawable == null) {
             mIconDrawable = new BitmapDrawable(context.getResources(), LauncherAppState.getInstance().getIconCache().getDefaultIcon(statusBarNotification.getUser()));
             mBadgeIcon = 0;
