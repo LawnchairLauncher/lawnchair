@@ -70,7 +70,7 @@
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
   <string name="uninstall_drop_target_label">Deinstallieren</string>
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
-  <string name="app_info_drop_target_label">App Informationen</string>
+  <string name="app_info_drop_target_label">App-Details</string>
   <!-- Permissions: -->
   <skip></skip>
   <!-- Permission short label -->
@@ -262,16 +262,16 @@
   <string name="transparent_hotseat_pref_title">Transparente Favoritenablage</string>
   <string name="dynamic_ui_pref_title">Akzentfarbe an Hintergrundbild anpassen</string>
   <string name="dark_theme_pref_title">Dunkles Design verwenden</string>
-  <string name="blur_pref_title">Glaseffekt verwenden</string>
-  <string name="blur_radius_pref_title">Glaseffekt Stärke</string>
-  <string name="white_google_icon_pref_title">Weisse Google Icons verwenden</string>
-  <string name="hide_icon_labels_pref_title">Icon Texte auf dem Startbildschirm verstecken</string>
-  <string name="workspace_label_color_hue_pref_title">Farbe der Icon Texte auf dem Startbildschirm</string>
-  <string name="workspace_label_color_variation_pref_title">Farbvariation der Icon Texte auf dem Startbildschirm</string>
+  <string name="blur_pref_title">Unschärfeeffekt verwenden</string>
+  <string name="blur_radius_pref_title">Stärke des Unschärfeeffekts</string>
+  <string name="white_google_icon_pref_title">Weiße Google Icons verwenden</string>
+  <string name="hide_icon_labels_pref_title">Icon Beschriftungen auf dem Startbildschirm verstecken</string>
+  <string name="workspace_label_color_hue_pref_title">Farbe der Icon Beschriftungen auf dem Startbildschirm</string>
+  <string name="workspace_label_color_variation_pref_title">Farbvariation der Icon Beschriftungen auf dem Startbildschirm</string>
   <string name="all_apps_opacity_pref_title">Transparenz der App-Liste</string>
-  <string name="num_cols_pref_title">\"Anzahl Spalten\"</string>
-  <string name="num_rows_pref_title">Anzahl Zeilen</string>
-  <string name="num_hotseat_icons_pref_title">Anzahl Icons in der Favoritenablage</string>
+  <string name="num_cols_pref_title">Anzahl der Spalten</string>
+  <string name="num_rows_pref_title">Anzahl der Zeilen</string>
+  <string name="num_hotseat_icons_pref_title">Anzahl der Icons in der Favoritenablage</string>
   <string name="icon_scale_pref_title">Icon Größe</string>
   <string name="icon_text_scale_pref_title">Icon Textgröße</string>
   <string name="full_width_width_widgets_pref_title">Widgets mit voller Breite</string>
@@ -288,7 +288,7 @@
   <string name="show_mic_pref_title">Google Assistant Button anzeigen</string>
   <string name="pixel_style_icons_pref_title">Pixel Icons verwenden</string>
   <string name="pixel_style_icons_pref_summary">Wenn möglich, runde Icons verwenden</string>
-  <string name="show_google_now_tab_pref_title">Google Now Seite zeigen</string>
+  <string name="show_google_now_tab_pref_title">Google Now Seite anzeigen</string>
   <string name="restart_lawnchair_pref_title">Lawnchair neu starten</string>
   <string name="restart_lawnchair_pref_summary">Hilfreich, wenn Einstellungen nicht korrekt angewendet wurden</string>
   <string name="rebuild_icondb_pref_title">Icon Datenbank neu generieren</string>
