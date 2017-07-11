@@ -203,7 +203,7 @@
   <string name="action_deep_shortcut">Genvägar</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
   <string name="shortcuts_menu_description"><xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> genvägar för <xliff:g id="APP_NAME">%2$s</xliff:g></string>
-  <string name="edit_drop_target_label">Edit</string>
+  <string name="edit_drop_target_label">Redigera</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
   <string name="wallpaper_instructions">Ange bakgrund</string>
   <!-- Error message when an image is selected as a wallpaper,
@@ -238,31 +238,31 @@
   <!-- Title of activity for cropping wallpapers -->
   <string name="crop_wallpaper">Beskär bakgrund</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
-  <string name="which_wallpaper_option_home_screen">Home screen</string>
+  <string name="which_wallpaper_option_home_screen">Hemskärm</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
-  <string name="which_wallpaper_option_lock_screen">Lock screen</string>
+  <string name="which_wallpaper_option_lock_screen">Låsskärm</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
-  <string name="which_wallpaper_option_home_screen_and_lock_screen">Home screen and lock screen</string>
-  <string name="title_show_google_app">Show %1$s</string>
-  <string name="title_show_google_app_default">Show Google app</string>
-  <string name="label_search">Search</string>
-  <string name="label_voice_search">Voice search</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d shortcuts and %2$d notifications for %3$s</string>
-  <string name="notifications_header">Notifications</string>
-  <string name="widgets_bottom_sheet_title">%1$s widgets</string>
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">Startskärm och låsskärm</string>
+  <string name="title_show_google_app">Visa %1$s</string>
+  <string name="title_show_google_app_default">Visa Google-appen</string>
+  <string name="label_search">Sök</string>
+  <string name="label_voice_search">Röstsökning</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d genvägar och %2$d notifikationer för %3$s</string>
+  <string name="notifications_header">Notifikationer</string>
+  <string name="widgets_bottom_sheet_title">%1$s widgetar</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
-  <string name="about_title">About</string>
+  <string name="about_text">Lawnchair är en hemskärm-app skapad av Till Kottmann (deletescape). Den är baserad på Launcher3 från AOSP.</string>
+  <string name="about_title">Mer om</string>
   <string name="week_day_format">%1$s, %2$s</string>
-  <string name="icon_pack_preference_title">Icon Pack</string>
-  <string name="icon_pack_preference_summary">Select an icon Pack</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Dock uses wallpaper colors</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
-  <string name="transparent_hotseat_pref_title">Transparent Dock</string>
-  <string name="dynamic_ui_pref_title">Extract accent color from wallpaper</string>
-  <string name="dark_theme_pref_title">Enable dark theme</string>
-  <string name="blur_pref_title">Enable blur</string>
+  <string name="icon_pack_preference_title">Ikonpaket</string>
+  <string name="icon_pack_preference_summary">Välj ett ikonpaket</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Dockan använder färger från bakgrundsbilden</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">Dockan använder en färg som utvinns ur bakgrundsbilden</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">Dockan kommer att färgas grå, men justeras av ljusstyrkan i bakgrundsbilden</string>
+  <string name="transparent_hotseat_pref_title">Genomskinlig docka</string>
+  <string name="dynamic_ui_pref_title">Använd accentfärg från bakgrundsbilden</string>
+  <string name="dark_theme_pref_title">Använd mörkt färgtema</string>
+  <string name="blur_pref_title">Använd oskärpa</string>
   <string name="blur_radius_pref_title">Blur radius</string>
   <string name="white_google_icon_pref_title">Use white Google icon</string>
   <string name="hide_icon_labels_pref_title">Hide icon labels on homescreen</string>
