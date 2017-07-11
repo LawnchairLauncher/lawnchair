@@ -316,46 +316,46 @@
   <string name="test_title">Test</string>
   <string name="visibility">Sichtbarkeit</string>
   <!-- Customization Color -->
-  <string name="white">White</string>
+  <string name="white">Weiß</string>
   <!-- Customization Color -->
-  <string name="black">Black</string>
+  <string name="black">Schwarz</string>
   <!-- Customization Color -->
-  <string name="red">Red</string>
+  <string name="red">Rot</string>
   <!-- Customization Color -->
   <string name="pink">Pink</string>
   <!-- Customization Color -->
-  <string name="purple">Purple</string>
+  <string name="purple">Lila</string>
   <!-- Customization Color -->
-  <string name="deep_purple">Deep Purple</string>
+  <string name="deep_purple">Dunkellila</string>
   <!-- Customization Color -->
-  <string name="indigo">Indigo</string>
+  <string name="indigo">Indigoblau</string>
   <!-- Customization Color -->
-  <string name="blue">Blue</string>
+  <string name="blue">Blau</string>
   <!-- Customization Color -->
-  <string name="light_blue">Light Blue</string>
+  <string name="light_blue">Hellblau</string>
   <!-- Customization Color -->
-  <string name="cyan">Cyan</string>
+  <string name="cyan">Türkis</string>
   <!-- Customization Color -->
   <string name="teal">Teal</string>
   <!-- Customization Color -->
-  <string name="green">Green</string>
+  <string name="green">Grün</string>
   <!-- Customization Color -->
-  <string name="light_green">Light Green</string>
+  <string name="light_green">Hellgrün</string>
   <!-- Customization Color -->
-  <string name="lime">Lime</string>
+  <string name="lime">Limettengrün</string>
   <!-- Customization Color -->
-  <string name="yellow">Yellow</string>
+  <string name="yellow">Gelb</string>
   <!-- Customization Color -->
-  <string name="amber">Amber</string>
+  <string name="amber">Bernstein</string>
   <!-- Customization Color -->
   <string name="orange">Orange</string>
   <!-- Customization Color -->
-  <string name="deep_orange">Deep Orange</string>
+  <string name="deep_orange">Dunkelorange</string>
   <!-- Customization Color -->
-  <string name="brown">Brown</string>
+  <string name="brown">Braun</string>
   <!-- Customization Color -->
-  <string name="grey">Grey</string>
+  <string name="grey">Grau</string>
   <!-- Customization Color -->
-  <string name="blue_grey">Blue Grey</string>
-  <string name="default_text">Default</string>
+  <string name="blue_grey">Blaugrau</string>
+  <string name="default_text">Standard</string>
 </resources>
