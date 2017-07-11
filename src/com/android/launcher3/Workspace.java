@@ -3986,7 +3986,7 @@ public class Workspace extends PagedView
 
     void moveToDefaultScreen(boolean animate) {
         int page = getDefaultPage();
-        if (!workspaceInModalState() && getCurrentPage() != page) {
+        if (!workspaceInModalState() && getNextPage() != page) {
             if (animate) {
                 snapToPage(page);
             } else {
