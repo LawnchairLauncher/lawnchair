@@ -320,25 +320,25 @@
   <string name="test_title">اختبار</string>
   <string name="visibility">وضوح الرؤية</string>
   <!-- Customization Color -->
-  <string name="white">White</string>
+  <string name="white">أبيض</string>
   <!-- Customization Color -->
-  <string name="black">Black</string>
+  <string name="black">أسود</string>
   <!-- Customization Color -->
-  <string name="red">Red</string>
+  <string name="red">أحمر</string>
   <!-- Customization Color -->
-  <string name="pink">Pink</string>
+  <string name="pink">وردي</string>
   <!-- Customization Color -->
-  <string name="purple">Purple</string>
+  <string name="purple">بنفسجي</string>
   <!-- Customization Color -->
-  <string name="deep_purple">Deep Purple</string>
+  <string name="deep_purple">بنفسجي داكن</string>
   <!-- Customization Color -->
-  <string name="indigo">Indigo</string>
+  <string name="indigo">نيلي</string>
   <!-- Customization Color -->
-  <string name="blue">Blue</string>
+  <string name="blue">أزرق</string>
   <!-- Customization Color -->
-  <string name="light_blue">Light Blue</string>
+  <string name="light_blue">أزرق فاتح</string>
   <!-- Customization Color -->
-  <string name="cyan">Cyan</string>
+  <string name="cyan">أزرق سماوي</string>
   <!-- Customization Color -->
   <string name="teal">Teal</string>
   <!-- Customization Color -->
