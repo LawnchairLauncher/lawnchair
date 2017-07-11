@@ -3,9 +3,9 @@
 
     <Preference
         android:key="kill"
-        android:title="Restart Lawnchair"
-        android:summary="Can be helpful if some settings are not properly applied" />
+        android:title="@string/restart_lawnchair_pref_title"
+        android:summary="@string/restart_lawnchair_pref_summary" />
     <Preference
         android:key="rebuild_icondb"
-        android:title="Rebuild Icon Database" />
+        android:title="@string/rebuild_icondb_pref_title" />
 </PreferenceScreen>

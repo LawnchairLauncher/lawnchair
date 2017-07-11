@@ -4,47 +4,47 @@
 
     <ch.deletescape.lawnchair.preferences.IconPackPreference
         android:key="pref_iconPackPackage"
-        android:title="Icon Pack"
-        android:summary="Select an icon Pack"
+        android:title="@string/icon_pack_preference_title"
+        android:summary="@string/icon_pack_preference_summary"
         android:persistent="true" />
 
     <SwitchPreference
         android:key="pref_hotseatShouldUseExtractedColors"
-        android:title="Tray uses wallpaper colors"
-        android:summaryOn="The Tray will be colored with a color extracted from the wallpaper"
-        android:summaryOff="The Tray will be colored gray, but adjusted by the wallpaper brightness"
+        android:title="@string/hotseat_uses_extracted_colors_pref_title"
+        android:summaryOn="@string/hotseat_uses_extracted_colors_pref_on"
+        android:summaryOff="@string/hotseat_uses_extracted_colors_pref_off"
         android:defaultValue="true"
         android:persistent="true" />
 
     <SwitchPreference
         android:key="pref_isHotseatTransparent"
-        android:title="Transparent Tray"
+        android:title="@string/transparent_hotseat_pref_title"
         android:defaultValue="false"
         android:disableDependentsState="true"
         android:persistent="true" />
 
     <SwitchPreference
         android:key="pref_enableDynamicUi"
-        android:title="Extract accent color from wallpaper"
+        android:title="@string/dynamic_ui_pref_title"
         android:defaultValue="false"
         android:persistent="true" />
 
     <SwitchPreference
         android:key="pref_enableDarkTheme"
-        android:title="Enable dark theme"
+        android:title="@string/dark_theme_pref_title"
         android:defaultValue="false"
         android:persistent="true" />
 
     <SwitchPreference
         android:key="pref_enableBlur"
-        android:title="Enable blur"
+        android:title="@string/blur_pref_title"
         android:defaultValue="false"
         android:dependency="pref_isHotseatTransparent"
         android:persistent="true" />
 
     <ch.deletescape.lawnchair.preferences.SeekbarPreference
         android:key="pref_blurRadius"
-        android:title="Blur radius"
+        android:title="@string/blur_radius_pref_title"
         android:dependency="pref_enableBlur"
         app:minValue="0"
         app:maxValue="150"
@@ -54,21 +54,21 @@
 
     <SwitchPreference
         android:key="pref_enableWhiteGoogleIcon"
-        android:title="Use white Google icon"
+        android:title="@string/white_google_icon_pref_title"
         android:dependency="pref_enableBlur"
         android:defaultValue="false"
         android:persistent="true" />
 
     <SwitchPreference
         android:key="pref_hideAppLabels"
-        android:title="Hide Icon Labels on Homescreen"
+        android:title="@string/hide_icon_labels_pref_title"
         android:defaultValue="false"
         android:disableDependentsState="true"
         android:persistent="true" />
 
     <ListPreference
         android:key="pref_workspaceLabelColorHue"
-        android:title="Color of Icon Labels on Homescreen"
+        android:title="@string/workspace_label_color_hue_pref_title"
         android:entries="@array/color_index_entries"
         android:entryValues="@array/color_index_values"
         android:defaultValue="-3"
@@ -77,7 +77,7 @@
 
     <ListPreference
         android:key="pref_workspaceLabelColorVariation"
-        android:title="Color Variation of Icon Labels on Homescreen"
+        android:title="@string/workspace_label_color_variation_pref_title"
         android:entries="@array/color_variation_entries"
         android:entryValues="@array/color_variation_values"
         android:defaultValue="5"
@@ -86,7 +86,7 @@
 
     <ch.deletescape.lawnchair.preferences.SeekbarPreference
         android:key="pref_allAppsOpacitySB"
-        android:title="All apps opacity"
+        android:title="@string/all_apps_opacity_pref_title"
         app:minValue="0"
         app:maxValue="1"
         app:defaultValue="1"
@@ -96,7 +96,7 @@
 
     <ListPreference
         android:key="pref_numCols"
-        android:title="Number of columns"
+        android:title="@string/num_cols_pref_title"
         android:entries="@array/numColsTexts"
         android:entryValues="@array/numColsValues"
         android:defaultValue="@string/generalDefault"
@@ -104,7 +104,7 @@
 
     <ListPreference
         android:key="pref_numRows"
-        android:title="Number of rows"
+        android:title="@string/num_rows_pref_title"
         android:entryValues="@array/numRowsValues"
         android:entries="@array/numRowsTexts"
         android:defaultValue="@string/generalDefault"
@@ -112,7 +112,7 @@
 
     <ListPreference
         android:key="pref_numHotseatIcons"
-        android:title="Number of icons in tray"
+        android:title="@string/num_hotseat_icons_pref_title"
         android:entryValues="@array/numHotseatIconsValues"
         android:entries="@array/numHotseatIconsTexts"
         android:defaultValue="@string/generalDefault"
@@ -120,7 +120,7 @@
 
     <ch.deletescape.lawnchair.preferences.SeekbarPreference
         android:key="pref_iconScaleSB"
-        android:title="Icon Scale"
+        android:title="@string/icon_scale_pref_title"
         app:minValue="0.3"
         app:maxValue="1.5"
         app:summaryFormat="%.0f%%"
@@ -130,7 +130,7 @@
 
     <ch.deletescape.lawnchair.preferences.SeekbarPreference
         android:key="pref_iconTextScaleSB"
-        android:title="Icon Text Scale"
+        android:title="@string/icon_text_scale_pref_title"
         app:minValue="0.3"
         app:maxValue="1.5"
         app:summaryFormat="%.0f%%"
@@ -141,12 +141,12 @@
     <SwitchPreference
         android:key="pref_fullWidthWidgets"
         android:persistent="true"
-        android:title="Full width widgets"
+        android:title="@string/full_width_width_widgets_pref_title"
         android:defaultValue="false"
-        android:summary="Allow widgets to span over the whole width without padding" />
+        android:summary="@string/full_width_widgets_pref_summary" />
 
     <Preference
         android:key="notification_access"
-        android:title="Notification Badges and Preview"
-        android:summary="Allow Lawnchair to access your notification to enable this features" />
+        android:title="@string/notification_access_pref_title"
+        android:summary="@string/notification_access_pref_summary" />
 </PreferenceScreen>
