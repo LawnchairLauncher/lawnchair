@@ -1,6 +1,7 @@
 package ch.deletescape.lawnchair.pixelify;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.text.Editable;
@@ -17,7 +18,7 @@ import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 
-public class DateWidgetView extends LinearLayout implements TextWatcher {
+public class DateWidgetView extends LinearLayout implements TextWatcher, View.OnClickListener {
     private String text = "";
     private float dateText1TextSize;
     private DoubleShadowTextClock dateText1;
@@ -35,8 +36,10 @@ public class DateWidgetView extends LinearLayout implements TextWatcher {
         dateText1TextSize = dateText1.getTextSize();
         dateText1.addTextChangedListener(this);
         dateText1.setFormat(DateFormat.getBestDateTimePattern(Locale.getDefault(), "MMMMd"));
+        dateText1.setOnClickListener(this);
         dateText2 = (DoubleShadowTextClock) findViewById(R.id.date_text2);
         dateText2.setFormat(getContext().getString(R.string.week_day_format, "EEEE", "yyyy"));
+        dateText2.setOnClickListener(this);
         init();
     }
 
@@ -112,5 +115,12 @@ public class DateWidgetView extends LinearLayout implements TextWatcher {
                 }
             }
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        Context context = v.getContext();
+        Intent LaunchIntent = new Intent(Intent.ACTION_VIEW).setType("vnd.android.cursor.item/event");
+        context.startActivity(LaunchIntent);
     }
 }
