@@ -24,6 +24,7 @@ import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.text.InputType;
@@ -72,6 +73,9 @@ import ch.deletescape.lawnchair.UninstallDropTarget.DropTargetSource;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace.ItemOperator;
 import ch.deletescape.lawnchair.accessibility.AccessibleDragListenerAdapter;
+import ch.deletescape.lawnchair.blur.BlurDrawable;
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragController;
 import ch.deletescape.lawnchair.dragndrop.DragController.DragListener;
 import ch.deletescape.lawnchair.dragndrop.DragLayer;
@@ -135,6 +139,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     protected final Launcher mLauncher;
     protected DragController mDragController;
+    private BlurDrawable mBlurDrawable;
     public FolderInfo mInfo;
 
     @Thunk
@@ -220,6 +225,14 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // name is complete, we have something to focus on, thus hiding the cursor and giving
         // reliable behavior when clicking the text field (since it will always gain focus on click).
         setFocusableInTouchMode(true);
+
+        if (BlurWallpaperProvider.isEnabled()) {
+            mBlurDrawable = BlurWallpaperProvider.getInstance().createDrawable(
+                    res.getDimensionPixelSize(R.dimen.folder_background_radius), false);
+            mBlurDrawable.setBlurredView(mLauncher.getWorkspace());
+            mBlurDrawable.setShouldProvideOutline(true);
+            setBackground(mBlurDrawable);
+        }
     }
 
     @Override
@@ -239,6 +252,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             }
         });
         mFolderName.setOnFocusChangeListener(this);
+        if (BlurWallpaperProvider.isEnabled() && !FeatureFlags.useDarkTheme) {
+            mFolderName.setShadowLayer(getResources().getDimensionPixelSize(R.dimen.folder_label_shadow_radius),
+                    0, 0, getResources().getColor(R.color.folder_label_shadow_color));
+            mFolderName.setTextColor(Color.WHITE);
+        }
 
         if (!Utilities.ATLEAST_MARSHMALLOW) {
             // We disable action mode in older OSes where floating selection menu is not yet
@@ -431,6 +449,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // the folder itself.
         requestFocus();
         super.onAttachedToWindow();
+        if (mBlurDrawable != null)
+            mBlurDrawable.startListening();
     }
 
     @Override
@@ -1393,6 +1413,22 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         getHitRect(outRect);
         outRect.left -= mScrollAreaOffset;
         outRect.right += mScrollAreaOffset;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mBlurDrawable != null)
+            mBlurDrawable.stopListening();
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        if (mBlurDrawable == null) return;
+        mBlurDrawable.setOverscroll(l);
+        mBlurDrawable.setTranslation(t);
+        mBlurDrawable.invalidateSelf();
     }
 
     private class OnScrollHintListener implements OnAlarmListener {

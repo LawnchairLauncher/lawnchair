@@ -46,10 +46,10 @@
         android:key="pref_blurRadius"
         android:title="@string/blur_radius_pref_title"
         android:dependency="pref_enableBlur"
-        app:minValue="0"
+        app:minValue="10"
         app:maxValue="150"
         app:defaultValue="75"
-        app:summaryFormat="%.0fpx"
+        app:summaryFormat="%.0f"
         android:persistent="true" />
 
     <SwitchPreference
