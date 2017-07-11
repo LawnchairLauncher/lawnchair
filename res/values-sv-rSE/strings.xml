@@ -31,14 +31,14 @@
   <!-- SafeMode shortcut error string -->
   <string name="safemode_shortcut_error">Den hämtade appen inaktiverades i säkert läge</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">Widgets är inaktiverade i felsäkert läge</string>
+  <string name="safemode_widget_error">Widgetar är inaktiverade i felsäkert läge</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">Genvägen är inte tillgänglig</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">Tryck länge om du vill flytta en widget.</string>
+  <string name="long_press_widget_to_add">Tryck länge för att flytta en widget.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-  <string name="long_accessible_way_to_add">Tryck två gånger och håll kvar om du vill ta upp en widget eller använda anpassade åtgärder.</string>
+  <string name="long_accessible_way_to_add">Tryck två gånger och håll kvar för att ta upp en widget eller använda anpassade åtgärder.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
   <string name="widget_dims_format">%1$d × %2$d</string>
@@ -273,7 +273,7 @@
   <string name="num_hotseat_icons_pref_title">Antalet ikoner i dockan</string>
   <string name="icon_scale_pref_title">Skala på ikoner</string>
   <string name="icon_text_scale_pref_title">Skala på ikontext</string>
-  <string name="full_width_width_widgets_pref_title">Full width widgets</string>
+  <string name="full_width_width_widgets_pref_title">Full bredd widgetar</string>
   <string name="full_width_widgets_pref_summary">Tillåt widgetar att sträcka sig över hela bredden utan spaltfyllnad</string>
   <string name="notification_access_pref_title">Notifikationsmärken och förhandsgranskning</string>
   <string name="notification_access_pref_summary">Tillåt Lawnchair att komma åt dina notifikationer för att aktivera denna funktion</string>
@@ -295,7 +295,7 @@
   <string name="pinch_to_overview_pref_summary">Nyp på startskärmen för att öppna översikten</string>
   <string name="pull_down_notis_pref_title">Dra ner till Notifikationer</string>
   <string name="pull_down_notis_pref_on">Genom att dra ner på Hemskärmen kommer statusfältet att expandera.</string>
-  <string name="pull_down_notis_pref_off">When enabled pulling down on the Homescreen expand the statusbar.</string>
+  <string name="pull_down_notis_pref_off">Genom att dra ner på Hemskärmen kommer statusfältet att expandera när detta aktiveras.</string>
   <string name="light_statusbar_pref_title">Ljust statusfält</string>
   <string name="light_statusbar_pref_on">Statusfältet kan visa mörka ikoner vid användning av ljusa bakgrunder.</string>
   <string name="light_statusbar_pref_off">Statusfältet kommer alltid att visa ljusa ikoner.</string>
@@ -326,7 +326,7 @@
   <!-- Customization Color -->
   <string name="purple">Lila</string>
   <!-- Customization Color -->
-  <string name="deep_purple">Deep Purple</string>
+  <string name="deep_purple">Mörklila</string>
   <!-- Customization Color -->
   <string name="indigo">Indigo</string>
   <!-- Customization Color -->
@@ -350,7 +350,7 @@
   <!-- Customization Color -->
   <string name="orange">Orange</string>
   <!-- Customization Color -->
-  <string name="deep_orange">Djup Orange</string>
+  <string name="deep_orange">Mörkorange</string>
   <!-- Customization Color -->
   <string name="brown">Brun</string>
   <!-- Customization Color -->
