@@ -317,46 +317,46 @@
   <string name="test_title">Тест</string>
   <string name="visibility">Видимость</string>
   <!-- Customization Color -->
-  <string name="white">White</string>
+  <string name="white">Белый</string>
   <!-- Customization Color -->
-  <string name="black">Black</string>
+  <string name="black">Черный</string>
   <!-- Customization Color -->
-  <string name="red">Red</string>
+  <string name="red">Красный</string>
   <!-- Customization Color -->
-  <string name="pink">Pink</string>
+  <string name="pink">Розовый</string>
   <!-- Customization Color -->
-  <string name="purple">Purple</string>
+  <string name="purple">Фиолетовый</string>
   <!-- Customization Color -->
-  <string name="deep_purple">Deep Purple</string>
+  <string name="deep_purple">Багровый</string>
   <!-- Customization Color -->
-  <string name="indigo">Indigo</string>
+  <string name="indigo">Индиго</string>
   <!-- Customization Color -->
-  <string name="blue">Blue</string>
+  <string name="blue">Синий</string>
   <!-- Customization Color -->
-  <string name="light_blue">Light Blue</string>
+  <string name="light_blue">Голубой</string>
   <!-- Customization Color -->
-  <string name="cyan">Cyan</string>
+  <string name="cyan">Бирюзовый</string>
   <!-- Customization Color -->
-  <string name="teal">Teal</string>
+  <string name="teal">Зеленовато-голубой</string>
   <!-- Customization Color -->
-  <string name="green">Green</string>
+  <string name="green">Зеленый</string>
   <!-- Customization Color -->
-  <string name="light_green">Light Green</string>
+  <string name="light_green">Светло-зеленый</string>
   <!-- Customization Color -->
-  <string name="lime">Lime</string>
+  <string name="lime">Лаймовый</string>
   <!-- Customization Color -->
-  <string name="yellow">Yellow</string>
+  <string name="yellow">Желтый</string>
   <!-- Customization Color -->
-  <string name="amber">Amber</string>
+  <string name="amber">Янтарный</string>
   <!-- Customization Color -->
-  <string name="orange">Orange</string>
+  <string name="orange">Оранжевый</string>
   <!-- Customization Color -->
   <string name="deep_orange">Deep Orange</string>
   <!-- Customization Color -->
-  <string name="brown">Brown</string>
+  <string name="brown">Коричневый</string>
   <!-- Customization Color -->
-  <string name="grey">Grey</string>
+  <string name="grey">Серый</string>
   <!-- Customization Color -->
   <string name="blue_grey">Blue Grey</string>
-  <string name="default_text">Default</string>
+  <string name="default_text">По умолчанию</string>
 </resources>
