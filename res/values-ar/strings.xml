@@ -21,7 +21,6 @@
   <!-- General -->
   <skip></skip>
   <!-- Application name -->
-  <string name="app_name">Lawnchair</string>
   <!-- Default folder name -->
   <!-- Work folder name -->
   <string name="work_folder_name">العمل</string>
@@ -284,7 +283,7 @@
   <string name="notification_access_pref_summary">السماح ل Lawnchair بالوصول إلى الإشعارات الخاصة بك لتفعيل هذه الميزات</string>
   <string name="ui_pref_title">واجهة المستخدم</string>
   <string name="pixel_style_pref_title">نمط بكسل</string>
-  <string name="behavior_pref_title">السلوك</string>
+  <string name="behavior_pref_title">الشكل العام</string>
   <string name="debug_pref_title">تنقيح</string>
   <string name="import_export_pref_title">إستيراد/تصدير</string>
   <string name="show_pixel_bar_pref_title">اظهار الشريط العلوي لبكسل</string>
