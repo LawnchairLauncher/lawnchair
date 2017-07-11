@@ -1632,16 +1632,21 @@ public class Workspace extends PagedView
     }
 
     private void updatePageAlphaValues() {
-        if (mWorkspaceFadeInAdjacentScreens &&
-                !workspaceInModalState() &&
-                !mIsSwitchingState) {
+        if (!workspaceInModalState() && !mIsSwitchingState) {
             int screenCenter = getScrollX() + getViewportWidth() / 2;
             for (int i = numCustomPages(); i < getChildCount(); i++) {
                 CellLayout child = (CellLayout) getChildAt(i);
                 if (child != null) {
                     float scrollProgress = getScrollProgress(screenCenter, child, i);
                     float alpha = 1 - Math.abs(scrollProgress);
-                    child.getShortcutsAndWidgets().setAlpha(alpha);
+                    if (mWorkspaceFadeInAdjacentScreens) {
+                        child.getShortcutsAndWidgets().setAlpha(alpha);
+                    } else {
+                        // Pages that are off-screen aren't important for accessibility.
+                        child.getShortcutsAndWidgets().setImportantForAccessibility(
+                                alpha > 0 ? IMPORTANT_FOR_ACCESSIBILITY_AUTO
+                                        : IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+                    }
                 }
             }
         }
