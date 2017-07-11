@@ -31,7 +31,7 @@
     <string name="announce_selection">Выбран элемент \"%1$s\"</string>
     <string name="app_downloading_title">Скачивается \"%1$s\" (%2$s)</string>
     <string name="app_info_drop_target_label">О приложении</string>
-    <string name="app_name">Домашний Экран</string>
+    <string name="app_name">Lawnchair</string>
     <string name="app_waiting_download_title">Ожидание установки \"%1$s\"</string>
     <string name="common_google_play_services_enable_button">Включить</string>
     <string name="common_google_play_services_enable_text">Для работы приложения \"%1$s\" требуется включить сервисы Google Play.</string>
@@ -109,8 +109,10 @@
     <string name="work_folder_name">Работа</string>
     <string name="workspace_new_page">Новый экран</string>
     <string name="workspace_scroll_format">Главные экран %1$d из %2$d</string>
-    <string name="about_text">Домашний экран это приложение для запуска, созданное Тилом Коттманом. Он основан на Launcher3 от AOSP</string>
+    <string name="about_text">Lawnchair это приложение для запуска, созданное Тилом Коттманом. Он основан на Launcher3 от AOSP</string>
     <string name="about_title">О приложении</string>
     <string name="edit_drop_target_label">Редактировать</string>
     <string name="widgets_bottom_sheet_title">%1$s виджеты</string>
+    <string name="show_mic_pref_title">Показывать кнопку Google Ассистента</string>
+    <string name="use_wide_searchbar_pref_title">Использовать широкую строку поиска</string>
 </resources>
