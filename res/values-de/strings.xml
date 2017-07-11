@@ -37,9 +37,9 @@
   <string name="shortcut_not_available">Verknüpfung ist nicht verfügbar</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">Berühren und halten, um ein Widget aufzunehmen.</string>
+  <string name="long_press_widget_to_add">Berühren und halten, um ein Widget hinzufügen.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-  <string name="long_accessible_way_to_add">Berühren und halten, um ein Widget aufzunehmen oder benutzerdefinierte Aktionen verwenden.</string>
+  <string name="long_accessible_way_to_add">Berühren und halten, um ein Widget hinzufügen oder benutzerdefinierte Aktionen verwenden.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
   <string name="widget_dims_format">%1$d \u00d7 %2$d</string>
@@ -164,27 +164,27 @@
   <!-- Accessibility description to move item to empty cell. -->
   <string name="move_to_empty_cell">In Zeile <xliff:g id="NUMBER_0">%1$s</xliff:g>, Spalte <xliff:g id="NUMBER_1">%2$s</xliff:g> verschieben</string>
   <!-- Accessibility description to move item inside a folder. -->
-  <string name="move_to_position">Auf Position <xliff:g id="NUMBER">%1$s</xliff:g> verschoben</string>
+  <string name="move_to_position">Auf Position <xliff:g id="NUMBER">%1$s</xliff:g> verschieben</string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Auf Favoritenposition <xliff:g id="NUMBER">%1$s</xliff:g> verschoben</string>
+  <string name="move_to_hotseat_position">Auf Favoritenposition <xliff:g id="NUMBER">%1$s</xliff:g> verschieben</string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">Element verschoben</string>
   <!-- Accessibility description to move item into an existing folder. -->
   <string name="add_to_folder">Zum Ordner \"<xliff:g id="NAME">%1$s</xliff:g>\" hinzufügen</string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
-  <string name="add_to_folder_with_app">Zum Ordner hinzufügen, in dem sich <xliff:g id="NAME">%1$s</xliff:g> befindet</string>
+  <string name="add_to_folder_with_app">Zum Ordner hinzufügen, in dem sich \"<xliff:g id="NAME">%1$s</xliff:g>\" befindet</string>
   <!-- Accessibility confirmation for item added to folder. -->
   <string name="added_to_folder">Element zum Ordner hinzugefügt</string>
   <!-- Accessibility description to create folder with another item. -->
-  <string name="create_folder_with">Anhand von <xliff:g id="NAME">%1$s</xliff:g> Ordner erstellen</string>
+  <string name="create_folder_with">Anhand von \"<xliff:g id="NAME">%1$s</xliff:g>\" einen Ordner erstellen</string>
   <!-- Accessibility confirmation for folder created. -->
   <string name="folder_created">Ordner erstellt</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_move_to_workspace">Auf Startbildschirm verschieben</string>
+  <string name="action_move_to_workspace">Auf den Startbildschirm verschieben</string>
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
-  <string name="action_move_screen_left">Bildschirm nach links</string>
+  <string name="action_move_screen_left">Bildschirm nach links verschieben</string>
   <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
-  <string name="action_move_screen_right">Bildschirm nach rechts</string>
+  <string name="action_move_screen_right">Bildschirm nach rechts verschieben</string>
   <!-- Accessibility confirmation when a screen was moved. -->
   <string name="screen_moved">Bildschirm verschoben</string>
   <!-- Accessibility action to resize a widget. [CHAR_LIMIT=30] -->
@@ -208,15 +208,15 @@
   <string name="wallpaper_instructions">Hintergrund auswählen</string>
   <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper picker cannot load it -->
-  <string name="image_load_fail">Bild konnte nicht geladen werden.</string>
+  <string name="image_load_fail">Bild konnte nicht geladen werden</string>
   <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper cropper cannot load it. The user will
          usually see this when using another app and trying to set
          an image as the wallpaper -->
-  <string name="wallpaper_load_fail">Bild konnte nicht als Hintergrund geladen werden.</string>
+  <string name="wallpaper_load_fail">Bild konnte nicht als Hintergrund geladen werden</string>
   <!-- Error message when an image is selected as a wallpaper,
          but something goes wrong when the user clicks "Set wallpaper" -->
-  <string name="wallpaper_set_fail">Bild konnte nicht als Hintergrund festgelegt werden.</string>
+  <string name="wallpaper_set_fail">Bild konnte nicht als Hintergrund festgelegt werden</string>
   <!-- Shown when wallpapers are selected in Wallpaper picker -->
   <!-- String indicating how many media item(s) is(are) selected
             eg. 1 selected [CHAR LIMIT=30] -->
@@ -247,7 +247,7 @@
   <string name="title_show_google_app_default">Google App anzeigen</string>
   <string name="label_search">Suchen</string>
   <string name="label_voice_search">Sprachsuche</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d Shortcuts und %2$d Benachrichtigungen für %3$s</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d Verknüpfungen und %2$d Benachrichtigungen für %3$s</string>
   <string name="notifications_header">Benachrichtigungen</string>
   <string name="widgets_bottom_sheet_title">%1$s Widgets</string>
   <!-- About Lawnchair -->
@@ -272,12 +272,12 @@
   <string name="num_cols_pref_title">\"Anzahl Spalten\"</string>
   <string name="num_rows_pref_title">Anzahl Zeilen</string>
   <string name="num_hotseat_icons_pref_title">Anzahl Icons in der Favoritenablage</string>
-  <string name="icon_scale_pref_title">Icon Grösse</string>
-  <string name="icon_text_scale_pref_title">Icon Textgrösse</string>
-  <string name="full_width_width_widgets_pref_title">Breite Widgets</string>
-  <string name="full_width_widgets_pref_summary">Widgets erlauben auf die volle Breite vergrössert zu werden</string>
-  <string name="notification_access_pref_title">Benachrichtigungsanzeige und -vorschauf</string>
-  <string name="notification_access_pref_summary">Für diese Funktion braucht Lawnchair zugriff auf Benachrichtigungen</string>
+  <string name="icon_scale_pref_title">Icon Größe</string>
+  <string name="icon_text_scale_pref_title">Icon Textgröße</string>
+  <string name="full_width_width_widgets_pref_title">Widgets mit voller Breite</string>
+  <string name="full_width_widgets_pref_summary">Widgets erlauben auf die volle Breite vergrößert zu werden</string>
+  <string name="notification_access_pref_title">Benachrichtigungsanzeige und -vorschau</string>
+  <string name="notification_access_pref_summary">Für diese Funktion benötigt Lawnchair Zugriff auf Benachrichtigungen</string>
   <string name="ui_pref_title">Benutzeroberfläche</string>
   <string name="pixel_style_pref_title">Pixel Stil</string>
   <string name="behavior_pref_title">Verhalten</string>
@@ -285,21 +285,21 @@
   <string name="import_export_pref_title">Import/Export</string>
   <string name="show_pixel_bar_pref_title">Pixel Top Bar anzeigen</string>
   <string name="use_wide_searchbar_pref_title">Breite Suchleiste verwenden</string>
-  <string name="show_mic_pref_title">Google Assistant anzeigen</string>
+  <string name="show_mic_pref_title">Google Assistant Button anzeigen</string>
   <string name="pixel_style_icons_pref_title">Pixel Icons verwenden</string>
-  <string name="pixel_style_icons_pref_summary">Wenn möglich werden runde Icons verwendet</string>
+  <string name="pixel_style_icons_pref_summary">Wenn möglich, runde Icons verwenden</string>
   <string name="show_google_now_tab_pref_title">Google Now Seite anzeigen</string>
   <string name="restart_lawnchair_pref_title">Lawnchair neu starten</string>
-  <string name="restart_lawnchair_pref_summary">Hilfreich wenn Einstellungen nicht korrekt angewendet wurden</string>
+  <string name="restart_lawnchair_pref_summary">Hilfreich, wenn Einstellungen nicht korrekt angewendet wurden</string>
   <string name="rebuild_icondb_pref_title">Icon Datenbank neu generieren</string>
-  <string name="pinch_to_overview_pref_title">Geste für Übersicht</string>
+  <string name="pinch_to_overview_pref_title">Zoomgeste für Übersicht</string>
   <string name="pinch_to_overview_pref_summary">Zoomgeste auf dem Startbildschirm öffnet die Übersicht</string>
   <string name="pull_down_notis_pref_title">Nach unten wischen zu Benachrichtigungen</string>
-  <string name="pull_down_notis_pref_on">Nach unten wischen auf dem Startbildschirm öffnet die Statusbar</string>
-  <string name="pull_down_notis_pref_off">Falls eingeschaltet öffnet nach unten wischen auf dem Startbildschirm die Statusbar</string>
-  <string name="light_statusbar_pref_title">Helle Statusbar</string>
-  <string name="light_statusbar_pref_on">Die Statusbar zeigt dunkle Icons an wenn ein Hellles Hintergrundbild verwendet wird</string>
-  <string name="light_statusbar_pref_off">Die Statusbar zeigt immer helle Icons</string>
+  <string name="pull_down_notis_pref_on">Nach unten Wischen auf dem Startbildschirm öffnet die Statusleiste.</string>
+  <string name="pull_down_notis_pref_off">Falls eingeschaltet, öffnet nach unten Wischen auf dem Startbildschirm die Statusleiste.</string>
+  <string name="light_statusbar_pref_title">Helle Statusleiste</string>
+  <string name="light_statusbar_pref_on">Die Statusleiste darf dunkle Icons zeigen, wenn ein helles Hintergrundbild verwendet wird.</string>
+  <string name="light_statusbar_pref_off">Die Statusleiste zeigt immer helle Icons.</string>
   <string name="haptic_feedback_pref_title">Vibration verwenden</string>
   <string name="keep_scroll_state_pref_title">Scrollposition speichern</string>
   <string name="keep_scroll_state_pref_summary">Speichert die Scrollposition in der App-Liste</string>
