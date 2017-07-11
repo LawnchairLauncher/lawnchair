@@ -58,7 +58,7 @@
   <!-- Error message when user has filled a home screen -->
   <string name="out_of_space">Auf diesem Startbildschirm ist kein Platz mehr vorhanden.</string>
   <!-- Error message when user has filled the hotseat -->
-  <string name="hotseat_out_of_space">Ablage der Favoriten ist voll</string>
+  <string name="hotseat_out_of_space">Das Dock ist bereits voll</string>
   <!-- All applications label -->
   <string name="all_apps_button_label">Liste der Apps</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
@@ -270,7 +270,7 @@
   <string name="all_apps_opacity_pref_title">Transparenz der App-Liste</string>
   <string name="num_cols_pref_title">Anzahl der Spalten</string>
   <string name="num_rows_pref_title">Anzahl der Zeilen</string>
-  <string name="num_hotseat_icons_pref_title">Anzahl der Icons in der Favoritenablage</string>
+  <string name="num_hotseat_icons_pref_title">Anzahl der Icons im Dock</string>
   <string name="icon_scale_pref_title">Icon Größe</string>
   <string name="icon_text_scale_pref_title">Icon Textgröße</string>
   <string name="full_width_width_widgets_pref_title">Widgets mit voller Breite</string>
