@@ -294,8 +294,8 @@
   <string name="pinch_to_overview_pref_title">Pincer pour afficher les aperçus</string>
   <string name="pinch_to_overview_pref_summary">Pincer à 2 doigts sur l\'écran d\'accueil pour ouvrir la vue d\'ensemble</string>
   <string name="pull_down_notis_pref_title">Glisser vers le bas affiche les notifications</string>
-  <string name="pull_down_notis_pref_on">Glisser vers le bas sur l\'écran d\'accueil étendra la barre de statuts.</string>
-  <string name="pull_down_notis_pref_off">When enabled pulling down on the Homescreen expand the statusbar.</string>
+  <string name="pull_down_notis_pref_on">Glisser vers le bas sur l\'écran d\'accueil étendra la barre d\'état.</string>
+  <string name="pull_down_notis_pref_off">Si activé, glisser vers le bas sur l\'écran d\'accueil étend la barre d\'état.</string>
   <string name="light_statusbar_pref_title">Light statusbar</string>
   <string name="light_statusbar_pref_on">The status bar may show dark icons when using a light wallpaper.</string>
   <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
