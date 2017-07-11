@@ -292,7 +292,7 @@
   <string name="pixel_style_icons_pref_title">استخدم أيقونات بكسل</string>
   <string name="pixel_style_icons_pref_summary">عند التفعيل سيتم استخدام الأيقونات الدائرية حيثما كان ذلك ممكناً</string>
   <string name="show_google_now_tab_pref_title">إظهار صفحة جوجل الآن</string>
-  <string name="restart_lawnchair_pref_title">أعادة تشغيل lawnchair</string>
+  <string name="restart_lawnchair_pref_title">أعادة تشغيل Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">يمكن أن يكون مفيداً إذا لم يتم تطبيق بعض الإعدادات بشكل صحيح</string>
   <string name="rebuild_icondb_pref_title">إعادة إنشاء قاعدة بيانات الأيقونة</string>
   <string name="pinch_to_overview_pref_title">اقبض بإصبعين لنظرة عامة</string>
