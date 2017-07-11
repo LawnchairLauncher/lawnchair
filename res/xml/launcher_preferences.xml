@@ -18,23 +18,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
-        android:title="UI"
+        android:title="@string/ui_pref_title"
         app:content="@xml/launcher_ui_preferences" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
-        android:title="Pixel Style"
+        android:title="@string/pixel_style_pref_title"
         app:content="@xml/launcher_pixel_style_preferences" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
-        android:title="Behavior"
+        android:title="@string/behavior_pref_title"
         app:content="@xml/launcher_behavior_preferences" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
-        android:title="Debug"
+        android:title="@string/debug_pref_title"
         app:content="@xml/launcher_debug_preferences" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
-        android:title="Import/Export"
+        android:title="@string/import_export_pref_title"
         app:content="@xml/launcher_backup_preferences" />
 
     <Preference
