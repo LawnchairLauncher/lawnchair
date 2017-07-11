@@ -294,7 +294,7 @@
   <string name="pinch_to_overview_pref_title">Zoomgeste für Übersicht</string>
   <string name="pinch_to_overview_pref_summary">Zoomgeste auf dem Startbildschirm öffnet die Übersicht</string>
   <string name="pull_down_notis_pref_title">Nach unten wischen um Benachrichtigungsleiste zu öffnen</string>
-  <string name="pull_down_notis_pref_on">Nach unten Wischen auf dem Startbildschirm öffnet die Statusleiste.</string>
+  <string name="pull_down_notis_pref_on">Nach unten Wischen auf dem Startbildschirm öffnet die Benachrichtigungsleiste.</string>
   <string name="pull_down_notis_pref_off">Falls eingeschaltet, öffnet nach unten Wischen auf dem Startbildschirm die Statusleiste.</string>
   <string name="light_statusbar_pref_title">Helle Statusleiste</string>
   <string name="light_statusbar_pref_on">Die Statusleiste darf dunkle Icons zeigen, wenn ein helles Hintergrundbild verwendet wird.</string>
