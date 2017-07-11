@@ -120,12 +120,14 @@ public class ExperimentalQsbWidget extends BaseQsbView {
             mBlurDrawable.stopListening();
     }
 
+    @Override
     public void translateBlurX(int translationX) {
         if (!mBlurEnabled) return;
         mBlurTranslationX = translationX;
         updateBlur();
     }
 
+    @Override
     public void translateBlurY(int translationY) {
         if (!mBlurEnabled) return;
         mBlurTranslationY = translationY;

@@ -78,7 +78,7 @@ import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.graphics.DragPreviewProvider;
-import ch.deletescape.lawnchair.pixelify.ExperimentalQsbWidget;
+import ch.deletescape.lawnchair.pixelify.BaseQsbView;
 import ch.deletescape.lawnchair.popup.PopupContainerWithArrow;
 import ch.deletescape.lawnchair.shortcuts.ShortcutDragPreviewProvider;
 import ch.deletescape.lawnchair.util.ItemInfoMatcher;
@@ -184,7 +184,7 @@ public class Workspace extends PagedView
     private SpringLoadedDragController mSpringLoadedDragController;
     private float mOverviewModeShrinkFactor;
     private View mQsbView;
-    private ExperimentalQsbWidget mSearchBar;
+    private BaseQsbView mSearchBar;
     private int mLastScrollX;
 
     // State variable that indicates whether the pages are small (ie when you're
@@ -1337,7 +1337,7 @@ public class Workspace extends PagedView
     private void translateBlurX(int translationX) {
         if (!mBlurQsb) return;
 
-        ExperimentalQsbWidget searchBar = getSearchBar();
+        BaseQsbView searchBar = getSearchBar();
         if (searchBar != null)
             searchBar.translateBlurX(translationX);
     }
@@ -1345,15 +1345,15 @@ public class Workspace extends PagedView
     private void translateBlurY(int translationY) {
         if (!mBlurQsb) return;
 
-        ExperimentalQsbWidget searchBar = getSearchBar();
+        BaseQsbView searchBar = getSearchBar();
         if (searchBar != null)
             searchBar.translateBlurY(translationY);
     }
 
-    private ExperimentalQsbWidget getSearchBar() {
+    private BaseQsbView getSearchBar() {
         if (mSearchBar == null) {
             if (mQsbView == null) return null;
-            mSearchBar = (ExperimentalQsbWidget) ((ViewGroup) mQsbView).getChildAt(0);
+            mSearchBar = (BaseQsbView) ((ViewGroup) mQsbView).getChildAt(0);
         }
         return mSearchBar;
     }

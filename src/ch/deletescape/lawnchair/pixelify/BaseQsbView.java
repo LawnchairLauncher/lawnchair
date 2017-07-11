@@ -231,6 +231,12 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
         }
     }
 
+    public void translateBlurX(int translationX) {
+    }
+
+    public void translateBlurY(int translationY) {
+    }
+
     final class C0287l extends BroadcastReceiver {
         final /* synthetic */ BaseQsbView cq;
 

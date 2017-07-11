@@ -3,19 +3,49 @@ package ch.deletescape.lawnchair.pixelify;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ImageView;
 
 import ch.deletescape.lawnchair.DeviceProfile;
+import ch.deletescape.lawnchair.LauncherRootView;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
+import ch.deletescape.lawnchair.blur.BlurDrawable;
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.util.TransformingTouchDelegate;
 
 public class SuperGContainerView extends BaseQsbView {
     private static final Rect sTempRect = new Rect();
     private final TransformingTouchDelegate bz;
+    private int mLeft;
+    private int mTop;
+    private int mBlurTranslationX;
+    private int mBlurTranslationY;
+    private final boolean mBlurEnabled;
+    private BlurDrawable mBlurDrawable;
+    private Runnable mUpdatePosition = new Runnable() {
+        @Override
+        public void run() {
+            int left = 0, top = 0;
+            View view = mQsbView;
+            while (!(view instanceof LauncherRootView)) {
+                if (view == null) {
+                    break;
+                }
+                left += view.getLeft();
+                top += view.getTop();
+                view = (View) view.getParent();
+            }
+            mLeft = left;
+            mTop = top;
+            updateBlur();
+        }
+    };
 
 
     public SuperGContainerView(Context context) {
@@ -32,6 +62,25 @@ public class SuperGContainerView extends BaseQsbView {
             bz = null;
         } else {
             bz = new TransformingTouchDelegate(this);
+        }
+        mBlurEnabled = BlurWallpaperProvider.isEnabled();
+        if (mBlurEnabled) {
+            mBlurDrawable = mLauncher.getBlurWallpaperProvider().createDrawable(100, true);
+        }
+    }
+
+    @Override
+    protected void setupViews() {
+        super.setupViews();
+        if (mBlurEnabled) {
+            mQsbView.setBackground(mBlurDrawable);
+            mQsbView.setLayerType(LAYER_TYPE_SOFTWARE, null);
+            if (FeatureFlags.useWhiteGoogleIcon(getContext())) {
+                ((ImageView) findViewById(R.id.g_icon)).setColorFilter(Color.WHITE);
+                if (FeatureFlags.showVoiceSearchButton(getContext())) {
+                    ((ImageView) findViewById(R.id.mic_icon)).setColorFilter(Color.WHITE);
+                }
+            }
         }
     }
 
@@ -74,6 +123,8 @@ public class SuperGContainerView extends BaseQsbView {
         if (bz != null) {
             mLauncher.getWorkspace().findViewById(R.id.workspace_blocked_row).setTouchDelegate(bz);
         }
+        if (mBlurEnabled)
+            mBlurDrawable.startListening();
     }
 
     @Override
@@ -116,6 +167,14 @@ public class SuperGContainerView extends BaseQsbView {
             }
             bz.setBounds(i5, mQsbView.getTop(), mQsbView.getWidth() + i5, mQsbView.getBottom());
         }
+        if (!mBlurEnabled) return;
+        post(mUpdatePosition);
+    }
+
+    private void updateBlur() {
+        if (!mBlurEnabled) return;
+        mBlurDrawable.setTranslation(mTop - mBlurTranslationY);
+        mBlurDrawable.setOverscroll(mLeft - mBlurTranslationX);
     }
 
     @Override
@@ -131,5 +190,26 @@ public class SuperGContainerView extends BaseQsbView {
     @Override
     public boolean dispatchTouchEvent(MotionEvent motionEvent) {
         return bz == null && super.dispatchTouchEvent(motionEvent);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mBlurEnabled)
+            mBlurDrawable.stopListening();
+    }
+
+    @Override
+    public void translateBlurX(int translationX) {
+        if (!mBlurEnabled) return;
+        mBlurTranslationX = translationX;
+        updateBlur();
+    }
+
+    @Override
+    public void translateBlurY(int translationY) {
+        if (!mBlurEnabled) return;
+        mBlurTranslationY = translationY;
+        updateBlur();
     }
 }
