@@ -51,7 +51,7 @@
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
   <string name="all_apps_loading_message">Φόρτωση εφαρμογών…</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_no_search_results">Δεν βρέθηκαν εφαρμογές για το ερώτημα \"<xliff:g id="QUERY">%1$s</xliff:g>\"</string>
+  <string name="all_apps_no_search_results">Δεν βρέθηκαν εφαρμογές που να ταιριάζουν\"<xliff:g id="Query">%1$s</xliff:g>\"</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">Αναζήτηση περισσότερων εφαρμογών</string>
   <!-- Drag and drop -->
