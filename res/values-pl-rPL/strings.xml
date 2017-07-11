@@ -337,7 +337,7 @@
   <!-- Customization Color -->
   <string name="cyan">Cyjan</string>
   <!-- Customization Color -->
-  <string name="teal">Teal</string>
+  <string name="teal">Morski</string>
   <!-- Customization Color -->
   <string name="green">Zielony</string>
   <!-- Customization Color -->
@@ -347,7 +347,7 @@
   <!-- Customization Color -->
   <string name="yellow">Żółty</string>
   <!-- Customization Color -->
-  <string name="amber">Amber</string>
+  <string name="amber">Bursztynowy</string>
   <!-- Customization Color -->
   <string name="orange">Pomarańczowy</string>
   <!-- Customization Color -->
@@ -357,6 +357,6 @@
   <!-- Customization Color -->
   <string name="grey">Szary</string>
   <!-- Customization Color -->
-  <string name="blue_grey">Blue Grey</string>
+  <string name="blue_grey">Niebieskoszary</string>
   <string name="default_text">Domyślny</string>
 </resources>
