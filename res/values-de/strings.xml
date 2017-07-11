@@ -288,7 +288,7 @@
   <string name="show_mic_pref_title">Google Assistant Button anzeigen</string>
   <string name="pixel_style_icons_pref_title">Pixel Icons verwenden</string>
   <string name="pixel_style_icons_pref_summary">Wenn möglich, runde Icons verwenden</string>
-  <string name="show_google_now_tab_pref_title">Google Now Seite anzeigen</string>
+  <string name="show_google_now_tab_pref_title">Google Now Seite zeigen</string>
   <string name="restart_lawnchair_pref_title">Lawnchair neu starten</string>
   <string name="restart_lawnchair_pref_summary">Hilfreich, wenn Einstellungen nicht korrekt angewendet wurden</string>
   <string name="rebuild_icondb_pref_title">Icon Datenbank neu generieren</string>
@@ -300,13 +300,13 @@
   <string name="light_statusbar_pref_title">Helle Statusleiste</string>
   <string name="light_statusbar_pref_on">Die Statusleiste darf dunkle Icons zeigen, wenn ein helles Hintergrundbild verwendet wird.</string>
   <string name="light_statusbar_pref_off">Die Statusleiste zeigt immer helle Icons.</string>
-  <string name="haptic_feedback_pref_title">Vibration verwenden</string>
+  <string name="haptic_feedback_pref_title">Vibration aktivieren</string>
   <string name="keep_scroll_state_pref_title">Scrollposition speichern</string>
   <string name="keep_scroll_state_pref_summary">Speichert die Scrollposition in der App-Liste</string>
   <string name="home_opens_drawer_pref_title">Homebutton öffnet App-Liste</string>
-  <string name="home_opens_drawer_pref_summary">Ein Klick auf den Homebutton öffnet die App-Liste</string>
+  <string name="home_opens_drawer_pref_summary">Ein Klick auf den Homebutton während der Startbildschirm aktiv ist öffnet die App-Liste</string>
   <string name="show_hidden_pref_title">Versteckte Apps anzeigen</string>
-  <string name="show_hidden_pref_on">Versteckte Apps werden angezeigt um Einstellungen zu ändern</string>
+  <string name="show_hidden_pref_on">Versteckte Apps werden angezeigt um Sichtbarkeitseinstellungen zu ändern</string>
   <string name="show_hidden_pref_off">Versteckte Apps werden nicht angezeigt</string>
   <string name="export_db_title">Datenbank Exportieren</string>
   <string name="import_db_title">Datenbank importieren</string>
