@@ -43,7 +43,7 @@
   <!-- There is a special version of this format string for Farsi -->
   <string name="widget_dims_format">%1$d × %2$d</string>
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
-  <string name="widget_accessible_dims_format">%1$d bred gånger %2$d hög</string>
+  <string name="widget_accessible_dims_format">%1$d bred och %2$d hög</string>
   <!-- All Apps -->
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_bar_hint">Sök efter appar</string>
@@ -177,7 +177,7 @@
   <!-- Accessibility description to create folder with another item. -->
   <string name="create_folder_with">Skapa mapp med: <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
-  <string name="folder_created">Mappen har skapats</string>
+  <string name="folder_created">Mapp skapad</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
   <string name="action_move_to_workspace">Flytta till startskärmen</string>
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
@@ -231,7 +231,7 @@
   <!-- Label on button to delete wallpaper(s) -->
   <string name="wallpaper_delete">Ta bort</string>
   <!-- Label on button in Wallpaper Picker to pick an image -->
-  <string name="pick_image">Mina foton</string>
+  <string name="pick_image">Mina bilder</string>
   <!-- Option in "Select wallpaper from" dialog box -->
   <string name="pick_wallpaper">Bakgrunder</string>
   <!-- Title of activity for cropping wallpapers -->
@@ -251,7 +251,7 @@
   <string name="widgets_bottom_sheet_title">%1$s widgetar</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair är en hemskärm-app skapad av Till Kottmann (deletescape). Den är baserad på Launcher3 från AOSP.</string>
-  <string name="about_title">Mer om</string>
+  <string name="about_title">Om</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Ikonpaket</string>
   <string name="icon_pack_preference_summary">Välj ett ikonpaket</string>
@@ -262,100 +262,100 @@
   <string name="dynamic_ui_pref_title">Använd accentfärg från bakgrundsbilden</string>
   <string name="dark_theme_pref_title">Använd mörkt färgtema</string>
   <string name="blur_pref_title">Använd oskärpa</string>
-  <string name="blur_radius_pref_title">Blur radius</string>
-  <string name="white_google_icon_pref_title">Use white Google icon</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on homescreen</string>
-  <string name="workspace_label_color_hue_pref_title">Color of icon labels on homescreen</string>
+  <string name="blur_radius_pref_title">Radius för suddighet</string>
+  <string name="white_google_icon_pref_title">Använd vit Google ikon</string>
+  <string name="hide_icon_labels_pref_title">Dölj ikonetiketter på hemskärmen</string>
+  <string name="workspace_label_color_hue_pref_title">Ikonetiketters färg på hemskärmen</string>
   <string name="workspace_label_color_variation_pref_title">Color variation of icon labels on homescreen</string>
-  <string name="all_apps_opacity_pref_title">Drawer opacity</string>
-  <string name="num_cols_pref_title">Number of columns</string>
-  <string name="num_rows_pref_title">Number of rows</string>
-  <string name="num_hotseat_icons_pref_title">Number of icons in dock</string>
-  <string name="icon_scale_pref_title">Icon scale</string>
-  <string name="icon_text_scale_pref_title">Icon text scale</string>
+  <string name="all_apps_opacity_pref_title">Opacitet på applåda</string>
+  <string name="num_cols_pref_title">Antal kolumner</string>
+  <string name="num_rows_pref_title">Antal rader</string>
+  <string name="num_hotseat_icons_pref_title">Antalet ikoner i dockan</string>
+  <string name="icon_scale_pref_title">Skala på ikoner</string>
+  <string name="icon_text_scale_pref_title">Skala på ikontext</string>
   <string name="full_width_width_widgets_pref_title">Full width widgets</string>
   <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
   <string name="notification_access_pref_title">Notification badges and preview</string>
-  <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
-  <string name="ui_pref_title">UI</string>
-  <string name="pixel_style_pref_title">Pixel style</string>
-  <string name="behavior_pref_title">Behavior</string>
-  <string name="debug_pref_title">Debug</string>
-  <string name="import_export_pref_title">Import/Export</string>
+  <string name="notification_access_pref_summary">Tillåt Lawnchair att komma åt dina notifikationer för att aktivera denna funktion</string>
+  <string name="ui_pref_title">Användargränssnitt</string>
+  <string name="pixel_style_pref_title">Pixel stil</string>
+  <string name="behavior_pref_title">Beteende</string>
+  <string name="debug_pref_title">Felsök</string>
+  <string name="import_export_pref_title">Importera/Exportera</string>
   <string name="show_pixel_bar_pref_title">Show Pixel top bar</string>
-  <string name="use_wide_searchbar_pref_title">Use wide searchbar</string>
-  <string name="show_mic_pref_title">Show Google Assistant button</string>
-  <string name="pixel_style_icons_pref_title">Use Pixel icons</string>
-  <string name="pixel_style_icons_pref_summary">When enabled circular icons will be used where possible</string>
-  <string name="show_google_now_tab_pref_title">Show Google Now page</string>
-  <string name="restart_lawnchair_pref_title">Restart Lawnchair</string>
-  <string name="restart_lawnchair_pref_summary">Can be helpful if some settings are not properly applied</string>
-  <string name="rebuild_icondb_pref_title">Rebuild Icon Database</string>
+  <string name="use_wide_searchbar_pref_title">Använd brett sökfält</string>
+  <string name="show_mic_pref_title">Visa Google Assistent knappen</string>
+  <string name="pixel_style_icons_pref_title">Använd Pixel ikoner</string>
+  <string name="pixel_style_icons_pref_summary">När aktiverad kommer cirkulära ikoner användas där möjligt</string>
+  <string name="show_google_now_tab_pref_title">Visa Google Now sida</string>
+  <string name="restart_lawnchair_pref_title">Starta om Lawnchair</string>
+  <string name="restart_lawnchair_pref_summary">Kan vara användbart om vissa inställningar inte tillämpas korrekt</string>
+  <string name="rebuild_icondb_pref_title">Återskapa ikondatabasen</string>
   <string name="pinch_to_overview_pref_title">Pinch to overview</string>
   <string name="pinch_to_overview_pref_summary">Pinch on the homescreen to open the overview</string>
   <string name="pull_down_notis_pref_title">Pull down to Notifications</string>
-  <string name="pull_down_notis_pref_on">Pulling down on the Homescreen will expand the statusbar.</string>
+  <string name="pull_down_notis_pref_on">Genom att dra ner på Hemskärmen kommer statusfältet att expandera.</string>
   <string name="pull_down_notis_pref_off">When enabled pulling down on the Homescreen expand the statusbar.</string>
   <string name="light_statusbar_pref_title">Light statusbar</string>
   <string name="light_statusbar_pref_on">The status bar may show dark icons when using a light wallpaper.</string>
   <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
-  <string name="haptic_feedback_pref_title">Enable vibration</string>
+  <string name="haptic_feedback_pref_title">Aktivera vibration</string>
   <string name="keep_scroll_state_pref_title">Save scroll position</string>
   <string name="keep_scroll_state_pref_summary">Saves the scroll position in the drawer</string>
-  <string name="home_opens_drawer_pref_title">Home button opens app drawer</string>
+  <string name="home_opens_drawer_pref_title">Hemknappen öppnar applådan</string>
   <string name="home_opens_drawer_pref_summary">Pressing the home button while on the homescreen will open the app drawer</string>
-  <string name="show_hidden_pref_title">Show hidden apps</string>
+  <string name="show_hidden_pref_title">Visa dolda appar</string>
   <string name="show_hidden_pref_on">Hidden apps will be shown to change visibility settings</string>
-  <string name="show_hidden_pref_off">Hidden apps won\'t be visible</string>
-  <string name="export_db_title">Export database</string>
-  <string name="import_db_title">Import database</string>
-  <string name="export_prefs_title">Export settings</string>
+  <string name="show_hidden_pref_off">Dolda appar kommer inte att synas</string>
+  <string name="export_db_title">Exportera databas</string>
+  <string name="import_db_title">Importera databas</string>
+  <string name="export_prefs_title">Exportera inställningar</string>
   <string name="import_prefs_title">Import settings</string>
   <string name="notification_listener_label">Lawnchair - Notification badges</string>
-  <string name="color_extraction_label">Lawnchair - Color extraction</string>
+  <string name="color_extraction_label">Lawnchair - Färgutvinning</string>
   <string name="test_title">Test</string>
-  <string name="visibility">Visibility</string>
+  <string name="visibility">Synlighet</string>
   <!-- Customization Color -->
-  <string name="white">White</string>
+  <string name="white">Vit</string>
   <!-- Customization Color -->
-  <string name="black">Black</string>
+  <string name="black">Svart</string>
   <!-- Customization Color -->
-  <string name="red">Red</string>
+  <string name="red">Röd</string>
   <!-- Customization Color -->
-  <string name="pink">Pink</string>
+  <string name="pink">Rosa</string>
   <!-- Customization Color -->
-  <string name="purple">Purple</string>
+  <string name="purple">Lila</string>
   <!-- Customization Color -->
   <string name="deep_purple">Deep Purple</string>
   <!-- Customization Color -->
   <string name="indigo">Indigo</string>
   <!-- Customization Color -->
-  <string name="blue">Blue</string>
+  <string name="blue">Blå</string>
   <!-- Customization Color -->
-  <string name="light_blue">Light Blue</string>
+  <string name="light_blue">Ljusblå</string>
   <!-- Customization Color -->
   <string name="cyan">Cyan</string>
   <!-- Customization Color -->
-  <string name="teal">Teal</string>
+  <string name="teal">Blågrön</string>
   <!-- Customization Color -->
-  <string name="green">Green</string>
+  <string name="green">Grön</string>
   <!-- Customization Color -->
-  <string name="light_green">Light Green</string>
+  <string name="light_green">Ljusgrön</string>
   <!-- Customization Color -->
   <string name="lime">Lime</string>
   <!-- Customization Color -->
-  <string name="yellow">Yellow</string>
+  <string name="yellow">Gul</string>
   <!-- Customization Color -->
-  <string name="amber">Amber</string>
+  <string name="amber">Bärnsten</string>
   <!-- Customization Color -->
   <string name="orange">Orange</string>
   <!-- Customization Color -->
-  <string name="deep_orange">Deep Orange</string>
+  <string name="deep_orange">Djup Orange</string>
   <!-- Customization Color -->
-  <string name="brown">Brown</string>
+  <string name="brown">Brun</string>
   <!-- Customization Color -->
-  <string name="grey">Grey</string>
+  <string name="grey">Grå</string>
   <!-- Customization Color -->
-  <string name="blue_grey">Blue Grey</string>
-  <string name="default_text">Default</string>
+  <string name="blue_grey">Blågrå</string>
+  <string name="default_text">Standard</string>
 </resources>
