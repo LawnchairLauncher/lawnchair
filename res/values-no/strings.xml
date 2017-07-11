@@ -21,7 +21,6 @@
   <!-- General -->
   <skip></skip>
   <!-- Application name -->
-  <string name="app_name">Lawnchair</string>
   <!-- Default folder name -->
   <!-- Work folder name -->
   <string name="work_folder_name">Work</string>
@@ -213,7 +212,7 @@
   <string name="wallpaper_instructions">Set wallpaper</string>
   <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper picker cannot load it -->
-  <string name="image_load_fail">Coudn\'t load image</string>
+  <string name="image_load_fail">Couldn\'t load image</string>
   <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper cropper cannot load it. The user will
          usually see this when using another app and trying to set
