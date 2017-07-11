@@ -27,13 +27,13 @@
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
   <string name="activity_not_found">செயலி நிறுவப்படவில்லை.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
-  <string name="activity_not_available">செயலி கிடைக்கவில்லை</string>
+  <string name="activity_not_available">செயலி கிட்டவில்லை</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">பதிவிறக்கிய செயலி பாதுகாப்பு பயன்முறையில் செயலிழக்கபட்டுள்ளது</string>
+  <string name="safemode_shortcut_error">பதிவிறக்கிய செயலி பாதுகாப்பு பயன்முறையில் செயலிழக்கப்பட்டுள்ளது</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">Widgets disabled in Safe mode</string>
+  <string name="safemode_widget_error">குறுபயன்பாடுகள் பாதுகாப்பு பயன்முறையில் செயலிழக்கப்பட்டுள்ளது</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
-  <string name="shortcut_not_available">Shortcut isn\'t available</string>
+  <string name="shortcut_not_available">குருக்குவழி கிட்டவில்லை ய</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
   <string name="long_press_widget_to_add">Touch &amp; hold to pick up a widget.</string>
