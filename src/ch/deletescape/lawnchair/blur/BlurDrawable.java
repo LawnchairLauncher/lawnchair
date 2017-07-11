@@ -119,8 +119,10 @@ public class BlurDrawable extends Drawable implements BlurWallpaperProvider.List
                 long startTime = System.currentTimeMillis();
 
                 mBlurredView.draw(mBlurringCanvas);
-                blur();
                 mBlurringCanvas.drawColor(mProvider.getTintColor());
+                if (mOverlayColor != 0)
+                    mBlurringCanvas.drawColor(mOverlayColor);
+                blur();
 
                 mBlurringCanvas = null;
                 mBitmapToBlur = null;
@@ -137,10 +139,9 @@ public class BlurDrawable extends Drawable implements BlurWallpaperProvider.List
             mClipCanvas.restore();
         }
 
-        if (mBlurredView != null)
+        if (mBlurredView != null) {
             canvas.drawBitmap(mTempBitmap, 0, 0, null);
-
-        if (mOverlayColor != 0) {
+        } else if (mOverlayColor != 0) {
             canvas.drawRect(mRect, mColorPaint);
         }
     }
@@ -171,7 +172,7 @@ public class BlurDrawable extends Drawable implements BlurWallpaperProvider.List
             scaledWidth = scaledWidth - scaledWidth % 4 + 4;
             scaledHeight = scaledHeight - scaledHeight % 4 + 4;
 
-            if (mBlurredBitmap == null
+            if (mBitmapToBlur == null || mBlurredBitmap == null
                     || mBlurredBitmap.getWidth() != scaledWidth
                     || mBlurredBitmap.getHeight() != scaledHeight) {
                 mBitmapToBlur = Bitmap.createBitmap(scaledWidth, scaledHeight,

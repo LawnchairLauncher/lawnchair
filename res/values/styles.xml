@@ -54,6 +54,7 @@
         <item name="blurTintColor">#45ffffff</item>
         <item name="notificationBeneathColor">@color/notification_color_beneath</item>
         <item name="qsbBgColor">@android:color/white</item>
+        <item name="folderBgColorBlur">#75ffffff</item>
     </style>
 
     <style name="LauncherTheme.Dark" parent="@style/BaseLauncherTheme.Dark">
@@ -76,6 +77,7 @@
         <item name="blurTintColor">#45212121</item>
         <item name="notificationBeneathColor">#ff252525</item>
         <item name="qsbBgColor">@color/quantum_panel_bg_color_dark</item>
+        <item name="folderBgColorBlur">#75212121</item>
     </style>
 
     <style name="Theme" parent="@style/LauncherTheme" />
