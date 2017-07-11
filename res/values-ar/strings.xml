@@ -21,7 +21,7 @@
   <!-- General -->
   <skip></skip>
   <!-- Application name -->
-  <string name="app_name">لاونتشير</string>
+  <string name="app_name">Lawnchair</string>
   <!-- Default folder name -->
   <!-- Work folder name -->
   <string name="work_folder_name">العمل</string>
@@ -251,8 +251,8 @@
   <string name="title_show_google_app_default">إظهار تطبيق جوجل</string>
   <string name="label_search">بحث</string>
   <string name="label_voice_search">بحث صوتي</string>
-  <string name="shortcuts_menu_with_notifications_description">اختصارات %1$d والإشعارات %2$d ل %3$s</string>
-  <string name="notifications_header">الاشعارات</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d اختصارات و %2$d اشعارات ل %3$s</string>
+  <string name="notifications_header">الإشعارات</string>
   <string name="widgets_bottom_sheet_title">المربعات الجانبية %1$s</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair هو تطبيق واجهة مستخدم تم إنشاؤه بواسطة Till Kottmann الملقب ب deletescape. هذا التطبيق يستند على Launcher3 من AOSP.</string>
@@ -303,7 +303,7 @@
   <string name="pull_down_notis_pref_off">عند التفعيل السحب لأسفل على الشاشة الرئيسية يظهر جميع عناصر شريط الإشعارات.</string>
   <string name="light_statusbar_pref_title">شريط حالة باهت</string>
   <string name="light_statusbar_pref_on">قد يظهر شريط الاشعارات مظلم عند استخدام خلفية خفيفة.</string>
-  <string name="light_statusbar_pref_off">شريط المعلومات سيظهر دائما رموز بلون باهت.</string>
+  <string name="light_statusbar_pref_off">شريط الاشعارات سوف يظهر أيكونات مضيئه دائما.</string>
   <string name="haptic_feedback_pref_title">تفعيل الإهتزاز</string>
   <string name="keep_scroll_state_pref_title">حفظ موضع التمرير</string>
   <string name="keep_scroll_state_pref_summary">حفظ الموقع في قائمة التطبيقات</string>
