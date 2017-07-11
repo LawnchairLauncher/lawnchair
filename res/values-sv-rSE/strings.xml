@@ -77,7 +77,7 @@
   <!-- Permission description -->
   <string name="permdesc_install_shortcut">Tillåter att en app lägger till genvägar utan åtgärd från användaren.</string>
   <!-- Permission short label -->
-  <string name="permlab_read_settings">läsa inställningar och genvägar för startsidan</string>
+  <string name="permlab_read_settings">läs inställningar och genvägar för startsidan</string>
   <!-- Permission description -->
   <string name="permdesc_read_settings">Tillåter att appen läser inställningar och genvägar på startsidan.</string>
   <!-- Permission short label -->
