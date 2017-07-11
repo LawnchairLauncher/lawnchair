@@ -255,10 +255,10 @@
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Πακέτο εικονιδίων</string>
   <string name="icon_pack_preference_summary">Επιλέξτε ένα πακέτο εικονιδίων</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Dock uses wallpaper colors</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
-  <string name="transparent_hotseat_pref_title">Transparent Dock</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Η μπάρα εφαρμογών χρησιμοποιεί χρώματα της ταπετσαρίας</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">Η μπάρα εφαρμογών θα χρωματιστεί με χρώμα που εξάγεται από την ταπετσαρία</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">Η μπάρα εφαρμογών θα χρωματιστεί γκρι, αλλά ρυθμιζόμενη από τη φωτεινότητα της ταπετσαρίας</string>
+  <string name="transparent_hotseat_pref_title">Διαφανή μπάρα εφαρμογών</string>
   <string name="dynamic_ui_pref_title">Extract accent color from wallpaper</string>
   <string name="dark_theme_pref_title">Ενεργοποίηση σκοτεινού θέματος</string>
   <string name="blur_pref_title">Ενεργοποίηση θολότητας</string>
