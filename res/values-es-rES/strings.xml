@@ -204,7 +204,7 @@
   <string name="shortcuts_menu_description"><xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> accesos directos de <xliff:g id="APP_NAME">%2$s</xliff:g></string>
   <string name="edit_drop_target_label">Editar</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
-  <string name="wallpaper_instructions">Establecer fondo</string>
+  <string name="wallpaper_instructions">Establecer fondo de pantalla</string>
   <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper picker cannot load it -->
   <string name="image_load_fail">No se ha podido cargar la imagen</string>
@@ -250,7 +250,7 @@
   <string name="notifications_header">Notificaciones</string>
   <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair es un Launcher creado por Till Kottmann (alias deletescape) Esta basado en Launcher3 de AOSP.</string>
+  <string name="about_text">Lawnchair es un Launcher creado por Till Kottmann (alias deletescape). Basado en Launcher3 de AOSP.</string>
   <string name="about_title">Acerca de</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Paquete de iconos</string>
