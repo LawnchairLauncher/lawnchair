@@ -21,7 +21,7 @@
     <skip />
 
     <!-- Application name -->
-    <string name="app_name">Lawnchair</string>
+    <string name="app_name" translatable="false">Lawnchair</string>
     <!-- Default folder name -->
     <string name="folder_name" translatable="false" />
     <!-- Work folder name -->
