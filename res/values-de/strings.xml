@@ -70,7 +70,7 @@
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
   <string name="uninstall_drop_target_label">Deinstallieren</string>
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
-  <string name="app_info_drop_target_label">App-Details</string>
+  <string name="app_info_drop_target_label">App Informationen</string>
   <!-- Permissions: -->
   <skip></skip>
   <!-- Permission short label -->
@@ -80,13 +80,13 @@
   <!-- Permission short label -->
   <string name="permlab_read_settings">Einstellungen und Verknüpfungen des Startbildschirms lesen</string>
   <!-- Permission description -->
-  <string name="permdesc_read_settings">Ermöglicht der App, die Einstellungen und Verknüpfungen auf dem Startbildschirm zu lesen</string>
+  <string name="permdesc_read_settings">Ermöglicht der App, die Einstellungen und Verknüpfungen auf dem Startbildschirm zu lesen.</string>
   <!-- Permission short label -->
-  <string name="permlab_write_settings">Einstellungen und Verknüpfungen für den Startbildschirm schreiben</string>
+  <string name="permlab_write_settings">Einstellungen und Verknüpfungen des Startbildschirms schreiben</string>
   <!-- Permission description -->
-  <string name="permdesc_write_settings">Ermöglicht der App, die Einstellungen und Verknüpfungen auf dem Startbildschirm zu ändern</string>
+  <string name="permdesc_write_settings">Ermöglicht der App, die Einstellungen und Verknüpfungen auf dem Startbildschirm zu ändern.</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
-  <string name="msg_no_phone_permission"><xliff:g id="APP_NAME">%1$s</xliff:g> darf keine Telefonanrufe tätigen.</string>
+  <string name="msg_no_phone_permission"><xliff:g id="APP_NAME">%1$s</xliff:g> darf keine Telefonanrufe tätigen</string>
   <!-- Widgets: -->
   <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
@@ -109,11 +109,11 @@
   <string name="workspace_new_page">Neue Startbildschirmseite</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
-  <string name="folder_opened">Ordner geöffnet, <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g></string>
+  <string name="folder_opened">Ordner geöffnet, <xliff:g id="WIDTH">%1$d</xliff:g> \u00d7 <xliff:g id="HEIGHT">%2$d</xliff:g></string>
   <!-- Instruction that clicking outside will close folder -->
   <string name="folder_tap_to_close">Ordner zum Schließen antippen</string>
   <!-- Instruction that clicking outside will commit folder rename -->
-  <string name="folder_tap_to_rename">Neuen Namen zum Speichern antippen</string>
+  <string name="folder_tap_to_rename">Zum Speichern des neuen Namens antippen</string>
   <!-- Indication that folder closed -->
   <string name="folder_closed">Ordner geschlossen</string>
   <!-- Folder renamed format -->
@@ -145,11 +145,11 @@
   <string name="abandoned_promises_title">Diese App ist nicht installiert</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
-  <string name="abandoned_promise_explanation">Die App für dieses Symbol ist nicht installiert. Du kannst das Symbol entfernen oder die App lokalisieren und dann manuell installieren.</string>
+  <string name="abandoned_promise_explanation">Die App für dieses Symbol ist nicht installiert. Du kannst das Symbol entfernen oder die App lokalisieren und manuell installieren.</string>
   <!-- Title for an app which is being downloaded. -->
   <string name="app_downloading_title"><xliff:g id="NAME">%1$s</xliff:g> wird heruntergeladen, <xliff:g id="PROGRESS">%2$s</xliff:g> abgeschlossen</string>
   <!-- Title for an app whose download has been started. -->
-  <string name="app_waiting_download_title">Warten auf Installation von <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="app_waiting_download_title"><xliff:g id="NAME">%1$s</xliff:g> wartet auf Installation</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
   <string name="action_add_to_workspace">Zum Startbildschirm hinzufügen</string>
@@ -162,7 +162,7 @@
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
   <string name="action_move">Element verschieben</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell">In Zeile <xliff:g id="NUMBER_0">%1$s</xliff:g>, Spalte <xliff:g id="NUMBER_1">%2$s</xliff:g> verschoben</string>
+  <string name="move_to_empty_cell">In Zeile <xliff:g id="NUMBER_0">%1$s</xliff:g>, Spalte <xliff:g id="NUMBER_1">%2$s</xliff:g> verschieben</string>
   <!-- Accessibility description to move item inside a folder. -->
   <string name="move_to_position">Auf Position <xliff:g id="NUMBER">%1$s</xliff:g> verschoben</string>
   <!-- Accessibility description to move item to the hotseat. -->
@@ -315,5 +315,5 @@
   <string name="notification_listener_label">Lawnchair - Benachrichtigungsanzeige</string>
   <string name="color_extraction_label">Lawnchair - Farbextraktion</string>
   <string name="test_title">Test</string>
-  <string name="visibility">Sichtbar</string>
+  <string name="visibility">Sichtbarkeit</string>
 </resources>
