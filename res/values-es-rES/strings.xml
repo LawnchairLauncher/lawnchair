@@ -276,7 +276,7 @@
   <string name="full_width_width_widgets_pref_title">Widgets con redimensionamiento completo</string>
   <string name="full_width_widgets_pref_summary">Permitir a los widgets mostrarse sobre todo el ancho sin relleno</string>
   <string name="notification_access_pref_title">Vista previa y notificaciones varias</string>
-  <string name="notification_access_pref_summary">Permite a Lawnchair el acceso a tus notificaciones</string>
+  <string name="notification_access_pref_summary">Permitir a Lawnchair el acceso a las notificaciones</string>
   <string name="ui_pref_title">Interfaz de usuario</string>
   <string name="pixel_style_pref_title">Estilo Pixel</string>
   <string name="behavior_pref_title">Comportamiento</string>
@@ -293,9 +293,9 @@
   <string name="rebuild_icondb_pref_title">Reconstrución de la base de datos de los iconos</string>
   <string name="pinch_to_overview_pref_title">Pinchar para vista general</string>
   <string name="pinch_to_overview_pref_summary">Pellizcar en el escritorio para abrir la vista general</string>
-  <string name="pull_down_notis_pref_title">Tira hacia abajo para las notificaciones</string>
-  <string name="pull_down_notis_pref_on">Tirando hacia abajo en el escritorio abre la barra de estado.</string>
-  <string name="pull_down_notis_pref_off">Activado, tirando hacia abajo en el escritorio expande la barra de estado.</string>
+  <string name="pull_down_notis_pref_title">Desliza hacia abajo para abrir las notificaciones</string>
+  <string name="pull_down_notis_pref_on">Desliza hacia abajo la pantalla de inicio para expandir la barra de estado.</string>
+  <string name="pull_down_notis_pref_off">Activado, deslizando hacia abajo en la pantalla de inicio expande la barra de estado.</string>
   <string name="light_statusbar_pref_title">Barra de estado clara</string>
   <string name="light_statusbar_pref_on">La barra de estado podrá mostrar iconos oscuros cuando usa un fondo de pantalla claro.</string>
   <string name="light_statusbar_pref_off">La barra de estado mostrará siempre iconos claros.</string>
