@@ -251,15 +251,15 @@
   <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair on käynnistysohjelma, jonka on luonut Till Kottmann (Deletescape). Se pohjautuu Launcher3 -käynnistysohjelmaan.</string>
-  <string name="about_title">About</string>
+  <string name="about_title">Tietoja</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Kuvakepaketti</string>
   <string name="icon_pack_preference_summary">Valitse kuvakepaketti</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Dock uses wallpaper colors</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
-  <string name="transparent_hotseat_pref_title">Transparent Dock</string>
-  <string name="dynamic_ui_pref_title">Extract accent color from wallpaper</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Telakka käyttää taustakuvan värejä</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">Telakka väritetään taustakuvasta poimitulla värillä</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">Telakka väritetään harmaaksi, mutta säädetään taustakuvan kirkkauden mukaan</string>
+  <string name="transparent_hotseat_pref_title">Läpikuultava telakka</string>
+  <string name="dynamic_ui_pref_title">Poimi aksenttiväri taustakuvasta</string>
   <string name="dark_theme_pref_title">Käytä tummaa teemaa</string>
   <string name="blur_pref_title">Käytä sumennusta</string>
   <string name="blur_radius_pref_title">Sumennuksen Säde</string>
@@ -270,12 +270,12 @@
   <string name="all_apps_opacity_pref_title">Sovellusvalikon opasiteetti</string>
   <string name="num_cols_pref_title">Sarakkeiden määrä</string>
   <string name="num_rows_pref_title">Rivien määrä</string>
-  <string name="num_hotseat_icons_pref_title">Number of icons in dock</string>
-  <string name="icon_scale_pref_title">Icon scale</string>
-  <string name="icon_text_scale_pref_title">Icon text scale</string>
+  <string name="num_hotseat_icons_pref_title">Kuvakkeiden lukumäärä telakassa</string>
+  <string name="icon_scale_pref_title">Kuvakkeen skaalaus</string>
+  <string name="icon_text_scale_pref_title">Kuvakkeen tekstin skaalaus</string>
   <string name="full_width_width_widgets_pref_title">Full width widgets</string>
   <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
-  <string name="notification_access_pref_title">Notification badges and preview</string>
+  <string name="notification_access_pref_title">Ilmoitusten merkit ja esikatselu</string>
   <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
   <string name="ui_pref_title">Käyttöliittymä</string>
   <string name="pixel_style_pref_title">Pixel style</string>
@@ -338,24 +338,24 @@
   <!-- Customization Color -->
   <string name="teal">Teal</string>
   <!-- Customization Color -->
-  <string name="green">Green</string>
+  <string name="green">Vihreä</string>
   <!-- Customization Color -->
-  <string name="light_green">Light Green</string>
+  <string name="light_green">Vaaleanvihreä</string>
   <!-- Customization Color -->
-  <string name="lime">Lime</string>
+  <string name="lime">Limetti</string>
   <!-- Customization Color -->
-  <string name="yellow">Yellow</string>
+  <string name="yellow">Keltainen</string>
   <!-- Customization Color -->
-  <string name="amber">Amber</string>
+  <string name="amber">Meripihka</string>
   <!-- Customization Color -->
-  <string name="orange">Orange</string>
+  <string name="orange">Oranssi</string>
   <!-- Customization Color -->
   <string name="deep_orange">Deep Orange</string>
   <!-- Customization Color -->
-  <string name="brown">Brown</string>
+  <string name="brown">Ruskea</string>
   <!-- Customization Color -->
-  <string name="grey">Grey</string>
+  <string name="grey">Harmaa</string>
   <!-- Customization Color -->
-  <string name="blue_grey">Blue Grey</string>
-  <string name="default_text">Default</string>
+  <string name="blue_grey">Siniharmaa</string>
+  <string name="default_text">Oletus</string>
 </resources>
