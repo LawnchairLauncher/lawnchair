@@ -35,27 +35,27 @@
     </string-array>
 
     <string-array name="color_index_entries">
-        <item>White</item>
-        <item>Black</item>
-        <item>Red</item>
-        <item>Pink</item>
-        <item>Purple</item>
-        <item>Deep Purple</item>
-        <item>Indigo</item>
-        <item>Blue</item>
-        <item>Light Blue</item>
-        <item>Cyan</item>
-        <item>Teal</item>
-        <item>Green</item>
-        <item>Light Green</item>
-        <item>Lime</item>
-        <item>Yellow</item>
-        <item>Amber</item>
-        <item>Orange</item>
-        <item>Deep Orange</item>
-        <item>Brown</item>
-        <item>Grey</item>
-        <item>Blue Grey</item>
+        <item>@string/white</item>
+        <item>@string/black</item>
+        <item>@string/red</item>
+        <item>@string/pink</item>
+        <item>@string/purple</item>
+        <item>@string/deep_purple</item>
+        <item>@string/indigo</item>
+        <item>@string/blue</item>
+        <item>@string/light_blue</item>
+        <item>@string/cyan</item>
+        <item>@string/teal</item>
+        <item>@string/green</item>
+        <item>@string/light_green</item>
+        <item>@string/lime</item>
+        <item>@string/yellow</item>
+        <item>@string/amber</item>
+        <item>@string/orange</item>
+        <item>@string/deep_orange</item>
+        <item>@string/brown</item>
+        <item>@string/grey</item>
+        <item>@string/blue_grey</item>
     </string-array>
 
     <string-array name="color_index_values">
