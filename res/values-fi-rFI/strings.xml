@@ -241,7 +241,7 @@
   <!-- Option for setting the wallpaper only on the lock screen. -->
   <string name="which_wallpaper_option_lock_screen">Lukitusnäyttö</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
-  <string name="which_wallpaper_option_home_screen_and_lock_screen">Home screen and lock screen</string>
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">Aloitus- ja lukitusnäyttö</string>
   <string name="title_show_google_app">Show %1$s</string>
   <string name="title_show_google_app_default">Show Google app</string>
   <string name="label_search">Search</string>
@@ -315,4 +315,47 @@
   <string name="color_extraction_label">Lawnchair - Color extraction</string>
   <string name="test_title">Test</string>
   <string name="visibility">Visibility</string>
+  <!-- Customization Color -->
+  <string name="white">White</string>
+  <!-- Customization Color -->
+  <string name="black">Black</string>
+  <!-- Customization Color -->
+  <string name="red">Red</string>
+  <!-- Customization Color -->
+  <string name="pink">Pink</string>
+  <!-- Customization Color -->
+  <string name="purple">Purple</string>
+  <!-- Customization Color -->
+  <string name="deep_purple">Deep Purple</string>
+  <!-- Customization Color -->
+  <string name="indigo">Indigo</string>
+  <!-- Customization Color -->
+  <string name="blue">Blue</string>
+  <!-- Customization Color -->
+  <string name="light_blue">Light Blue</string>
+  <!-- Customization Color -->
+  <string name="cyan">Cyan</string>
+  <!-- Customization Color -->
+  <string name="teal">Teal</string>
+  <!-- Customization Color -->
+  <string name="green">Green</string>
+  <!-- Customization Color -->
+  <string name="light_green">Light Green</string>
+  <!-- Customization Color -->
+  <string name="lime">Lime</string>
+  <!-- Customization Color -->
+  <string name="yellow">Yellow</string>
+  <!-- Customization Color -->
+  <string name="amber">Amber</string>
+  <!-- Customization Color -->
+  <string name="orange">Orange</string>
+  <!-- Customization Color -->
+  <string name="deep_orange">Deep Orange</string>
+  <!-- Customization Color -->
+  <string name="brown">Brown</string>
+  <!-- Customization Color -->
+  <string name="grey">Grey</string>
+  <!-- Customization Color -->
+  <string name="blue_grey">Blue Grey</string>
+  <string name="default_text">Default</string>
 </resources>
