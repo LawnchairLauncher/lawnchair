@@ -256,10 +256,10 @@
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Paczki ikon</string>
   <string name="icon_pack_preference_summary">Wybierz paczkę ikon</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Dock uses wallpaper colors</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
-  <string name="transparent_hotseat_pref_title">Transparent Dock</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Dock używa koloru z tapety</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">Dock będzie w kolorze wydobytym z tapety</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">Dock będzie w kolorze szarym, ale dostosowanym przez jasność tapety</string>
+  <string name="transparent_hotseat_pref_title">Przezroczysty dock</string>
   <string name="dynamic_ui_pref_title">Extract accent color from wallpaper</string>
   <string name="dark_theme_pref_title">Użyj ciemnego motywu</string>
   <string name="blur_pref_title">Włącz rozmycie</string>
@@ -312,7 +312,7 @@
   <string name="import_db_title">Importuj bazę danych</string>
   <string name="export_prefs_title">Eksportuj ustawienia</string>
   <string name="import_prefs_title">Importuj ustawienia</string>
-  <string name="notification_listener_label">Lawnchair - Notification badges</string>
+  <string name="notification_listener_label">Lawnchair - Odznaki powiadomień</string>
   <string name="color_extraction_label">Lawnchair - Color extraction</string>
   <string name="test_title">Test</string>
   <string name="visibility">Widoczność</string>
