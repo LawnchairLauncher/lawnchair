@@ -36,9 +36,9 @@
   <string name="shortcut_not_available">الاختصار غير متاح</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">المس مع الاستمرار لاختيار إحدى الأدوات.</string>
+  <string name="long_press_widget_to_add">اضغط مع الاستمرار لاختيار إحدى الأدوات.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-  <string name="long_accessible_way_to_add">انقر نقرًا مزدوجًا مع الاستمرار لاختيار أداة أو استخدم الإجراءات المخصصة.</string>
+  <string name="long_accessible_way_to_add">انقر نقرًا مزدوجًا مع الاستمرار لاختيار أداة أو استخدام الإجراءات المخصصة.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
   <string name="widget_dims_format">%1$d × %2$d</string>
@@ -58,7 +58,7 @@
   <!-- Error message when user has filled a home screen -->
   <string name="out_of_space">ليس هناك مساحة أخرى في هذه الشاشة الرئيسية.</string>
   <!-- Error message when user has filled the hotseat -->
-  <string name="hotseat_out_of_space">لا يوجد المزيد من الحقول في علبة المفضلة</string>
+  <string name="hotseat_out_of_space">لا يوجد المزيد من الحقول في قائمة المفضلات</string>
   <!-- All applications label -->
   <string name="all_apps_button_label">قائمة التطبيقات</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
@@ -85,7 +85,7 @@
   <!-- Permission description -->
   <string name="permdesc_write_settings">للسماح للتطبيق بتغيير الإعدادات والاختصارات في الشاشة الرئيسية.</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
-  <string name="msg_no_phone_permission"><xliff:g id="APP_NAME">%1$s</xliff:g> غير مسموح به لإجراء مكالمات هاتفية</string>
+  <string name="msg_no_phone_permission"><xliff:g id="APP_NAME">%1$s</xliff:g> غير مسموح له لإجراء مكالمات هاتفية</string>
   <!-- Widgets: -->
   <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
@@ -93,19 +93,19 @@
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
   <string name="gadget_setup_text">الإعداد</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
-  <string name="uninstall_system_app_text">هذا تطبيق نظام وتتعذر إزالته.</string>
+  <string name="uninstall_system_app_text">لا يمكن الغاء تثبيت تطبيقات الظام.</string>
   <!-- Default folder title -->
   <string name="folder_hint_text">مجلد بدون اسم</string>
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
-  <string name="disabled_app_label">تم تعطيل <xliff:g id="APP_NAME">%1$s</xliff:g></string>
+  <string name="disabled_app_label">تم التعطيل <xliff:g id="APP_NAME">%1$s</xliff:g></string>
   <skip></skip>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">‏الصفحة %1$d من %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">‏الشاشة الرئيسية %1$d من %2$d</string>
   <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
-  <string name="workspace_new_page">صفحة الشاشة الرئيسية الجديدة</string>
+  <string name="workspace_new_page">صفحة شاشة رئيسية الجديدة</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
   <string name="folder_opened">تم فتح المجلد، بمقاس <xliff:g id="WIDTH">%1$d</xliff:g> في <xliff:g id="HEIGHT">%2$d</xliff:g></string>
@@ -159,7 +159,7 @@
   <!-- Accessibility confirmation for item removed. -->
   <string name="item_removed">تم حذف العنصر</string>
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
-  <string name="action_move">نقل العنصر</string>
+  <string name="action_move">تحريك العنصر</string>
   <!-- Accessibility description to move item to empty cell. -->
   <string name="move_to_empty_cell">نقل إلى الصف <xliff:g id="NUMBER_0">%1$s</xliff:g> العمود <xliff:g id="NUMBER_1">%2$s</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
@@ -275,7 +275,7 @@
   <string name="num_cols_pref_title">عدد الأعمدة</string>
   <string name="num_rows_pref_title">عدد الصفوف</string>
   <string name="num_hotseat_icons_pref_title">عدد الرموز في منصة التطبيقات</string>
-  <string name="icon_scale_pref_title">حجم الرمز</string>
+  <string name="icon_scale_pref_title">حجم الأيقونة</string>
   <string name="icon_text_scale_pref_title">حجم نص الأيقونة</string>
   <string name="full_width_width_widgets_pref_title">مربعات جانبية بالعرض الكامل</string>
   <string name="full_width_widgets_pref_summary">السماح للمربعات الجانبية بالتمدد على كامل عرض الشاشة من غير حشو</string>
@@ -292,7 +292,7 @@
   <string name="pixel_style_icons_pref_title">استخدم أيقونات بكسل</string>
   <string name="pixel_style_icons_pref_summary">عند التفعيل سيتم استخدام الأيقونات الدائرية حيثما كان ذلك ممكناً</string>
   <string name="show_google_now_tab_pref_title">إظهار صفحة جوجل الآن</string>
-  <string name="restart_lawnchair_pref_title">أعادة تشغيل لاونتشير</string>
+  <string name="restart_lawnchair_pref_title">أعادة تشغيل lawnchair</string>
   <string name="restart_lawnchair_pref_summary">يمكن أن يكون مفيداً إذا لم يتم تطبيق بعض الإعدادات بشكل صحيح</string>
   <string name="rebuild_icondb_pref_title">إعادة إنشاء قاعدة بيانات الأيقونة</string>
   <string name="pinch_to_overview_pref_title">اقبض بإصبعين لنظرة عامة</string>
@@ -300,7 +300,7 @@
   <string name="pull_down_notis_pref_title">سحب لأسفل لإظهار الإشعارات</string>
   <string name="pull_down_notis_pref_on">السحب لأسفل على الشاشة الرئيسية سوف بظهر جميع عناصر شريط الإشعارات.</string>
   <string name="pull_down_notis_pref_off">عند التفعيل السحب لأسفل على الشاشة الرئيسية يظهر جميع عناصر شريط الإشعارات.</string>
-  <string name="light_statusbar_pref_title">شريط حالة باهت</string>
+  <string name="light_statusbar_pref_title">شريط حالة ابيض</string>
   <string name="light_statusbar_pref_on">قد يظهر شريط الاشعارات مظلم عند استخدام خلفية شاشة باهتة اللون.</string>
   <string name="light_statusbar_pref_off">شريط المعلومات سيظهر دائما رموز بلون باهت.</string>
   <string name="haptic_feedback_pref_title">تفعيل الإهتزاز</string>
@@ -340,26 +340,26 @@
   <!-- Customization Color -->
   <string name="cyan">أزرق سماوي</string>
   <!-- Customization Color -->
-  <string name="teal">Teal</string>
+  <string name="teal">أزرق مخضر</string>
   <!-- Customization Color -->
-  <string name="green">Green</string>
+  <string name="green">أخضر</string>
   <!-- Customization Color -->
-  <string name="light_green">Light Green</string>
+  <string name="light_green">أخضر فاتح</string>
   <!-- Customization Color -->
-  <string name="lime">Lime</string>
+  <string name="lime">ليموني</string>
   <!-- Customization Color -->
-  <string name="yellow">Yellow</string>
+  <string name="yellow">أصفر</string>
   <!-- Customization Color -->
-  <string name="amber">Amber</string>
+  <string name="amber">كهرمان</string>
   <!-- Customization Color -->
-  <string name="orange">Orange</string>
+  <string name="orange">برتقالي</string>
   <!-- Customization Color -->
-  <string name="deep_orange">Deep Orange</string>
+  <string name="deep_orange">برتقالي داكن</string>
   <!-- Customization Color -->
-  <string name="brown">Brown</string>
+  <string name="brown">بني</string>
   <!-- Customization Color -->
-  <string name="grey">Grey</string>
+  <string name="grey">رمادي</string>
   <!-- Customization Color -->
-  <string name="blue_grey">Blue Grey</string>
-  <string name="default_text">Default</string>
+  <string name="blue_grey">أزرق رمادي</string>
+  <string name="default_text">الإفتراضي</string>
 </resources>
