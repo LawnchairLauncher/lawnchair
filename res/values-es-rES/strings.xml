@@ -116,7 +116,7 @@
   <!-- Indication that folder closed -->
   <string name="folder_closed">Carpeta cerrada</string>
   <!-- Folder renamed format -->
-  <string name="folder_renamed">Se ha cambiado el nombre de la carpeta a <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="folder_renamed">Carpeta renombrada a <xliff:g id="Name">%1$s</xliff:g></string>
   <!-- Folder name format -->
   <string name="folder_name_format">Carpeta: <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Strings for the customization mode -->
