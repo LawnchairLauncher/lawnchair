@@ -21,7 +21,6 @@
   <!-- General -->
   <skip></skip>
   <!-- Application name -->
-  <string name="app_name">Lawnchair</string>
   <!-- Default folder name -->
   <!-- Work folder name -->
   <string name="work_folder_name">Praca</string>
