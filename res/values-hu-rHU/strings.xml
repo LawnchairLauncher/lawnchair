@@ -242,13 +242,13 @@
   <string name="which_wallpaper_option_lock_screen">Képernyőzár</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
   <string name="which_wallpaper_option_home_screen_and_lock_screen">Főképernyő és képernyőzár</string>
-  <string name="title_show_google_app">Show %1$s</string>
-  <string name="title_show_google_app_default">Show Google app</string>
-  <string name="label_search">Search</string>
-  <string name="label_voice_search">Voice search</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d shortcuts and %2$d notifications for %3$s</string>
-  <string name="notifications_header">Notifications</string>
-  <string name="widgets_bottom_sheet_title">%1$s widgets</string>
+  <string name="title_show_google_app">%1$s megjelenítése</string>
+  <string name="title_show_google_app_default">Google app megjelenítése</string>
+  <string name="label_search">Keresés</string>
+  <string name="label_voice_search">Hangalapú keresés</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d parancsikonok és %2$d értesítések ehhez: %3$s</string>
+  <string name="notifications_header">Értesítések</string>
+  <string name="widgets_bottom_sheet_title">%1$s widget</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
   <string name="about_title">About</string>
