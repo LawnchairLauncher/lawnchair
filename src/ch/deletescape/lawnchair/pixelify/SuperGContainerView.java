@@ -65,7 +65,7 @@ public class SuperGContainerView extends BaseQsbView {
         }
         mBlurEnabled = BlurWallpaperProvider.isEnabled();
         if (mBlurEnabled) {
-            mBlurDrawable = mLauncher.getBlurWallpaperProvider().createDrawable(100, true);
+            mBlurDrawable = mLauncher.getBlurWallpaperProvider().createDrawable(100, false);
         }
     }
 
