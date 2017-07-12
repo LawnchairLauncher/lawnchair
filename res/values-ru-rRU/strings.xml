@@ -25,7 +25,7 @@
   <!-- Work folder name -->
   <string name="work_folder_name">Работа</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
-  <string name="activity_not_found">Приложение удалено</string>
+  <string name="activity_not_found">Приложение не установлено.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">Приложение недоступно</string>
   <!-- SafeMode shortcut error string -->
@@ -300,7 +300,7 @@
   <string name="light_statusbar_pref_title">Светлая строка состояния</string>
   <string name="light_statusbar_pref_on">Строка состояния может показывать темные значки при использовании светлых обоев</string>
   <string name="light_statusbar_pref_off">В строке состояния всегда будут отображаться светлые значки</string>
-  <string name="haptic_feedback_pref_title">Вибрация</string>
+  <string name="haptic_feedback_pref_title">Включить вибрацию</string>
   <string name="keep_scroll_state_pref_title">Сохранять позицию прокрутки</string>
   <string name="keep_scroll_state_pref_summary">Сохраняет положение прокрутки в меню приложения</string>
   <string name="home_opens_drawer_pref_title">Кнопка «Домой» открывает меню приложений</string>
@@ -351,12 +351,12 @@
   <!-- Customization Color -->
   <string name="orange">Оранжевый</string>
   <!-- Customization Color -->
-  <string name="deep_orange">Deep Orange</string>
+  <string name="deep_orange">Темно-оранжевый</string>
   <!-- Customization Color -->
   <string name="brown">Коричневый</string>
   <!-- Customization Color -->
   <string name="grey">Серый</string>
   <!-- Customization Color -->
-  <string name="blue_grey">Blue Grey</string>
+  <string name="blue_grey">Серо-голубой</string>
   <string name="default_text">По умолчанию</string>
 </resources>
