@@ -1,5 +1,8 @@
 language: android
 jdk: oraclejdk8
+branches:
+   except:
+   - l10n_alpha2
 android:
   components:
     - tools

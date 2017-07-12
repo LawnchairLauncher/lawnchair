@@ -21,7 +21,7 @@
     <skip />
 
     <!-- Application name -->
-    <string name="app_name">Lawnchair</string>
+    <string name="app_name" translatable="false">Lawnchair</string>
     <!-- Default folder name -->
     <string name="folder_name" translatable="false" />
     <!-- Work folder name -->
@@ -260,7 +260,7 @@
     <string name="wallpaper_instructions">Set wallpaper</string>
     <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper picker cannot load it -->
-    <string name="image_load_fail">Coudn\'t load image</string>
+    <string name="image_load_fail">Couldn\'t load image</string>
     <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper cropper cannot load it. The user will
          usually see this when using another app and trying to set
@@ -375,5 +375,48 @@
     <string name="test_title">Test</string>
     <string name="test_package" translatable="false">com.example.test</string>
     <string name="visibility">Visibility</string>
+    <!-- Customization Color -->
+    <string name="white">White</string>
+    <!-- Customization Color -->
+    <string name="black">Black</string>
+    <!-- Customization Color -->
+    <string name="red">Red</string>
+    <!-- Customization Color -->
+    <string name="pink">Pink</string>
+    <!-- Customization Color -->
+    <string name="purple">Purple</string>
+    <!-- Customization Color -->
+    <string name="deep_purple">Deep Purple</string>
+    <!-- Customization Color -->
+    <string name="indigo">Indigo</string>
+    <!-- Customization Color -->
+    <string name="blue">Blue</string>
+    <!-- Customization Color -->
+    <string name="light_blue">Light Blue</string>
+    <!-- Customization Color -->
+    <string name="cyan">Cyan</string>
+    <!-- Customization Color -->
+    <string name="teal">Teal</string>
+    <!-- Customization Color -->
+    <string name="green">Green</string>
+    <!-- Customization Color -->
+    <string name="light_green">Light Green</string>
+    <!-- Customization Color -->
+    <string name="lime">Lime</string>
+    <!-- Customization Color -->
+    <string name="yellow">Yellow</string>
+    <!-- Customization Color -->
+    <string name="amber">Amber</string>
+    <!-- Customization Color -->
+    <string name="orange">Orange</string>
+    <!-- Customization Color -->
+    <string name="deep_orange">Deep Orange</string>
+    <!-- Customization Color -->
+    <string name="brown">Brown</string>
+    <!-- Customization Color -->
+    <string name="grey">Grey</string>
+    <!-- Customization Color -->
+    <string name="blue_grey">Blue Grey</string>
+    <string name="default_text">Default</string>
 
 </resources>
