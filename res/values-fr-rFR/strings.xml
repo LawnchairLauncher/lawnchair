@@ -296,7 +296,7 @@
   <string name="pull_down_notis_pref_title">Glisser vers le bas affiche les notifications</string>
   <string name="pull_down_notis_pref_on">Glisser vers le bas sur l\'écran d\'accueil étendra la barre d\'état.</string>
   <string name="pull_down_notis_pref_off">Si activé, glisser vers le bas sur l\'écran d\'accueil étend la barre d\'état.</string>
-  <string name="light_statusbar_pref_title">Light statusbar</string>
+  <string name="light_statusbar_pref_title">Barre d\'état claire</string>
   <string name="light_statusbar_pref_on">The status bar may show dark icons when using a light wallpaper.</string>
   <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
   <string name="haptic_feedback_pref_title">Enable vibration</string>
@@ -357,5 +357,5 @@
   <string name="grey">Gris</string>
   <!-- Customization Color -->
   <string name="blue_grey">Bleu Gris</string>
-  <string name="default_text">Default</string>
+  <string name="default_text">Par défaut</string>
 </resources>
