@@ -138,6 +138,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     private TouchController mActiveController;
     public boolean mIsAccesibilityEnabled;
+    private boolean mPreventAllApps;
 
     /**
      * Used to create a new DragLayer from XML.
@@ -252,6 +253,7 @@ public class DragLayer extends InsettableFrameLayout {
                     return true;
                 }
             } else if (topOpenView instanceof PopupContainerWithArrow) {
+                mPreventAllApps = true;
                 return false;
             }
         }
@@ -265,6 +267,7 @@ public class DragLayer extends InsettableFrameLayout {
                 }
             }
 
+            mPreventAllApps = true;
             if (!isEventOverFolder(currentFolder, ev)) {
                 if (isInAccessibleDrag()) {
                     // Do not close the folder if in drag and drop.
@@ -288,6 +291,7 @@ public class DragLayer extends InsettableFrameLayout {
             // Cancel discovery bounce animation when a user start interacting on anywhere on
             // dray layer even if mAllAppsController is NOT the active controller.
             // TODO: handle other input other than touch
+            mPreventAllApps = false;
             mAllAppsController.cancelDiscoveryAnimation();
             if (handleTouchDown(ev, true)) {
                 return true;
@@ -307,7 +311,7 @@ public class DragLayer extends InsettableFrameLayout {
             return true;
         }
 
-        if (mAllAppsController.onInterceptTouchEvent(ev)) {
+        if (!mPreventAllApps && mAllAppsController.onInterceptTouchEvent(ev)) {
             mActiveController = mAllAppsController;
             return true;
         }
