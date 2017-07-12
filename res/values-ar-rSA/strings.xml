@@ -220,7 +220,7 @@
   <!-- String indicating how many media item(s) is(are) selected
             eg. 1 selected [CHAR LIMIT=30] -->
   <plurals name="number_of_items_selected">
-    <item quantity="zero">محدد %1$d</item>
+    <item quantity="zero">‏تم تحديد %1$d</item>
     <item quantity="one">‏تم تحديد %1$d</item>
     <item quantity="two">‏تم تحديد %1$d</item>
     <item quantity="few">%1$d selected</item>
