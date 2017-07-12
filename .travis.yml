@@ -26,8 +26,10 @@ cache:
   - "$HOME/.android/build-cache"
   - "$ANDROID_HOME"
 
-before_deploy: ./scripts/deploy-telegram.sh
 deploy:
+  - provider: script
+    skip_cleanup: true
+    script: scripts/deploy-telegram.sh
   - provider: releases
     skip_cleanup: true
     api_key: $GITHUB_OAUTH_TOKEN
