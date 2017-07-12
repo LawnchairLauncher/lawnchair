@@ -31,7 +31,7 @@
   <!-- SafeMode shortcut error string -->
   <string name="safemode_shortcut_error">Aplicación descargada deshabilitada en modo seguro</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">Widgets inhabilitados en modo seguro</string>
+  <string name="safemode_widget_error">Widgets deshabilitados en modo seguro</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">Acceso directo no disponible</string>
   <!-- Widgets -->
@@ -127,7 +127,7 @@
   <!-- Text for settings button -->
   <string name="settings_button_text">Ajustes</string>
   <!-- Message shown when a feature is disabled by the administrator -->
-  <string name="msg_disabled_by_admin">Inhabilitada por el administrador</string>
+  <string name="msg_disabled_by_admin">Deshabilitada por el administrador</string>
   <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
   <string name="accessibility_action_overview">Visión general</string>
   <!-- Strings for settings -->
@@ -259,7 +259,7 @@
   <string name="hotseat_uses_extracted_colors_pref_on">El dock se colorea con el color extraido del fondo de pantalla</string>
   <string name="hotseat_uses_extracted_colors_pref_off">El dock será gris ajustado al brillo del fondo de pantalla</string>
   <string name="transparent_hotseat_pref_title">Dock transparente</string>
-  <string name="dynamic_ui_pref_title">Extrae el color de tu fondo de pantalla</string>
+  <string name="dynamic_ui_pref_title">Extrae el color del fondo de pantalla</string>
   <string name="dark_theme_pref_title">Habilitar tema oscuro</string>
   <string name="blur_pref_title">Habilitar desenfoque</string>
   <string name="blur_radius_pref_title">Radio de desenfoque</string>
