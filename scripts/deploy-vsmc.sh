@@ -1,5 +1,8 @@
 #!/usr/bin/env sh
 
+# skipping for now
+exit 0
+
 BRANCH=$1
 
 URLBASE="https://api.mobile.azure.com/v0.1/apps/$MOBILE_CENTER_USER/$MOBILE_CENTER_APP"
