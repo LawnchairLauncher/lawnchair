@@ -316,7 +316,7 @@
   <string name="import_db_title">استيراد قاعدة البيانات</string>
   <string name="export_prefs_title">تصدير الإعدادات</string>
   <string name="import_prefs_title">استيراد الإعدادات</string>
-  <string name="notification_listener_label">لاونتشير - علامات الإشعارات</string>
+  <string name="notification_listener_label">Lawnchair - علامات الإشعارات</string>
   <string name="color_extraction_label">لاونتشير - استخراج اللون</string>
   <string name="test_title">اختبار</string>
   <string name="visibility">وضوح الرؤية</string>
