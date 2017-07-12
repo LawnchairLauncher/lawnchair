@@ -250,7 +250,7 @@
   <string name="notifications_header">Notifications</string>
   <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair est un launcher créé par Till Kottmann (deletescape). Il est basé sur Launcher3 d\'AOSP.</string>
+  <string name="about_text">Lawnchair est un launcher créé par Till Kottmann (alias deletescape). Il est basé sur Launcher3 d\'AOSP.</string>
   <string name="about_title">A propos</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Pack d\'icônes</string>
@@ -288,7 +288,7 @@
   <string name="pixel_style_icons_pref_title">Utiliser les icônes Pixel</string>
   <string name="pixel_style_icons_pref_summary">Lorsque cette option est activée, des icônes circulaires seront utilisées si possible</string>
   <string name="show_google_now_tab_pref_title">Afficher la page Google Now</string>
-  <string name="restart_lawnchair_pref_title">Redémarrez Lawnchair</string>
+  <string name="restart_lawnchair_pref_title">Redémarrer Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">Peut être utile si certains paramètres ne sont pas correctement appliqués</string>
   <string name="rebuild_icondb_pref_title">Reconstruire la base de données des icônes</string>
   <string name="pinch_to_overview_pref_title">Pincer pour afficher la vue d\'ensemble</string>
@@ -299,7 +299,7 @@
   <string name="light_statusbar_pref_title">Barre d\'état claire</string>
   <string name="light_statusbar_pref_on">La barre d’État peut afficher des icônes sombres lors de l\'utilisation d\'un fond d\'écran clair.</string>
   <string name="light_statusbar_pref_off">La barre d’état affichera toujours des icônes clairs.</string>
-  <string name="haptic_feedback_pref_title">Activer vibration</string>
+  <string name="haptic_feedback_pref_title">Activer les vibrations</string>
   <string name="keep_scroll_state_pref_title">Enregistrer la position du défilement</string>
   <string name="keep_scroll_state_pref_summary">Enregistre la position du défilement dans le tiroir des applications</string>
   <string name="home_opens_drawer_pref_title">Le bouton Home ouvre le tiroir des applications</string>
