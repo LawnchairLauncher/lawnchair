@@ -259,14 +259,14 @@
   <string name="hotseat_uses_extracted_colors_pref_on">Le dock sera coloré avec une couleur extraite du fond d\'écran</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Le dock sera de couleur grise, mais ajusté par la luminosité du fond d\'écran</string>
   <string name="transparent_hotseat_pref_title">Dock transparent</string>
-  <string name="dynamic_ui_pref_title">Extraire la couleur d\'accentuation du fond d\'écran</string>
+  <string name="dynamic_ui_pref_title">Extraire couleur accentuation du fond d\'écran</string>
   <string name="dark_theme_pref_title">Activer le thème sombre</string>
   <string name="blur_pref_title">Activer le flou</string>
   <string name="blur_radius_pref_title">Rayon du flou</string>
   <string name="white_google_icon_pref_title">Utiliser l\'icône blanche de Google</string>
-  <string name="hide_icon_labels_pref_title">Masquer les libellés des icônes sur l\'écran d\'accueil</string>
+  <string name="hide_icon_labels_pref_title">Masquer libellés des icônes de l\'écran d\'accueil</string>
   <string name="workspace_label_color_hue_pref_title">Couleur des libellés des icônes sur l\'écran d\'accueil</string>
-  <string name="workspace_label_color_variation_pref_title">Variation de la couleur des libellés des icônes sur l\'écran d\'accueil</string>
+  <string name="workspace_label_color_variation_pref_title">Variation de couleur libellés des icônes de l\'écran d\'accueil</string>
   <string name="all_apps_opacity_pref_title">Opacité du tiroir des applications</string>
   <string name="num_cols_pref_title">Nombre de colonnes</string>
   <string name="num_rows_pref_title">Nombre de lignes</string>
