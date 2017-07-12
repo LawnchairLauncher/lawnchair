@@ -243,7 +243,7 @@
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
   <string name="which_wallpaper_option_home_screen_and_lock_screen">Pantalla de inicio y pantalla de bloqueo</string>
   <string name="title_show_google_app">Mostrar %1$s</string>
-  <string name="title_show_google_app_default">Abrir aplicación de Google</string>
+  <string name="title_show_google_app_default">Mostrar aplicación de Google</string>
   <string name="label_search">Buscar</string>
   <string name="label_voice_search">Busqueda por voz</string>
   <string name="shortcuts_menu_with_notifications_description">%1$d atajos y %2$d notificaciones para %3$s</string>
@@ -328,7 +328,7 @@
   <!-- Customization Color -->
   <string name="deep_purple">Morado oscuro</string>
   <!-- Customization Color -->
-  <string name="indigo">Azul añil</string>
+  <string name="indigo">Azul oscuro</string>
   <!-- Customization Color -->
   <string name="blue">Azul</string>
   <!-- Customization Color -->
