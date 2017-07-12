@@ -85,7 +85,7 @@
   <!-- Permission description -->
   <string name="permdesc_write_settings">للسماح للتطبيق بتغيير الإعدادات والاختصارات في الشاشة الرئيسية.</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
-  <string name="msg_no_phone_permission"><xliff:g id="APP_NAME">%1$s</xliff:g> غير مسموح له لإجراء مكالمات هاتفية</string>
+  <string name="msg_no_phone_permission"><xliff:g id="Launcher3">%1$s</xliff:g> غير مسموح له بإجراء مكالمات هاتفية</string>
   <!-- Widgets: -->
   <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
@@ -251,7 +251,7 @@
   <string name="title_show_google_app_default">إظهار تطبيق جوجل</string>
   <string name="label_search">بحث</string>
   <string name="label_voice_search">بحث صوتي</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d اختصارات و %2$d اشعارات ل %3$s</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d اختصارات و %2$d اشعارات لـ %3$s</string>
   <string name="notifications_header">الإشعارات</string>
   <string name="widgets_bottom_sheet_title">الأدوات %1$s</string>
   <!-- About Lawnchair -->
@@ -262,9 +262,9 @@
   <string name="icon_pack_preference_summary">اختر حزمة أيقونات</string>
   <string name="hotseat_uses_extracted_colors_pref_title">منصة التطبيقات تستخدم ألوان خلفية الشاشة</string>
   <string name="hotseat_uses_extracted_colors_pref_on">منصة التطبيقات ستلون بلون مستخرج من صورة خلفية الشاشة</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">منصة التطبيقات ستكون بلون رمادي, لكن معدلة بدرجة سطوع صورة الخلفية</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">منصة التطبيقات ستكون بلون رمادي، لكن معدلة بدرجة سطوع صورة الخلفية</string>
   <string name="transparent_hotseat_pref_title">منصة شفافة</string>
-  <string name="dynamic_ui_pref_title">استخراج اللون من صورة الخلفية</string>
+  <string name="dynamic_ui_pref_title">استخراج لون مميز من صورة الخلفية</string>
   <string name="dark_theme_pref_title">تفعيل السمة الداكنة</string>
   <string name="blur_pref_title">تفعيل التمويه</string>
   <string name="blur_radius_pref_title">نسبة التمويه</string>
@@ -272,14 +272,14 @@
   <string name="hide_icon_labels_pref_title">إخفاء تسميات الرموز في الشاشة الرئيسية</string>
   <string name="workspace_label_color_hue_pref_title">لون تسميات الرموز على الشاشة الرئيسية</string>
   <string name="workspace_label_color_variation_pref_title">تباين الألوان لتسميات الرموز على الشاشة الرئيسية</string>
-  <string name="all_apps_opacity_pref_title">درجة وضوح قائمة التطبيقات</string>
+  <string name="all_apps_opacity_pref_title">شفافية قائمة التطبيقات</string>
   <string name="num_cols_pref_title">عدد الأعمدة</string>
   <string name="num_rows_pref_title">عدد الصفوف</string>
   <string name="num_hotseat_icons_pref_title">عدد الرموز في منصة التطبيقات</string>
   <string name="icon_scale_pref_title">حجم الأيقونة</string>
   <string name="icon_text_scale_pref_title">حجم نص الأيقونة</string>
   <string name="full_width_width_widgets_pref_title">أدوات بالعرض الكامل</string>
-  <string name="full_width_widgets_pref_summary">السماح للمربعات الجانبية بالتمدد على كامل عرض الشاشة من غير حشو</string>
+  <string name="full_width_widgets_pref_summary">السماح للأدوات بالتمدد على كامل عرض الشاشة من غير حشو</string>
   <string name="notification_access_pref_title">علامات الإشعارات و معاينتها</string>
   <string name="notification_access_pref_summary">السماح ل Lawnchair بالوصول إلى الإشعارات الخاصة بك لتفعيل هذه الميزات</string>
   <string name="ui_pref_title">واجهة المستخدم</string>
@@ -303,7 +303,7 @@
   <string name="pull_down_notis_pref_off">عند التفعيل السحب لأسفل على الشاشة الرئيسية يظهر جميع عناصر شريط الإشعارات.</string>
   <string name="light_statusbar_pref_title">شريط حالة فاتح</string>
   <string name="light_statusbar_pref_on">قد يظهر شريط الاشعارات مظلم عند استخدام خلفية شاشة باهتة اللون.</string>
-  <string name="light_statusbar_pref_off">شريط المعلومات سيظهر دائما رموز بلون باهت.</string>
+  <string name="light_statusbar_pref_off">شريط المعلومات سيظهر دائماً الأيقونات بلون فاتح.</string>
   <string name="haptic_feedback_pref_title">تفعيل الإهتزاز</string>
   <string name="keep_scroll_state_pref_title">حفظ موضع التمرير</string>
   <string name="keep_scroll_state_pref_summary">حفظ موضع التمرير في قائمة التطبيقات</string>
@@ -313,7 +313,7 @@
   <string name="show_hidden_pref_on">التطبيقات المخفية سوف تظهر لتغيير إعدادات الوضوح</string>
   <string name="show_hidden_pref_off">التطبيقات المخفية لن تكون مرئية</string>
   <string name="export_db_title">تصدير قاعدة البيانات</string>
-  <string name="import_db_title">إستيراد قاعدة البيانات</string>
+  <string name="import_db_title">استيراد قاعدة البيانات</string>
   <string name="export_prefs_title">تصدير الإعدادات</string>
   <string name="import_prefs_title">استيراد الإعدادات</string>
   <string name="notification_listener_label">لاونتشير - علامات الإشعارات</string>
