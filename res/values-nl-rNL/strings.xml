@@ -309,53 +309,53 @@
   <string name="show_hidden_pref_off">Hidden apps won\'t be visible</string>
   <string name="export_db_title">Export database</string>
   <string name="import_db_title">Import database</string>
-  <string name="export_prefs_title">Export settings</string>
-  <string name="import_prefs_title">Import settings</string>
+  <string name="export_prefs_title">Instellingen exporteren</string>
+  <string name="import_prefs_title">Instellingen importeren</string>
   <string name="notification_listener_label">Lawnchair - Notification badges</string>
   <string name="color_extraction_label">Lawnchair - Color extraction</string>
   <string name="test_title">Test</string>
   <string name="visibility">Visibility</string>
   <!-- Customization Color -->
-  <string name="white">White</string>
+  <string name="white">Wit</string>
   <!-- Customization Color -->
-  <string name="black">Black</string>
+  <string name="black">Zwart</string>
   <!-- Customization Color -->
-  <string name="red">Red</string>
+  <string name="red">Rood</string>
   <!-- Customization Color -->
-  <string name="pink">Pink</string>
+  <string name="pink">Roze</string>
   <!-- Customization Color -->
-  <string name="purple">Purple</string>
+  <string name="purple">Paars</string>
   <!-- Customization Color -->
-  <string name="deep_purple">Deep Purple</string>
+  <string name="deep_purple">Donkerpaars</string>
   <!-- Customization Color -->
   <string name="indigo">Indigo</string>
   <!-- Customization Color -->
-  <string name="blue">Blue</string>
+  <string name="blue">Blauw</string>
   <!-- Customization Color -->
-  <string name="light_blue">Light Blue</string>
+  <string name="light_blue">Lichtblauw</string>
   <!-- Customization Color -->
-  <string name="cyan">Cyan</string>
+  <string name="cyan">Cyaan</string>
   <!-- Customization Color -->
-  <string name="teal">Teal</string>
+  <string name="teal">Groenblauw</string>
   <!-- Customization Color -->
-  <string name="green">Green</string>
+  <string name="green">Groen</string>
   <!-- Customization Color -->
-  <string name="light_green">Light Green</string>
+  <string name="light_green">Lichtgroen</string>
   <!-- Customization Color -->
-  <string name="lime">Lime</string>
+  <string name="lime">Lichtgroen</string>
   <!-- Customization Color -->
-  <string name="yellow">Yellow</string>
+  <string name="yellow">Geel</string>
   <!-- Customization Color -->
   <string name="amber">Amber</string>
   <!-- Customization Color -->
-  <string name="orange">Orange</string>
+  <string name="orange">Oranje</string>
   <!-- Customization Color -->
-  <string name="deep_orange">Deep Orange</string>
+  <string name="deep_orange">Donkeroranje</string>
   <!-- Customization Color -->
-  <string name="brown">Brown</string>
+  <string name="brown">Bruin</string>
   <!-- Customization Color -->
-  <string name="grey">Grey</string>
+  <string name="grey">Grijs</string>
   <!-- Customization Color -->
-  <string name="blue_grey">Blue Grey</string>
-  <string name="default_text">Default</string>
+  <string name="blue_grey">Blauwgrijs</string>
+  <string name="default_text">Standaard</string>
 </resources>
