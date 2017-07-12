@@ -23,7 +23,7 @@
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
-  <string name="work_folder_name">Work</string>
+  <string name="work_folder_name">工作</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
   <string name="activity_not_found">未安装该应用。</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
@@ -202,7 +202,7 @@
   <string name="action_deep_shortcut">快捷方式</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
   <string name="shortcuts_menu_description"><xliff:g id="APP_NAME">%2$s</xliff:g>有 <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> 个快捷方式</string>
-  <string name="edit_drop_target_label">Edit</string>
+  <string name="edit_drop_target_label">编辑</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
   <string name="wallpaper_instructions">设置壁纸</string>
   <!-- Error message when an image is selected as a wallpaper,
@@ -236,24 +236,24 @@
   <!-- Title of activity for cropping wallpapers -->
   <string name="crop_wallpaper">剪裁壁纸</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
-  <string name="which_wallpaper_option_home_screen">Home screen</string>
+  <string name="which_wallpaper_option_home_screen">主屏幕</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
-  <string name="which_wallpaper_option_lock_screen">Lock screen</string>
+  <string name="which_wallpaper_option_lock_screen">锁定屏幕</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
-  <string name="which_wallpaper_option_home_screen_and_lock_screen">Home screen and lock screen</string>
-  <string name="title_show_google_app">Show %1$s</string>
-  <string name="title_show_google_app_default">Show Google app</string>
-  <string name="label_search">Search</string>
-  <string name="label_voice_search">Voice search</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d shortcuts and %2$d notifications for %3$s</string>
-  <string name="notifications_header">Notifications</string>
-  <string name="widgets_bottom_sheet_title">%1$s widgets</string>
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">主屏和锁屏界面</string>
+  <string name="title_show_google_app">显示%1$s</string>
+  <string name="title_show_google_app_default">显示谷歌应用</string>
+  <string name="label_search">搜索</string>
+  <string name="label_voice_search">语音搜索</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d 的快捷方式和 %3$s %2$d 通知</string>
+  <string name="notifications_header">通知</string>
+  <string name="widgets_bottom_sheet_title">%1$s 小部件</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
-  <string name="about_title">About</string>
-  <string name="week_day_format">%1$s, %2$s</string>
-  <string name="icon_pack_preference_title">Icon Pack</string>
-  <string name="icon_pack_preference_summary">Select an icon Pack</string>
+  <string name="about_text">Lawnchair 是 Kottmann (aka deletescape) 开发的一个启动器程序。它基于AOSP的Launcher3。</string>
+  <string name="about_title">关于</string>
+  <string name="week_day_format">%1$s， %2$s</string>
+  <string name="icon_pack_preference_title">图标包</string>
+  <string name="icon_pack_preference_summary">选择一个图标包</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Dock uses wallpaper colors</string>
   <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
   <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
