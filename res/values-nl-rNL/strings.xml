@@ -108,52 +108,50 @@
   <string name="workspace_new_page">Nieuwe thuispagina</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
-  <string name="folder_opened">Folder opened, <xliff:g example="5" id="width">%1$d</xliff:g> by <xliff:g example="3" id="height">%2$d</xliff:g></string>
+  <string name="folder_opened">Map geopend, <xliff:g example="5" id="width">%1$d </xliff:g> door <xliff:g example="3" id="height">%2$d </xliff:g></string>
   <!-- Instruction that clicking outside will close folder -->
-  <string name="folder_tap_to_close">Tap to close folder</string>
+  <string name="folder_tap_to_close">Raak aan om de map te sluiten</string>
   <!-- Instruction that clicking outside will commit folder rename -->
-  <string name="folder_tap_to_rename">Tap to save rename</string>
+  <string name="folder_tap_to_rename">Raak aan om de gewijzigde naam op te slaan</string>
   <!-- Indication that folder closed -->
-  <string name="folder_closed">Folder closed</string>
+  <string name="folder_closed">Map gesloten</string>
   <!-- Folder renamed format -->
-  <string name="folder_renamed">Folder renamed to <xliff:g example="Games" id="name">%1$s</xliff:g></string>
+  <string name="folder_renamed">De naam van de map is gewijzigd naar <xliff:g example="Games" id="name">%1$s</xliff:g></string>
   <!-- Folder name format -->
-  <string name="folder_name_format">Folder: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
+  <string name="folder_name_format">Map: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
   <!-- Strings for the customization mode -->
   <!-- Text for widget add button -->
   <string name="widget_button_text">Widgets</string>
   <!-- Text for wallpaper change button -->
-  <string name="wallpaper_button_text">Wallpapers</string>
+  <string name="wallpaper_button_text">Achtergrond</string>
   <!-- Text for settings button -->
-  <string name="settings_button_text">Settings</string>
+  <string name="settings_button_text">Instellingen</string>
   <!-- Message shown when a feature is disabled by the administrator -->
-  <string name="msg_disabled_by_admin">Disabled by your admin</string>
+  <string name="msg_disabled_by_admin">Uitgeschakeld door uw beheerder</string>
   <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
-  <string name="accessibility_action_overview">Overview</string>
+  <string name="accessibility_action_overview">Overzicht</string>
   <!-- Strings for settings -->
   <!-- Title for Allow Rotation setting. [CHAR LIMIT=50] -->
   <!-- Text explaining when the home screen will get rotated. [CHAR LIMIT=100] -->
   <!-- Text explaining that rotation is disabled in Display settings. 'Display' refers to the Display section in system settings [CHAR LIMIT=100] -->
   <!-- Label on an icon that references an uninstalled package, for which we have no information about when it might be installed. [CHAR_LIMIT=15] -->
-  <string name="package_state_unknown">Unknown</string>
+  <string name="package_state_unknown">Onbekend</string>
   <!-- Button for abandoned promises dialog, to removes this abandoned promise icon. -->
-  <string name="abandoned_clean_this">Remove</string>
+  <string name="abandoned_clean_this">Verwijderen</string>
   <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->
-  <string name="abandoned_search">Search</string>
+  <string name="abandoned_search">Zoeken</string>
   <!-- Title for abandoned promise dialog. -->
-  <string name="abandoned_promises_title">This app is not installed</string>
+  <string name="abandoned_promises_title">Deze app is niet geïnstalleerd</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
-  <string name="abandoned_promise_explanation">The app for this icon isn\'t installed.
-        You can remove it, or search for the app and install it manually.
-    </string>
+  <string name="abandoned_promise_explanation">De app voor dit icoon is niet geïnstalleerd. U kunt het icoon verwijderen of de app zoeken en handmatig installeren.    </string>
   <!-- Title for an app which is being downloaded. -->
-  <string name="app_downloading_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> downloading, <xliff:g example="30%" id="progress">%2$s</xliff:g> complete</string>
+  <string name="app_downloading_title"><xliff:g example="Messenger" id="name">%1$s </xliff:g> downloaden, <xliff:g example="30%" id="progress">%2$s </xliff:g> compleet</string>
   <!-- Title for an app whose download has been started. -->
-  <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> waiting to install</string>
+  <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s </xliff:g> wachten om te installeren</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_add_to_workspace">Add to Home screen</string>
+  <string name="action_add_to_workspace">Aan startscherm toevoegen</string>
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
   <string name="action_move_here">Move item here</string>
   <!-- Accessibility confirmation for item added to workspace. -->
@@ -255,15 +253,15 @@
   <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
   <string name="about_title">About</string>
   <string name="week_day_format">%1$s, %2$s</string>
-  <string name="icon_pack_preference_title">Icon Pack</string>
-  <string name="icon_pack_preference_summary">Select an icon Pack</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Dock uses wallpaper colors</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
-  <string name="transparent_hotseat_pref_title">Transparent Dock</string>
-  <string name="dynamic_ui_pref_title">Extract accent color from wallpaper</string>
-  <string name="dark_theme_pref_title">Enable dark theme</string>
-  <string name="blur_pref_title">Enable blur</string>
+  <string name="icon_pack_preference_title">Icoon pakket</string>
+  <string name="icon_pack_preference_summary">Selecteer een icoon pakket</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Favorietenbalk gebruikt achtergrond kleuren</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">De favorietenbalk zal de kleur van de achtergrond gebruiken</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">De favorietenbalk zal grijs zijn, maar aangepast op de helderheid van de achtergrond</string>
+  <string name="transparent_hotseat_pref_title">Doorzichtige favorietenbalk</string>
+  <string name="dynamic_ui_pref_title">Haal accent kleur van achtergrond</string>
+  <string name="dark_theme_pref_title">Donker thema gebruiken</string>
+  <string name="blur_pref_title">Blur inschakelen</string>
   <string name="blur_radius_pref_title">Blur radius</string>
   <string name="white_google_icon_pref_title">Use white Google icon</string>
   <string name="hide_icon_labels_pref_title">Hide icon labels on homescreen</string>
