@@ -243,12 +243,12 @@
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
   <string name="which_wallpaper_option_home_screen_and_lock_screen">Écrans d\'accueil et de verrouillage</string>
   <string name="title_show_google_app">Afficher %1$s</string>
-  <string name="title_show_google_app_default">Afficher l\'appli Google</string>
+  <string name="title_show_google_app_default">Afficher l\'application Google</string>
   <string name="label_search">Rechercher</string>
   <string name="label_voice_search">Recherche vocale</string>
   <string name="shortcuts_menu_with_notifications_description">Raccourcis de %1$d et notifications de %2$d pour %3$s</string>
   <string name="notifications_header">Notifications</string>
-  <string name="widgets_bottom_sheet_title">Widgets %1$s</string>
+  <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair est un launcher créé par Till Kottmann (deletescape). Il est basé sur Launcher3 d\'AOSP.</string>
   <string name="about_title">A propos</string>
