@@ -177,7 +177,7 @@
   <!-- Accessibility description to create folder with another item. -->
   <string name="create_folder_with">Skapa mapp med: <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
-  <string name="folder_created">Mapp skapad</string>
+  <string name="folder_created">Mappen har skapats</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
   <string name="action_move_to_workspace">Flytta till startskärmen</string>
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
