@@ -1,8 +1,6 @@
 package ch.deletescape.lawnchair;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -51,7 +49,8 @@ public class IconPack {
     private Drawable getMaskedDrawable(LauncherActivityInfoCompat info) {
         try {
             return new CustomIconDrawable(mContext, this, info);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
