@@ -23,17 +23,17 @@
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
-  <string name="work_folder_name">Work</string>
+  <string name="work_folder_name">कार्य</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
-  <string name="activity_not_found">App isn\'t installed.</string>
+  <string name="activity_not_found">अनुप्रयोग स्थापित नहीं है।</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
-  <string name="activity_not_available">App isn\'t available</string>
+  <string name="activity_not_available">App उपलब्ध नहीं है!</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Downloaded app disabled in Safe mode</string>
+  <string name="safemode_shortcut_error">डाउनलोड किए गए एप्लिकेशन में सुरक्षित मोड अक्षम किया गया है|</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">Widgets disabled in Safe mode</string>
+  <string name="safemode_widget_error">विजेट को सुरक्षित मोड में अक्षम किया गया है|</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
-  <string name="shortcut_not_available">Shortcut isn\'t available</string>
+  <string name="shortcut_not_available">शॉर्टकट उपलब्ध नहीं है|</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
   <string name="long_press_widget_to_add">Touch &amp; hold to pick up a widget.</string>
