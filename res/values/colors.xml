@@ -63,5 +63,4 @@
     <color name="notification_icon_default_color">#ff757575</color>
     <color name="notification_color_beneath">#ffe0e0e0</color>
     <color name="badge_color">#ff40c4ff</color>
-    <color name="folder_label_shadow_color">#b0000000</color>
 </resources>

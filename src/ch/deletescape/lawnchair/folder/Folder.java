@@ -227,10 +227,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         setFocusableInTouchMode(true);
 
         if (BlurWallpaperProvider.isEnabled()) {
+            int tintColor = Utilities.resolveAttributeData(context, R.attr.folderBgColorBlur);
+
             mBlurDrawable = BlurWallpaperProvider.getInstance().createDrawable(
                     res.getDimensionPixelSize(R.dimen.folder_background_radius), false);
             mBlurDrawable.setBlurredView(mLauncher.getWorkspace());
             mBlurDrawable.setShouldProvideOutline(true);
+            mBlurDrawable.setOverlayColor(tintColor);
             setBackground(mBlurDrawable);
         }
     }
@@ -252,11 +255,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             }
         });
         mFolderName.setOnFocusChangeListener(this);
-        if (BlurWallpaperProvider.isEnabled() && !FeatureFlags.useDarkTheme) {
-            mFolderName.setShadowLayer(getResources().getDimensionPixelSize(R.dimen.folder_label_shadow_radius),
-                    0, 0, getResources().getColor(R.color.folder_label_shadow_color));
-            mFolderName.setTextColor(Color.WHITE);
-        }
 
         if (!Utilities.ATLEAST_MARSHMALLOW) {
             // We disable action mode in older OSes where floating selection menu is not yet

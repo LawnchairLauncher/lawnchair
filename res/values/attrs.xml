@@ -141,5 +141,6 @@
     <attr name="deepShortcutsHandleColor" format="color" />
     <attr name="notificationBeneathColor" format="color" />
     <attr name="qsbBgColor" format="color" />
+    <attr name="folderBgColorBlur" format="color" />
 
 </resources>
