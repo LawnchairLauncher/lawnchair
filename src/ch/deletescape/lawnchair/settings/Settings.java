@@ -121,6 +121,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case KEY_PREF_FULL_WIDTH_WIDGETS:
                 case KEY_PREF_ENABLE_DYNAMIC_UI:
                 case KEY_PREF_DARK_THEME:
+                case KEY_PREF_TRANSPARENT_HOTSEAT:
                     mLauncher.scheduleKill();
                     break;
                 case KEY_PREF_ICON_PACK_PACKAGE:

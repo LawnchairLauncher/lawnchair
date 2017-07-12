@@ -20,7 +20,6 @@
         android:key="pref_isHotseatTransparent"
         android:title="@string/transparent_hotseat_pref_title"
         android:defaultValue="false"
-        android:disableDependentsState="true"
         android:persistent="true" />
 
     <SwitchPreference
@@ -39,7 +38,6 @@
         android:key="pref_enableBlur"
         android:title="@string/blur_pref_title"
         android:defaultValue="false"
-        android:dependency="pref_isHotseatTransparent"
         android:persistent="true" />
 
     <ch.deletescape.lawnchair.preferences.SeekbarPreference

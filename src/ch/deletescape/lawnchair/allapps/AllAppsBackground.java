@@ -98,4 +98,10 @@ public class AllAppsBackground extends View {
             super.setBackgroundColor(color);
         }
     }
+
+    public void setBlurOpacity(int opacity) {
+        if (mBlurEnabled) {
+            mBlurDrawable.setOpacity(opacity);
+        }
+    }
 }

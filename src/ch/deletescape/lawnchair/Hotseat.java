@@ -21,6 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -34,6 +35,7 @@ import android.widget.FrameLayout;
 
 import ch.deletescape.lawnchair.blur.BlurDrawable;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 
 public class Hotseat extends FrameLayout {
@@ -60,11 +62,15 @@ public class Hotseat extends FrameLayout {
     public Hotseat(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mLauncher = Launcher.getLauncher(context);
-        mBackgroundColor = ColorUtils.setAlphaComponent(
-                Utilities.resolveAttributeData(context, R.attr.allAppsContainerColor), 0);
-        mBackground = BlurWallpaperProvider.isEnabled() ?
-                mLauncher.getBlurWallpaperProvider().createDrawable(): new ColorDrawable(mBackgroundColor);
-        setBackground(mBackground);
+        if (FeatureFlags.isTransparentHotseat(context)) {
+            setBackgroundColor(Color.TRANSPARENT);
+        } else {
+            mBackgroundColor = ColorUtils.setAlphaComponent(
+                    Utilities.resolveAttributeData(context, R.attr.allAppsContainerColor), 0);
+            mBackground = BlurWallpaperProvider.isEnabled() ?
+                    mLauncher.getBlurWallpaperProvider().createDrawable(): new ColorDrawable(mBackgroundColor);
+            setBackground(mBackground);
+        }
     }
 
     public CellLayout getLayout() {
@@ -149,6 +155,7 @@ public class Hotseat extends FrameLayout {
     }
 
     public void setBackgroundTransparent(boolean enable) {
+        if (mBackground == null) return;
         if (enable) {
             mBackground.setAlpha(0);
         } else {
@@ -171,7 +178,9 @@ public class Hotseat extends FrameLayout {
     }
 
     public void setWallpaperTranslation(float translation) {
-        ((BlurDrawable) mBackground).setTranslation(translation);
+        if (mBackground instanceof BlurDrawable) {
+            ((BlurDrawable) mBackground).setTranslation(translation);
+        }
     }
 
     @Override
