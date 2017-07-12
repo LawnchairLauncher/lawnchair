@@ -290,7 +290,7 @@
   <string name="pixel_style_icons_pref_summary">Kiedy włączone, okrągłe ikony będą używane tam, gdzie to możliwe</string>
   <string name="show_google_now_tab_pref_title">Pokaż stronę Google Now</string>
   <string name="restart_lawnchair_pref_title">Zrestartuj Lawnchair</string>
-  <string name="restart_lawnchair_pref_summary">Can be helpful if some settings are not properly applied</string>
+  <string name="restart_lawnchair_pref_summary">Może być pomocne gdy niektóre ustawienia nie zostaną zastosowane poprawnie</string>
   <string name="rebuild_icondb_pref_title">Przebuduj bazę danych ikon</string>
   <string name="pinch_to_overview_pref_title">Pinch to overview</string>
   <string name="pinch_to_overview_pref_summary">Pinch on the homescreen to open the overview</string>
