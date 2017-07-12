@@ -89,11 +89,11 @@
   <!-- Widgets: -->
   <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
-  <string name="gadget_error_text">حدثت مشكلة أثناء تحميل الأداة</string>
+  <string name="gadget_error_text">حدثت مشكلة أثناء تحميل المربع الجانبي</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
-  <string name="gadget_setup_text">الإعداد</string>
+  <string name="gadget_setup_text">إعداد</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
-  <string name="uninstall_system_app_text">هذا تطبيق نظام وتتعذر إزالته.</string>
+  <string name="uninstall_system_app_text">لا يمكن الغاء تثبيت تطبيقات النظام.</string>
   <!-- Default folder title -->
   <string name="folder_hint_text">مجلد بدون اسم</string>
   <!-- Accessibility -->
@@ -105,7 +105,7 @@
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">‏الشاشة الرئيسية %1$d من %2$d</string>
   <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
-  <string name="workspace_new_page">صفحة الشاشة الرئيسية الجديدة</string>
+  <string name="workspace_new_page">صفحة شاشة رئيسية جديدة</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
   <string name="folder_opened">تم فتح المجلد، بمقاس <xliff:g id="WIDTH">%1$d</xliff:g> في <xliff:g id="HEIGHT">%2$d</xliff:g></string>
@@ -121,7 +121,7 @@
   <string name="folder_name_format">المجلد: <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Strings for the customization mode -->
   <!-- Text for widget add button -->
-  <string name="widget_button_text">الأدوات</string>
+  <string name="widget_button_text">المربعات الجانبية</string>
   <!-- Text for wallpaper change button -->
   <string name="wallpaper_button_text">الخلفيات</string>
   <!-- Text for settings button -->
