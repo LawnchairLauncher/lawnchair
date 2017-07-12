@@ -249,13 +249,13 @@
   <string name="notifications_header">Notifications</string>
   <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair 是由 Till Kottmann(aka deletescape) 創建一個基於Launcher3的啟動器</string>
+  <string name="about_text">Lawnchair 是由 Till Kottmann(deletescape) 建立的啟動器應用程式，基於 AOSP 的 Launcher3。</string>
   <string name="about_title">關於</string>
-  <string name="week_day_format">%1$s, %2$s</string>
-  <string name="icon_pack_preference_title">Icon Pack</string>
-  <string name="icon_pack_preference_summary">Select an icon Pack</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Dock uses wallpaper colors</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
+  <string name="week_day_format">%1$s：%2$s</string>
+  <string name="icon_pack_preference_title">圖示包</string>
+  <string name="icon_pack_preference_summary">選擇一個圖示包</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Dock欄使用桌布的顏色</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">Dock欄將從壁紙中提取的顏色著色</string>
   <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
   <string name="transparent_hotseat_pref_title">Transparent Dock</string>
   <string name="dynamic_ui_pref_title">Extract accent color from wallpaper</string>
