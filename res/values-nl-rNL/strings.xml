@@ -153,13 +153,13 @@
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
   <string name="action_add_to_workspace">Aan startscherm toevoegen</string>
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
-  <string name="action_move_here">Move item here</string>
+  <string name="action_move_here">Item hier naartoe verplaatsen</string>
   <!-- Accessibility confirmation for item added to workspace. -->
-  <string name="item_added_to_workspace">Item added to home screen</string>
+  <string name="item_added_to_workspace">Item toegevoegd aan startscherm</string>
   <!-- Accessibility confirmation for item removed. -->
-  <string name="item_removed">Item removed</string>
+  <string name="item_removed">Item verwijderd</string>
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
-  <string name="action_move">Move item</string>
+  <string name="action_move">Item verplaatsen</string>
   <!-- Accessibility description to move item to empty cell. -->
   <string name="move_to_empty_cell">Move to row <xliff:g example="1" id="number">%1$s</xliff:g> column <xliff:g example="1" id="number">%2$s</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
@@ -167,13 +167,13 @@
   <!-- Accessibility description to move item to the hotseat. -->
   <string name="move_to_hotseat_position">Move to favorites position <xliff:g example="1" id="number">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for item move. -->
-  <string name="item_moved">Item moved</string>
+  <string name="item_moved">Item verplaatst</string>
   <!-- Accessibility description to move item into an existing folder. -->
   <string name="add_to_folder">Add to folder: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
   <string name="add_to_folder_with_app">Add to folder with <xliff:g example="Messenger" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for item added to folder. -->
-  <string name="added_to_folder">Item added to folder</string>
+  <string name="added_to_folder">Item toegevoegd aan map</string>
   <!-- Accessibility description to create folder with another item. -->
   <string name="create_folder_with">Create folder with: <xliff:g example="Game" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
@@ -296,25 +296,25 @@
   <string name="pull_down_notis_pref_title">Schuif omlaag voor Notificaties</string>
   <string name="pull_down_notis_pref_on">Omlaag schuiven op het startscherm zal de statusbar openen.</string>
   <string name="pull_down_notis_pref_off">When enabled pulling down on the Homescreen expand the statusbar.</string>
-  <string name="light_statusbar_pref_title">Light statusbar</string>
-  <string name="light_statusbar_pref_on">The status bar may show dark icons when using a light wallpaper.</string>
-  <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
-  <string name="haptic_feedback_pref_title">Enable vibration</string>
-  <string name="keep_scroll_state_pref_title">Save scroll position</string>
-  <string name="keep_scroll_state_pref_summary">Saves the scroll position in the drawer</string>
-  <string name="home_opens_drawer_pref_title">Home button opens app drawer</string>
+  <string name="light_statusbar_pref_title">Lichte statusbar</string>
+  <string name="light_statusbar_pref_on">De statusbalk kan donkere iconen weergeven bij het gebruik van een lichte achtergrond.</string>
+  <string name="light_statusbar_pref_off">De statusbalk weergeeft altijd lichte iconen.</string>
+  <string name="haptic_feedback_pref_title">Activeer trillen</string>
+  <string name="keep_scroll_state_pref_title">Onthoudt scrollpositie</string>
+  <string name="keep_scroll_state_pref_summary">Onthoudt de scrollpositie in het applicatiescherm</string>
+  <string name="home_opens_drawer_pref_title">Home-knop opent applicatiescherm</string>
   <string name="home_opens_drawer_pref_summary">Pressing the home button while on the homescreen will open the app drawer</string>
-  <string name="show_hidden_pref_title">Show hidden apps</string>
-  <string name="show_hidden_pref_on">Hidden apps will be shown to change visibility settings</string>
-  <string name="show_hidden_pref_off">Hidden apps won\'t be visible</string>
-  <string name="export_db_title">Export database</string>
-  <string name="import_db_title">Import database</string>
+  <string name="show_hidden_pref_title">Laat verborgen applicaties zien</string>
+  <string name="show_hidden_pref_on">Laat verborgen applicaties zien om de zichtbaarheidsinstellingen aan te passen</string>
+  <string name="show_hidden_pref_off">Laat verborgen applicaties niet zien</string>
+  <string name="export_db_title">Exporteer database</string>
+  <string name="import_db_title">Importeer database</string>
   <string name="export_prefs_title">Instellingen exporteren</string>
   <string name="import_prefs_title">Instellingen importeren</string>
-  <string name="notification_listener_label">Lawnchair - Notification badges</string>
-  <string name="color_extraction_label">Lawnchair - Color extraction</string>
+  <string name="notification_listener_label">Lawnchair - Notificatie icoon</string>
+  <string name="color_extraction_label">Lawnchair - Kleur extractie</string>
   <string name="test_title">Test</string>
-  <string name="visibility">Visibility</string>
+  <string name="visibility">Zichtbaarheid</string>
   <!-- Customization Color -->
   <string name="white">Wit</string>
   <!-- Customization Color -->
