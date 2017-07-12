@@ -18,7 +18,7 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Launcher theme -->
-    <style name="BaseLauncherTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
+    <style name="BaseLauncherTheme" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowShowWallpaper">true</item>
@@ -26,7 +26,7 @@
         <item name="android:colorAccent">@color/accent_material_light</item>
     </style>
 
-    <style name="BaseLauncherTheme.Dark" parent="@android:style/Theme.Material.NoActionBar">
+    <style name="BaseLauncherTheme.Dark" parent="@android:style/Theme.DeviceDefault.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowShowWallpaper">true</item>
