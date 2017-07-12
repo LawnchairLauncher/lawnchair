@@ -48,15 +48,15 @@
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_bar_hint">البحث في التطبيقات</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_loading_message">جارٍ تحميل التطبيقات…</string>
+  <string name="all_apps_loading_message">تحميل التطبيقات &#8230;</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_no_search_results">لم يتم العثور على أية تطبيقات تتطابق مع \"<xliff:g id="QUERY">%1$s</xliff:g>\"</string>
+  <string name="all_apps_no_search_results">لم يتم العثور على أية تطبيقات تتوافق مع \"<xliff:g id="Query">%1$s</xliff:g>\"</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">البحث عن مزيد من التطبيقات</string>
   <!-- Drag and drop -->
   <skip></skip>
   <!-- Error message when user has filled a home screen -->
-  <string name="out_of_space">ليس هناك مساحة أخرى في هذه الشاشة الرئيسية.</string>
+  <string name="out_of_space">لا مجال في هذه الشاشة الرئيسية.</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">لا يوجد المزيد من الحقول في قائمة المفضلات</string>
   <!-- All applications label -->
@@ -221,12 +221,12 @@
   <!-- String indicating how many media item(s) is(are) selected
             eg. 1 selected [CHAR LIMIT=30] -->
   <plurals name="number_of_items_selected">
-    <item quantity="zero">‏تم تحديد %1$d</item>
-    <item quantity="one">‏تم تحديد %1$d</item>
-    <item quantity="two">‏تم تحديد %1$d</item>
-    <item quantity="few">‏تم تحديد %1$d</item>
-    <item quantity="many">‏تم تحديد %1$d</item>
-    <item quantity="other">‏تم تحديد %1$d</item>
+    <item quantity="zero">تحديد %1$d</item>
+    <item quantity="one">تحديد %1$d</item>
+    <item quantity="two">تحديد %1$d</item>
+    <item quantity="few">تحديد %1$d</item>
+    <item quantity="many">تحديد %1$d</item>
+    <item quantity="other">تحديد %1$d</item>
   </plurals>
   <!-- Accessibility string used as a label for a particular wallpaper in the Wallpaper Picker list.
          e.g. "Wallpaper 3 of 10" -->
