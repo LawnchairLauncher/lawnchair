@@ -58,7 +58,7 @@
   <!-- Error message when user has filled a home screen -->
   <string name="out_of_space">Auf diesem Startbildschirm ist kein Platz mehr vorhanden.</string>
   <!-- Error message when user has filled the hotseat -->
-  <string name="hotseat_out_of_space">Dock ist bereits voll</string>
+  <string name="hotseat_out_of_space">Das Dock ist bereits voll</string>
   <!-- All applications label -->
   <string name="all_apps_button_label">Liste der Apps</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
@@ -284,7 +284,7 @@
   <string name="import_export_pref_title">Import/Export</string>
   <string name="show_pixel_bar_pref_title">Pixel Top Bar anzeigen</string>
   <string name="use_wide_searchbar_pref_title">Breite Suchleiste verwenden</string>
-  <string name="show_mic_pref_title">Google Assistant Button anzeigen</string>
+  <string name="show_mic_pref_title">Google Assistant anzeigen</string>
   <string name="pixel_style_icons_pref_title">Pixel Icons verwenden</string>
   <string name="pixel_style_icons_pref_summary">Wenn möglich, runde Icons verwenden</string>
   <string name="show_google_now_tab_pref_title">Google Now Seite anzeigen</string>
