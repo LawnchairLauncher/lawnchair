@@ -277,17 +277,17 @@
   <string name="full_width_width_widgets_pref_title">Widgety na całej szerokości</string>
   <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
   <string name="notification_access_pref_title">Notification badges and preview</string>
-  <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
+  <string name="notification_access_pref_summary">Zezwól Lawnchair na dostęp do twoich powiadomień żeby włączyć te funkcje</string>
   <string name="ui_pref_title">Interfejs</string>
   <string name="pixel_style_pref_title">Pixel style</string>
   <string name="behavior_pref_title">Zachowanie</string>
   <string name="debug_pref_title">Opcje debugujące</string>
   <string name="import_export_pref_title">Importuj/Eksportuj</string>
-  <string name="show_pixel_bar_pref_title">Show Pixel top bar</string>
+  <string name="show_pixel_bar_pref_title">Pokaż górny pasek Pixel</string>
   <string name="use_wide_searchbar_pref_title">Użyj szerokiego paska wyszukiwania</string>
   <string name="show_mic_pref_title">Pokaż przycisk Asystenta Google</string>
   <string name="pixel_style_icons_pref_title">Uzyj stylu ikon Google Pixel</string>
-  <string name="pixel_style_icons_pref_summary">When enabled circular icons will be used where possible</string>
+  <string name="pixel_style_icons_pref_summary">Kiedy włączone, okrągłe ikony będą używane tam, gdzie to możliwe</string>
   <string name="show_google_now_tab_pref_title">Pokaż stronę Google Now</string>
   <string name="restart_lawnchair_pref_title">Zrestartuj Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">Can be helpful if some settings are not properly applied</string>
@@ -313,7 +313,7 @@
   <string name="export_prefs_title">Eksportuj ustawienia</string>
   <string name="import_prefs_title">Importuj ustawienia</string>
   <string name="notification_listener_label">Lawnchair - Odznaki powiadomień</string>
-  <string name="color_extraction_label">Lawnchair - Color extraction</string>
+  <string name="color_extraction_label">Lawnchair - Pobieranie koloru</string>
   <string name="test_title">Test</string>
   <string name="visibility">Widoczność</string>
   <!-- Customization Color -->
