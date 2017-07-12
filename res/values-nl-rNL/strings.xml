@@ -161,21 +161,21 @@
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
   <string name="action_move">Item verplaatsen</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell">Move to row <xliff:g example="1" id="number">%1$s</xliff:g> column <xliff:g example="1" id="number">%2$s</xliff:g></string>
+  <string name="move_to_empty_cell">Verplaats naar rij <xliff:g example="1" id="number">%1$s</xliff:g> kolom <xliff:g example="1" id="number">%2$s</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
-  <string name="move_to_position">Move to position <xliff:g example="1" id="number">%1$s</xliff:g></string>
+  <string name="move_to_position">Verplaats naar de positie van <xliff:g example="1" id="number">%1$s</xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Move to favorites position <xliff:g example="1" id="number">%1$s</xliff:g></string>
+  <string name="move_to_hotseat_position">Verplaats naar favorieten positie <xliff:g example="1" id="number">%1$s </xliff:g></string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">Item verplaatst</string>
   <!-- Accessibility description to move item into an existing folder. -->
-  <string name="add_to_folder">Add to folder: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
+  <string name="add_to_folder">Voeg toe aan map: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
-  <string name="add_to_folder_with_app">Add to folder with <xliff:g example="Messenger" id="name">%1$s</xliff:g></string>
+  <string name="add_to_folder_with_app">Voeg toe aan map met <xliff:g example="Messenger" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for item added to folder. -->
   <string name="added_to_folder">Item toegevoegd aan map</string>
   <!-- Accessibility description to create folder with another item. -->
-  <string name="create_folder_with">Create folder with: <xliff:g example="Game" id="name">%1$s</xliff:g></string>
+  <string name="create_folder_with">Maak map met: <xliff:g example="Game" id="name">%1$s </xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
   <string name="folder_created">Map aangemaakt</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
@@ -250,7 +250,7 @@
   <string name="notifications_header">Notificaties</string>
   <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
+  <string name="about_text">Lawnchair is een Launcher-app gemaakt door Till Kottmann (bekend als deletescape). Het is gebaseerd op Launcher3 uit AOSP.</string>
   <string name="about_title">Over</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Icoon pakket</string>
