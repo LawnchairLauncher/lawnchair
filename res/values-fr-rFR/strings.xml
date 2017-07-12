@@ -246,7 +246,7 @@
   <string name="title_show_google_app_default">Afficher l\'appli Google</string>
   <string name="label_search">Rechercher</string>
   <string name="label_voice_search">Recherche vocale</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d shortcuts and %2$d notifications for %3$s</string>
+  <string name="shortcuts_menu_with_notifications_description">Raccourcis de %1$d et notifications de %2$d pour %3$s</string>
   <string name="notifications_header">Notifications</string>
   <string name="widgets_bottom_sheet_title">Widgets %1$s</string>
   <!-- About Lawnchair -->
@@ -267,7 +267,7 @@
   <string name="hide_icon_labels_pref_title">Masquer les libellés des icônes sur l\'écran d\'accueil</string>
   <string name="workspace_label_color_hue_pref_title">Couleur des libellés des icônes sur l\'écran d\'accueil</string>
   <string name="workspace_label_color_variation_pref_title">Variation de la couleur des libellés des icônes sur l\'écran d\'accueil</string>
-  <string name="all_apps_opacity_pref_title">Opacité du fond du drawer</string>
+  <string name="all_apps_opacity_pref_title">Opacité du tiroir des applications</string>
   <string name="num_cols_pref_title">Nombre de colonnes</string>
   <string name="num_rows_pref_title">Nombre de lignes</string>
   <string name="num_hotseat_icons_pref_title">Nombre d\'icônes dans le dock</string>
@@ -297,12 +297,12 @@
   <string name="pull_down_notis_pref_on">Glisser vers le bas sur l\'écran d\'accueil étendra la barre d\'état.</string>
   <string name="pull_down_notis_pref_off">Si activé, glisser vers le bas sur l\'écran d\'accueil étend la barre d\'état.</string>
   <string name="light_statusbar_pref_title">Barre d\'état claire</string>
-  <string name="light_statusbar_pref_on">The status bar may show dark icons when using a light wallpaper.</string>
-  <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
-  <string name="haptic_feedback_pref_title">Enable vibration</string>
-  <string name="keep_scroll_state_pref_title">Save scroll position</string>
-  <string name="keep_scroll_state_pref_summary">Saves the scroll position in the drawer</string>
-  <string name="home_opens_drawer_pref_title">Home button opens app drawer</string>
+  <string name="light_statusbar_pref_on">La barre d’État peut afficher des icônes sombres lors de l\'utilisation d\'un fond d\'écran clair.</string>
+  <string name="light_statusbar_pref_off">La barre d’état affichera toujours des icônes clairs.</string>
+  <string name="haptic_feedback_pref_title">Activer vibration</string>
+  <string name="keep_scroll_state_pref_title">Enregistrer la position du défilement</string>
+  <string name="keep_scroll_state_pref_summary">Enregistre la position du défilement dans le tiroir des applications</string>
+  <string name="home_opens_drawer_pref_title">Le bouton Home ouvre le tiroir des applications</string>
   <string name="home_opens_drawer_pref_summary">Pressing the home button while on the homescreen will open the app drawer</string>
   <string name="show_hidden_pref_title">Show hidden apps</string>
   <string name="show_hidden_pref_on">Hidden apps will be shown to change visibility settings</string>
