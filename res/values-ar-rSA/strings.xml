@@ -144,7 +144,8 @@
   <string name="abandoned_promises_title">لم يتم تثبيت هذا التطبيق</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
-  <string name="abandoned_promise_explanation">لم يتم تثبيت تطبيق لهذا الرمز. يمكنك إزالته أو البحث عن التطبيق وتثبيته يدويًا.</string>
+  <string name="abandoned_promise_explanation">لم يتم تثبيت تطبيق لهذه الأيقونة.
+يمكنك إزالته أو البحث عن التطبيق وتثبيته يدوياً.</string>
   <!-- Title for an app which is being downloaded. -->
   <string name="app_downloading_title">جارٍ تنزيل <xliff:g id="NAME">%1$s</xliff:g>، اكتمل <xliff:g id="PROGRESS">%2$s</xliff:g></string>
   <!-- Title for an app whose download has been started. -->
@@ -197,11 +198,11 @@
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
   <string name="action_decrease_height">تقليل الارتفاع</string>
   <!-- Accessibility confirmation for widget resize. -->
-  <string name="widget_resized">تم تغيير حجم الأداة إلى العرض <xliff:g id="NUMBER_0">%1$s</xliff:g> والارتفاع <xliff:g id="NUMBER_1">%2$s</xliff:g></string>
+  <string name="widget_resized">تم تغيير حجم الأداة إلى العرض <xliff:g example="2" id="number">%1$s</xliff:g> والارتفاع <xliff:g example="1" id="number">%2$s</xliff:g></string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
   <string name="action_deep_shortcut">الاختصارات</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
-  <string name="shortcuts_menu_description"><xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> اختصار لتطبيق <xliff:g id="APP_NAME">%2$s</xliff:g></string>
+  <string name="shortcuts_menu_description"><xliff:g example="3" id="number_of_shortcuts">%1$d</xliff:g> اختصار لتطبيق <xliff:g example="Messenger" id="app_name">%2$s</xliff:g></string>
   <string name="edit_drop_target_label">تحرير</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
   <string name="wallpaper_instructions">تعيين الخلفية</string>
@@ -231,7 +232,7 @@
          e.g. "Wallpaper 3 of 10" -->
   <string name="wallpaper_accessibility_name">‏الخلفية %1$d من %2$d</string>
   <!-- Accessibility string used to announce that a wallpaper has been selected. -->
-  <string name="announce_selection">تم تحديد <xliff:g id="LABEL">%1$s</xliff:g></string>
+  <string name="announce_selection">تم تحديد <xliff:g example="Wallpaper 3 of 10" id="label">%1$s</xliff:g></string>
   <!-- Label on button to delete wallpaper(s) -->
   <string name="wallpaper_delete">حذف</string>
   <!-- Label on button in Wallpaper Picker to pick an image -->
@@ -239,7 +240,7 @@
   <!-- Option in "Select wallpaper from" dialog box -->
   <string name="pick_wallpaper">الخلفيات</string>
   <!-- Title of activity for cropping wallpapers -->
-  <string name="crop_wallpaper">اقتصاص الخلفية</string>
+  <string name="crop_wallpaper">قص الخلفية</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
   <string name="which_wallpaper_option_home_screen">الشاشة الرئيسية</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
@@ -252,13 +253,13 @@
   <string name="label_voice_search">بحث صوتي</string>
   <string name="shortcuts_menu_with_notifications_description">%1$d اختصارات و %2$d اشعارات ل %3$s</string>
   <string name="notifications_header">الإشعارات</string>
-  <string name="widgets_bottom_sheet_title">المربعات الجانبية %1$s</string>
+  <string name="widgets_bottom_sheet_title">الأدوات %1$s</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair هو تطبيق واجهة مستخدم تم إنشاؤه بواسطة Till Kottmann الملقب ب deletescape. هذا التطبيق يستند على Launcher3 من AOSP.</string>
   <string name="about_title">حول</string>
   <string name="week_day_format">%1$s، %2$s</string>
   <string name="icon_pack_preference_title">حزم الإيقونات</string>
-  <string name="icon_pack_preference_summary">اختر مجموعة أيقونات</string>
+  <string name="icon_pack_preference_summary">اختر حزمة أيقونات</string>
   <string name="hotseat_uses_extracted_colors_pref_title">منصة التطبيقات تستخدم ألوان خلفية الشاشة</string>
   <string name="hotseat_uses_extracted_colors_pref_on">منصة التطبيقات ستلون بلون مستخرج من صورة خلفية الشاشة</string>
   <string name="hotseat_uses_extracted_colors_pref_off">منصة التطبيقات ستكون بلون رمادي, لكن معدلة بدرجة سطوع صورة الخلفية</string>
@@ -277,7 +278,7 @@
   <string name="num_hotseat_icons_pref_title">عدد الرموز في منصة التطبيقات</string>
   <string name="icon_scale_pref_title">حجم الأيقونة</string>
   <string name="icon_text_scale_pref_title">حجم نص الأيقونة</string>
-  <string name="full_width_width_widgets_pref_title">مربعات جانبية بالعرض الكامل</string>
+  <string name="full_width_width_widgets_pref_title">أدوات بالعرض الكامل</string>
   <string name="full_width_widgets_pref_summary">السماح للمربعات الجانبية بالتمدد على كامل عرض الشاشة من غير حشو</string>
   <string name="notification_access_pref_title">علامات الإشعارات و معاينتها</string>
   <string name="notification_access_pref_summary">السماح ل Lawnchair بالوصول إلى الإشعارات الخاصة بك لتفعيل هذه الميزات</string>
@@ -300,7 +301,7 @@
   <string name="pull_down_notis_pref_title">سحب لأسفل لإظهار الإشعارات</string>
   <string name="pull_down_notis_pref_on">السحب لأسفل على الشاشة الرئيسية سوف بظهر جميع عناصر شريط الإشعارات.</string>
   <string name="pull_down_notis_pref_off">عند التفعيل السحب لأسفل على الشاشة الرئيسية يظهر جميع عناصر شريط الإشعارات.</string>
-  <string name="light_statusbar_pref_title">شريط حالة ابيض</string>
+  <string name="light_statusbar_pref_title">شريط حالة فاتح</string>
   <string name="light_statusbar_pref_on">قد يظهر شريط الاشعارات مظلم عند استخدام خلفية شاشة باهتة اللون.</string>
   <string name="light_statusbar_pref_off">شريط المعلومات سيظهر دائما رموز بلون باهت.</string>
   <string name="haptic_feedback_pref_title">تفعيل الإهتزاز</string>
