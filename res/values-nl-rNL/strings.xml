@@ -177,9 +177,9 @@
   <!-- Accessibility description to create folder with another item. -->
   <string name="create_folder_with">Create folder with: <xliff:g example="Game" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
-  <string name="folder_created">Folder created</string>
+  <string name="folder_created">Map aangemaakt</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_move_to_workspace">Move to Home screen</string>
+  <string name="action_move_to_workspace">Verplaats naar startscherm</string>
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
   <string name="action_move_screen_left">Move screen to left</string>
   <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
