@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-cp build/outputs/apk/Lawnchair-aosp-debug.apk Lawnchair-$TRAVIS_BUILD_NUMBER.apk
+cp $(ls build/outputs/apk/Lawnchair*debug*.apk) Lawnchair-$TRAVIS_BUILD_NUMBER.apk
 cp build/outputs/mapping/aosp/debug/mapping.txt proguard-$TRAVIS_BUILD_NUMBER.txt
 
 curl -F chat_id="@lawnchairci" -F document=@"Lawnchair-$TRAVIS_BUILD_NUMBER.apk" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
