@@ -257,10 +257,10 @@
   <string name="icon_pack_preference_title">Paczka ikon</string>
   <string name="icon_pack_preference_summary">Wybierz paczkę ikon</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Dock używa koloru z tapety</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">Dock będzie pokolorowany na kolor pobrany z tapety</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">Dock będzie pokolorowany na kolor szary, ale dostosowany przez jasność tapety</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">Dock będzie w kolorze wydobytym z tapety</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">Dock będzie w kolorze szarym, ale dostosowanym przez jasność tapety</string>
   <string name="transparent_hotseat_pref_title">Przezroczysty dock</string>
-  <string name="dynamic_ui_pref_title">Pobierz akcent z tapety</string>
+  <string name="dynamic_ui_pref_title">Pobierz kolor dominujący z tapety</string>
   <string name="dark_theme_pref_title">Włącz ciemny motyw</string>
   <string name="blur_pref_title">Włącz rozmycie</string>
   <string name="blur_radius_pref_title">Promień rozmycia</string>
@@ -294,7 +294,7 @@
   <string name="rebuild_icondb_pref_title">Przebuduj bazę danych ikon</string>
   <string name="pinch_to_overview_pref_title">Pinch to overview</string>
   <string name="pinch_to_overview_pref_summary">Pinch on the homescreen to open the overview</string>
-  <string name="pull_down_notis_pref_title">Pociągnij w dół by zobaczyć powiadomenia</string>
+  <string name="pull_down_notis_pref_title">Pociągnij w dół by zobaczyć powiadomienia</string>
   <string name="pull_down_notis_pref_on">Pociągnięcie w dół na pulpicie rozwinie pasek stanu.</string>
   <string name="pull_down_notis_pref_off">Kiedy włączone, pociągnięcie w dół na pulpicie rozwinie pasek statusu.</string>
   <string name="light_statusbar_pref_title">Jasny pasek stanu</string>
