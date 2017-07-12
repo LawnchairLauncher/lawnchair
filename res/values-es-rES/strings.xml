@@ -46,7 +46,7 @@
   <string name="widget_accessible_dims_format">%1$d de ancho por %2$d de alto</string>
   <!-- All Apps -->
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
-  <string name="all_apps_search_bar_hint">Busca aplicaciones</string>
+  <string name="all_apps_search_bar_hint">Buscar aplicaciones</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
   <string name="all_apps_loading_message">Cargando aplicaciones…</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
