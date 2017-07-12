@@ -296,7 +296,7 @@
   <string name="pinch_to_overview_pref_summary">Pinch on the homescreen to open the overview</string>
   <string name="pull_down_notis_pref_title">Pociągnij w dół by zobaczyć powiadomienia</string>
   <string name="pull_down_notis_pref_on">Pociągnięcie w dół na pulpicie rozwinie pasek stanu.</string>
-  <string name="pull_down_notis_pref_off">Kiedy włączone, pociągnięcie w dół na pulpicie rozwinie pasek statusu.</string>
+  <string name="pull_down_notis_pref_off">Kiedy włączone, pociągnięcie w dół na pulpicie rozwinie pasek stanu.</string>
   <string name="light_statusbar_pref_title">Jasny pasek stanu</string>
   <string name="light_statusbar_pref_on">Pasek stanu może pokazywać ciemne ikony kiedy używana jest jasna tapeta.</string>
   <string name="light_statusbar_pref_off">Pasek stanu będzie zawsze pokazywać jasne ikony.</string>
