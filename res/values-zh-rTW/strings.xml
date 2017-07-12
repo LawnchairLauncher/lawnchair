@@ -43,72 +43,69 @@
   <!-- There is a special version of this format string for Farsi -->
   <string name="widget_dims_format">%1$d × %2$d</string>
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
-  <string name="widget_accessible_dims_format">%1$d wide by %2$d high</string>
+  <string name="widget_accessible_dims_format">寬度為 %1$d，高度為 %2$d</string>
   <!-- All Apps -->
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
-  <string name="all_apps_search_bar_hint">Search Apps</string>
+  <string name="all_apps_search_bar_hint">搜尋應用程式</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_loading_message">Loading Apps&#8230;</string>
+  <string name="all_apps_loading_message">正在載入應用程式&#8230;</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_no_search_results">No Apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
+  <string name="all_apps_no_search_results">找不到符合「<xliff:g example="Android" id="query">%1$s</xliff:g>」的應用程式</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
-  <string name="all_apps_search_market_message">Search for more apps</string>
+  <string name="all_apps_search_market_message">搜尋更多應用程式</string>
   <!-- Drag and drop -->
   <skip></skip>
   <!-- Error message when user has filled a home screen -->
-  <string name="out_of_space">No more room on this Home screen.</string>
+  <string name="out_of_space">這個主螢幕已無空間。</string>
   <!-- Error message when user has filled the hotseat -->
-  <string name="hotseat_out_of_space">No more room in the Favorites tray</string>
+  <string name="hotseat_out_of_space">「我的最愛」欄中已無可用空間</string>
   <!-- All applications label -->
-  <string name="all_apps_button_label">Apps list</string>
+  <string name="all_apps_button_label">應用程式清單</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
-  <string name="all_apps_home_button_label">Home</string>
+  <string name="all_apps_home_button_label">主螢幕</string>
   <!-- Label for remove drop target. [CHAR_LIMIT=20] -->
-  <string name="remove_drop_target_label">Remove</string>
+  <string name="remove_drop_target_label">移除</string>
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
-  <string name="uninstall_drop_target_label">Uninstall</string>
+  <string name="uninstall_drop_target_label">解除安裝</string>
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
-  <string name="app_info_drop_target_label">App info</string>
+  <string name="app_info_drop_target_label">應用程式資訊</string>
   <!-- Permissions: -->
   <skip></skip>
   <!-- Permission short label -->
-  <string name="permlab_install_shortcut">install shortcuts</string>
+  <string name="permlab_install_shortcut">安裝捷徑</string>
   <!-- Permission description -->
-  <string name="permdesc_install_shortcut">Allows an app to add
-        shortcuts without user intervention.</string>
+  <string name="permdesc_install_shortcut">允許應用程式自動新增捷徑。</string>
   <!-- Permission short label -->
-  <string name="permlab_read_settings">read Home settings and shortcuts</string>
+  <string name="permlab_read_settings">讀取主螢幕的設定和捷徑</string>
   <!-- Permission description -->
-  <string name="permdesc_read_settings">Allows the app to read the settings and
-        shortcuts in Home.</string>
+  <string name="permdesc_read_settings">允許應用程式讀取主螢幕中的設定和捷徑。</string>
   <!-- Permission short label -->
-  <string name="permlab_write_settings">write Home settings and shortcuts</string>
+  <string name="permlab_write_settings">寫入主螢幕設定和捷徑</string>
   <!-- Permission description -->
-  <string name="permdesc_write_settings">Allows the app to change the settings and
-        shortcuts in Home.</string>
+  <string name="permdesc_write_settings">允許應用程式變更主螢幕中的設定和捷徑。</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission"><xliff:g example="Launcher3" id="app_name">%1$s</xliff:g> 無法撥打電話</string>
   <!-- Widgets: -->
   <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
-  <string name="gadget_error_text">Problem loading widget</string>
+  <string name="gadget_error_text">載入小工具時發生問題</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
-  <string name="gadget_setup_text">Setup</string>
+  <string name="gadget_setup_text">設定</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
-  <string name="uninstall_system_app_text">This is a system app and can\'t be uninstalled.</string>
+  <string name="uninstall_system_app_text">這是系統應用程式，不可解除安裝。</string>
   <!-- Default folder title -->
-  <string name="folder_hint_text">Unnamed Folder</string>
+  <string name="folder_hint_text">未命名的資料夾</string>
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
-  <string name="disabled_app_label">Disabled <xliff:g example="Messenger" id="app_name">%1$s</xliff:g></string>
+  <string name="disabled_app_label">已停用 <xliff:g example="Messenger" id="app_name">%1$s</xliff:g></string>
   <skip></skip>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
-  <string name="default_scroll_format">Page %1$d of %2$d</string>
+  <string name="default_scroll_format">第 %1$d 頁，共 %2$d 頁</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
-  <string name="workspace_scroll_format">Home screen %1$d of %2$d</string>
+  <string name="workspace_scroll_format">主螢幕：第 %1$d 頁，共 %2$d 頁</string>
   <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
-  <string name="workspace_new_page">New home screen page</string>
+  <string name="workspace_new_page">新的主畫面頁面</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
   <string name="folder_opened">Folder opened, <xliff:g example="5" id="width">%1$d</xliff:g> by <xliff:g example="3" id="height">%2$d</xliff:g></string>
