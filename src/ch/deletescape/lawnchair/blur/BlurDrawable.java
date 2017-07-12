@@ -24,6 +24,7 @@ public class BlurDrawable extends Drawable implements BlurWallpaperProvider.List
 
     private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
     private final Paint mBlurPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
+    private final Paint mOpacityPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mColorPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mClipPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final RectF mRect = new RectF();
@@ -56,6 +57,8 @@ public class BlurDrawable extends Drawable implements BlurWallpaperProvider.List
 
     private float mBlurredX, mBlurredY;
     private boolean mShouldProvideOutline;
+    private int mOpacity = 255;
+    private boolean mTransparencyEnabled;
 
     BlurDrawable(BlurWallpaperProvider provider, float radius, boolean allowTransparencyMode) {
         mProvider = provider;
@@ -106,6 +109,11 @@ public class BlurDrawable extends Drawable implements BlurWallpaperProvider.List
         mRect.set(0, 0, canvas.getWidth(), canvas.getHeight());
         if (mRadius > 0) {
             drawTo.drawRoundRect(mRect, mRadius, mRadius, mClipPaint);
+        }
+
+        if (mTransparencyEnabled) {
+            mOpacityPaint.setColor(mOpacity << 24);
+            drawTo.drawRect(mRect, mOpacityPaint);
         }
 
         drawTo.drawBitmap(toDraw, blurTranslateX, translateY, mPaint);
@@ -283,5 +291,15 @@ public class BlurDrawable extends Drawable implements BlurWallpaperProvider.List
 
     private void invalidateBlur() {
         mBlurInvalid = mOverscroll != mBlurredX || mTranslation != mBlurredY;
+    }
+
+    public void setOpacity(int opacity) {
+        if (!mTransparencyEnabled) {
+            mTransparencyEnabled = true;
+            mColorPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP));
+            mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+            mBlurPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        }
+        mOpacity = opacity;
     }
 }

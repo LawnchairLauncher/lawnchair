@@ -618,4 +618,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     public void setWallpaperTranslation(float translation) {
         mAllAppsBackground.setWallpaperTranslation(translation);
     }
+
+    public void setBlurOpacity(int opacity) {
+        mAllAppsBackground.setBlurOpacity(opacity);
+    }
 }

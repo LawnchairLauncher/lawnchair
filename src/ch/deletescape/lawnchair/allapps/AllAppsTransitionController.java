@@ -51,6 +51,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private static final float PARALLAX_COEFFICIENT = .125f;
     private static final float FAST_FLING_PX_MS = 10;
     private static final int SINGLE_FRAME_MS = 16;
+    private final boolean mTransparentHotseat;
 
     private AllAppsContainerView mAppsView;
     private int mAllAppsBackgroundColor;
@@ -104,6 +105,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mEvaluator = new ArgbEvaluator();
         mAllAppsBackgroundColor = Utilities.resolveAttributeData(l, R.attr.allAppsContainerColor);
         mAllAppsBackgroundColorBlur = Utilities.resolveAttributeData(l, R.attr.allAppsContainerColorBlur);
+        mTransparentHotseat = FeatureFlags.isTransparentHotseat(l);
     }
 
     public void setAllAppsAlpha(int allAppsAlpha) {
@@ -289,11 +291,17 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         float interpolation = mAccelInterpolator.getInterpolation(progress);
 
         int allAppsBg = ColorUtils.setAlphaComponent(mAllAppsBackgroundColor, allAppsAlpha);
-        int color = (int) mEvaluator.evaluate(
-                mDecelInterpolator.getInterpolation(alpha),
-                BlurWallpaperProvider.isEnabled() ? mAllAppsBackgroundColorBlur : mHotseatBackgroundColor,
-                BlurWallpaperProvider.isEnabled() ? mAllAppsBackgroundColorBlur + (allAppsAlpha << 24) : allAppsBg);
-        mAppsView.setRevealDrawableColor(color);
+        int allAppsBgBlur = mAllAppsBackgroundColorBlur + (allAppsAlpha << 24);
+        if (mTransparentHotseat) {
+            mAppsView.setRevealDrawableColor(allAppsBgBlur);
+            mAppsView.setBlurOpacity((int) (alpha * 255));
+        } else {
+            int color = (int) mEvaluator.evaluate(
+                    mDecelInterpolator.getInterpolation(alpha),
+                    BlurWallpaperProvider.isEnabled() ? mAllAppsBackgroundColorBlur : mHotseatBackgroundColor,
+                    BlurWallpaperProvider.isEnabled() ? allAppsBgBlur : allAppsBg);
+            mAppsView.setRevealDrawableColor(color);
+        }
         if (BlurWallpaperProvider.isEnabled()) {
             mAppsView.setWallpaperTranslation(shiftCurrent);
             mHotseat.setWallpaperTranslation(shiftCurrent);
