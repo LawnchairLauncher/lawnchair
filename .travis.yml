@@ -15,11 +15,7 @@ before_install:
     fi
   - chmod a+x ./scripts/deploy-*.sh
 script:
-  - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then 
-      bash ./gradlew assembleDebug check; 
-    else
-      bash ./gradlew assembleDebug check;
-    fi
+  - bash ./gradlew assembleDebug check;
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
