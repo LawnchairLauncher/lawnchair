@@ -314,48 +314,48 @@
   <string name="notification_listener_label">Lawnchair - Notification badges</string>
   <string name="color_extraction_label">Lawnchair - Color extraction</string>
   <string name="test_title">Test</string>
-  <string name="visibility">Visibility</string>
+  <string name="visibility">Visibilité</string>
   <!-- Customization Color -->
-  <string name="white">White</string>
+  <string name="white">Blanc</string>
   <!-- Customization Color -->
-  <string name="black">Black</string>
+  <string name="black">Noir</string>
   <!-- Customization Color -->
-  <string name="red">Red</string>
+  <string name="red">Rouge</string>
   <!-- Customization Color -->
-  <string name="pink">Pink</string>
+  <string name="pink">Rose</string>
   <!-- Customization Color -->
-  <string name="purple">Purple</string>
+  <string name="purple">Violet</string>
   <!-- Customization Color -->
-  <string name="deep_purple">Deep Purple</string>
+  <string name="deep_purple">Violet foncé</string>
   <!-- Customization Color -->
   <string name="indigo">Indigo</string>
   <!-- Customization Color -->
-  <string name="blue">Blue</string>
+  <string name="blue">Bleu</string>
   <!-- Customization Color -->
-  <string name="light_blue">Light Blue</string>
+  <string name="light_blue">Bleu clair</string>
   <!-- Customization Color -->
   <string name="cyan">Cyan</string>
   <!-- Customization Color -->
-  <string name="teal">Teal</string>
+  <string name="teal">Turquoise</string>
   <!-- Customization Color -->
-  <string name="green">Green</string>
+  <string name="green">Vert</string>
   <!-- Customization Color -->
-  <string name="light_green">Light Green</string>
+  <string name="light_green">Vert clair</string>
   <!-- Customization Color -->
-  <string name="lime">Lime</string>
+  <string name="lime">Vert citron</string>
   <!-- Customization Color -->
-  <string name="yellow">Yellow</string>
+  <string name="yellow">Jaune</string>
   <!-- Customization Color -->
-  <string name="amber">Amber</string>
+  <string name="amber">Ambre</string>
   <!-- Customization Color -->
   <string name="orange">Orange</string>
   <!-- Customization Color -->
-  <string name="deep_orange">Deep Orange</string>
+  <string name="deep_orange">Orange foncé</string>
   <!-- Customization Color -->
-  <string name="brown">Brown</string>
+  <string name="brown">Marron</string>
   <!-- Customization Color -->
-  <string name="grey">Grey</string>
+  <string name="grey">Gris</string>
   <!-- Customization Color -->
-  <string name="blue_grey">Blue Grey</string>
+  <string name="blue_grey">Bleu Gris</string>
   <string name="default_text">Default</string>
 </resources>
