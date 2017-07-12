@@ -125,7 +125,7 @@ public class PixelIconProvider {
     }
 
     private boolean isRoundIconPack(IconPack iconPack) {
-        return iconPack.getPackageName().contains("pixel");
+        return iconPack != null && iconPack.getPackageName().contains("pixel");
     }
 
     class DynamicIconProviderReceiver extends BroadcastReceiver {
