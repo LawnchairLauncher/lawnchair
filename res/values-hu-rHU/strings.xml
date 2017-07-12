@@ -202,7 +202,7 @@
   <string name="action_deep_shortcut">Gyorsparancsok</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
   <string name="shortcuts_menu_description"><xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> gyorsparancs a(z) <xliff:g id="APP_NAME">%2$s</xliff:g> számára</string>
-  <string name="edit_drop_target_label">Edit</string>
+  <string name="edit_drop_target_label">Szerkesztés</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
   <string name="wallpaper_instructions">Háttérkép beállítása</string>
   <!-- Error message when an image is selected as a wallpaper,
@@ -237,11 +237,11 @@
   <!-- Title of activity for cropping wallpapers -->
   <string name="crop_wallpaper">Háttérkép körbevágása</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
-  <string name="which_wallpaper_option_home_screen">Home screen</string>
+  <string name="which_wallpaper_option_home_screen">Főképernyő</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
-  <string name="which_wallpaper_option_lock_screen">Lock screen</string>
+  <string name="which_wallpaper_option_lock_screen">Képernyőzár</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
-  <string name="which_wallpaper_option_home_screen_and_lock_screen">Home screen and lock screen</string>
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">Főképernyő és képernyőzár</string>
   <string name="title_show_google_app">Show %1$s</string>
   <string name="title_show_google_app_default">Show Google app</string>
   <string name="label_search">Search</string>
