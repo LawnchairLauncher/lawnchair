@@ -302,7 +302,7 @@
   <string name="haptic_feedback_pref_title">Habilitar vibración</string>
   <string name="keep_scroll_state_pref_title">Mantener posición de desplazamiento</string>
   <string name="keep_scroll_state_pref_summary">Guarda los cambios de la posición de desplazamiento del cajón</string>
-  <string name="home_opens_drawer_pref_title">El botón de inicio abre el cajón de aplicaciones</string>
+  <string name="home_opens_drawer_pref_title">El botón de home abre el cajón de aplicaciones</string>
   <string name="home_opens_drawer_pref_summary">Presionando el botón home en la pantalla de inicio, se abrirá el cajón de aplicaciones</string>
   <string name="show_hidden_pref_title">Mostrar aplicaciones ocultas</string>
   <string name="show_hidden_pref_on">Se mostraran las aplicaciones ocultas para cambiar la configuración de visibilidad</string>
