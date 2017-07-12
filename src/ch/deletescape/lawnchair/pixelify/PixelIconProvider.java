@@ -21,6 +21,7 @@ import org.xmlpull.v1.XmlPullParser;
 import java.util.Calendar;
 import java.util.List;
 
+import ch.deletescape.lawnchair.CustomIconDrawable;
 import ch.deletescape.lawnchair.IconPack;
 import ch.deletescape.lawnchair.IconPackProvider;
 import ch.deletescape.lawnchair.LauncherAppState;
@@ -96,8 +97,12 @@ public class PixelIconProvider {
 
     public Drawable getIcon(final LauncherActivityInfoCompat info, int iconDpi) {
         Drawable drawable = sIconPack == null ? null : sIconPack.getIcon(info);
-        if (drawable == null && FeatureFlags.usePixelIcons(mContext)) {
-            drawable = getRoundIcon(info.getComponentName().getPackageName(), iconDpi);
+        boolean isRoundPack = isRoundIconPack(sIconPack);
+        if ((drawable == null && FeatureFlags.usePixelIcons(mContext)) ||
+                (isRoundPack && drawable instanceof CustomIconDrawable)) {
+            Drawable roundIcon = getRoundIcon(info.getComponentName().getPackageName(), iconDpi);
+            if (roundIcon != null)
+                drawable = roundIcon;
             String packageName = info.getApplicationInfo().packageName;
             if (isCalendar(packageName)) {
                 try {
@@ -117,6 +122,10 @@ public class PixelIconProvider {
             drawable = info.getIcon(iconDpi);
         }
         return drawable;
+    }
+
+    private boolean isRoundIconPack(IconPack iconPack) {
+        return iconPack.getPackageName().contains("pixel");
     }
 
     class DynamicIconProviderReceiver extends BroadcastReceiver {

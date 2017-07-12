@@ -87,11 +87,11 @@ public class IconPackProvider {
                         entries.put(comp, drawable);
                     }
                 } else if (name.equals("iconback")) {
-                    iconBack = parser.getAttributeValue(null, "img1");
+                    iconBack = getImg(parser);
                 } else if (name.equals("iconupon")) {
-                    iconUpon = parser.getAttributeValue(null, "img1");
+                    iconUpon = getImg(parser);
                 } else if (name.equals("iconmask")) {
-                    iconMask = parser.getAttributeValue(null, "img");
+                    iconMask = getImg(parser);
                 } else if (name.equals("scale")) {
                     scale = Float.parseFloat(parser.getAttributeValue(null, "factor"));
                 }
@@ -100,6 +100,19 @@ public class IconPackProvider {
             }
         }
         return new IconPack(entries, context, packageName, iconBack, iconUpon, iconMask, scale);
+    }
+
+    private static String getImg(XmlPullParser parser) {
+        String img = parser.getAttributeValue(null, "img");
+        if (img == null)
+            img = parser.getAttributeValue(null, "img0");
+        if (img == null)
+            img = parser.getAttributeValue(null, "img1");
+        if (img == null)
+            img = parser.getAttributeValue(null, "img2");
+        if (img == null)
+            img = parser.getAttributeValue(null, "img3");
+        return img;
     }
 
     private static XmlPullParser getAppFilter(Context context, String packageName) {

@@ -52,7 +52,11 @@ public class CustomIconDrawable extends Drawable {
     }
 
     private Drawable getDrawable(String name) {
-        return mResources.getDrawable(getIconRes(name));
+        try {
+            return mResources.getDrawable(getIconRes(name));
+        } catch (Resources.NotFoundException e) {
+            return null;
+        }
     }
 
     private int getIconRes(String name) {
