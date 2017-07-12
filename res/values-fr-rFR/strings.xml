@@ -309,10 +309,10 @@
   <string name="show_hidden_pref_off">Les applications cachées ne seront pas visilbles</string>
   <string name="export_db_title">Exporter la base de données</string>
   <string name="import_db_title">Importer une base de données</string>
-  <string name="export_prefs_title">Export settings</string>
-  <string name="import_prefs_title">Import settings</string>
-  <string name="notification_listener_label">Lawnchair - Notification badges</string>
-  <string name="color_extraction_label">Lawnchair - Color extraction</string>
+  <string name="export_prefs_title">Exporter les paramètres</string>
+  <string name="import_prefs_title">Importer des paramètres</string>
+  <string name="notification_listener_label">Lawnchair - Badges de notification</string>
+  <string name="color_extraction_label">Lawnchair - Extraction de la couleur</string>
   <string name="test_title">Test</string>
   <string name="visibility">Visibilité</string>
   <!-- Customization Color -->
