@@ -155,13 +155,13 @@
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
   <string name="action_move_here">將項目移至這裡</string>
   <!-- Accessibility confirmation for item added to workspace. -->
-  <string name="item_added_to_workspace">已將項目新增到主螢幕</string>
+  <string name="item_added_to_workspace">已將項目新增到主畫面</string>
   <!-- Accessibility confirmation for item removed. -->
   <string name="item_removed">已移除項目</string>
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
   <string name="action_move">移動項目</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell">Move to row <xliff:g example="1" id="number">%1$s</xliff:g> column <xliff:g example="1" id="number">%2$s</xliff:g></string>
+  <string name="move_to_empty_cell">移至第 <xliff:g example="1" id="number">%1$s</xliff:g> 列第 <xliff:g example="1" id="number">%2$s</xliff:g> 欄</string>
   <!-- Accessibility description to move item inside a folder. -->
   <string name="move_to_position">Move to position <xliff:g example="1" id="number">%1$s</xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
