@@ -755,10 +755,6 @@ public class FolderPagedView extends PagedView {
         return mMaxItemsPerPage;
     }
 
-    public int getReadingOrderPosForRank(int rank) {
-        return getReadingOrderPosForRank(rank, mMaxItemsPerPage, mGridCountX, sTmpArray);
-    }
-
     /**
      * Returns the reading order position for a given rank.
      *
@@ -767,44 +763,34 @@ public class FolderPagedView extends PagedView {
      *
      *     R0 R1 R4
      *     R2 R3 R5
-     *
-     * @param outXY If notnull, we also return the cell X/Y position.
      */
-    public static int getReadingOrderPosForRank(int rank, int maxItemsPerPage, int gridX,
-            int[] outXY) {
-        outXY = outXY == null ? sTmpArray : outXY;
-        getCellXYPositionForRank(rank, maxItemsPerPage, gridX, outXY);
-
-        if (rank >= maxItemsPerPage) {
+    public int getReadingOrderPosForRank(int rank) {
+        if (rank >= mMaxItemsPerPage) {
             return rank;
         }
 
-        return outXY[0] + (gridX * outXY[1]);
-    }
-
-    public void getCellXYPositionForRank(int rank, int[] outXY) {
-        getCellXYPositionForRank(rank, mMaxItemsPerPage, mGridCountX, outXY);
+        getCellXYPositionForRank(rank, sTmpArray);
+        return sTmpArray[0] + (mGridCountX * sTmpArray[1]);
     }
 
     /**
      * Returns the cell XY position for a Folder item with the given rank.
      */
-    public static void getCellXYPositionForRank(int rank, int maxItemsPerPage, int gridX,
-            int[] outXY) {
-        boolean onFirstPage = rank < maxItemsPerPage;
+    public void getCellXYPositionForRank(int rank, int[] outXY) {
+        boolean onFirstPage = rank < mMaxItemsPerPage;
 
-        if (onFirstPage && gridX == 3) {
+        if (onFirstPage && mGridCountX == 3) {
             outXY[0] = FolderPermutation.THREE_COLS[rank][0];
             outXY[1] = FolderPermutation.THREE_COLS[rank][1];
-        } else if (onFirstPage && gridX == 4) {
+        } else if (onFirstPage && mGridCountX == 4) {
             outXY[0] = FolderPermutation.FOUR_COLS[rank][0];
             outXY[1] = FolderPermutation.FOUR_COLS[rank][1];
-        } else if (onFirstPage && gridX == 5) {
+        } else if (onFirstPage && mGridCountX == 5) {
             outXY[0] = FolderPermutation.FIVE_COLS[rank][0];
             outXY[1] = FolderPermutation.FIVE_COLS[rank][1];
         } else {
-            outXY[0] = (rank % maxItemsPerPage) % gridX;
-            outXY[1] = (rank % maxItemsPerPage) / gridX;
+            outXY[0] = (rank % mMaxItemsPerPage) % mGridCountX;
+            outXY[1] = (rank % mMaxItemsPerPage) / mGridCountX;
         }
     }
 
