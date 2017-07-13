@@ -17,10 +17,12 @@
 package ch.deletescape.lawnchair;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -94,6 +96,7 @@ public final class Utilities {
 
     private static final Pattern sTrimPattern =
             Pattern.compile("^[\\s|\\p{javaSpaceChar}]*(.*)[\\s|\\p{javaSpaceChar}]*$");
+    private static final String KEY_PREVIOUS_BUILD_NUMBER = "previousBuildNumber";
 
     static {
         sCanvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.DITHER_FLAG,
@@ -912,5 +915,30 @@ public final class Utilities {
         TypedValue typedValue = new TypedValue();
         context.getTheme().resolveAttribute(attr, typedValue, true);
         return typedValue.data;
+    }
+
+    private static int getPreviousBuildNumber(SharedPreferences prefs) {
+        return prefs.getInt(KEY_PREVIOUS_BUILD_NUMBER, 0);
+    }
+
+    private static void setBuildNumber(SharedPreferences prefs, int buildNumber) {
+        prefs.edit().putInt(KEY_PREVIOUS_BUILD_NUMBER, buildNumber).apply();
+    }
+
+    public static void showChangelog(Context context) {
+        if (!BuildConfig.TRAVIS) return;
+        final SharedPreferences prefs = getPrefs(context);
+        if (BuildConfig.TRAVIS_BUILD_NUMBER != getPreviousBuildNumber(prefs)) {
+            new AlertDialog.Builder(context)
+                    .setTitle(String.format(context.getString(R.string.changelog_title), BuildConfig.TRAVIS_BUILD_NUMBER))
+                    .setMessage(BuildConfig.CHANGELOG)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            setBuildNumber(prefs, BuildConfig.TRAVIS_BUILD_NUMBER);
+                        }
+                    })
+                    .show();
+        }
     }
 }

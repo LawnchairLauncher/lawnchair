@@ -11,6 +11,20 @@ buildscript {
 
 apply plugin: 'com.android.application'
 
+def getChangelog = { ->
+    def commitRange = System.getenv("TRAVIS_COMMIT_RANGE")
+    if (commitRange) {
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'log', '--format=%s', commitRange
+            standardOutput = stdout
+        }
+        return '- ' + stdout.toString().trim().replace("\n", "\\n- ")
+    } else {
+        return null
+    }
+}
+
 android {
     compileSdkVersion 26
     buildToolsVersion '26.0.0'
@@ -29,6 +43,9 @@ android {
         targetSdkVersion 26
         applicationId 'ch.deletescape.lawnchair'
         buildConfigField "String", "MOBILE_CENTER_KEY", "\"" + System.getenv("MOBILE_CENTER_KEY") + "\""
+        buildConfigField "boolean", "TRAVIS", System.getenv("TRAVIS") ?: "false"
+        buildConfigField "int", "TRAVIS_BUILD_NUMBER", System.getenv("TRAVIS_BUILD_NUMBER") ?: "0"
+        buildConfigField "String", "CHANGELOG", "\"${getChangelog()}\""
         if (System.getenv("TRAVIS") == "true") {
             versionCode = Integer.valueOf(System.getenv("TRAVIS_BUILD_NUMBER"))
             versionName = "Travis-" + System.getenv("TRAVIS_BUILD_NUMBER")
