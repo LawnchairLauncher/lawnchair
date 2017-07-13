@@ -249,7 +249,7 @@
   <string name="label_voice_search">Wyszukiwanie głosowe</string>
   <string name="shortcuts_menu_with_notifications_description">%1$d shortcuts and %2$d notifications for %3$s</string>
   <string name="notifications_header">Powiadomienia</string>
-  <string name="widgets_bottom_sheet_title">%1$s widgets</string>
+  <string name="widgets_bottom_sheet_title">%1$s widgetów</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair to launcher stworzony przez Till Kottmann\'a (aka deletescape). Oparty o Launcher3 z AOSP (Android Open Source Project).</string>
   <string name="about_title">О aplikacji</string>
@@ -292,8 +292,8 @@
   <string name="restart_lawnchair_pref_title">Zrestartuj Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">Może być pomocne gdy niektóre ustawienia nie zostaną zastosowane poprawnie</string>
   <string name="rebuild_icondb_pref_title">Przebuduj bazę danych ikon</string>
-  <string name="pinch_to_overview_pref_title">Pinch to overview</string>
-  <string name="pinch_to_overview_pref_summary">Pinch on the homescreen to open the overview</string>
+  <string name="pinch_to_overview_pref_title">Uszczypnij dla podglądu ekranów</string>
+  <string name="pinch_to_overview_pref_summary">Wykonaj gest uszczypnięcia na ekranie głównym aby zobaczyć podgląd ekranów</string>
   <string name="pull_down_notis_pref_title">Pociągnij w dół by zobaczyć powiadomienia</string>
   <string name="pull_down_notis_pref_on">Pociągnięcie w dół na pulpicie rozwinie pasek stanu.</string>
   <string name="pull_down_notis_pref_off">Kiedy włączone, pociągnięcie w dół na pulpicie rozwinie pasek stanu.</string>
