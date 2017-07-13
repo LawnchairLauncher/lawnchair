@@ -254,7 +254,7 @@
   <string name="notifications_header">Bildirimler</string>
   <string name="widgets_bottom_sheet_title">%1$s widget</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
+  <string name="about_text">Lawnchair, Till Kottmann (diğer adıyla deletescape) tarafından oluşturulan bir Başlatıcı uygulamasıdır. AOSP\'dan Launcher3\'e dayanıyor.</string>
   <string name="about_title">Hakkında</string>
   <string name="changelog_title">Bu yapıdaki değişiklikler #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
@@ -267,27 +267,27 @@
   <string name="dynamic_ui_pref_title">Extract accent color from wallpaper</string>
   <string name="dark_theme_pref_title">Koyu temayı kullan</string>
   <string name="blur_pref_title">Bulanıklığı etkinleştir</string>
-  <string name="blur_radius_pref_title">Blur radius</string>
+  <string name="blur_radius_pref_title">Bulanıklık yarıçapı</string>
   <string name="white_google_icon_pref_title">Beyaz Google ikonunu kullan</string>
   <string name="hide_icon_labels_pref_title">Ana ekrandaki ikon etiketlerini gizle</string>
   <string name="workspace_label_color_hue_pref_title">Color of icon labels on homescreen</string>
   <string name="workspace_label_color_variation_pref_title">Color variation of icon labels on homescreen</string>
-  <string name="all_apps_opacity_pref_title">Drawer opacity</string>
+  <string name="all_apps_opacity_pref_title">Uygulama çekmecesi şeffaflığı</string>
   <string name="num_cols_pref_title">Sütun sayısı</string>
   <string name="num_rows_pref_title">Satır sayısı</string>
   <string name="num_hotseat_icons_pref_title">Alt paneldeki simge sayısı</string>
-  <string name="icon_scale_pref_title">Icon scale</string>
-  <string name="icon_text_scale_pref_title">Icon text scale</string>
+  <string name="icon_scale_pref_title">İkon boyutu</string>
+  <string name="icon_text_scale_pref_title">İkon yazı boyutu</string>
   <string name="full_width_width_widgets_pref_title">Full width widgets</string>
-  <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
-  <string name="notification_access_pref_title">Notification badges and preview</string>
-  <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
-  <string name="ui_pref_title">UI</string>
+  <string name="full_width_widgets_pref_summary">Widget\'ların dolgu olmadan tüm genişliğe yayılmasına izin ver</string>
+  <string name="notification_access_pref_title">Bildirim rozetleri ve önizleme</string>
+  <string name="notification_access_pref_summary">Bu özellikleri etkinleştirmek için Lawnchair\'ın bildiriminize erişmesine izin verin</string>
+  <string name="ui_pref_title">Arayüz</string>
   <string name="pixel_style_pref_title">Pixel tarzı</string>
   <string name="behavior_pref_title">Davranış</string>
   <string name="debug_pref_title">Hata ayıklama</string>
   <string name="import_export_pref_title">İçe/Dışa aktar</string>
-  <string name="show_pixel_bar_pref_title">Show Pixel top bar</string>
+  <string name="show_pixel_bar_pref_title">Pixel üst barını göster</string>
   <string name="use_wide_searchbar_pref_title">Geniş arama çubuğunu kullan</string>
   <string name="show_mic_pref_title">Google Asistan Simgesini Göster</string>
   <string name="pixel_style_icons_pref_title">Pixel Simgeleri Kullan</string>
@@ -341,7 +341,7 @@
   <!-- Customization Color -->
   <string name="cyan">Camgöbeği</string>
   <!-- Customization Color -->
-  <string name="teal">Teal</string>
+  <string name="teal">Turkuaz</string>
   <!-- Customization Color -->
   <string name="green">Yeşil</string>
   <!-- Customization Color -->
@@ -349,18 +349,18 @@
   <!-- Customization Color -->
   <string name="lime">Limon Yeşili</string>
   <!-- Customization Color -->
-  <string name="yellow">Yellow</string>
+  <string name="yellow">Sarı</string>
   <!-- Customization Color -->
-  <string name="amber">Amber</string>
+  <string name="amber">Koyu Sarı</string>
   <!-- Customization Color -->
   <string name="orange">Turuncu</string>
   <!-- Customization Color -->
-  <string name="deep_orange">Deep Orange</string>
+  <string name="deep_orange">Koyu Turuncu</string>
   <!-- Customization Color -->
   <string name="brown">Kahverengi</string>
   <!-- Customization Color -->
   <string name="grey">Gri</string>
   <!-- Customization Color -->
-  <string name="blue_grey">Blue Grey</string>
+  <string name="blue_grey">Mavi Gri</string>
   <string name="default_text">Varsayılan</string>
 </resources>
