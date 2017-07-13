@@ -369,7 +369,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
         Folder folder = Folder.getOpen(mLauncher);
         if (folder != null) {
-            if (!folder.getItemsInRankOrder().contains(item)) {
+            if (!folder.getItemsInReadingOrder().contains(item)) {
                 folder.close(true);
                 folder = null;
             }
