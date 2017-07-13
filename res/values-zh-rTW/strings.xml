@@ -335,26 +335,26 @@
   <!-- Customization Color -->
   <string name="cyan">青藍色</string>
   <!-- Customization Color -->
-  <string name="teal">Teal</string>
+  <string name="teal">藍綠色</string>
   <!-- Customization Color -->
-  <string name="green">Green</string>
+  <string name="green">綠色</string>
   <!-- Customization Color -->
-  <string name="light_green">Light Green</string>
+  <string name="light_green">亮綠色</string>
   <!-- Customization Color -->
-  <string name="lime">Lime</string>
+  <string name="lime">黃綠色</string>
   <!-- Customization Color -->
-  <string name="yellow">Yellow</string>
+  <string name="yellow">黃色</string>
   <!-- Customization Color -->
-  <string name="amber">Amber</string>
+  <string name="amber">琥珀色</string>
   <!-- Customization Color -->
-  <string name="orange">Orange</string>
+  <string name="orange">橘色</string>
   <!-- Customization Color -->
-  <string name="deep_orange">Deep Orange</string>
+  <string name="deep_orange">深橘色</string>
   <!-- Customization Color -->
-  <string name="brown">Brown</string>
+  <string name="brown">棕色</string>
   <!-- Customization Color -->
-  <string name="grey">Grey</string>
+  <string name="grey">灰色</string>
   <!-- Customization Color -->
-  <string name="blue_grey">Blue Grey</string>
-  <string name="default_text">Default</string>
+  <string name="blue_grey">藍灰色</string>
+  <string name="default_text">預設</string>
 </resources>
