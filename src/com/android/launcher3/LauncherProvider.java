@@ -56,7 +56,6 @@ import com.android.launcher3.LauncherSettings.WorkspaceScreens;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dynamicui.ExtractionUtils;
-import com.android.launcher3.folder.FolderPagedView;
 import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.DbDowngradeHelper;
@@ -725,87 +724,6 @@ public class LauncherProvider extends ContentProvider {
                 String sql = "update favorites set intent = replace(intent, "
                         + "';l.profile=" + serial + ";', ';') where itemType = 0;";
                 db.execSQL(sql);
-            }
-
-            updateExistingFoldersToMatchPrePermutationLayout(db);
-        }
-
-        /**
-         * We have changed the way we display items in Folders, but we want existing folders to
-         * appear the same.
-         *
-         * To make this change invisible to existing Folders, we need to update the ranks of the
-         * items such that, when displayed using the permutation, the order remains the same.
-         */
-        private void updateExistingFoldersToMatchPrePermutationLayout(SQLiteDatabase db) {
-            InvariantDeviceProfile idp = new InvariantDeviceProfile(mContext);
-            int maxCols = idp.numFolderColumns;
-            int maxRows = idp.numFolderRows;
-
-            try (SQLiteTransaction t = new SQLiteTransaction(db)) {
-                Cursor c = db.query(Favorites.TABLE_NAME,
-                        new String[] {Favorites._ID, Favorites.OPTIONS},
-                        "itemType=" + Favorites.ITEM_TYPE_FOLDER, null, null, null, null);
-
-                // For every Folder
-                while (c.moveToNext()) {
-                    final long folderId = c.getLong(c.getColumnIndexOrThrow(Favorites._ID));
-                    int options = c.getInt(c.getColumnIndexOrThrow(Favorites.OPTIONS));
-
-                    if ((options & FolderInfo.FLAG_ITEM_RANKS_UPDATED) != 0) {
-                        // The folder has already been updated.
-                        continue;
-                    }
-
-                    // For each item in the Folder
-                    Cursor c2 = db.query(Favorites.TABLE_NAME, new String[] {
-                                    Favorites._ID, Favorites.RANK, Favorites.CELLX, Favorites.CELLY,
-                                    Favorites.OPTIONS},
-                            "container=" + folderId, null, null, null, null);
-
-                    int numItemsInFolder = c2.getCount();
-
-                    // Calculate the grid size.
-                    int[] gridXY = new int[2];
-                    FolderPagedView.calculateGridSize(numItemsInFolder, 0, 0, maxCols, maxRows,
-                            maxCols * maxRows, gridXY);
-                    int gridX = gridXY[0];
-                    int gridY = gridXY[1];
-                    int maxItemsPerPage = gridX * gridY;
-
-                    // We create a mapping from the permutation to the original rank (ie. the
-                    // inverse permutation). This is what we'll use to set the folder items so that
-                    // they appear in their original order.
-                    int[] inversion = new int[numItemsInFolder];
-                    for (int i = 0; i < numItemsInFolder; ++i) {
-                        int permutation = FolderPagedView.getReadingOrderPosForRank(i,
-                                maxItemsPerPage, gridX, null);
-                        inversion[permutation] = i;
-                    }
-
-                    // Now we update the ranks of the folder items. Note that cellX/cellY stay the
-                    // same, due to the permutation.
-                    for (int i = 0; i < numItemsInFolder && c2.moveToNext(); ++i) {
-                        final int rank = c2.getInt(c2.getColumnIndexOrThrow(Favorites.RANK));
-
-                        SQLiteStatement updateItem = db.compileStatement(
-                                "UPDATE favorites SET rank=" + inversion[rank] + " WHERE _id=?");
-                        updateItem.bindLong(1, c2.getInt(c2.getColumnIndexOrThrow(Favorites._ID)));
-                        updateItem.executeUpdateDelete();
-                    }
-                    c2.close();
-
-                    // Mark the folder as having been updated.
-                    options |= FolderInfo.FLAG_ITEM_RANKS_UPDATED;
-                    SQLiteStatement updateFolder = db.compileStatement(
-                            "UPDATE favorites SET options=" + options + " WHERE _id=?");
-                    updateFolder.bindLong(1, folderId);
-                    updateFolder.executeUpdateDelete();
-                }
-                c.close();
-                t.commit();
-            } catch (SQLException ex) {
-                Log.w(TAG, "Error updating folder items to match permutation.", ex);
             }
         }
 
