@@ -49,6 +49,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.UserHandle;
+import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -926,12 +927,16 @@ public final class Utilities {
     }
 
     public static void showChangelog(Context context) {
+        showChangelog(context, false);
+    }
+
+    public static void showChangelog(Context context, boolean force) {
         if (!BuildConfig.TRAVIS) return;
         final SharedPreferences prefs = getPrefs(context);
-        if (BuildConfig.TRAVIS_BUILD_NUMBER != getPreviousBuildNumber(prefs)) {
+        if (force || BuildConfig.TRAVIS_BUILD_NUMBER != getPreviousBuildNumber(prefs)) {
             new AlertDialog.Builder(context)
                     .setTitle(String.format(context.getString(R.string.changelog_title), BuildConfig.TRAVIS_BUILD_NUMBER))
-                    .setMessage(BuildConfig.CHANGELOG)
+                    .setMessage(getChangelog().trim())
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -940,5 +945,22 @@ public final class Utilities {
                     })
                     .show();
         }
+    }
+
+    @NonNull
+    private static String getChangelog() {
+        StringBuilder builder = new StringBuilder();
+        String[] lines = BuildConfig.CHANGELOG.split("\n");
+        for (String line : lines) {
+            if (line.startsWith("Merge pull request")) continue;
+            if (line.startsWith("[no ci]")) {
+                line = line.replace("[no ci]", "");
+            }
+            builder
+                    .append("- ")
+                    .append(line.trim())
+                    .append("\n");
+        }
+        return builder.toString();
     }
 }
