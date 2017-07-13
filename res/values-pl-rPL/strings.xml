@@ -253,6 +253,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair to launcher stworzony przez Till Kottmann\'a (aka deletescape). Oparty o Launcher3 z AOSP (Android Open Source Project).</string>
   <string name="about_title">О aplikacji</string>
+  <string name="changelog_title">Changelog for build #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Paczka ikon</string>
   <string name="icon_pack_preference_summary">Wybierz paczkę ikon</string>
