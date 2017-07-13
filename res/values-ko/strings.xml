@@ -79,6 +79,9 @@
     <string name="icon_badging_title" msgid="874121399231955394">"알림 표시 점"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"사용"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"사용 안함"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"알림 액세스 권한 필요"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"알림 표시점을 표시하려면 <xliff:g id="NAME">%1$s</xliff:g>의 앱 알림을 사용 설정하세요."</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"설정 변경"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"홈 화면에 아이콘 추가"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"새로 설치한 앱에 적용"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
