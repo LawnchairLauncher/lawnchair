@@ -105,18 +105,18 @@
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">Schermata Home %1$d di %2$d</string>
   <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
-  <string name="workspace_new_page">Nuova pagina per la Schermata Home</string>
+  <string name="workspace_new_page">Nuova pagina della Schermata Home</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
-  <string name="folder_opened">Cartella aperta, <xliff:g id="WIDTH">%1$d</xliff:g> per <xliff:g id="HEIGHT">%2$d</xliff:g></string>
+  <string name="folder_opened">Cartella aperta, <xliff:g id="Width">%1$d</xliff:g> da <xliff:g id="Height">%2$d</xliff:g></string>
   <!-- Instruction that clicking outside will close folder -->
   <string name="folder_tap_to_close">Tocca per chiudere la cartella</string>
   <!-- Instruction that clicking outside will commit folder rename -->
-  <string name="folder_tap_to_rename">Tocca per salvare il nuovo nome</string>
+  <string name="folder_tap_to_rename">Tocca per rinominare</string>
   <!-- Indication that folder closed -->
   <string name="folder_closed">Cartella chiusa</string>
   <!-- Folder renamed format -->
-  <string name="folder_renamed">Nome della cartella sostituito con <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="folder_renamed">Cartella rinominata in <xliff:g id="Name">%1$s</xliff:g></string>
   <!-- Folder name format -->
   <string name="folder_name_format">Cartella: <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Strings for the customization mode -->
@@ -165,7 +165,7 @@
   <!-- Accessibility description to move item inside a folder. -->
   <string name="move_to_position">Sposta nella posizione <xliff:g id="NUMBER">%1$s</xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Sposta nella posizione dei preferiti <xliff:g id="Number">%1$s</xliff:g></string>
+  <string name="move_to_hotseat_position">Sposta nella posizione <xliff:g id="NUMBER">%1$s</xliff:g> dei preferiti</string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">Elemento spostato</string>
   <!-- Accessibility description to move item into an existing folder. -->
