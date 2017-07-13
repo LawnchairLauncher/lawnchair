@@ -127,6 +127,11 @@ import ch.deletescape.lawnchair.widget.PendingAddWidgetInfo;
 import ch.deletescape.lawnchair.widget.WidgetHostViewLoader;
 import ch.deletescape.lawnchair.widget.WidgetsContainerView;
 
+import com.microsoft.azure.mobile.MobileCenter;
+import com.microsoft.azure.mobile.analytics.Analytics;
+import com.microsoft.azure.mobile.crashes.Crashes;
+import com.microsoft.azure.mobile.distribute.Distribute;
+
 /**
  * Default launcher application.
  */
@@ -348,6 +353,9 @@ public class Launcher extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         FeatureFlags.applyDarkThemePreference(this);
         super.onCreate(savedInstanceState);
+        
+        if(!BuildConfig.MOBILE_CENTER_KEY.equalsIgnoreCase("null"))
+            MobileCenter.start(getApplication(), BuildConfig.MOBILE_CENTER_KEY, Analytics.class, Crashes.class, Distribute.class);
 
         LauncherAppState app = LauncherAppState.getInstance();
         app.setMLauncher(this);
