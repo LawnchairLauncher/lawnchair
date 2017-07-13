@@ -421,6 +421,8 @@ public class Launcher extends Activity
             reloadIcons();
         }
         Settings.init(this);
+
+        Utilities.showChangelog(this);
     }
 
     public PopupDataProvider getPopupDataProvider() {
