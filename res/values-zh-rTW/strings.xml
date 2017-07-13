@@ -269,11 +269,11 @@
   <string name="all_apps_opacity_pref_title">抽屜透明度</string>
   <string name="num_cols_pref_title">列數</string>
   <string name="num_rows_pref_title">行數</string>
-  <string name="num_hotseat_icons_pref_title">Number of icons in dock</string>
-  <string name="icon_scale_pref_title">Icon scale</string>
-  <string name="icon_text_scale_pref_title">Icon text scale</string>
-  <string name="full_width_width_widgets_pref_title">Full width widgets</string>
-  <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
+  <string name="num_hotseat_icons_pref_title">Dock欄上的圖示數量</string>
+  <string name="icon_scale_pref_title">圖示大小</string>
+  <string name="icon_text_scale_pref_title">圖示字型大小</string>
+  <string name="full_width_width_widgets_pref_title">全寬小工具</string>
+  <string name="full_width_widgets_pref_summary">允許小工具填滿桌面寬度</string>
   <string name="notification_access_pref_title">Notification badges and preview</string>
   <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
   <string name="ui_pref_title">UI</string>
