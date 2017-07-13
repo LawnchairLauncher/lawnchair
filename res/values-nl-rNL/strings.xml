@@ -267,15 +267,15 @@
   <string name="hide_icon_labels_pref_title">Verberg icoon labels op startscherm</string>
   <string name="workspace_label_color_hue_pref_title">Kleur van de icoon labels op startscherm</string>
   <string name="workspace_label_color_variation_pref_title">Kleurvariatie van de icoon labels op startscherm</string>
-  <string name="all_apps_opacity_pref_title">Drawer opacity</string>
+  <string name="all_apps_opacity_pref_title">Doorzichtigheid applicatiescherm</string>
   <string name="num_cols_pref_title">Aantal kolommen</string>
   <string name="num_rows_pref_title">Aantal rijen</string>
   <string name="num_hotseat_icons_pref_title">Aantal iconen in dock</string>
   <string name="icon_scale_pref_title">Icoon grootte</string>
   <string name="icon_text_scale_pref_title">Icoon label grootte</string>
   <string name="full_width_width_widgets_pref_title">Volledige breedte widgets</string>
-  <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
-  <string name="notification_access_pref_title">Notification badges and preview</string>
+  <string name="full_width_widgets_pref_summary">Sta widgets toe de volledige breedte te omvatten</string>
+  <string name="notification_access_pref_title">Notificatie icoon en voorvertoning</string>
   <string name="notification_access_pref_summary">Geef Lawnchair toestemming tot uw notificaties om deze functie te gebruiken</string>
   <string name="ui_pref_title">UI - gebruikersinterface</string>
   <string name="pixel_style_pref_title">Pixel stijl</string>
@@ -295,7 +295,7 @@
   <string name="pinch_to_overview_pref_summary">Knijpen op het startscherm overzicht te openen</string>
   <string name="pull_down_notis_pref_title">Schuif omlaag voor Notificaties</string>
   <string name="pull_down_notis_pref_on">Omlaag schuiven op het startscherm zal de statusbar openen.</string>
-  <string name="pull_down_notis_pref_off">When enabled pulling down on the Homescreen expand the statusbar.</string>
+  <string name="pull_down_notis_pref_off">Een schuifbeweging omlaag op het startscherm schuift de statusbalk uit.</string>
   <string name="light_statusbar_pref_title">Lichte statusbar</string>
   <string name="light_statusbar_pref_on">De statusbalk kan donkere iconen weergeven bij het gebruik van een lichte achtergrond.</string>
   <string name="light_statusbar_pref_off">De statusbalk weergeeft altijd lichte iconen.</string>
@@ -303,7 +303,7 @@
   <string name="keep_scroll_state_pref_title">Onthoudt scrollpositie</string>
   <string name="keep_scroll_state_pref_summary">Onthoudt de scrollpositie in het applicatiescherm</string>
   <string name="home_opens_drawer_pref_title">Home-knop opent applicatiescherm</string>
-  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the homescreen will open the app drawer</string>
+  <string name="home_opens_drawer_pref_summary">Een druk op de home-knop op het startscherm opent het applicatiescherm</string>
   <string name="show_hidden_pref_title">Laat verborgen applicaties zien</string>
   <string name="show_hidden_pref_on">Laat verborgen applicaties zien om de zichtbaarheidsinstellingen aan te passen</string>
   <string name="show_hidden_pref_off">Laat verborgen applicaties niet zien</string>
