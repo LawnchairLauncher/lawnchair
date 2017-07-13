@@ -29,7 +29,7 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">应用不可用。</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">安全模式下不允许使用下载的应用</string>
+  <string name="safemode_shortcut_error">安全模式下不可安装下载的应用</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">安全模式下不允许使用小部件</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
@@ -73,7 +73,7 @@
   <!-- Permissions: -->
   <skip></skip>
   <!-- Permission short label -->
-  <string name="permlab_install_shortcut">安装快捷方式</string>
+  <string name="permlab_install_shortcut">添加快捷方式</string>
   <!-- Permission description -->
   <string name="permdesc_install_shortcut">允许应用自行添加快捷方式。</string>
   <!-- Permission short label -->
@@ -81,7 +81,7 @@
   <!-- Permission description -->
   <string name="permdesc_read_settings">允许应用读取主屏幕中的设置和快捷方式。</string>
   <!-- Permission short label -->
-  <string name="permlab_write_settings">写入主屏幕设置和快捷方式</string>
+  <string name="permlab_write_settings">写入主屏幕的个性化设置</string>
   <!-- Permission description -->
   <string name="permdesc_write_settings">允许应用更改主屏幕中的设置和快捷方式。</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
@@ -95,7 +95,7 @@
   <!-- Text to inform the user that they can't uninstall a system application -->
   <string name="uninstall_system_app_text">无法卸载系统应用。</string>
   <!-- Default folder title -->
-  <string name="folder_hint_text">未命名文件夹</string>
+  <string name="folder_hint_text">未命名的文件夹</string>
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
   <string name="disabled_app_label"><xliff:g id="APP_NAME">%1$s</xliff:g> 已被停用</string>
