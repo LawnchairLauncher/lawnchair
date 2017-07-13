@@ -79,6 +79,9 @@
     <string name="icon_badging_title" msgid="874121399231955394">"Κουκκίδες ειδοποίησης"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Ενεργή"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Ανενεργή"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"Απαιτείται πρόσβαση στις ειδοποιήσεις"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Για να εμφανιστούν οι Κουκκίδες ειδοποίησης, ενεργοποιήστε τις κουκκίδες εφαρμογής για την εφαρμογή <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"Αλλαγή ρυθμίσεων"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Προσθήκη εικονιδίου στην Αρχική οθόνη"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Για νέες εφαρμογές"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->

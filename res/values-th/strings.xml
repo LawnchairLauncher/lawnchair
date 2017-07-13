@@ -76,9 +76,12 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"อนุญาตให้หมุนหน้าจอหลัก"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"เมื่อหมุนโทรศัพท์"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"การตั้งค่าการแสดงผลปัจจุบันไม่อนุญาตให้มีการหมุน"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"จุดการแจ้งเตือน"</string>
+    <string name="icon_badging_title" msgid="874121399231955394">"จุดแจ้งเตือน"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"เปิด"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"ปิด"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"ต้องได้รับสิทธิ์เข้าถึงการแจ้งเตือน"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"เปิดการแจ้งเตือนแอปของ <xliff:g id="NAME">%1$s</xliff:g> เพื่อแสดงจุดแจ้งเตือน"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"เปลี่ยนการตั้งค่า"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"เพิ่มไอคอนในหน้าจอหลัก"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"สำหรับแอปใหม่"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
