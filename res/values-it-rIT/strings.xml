@@ -256,7 +256,7 @@
   <string name="icon_pack_preference_title">Pacchetto icone</string>
   <string name="icon_pack_preference_summary">Seleziona un pacchetto icone</string>
   <string name="hotseat_uses_extracted_colors_pref_title">La dock utilizza il colore del wallpaper</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">La dock sarà colorata con un colore estratto dal wallpaper</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">La dock verrà colorata con un colore estratto dallo sfondo</string>
   <string name="hotseat_uses_extracted_colors_pref_off">La dock sarà grigia ma aggiustata rispetto alla luminosità del wallpaper</string>
   <string name="transparent_hotseat_pref_title">Dock trasparente</string>
   <string name="dynamic_ui_pref_title">Estrai colore secondario dal wallpaper</string>
