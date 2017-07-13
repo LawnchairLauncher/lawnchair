@@ -251,6 +251,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair はTill Kottmann（ deletescape としても知られています）によって作成されたランチャーアプリです。それは AOSP の Launcher3 に基づいて出来ています。</string>
   <string name="about_title">About</string>
+  <string name="changelog_title">Changelog for build #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">アイコンパック</string>
   <string name="icon_pack_preference_summary">Select an icon Pack</string>
