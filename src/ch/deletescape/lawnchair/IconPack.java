@@ -7,9 +7,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.util.ArrayMap;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
+import ch.deletescape.lawnchair.pixelify.PixelIconProvider;
 
 public class IconPack {
     /*
@@ -22,12 +25,13 @@ public class IconPack {
     private final String mIconUpon;
     private final String mIconMask;
     private final float mScale;
-    private Map<String, String> icons = new ArrayMap<>();
+    private final List<String> mCalendars;
+    private Map<String, IconPackProvider.IconInfo> icons = new ArrayMap<>();
     private String packageName;
     private Context mContext;
 
-    public IconPack(Map<String, String> icons, Context context, String packageName,
-                    String iconBack, String iconUpon, String iconMask, float scale) {
+    public IconPack(Map<String, IconPackProvider.IconInfo> icons, Context context, String packageName,
+                    String iconBack, String iconUpon, String iconMask, float scale, List<String> calendars) {
         this.icons = icons;
         this.packageName = packageName;
         mContext = context;
@@ -35,13 +39,20 @@ public class IconPack {
         mIconUpon = iconUpon;
         mIconMask = iconMask;
         mScale = scale;
+        mCalendars = calendars;
     }
 
     public Drawable getIcon(LauncherActivityInfoCompat info) {
-        String iconName = icons.get(info.getComponentName().toString());
-        if (iconName != null)
-            return getDrawable(iconName);
-        else if (mIconBack != null || mIconUpon != null || mIconMask != null)
+        IconPackProvider.IconInfo iconInfo = icons.get(info.getComponentName().toString());
+        if (iconInfo != null && iconInfo.prefix != null) {
+            Drawable drawable = getDrawable(iconInfo.prefix + (PixelIconProvider.dayOfMonth() + 1));
+            if (drawable != null) {
+                return drawable;
+            }
+        }
+        if (iconInfo != null && iconInfo.drawable != null)
+            return getDrawable(iconInfo.drawable);
+        if (mIconBack != null || mIconUpon != null || mIconMask != null)
             return getMaskedDrawable(info);
         return null;
     }
@@ -87,5 +98,9 @@ public class IconPack {
 
     public float getScale() {
         return mScale;
+    }
+
+    public List<String> getCalendars() {
+        return mCalendars;
     }
 }

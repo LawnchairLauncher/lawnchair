@@ -18,6 +18,7 @@ import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParser;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -30,12 +31,15 @@ import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
+import ch.deletescape.lawnchair.util.PackageManagerHelper;
 
 public class PixelIconProvider {
     private BroadcastReceiver mBroadcastReceiver;
     private PackageManager mPackageManager;
     private IconPack sIconPack;
     private Context mContext;
+
+    private ArrayList<String> mCalendars;
 
     public PixelIconProvider(Context context) {
         mBroadcastReceiver = new DynamicIconProviderReceiver(this);
@@ -44,11 +48,11 @@ public class PixelIconProvider {
         intentFilter.addAction("android.intent.action.TIMEZONE_CHANGED");
         context.registerReceiver(mBroadcastReceiver, intentFilter, null, new Handler(LauncherModel.getWorkerLooper()));
         mPackageManager = context.getPackageManager();
-        sIconPack = IconPackProvider.loadAndGetIconPack(context);
         mContext = context;
+        updateIconPack();
     }
 
-    private int dayOfMonth() {
+    public static int dayOfMonth() {
         return Calendar.getInstance().get(Calendar.DAY_OF_MONTH) - 1;
     }
 
@@ -93,6 +97,11 @@ public class PixelIconProvider {
 
     public void updateIconPack() {
         sIconPack = IconPackProvider.loadAndGetIconPack(mContext);
+        mCalendars = new ArrayList<>();
+        mCalendars.add("com.google.android.calendar");
+        if (sIconPack != null) {
+            mCalendars.addAll(sIconPack.getCalendars());
+        }
     }
 
     public Drawable getIcon(final LauncherActivityInfoCompat info, int iconDpi) {
@@ -139,11 +148,15 @@ public class PixelIconProvider {
         public void onReceive(final Context context, final Intent intent) {
             for (UserHandle userHandle : UserManagerCompat.getInstance(context).getUserProfiles()) {
                 LauncherAppState instance = LauncherAppState.getInstance();
-                instance.getModel().onPackageChanged("com.google.android.calendar", userHandle);
-                List queryForPinnedShortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts("com.google.android.calendar", userHandle);
-                if (!queryForPinnedShortcuts.isEmpty()) {
-                    instance.getModel().updatePinnedShortcuts("com.google.android.calendar", queryForPinnedShortcuts, userHandle);
+                for (String calendar : mCalendars) {
+                    if (!PackageManagerHelper.isAppEnabled(mPackageManager, calendar, 0)) continue;
+                    instance.getModel().onPackageChanged(calendar, userHandle);
+                    List queryForPinnedShortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(calendar, userHandle);
+                    if (!queryForPinnedShortcuts.isEmpty()) {
+                        instance.getModel().updatePinnedShortcuts(calendar, queryForPinnedShortcuts, userHandle);
+                    }
                 }
+
             }
         }
     }
