@@ -14,6 +14,8 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class IconPackProvider {
@@ -73,7 +75,8 @@ public class IconPackProvider {
         String iconBack = null;
         String iconUpon = null;
         String iconMask = null;
-        Map<String, String> entries = new ArrayMap<>();
+        Map<String, IconInfo> entries = new ArrayMap<>();
+        List<String> calendars = new ArrayList<>();
         while (parser != null && parser.next() != XmlPullParser.END_DOCUMENT) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
@@ -84,7 +87,14 @@ public class IconPackProvider {
                     String comp = parser.getAttributeValue(null, "component");
                     String drawable = parser.getAttributeValue(null, "drawable");
                     if (drawable != null && comp != null) {
-                        entries.put(comp, drawable);
+                        IconInfo iconInfo;
+                        if (!entries.containsKey(comp)) {
+                            iconInfo = new IconInfo();
+                            entries.put(comp, iconInfo);
+                        } else {
+                            iconInfo = entries.get(comp);
+                        }
+                        iconInfo.drawable = drawable;
                     }
                 } else if (name.equals("iconback")) {
                     iconBack = getImg(parser);
@@ -94,12 +104,31 @@ public class IconPackProvider {
                     iconMask = getImg(parser);
                 } else if (name.equals("scale")) {
                     scale = Float.parseFloat(parser.getAttributeValue(null, "factor"));
+                } else if (name.equals("calendar")) {
+                    String comp = parser.getAttributeValue(null, "component");
+                    String prefix = parser.getAttributeValue(null, "prefix");
+                    if (prefix != null && comp != null) {
+                        IconInfo iconInfo;
+                        if (!entries.containsKey(comp)) {
+                            iconInfo = new IconInfo();
+                            entries.put(comp, iconInfo);
+                        } else {
+                            iconInfo = entries.get(comp);
+                        }
+                        iconInfo.prefix = prefix;
+                        try {
+                            String calendar = comp.split("/")[0].split("\\{")[1];
+                            calendars.add(calendar);
+                        } catch (Exception ignored) {
+
+                        }
+                    }
                 }
             } catch (Exception ignored) {
 
             }
         }
-        return new IconPack(entries, context, packageName, iconBack, iconUpon, iconMask, scale);
+        return new IconPack(entries, context, packageName, iconBack, iconUpon, iconMask, scale, calendars);
     }
 
     private static String getImg(XmlPullParser parser) {
@@ -132,5 +161,11 @@ public class IconPackProvider {
             Toast.makeText(context, "Failed to get AppFilter", Toast.LENGTH_SHORT).show();
         }
         return null;
+    }
+
+    public static class IconInfo {
+
+        public String drawable = null;
+        public String prefix = null;
     }
 }
