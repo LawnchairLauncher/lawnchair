@@ -3824,7 +3824,7 @@ public class Workspace extends PagedView
                 ItemInfo info = (ItemInfo) item.getTag();
                 if (recurse && info instanceof FolderInfo && item instanceof FolderIcon) {
                     FolderIcon folder = (FolderIcon) item;
-                    ArrayList<View> folderChildren = folder.getFolder().getItemsInRankOrder();
+                    ArrayList<View> folderChildren = folder.getFolder().getItemsInReadingOrder();
                     // map over all the children in the folder
                     final int childCount = folderChildren.size();
                     for (int childIdx = 0; childIdx < childCount; childIdx++) {
