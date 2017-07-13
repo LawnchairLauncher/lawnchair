@@ -31,7 +31,7 @@ deploy:
     skip_cleanup: true
     script: scripts/deploy-telegram.sh
     on:
-      all_branches: true
+      branch: alpha
   - provider: releases
     skip_cleanup: true
     api_key: $GITHUB_OAUTH_TOKEN
