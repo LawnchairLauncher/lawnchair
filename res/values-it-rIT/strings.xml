@@ -279,7 +279,7 @@
   <string name="notification_access_pref_summary">Permetti l\'accesso alle notifiche a Lawnchair per abilitare queste funzioni</string>
   <string name="ui_pref_title">Interfaccia</string>
   <string name="pixel_style_pref_title">Stile Pixel</string>
-  <string name="behavior_pref_title">Funzionalità</string>
+  <string name="behavior_pref_title">Gesti e funzionalità</string>
   <string name="debug_pref_title">Debug</string>
   <string name="import_export_pref_title">Importa/Esporta</string>
   <string name="show_pixel_bar_pref_title">Mostra la barra Pixel in alto</string>
@@ -291,7 +291,7 @@
   <string name="restart_lawnchair_pref_title">Riavvia Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">Può essere utile se alcune impostazioni non sono state applicate correttamente</string>
   <string name="rebuild_icondb_pref_title">Ricostruisci il database delle icone</string>
-  <string name="pinch_to_overview_pref_title">Pizzica per la panoramica</string>
+  <string name="pinch_to_overview_pref_title">Pinch per la panoramica</string>
   <string name="pinch_to_overview_pref_summary">Pizzica la schermata home per aprire la panoramica</string>
   <string name="pull_down_notis_pref_title">Scorri in basso per le notifiche</string>
   <string name="pull_down_notis_pref_on">Uno swipe verso il basso nella homescreen farà espandere la barra delle notifiche.</string>
