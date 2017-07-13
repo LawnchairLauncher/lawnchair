@@ -300,40 +300,40 @@
   <string name="light_statusbar_pref_off">狀態欄將一直顯示亮色圖示。</string>
   <string name="haptic_feedback_pref_title">啟用震動</string>
   <string name="keep_scroll_state_pref_title">保持滾動軸位置</string>
-  <string name="keep_scroll_state_pref_summary">Saves the scroll position in the drawer</string>
-  <string name="home_opens_drawer_pref_title">Home button opens app drawer</string>
-  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the homescreen will open the app drawer</string>
-  <string name="show_hidden_pref_title">Show hidden apps</string>
-  <string name="show_hidden_pref_on">Hidden apps will be shown to change visibility settings</string>
-  <string name="show_hidden_pref_off">Hidden apps won\'t be visible</string>
-  <string name="export_db_title">Export database</string>
-  <string name="import_db_title">Import database</string>
-  <string name="export_prefs_title">Export settings</string>
-  <string name="import_prefs_title">Import settings</string>
+  <string name="keep_scroll_state_pref_summary">在抽屜裡保持滾動軸位置</string>
+  <string name="home_opens_drawer_pref_title">Home鍵打開應用抽屜</string>
+  <string name="home_opens_drawer_pref_summary">在主畫面按Home鍵打開應用抽屜</string>
+  <string name="show_hidden_pref_title">顯示隱藏的應用程式</string>
+  <string name="show_hidden_pref_on">顯示隱藏的應用程式來調整可見性設置</string>
+  <string name="show_hidden_pref_off">不顯示影藏的應用程式</string>
+  <string name="export_db_title">匯出資料庫</string>
+  <string name="import_db_title">匯入資料庫</string>
+  <string name="export_prefs_title">匯出設定</string>
+  <string name="import_prefs_title">匯入設定</string>
   <string name="notification_listener_label">Lawnchair－未讀計數</string>
-  <string name="color_extraction_label">Lawnchair - Color extraction</string>
-  <string name="test_title">Test</string>
-  <string name="visibility">Visibility</string>
+  <string name="color_extraction_label">Lawnchair－顏色提取</string>
+  <string name="test_title">測試</string>
+  <string name="visibility">可見性</string>
   <!-- Customization Color -->
-  <string name="white">White</string>
+  <string name="white">白色</string>
   <!-- Customization Color -->
-  <string name="black">Black</string>
+  <string name="black">黑色</string>
   <!-- Customization Color -->
-  <string name="red">Red</string>
+  <string name="red">紅色</string>
   <!-- Customization Color -->
-  <string name="pink">Pink</string>
+  <string name="pink">粉紅色</string>
   <!-- Customization Color -->
-  <string name="purple">Purple</string>
+  <string name="purple">紫色</string>
   <!-- Customization Color -->
-  <string name="deep_purple">Deep Purple</string>
+  <string name="deep_purple">深紫色</string>
   <!-- Customization Color -->
-  <string name="indigo">Indigo</string>
+  <string name="indigo">靛青色</string>
   <!-- Customization Color -->
-  <string name="blue">Blue</string>
+  <string name="blue">藍色</string>
   <!-- Customization Color -->
-  <string name="light_blue">Light Blue</string>
+  <string name="light_blue">亮藍色</string>
   <!-- Customization Color -->
-  <string name="cyan">Cyan</string>
+  <string name="cyan">青藍色</string>
   <!-- Customization Color -->
   <string name="teal">Teal</string>
   <!-- Customization Color -->
