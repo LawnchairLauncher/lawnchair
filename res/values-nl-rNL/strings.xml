@@ -27,9 +27,9 @@
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
   <string name="activity_not_found">App is niet geïnstalleerd.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
-  <string name="activity_not_available">App is niet bereikbaar</string>
+  <string name="activity_not_available">App is niet beschikbaar</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Gedownloade apps uitgeschakeld in veilige modus</string>
+  <string name="safemode_shortcut_error">Gedownloade app uitgeschakeld in veilige modus</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">Widgets uitgeschakeld in Veilige modus</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
@@ -270,7 +270,7 @@
   <string name="all_apps_opacity_pref_title">Doorzichtigheid applicatiescherm</string>
   <string name="num_cols_pref_title">Aantal kolommen</string>
   <string name="num_rows_pref_title">Aantal rijen</string>
-  <string name="num_hotseat_icons_pref_title">Aantal iconen in dock</string>
+  <string name="num_hotseat_icons_pref_title">Aantal iconen in favorietenbalk</string>
   <string name="icon_scale_pref_title">Icoon grootte</string>
   <string name="icon_text_scale_pref_title">Icoon label grootte</string>
   <string name="full_width_width_widgets_pref_title">Volledige breedte widgets</string>
