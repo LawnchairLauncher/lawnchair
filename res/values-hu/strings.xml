@@ -79,6 +79,9 @@
     <string name="icon_badging_title" msgid="874121399231955394">"Értesítési pöttyök"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Bekapcsolva"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Kikapcsolva"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"Értesítésekhez való hozzáférésre van szükség"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Az értesítési pöttyök megjelenítéséhez kapcsolja be a(z) <xliff:g id="NAME">%1$s</xliff:g> alkalmazás értesítéseit"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"Beállítások módosítása"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Ikon hozzáadása a kezdőképernyőhöz"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Új alkalmazásoknál"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
