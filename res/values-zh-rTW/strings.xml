@@ -245,9 +245,9 @@
   <string name="title_show_google_app_default">顯示Google應用程式</string>
   <string name="label_search">搜尋</string>
   <string name="label_voice_search">語音搜尋</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d shortcuts and %2$d notifications for %3$s</string>
-  <string name="notifications_header">Notifications</string>
-  <string name="widgets_bottom_sheet_title">%1$s widgets</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d 捷徑和 %3$s 的 %2$d 通知</string>
+  <string name="notifications_header">通知</string>
+  <string name="widgets_bottom_sheet_title">%1$s 小工具</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair 是由 Till Kottmann(deletescape) 建立的啟動器應用程式，基於 AOSP 的 Launcher3。</string>
   <string name="about_title">關於</string>
@@ -263,12 +263,12 @@
   <string name="blur_pref_title">開啟模糊</string>
   <string name="blur_radius_pref_title">模糊範圍</string>
   <string name="white_google_icon_pref_title">使用白色的 Google 圖示</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on homescreen</string>
-  <string name="workspace_label_color_hue_pref_title">Color of icon labels on homescreen</string>
-  <string name="workspace_label_color_variation_pref_title">Color variation of icon labels on homescreen</string>
-  <string name="all_apps_opacity_pref_title">Drawer opacity</string>
-  <string name="num_cols_pref_title">Number of columns</string>
-  <string name="num_rows_pref_title">Number of rows</string>
+  <string name="hide_icon_labels_pref_title">在主螢幕上隱藏圖示標籤</string>
+  <string name="workspace_label_color_hue_pref_title">主螢幕上的圖示標籤顏色</string>
+  <string name="workspace_label_color_variation_pref_title">主螢幕上的圖示標籤顏色變化</string>
+  <string name="all_apps_opacity_pref_title">抽屜透明度</string>
+  <string name="num_cols_pref_title">列數</string>
+  <string name="num_rows_pref_title">行數</string>
   <string name="num_hotseat_icons_pref_title">Number of icons in dock</string>
   <string name="icon_scale_pref_title">Icon scale</string>
   <string name="icon_text_scale_pref_title">Icon text scale</string>
