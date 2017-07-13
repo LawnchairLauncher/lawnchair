@@ -257,6 +257,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair هو تطبيق واجهة مستخدم تم إنشاؤه بواسطة Till Kottmann الملقب ب deletescape. هذا التطبيق يستند على Launcher3 من AOSP.</string>
   <string name="about_title">حول</string>
+  <string name="changelog_title">Changelog for build #%d</string>
   <string name="week_day_format">%1$s، %2$s</string>
   <string name="icon_pack_preference_title">حزم الإيقونات</string>
   <string name="icon_pack_preference_summary">اختر حزمة أيقونات</string>
