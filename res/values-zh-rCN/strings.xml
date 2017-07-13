@@ -189,13 +189,13 @@
   <!-- Accessibility action to resize a widget. [CHAR_LIMIT=30] -->
   <string name="action_resize">调整大小</string>
   <!-- Accessibility action to increase width of a widget. [CHAR_LIMIT=30] -->
-  <string name="action_increase_width">增加宽度</string>
+  <string name="action_increase_width">加宽</string>
   <!-- Accessibility action to increase height of a widget. [CHAR_LIMIT=30] -->
-  <string name="action_increase_height">增加高度</string>
+  <string name="action_increase_height">增长</string>
   <!-- Accessibility action to decrease width of a widget. [CHAR_LIMIT=30] -->
-  <string name="action_decrease_width">减小宽度</string>
+  <string name="action_decrease_width">变窄</string>
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
-  <string name="action_decrease_height">减小高度</string>
+  <string name="action_decrease_height">缩短</string>
   <!-- Accessibility confirmation for widget resize. -->
   <string name="widget_resized">小部件尺寸已调整为：宽度 <xliff:g id="NUMBER_0">%1$s</xliff:g>，高度 <xliff:g id="NUMBER_1">%2$s</xliff:g></string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
@@ -220,13 +220,13 @@
   <!-- String indicating how many media item(s) is(are) selected
             eg. 1 selected [CHAR LIMIT=30] -->
   <plurals name="number_of_items_selected">
-    <item quantity="other">已选择%1$d项</item>
+    <item quantity="other">已选择 %1$d 项</item>
   </plurals>
   <!-- Accessibility string used as a label for a particular wallpaper in the Wallpaper Picker list.
          e.g. "Wallpaper 3 of 10" -->
-  <string name="wallpaper_accessibility_name">第%1$d张壁纸，共%2$d张</string>
+  <string name="wallpaper_accessibility_name">第 %1$d 张壁纸，共 %2$d 张</string>
   <!-- Accessibility string used to announce that a wallpaper has been selected. -->
-  <string name="announce_selection">已选择<xliff:g id="LABEL">%1$s</xliff:g></string>
+  <string name="announce_selection">已选择 <xliff:g id="label">%1$s</xliff:g></string>
   <!-- Label on button to delete wallpaper(s) -->
   <string name="wallpaper_delete">删除</string>
   <!-- Label on button in Wallpaper Picker to pick an image -->
@@ -238,10 +238,10 @@
   <!-- Option for setting the wallpaper only on the home screen. -->
   <string name="which_wallpaper_option_home_screen">主屏幕</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
-  <string name="which_wallpaper_option_lock_screen">锁定屏幕</string>
+  <string name="which_wallpaper_option_lock_screen">锁屏界面</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
   <string name="which_wallpaper_option_home_screen_and_lock_screen">主屏和锁屏界面</string>
-  <string name="title_show_google_app">显示%1$s</string>
+  <string name="title_show_google_app">显示 %1$s</string>
   <string name="title_show_google_app_default">显示谷歌应用</string>
   <string name="label_search">搜索</string>
   <string name="label_voice_search">语音搜索</string>
@@ -251,6 +251,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair 是 Kottmann (aka deletescape) 开发的一个启动器程序。它基于AOSP的Launcher3。</string>
   <string name="about_title">关于</string>
+  <string name="changelog_title">Changelog for build #%d</string>
   <string name="week_day_format">%1$s， %2$s</string>
   <string name="icon_pack_preference_title">图标包</string>
   <string name="icon_pack_preference_summary">选择一个图标包</string>
