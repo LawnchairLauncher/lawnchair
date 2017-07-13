@@ -577,7 +577,6 @@ public class BubbleTextView extends TextView
         if (visible) {
             super.setTextColor(mTextColor);
         } else {
-            setText("");
             super.setTextColor(res.getColor(android.R.color.transparent));
         }
     }
