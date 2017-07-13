@@ -252,7 +252,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair är en hemskärm-app skapad av Till Kottmann (deletescape). Den är baserad på Launcher3 från AOSP.</string>
   <string name="about_title">Om</string>
-  <string name="changelog_title">Changelog for build #%d</string>
+  <string name="changelog_title">Ändringar för version #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Ikonpaket</string>
   <string name="icon_pack_preference_summary">Välj ett ikonpaket</string>
