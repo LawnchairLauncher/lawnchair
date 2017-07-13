@@ -292,17 +292,17 @@
   <string name="restart_lawnchair_pref_summary">Può essere utile se alcune impostazioni non sono state applicate correttamente</string>
   <string name="rebuild_icondb_pref_title">Ricostruisci il database delle icone</string>
   <string name="pinch_to_overview_pref_title">Pinch per la panoramica</string>
-  <string name="pinch_to_overview_pref_summary">Pizzica la schermata home per aprire la panoramica</string>
-  <string name="pull_down_notis_pref_title">Scorri in basso per le notifiche</string>
+  <string name="pinch_to_overview_pref_summary">Pizzica la schermata home per mostrare le anteprime</string>
+  <string name="pull_down_notis_pref_title">Scorrimento verso il basso per le notifiche</string>
   <string name="pull_down_notis_pref_on">Uno swipe verso il basso nella homescreen farà espandere la barra delle notifiche.</string>
-  <string name="pull_down_notis_pref_off">Se abilitato, facendo uno swipe verso il basso nella homescreen la barra di stato verrà espansa.</string>
+  <string name="pull_down_notis_pref_off">Quando abilitato, uno swipe verso il basso nella schermata home espanderà la barra di stato.</string>
   <string name="light_statusbar_pref_title">Statusbar chiara</string>
   <string name="light_statusbar_pref_on">La status bar potrebbe mostrare delle icone scure mentre si utilizza uno sfondo chiaro.</string>
-  <string name="light_statusbar_pref_off">La status bar mostrerà sempre delle icone chiare.</string>
+  <string name="light_statusbar_pref_off">La status bar mostrerà sempre icone chiare.</string>
   <string name="haptic_feedback_pref_title">Abilita vibrazione</string>
   <string name="keep_scroll_state_pref_title">Mantieni la posizione di scorrimento</string>
-  <string name="keep_scroll_state_pref_summary">Mantieni la posizione di scorrimento nel drawer</string>
-  <string name="home_opens_drawer_pref_title">Il tasto home apre l\'app drawer</string>
+  <string name="keep_scroll_state_pref_summary">Mantieni la posizione di scorrimento nel menù delle applicazioni</string>
+  <string name="home_opens_drawer_pref_title">Il tasto home apre il menù delle applicazioni</string>
   <string name="home_opens_drawer_pref_summary">Schiacciando il tasto home mentre si è nella schermata principale aprirà l\'app drawer</string>
   <string name="show_hidden_pref_title">Mostra le app nascoste</string>
   <string name="show_hidden_pref_on">Le app nascoste verranno mostrate per cambiare le impostazioni di visibilità</string>
@@ -313,7 +313,7 @@
   <string name="import_prefs_title">Importa impostazioni</string>
   <string name="notification_listener_label">Lawnchair - Badge di notifica</string>
   <string name="color_extraction_label">Lawnchair - Estrazione del colore</string>
-  <string name="test_title">Prova</string>
+  <string name="test_title">Test</string>
   <string name="visibility">Visibilità</string>
   <!-- Customization Color -->
   <string name="white">Bianco</string>
