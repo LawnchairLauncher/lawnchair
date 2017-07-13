@@ -146,12 +146,12 @@
     The second "it" refers to the app. -->
   <string name="abandoned_promise_explanation">您尚未安裝這個圖示代表的應用程式。您可以移除這個圖示，也可以搜尋該應用程式並手動安裝。</string>
   <!-- Title for an app which is being downloaded. -->
-  <string name="app_downloading_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> downloading, <xliff:g example="30%" id="progress">%2$s</xliff:g> complete</string>
+  <string name="app_downloading_title">正在下載 <xliff:g example="Messenger" id="name">%1$s</xliff:g>，已完成 <xliff:g example="30%" id="progress">%2$s</xliff:g></string>
   <!-- Title for an app whose download has been started. -->
-  <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> waiting to install</string>
+  <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> 正在等待安裝</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_add_to_workspace">Add to Home screen</string>
+  <string name="action_add_to_workspace">添加到主螢幕</string>
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
   <string name="action_move_here">Move item here</string>
   <!-- Accessibility confirmation for item added to workspace. -->
@@ -236,11 +236,11 @@
   <!-- Title of activity for cropping wallpapers -->
   <string name="crop_wallpaper">Crop wallpaper</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
-  <string name="which_wallpaper_option_home_screen">Home screen</string>
+  <string name="which_wallpaper_option_home_screen">主螢幕</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
   <string name="which_wallpaper_option_lock_screen">Lock screen</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
-  <string name="which_wallpaper_option_home_screen_and_lock_screen">Home screen and lock screen</string>
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">主螢幕和鎖定畫面</string>
   <string name="title_show_google_app">Show %1$s</string>
   <string name="title_show_google_app_default">Show Google app</string>
   <string name="label_search">Search</string>
