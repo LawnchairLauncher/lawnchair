@@ -597,15 +597,18 @@ public class DeviceProfile {
                     ? hotseatBarLeftNavBarRightPaddingPx
                     : hotseatBarRightNavBarRightPaddingPx;
 
-            hotseat.getLayout().setPadding(mInsets.left, mInsets.top, mInsets.right + paddingRight,
+            hotseat.getLayout().setPadding(mInsets.left + cellLayoutPaddingLeftRightPx,
+                    mInsets.top, mInsets.right + paddingRight + cellLayoutPaddingLeftRightPx,
                     workspacePadding.bottom);
         } else if (isTablet) {
             // Pad the hotseat with the workspace padding calculated above
             lp.gravity = Gravity.BOTTOM;
             lp.width = LayoutParams.MATCH_PARENT;
             lp.height = hotseatBarHeightPx + mInsets.bottom;
-            hotseat.getLayout().setPadding(hotseatAdjustment + workspacePadding.left,
-                    hotseatBarTopPaddingPx, hotseatAdjustment + workspacePadding.right,
+            hotseat.getLayout().setPadding(hotseatAdjustment + workspacePadding.left
+                            + cellLayoutPaddingLeftRightPx,
+                    hotseatBarTopPaddingPx,
+                    hotseatAdjustment + workspacePadding.right + cellLayoutPaddingLeftRightPx,
                     hotseatBarBottomPaddingPx + mInsets.bottom);
         } else {
             // For phones, layout the hotseat without any bottom margin
@@ -613,11 +616,12 @@ public class DeviceProfile {
             lp.gravity = Gravity.BOTTOM;
             lp.width = LayoutParams.MATCH_PARENT;
             lp.height = hotseatBarHeightPx + mInsets.bottom;
-            hotseat.getLayout().setPadding(hotseatAdjustment + workspacePadding.left,
-                    hotseatBarTopPaddingPx, hotseatAdjustment + workspacePadding.right,
+            hotseat.getLayout().setPadding(hotseatAdjustment + workspacePadding.left
+                            + cellLayoutPaddingLeftRightPx,
+                    hotseatBarTopPaddingPx,
+                    hotseatAdjustment + workspacePadding.right + cellLayoutPaddingLeftRightPx,
                     hotseatBarBottomPaddingPx + mInsets.bottom);
         }
-        hotseat.setPadding(cellLayoutPaddingLeftRightPx, 0, cellLayoutPaddingLeftRightPx, 0);
         hotseat.setLayoutParams(lp);
 
         // Layout the page indicators
