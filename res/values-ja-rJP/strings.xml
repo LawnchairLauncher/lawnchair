@@ -295,18 +295,18 @@
   <string name="pinch_to_overview_pref_summary">ホーム画面をピンチして概要を開きます</string>
   <string name="pull_down_notis_pref_title">プルダウンから通知</string>
   <string name="pull_down_notis_pref_on">ホーム画面をプルダウンするとステータスバーが開きます。</string>
-  <string name="pull_down_notis_pref_off">When enabled pulling down on the Homescreen expand the statusbar.</string>
-  <string name="light_statusbar_pref_title">Light statusbar</string>
-  <string name="light_statusbar_pref_on">The status bar may show dark icons when using a light wallpaper.</string>
-  <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
+  <string name="pull_down_notis_pref_off">有効にすると、ホーム画面がプルダウンされ、ステータスバーが展開されます。</string>
+  <string name="light_statusbar_pref_title">明るいステータスバー</string>
+  <string name="light_statusbar_pref_on">明るい壁紙を使用する場合、ステータスバーには暗いアイコンを適用します。</string>
+  <string name="light_statusbar_pref_off">ステータスバーは常に明るいアイコンで表示されます。</string>
   <string name="haptic_feedback_pref_title">振動を有効にします</string>
   <string name="keep_scroll_state_pref_title">スクロール位置を保存</string>
   <string name="keep_scroll_state_pref_summary">アプリドロワーのスクロール位置を保存します。</string>
   <string name="home_opens_drawer_pref_title">ホームボタンでアプリドロワーを開きます</string>
   <string name="home_opens_drawer_pref_summary">ホーム画面でホームボタンを押すと、アプリドロワーが開きます</string>
-  <string name="show_hidden_pref_title">Show hidden apps</string>
-  <string name="show_hidden_pref_on">Hidden apps will be shown to change visibility settings</string>
-  <string name="show_hidden_pref_off">Hidden apps won\'t be visible</string>
+  <string name="show_hidden_pref_title">隠しアプリを表示する</string>
+  <string name="show_hidden_pref_on">非表示のアプリケーションが表示され、表示設定が変更されます</string>
+  <string name="show_hidden_pref_off">隠しアプリは表示されません</string>
   <string name="export_db_title">データベースをエクスポート</string>
   <string name="import_db_title">データベースをインポート</string>
   <string name="export_prefs_title">設定をエクスポート</string>
@@ -314,7 +314,7 @@
   <string name="notification_listener_label">Lawnchair - 通知バッジ</string>
   <string name="color_extraction_label">Lawnchair - 色の抽出</string>
   <string name="test_title">テスト</string>
-  <string name="visibility">Visibility</string>
+  <string name="visibility">可視性</string>
   <!-- Customization Color -->
   <string name="white">ホワイト</string>
   <!-- Customization Color -->
@@ -326,7 +326,7 @@
   <!-- Customization Color -->
   <string name="purple">パープル</string>
   <!-- Customization Color -->
-  <string name="deep_purple">ディープ パープル</string>
+  <string name="deep_purple">ディープパープル</string>
   <!-- Customization Color -->
   <string name="indigo">インディゴ</string>
   <!-- Customization Color -->
