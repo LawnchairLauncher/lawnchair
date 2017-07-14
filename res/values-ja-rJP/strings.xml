@@ -254,7 +254,7 @@
   <string name="changelog_title">Changelog for build #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">アイコンパック</string>
-  <string name="icon_pack_preference_summary">Select an icon Pack</string>
+  <string name="icon_pack_preference_summary">アイコンパックを選択</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Dock uses wallpaper colors</string>
   <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
   <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
@@ -299,8 +299,8 @@
   <string name="light_statusbar_pref_title">Light statusbar</string>
   <string name="light_statusbar_pref_on">The status bar may show dark icons when using a light wallpaper.</string>
   <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
-  <string name="haptic_feedback_pref_title">Enable vibration</string>
-  <string name="keep_scroll_state_pref_title">Save scroll position</string>
+  <string name="haptic_feedback_pref_title">振動を有効にします</string>
+  <string name="keep_scroll_state_pref_title">スクロール位置を保存</string>
   <string name="keep_scroll_state_pref_summary">Saves the scroll position in the drawer</string>
   <string name="home_opens_drawer_pref_title">ホームボタンでアプリドロワーを開きます</string>
   <string name="home_opens_drawer_pref_summary">Pressing the home button while on the homescreen will open the app drawer</string>
