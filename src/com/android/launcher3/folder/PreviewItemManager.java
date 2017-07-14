@@ -27,6 +27,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 
@@ -272,5 +273,81 @@ public class PreviewItemManager {
 
     float getIntrinsicIconSize() {
         return mIntrinsicIconSize;
+    }
+
+    /**
+     * Handles the case where items in the preview are either:
+     *  - Moving into the preview
+     *  - Moving into a new position
+     *  - Moving out of the preview
+     *
+     * @param oldParams The list of items in the old preview.
+     * @param newParams The list of items in the new preview.
+     * @param dropped The item that was dropped onto the FolderIcon.
+     */
+    public void onDrop(List<BubbleTextView> oldParams, List<BubbleTextView> newParams,
+            ShortcutInfo dropped) {
+        int numItems = newParams.size();
+        final ArrayList<PreviewItemDrawingParams> params = mFirstPageParams;
+        buildParamsForPage(0, params, false);
+
+        // New preview items for items that are moving in (except for the dropped item).
+        List<BubbleTextView> moveIn = new ArrayList<>();
+        for (BubbleTextView btv : newParams) {
+            if (!oldParams.contains(btv) && !btv.getTag().equals(dropped)) {
+                moveIn.add(btv);
+            }
+        }
+        for (int i = 0; i < moveIn.size(); ++i) {
+            int prevIndex = newParams.indexOf(moveIn.get(i));
+            PreviewItemDrawingParams p = params.get(prevIndex);
+            computePreviewItemDrawingParams(prevIndex, numItems, p);
+            updateTransitionParam(p, moveIn.get(i), mIcon.mPreviewLayoutRule.getEnterIndex(),
+                    newParams.indexOf(moveIn.get(i)));
+        }
+
+        // Items that are moving into new positions within the preview.
+        for (int newIndex = 0; newIndex < newParams.size(); ++newIndex) {
+            int oldIndex = oldParams.indexOf(newParams.get(newIndex));
+            if (oldIndex >= 0 && newIndex != oldIndex) {
+                PreviewItemDrawingParams p = params.get(newIndex);
+                updateTransitionParam(p, newParams.get(newIndex), oldIndex, newIndex);
+            }
+        }
+
+        // Old preview items that need to be moved out.
+        List<BubbleTextView> moveOut = new ArrayList<>(oldParams);
+        moveOut.removeAll(newParams);
+        for (int i = 0; i < moveOut.size(); ++i) {
+            BubbleTextView item = moveOut.get(i);
+            int oldIndex = oldParams.indexOf(item);
+            PreviewItemDrawingParams p = computePreviewItemDrawingParams(oldIndex, numItems, null);
+            updateTransitionParam(p, item, oldIndex, mIcon.mPreviewLayoutRule.getExitIndex());
+            params.add(0, p); // We want these items first so that they are on drawn last.
+        }
+
+        for (int i = 0; i < params.size(); ++i) {
+            if (params.get(i).anim != null) {
+                params.get(i).anim.start();
+            }
+        }
+    }
+
+    private void updateTransitionParam(final PreviewItemDrawingParams p, BubbleTextView btv,
+            int prevIndex, int newIndex) {
+        p.drawable = btv.getCompoundDrawables()[1];
+        if (!mIcon.mFolder.isOpen()) {
+            // Set the callback to FolderIcon as it is responsible to drawing the icon. The
+            // callback will be released when the folder is opened.
+            p.drawable.setCallback(mIcon);
+        }
+
+        FolderPreviewItemAnim anim = new FolderPreviewItemAnim(this, p, prevIndex,
+                FolderIcon.NUM_ITEMS_IN_PREVIEW, newIndex, FolderIcon.NUM_ITEMS_IN_PREVIEW,
+                DROP_IN_ANIMATION_DURATION, null);
+        if (p.anim != null && !p.anim.hasEqualFinalState(anim)) {
+            p.anim.cancel();
+        }
+        p.anim = anim;
     }
 }

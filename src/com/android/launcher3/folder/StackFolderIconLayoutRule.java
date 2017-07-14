@@ -97,4 +97,19 @@ public class StackFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
     public boolean clipToBackground() {
         return false;
     }
+
+    @Override
+    public boolean hasEnterExitIndices() {
+        return false;
+    }
+
+    @Override
+    public int getExitIndex() {
+        throw new RuntimeException("hasEnterExitIndices not supported");
+    }
+
+    @Override
+    public int getEnterIndex() {
+        throw new RuntimeException("hasEnterExitIndices not supported");
+    }
 }
