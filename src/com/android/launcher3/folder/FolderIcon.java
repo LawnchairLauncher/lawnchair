@@ -221,7 +221,15 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public void addItem(ShortcutInfo item) {
-        mInfo.add(item, true);
+        addItem(item, true);
+    }
+
+    public void addItem(ShortcutInfo item, boolean animate) {
+        mInfo.add(item, animate);
+    }
+
+    public void removeItem(ShortcutInfo item, boolean animate) {
+        mInfo.remove(item, animate);
     }
 
     public void onDragEnter(ItemInfo dragInfo) {
@@ -276,7 +284,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     private void onDrop(final ShortcutInfo item, DragView animateView, Rect finalRect,
-            float scaleRelativeToDragLayer, final int index, Runnable postAnimationRunnable) {
+            float scaleRelativeToDragLayer, int index, Runnable postAnimationRunnable) {
         item.cellX = -1;
         item.cellY = -1;
 
@@ -304,13 +312,39 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 workspace.resetTransitionTransform((CellLayout) getParent().getParent());
             }
 
+            boolean itemAdded = false;
+            if (index >= mPreviewLayoutRule.maxNumItems()
+                    && mPreviewLayoutRule.hasEnterExitIndices()) {
+                List<BubbleTextView> oldPreviewItems = getPreviewItemsOnPage(0);
+                addItem(item, false);
+                List<BubbleTextView> newPreviewItems = getPreviewItemsOnPage(0);
+
+                if (!oldPreviewItems.containsAll(newPreviewItems)) {
+                    for (int i = 0; i < newPreviewItems.size(); ++i) {
+                        if (newPreviewItems.get(i).getTag().equals(item)) {
+                            // If the item dropped is going to be in the preview, we update the
+                            // index here to reflect its position in the preview.
+                            index = i;
+                        }
+                    }
+                    mPreviewItemManager.onDrop(oldPreviewItems, newPreviewItems, item);
+                    itemAdded = true;
+                } else {
+                    removeItem(item, false);
+                }
+            }
+
+            if (!itemAdded) {
+                addItem(item);
+            }
+
             int[] center = new int[2];
             float scale = getLocalCenterForIndex(index, index + 1, center);
             center[0] = (int) Math.round(scaleRelativeToDragLayer * center[0]);
             center[1] = (int) Math.round(scaleRelativeToDragLayer * center[1]);
 
             to.offset(center[0] - animateView.getMeasuredWidth() / 2,
-                      center[1] - animateView.getMeasuredHeight() / 2);
+                    center[1] - animateView.getMeasuredHeight() / 2);
 
             float finalAlpha = index < mPreviewLayoutRule.maxNumItems() ? 0.5f : 0f;
 
@@ -319,13 +353,14 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                     1, 1, finalScale, finalScale, DROP_IN_ANIMATION_DURATION,
                     new DecelerateInterpolator(2), new AccelerateInterpolator(2),
                     postAnimationRunnable, DragLayer.ANIMATION_END_DISAPPEAR, null);
-            addItem(item);
+
             mFolder.hideItem(item);
 
-            mPreviewItemManager.hidePreviewItem(index, true);
+            if (!itemAdded) mPreviewItemManager.hidePreviewItem(index, true);
+            final int finalIndex = index;
             postDelayed(new Runnable() {
                 public void run() {
-                    mPreviewItemManager.hidePreviewItem(index, false);
+                    mPreviewItemManager.hidePreviewItem(finalIndex, false);
                     mFolder.showItem(item);
                     invalidate();
                 }
@@ -655,11 +690,16 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     interface PreviewLayoutRule {
         PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
-            PreviewItemDrawingParams params);
+                PreviewItemDrawingParams params);
         void init(int availableSpace, float intrinsicIconSize, boolean rtl);
         float scaleForItem(int index, int totalNumItems);
         float getIconSize();
         int maxNumItems();
         boolean clipToBackground();
+
+        boolean hasEnterExitIndices();
+        int getExitIndex();
+        int getEnterIndex();
+
     }
 }
