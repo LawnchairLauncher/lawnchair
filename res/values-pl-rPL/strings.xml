@@ -262,11 +262,11 @@
   <string name="hotseat_uses_extracted_colors_pref_off">Dock będzie w kolorze szarym, ale dostosowanym przez jasność tapety</string>
   <string name="transparent_hotseat_pref_title">Przezroczysty dock</string>
   <string name="dynamic_ui_pref_title">Pobierz kolor dominujący z tapety</string>
-  <string name="dark_theme_pref_title">Włącz ciemny motyw</string>
+  <string name="dark_theme_pref_title">Użyj ciemnego motywu</string>
   <string name="blur_pref_title">Włącz rozmycie</string>
   <string name="blur_radius_pref_title">Promień rozmycia</string>
   <string name="white_google_icon_pref_title">Użyj białej ikony Google</string>
-  <string name="hide_icon_labels_pref_title">Ukryj nazwy ikon na pulpicie</string>
+  <string name="hide_icon_labels_pref_title">Ukryj nazwy ikon na ekranie głównym</string>
   <string name="workspace_label_color_hue_pref_title">Kolor etykiet na pulpicie</string>
   <string name="workspace_label_color_variation_pref_title">Odcień koloru etykiet na pulpicie</string>
   <string name="all_apps_opacity_pref_title">Przezroczystość szuflady</string>
@@ -274,7 +274,7 @@
   <string name="num_rows_pref_title">Liczba wierszy</string>
   <string name="num_hotseat_icons_pref_title">Liczba ikon w docku</string>
   <string name="icon_scale_pref_title">Rozmiar ikon</string>
-  <string name="icon_text_scale_pref_title">Rozmiar etykiet ikon</string>
+  <string name="icon_text_scale_pref_title">Rozmiar tekstu pod ikonami</string>
   <string name="full_width_width_widgets_pref_title">Widgety na całej szerokości</string>
   <string name="full_width_widgets_pref_summary">Zezwól widgetom na rozciągnięcie się na całej szerokości ekranu bez odstępów</string>
   <string name="notification_access_pref_title">Odznaki powiadomień i podgląd</string>
@@ -297,7 +297,7 @@
   <string name="pinch_to_overview_pref_summary">Wykonaj gest uszczypnięcia na ekranie głównym aby zobaczyć podgląd ekranów</string>
   <string name="pull_down_notis_pref_title">Pociągnij w dół by zobaczyć powiadomienia</string>
   <string name="pull_down_notis_pref_on">Pociągnięcie w dół na pulpicie rozwinie pasek stanu.</string>
-  <string name="pull_down_notis_pref_off">Kiedy włączone, pociągnięcie w dół na pulpicie rozwinie pasek stanu.</string>
+  <string name="pull_down_notis_pref_off">Kiedy włączone, pociągnięcie w dół na pulpicie rozwinie pasek statusu.</string>
   <string name="light_statusbar_pref_title">Jasny pasek stanu</string>
   <string name="light_statusbar_pref_on">Pasek stanu może pokazywać ciemne ikony kiedy używana jest jasna tapeta.</string>
   <string name="light_statusbar_pref_off">Pasek stanu będzie zawsze pokazywać jasne ikony.</string>
