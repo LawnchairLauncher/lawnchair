@@ -311,7 +311,7 @@
   <string name="import_db_title">导入数据库</string>
   <string name="export_prefs_title">导出设置</string>
   <string name="import_prefs_title">导入设置</string>
-  <string name="notification_listener_label">Lawnchair - 通知小圆点</string>
+  <string name="notification_listener_label">Lawnchair - 通知角标</string>
   <string name="color_extraction_label">Lawnchair - 提取颜色</string>
   <string name="test_title">测试</string>
   <string name="visibility">可见性</string>
