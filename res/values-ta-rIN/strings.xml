@@ -38,7 +38,7 @@
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
   <string name="long_press_widget_to_add">தொட்டு &amp; அழுத்தி பிடித்து குறுபயன்பாட்டை நகர்த்தவும்.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-  <string name="long_accessible_way_to_add">Double-tap &amp; hold to pick up a widget or use custom actions.</string>
+  <string name="long_accessible_way_to_add">இரட்டை-ஆணி &amp; யை ஒரு விட்ஜெட் தேர்ந்தெடு அல்லது விருப்ப செயல்களை பயன்படுத்தவும்.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
   <string name="widget_dims_format">%1$d \u00d7 %2$d</string>
@@ -46,7 +46,7 @@
   <string name="widget_accessible_dims_format">%1$d wide by %2$d high</string>
   <!-- All Apps -->
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
-  <string name="all_apps_search_bar_hint">Search Apps</string>
+  <string name="all_apps_search_bar_hint">பயன்பாடுகளைத் தேடு</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
   <string name="all_apps_loading_message">Loading Apps&#8230;</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
