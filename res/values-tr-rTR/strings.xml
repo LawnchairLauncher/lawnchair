@@ -110,7 +110,7 @@
   <string name="workspace_new_page">Yeni ana ekran sayfası</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
-  <string name="folder_opened">Folder opened, <xliff:g example="5" id="width">%1$d</xliff:g> by <xliff:g example="3" id="height">%2$d</xliff:g></string>
+  <string name="folder_opened">Klasör açıldığında, <xliff:g example="5" id="width">%1$d</xliff:g> - <xliff:g example="3" id="height">%2$d</xliff:g></string>
   <!-- Instruction that clicking outside will close folder -->
   <string name="folder_tap_to_close">Klasörü kapatmak için dokunun</string>
   <!-- Instruction that clicking outside will commit folder rename -->
@@ -259,7 +259,7 @@
   <string name="changelog_title">Bu yapıdaki değişiklikler #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Simge Paketi</string>
-  <string name="icon_pack_preference_summary">İkon paketini seçin</string>
+  <string name="icon_pack_preference_summary">Simge paketini seçin</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Alt panel duvar kağıdı renklerini kullanır</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Alt panel duvar kağıdından alınan bir renkle renklendirilir</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Alt panel gri renkte olacak, ancak duvar kağıdı parlaklığıyla ayarlanacaktır</string>
@@ -268,16 +268,16 @@
   <string name="dark_theme_pref_title">Koyu temayı kullan</string>
   <string name="blur_pref_title">Bulanıklığı etkinleştir</string>
   <string name="blur_radius_pref_title">Bulanıklık yarıçapı</string>
-  <string name="white_google_icon_pref_title">Beyaz Google ikonunu kullan</string>
-  <string name="hide_icon_labels_pref_title">Ana ekrandaki ikon etiketlerini gizle</string>
+  <string name="white_google_icon_pref_title">Beyaz Google simgesi kullan</string>
+  <string name="hide_icon_labels_pref_title">Ana ekrandaki simge etiketlerini gizle</string>
   <string name="workspace_label_color_hue_pref_title">Ana ekranda simge etiketlerinin rengi</string>
   <string name="workspace_label_color_variation_pref_title">Ana ekranda simge etiketlerinin renk çeşitliliği</string>
   <string name="all_apps_opacity_pref_title">Uygulama çekmecesi şeffaflığı</string>
   <string name="num_cols_pref_title">Sütun sayısı</string>
   <string name="num_rows_pref_title">Satır sayısı</string>
   <string name="num_hotseat_icons_pref_title">Alt paneldeki simge sayısı</string>
-  <string name="icon_scale_pref_title">İkon boyutu</string>
-  <string name="icon_text_scale_pref_title">İkon yazı boyutu</string>
+  <string name="icon_scale_pref_title">Simge boyutu</string>
+  <string name="icon_text_scale_pref_title">Simge yazı boyutu</string>
   <string name="full_width_width_widgets_pref_title">Widget\'lere tam genişlik</string>
   <string name="full_width_widgets_pref_summary">Widget\'ların dolgu olmadan tüm genişliğe yayılmasına izin ver</string>
   <string name="notification_access_pref_title">Bildirim rozetleri ve önizleme</string>
@@ -290,7 +290,7 @@
   <string name="show_pixel_bar_pref_title">Pixel üst barını göster</string>
   <string name="use_wide_searchbar_pref_title">Geniş arama çubuğunu kullan</string>
   <string name="show_mic_pref_title">Google Asistan Simgesini Göster</string>
-  <string name="pixel_style_icons_pref_title">Pixel Simgeleri Kullan</string>
+  <string name="pixel_style_icons_pref_title">Pixel simgeleri kullan</string>
   <string name="pixel_style_icons_pref_summary">Etkinleştirildiğinde, mümkün olduğunca dairesel simgeler kullanılacaktır</string>
   <string name="show_google_now_tab_pref_title">Google Now sayfasını göster</string>
   <string name="restart_lawnchair_pref_title">Lawnchair Yeniden Başlat</string>
