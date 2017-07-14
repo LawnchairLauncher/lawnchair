@@ -179,7 +179,7 @@
   <!-- Accessibility confirmation for item added to folder. -->
   <string name="added_to_folder">Öğe klasöre eklendi</string>
   <!-- Accessibility description to create folder with another item. -->
-  <string name="create_folder_with">Create folder with: <xliff:g example="Game" id="name">%1$s</xliff:g></string>
+  <string name="create_folder_with">Bununlla klasör oluştur: <xliff:g example="Game" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
   <string name="folder_created">Klasör oluşturuldu</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
@@ -201,11 +201,11 @@
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
   <string name="action_decrease_height">Yüksekliği azalt</string>
   <!-- Accessibility confirmation for widget resize. -->
-  <string name="widget_resized">Widget resized to width <xliff:g example="2" id="number">%1$s</xliff:g> height <xliff:g example="1" id="number">%2$s</xliff:g></string>
+  <string name="widget_resized">Widget genişliği <xliff:g example="2" id="number">%1$s</xliff:g> - yüksekliği <xliff:g example="1" id="number">%2$s</xliff:g> olarak yeniden boyutlandırıldı</string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
   <string name="action_deep_shortcut">Kısayollar</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
-  <string name="shortcuts_menu_description"><xliff:g example="3" id="number_of_shortcuts">%1$d</xliff:g> shortcuts for <xliff:g example="Messenger" id="app_name">%2$s</xliff:g></string>
+  <string name="shortcuts_menu_description"><xliff:g example="Messenger" id="app_name">%2$s</xliff:g> için <xliff:g example="3" id="number_of_shortcuts">%1$d</xliff:g> kısayol</string>
   <string name="edit_drop_target_label">Düzenle</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
   <string name="wallpaper_instructions">Duvar kağıdını ayarla</string>
@@ -250,7 +250,7 @@
   <string name="title_show_google_app_default">Google uygulamasını göster</string>
   <string name="label_search">Ara</string>
   <string name="label_voice_search">Sesli arama</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d shortcuts and %2$d notifications for %3$s</string>
+  <string name="shortcuts_menu_with_notifications_description">%3$s için %1$d kısayol ve %2$d bildirim</string>
   <string name="notifications_header">Bildirimler</string>
   <string name="widgets_bottom_sheet_title">%1$s widget</string>
   <!-- About Lawnchair -->
