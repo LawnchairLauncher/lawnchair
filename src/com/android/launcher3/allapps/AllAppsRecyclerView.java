@@ -36,6 +36,7 @@ import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
+import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -98,8 +99,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
                 R.dimen.all_apps_empty_search_bg_top_offset);
 
         mOverScrollHelper = new OverScrollHelper();
-        mPullDetector = new SwipeDetector(getContext());
-        mPullDetector.setListener(mOverScrollHelper);
+        mPullDetector = new SwipeDetector(getContext(), mOverScrollHelper, SwipeDetector.VERTICAL);
         mPullDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_BOTH, true);
     }
 
@@ -564,37 +564,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         }
 
         private float getDampedOverScroll(float y) {
-            return dampedOverScroll(y, getHeight()) * MAX_OVERSCROLL_PERCENTAGE;
-        }
-
-        /**
-         * This curve determines how the effect of scrolling over the limits of the page diminishes
-         * as the user pulls further and further from the bounds
-         *
-         * @param f The percentage of how much the user has overscrolled.
-         * @return A transformed percentage based on the influence curve.
-         */
-        private float overScrollInfluenceCurve(float f) {
-            f -= 1.0f;
-            return f * f * f + 1.0f;
-        }
-
-        /**
-         * @param amount The original amount overscrolled.
-         * @param max The maximum amount that the View can overscroll.
-         * @return The dampened overscroll amount.
-         */
-        private float dampedOverScroll(float amount, float max) {
-            float f = amount / max;
-            if (Float.compare(f, 0) == 0) return 0;
-            f = f / (Math.abs(f)) * (overScrollInfluenceCurve(Math.abs(f)));
-
-            // Clamp this factor, f, to -1 < f < 1
-            if (Math.abs(f) >= 1) {
-                f /= Math.abs(f);
-            }
-
-            return Math.round(f * max);
+            return OverScroll.dampedScroll(y, getHeight());
         }
     }
 }

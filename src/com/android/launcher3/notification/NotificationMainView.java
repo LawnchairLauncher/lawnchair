@@ -23,15 +23,17 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewPropertyAnimator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.touch.OverScroll;
+import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.Themes;
 
@@ -39,13 +41,15 @@ import com.android.launcher3.util.Themes;
  * A {@link android.widget.FrameLayout} that contains a single notification,
  * e.g. icon + title + text.
  */
-public class NotificationMainView extends FrameLayout implements SwipeHelper.Callback {
+public class NotificationMainView extends FrameLayout implements SwipeDetector.Listener {
 
     private NotificationInfo mNotificationInfo;
     private ViewGroup mTextAndBackground;
     private int mBackgroundColor;
     private TextView mTitleView;
     private TextView mTextView;
+
+    private SwipeDetector mSwipeDetector;
 
     public NotificationMainView(Context context) {
         this(context, null, 0);
@@ -76,6 +80,10 @@ public class NotificationMainView extends FrameLayout implements SwipeHelper.Cal
 
     public void applyNotificationInfo(NotificationInfo mainNotification, View iconView) {
         applyNotificationInfo(mainNotification, iconView, false);
+    }
+
+    public void setSwipeDetector(SwipeDetector swipeDetector) {
+        mSwipeDetector = swipeDetector;
     }
 
     /**
@@ -113,29 +121,11 @@ public class NotificationMainView extends FrameLayout implements SwipeHelper.Cal
     }
 
 
-    // SwipeHelper.Callback's
-
-    @Override
-    public View getChildAtPosition(MotionEvent ev) {
-        return this;
-    }
-
-    @Override
-    public boolean canChildBeDismissed(View v) {
+    public boolean canChildBeDismissed() {
         return mNotificationInfo != null && mNotificationInfo.dismissable;
     }
 
-    @Override
-    public boolean isAntiFalsingNeeded() {
-        return false;
-    }
-
-    @Override
-    public void onBeginDrag(View v) {
-    }
-
-    @Override
-    public void onChildDismissed(View v) {
+    public void onChildDismissed() {
         Launcher launcher = Launcher.getLauncher(getContext());
         launcher.getPopupDataProvider().cancelNotification(
                 mNotificationInfo.notificationKey);
@@ -145,22 +135,55 @@ public class NotificationMainView extends FrameLayout implements SwipeHelper.Cal
                 LauncherLogProto.ItemType.NOTIFICATION);
     }
 
+    // SwipeDetector.Listener's
     @Override
-    public void onDragCancelled(View v) {
-    }
+    public void onDragStart(boolean start) { }
+
 
     @Override
-    public void onChildSnappedBack(View animView, float targetLeft) {
-    }
-
-    @Override
-    public boolean updateSwipeProgress(View animView, boolean dismissable, float swipeProgress) {
-        // Don't fade out.
+    public boolean onDrag(float displacement, float velocity) {
+        setTranslationX(canChildBeDismissed()
+                ? displacement : OverScroll.dampedScroll(displacement, getWidth()));
+        animate().cancel();
         return true;
     }
 
     @Override
-    public float getFalsingThresholdFactor() {
-        return 1;
+    public void onDragEnd(float velocity, boolean fling) {
+        final boolean willExit;
+        final float endTranslation;
+
+        if (!canChildBeDismissed()) {
+            willExit = false;
+            endTranslation = 0;
+        } else if (fling) {
+            willExit = true;
+            endTranslation = velocity < 0 ? - getWidth() : getWidth();
+        } else if (Math.abs(getTranslationX()) > getWidth() / 2) {
+            willExit = true;
+            endTranslation = (getTranslationX() < 0 ? -getWidth() : getWidth());
+        } else {
+            willExit = false;
+            endTranslation = 0;
+        }
+
+        SwipeDetector.ScrollInterpolator interpolator = new SwipeDetector.ScrollInterpolator();
+        interpolator.setVelocityAtZero(velocity);
+
+        long duration = SwipeDetector.calculateDuration(velocity,
+                (endTranslation - getTranslationX()) / getWidth());
+        animate()
+                .setDuration(duration)
+                .setInterpolator(interpolator)
+                .translationX(endTranslation)
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSwipeDetector.finishedScrolling();
+                        if (willExit) {
+                            onChildDismissed();
+                        }
+                    }
+                }).start();
     }
 }

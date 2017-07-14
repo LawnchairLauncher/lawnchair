@@ -107,8 +107,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
 
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
-        mDetector = new SwipeDetector(l);
-        mDetector.setListener(this);
+        mDetector = new SwipeDetector(l, this, SwipeDetector.VERTICAL);
         mShiftRange = DEFAULT_SHIFT_RANGE;
         mProgress = 1f;
 
@@ -137,15 +136,15 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
 
                 if (mDetector.isIdleState()) {
                     if (mLauncher.isAllAppsVisible()) {
-                        directionsToDetectScroll |= SwipeDetector.DIRECTION_DOWN;
+                        directionsToDetectScroll |= SwipeDetector.DIRECTION_NEGATIVE;
                     } else {
-                        directionsToDetectScroll |= SwipeDetector.DIRECTION_UP;
+                        directionsToDetectScroll |= SwipeDetector.DIRECTION_POSITIVE;
                     }
                 } else {
                     if (isInDisallowRecatchBottomZone()) {
-                        directionsToDetectScroll |= SwipeDetector.DIRECTION_UP;
+                        directionsToDetectScroll |= SwipeDetector.DIRECTION_POSITIVE;
                     } else if (isInDisallowRecatchTopZone()) {
-                        directionsToDetectScroll |= SwipeDetector.DIRECTION_DOWN;
+                        directionsToDetectScroll |= SwipeDetector.DIRECTION_NEGATIVE;
                     } else {
                         directionsToDetectScroll |= SwipeDetector.DIRECTION_BOTH;
                         ignoreSlopWhenSettling = true;
@@ -368,7 +367,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
     }
 
     private void calculateDuration(float velocity, float disp) {
-        mAnimationDuration = mDetector.calculateDuration(velocity, disp / mShiftRange);
+        mAnimationDuration = SwipeDetector.calculateDuration(velocity, disp / mShiftRange);
     }
 
     public boolean animateToAllApps(AnimatorSet animationOut, long duration) {
