@@ -83,13 +83,13 @@
   <!-- Permission short label -->
   <string name="permlab_write_settings">写入主屏幕设置和快捷方式</string>
   <!-- Permission description -->
-  <string name="permdesc_write_settings">允许应用更改主页面中的设置和快捷方式。</string>
+  <string name="permdesc_write_settings">允许应用更改主屏幕中的设置和快捷方式。</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission">“<xliff:g id="APP_NAME">%1$s</xliff:g>” 不被允许拨打电话</string>
   <!-- Widgets: -->
   <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
-  <string name="gadget_error_text">加载小部件时出现问题。</string>
+  <string name="gadget_error_text">加载小部件时出现问题</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
   <string name="gadget_setup_text">开始部署</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
@@ -249,7 +249,7 @@
   <string name="notifications_header">通知</string>
   <string name="widgets_bottom_sheet_title">%1$s 小部件</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair 是由 Till Kottmann (即 deletescape) 开发的一个启动器程序。它基于 AOSP 的 Launcher3。</string>
+  <string name="about_text">Lawnchair 是 Till Kottmann （又名 deletescape）开发的一个启动器应用。它基于 AOSP 的 Launcher3。</string>
   <string name="about_title">关于</string>
   <string name="changelog_title">#%d 版的更新日志</string>
   <string name="week_day_format">%1$s， %2$s</string>
@@ -291,7 +291,7 @@
   <string name="restart_lawnchair_pref_title">重启 Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">当设置出错时可能会有用</string>
   <string name="rebuild_icondb_pref_title">重建图标缓存</string>
-  <string name="pinch_to_overview_pref_title">双指缩放以转到概览页面</string>
+  <string name="pinch_to_overview_pref_title">双指捏合以转到概览页面</string>
   <string name="pinch_to_overview_pref_summary">在主屏幕双指捏合以显示概览</string>
   <string name="pull_down_notis_pref_title">下拉显示通知</string>
   <string name="pull_down_notis_pref_on">在主屏幕下拉将展开通知栏</string>
