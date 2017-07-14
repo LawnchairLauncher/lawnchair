@@ -125,7 +125,8 @@ public class FolderAnimationManager {
         final Rect folderIconPos = new Rect();
         float scaleRelativeToDragLayer = mLauncher.getDragLayer()
                 .getDescendantRectRelativeToSelf(mFolderIcon, folderIconPos);
-        float initialSize = (mPreviewBackground.getRadius() * 2) * scaleRelativeToDragLayer;
+        int scaledRadius = mPreviewBackground.getScaledRadius();
+        float initialSize = (scaledRadius * 2) * scaleRelativeToDragLayer;
 
         // Match size/scale of icons in the preview
         float previewScale = rule.scaleForItem(0, itemsInPreview.size());
@@ -152,13 +153,9 @@ public class FolderAnimationManager {
         final int paddingOffsetY = (int) ((mFolder.getPaddingTop() + mContent.getPaddingTop())
                 * initialScale);
 
-        // Background can have a scaled radius in drag and drop mode.
-        int radiusDiff = mPreviewBackground.getScaledRadius()- mPreviewBackground.getRadius();
-
         int initialX = folderIconPos.left + mPreviewBackground.getOffsetX() - paddingOffsetX
-                - previewItemOffsetX + radiusDiff;
-        int initialY = folderIconPos.top + mPreviewBackground.getOffsetY() - paddingOffsetY
-                + radiusDiff;
+                - previewItemOffsetX;
+        int initialY = folderIconPos.top + mPreviewBackground.getOffsetY() - paddingOffsetY;
         final float xDistance = initialX - lp.x;
         final float yDistance = initialY - lp.y;
 
@@ -232,7 +229,11 @@ public class FolderAnimationManager {
             animator.setInterpolator(mFolderInterpolator);
         }
 
-        addPreviewItemAnimators(a, initialScale / scaleRelativeToDragLayer, previewItemOffsetX);
+        int radiusDiff = scaledRadius - mPreviewBackground.getRadius();
+        addPreviewItemAnimators(a, initialScale / scaleRelativeToDragLayer,
+                // Background can have a scaled radius in drag and drop mode, so we need to add the
+                // difference to keep the preview items centered.
+                previewItemOffsetX + radiusDiff, radiusDiff);
         return a;
     }
 
@@ -240,7 +241,7 @@ public class FolderAnimationManager {
      * Animate the items on the current page.
      */
     private void addPreviewItemAnimators(AnimatorSet animatorSet, final float folderScale,
-            int previewItemOffsetX) {
+            int previewItemOffsetX, int previewItemOffsetY) {
         FolderIcon.PreviewLayoutRule rule = mFolderIcon.getLayoutRule();
         boolean isOnFirstPage = mFolder.mContent.getCurrentPage() == 0;
         final List<BubbleTextView> itemsInPreview = isOnFirstPage
@@ -281,7 +282,7 @@ public class FolderAnimationManager {
 
             final int previewPosX =
                     (int) ((mTmpParams.transX - iconOffsetX + previewItemOffsetX) / folderScale);
-            final int previewPosY = (int) (mTmpParams.transY / folderScale);
+            final int previewPosY = (int) ((mTmpParams.transY + previewItemOffsetY) / folderScale);
 
             final float xDistance = previewPosX - btvLp.x;
             final float yDistance = previewPosY - btvLp.y;
