@@ -860,10 +860,10 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         // Expand the background drawing bounds by the padding baked into the background drawable
         mBackground.getPadding(mTempRect);
         mBackground.setBounds(
-                left - mTempRect.left,
-                top - mTempRect.top,
-                right + mTempRect.right,
-                bottom + mTempRect.bottom);
+                left - mTempRect.left - getPaddingLeft(),
+                top - mTempRect.top - getPaddingTop(),
+                right + mTempRect.right + getPaddingRight(),
+                bottom + mTempRect.bottom + getPaddingBottom());
     }
 
     /**
