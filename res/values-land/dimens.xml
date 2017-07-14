@@ -26,7 +26,7 @@
 
     <!-- Dynamic grid -->
     <dimen name="dynamic_grid_overview_bar_item_width">120dp</dimen>
-    <dimen name="dynamic_grid_min_page_indicator_size">24dp</dimen>
+    <dimen name="dynamic_grid_min_page_indicator_size">48dp</dimen>
     <dimen name="folder_preview_padding">5dp</dimen>
 
     <!-- Hotseat -->
