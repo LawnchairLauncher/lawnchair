@@ -79,7 +79,7 @@
   <!-- Permission short label -->
   <string name="permlab_read_settings">Einstellungen und Verknüpfungen des Startbildschirms lesen</string>
   <!-- Permission description -->
-  <string name="permdesc_read_settings">Ermöglicht der App, die Einstellungen und Verknüpfungen auf dem Startbildschirm zu lesen.</string>
+  <string name="permdesc_read_settings">Ermöglicht der App, die Einstellungen und Verknüpfungen des Startbildschirms zu lesen.</string>
   <!-- Permission short label -->
   <string name="permlab_write_settings">Einstellungen und Verknüpfungen des Startbildschirms schreiben</string>
   <!-- Permission description -->
@@ -252,7 +252,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair ist ein Launcher erstellt von Till Kottmann (aka deletescape). Er basiert auf Launcher3 von AOSP.</string>
   <string name="about_title">Über</string>
-  <string name="changelog_title">Changelog for build #%d</string>
+  <string name="changelog_title">Changelog für Build #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Iconpack</string>
   <string name="icon_pack_preference_summary">Iconpack auswählen</string>
@@ -275,7 +275,7 @@
   <string name="icon_scale_pref_title">Icon Größe</string>
   <string name="icon_text_scale_pref_title">Icon Textgröße</string>
   <string name="full_width_width_widgets_pref_title">Widgets mit voller Breite</string>
-  <string name="full_width_widgets_pref_summary">Widgets erlauben auf die volle Breite vergrößert zu werden</string>
+  <string name="full_width_widgets_pref_summary">Widgets erlauben, auf die volle Breite vergrößert zu werden</string>
   <string name="notification_access_pref_title">Benachrichtigungsanzeige und -vorschau</string>
   <string name="notification_access_pref_summary">Für diese Funktion benötigt Lawnchair Zugriff auf Benachrichtigungen</string>
   <string name="ui_pref_title">Benutzeroberfläche</string>
