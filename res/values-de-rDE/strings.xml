@@ -265,9 +265,9 @@
   <string name="blur_pref_title">Unschärfeeffekt verwenden</string>
   <string name="blur_radius_pref_title">Stärke des Unschärfeeffekts</string>
   <string name="white_google_icon_pref_title">Weiße Google Icons verwenden</string>
-  <string name="hide_icon_labels_pref_title">Icon Beschriftungen auf dem Startbildschirm verstecken</string>
-  <string name="workspace_label_color_hue_pref_title">Farbe der Icon Beschriftungen auf dem Startbildschirm</string>
-  <string name="workspace_label_color_variation_pref_title">Farbvariation der Icon Beschriftungen auf dem Startbildschirm</string>
+  <string name="hide_icon_labels_pref_title">Symbolbeschriftungen auf dem Startbildschirm verstecken</string>
+  <string name="workspace_label_color_hue_pref_title">Farbe der Symbolbeschriftungen auf dem Startbildschirm</string>
+  <string name="workspace_label_color_variation_pref_title">Farbvariation der Symbolbeschriftungen auf dem Startbildschirm</string>
   <string name="all_apps_opacity_pref_title">Transparenz der App-Liste</string>
   <string name="num_cols_pref_title">Anzahl der Spalten</string>
   <string name="num_rows_pref_title">Anzahl der Zeilen</string>
@@ -288,7 +288,7 @@
   <string name="show_mic_pref_title">Google Assistant anzeigen</string>
   <string name="pixel_style_icons_pref_title">Pixel Icons verwenden</string>
   <string name="pixel_style_icons_pref_summary">Wenn möglich runde Symbole verwenden</string>
-  <string name="show_google_now_tab_pref_title">Google Now Seite anzeigen</string>
+  <string name="show_google_now_tab_pref_title">Google Now-Seite anzeigen</string>
   <string name="restart_lawnchair_pref_title">Lawnchair neu starten</string>
   <string name="restart_lawnchair_pref_summary">Hilfreich, wenn Einstellungen nicht korrekt angewendet wurden</string>
   <string name="rebuild_icondb_pref_title">Icon Datenbank neu generieren</string>
@@ -296,7 +296,7 @@
   <string name="pinch_to_overview_pref_summary">Zoomgeste auf dem Startbildschirm öffnet die Übersicht</string>
   <string name="pull_down_notis_pref_title">Nach unten wischen um Benachrichtigungsleiste zu öffnen</string>
   <string name="pull_down_notis_pref_on">Nach unten Wischen auf dem Startbildschirm öffnet die Statusleiste.</string>
-  <string name="pull_down_notis_pref_off">Falls eingeschaltet, öffnet nach unten Wischen auf dem Startbildschirm die Statusleiste.</string>
+  <string name="pull_down_notis_pref_off">Falls eingeschaltet, öffnet nach unten Wischen auf dem Startbildschirm die Benachrichtigungsleiste.</string>
   <string name="light_statusbar_pref_title">Helle Statusleiste</string>
   <string name="light_statusbar_pref_on">Die Statusleiste darf dunkle Symbole zeigen, wenn ein helles Hintergrundbild verwendet wird.</string>
   <string name="light_statusbar_pref_off">Die Statusleiste zeigt immer helle Symbole.</string>
@@ -304,7 +304,7 @@
   <string name="keep_scroll_state_pref_title">Scrollposition speichern</string>
   <string name="keep_scroll_state_pref_summary">Speichert die Scrollposition in der App-Liste</string>
   <string name="home_opens_drawer_pref_title">Homebutton öffnet App-Liste</string>
-  <string name="home_opens_drawer_pref_summary">Ein Klick auf den Homebutton während der Startbildschirm aktiv ist öffnet die App-Liste</string>
+  <string name="home_opens_drawer_pref_summary">Antippen des Homebuttons auf dem Startbildschirm öffnet die App-Liste</string>
   <string name="show_hidden_pref_title">Versteckte Apps anzeigen</string>
   <string name="show_hidden_pref_on">Versteckte Apps werden angezeigt um Sichtbarkeitseinstellungen zu ändern</string>
   <string name="show_hidden_pref_off">Versteckte Apps werden nicht angezeigt</string>
