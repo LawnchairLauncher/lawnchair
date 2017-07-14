@@ -63,7 +63,7 @@
   <string name="all_apps_button_label">Uygulama listesi</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
-  <string name="all_apps_home_button_label">Ana ekran</string>
+  <string name="all_apps_home_button_label">Ana Ekran</string>
   <!-- Label for remove drop target. [CHAR_LIMIT=20] -->
   <string name="remove_drop_target_label">Sil</string>
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
@@ -78,7 +78,7 @@
   <string name="permdesc_install_shortcut">Uygulamaya, kullanıcı
         müdahalesi olmadan kısayollar ekleme izin verir.</string>
   <!-- Permission short label -->
-  <string name="permlab_read_settings">Ana ekran ayarlarını ve kısayollarını oku</string>
+  <string name="permlab_read_settings">ana ekran ayarlarını ve kısayollarını oku</string>
   <!-- Permission description -->
   <string name="permdesc_read_settings">Uygulamaya, Ana ekran ayarları ve kısayolları okuma izni verir.</string>
   <!-- Permission short label -->
