@@ -43,7 +43,7 @@
   <!-- There is a special version of this format string for Farsi -->
   <string name="widget_dims_format">%1$d \u00d7 %2$d</string>
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
-  <string name="widget_accessible_dims_format">%1$d wide by %2$d high</string>
+  <string name="widget_accessible_dims_format">%1$d genişlik - %2$d yükseklik</string>
   <!-- All Apps -->
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_bar_hint">Uygulama Ara</string>
@@ -118,9 +118,9 @@
   <!-- Indication that folder closed -->
   <string name="folder_closed">Klasör kapatıldı</string>
   <!-- Folder renamed format -->
-  <string name="folder_renamed">Folder renamed to <xliff:g example="Games" id="name">%1$s</xliff:g></string>
+  <string name="folder_renamed"><xliff:g example="Games" id="name">%1$s</xliff:g> klasör yeniden adlandırıldı</string>
   <!-- Folder name format -->
-  <string name="folder_name_format">Folder: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
+  <string name="folder_name_format">Klasör: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
   <!-- Strings for the customization mode -->
   <!-- Text for widget add button -->
   <string name="widget_button_text">Widgetler</string>
@@ -150,7 +150,7 @@
         Kaldırabilir veya uygulamayı arayabilir ve el ile kurabilirsiniz.
     </string>
   <!-- Title for an app which is being downloaded. -->
-  <string name="app_downloading_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> downloading, <xliff:g example="30%" id="progress">%2$s</xliff:g> complete</string>
+  <string name="app_downloading_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> indirildi, <xliff:g example="30%" id="progress">%2$s</xliff:g> tamamlandı</string>
   <!-- Title for an app whose download has been started. -->
   <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> yüklenmeyi bekliyor</string>
   <!-- Strings for accessibility actions -->
@@ -165,17 +165,17 @@
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
   <string name="action_move">Öğeyi taşı</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell">Move to row <xliff:g example="1" id="number">%1$s</xliff:g> column <xliff:g example="1" id="number">%2$s</xliff:g></string>
+  <string name="move_to_empty_cell">Satır <xliff:g example="1" id="number">%1$s</xliff:g> sütun <xliff:g example="1" id="number"><xliff:g example="1" id="number">%2$s</xliff:g> taşı</string>
   <!-- Accessibility description to move item inside a folder. -->
-  <string name="move_to_position">Move to position <xliff:g example="1" id="number">%1$s</xliff:g></string>
+  <string name="move_to_position"><xliff:g example="1" id="number">%1$s</xliff:g> buraya taşı</string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Move to favorites position <xliff:g example="1" id="number">%1$s</xliff:g></string>
+  <string name="move_to_hotseat_position"><xliff:g example="1" id="number">%1$s</xliff:g> sık kullanılanlara taşı</string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">Öğe taşındı</string>
   <!-- Accessibility description to move item into an existing folder. -->
-  <string name="add_to_folder">Add to folder: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
+  <string name="add_to_folder">Klasöre ekle: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
-  <string name="add_to_folder_with_app">Add to folder with <xliff:g example="Messenger" id="name">%1$s</xliff:g></string>
+  <string name="add_to_folder_with_app"><xliff:g example="Messenger" id="name">%1$s</xliff:g> ile klasöre ekle</string>
   <!-- Accessibility confirmation for item added to folder. -->
   <string name="added_to_folder">Öğe klasöre eklendi</string>
   <!-- Accessibility description to create folder with another item. -->
