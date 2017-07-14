@@ -249,11 +249,11 @@
   <string name="label_voice_search">Голосовой поиск</string>
   <string name="shortcuts_menu_with_notifications_description">%1$d шорткаты и %2$d уведомления для %3$s</string>
   <string name="notifications_header">Уведомления</string>
-  <string name="widgets_bottom_sheet_title">%1$s виджетов</string>
+  <string name="widgets_bottom_sheet_title">%1$s: виджеты</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair - это лаунчер, созданный Till Kottmann (aka deletescape). Он основан на Launcher3 из AOSP.</string>
   <string name="about_title">О программе</string>
-  <string name="changelog_title">Changelog for build #%d</string>
+  <string name="changelog_title">Изменения в сборке #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Набор значков</string>
   <string name="icon_pack_preference_summary">Выберите набор значков</string>
@@ -263,9 +263,9 @@
   <string name="transparent_hotseat_pref_title">Прозрачный докбар</string>
   <string name="dynamic_ui_pref_title">Извлечь цвет акцента из обоев</string>
   <string name="dark_theme_pref_title">Включить темную тему оформления</string>
-  <string name="blur_pref_title">Включить блюр эффект</string>
-  <string name="blur_radius_pref_title">Уровень размытия</string>
-  <string name="white_google_icon_pref_title">Использовать белые иконки в виджете поиска</string>
+  <string name="blur_pref_title">Включить размытие</string>
+  <string name="blur_radius_pref_title">Радиус размытия</string>
+  <string name="white_google_icon_pref_title">Использовать белый значок Google</string>
   <string name="hide_icon_labels_pref_title">Скрыть подписи иконок на рабочем столе</string>
   <string name="workspace_label_color_hue_pref_title">Цвет подписи иконок</string>
   <string name="workspace_label_color_variation_pref_title">Вариация цвета подписей</string>
@@ -279,7 +279,7 @@
   <string name="full_width_widgets_pref_summary">Разрешить виджетам занимать место без отступов</string>
   <string name="notification_access_pref_title">Значки уведомлений и предварительный просмотр</string>
   <string name="notification_access_pref_summary">Разрешить Lawnchair доступ к вашим уведомлениям для включения этой функции</string>
-  <string name="ui_pref_title">UI</string>
+  <string name="ui_pref_title">Интерфейс</string>
   <string name="pixel_style_pref_title">Стиль Pixel</string>
   <string name="behavior_pref_title">Поведение</string>
   <string name="debug_pref_title">Отладка</string>
