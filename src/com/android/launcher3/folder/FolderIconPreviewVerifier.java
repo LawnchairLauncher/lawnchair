@@ -40,19 +40,14 @@ public class FolderIconPreviewVerifier {
     }
 
     public void setFolderInfo(FolderInfo info) {
-        FolderPagedView.calculateGridSize(info.contents.size(), 0, 0, mMaxGridCountX,
+        int numItemsInFolder = info.contents.size();
+        FolderPagedView.calculateGridSize(numItemsInFolder, 0, 0, mMaxGridCountX,
                 mMaxGridCountY, mMaxItemsPerPage, mGridSize);
         mGridCountX = mGridSize[0];
-        int numItemsInFolder = info.contents.size();
+
         mDisplayingUpperLeftQuadrant = FeatureFlags.LAUNCHER3_NEW_FOLDER_ANIMATION
                 && !FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON
                 && numItemsInFolder > FolderIcon.NUM_ITEMS_IN_PREVIEW;
-
-        if (mDisplayingUpperLeftQuadrant) {
-            FolderPagedView.calculateGridSize(info.contents.size(), 0, 0, mMaxGridCountX,
-                    mMaxGridCountY, mMaxItemsPerPage, mGridSize);
-            mGridCountX = mGridSize[0];
-        }
     }
 
     /**
