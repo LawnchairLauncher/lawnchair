@@ -50,7 +50,7 @@ LOCAL_MIN_SDK_VERSION := 21
 LOCAL_PACKAGE_NAME := Lawnchair
 LOCAL_OVERRIDES_PACKAGES := Home Launcher2 Launcher3
 
-LOCAL_FULL_LIBS_MANIFEST_FILES := $(LOCAL_PATH)/AndroidManifest-common.xml
+LOCAL_FULL_LIBS_MANIFEST_FILES := $(LOCAL_PATH)/AndroidManifest.xml
 
 LOCAL_JACK_COVERAGE_INCLUDE_FILTER := ch.deletescape.lawnchair.*
 
