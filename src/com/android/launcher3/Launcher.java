@@ -2256,9 +2256,8 @@ public class Launcher extends BaseActivity
             if (v instanceof FolderIcon) {
                 onClickFolderIcon(v);
             }
-        } else if ((FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && v instanceof PageIndicator)) {
-            onClickAllAppsCaret(v);
-        } else if (v == mAllAppsButton && mAllAppsButton != null) {
+        } else if ((FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && v instanceof PageIndicator) ||
+            (v == mAllAppsButton && mAllAppsButton != null)) {
             onClickAllAppsButton(v);
         } else if (tag instanceof AppInfo) {
             startAppShortcutOrInfoActivity(v);
@@ -2309,27 +2308,14 @@ public class Launcher extends BaseActivity
     }
 
     /**
-     * Event handler for the "grid" button that appears on the home screen, which
-     * enters all apps mode.
+     * Event handler for the "grid" button or "caret" that appears on the home screen, which
+     * enters all apps mode. In verticalBarLayout the caret can be seen when all apps is open, and
+     * so in that case reverses the action.
      *
      * @param v The view that was clicked.
      */
     protected void onClickAllAppsButton(View v) {
         if (LOGD) Log.d(TAG, "onClickAllAppsButton");
-        if (!isAppsViewVisible()) {
-            getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
-                    ControlType.ALL_APPS_BUTTON);
-            showAppsView(true /* animated */, true /* updatePredictedApps */);
-        }
-    }
-
-    /**
-     * Event handler for the swipe up caret
-     *
-     * @param v The view that was clicked.
-     */
-    protected void onClickAllAppsCaret(View v) {
-        if (LOGD) Log.d(TAG, "onClickAllAppsCaret");
         if (!isAppsViewVisible()) {
             getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
                     ControlType.ALL_APPS_BUTTON);
