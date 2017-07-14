@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AllAppsNavBarProtection">
+        <item name="android:background">?android:colorPrimary</item>
+        <item name="android:alpha">0.6</item>
+    </style>
+</resources>

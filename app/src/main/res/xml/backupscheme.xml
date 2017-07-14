@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+
+    <include
+        domain="database"
+        path="launcher.db" />
+    <include
+        domain="sharedpref"
+        path="ch.deletescape.lawnchair.prefs.xml" />
+
+</full-backup-content>

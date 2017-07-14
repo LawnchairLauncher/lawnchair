@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ch.deletescape.lawnchair.widget.WidgetCell xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_weight="1.0"
+    android:background="?android:colorPrimaryDark"
+    android:focusable="true"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <include layout="@layout/widget_cell_content" />
+</ch.deletescape.lawnchair.widget.WidgetCell>

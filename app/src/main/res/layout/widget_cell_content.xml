@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/widget_preview_label_vertical_padding"
+        android:paddingLeft="@dimen/widget_preview_label_horizontal_padding"
+        android:paddingRight="@dimen/widget_preview_label_horizontal_padding"
+        android:paddingTop="@dimen/widget_preview_label_vertical_padding">
+
+        <TextView
+            android:id="@+id/widget_name"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:ellipsize="end"
+            android:fadingEdge="horizontal"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="start"
+            android:maxLines="1"
+            android:textColor="?android:textColorSecondary"
+            android:textSize="14.0sp" />
+
+        <TextView
+            android:id="@+id/widget_dims"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5.0dip"
+            android:alpha="0.8"
+            android:fontFamily="sans-serif-condensed"
+            android:textColor="?android:textColorSecondary"
+            android:textSize="14.0sp" />
+    </LinearLayout>
+
+    <ch.deletescape.lawnchair.widget.WidgetImageView
+        android:id="@+id/widget_preview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0" />
+</merge>

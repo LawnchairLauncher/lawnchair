@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:key="kill"
+        android:title="@string/restart_lawnchair_pref_title"
+        android:summary="@string/restart_lawnchair_pref_summary" />
+    <Preference
+        android:key="rebuild_icondb"
+        android:title="@string/rebuild_icondb_pref_title" />
+</PreferenceScreen>
