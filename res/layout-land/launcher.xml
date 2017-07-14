@@ -60,13 +60,6 @@
             android:id="@+id/overview_panel"
             android:visibility="gone" />
 
-        <com.android.launcher3.pageindicators.PageIndicatorCaretLandscape
-            android:id="@+id/page_indicator"
-            android:theme="@style/HomeScreenElementTheme"
-            android:layout_width="@dimen/dynamic_grid_min_page_indicator_size"
-            android:layout_height="@dimen/dynamic_grid_min_page_indicator_size"
-            android:layout_gravity="bottom|left"/>
-
         <include layout="@layout/widgets_view"
             android:id="@+id/widgets_view"
             android:layout_width="match_parent"
@@ -78,6 +71,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />
+
+        <com.android.launcher3.pageindicators.PageIndicatorCaretLandscape
+            android:id="@+id/page_indicator"
+            android:theme="@style/HomeScreenElementTheme"
+            android:layout_width="@dimen/dynamic_grid_min_page_indicator_size"
+            android:layout_height="@dimen/dynamic_grid_min_page_indicator_size"
+            android:layout_gravity="bottom|left"/>
 
     </com.android.launcher3.dragndrop.DragLayer>
 

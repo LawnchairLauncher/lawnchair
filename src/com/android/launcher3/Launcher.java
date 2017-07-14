@@ -2256,8 +2256,9 @@ public class Launcher extends BaseActivity
             if (v instanceof FolderIcon) {
                 onClickFolderIcon(v);
             }
-        } else if ((FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && v instanceof PageIndicator) ||
-                (v == mAllAppsButton && mAllAppsButton != null)) {
+        } else if ((FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && v instanceof PageIndicator)) {
+            onClickAllAppsCaret(v);
+        } else if (v == mAllAppsButton && mAllAppsButton != null) {
             onClickAllAppsButton(v);
         } else if (tag instanceof AppInfo) {
             startAppShortcutOrInfoActivity(v);
@@ -2319,6 +2320,22 @@ public class Launcher extends BaseActivity
             getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
                     ControlType.ALL_APPS_BUTTON);
             showAppsView(true /* animated */, true /* updatePredictedApps */);
+        }
+    }
+
+    /**
+     * Event handler for the swipe up caret
+     *
+     * @param v The view that was clicked.
+     */
+    protected void onClickAllAppsCaret(View v) {
+        if (LOGD) Log.d(TAG, "onClickAllAppsCaret");
+        if (!isAppsViewVisible()) {
+            getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
+                    ControlType.ALL_APPS_BUTTON);
+            showAppsView(true /* animated */, true /* updatePredictedApps */);
+        } else {
+            showWorkspace(true);
         }
     }
 
