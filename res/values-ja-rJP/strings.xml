@@ -241,17 +241,17 @@
   <string name="which_wallpaper_option_lock_screen">ロック画面</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
   <string name="which_wallpaper_option_home_screen_and_lock_screen">ホーム画面とロック画面</string>
-  <string name="title_show_google_app">Show %1$s</string>
-  <string name="title_show_google_app_default">Show Google app</string>
+  <string name="title_show_google_app">%1$s を表示</string>
+  <string name="title_show_google_app_default">Googleアプリを見る</string>
   <string name="label_search">検索</string>
   <string name="label_voice_search">音声検索</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d shortcuts and %2$d notifications for %3$s</string>
-  <string name="notifications_header">Notifications</string>
-  <string name="widgets_bottom_sheet_title">%1$s widgets</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d のショートカットと %3$s の %2$d 通知</string>
+  <string name="notifications_header">通知</string>
+  <string name="widgets_bottom_sheet_title">%1$s ウィジェット</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair はTill Kottmann（ deletescape としても知られています）によって作成されたランチャーアプリです。それは AOSP の Launcher3 に基づいて出来ています。</string>
   <string name="about_title">About</string>
-  <string name="changelog_title">Changelog for build #%d</string>
+  <string name="changelog_title">ビルド #%d のための変更履歴</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">アイコンパック</string>
   <string name="icon_pack_preference_summary">アイコンパックを選択</string>
