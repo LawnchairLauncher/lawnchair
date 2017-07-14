@@ -165,7 +165,7 @@
   <!-- Accessibility description to move item inside a folder. -->
   <string name="move_to_position">Auf Position <xliff:g id="NUMBER">%1$s</xliff:g> verschieben</string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Auf Favoritenposition <xliff:g id="NUMBER">%1$s</xliff:g> verschieben</string>
+  <string name="move_to_hotseat_position">Auf Position <xliff:g id="NUMBER">%1$s</xliff:g> im Dock verschieben</string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">Element verschoben</string>
   <!-- Accessibility description to move item into an existing folder. -->
