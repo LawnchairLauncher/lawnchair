@@ -71,7 +71,8 @@ public class DeviceProfile {
     private final float overviewModeIconZoneRatio;
 
     // Workspace
-    private int desiredWorkspaceLeftRightMarginPx;
+    private final int desiredWorkspaceLeftRightMarginPx;
+    public final int cellLayoutPaddingLeftRightPx;
     public final int edgeMarginPx;
     public final Rect defaultWidgetPadding;
     private final int defaultPageSpacingPx;
@@ -171,7 +172,8 @@ public class DeviceProfile {
                 this.getClass().getName());
         defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
-        desiredWorkspaceLeftRightMarginPx = edgeMarginPx;
+        desiredWorkspaceLeftRightMarginPx = isVerticalBarLayout() ? 0 : edgeMarginPx;
+        cellLayoutPaddingLeftRightPx = isVerticalBarLayout() ? 0 : edgeMarginPx;
         pageIndicatorSizePx = res.getDimensionPixelSize(
                 R.dimen.dynamic_grid_min_page_indicator_size);
         pageIndicatorLandGutterPx = res.getDimensionPixelSize(
@@ -513,7 +515,7 @@ public class DeviceProfile {
             // In portrait, we want the pages spaced such that there is no
             // overhang of the previous / next page into the current page viewport.
             // We assume symmetrical padding in portrait mode.
-            return Math.max(defaultPageSpacingPx, getWorkspacePadding(null).left / 2 + 1);
+            return Math.max(defaultPageSpacingPx, getWorkspacePadding(null).left + 1);
         }
     }
 
@@ -564,7 +566,7 @@ public class DeviceProfile {
         lp = (FrameLayout.LayoutParams) searchBar.getLayoutParams();
         lp.width = searchBarBounds.x;
         lp.height = searchBarBounds.y;
-        lp.topMargin = mInsets.top + edgeMarginPx / 2;
+        lp.topMargin = mInsets.top + edgeMarginPx;
         searchBar.setLayoutParams(lp);
 
         // Layout the workspace
@@ -615,6 +617,7 @@ public class DeviceProfile {
                     hotseatBarTopPaddingPx, hotseatAdjustment + workspacePadding.right,
                     hotseatBarBottomPaddingPx + mInsets.bottom);
         }
+        hotseat.setPadding(cellLayoutPaddingLeftRightPx, 0, cellLayoutPaddingLeftRightPx, 0);
         hotseat.setLayoutParams(lp);
 
         // Layout the page indicators
@@ -652,7 +655,7 @@ public class DeviceProfile {
 
         // Layout the AllAppsRecyclerView
         View view = launcher.findViewById(R.id.apps_list_view);
-        int paddingLeftRight = hasVerticalBarLayout ? 0 : edgeMarginPx;
+        int paddingLeftRight = desiredWorkspaceLeftRightMarginPx + cellLayoutPaddingLeftRightPx;
         view.setPadding(paddingLeftRight, view.getPaddingTop(), paddingLeftRight,
                 view.getPaddingBottom());
 
