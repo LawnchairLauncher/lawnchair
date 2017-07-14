@@ -144,7 +144,7 @@
   <string name="abandoned_promises_title">Diese App ist nicht installiert</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
-  <string name="abandoned_promise_explanation">Die App für dieses Icon ist nicht installiert. Du kannst das Icon entfernen oder die App suchen und manuell installieren.</string>
+  <string name="abandoned_promise_explanation">Die App für dieses Symbol ist nicht installiert. Du kannst das Symbol entfernen oder die App suchen und manuell installieren.    </string>
   <!-- Title for an app which is being downloaded. -->
   <string name="app_downloading_title"><xliff:g id="NAME">%1$s</xliff:g> wird heruntergeladen, <xliff:g id="PROGRESS">%2$s</xliff:g> abgeschlossen</string>
   <!-- Title for an app whose download has been started. -->
