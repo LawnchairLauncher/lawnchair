@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ch.deletescape.lawnchair.widget.WidgetsBottomSheet xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:background="?android:colorPrimary"
+    android:elevation="@dimen/deep_shortcuts_elevation"
+    android:orientation="vertical"
+    android:paddingTop="28.0dip">
+
+    <TextView
+        android:id="@id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:gravity="center_horizontal"
+        android:textColor="?android:textColorPrimary"
+        android:textSize="24.0sp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:gravity="center_horizontal"
+        android:paddingTop="4.0dip"
+        android:text="@string/long_press_widget_to_add"
+        android:textColor="?android:textColorTertiary"
+        android:textSize="14.0sp" />
+
+    <include
+        android:id="@+id/widgets"
+        layout="@layout/widgets_scroll_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40.0dip"
+        android:layout_marginTop="45.0dip" />
+</ch.deletescape.lawnchair.widget.WidgetsBottomSheet>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/qsb_button_height"
+    android:layout_gravity="start|center"
+    android:background="@drawable/bg_qsb_pill"
+    android:contentDescription="@string/label_search"
+    android:elevation="@dimen/qsb_button_elevation"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/g_icon"
+        android:layout_width="0.0dip"
+        android:layout_height="fill_parent"
+        android:layout_weight="1.0"
+        android:scaleType="center"
+        android:src="@drawable/ic_super_g_color" />
+
+    <View
+        android:layout_width="0.5dip"
+        android:layout_height="27.0dip"
+        android:layout_gravity="center_vertical"
+        android:background="#72333333" />
+
+    <ImageView
+        android:id="@+id/mic_icon"
+        android:layout_width="@dimen/qsb_button_height"
+        android:layout_height="@dimen/qsb_button_height"
+        android:background="@drawable/bg_qsb_mic"
+        android:contentDescription="@string/label_voice_search"
+        android:elevation="@dimen/qsb_button_elevation"
+        android:scaleType="center"
+        android:src="@drawable/opa_assistant_logo" />
+</LinearLayout>

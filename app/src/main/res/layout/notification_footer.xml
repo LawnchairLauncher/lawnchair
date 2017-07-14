@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ch.deletescape.lawnchair.notification.NotificationFooterLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center_vertical"
+    android:background="?attr/appPopupBgColor"
+    android:clipChildren="false"
+    android:elevation="@dimen/notification_elevation">
+
+    <LinearLayout
+        android:id="@+id/icon_row"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:gravity="end|center"
+        android:orientation="horizontal"
+        android:padding="@dimen/notification_footer_icon_row_padding" />
+
+    <View
+        android:id="@+id/overflow"
+        android:layout_width="@dimen/horizontal_ellipsis_size"
+        android:layout_height="@dimen/horizontal_ellipsis_size"
+        android:layout_gravity="start|center"
+        android:layout_marginStart="@dimen/horizontal_ellipsis_offset"
+        android:background="@drawable/horizontal_ellipsis" />
+</ch.deletescape.lawnchair.notification.NotificationFooterLayout>

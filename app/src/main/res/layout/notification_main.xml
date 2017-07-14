@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ch.deletescape.lawnchair.notification.NotificationMainView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:elevation="@dimen/notification_elevation"
+    android:focusable="true">
+
+    <LinearLayout
+        android:id="@+id/text_and_background"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="?attr/appPopupBgColor"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingEnd="@dimen/notification_main_text_padding_end"
+        android:paddingStart="@dimen/notification_padding_start">
+
+        <TextView
+            android:id="@id/title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:lines="1"
+            android:textAlignment="viewStart"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="@dimen/notification_main_text_size" />
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:lines="1"
+            android:textColor="?android:textColorSecondary"
+            android:textSize="@dimen/notification_main_text_size" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/popup_item_icon"
+        android:layout_width="@dimen/notification_icon_size"
+        android:layout_height="@dimen/notification_icon_size"
+        android:layout_gravity="end|center"
+        android:layout_marginEnd="@dimen/notification_padding_end" />
+</ch.deletescape.lawnchair.notification.NotificationMainView>
