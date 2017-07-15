@@ -239,19 +239,20 @@
   <!-- Option for setting the wallpaper only on the home screen. -->
   <string name="which_wallpaper_option_home_screen">Tela inicial</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
-  <string name="which_wallpaper_option_lock_screen">Lock screen</string>
+  <string name="which_wallpaper_option_lock_screen">Ecrã de Bloqueio</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
-  <string name="which_wallpaper_option_home_screen_and_lock_screen">Home screen and lock screen</string>
-  <string name="title_show_google_app">Show %1$s</string>
-  <string name="title_show_google_app_default">Show Google app</string>
-  <string name="label_search">Search</string>
-  <string name="label_voice_search">Voice search</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d shortcuts and %2$d notifications for %3$s</string>
-  <string name="notifications_header">Notifications</string>
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">Ecrã inicial e ecrã de bloqueio</string>
+  <string name="title_show_google_app">Mostrar %1$s</string>
+  <string name="title_show_google_app_default">Mostrar Google app</string>
+  <string name="label_search">Pesquisa</string>
+  <string name="label_voice_search">Pesquisa por voz</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d atalhos e %2$d notificações para %3$s</string>
+  <string name="notifications_header">Notificações</string>
   <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
-  <string name="about_title">About</string>
+  <string name="about_text">Lawnchair é uma aplicação da tela inicial criada por Till Kottmann (aka deletescape). É baseado no Launcher3 da AOSP.</string>
+  <string name="about_title">Sobre</string>
+  <string name="changelog_title">Changelog for build #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Icon Pack</string>
   <string name="icon_pack_preference_summary">Select an icon Pack</string>
@@ -259,19 +260,19 @@
   <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
   <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
   <string name="transparent_hotseat_pref_title">Transparent Dock</string>
-  <string name="dynamic_ui_pref_title">Extract accent color from wallpaper</string>
-  <string name="dark_theme_pref_title">Enable dark theme</string>
-  <string name="blur_pref_title">Enable blur</string>
+  <string name="dynamic_ui_pref_title">Extrair a cor através do wallpaper</string>
+  <string name="dark_theme_pref_title">Ativar tema escuro</string>
+  <string name="blur_pref_title">Ativar o blur</string>
   <string name="blur_radius_pref_title">Blur radius</string>
-  <string name="white_google_icon_pref_title">Use white Google icon</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on homescreen</string>
-  <string name="workspace_label_color_hue_pref_title">Color of icon labels on homescreen</string>
+  <string name="white_google_icon_pref_title">Usar o ícone branco da Google</string>
+  <string name="hide_icon_labels_pref_title">Ocultar as legendas dos ícones do ambiente de trabalho</string>
+  <string name="workspace_label_color_hue_pref_title">Cor das legendas dos ícones do ambiente de trabalho</string>
   <string name="workspace_label_color_variation_pref_title">Color variation of icon labels on homescreen</string>
   <string name="all_apps_opacity_pref_title">Drawer opacity</string>
-  <string name="num_cols_pref_title">Number of columns</string>
-  <string name="num_rows_pref_title">Number of rows</string>
-  <string name="num_hotseat_icons_pref_title">Number of icons in dock</string>
-  <string name="icon_scale_pref_title">Icon scale</string>
+  <string name="num_cols_pref_title">Número de colunas</string>
+  <string name="num_rows_pref_title">Número de linhas</string>
+  <string name="num_hotseat_icons_pref_title">Número de ícones da dock</string>
+  <string name="icon_scale_pref_title">Escala dos ícones</string>
   <string name="icon_text_scale_pref_title">Icon text scale</string>
   <string name="full_width_width_widgets_pref_title">Full width widgets</string>
   <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>

@@ -58,7 +58,7 @@
   <!-- Error message when user has filled a home screen -->
   <string name="out_of_space">Auf diesem Startbildschirm ist kein Platz mehr vorhanden.</string>
   <!-- Error message when user has filled the hotseat -->
-  <string name="hotseat_out_of_space">Dock ist bereits voll</string>
+  <string name="hotseat_out_of_space">Das Dock ist bereits voll</string>
   <!-- All applications label -->
   <string name="all_apps_button_label">Liste der Apps</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
@@ -79,7 +79,7 @@
   <!-- Permission short label -->
   <string name="permlab_read_settings">Einstellungen und Verknüpfungen des Startbildschirms lesen</string>
   <!-- Permission description -->
-  <string name="permdesc_read_settings">Ermöglicht der App, die Einstellungen und Verknüpfungen auf dem Startbildschirm zu lesen.</string>
+  <string name="permdesc_read_settings">Ermöglicht der App, die Einstellungen und Verknüpfungen des Startbildschirms zu lesen.</string>
   <!-- Permission short label -->
   <string name="permlab_write_settings">Einstellungen und Verknüpfungen des Startbildschirms schreiben</string>
   <!-- Permission description -->
@@ -144,7 +144,7 @@
   <string name="abandoned_promises_title">Diese App ist nicht installiert</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
-  <string name="abandoned_promise_explanation">Die App für dieses Icon ist nicht installiert. Du kannst das Icon entfernen oder die App suchen und manuell installieren.</string>
+  <string name="abandoned_promise_explanation">Die App für dieses Symbol ist nicht installiert. Du kannst das Symbol entfernen oder die App suchen und manuell installieren.    </string>
   <!-- Title for an app which is being downloaded. -->
   <string name="app_downloading_title"><xliff:g id="NAME">%1$s</xliff:g> wird heruntergeladen, <xliff:g id="PROGRESS">%2$s</xliff:g> abgeschlossen</string>
   <!-- Title for an app whose download has been started. -->
@@ -165,7 +165,7 @@
   <!-- Accessibility description to move item inside a folder. -->
   <string name="move_to_position">Auf Position <xliff:g id="NUMBER">%1$s</xliff:g> verschieben</string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Auf Favoritenposition <xliff:g id="NUMBER">%1$s</xliff:g> verschieben</string>
+  <string name="move_to_hotseat_position">Auf Position <xliff:g id="NUMBER">%1$s</xliff:g> im Dock verschieben</string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">Element verschoben</string>
   <!-- Accessibility description to move item into an existing folder. -->
@@ -252,6 +252,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair ist ein Launcher erstellt von Till Kottmann (aka deletescape). Er basiert auf Launcher3 von AOSP.</string>
   <string name="about_title">Über</string>
+  <string name="changelog_title">Changelog für Build #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Iconpack</string>
   <string name="icon_pack_preference_summary">Iconpack auswählen</string>
@@ -264,9 +265,9 @@
   <string name="blur_pref_title">Unschärfeeffekt verwenden</string>
   <string name="blur_radius_pref_title">Stärke des Unschärfeeffekts</string>
   <string name="white_google_icon_pref_title">Weiße Google Icons verwenden</string>
-  <string name="hide_icon_labels_pref_title">Icon Beschriftungen auf dem Startbildschirm verstecken</string>
-  <string name="workspace_label_color_hue_pref_title">Farbe der Icon Beschriftungen auf dem Startbildschirm</string>
-  <string name="workspace_label_color_variation_pref_title">Farbvariation der Icon Beschriftungen auf dem Startbildschirm</string>
+  <string name="hide_icon_labels_pref_title">Symbolbeschriftungen auf dem Startbildschirm verstecken</string>
+  <string name="workspace_label_color_hue_pref_title">Farbe der Symbolbeschriftungen auf dem Startbildschirm</string>
+  <string name="workspace_label_color_variation_pref_title">Farbvariation der Symbolbeschriftungen auf dem Startbildschirm</string>
   <string name="all_apps_opacity_pref_title">Transparenz der App-Liste</string>
   <string name="num_cols_pref_title">Anzahl der Spalten</string>
   <string name="num_rows_pref_title">Anzahl der Zeilen</string>
@@ -274,7 +275,7 @@
   <string name="icon_scale_pref_title">Icon Größe</string>
   <string name="icon_text_scale_pref_title">Icon Textgröße</string>
   <string name="full_width_width_widgets_pref_title">Widgets mit voller Breite</string>
-  <string name="full_width_widgets_pref_summary">Widgets erlauben auf die volle Breite vergrößert zu werden</string>
+  <string name="full_width_widgets_pref_summary">Widgets erlauben, auf die volle Breite vergrößert zu werden</string>
   <string name="notification_access_pref_title">Benachrichtigungsanzeige und -vorschau</string>
   <string name="notification_access_pref_summary">Für diese Funktion benötigt Lawnchair Zugriff auf Benachrichtigungen</string>
   <string name="ui_pref_title">Benutzeroberfläche</string>
@@ -284,26 +285,26 @@
   <string name="import_export_pref_title">Import/Export</string>
   <string name="show_pixel_bar_pref_title">Pixel Top Bar anzeigen</string>
   <string name="use_wide_searchbar_pref_title">Breite Suchleiste verwenden</string>
-  <string name="show_mic_pref_title">Google Assistant Button anzeigen</string>
+  <string name="show_mic_pref_title">Google Assistant anzeigen</string>
   <string name="pixel_style_icons_pref_title">Pixel Icons verwenden</string>
-  <string name="pixel_style_icons_pref_summary">Wenn möglich, runde Icons verwenden</string>
-  <string name="show_google_now_tab_pref_title">Google Now Seite anzeigen</string>
+  <string name="pixel_style_icons_pref_summary">Wenn möglich runde Symbole verwenden</string>
+  <string name="show_google_now_tab_pref_title">Google Now-Seite anzeigen</string>
   <string name="restart_lawnchair_pref_title">Lawnchair neu starten</string>
   <string name="restart_lawnchair_pref_summary">Hilfreich, wenn Einstellungen nicht korrekt angewendet wurden</string>
   <string name="rebuild_icondb_pref_title">Icon Datenbank neu generieren</string>
   <string name="pinch_to_overview_pref_title">Zoomgeste für Übersicht</string>
   <string name="pinch_to_overview_pref_summary">Zoomgeste auf dem Startbildschirm öffnet die Übersicht</string>
   <string name="pull_down_notis_pref_title">Nach unten wischen um Benachrichtigungsleiste zu öffnen</string>
-  <string name="pull_down_notis_pref_on">Nach unten Wischen auf dem Startbildschirm öffnet die Benachrichtigungsleiste.</string>
-  <string name="pull_down_notis_pref_off">Falls eingeschaltet, öffnet nach unten Wischen auf dem Startbildschirm die Statusleiste.</string>
+  <string name="pull_down_notis_pref_on">Nach unten Wischen auf dem Startbildschirm öffnet die Statusleiste.</string>
+  <string name="pull_down_notis_pref_off">Falls eingeschaltet, öffnet nach unten Wischen auf dem Startbildschirm die Benachrichtigungsleiste.</string>
   <string name="light_statusbar_pref_title">Helle Statusleiste</string>
-  <string name="light_statusbar_pref_on">Die Statusleiste darf dunkle Icons zeigen, wenn ein helles Hintergrundbild verwendet wird.</string>
-  <string name="light_statusbar_pref_off">Die Statusleiste zeigt immer helle Icons.</string>
+  <string name="light_statusbar_pref_on">Die Statusleiste darf dunkle Symbole zeigen, wenn ein helles Hintergrundbild verwendet wird.</string>
+  <string name="light_statusbar_pref_off">Die Statusleiste zeigt immer helle Symbole.</string>
   <string name="haptic_feedback_pref_title">Vibration aktivieren</string>
   <string name="keep_scroll_state_pref_title">Scrollposition speichern</string>
   <string name="keep_scroll_state_pref_summary">Speichert die Scrollposition in der App-Liste</string>
   <string name="home_opens_drawer_pref_title">Homebutton öffnet App-Liste</string>
-  <string name="home_opens_drawer_pref_summary">Ein Klick auf den Homebutton während der Startbildschirm aktiv ist öffnet die App-Liste</string>
+  <string name="home_opens_drawer_pref_summary">Antippen des Homebuttons auf dem Startbildschirm öffnet die App-Liste</string>
   <string name="show_hidden_pref_title">Versteckte Apps anzeigen</string>
   <string name="show_hidden_pref_on">Versteckte Apps werden angezeigt um Sichtbarkeitseinstellungen zu ändern</string>
   <string name="show_hidden_pref_off">Versteckte Apps werden nicht angezeigt</string>

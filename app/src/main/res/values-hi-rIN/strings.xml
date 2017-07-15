@@ -46,7 +46,7 @@
   <string name="widget_accessible_dims_format">%1$d wide by %2$d high</string>
   <!-- All Apps -->
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
-  <string name="all_apps_search_bar_hint">Search Apps</string>
+  <string name="all_apps_search_bar_hint">ऐप्स खोजें</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
   <string name="all_apps_loading_message">Loading Apps&#8230;</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
@@ -56,7 +56,7 @@
   <!-- Drag and drop -->
   <skip></skip>
   <!-- Error message when user has filled a home screen -->
-  <string name="out_of_space">No more room on this Home screen.</string>
+  <string name="out_of_space">कोई रिक्त जगह नही है।</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">No more room in the Favorites tray</string>
   <!-- All applications label -->
@@ -257,6 +257,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
   <string name="about_title">About</string>
+  <string name="changelog_title">Changelog for build #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Icon Pack</string>
   <string name="icon_pack_preference_summary">Select an icon Pack</string>
