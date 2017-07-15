@@ -19,6 +19,15 @@ android {
     compileSdkVersion 26
     buildToolsVersion "26.0.0"
 
+    signingConfigs {
+        travis {
+            storeFile file("debug.jks")
+            storePassword System.getenv("STORE_PASSWORD")
+            keyAlias "Lawnchair"
+            keyPassword System.getenv("KEY_PASSWORD")
+        }
+    }
+
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 26
