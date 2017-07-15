@@ -124,7 +124,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case KEY_PREF_DARK_THEME:
                 case KEY_PREF_TRANSPARENT_HOTSEAT:
                 case KEY_PREF_ROUND_SEARCH_BAR:
-                    mLauncher.scheduleKill();
+                    mLauncher.scheduleRecreate();
                     break;
                 case KEY_PREF_ICON_PACK_PACKAGE:
                 case KEY_PREF_PIXEL_STYLE_ICONS:
