@@ -28,7 +28,6 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -54,8 +53,6 @@ import ch.deletescape.lawnchair.LauncherTransitionable;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
-import ch.deletescape.lawnchair.blur.BlurDrawable;
-import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.folder.Folder;
@@ -90,6 +87,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     // The computed bounds of the container
     private final Rect mContentBounds = new Rect();
+    private final boolean mUseRoundSearchBar;
 
     private AllAppsRecyclerView mAppsRecyclerView;
     private AllAppsSearchBarController mSearchBarController;
@@ -131,6 +129,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         setPadding(0, 0, 0, 0);
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
+        mUseRoundSearchBar = FeatureFlags.useRoundSearchBar(context);
     }
 
     /**
@@ -260,7 +259,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mSearchContainer = findViewById(R.id.search_container);
         mSearchInput = findViewById(R.id.search_box_input);
         int accent = Utilities.getDynamicAccent(getContext());
-        mSearchInput.setHintTextColor(accent);
+        if (!mUseRoundSearchBar)
+            mSearchInput.setHintTextColor(accent);
         mSearchInput.setCursorColor(accent);
 
         // Update the hint to contain the icon.
@@ -275,7 +275,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mSearchContainerOffsetTop = getResources().getDimensionPixelSize(
                 R.dimen.all_apps_search_bar_margin_top);
 
-        mElevationController = new HeaderElevationController.ControllerVL(mSearchContainer);
 
         // Load the all apps recycler view
         mAppsRecyclerView = findViewById(R.id.apps_list_view);
@@ -283,8 +282,11 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAppsRecyclerView.setLayoutManager(mLayoutManager);
         mAppsRecyclerView.setAdapter(mAdapter);
         mAppsRecyclerView.setHasFixedSize(true);
-        mAppsRecyclerView.addOnScrollListener(mElevationController);
-        mAppsRecyclerView.setElevationController(mElevationController);
+        if (!mUseRoundSearchBar) {
+            mElevationController = new HeaderElevationController.ControllerVL(mSearchContainer);
+            mAppsRecyclerView.addOnScrollListener(mElevationController);
+            mAppsRecyclerView.setElevationController(mElevationController);
+        }
 
         FocusedItemDecorator focusedItemDecorator = new FocusedItemDecorator(mAppsRecyclerView);
         mAppsRecyclerView.addItemDecoration(focusedItemDecorator);
@@ -369,7 +371,20 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         Rect insets = mLauncher.getDragLayer().getInsets();
         getContentView().setPadding(0, 0, 0, 0);
-        int height = insets.top + grid.inv.searchHeightAddition;
+        int height = insets.top;
+        if (mUseRoundSearchBar) {
+            height += getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_round_height);
+            height += getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_round_margin_bottom);
+        } else {
+            height += grid.inv.searchHeightAddition;
+        }
+
+        if (mUseRoundSearchBar) {
+            View divider = findViewById(R.id.search_bar_divider);
+            MarginLayoutParams dividerParams = (MarginLayoutParams) divider.getLayoutParams();
+            dividerParams.topMargin = height - dividerParams.height;
+            divider.setLayoutParams(dividerParams);
+        }
 
         mlp.topMargin = height;
         mAppsRecyclerView.setLayoutParams(mlp);

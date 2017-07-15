@@ -55,6 +55,9 @@
         <item name="notificationBeneathColor">@color/notification_color_beneath</item>
         <item name="qsbBgColor">@android:color/white</item>
         <item name="folderBgColorBlur">#75ffffff</item>
+        <item name="roundSearchBarBgColor">#10000000</item>
+        <item name="roundSearchBarDividerColor">#10111111</item>
+        <item name="roundSearchBarHintColor">@color/quantum_panel_text_color</item>
     </style>
 
     <style name="LauncherTheme.Dark" parent="@style/BaseLauncherTheme.Dark">
@@ -78,6 +81,9 @@
         <item name="notificationBeneathColor">#ff252525</item>
         <item name="qsbBgColor">@color/quantum_panel_bg_color_dark</item>
         <item name="folderBgColorBlur">#75212121</item>
+        <item name="roundSearchBarBgColor">#10ffffff</item>
+        <item name="roundSearchBarDividerColor">#10eeeeee</item>
+        <item name="roundSearchBarHintColor">@android:color/white</item>
     </style>
 
     <style name="Theme" parent="@style/LauncherTheme" />
