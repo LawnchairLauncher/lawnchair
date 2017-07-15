@@ -165,7 +165,7 @@
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
   <string name="action_move">Öğeyi taşı</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell">Satır <xliff:g example="1" id="number">%1$s</xliff:g> sütun <xliff:g example="1" id="number"><xliff:g example="1" id="number">%2$s</xliff:g> taşı</string>
+  <string name="move_to_empty_cell">Satır <xliff:g example="1" id="number">%1$s</xliff:g> sütun <xliff:g example="1" id="number">%2$s</xliff:g> taşı</string>
   <!-- Accessibility description to move item inside a folder. -->
   <string name="move_to_position"><xliff:g example="1" id="number">%1$s</xliff:g> buraya taşı</string>
   <!-- Accessibility description to move item to the hotseat. -->
