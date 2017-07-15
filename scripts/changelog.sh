@@ -1,14 +1,12 @@
+TRAVIS_COMMIT_RANGE=d5adb5f..44b6ef2
+
 MERGE_PREFIX="Merge pull request"
-NEWLINE="
-"
 
-CHANGELOG=" <b>Changelog for build #${TRAVIS_BUILD_NUMBER}</b>${NEWLINE}"
+GIT_COMMIT_LOG="$(git log --format=%s $TRAVIS_COMMIT_RANGE)"
 
-while read -r line; do
-  if [[ $line != ${MERGE_PREFIX}* ]] ;
-  then
-    CHANGELOG="${CHANGELOG}- ${line}${NEWLINE}"
-  fi
-done <<< "$(git log --format=%s $TRAVIS_COMMIT_RANGE)"
+echo " <b>Changelog for build #${TRAVIS_BUILD_NUMBER}</b>${NEWLINE}"
 
-echo "${CHANGELOG}"
+printf '%s\n' "$GIT_COMMIT_LOG" | while IFS= read -r line
+do
+  echo "- ${line}"
+done
