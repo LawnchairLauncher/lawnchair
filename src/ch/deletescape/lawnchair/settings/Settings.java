@@ -104,9 +104,6 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                             }
                     );
                     break;
-                case KEY_SHOW_PIXEL_BAR:
-                    mLauncher.getWorkspace().updateQsbVisibility();
-                    break;
                 case KEY_PREF_KEEP_SCROLL_STATE:
                 case KEY_SHOW_VOICE_SEARCH_BUTTON:
                 case KEY_PREF_WHITE_GOOGLE_ICON:
@@ -124,6 +121,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case KEY_PREF_DARK_THEME:
                 case KEY_PREF_TRANSPARENT_HOTSEAT:
                 case KEY_PREF_ROUND_SEARCH_BAR:
+                case KEY_SHOW_PIXEL_BAR:
                     mLauncher.scheduleRecreate();
                     break;
                 case KEY_PREF_ICON_PACK_PACKAGE:
