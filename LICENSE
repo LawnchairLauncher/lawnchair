@@ -1,16 +1,4 @@
 
-   Copyright (c) 2005-2008, The Android Open Source Project
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-
-
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -188,3 +176,46 @@
 
    END OF TERMS AND CONDITIONS
 
+   APPENDIX 1: How to apply the Apache License to your work.
+
+      To apply the Apache License to your work, attach the following
+      boilerplate notice, with the fields enclosed by brackets "[]"
+      replaced with your own identifying information. (Don't include
+      the brackets!)  The text should be enclosed in the appropriate
+      comment syntax for the file format. We also recommend that a
+      file or class name and description of purpose be included on the
+      same "printed page" as the copyright notice for easier
+      identification within third-party archives.
+
+   APPENDIX 2: License extension for modifications of the Source
+      
+	  As per point 4 of the License, all modifications made to the 
+	  Source can be used by open source projects, as long as the 
+	  following terms are met:
+	  
+      (a) Said project is licensed under a compatible open source 
+	      license
+	  
+	  (b) Said project is non-commercial, or does not use the
+	      modifications in a commercial manner (i.e. does not
+		  use the modifications for financial gains)
+		  
+	  (c) Said project publishes the Source of the modifications
+	      alongside their own modifications, if applicable
+		  
+	  Custom licensing can be made available upon request for the
+	  modifications
+
+   Copyright 2017 Lawnchair
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
