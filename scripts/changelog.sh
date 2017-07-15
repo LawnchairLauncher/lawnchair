@@ -2,7 +2,7 @@ MERGE_PREFIX="Merge pull request"
 NEWLINE="
 "
 
-CHANGELOG=""
+CHANGELOG=" <b>Changelog for build #${TRAVIS_BUILD_NUMBER}</b>${NEWLINE}"
 
 while read -r line; do
   if [[ $line != ${MERGE_PREFIX}* ]] ;
