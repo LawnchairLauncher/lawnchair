@@ -286,6 +286,7 @@
   <string name="show_pixel_bar_pref_title">Mostrar a barra superior do Pixel</string>
   <string name="use_wide_searchbar_pref_title">Use uma barra de pesquisa circular</string>
   <string name="show_mic_pref_title">Mostrar botão de assistente de Google</string>
+  <string name="use_round_searhbar">Use round apps searchbar</string>
   <string name="pixel_style_icons_pref_title">Usar ícones Pixel</string>
   <string name="pixel_style_icons_pref_summary">Quando habilitados, ícones circulares serão usados quando possível</string>
   <string name="show_google_now_tab_pref_title">Mostrar página do Google Now</string>
