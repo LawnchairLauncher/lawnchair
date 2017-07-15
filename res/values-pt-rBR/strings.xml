@@ -264,7 +264,7 @@
   <string name="dark_theme_pref_title">Usar tema escuro</string>
   <string name="blur_pref_title">Ativar desfoque</string>
   <string name="blur_radius_pref_title">Raio de desfoque</string>
-  <string name="white_google_icon_pref_title">Usar ícone do google branco</string>
+  <string name="white_google_icon_pref_title">Usar ícone do Google branco</string>
   <string name="hide_icon_labels_pref_title">Ocultar rótulos dos ícones na tela inicial</string>
   <string name="workspace_label_color_hue_pref_title">Cor dos rótulos dos ícones na tela inicial</string>
   <string name="workspace_label_color_variation_pref_title">Variação de cor dos rótulos dos ícones na tela inicial</string>
