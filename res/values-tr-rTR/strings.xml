@@ -290,6 +290,7 @@
   <string name="show_pixel_bar_pref_title">Pixel üst barını göster</string>
   <string name="use_wide_searchbar_pref_title">Geniş arama çubuğunu kullan</string>
   <string name="show_mic_pref_title">Google Asistan Simgesini Göster</string>
+  <string name="use_round_searhbar">Use round apps searchbar</string>
   <string name="pixel_style_icons_pref_title">Pixel simgeleri kullan</string>
   <string name="pixel_style_icons_pref_summary">Etkinleştirildiğinde, mümkün olduğunca dairesel simgeler kullanılacaktır</string>
   <string name="show_google_now_tab_pref_title">Google Now sayfasını göster</string>
