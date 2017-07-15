@@ -25,13 +25,13 @@
   <!-- Work folder name -->
   <string name="work_folder_name">Trabajo</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
-  <string name="activity_not_found">La aplicación no está instalada.</string>
+  <string name="activity_not_found">Aplicación no instalada.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
-  <string name="activity_not_available">La aplicación no está disponible</string>
+  <string name="activity_not_available">Aplicación no disponible</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Aplicación descargada inhabilitada en modo seguro</string>
+  <string name="safemode_shortcut_error">Aplicación descargada deshabilitada en modo seguro</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">Widgets inhabilitados en modo seguro</string>
+  <string name="safemode_widget_error">Widgets deshabilitados en modo seguro</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">Acceso directo no disponible</string>
   <!-- Widgets -->
@@ -46,7 +46,7 @@
   <string name="widget_accessible_dims_format">%1$d de ancho por %2$d de alto</string>
   <!-- All Apps -->
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
-  <string name="all_apps_search_bar_hint">Busca aplicaciones</string>
+  <string name="all_apps_search_bar_hint">Buscar aplicaciones</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
   <string name="all_apps_loading_message">Cargando aplicaciones…</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
@@ -127,7 +127,7 @@
   <!-- Text for settings button -->
   <string name="settings_button_text">Ajustes</string>
   <!-- Message shown when a feature is disabled by the administrator -->
-  <string name="msg_disabled_by_admin">Inhabilitada por el administrador</string>
+  <string name="msg_disabled_by_admin">Deshabilitada por el administrador</string>
   <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
   <string name="accessibility_action_overview">Visión general</string>
   <!-- Strings for settings -->
@@ -248,10 +248,11 @@
   <string name="label_voice_search">Busqueda por voz</string>
   <string name="shortcuts_menu_with_notifications_description">%1$d atajos y %2$d notificaciones para %3$s</string>
   <string name="notifications_header">Notificaciones</string>
-  <string name="widgets_bottom_sheet_title">%1$s widgets</string>
+  <string name="widgets_bottom_sheet_title">Widgets de %1$s</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair es un Launcher creado por Till Kottmann (alias deletescape). Basado en Launcher3 de AOSP.</string>
   <string name="about_title">Acerca de</string>
+  <string name="changelog_title">Cambios del build #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Paquete de iconos</string>
   <string name="icon_pack_preference_summary">Selecciona un paquete de iconos</string>
@@ -259,7 +260,7 @@
   <string name="hotseat_uses_extracted_colors_pref_on">El dock se colorea con el color extraido del fondo de pantalla</string>
   <string name="hotseat_uses_extracted_colors_pref_off">El dock será gris ajustado al brillo del fondo de pantalla</string>
   <string name="transparent_hotseat_pref_title">Dock transparente</string>
-  <string name="dynamic_ui_pref_title">Extrae el color de tu fondo de pantalla</string>
+  <string name="dynamic_ui_pref_title">Extrae el color del fondo de pantalla</string>
   <string name="dark_theme_pref_title">Habilitar tema oscuro</string>
   <string name="blur_pref_title">Habilitar desenfoque</string>
   <string name="blur_radius_pref_title">Radio de desenfoque</string>
@@ -275,7 +276,7 @@
   <string name="icon_text_scale_pref_title">Escala del texto en el icono</string>
   <string name="full_width_width_widgets_pref_title">Widgets con redimensionamiento completo</string>
   <string name="full_width_widgets_pref_summary">Permitir a los widgets mostrarse sobre todo el ancho sin relleno</string>
-  <string name="notification_access_pref_title">Vista previa y notificaciones varias</string>
+  <string name="notification_access_pref_title">Insignia en notificaciones y vista previa</string>
   <string name="notification_access_pref_summary">Permitir a Lawnchair el acceso a las notificaciones</string>
   <string name="ui_pref_title">Interfaz de usuario</string>
   <string name="pixel_style_pref_title">Estilo Pixel</string>
@@ -294,15 +295,15 @@
   <string name="pinch_to_overview_pref_title">Pinchar para vista general</string>
   <string name="pinch_to_overview_pref_summary">Pellizcar en el escritorio para abrir la vista general</string>
   <string name="pull_down_notis_pref_title">Desliza hacia abajo para abrir las notificaciones</string>
-  <string name="pull_down_notis_pref_on">Desliza hacia abajo la pantalla de inicio para expandir la barra de estado.</string>
-  <string name="pull_down_notis_pref_off">Activado, deslizando hacia abajo en la pantalla de inicio expande la barra de estado.</string>
+  <string name="pull_down_notis_pref_on">Al deslizar hacia abajo en la pantalla de inicio, muestra la barra de estado.</string>
+  <string name="pull_down_notis_pref_off">Cuando esté activado y al deslizar hacia abajo en la pantalla de inicio, mostrar la barra de estado.</string>
   <string name="light_statusbar_pref_title">Barra de estado clara</string>
   <string name="light_statusbar_pref_on">La barra de estado podrá mostrar iconos oscuros cuando usa un fondo de pantalla claro.</string>
   <string name="light_statusbar_pref_off">La barra de estado mostrará siempre iconos claros.</string>
   <string name="haptic_feedback_pref_title">Habilitar vibración</string>
   <string name="keep_scroll_state_pref_title">Mantener posición de desplazamiento</string>
   <string name="keep_scroll_state_pref_summary">Guarda los cambios de la posición de desplazamiento del cajón</string>
-  <string name="home_opens_drawer_pref_title">El botón de inicio abre el cajón de aplicaciones</string>
+  <string name="home_opens_drawer_pref_title">El botón de home abre el cajón de aplicaciones</string>
   <string name="home_opens_drawer_pref_summary">Presionando el botón home en la pantalla de inicio, se abrirá el cajón de aplicaciones</string>
   <string name="show_hidden_pref_title">Mostrar aplicaciones ocultas</string>
   <string name="show_hidden_pref_on">Se mostraran las aplicaciones ocultas para cambiar la configuración de visibilidad</string>

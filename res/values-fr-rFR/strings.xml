@@ -36,9 +36,9 @@
   <string name="shortcut_not_available">Le raccourci n\'est pas disponible</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">Appuyer &amp; de manière prolongée pour sélectionner un widget.</string>
+  <string name="long_press_widget_to_add">Appuyer de manière prolongée pour sélectionner un widget.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-  <string name="long_accessible_way_to_add">Appuyer 2 fois &amp; et maintenir la pression pour sélectionner un widget ou utiliser des actions personnalisées.</string>
+  <string name="long_accessible_way_to_add">Appuyer 2 fois et maintenir la pression pour sélectionner un widget ou utilisez une action personnalisée.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
   <string name="widget_dims_format">%1$d x %2$d</string>
@@ -56,11 +56,11 @@
   <!-- Drag and drop -->
   <skip></skip>
   <!-- Error message when user has filled a home screen -->
-  <string name="out_of_space">Pas d\'espace libre sur cet écran d\'accueil.</string>
+  <string name="out_of_space">Plus d\'espace libre sur cet écran d\'accueil.</string>
   <!-- Error message when user has filled the hotseat -->
-  <string name="hotseat_out_of_space">Plus d\'espace disponible dans la zone de favoris.</string>
+  <string name="hotseat_out_of_space">Plus d\'espace libre dans la zone de favoris</string>
   <!-- All applications label -->
-  <string name="all_apps_button_label">Liste d\'applications</string>
+  <string name="all_apps_button_label">Liste des applications</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
   <string name="all_apps_home_button_label">Accueil</string>
@@ -69,7 +69,7 @@
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
   <string name="uninstall_drop_target_label">Désinstaller</string>
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
-  <string name="app_info_drop_target_label">Infos sur l\'appli</string>
+  <string name="app_info_drop_target_label">Infos sur l\'application</string>
   <!-- Permissions: -->
   <skip></skip>
   <!-- Permission short label -->
@@ -93,7 +93,7 @@
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
   <string name="gadget_setup_text">Configuration</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
-  <string name="uninstall_system_app_text">Impossible de désinstaller cette application, car il s\'agit d\'une application système.</string>
+  <string name="uninstall_system_app_text">Cette application système ne peut pas être désinstallée.</string>
   <!-- Default folder title -->
   <string name="folder_hint_text">Dossier sans nom</string>
   <!-- Accessibility -->
@@ -243,15 +243,16 @@
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
   <string name="which_wallpaper_option_home_screen_and_lock_screen">Écrans d\'accueil et de verrouillage</string>
   <string name="title_show_google_app">Afficher %1$s</string>
-  <string name="title_show_google_app_default">Afficher l\'appli Google</string>
+  <string name="title_show_google_app_default">Afficher l\'application Google</string>
   <string name="label_search">Rechercher</string>
   <string name="label_voice_search">Recherche vocale</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d shortcuts and %2$d notifications for %3$s</string>
+  <string name="shortcuts_menu_with_notifications_description">Raccourcis de %1$d et notifications de %2$d pour %3$s</string>
   <string name="notifications_header">Notifications</string>
-  <string name="widgets_bottom_sheet_title">Widgets %1$s</string>
+  <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair est un launcher créé par Till Kottmann (deletescape). Il est basé sur Launcher3 d\'AOSP.</string>
+  <string name="about_text">Lawnchair est un launcher créé par Till Kottmann (alias deletescape). Il est basé sur Launcher3 d\'AOSP.</string>
   <string name="about_title">A propos</string>
+  <string name="changelog_title">Journal des modifications pour le build n°%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Pack d\'icônes</string>
   <string name="icon_pack_preference_summary">Choisissez un pack d\'icônes</string>
@@ -259,15 +260,15 @@
   <string name="hotseat_uses_extracted_colors_pref_on">Le dock sera coloré avec une couleur extraite du fond d\'écran</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Le dock sera de couleur grise, mais ajusté par la luminosité du fond d\'écran</string>
   <string name="transparent_hotseat_pref_title">Dock transparent</string>
-  <string name="dynamic_ui_pref_title">Extraire la couleur d\'accentuation du fond d\'écran</string>
+  <string name="dynamic_ui_pref_title">Extraire couleur accentuation du fond d\'écran</string>
   <string name="dark_theme_pref_title">Activer le thème sombre</string>
   <string name="blur_pref_title">Activer le flou</string>
   <string name="blur_radius_pref_title">Rayon du flou</string>
   <string name="white_google_icon_pref_title">Utiliser l\'icône blanche de Google</string>
-  <string name="hide_icon_labels_pref_title">Masquer les libellés des icônes sur l\'écran d\'accueil</string>
+  <string name="hide_icon_labels_pref_title">Masquer libellés des icônes de l\'écran d\'accueil</string>
   <string name="workspace_label_color_hue_pref_title">Couleur des libellés des icônes sur l\'écran d\'accueil</string>
-  <string name="workspace_label_color_variation_pref_title">Variation de la couleur des libellés des icônes sur l\'écran d\'accueil</string>
-  <string name="all_apps_opacity_pref_title">Opacité du fond du drawer</string>
+  <string name="workspace_label_color_variation_pref_title">Variation de couleur libellés des icônes de l\'écran d\'accueil</string>
+  <string name="all_apps_opacity_pref_title">Opacité du tiroir des applications</string>
   <string name="num_cols_pref_title">Nombre de colonnes</string>
   <string name="num_rows_pref_title">Nombre de lignes</string>
   <string name="num_hotseat_icons_pref_title">Nombre d\'icônes dans le dock</string>
@@ -288,74 +289,74 @@
   <string name="pixel_style_icons_pref_title">Utiliser les icônes Pixel</string>
   <string name="pixel_style_icons_pref_summary">Lorsque cette option est activée, des icônes circulaires seront utilisées si possible</string>
   <string name="show_google_now_tab_pref_title">Afficher la page Google Now</string>
-  <string name="restart_lawnchair_pref_title">Redémarrez Lawnchair</string>
+  <string name="restart_lawnchair_pref_title">Redémarrer Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">Peut être utile si certains paramètres ne sont pas correctement appliqués</string>
   <string name="rebuild_icondb_pref_title">Reconstruire la base de données des icônes</string>
-  <string name="pinch_to_overview_pref_title">Pincer pour afficher les aperçus</string>
+  <string name="pinch_to_overview_pref_title">Pincer pour afficher la vue d\'ensemble</string>
   <string name="pinch_to_overview_pref_summary">Pincer à 2 doigts sur l\'écran d\'accueil pour ouvrir la vue d\'ensemble</string>
   <string name="pull_down_notis_pref_title">Glisser vers le bas affiche les notifications</string>
   <string name="pull_down_notis_pref_on">Glisser vers le bas sur l\'écran d\'accueil étendra la barre d\'état.</string>
   <string name="pull_down_notis_pref_off">Si activé, glisser vers le bas sur l\'écran d\'accueil étend la barre d\'état.</string>
-  <string name="light_statusbar_pref_title">Light statusbar</string>
-  <string name="light_statusbar_pref_on">The status bar may show dark icons when using a light wallpaper.</string>
-  <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
-  <string name="haptic_feedback_pref_title">Enable vibration</string>
-  <string name="keep_scroll_state_pref_title">Save scroll position</string>
-  <string name="keep_scroll_state_pref_summary">Saves the scroll position in the drawer</string>
-  <string name="home_opens_drawer_pref_title">Home button opens app drawer</string>
-  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the homescreen will open the app drawer</string>
-  <string name="show_hidden_pref_title">Show hidden apps</string>
-  <string name="show_hidden_pref_on">Hidden apps will be shown to change visibility settings</string>
-  <string name="show_hidden_pref_off">Hidden apps won\'t be visible</string>
-  <string name="export_db_title">Export database</string>
-  <string name="import_db_title">Import database</string>
-  <string name="export_prefs_title">Export settings</string>
-  <string name="import_prefs_title">Import settings</string>
-  <string name="notification_listener_label">Lawnchair - Notification badges</string>
-  <string name="color_extraction_label">Lawnchair - Color extraction</string>
+  <string name="light_statusbar_pref_title">Barre d\'état claire</string>
+  <string name="light_statusbar_pref_on">La barre d’État peut afficher des icônes sombres lors de l\'utilisation d\'un fond d\'écran clair.</string>
+  <string name="light_statusbar_pref_off">La barre d’état affichera toujours des icônes clairs.</string>
+  <string name="haptic_feedback_pref_title">Activer les vibrations</string>
+  <string name="keep_scroll_state_pref_title">Enregistrer la position du défilement</string>
+  <string name="keep_scroll_state_pref_summary">Enregistre la position du défilement dans le tiroir des applications</string>
+  <string name="home_opens_drawer_pref_title">Le bouton Home ouvre le tiroir des applications</string>
+  <string name="home_opens_drawer_pref_summary">Sur l’écran d’accueil, en appuyant sur le bouton home vous ouvrirez le tiroir des applications</string>
+  <string name="show_hidden_pref_title">Afficher les applications cachées</string>
+  <string name="show_hidden_pref_on">Les applications cachées seront affichées pour modifier les paramètres de visibilité</string>
+  <string name="show_hidden_pref_off">Les applications cachées ne seront pas visilbles</string>
+  <string name="export_db_title">Exporter la base de données</string>
+  <string name="import_db_title">Importer une base de données</string>
+  <string name="export_prefs_title">Exporter les paramètres</string>
+  <string name="import_prefs_title">Importer des paramètres</string>
+  <string name="notification_listener_label">Lawnchair - Badges de notification</string>
+  <string name="color_extraction_label">Lawnchair - Extraction de la couleur</string>
   <string name="test_title">Test</string>
-  <string name="visibility">Visibility</string>
+  <string name="visibility">Visibilité</string>
   <!-- Customization Color -->
-  <string name="white">White</string>
+  <string name="white">Blanc</string>
   <!-- Customization Color -->
-  <string name="black">Black</string>
+  <string name="black">Noir</string>
   <!-- Customization Color -->
-  <string name="red">Red</string>
+  <string name="red">Rouge</string>
   <!-- Customization Color -->
-  <string name="pink">Pink</string>
+  <string name="pink">Rose</string>
   <!-- Customization Color -->
-  <string name="purple">Purple</string>
+  <string name="purple">Violet</string>
   <!-- Customization Color -->
-  <string name="deep_purple">Deep Purple</string>
+  <string name="deep_purple">Violet foncé</string>
   <!-- Customization Color -->
   <string name="indigo">Indigo</string>
   <!-- Customization Color -->
-  <string name="blue">Blue</string>
+  <string name="blue">Bleu</string>
   <!-- Customization Color -->
-  <string name="light_blue">Light Blue</string>
+  <string name="light_blue">Bleu clair</string>
   <!-- Customization Color -->
   <string name="cyan">Cyan</string>
   <!-- Customization Color -->
-  <string name="teal">Teal</string>
+  <string name="teal">Turquoise</string>
   <!-- Customization Color -->
-  <string name="green">Green</string>
+  <string name="green">Vert</string>
   <!-- Customization Color -->
-  <string name="light_green">Light Green</string>
+  <string name="light_green">Vert clair</string>
   <!-- Customization Color -->
-  <string name="lime">Lime</string>
+  <string name="lime">Vert citron</string>
   <!-- Customization Color -->
-  <string name="yellow">Yellow</string>
+  <string name="yellow">Jaune</string>
   <!-- Customization Color -->
-  <string name="amber">Amber</string>
+  <string name="amber">Ambre</string>
   <!-- Customization Color -->
   <string name="orange">Orange</string>
   <!-- Customization Color -->
-  <string name="deep_orange">Deep Orange</string>
+  <string name="deep_orange">Orange foncé</string>
   <!-- Customization Color -->
-  <string name="brown">Brown</string>
+  <string name="brown">Marron</string>
   <!-- Customization Color -->
-  <string name="grey">Grey</string>
+  <string name="grey">Gris</string>
   <!-- Customization Color -->
-  <string name="blue_grey">Blue Grey</string>
-  <string name="default_text">Default</string>
+  <string name="blue_grey">Bleu Gris</string>
+  <string name="default_text">Par défaut</string>
 </resources>
