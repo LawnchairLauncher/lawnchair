@@ -252,6 +252,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
   <string name="about_title">Σχετικά με</string>
+  <string name="changelog_title">Changelog for build #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Πακέτο εικονιδίων</string>
   <string name="icon_pack_preference_summary">Επιλέξτε ένα πακέτο εικονιδίων</string>

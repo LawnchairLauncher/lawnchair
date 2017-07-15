@@ -252,6 +252,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair é um Launcher criado por Kottmann (aka deletescape). Baseia-se no Launcher3 da AOSP.</string>
   <string name="about_title">Sobre</string>
+  <string name="changelog_title">Changelog for build #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Pacote de Ícones</string>
   <string name="icon_pack_preference_summary">Selecione um pacote de ícone</string>

@@ -154,8 +154,7 @@ public class BubbleTextView extends TextView
             float allAppsOpacity = Utilities.getPrefs(getContext()).getFloat("pref_allAppsOpacitySB", 1f);
             if (FeatureFlags.useDarkTheme) {
                 setTextColor(Color.WHITE);
-            }
-            if ((allAppsOpacity < .5f && !BlurWallpaperProvider.isEnabled()) || allAppsOpacity < .2f) {
+            } else if ((allAppsOpacity < .5f && !BlurWallpaperProvider.isEnabled()) || allAppsOpacity < .2f) {
                 setTextColor(Utilities.getColor(getContext(), ExtractedColors.DOMINANT_FOREGROUND_INDEX, Color.WHITE));
             }
         } else if (display == DISPLAY_FOLDER) {
