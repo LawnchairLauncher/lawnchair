@@ -285,6 +285,7 @@
   <string name="show_pixel_bar_pref_title">Pixelのトップバーを表示する</string>
   <string name="use_wide_searchbar_pref_title">ワイド検索バーを使用する</string>
   <string name="show_mic_pref_title">Google アシスタント ボタンを表示する</string>
+  <string name="use_round_searhbar">Use round apps searchbar</string>
   <string name="pixel_style_icons_pref_title">Pixel アイコンを使用する</string>
   <string name="pixel_style_icons_pref_summary">有効になっている場合は可能な限り円形のアイコンが使用されます</string>
   <string name="show_google_now_tab_pref_title">Google Now ページを表示する</string>

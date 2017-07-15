@@ -287,6 +287,7 @@
   <string name="show_pixel_bar_pref_title">Показать строку поиска</string>
   <string name="use_wide_searchbar_pref_title">Строка поиска как в Android O</string>
   <string name="show_mic_pref_title">Показать кнопку Google Ассистента</string>
+  <string name="use_round_searhbar">Использовать круглые иконки в строке поиска</string>
   <string name="pixel_style_icons_pref_title">Использовать круглые иконки</string>
   <string name="pixel_style_icons_pref_summary">Когда включено, приложение использует круглую иконку, где это возможно</string>
   <string name="show_google_now_tab_pref_title">Показывать страницу Google Now</string>

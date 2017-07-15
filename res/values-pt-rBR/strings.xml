@@ -252,7 +252,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair é um Launcher criado por Kottmann (aka deletescape). Baseia-se no Launcher3 da AOSP.</string>
   <string name="about_title">Sobre</string>
-  <string name="changelog_title">Changelog for build #%d</string>
+  <string name="changelog_title">Alterações para a versão #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Pacote de Ícones</string>
   <string name="icon_pack_preference_summary">Selecione um pacote de ícone</string>
@@ -264,7 +264,7 @@
   <string name="dark_theme_pref_title">Usar tema escuro</string>
   <string name="blur_pref_title">Ativar desfoque</string>
   <string name="blur_radius_pref_title">Raio de desfoque</string>
-  <string name="white_google_icon_pref_title">Usar ícone do google branco</string>
+  <string name="white_google_icon_pref_title">Usar ícone do Google branco</string>
   <string name="hide_icon_labels_pref_title">Ocultar rótulos dos ícones na tela inicial</string>
   <string name="workspace_label_color_hue_pref_title">Cor dos rótulos dos ícones na tela inicial</string>
   <string name="workspace_label_color_variation_pref_title">Variação de cor dos rótulos dos ícones na tela inicial</string>
@@ -284,8 +284,9 @@
   <string name="debug_pref_title">Depuração</string>
   <string name="import_export_pref_title">Importar/exportar</string>
   <string name="show_pixel_bar_pref_title">Mostrar a barra superior do Pixel</string>
-  <string name="use_wide_searchbar_pref_title">Use uma barra de pesquisa circular</string>
+  <string name="use_wide_searchbar_pref_title">Usar barra de pesquisa circular</string>
   <string name="show_mic_pref_title">Mostrar botão de assistente de Google</string>
+  <string name="use_round_searhbar">Usar barra de pesquisa de apps circular</string>
   <string name="pixel_style_icons_pref_title">Usar ícones Pixel</string>
   <string name="pixel_style_icons_pref_summary">Quando habilitados, ícones circulares serão usados quando possível</string>
   <string name="show_google_now_tab_pref_title">Mostrar página do Google Now</string>

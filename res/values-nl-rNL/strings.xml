@@ -252,7 +252,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair is een Launcher-app gemaakt door Till Kottmann (bekend als deletescape). Het is gebaseerd op Launcher3 uit AOSP.</string>
   <string name="about_title">Over</string>
-  <string name="changelog_title">Changelog for build #%d</string>
+  <string name="changelog_title">Changelog voor build #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Icoon pakket</string>
   <string name="icon_pack_preference_summary">Selecteer een icoon pakket</string>
@@ -286,6 +286,7 @@
   <string name="show_pixel_bar_pref_title">Toon Pixel zoek balk</string>
   <string name="use_wide_searchbar_pref_title">Gebruik brede zoekbalk</string>
   <string name="show_mic_pref_title">Google Assistant-knop weergeven</string>
+  <string name="use_round_searhbar">Use round apps searchbar</string>
   <string name="pixel_style_icons_pref_title">Gebruik Pixel iconen</string>
   <string name="pixel_style_icons_pref_summary">Wanneer ingeschakeld zullen ronde iconen worden gebruikt waar mogelijk</string>
   <string name="show_google_now_tab_pref_title">Google Now pagina weegeven</string>

@@ -63,7 +63,7 @@
   <string name="all_apps_button_label">Uygulama listesi</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
-  <string name="all_apps_home_button_label">Ana Ekran</string>
+  <string name="all_apps_home_button_label">Ana ekran</string>
   <!-- Label for remove drop target. [CHAR_LIMIT=20] -->
   <string name="remove_drop_target_label">Sil</string>
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
@@ -78,7 +78,7 @@
   <string name="permdesc_install_shortcut">Uygulamaya, kullanıcı
         müdahalesi olmadan kısayollar ekleme izin verir.</string>
   <!-- Permission short label -->
-  <string name="permlab_read_settings">ana ekran ayarlarını ve kısayollarını oku</string>
+  <string name="permlab_read_settings">Ana ekran ayarlarını ve kısayollarını oku</string>
   <!-- Permission description -->
   <string name="permdesc_read_settings">Uygulamaya, Ana ekran ayarları ve kısayolları okuma izni verir.</string>
   <!-- Permission short label -->
@@ -290,6 +290,7 @@
   <string name="show_pixel_bar_pref_title">Pixel üst barını göster</string>
   <string name="use_wide_searchbar_pref_title">Geniş arama çubuğunu kullan</string>
   <string name="show_mic_pref_title">Google Asistan Simgesini Göster</string>
+  <string name="use_round_searhbar">Yuvarlak uygulama arama çubuğunu kullan</string>
   <string name="pixel_style_icons_pref_title">Pixel simgeleri kullan</string>
   <string name="pixel_style_icons_pref_summary">Etkinleştirildiğinde, mümkün olduğunca dairesel simgeler kullanılacaktır</string>
   <string name="show_google_now_tab_pref_title">Google Now sayfasını göster</string>

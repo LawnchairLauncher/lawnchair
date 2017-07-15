@@ -256,10 +256,10 @@
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Iconpack</string>
   <string name="icon_pack_preference_summary">Iconpack auswählen</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Favoritenablage verwendet Hintergrundbild-Farben</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">Die Favoritenablage wird mit einer Farbe aus dem Hintergrundbild gefärbt</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">Die Favoritenablage wird Grau gefärbt, angepasst and die Helligkeit des Hintergrundbildes</string>
-  <string name="transparent_hotseat_pref_title">Transparente Favoritenablage</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Dock verwendet Hintergrundbild-Farben</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">Das Dock wird mit einer Farbe aus dem Hintergrundbild gefärbt</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">Das Dock wird grau gefärbt, angepasst an die Helligkeit des Hintergrundbildes</string>
+  <string name="transparent_hotseat_pref_title">Transparentes Dock</string>
   <string name="dynamic_ui_pref_title">Akzentfarbe an Hintergrundbild anpassen</string>
   <string name="dark_theme_pref_title">Dunkles Design verwenden</string>
   <string name="blur_pref_title">Unschärfeeffekt verwenden</string>
@@ -286,6 +286,7 @@
   <string name="show_pixel_bar_pref_title">Pixel Top Bar anzeigen</string>
   <string name="use_wide_searchbar_pref_title">Breite Suchleiste verwenden</string>
   <string name="show_mic_pref_title">Google Assistant anzeigen</string>
+  <string name="use_round_searhbar">Use round apps searchbar</string>
   <string name="pixel_style_icons_pref_title">Pixel Icons verwenden</string>
   <string name="pixel_style_icons_pref_summary">Wenn möglich runde Symbole verwenden</string>
   <string name="show_google_now_tab_pref_title">Google Now-Seite anzeigen</string>

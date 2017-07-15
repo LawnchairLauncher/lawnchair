@@ -285,6 +285,7 @@
   <string name="show_pixel_bar_pref_title">显示 Pixel 顶栏</string>
   <string name="use_wide_searchbar_pref_title">使用宽搜索栏</string>
   <string name="show_mic_pref_title">显示 Google Assistant 按钮</string>
+  <string name="use_round_searhbar">Use round apps searchbar</string>
   <string name="pixel_style_icons_pref_title">使用 Pixel 图标</string>
   <string name="pixel_style_icons_pref_summary">该项启用时会优先选择圆形图标</string>
   <string name="show_google_now_tab_pref_title">显示 Google now 页面</string>

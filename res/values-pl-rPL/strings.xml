@@ -287,6 +287,7 @@
   <string name="show_pixel_bar_pref_title">Pokaż górny pasek Pixel</string>
   <string name="use_wide_searchbar_pref_title">Użyj szerokiego paska wyszukiwania</string>
   <string name="show_mic_pref_title">Pokaż przycisk Asystenta Google</string>
+  <string name="use_round_searhbar">Use round apps searchbar</string>
   <string name="pixel_style_icons_pref_title">Uzyj stylu ikon Google Pixel</string>
   <string name="pixel_style_icons_pref_summary">Kiedy włączone, okrągłe ikony będą używane tam, gdzie to możliwe</string>
   <string name="show_google_now_tab_pref_title">Pokaż stronę Google Now</string>
