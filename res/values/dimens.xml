@@ -55,6 +55,8 @@
     <dimen name="all_apps_grid_view_start_margin">0dp</dimen>
     <dimen name="all_apps_search_bar_height">60dp</dimen>
     <dimen name="all_apps_search_bar_margin_top">12dp</dimen>
+    <dimen name="all_apps_search_bar_round_height">68dp</dimen>
+    <dimen name="all_apps_search_bar_round_margin_bottom">20dp</dimen>
     <dimen name="all_apps_empty_search_message_top_offset">40dp</dimen>
     <dimen name="all_apps_caret_stroke_width">2dp</dimen>
     <dimen name="all_apps_caret_shadow_spread">1dp</dimen>
@@ -204,4 +206,5 @@
     <dimen name="widget_section_indent">0.0dip</dimen>
     <dimen name="widget_row_divider">2.0dip</dimen>
     <dimen name="folder_background_radius">2dp</dimen>
+    <dimen name="all_apps_round_search_bar">56dp</dimen>
 </resources>

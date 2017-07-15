@@ -142,5 +142,8 @@
     <attr name="notificationBeneathColor" format="color" />
     <attr name="qsbBgColor" format="color" />
     <attr name="folderBgColorBlur" format="color" />
+    <attr name="roundSearchBarBgColor" format="color" />
+    <attr name="roundSearchBarDividerColor" format="color" />
+    <attr name="roundSearchBarHintColor" format="color" />
 
 </resources>

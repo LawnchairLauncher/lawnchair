@@ -36,6 +36,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private static final String KEY_PREF_BLUR_RADIUS = "pref_blurRadius";
     private static final String KEY_PREF_WHITE_GOOGLE_ICON = "pref_enableWhiteGoogleIcon";
     private static final String KEY_PREF_DARK_THEME = "pref_enableDarkTheme";
+    private static final String KEY_PREF_ROUND_SEARCH_BAR = "pref_useRoundSearchBar";
     private static Settings instance;
     private Launcher mLauncher;
 
@@ -122,6 +123,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case KEY_PREF_ENABLE_DYNAMIC_UI:
                 case KEY_PREF_DARK_THEME:
                 case KEY_PREF_TRANSPARENT_HOTSEAT:
+                case KEY_PREF_ROUND_SEARCH_BAR:
                     mLauncher.scheduleKill();
                     break;
                 case KEY_PREF_ICON_PACK_PACKAGE:

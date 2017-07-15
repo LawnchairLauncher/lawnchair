@@ -18,6 +18,7 @@ package ch.deletescape.lawnchair.allapps;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -28,6 +29,7 @@ import ch.deletescape.lawnchair.ClickShadowView;
 import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 
 /**
  * A container for RecyclerView to allow for the click shadow view to be shown behind an icon that
@@ -57,6 +59,19 @@ public class AllAppsRecyclerViewContainerView extends FrameLayout
         // Make the feedback view large enough to hold the blur bitmap.
         int size = grid.allAppsIconSizePx + mTouchFeedbackView.getExtraSize();
         addView(mTouchFeedbackView, size, size);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        LayoutInflater.from(getContext()).inflate(getSearchBar(), this);
+    }
+
+    private int getSearchBar() {
+        return FeatureFlags.useRoundSearchBar(getContext()) ?
+                R.layout.all_apps_search_bar_round :
+                R.layout.all_apps_search_bar;
     }
 
     @Override

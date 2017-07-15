@@ -41,6 +41,7 @@ import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 
 /**
  * The grid view adapter of all the apps.
@@ -278,7 +279,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_SEARCH_DIVIDER:
                 ImageView divider = (ImageView) mLayoutInflater.inflate(
                         R.layout.all_apps_search_divider, parent, false);
-                divider.setImageDrawable(new ColorDrawable(Utilities.getDynamicAccent(parent.getContext())));
+                if (!FeatureFlags.useRoundSearchBar(mLauncher))
+                    divider.setImageDrawable(new ColorDrawable(Utilities.getDynamicAccent(parent.getContext())));
                 return new ViewHolder(divider);
             case VIEW_TYPE_SEARCH_MARKET_DIVIDER:
                 return new ViewHolder(mLayoutInflater.inflate(

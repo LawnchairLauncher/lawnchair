@@ -22,6 +22,12 @@
         android:persistent="true" />
 
     <SwitchPreference
+        android:key="pref_useRoundSearchBar"
+        android:defaultValue="false"
+        android:title="@string/use_round_searhbar"
+        android:persistent="true" />
+
+    <SwitchPreference
         android:key="pref_pixelStyleIcons"
         android:title="@string/pixel_style_icons_pref_title"
         android:summary="@string/pixel_style_icons_pref_summary"

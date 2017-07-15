@@ -45,6 +45,7 @@ public final class FeatureFlags {
     private static final String KEY_PREF_ENABLE_BLUR = "pref_enableBlur";
     public static final String KEY_PREF_WHITE_GOOGLE_ICON = "pref_enableWhiteGoogleIcon";
     private static final String KEY_PREF_DARK_THEME = "pref_enableDarkTheme";
+    private static final String KEY_PREF_ROUND_SEARCH_BAR = "pref_useRoundSearchBar";
 
     private FeatureFlags() {
     }
@@ -155,5 +156,9 @@ public final class FeatureFlags {
 
     public static boolean isVibrancyEnabled(Context context) {
         return true;
+    }
+
+    public static boolean useRoundSearchBar(Context context) {
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_ROUND_SEARCH_BAR, false);
     }
 }
