@@ -252,7 +252,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair is een Launcher-app gemaakt door Till Kottmann (bekend als deletescape). Het is gebaseerd op Launcher3 uit AOSP.</string>
   <string name="about_title">Over</string>
-  <string name="changelog_title">Changelog for build #%d</string>
+  <string name="changelog_title">Changelog voor build #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Icoon pakket</string>
   <string name="icon_pack_preference_summary">Selecteer een icoon pakket</string>
