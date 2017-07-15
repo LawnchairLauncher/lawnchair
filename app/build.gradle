@@ -27,7 +27,6 @@ android {
             keyPassword System.getenv("KEY_PASSWORD")
         }
     }
-
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 26
@@ -58,6 +57,9 @@ android {
                 minifyEnabled false
             }
         }
+    }
+    lintOptions {
+        abortOnError false
     }
 }
 
