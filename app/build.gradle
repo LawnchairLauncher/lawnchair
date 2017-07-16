@@ -33,6 +33,7 @@ android {
         applicationId "ch.deletescape.lawnchair"
 
         buildConfigField "boolean", "TRAVIS", System.getenv("TRAVIS") ?: "false"
+        buildConfigField "boolean", "TAGGED_BUILD", System.getenv("TRAVIS_TAG") ? "true" : "false"
         buildConfigField "int", "TRAVIS_BUILD_NUMBER", System.getenv("TRAVIS_BUILD_NUMBER") ?: "0"
         buildConfigField "String", "CHANGELOG", "\"${getChangelog()}\""
         buildConfigField "String", "MOBILE_CENTER_KEY", "\"" + System.getenv("MOBILE_CENTER_KEY") + "\""
