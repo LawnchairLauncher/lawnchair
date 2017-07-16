@@ -292,14 +292,14 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
         int allAppsBg = ColorUtils.setAlphaComponent(mAllAppsBackgroundColor, allAppsAlpha);
         int allAppsBgBlur = mAllAppsBackgroundColorBlur + (allAppsAlpha << 24);
+        int color = (int) mEvaluator.evaluate(
+                mDecelInterpolator.getInterpolation(alpha),
+                BlurWallpaperProvider.isEnabled() ? mAllAppsBackgroundColorBlur : mHotseatBackgroundColor,
+                BlurWallpaperProvider.isEnabled() ? allAppsBgBlur : allAppsBg);
         if (mTransparentHotseat) {
-            mAppsView.setRevealDrawableColor(allAppsBgBlur);
+            mAppsView.setRevealDrawableColor(BlurWallpaperProvider.isEnabled() ? allAppsBgBlur : color);
             mAppsView.setBlurOpacity((int) (alpha * 255));
         } else {
-            int color = (int) mEvaluator.evaluate(
-                    mDecelInterpolator.getInterpolation(alpha),
-                    BlurWallpaperProvider.isEnabled() ? mAllAppsBackgroundColorBlur : mHotseatBackgroundColor,
-                    BlurWallpaperProvider.isEnabled() ? allAppsBgBlur : allAppsBg);
             mAppsView.setRevealDrawableColor(color);
         }
         if (BlurWallpaperProvider.isEnabled()) {
