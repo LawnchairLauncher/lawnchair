@@ -6,6 +6,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
@@ -108,8 +110,19 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mTransparentHotseat = FeatureFlags.isTransparentHotseat(l);
     }
 
-    public void setAllAppsAlpha(int allAppsAlpha) {
+    public void setAllAppsAlpha(Context context, int allAppsAlpha) {
         this.allAppsAlpha = allAppsAlpha;
+        mAppsView.setAppIconTextColor(getAppIconTextColor(context, allAppsAlpha));
+    }
+
+    private int getAppIconTextColor(Context context, int allAppsAlpha) {
+        if (FeatureFlags.useDarkTheme) {
+            return Color.WHITE;
+        } else if ((allAppsAlpha < 128 && !BlurWallpaperProvider.isEnabled()) || allAppsAlpha < 50) {
+            return Color.WHITE;
+        } else {
+            return context.getResources().getColor(R.color.quantum_panel_text_color);
+        }
     }
 
     @Override
