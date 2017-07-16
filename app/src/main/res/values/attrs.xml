@@ -137,6 +137,7 @@
     <attr name="folderNameTextColor" format="color" />
     <attr name="allAppsContainerColor" format="color" />
     <attr name="allAppsContainerColorBlur" format="color" />
+    <attr name="allAppsEmptySearchTextColor" format="color" />
     <attr name="blurTintColor" format="color" />
     <attr name="deepShortcutsHandleColor" format="color" />
     <attr name="notificationBeneathColor" format="color" />
