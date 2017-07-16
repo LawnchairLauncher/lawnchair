@@ -22,7 +22,6 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.android/build-cache"
-  - "$ANDROID_HOME"
 
 deploy:
   - provider: script
@@ -30,6 +29,16 @@ deploy:
     script: scripts/deploy-telegram.sh
     on:
       branch: alpha
+  - provider: script
+    skip_cleanup: true
+    script: scripts/deploy-telegram.sh
+    on:
+      branch: beta
+  - provider: script
+    skip_cleanup: true
+    script: scripts/deploy-telegram.sh
+    on:
+      branch: master
   - provider: releases
     skip_cleanup: true
     api_key: $GITHUB_OAUTH_TOKEN
