@@ -7,7 +7,7 @@
     <ch.deletescape.lawnchair.shortcuts.DeepShortcutTextView
         android:id="@+id/bubble_text"
         style="@style/Icon"
-        android:background="?android:selectableItemBackground"
+        android:background="?android:attr/selectableItemBackground"
         android:drawableEnd="@drawable/deep_shortcuts_drag_handle"
         android:drawablePadding="@dimen/deep_shortcut_drawable_padding"
         android:fontFamily="sans-serif"
@@ -17,6 +17,8 @@
         android:textAlignment="viewStart"
         android:textColor="?attr/appPopupTextColor"
         android:textSize="14.0sp"
+        launcher:customShadows="false"
+        launcher:disablePressedState="true"
         launcher:disableShadows="true"
         launcher:iconDisplay="deep_shortcut"
         launcher:iconSizeOverride="@dimen/deep_shortcut_icon_size"

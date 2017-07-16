@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ch.deletescape.lawnchair.shortcuts.DeepShortcutView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:background="?android:attr/selectableItemBackground"
     android:layout_width="@dimen/bg_popup_item_width"
     android:layout_height="@dimen/bg_popup_item_height">
 
