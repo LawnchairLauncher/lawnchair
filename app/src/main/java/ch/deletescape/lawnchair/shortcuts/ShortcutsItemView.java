@@ -22,6 +22,7 @@ import ch.deletescape.lawnchair.BubbleTextView;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAnimUtils;
+import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.anim.PropertyListBuilder;
@@ -99,6 +100,7 @@ public class ShortcutsItemView extends PopupItemView implements OnLongClickListe
                     DragView dv = mLauncher.getWorkspace().beginDragShared(r5.getIconView(), r2, r5.getFinalInfo(), new ShortcutDragPreviewProvider(r5.getIconView(), mIconShift), new DragOptions());
                     dv.animateShift(-mIconShift.x, -mIconShift.y);
                     AbstractFloatingView.closeOpenContainer(mLauncher, 1);
+                    LauncherAppState.getInstance().getLauncher().closeFolder();
                     return false;
                 }
             } else {
