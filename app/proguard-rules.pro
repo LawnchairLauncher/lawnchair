@@ -1,25 +1,86 @@
-# Add project specific ProGuard rules here.
-# By default, the flags in this file are appended to flags specified
-# in D:\Android\sdk/tools/proguard/proguard-android.txt
-# You can edit the include path and order by changing the proguardFiles
-# directive in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+-keep,allowshrinking,allowoptimization class ch.deletescape.lawnchair.** {
+  *;
+}
 
-# Add any project specific keep options here:
+-keep class ch.deletescape.lawnchair.BaseRecyclerViewFastScrollBar {
+  public void setThumbWidth(int);
+  public int getThumbWidth();
+  public void setTrackWidth(int);
+  public int getTrackWidth();
+}
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+-keep class ch.deletescape.lawnchair.BaseRecyclerViewFastScrollPopup {
+  public void setAlpha(float);
+  public float getAlpha();
+}
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+-keep class ch.deletescape.lawnchair.ButtonDropTarget {
+  public int getTextColor();
+}
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+-keep class ch.deletescape.lawnchair.CellLayout {
+  public float getBackgroundAlpha();
+  public void setBackgroundAlpha(float);
+}
+
+-keep class ch.deletescape.lawnchair.CellLayout$LayoutParams {
+  public void setWidth(int);
+  public int getWidth();
+  public void setHeight(int);
+  public int getHeight();
+  public void setX(int);
+  public int getX();
+  public void setY(int);
+  public int getY();
+}
+
+-keep class ch.deletescape.lawnchair.dragndrop.DragLayer$LayoutParams {
+  public void setWidth(int);
+  public int getWidth();
+  public void setHeight(int);
+  public int getHeight();
+  public void setX(int);
+  public int getX();
+  public void setY(int);
+  public int getY();
+}
+
+-keep class ch.deletescape.lawnchair.FastBitmapDrawable {
+  public void setDesaturation(float);
+  public float getDesaturation();
+  public void setBrightness(float);
+  public float getBrightness();
+}
+
+-keep class ch.deletescape.lawnchair.MemoryDumpActivity {
+  *;
+}
+
+-keep class ch.deletescape.lawnchair.PreloadIconDrawable {
+  public float getAnimationProgress();
+  public void setAnimationProgress(float);
+}
+
+-keep class ch.deletescape.lawnchair.pageindicators.CaretDrawable {
+  public float getCaretProgress();
+  public void setCaretProgress(float);
+}
+
+-keep class ch.deletescape.lawnchair.Workspace {
+  public float getBackgroundAlpha();
+  public void setBackgroundAlpha(float);
+}
+
+-keep class com.google.android.libraries.launcherclient.* {
+  *;
+}
+
+-keep class ch.deletescape.lawnchair.DeferredHandler {
+ *;
+}
+
+# Proguard will strip new callbacks in LauncherApps.Callback from
+# WrappedCallback if compiled against an older SDK. Don't let this happen.
+-keep class ch.deletescape.lawnchair.compat.** {
+  *;
+}
