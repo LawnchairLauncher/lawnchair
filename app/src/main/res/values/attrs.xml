@@ -30,6 +30,7 @@
         </attr>
         <attr name="deferShadowGeneration" format="boolean" />
         <attr name="customShadows" format="boolean" />
+        <attr name="disablePressedState" format="boolean" />
         <attr name="disableShadows" format="boolean" />
         <attr name="centerVertically" format="boolean" />
     </declare-styleable>

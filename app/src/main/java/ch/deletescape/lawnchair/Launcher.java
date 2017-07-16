@@ -26,6 +26,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.SearchManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
@@ -136,9 +137,9 @@ import com.microsoft.azure.mobile.distribute.Distribute;
  * Default launcher application.
  */
 public class Launcher extends Activity
-        implements View.OnClickListener, OnLongClickListener,
+        implements OnClickListener, OnLongClickListener,
         LauncherModel.Callbacks, View.OnTouchListener, LauncherProviderChangeListener,
-        AccessibilityManager.AccessibilityStateChangeListener {
+        AccessibilityManager.AccessibilityStateChangeListener, DialogInterface.OnDismissListener {
     public static final String TAG = "Launcher";
 
     private static final int REQUEST_CREATE_SHORTCUT = 1;
@@ -348,6 +349,8 @@ public class Launcher extends Activity
     public ViewGroupFocusHelper mFocusHandler;
 
     private BlurWallpaperProvider mBlurWallpaperProvider;
+
+    private Dialog mCurrentDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1636,6 +1639,8 @@ public class Launcher extends Activity
                 });
             }
         }
+
+        dismissDialog();
     }
 
     public IconCache getIconCache() {
@@ -3831,6 +3836,25 @@ public class Launcher extends Activity
     public Drawable resizeIconDrawable(Drawable icon) {
         icon.setBounds(0, 0, mDeviceProfile.iconSizePx, mDeviceProfile.iconSizePx);
         return icon;
+    }
+
+    public void openDialog(Dialog dialog) {
+        dismissDialog();
+        mCurrentDialog = dialog;
+        mCurrentDialog.setOnDismissListener(this);
+        mCurrentDialog.show();
+    }
+
+    private void dismissDialog() {
+        if (mCurrentDialog != null) {
+            mCurrentDialog.dismiss();
+            mCurrentDialog = null;
+        }
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialogInterface) {
+        mCurrentDialog = null;
     }
 
     public static Launcher getLauncher(Context context) {

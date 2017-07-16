@@ -24,7 +24,12 @@ import ch.deletescape.lawnchair.util.MultiHashMap;
 import ch.deletescape.lawnchair.util.PackageUserKey;
 
 public class PopupDataProvider implements NotificationListener.NotificationsChangedListener {
-    private static final SystemShortcut[] SYSTEM_SHORTCUTS = new SystemShortcut[]{new SystemShortcut.AppInfo(), new SystemShortcut.Widgets(), new SystemShortcut.Edit()};
+    private static final SystemShortcut[] SYSTEM_SHORTCUTS = new SystemShortcut[]{
+            new SystemShortcut.AppInfo(),
+            new SystemShortcut.Widgets(),
+            new SystemShortcut.Delete(),
+            new SystemShortcut.Edit()};
+
     private MultiHashMap<ComponentKey, List> mDeepShortcutMap = new MultiHashMap<>();
     private final Launcher mLauncher;
     private Map<PackageUserKey, BadgeInfo> mPackageUserToBadgeInfos = new HashMap<>();

@@ -7,11 +7,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import ch.deletescape.lawnchair.AbstractFloatingView;
+import ch.deletescape.lawnchair.DeleteDropTarget;
 import ch.deletescape.lawnchair.EditAppDialog;
 import ch.deletescape.lawnchair.InfoDropTarget;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.util.PackageUserKey;
 import ch.deletescape.lawnchair.util.Themes;
@@ -57,6 +59,26 @@ public abstract class SystemShortcut {
         }
     }
 
+    public static class Delete extends SystemShortcut {
+        public Delete() {
+            super(R.drawable.ic_remove_no_shadow, R.string.remove_drop_target_label);
+        }
+
+        @Override
+        public OnClickListener getOnClickListener(final Launcher launcher, final ItemInfo itemInfo) {
+            if (itemInfo instanceof ch.deletescape.lawnchair.AppInfo) return null;
+            return new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AbstractFloatingView.closeAllOpenViews(launcher);
+                    DeleteDropTarget.removeWorkspaceOrFolderItem(launcher, itemInfo, null);
+                    Workspace workspace = launcher.getWorkspace();
+                    workspace.removeWorkspaceItem(workspace.getHomescreenIconByItemId(itemInfo.id));
+                }
+            };
+        }
+    }
+
     public static class Edit extends SystemShortcut {
         public Edit() {
             super(R.drawable.ic_edit_no_shadow, R.string.edit_drop_target_label);
@@ -70,7 +92,7 @@ public abstract class SystemShortcut {
                     Intent i = new Intent(Intent.ACTION_MAIN).setComponent(itemInfo.getTargetComponent());
                     LauncherActivityInfoCompat laic = LauncherActivityInfoCompat.create(launcher, itemInfo.user, i);
                     ch.deletescape.lawnchair.AppInfo appInfo = new ch.deletescape.lawnchair.AppInfo(launcher, laic, itemInfo.user, launcher.getIconCache());
-                    new EditAppDialog(launcher, appInfo, launcher).show();
+                    launcher.openDialog(new EditAppDialog(launcher, appInfo, launcher));
                 }
             };
         }

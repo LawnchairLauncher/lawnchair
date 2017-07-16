@@ -100,6 +100,7 @@ public class BubbleTextView extends TextView
 
     private final boolean mDeferShadowGenerationOnTouch;
     private final boolean mCustomShadowsEnabled;
+    private final boolean mDisablePressedState;
     private final boolean mShadowsDisabled;
     private final boolean mLayoutHorizontal;
     private final int mIconSize;
@@ -133,6 +134,7 @@ public class BubbleTextView extends TextView
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BubbleTextView, defStyle, 0);
         mCustomShadowsEnabled = a.getBoolean(R.styleable.BubbleTextView_customShadows, true);
+        mDisablePressedState = a.getBoolean(R.styleable.BubbleTextView_disablePressedState, false);
         mShadowsDisabled = a.getBoolean(R.styleable.BubbleTextView_disableShadows, false);
         mLayoutHorizontal = a.getBoolean(R.styleable.BubbleTextView_layoutHorizontal, false);
         mDeferShadowGenerationOnTouch =
@@ -319,7 +321,7 @@ public class BubbleTextView extends TextView
             if (getTag() instanceof ItemInfo
                     && ((ItemInfo) getTag()).isDisabled()) {
                 d.animateState(FastBitmapDrawable.State.DISABLED);
-            } else if (isPressed() || mStayPressed) {
+            } else if (!mDisablePressedState && (isPressed() || mStayPressed)) {
                 d.animateState(FastBitmapDrawable.State.PRESSED);
             } else {
                 d.animateState(FastBitmapDrawable.State.NORMAL);
