@@ -637,4 +637,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     public void setBlurOpacity(int opacity) {
         mAllAppsBackground.setBlurOpacity(opacity);
     }
+
+    public void setAppIconTextColor(int color) {
+        mAdapter.setAppIconTextColor(color);
+        mAdapter.notifyDataSetChanged();
+    }
 }

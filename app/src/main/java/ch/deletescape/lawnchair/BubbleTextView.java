@@ -24,7 +24,6 @@ import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -48,9 +47,7 @@ import java.text.NumberFormat;
 import ch.deletescape.lawnchair.IconCache.IconLoadRequest;
 import ch.deletescape.lawnchair.badge.BadgeInfo;
 import ch.deletescape.lawnchair.badge.BadgeRenderer;
-import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
-import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.graphics.IconPalette;
 import ch.deletescape.lawnchair.model.PackageItemInfo;
@@ -151,12 +148,6 @@ public class BubbleTextView extends TextView
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
-            float allAppsOpacity = Utilities.getPrefs(getContext()).getFloat("pref_allAppsOpacitySB", 1f);
-            if (FeatureFlags.useDarkTheme) {
-                setTextColor(Color.WHITE);
-            } else if ((allAppsOpacity < .5f && !BlurWallpaperProvider.isEnabled()) || allAppsOpacity < .2f) {
-                setTextColor(Utilities.getColor(getContext(), ExtractedColors.DOMINANT_FOREGROUND_INDEX, Color.WHITE));
-            }
         } else if (display == DISPLAY_FOLDER) {
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
         }

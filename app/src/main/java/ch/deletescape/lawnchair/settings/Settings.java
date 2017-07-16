@@ -145,6 +145,6 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
 
     private void applyAllAppsOpacity(SharedPreferences prefs) {
         int tmp = (int) (prefs.getFloat(KEY_PREF_ALL_APPS_OPACITY, 1f) * 255);
-        mLauncher.getAllAppsController().setAllAppsAlpha(tmp);
+        mLauncher.getAllAppsController().setAllAppsAlpha(mLauncher, tmp);
     }
 }
