@@ -1,4 +1,4 @@
-package ch.deletescape.lawnchair;
+package ch.deletescape.lawnchair.iconpack;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import ch.deletescape.lawnchair.Utilities;
+
 public class IconPackProvider {
     private static Map<String, IconPack> iconPacks = new ArrayMap<>();
 
@@ -28,6 +30,10 @@ public class IconPackProvider {
     public static IconPack loadAndGetIconPack(Context context) {
         SharedPreferences prefs = Utilities.getPrefs(context);
         String packageName = prefs.getString("pref_iconPackPackage", "");
+        return loadAndGetIconPack(context, packageName);
+    }
+
+    public static IconPack loadAndGetIconPack(Context context, String packageName) {
         if ("".equals(packageName)) {
             return null;
         }
@@ -37,12 +43,11 @@ public class IconPackProvider {
         return getIconPack(packageName);
     }
 
-    public static void loadIconPack(Context context, String packageName) {
+    private static void loadIconPack(Context context, String packageName) {
         if ("".equals(packageName)) {
             iconPacks.put("", null);
         }
         clearCache(context, packageName);
-        Map<String, String> appFilter;
         try {
             iconPacks.put(packageName, parseAppFilter(context, packageName));
         } catch (Exception e) {

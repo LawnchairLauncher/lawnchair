@@ -207,4 +207,5 @@
     <dimen name="widget_row_divider">2.0dip</dimen>
     <dimen name="folder_background_radius">2dp</dimen>
     <dimen name="all_apps_round_search_bar">56dp</dimen>
+    <dimen name="icon_preview_size">48dp</dimen>
 </resources>

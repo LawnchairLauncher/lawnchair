@@ -90,11 +90,13 @@
 
     <style name="SettingsTheme" parent="@android:style/Theme.Material.Light">
         <item name="android:colorAccent">@color/accent_material_light</item>
+        <item name="blurTintColor">#45ffffff</item>
     </style>
 
     <style name="SettingsTheme.Dark" parent="@android:style/Theme.Material">
         <item name="android:colorAccent">@color/accent_material_light</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="blurTintColor">#45212121</item>
     </style>
 
     <!-- Theme for the widget container. -->

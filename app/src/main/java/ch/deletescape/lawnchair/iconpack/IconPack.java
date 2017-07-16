@@ -1,4 +1,4 @@
-package ch.deletescape.lawnchair;
+package ch.deletescape.lawnchair.iconpack;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -7,10 +7,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.util.ArrayMap;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import ch.deletescape.lawnchair.FastBitmapDrawable;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.pixelify.PixelIconProvider;
 
