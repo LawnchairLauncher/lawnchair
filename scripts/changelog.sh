@@ -1,5 +1,3 @@
-TRAVIS_COMMIT_RANGE=d5adb5f..44b6ef2
-
 MERGE_PREFIX="Merge pull request"
 
 GIT_COMMIT_LOG="$(git log --format=%s $TRAVIS_COMMIT_RANGE)"
