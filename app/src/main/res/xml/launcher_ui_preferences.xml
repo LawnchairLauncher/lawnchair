@@ -37,6 +37,7 @@
     <SwitchPreference
         android:key="pref_enableBlur"
         android:title="@string/blur_pref_title"
+        android:summary="@string/blur_pref_summary"
         android:defaultValue="false"
         android:persistent="true" />
 

@@ -1,5 +1,6 @@
 package ch.deletescape.lawnchair.blur;
 
+import android.app.Activity;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
+import android.support.v4.graphics.ColorUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
@@ -25,6 +27,7 @@ import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.config.FeatureFlags;
+import ch.deletescape.lawnchair.iconpack.EditIconActivity;
 
 public class BlurWallpaperProvider {
     private final Context mContext;
@@ -269,6 +272,17 @@ public class BlurWallpaperProvider {
 
     public int getBlurRadius() {
         return mBlurRadius;
+    }
+
+    public static void applyBlurBackground(Activity activity) {
+        if (!isEnabled()) return;
+
+        int color = Utilities.resolveAttributeData(activity, R.attr.blurTintColor);
+        color = ColorUtils.setAlphaComponent(color, 220);
+
+        BlurDrawable drawable = BlurWallpaperProvider.getInstance().createDrawable();
+        drawable.setOverlayColor(color);
+        activity.findViewById(android.R.id.content).setBackground(drawable);
     }
 
     interface Listener {

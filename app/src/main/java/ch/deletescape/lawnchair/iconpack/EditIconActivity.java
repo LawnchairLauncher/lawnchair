@@ -13,7 +13,6 @@ import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -31,7 +30,6 @@ import ch.deletescape.lawnchair.AppInfo;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
-import ch.deletescape.lawnchair.blur.BlurDrawable;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
@@ -69,14 +67,7 @@ public class EditIconActivity extends Activity implements CustomIconAdapter.List
 
         setTitle(appInfo.originalTitle);
 
-        if (BlurWallpaperProvider.isEnabled()) {
-            int color = Utilities.resolveAttributeData(this, R.attr.blurTintColor);
-            color = ColorUtils.setAlphaComponent(color, 220);
-
-            BlurDrawable drawable = BlurWallpaperProvider.getInstance().createDrawable();
-            drawable.setOverlayColor(color);
-            findViewById(android.R.id.content).setBackground(drawable);
-        }
+        BlurWallpaperProvider.applyBlurBackground(this);
 
         RecyclerView iconRecyclerView = findViewById(R.id.iconRecyclerView);
         CustomIconAdapter iconAdapter = new CustomIconAdapter(this, mInfo, iconPacks);
@@ -154,19 +145,21 @@ public class EditIconActivity extends Activity implements CustomIconAdapter.List
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_PICK_ICON) {
-            try {
-                String dataUri = data.getData().toString();
-                if (dataUri.startsWith("file") && !isPermissionGranted()) {
-                    mPendingData = dataUri;
-                    ActivityCompat.requestPermissions(
-                            this,
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                            REQUEST_GRANT_PERMISSION);
-                    return;
+            if (resultCode == RESULT_OK) {
+                try {
+                    String dataUri = data.getData().toString();
+                    if (dataUri.startsWith("file") && !isPermissionGranted()) {
+                        mPendingData = dataUri;
+                        ActivityCompat.requestPermissions(
+                                this,
+                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                REQUEST_GRANT_PERMISSION);
+                        return;
+                    }
+                    setAlternateIcon("uri/" + dataUri);
+                } catch (Exception e) {
+                    Toast.makeText(this, R.string.icon_pack_unsupported, Toast.LENGTH_SHORT).show();
                 }
-                setAlternateIcon("uri/" + dataUri);
-            } catch (Exception e) {
-                Toast.makeText(this, R.string.icon_pack_unsupported, Toast.LENGTH_SHORT).show();
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);

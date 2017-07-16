@@ -32,6 +32,7 @@ import ch.deletescape.lawnchair.DumbImportExportTask;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherFiles;
 import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 
 /**
@@ -43,6 +44,8 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
         FeatureFlags.applyDarkTheme(this);
 
         super.onCreate(savedInstanceState);
+
+        BlurWallpaperProvider.applyBlurBackground(this);
 
         if (savedInstanceState == null) {
             // Display the fragment as the main content.
