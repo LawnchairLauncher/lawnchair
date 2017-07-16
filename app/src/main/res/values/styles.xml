@@ -59,6 +59,7 @@
         <item name="roundSearchBarBgColor">#10000000</item>
         <item name="roundSearchBarDividerColor">#10111111</item>
         <item name="roundSearchBarHintColor">@color/quantum_panel_text_color</item>
+        <item name="roundSearchBarTextColor">#4c4c4c</item>
     </style>
 
     <style name="LauncherTheme.Dark" parent="@style/BaseLauncherTheme.Dark">
@@ -86,6 +87,7 @@
         <item name="roundSearchBarBgColor">#10ffffff</item>
         <item name="roundSearchBarDividerColor">#10eeeeee</item>
         <item name="roundSearchBarHintColor">@android:color/white</item>
+        <item name="roundSearchBarTextColor">@android:color/white</item>
     </style>
 
     <style name="Theme" parent="@style/LauncherTheme" />

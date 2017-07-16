@@ -147,5 +147,6 @@
     <attr name="roundSearchBarBgColor" format="color" />
     <attr name="roundSearchBarDividerColor" format="color" />
     <attr name="roundSearchBarHintColor" format="color" />
+    <attr name="roundSearchBarTextColor" format="color" />
 
 </resources>
