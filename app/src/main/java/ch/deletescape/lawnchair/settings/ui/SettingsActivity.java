@@ -40,9 +40,7 @@ import ch.deletescape.lawnchair.config.FeatureFlags;
 public class SettingsActivity extends Activity implements PreferenceFragment.OnPreferenceStartFragmentCallback {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FeatureFlags.loadDarkThemePreference(this);
-        if (FeatureFlags.useDarkTheme)
-            setTheme(R.style.SettingsTheme_Dark);
+        FeatureFlags.applyDarkTheme(this);
 
         super.onCreate(savedInstanceState);
 

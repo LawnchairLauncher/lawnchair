@@ -16,10 +16,12 @@
 
 package ch.deletescape.lawnchair.config;
 
+import android.app.Activity;
 import android.content.Context;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
+import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
 
 /**
  * Defines a set of flags used to control various launcher behaviors
@@ -160,5 +162,11 @@ public final class FeatureFlags {
 
     public static boolean useRoundSearchBar(Context context) {
         return Utilities.getPrefs(context).getBoolean(KEY_PREF_ROUND_SEARCH_BAR, false);
+    }
+
+    public static void applyDarkTheme(Activity activity) {
+        FeatureFlags.loadDarkThemePreference(activity);
+        if (FeatureFlags.useDarkTheme)
+            activity.setTheme(R.style.SettingsTheme_Dark);
     }
 }

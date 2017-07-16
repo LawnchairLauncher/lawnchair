@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
+import ch.deletescape.lawnchair.iconpack.EditIconActivity;
 
 
 public class EditAppDialog extends Dialog {
@@ -41,6 +43,7 @@ public class EditAppDialog extends Dialog {
         setContentView(R.layout.app_edit_dialog);
 
         final ComponentName component = info.componentName;
+        setTitle(info.originalTitle);
 
         title = findViewById(R.id.title);
         TextView packageName = findViewById(R.id.package_name);
@@ -53,6 +56,17 @@ public class EditAppDialog extends Dialog {
         packageName.setText(component.getPackageName());
         visibleState = !Utilities.isAppHidden(getContext(), component.flattenToString());
         visibility.setChecked(visibleState);
+
+        View.OnClickListener editIcon = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), EditIconActivity.class);
+                intent.putExtra("componentName", info.componentName);
+                intent.putExtra("userHandle", info.user);
+                getContext().startActivity(intent);
+            }
+        };
+        icon.setOnClickListener(editIcon);
 
         View.OnLongClickListener olcl = new View.OnLongClickListener() {
             @Override

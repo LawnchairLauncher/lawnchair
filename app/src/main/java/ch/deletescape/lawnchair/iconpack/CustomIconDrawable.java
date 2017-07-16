@@ -1,6 +1,5 @@
-package ch.deletescape.lawnchair;
+package ch.deletescape.lawnchair.iconpack;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;

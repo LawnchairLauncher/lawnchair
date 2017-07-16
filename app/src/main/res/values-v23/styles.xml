@@ -4,5 +4,6 @@
         <item name="android:colorPrimaryDark">#e0e0e0</item>
         <item name="android:colorAccent">@color/accent_material_light</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="blurTintColor">#45ffffff</item>
     </style>
 </resources>

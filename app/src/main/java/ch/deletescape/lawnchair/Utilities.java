@@ -71,6 +71,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.Executor;
@@ -83,7 +84,9 @@ import java.util.regex.Pattern;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.graphics.ShadowGenerator;
+import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.util.IconNormalizer;
+import ch.deletescape.lawnchair.util.PackageManagerHelper;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -962,5 +965,15 @@ public final class Utilities {
                     .append("\n");
         }
         return builder.toString();
+    }
+
+    public static void updatePackage(Context context, UserHandle userHandle, String packageName) {
+        if (!PackageManagerHelper.isAppEnabled(context.getPackageManager(), packageName, 0)) return;
+        LauncherAppState instance = LauncherAppState.getInstance();
+        instance.getModel().onPackageChanged(packageName, userHandle);
+        List queryForPinnedShortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(packageName, userHandle);
+        if (!queryForPinnedShortcuts.isEmpty()) {
+            instance.getModel().updatePinnedShortcuts(packageName, queryForPinnedShortcuts, userHandle);
+        }
     }
 }

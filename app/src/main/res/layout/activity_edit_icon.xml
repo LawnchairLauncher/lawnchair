@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ch.deletescape.lawnchair.iconpack.EditIconActivity"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/iconRecyclerView"
+        android:padding="16dp"
+        android:clipToPadding="false"
+        android:layout_width="match_parent"
+        android:layout_height="112dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="?android:attr/listDivider" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/iconPackRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

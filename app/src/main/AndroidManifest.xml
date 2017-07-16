@@ -22,7 +22,6 @@
         android:label="@string/permlab_write_settings"
         android:protectionLevel="signatureOrSystem" />
 
-
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
@@ -37,7 +36,7 @@
 
     <application
         android:name=".App"
-        android:backupAgent="ch.deletescape.lawnchair.LauncherBackupAgent"
+        android:backupAgent=".LauncherBackupAgent"
         android:fullBackupContent="@xml/backupscheme"
         android:fullBackupOnly="true"
         android:hardwareAccelerated="true"
@@ -46,9 +45,8 @@
         android:largeHeap="true"
         android:restoreAnyVersion="true"
         android:supportsRtl="true">
-
         <activity
-            android:name="ch.deletescape.lawnchair.Launcher"
+            android:name=".Launcher"
             android:clearTaskOnLaunch="true"
             android:configChanges="keyboard|keyboardHidden|navigation"
             android:enabled="true"
@@ -68,18 +66,17 @@
                 <category android:name="android.intent.category.MONKEY" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name="ch.deletescape.lawnchair.settings.ui.SettingsActivity"
+            android:name=".settings.ui.SettingsActivity"
             android:autoRemoveFromRecents="true"
             android:label="@string/settings_button_text"
             android:theme="@style/SettingsTheme">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="ch.deletescape.wallpaperpicker.WallpaperPickerActivity"
             android:finishOnCloseSystemDialogs="true"
@@ -88,10 +85,10 @@
             android:theme="@style/WallpaperTheme.Picker">
             <intent-filter>
                 <action android:name="android.intent.action.SET_WALLPAPER" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="ch.deletescape.wallpaperpicker.WallpaperCropActivity"
             android:finishOnCloseSystemDialogs="true"
@@ -100,34 +97,34 @@
             android:theme="@style/WallpaperTheme">
             <intent-filter>
                 <action android:name="android.service.wallpaper.CROP_AND_SET_WALLPAPER" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
 
         <provider
-            android:name="ch.deletescape.lawnchair.LauncherProvider"
+            android:name=".LauncherProvider"
             android:authorities="ch.deletescape.lawnchair.settings"
             android:exported="true"
             android:readPermission="ch.deletescape.lawnchair.permission.READ_SETTINGS"
             android:writePermission="ch.deletescape.lawnchair.permission.WRITE_SETTINGS" />
 
         <receiver
-            android:name="ch.deletescape.lawnchair.InstallShortcutReceiver"
+            android:name=".InstallShortcutReceiver"
             android:permission="com.android.launcher.permission.INSTALL_SHORTCUT">
             <intent-filter>
                 <action android:name="com.android.launcher.action.INSTALL_SHORTCUT" />
             </intent-filter>
         </receiver>
-
-        <receiver android:name="ch.deletescape.lawnchair.AppWidgetsRestoredReceiver">
+        <receiver android:name=".AppWidgetsRestoredReceiver">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_HOST_RESTORED" />
             </intent-filter>
         </receiver>
-
         <receiver
-            android:name="ch.deletescape.lawnchair.pixelify.WeatherUpdateReciever"
+            android:name=".pixelify.WeatherUpdateReciever"
             android:permission="android.permission.CAPTURE_AUDIO_HOTWORD">
             <intent-filter>
                 <action android:name="com.google.android.apps.nexuslauncher.updateweather" />
@@ -142,16 +139,18 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
-
         <service
-            android:name="ch.deletescape.lawnchair.dynamicui.ColorExtractionService"
-            android:label="@string/color_extraction_label"
+            android:name=".dynamicui.ColorExtractionService"
             android:exported="false"
+            android:label="@string/color_extraction_label"
             android:process=":color_extraction" />
 
         <meta-data
             android:name="android.nfc.disable_beam_default"
             android:value="true" />
 
+        <activity android:name=".iconpack.EditIconActivity"
+            android:theme="@style/SettingsTheme" />
     </application>
+
 </manifest>
