@@ -21,7 +21,7 @@
             android:inputType="text|textNoSuggestions|textCapWords"
             android:maxLines="1"
             android:scrollHorizontally="true"
-            android:textColor="#4c4c4c"
+            android:textColor="@android:color/white"
             android:hint="@string/all_apps_search_bar_hint"
             android:textColorHint="?attr/roundSearchBarHintColor"
             android:textSize="16sp" />
