@@ -27,7 +27,6 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     private static final SystemShortcut[] SYSTEM_SHORTCUTS = new SystemShortcut[]{
             new SystemShortcut.AppInfo(),
             new SystemShortcut.Widgets(),
-            new SystemShortcut.Delete(),
             new SystemShortcut.Edit()};
 
     private MultiHashMap<ComponentKey, List> mDeepShortcutMap = new MultiHashMap<>();

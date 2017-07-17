@@ -3510,6 +3510,11 @@ public class Workspace extends PagedView
     }
 
     @Override
+    public boolean supportsFlingToDelete() {
+        return true;
+    }
+
+    @Override
     public boolean supportsAppInfoDropTarget() {
         return true;
     }
@@ -3521,6 +3526,11 @@ public class Workspace extends PagedView
 
     @Override
     public void onFlingToDelete(DragObject d, PointF vec) {
+        // Do nothing
+    }
+
+    @Override
+    public void onFlingToDeleteCompleted() {
         // Do nothing
     }
 

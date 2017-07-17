@@ -409,7 +409,7 @@ public class DragController implements DragDriver.EventListener, TouchController
     }
 
     public void onDeferredEndFling(DropTarget.DragObject d) {
-        //d.dragSource.onFlingToDeleteCompleted();
+        d.dragSource.onFlingToDeleteCompleted();
     }
 
     /**
@@ -690,7 +690,7 @@ public class DragController implements DragDriver.EventListener, TouchController
      */
     private PointF isFlingingToDelete(DragSource source) {
         if (mFlingToDeleteDropTarget == null) return null;
-        /*if (!source.supportsFlingToDelete()) return null;
+        if (!source.supportsFlingToDelete()) return null;
 
         ViewConfiguration config = ViewConfiguration.get(mLauncher);
         mVelocityTracker.computeCurrentVelocity(1000, config.getScaledMaximumFlingVelocity());
@@ -703,7 +703,7 @@ public class DragController implements DragDriver.EventListener, TouchController
         }
         if (theta <= Math.toRadians(MAX_FLING_DEGREES)) {
             return vel;
-        }*/
+        }
         return null;
     }
 
