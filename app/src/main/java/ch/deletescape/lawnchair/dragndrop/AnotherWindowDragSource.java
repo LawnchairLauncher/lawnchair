@@ -35,6 +35,11 @@ public class AnotherWindowDragSource implements DragSource {
     }
 
     @Override
+    public boolean supportsFlingToDelete() {
+        return false;
+    }
+
+    @Override
     public boolean supportsAppInfoDropTarget() {
         return false;
     }
@@ -47,6 +52,10 @@ public class AnotherWindowDragSource implements DragSource {
     @Override
     public float getIntrinsicIconScaleFactor() {
         return 1;
+    }
+
+    @Override
+    public void onFlingToDeleteCompleted() {
     }
 
     @Override

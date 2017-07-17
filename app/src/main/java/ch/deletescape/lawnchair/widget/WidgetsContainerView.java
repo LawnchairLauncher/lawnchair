@@ -115,6 +115,11 @@ public class WidgetsContainerView extends BaseContainerView implements OnLongCli
     }
 
     @Override
+    public boolean supportsFlingToDelete() {
+        return false;
+    }
+
+    @Override
     public boolean supportsAppInfoDropTarget() {
         return true;
     }
@@ -127,6 +132,11 @@ public class WidgetsContainerView extends BaseContainerView implements OnLongCli
     @Override
     public float getIntrinsicIconScaleFactor() {
         return 0.0f;
+    }
+
+    @Override
+    public void onFlingToDeleteCompleted() {
+        // Do nothing
     }
 
     @Override

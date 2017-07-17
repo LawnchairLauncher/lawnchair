@@ -557,6 +557,11 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     }
 
     @Override
+    public boolean supportsFlingToDelete() {
+        return true;
+    }
+
+    @Override
     public boolean supportsAppInfoDropTarget() {
         return true;
     }
@@ -569,6 +574,11 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     @Override
     public float getIntrinsicIconScaleFactor() {
         return 1.0f;
+    }
+
+    @Override
+    public void onFlingToDeleteCompleted() {
+        // Do nothing
     }
 
     @Override
