@@ -202,7 +202,8 @@ public class AppsSearchContainerLayout extends FrameLayout
                 if (!dp.isVerticalBarLayout()) {
                     Rect insets = mLauncher.getDragLayer().getInsets();
                     int hotseatBottom = bottom - dp.hotseatBarBottomPaddingPx - insets.bottom;
-                    int searchTopMargin = insets.top + (mMinHeight - mSearchBoxHeight);
+                    int searchTopMargin = insets.top + (mMinHeight - mSearchBoxHeight)
+                            + ((MarginLayoutParams) getLayoutParams()).bottomMargin;
                     listener.onScrollRangeChanged(hotseatBottom - searchTopMargin);
                 } else {
                     listener.onScrollRangeChanged(bottom);
