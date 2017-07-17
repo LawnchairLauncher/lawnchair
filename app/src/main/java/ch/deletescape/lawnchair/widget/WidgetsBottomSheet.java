@@ -190,7 +190,7 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
     }
 
     private void setLightNavBar(boolean z) {
-        //this.mLauncher.activateLightSystemBars(z, false, true);
+        mLauncher.activateLightSystemBars(z, false, true);
     }
 
     @Override
