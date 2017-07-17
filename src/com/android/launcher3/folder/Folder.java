@@ -1359,8 +1359,11 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         }
         mContent.completePendingPageChanges();
 
-        if (d.dragInfo instanceof PendingAddShortcutInfo) {
-            PendingAddShortcutInfo pasi = (PendingAddShortcutInfo) d.dragInfo;
+        PendingAddShortcutInfo pasi = d.dragInfo instanceof PendingAddShortcutInfo
+                ? (PendingAddShortcutInfo) d.dragInfo : null;
+        ShortcutInfo pasiSi = pasi != null ? pasi.activityInfo.createShortcutInfo() : null;
+        if (pasi != null && pasiSi == null) {
+            // There is no ShortcutInfo, so we have to go through a configuration activity.
             pasi.container = mInfo.id;
             pasi.rank = mEmptyCellRank;
 
@@ -1370,7 +1373,9 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             mRearrangeOnClose = true;
         } else {
             final ShortcutInfo si;
-            if (d.dragInfo instanceof AppInfo) {
+            if (pasiSi != null) {
+                si = pasiSi;
+            } else if (d.dragInfo instanceof AppInfo) {
                 // Came from all apps -- make a copy.
                 si = ((AppInfo) d.dragInfo).makeShortcut();
             } else {

@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.widget;
 
-import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 
