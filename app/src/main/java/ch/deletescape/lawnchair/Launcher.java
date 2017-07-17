@@ -473,6 +473,13 @@ public class Launcher extends Activity
         return mAllAppsController;
     }
 
+    public void activateLightSystemBars(boolean activate, boolean statusBar, boolean navigationBar) {
+        if (statusBar)
+            activateLightStatusBar(activate);
+        if (navigationBar)
+            activateLightNavigationBar(activate);
+    }
+
     /**
      * Sets the status bar to be light or not. Light status bar means dark icons.
      *
@@ -488,6 +495,25 @@ public class Launcher extends Activity
             newSystemUiFlags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
         } else {
             newSystemUiFlags &= ~(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+        if (newSystemUiFlags != oldSystemUiFlags) {
+            final int systemUiFlags = newSystemUiFlags;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    getWindow().getDecorView().setSystemUiVisibility(systemUiFlags);
+                }
+            });
+        }
+    }
+
+    public void activateLightNavigationBar(boolean activate) {
+        int oldSystemUiFlags = getWindow().getDecorView().getSystemUiVisibility();
+        int newSystemUiFlags = oldSystemUiFlags;
+        if (activate) {
+            newSystemUiFlags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+        } else {
+            newSystemUiFlags &= ~(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }
         if (newSystemUiFlags != oldSystemUiFlags) {
             final int systemUiFlags = newSystemUiFlags;

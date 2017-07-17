@@ -92,5 +92,13 @@ public class ColorExtractionService extends IntentService {
                 .clearFilters()
                 .generate();
         extractedColors.updateStatusBarPalette(statusBarPalette);
+
+        int navigationBarHeight = getResources()
+                .getDimensionPixelSize(R.dimen.navigation_bar_height);
+        Palette navigationBarPalette = Palette.from(wallpaper)
+                .setRegion(0, wallpaper.getHeight() - navigationBarHeight, wallpaper.getWidth(), wallpaper.getHeight())
+                .clearFilters()
+                .generate();
+        extractedColors.updateNavigationBarPalette(navigationBarPalette);
     }
 }

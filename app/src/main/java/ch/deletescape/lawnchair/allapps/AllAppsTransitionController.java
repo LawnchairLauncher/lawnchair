@@ -282,11 +282,17 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 !mLauncher.getExtractedColors().isLightStatusBar() &&
                 allAppsAlpha < 52);
 
+        boolean darkNavigationBar = FeatureFlags.useDarkTheme ||
+                (BlurWallpaperProvider.isEnabled() &&
+                !mLauncher.getExtractedColors().isLightNavigationBar() &&
+                allAppsAlpha < 52);
+
         if (Utilities.ATLEAST_MARSHMALLOW) {
             // Use a light status bar (dark icons) if all apps is behind at least half of the status
             // bar. If the status bar is already light due to wallpaper extraction, keep it that way.
-            boolean forceLight = !darkStatusBar && shift <= mStatusBarHeight / 2;
-            mLauncher.activateLightStatusBar(forceLight);
+            boolean activate = shift <= mStatusBarHeight / 2;
+            mLauncher.activateLightStatusBar(!darkStatusBar && activate);
+            mLauncher.activateLightNavigationBar(!darkNavigationBar && activate);
         } else {
             mAppsView.setStatusBarHeight(darkStatusBar ? 0 : Math.max(mStatusBarHeight - shift, 0));
         }

@@ -137,8 +137,9 @@
          also happens to equal 19dp-->
 
     <!-- Other -->
-    <!-- Approximates the system status bar height. Not guaranteed to be always be correct. -->
+    <!-- Approximates the system bars height. Not guaranteed to be always be correct. -->
     <dimen name="status_bar_height">24dp</dimen>
+    <dimen name="navigation_bar_height">48dp</dimen>
 
     <!-- Wallpaper picker -->
     <dimen name="wallpaperThumbnailWidth">106.5dp</dimen>

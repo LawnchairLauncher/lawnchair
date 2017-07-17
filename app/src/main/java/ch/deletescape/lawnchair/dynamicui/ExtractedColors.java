@@ -54,6 +54,7 @@ public class ExtractedColors {
     private static final int HOTSEAT_DARK_VIBRANT_INDEX = 14;
     private static final int IS_SUPER_LIGHT = 15;
     private static final int IS_SUPER_DARK = 16;
+    public static final int NAVIGATION_BAR_INDEX = 17;
 
     public static final int NUM_COLOR_PROFILES = 16;
     private static final int VERSION = 7;
@@ -214,7 +215,16 @@ public class ExtractedColors {
                 DEFAULT_LIGHT : DEFAULT_DARK);
     }
 
+    public void updateNavigationBarPalette(Palette navigationBarPalette) {
+        setColorAtIndex(NAVIGATION_BAR_INDEX, ExtractionUtils.isSuperLight(navigationBarPalette) ?
+                DEFAULT_LIGHT : DEFAULT_DARK);
+    }
+
     public boolean isLightStatusBar() {
         return getColor(STATUS_BAR_INDEX, DEFAULT_LIGHT) == DEFAULT_LIGHT;
+    }
+
+    public boolean isLightNavigationBar() {
+        return getColor(NAVIGATION_BAR_INDEX, DEFAULT_LIGHT) == DEFAULT_LIGHT;
     }
 }
