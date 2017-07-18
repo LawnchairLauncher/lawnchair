@@ -209,4 +209,5 @@
     <dimen name="folder_background_radius">2dp</dimen>
     <dimen name="all_apps_round_search_bar">56dp</dimen>
     <dimen name="icon_preview_size">48dp</dimen>
+    <dimen name="icon_grid_column_width">80dp</dimen>
 </resources>

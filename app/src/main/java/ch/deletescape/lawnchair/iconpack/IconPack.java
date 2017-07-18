@@ -7,6 +7,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.util.ArrayMap;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +70,7 @@ public class IconPack {
         }
     }
 
-    private Drawable getDrawable(String name) {
+    public Drawable getDrawable(String name) {
         Resources res;
         try {
             res = mContext.getPackageManager().getResourcesForApplication(packageName);
@@ -102,5 +106,54 @@ public class IconPack {
 
     public List<String> getCalendars() {
         return mCalendars;
+    }
+
+    public List<IconEntry> getIconList() {
+        Map<String, IconEntry> iconMap = new HashMap<>();
+
+        for (Map.Entry<String, IconPackProvider.IconInfo> entry : icons.entrySet()) {
+            IconPackProvider.IconInfo iconInfo = entry.getValue();
+            if (iconInfo.drawable != null) {
+                iconMap.put(iconInfo.drawable, new IconEntry(this, iconInfo.drawable));
+            } else if (iconInfo.prefix != null) {
+                for (int i = 1; i <= 31; i++) {
+                    String resourceName = iconInfo.prefix + i;
+                    iconMap.put(resourceName, new IconEntry(this, resourceName));
+                }
+            }
+        }
+
+        List<IconEntry> iconList = new ArrayList<>();
+        for (Map.Entry<String, IconEntry> entry : iconMap.entrySet()) {
+            iconList.add(entry.getValue());
+        }
+
+        Collections.sort(iconList, new Comparator<IconEntry>() {
+            @Override
+            public int compare(IconEntry t1, IconEntry t2) {
+                return t1.resourceName.compareTo(t2.resourceName);
+            }
+        });
+
+        return iconList;
+    }
+
+    public static class IconEntry {
+
+        private final IconPack iconPack;
+        public final String resourceName;
+
+        private IconEntry(IconPack ip, String n) {
+            iconPack = ip;
+            resourceName = n;
+        }
+
+        public Drawable loadDrawable() {
+            return iconPack.getDrawable(resourceName);
+        }
+
+        public String getPackageName() {
+            return iconPack.getPackageName();
+        }
     }
 }
