@@ -61,7 +61,7 @@ public class PreviewItemManager {
     static final int INITIAL_ITEM_ANIMATION_DURATION = 350;
     private static final int FINAL_ITEM_ANIMATION_DURATION = 200;
 
-    private static final int SLIDE_IN_FIRST_PAGE_ANIMATION_DURATION_DELAY = 200;
+    private static final int SLIDE_IN_FIRST_PAGE_ANIMATION_DURATION_DELAY = 100;
     private static final int SLIDE_IN_FIRST_PAGE_ANIMATION_DURATION = 300;
     private static final int ITEM_SLIDE_IN_OUT_DISTANCE_PX = 200;
 
