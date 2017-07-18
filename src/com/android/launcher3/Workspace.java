@@ -1401,7 +1401,7 @@ public class Workspace extends PagedView
     @Override
     protected boolean shouldFlingForVelocity(int velocityX) {
         // When the overlay is moving, the fling or settle transition is controlled by the overlay.
-        return Float.compare(mOverlayTranslation, 0) == 0 &&
+        return Float.compare(Math.abs(mOverlayTranslation), 0) == 0 &&
                 super.shouldFlingForVelocity(velocityX);
     }
 
