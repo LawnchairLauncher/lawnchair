@@ -149,8 +149,13 @@
             android:name="android.nfc.disable_beam_default"
             android:value="true" />
 
-        <activity android:name=".iconpack.EditIconActivity"
+        <activity
+            android:name=".iconpack.EditIconActivity"
+            android:parentActivityName=".Launcher"
             android:theme="@style/SettingsTheme" />
+        <activity android:name=".iconpack.IconPickerActivity"
+            android:parentActivityName=".iconpack.EditIconActivity"
+            android:theme="@style/SettingsTheme"/>
     </application>
 
 </manifest>

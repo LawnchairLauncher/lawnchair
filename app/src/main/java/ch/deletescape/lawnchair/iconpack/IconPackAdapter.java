@@ -1,9 +1,6 @@
 package ch.deletescape.lawnchair.iconpack;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,15 +42,7 @@ class IconPackAdapter extends RecyclerView.Adapter<IconPackAdapter.Holder> {
     private void onSelect(int position) {
         if (mListener == null) return;
 
-        EditIconActivity.IconPackInfo iconPackInfo = mIconPacks.get(position);
-        ActivityInfo activityInfo = iconPackInfo.resolveInfo.activityInfo;
-
-        ComponentName componentName = new ComponentName(activityInfo.packageName, activityInfo.name);
-
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setComponent(componentName);
-        intent.setPackage(iconPackInfo.iconPack.getPackageName());
-        mListener.startPicker(intent);
+        mListener.startPicker(mIconPacks.get(position));
     }
 
     public void setListener(Listener listener) {
@@ -86,6 +75,6 @@ class IconPackAdapter extends RecyclerView.Adapter<IconPackAdapter.Holder> {
 
     interface Listener {
 
-        void startPicker(Intent intent);
+        void startPicker(EditIconActivity.IconPackInfo iconPackInfo);
     }
 }
