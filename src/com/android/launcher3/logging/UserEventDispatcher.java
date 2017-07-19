@@ -36,10 +36,8 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.LauncherEvent;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LogConfig;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -128,9 +126,6 @@ public class UserEventDispatcher {
     private boolean mIsInLandscapeMode;
     private String mUuidStr;
 
-    // Used for filling in predictedRank on {@link Target}s.
-    private List<ComponentKey> mPredictedApps;
-
     //                      APP_ICON    SHORTCUT    WIDGET
     // --------------------------------------------------------------
     // packageNameHash      required    optional    required
@@ -138,32 +133,11 @@ public class UserEventDispatcher {
     // intentHash                       required
     // --------------------------------------------------------------
 
-    protected LauncherEvent createLauncherEvent(View v, int intentHashCode, ComponentName cn) {
-        LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
-                newItemTarget(v), newTarget(Target.Type.CONTAINER));
-
-        // TODO: make idx percolate up the view hierarchy if needed.
-        int idx = 0;
-        if (fillInLogContainerData(event, v)) {
-            ItemInfo itemInfo = (ItemInfo) v.getTag();
-            event.srcTarget[idx].intentHash = intentHashCode;
-            if (cn != null) {
-                event.srcTarget[idx].packageNameHash = (mUuidStr + cn.getPackageName()).hashCode();
-                event.srcTarget[idx].componentHash = (mUuidStr + cn.flattenToString()).hashCode();
-                if (mPredictedApps != null) {
-                    event.srcTarget[idx].predictedRank = mPredictedApps.indexOf(
-                            new ComponentKey(cn, itemInfo.user));
-                }
-            }
-        }
-        return event;
-    }
-
     /**
      * Fills in the container data on the given event if the given view is not null.
      * @return whether container data was added.
      */
-    private boolean fillInLogContainerData(LauncherEvent event, @Nullable View v) {
+    protected boolean fillInLogContainerData(LauncherEvent event, @Nullable View v) {
         // Fill in grid(x,y), pageIndex of the child and container type of the parent
         LogContainerProvider provider = getLaunchProviderRecursive(v);
         if (v == null || !(v.getTag() instanceof ItemInfo) || provider == null) {
@@ -175,20 +149,31 @@ public class UserEventDispatcher {
     }
 
     public void logAppLaunch(View v, Intent intent) {
-        LauncherEvent ev = createLauncherEvent(v, intent.hashCode(), intent.getComponent());
-        if (ev == null) {
-            return;
+        LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
+                newItemTarget(v), newTarget(Target.Type.CONTAINER));
+
+        if (fillInLogContainerData(event, v)) {
+            fillIntentInfo(event.srcTarget[0], intent);
         }
-        dispatchUserEvent(ev, intent);
+        dispatchUserEvent(event, intent);
+    }
+
+    protected void fillIntentInfo(Target target, Intent intent) {
+        target.intentHash = intent.hashCode();
+        ComponentName cn = intent.getComponent();
+        if (cn != null) {
+            target.packageNameHash = (mUuidStr + cn.getPackageName()).hashCode();
+            target.componentHash = (mUuidStr + cn.flattenToString()).hashCode();
+        }
     }
 
     public void logNotificationLaunch(View v, PendingIntent intent) {
-        ComponentName dummyComponent = new ComponentName(intent.getCreatorPackage(), "--dummy--");
-        LauncherEvent ev = createLauncherEvent(v, intent.hashCode(), dummyComponent);
-        if (ev == null) {
-            return;
+        LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
+                newItemTarget(v), newTarget(Target.Type.CONTAINER));
+        if (fillInLogContainerData(event, v)) {
+            event.srcTarget[0].packageNameHash = (mUuidStr + intent.getCreatorPackage()).hashCode();
         }
-        dispatchUserEvent(ev, null);
+        dispatchUserEvent(event, null);
     }
 
     public void logActionCommand(int command, int containerType) {
@@ -273,10 +258,6 @@ public class UserEventDispatcher {
         resetElapsedContainerMillis();
     }
 
-    public void setPredictedApps(List<ComponentKey> predictedApps) {
-        mPredictedApps = predictedApps;
-    }
-
     /* Currently we are only interested in whether this event happens or not and don't
     * care about which screen moves to where. */
     public void logOverviewReorder() {
@@ -348,7 +329,10 @@ public class UserEventDispatcher {
     }
 
     private static String getTargetsStr(Target[] targets) {
-        return "child:" + LoggerUtils.getTargetStr(targets[0]) +
-                (targets.length > 1 ? "\tparent:" + LoggerUtils.getTargetStr(targets[1]) : "");
+        String result = "child:" + LoggerUtils.getTargetStr(targets[0]);
+        for (int i = 1; i < targets.length; i++) {
+            result += "\tparent:" + LoggerUtils.getTargetStr(targets[i]);
+        }
+        return result;
     }
 }
