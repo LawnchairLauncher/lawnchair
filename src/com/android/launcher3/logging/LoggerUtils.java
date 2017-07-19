@@ -25,6 +25,7 @@ import com.android.launcher3.InfoDropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.UninstallDropTarget;
+import com.android.launcher3.userevent.nano.LauncherLogExtensions.TargetExtension;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
@@ -156,6 +157,13 @@ public class LoggerUtils {
         } else if (v instanceof DeleteDropTarget) {
             t.controlType = ControlType.REMOVE_TARGET;
         }
+        return t;
+    }
+
+    public static Target newTarget(int targetType, TargetExtension extension) {
+        Target t = new Target();
+        t.type = targetType;
+        t.extension = extension;
         return t;
     }
 
