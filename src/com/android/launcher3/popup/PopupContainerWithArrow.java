@@ -399,6 +399,24 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         openAnim.start();
     }
 
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        DragLayer dragLayer = mLauncher.getDragLayer();
+        if (getTranslationX() + l < 0 ||
+                getTranslationX() + l + getMeasuredWidth() > dragLayer.getWidth()) {
+            // If we are still off screen, center horizontally too.
+            mGravity |= Gravity.CENTER_HORIZONTAL;
+        }
+
+        if (Gravity.isHorizontal(mGravity)) {
+            setX(dragLayer.getWidth() / 2 - getMeasuredWidth() / 2);
+        }
+        if (Gravity.isVertical(mGravity)) {
+            setY(dragLayer.getHeight() / 2 - getMeasuredHeight() / 2);
+        }
+    }
+
     /**
      * Returns the point at which the center of the arrow merges with the first popup item.
      */
@@ -517,21 +535,8 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             mIsAboveIcon = true;
         }
 
-        if (x < dragLayer.getLeft() || x + width > dragLayer.getRight()) {
-            // If we are still off screen, center horizontally too.
-            mGravity |= Gravity.CENTER_HORIZONTAL;
-        }
-
-        if (Gravity.isHorizontal(mGravity)) {
-            setX(dragLayer.getWidth() / 2 - getMeasuredWidth() / 2);
-        } else {
-            setX(x);
-        }
-        if (Gravity.isVertical(mGravity)) {
-            setY(dragLayer.getHeight() / 2 - getMeasuredHeight() / 2);
-        } else {
-            setY(y);
-        }
+        setX(x);
+        setY(y);
     }
 
     private boolean isAlignedWithStart() {
