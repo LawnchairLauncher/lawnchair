@@ -1,5 +1,6 @@
 package com.android.launcher3.touch;
 
+import static android.view.MotionEvent.INVALID_POINTER_ID;
 import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -23,6 +24,8 @@ public class SwipeDetector {
 
     private static final float ANIMATION_DURATION = 1200;
     private static final float FAST_FLING_PX_MS = 10;
+
+    protected int mActivePointerId = INVALID_POINTER_ID;
 
     /**
      * The minimum release velocity in pixels per millisecond that triggers fling..
@@ -97,7 +100,8 @@ public class SwipeDetector {
     private long mCurrentMillis;
 
     private float mVelocity;
-    private float mLastDisplacement;
+    private float mLastDisplacementX;
+    private float mLastDisplacementY;
     private float mDisplacementY;
     private float mDisplacementX;
 
@@ -149,11 +153,13 @@ public class SwipeDetector {
     }
 
     public boolean onTouchEvent(MotionEvent ev) {
-        switch (ev.getAction()) {
+        switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 mDownX = ev.getX();
                 mDownY = ev.getY();
-                mLastDisplacement = 0;
+                mActivePointerId = ev.getPointerId(0);
+                mLastDisplacementX = 0;
+                mLastDisplacementY = 0;
                 mDisplacementY = 0;
                 mVelocity = 0;
 
@@ -161,9 +167,26 @@ public class SwipeDetector {
                     setState(ScrollState.DRAGGING);
                 }
                 break;
+            //case MotionEvent.ACTION_POINTER_DOWN:
+            case MotionEvent.ACTION_POINTER_UP:
+                int ptrIdx = (ev.getActionIndex() & MotionEvent.ACTION_POINTER_INDEX_MASK) >>
+                        MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+                int ptrId = ev.getPointerId(ptrIdx);
+                if (ptrId == mActivePointerId) {
+                    final int newPointerIdx = ptrIdx == 0 ? 1 : 0;
+                    mDownX = ev.getX(newPointerIdx) - mLastDisplacementX;
+                    mDownY = ev.getY(newPointerIdx) - mLastDisplacementY;
+                    mActivePointerId = ev.getPointerId(newPointerIdx);
+                }
+                break;
             case MotionEvent.ACTION_MOVE:
-                mDisplacementX = ev.getX() - mDownX;
-                mDisplacementY = ev.getY() - mDownY;
+                int pointerIndex = ev.findPointerIndex(mActivePointerId);
+                if (pointerIndex == INVALID_POINTER_ID) {
+                    break;
+                }
+                mDisplacementX = ev.getX(pointerIndex) - mDownX;
+                mDisplacementY = ev.getY(pointerIndex) - mDownY;
+
                 computeVelocity(ev);
 
                 // handle state and listener calls.
@@ -186,8 +209,12 @@ public class SwipeDetector {
                 break;
         }
         // Do house keeping.
-        mLastDisplacement = mDisplacementY;
-        mLastY = ev.getY();
+        mLastDisplacementX = mDisplacementX;
+        mLastDisplacementY = mDisplacementY;
+        int pointerIndex = ev.findPointerIndex(mActivePointerId);
+        if (pointerIndex != INVALID_POINTER_ID) {
+            mLastY = ev.getY(pointerIndex);
+        }
         return true;
     }
 
@@ -215,7 +242,7 @@ public class SwipeDetector {
     }
 
     private boolean reportDragging() {
-        float delta = mDisplacementY - mLastDisplacement;
+        float delta = mDisplacementY - mLastDisplacementY;
         if (delta != 0) {
             if (DBG) {
                 Log.d(TAG, String.format("onDrag disp=%.1f, velocity=%.1f",
