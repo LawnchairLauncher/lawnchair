@@ -49,7 +49,7 @@ public class DeepShortcutManagerNative extends DeepShortcutManager {
 
     @Override
     public List<ShortcutInfoCompat> queryForShortcutsContainer(ComponentName componentName, List<String> list, UserHandle userHandle) {
-        return query(ShortcutQuery.FLAG_MATCH_DYNAMIC | ShortcutQuery.FLAG_MATCH_PINNED,
+        return query(ShortcutQuery.FLAG_MATCH_DYNAMIC | ShortcutQuery.FLAG_MATCH_MANIFEST,
                 componentName.getPackageName(), componentName, list, userHandle);
     }
 
