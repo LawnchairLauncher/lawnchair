@@ -436,7 +436,8 @@ public class DeviceProfile {
         // Since we are only concerned with the overall padding, layout direction does
         // not matter.
         Point padding = getTotalWorkspacePadding();
-        result.x = calculateCellWidth(availableWidthPx - padding.x, inv.numColumns);
+        int cellPadding = cellLayoutPaddingLeftRightPx * 2;
+        result.x = calculateCellWidth(availableWidthPx - padding.x - cellPadding, inv.numColumns);
         result.y = calculateCellHeight(availableHeightPx - padding.y, inv.numRows);
         return result;
     }
