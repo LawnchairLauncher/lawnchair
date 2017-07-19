@@ -85,6 +85,7 @@ import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.graphics.ShadowGenerator;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
+import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 import ch.deletescape.lawnchair.util.IconNormalizer;
 import ch.deletescape.lawnchair.util.PackageManagerHelper;
 
@@ -971,7 +972,7 @@ public final class Utilities {
         if (!PackageManagerHelper.isAppEnabled(context.getPackageManager(), packageName, 0)) return;
         LauncherAppState instance = LauncherAppState.getInstance();
         instance.getModel().onPackageChanged(packageName, userHandle);
-        List queryForPinnedShortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(packageName, userHandle);
+        List<ShortcutInfoCompat> queryForPinnedShortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(packageName, userHandle);
         if (!queryForPinnedShortcuts.isEmpty()) {
             instance.getModel().updatePinnedShortcuts(packageName, queryForPinnedShortcuts, userHandle);
         }
