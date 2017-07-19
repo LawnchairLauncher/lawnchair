@@ -30,19 +30,22 @@ import android.view.View;
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.DrawableFactory;
+import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
 import java.util.List;
 
 /**
  * A RecyclerView with custom fast scroll support for the all apps view.
  */
-public class AllAppsRecyclerView extends BaseRecyclerView {
+public class AllAppsRecyclerView extends BaseRecyclerView implements LogContainerProvider {
 
     private AlphabeticalAppsList mApps;
     private AllAppsFastScrollHelper mFastScrollHelper;
@@ -232,9 +235,10 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         updateEmptySearchBackgroundBounds();
     }
 
-    public int getContainerType(View v) {
+    @Override
+    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
         if (mApps.hasFilter()) {
-            return ContainerType.SEARCHRESULT;
+            targetParent.containerType = ContainerType.SEARCHRESULT;
         } else {
             if (v instanceof BubbleTextView) {
                 BubbleTextView icon = (BubbleTextView) v;
@@ -243,11 +247,13 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                     List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
                     AlphabeticalAppsList.AdapterItem item = items.get(position);
                     if (item.viewType == AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON) {
-                        return ContainerType.PREDICTION;
+                        targetParent.containerType = ContainerType.PREDICTION;
+                        target.predictedRank = item.rowAppIndex;
+                        return;
                     }
                 }
             }
-            return ContainerType.ALLAPPS;
+            targetParent.containerType = ContainerType.ALLAPPS;
         }
     }
 

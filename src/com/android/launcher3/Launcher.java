@@ -3049,7 +3049,6 @@ public class Launcher extends BaseActivity
             List<ComponentKey> apps = mLauncherCallbacks.getPredictedApps();
             if (apps != null) {
                 mAppsView.setPredictedApps(apps);
-                getUserEventDispatcher().setPredictedApps(apps);
             }
         }
     }
