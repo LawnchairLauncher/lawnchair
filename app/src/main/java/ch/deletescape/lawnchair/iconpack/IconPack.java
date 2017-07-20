@@ -1,6 +1,7 @@
 package ch.deletescape.lawnchair.iconpack;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -70,10 +71,17 @@ public class IconPack {
         }
     }
 
+    private Resources getResources() throws PackageManager.NameNotFoundException {
+        return mContext.getPackageManager().getResourcesForApplication(packageName);
+    }
+
+    private boolean iconExists(Resources res, String name) {
+        return res.getIdentifier(name, "drawable", packageName) != 0;
+    }
+
     public Drawable getDrawable(String name) {
-        Resources res;
         try {
-            res = mContext.getPackageManager().getResourcesForApplication(packageName);
+            Resources res = getResources();
             int resourceId = res.getIdentifier(name, "drawable", packageName);
             if (0 != resourceId) {
                 Bitmap b = BitmapFactory.decodeResource(res, resourceId);
@@ -110,32 +118,40 @@ public class IconPack {
 
     public List<IconEntry> getIconList() {
         Map<String, IconEntry> iconMap = new HashMap<>();
+        try {
+            Resources res = getResources();
 
-        for (Map.Entry<String, IconPackProvider.IconInfo> entry : icons.entrySet()) {
-            IconPackProvider.IconInfo iconInfo = entry.getValue();
-            if (iconInfo.drawable != null) {
-                iconMap.put(iconInfo.drawable, new IconEntry(this, iconInfo.drawable));
-            } else if (iconInfo.prefix != null) {
-                for (int i = 1; i <= 31; i++) {
-                    String resourceName = iconInfo.prefix + i;
-                    iconMap.put(resourceName, new IconEntry(this, resourceName));
+            for (Map.Entry<String, IconPackProvider.IconInfo> entry : icons.entrySet()) {
+                IconPackProvider.IconInfo iconInfo = entry.getValue();
+                if (iconInfo.drawable != null) {
+                    if (iconExists(res, iconInfo.drawable))
+                        iconMap.put(iconInfo.drawable, new IconEntry(this, iconInfo.drawable));
+                } else if (iconInfo.prefix != null) {
+                    for (int i = 1; i <= 31; i++) {
+                        String resourceName = iconInfo.prefix + i;
+                        if (iconExists(res, resourceName))
+                            iconMap.put(resourceName, new IconEntry(this, resourceName));
+                    }
                 }
             }
-        }
 
-        List<IconEntry> iconList = new ArrayList<>();
-        for (Map.Entry<String, IconEntry> entry : iconMap.entrySet()) {
-            iconList.add(entry.getValue());
-        }
-
-        Collections.sort(iconList, new Comparator<IconEntry>() {
-            @Override
-            public int compare(IconEntry t1, IconEntry t2) {
-                return t1.resourceName.compareTo(t2.resourceName);
+            List<IconEntry> iconList = new ArrayList<>();
+            for (Map.Entry<String, IconEntry> entry : iconMap.entrySet()) {
+                iconList.add(entry.getValue());
             }
-        });
 
-        return iconList;
+            Collections.sort(iconList, new Comparator<IconEntry>() {
+                @Override
+                public int compare(IconEntry t1, IconEntry t2) {
+                    return t1.resourceName.compareTo(t2.resourceName);
+                }
+            });
+
+            return iconList;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return Collections.EMPTY_LIST;
     }
 
     public static class IconEntry {
