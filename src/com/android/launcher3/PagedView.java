@@ -48,6 +48,7 @@ import android.view.animation.Interpolator;
 
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.pageindicators.PageIndicator;
+import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 
@@ -68,10 +69,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     public static final int PAGE_SNAP_ANIMATION_DURATION = 750;
     protected static final int SLOW_PAGE_SNAP_ANIMATION_DURATION = 950;
 
-    // Overscroll constants
+    // OverScroll constants
     private final static int OVERSCROLL_PAGE_SNAP_ANIMATION_DURATION = 270;
-    private static final float OVERSCROLL_ACCELERATE_FACTOR = 2;
-    private static final float OVERSCROLL_DAMP_FACTOR = 0.07f;
 
     private static final float RETURN_TO_ORIGINAL_PAGE_THRESHOLD = 0.33f;
     // The page is moved more than halfway, automatically move to the next page on touch up.
@@ -188,7 +187,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     // Convenience/caching
     private static final Matrix sTmpInvMatrix = new Matrix();
     private static final float[] sTmpPoint = new float[2];
-    private static final int[] sTmpIntPoint = new int[2];
     private static final Rect sTmpRect = new Rect();
 
     protected final Rect mInsets = new Rect();
@@ -233,8 +231,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         mMinSnapVelocity = (int) (MIN_SNAP_VELOCITY * density);
         setOnHierarchyChangeListener(this);
         setWillNotDraw(false);
-
-        int edgeEffectColor = Themes.getAttrColor(getContext(), android.R.attr.colorEdgeEffect);
     }
 
     protected void setDefaultInterpolator(Interpolator interpolator) {
@@ -1305,29 +1301,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
     }
 
-    // This curve determines how the effect of scrolling over the limits of the page dimishes
-    // as the user pulls further and further from the bounds
-    private float overScrollInfluenceCurve(float f) {
-        f -= 1.0f;
-        return f * f * f + 1.0f;
-    }
-
-    protected float acceleratedOverFactor(float amount) {
-        int screenSize = getViewportWidth();
-
-        // We want to reach the max over scroll effect when the user has
-        // over scrolled half the size of the screen
-        float f = OVERSCROLL_ACCELERATE_FACTOR * (amount / screenSize);
-
-        if (Float.compare(f, 0f) == 0) return 0;
-
-        // Clamp this factor, f, to -1 < f < 1
-        if (Math.abs(f) >= 1) {
-            f /= Math.abs(f);
-        }
-        return f;
-    }
-
     // While layout transitions are occurring, a child's position may stray from its baseline
     // position. This method returns the magnitude of this stray at any given time.
     public int getLayoutTransitionOffsetForPage(int index) {
@@ -1348,20 +1321,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     protected void dampedOverScroll(float amount) {
-        int screenSize = getViewportWidth();
+        if (Float.compare(amount, 0f) == 0) return;
 
-        float f = (amount / screenSize);
-
-        if (Float.compare(f, 0f) == 0) return;
-
-        f = f / (Math.abs(f)) * (overScrollInfluenceCurve(Math.abs(f)));
-
-        // Clamp this factor, f, to -1 < f < 1
-        if (Math.abs(f) >= 1) {
-            f /= Math.abs(f);
-        }
-
-        int overScrollAmount = (int) Math.round(OVERSCROLL_DAMP_FACTOR * f * screenSize);
+        int overScrollAmount = OverScroll.dampedScroll(amount, getViewportWidth());
         if (amount < 0) {
             mOverScrollX = overScrollAmount;
             super.scrollTo(mOverScrollX, getScrollY());
@@ -1374,14 +1336,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     protected void overScroll(float amount) {
         dampedOverScroll(amount);
-    }
-
-    protected float maxOverScroll() {
-        // Using the formula in overScroll, assuming that f = 1.0 (which it should generally not
-        // exceed). Used to find out how much extra wallpaper we need for the over scroll effect
-        float f = 1.0f;
-        f = f / (Math.abs(f)) * (overScrollInfluenceCurve(Math.abs(f)));
-        return OVERSCROLL_DAMP_FACTOR * f;
     }
 
     /**
