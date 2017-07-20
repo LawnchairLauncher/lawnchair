@@ -108,6 +108,10 @@
         <item name="colorSecondary">@color/secondary_color</item>
     </style>
 
+    <style name="WidgetContainerTheme.Dark" parent="@style/SettingsTheme.Dark">
+        <item name="colorSecondary">@color/secondary_color</item>
+    </style>
+
     <!-- Overscroll effect -->
     <style name="CustomOverscroll.Light" parent="@android:style/Theme.Material.Light">
         <item name="android:colorEdgeEffect">@color/folder_edge_effect_color</item>

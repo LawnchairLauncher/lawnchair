@@ -4,6 +4,10 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
@@ -32,6 +36,7 @@ import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.allapps.VerticalPullDetector;
 import ch.deletescape.lawnchair.anim.PropertyListBuilder;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragController;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.model.WidgetItem;
@@ -50,6 +55,10 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
     private float mTranslationYRange;
     private VerticalPullDetector mVerticalPullDetector;
     private boolean mWasNavBarLight;
+
+    private int mNavHeight;
+    private Paint mNavPaint;
+    private Path mNavPath;
 
     final class C05151 extends AnimatorListenerAdapter {
         C05151() {
@@ -79,7 +88,7 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
     }
 
     public WidgetsBottomSheet(Context context, AttributeSet attributeSet, int i) {
-        super(new ContextThemeWrapper(context, R.style.WidgetContainerTheme), attributeSet, i);
+        super(new ContextThemeWrapper(context, getTheme()), attributeSet, i);
         setWillNotDraw(false);
         this.mLauncher = Launcher.getLauncher(context);
         this.mOpenCloseAnimator = LauncherAnimUtils.ofPropertyValuesHolder(this);
@@ -88,6 +97,18 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
         this.mInsets = new Rect();
         this.mVerticalPullDetector = new VerticalPullDetector(context);
         this.mVerticalPullDetector.setListener(this);
+
+        if (!Utilities.isAtLeastO() && !FeatureFlags.useDarkTheme) {
+            setWillNotDraw(false);
+            mNavHeight = getResources().getDimensionPixelSize(R.dimen.navigation_bar_height);
+            mNavPaint = new Paint();
+            mNavPaint.setColor(Color.BLACK);
+            mNavPath = new Path();
+        }
+    }
+
+    private static int getTheme() {
+        return FeatureFlags.useDarkTheme ? R.style.WidgetContainerTheme_Dark : R.style.WidgetContainerTheme;
     }
 
     @Override
@@ -257,5 +278,25 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
 
     @Override
     public void onDragEnd() {
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+
+        if (mNavPath == null) return;
+        int width = r - l, top = b - t - mNavHeight;
+        mNavPath.moveTo(0, top);
+        mNavPath.lineTo(width, top);
+        mNavPath.lineTo(width, b - t);
+        mNavPath.lineTo(0, b - t);
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        super.draw(canvas);
+
+        if (mNavPath == null) return;
+        canvas.drawPath(mNavPath, mNavPaint);
     }
 }

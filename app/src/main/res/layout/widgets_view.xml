@@ -5,7 +5,6 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:descendantFocusability="afterDescendants"
-    android:theme="@style/WidgetContainerTheme"
     launcher:revealBackground="@drawable/round_rect_primary">
 
     <View

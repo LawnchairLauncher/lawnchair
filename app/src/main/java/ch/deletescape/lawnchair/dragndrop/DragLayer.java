@@ -69,7 +69,6 @@ import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.keyboard.ViewGroupFocusHelper;
-import ch.deletescape.lawnchair.popup.PopupContainerWithArrow;
 import ch.deletescape.lawnchair.util.Thunk;
 import ch.deletescape.lawnchair.util.TouchController;
 
@@ -252,7 +251,7 @@ public class DragLayer extends InsettableFrameLayout {
                 } else if (!isEventOverDropTargetBar(ev)) {
                     return true;
                 }
-            } else if (topOpenView instanceof PopupContainerWithArrow) {
+            } else {
                 mPreventAllApps = true;
                 return false;
             }

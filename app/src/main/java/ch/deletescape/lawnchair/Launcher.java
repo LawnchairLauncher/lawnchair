@@ -126,6 +126,7 @@ import ch.deletescape.lawnchair.util.Thunk;
 import ch.deletescape.lawnchair.util.ViewOnDrawExecutor;
 import ch.deletescape.lawnchair.widget.PendingAddWidgetInfo;
 import ch.deletescape.lawnchair.widget.WidgetHostViewLoader;
+import ch.deletescape.lawnchair.widget.WidgetsBottomSheet;
 import ch.deletescape.lawnchair.widget.WidgetsContainerView;
 
 import com.microsoft.azure.mobile.MobileCenter;
@@ -990,7 +991,7 @@ public class Launcher extends Activity
                 closeFolder();
 
                 // Close any shortcuts containers
-                closeShortcutsContainer();
+                closeFloatingContainer();
 
                 // Stop resizing any widgets
                 mWorkspace.exitWidgetResizeMode();
@@ -1611,7 +1612,7 @@ public class Launcher extends Activity
             mWorkspace.exitWidgetResizeMode();
 
             closeFolder(alreadyOnHome);
-            closeShortcutsContainer(alreadyOnHome);
+            closeFloatingContainer(alreadyOnHome);
             exitSpringLoadedDragMode();
 
             // If we are already on home, then just animate back to the workspace,
@@ -1695,7 +1696,7 @@ public class Launcher extends Activity
         // this state is reflected.
         // TODO: Move folderInfo.isOpened out of the model and make it a UI state.
         closeFolder(false);
-        closeShortcutsContainer(false);
+        closeFloatingContainer(false);
 
         if (mPendingRequestArgs != null) {
             outState.putParcelable(RUNTIME_STATE_PENDING_REQUEST_ARGS, mPendingRequestArgs);
@@ -2693,23 +2694,14 @@ public class Launcher extends Activity
         getDragLayer().sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
     }
 
-    public void closeShortcutsContainer() {
-        closeShortcutsContainer(true);
+    public void closeFloatingContainer() {
+        closeFloatingContainer(true);
     }
 
-    public void closeShortcutsContainer(boolean animate) {
+    public void closeFloatingContainer(boolean animate) {
         AbstractFloatingView topOpenView = AbstractFloatingView.getTopOpenView(this);
-        if (topOpenView instanceof PopupContainerWithArrow) {
+        if (topOpenView != null)
             topOpenView.close(animate);
-        }
-        /*DeepShortcutsContainer deepShortcutsContainer = getOpenShortcutsContainer();
-        if (deepShortcutsContainer != null) {
-            if (animate) {
-                deepShortcutsContainer.animateClose();
-            } else {
-                deepShortcutsContainer.close();
-            }
-        }*/
     }
 
     public View getTopFloatingView() {
@@ -2960,7 +2952,7 @@ public class Launcher extends Activity
         mUserPresent = false;
         updateAutoAdvanceState();
         closeFolder();
-        closeShortcutsContainer();
+        closeFloatingContainer();
 
         // Send an accessibility event to announce the context change
         getWindow().getDecorView()
