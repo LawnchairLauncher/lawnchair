@@ -79,12 +79,9 @@
     <string name="icon_badging_title" msgid="874121399231955394">"સૂચના બિંદુઓ"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"ચાલુ"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"બંધ"</string>
-    <!-- no translation found for title_missing_notification_access (7503287056163941064) -->
-    <skip />
-    <!-- no translation found for msg_missing_notification_access (281113995110910548) -->
-    <skip />
-    <!-- no translation found for title_change_settings (1376365968844349552) -->
-    <skip />
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"નોટિફિકેશનનો ઍક્સેસની જરૂરી છે"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"નોટિફિકેશન માટેનું ચિહ્ન બતાવવા હેતુ, <xliff:g id="NAME">%1$s</xliff:g> માટેની ઍપ્લિકેશન નોટિફિકેશન ચાલુ કરો"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"સેટિંગ્સ બદલો"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"હોમ સ્ક્રીન પર આઇકન ઉમેરો"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"નવી ઍપ્લિકેશનો માટે"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"આઇકનનો આકાર બદલો"</string>
