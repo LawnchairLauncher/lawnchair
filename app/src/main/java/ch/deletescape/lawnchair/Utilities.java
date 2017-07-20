@@ -764,7 +764,7 @@ public final class Utilities {
     }
 
     public static boolean isAtLeastO() {
-        return Build.VERSION.SDK_INT >= 26;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
     }
 
     /**
