@@ -182,8 +182,8 @@
     <dimen name="popup_arrow_vertical_offset">-2.0dip</dimen>
     <dimen name="popup_arrow_horizontal_center_start">28.0dip</dimen>
     <dimen name="popup_arrow_horizontal_center_end">24.0dip</dimen>
-    <dimen name="popup_arrow_horizontal_offset_start">23.0dip</dimen>
-    <dimen name="popup_arrow_horizontal_offset_end">19.0dip</dimen>
+    <dimen name="popup_arrow_horizontal_offset_start">19.0dip</dimen>
+    <dimen name="popup_arrow_horizontal_offset_end">23.0dip</dimen>
     <dimen name="popup_arrow_corner_radius">2.0dip</dimen>
     <dimen name="bg_popup_item_width">220.0dip</dimen>
     <dimen name="bg_popup_item_height">56.0dip</dimen>
