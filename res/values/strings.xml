@@ -59,11 +59,11 @@
 
     <!-- All Apps -->
     <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
-    <string name="all_apps_search_bar_hint">Search Apps</string>
+    <string name="all_apps_search_bar_hint">Search apps</string>
     <!-- Loading apps text. [CHAR_LIMIT=50] -->
-    <string name="all_apps_loading_message">Loading Apps&#8230;</string>
+    <string name="all_apps_loading_message">Loading apps&#8230;</string>
     <!-- No-search-results text. [CHAR_LIMIT=50] -->
-    <string name="all_apps_no_search_results">No Apps found matching \"<xliff:g id="query" example="Android">%1$s</xliff:g>\"</string>
+    <string name="all_apps_no_search_results">No apps found matching \"<xliff:g id="query" example="Android">%1$s</xliff:g>\"</string>
     <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
     <string name="all_apps_search_market_message">Search for more apps</string>
 
