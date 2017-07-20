@@ -41,7 +41,10 @@ android {
             res.srcDirs = ['res']
             java.srcDirs = ['src', 'src_flags']
             manifest.srcFile 'AndroidManifest-common.xml'
-            proto.srcDirs 'protos/'
+            proto {
+                srcDir 'protos/'
+                srcDir 'proto_overrides/'
+            }
         }
 
         androidTest {
@@ -92,6 +95,7 @@ protobuf {
                 task.builtins {
                     remove java
                     javanano {
+                        option "java_package=launcher_log_extension.proto|com.android.launcher3.userevent.nano"
                         option "java_package=launcher_log.proto|com.android.launcher3.userevent.nano"
                         option "java_package=launcher_dump.proto|com.android.launcher3.model.nano"
                         option "enum_style=java"
