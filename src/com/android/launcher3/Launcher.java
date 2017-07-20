@@ -274,6 +274,7 @@ public class Launcher extends BaseActivity
     private boolean mHasFocus = false;
 
     private ObjectAnimator mScrimAnimator;
+    private boolean mShouldFadeInScrim;
 
     private PopupDataProvider mPopupDataProvider;
 
@@ -467,8 +468,12 @@ public class Launcher extends BaseActivity
             mLauncherCallbacks.onCreate(savedInstanceState);
         }
 
-        // Listen for broadcasts screen off
-        registerReceiver(mReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+        // Listen for broadcasts
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_USER_PRESENT); // When the device wakes up + keyguard is gone
+        registerReceiver(mReceiver, filter);
+        mShouldFadeInScrim = true;
 
         getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
                 Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
@@ -906,7 +911,7 @@ public class Launcher extends BaseActivity
             NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
         }
 
-        if (mIsResumeFromActionScreenOff && mDragLayer.getBackground() != null) {
+        if (mShouldFadeInScrim && mDragLayer.getBackground() != null) {
             if (mScrimAnimator != null) {
                 mScrimAnimator.cancel();
             }
@@ -923,6 +928,7 @@ public class Launcher extends BaseActivity
             mScrimAnimator.setStartDelay(getWindow().getTransitionBackgroundFadeDuration());
             mScrimAnimator.start();
         }
+        mShouldFadeInScrim = false;
     }
 
     @Override
@@ -1534,6 +1540,11 @@ public class Launcher extends BaseActivity
                     }
                 }
                 mIsResumeFromActionScreenOff = true;
+                mShouldFadeInScrim = true;
+            } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
+                // ACTION_USER_PRESENT is sent after onStart/onResume. This covers the case where
+                // the user unlocked and the Launcher is not in the foreground.
+                mShouldFadeInScrim = false;
             }
         }
     };
