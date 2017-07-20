@@ -28,10 +28,6 @@ public class DeepShortcutManagerNative extends DeepShortcutManager {
         mLauncherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
     }
 
-    public static boolean supportsShortcuts(ItemInfo itemInfo) {
-        return itemInfo.itemType == 0 && !itemInfo.isDisabled();
-    }
-
     @Override
     public boolean wasLastCallSuccess() {
         return mWasLastCallSuccess;

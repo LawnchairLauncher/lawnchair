@@ -32,9 +32,7 @@ public abstract class DeepShortcutManager {
     }
 
     public static boolean supportsShortcuts(ItemInfo itemInfo) {
-        if (Utilities.isNycMR1OrAbove())
-            return DeepShortcutManagerNative.supportsShortcuts(itemInfo);
-        return false;
+        return itemInfo.itemType == 0 && !itemInfo.isDisabled();
     }
 
     public abstract boolean wasLastCallSuccess();
