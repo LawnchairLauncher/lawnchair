@@ -90,6 +90,19 @@
         <item name="roundSearchBarTextColor">@android:color/white</item>
     </style>
 
+    <style name="LauncherTheme.Black" parent="LauncherTheme.Dark">
+        <item name="materialPanelBgColor">@android:color/black</item>
+        <item name="folderBgIntensity">0</item>
+        <item name="appPopupHeaderBgColor">@android:color/black</item>
+        <item name="appPopupBgColor">#ff101010</item>
+        <item name="allAppsContainerColor">@android:color/black</item>
+        <item name="allAppsContainerColorBlur">#00000000</item>
+        <item name="blurTintColor">#45000000</item>
+        <item name="notificationBeneathColor">#ff101010</item>
+        <item name="qsbBgColor">@android:color/black</item>
+        <item name="folderBgColorBlur">@android:color/black</item>
+    </style>
+
     <style name="Theme" parent="@style/LauncherTheme" />
 
     <style name="SettingsTheme" parent="@android:style/Theme.Material.Light">
@@ -103,6 +116,13 @@
         <item name="android:colorAccent">@color/accent_material_light</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <item name="blurTintColor">#45212121</item>
+    </style>
+
+    <style name="SettingsTheme.Black" parent="SettingsTheme.Dark">
+        <item name="android:colorPrimaryDark">@android:color/black</item>
+        <item name="android:colorPrimary">@android:color/black</item>
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:listDivider">@android:color/transparent</item>
     </style>
 
     <!-- Theme for the widget container. -->

@@ -18,6 +18,8 @@ package ch.deletescape.lawnchair.config;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
@@ -50,10 +52,10 @@ public final class FeatureFlags {
     private static final String KEY_PREF_ROUND_SEARCH_BAR = "pref_useRoundSearchBar";
     private static final String KEY_PREF_ENABLE_BACKPORT_SHORTCUTS = "pref_enableBackportShortcuts";
     private static final String KEY_PREF_SHOW_TOP_SHADOW = "pref_showTopShadow";
+    public static final String KEY_PREF_THEME = "pref_theme";
 
     private FeatureFlags() {
     }
-
     // When enabled fling down gesture on the first workspace triggers search.
     public static boolean pulldownOpensNotifications(Context context) {
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_PULLDOWN_NOTIS, true);
@@ -146,16 +148,29 @@ public final class FeatureFlags {
         return enabled;
     }
 
+    public static int currentTheme;
     public static boolean useDarkTheme = true;
 
     public static void applyDarkThemePreference(Launcher launcher) {
+        migrateThemePref(launcher);
         loadDarkThemePreference(launcher);
         if (useDarkTheme)
-            launcher.setTheme(R.style.LauncherTheme_Dark);
+            launcher.setTheme(LAUNCHER_THEMES[currentTheme]);
+    }
+
+    private static void migrateThemePref(Context context) {
+        boolean darkTheme = Utilities.getPrefs(context).getBoolean(KEY_PREF_DARK_THEME, false);
+        if (darkTheme) {
+            Utilities.getPrefs(context).edit()
+                    .remove(KEY_PREF_DARK_THEME)
+                    .putString(KEY_PREF_THEME, "1")
+                    .apply();
+        }
     }
 
     public static void loadDarkThemePreference(Context context) {
-        useDarkTheme = Utilities.getPrefs(context).getBoolean(KEY_PREF_DARK_THEME, false);
+        currentTheme = Integer.parseInt(Utilities.getPrefs(context).getString(KEY_PREF_THEME, "0"));
+        useDarkTheme = currentTheme != 0;
     }
 
     public static boolean isVibrancyEnabled(Context context) {
@@ -167,9 +182,10 @@ public final class FeatureFlags {
     }
 
     public static void applyDarkTheme(Activity activity) {
-        FeatureFlags.loadDarkThemePreference(activity);
+        migrateThemePref(activity);
+        loadDarkThemePreference(activity);
         if (FeatureFlags.useDarkTheme)
-            activity.setTheme(R.style.SettingsTheme_Dark);
+            activity.setTheme(SETTINGS_THEMES[currentTheme]);
     }
 
     public static boolean enableBackportShortcuts(Context context) {
@@ -181,4 +197,7 @@ public final class FeatureFlags {
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_SHOW_TOP_SHADOW, true);
         return enabled;
     }
+
+    private static int[] LAUNCHER_THEMES = {R.style.LauncherTheme, R.style.LauncherTheme_Dark, R.style.LauncherTheme_Black};
+    private static int[] SETTINGS_THEMES = {R.style.SettingsTheme, R.style.SettingsTheme_Dark, R.style.SettingsTheme_Black};
 }

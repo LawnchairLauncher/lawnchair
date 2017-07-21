@@ -67,5 +67,17 @@
         <item>9</item>
     </string-array>
 
+    <string-array name="themeTexts">
+        <item>@string/theme_light</item>
+        <item>@string/theme_dark</item>
+        <item>@string/theme_black</item>
+    </string-array>
+
+    <string-array name="themeValues">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
     <string name="generalDefault" translatable="false">default</string>
 </resources>

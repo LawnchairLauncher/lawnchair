@@ -129,10 +129,13 @@
             android:defaultValue="false"
             android:persistent="true" />
 
-        <SwitchPreference
-            android:key="pref_enableDarkTheme"
-            android:title="@string/dark_theme_pref_title"
-            android:defaultValue="false"
+        <ListPreference
+            android:key="pref_theme"
+            android:title="@string/theme_pref_title"
+            android:entryValues="@array/themeValues"
+            android:entries="@array/themeTexts"
+            android:summary="%s"
+            android:defaultValue="0"
             android:persistent="true" />
 
         <SwitchPreference

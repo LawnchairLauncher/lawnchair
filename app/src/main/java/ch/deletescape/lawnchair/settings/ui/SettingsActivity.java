@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -39,20 +40,21 @@ import ch.deletescape.lawnchair.DumbImportExportTask;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherFiles;
 import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
  */
-public class SettingsActivity extends Activity implements PreferenceFragment.OnPreferenceStartFragmentCallback {
+public class SettingsActivity extends Activity implements PreferenceFragment.OnPreferenceStartFragmentCallback, SharedPreferences.OnSharedPreferenceChangeListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FeatureFlags.applyDarkTheme(this);
-
         super.onCreate(savedInstanceState);
 
-        BlurWallpaperProvider.applyBlurBackground(this);
+        if (FeatureFlags.currentTheme != 2)
+            BlurWallpaperProvider.applyBlurBackground(this);
 
         if (savedInstanceState == null) {
             // Display the fragment as the main content.
@@ -60,6 +62,9 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                     .replace(android.R.id.content, new LauncherSettingsFragment())
                     .commit();
         }
+
+        Utilities.getPrefs(this).registerOnSharedPreferenceChangeListener(this);
+        updateUpButton();
     }
 
     @Override
@@ -81,6 +86,10 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        updateUpButton();
+    }
+
+    private void updateUpButton() {
         getActionBar().setDisplayHomeAsUpEnabled(getFragmentManager().getBackStackEntryCount() != 0);
     }
 
@@ -91,6 +100,14 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+        if (FeatureFlags.KEY_PREF_THEME.equals(key)) {
+            FeatureFlags.loadDarkThemePreference(this);
+            recreate();
+        }
     }
 
     /**
