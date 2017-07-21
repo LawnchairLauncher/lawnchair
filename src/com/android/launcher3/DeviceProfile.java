@@ -266,9 +266,7 @@ public class DeviceProfile {
                 isLandscape);
 
         // Hide labels on the workspace.
-        profile.iconTextSizePx = 0;
-        profile.cellHeightPx = profile.iconSizePx + profile.iconDrawablePaddingPx
-                + Utilities.calculateTextHeight(profile.iconTextSizePx);
+        profile.adjustToHideWorkspaceLabels();
 
         // We use these scales to measure and layout the widgets using their full invariant profile
         // sizes and then draw them scaled and centered to fit in their multi-window mode cellspans.
@@ -289,6 +287,24 @@ public class DeviceProfile {
         if (mListeners.contains(listener)) {
             mListeners.remove(listener);
         }
+    }
+
+    /**
+     * Adjusts the profile so that the labels on the Workspace are hidden.
+     * It is important to call this method after the All Apps variables have been set.
+     */
+    private void adjustToHideWorkspaceLabels() {
+        iconTextSizePx = 0;
+        iconDrawablePaddingPx = 0;
+        cellHeightPx = iconSizePx;
+
+        // In normal cases, All Apps cell height should equal the Workspace cell height.
+        // Since we are removing labels from the Workspace, we need to manually compute the
+        // All Apps cell height.
+        allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx
+                + Utilities.calculateTextHeight(allAppsIconTextSizePx)
+                // Top and bottom padding is equal to the drawable padding
+                + allAppsIconDrawablePaddingPx * 2;
     }
 
     /**
@@ -329,14 +345,7 @@ public class DeviceProfile {
 
         if (isVerticalBarLayout()) {
             // Always hide the Workspace text with vertical bar layout.
-            iconTextSizePx = 0;
-            iconDrawablePaddingPx = 0;
-
-            // Manually compute all apps cell height since workspace cells have less content.
-            allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx
-                    + Utilities.calculateTextHeight(allAppsIconTextSizePx)
-                    // Top and bottom padding is equal to the drawable padding
-                    + allAppsIconDrawablePaddingPx * 2;
+            adjustToHideWorkspaceLabels();
         }
 
         cellWidthPx = iconSizePx + iconDrawablePaddingPx;
