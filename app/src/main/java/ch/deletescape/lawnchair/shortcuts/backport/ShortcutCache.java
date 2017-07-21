@@ -25,14 +25,16 @@ public class ShortcutCache {
         long startTime = System.currentTimeMillis();
         List<LauncherActivityInfo> infoList = launcherApps.getActivityList(null, Utilities.myUserHandle());
         for (LauncherActivityInfo info : infoList) {
+            String packageName = info.getComponentName().getPackageName();
             try {
-                String packageName = info.getComponentName().getPackageName();
                 List<ShortcutInfoCompat> shortcuts = new ShortcutPackage(context, packageName).getAllShortcuts();
-                mShortcutList.addAll(shortcuts);
-                mShortcutsMap.put(packageName, shortcuts);
-                mIdsMap.put(packageName, extractIds(shortcuts));
+                if (!shortcuts.isEmpty()) {
+                    mShortcutList.addAll(shortcuts);
+                    mShortcutsMap.put(packageName, shortcuts);
+                    mIdsMap.put(packageName, extractIds(shortcuts));
+                }
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.d(TAG, "can't parse package " + packageName, e);
             }
         }
         Log.d(TAG, "Took " + (System.currentTimeMillis() - startTime) + "ms to parse manifests");
@@ -41,8 +43,10 @@ public class ShortcutCache {
     public List<ShortcutInfoCompat> query(String packageName, ComponentName componentName) {
         if (packageName == null) {
             return mShortcutList;
-        } else {
+        } else if (mShortcutsMap.containsKey(packageName)) {
             return mShortcutsMap.get(packageName);
+        } else {
+            return Utilities.emptyList();
         }
     }
 

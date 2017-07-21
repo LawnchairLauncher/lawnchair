@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 import ch.deletescape.lawnchair.ItemInfo;
+import ch.deletescape.lawnchair.Utilities;
 
 @TargetApi(Build.VERSION_CODES.N_MR1)
 public class DeepShortcutManagerNative extends DeepShortcutManager {
@@ -132,7 +133,7 @@ public class DeepShortcutManagerNative extends DeepShortcutManager {
             mWasLastCallSuccess = false;
         }
         if (shortcuts == null) {
-            return Collections.EMPTY_LIST;
+            return Utilities.emptyList();
         }
         List<ShortcutInfoCompat> shortcutList = new ArrayList<>(shortcuts.size());
         for (ShortcutInfo shortcutInfoCompat : shortcuts) {

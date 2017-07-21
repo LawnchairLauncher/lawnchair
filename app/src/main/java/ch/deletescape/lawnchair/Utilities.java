@@ -70,6 +70,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -976,5 +977,10 @@ public final class Utilities {
         if (!queryForPinnedShortcuts.isEmpty()) {
             instance.getModel().updatePinnedShortcuts(packageName, queryForPinnedShortcuts, userHandle);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> emptyList() {
+        return Collections.EMPTY_LIST;
     }
 }

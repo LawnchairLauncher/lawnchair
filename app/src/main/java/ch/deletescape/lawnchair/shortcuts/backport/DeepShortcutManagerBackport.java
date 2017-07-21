@@ -3,16 +3,13 @@ package ch.deletescape.lawnchair.shortcuts.backport;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.UserHandle;
-import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import ch.deletescape.lawnchair.Utilities;
@@ -81,7 +78,7 @@ public class DeepShortcutManagerBackport extends DeepShortcutManager {
 
     @Override
     protected List<String> extractIds(List<ShortcutInfoCompat> list) {
-        if (!mEnableBackport) return Collections.EMPTY_LIST;
+        if (!mEnableBackport) return Utilities.emptyList();
         List<String> ids = new ArrayList<>(list.size());
         for (ShortcutInfoCompat item : list) {
             ids.add(item.getId());
@@ -91,7 +88,7 @@ public class DeepShortcutManagerBackport extends DeepShortcutManager {
 
     @Override
     protected List<ShortcutInfoCompat> query(int flags, String packageName, ComponentName componentName, List<String> shortcutIds, UserHandle userHandle) {
-        if (!mEnableBackport) return Collections.EMPTY_LIST;
+        if (!mEnableBackport) return Utilities.emptyList();
         return getShortcutCache().query(packageName, componentName);
     }
 

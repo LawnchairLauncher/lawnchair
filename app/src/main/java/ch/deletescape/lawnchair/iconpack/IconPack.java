@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import ch.deletescape.lawnchair.FastBitmapDrawable;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.pixelify.PixelIconProvider;
 
@@ -151,7 +152,7 @@ public class IconPack {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        return Collections.EMPTY_LIST;
+        return Utilities.emptyList();
     }
 
     public static class IconEntry {

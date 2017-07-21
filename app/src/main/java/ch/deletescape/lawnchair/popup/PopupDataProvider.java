@@ -29,7 +29,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             new SystemShortcut.Widgets(),
             new SystemShortcut.Edit()};
 
-    private MultiHashMap<ComponentKey, List> mDeepShortcutMap = new MultiHashMap<>();
+    private MultiHashMap<ComponentKey, String> mDeepShortcutMap = new MultiHashMap<>();
     private final Launcher mLauncher;
     private Map<PackageUserKey, BadgeInfo> mPackageUserToBadgeInfos = new HashMap<>();
 
@@ -144,27 +144,24 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             //notificationInfo = null;
         }
         badgeInfo.setNotificationToShow(notificationInfo);
-        if (hasNotificationToShow) {
-            return true;
-        }
-        return badgeInfo.hasNotificationToShow();
+        return hasNotificationToShow || badgeInfo.hasNotificationToShow();
     }
 
-    public void setDeepShortcutMap(MultiHashMap multiHashMap) {
+    public void setDeepShortcutMap(MultiHashMap<ComponentKey, String> multiHashMap) {
         mDeepShortcutMap = multiHashMap;
     }
 
-    public List getShortcutIdsForItem(ItemInfo itemInfo) {
+    public List<String> getShortcutIdsForItem(ItemInfo itemInfo) {
         if (!DeepShortcutManager.supportsShortcuts(itemInfo)) {
-            return Collections.EMPTY_LIST;
+            return Utilities.emptyList();
         }
         ComponentName targetComponent = itemInfo.getTargetComponent();
         if (targetComponent == null) {
-            return Collections.EMPTY_LIST;
+            return Utilities.emptyList();
         }
-        List list = mDeepShortcutMap.get(new ComponentKey(targetComponent, itemInfo.user));
+        List<String> list = mDeepShortcutMap.get(new ComponentKey(targetComponent, itemInfo.user));
         if (list == null) {
-            list = Collections.EMPTY_LIST;
+            list = Utilities.emptyList();
         }
         return list;
     }
@@ -176,15 +173,15 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         return null;
     }
 
-    public List getNotificationKeysForItem(ItemInfo itemInfo) {
+    public List<NotificationKeyData> getNotificationKeysForItem(ItemInfo itemInfo) {
         BadgeInfo badgeInfoForItem = getBadgeInfoForItem(itemInfo);
-        return badgeInfoForItem == null ? Collections.EMPTY_LIST : badgeInfoForItem.getNotificationKeys();
+        return badgeInfoForItem == null ? Utilities.<NotificationKeyData>emptyList() : badgeInfoForItem.getNotificationKeys();
     }
 
-    public List getStatusBarNotificationsForKeys(List list) {
+    public List<StatusBarNotification> getStatusBarNotificationsForKeys(List<NotificationKeyData> list) {
         NotificationListener instanceIfConnected = NotificationListener.getInstanceIfConnected();
         if (instanceIfConnected == null) {
-            return Collections.EMPTY_LIST;
+            return Utilities.emptyList();
         }
         return instanceIfConnected.getNotificationsForKeys(list);
     }
