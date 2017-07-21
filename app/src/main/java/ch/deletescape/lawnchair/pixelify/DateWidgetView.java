@@ -1,9 +1,12 @@
 package ch.deletescape.lawnchair.pixelify;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.net.Uri;
+import android.provider.CalendarContract;
 import android.text.Editable;
 import android.text.TextPaint;
 import android.text.TextWatcher;
@@ -120,7 +123,17 @@ public class DateWidgetView extends LinearLayout implements TextWatcher, View.On
     @Override
     public void onClick(View v) {
         Context context = v.getContext();
-        Intent LaunchIntent = new Intent(Intent.ACTION_VIEW).setType("vnd.android.cursor.item/event");
+        long currentTime = System.currentTimeMillis();
+        Intent LaunchIntent;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
+            builder.appendPath("time");
+            ContentUris.appendId(builder, currentTime);
+            LaunchIntent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
+        } else{
+            LaunchIntent = new Intent(Intent.ACTION_VIEW).setType("vnd.android.cursor.item/event");
+        }
+
         context.startActivity(LaunchIntent);
     }
 }
