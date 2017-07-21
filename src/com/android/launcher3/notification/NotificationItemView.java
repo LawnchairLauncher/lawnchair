@@ -37,6 +37,7 @@ import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
 import com.android.launcher3.popup.PopupItemView;
+import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.Themes;
 
@@ -56,7 +57,7 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
     private TextView mHeaderCount;
     private NotificationMainView mMainView;
     private NotificationFooterLayout mFooter;
-    private SwipeHelper mSwipeHelper;
+    private SwipeDetector mSwipeDetector;
     private boolean mAnimatingNextIcon;
     private int mNotificationHeaderTextColor = Notification.COLOR_DEFAULT;
 
@@ -75,12 +76,14 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mHeaderText = (TextView) findViewById(R.id.notification_text);
-        mHeaderCount = (TextView) findViewById(R.id.notification_count);
-        mMainView = (NotificationMainView) findViewById(R.id.main_view);
-        mFooter = (NotificationFooterLayout) findViewById(R.id.footer);
-        mSwipeHelper = new SwipeHelper(SwipeHelper.X, mMainView, getContext());
-        mSwipeHelper.setDisableHardwareLayers(true);
+        mHeaderText = findViewById(R.id.notification_text);
+        mHeaderCount = findViewById(R.id.notification_count);
+        mMainView = findViewById(R.id.main_view);
+        mFooter = findViewById(R.id.footer);
+
+        mSwipeDetector = new SwipeDetector(getContext(), mMainView, SwipeDetector.HORIZONTAL);
+        mSwipeDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_BOTH, false);
+        mMainView.setSwipeDetector(mSwipeDetector);
     }
 
     public NotificationMainView getMainView() {
@@ -136,7 +139,8 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
             return false;
         }
         getParent().requestDisallowInterceptTouchEvent(true);
-        return mSwipeHelper.onInterceptTouchEvent(ev);
+        mSwipeDetector.onTouchEvent(ev);
+        return mSwipeDetector.isDraggingOrSettling();
     }
 
     @Override
@@ -145,7 +149,7 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
             // The notification hasn't been populated yet.
             return false;
         }
-        return mSwipeHelper.onTouchEvent(ev) || super.onTouchEvent(ev);
+        return mSwipeDetector.onTouchEvent(ev) || super.onTouchEvent(ev);
     }
 
     public void applyNotificationInfos(final List<NotificationInfo> notificationInfos) {

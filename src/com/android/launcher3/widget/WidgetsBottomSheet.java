@@ -87,8 +87,7 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
                 AnimationUtils.loadInterpolator(context, android.R.interpolator.fast_out_slow_in);
         mScrollInterpolator = new SwipeDetector.ScrollInterpolator();
         mInsets = new Rect();
-        mSwipeDetector = new SwipeDetector(context);
-        mSwipeDetector.setListener(this);
+        mSwipeDetector = new SwipeDetector(context, this, SwipeDetector.VERTICAL);
         mGradientBackground = (GradientView) mLauncher.findViewById(R.id.gradient_bg);
     }
 
@@ -283,12 +282,12 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
     public void onDragEnd(float velocity, boolean fling) {
         if ((fling && velocity > 0) || getTranslationY() > (mTranslationYRange) / 2) {
             mScrollInterpolator.setVelocityAtZero(velocity);
-            mOpenCloseAnimator.setDuration(mSwipeDetector.calculateDuration(velocity,
+            mOpenCloseAnimator.setDuration(SwipeDetector.calculateDuration(velocity,
                     (mTranslationYClosed - getTranslationY()) / mTranslationYRange));
             close(true);
         } else {
             mIsOpen = false;
-            mOpenCloseAnimator.setDuration(mSwipeDetector.calculateDuration(velocity,
+            mOpenCloseAnimator.setDuration(SwipeDetector.calculateDuration(velocity,
                     (getTranslationY() - mTranslationYOpen) / mTranslationYRange));
             open(true);
         }
@@ -302,7 +301,7 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         int directionsToDetectScroll = mSwipeDetector.isIdleState() ?
-                SwipeDetector.DIRECTION_DOWN : 0;
+                SwipeDetector.DIRECTION_NEGATIVE : 0;
         mSwipeDetector.setDetectableScrollConditions(
                 directionsToDetectScroll, false);
         mSwipeDetector.onTouchEvent(ev);
