@@ -548,6 +548,11 @@ public class LoaderTask implements Runnable {
                             break;
 
                         case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                            if (FeatureFlags.GO_DISABLE_WIDGETS) {
+                                c.markDeleted("Only legacy shortcuts can have null package");
+                                continue;
+                            }
+                            // Follow through
                         case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
                             // Read all Launcher-specific widget details
                             boolean customWidget = c.itemType ==

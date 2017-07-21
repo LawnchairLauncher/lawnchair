@@ -13,6 +13,7 @@ import android.support.annotation.WorkerThread;
 import android.util.Log;
 
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.util.ContentWriter;
@@ -26,7 +27,7 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
         if (AppWidgetManager.ACTION_APPWIDGET_HOST_RESTORED.equals(intent.getAction())) {
             int hostId = intent.getIntExtra(AppWidgetManager.EXTRA_HOST_ID, 0);
             Log.d(TAG, "Widget ID map received for host:" + hostId);
-            if (hostId != Launcher.APPWIDGET_HOST_ID) {
+            if (hostId != LauncherAppWidgetHost.APPWIDGET_HOST_ID) {
                 return;
             }
 
@@ -38,7 +39,8 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
                         .postAtFrontOfQueue(new Runnable() {
                             @Override
                             public void run() {
-                                restoreAppWidgetIds(context, asyncResult, oldIds, newIds);
+                                restoreAppWidgetIds(context, oldIds, newIds);
+                                asyncResult.finish();
                             }
                         });
             } else {
@@ -51,9 +53,13 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
      * Updates the app widgets whose id has changed during the restore process.
      */
     @WorkerThread
-    static void restoreAppWidgetIds(Context context, PendingResult asyncResult,
-            int[] oldWidgetIds, int[] newWidgetIds) {
-        AppWidgetHost appWidgetHost = new AppWidgetHost(context, Launcher.APPWIDGET_HOST_ID);
+    static void restoreAppWidgetIds(Context context, int[] oldWidgetIds, int[] newWidgetIds) {
+        AppWidgetHost appWidgetHost = new LauncherAppWidgetHost(context);
+        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+            Log.e(TAG, "Skipping widget ID remap as widgets not supported");
+            appWidgetHost.deleteHost();
+            return;
+        }
         if (!RestoreDbTask.isPending(context)) {
             // Someone has already gone through our DB once, probably LoaderTask. Skip any further
             // modifications of the DB.
@@ -62,7 +68,6 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
                 Log.d(TAG, "Deleting widgetId: " + widgetId);
                 appWidgetHost.deleteAppWidgetId(widgetId);
             }
-            asyncResult.finish();
             return;
         }
         final ContentResolver cr = context.getContentResolver();
@@ -106,6 +111,5 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
         if (app != null) {
             app.getModel().forceReload();
         }
-        asyncResult.finish();
     }
 }

@@ -16,24 +16,21 @@
 
 package com.android.launcher3.compat;
 
-import android.app.Activity;
-import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetProviderInfo;
-import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
 
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
-import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -49,6 +46,9 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
     @Override
     public List<AppWidgetProviderInfo> getAllProviders(@Nullable PackageUserKey packageUser) {
+        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+            return Collections.emptyList();
+        }
         if (packageUser == null) {
             ArrayList<AppWidgetProviderInfo> providers = new ArrayList<AppWidgetProviderInfo>();
             for (UserHandle user : mUserManager.getUserProfiles()) {
@@ -71,24 +71,20 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
     @Override
     public boolean bindAppWidgetIdIfAllowed(int appWidgetId, AppWidgetProviderInfo info,
             Bundle options) {
+        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+            return false;
+        }
         return mAppWidgetManager.bindAppWidgetIdIfAllowed(
                 appWidgetId, info.getProfile(), info.provider, options);
     }
 
     @Override
-    public void startConfigActivity(AppWidgetProviderInfo info, int widgetId, Activity activity,
-            AppWidgetHost host, int requestCode) {
-        try {
-            host.startAppWidgetConfigureActivityForResult(activity, widgetId, 0, requestCode, null);
-        } catch (ActivityNotFoundException | SecurityException e) {
-            Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
     public LauncherAppWidgetProviderInfo findProvider(ComponentName provider, UserHandle user) {
-        for (AppWidgetProviderInfo info : mAppWidgetManager
-                .getInstalledProvidersForProfile(user)) {
+        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+            return null;
+        }
+        for (AppWidgetProviderInfo info :
+                getAllProviders(new PackageUserKey(provider.getPackageName(), user))) {
             if (info.provider.equals(provider)) {
                 return LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
             }
@@ -99,6 +95,9 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
     @Override
     public HashMap<ComponentKey, AppWidgetProviderInfo> getAllProvidersMap() {
         HashMap<ComponentKey, AppWidgetProviderInfo> result = new HashMap<>();
+        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+            return result;
+        }
         for (UserHandle user : mUserManager.getUserProfiles()) {
             for (AppWidgetProviderInfo info :
                     mAppWidgetManager.getInstalledProvidersForProfile(user)) {
