@@ -424,5 +424,6 @@
     <string name="edit_icon_reset">Reset</string>
     <string name="icon_pack_unsupported">Icon pack unsupported</string>
     <string name="icon_pack_permission_denied">Storage permission is required to access icon</string>
+    <string name="show_top_shadow_title">Show top shadow</string>
 
 </resources>

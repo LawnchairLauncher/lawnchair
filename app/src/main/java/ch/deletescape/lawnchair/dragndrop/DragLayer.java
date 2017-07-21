@@ -139,6 +139,8 @@ public class DragLayer extends InsettableFrameLayout {
     public boolean mIsAccesibilityEnabled;
     private boolean mPreventAllApps;
 
+    private final Drawable mTopShadow;
+
     /**
      * Used to create a new DragLayer from XML.
      *
@@ -159,6 +161,13 @@ public class DragLayer extends InsettableFrameLayout {
         mRightHoverDrawableActive = res.getDrawable(R.drawable.page_hover_right_active, null);
         mIsRtl = Utilities.isRtl(res);
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
+
+        mTopShadow = getBackground();
+        updateTopShadow();
+    }
+
+    public void updateTopShadow() {
+        setBackground(FeatureFlags.showTopShadow(getContext()) ? mTopShadow : null);
     }
 
     public void setup(Launcher launcher, DragController dragController,

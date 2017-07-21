@@ -38,6 +38,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private static final String KEY_PREF_DARK_THEME = "pref_enableDarkTheme";
     private static final String KEY_PREF_ROUND_SEARCH_BAR = "pref_useRoundSearchBar";
     private static final String KEY_PREF_ENABLE_BACKPORT_SHORTCUTS = "pref_enableBackportShortcuts";
+    private static final String KEY_PREF_SHOW_TOP_SHADOW = "pref_showTopShadow";
     private static Settings instance;
     private Launcher mLauncher;
 
@@ -141,6 +142,9 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                     } else {
                         mLauncher.scheduleKill();
                     }
+                case KEY_PREF_SHOW_TOP_SHADOW:
+                    mLauncher.getDragLayer().updateTopShadow();
+                    break;
                 default:
                     las.reloadAll(false);
             }

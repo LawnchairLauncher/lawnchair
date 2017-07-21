@@ -49,6 +49,7 @@ public final class FeatureFlags {
     private static final String KEY_PREF_DARK_THEME = "pref_enableDarkTheme";
     private static final String KEY_PREF_ROUND_SEARCH_BAR = "pref_useRoundSearchBar";
     private static final String KEY_PREF_ENABLE_BACKPORT_SHORTCUTS = "pref_enableBackportShortcuts";
+    private static final String KEY_PREF_SHOW_TOP_SHADOW = "pref_showTopShadow";
 
     private FeatureFlags() {
     }
@@ -173,6 +174,11 @@ public final class FeatureFlags {
 
     public static boolean enableBackportShortcuts(Context context) {
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_ENABLE_BACKPORT_SHORTCUTS, false);
+        return enabled;
+    }
+
+    public static boolean showTopShadow(Context context) {
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_SHOW_TOP_SHADOW, true);
         return enabled;
     }
 }
