@@ -1,13 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
+    
+    <PreferenceCategory android:title="@string/pref_category_icon" />
+    
     <ch.deletescape.lawnchair.preferences.IconPackPreference
         android:key="pref_iconPackPackage"
         android:title="@string/icon_pack_preference_title"
         android:summary="@string/icon_pack_preference_summary"
         android:persistent="true" />
+    
+    <SwitchPreference
+        android:key="pref_hideAppLabels"
+        android:title="@string/hide_icon_labels_pref_title"
+        android:defaultValue="false"
+        android:disableDependentsState="true"
+        android:persistent="true" />
 
+    <ListPreference
+        android:key="pref_workspaceLabelColorHue"
+        android:title="@string/workspace_label_color_hue_pref_title"
+        android:entries="@array/color_index_entries"
+        android:entryValues="@array/color_index_values"
+        android:defaultValue="-3"
+        android:dependency="pref_hideAppLabels"
+        android:persistent="true" />
+
+    <ListPreference
+        android:key="pref_workspaceLabelColorVariation"
+        android:title="@string/workspace_label_color_variation_pref_title"
+        android:entries="@array/color_variation_entries"
+        android:entryValues="@array/color_variation_values"
+        android:defaultValue="5"
+        android:dependency="pref_hideAppLabels"
+        android:persistent="true" />
+    
+    <PreferenceCategory android:title="@string/pref_category_dock" />
+    
     <SwitchPreference
         android:key="pref_hotseatShouldUseExtractedColors"
         android:title="@string/hotseat_uses_extracted_colors_pref_title"
@@ -25,12 +54,6 @@
     <SwitchPreference
         android:key="pref_enableDynamicUi"
         android:title="@string/dynamic_ui_pref_title"
-        android:defaultValue="false"
-        android:persistent="true" />
-
-    <SwitchPreference
-        android:key="pref_enableDarkTheme"
-        android:title="@string/dark_theme_pref_title"
         android:defaultValue="false"
         android:persistent="true" />
 
@@ -58,30 +81,7 @@
         android:defaultValue="false"
         android:persistent="true" />
 
-    <SwitchPreference
-        android:key="pref_hideAppLabels"
-        android:title="@string/hide_icon_labels_pref_title"
-        android:defaultValue="false"
-        android:disableDependentsState="true"
-        android:persistent="true" />
-
-    <ListPreference
-        android:key="pref_workspaceLabelColorHue"
-        android:title="@string/workspace_label_color_hue_pref_title"
-        android:entries="@array/color_index_entries"
-        android:entryValues="@array/color_index_values"
-        android:defaultValue="-3"
-        android:dependency="pref_hideAppLabels"
-        android:persistent="true" />
-
-    <ListPreference
-        android:key="pref_workspaceLabelColorVariation"
-        android:title="@string/workspace_label_color_variation_pref_title"
-        android:entries="@array/color_variation_entries"
-        android:entryValues="@array/color_variation_values"
-        android:defaultValue="5"
-        android:dependency="pref_hideAppLabels"
-        android:persistent="true" />
+    <PreferenceCategory android:title="@string/pref_category_application_menu" />
 
     <ch.deletescape.lawnchair.preferences.SeekbarPreference
         android:key="pref_allAppsOpacitySB"
@@ -136,14 +136,26 @@
         app:summaryMultiplier="100"
         app:defaultValue="1.0"
         android:persistent="true" />
-
+    
+    <PreferenceCategory android:title="@string/pref_category_widgets" />
+    
     <SwitchPreference
         android:key="pref_fullWidthWidgets"
         android:persistent="true"
         android:title="@string/full_width_width_widgets_pref_title"
         android:defaultValue="false"
         android:summary="@string/full_width_widgets_pref_summary" />
-
+    
+    <PreferenceCategory android:title="@string/pref_category_theme" />
+    
+    <SwitchPreference
+        android:key="pref_enableDarkTheme"
+        android:title="@string/dark_theme_pref_title"
+        android:defaultValue="false"
+        android:persistent="true" />
+    
+    <PreferenceCategory android:title="@string/pref_category_notification" />
+    
     <Preference
         android:key="notification_access"
         android:title="@string/notification_access_pref_title"
