@@ -56,6 +56,7 @@ import android.os.Message;
 import android.os.StrictMode;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -351,7 +352,7 @@ public class Launcher extends Activity
 
     private BlurWallpaperProvider mBlurWallpaperProvider;
 
-    private Dialog mCurrentDialog;
+    private LauncherDialog mCurrentDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -892,6 +893,10 @@ public class Launcher extends Activity
         mIsResumeFromActionScreenOff = false;
 
         mLauncherTab.getClient().onResume();
+
+        if (mCurrentDialog != null) {
+            mCurrentDialog.onResume();
+        }
 
         if (reloadIcons) {
             reloadIcons = false;
@@ -3856,7 +3861,7 @@ public class Launcher extends Activity
         return icon;
     }
 
-    public void openDialog(Dialog dialog) {
+    public void openDialog(LauncherDialog dialog) {
         dismissDialog();
         mCurrentDialog = dialog;
         mCurrentDialog.setOnDismissListener(this);
@@ -3924,6 +3929,25 @@ public class Launcher extends Activity
         @Override
         public void run() {
             Launcher.this.bindAllWidgets(Launcher.this.mAllWidgets);
+        }
+    }
+
+    public static class LauncherDialog extends Dialog {
+
+        public LauncherDialog(@NonNull Context context) {
+            super(context);
+        }
+
+        public LauncherDialog(@NonNull Context context, int themeResId) {
+            super(context, themeResId);
+        }
+
+        protected LauncherDialog(@NonNull Context context, boolean cancelable, @Nullable OnCancelListener cancelListener) {
+            super(context, cancelable, cancelListener);
+        }
+
+        public void onResume() {
+
         }
     }
 }
