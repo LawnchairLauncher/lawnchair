@@ -425,5 +425,9 @@
     <string name="icon_pack_unsupported">Icon pack unsupported</string>
     <string name="icon_pack_permission_denied">Storage permission is required to access icon</string>
     <string name="show_top_shadow_title">Show top shadow</string>
+    <string name="pref_cat_homescreen">Home screen</string>
+    <string name="pref_cat_miscellaneous">Miscellaneous</string>
+    <string name="pref_cat_hotseat">Dock</string>
+    <string name="pref_cat_theme">Theme</string>
 
 </resources>

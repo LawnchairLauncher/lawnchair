@@ -98,6 +98,8 @@
     </style>
 
     <style name="SettingsTheme.Dark" parent="@android:style/Theme.Material">
+        <item name="android:colorPrimaryDark">#ff242424</item>
+        <item name="android:colorPrimary">#ff2d2d2d</item>
         <item name="android:colorAccent">@color/accent_material_light</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <item name="blurTintColor">#45212121</item>
