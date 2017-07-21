@@ -127,6 +127,7 @@
 
     <declare-styleable name="SubPreference">
         <attr name="content" format="reference"/>
+        <attr name="longClickContent" format="reference"/>
     </declare-styleable>
 
     <attr name="materialPanelBgColor" format="color" />

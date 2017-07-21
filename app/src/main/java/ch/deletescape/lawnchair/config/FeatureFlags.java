@@ -48,6 +48,7 @@ public final class FeatureFlags {
     public static final String KEY_PREF_WHITE_GOOGLE_ICON = "pref_enableWhiteGoogleIcon";
     private static final String KEY_PREF_DARK_THEME = "pref_enableDarkTheme";
     private static final String KEY_PREF_ROUND_SEARCH_BAR = "pref_useRoundSearchBar";
+    private static final String KEY_PREF_ENABLE_BACKPORT_SHORTCUTS = "pref_enableBackportShortcuts";
 
     private FeatureFlags() {
     }
@@ -168,5 +169,10 @@ public final class FeatureFlags {
         FeatureFlags.loadDarkThemePreference(activity);
         if (FeatureFlags.useDarkTheme)
             activity.setTheme(R.style.SettingsTheme_Dark);
+    }
+
+    public static boolean enableBackportShortcuts(Context context) {
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_ENABLE_BACKPORT_SHORTCUTS, false);
+        return enabled;
     }
 }

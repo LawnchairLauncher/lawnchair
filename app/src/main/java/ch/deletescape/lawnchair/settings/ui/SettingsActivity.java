@@ -26,7 +26,14 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 import ch.deletescape.lawnchair.DumbImportExportTask;
 import ch.deletescape.lawnchair.LauncherAppState;
@@ -89,7 +96,7 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
     /**
      * This fragment shows the launcher preferences.
      */
-    public static class LauncherSettingsFragment extends PreferenceFragment {
+    public static class LauncherSettingsFragment extends PreferenceFragment implements AdapterView.OnItemLongClickListener {
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -99,19 +106,36 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
         }
 
         @Override
+        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+            View view = super.onCreateView(inflater, container, savedInstanceState);
+            if (view == null) return null;
+            ListView listView = view.findViewById(android.R.id.list);
+            listView.setOnItemLongClickListener(this);
+            return view;
+        }
+
+        @Override
         public void onResume() {
             super.onResume();
             getActivity().setTitle(R.string.settings_button_text);
         }
 
         @Override
-        public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
-            if (preference.getKey() != null && preference.getKey().equals("about")) {
-                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/deletescape-media/lawnchair"));
-                startActivity(i);
-                return true;
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            ListView listView = (ListView) parent;
+            ListAdapter listAdapter = listView.getAdapter();
+            Object item = listAdapter.getItem(position);
+
+            if (item instanceof SubPreference) {
+                SubPreference subPreference = (SubPreference) item;
+                if (subPreference.onLongClick(null)) {
+                    ((SettingsActivity) getActivity()).onPreferenceStartFragment(this, subPreference);
+                    return true;
+                } else {
+                    return false;
+                }
             }
-            return super.onPreferenceTreeClick(preferenceScreen, preference);
+            return item != null && item instanceof View.OnLongClickListener && ((View.OnLongClickListener) item).onLongClick(view);
         }
     }
 

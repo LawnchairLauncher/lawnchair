@@ -31,13 +31,14 @@
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:title="@string/debug_pref_title"
-        app:content="@xml/launcher_debug_preferences" />
+        app:content="@xml/launcher_debug_preferences"
+        app:longClickContent="@xml/launcher_hidden_preferences" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:title="@string/import_export_pref_title"
         app:content="@xml/launcher_backup_preferences" />
 
-    <Preference
+    <ch.deletescape.lawnchair.settings.ui.AboutPreference
         android:title="@string/about_title"
         android:key="about"
         android:summary="@string/about_text" />

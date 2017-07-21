@@ -115,27 +115,27 @@ public class DeepShortcutManagerNative extends DeepShortcutManager {
     }
 
     @Override
-    protected List<ShortcutInfoCompat> query(int flags, String packageName, ComponentName componentName, List<String> list, UserHandle userHandle) {
-        List<ShortcutInfo> iterable = null;
+    protected List<ShortcutInfoCompat> query(int flags, String packageName, ComponentName componentName, List<String> shortcutIds, UserHandle userHandle) {
+        List<ShortcutInfo> shortcuts = null;
         ShortcutQuery shortcutQuery = new ShortcutQuery();
         shortcutQuery.setQueryFlags(flags);
         if (packageName != null) {
             shortcutQuery.setPackage(packageName);
             shortcutQuery.setActivity(componentName);
-            shortcutQuery.setShortcutIds(list);
+            shortcutQuery.setShortcutIds(shortcutIds);
         }
         try {
-            iterable = mLauncherApps.getShortcuts(shortcutQuery, userHandle);
+            shortcuts = mLauncherApps.getShortcuts(shortcutQuery, userHandle);
             mWasLastCallSuccess = true;
         } catch (Throwable e) {
             Log.e("DeepShortcutManager", "Failed to query for shortcuts", e);
             mWasLastCallSuccess = false;
         }
-        if (iterable == null) {
+        if (shortcuts == null) {
             return Collections.EMPTY_LIST;
         }
-        List<ShortcutInfoCompat> shortcutList = new ArrayList<>(iterable.size());
-        for (ShortcutInfo shortcutInfoCompat : iterable) {
+        List<ShortcutInfoCompat> shortcutList = new ArrayList<>(shortcuts.size());
+        for (ShortcutInfo shortcutInfoCompat : shortcuts) {
             shortcutList.add(new ShortcutInfoCompat(shortcutInfoCompat));
         }
         return shortcutList;

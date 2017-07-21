@@ -16,14 +16,13 @@
 
 package ch.deletescape.lawnchair.shortcuts;
 
-import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.UserHandle;
+import android.util.Log;
 
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Utilities;
@@ -35,7 +34,6 @@ import ch.deletescape.lawnchair.compat.UserManagerCompat;
  * <p>
  * Not to be confused with {@link ch.deletescape.lawnchair.ShortcutInfo}.
  */
-@TargetApi(Build.VERSION_CODES.N)
 public class ShortcutInfoCompat {
     private static final String INTENT_CATEGORY = "ch.deletescape.lawnchair.DEEP_SHORTCUT";
     public static final String EXTRA_SHORTCUT_ID = "shortcut_id";
@@ -43,7 +41,7 @@ public class ShortcutInfoCompat {
     private String id;
     private CharSequence shortLabel;
     private CharSequence longLabel;
-    private ComponentName activity;
+    private Intent activity;
     private UserHandle userHandle;
     private int rank;
     private boolean enabled;
@@ -57,7 +55,7 @@ public class ShortcutInfoCompat {
     }
 
     public ShortcutInfoCompat(String packageName, String id, CharSequence shortLabel, CharSequence longLabel,
-                              ComponentName activity, UserHandle userHandle, int rank, boolean enabled, CharSequence disabledMessage, Drawable icon) {
+                              Intent activity, UserHandle userHandle, int rank, boolean enabled, CharSequence disabledMessage, Drawable icon) {
         this.packageName = packageName;
         this.id = id;
         this.shortLabel = shortLabel;
@@ -70,13 +68,18 @@ public class ShortcutInfoCompat {
         this.icon = icon;
     }
 
-    @TargetApi(Build.VERSION_CODES.N)
     public Intent makeIntent(Context context) {
         long serialNumber = UserManagerCompat.getInstance(context)
                 .getSerialNumberForUser(getUserHandle());
-        return new Intent(Intent.ACTION_MAIN)
+        Intent intent;
+        if (useNative()) {
+            intent = new Intent(Intent.ACTION_MAIN);
+            intent.setComponent(getActivity());
+        } else {
+            intent = activity;
+        }
+        return intent
                 .addCategory(INTENT_CATEGORY)
-                .setComponent(getActivity())
                 .setPackage(getPackage())
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
                 .putExtra(ItemInfo.EXTRA_PROFILE, serialNumber)
@@ -88,7 +91,7 @@ public class ShortcutInfoCompat {
     }
 
     public String getPackage() {
-        if (Utilities.isNycOrAbove()) {
+        if (useNative()) {
             return mShortcutInfo.getPackage();
         } else {
             return packageName;
@@ -96,7 +99,7 @@ public class ShortcutInfoCompat {
     }
 
     public String getId() {
-        if (Utilities.isNycOrAbove()) {
+        if (useNative()) {
             return mShortcutInfo.getId();
         } else {
             return id;
@@ -104,7 +107,7 @@ public class ShortcutInfoCompat {
     }
 
     public CharSequence getShortLabel() {
-        if (Utilities.isNycOrAbove()) {
+        if (useNative()) {
             return mShortcutInfo.getShortLabel();
         } else {
             return shortLabel;
@@ -112,7 +115,7 @@ public class ShortcutInfoCompat {
     }
 
     public CharSequence getLongLabel() {
-        if (Utilities.isNycOrAbove()) {
+        if (useNative()) {
             return mShortcutInfo.getLongLabel();
         } else {
             return longLabel;
@@ -120,7 +123,7 @@ public class ShortcutInfoCompat {
     }
 
     public long getLastChangedTimestamp() {
-        if (Utilities.isNycOrAbove()) {
+        if (useNative()) {
             return mShortcutInfo.getLastChangedTimestamp();
         } else {
             return 0;
@@ -128,15 +131,15 @@ public class ShortcutInfoCompat {
     }
 
     public ComponentName getActivity() {
-        if (Utilities.isNycOrAbove()) {
+        if (useNative()) {
             return mShortcutInfo.getActivity();
         } else {
-            return activity;
+            return activity.getComponent();
         }
     }
 
     public UserHandle getUserHandle() {
-        if (Utilities.isNycOrAbove()) {
+        if (useNative()) {
             return mShortcutInfo.getUserHandle();
         } else {
             return userHandle;
@@ -144,7 +147,7 @@ public class ShortcutInfoCompat {
     }
 
     public boolean hasKeyFieldsOnly() {
-        if (Utilities.isNycOrAbove()) {
+        if (useNative()) {
             return mShortcutInfo.hasKeyFieldsOnly();
         } else {
             return false;
@@ -152,7 +155,7 @@ public class ShortcutInfoCompat {
     }
 
     public boolean isPinned() {
-        if (Utilities.isNycOrAbove()) {
+        if (useNative()) {
             return mShortcutInfo.isPinned();
         } else {
             return false;
@@ -160,7 +163,7 @@ public class ShortcutInfoCompat {
     }
 
     public boolean isDeclaredInManifest() {
-        if (Utilities.isNycOrAbove()) {
+        if (useNative()) {
             return mShortcutInfo.isDeclaredInManifest();
         } else {
             return true;
@@ -168,7 +171,7 @@ public class ShortcutInfoCompat {
     }
 
     public boolean isEnabled() {
-        if (Utilities.isNycOrAbove()) {
+        if (useNative()) {
             return mShortcutInfo.isEnabled();
         } else {
             return enabled;
@@ -176,7 +179,7 @@ public class ShortcutInfoCompat {
     }
 
     public boolean isDynamic() {
-        if (Utilities.isNycOrAbove()) {
+        if (useNative()) {
             return mShortcutInfo.isDynamic();
         } else {
             return false;
@@ -184,7 +187,7 @@ public class ShortcutInfoCompat {
     }
 
     public int getRank() {
-        if (Utilities.isNycOrAbove()) {
+        if (useNative()) {
             return mShortcutInfo.getRank();
         } else {
             return rank;
@@ -192,7 +195,7 @@ public class ShortcutInfoCompat {
     }
 
     public CharSequence getDisabledMessage() {
-        if (Utilities.isNycOrAbove()) {
+        if (useNative()) {
             return mShortcutInfo.getDisabledMessage();
         } else {
             return disabledMessage;
@@ -205,11 +208,15 @@ public class ShortcutInfoCompat {
 
     @Override
     public String toString() {
-        if (Utilities.isNycOrAbove()) {
+        if (useNative()) {
             return mShortcutInfo.toString();
         } else {
             return super.toString();
         }
+    }
+
+    public boolean useNative() {
+        return Utilities.isNycMR1OrAbove() && mShortcutInfo != null;
     }
 
     public LauncherActivityInfoCompat getActivityInfo(Context context) {

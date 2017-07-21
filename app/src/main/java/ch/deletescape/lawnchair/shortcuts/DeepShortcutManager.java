@@ -11,6 +11,7 @@ import java.util.List;
 
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Utilities;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.shortcuts.backport.DeepShortcutManagerBackport;
 
 public abstract class DeepShortcutManager {
@@ -21,7 +22,7 @@ public abstract class DeepShortcutManager {
         DeepShortcutManager deepShortcutManager;
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                if (Utilities.isNycMR1OrAbove())
+                if (Utilities.isNycMR1OrAbove() && !FeatureFlags.enableBackportShortcuts(context))
                     sInstance = new DeepShortcutManagerNative(context.getApplicationContext());
                 else
                     sInstance = new DeepShortcutManagerBackport(context.getApplicationContext());
@@ -61,7 +62,7 @@ public abstract class DeepShortcutManager {
 
     protected abstract List<String> extractIds(List<ShortcutInfoCompat> list);
 
-    protected abstract List<ShortcutInfoCompat> query(int flags, String str, ComponentName componentName, List<String> list, UserHandle userHandle);
+    protected abstract List<ShortcutInfoCompat> query(int flags, String packageName, ComponentName componentName, List<String> shortcutIds, UserHandle userHandle);
 
     public abstract boolean hasHostPermission();
 }
