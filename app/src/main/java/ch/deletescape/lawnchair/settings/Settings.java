@@ -9,7 +9,7 @@ import ch.deletescape.lawnchair.dragndrop.DragLayer;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 
 public class Settings implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final String KEY_PREF_LIGHT_STATUS_BAR = "pref_lightStatusBar";
+    private static final String KEY_PREF_LIGHT_STATUS_BAR = "pref_forceLightStatusBar";
     private static final String KEY_PREF_PINCH_TO_OVERVIEW = "pref_pinchToOverview";
     private static final String KEY_PREF_PULLDOWN_SEARCH = "pref_pulldownSearch";
     private static final String KEY_PREF_HOTSEAT_EXTRACTED_COLORS = "pref_hotseatShouldUseExtractedColors";

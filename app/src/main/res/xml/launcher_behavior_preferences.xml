@@ -17,9 +17,9 @@
         android:persistent="true" />
 
     <SwitchPreference
-        android:key="pref_lightStatusBar"
+        android:key="pref_forceLightStatusBar"
         android:title="@string/light_statusbar_pref_title"
-        android:summaryOn="@string/light_statusbar_pref_on"
+        android:summaryOn="@string/light_statusbar_pref_force"
         android:summaryOff="@string/light_statusbar_pref_off"
         android:defaultValue="false"
         android:persistent="true" />
