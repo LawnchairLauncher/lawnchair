@@ -18,12 +18,10 @@ package ch.deletescape.lawnchair.config;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
-import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
 
 /**
  * Defines a set of flags used to control various launcher behaviors
@@ -54,9 +52,12 @@ public final class FeatureFlags {
     private static final String KEY_PREF_SHOW_TOP_SHADOW = "pref_showTopShadow";
     public static final String KEY_PREF_THEME = "pref_theme";
     private static final String KEY_PREF_HIDE_HOTSEAT = "pref_hideHotseat";
+    private static final String KEY_PREF_PLANE = "pref_plane";
+
 
     private FeatureFlags() {
     }
+
     // When enabled fling down gesture on the first workspace triggers search.
     public static boolean pulldownOpensNotifications(Context context) {
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_PULLDOWN_NOTIS, true);
@@ -204,6 +205,11 @@ public final class FeatureFlags {
 
     public static boolean hideHotseat(Context context) {
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_HIDE_HOTSEAT, false);
+        return enabled;
+    }
+
+    public static boolean planes(Context context) {
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_PLANE, false);
         return enabled;
     }
 }

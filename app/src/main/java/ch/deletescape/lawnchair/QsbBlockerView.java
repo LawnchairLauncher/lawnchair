@@ -108,7 +108,9 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
             View inflate;
             mState = 1;
             if (view == null || i != 1) {
-                if (DEBUG) {
+                if (FeatureFlags.planes(getContext())) {
+                    inflate = LayoutInflater.from(getContext()).inflate(R.layout.plane_widget, this, false);
+                } else if (DEBUG) {
                     inflate = LayoutInflater.from(getContext()).inflate(R.layout.weather_widget, this, false);
                     TextView temperature = inflate.findViewById(R.id.weather_widget_temperature);
                     temperature.setText("20°C");

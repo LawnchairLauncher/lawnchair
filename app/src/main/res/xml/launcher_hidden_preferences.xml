@@ -5,4 +5,8 @@
         android:key="pref_enableBackportShortcuts"
         android:title="Backport shortcuts"
         android:summary="Very experimental and slow. Do not report bugs if this is enabled" />
+
+    <SwitchPreference
+        android:key="pref_plane"
+        android:title="Amazing Plane" />
 </PreferenceScreen>
