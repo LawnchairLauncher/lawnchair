@@ -136,9 +136,17 @@ public class PixelIconProvider {
             try {
                 InputStream inputStream = mContext.getContentResolver().openInputStream(uri);
                 return Drawable.createFromStream(inputStream, alternateIcon);
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
+            }
+        } else if (alternateIcon.startsWith("resource")) {
+            try {
+                String[] parts = alternateIcon.substring(9).split("/");
+                IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext, parts[0]);
+                return iconPack.getDrawable(parts[1]);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         return null;

@@ -1,16 +1,22 @@
 package ch.deletescape.lawnchair.iconpack;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.util.ArrayMap;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import ch.deletescape.lawnchair.FastBitmapDrawable;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.pixelify.PixelIconProvider;
 
@@ -66,10 +72,17 @@ public class IconPack {
         }
     }
 
-    private Drawable getDrawable(String name) {
-        Resources res;
+    private Resources getResources() throws PackageManager.NameNotFoundException {
+        return mContext.getPackageManager().getResourcesForApplication(packageName);
+    }
+
+    private boolean iconExists(Resources res, String name) {
+        return res.getIdentifier(name, "drawable", packageName) != 0;
+    }
+
+    public Drawable getDrawable(String name) {
         try {
-            res = mContext.getPackageManager().getResourcesForApplication(packageName);
+            Resources res = getResources();
             int resourceId = res.getIdentifier(name, "drawable", packageName);
             if (0 != resourceId) {
                 Bitmap b = BitmapFactory.decodeResource(res, resourceId);
@@ -102,5 +115,62 @@ public class IconPack {
 
     public List<String> getCalendars() {
         return mCalendars;
+    }
+
+    public List<IconEntry> getIconList() {
+        Map<String, IconEntry> iconMap = new HashMap<>();
+        try {
+            Resources res = getResources();
+
+            for (Map.Entry<String, IconPackProvider.IconInfo> entry : icons.entrySet()) {
+                IconPackProvider.IconInfo iconInfo = entry.getValue();
+                if (iconInfo.drawable != null) {
+                    if (iconExists(res, iconInfo.drawable))
+                        iconMap.put(iconInfo.drawable, new IconEntry(this, iconInfo.drawable));
+                } else if (iconInfo.prefix != null) {
+                    for (int i = 1; i <= 31; i++) {
+                        String resourceName = iconInfo.prefix + i;
+                        if (iconExists(res, resourceName))
+                            iconMap.put(resourceName, new IconEntry(this, resourceName));
+                    }
+                }
+            }
+
+            List<IconEntry> iconList = new ArrayList<>();
+            for (Map.Entry<String, IconEntry> entry : iconMap.entrySet()) {
+                iconList.add(entry.getValue());
+            }
+
+            Collections.sort(iconList, new Comparator<IconEntry>() {
+                @Override
+                public int compare(IconEntry t1, IconEntry t2) {
+                    return t1.resourceName.compareTo(t2.resourceName);
+                }
+            });
+
+            return iconList;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return Utilities.emptyList();
+    }
+
+    public static class IconEntry {
+
+        private final IconPack iconPack;
+        public final String resourceName;
+
+        private IconEntry(IconPack ip, String n) {
+            iconPack = ip;
+            resourceName = n;
+        }
+
+        public Drawable loadDrawable() {
+            return iconPack.getDrawable(resourceName);
+        }
+
+        public String getPackageName() {
+            return iconPack.getPackageName();
+        }
     }
 }

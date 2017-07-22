@@ -119,6 +119,7 @@ public class Workspace extends PagedView
 
     private static final int DEFAULT_PAGE = 0;
     private final boolean mBlurQsb;
+    private final boolean mFullWidthQsb;
 
     private LayoutTransition mLayoutTransition;
     @Thunk
@@ -364,7 +365,8 @@ public class Workspace extends PagedView
         mOverviewModeShrinkFactor =
                 res.getInteger(R.integer.config_workspaceOverviewShrinkPercentage) / 100f;
 
-        mBlurQsb = FeatureFlags.isBlurEnabled(context) && FeatureFlags.useFullWidthSearchbar(context);
+        mBlurQsb = FeatureFlags.isBlurEnabled(context);
+        mFullWidthQsb = FeatureFlags.useFullWidthSearchbar(context);
 
         setOnHierarchyChangeListener(this);
         setHapticFeedbackEnabled(false);
@@ -1356,8 +1358,11 @@ public class Workspace extends PagedView
 
     private BaseQsbView getSearchBar() {
         if (mSearchBar == null) {
-            if (mQsbView == null) return null;
-            mSearchBar = (BaseQsbView) ((ViewGroup) mQsbView).getChildAt(0);
+            if (!mFullWidthQsb) {
+                return (BaseQsbView) mLauncher.getQsbContainer();
+            } else if (mQsbView != null) {
+                mSearchBar = (BaseQsbView) ((ViewGroup) mQsbView).getChildAt(0);
+            }
         }
         return mSearchBar;
     }
@@ -3510,6 +3515,11 @@ public class Workspace extends PagedView
     }
 
     @Override
+    public boolean supportsFlingToDelete() {
+        return true;
+    }
+
+    @Override
     public boolean supportsAppInfoDropTarget() {
         return true;
     }
@@ -3521,6 +3531,11 @@ public class Workspace extends PagedView
 
     @Override
     public void onFlingToDelete(DragObject d, PointF vec) {
+        // Do nothing
+    }
+
+    @Override
+    public void onFlingToDeleteCompleted() {
         // Do nothing
     }
 

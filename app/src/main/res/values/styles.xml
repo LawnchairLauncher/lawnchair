@@ -59,6 +59,7 @@
         <item name="roundSearchBarBgColor">#10000000</item>
         <item name="roundSearchBarDividerColor">#10111111</item>
         <item name="roundSearchBarHintColor">@color/quantum_panel_text_color</item>
+        <item name="roundSearchBarTextColor">#4c4c4c</item>
     </style>
 
     <style name="LauncherTheme.Dark" parent="@style/BaseLauncherTheme.Dark">
@@ -86,6 +87,20 @@
         <item name="roundSearchBarBgColor">#10ffffff</item>
         <item name="roundSearchBarDividerColor">#10eeeeee</item>
         <item name="roundSearchBarHintColor">@android:color/white</item>
+        <item name="roundSearchBarTextColor">@android:color/white</item>
+    </style>
+
+    <style name="LauncherTheme.Black" parent="LauncherTheme.Dark">
+        <item name="materialPanelBgColor">@android:color/black</item>
+        <item name="folderBgIntensity">0</item>
+        <item name="appPopupHeaderBgColor">@android:color/black</item>
+        <item name="appPopupBgColor">#ff101010</item>
+        <item name="allAppsContainerColor">@android:color/black</item>
+        <item name="allAppsContainerColorBlur">#00000000</item>
+        <item name="blurTintColor">#45000000</item>
+        <item name="notificationBeneathColor">#ff101010</item>
+        <item name="qsbBgColor">@android:color/black</item>
+        <item name="folderBgColorBlur">#75000000</item>
     </style>
 
     <style name="Theme" parent="@style/LauncherTheme" />
@@ -96,13 +111,26 @@
     </style>
 
     <style name="SettingsTheme.Dark" parent="@android:style/Theme.Material">
+        <item name="android:colorPrimaryDark">#ff242424</item>
+        <item name="android:colorPrimary">#ff2d2d2d</item>
         <item name="android:colorAccent">@color/accent_material_light</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <item name="blurTintColor">#45212121</item>
     </style>
 
+    <style name="SettingsTheme.Black" parent="SettingsTheme.Dark">
+        <item name="android:colorPrimaryDark">@android:color/black</item>
+        <item name="android:colorPrimary">@android:color/black</item>
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:listDivider">@android:color/transparent</item>
+    </style>
+
     <!-- Theme for the widget container. -->
     <style name="WidgetContainerTheme" parent="@style/SettingsTheme">
+        <item name="colorSecondary">@color/secondary_color</item>
+    </style>
+
+    <style name="WidgetContainerTheme.Dark" parent="@style/SettingsTheme.Dark">
         <item name="colorSecondary">@color/secondary_color</item>
     </style>
 

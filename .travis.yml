@@ -1,4 +1,5 @@
 language: android
+dist: precise
 jdk: oraclejdk8
 branches:
    except:

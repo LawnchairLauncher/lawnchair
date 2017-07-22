@@ -19,7 +19,7 @@ import ch.deletescape.lawnchair.util.PackageUserKey;
 public class BadgeInfo {
     private Shader mNotificationIcon;
     private NotificationInfo mNotificationInfo;
-    private List mNotificationKeys = new ArrayList();
+    private List<NotificationKeyData> mNotificationKeys = new ArrayList<>();
     private PackageUserKey mPackageUserKey;
     private int mTotalCount;
 
@@ -31,7 +31,7 @@ public class BadgeInfo {
         NotificationKeyData notificationKeyData2 = null;
         int indexOf = mNotificationKeys.indexOf(notificationKeyData);
         if (indexOf != -1) {
-            notificationKeyData2 = (NotificationKeyData) mNotificationKeys.get(indexOf);
+            notificationKeyData2 = mNotificationKeys.get(indexOf);
         }
         if (notificationKeyData2 == null) {
             boolean add = mNotificationKeys.add(notificationKeyData);
@@ -57,7 +57,7 @@ public class BadgeInfo {
         return remove;
     }
 
-    public List getNotificationKeys() {
+    public List<NotificationKeyData> getNotificationKeys() {
         return mNotificationKeys;
     }
 

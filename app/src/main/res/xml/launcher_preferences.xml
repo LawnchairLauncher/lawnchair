@@ -19,26 +19,33 @@
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:title="@string/ui_pref_title"
+        android:icon="@drawable/ic_ui"
         app:content="@xml/launcher_ui_preferences" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:title="@string/pixel_style_pref_title"
+        android:icon="@drawable/ic_google"
         app:content="@xml/launcher_pixel_style_preferences" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:title="@string/behavior_pref_title"
+        android:icon="@drawable/ic_behavior"
         app:content="@xml/launcher_behavior_preferences" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:title="@string/debug_pref_title"
-        app:content="@xml/launcher_debug_preferences" />
+        android:icon="@drawable/ic_debug"
+        app:content="@xml/launcher_debug_preferences"
+        app:longClickContent="@xml/launcher_hidden_preferences" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:title="@string/import_export_pref_title"
+        android:icon="@drawable/ic_import_export"
         app:content="@xml/launcher_backup_preferences" />
 
-    <Preference
+    <ch.deletescape.lawnchair.settings.ui.AboutPreference
         android:title="@string/about_title"
+        android:icon="@drawable/ic_information"
         android:key="about"
         android:summary="@string/about_text" />
 

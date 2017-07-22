@@ -222,7 +222,7 @@ public class ShortcutsItemView extends PopupItemView implements OnLongClickListe
     @Override
     public int getArrowColor(boolean z) {
         Context context = getContext();
-        if (z) {
+        if (z || mDeepShortcutViews.isEmpty()) {
             return Utilities.resolveAttributeData(context, R.attr.appPopupBgColor);
         } else {
             return Utilities.resolveAttributeData(context, R.attr.appPopupHeaderBgColor);

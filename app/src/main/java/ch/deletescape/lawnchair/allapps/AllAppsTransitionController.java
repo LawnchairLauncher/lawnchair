@@ -54,6 +54,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private static final float FAST_FLING_PX_MS = 10;
     private static final int SINGLE_FRAME_MS = 16;
     private final boolean mTransparentHotseat;
+    private boolean mLightStatusBar;
 
     private AllAppsContainerView mAppsView;
     private int mAllAppsBackgroundColor;
@@ -108,6 +109,12 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mAllAppsBackgroundColor = Utilities.resolveAttributeData(l, R.attr.allAppsContainerColor);
         mAllAppsBackgroundColorBlur = Utilities.resolveAttributeData(l, R.attr.allAppsContainerColorBlur);
         mTransparentHotseat = FeatureFlags.isTransparentHotseat(l);
+        mLightStatusBar = FeatureFlags.lightStatusBar(l);
+    }
+
+    public void updateLightStatusBar(Context context) {
+        mLightStatusBar = FeatureFlags.lightStatusBar(context);
+        updateLightStatusBar(mProgress * mShiftRange);
     }
 
     public void setAllAppsAlpha(Context context, int allAppsAlpha) {
@@ -282,11 +289,17 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 !mLauncher.getExtractedColors().isLightStatusBar() &&
                 allAppsAlpha < 52);
 
+        boolean darkNavigationBar = FeatureFlags.useDarkTheme ||
+                (BlurWallpaperProvider.isEnabled() &&
+                !mLauncher.getExtractedColors().isLightNavigationBar() &&
+                allAppsAlpha < 52);
+
         if (Utilities.ATLEAST_MARSHMALLOW) {
             // Use a light status bar (dark icons) if all apps is behind at least half of the status
             // bar. If the status bar is already light due to wallpaper extraction, keep it that way.
-            boolean forceLight = !darkStatusBar && shift <= mStatusBarHeight / 2;
-            mLauncher.activateLightStatusBar(forceLight);
+            boolean activate = shift <= mStatusBarHeight / 2;
+            mLauncher.activateLightStatusBar(activate ? !darkStatusBar : mLightStatusBar);
+            mLauncher.activateLightNavigationBar(!darkNavigationBar && activate);
         } else {
             mAppsView.setStatusBarHeight(darkStatusBar ? 0 : Math.max(mStatusBarHeight - shift, 0));
         }
@@ -306,7 +319,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         int allAppsBg = ColorUtils.setAlphaComponent(mAllAppsBackgroundColor, allAppsAlpha);
         int allAppsBgBlur = mAllAppsBackgroundColorBlur + (allAppsAlpha << 24);
         int color = (int) mEvaluator.evaluate(
-                mDecelInterpolator.getInterpolation(alpha),
+                Math.max(mDecelInterpolator.getInterpolation(alpha), 0),
                 BlurWallpaperProvider.isEnabled() ? mAllAppsBackgroundColorBlur : mHotseatBackgroundColor,
                 BlurWallpaperProvider.isEnabled() ? allAppsBgBlur : allAppsBg);
         if (mTransparentHotseat) {
