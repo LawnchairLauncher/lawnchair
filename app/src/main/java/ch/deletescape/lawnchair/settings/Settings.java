@@ -39,6 +39,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private static final String KEY_PREF_ENABLE_BACKPORT_SHORTCUTS = "pref_enableBackportShortcuts";
     private static final String KEY_PREF_SHOW_TOP_SHADOW = "pref_showTopShadow";
     private static final String KEY_PREF_THEME = "pref_theme";
+    private static final String KEY_PREF_HIDE_HOTSEAT = "pref_hideHotseat";
     private static Settings instance;
     private Launcher mLauncher;
 
@@ -124,6 +125,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case KEY_PREF_TRANSPARENT_HOTSEAT:
                 case KEY_PREF_ROUND_SEARCH_BAR:
                 case KEY_SHOW_PIXEL_BAR:
+                case KEY_PREF_HIDE_HOTSEAT:
                     mLauncher.scheduleRecreate();
                     break;
                 case KEY_PREF_ENABLE_BACKPORT_SHORTCUTS:

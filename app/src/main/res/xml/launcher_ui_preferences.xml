@@ -118,6 +118,13 @@
             android:title="@string/transparent_hotseat_pref_title"
             android:defaultValue="false"
             android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_hideHotseat"
+            android:title="@string/hide_hotseat_pref_title"
+            android:defaultValue="false"
+            android:dependency="pref_isHotseatTransparent"
+            android:persistent="true" />
     </PreferenceCategory>
 
     <PreferenceCategory

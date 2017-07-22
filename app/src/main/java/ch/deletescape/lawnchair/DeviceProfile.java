@@ -323,7 +323,7 @@ public class DeviceProfile {
      */
     public Rect getWorkspacePadding(Rect recycle) {
         Rect padding = recycle == null ? new Rect() : recycle;
-        int paddingBottom = hotseatBarHeightPx + pageIndicatorHeightPx;
+        int paddingBottom = (FeatureFlags.isTransparentHotseat(mContext) && FeatureFlags.hideHotseat(mContext) ? 0 : hotseatBarHeightPx) + pageIndicatorHeightPx;
         if (FeatureFlags.allowFullWidthWidgets(mContext)) {
             padding.set(0, 0, 0, paddingBottom);
         } else if (isTablet) {
@@ -439,6 +439,7 @@ public class DeviceProfile {
         float hotseatCellWidth = (float) getCurrentWidth() / inv.numHotseatIcons;
         int hotseatAdjustment = Math.round((workspaceCellWidth - hotseatCellWidth) / 2);
         boolean transparentHotseat = FeatureFlags.isTransparentHotseat(mContext);
+        boolean hideHotseat = transparentHotseat && FeatureFlags.hideHotseat(mContext);
         if (isTablet) {
             // Pad the hotseat with the workspace padding calculated above
             lp.gravity = Gravity.BOTTOM;
@@ -455,9 +456,11 @@ public class DeviceProfile {
             // to ensure that we have space for the folders
             lp.gravity = Gravity.BOTTOM;
             lp.width = LayoutParams.MATCH_PARENT;
-            lp.height = hotseatBarHeightPx + (transparentHotseat ? 0 : mInsets.bottom);
+            lp.height = hideHotseat ? 0 : (hotseatBarHeightPx + (transparentHotseat ? 0 : mInsets.bottom));
             if (transparentHotseat) {
-                lp.bottomMargin = pageIndicatorHeightPx + mInsets.bottom;
+                lp.bottomMargin = mInsets.bottom;
+                if (!hideHotseat)
+                    lp.bottomMargin += pageIndicatorHeightPx;
             }
             hotseat.getLayout().setPadding(hotseatAdjustment + workspacePadding.left,
                     hotseatBarTopPaddingPx, hotseatAdjustment + workspacePadding.right,

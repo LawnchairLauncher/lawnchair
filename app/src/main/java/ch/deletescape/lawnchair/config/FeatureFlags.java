@@ -53,6 +53,7 @@ public final class FeatureFlags {
     private static final String KEY_PREF_ENABLE_BACKPORT_SHORTCUTS = "pref_enableBackportShortcuts";
     private static final String KEY_PREF_SHOW_TOP_SHADOW = "pref_showTopShadow";
     public static final String KEY_PREF_THEME = "pref_theme";
+    private static final String KEY_PREF_HIDE_HOTSEAT = "pref_hideHotseat";
 
     private FeatureFlags() {
     }
@@ -200,4 +201,9 @@ public final class FeatureFlags {
 
     private static int[] LAUNCHER_THEMES = {R.style.LauncherTheme, R.style.LauncherTheme_Dark, R.style.LauncherTheme_Black};
     private static int[] SETTINGS_THEMES = {R.style.SettingsTheme, R.style.SettingsTheme_Dark, R.style.SettingsTheme_Black};
+
+    public static boolean hideHotseat(Context context) {
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_HIDE_HOTSEAT, false);
+        return enabled;
+    }
 }
