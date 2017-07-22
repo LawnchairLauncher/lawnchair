@@ -64,6 +64,7 @@
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.MONKEY" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
@@ -149,7 +150,8 @@
             android:name="android.nfc.disable_beam_default"
             android:value="true" />
 
-        <activity android:name=".iconpack.EditIconActivity"
+        <activity
+            android:name=".iconpack.EditIconActivity"
             android:theme="@style/SettingsTheme" />
     </application>
 
