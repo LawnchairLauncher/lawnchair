@@ -100,7 +100,7 @@
         <item name="blurTintColor">#45000000</item>
         <item name="notificationBeneathColor">#ff101010</item>
         <item name="qsbBgColor">@android:color/black</item>
-        <item name="folderBgColorBlur">@android:color/black</item>
+        <item name="folderBgColorBlur">#75000000</item>
     </style>
 
     <style name="Theme" parent="@style/LauncherTheme" />
