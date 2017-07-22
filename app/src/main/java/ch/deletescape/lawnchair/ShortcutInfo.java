@@ -161,7 +161,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
 
     private Bitmap mUnbadgedIcon;
 
-    public boolean useNativeShortcut = true;
+    public boolean useDeepShortcutManager = false;
 
     public ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
@@ -230,7 +230,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     public ShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
         user = shortcutInfo.getUserHandle();
         itemType = LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
-        useNativeShortcut = shortcutInfo.useNative();
+        useDeepShortcutManager = shortcutInfo.useNative();
         flags = 0;
         updateFromDeepShortcutInfo(shortcutInfo, context);
     }
