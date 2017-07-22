@@ -127,7 +127,10 @@ public class DateWidgetView extends LinearLayout implements TextWatcher, View.On
         Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
         builder.appendPath("time");
         ContentUris.appendId(builder, currentTime);
-        Intent LaunchIntent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
-        context.startActivity(LaunchIntent);
+
+        Launcher launcher = Launcher.getLauncher(getContext());
+        Intent intent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
+        intent.setSourceBounds(launcher.getViewBounds(dateText1));
+        context.startActivity(intent, launcher.getActivityLaunchOptions(dateText1));
     }
 }
