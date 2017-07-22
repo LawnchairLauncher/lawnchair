@@ -487,12 +487,9 @@ public class Launcher extends Activity
      * @param activate if true, make sure the status bar is light, otherwise base on wallpaper.
      */
     public void activateLightStatusBar(boolean activate) {
-        boolean lightStatusBar = activate || (FeatureFlags.lightStatusBar(getApplicationContext())
-                && mExtractedColors.getColor(ExtractedColors.STATUS_BAR_INDEX,
-                ExtractedColors.DEFAULT_DARK) == ExtractedColors.DEFAULT_LIGHT);
         int oldSystemUiFlags = getWindow().getDecorView().getSystemUiVisibility();
         int newSystemUiFlags = oldSystemUiFlags;
-        if (lightStatusBar) {
+        if (activate) {
             newSystemUiFlags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
         } else {
             newSystemUiFlags &= ~(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);

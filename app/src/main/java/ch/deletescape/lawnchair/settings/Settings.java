@@ -68,7 +68,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
             LauncherAppState las = LauncherAppState.getInstance();
             switch (key) {
                 case KEY_PREF_LIGHT_STATUS_BAR:
-                    mLauncher.activateLightStatusBar(false);
+                    mLauncher.getAllAppsController().updateLightStatusBar(mLauncher);
                     break;
                 case KEY_PREF_PINCH_TO_OVERVIEW:
                     DragLayer dragLayer = mLauncher.getDragLayer();

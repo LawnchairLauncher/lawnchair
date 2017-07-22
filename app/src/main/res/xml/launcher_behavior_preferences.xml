@@ -21,7 +21,7 @@
         android:title="@string/light_statusbar_pref_title"
         android:summaryOn="@string/light_statusbar_pref_on"
         android:summaryOff="@string/light_statusbar_pref_off"
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:persistent="true" />
 
     <SwitchPreference
