@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://C:\Users\Spoon\StudioProjects\Lawnchair_BugFixing\Lawnchair.iml" filepath="C:\Users\Spoon\StudioProjects\Lawnchair_BugFixing\Lawnchair.iml" />
       <module fileurl="file://$PROJECT_DIR$/Lawnchair_BugFixing.iml" filepath="$PROJECT_DIR$/Lawnchair_BugFixing.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\Spoon\StudioProjects\Lawnchair_BugFixing\app\app.iml" filepath="C:\Users\Spoon\StudioProjects\Lawnchair_BugFixing\app\app.iml" />
     </modules>
   </component>
 </project>
