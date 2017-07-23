@@ -259,6 +259,8 @@ public class Launcher extends Activity
 
     private boolean mPaused = true;
     private boolean mOnResumeNeedsLoad;
+    private boolean mPlanesEnabled;
+    private ObjectAnimator mPlanesAnimator;
 
     private ArrayList<Runnable> mBindOnResumeCallbacks = new ArrayList<>();
     private ArrayList<Runnable> mOnResumeCallbacks = new ArrayList<>();
@@ -390,6 +392,7 @@ public class Launcher extends Activity
 
         setContentView(R.layout.launcher);
 
+        mPlanesEnabled = FeatureFlags.planes(this);
         setupViews();
         mDeviceProfile.layout(this, false /* notifyListeners */);
         mExtractedColors = new ExtractedColors();
@@ -1101,6 +1104,11 @@ public class Launcher extends Activity
         mQsbContainer = mDragLayer.findViewById(R.id.qsb_container);
         mWorkspace.initParentViews(mDragLayer);
 
+        if (mPlanesEnabled) {
+            Log.d(TAG, "inflating planes");
+            getLayoutInflater().inflate(R.layout.planes, (ViewGroup) mLauncherView, true);
+        }
+
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
@@ -1666,6 +1674,26 @@ public class Launcher extends Activity
                     }
                 });
             }
+        }
+
+        if (mPlanesEnabled && mPlanesAnimator == null) {
+            int height = findViewById(R.id.launcher).getHeight();
+            final View planes = findViewById(R.id.planes);
+            mPlanesAnimator = ObjectAnimator.ofFloat(planes, "translationY", height, -height);
+            mPlanesAnimator.setDuration(2000);
+            mPlanesAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    planes.setVisibility(View.GONE);
+                    mPlanesAnimator = null;
+                }
+
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    planes.setVisibility(View.VISIBLE);
+                }
+            });
+            mPlanesAnimator.start();
         }
 
         dismissDialog();
