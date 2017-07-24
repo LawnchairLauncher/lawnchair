@@ -187,6 +187,7 @@ public class Workspace extends PagedView
     private View mQsbView;
     private BaseQsbView mSearchBar;
     private int mLastScrollX;
+    private int mPullDownAction;
 
     // State variable that indicates whether the pages are small (ie when you're
     // in all apps or customize mode)
@@ -605,13 +606,14 @@ public class Workspace extends PagedView
     }
 
     public void initPullDown() {
+        mPullDownAction = FeatureFlags.pullDownAction(getContext());
         for (CellLayout layout : mWorkspaceScreens) {
             initPullDown(layout);
         }
     }
 
     public void initPullDown(CellLayout layout) {
-        if (FeatureFlags.pulldownOpensNotifications(getContext())) {
+        if (mPullDownAction != 0) {
             layout.setOnTouchListener(new VerticalFlingDetector(mLauncher) {
                 // detect fling when touch started from empty space
                 @Override
@@ -619,7 +621,7 @@ public class Workspace extends PagedView
                     if (workspaceInModalState()) return false;
                     if (shouldConsumeTouch(v)) return true;
                     if (super.onTouch(v, ev)) {
-                        expandStatusbar();
+                        onPullDownAction();
                         return true;
                     }
                     return false;
@@ -631,7 +633,7 @@ public class Workspace extends PagedView
                 public boolean onTouch(View v, MotionEvent ev) {
                     if (shouldConsumeTouch(v)) return true;
                     if (super.onTouch(v, ev)) {
-                        expandStatusbar();
+                        onPullDownAction();
                         return true;
                     }
                     return false;
@@ -640,6 +642,20 @@ public class Workspace extends PagedView
         } else {
             layout.setOnTouchListener(null);
             layout.setOnInterceptTouchListener(null);
+        }
+    }
+
+    private void onPullDownAction() {
+        switch (mPullDownAction) {
+            case 1:
+                expandStatusbar();
+                break;
+            case 2:
+                mLauncher.startSearch("", false, null, false);
+                break;
+            case 3:
+                mLauncher.onLongClickAllAppsHandle();
+                break;
         }
     }
 
@@ -731,6 +747,7 @@ public class Workspace extends PagedView
             newScreen.enableAccessibleDrag(true, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
         }
 
+        mPullDownAction = FeatureFlags.pullDownAction(getContext());
         initPullDown(newScreen);
 
         return newScreen;

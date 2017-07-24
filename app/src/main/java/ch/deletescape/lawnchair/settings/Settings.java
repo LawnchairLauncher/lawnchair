@@ -11,7 +11,7 @@ import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 public class Settings implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String KEY_PREF_LIGHT_STATUS_BAR = "pref_forceLightStatusBar";
     private static final String KEY_PREF_PINCH_TO_OVERVIEW = "pref_pinchToOverview";
-    private static final String KEY_PREF_PULLDOWN_SEARCH = "pref_pulldownSearch";
+    private static final String KEY_PREF_PULLDOWN_ACTION = "pref_pulldownAction";
     private static final String KEY_PREF_HOTSEAT_EXTRACTED_COLORS = "pref_hotseatShouldUseExtractedColors";
     private static final String KEY_PREF_HAPTIC_FEEDBACK = "pref_enableHapticFeedback";
     private static final String KEY_PREF_KEEP_SCROLL_STATE = "pref_keepScrollState";
@@ -74,7 +74,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                     DragLayer dragLayer = mLauncher.getDragLayer();
                     dragLayer.onAccessibilityStateChanged(dragLayer.mIsAccesibilityEnabled);
                     break;
-                case KEY_PREF_PULLDOWN_SEARCH:
+                case KEY_PREF_PULLDOWN_ACTION:
                     mLauncher.getWorkspace().initPullDown();
                     break;
                 case KEY_PREF_HOTSEAT_EXTRACTED_COLORS:

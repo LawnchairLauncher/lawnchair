@@ -53,15 +53,9 @@ public final class FeatureFlags {
     public static final String KEY_PREF_THEME = "pref_theme";
     private static final String KEY_PREF_HIDE_HOTSEAT = "pref_hideHotseat";
     private static final String KEY_PREF_PLANE = "pref_plane";
-
+    private static final String KEY_PREF_PULLDOWN_ACTION = "pref_pulldownAction";
 
     private FeatureFlags() {
-    }
-
-    // When enabled fling down gesture on the first workspace triggers search.
-    public static boolean pulldownOpensNotifications(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_PULLDOWN_NOTIS, true);
-        return enabled;
     }
 
     public static boolean pinchToOverview(Context context) {
@@ -168,6 +162,21 @@ public final class FeatureFlags {
                     .putString(KEY_PREF_THEME, "1")
                     .apply();
         }
+    }
+
+    private static void migratePullDownPref(Context context) {
+        boolean pulldownNotis = Utilities.getPrefs(context).getBoolean(KEY_PREF_PULLDOWN_NOTIS, true);
+        if (!pulldownNotis) {
+            Utilities.getPrefs(context).edit()
+                    .remove(KEY_PREF_PULLDOWN_NOTIS)
+                    .putString(KEY_PREF_PULLDOWN_ACTION, "0")
+                    .apply();
+        }
+    }
+
+    public static int pullDownAction(Context context) {
+        migratePullDownPref(context);
+        return Integer.parseInt(Utilities.getPrefs(context).getString(KEY_PREF_PULLDOWN_ACTION, "1"));
     }
 
     public static void loadDarkThemePreference(Context context) {

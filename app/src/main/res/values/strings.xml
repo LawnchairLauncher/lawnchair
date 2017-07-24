@@ -436,5 +436,10 @@
     <string name="theme_black">Black</string>
     <string name="hide_hotseat_pref_title">Hide Dock</string>
     <string name="all_icons">All icons</string>
+    <string name="pull_down_action_pref_title">Pull down action</string>
+    <string name="pull_down_do_nothing">Do nothing</string>
+    <string name="pull_down_notis">Show notifications</string>
+    <string name="pull_down_search">Open search</string>
+    <string name="pull_down_apps_search">Apps search</string>
 
 </resources>

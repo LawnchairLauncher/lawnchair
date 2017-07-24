@@ -2233,7 +2233,7 @@ public class Launcher extends Activity
         }
     }
 
-    protected void onLongClickAllAppsHandle() {
+    public void onLongClickAllAppsHandle() {
         if (!isAppsViewVisible()) {
             showAppsView(true, true);
         }

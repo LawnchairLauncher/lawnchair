@@ -79,5 +79,19 @@
         <item>2</item>
     </string-array>
 
+    <string-array name="pullDownActionTexts">
+        <item>@string/pull_down_do_nothing</item>
+        <item>@string/pull_down_notis</item>
+        <item>@string/pull_down_search</item>
+        <item>@string/pull_down_apps_search</item>
+    </string-array>
+
+    <string-array name="pullDownActionValues">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
     <string name="generalDefault" translatable="false">default</string>
 </resources>
