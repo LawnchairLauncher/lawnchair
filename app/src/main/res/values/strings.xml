@@ -337,7 +337,7 @@
     <string name="full_width_width_widgets_pref_title">Full width widgets</string>
     <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
     <string name="notification_access_pref_title">Notification badges and preview</string>
-    <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
+    <string name="notification_access_pref_summary">Allow Lawnchair to access your notifications to enable this feature</string>
     <string name="ui_pref_title">UI</string>
     <string name="pixel_style_pref_title">Pixel style</string>
     <string name="behavior_pref_title">Behavior</string>
@@ -356,12 +356,12 @@
     <string name="pinch_to_overview_pref_title">Pinch to overview</string>
     <string name="pinch_to_overview_pref_summary">Pinch on the homescreen to open the overview</string>
     <string name="pull_down_notis_pref_title">Pull down to Notifications</string>
-    <string name="pull_down_notis_pref_on">Pulling down on the Homescreen will expand the statusbar.</string>
-    <string name="pull_down_notis_pref_off">When enabled pulling down on the Homescreen expand the statusbar.</string>
+    <string name="pull_down_notis_pref_on">Pulling down on the Homescreen will expand the statusbar</string>
+    <string name="pull_down_notis_pref_off">When enabled pulling down on the Homescreen expand the statusbar</string>
     <string name="light_statusbar_pref_title">Light statusbar</string>
-    <string name="light_statusbar_pref_on">The status bar may show dark icons when using a light wallpaper.</string>
-    <string name="light_statusbar_pref_force">The status bar will show dark icons.</string>
-    <string name="light_statusbar_pref_off">The status bar will show light icons.</string>
+    <string name="light_statusbar_pref_on">The status bar may show dark icons when using a light wallpaper</string>
+    <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
+    <string name="light_statusbar_pref_off">The status bar will show light icons</string>
     <string name="haptic_feedback_pref_title">Enable vibration</string>
     <string name="keep_scroll_state_pref_title">Save scroll position</string>
     <string name="keep_scroll_state_pref_summary">Saves the scroll position in the drawer</string>
