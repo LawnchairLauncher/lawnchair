@@ -16,11 +16,13 @@
 
 package ch.deletescape.lawnchair.settings.ui;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -28,6 +30,8 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -182,24 +186,42 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                         LauncherAppState.getInstance().getLauncher().scheduleReloadIcons();
                         break;
                     case "export_db":
-                        DumbImportExportTask.exportDB(getActivity());
+                        if (checkStoragePermission())
+                            DumbImportExportTask.exportDB(getActivity());
                         break;
                     case "import_db":
-                        DumbImportExportTask.importDB(getActivity());
-                        LauncherAppState.getInstance().getLauncher().scheduleKill();
+                        if (checkStoragePermission()) {
+                            DumbImportExportTask.importDB(getActivity());
+                            LauncherAppState.getInstance().getLauncher().scheduleKill();
+                        }
                         break;
                     case "export_prefs":
-                        DumbImportExportTask.exportPrefs(getActivity());
+                        if (checkStoragePermission())
+                            DumbImportExportTask.exportPrefs(getActivity());
                         break;
                     case "import_prefs":
-                        DumbImportExportTask.importPrefs(getActivity());
-                        LauncherAppState.getInstance().getLauncher().scheduleKill();
+                        if (checkStoragePermission()) {
+                            DumbImportExportTask.importPrefs(getActivity());
+                            LauncherAppState.getInstance().getLauncher().scheduleKill();
+                        }
                         break;
                     default:
                         return false;
                 }
                 return true;
             }
+            return false;
+        }
+
+        private boolean checkStoragePermission() {
+            boolean granted = ContextCompat.checkSelfPermission(
+                    getActivity(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+            if (granted) return true;
+            ActivityCompat.requestPermissions(
+                    getActivity(),
+                    new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    0);
             return false;
         }
 
