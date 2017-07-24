@@ -75,7 +75,7 @@ public class IconPackProvider {
     }
 
     private static IconPack parseAppFilter(Context context, String packageName) throws Exception {
-        XmlPullParser parser = getAppFilter(context, packageName);
+        XmlPullParser parser = getXml(context, packageName, "appfilter");
         float scale = 1f;
         String iconBack = null;
         String iconUpon = null;
@@ -149,17 +149,17 @@ public class IconPackProvider {
         return img;
     }
 
-    private static XmlPullParser getAppFilter(Context context, String packageName) {
+    static XmlPullParser getXml(Context context, String packageName, String name) {
         Resources res;
         try {
             res = context.getPackageManager().getResourcesForApplication(packageName);
-            int resourceId = res.getIdentifier("appfilter", "xml", packageName);
+            int resourceId = res.getIdentifier(name, "xml", packageName);
             if (0 != resourceId) {
                 return context.getPackageManager().getXml(packageName, resourceId, null);
             } else {
                 XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
                 XmlPullParser parser = factory.newPullParser();
-                parser.setInput(res.getAssets().open("appfilter.xml"), Xml.Encoding.UTF_8.toString());
+                parser.setInput(res.getAssets().open(name + ".xml"), Xml.Encoding.UTF_8.toString());
                 return parser;
             }
         } catch (PackageManager.NameNotFoundException | IOException | XmlPullParserException e) {

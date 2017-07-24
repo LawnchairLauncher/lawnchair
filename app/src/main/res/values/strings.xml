@@ -435,5 +435,6 @@
     <string name="theme_dark">Dark</string>
     <string name="theme_black">Black</string>
     <string name="hide_hotseat_pref_title">Hide Dock</string>
+    <string name="all_icons">All icons</string>
 
 </resources>

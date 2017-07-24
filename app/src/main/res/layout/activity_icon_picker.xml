@@ -6,7 +6,7 @@
     tools:context="ch.deletescape.lawnchair.iconpack.IconPickerActivity">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/iconRecyclerView"
+        android:id="@+id/categoryRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </FrameLayout>

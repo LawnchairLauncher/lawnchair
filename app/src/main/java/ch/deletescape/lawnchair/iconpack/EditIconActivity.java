@@ -143,8 +143,8 @@ public class EditIconActivity extends Activity implements CustomIconAdapter.List
         if (requestCode == REQUEST_PICK_ICON) {
             if (resultCode == RESULT_OK) {
                 String packageName = data.getStringExtra("packageName");
-                String resourceName = data.getStringExtra("resourceName");
-                setAlternateIcon("resource/" + packageName + "/" + resourceName);
+                int resourceId = data.getIntExtra("resourceId", 0);
+                setAlternateIcon("resourceId/" + packageName + "/" + resourceId);
                 finish();
             }
         } else {

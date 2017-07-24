@@ -3,11 +3,10 @@ package ch.deletescape.lawnchair.iconpack;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.MenuItem;
 
 import ch.deletescape.lawnchair.R;
@@ -17,8 +16,6 @@ import ch.deletescape.lawnchair.config.FeatureFlags;
 public class IconPickerActivity extends Activity implements IconGridAdapter.Listener {
 
     private EditIconActivity.IconPackInfo mIconPackInfo;
-    private GridLayoutManager mLayoutManager;
-    private int mColumnWidth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,15 +31,14 @@ public class IconPickerActivity extends Activity implements IconGridAdapter.List
 
         setTitle(mIconPackInfo.label);
 
-        mColumnWidth = getResources().getDimensionPixelSize(R.dimen.icon_grid_column_width);
-        RecyclerView recyclerView = findViewById(R.id.iconRecyclerView);
-        IconGridAdapter adapter = new IconGridAdapter();
-        adapter.setIconList(mIconPackInfo.iconPack.getIconList());
+        RecyclerView recyclerView = findViewById(R.id.categoryRecyclerView);
+        IconCategoryAdapter adapter = new IconCategoryAdapter();
+        adapter.setCategoryList(mIconPackInfo.iconPack.getIconList());
         adapter.setListener(this);
-        mLayoutManager = new GridLayoutManager(this, 1);
-        updateColumnCount();
-        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
+        new PagerSnapHelper().attachToRecyclerView(recyclerView);
 
         BlurWallpaperProvider.applyBlurBackground(this);
     }
@@ -63,23 +59,10 @@ public class IconPickerActivity extends Activity implements IconGridAdapter.List
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        updateColumnCount();
-    }
-
-    private void updateColumnCount() {
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int columnCount = displayMetrics.widthPixels / mColumnWidth;
-        mLayoutManager.setSpanCount(columnCount);
-    }
-
-    @Override
     public void onSelect(IconPack.IconEntry iconEntry) {
         Intent data = new Intent();
         data.putExtra("packageName", iconEntry.getPackageName());
-        data.putExtra("resourceName", iconEntry.resourceName);
+        data.putExtra("resourceId", iconEntry.resId);
         setResult(RESULT_OK, data);
         finish();
     }

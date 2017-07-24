@@ -140,6 +140,14 @@ public class PixelIconProvider {
                 e.printStackTrace();
                 return null;
             }
+        } else if (alternateIcon.startsWith("resourceId")) {
+            try {
+                String[] parts = alternateIcon.substring(11).split("/");
+                IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext, parts[0]);
+                return iconPack.getDrawable(Integer.parseInt(parts[1]));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else if (alternateIcon.startsWith("resource")) {
             try {
                 String[] parts = alternateIcon.substring(9).split("/");
