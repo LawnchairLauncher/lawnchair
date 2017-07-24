@@ -25,7 +25,6 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.GradientView;
-import com.android.launcher3.graphics.ScrimView;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -101,7 +100,6 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
     private boolean mIsTranslateWithoutWorkspace = false;
     private AnimatorSet mDiscoBounceAnimation;
     private GradientView mGradientView;
-    private ScrimView mScrimView;
 
     private SpringAnimationHandler mSpringAnimationHandler;
 
@@ -302,13 +300,6 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
             mGradientView.setVisibility(View.VISIBLE);
         }
         mGradientView.setProgress(progress);
-
-        // scrim
-        if (mScrimView == null) {
-            mScrimView = (ScrimView) mLauncher.findViewById(R.id.scrim_bg);
-            mScrimView.setVisibility(View.VISIBLE);
-        }
-        mScrimView.setProgress(progress);
     }
 
     /**

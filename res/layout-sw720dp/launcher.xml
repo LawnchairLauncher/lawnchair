@@ -43,7 +43,12 @@
             launcher:pageIndicator="@id/page_indicator">
         </com.android.launcher3.Workspace>
 
-        <include layout="@layout/gradient_scrim" />
+        <com.android.launcher3.graphics.GradientView
+            android:id="@+id/gradient_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            launcher:layout_ignoreInsets="true"/>
 
         <!-- DO NOT CHANGE THE ID -->
         <include layout="@layout/hotseat"
