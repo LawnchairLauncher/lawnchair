@@ -90,8 +90,11 @@ public class PreviewItemManager {
         return animateDrawable;
     }
 
-    private void computePreviewDrawingParams(Drawable d) {
-        computePreviewDrawingParams(d.getIntrinsicWidth(), mIcon.getMeasuredWidth());
+    public void recomputePreviewDrawingParams() {
+        if (mReferenceDrawable != null) {
+            computePreviewDrawingParams(mReferenceDrawable.getIntrinsicWidth(),
+                    mIcon.getMeasuredWidth());
+        }
     }
 
     private void computePreviewDrawingParams(int drawableSize, int totalSize) {
@@ -143,8 +146,6 @@ public class PreviewItemManager {
     }
 
     public void draw(Canvas canvas) {
-        computePreviewDrawingParams(mReferenceDrawable);
-
         float firstPageItemsTransX = 0;
         if (mShouldSlideInFirstPage) {
             drawParams(canvas, mCurrentPageParams, mCurrentPageItemsTransX);

@@ -446,6 +446,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
         if (!mBackgroundIsVisible) return;
 
+        mPreviewItemManager.recomputePreviewDrawingParams();
+
         if (!mBackground.drawingDelegated()) {
             mBackground.drawBackground(canvas);
         }
