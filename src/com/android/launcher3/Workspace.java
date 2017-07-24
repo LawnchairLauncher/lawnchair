@@ -52,8 +52,10 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.Toast;
+
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.Launcher.LauncherOverlay;
+import com.android.launcher3.LauncherAppWidgetHost.ProviderChangedListener;
 import com.android.launcher3.UninstallDropTarget.DropTargetSource;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.OverviewAccessibilityDelegate;
@@ -86,6 +88,7 @@ import com.android.launcher3.util.VerticalFlingDetector;
 import com.android.launcher3.util.WallpaperOffsetInterpolator;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -4079,7 +4082,7 @@ public class Workspace extends PagedView
      * Used as a workaround to ensure that the AppWidgetService receives the
      * PACKAGE_ADDED broadcast before updating widgets.
      */
-    private class DeferredWidgetRefresh implements Runnable {
+    private class DeferredWidgetRefresh implements Runnable, ProviderChangedListener {
         private final ArrayList<LauncherAppWidgetInfo> mInfos;
         private final LauncherAppWidgetHost mHost;
         private final Handler mHandler;
@@ -4121,6 +4124,11 @@ public class Workspace extends PagedView
                     return false;
                 }
             });
+        }
+
+        @Override
+        public void notifyWidgetProvidersChanged() {
+            run();
         }
     }
 
