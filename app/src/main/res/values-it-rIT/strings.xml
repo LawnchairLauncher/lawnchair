@@ -252,7 +252,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair è un Launcher creato da Till Kottmann (aka deletescape). E\' basato su Launcher3 da AOSP.</string>
   <string name="about_title">Info</string>
-  <string name="changelog_title">Changelog for build #%d</string>
+  <string name="changelog_title">Changelog della build #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Pacchetto icone</string>
   <string name="icon_pack_preference_summary">Seleziona un pacchetto icone</string>
@@ -262,7 +262,7 @@
   <string name="transparent_hotseat_pref_title">Dock trasparente</string>
   <string name="dynamic_ui_pref_title">Estrai colore secondario dallo sfondo</string>
   <string name="dark_theme_pref_title">Attiva tema scuro</string>
-  <string name="blur_pref_title">Attiva effetto sfocato</string>
+  <string name="blur_pref_title">Attiva effetto sfocatura</string>
   <string name="blur_radius_pref_title">Raggio sfocatura</string>
   <string name="white_google_icon_pref_title">Utilizza l\'icona bianca per Google</string>
   <string name="hide_icon_labels_pref_title">Nascondi le etichette delle icone nella schermata principale</string>
@@ -283,11 +283,11 @@
   <string name="behavior_pref_title">Gesti e funzionalità</string>
   <string name="debug_pref_title">Debug</string>
   <string name="import_export_pref_title">Importa/Esporta</string>
-  <string name="show_pixel_bar_pref_title">Mostra la barra Pixel in alto</string>
+  <string name="show_pixel_bar_pref_title">Mostra la barra in stile Pixel in alto</string>
   <string name="use_wide_searchbar_pref_title">Usa la barra di ricerca estesa</string>
   <string name="show_mic_pref_title">Mostra il pulsante di Google Assistant</string>
-  <string name="pixel_style_icons_pref_title">Usa le icone Pixel</string>
-  <string name="pixel_style_icons_pref_summary">Se abilitato, dove possibile, saranno utilizzate le icone circolari </string>
+  <string name="pixel_style_icons_pref_title">Uilizza le icone circolari</string>
+  <string name="pixel_style_icons_pref_summary">Le app che supportano questa funzione utilizzeranno delle icone circolari</string>
   <string name="show_google_now_tab_pref_title">Mostra la pagina Google Now</string>
   <string name="restart_lawnchair_pref_title">Riavvia Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">Può essere utile se alcune impostazioni non sono state applicate correttamente</string>
