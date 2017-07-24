@@ -16,12 +16,20 @@
 
 package com.android.launcher3;
 
+import android.app.Activity;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetHostView;
+import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.widget.Toast;
+
+import com.android.launcher3.config.FeatureFlags;
 
 import java.util.ArrayList;
 
@@ -33,14 +41,16 @@ import java.util.ArrayList;
  */
 public class LauncherAppWidgetHost extends AppWidgetHost {
 
-    private final ArrayList<Runnable> mProviderChangeListeners = new ArrayList<Runnable>();
+    public static final int APPWIDGET_HOST_ID = 1024;
+
+    private final ArrayList<ProviderChangedListener> mProviderChangeListeners = new ArrayList<>();
     private final SparseArray<LauncherAppWidgetHostView> mViews = new SparseArray<>();
 
-    private Launcher mLauncher;
+    private final Context mContext;
 
-    public LauncherAppWidgetHost(Launcher launcher, int hostId) {
-        super(launcher, hostId);
-        mLauncher = launcher;
+    public LauncherAppWidgetHost(Context context) {
+        super(context, APPWIDGET_HOST_ID);
+        mContext = context;
     }
 
     @Override
@@ -53,6 +63,10 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
 
     @Override
     public void startListening() {
+        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+            return;
+        }
+
         try {
             super.startListening();
         } catch (Exception e) {
@@ -66,23 +80,37 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         }
     }
 
-    public void addProviderChangeListener(Runnable callback) {
+    @Override
+    public void stopListening() {
+        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+            return;
+        }
+
+        super.stopListening();
+    }
+
+    @Override
+    public int allocateAppWidgetId() {
+        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+            return AppWidgetManager.INVALID_APPWIDGET_ID;
+        }
+
+        return super.allocateAppWidgetId();
+    }
+
+    public void addProviderChangeListener(ProviderChangedListener callback) {
         mProviderChangeListeners.add(callback);
     }
 
-    public void removeProviderChangeListener(Runnable callback) {
+    public void removeProviderChangeListener(ProviderChangedListener callback) {
         mProviderChangeListeners.remove(callback);
     }
 
     protected void onProvidersChanged() {
         if (!mProviderChangeListeners.isEmpty()) {
-            for (Runnable callback : new ArrayList<>(mProviderChangeListeners)) {
-                callback.run();
+            for (ProviderChangedListener callback : new ArrayList<>(mProviderChangeListeners)) {
+                callback.notifyWidgetProvidersChanged();
             }
-        }
-
-        if (Utilities.ATLEAST_MARSHMALLOW) {
-            mLauncher.notifyWidgetProvidersChanged();
         }
     }
 
@@ -109,7 +137,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
                 // will update.
                 LauncherAppWidgetHostView view = mViews.get(appWidgetId);
                 if (view == null) {
-                    view = onCreateView(mLauncher, appWidgetId, appWidget);
+                    view = onCreateView(mContext, appWidgetId, appWidget);
                 }
                 view.setAppWidget(appWidgetId, appWidget);
                 view.switchToErrorView();
@@ -124,11 +152,11 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     @Override
     protected void onProviderChanged(int appWidgetId, AppWidgetProviderInfo appWidget) {
         LauncherAppWidgetProviderInfo info = LauncherAppWidgetProviderInfo.fromProviderInfo(
-                mLauncher, appWidget);
+                mContext, appWidget);
         super.onProviderChanged(appWidgetId, info);
         // The super method updates the dimensions of the providerInfo. Update the
         // launcher spans accordingly.
-        info.initSpans(mLauncher);
+        info.initSpans(mContext);
     }
 
     @Override
@@ -141,5 +169,54 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     protected void clearViews() {
         super.clearViews();
         mViews.clear();
+    }
+
+    public void startBindFlow(BaseActivity activity,
+            int appWidgetId, AppWidgetProviderInfo info, int requestCode) {
+
+        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+            sendActionCancelled(activity, requestCode);
+            return;
+        }
+
+        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND)
+                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, info.provider)
+                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE, info.getProfile());
+        // TODO: we need to make sure that this accounts for the options bundle.
+        // intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
+        activity.startActivityForResult(intent, requestCode);
+    }
+
+
+    public void startConfigActivity(BaseActivity activity, int widgetId, int requestCode) {
+        if (FeatureFlags.GO_DISABLE_WIDGETS) {
+            sendActionCancelled(activity, requestCode);
+            return;
+        }
+
+        try {
+            startAppWidgetConfigureActivityForResult(activity, widgetId, 0, requestCode, null);
+        } catch (ActivityNotFoundException | SecurityException e) {
+            Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
+            sendActionCancelled(activity, requestCode);
+        }
+    }
+
+    private void sendActionCancelled(final BaseActivity activity, final int requestCode) {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                activity.onActivityResult(requestCode, Activity.RESULT_CANCELED, null);
+            }
+        });
+    }
+
+    /**
+     * Listener for getting notifications on provider changes.
+     */
+    public interface ProviderChangedListener {
+
+        void notifyWidgetProvidersChanged();
     }
 }
