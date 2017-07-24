@@ -92,7 +92,7 @@ public class DeepShortcutManagerBackport extends DeepShortcutManager {
         return getShortcutCache().query(packageName, componentName);
     }
 
-    private ShortcutCache getShortcutCache() {
+    public ShortcutCache getShortcutCache() {
         if (mShortcutCache == null) {
             mShortcutCache = new ShortcutCache(mContext, mLauncherApps);
         }

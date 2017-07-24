@@ -41,7 +41,8 @@ public class ShortcutInfoCompat {
     private String id;
     private CharSequence shortLabel;
     private CharSequence longLabel;
-    private Intent activity;
+    private ComponentName activity;
+    private Intent launchIntent;
     private UserHandle userHandle;
     private int rank;
     private boolean enabled;
@@ -55,12 +56,13 @@ public class ShortcutInfoCompat {
     }
 
     public ShortcutInfoCompat(String packageName, String id, CharSequence shortLabel, CharSequence longLabel,
-                              Intent activity, UserHandle userHandle, int rank, boolean enabled, CharSequence disabledMessage, Drawable icon) {
+                              ComponentName activity, Intent launchIntent, UserHandle userHandle, int rank, boolean enabled, CharSequence disabledMessage, Drawable icon) {
         this.packageName = packageName;
         this.id = id;
         this.shortLabel = shortLabel;
         this.longLabel = longLabel;
         this.activity = activity;
+        this.launchIntent = launchIntent;
         this.userHandle = userHandle;
         this.rank = rank;
         this.enabled = enabled;
@@ -74,9 +76,9 @@ public class ShortcutInfoCompat {
         Intent intent;
         if (useNative()) {
             intent = new Intent(Intent.ACTION_MAIN);
-            intent.setComponent(getActivity());
+            intent.setComponent(launchIntent.getComponent());
         } else {
-            intent = activity;
+            intent = launchIntent;
         }
         return intent
                 .addCategory(INTENT_CATEGORY)
@@ -134,7 +136,7 @@ public class ShortcutInfoCompat {
         if (useNative()) {
             return mShortcutInfo.getActivity();
         } else {
-            return activity.getComponent();
+            return activity;
         }
     }
 

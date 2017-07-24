@@ -43,14 +43,16 @@ public class ShortcutParser {
     private final Resources mResources;
     private final String mPackageName;
     private final ComponentName mComponentName;
-    private final List<ShortcutInfoCompat> mShortcutsList = new ArrayList<>();
+    private final ArrayList<ShortcutInfoCompat> mShortcutsList = new ArrayList<>();
     private final PackageInfo mPackageInfo;
+    private final int mResId;
 
     public ShortcutParser(Context context, Resources resources, String packageName, ComponentName componentName, int resId) throws PackageManager.NameNotFoundException {
         mResources = resources;
         mPackageName = packageName;
         mComponentName = componentName;
         mPackageInfo = context.getPackageManager().getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+        mResId = resId;
 
         try {
             parseShortcuts(resId);
@@ -103,7 +105,7 @@ public class ShortcutParser {
             shortLabel = "null";
         }
         if (isComponentExported(activity.getComponent())) {
-            mShortcutsList.add(new ShortcutInfoCompat(mPackageName, id, shortLabel, longLabel, activity, Utilities.myUserHandle(), 0, true, disabledMessage, icon));
+            mShortcutsList.add(new ShortcutInfoCompat(mPackageName, id, shortLabel, longLabel, mComponentName, activity, Utilities.myUserHandle(), 0, true, disabledMessage, icon));
         }
     }
 
@@ -188,7 +190,11 @@ public class ShortcutParser {
         }
     }
 
-    public List<ShortcutInfoCompat> getShortcutsList() {
+    ArrayList<ShortcutInfoCompat> getShortcutsList() {
         return mShortcutsList;
+    }
+
+    int getResId() {
+        return mResId;
     }
 }

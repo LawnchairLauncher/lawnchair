@@ -19,7 +19,7 @@ public class ShortcutPackage {
     private final Resources mResources;
 
     private final Map<ComponentName, ShortcutParser> mShortcutsMap = new HashMap<>();
-    private final List<ShortcutInfoCompat> mShortcutsList = new ArrayList<>();
+    private final ArrayList<ShortcutInfoCompat> mShortcutsList = new ArrayList<>();
 
     public ShortcutPackage(Context context, String packageName) throws Exception {
         mContext = context;
@@ -36,7 +36,11 @@ public class ShortcutPackage {
         }
     }
 
-    List<ShortcutInfoCompat> getAllShortcuts() {
+    Map<ComponentName, ShortcutParser> getShortcutsMap() {
+        return mShortcutsMap;
+    }
+
+    ArrayList<ShortcutInfoCompat> getAllShortcuts() {
         return mShortcutsList;
     }
 }
