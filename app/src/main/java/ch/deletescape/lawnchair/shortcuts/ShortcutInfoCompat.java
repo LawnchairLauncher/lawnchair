@@ -76,7 +76,7 @@ public class ShortcutInfoCompat {
         Intent intent;
         if (useNative()) {
             intent = new Intent(Intent.ACTION_MAIN);
-            intent.setComponent(launchIntent.getComponent());
+            intent.setComponent(activity);
         } else {
             intent = launchIntent;
         }

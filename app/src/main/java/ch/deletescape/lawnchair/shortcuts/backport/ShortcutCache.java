@@ -49,7 +49,7 @@ public class ShortcutCache {
                         .unflattenFromString(c.getString(c.getColumnIndexOrThrow(ShortcutDB.COLUMN_COMPONENT)));
                 String packageName = c.getString(c.getColumnIndexOrThrow(ShortcutDB.COLUMN_PACKAGE));
                 int shortcutXml = c.getInt(c.getColumnIndexOrThrow(ShortcutDB.COLUMN_SHORTCUT_XML));
-                Log.d(TAG, componentName.flattenToString() + " -> " + shortcutXml);
+                //Log.d(TAG, componentName.flattenToString() + " -> " + shortcutXml);
                 parseShortcut(context, packageName, componentName, shortcutXml);
             }
         }
@@ -71,7 +71,7 @@ public class ShortcutCache {
     }
 
     public void addPackage(Context context, String packageName) {
-        Log.d(TAG, "adding package " + packageName);
+        //Log.d(TAG, "adding package " + packageName);
         parsePackage(context, packageName);
     }
 
