@@ -402,9 +402,14 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
+        enforceContainedWithinScreen(l, r);
+
+    }
+
+    private void enforceContainedWithinScreen(int left, int right) {
         DragLayer dragLayer = mLauncher.getDragLayer();
-        if (getTranslationX() + l < 0 ||
-                getTranslationX() + l + getMeasuredWidth() > dragLayer.getWidth()) {
+        if (getTranslationX() + left < 0 ||
+                getTranslationX() + right > dragLayer.getWidth()) {
             // If we are still off screen, center horizontally too.
             mGravity |= Gravity.CENTER_HORIZONTAL;
         }
