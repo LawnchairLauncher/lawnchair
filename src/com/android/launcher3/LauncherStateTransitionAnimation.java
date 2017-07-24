@@ -387,7 +387,6 @@ public class LauncherStateTransitionAnimation {
     private void startAnimationToWorkspaceFromAllApps(final Workspace.State fromWorkspaceState,
             final Workspace.State toWorkspaceState, final boolean animated, int type,
             final Runnable onCompleteRunnable) {
-        final AllAppsContainerView appsView = mLauncher.getAppsView();
         // No alpha anim from all apps
         PrivateTransitionCallbacks cb = new PrivateTransitionCallbacks(1f) {
             @Override
@@ -417,12 +416,11 @@ public class LauncherStateTransitionAnimation {
             @Override
             void onTransitionComplete() {
                 mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
-                appsView.reset();
             }
         };
         // Only animate the search bar if animating to spring loaded mode from all apps
         startAnimationToWorkspaceFromOverlay(fromWorkspaceState, toWorkspaceState,
-                mLauncher.getStartViewForAllAppsRevealAnimation(), appsView,
+                mLauncher.getStartViewForAllAppsRevealAnimation(), mLauncher.getAppsView(),
                 animated, type, onCompleteRunnable, cb);
     }
 
