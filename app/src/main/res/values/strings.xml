@@ -442,4 +442,11 @@
     <string name="pull_down_search">Open search</string>
     <string name="pull_down_apps_search">Apps search</string>
 
+    <!-- Import/Export Strings -->
+    <string name="imexport_success">Success!</string>
+    <string name="imexport_error">Error: Failed to copy file</string>
+    <string name="imexport_no_backup_found">No backup found</string>
+    <string name="imexport_external_storage_unreadable">External Storage is not readable (grant permission in settings)</string>
+    <string name="imexport_external_storage_unwritable">External Storage is not writable (grant permission in settings)</string>
+
 </resources>
