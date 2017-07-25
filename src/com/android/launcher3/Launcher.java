@@ -1465,21 +1465,23 @@ public class Launcher extends BaseActivity
             mWorkspace.addInScreen(view, info);
         } else {
             // Adding a shortcut to a Folder.
-            final long folderIconId = container;
-            FolderIcon folderIcon = (FolderIcon) mWorkspace.getFirstMatch(new ItemOperator() {
-                @Override
-                public boolean evaluate(ItemInfo info, View view) {
-                    return info != null && info.id == folderIconId;
-                }
-            });
-
+            FolderIcon folderIcon = findFolderIcon(container);
             if (folderIcon != null) {
                 FolderInfo folderInfo = (FolderInfo) folderIcon.getTag();
                 folderInfo.add(info, args.rank, false);
             } else {
-                Log.e(TAG, "Could not find folder with id " + folderIconId + " to add shortcut.");
+                Log.e(TAG, "Could not find folder with id " + container + " to add shortcut.");
             }
         }
+    }
+
+    public FolderIcon findFolderIcon(final long folderIconId) {
+        return (FolderIcon) mWorkspace.getFirstMatch(new ItemOperator() {
+            @Override
+            public boolean evaluate(ItemInfo info, View view) {
+                return info != null && info.id == folderIconId;
+            }
+        });
     }
 
     /**

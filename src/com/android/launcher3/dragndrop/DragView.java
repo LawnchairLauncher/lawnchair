@@ -78,6 +78,7 @@ public class DragView extends View {
 
     @Thunk static float sDragAlpha = 1f;
 
+    private boolean mDrawBitmap = true;
     private Bitmap mBitmap;
     private Bitmap mCrossFadeBitmap;
     @Thunk Paint mPaint;
@@ -187,7 +188,8 @@ public class DragView extends View {
     }
 
     /**
-     * Initialize {@code #mIconDrawable} only if the icon type is app icon (not shortcut or folder).
+     * Initialize {@code #mIconDrawable} if the item can be represented using
+     * an {@link AdaptiveIconDrawable} or {@link FolderAdaptiveIcon}.
      */
     @TargetApi(Build.VERSION_CODES.O)
     public void setItemInfo(final ItemInfo info) {
@@ -195,7 +197,8 @@ public class DragView extends View {
             return;
         }
         if (info.itemType != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
-                info.itemType != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+                info.itemType != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
+                info.itemType != LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
             return;
         }
         // Load the adaptive icon on a background thread and add the view in ui thread.
@@ -205,7 +208,7 @@ public class DragView extends View {
             public void run() {
                 LauncherAppState appState = LauncherAppState.getInstance(mLauncher);
                 Object[] outObj = new Object[1];
-                Drawable dr = getFullDrawable(info, appState, outObj);
+                final Drawable dr = getFullDrawable(info, appState, outObj);
 
                 if (dr instanceof AdaptiveIconDrawable) {
                     int w = mBitmap.getWidth();
@@ -248,6 +251,9 @@ public class DragView extends View {
                         public void run() {
                             // Assign the variable on the UI thread to avoid race conditions.
                             mScaledMaskPath = mask;
+
+                            // Do not draw the background in case of folder as its translucent
+                            mDrawBitmap = !(dr instanceof FolderAdaptiveIcon);
 
                             if (info.isDisabled()) {
                                 FastBitmapDrawable d = new FastBitmapDrawable(null);
@@ -323,6 +329,14 @@ public class DragView extends View {
                 return sm.getShortcutIconDrawable(si.get(0),
                         appState.getInvariantDeviceProfile().fillResIconDpi);
             }
+        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+            FolderAdaptiveIcon icon =  FolderAdaptiveIcon.createFolderAdaptiveIcon(
+                    mLauncher, info.id, new Point(mBitmap.getWidth(), mBitmap.getHeight()));
+            if (icon == null) {
+                return null;
+            }
+            outObj[0] = icon;
+            return icon;
         } else {
             return null;
         }
@@ -350,6 +364,8 @@ public class DragView extends View {
             float insetFraction = (iconSize - badgeSize) / iconSize;
             return new InsetDrawable(new FastBitmapDrawable(badge),
                     insetFraction, insetFraction, 0, 0);
+        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+            return ((FolderAdaptiveIcon) obj).getBadge();
         } else {
             return mLauncher.getPackageManager()
                     .getUserBadgedIcon(new FixedSizeEmptyDrawable(iconSize), info.user);
@@ -405,21 +421,24 @@ public class DragView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         mHasDrawn = true;
-        // Always draw the bitmap to mask anti aliasing due to clipPath
-        boolean crossFade = mCrossFadeProgress > 0 && mCrossFadeBitmap != null;
-        if (crossFade) {
-            int alpha = crossFade ? (int) (255 * (1 - mCrossFadeProgress)) : 255;
-            mPaint.setAlpha(alpha);
-        }
-        canvas.drawBitmap(mBitmap, 0.0f, 0.0f, mPaint);
-        if (crossFade) {
-            mPaint.setAlpha((int) (255 * mCrossFadeProgress));
-            final int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
-            float sX = (mBitmap.getWidth() * 1.0f) / mCrossFadeBitmap.getWidth();
-            float sY = (mBitmap.getHeight() * 1.0f) / mCrossFadeBitmap.getHeight();
-            canvas.scale(sX, sY);
-            canvas.drawBitmap(mCrossFadeBitmap, 0.0f, 0.0f, mPaint);
-            canvas.restoreToCount(saveCount);
+
+        if (mDrawBitmap) {
+            // Always draw the bitmap to mask anti aliasing due to clipPath
+            boolean crossFade = mCrossFadeProgress > 0 && mCrossFadeBitmap != null;
+            if (crossFade) {
+                int alpha = crossFade ? (int) (255 * (1 - mCrossFadeProgress)) : 255;
+                mPaint.setAlpha(alpha);
+            }
+            canvas.drawBitmap(mBitmap, 0.0f, 0.0f, mPaint);
+            if (crossFade) {
+                mPaint.setAlpha((int) (255 * mCrossFadeProgress));
+                final int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
+                float sX = (mBitmap.getWidth() * 1.0f) / mCrossFadeBitmap.getWidth();
+                float sY = (mBitmap.getHeight() * 1.0f) / mCrossFadeBitmap.getHeight();
+                canvas.scale(sX, sY);
+                canvas.drawBitmap(mCrossFadeBitmap, 0.0f, 0.0f, mPaint);
+                canvas.restoreToCount(saveCount);
+            }
         }
 
         if (mScaledMaskPath != null) {
