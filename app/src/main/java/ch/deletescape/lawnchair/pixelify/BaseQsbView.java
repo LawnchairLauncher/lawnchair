@@ -32,7 +32,7 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     protected boolean showMic;
     protected QsbConnector qsbConnector;
     private ObjectAnimator elevationAnimator;
-    private final BroadcastReceiver packageChangedReciever = new PackageChangedReciever(this);
+    private final BroadcastReceiver packageChangedReceiver = new PackageChangedReceiver(this);
     private boolean qsbHidden;
     private int mQsbViewId = 0;
     private boolean bM;
@@ -85,7 +85,7 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
         SharedPreferences sharedPreferences = Utilities.getPrefs(getContext());
         applyVoiceSearchPreference(sharedPreferences);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        getContext().registerReceiver(packageChangedReciever, Util.createIntentFilter("android.intent.action.PACKAGE_CHANGED"));
+        getContext().registerReceiver(packageChangedReceiver, Util.createIntentFilter("android.intent.action.PACKAGE_CHANGED"));
         initializeQsbConnector();
         applyVisibility();
     }
@@ -95,7 +95,7 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
         super.onDetachedFromWindow();
         try {
             Utilities.getPrefs(getContext()).unregisterOnSharedPreferenceChangeListener(this);
-            getContext().unregisterReceiver(packageChangedReciever);
+            getContext().unregisterReceiver(packageChangedReceiver);
         } catch (IllegalArgumentException ignored) {
             // Not supposed to happen but we'll ignore it
         }
@@ -254,10 +254,10 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
         }
     }
 
-    final class PackageChangedReciever extends BroadcastReceiver {
+    final class PackageChangedReceiver extends BroadcastReceiver {
         final /* synthetic */ BaseQsbView cp;
 
-        PackageChangedReciever(BaseQsbView qsbView) {
+        PackageChangedReceiver(BaseQsbView qsbView) {
             cp = qsbView;
         }
 
