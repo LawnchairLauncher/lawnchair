@@ -3,20 +3,20 @@ package ch.deletescape.lawnchair;
 import android.content.ComponentName;
 import android.content.Context;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class StringSetAppFilter extends PreferenceAppFilter {
 
-    private List<String> mHiddenPackages = new ArrayList<>();
+    private Set<ComponentName> mHiddenComponents = new HashSet<>();
 
     StringSetAppFilter() {
-        mHiddenPackages.add("com.google.android.apps.wallpaper");
-        mHiddenPackages.add("com.google.android.googlequicksearchbox");
+        mHiddenComponents.add(ComponentName.unflattenFromString("com.google.android.apps.wallpaper/.picker.CategoryPickerActivity"));
+        mHiddenComponents.add(ComponentName.unflattenFromString("com.google.android.googlequicksearchbox/.VoiceSearchActivity"));
     }
 
     @Override
     public boolean shouldShowApp(ComponentName app, Context context) {
-        return !mHiddenPackages.contains(app.getPackageName()) && super.shouldShowApp(app, context);
+        return !mHiddenComponents.contains(app) && super.shouldShowApp(app, context);
     }
 }
