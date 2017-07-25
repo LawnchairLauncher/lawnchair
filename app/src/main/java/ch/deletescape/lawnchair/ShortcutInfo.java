@@ -200,6 +200,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         mInstallProgress = info.mInstallProgress;
         isDisabled = info.isDisabled;
         usingFallbackIcon = info.usingFallbackIcon;
+        useDeepShortcutManager = info.useDeepShortcutManager;
     }
 
     /**
