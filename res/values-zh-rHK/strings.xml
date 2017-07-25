@@ -35,12 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d 闊，%2$d 高"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"按住即可手動新增"</string>
     <string name="place_automatically" msgid="8064208734425456485">"自動新增"</string>
-    <!-- no translation found for all_apps_search_bar_hint (1390553134053255246) -->
-    <skip />
-    <!-- no translation found for all_apps_loading_message (5813968043155271636) -->
-    <skip />
-    <!-- no translation found for all_apps_no_search_results (3200346862396363786) -->
-    <skip />
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"搜尋應用程式"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"正在載入應用程式…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"找不到與「<xliff:g id="QUERY">%1$s</xliff:g>」相符的應用程式"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"搜尋更多應用程式"</string>
     <string name="notifications_header" msgid="1404149926117359025">"通知"</string>
     <string name="out_of_space" msgid="4691004494942118364">"主畫面已無空間。"</string>
