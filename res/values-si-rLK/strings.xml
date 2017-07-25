@@ -35,12 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"පළල %1$d උස %2$d"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"අතින් ස්ථානගත කිරීමට ස්පර්ශ කර අල්ලාගෙන සිටින්න"</string>
     <string name="place_automatically" msgid="8064208734425456485">"ස්වයංක්‍රියව එක් කරන්න"</string>
-    <!-- no translation found for all_apps_search_bar_hint (1390553134053255246) -->
-    <skip />
-    <!-- no translation found for all_apps_loading_message (5813968043155271636) -->
-    <skip />
-    <!-- no translation found for all_apps_no_search_results (3200346862396363786) -->
-    <skip />
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"යෙදුම් සොයන්න"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"යෙදුම් පූරණය වෙමින්…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" සමග ගැළපෙන යෙදුම් හමු නොවිණි"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"තව යෙදුම් සඳහා සොයන්න"</string>
     <string name="notifications_header" msgid="1404149926117359025">"දැනුම්දීම්"</string>
     <string name="out_of_space" msgid="4691004494942118364">"මෙම මුල් පිටු තිරය මත තවත් අවසර නැත."</string>
