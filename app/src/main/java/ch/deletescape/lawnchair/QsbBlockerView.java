@@ -2,10 +2,13 @@ package ch.deletescape.lawnchair;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.LayoutInflater;
@@ -123,6 +126,16 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
                     helper.setUnits(units);
                     String city = prefs.getString("pref_weatherDebug_city", "Lucerne, CH");
                     final TextView temperature = inflate.findViewById(R.id.weather_widget_temperature);
+                    temperature.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setData(Uri.parse("dynact://velour/weather/ProxyActivity"));
+                            intent.setComponent(new ComponentName("com.google.android.googlequicksearchbox",
+                                    "com.google.android.apps.gsa.velour.DynamicActivityTrampoline"));
+                            getContext().startActivity(intent);
+                        }
+                    });
                     OpenWeatherMapHelper.CurrentWeatherCallback callback = new OpenWeatherMapHelper.CurrentWeatherCallback() {
                         @Override
                         public void onSuccess(CurrentWeather currentWeather) {
