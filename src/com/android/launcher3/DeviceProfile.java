@@ -63,6 +63,8 @@ public class DeviceProfile {
      */
     private static final float MAX_HORIZONTAL_PADDING_PERCENT = 0.14f;
 
+    private static final float TALL_DEVICE_ASPECT_RATIO_THRESHOLD = 1.82f;
+
     // Overview mode
     private final int overviewModeMinIconZoneHeightPx;
     private final int overviewModeMaxIconZoneHeightPx;
@@ -173,7 +175,8 @@ public class DeviceProfile {
         defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
         desiredWorkspaceLeftRightMarginPx = isVerticalBarLayout() ? 0 : edgeMarginPx;
-        cellLayoutPaddingLeftRightPx = isVerticalBarLayout() ? 0 : edgeMarginPx;
+        cellLayoutPaddingLeftRightPx =
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
         pageIndicatorSizePx = res.getDimensionPixelSize(
                 R.dimen.dynamic_grid_min_page_indicator_size);
         pageIndicatorLandGutterPx = res.getDimensionPixelSize(
@@ -235,17 +238,18 @@ public class DeviceProfile {
         updateAvailableDimensions(dm, res);
 
         // Now that we have all of the variables calculated, we can tune certain sizes.
-        if (!isVerticalBarLayout()) {
+        float aspectRatio = ((float) Math.max(availableWidthPx, availableHeightPx))
+                / Math.min(availableWidthPx, availableHeightPx);
+        boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
+        if (!isVerticalBarLayout() && isPhone && isTallDevice) {
             // We increase the page indicator size when there is extra space.
             // ie. For a display with a large aspect ratio, we can keep the icons on the workspace
             // in portrait mode closer together by increasing the page indicator size.
-            int newPageIndicatorSizePx = getCellSize().y - iconSizePx - iconTextSizePx
-                    - iconDrawablePaddingOriginalPx;
-            if (newPageIndicatorSizePx > pageIndicatorSizePx) {
-                pageIndicatorSizePx = newPageIndicatorSizePx;
-                // Recalculate the available dimensions using the new page indicator size.
-                updateAvailableDimensions(dm, res);
-            }
+            // Note: This calculation was created after noticing a pattern in the design spec.
+            pageIndicatorSizePx = getCellSize().y - iconSizePx - iconDrawablePaddingPx;
+
+            // Recalculate the available dimensions using the new page indicator size.
+            updateAvailableDimensions(dm, res);
         }
 
         computeAllAppsButtonSize(context);
