@@ -239,8 +239,14 @@ public class DragView extends View {
                             (int) (-bounds.height() * AdaptiveIconDrawable.getExtraInsetFraction())
                     );
                     mBgSpringDrawable = adaptiveIcon.getBackground();
+                    if (mBgSpringDrawable == null) {
+                        mBgSpringDrawable = new ColorDrawable(Color.TRANSPARENT);
+                    }
                     mBgSpringDrawable.setBounds(bounds);
                     mFgSpringDrawable = adaptiveIcon.getForeground();
+                    if (mFgSpringDrawable == null) {
+                        mFgSpringDrawable = new ColorDrawable(Color.TRANSPARENT);
+                    }
                     mFgSpringDrawable.setBounds(bounds);
 
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
