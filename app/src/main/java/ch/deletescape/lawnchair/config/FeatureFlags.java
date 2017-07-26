@@ -53,6 +53,7 @@ public final class FeatureFlags {
     public static final String KEY_PREF_THEME = "pref_theme";
     private static final String KEY_PREF_HIDE_HOTSEAT = "pref_hideHotseat";
     private static final String KEY_PREF_PLANE = "pref_plane";
+    private static final String KEY_PREF_WEATHER_DEBUG = "pref_weatherDebug";
     private static final String KEY_PREF_PULLDOWN_ACTION = "pref_pulldownAction";
 
     private FeatureFlags() {
@@ -219,6 +220,11 @@ public final class FeatureFlags {
 
     public static boolean planes(Context context) {
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_PLANE, false);
+        return enabled;
+    }
+
+    public static boolean weatherDebug(Context context) {
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_WEATHER_DEBUG, false);
         return enabled;
     }
 }
