@@ -21,7 +21,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.InsetDrawable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
@@ -227,7 +226,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAppsRecyclerView.setHasFixedSize(true);
         if (FeatureFlags.LAUNCHER3_PHYSICS) {
             mAppsRecyclerView.setSpringAnimationHandler(mSpringAnimationHandler);
-            mAppsRecyclerView.addOnScrollListener(new SpringMotionOnScrollListener());
         }
 
         mSearchContainer = findViewById(R.id.search_container_all_apps);
@@ -402,34 +400,5 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     public SpringAnimationHandler getSpringAnimationHandler() {
         return mSpringAnimationHandler;
-    }
-
-    public class SpringMotionOnScrollListener extends RecyclerView.OnScrollListener {
-
-        private int mScrollState = RecyclerView.SCROLL_STATE_IDLE;
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            if (mScrollState == RecyclerView.SCROLL_STATE_DRAGGING || (dx == 0 && dy == 0)) {
-                if (mSpringAnimationHandler.isRunning()){
-                    mSpringAnimationHandler.skipToEnd();
-                }
-                return;
-            }
-
-            // We only start the spring animation when we fling and hit the top/bottom, to ensure
-            // that all of the animations start at the same time.
-            if (dy < 0 && !mAppsRecyclerView.canScrollVertically(-1)) {
-                mSpringAnimationHandler.animateToFinalPosition(0, 1);
-            } else if (dy > 0 && !mAppsRecyclerView.canScrollVertically(1)) {
-                mSpringAnimationHandler.animateToFinalPosition(0, -1);
-            }
-        }
-
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-            mScrollState = newState;
-        }
     }
 }
