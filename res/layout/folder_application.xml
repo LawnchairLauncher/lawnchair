@@ -19,9 +19,4 @@
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     style="@style/BaseIcon"
     android:includeFontPadding="false"
-    android:paddingLeft="@dimen/folder_cell_x_padding"
-    android:paddingTop="@dimen/folder_cell_y_padding"
-    android:paddingRight="@dimen/folder_cell_x_padding"
-    android:paddingBottom="@dimen/folder_cell_y_padding"
-    launcher:centerVertically="true"
-    launcher:iconDisplay="folder"/>
+    launcher:iconDisplay="folder" />

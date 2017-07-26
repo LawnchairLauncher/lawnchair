@@ -108,7 +108,6 @@ public class DeviceProfile {
     public int folderChildIconSizePx;
     public int folderChildTextSizePx;
     public int folderChildDrawablePaddingPx;
-    public final int folderChildDrawablePaddingOriginalPx;
 
     // Hotseat
     public int hotseatCellHeightPx;
@@ -220,9 +219,6 @@ public class DeviceProfile {
                 R.dimen.dynamic_grid_hotseat_land_left_nav_bar_gutter_width);
         hotseatLandRightNavBarGutterPx = res.getDimensionPixelSize(
                 R.dimen.dynamic_grid_hotseat_land_right_nav_bar_gutter_width);
-
-        folderChildDrawablePaddingOriginalPx =
-                res.getDimensionPixelSize(R.dimen.folder_child_icon_drawable_padding);
 
         // Determine sizes.
         widthPx = width;
@@ -403,15 +399,15 @@ public class DeviceProfile {
         folderChildIconSizePx = (int) (Utilities.pxFromDp(inv.iconSize, dm) * scale);
         folderChildTextSizePx =
                 (int) (res.getDimensionPixelSize(R.dimen.folder_child_text_size) * scale);
-        folderChildDrawablePaddingPx = (int) (folderChildDrawablePaddingOriginalPx * scale);
 
         int textHeight = Utilities.calculateTextHeight(folderChildTextSizePx);
         int cellPaddingX = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_x_padding) * scale);
         int cellPaddingY = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_y_padding) * scale);
 
         folderCellWidthPx = folderChildIconSizePx + 2 * cellPaddingX;
-        folderCellHeightPx = folderChildIconSizePx + 2 * cellPaddingY + textHeight
-                + folderChildDrawablePaddingPx;
+        folderCellHeightPx = folderChildIconSizePx + 2 * cellPaddingY + textHeight;
+        folderChildDrawablePaddingPx = Math.max(0,
+                (folderCellHeightPx - folderChildIconSizePx - textHeight) / 3);
     }
 
     public void updateInsets(Rect insets) {
