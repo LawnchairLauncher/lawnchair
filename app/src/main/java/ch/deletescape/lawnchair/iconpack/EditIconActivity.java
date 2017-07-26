@@ -39,6 +39,8 @@ public class EditIconActivity extends Activity implements CustomIconAdapter.List
     protected void onCreate(Bundle savedInstanceState) {
         FeatureFlags.applyDarkTheme(this);
 
+        FeatureFlags.enableScreenRotation(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_icon);
 

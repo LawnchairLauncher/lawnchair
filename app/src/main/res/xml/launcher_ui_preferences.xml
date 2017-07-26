@@ -20,6 +20,13 @@
             android:persistent="true" />
 
         <SwitchPreference
+            android:key="pref_enableScreenRotation"
+            android:title="@string/enable_screen_rotation"
+            android:defaultValue="false"
+            android:disableDependentsState="true"
+            android:persistent="true" />
+
+        <SwitchPreference
             android:key="pref_hideAppLabels"
             android:title="@string/hide_icon_labels_pref_title"
             android:defaultValue="false"

@@ -42,7 +42,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -359,7 +361,9 @@ public class Launcher extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         FeatureFlags.applyDarkThemePreference(this);
         super.onCreate(savedInstanceState);
-        
+
+        SetScreenOrientation();
+
         if(!BuildConfig.MOBILE_CENTER_KEY.equalsIgnoreCase("null"))
             MobileCenter.start(getApplication(), BuildConfig.MOBILE_CENTER_KEY, Analytics.class, Crashes.class, Distribute.class);
 
@@ -430,6 +434,17 @@ public class Launcher extends Activity
         Settings.init(this);
 
         Utilities.showChangelog(this);
+    }
+
+    private void SetScreenOrientation() {
+        if(FeatureFlags.enableScreenRotation(this))
+        {
+            setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        }
+        else {
+
+            setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
     }
 
     public PopupDataProvider getPopupDataProvider() {
@@ -817,6 +832,8 @@ public class Launcher extends Activity
         mLauncherTab.getClient().onStop();
     }
 
+
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -837,6 +854,7 @@ public class Launcher extends Activity
     protected void onResume() {
         super.onResume();
 
+        SetScreenOrientation();
         // Restore the previous launcher state
         if (mOnResumeState == State.WORKSPACE) {
             showWorkspace(false);
@@ -917,6 +935,14 @@ public class Launcher extends Activity
             updateWallpaper = false;
             mBlurWallpaperProvider.updateAsync();
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+
+        mBlurWallpaperProvider.updateAsync();
     }
 
     private void reloadIcons() {
