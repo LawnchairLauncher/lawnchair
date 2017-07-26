@@ -120,7 +120,6 @@ public class FolderAnimationManager {
         final DragLayer.LayoutParams lp = (DragLayer.LayoutParams) mFolder.getLayoutParams();
         FolderIcon.PreviewLayoutRule rule = mFolderIcon.getLayoutRule();
         final List<BubbleTextView> itemsInPreview = mFolderIcon.getPreviewItems();
-        BubbleTextView btv = itemsInPreview.get(0);
 
         // Match position of the FolderIcon
         final Rect folderIconPos = new Rect();
@@ -132,7 +131,7 @@ public class FolderAnimationManager {
         // Match size/scale of icons in the preview
         float previewScale = rule.scaleForItem(0, itemsInPreview.size());
         float previewSize = rule.getIconSize() * previewScale;
-        float initialScale = previewSize / btv.getIconSize()
+        float initialScale = previewSize / itemsInPreview.get(0).getIconSize()
                 * scaleRelativeToDragLayer;
         final float finalScale = 1f;
         float scale = mIsOpening ? initialScale : finalScale;
@@ -149,12 +148,10 @@ public class FolderAnimationManager {
             previewItemOffsetX = (int) (lp.width * initialScale - initialSize - previewItemOffsetX);
         }
 
-        // Note that we do not include btv.getPaddingLeft() in the calculation, since it is
-        // handled in addPreviewItemAnimators as part of iconOffsetX.
         final int paddingOffsetX = (int) ((mFolder.getPaddingLeft() + mContent.getPaddingLeft())
                 * initialScale);
-        final int paddingOffsetY = (int) ((mFolder.getPaddingTop() + mContent.getPaddingTop()
-                + btv.getPaddingTop()) * initialScale);
+        final int paddingOffsetY = (int) ((mFolder.getPaddingTop() + mContent.getPaddingTop())
+                * initialScale);
 
         int initialX = folderIconPos.left + mPreviewBackground.getOffsetX() - paddingOffsetX
                 - previewItemOffsetX;
