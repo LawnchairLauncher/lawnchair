@@ -275,7 +275,9 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
     public void setTranslationY(float translationY) {
         super.setTranslationY(translationY);
         if (mGradientBackground == null) return;
-        mGradientBackground.setProgress((mTranslationYClosed - translationY) / mTranslationYRange);
+        float p = (mTranslationYClosed - translationY) / mTranslationYRange;
+        boolean showScrim = p <= 0;
+        mGradientBackground.setProgress(p, showScrim);
     }
 
     @Override
