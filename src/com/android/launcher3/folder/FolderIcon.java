@@ -440,6 +440,14 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         invalidate();
     }
 
+    public PreviewBackground getFolderBackground() {
+        return mBackground;
+    }
+
+    public PreviewItemManager getPreviewItemManager() {
+        return mPreviewItemManager;
+    }
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
@@ -463,14 +471,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         } else {
             saveCount = canvas.save(Canvas.CLIP_SAVE_FLAG);
             if (mPreviewLayoutRule.clipToBackground()) {
-                mBackground.clipCanvasSoftware(canvas, Region.Op.INTERSECT);
+                canvas.clipPath(mBackground.getClipPath(), Region.Op.INTERSECT);
             }
         }
 
-        // The items are drawn in coordinates relative to the preview offset
-        canvas.translate(mBackground.basePreviewOffsetX, mBackground.basePreviewOffsetY);
         mPreviewItemManager.draw(canvas);
-        canvas.translate(-mBackground.basePreviewOffsetX, -mBackground.basePreviewOffsetY);
 
         if (mPreviewLayoutRule.clipToBackground() && canvas.isHardwareAccelerated()) {
             mBackground.clipCanvasHardware(canvas);
@@ -481,6 +486,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             mBackground.drawBackgroundStroke(canvas);
         }
 
+        drawBadge(canvas);
+    }
+
+    public void drawBadge(Canvas canvas) {
         if ((mBadgeInfo != null && mBadgeInfo.hasBadge()) || mBadgeScale > 0) {
             int offsetX = mBackground.getOffsetX();
             int offsetY = mBackground.getOffsetY();

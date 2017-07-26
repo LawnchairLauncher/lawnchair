@@ -146,6 +146,10 @@ public class PreviewItemManager {
     }
 
     public void draw(Canvas canvas) {
+        // The items are drawn in coordinates relative to the preview offset
+        PreviewBackground bg = mIcon.getFolderBackground();
+        canvas.translate(bg.basePreviewOffsetX, bg.basePreviewOffsetY);
+
         float firstPageItemsTransX = 0;
         if (mShouldSlideInFirstPage) {
             drawParams(canvas, mCurrentPageParams, mCurrentPageItemsTransX);
@@ -154,6 +158,7 @@ public class PreviewItemManager {
         }
 
         drawParams(canvas, mFirstPageParams, firstPageItemsTransX);
+        canvas.translate(-bg.basePreviewOffsetX, -bg.basePreviewOffsetY);
     }
 
     public void onParamsChanged() {
