@@ -202,14 +202,19 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
 
     @Override
     public void onDraw(Canvas c) {
-        c.translate(0, mContentTranslationY);
-
         // Draw the background
         if (mEmptySearchBackground != null && mEmptySearchBackground.getAlpha() > 0) {
             mEmptySearchBackground.draw(c);
         }
 
         super.onDraw(c);
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        canvas.translate(0, mContentTranslationY);
+        super.dispatchDraw(canvas);
+        canvas.translate(0, -mContentTranslationY);
     }
 
     public float getContentTranslationY() {
@@ -334,6 +339,22 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
             }
         });
         mFastScrollHelper.onSetAdapter((AllAppsGridAdapter) adapter);
+    }
+
+    @Override
+    protected float getBottomFadingEdgeStrength() {
+        // No bottom fading edge.
+        return 0;
+    }
+
+    @Override
+    protected boolean isPaddingOffsetRequired() {
+        return true;
+    }
+
+    @Override
+    protected int getTopPaddingOffset() {
+        return -getPaddingTop();
     }
 
     /**
