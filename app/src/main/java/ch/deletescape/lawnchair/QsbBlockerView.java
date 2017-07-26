@@ -23,7 +23,6 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
     private final Paint mBgPaint = new Paint(1);
     private int mState = 0;
     private View mView;
-    private static final boolean DEBUG = false;
 
     public QsbBlockerView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
