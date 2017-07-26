@@ -104,7 +104,10 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     }
 
     public void setSpringAnimationHandler(SpringAnimationHandler springAnimationHandler) {
-        mSpringAnimationHandler = springAnimationHandler;
+        if (FeatureFlags.LAUNCHER3_PHYSICS) {
+            mSpringAnimationHandler = springAnimationHandler;
+            addOnScrollListener(new SpringMotionOnScrollListener());
+        }
     }
 
     @Override
@@ -484,6 +487,25 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         mEmptySearchBackground.setBounds(x, y,
                 x + mEmptySearchBackground.getIntrinsicWidth(),
                 y + mEmptySearchBackground.getIntrinsicHeight());
+    }
+
+    private class SpringMotionOnScrollListener extends RecyclerView.OnScrollListener {
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            if (mOverScrollHelper.isInOverScroll()) {
+                // OverScroll will handle animating the springs.
+                return;
+            }
+
+            // We only start the spring animation when we hit the top/bottom, to ensure
+            // that all of the animations start at the same time.
+            if (dy < 0 && !canScrollVertically(-1)) {
+                mSpringAnimationHandler.animateToFinalPosition(0, 1);
+            } else if (dy > 0 && !canScrollVertically(1)) {
+                mSpringAnimationHandler.animateToFinalPosition(0, -1);
+            }
+        }
     }
 
     private class OverScrollHelper implements SwipeDetector.Listener {
