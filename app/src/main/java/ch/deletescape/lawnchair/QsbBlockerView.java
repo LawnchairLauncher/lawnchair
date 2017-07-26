@@ -118,7 +118,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
                     OpenWeatherMapHelper helper = new OpenWeatherMapHelper();
                     helper.setAppId(BuildConfig.OPENWEATHERMAP_KEY);
                     SharedPreferences prefs = Utilities.getPrefs(getContext());
-                    helper.setUnits(prefs.getString("pref_weatherDebug_units", "imperial"));
+                    helper.setUnits(prefs.getString("pref_weatherDebug_units", "metric"));
                     String city = prefs.getString("pref_weatherDebug_city", "Lucerne, CH");
                     final TextView temperature = inflate.findViewById(R.id.weather_widget_temperature);
                     OpenWeatherMapHelper.CurrentWeatherCallback callback = new OpenWeatherMapHelper.CurrentWeatherCallback() {

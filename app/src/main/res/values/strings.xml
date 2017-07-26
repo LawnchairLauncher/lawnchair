@@ -449,4 +449,9 @@
     <string name="imexport_external_storage_unreadable">External Storage is not readable (grant permission in settings)</string>
     <string name="imexport_external_storage_unwritable">External Storage is not writable (grant permission in settings)</string>
 
+    <string name="units_metric">Metric</string>
+    <string name="units_imperial">Imperial</string>
+
+    <!-- Default units to use, either 'metric' or 'imperial' -->
+    <string name="default_units">metric</string>
 </resources>

@@ -14,11 +14,12 @@
         android:key="pref_weatherDebug"
         android:title="Debug WeatherView" />
 
-    <EditTextPreference
-        android:dependency="pref_weatherDebug"
+    <ListPreference
         android:key="pref_weatherDebug_units"
-        android:title="Weather units"
-        android:summary="either 'imperial' or 'fahrenheit'" />
+        android:title="Units"
+        android:entryValues="@array/unitsValues"
+        android:defaultValue=""
+        android:entries="@array/unitsTexts" />
 
     <EditTextPreference
         android:dependency="pref_weatherDebug"
