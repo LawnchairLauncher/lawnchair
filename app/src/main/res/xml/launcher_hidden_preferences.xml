@@ -13,4 +13,16 @@
     <SwitchPreference
         android:key="pref_weatherDebug"
         android:title="Debug WeatherView" />
+
+    <EditTextPreference
+        android:dependency="pref_weatherDebug"
+        android:key="pref_weatherDebug_units"
+        android:title="Weather units"
+        android:summary="either 'imperial' or 'fahrenheit'" />
+
+    <EditTextPreference
+        android:dependency="pref_weatherDebug"
+        android:key="pref_weatherDebug_city"
+        android:title="City name"
+        android:summary="For weather (best is to include country code)" />
 </PreferenceScreen>

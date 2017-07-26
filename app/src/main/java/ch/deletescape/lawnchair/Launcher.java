@@ -80,6 +80,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.libraries.launcherclient.LauncherClient;
+import com.microsoft.azure.mobile.MobileCenter;
+import com.microsoft.azure.mobile.analytics.Analytics;
+import com.microsoft.azure.mobile.crashes.Crashes;
+import com.microsoft.azure.mobile.distribute.Distribute;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -128,11 +132,6 @@ import ch.deletescape.lawnchair.util.ViewOnDrawExecutor;
 import ch.deletescape.lawnchair.widget.PendingAddWidgetInfo;
 import ch.deletescape.lawnchair.widget.WidgetHostViewLoader;
 import ch.deletescape.lawnchair.widget.WidgetsContainerView;
-
-import com.microsoft.azure.mobile.MobileCenter;
-import com.microsoft.azure.mobile.analytics.Analytics;
-import com.microsoft.azure.mobile.crashes.Crashes;
-import com.microsoft.azure.mobile.distribute.Distribute;
 
 /**
  * Default launcher application.
@@ -359,8 +358,8 @@ public class Launcher extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         FeatureFlags.applyDarkThemePreference(this);
         super.onCreate(savedInstanceState);
-        
-        if(!BuildConfig.MOBILE_CENTER_KEY.equalsIgnoreCase("null"))
+
+        if (!BuildConfig.MOBILE_CENTER_KEY.equalsIgnoreCase("null"))
             MobileCenter.start(getApplication(), BuildConfig.MOBILE_CENTER_KEY, Analytics.class, Crashes.class, Distribute.class);
 
         LauncherAppState app = LauncherAppState.getInstance();
@@ -748,7 +747,7 @@ public class Launcher extends Activity
             } else {
                 // TODO: Show a snack bar with link to settings
                 Toast.makeText(this, getString(R.string.msg_no_phone_permission,
-                        getString(R.string.derived_app_name)), Toast.LENGTH_SHORT).show();
+                        getString(R.string.app_name)), Toast.LENGTH_SHORT).show();
             }
         }
     }
