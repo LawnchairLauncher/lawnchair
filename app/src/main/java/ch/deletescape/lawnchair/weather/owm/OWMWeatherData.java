@@ -42,7 +42,7 @@ public class OWMWeatherData {
     }
 
     public String getTemperature() {
-        return String.valueOf(temperature);
+        return temperature;
     }
 
     public int getConditionID() {
