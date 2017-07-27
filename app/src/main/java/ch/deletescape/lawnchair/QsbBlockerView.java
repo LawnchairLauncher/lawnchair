@@ -16,9 +16,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.kwabenaberko.openweathermaplib.implementation.OpenWeatherMapHelper;
-import com.kwabenaberko.openweathermaplib.models.CurrentWeather;
-
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.pixelify.OnWeatherInfoListener;
 import ch.deletescape.lawnchair.pixelify.ShadowHostView;
