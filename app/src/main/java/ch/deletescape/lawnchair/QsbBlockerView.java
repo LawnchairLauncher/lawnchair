@@ -24,6 +24,10 @@ import ch.deletescape.lawnchair.pixelify.OnWeatherInfoListener;
 import ch.deletescape.lawnchair.pixelify.ShadowHostView;
 import ch.deletescape.lawnchair.pixelify.WeatherInfo;
 import ch.deletescape.lawnchair.pixelify.WeatherThing;
+import ch.deletescape.lawnchair.weather.WeatherUnits;
+import ch.deletescape.lawnchair.weather.owm.OWMWeatherCallback;
+import ch.deletescape.lawnchair.weather.owm.OWMWeatherData;
+import ch.deletescape.lawnchair.weather.owm.OWMWeatherDownload;
 
 public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener, OnWeatherInfoListener {
     public static final Property<QsbBlockerView, Integer> QSB_BLOCKER_VIEW_ALPHA = new QsbBlockerViewAlpha(Integer.TYPE, "bgAlpha");
@@ -118,13 +122,6 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
                     inflate = LayoutInflater.from(getContext()).inflate(R.layout.plane_widget, this, false);
                 } else if (FeatureFlags.weatherDebug(getContext())) {
                     inflate = LayoutInflater.from(getContext()).inflate(R.layout.weather_widget, this, false);
-                    OpenWeatherMapHelper helper = new OpenWeatherMapHelper();
-                    helper.setAppId(BuildConfig.OPENWEATHERMAP_KEY);
-                    SharedPreferences prefs = Utilities.getPrefs(getContext());
-                    String units = prefs.getString("pref_weatherDebug_units", "metric");
-                    final boolean isImperial = units.equals("imperial");
-                    helper.setUnits(units);
-                    String city = prefs.getString("pref_weatherDebug_city", "Lucerne, CH");
                     final TextView temperature = inflate.findViewById(R.id.weather_widget_temperature);
                     temperature.setOnClickListener(new OnClickListener() {
                         @Override
@@ -136,18 +133,25 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
                             getContext().startActivity(intent);
                         }
                     });
-                    OpenWeatherMapHelper.CurrentWeatherCallback callback = new OpenWeatherMapHelper.CurrentWeatherCallback() {
-                        @Override
-                        public void onSuccess(CurrentWeather currentWeather) {
-                            temperature.setText(currentWeather.getMain().getTemp() + (isImperial ? "°F" : "°C"));
-                        }
-
-                        @Override
-                        public void onFailure(Throwable throwable) {
-                            temperature.setText("ERROR°C");
-                        }
-                    };
-                    helper.getCurrentWeatherByCityName(city, callback);
+                    SharedPreferences prefs = Utilities.getPrefs(getContext());
+                    String apiKey = prefs.getString("pref_weatherDebug_api_key", BuildConfig.OPENWEATHERMAP_KEY);
+                    String city = prefs.getString("pref_weatherDebug_city", "Lucerne, CH");
+                    String units = prefs.getString("pref_weatherDebug_units", "metric");
+                    final boolean isImperial = units.equals("imperial");
+                    new OWMWeatherDownload()
+                            .setAPIKey(apiKey)
+                            .setLocation(city)
+                            .setWeatherUnits(isImperial ? WeatherUnits.IMPERIAL : WeatherUnits.METRIC)
+                            .download(new OWMWeatherCallback() {
+                                @Override
+                                public void onSuccess(OWMWeatherData weatherData) {
+                                    temperature.setText(weatherData.getTemperature());
+                                }
+                                @Override
+                                public void onFailed() {
+                                    temperature.setText("ERROR\u00b0C");
+                                }
+                            });
                 } else {
                     inflate = LayoutInflater.from(getContext()).inflate(R.layout.date_widget, this, false);
                 }

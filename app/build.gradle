@@ -76,7 +76,6 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:${supportLibVersion}"
     implementation "com.android.support:palette-v7:${supportLibVersion}"
     implementation "com.android.support:cardview-v7:${supportLibVersion}"
-    compile 'com.github.KwabenBerko:OpenWeatherMap-Android-Library:v1.0.0'
 }
 
 
