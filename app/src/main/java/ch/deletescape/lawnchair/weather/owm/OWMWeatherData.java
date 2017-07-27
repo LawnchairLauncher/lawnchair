@@ -24,7 +24,7 @@ public class OWMWeatherData {
     public OWMWeatherData(JSONObject json, OWMWeatherCallback weatherCallback, WeatherUnits weatherUnits) {
         // Parse JSON.
         try {
-            temperature = String.valueOf((int) json.getJSONObject("main").getDouble("temp")) + (weatherUnits == WeatherUnits.IMPERIAL ? "\u00b0F" : "\u00b0C");
+            temperature = String.valueOf(Math.round(json.getJSONObject("main").getDouble("temp"))) + (weatherUnits == WeatherUnits.IMPERIAL ? "\u00b0F" : "\u00b0C");
             JSONObject weatherCondition = json.getJSONArray("weather").getJSONObject(0);
             conditionID = weatherCondition.getInt("id");
             condition = weatherCondition.getString("main");
