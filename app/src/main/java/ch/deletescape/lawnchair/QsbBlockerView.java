@@ -13,13 +13,9 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import ch.deletescape.lawnchair.config.FeatureFlags;
-import ch.deletescape.lawnchair.pixelify.OnWeatherInfoListener;
-import ch.deletescape.lawnchair.pixelify.ShadowHostView;
-import ch.deletescape.lawnchair.pixelify.WeatherInfo;
-import ch.deletescape.lawnchair.pixelify.WeatherThing;
 import ch.deletescape.lawnchair.weather.WeatherHelper;
 
-public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener, OnWeatherInfoListener {
+public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener {
     public static final Property<QsbBlockerView, Integer> QSB_BLOCKER_VIEW_ALPHA = new QsbBlockerViewAlpha(Integer.TYPE, "bgAlpha");
     private final Paint mBgPaint = new Paint(1);
     private int mState = 0;
@@ -47,10 +43,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
             Workspace workspace = Launcher.getLauncher(getContext()).getWorkspace();
             workspace.setOnStateChangeListener(this);
             prepareStateChange(workspace.getState(), null);
-            WeatherInfo gsa = WeatherThing.getInstance(getContext()).getWeatherInfoAndAddListener(this);
-            if (gsa != null) {
-                onWeatherInfo(gsa);
-            }
+            setupView();
         }
     }
 
@@ -68,9 +61,6 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
 
     @Override
     protected void onDetachedFromWindow() {
-        if (!FeatureFlags.useFullWidthSearchbar(getContext())) {
-            WeatherThing.getInstance(getContext()).removeListener(this);
-        }
         super.onDetachedFromWindow();
     }
 
@@ -94,36 +84,31 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
         canvas.drawPaint(mBgPaint);
     }
 
-    @Override
-    public void onWeatherInfo(WeatherInfo weatherInfo) {
+    public void setupView() {
         if (!FeatureFlags.showPixelBar(getContext())) {
             removeAllViews();
             return;
         }
         View view = mView;
         int i = mState;
-        mView = ShadowHostView.bG(weatherInfo, this, mView);
+        mView = null;
         mState = 2;
-        if (mView == null) {
-            View inflate;
-            mState = 1;
-            if (view == null || i != 1) {
-                if (FeatureFlags.planes(getContext())) {
-                    inflate = LayoutInflater.from(getContext()).inflate(R.layout.plane_widget, this, false);
-                } else if (FeatureFlags.weatherDebug(getContext())) {
-                    inflate = LayoutInflater.from(getContext()).inflate(R.layout.weather_widget, this, false);
-                    final TextView temperature = inflate.findViewById(R.id.weather_widget_temperature);
-                    new WeatherHelper(temperature, getContext());
-                } else {
-                    inflate = LayoutInflater.from(getContext()).inflate(R.layout.date_widget, this, false);
-                }
-                if (FeatureFlags.useFullWidthSearchbar(getContext())) {
-                    inflate.setVisibility(GONE);
-                }
+        mState = 1;
+        if (view == null || i != 1) {
+            if (FeatureFlags.planes(getContext())) {
+                mView = LayoutInflater.from(getContext()).inflate(R.layout.plane_widget, this, false);
+            } else if (FeatureFlags.weatherDebug(getContext())) {
+                mView = LayoutInflater.from(getContext()).inflate(R.layout.weather_widget, this, false);
+                final TextView temperature = mView.findViewById(R.id.weather_widget_temperature);
+                new WeatherHelper(temperature, getContext());
             } else {
-                inflate = view;
+                mView = LayoutInflater.from(getContext()).inflate(R.layout.date_widget, this, false);
             }
-            mView = inflate;
+            if (FeatureFlags.useFullWidthSearchbar(getContext())) {
+                mView.setVisibility(GONE);
+            }
+        } else {
+            mView = view;
         }
         if (i != mState) {
             if (view != null) {

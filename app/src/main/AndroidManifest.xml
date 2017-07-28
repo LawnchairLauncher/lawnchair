@@ -124,13 +124,6 @@
                 <action android:name="android.appwidget.action.APPWIDGET_HOST_RESTORED" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name=".pixelify.WeatherUpdateReciever"
-            android:permission="android.permission.CAPTURE_AUDIO_HOTWORD">
-            <intent-filter>
-                <action android:name="com.google.android.apps.nexuslauncher.updateweather" />
-            </intent-filter>
-        </receiver>
 
         <service
             android:name=".notification.NotificationListener"
