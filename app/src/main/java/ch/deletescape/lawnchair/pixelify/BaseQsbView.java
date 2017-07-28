@@ -17,6 +17,7 @@ import android.view.View.OnClickListener;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 
+import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
@@ -111,7 +112,9 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     }
 
     private void initializeQsbConnector() {
-        if (qsbConnector == null && !FeatureFlags.useFullWidthSearchbar(getContext()) && FeatureFlags.showGoogleNowTab(mLauncher)) {
+        DeviceProfile deviceProfile = mLauncher.getDeviceProfile();
+        if (qsbConnector == null && !FeatureFlags.useFullWidthSearchbar(getContext())
+                && FeatureFlags.showGoogleNowTab(mLauncher) && !deviceProfile.isLandscape && !deviceProfile.isTablet) {
             qsbConnector = (QsbConnector) mLauncher.getLayoutInflater().inflate(R.layout.qsb_connector, this, false);
             addView(qsbConnector, 0);
         } else if (FeatureFlags.useFullWidthSearchbar(getContext()) || !FeatureFlags.showGoogleNowTab(mLauncher)) {
