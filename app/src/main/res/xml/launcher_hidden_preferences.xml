@@ -9,4 +9,21 @@
     <SwitchPreference
         android:key="pref_plane"
         android:title="Amazing Plane" />
+
+    <SwitchPreference
+        android:key="pref_weatherDebug"
+        android:title="Debug WeatherView" />
+
+    <ListPreference
+        android:key="pref_weatherDebug_units"
+        android:title="Units"
+        android:entryValues="@array/unitsValues"
+        android:defaultValue=""
+        android:entries="@array/unitsTexts" />
+
+    <EditTextPreference
+        android:dependency="pref_weatherDebug"
+        android:key="pref_weatherDebug_city"
+        android:title="City name"
+        android:summary="For weather (best is to include country code)" />
 </PreferenceScreen>

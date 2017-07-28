@@ -54,60 +54,51 @@ public final class FeatureFlags {
     public static final String KEY_PREF_THEME = "pref_theme";
     private static final String KEY_PREF_HIDE_HOTSEAT = "pref_hideHotseat";
     private static final String KEY_PREF_PLANE = "pref_plane";
+    private static final String KEY_PREF_WEATHER_DEBUG = "pref_weatherDebug";
     private static final String KEY_PREF_PULLDOWN_ACTION = "pref_pulldownAction";
 
     private FeatureFlags() {
     }
 
     public static boolean pinchToOverview(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_PINCH_TO_OVERVIEW, true);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_PINCH_TO_OVERVIEW, true);
     }
 
     // When enabled the status bar may show dark icons based on the top of the wallpaper.
     public static boolean lightStatusBar(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_LIGHT_STATUS_BAR, false);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_LIGHT_STATUS_BAR, false);
     }
 
     public static boolean hotseatShouldUseExtractedColors(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_HOTSEAT_EXTRACTED_COLORS, true);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_HOTSEAT_EXTRACTED_COLORS, true);
     }
 
     public static boolean enableHapticFeedback(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_HAPTIC_FEEDBACK, false);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_HAPTIC_FEEDBACK, false);
     }
 
     public static boolean keepScrollState(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_KEEP_SCROLL_STATE, false);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_KEEP_SCROLL_STATE, false);
     }
 
     public static boolean useFullWidthSearchbar(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_FULL_WIDTH_SEARCHBAR, false);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_FULL_WIDTH_SEARCHBAR, false);
     }
 
     public static boolean showVoiceSearchButton(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_SHOW_VOICE_SEARCH_BUTTON, false);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_SHOW_VOICE_SEARCH_BUTTON, false);
     }
 
     public static boolean showPixelBar(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_SHOW_PIXEL_BAR, true);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_SHOW_PIXEL_BAR, true);
     }
 
     public static boolean homeOpensDrawer(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_HOME_OPENS_DRAWER, true);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_HOME_OPENS_DRAWER, true);
     }
 
     public static boolean usePixelIcons(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_PIXEL_STYLE_ICONS, true);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_PIXEL_STYLE_ICONS, true);
     }
 
     public static boolean enableScreenRotation(Context context) {
@@ -116,38 +107,31 @@ public final class FeatureFlags {
     }
 
     public static boolean hideAppLabels(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_HIDE_APP_LABELS, false);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_HIDE_APP_LABELS, false);
     }
 
     public static boolean allowFullWidthWidgets(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_FULL_WIDTH_WIDGETS, false);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_FULL_WIDTH_WIDGETS, false);
     }
 
     public static boolean showGoogleNowTab(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_SHOW_NOW_TAB, true);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_SHOW_NOW_TAB, true);
     }
 
     public static boolean isTransparentHotseat(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_TRANSPARENT_HOTSEAT, false);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_TRANSPARENT_HOTSEAT, false);
     }
 
     public static boolean isDynamicUiEnabled(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_ENABLE_DYNAMIC_UI, false);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_ENABLE_DYNAMIC_UI, false);
     }
 
     public static boolean isBlurEnabled(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_ENABLE_BLUR, false);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_ENABLE_BLUR, false);
     }
 
     public static boolean useWhiteGoogleIcon(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_WHITE_GOOGLE_ICON, false);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_WHITE_GOOGLE_ICON, false);
     }
 
     public static int currentTheme;
@@ -206,25 +190,25 @@ public final class FeatureFlags {
     }
 
     public static boolean enableBackportShortcuts(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_ENABLE_BACKPORT_SHORTCUTS, false);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_ENABLE_BACKPORT_SHORTCUTS, false);
     }
 
     public static boolean showTopShadow(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_SHOW_TOP_SHADOW, true);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_SHOW_TOP_SHADOW, true);
     }
 
     private static int[] LAUNCHER_THEMES = {R.style.LauncherTheme, R.style.LauncherTheme_Dark, R.style.LauncherTheme_Black};
     private static int[] SETTINGS_THEMES = {R.style.SettingsTheme, R.style.SettingsTheme_Dark, R.style.SettingsTheme_Black};
 
     public static boolean hideHotseat(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_HIDE_HOTSEAT, false);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_HIDE_HOTSEAT, false);
     }
 
     public static boolean planes(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_PLANE, false);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_PLANE, false);
+    }
+
+    public static boolean weatherDebug(Context context) {
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_WEATHER_DEBUG, false);
     }
 }

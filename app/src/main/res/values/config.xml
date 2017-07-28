@@ -7,10 +7,6 @@
     <bool name="is_tablet">false</bool>
     <bool name="is_large_tablet">false</bool>
 
-    <!-- A string pointer to the original app name string. This allows derived projects to
-     easily override the app name without providing all translations -->
-    <string name="derived_app_name" translatable="false">@string/app_name</string>
-
     <!-- DragController -->
     <item type="id" name="drag_event_parity" />
 

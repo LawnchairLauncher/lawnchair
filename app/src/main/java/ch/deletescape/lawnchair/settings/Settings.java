@@ -41,6 +41,8 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private static final String KEY_PREF_SHOW_TOP_SHADOW = "pref_showTopShadow";
     private static final String KEY_PREF_THEME = "pref_theme";
     private static final String KEY_PREF_HIDE_HOTSEAT = "pref_hideHotseat";
+    private static final String KEY_PREF_PLANE = "pref_plane";
+    private static final String KEY_PREF_WEATHER_DEBUG = "pref_weatherDebug";
     private static Settings instance;
     private Launcher mLauncher;
 
@@ -117,8 +119,6 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case KEY_PREF_BLUR_RADIUS:
                     mLauncher.scheduleUpdateWallpaper();
                     break;
-                case KEY_PREF_ICON_SCALE:
-                case KEY_PREF_ICON_TEXT_SCALE:
                 case KEY_FULL_WIDTH_SEARCHBAR:
                 case KEY_PREF_FULL_WIDTH_WIDGETS:
                 case KEY_PREF_ENABLE_DYNAMIC_UI:
@@ -129,7 +129,11 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case KEY_PREF_HIDE_HOTSEAT:
                     mLauncher.scheduleRecreate();
                     break;
+                case KEY_PREF_ICON_SCALE:
+                case KEY_PREF_ICON_TEXT_SCALE:
                 case KEY_PREF_ENABLE_BACKPORT_SHORTCUTS:
+                case KEY_PREF_PLANE:
+                case KEY_PREF_WEATHER_DEBUG:
                     mLauncher.scheduleKill();
                     break;
                 case KEY_PREF_ICON_PACK_PACKAGE:

@@ -37,6 +37,7 @@ android {
         buildConfigField "int", "TRAVIS_BUILD_NUMBER", System.getenv("TRAVIS_BUILD_NUMBER") ?: "0"
         buildConfigField "String", "CHANGELOG", "\"${getChangelog()}\""
         buildConfigField "String", "MOBILE_CENTER_KEY", "\"" + System.getenv("MOBILE_CENTER_KEY") + "\""
+        buildConfigField "String", "OPENWEATHERMAP_KEY", "\"" + System.getenv("OPENWEATHERMAP_KEY") + "\""
 
         if (System.getenv("TRAVIS") == "true") {
             versionCode = Integer.valueOf(System.getenv("TRAVIS_BUILD_NUMBER"))
@@ -49,8 +50,8 @@ android {
     buildTypes {
         debug {
             if (System.getenv("TRAVIS") == "true") {
-                minifyEnabled true
-                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+                minifyEnabled false //true
+                //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
                 if (System.getenv("TRAVIS_EVENT_TYPE") != "pull_request") {
                     signingConfig signingConfigs.travis
                 }
@@ -75,6 +76,7 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:${supportLibVersion}"
     implementation "com.android.support:palette-v7:${supportLibVersion}"
     implementation "com.android.support:cardview-v7:${supportLibVersion}"
+    compile 'com.github.KwabenBerko:OpenWeatherMap-Android-Library:v1.0.0'
 }
 
 
