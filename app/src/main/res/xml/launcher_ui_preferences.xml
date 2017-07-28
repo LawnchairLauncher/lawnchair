@@ -40,6 +40,7 @@
             android:entryValues="@array/color_index_values"
             android:defaultValue="-3"
             android:dependency="pref_hideAppLabels"
+            android:summary="%s"
             android:persistent="true" />
 
         <ListPreference
@@ -48,6 +49,7 @@
             android:entries="@array/color_variation_entries"
             android:entryValues="@array/color_variation_values"
             android:defaultValue="5"
+            android:summary="%s"
             android:dependency="pref_hideAppLabels"
             android:persistent="true" />
 
@@ -57,6 +59,7 @@
             android:entries="@array/numColsTexts"
             android:entryValues="@array/numColsValues"
             android:defaultValue="@string/generalDefault"
+            android:summary="%s"
             android:persistent="true" />
 
         <ListPreference
@@ -65,6 +68,7 @@
             android:entryValues="@array/numRowsValues"
             android:entries="@array/numRowsTexts"
             android:defaultValue="@string/generalDefault"
+            android:summary="%s"
             android:persistent="true" />
 
         <ch.deletescape.lawnchair.preferences.SeekbarPreference
@@ -131,6 +135,7 @@
             android:entryValues="@array/numHotseatIconsValues"
             android:entries="@array/numHotseatIconsTexts"
             android:defaultValue="@string/generalDefault"
+            android:summary="%s"
             android:persistent="true" />
     </PreferenceCategory>
 
