@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.kwabenaberko.openweathermaplib.implementation.OpenWeatherMapHelper;
 import com.kwabenaberko.openweathermaplib.models.CurrentWeather;
 
+import java.util.Locale;
+
 import ch.deletescape.lawnchair.BuildConfig;
 import ch.deletescape.lawnchair.Utilities;
 
@@ -44,13 +46,13 @@ public class WeatherHelper implements OpenWeatherMapHelper.CurrentWeatherCallbac
         mHandler.postDelayed(this, DELAY);
     }
 
-    private String makeTemperatureString(Object obj) {
-        return String.format(mIsImperial ? "%s°F" : "%s°C", obj.toString());
+    private String makeTemperatureString(String string) {
+        return String.format(mIsImperial ? "%s°F" : "%s°C", string);
     }
 
     @Override
     public void onSuccess(CurrentWeather currentWeather) {
-        mTemp = String.valueOf(currentWeather.getMain().getTemp());
+        mTemp = String.format(Locale.US, "%.0f", currentWeather.getMain().getTemp());
         updateTextView();
     }
 

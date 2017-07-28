@@ -44,6 +44,7 @@ import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.ShortcutInfo;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.accessibility.DragViewStateAnnouncer;
+import ch.deletescape.lawnchair.allapps.AllAppsContainerView;
 import ch.deletescape.lawnchair.util.ItemInfoMatcher;
 import ch.deletescape.lawnchair.util.Thunk;
 import ch.deletescape.lawnchair.util.TouchController;
@@ -109,6 +110,7 @@ public class DragController implements DragDriver.EventListener, TouchController
     private ArrayList<DropTarget> mDropTargets = new ArrayList<>();
     private ArrayList<DragListener> mListeners = new ArrayList<>();
     private DropTarget mFlingToDeleteDropTarget;
+    private DropTarget mFlingToUninstallDropTarget;
 
     /**
      * The window token used as the parent for the DragView.
@@ -459,7 +461,8 @@ public class DragController implements DragDriver.EventListener, TouchController
         } else {
             vec = isFlingingToDelete(mDragObject.dragSource);
             if (vec != null) {
-                dropTarget = mFlingToDeleteDropTarget;
+                dropTarget = mDragObject.dragSource instanceof AllAppsContainerView ?
+                        mFlingToUninstallDropTarget : mFlingToDeleteDropTarget;
             } else {
                 dropTarget = findDropTarget((int) x, (int) y, mCoordinatesTemp);
             }
@@ -819,6 +822,10 @@ public class DragController implements DragDriver.EventListener, TouchController
      */
     public void setFlingToDeleteDropTarget(DropTarget target) {
         mFlingToDeleteDropTarget = target;
+    }
+
+    public void setFlingToUninstallDropTarget(DropTarget target) {
+        mFlingToUninstallDropTarget = target;
     }
 
     private void acquireVelocityTrackerAndAddMovement(MotionEvent ev) {

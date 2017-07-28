@@ -89,6 +89,7 @@ public class DropTargetBar extends LinearLayout implements DragController.DragLi
     public void setup(DragController dragController) {
         dragController.addDragListener(this);
         dragController.setFlingToDeleteDropTarget(mDeleteDropTarget);
+        dragController.setFlingToUninstallDropTarget(mUninstallDropTarget);
 
         dragController.addDragListener(mDeleteDropTarget);
         dragController.addDragListener(mAppInfoDropTarget);
