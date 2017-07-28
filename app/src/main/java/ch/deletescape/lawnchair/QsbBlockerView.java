@@ -16,7 +16,7 @@ import android.widget.TextView;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.weather.WeatherHelper;
 
-public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener {
+public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener, View.OnLongClickListener {
     public static final Property<QsbBlockerView, Integer> QSB_BLOCKER_VIEW_ALPHA = new QsbBlockerViewAlpha(Integer.TYPE, "bgAlpha");
     private final Paint mBgPaint = new Paint(1);
     private int mState = 0;
@@ -85,6 +85,9 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
         canvas.drawPaint(mBgPaint);
     }
 
+    private boolean switchToDate = false;
+    private boolean switching = false;
+
     public void setupView() {
         if (!FeatureFlags.showPixelBar(getContext())) {
             removeAllViews();
@@ -95,16 +98,22 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
         mView = null;
         mState = 2;
         mState = 1;
-        if (view == null || i != 1) {
+        if (view == null || i != 1 || switching) {
+            switching = false;
             if (FeatureFlags.planes(getContext())) {
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.plane_widget, this, false);
-            } else if (FeatureFlags.weatherDebug(getContext())) {
+            } else if (FeatureFlags.weatherDebug(getContext()) && !switchToDate) {
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.weather_widget, this, false);
                 TextView temperature = mView.findViewById(R.id.weather_widget_temperature);
                 ImageView iconView = mView.findViewById(R.id.weather_widget_icon);
                 new WeatherHelper(temperature, iconView, getContext());
+                mView.findViewById(R.id.weather_widget_time).setOnLongClickListener(this);
+                temperature.setOnLongClickListener(this);
+                iconView.setOnLongClickListener(this);
             } else {
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.date_widget, this, false);
+                mView.findViewById(R.id.date_text1).setOnLongClickListener(this);
+                mView.findViewById(R.id.date_text2).setOnLongClickListener(this);
             }
             if (FeatureFlags.useFullWidthSearchbar(getContext())) {
                 mView.setVisibility(GONE);
@@ -125,6 +134,17 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
             }
             addView(mView);
         }
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        if (!FeatureFlags.weatherDebug(getContext())) {
+            return false;
+        }
+        switchToDate = !switchToDate;
+        switching = true;
+        setupView();
+        return true;
     }
 
     private final class QsbBlockerViewViewRemover implements Runnable {
