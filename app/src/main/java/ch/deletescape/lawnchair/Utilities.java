@@ -726,6 +726,7 @@ public final class Utilities {
         return spanned;
     }
 
+    @NonNull
     public static SharedPreferences getPrefs(Context context) {
         return context.getSharedPreferences(
                 LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);

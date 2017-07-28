@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ch.deletescape.lawnchair.shortcuts.ShortcutsItemView android:id="@+id/shortcuts_view"
-    android:background="@drawable/bg_white_round_rect"
+<ch.deletescape.lawnchair.shortcuts.ShortcutsItemView android:background="@drawable/bg_white_round_rect"
     android:layout_width="@dimen/bg_popup_item_width"
     android:layout_height="wrap_content"
     android:elevation="@dimen/deep_shortcuts_elevation"

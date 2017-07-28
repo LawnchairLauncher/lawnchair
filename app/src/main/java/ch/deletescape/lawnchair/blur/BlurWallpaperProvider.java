@@ -27,9 +27,13 @@ import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.config.FeatureFlags;
-import ch.deletescape.lawnchair.iconpack.EditIconActivity;
 
 public class BlurWallpaperProvider {
+
+    public static final int BLUR_QSB = 1;
+    public static final int BLUR_FOLDER = 2;
+    public static final int BLUR_ALLAPPS = 4;
+
     private final Context mContext;
     private final WallpaperManager mWallpaperManager;
     private final List<Listener> mListeners = new ArrayList<>();
@@ -66,10 +70,11 @@ public class BlurWallpaperProvider {
     };
 
     public BlurWallpaperProvider(Context context) {
-        mContext = context;
+        mContext = FeatureFlags.applyDarkTheme(context, FeatureFlags.DARK_BLUR);
 
         mWallpaperManager = WallpaperManager.getInstance(context);
         sEnabled = mWallpaperManager.getWallpaperInfo() == null && FeatureFlags.isBlurEnabled(mContext);
+        sEnabledFlag = getEnabledFlag();
 
         updateBlurRadius();
     }
@@ -79,10 +84,14 @@ public class BlurWallpaperProvider {
         mBlurRadius = Math.max(1, Math.min(mBlurRadius, 25));
     }
 
+    private int getEnabledFlag() {
+        return Utilities.getPrefs(mContext).getInt("pref_blurMode", (1 << 30) - 1);
+    }
+
     private void updateWallpaper() {
         Launcher launcher = LauncherAppState.getInstance().getLauncher();
         boolean enabled = mWallpaperManager.getWallpaperInfo() == null && FeatureFlags.isBlurEnabled(mContext);
-        if (enabled != sEnabled) {
+        if (enabled != sEnabled || getEnabledFlag() != sEnabledFlag) {
             launcher.scheduleKill();
         }
 
@@ -306,9 +315,14 @@ public class BlurWallpaperProvider {
     }
 
     private static boolean sEnabled;
+    private static int sEnabledFlag;
 
-    public static boolean isEnabled() {
+    private static boolean isEnabled() {
         return sEnabled;
+    }
+
+    public static boolean isEnabled(int flag) {
+        return sEnabled && (sEnabledFlag & flag) != 0;
     }
 
     public static BlurWallpaperProvider getInstance() {

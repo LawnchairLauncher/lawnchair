@@ -4,7 +4,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -17,7 +16,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
@@ -111,9 +109,9 @@ public class ShortcutParser {
 
     private boolean isComponentExported(ComponentName componentName) {
         ActivityInfo[] activities = mPackageInfo.activities;
-        for (int i = 0; i < activities.length; i++) {
-            if (componentName.getClassName().equals(activities[i].name)) {
-                return activities[i].exported;
+        for (ActivityInfo activity : activities) {
+            if (componentName.getClassName().equals(activity.name)) {
+                return activity.exported;
             }
         }
         return false;

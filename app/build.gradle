@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 
 def getChangelog = { ->
@@ -9,7 +10,7 @@ def getChangelog = { ->
             commandLine 'git', 'log', '--format=%s', commitRange
             standardOutput = stdout
         }
-        return stdout.toString().trim().replace("\n", "\\n")
+        return stdout.toString().trim().replace("\n", "\\n").replace("\"", "\\\"")
     } else {
         return null
     }
@@ -77,6 +78,10 @@ dependencies {
     implementation "com.android.support:palette-v7:${supportLibVersion}"
     implementation "com.android.support:cardview-v7:${supportLibVersion}"
     compile 'com.github.KwabenBerko:OpenWeatherMap-Android-Library:v1.0.0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }
 
 

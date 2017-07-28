@@ -18,6 +18,8 @@ package ch.deletescape.lawnchair.config;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.view.ContextThemeWrapper;
 
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
@@ -52,10 +54,12 @@ public final class FeatureFlags {
     private static final String KEY_PREF_ENABLE_BACKPORT_SHORTCUTS = "pref_enableBackportShortcuts";
     private static final String KEY_PREF_SHOW_TOP_SHADOW = "pref_showTopShadow";
     public static final String KEY_PREF_THEME = "pref_theme";
+    private static final String KEY_PREF_THEME_MODE = "pref_themeMode";
     private static final String KEY_PREF_HIDE_HOTSEAT = "pref_hideHotseat";
     private static final String KEY_PREF_PLANE = "pref_plane";
     private static final String KEY_PREF_WEATHER = "pref_weather";
     private static final String KEY_PREF_PULLDOWN_ACTION = "pref_pulldownAction";
+    private static int darkThemeFlag;
 
     private FeatureFlags() {
     }
@@ -133,6 +137,12 @@ public final class FeatureFlags {
         return Utilities.getPrefs(context).getBoolean(KEY_PREF_WHITE_GOOGLE_ICON, false);
     }
 
+    public static final int DARK_QSB = 1;
+    public static final int DARK_FOLDER = 2;
+    public static final int DARK_ALLAPPS = 4;
+    public static final int DARK_SHORTCUTS = 8;
+    public static final int DARK_BLUR = 16;
+
     public static int currentTheme;
     public static boolean useDarkTheme = true;
 
@@ -168,9 +178,24 @@ public final class FeatureFlags {
         return Integer.parseInt(Utilities.getPrefs(context).getString(KEY_PREF_PULLDOWN_ACTION, "1"));
     }
 
+    @SuppressWarnings("NumericOverflow")
     public static void loadDarkThemePreference(Context context) {
-        currentTheme = Integer.parseInt(Utilities.getPrefs(context).getString(KEY_PREF_THEME, "0"));
+        SharedPreferences prefs = Utilities.getPrefs(context);
+        currentTheme = Integer.parseInt(prefs.getString(KEY_PREF_THEME, "0"));
         useDarkTheme = currentTheme != 0;
+        darkThemeFlag = prefs.getInt(KEY_PREF_THEME_MODE, (1 << 30) - 1);
+    }
+
+    public static boolean useDarkTheme(int flag) {
+        return useDarkTheme && (darkThemeFlag & flag) != 0;
+    }
+
+    public static Context applyDarkTheme(Context context, int flag) {
+        if (useDarkTheme(flag)) {
+            return new ContextThemeWrapper(context, LAUNCHER_THEMES[currentTheme]);
+        } else {
+            return context;
+        }
     }
 
     public static boolean isVibrancyEnabled(Context context) {

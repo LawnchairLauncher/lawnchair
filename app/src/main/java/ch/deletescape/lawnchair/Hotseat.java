@@ -69,7 +69,7 @@ public class Hotseat extends FrameLayout {
         } else {
             mBackgroundColor = ColorUtils.setAlphaComponent(
                     Utilities.resolveAttributeData(context, R.attr.allAppsContainerColor), 0);
-            mBackground = BlurWallpaperProvider.isEnabled() ?
+            mBackground = BlurWallpaperProvider.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS) ?
                     mLauncher.getBlurWallpaperProvider().createDrawable(): new ColorDrawable(mBackgroundColor);
             setBackground(mBackground);
         }

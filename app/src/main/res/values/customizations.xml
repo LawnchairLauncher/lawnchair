@@ -102,5 +102,33 @@
         <item>3</item>
     </string-array>
 
+    <string-array name="blurModeTexts">
+        <item>@string/search_bar</item>
+        <item>@string/folder</item>
+        <item>@string/dock_allapps</item>
+    </string-array>
+
+    <string-array name="blurModeValues">
+        <item>1</item>
+        <item>2</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="themeModeTexts">
+        <item>@string/search_bar</item>
+        <item>@string/folder</item>
+        <item>@string/dock_allapps</item>
+        <item>@string/app_shortcuts</item>
+        <item>@string/blur_effect</item>
+    </string-array>
+
+    <string-array name="themeModeValues">
+        <item>1</item>
+        <item>2</item>
+        <item>4</item>
+        <item>8</item>
+        <item>16</item>
+    </string-array>
+
     <string name="generalDefault" translatable="false">default</string>
 </resources>

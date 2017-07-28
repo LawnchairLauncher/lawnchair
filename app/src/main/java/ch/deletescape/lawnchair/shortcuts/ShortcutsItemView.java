@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
@@ -122,7 +123,7 @@ public class ShortcutsItemView extends PopupItemView implements OnLongClickListe
         }
         if (item == PopupPopulator.Item.SYSTEM_SHORTCUT_ICON) {
             if (mSystemShortcutIcons == null) {
-                mSystemShortcutIcons = (LinearLayout) mLauncher.getLayoutInflater().inflate(R.layout.system_shortcut_icons, mShortcutsLayout, false);
+                mSystemShortcutIcons = (LinearLayout) LayoutInflater.from(view.getContext()).inflate(R.layout.system_shortcut_icons, mShortcutsLayout, false);
                 mShortcutsLayout.addView(mSystemShortcutIcons, 0);
             }
             mSystemShortcutIcons.addView(view, i);

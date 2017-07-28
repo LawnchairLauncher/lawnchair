@@ -128,7 +128,6 @@
 
     <!-- Deep shortcuts -->
     <dimen name="deep_shortcuts_elevation">9dp</dimen>
-    <dimen name="bg_pill_height">48dp</dimen>
     <dimen name="deferred_drag_view_scale">6dp</dimen>
     <!-- an icon with shortcuts must be dragged this far before the container is removed. -->
     <dimen name="deep_shortcuts_start_drag_threshold">16dp</dimen>
@@ -155,8 +154,6 @@
     <dimen name="qsb_button_height">56.0dip</dimen>
     <dimen name="qsb_button_elevation">3.0dip</dimen>
     <dimen name="qsb_overlap_margin">-50.0dip</dimen>
-    <dimen name="qsb_shadow_blur_radius">1.0dip</dimen>
-    <dimen name="qsb_key_shadow_offset">1.0dip</dimen>
     <dimen name="qsb_touch_extension">20.0dip</dimen>
     <dimen name="notification_padding_start">16.0dip</dimen>
     <dimen name="notification_padding_end">12.0dip</dimen>
@@ -212,7 +209,6 @@
     <dimen name="widget_section_indent">0.0dip</dimen>
     <dimen name="widget_row_divider">2.0dip</dimen>
     <dimen name="folder_background_radius">2dp</dimen>
-    <dimen name="all_apps_round_search_bar">56dp</dimen>
     <dimen name="icon_preview_size">48dp</dimen>
     <dimen name="icon_grid_column_width">80dp</dimen>
 </resources>

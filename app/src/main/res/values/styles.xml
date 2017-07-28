@@ -103,8 +103,6 @@
         <item name="folderBgColorBlur">#75000000</item>
     </style>
 
-    <style name="Theme" parent="@style/LauncherTheme" />
-
     <style name="SettingsTheme" parent="@android:style/Theme.Material.Light">
         <item name="android:colorAccent">@color/accent_material_light</item>
         <item name="blurTintColor">#45ffffff</item>
@@ -186,23 +184,6 @@
         <item name="android:shadowRadius">3.0</item>
         <item name="android:shadowDy">0.5</item>
         <item name="android:shadowColor">#33000000</item>
-    </style>
-
-    <style name="Icon.DeepShortcut">
-        <item name="android:gravity">start|center_vertical</item>
-        <item name="android:textAlignment">viewStart</item>
-        <item name="android:elevation">@dimen/deep_shortcuts_elevation</item>
-        <item name="android:paddingStart">@dimen/bg_pill_height</item>
-        <item name="android:paddingEnd">@dimen/deep_shortcut_padding_end</item>
-        <item name="android:drawableEnd">@drawable/deep_shortcuts_drag_handle</item>
-        <item name="android:drawablePadding">@dimen/deep_shortcut_drawable_padding</item>
-        <item name="android:textColor">#FF212121</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:fontFamily">sans-serif</item>
-        <item name="android:shadowRadius">0</item>
-        <item name="customShadows">false</item>
-        <item name="layoutHorizontal">true</item>
-        <item name="iconSizeOverride">@dimen/deep_shortcut_icon_size</item>
     </style>
 
     <!-- Drop targets -->

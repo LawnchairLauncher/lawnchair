@@ -70,6 +70,7 @@ import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.badge.BadgeRenderer;
 import ch.deletescape.lawnchair.badge.FolderBadgeInfo;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragLayer;
 import ch.deletescape.lawnchair.dragndrop.DragView;
 import ch.deletescape.lawnchair.util.Thunk;
@@ -136,12 +137,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private Alarm mOpenAlarm = new Alarm();
 
     public FolderIcon(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        super(FeatureFlags.applyDarkTheme(context, FeatureFlags.DARK_FOLDER), attrs);
         init();
     }
 
     public FolderIcon(Context context) {
-        super(context);
+        this(context, null);
         init();
     }
 
