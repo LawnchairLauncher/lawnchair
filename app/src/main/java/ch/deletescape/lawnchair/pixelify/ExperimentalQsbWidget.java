@@ -49,7 +49,7 @@ public class ExperimentalQsbWidget extends BaseQsbView {
     public ExperimentalQsbWidget(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
 
-        mBlurEnabled = BlurWallpaperProvider.isEnabled();
+        mBlurEnabled = BlurWallpaperProvider.isEnabled(BlurWallpaperProvider.BLUR_QSB);
         if (mBlurEnabled) {
             mBlurDrawable = mLauncher.getBlurWallpaperProvider().createDrawable(100, true);
         }

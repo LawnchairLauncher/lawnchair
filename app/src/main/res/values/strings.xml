@@ -452,4 +452,12 @@
     <string name="pref_weather_units">Weather Units</string>
     <string name="pref_weather_city_summary">For best results include country code</string>
     <string name="pref_weather_city_title">City</string>
+    <string name="none">None</string>
+    <string name="pref_applyTheme">Apply theme on</string>
+    <string name="pref_applyBlur">Apply blur on</string>
+    <string name="search_bar">Search bar</string>
+    <string name="folder">Folder</string>
+    <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
+    <string name="app_shortcuts">App shortcuts</string>
+    <string name="blur_effect">Blur effect</string>
 </resources>

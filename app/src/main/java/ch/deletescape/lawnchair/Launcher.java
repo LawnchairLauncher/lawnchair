@@ -59,6 +59,7 @@ import android.os.StrictMode;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.view.ContextThemeWrapper;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -358,7 +359,7 @@ public class Launcher extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FeatureFlags.applyDarkThemePreference(this);
+        FeatureFlags.loadDarkThemePreference(this);
         super.onCreate(savedInstanceState);
 
         setScreenOrientation();
@@ -3941,7 +3942,7 @@ public class Launcher extends Activity
         if (context instanceof Launcher) {
             return (Launcher) context;
         }
-        return ((Launcher) ((ContextWrapper) context).getBaseContext());
+        return LauncherAppState.getInstance().getLauncher();
     }
 
     /**

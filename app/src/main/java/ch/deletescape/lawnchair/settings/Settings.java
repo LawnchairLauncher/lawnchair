@@ -34,12 +34,14 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private static final String KEY_PREF_TRANSPARENT_HOTSEAT = "pref_isHotseatTransparent";
     private static final String KEY_PREF_ENABLE_DYNAMIC_UI = "pref_enableDynamicUi";
     private static final String KEY_PREF_ENABLE_BLUR = "pref_enableBlur";
+    private static final String KEY_PREF_BLUR_MODE = "pref_blurMode";
     private static final String KEY_PREF_BLUR_RADIUS = "pref_blurRadius";
     private static final String KEY_PREF_WHITE_GOOGLE_ICON = "pref_enableWhiteGoogleIcon";
     private static final String KEY_PREF_ROUND_SEARCH_BAR = "pref_useRoundSearchBar";
     private static final String KEY_PREF_ENABLE_BACKPORT_SHORTCUTS = "pref_enableBackportShortcuts";
     private static final String KEY_PREF_SHOW_TOP_SHADOW = "pref_showTopShadow";
     private static final String KEY_PREF_THEME = "pref_theme";
+    private static final String KEY_PREF_THEME_MODE = "pref_themeMode";
     private static final String KEY_PREF_HIDE_HOTSEAT = "pref_hideHotseat";
     private static final String KEY_PREF_PLANE = "pref_plane";
     private static final String KEY_PREF_WEATHER = "pref_weather";
@@ -116,6 +118,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                     // Ignoring those as we do not need to apply anything special
                     break;
                 case KEY_PREF_ENABLE_BLUR:
+                case KEY_PREF_BLUR_MODE:
                 case KEY_PREF_BLUR_RADIUS:
                     mLauncher.scheduleUpdateWallpaper();
                     break;
@@ -123,6 +126,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case KEY_PREF_FULL_WIDTH_WIDGETS:
                 case KEY_PREF_ENABLE_DYNAMIC_UI:
                 case KEY_PREF_THEME:
+                case KEY_PREF_THEME_MODE:
                 case KEY_PREF_TRANSPARENT_HOTSEAT:
                 case KEY_PREF_ROUND_SEARCH_BAR:
                 case KEY_SHOW_PIXEL_BAR:

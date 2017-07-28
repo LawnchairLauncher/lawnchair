@@ -157,12 +157,25 @@
             android:defaultValue="0"
             android:persistent="true" />
 
+        <ch.deletescape.lawnchair.preferences.BitSetPreference
+            android:key="pref_themeMode"
+            android:title="@string/pref_applyTheme"
+            android:entries="@array/themeModeTexts"
+            android:entryValues="@array/themeModeValues" />
+
         <SwitchPreference
             android:key="pref_enableBlur"
             android:title="@string/blur_pref_title"
             android:summary="@string/blur_pref_summary"
             android:defaultValue="false"
             android:persistent="true" />
+
+        <ch.deletescape.lawnchair.preferences.BitSetPreference
+            android:key="pref_blurMode"
+            android:title="@string/pref_applyBlur"
+            android:dependency="pref_enableBlur"
+            android:entries="@array/blurModeTexts"
+            android:entryValues="@array/blurModeValues" />
 
         <ch.deletescape.lawnchair.preferences.SeekbarPreference
             android:key="pref_blurRadius"

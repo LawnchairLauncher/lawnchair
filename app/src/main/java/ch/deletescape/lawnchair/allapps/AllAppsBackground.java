@@ -45,7 +45,7 @@ public class AllAppsBackground extends View {
         mScrimPaint.setColor(scrimColor);
         mScrimPath = new Path();
 
-        mBlurEnabled = BlurWallpaperProvider.isEnabled();
+        mBlurEnabled = BlurWallpaperProvider.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS);
 
         if (mBlurEnabled) {
             mBaseDrawable = LauncherAppState.getInstance().getLauncher().getBlurWallpaperProvider().createDrawable();

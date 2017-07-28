@@ -34,6 +34,7 @@ import android.util.Log;
 import android.view.ActionMode;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -226,7 +227,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // reliable behavior when clicking the text field (since it will always gain focus on click).
         setFocusableInTouchMode(true);
 
-        if (BlurWallpaperProvider.isEnabled()) {
+        if (BlurWallpaperProvider.isEnabled(BlurWallpaperProvider.BLUR_FOLDER)) {
             int tintColor = Utilities.resolveAttributeData(context, R.attr.folderBgColorBlur);
 
             mBlurDrawable = BlurWallpaperProvider.getInstance().createDrawable(
@@ -514,7 +515,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
      */
     @SuppressLint("InflateParams")
     static Folder fromXml(Launcher launcher) {
-        return (Folder) launcher.getLayoutInflater().inflate(R.layout.user_folder_icon_normalized, null);
+        return (Folder) LayoutInflater.from(FeatureFlags.applyDarkTheme(launcher, FeatureFlags.DARK_FOLDER)).inflate(R.layout.user_folder_icon_normalized, null);
     }
 
     private void prepareReveal() {

@@ -42,7 +42,7 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     protected abstract int getQsbView(boolean withMic);
 
     public BaseQsbView(Context context, AttributeSet attributeSet, int i) {
-        super(context, attributeSet, i);
+        super(FeatureFlags.applyDarkTheme(context, FeatureFlags.DARK_QSB), attributeSet, i);
         mLauncher = Launcher.getLauncher(context);
     }
 

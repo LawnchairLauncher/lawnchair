@@ -106,8 +106,10 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mShiftRange = DEFAULT_SHIFT_RANGE;
         mProgress = 1f;
         mEvaluator = new ArgbEvaluator();
-        mAllAppsBackgroundColor = Utilities.resolveAttributeData(l, R.attr.allAppsContainerColor);
-        mAllAppsBackgroundColorBlur = Utilities.resolveAttributeData(l, R.attr.allAppsContainerColorBlur);
+        mAllAppsBackgroundColor = Utilities
+                .resolveAttributeData(FeatureFlags.applyDarkTheme(l, FeatureFlags.DARK_ALLAPPS), R.attr.allAppsContainerColor);
+        mAllAppsBackgroundColorBlur = Utilities
+                .resolveAttributeData(FeatureFlags.applyDarkTheme(l, FeatureFlags.DARK_BLUR), R.attr.allAppsContainerColorBlur);
         mTransparentHotseat = FeatureFlags.isTransparentHotseat(l);
         mLightStatusBar = FeatureFlags.lightStatusBar(l);
     }
@@ -123,9 +125,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     private int getAppIconTextColor(Context context, int allAppsAlpha) {
-        if (FeatureFlags.useDarkTheme) {
+        if (FeatureFlags.useDarkTheme(FeatureFlags.DARK_ALLAPPS)) {
             return Color.WHITE;
-        } else if ((allAppsAlpha < 128 && !BlurWallpaperProvider.isEnabled()) || allAppsAlpha < 50) {
+        } else if ((allAppsAlpha < 128 && !BlurWallpaperProvider.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS)) || allAppsAlpha < 50) {
             return Color.WHITE;
         } else {
             return context.getResources().getColor(R.color.quantum_panel_text_color);
@@ -284,13 +286,14 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     private void updateLightStatusBar(float shift) {
-        boolean darkStatusBar = FeatureFlags.useDarkTheme ||
-                (BlurWallpaperProvider.isEnabled() &&
+        boolean useDarkTheme = FeatureFlags.useDarkTheme(FeatureFlags.DARK_ALLAPPS);
+        boolean darkStatusBar = useDarkTheme ||
+                (BlurWallpaperProvider.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS) &&
                 !mLauncher.getExtractedColors().isLightStatusBar() &&
                 allAppsAlpha < 52);
 
-        boolean darkNavigationBar = FeatureFlags.useDarkTheme ||
-                (BlurWallpaperProvider.isEnabled() &&
+        boolean darkNavigationBar = useDarkTheme ||
+                (BlurWallpaperProvider.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS) &&
                 !mLauncher.getExtractedColors().isLightNavigationBar() &&
                 allAppsAlpha < 52);
 
@@ -318,17 +321,18 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
         int allAppsBg = ColorUtils.setAlphaComponent(mAllAppsBackgroundColor, allAppsAlpha);
         int allAppsBgBlur = mAllAppsBackgroundColorBlur + (allAppsAlpha << 24);
+        boolean blurEnabled = BlurWallpaperProvider.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS);
         int color = (int) mEvaluator.evaluate(
                 Math.max(mDecelInterpolator.getInterpolation(alpha), 0),
-                BlurWallpaperProvider.isEnabled() ? mAllAppsBackgroundColorBlur : mHotseatBackgroundColor,
-                BlurWallpaperProvider.isEnabled() ? allAppsBgBlur : allAppsBg);
+                blurEnabled ? mAllAppsBackgroundColorBlur : mHotseatBackgroundColor,
+                blurEnabled ? allAppsBgBlur : allAppsBg);
         if (mTransparentHotseat) {
-            mAppsView.setRevealDrawableColor(BlurWallpaperProvider.isEnabled() ? allAppsBgBlur : color);
+            mAppsView.setRevealDrawableColor(blurEnabled ? allAppsBgBlur : color);
             mAppsView.setBlurOpacity((int) (alpha * 255));
         } else {
             mAppsView.setRevealDrawableColor(color);
         }
-        if (BlurWallpaperProvider.isEnabled()) {
+        if (blurEnabled) {
             mAppsView.setWallpaperTranslation(shiftCurrent);
             mHotseat.setWallpaperTranslation(shiftCurrent);
         }

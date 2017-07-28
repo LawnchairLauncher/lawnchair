@@ -63,7 +63,7 @@ public class SuperGContainerView extends BaseQsbView {
         } else {
             bz = new TransformingTouchDelegate(this);
         }
-        mBlurEnabled = BlurWallpaperProvider.isEnabled();
+        mBlurEnabled = BlurWallpaperProvider.isEnabled(BlurWallpaperProvider.BLUR_QSB);
         if (mBlurEnabled) {
             mBlurDrawable = mLauncher.getBlurWallpaperProvider().createDrawable(100, false);
         }
