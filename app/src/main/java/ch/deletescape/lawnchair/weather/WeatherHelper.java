@@ -1,5 +1,6 @@
 package ch.deletescape.lawnchair.weather;
 
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -94,11 +95,15 @@ public class WeatherHelper implements OpenWeatherMapHelper.CurrentWeatherCallbac
         mTemperatureView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("dynact://velour/weather/ProxyActivity"));
-                intent.setComponent(new ComponentName("com.google.android.googlequicksearchbox",
-                        "com.google.android.apps.gsa.velour.DynamicActivityTrampoline"));
-                context.startActivity(intent);
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse("dynact://velour/weather/ProxyActivity"));
+                    intent.setComponent(new ComponentName("com.google.android.googlequicksearchbox",
+                            "com.google.android.apps.gsa.velour.DynamicActivityTrampoline"));
+                    context.startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
