@@ -78,9 +78,7 @@ public class UserManagerCompatVL extends UserManagerCompat {
         }
         ArrayList<UserHandle> compatUsers = new ArrayList<>(
                 users.size());
-        for (UserHandle user : users) {
-            compatUsers.add(user);
-        }
+        compatUsers.addAll(users);
         return compatUsers;
     }
 
@@ -107,6 +105,7 @@ public class UserManagerCompatVL extends UserManagerCompat {
         return false;
     }
 
+    @Override
     public UserHandle getUserForSerialNumber(long serialNumber) {
         synchronized (this) {
             if (mUsers != null) {
@@ -126,6 +125,7 @@ public class UserManagerCompatVL extends UserManagerCompat {
         return false;
     }
 
+    @Override
     public long getSerialNumberForUser(UserHandle user) {
         synchronized (this) {
             if (mUserToSerialMap != null) {

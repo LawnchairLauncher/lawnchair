@@ -30,7 +30,6 @@
             android:layout_height="fill_parent" />
 
         <TextView
-            android:id="@+id/fast_scroller_popup"
             style="@style/FastScrollerPopup"
             android:layout_gravity="end|center|top"
             android:layout_marginEnd="@dimen/container_fastscroll_popup_margin" />

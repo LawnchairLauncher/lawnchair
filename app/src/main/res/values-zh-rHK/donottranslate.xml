@@ -15,7 +15,7 @@
      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
     <!-- Time format for Weather Widget -->
     <string name="full_wday_month_day_no_year">M月dd日EEEE</string>
 </resources>
