@@ -84,15 +84,13 @@
     <string name="title_change_settings" msgid="1376365968844349552">"Change settings"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Add icon to Home screen"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"For new apps"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"Change icon shape"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Use system default"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Square"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Squircle"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"Circle"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"Teardrop"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Applying icon shape changes"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Unknown"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Remove"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Search"</string>

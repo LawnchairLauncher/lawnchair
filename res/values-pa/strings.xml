@@ -35,12 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d ਚੌੜਾਈ ਅਤੇ %2$d ਲੰਬਾਈ"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"ਹੱਥੀਂ ਰੱਖਣ ਲਈ ਸਪੱਰਸ਼ ਕਰੋ ਅਤੇ ਦਬਾਈ ਰੱਖੋ"</string>
     <string name="place_automatically" msgid="8064208734425456485">"ਸਵੈਚਲਿਤ ਤਰੀਕੇ ਨਾਲ ਸ਼ਾਮਲ ਕਰੋ"</string>
-    <!-- no translation found for all_apps_search_bar_hint (1390553134053255246) -->
-    <skip />
-    <!-- no translation found for all_apps_loading_message (5813968043155271636) -->
-    <skip />
-    <!-- no translation found for all_apps_no_search_results (3200346862396363786) -->
-    <skip />
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ਐਪਾਂ ਖੋਜੋ"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"ਐਪਾਂ ਨੂੰ ਲੋਡ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ਨਾਲ ਮੇਲ ਖਾਂਦੀਆਂ ਕੋਈ ਐਪਾਂ ਨਹੀਂ ਮਿਲੀਆਂ"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"ਹੋਰ ਐਪਾਂ ਖੋਜੋ"</string>
     <string name="notifications_header" msgid="1404149926117359025">"ਸੂਚਨਾਵਾਂ"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ਇਸ ਹੋਮ ਸਕ੍ਰੀਨ ਲਈ ਹੋਰ ਖਾਲੀ ਸਥਾਨ ਨਹੀਂ ਹੈ।"</string>
