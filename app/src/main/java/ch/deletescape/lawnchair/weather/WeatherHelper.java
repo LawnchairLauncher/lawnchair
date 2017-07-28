@@ -33,6 +33,7 @@ public class WeatherHelper implements OpenWeatherMapHelper.CurrentWeatherCallbac
     private String mIcon;
     private ImageView mIconView;
     private WeatherIconProvider iconProvider;
+    private boolean stopped = false;
 
     public WeatherHelper(TextView temperatureView, ImageView iconView, Context context) {
         mTemperatureView = temperatureView;
@@ -49,8 +50,10 @@ public class WeatherHelper implements OpenWeatherMapHelper.CurrentWeatherCallbac
     }
 
     private void refresh() {
-        mHelper.getCurrentWeatherByCityName(mCity, this);
-        mHandler.postDelayed(this, DELAY);
+        if (!stopped) {
+            mHelper.getCurrentWeatherByCityName(mCity, this);
+            mHandler.postDelayed(this, DELAY);
+        }
     }
 
     private String makeTemperatureString(String string) {
@@ -124,5 +127,10 @@ public class WeatherHelper implements OpenWeatherMapHelper.CurrentWeatherCallbac
     @Override
     public void run() {
         refresh();
+    }
+
+    public void stop() {
+        stopped = true;
+        mHandler.removeCallbacks(this);
     }
 }
