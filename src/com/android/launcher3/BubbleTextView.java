@@ -592,6 +592,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
             mIconLoadRequest = null;
             mDisableRelayout = true;
 
+            // Optimization: Starting in N, pre-uploads the bitmap to RenderThread.
+            info.iconBitmap.prepareToDraw();
+
             if (info instanceof AppInfo) {
                 applyFromApplicationInfo((AppInfo) info);
             } else if (info instanceof ShortcutInfo) {
