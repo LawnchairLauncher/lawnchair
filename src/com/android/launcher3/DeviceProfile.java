@@ -63,7 +63,7 @@ public class DeviceProfile {
      */
     private static final float MAX_HORIZONTAL_PADDING_PERCENT = 0.14f;
 
-    private static final float TALL_DEVICE_ASPECT_RATIO_THRESHOLD = 1.82f;
+    private static final float TALL_DEVICE_ASPECT_RATIO_THRESHOLD = 2.0f;
 
     // Overview mode
     private final int overviewModeMinIconZoneHeightPx;
@@ -238,17 +238,17 @@ public class DeviceProfile {
         updateAvailableDimensions(dm, res);
 
         // Now that we have all of the variables calculated, we can tune certain sizes.
-        float aspectRatio = ((float) Math.max(availableWidthPx, availableHeightPx))
-                / Math.min(availableWidthPx, availableHeightPx);
+        float aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
         boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
         if (!isVerticalBarLayout() && isPhone && isTallDevice) {
-            // We increase the page indicator size when there is extra space.
+            // We increase the hotseat size when there is extra space.
             // ie. For a display with a large aspect ratio, we can keep the icons on the workspace
-            // in portrait mode closer together by increasing the page indicator size.
+            // in portrait mode closer together by adding more height to the hotseat.
             // Note: This calculation was created after noticing a pattern in the design spec.
-            pageIndicatorSizePx = getCellSize().y - iconSizePx - iconDrawablePaddingPx;
+            int extraSpace = getCellSize().y - iconSizePx - iconDrawablePaddingPx;
+            hotseatBarHeightPx += extraSpace - pageIndicatorSizePx;
 
-            // Recalculate the available dimensions using the new page indicator size.
+            // Recalculate the available dimensions using the new hotseat size.
             updateAvailableDimensions(dm, res);
         }
 
@@ -301,10 +301,10 @@ public class DeviceProfile {
         // In normal cases, All Apps cell height should equal the Workspace cell height.
         // Since we are removing labels from the Workspace, we need to manually compute the
         // All Apps cell height.
+        int topBottomPadding = allAppsIconDrawablePaddingPx * (isVerticalBarLayout() ? 2 : 1);
         allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx
                 + Utilities.calculateTextHeight(allAppsIconTextSizePx)
-                // Top and bottom padding is equal to the drawable padding
-                + allAppsIconDrawablePaddingPx * 2;
+                + topBottomPadding * 2;
     }
 
     /**
