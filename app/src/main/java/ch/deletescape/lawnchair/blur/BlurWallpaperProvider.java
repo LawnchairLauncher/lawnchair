@@ -54,6 +54,8 @@ public class BlurWallpaperProvider {
 
     private int mDownsampleFactor = 8;
     private int mWallpaperWidth;
+    private int mDisplayHeight;
+    private float mWallpaperYOffset;
     private Canvas sCanvas = new Canvas();
 
     private final Runnable mUpdateRunnable = new Runnable() {
@@ -89,6 +91,12 @@ public class BlurWallpaperProvider {
         updateBlurRadius();
 
         Bitmap wallpaper = upscaleToScreenSize(((BitmapDrawable) mWallpaperManager.getDrawable()).getBitmap());
+        int wallpaperHeight = wallpaper.getHeight();
+        if (wallpaperHeight > mDisplayHeight) {
+            mWallpaperYOffset = (wallpaperHeight - mDisplayHeight) * 0.5f;
+        } else {
+            mWallpaperYOffset = 0;
+        }
 
         mWallpaperWidth = wallpaper.getWidth();
 
@@ -108,6 +116,7 @@ public class BlurWallpaperProvider {
         display.getRealMetrics(mDisplayMetrics);
 
         int width = mDisplayMetrics.widthPixels, height = mDisplayMetrics.heightPixels;
+        mDisplayHeight = height;
 
         float widthFactor = 0f, heightFactor = 0f;
         if (width > bitmap.getWidth()) {
@@ -283,6 +292,10 @@ public class BlurWallpaperProvider {
         BlurDrawable drawable = BlurWallpaperProvider.getInstance().createDrawable();
         drawable.setOverlayColor(color);
         activity.findViewById(android.R.id.content).setBackground(drawable);
+    }
+
+    public float getWallpaperYOffset() {
+        return mWallpaperYOffset;
     }
 
     interface Listener {

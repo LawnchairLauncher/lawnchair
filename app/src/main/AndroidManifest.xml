@@ -53,7 +53,6 @@
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:resumeWhilePausing="true"
-            android:screenOrientation="portrait"
             android:stateNotNeeded="true"
             android:taskAffinity=""
             android:theme="@style/LauncherTheme"

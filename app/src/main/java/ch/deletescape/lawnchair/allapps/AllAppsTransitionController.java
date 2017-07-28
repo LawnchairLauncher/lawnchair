@@ -297,7 +297,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         if (Utilities.ATLEAST_MARSHMALLOW) {
             // Use a light status bar (dark icons) if all apps is behind at least half of the status
             // bar. If the status bar is already light due to wallpaper extraction, keep it that way.
-            boolean activate = shift <= mStatusBarHeight / 2;
+            boolean activate = !mLauncher.getDeviceProfile().isVerticalBarLayout() && shift <= mStatusBarHeight / 2;
             mLauncher.activateLightStatusBar(activate ? !darkStatusBar : mLightStatusBar);
             mLauncher.activateLightNavigationBar(!darkNavigationBar && activate);
         } else {
@@ -334,8 +334,15 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         }
         mAppsView.getContentView().setAlpha(alpha);
         mAppsView.setTranslationY(shiftCurrent);
-        mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y, -mShiftRange + shiftCurrent,
-                interpolation);
+
+        if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+            mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y, -mShiftRange + shiftCurrent,
+                    interpolation);
+        } else {
+            mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y,
+                    PARALLAX_COEFFICIENT * (-mShiftRange + shiftCurrent),
+                    interpolation);
+        }
 
         if (mIsTranslateWithoutWorkspace) {
             return;
@@ -538,7 +545,11 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     @Override
     public void onLayoutChange(View v, int left, int top, int right, int bottom,
                                int oldLeft, int oldTop, int oldRight, int oldBottom) {
-        mShiftRange = top;
+        if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+            mShiftRange = top;
+        } else {
+            mShiftRange = bottom;
+        }
         setProgress(mProgress);
     }
 

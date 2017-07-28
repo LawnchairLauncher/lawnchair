@@ -15,6 +15,7 @@ import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import ch.deletescape.lawnchair.Launcher;

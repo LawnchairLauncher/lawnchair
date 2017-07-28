@@ -17,6 +17,8 @@ import com.kwabenaberko.openweathermaplib.models.CurrentWeather;
 import java.util.Locale;
 
 import ch.deletescape.lawnchair.BuildConfig;
+import ch.deletescape.lawnchair.Launcher;
+import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.Utilities;
 
 public class WeatherHelper implements OpenWeatherMapHelper.CurrentWeatherCallback, SharedPreferences.OnSharedPreferenceChangeListener, Runnable {
@@ -99,11 +101,13 @@ public class WeatherHelper implements OpenWeatherMapHelper.CurrentWeatherCallbac
             @Override
             public void onClick(View view) {
                 try {
+                    Launcher launcher = LauncherAppState.getInstance().getLauncher();
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setData(Uri.parse("dynact://velour/weather/ProxyActivity"));
                     intent.setComponent(new ComponentName("com.google.android.googlequicksearchbox",
                             "com.google.android.apps.gsa.velour.DynamicActivityTrampoline"));
-                    context.startActivity(intent);
+                    intent.setSourceBounds(launcher.getViewBounds(mTemperatureView));
+                    context.startActivity(intent, launcher.getActivityLaunchOptions(mTemperatureView));
                 } catch (ActivityNotFoundException e) {
                     e.printStackTrace();
                 }

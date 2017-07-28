@@ -361,7 +361,7 @@ public class Launcher extends Activity
         FeatureFlags.applyDarkThemePreference(this);
         super.onCreate(savedInstanceState);
 
-        SetScreenOrientation();
+        setScreenOrientation();
 
         if(!BuildConfig.MOBILE_CENTER_KEY.equalsIgnoreCase("null"))
             MobileCenter.start(getApplication(), BuildConfig.MOBILE_CENTER_KEY, Analytics.class, Crashes.class, Distribute.class);
@@ -370,7 +370,10 @@ public class Launcher extends Activity
         app.setMLauncher(this);
 
         // Load configuration-specific DeviceProfile
-        mDeviceProfile = app.getInvariantDeviceProfile().profile;
+        mDeviceProfile = getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE ?
+                app.getInvariantDeviceProfile().landscapeProfile
+                : app.getInvariantDeviceProfile().portraitProfile;
 
         mSharedPrefs = Utilities.getPrefs(this);
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
@@ -435,14 +438,11 @@ public class Launcher extends Activity
         Utilities.showChangelog(this);
     }
 
-    private void SetScreenOrientation() {
-        if(FeatureFlags.enableScreenRotation(this))
-        {
-            setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-        }
-        else {
-
-            setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    private void setScreenOrientation() {
+        if(FeatureFlags.enableScreenRotation(this)) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
     }
 
@@ -851,7 +851,7 @@ public class Launcher extends Activity
     protected void onResume() {
         super.onResume();
 
-        SetScreenOrientation();
+        setScreenOrientation();
         // Restore the previous launcher state
         if (mOnResumeState == State.WORKSPACE) {
             showWorkspace(false);
@@ -935,8 +935,7 @@ public class Launcher extends Activity
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig)
-    {
+    public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
         mBlurWallpaperProvider.updateAsync();
@@ -3622,6 +3621,17 @@ public class Launcher extends Activity
         bounceAnim.setInterpolator(new OvershootInterpolator(BOUNCE_ANIMATION_TENSION));
         return bounceAnim;
     }
+
+    public boolean useVerticalBarLayout() {
+        return mDeviceProfile.isVerticalBarLayout();
+    }
+
+/*    public int getSearchBarHeight() {
+        if (mLauncherCallbacks != null) {
+            return mLauncherCallbacks.getSearchBarHeight();
+        }
+        return LauncherCallbacks.SEARCH_BAR_HEIGHT_NORMAL;
+    }*/
 
     /**
      * A runnable that we can dequeue and re-enqueue when all applications are bound (to prevent
