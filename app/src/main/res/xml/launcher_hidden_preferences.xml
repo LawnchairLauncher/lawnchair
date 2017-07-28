@@ -26,4 +26,11 @@
         android:key="pref_weatherDebug_city"
         android:title="City name"
         android:summary="For weather (best is to include country code)" />
+
+    <EditTextPreference
+        android:dependency="pref_weatherDebug"
+        android:key="pref_weatherDebug_api_key"
+        android:title="API key"
+        android:summary="Enter your Open Weather Map API key" />
+
 </PreferenceScreen>
