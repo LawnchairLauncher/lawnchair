@@ -75,7 +75,7 @@ public class WeatherHelper implements OpenWeatherMapHelper.CurrentWeatherCallbac
     @Override
     public void onFailure(Throwable throwable) {
         mTemp = (mTemp != null && !mTemp.equals("ERROR")) ? mTemp : "ERROR";
-        mIcon = "-1d";
+        mIcon = "-1";
         updateTextView();
         updateIconView();
     }
