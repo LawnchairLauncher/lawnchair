@@ -21,7 +21,7 @@
             android:layout_marginBottom="5.0dip"
             android:layout_marginEnd="8.0dip" />
 
-        <TextView
+        <ch.deletescape.lawnchair.pixelify.DoubleShadowTextView
             android:id="@+id/weather_widget_temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -30,7 +30,12 @@
             android:includeFontPadding="false"
             android:paddingBottom="2.0dip"
             android:textColor="@color/weather_widget_text_color"
-            android:textSize="36.0dip" />
+            android:textSize="36.0dip"
+            launcher:ambientShadowBlur2="6.0dip"
+            launcher:ambientShadowColor2="#44000000"
+            launcher:keyShadowBlur2="2.0dip"
+            launcher:keyShadowColor2="#22000000"
+            launcher:keyShadowOffset2="0.5dip" />
     </LinearLayout>
 
     <ch.deletescape.lawnchair.pixelify.DoubleShadowTextClock

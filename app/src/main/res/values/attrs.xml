@@ -117,6 +117,13 @@
         <attr name="keyShadowBlur" format="dimension" />
         <attr name="keyShadowOffset" format="dimension" />
     </declare-styleable>
+    <declare-styleable name="DoubleShadowTextView">
+        <attr name="ambientShadowColor2" format="color" />
+        <attr name="keyShadowColor2" format="color" />
+        <attr name="ambientShadowBlur2" format="dimension" />
+        <attr name="keyShadowBlur2" format="dimension" />
+        <attr name="keyShadowOffset2" format="dimension" />
+    </declare-styleable>
     <declare-styleable name="SeekbarPreference">
         <attr name="minValue" format="float" />
         <attr name="maxValue" format="float" />
@@ -126,8 +133,8 @@
     </declare-styleable>
 
     <declare-styleable name="SubPreference">
-        <attr name="content" format="reference"/>
-        <attr name="longClickContent" format="reference"/>
+        <attr name="content" format="reference" />
+        <attr name="longClickContent" format="reference" />
     </declare-styleable>
 
     <attr name="materialPanelBgColor" format="color" />
