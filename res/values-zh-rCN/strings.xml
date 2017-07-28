@@ -84,15 +84,13 @@
     <string name="title_change_settings" msgid="1376365968844349552">"更改设置"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"将图标添加到主屏幕"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"适用于新应用"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"更改图标形状"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"使用系统默认设置"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"方形"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"方圆形"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"圆形"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"泪珠形"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"正在应用图标形状更改"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"未知"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"移除"</string>
     <string name="abandoned_search" msgid="891119232568284442">"搜索"</string>
