@@ -40,6 +40,7 @@ public final class FeatureFlags {
     public static final String KEY_SHOW_VOICE_SEARCH_BUTTON = "pref_showMic";
     private static final String KEY_PREF_PIXEL_STYLE_ICONS = "pref_pixelStyleIcons";
     private static final String KEY_PREF_HIDE_APP_LABELS = "pref_hideAppLabels";
+    private static final String KEY_PREF_ENABLE_SCREEN_ROTATION = "pref_enableScreenRotation";
     private static final String KEY_PREF_FULL_WIDTH_WIDGETS = "pref_fullWidthWidgets";
     private static final String KEY_PREF_SHOW_NOW_TAB = "pref_showGoogleNowTab";
     private static final String KEY_PREF_TRANSPARENT_HOTSEAT = "pref_isHotseatTransparent";
@@ -98,6 +99,11 @@ public final class FeatureFlags {
 
     public static boolean usePixelIcons(Context context) {
         return Utilities.getPrefs(context).getBoolean(KEY_PREF_PIXEL_STYLE_ICONS, true);
+    }
+
+    public static boolean enableScreenRotation(Context context) {
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_ENABLE_SCREEN_ROTATION, false);
+        return enabled;
     }
 
     public static boolean hideAppLabels(Context context) {

@@ -441,6 +441,7 @@
     <string name="pull_down_notis">Show notifications</string>
     <string name="pull_down_search">Open search</string>
     <string name="pull_down_apps_search">Apps search</string>
+    <string name="enable_screen_rotation">Enable screen rotation</string>
 
     <!-- Import/Export Strings -->
     <string name="imexport_success">Success!</string>

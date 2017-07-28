@@ -49,7 +49,7 @@
         <activity
             android:name=".Launcher"
             android:clearTaskOnLaunch="true"
-            android:configChanges="keyboard|keyboardHidden|navigation"
+            android:configChanges="orientation|keyboard|keyboardHidden|navigation"
             android:enabled="true"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
