@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/weather_launcher_widget_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -32,7 +33,7 @@
             android:textSize="36.0dip" />
     </LinearLayout>
 
-    <TextClock
+    <ch.deletescape.lawnchair.pixelify.DoubleShadowTextClock
         android:id="@+id/weather_widget_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -43,5 +44,10 @@
         android:includeFontPadding="false"
         android:textAllCaps="true"
         android:textColor="@color/weather_widget_text_color"
-        android:textSize="12.0sp" />
+        android:textSize="12.0sp"
+        launcher:ambientShadowBlur="2.0dip"
+        launcher:ambientShadowColor="#66000000"
+        launcher:keyShadowBlur="1.0dip"
+        launcher:keyShadowColor="#33000000"
+        launcher:keyShadowOffset="0.5dip" />
 </LinearLayout>
