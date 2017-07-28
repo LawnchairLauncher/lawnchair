@@ -1,5 +1,6 @@
 package ch.deletescape.lawnchair.weather.owm;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -61,18 +62,14 @@ public class OWMWeatherDownload {
 
     @Nullable
     private JSONObject download() {
-
-        String mURL;
-
-        if (weatherUnits == WeatherUnits.IMPERIAL)
-            mURL = "http://api.openweathermap.org/data/2.5/weather?q=" + location + "&units=imperial&APPID="
-                    + apiKey;
-        else
-            mURL = "http://api.openweathermap.org/data/2.5/weather?q=" + location + "&units=metric&APPID="
-                    + apiKey;
-
         try {
-            java.net.URL url = new URL(mURL);
+            Uri uri = Uri.parse("http://api.openweathermap.org/data/2.5/weather?")
+                    .buildUpon()
+                    .appendQueryParameter("q", location)
+                    .appendQueryParameter("units", weatherUnits == WeatherUnits.IMPERIAL ? "imperial" : "metric")
+                    .appendQueryParameter("APPID", apiKey)
+                    .build();
+            URL url = new URL(uri.toString());
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
             request.setRequestMethod("GET");
             request.connect();
@@ -85,16 +82,11 @@ public class OWMWeatherDownload {
                     length = request.getInputStream().read(buffer);
                 }
                 return new JSONObject(byteArrayOutputStream.toString("UTF-8"));
-            } else {
-                return null;
             }
-
         } catch (Exception e) {
             Log.d(TAG, "Failed to download JSON.");
         }
-
         return null;
-
     }
 
 }
