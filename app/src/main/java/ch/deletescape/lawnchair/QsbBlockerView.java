@@ -10,6 +10,7 @@ import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import ch.deletescape.lawnchair.config.FeatureFlags;
@@ -99,8 +100,9 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.plane_widget, this, false);
             } else if (FeatureFlags.weatherDebug(getContext())) {
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.weather_widget, this, false);
-                final TextView temperature = mView.findViewById(R.id.weather_widget_temperature);
-                new WeatherHelper(temperature, getContext());
+                TextView temperature = mView.findViewById(R.id.weather_widget_temperature);
+                ImageView iconView = mView.findViewById(R.id.weather_widget_icon);
+                new WeatherHelper(temperature, iconView, getContext());
             } else {
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.date_widget, this, false);
             }

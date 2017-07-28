@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Handler;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kwabenaberko.openweathermaplib.implementation.OpenWeatherMapHelper;
@@ -28,9 +29,14 @@ public class WeatherHelper implements OpenWeatherMapHelper.CurrentWeatherCallbac
     private String mTemp;
     private OpenWeatherMapHelper mHelper;
     private Handler mHandler;
+    private String mIcon;
+    private ImageView mIconView;
+    private WeatherIconProvider iconProvider;
 
-    public WeatherHelper(TextView temperatureView, Context context) {
+    public WeatherHelper(TextView temperatureView, ImageView iconView, Context context) {
         mTemperatureView = temperatureView;
+        mIconView = iconView;
+        iconProvider = new WeatherIconProvider(context);
         setupOnClickListener(context);
         mHandler = new Handler();
         mHelper = new OpenWeatherMapHelper();
@@ -53,17 +59,25 @@ public class WeatherHelper implements OpenWeatherMapHelper.CurrentWeatherCallbac
     @Override
     public void onSuccess(CurrentWeather currentWeather) {
         mTemp = String.format(Locale.US, "%.0f", currentWeather.getMain().getTemp());
+        mIcon = currentWeather.getWeatherArray().get(0).getIcon();
         updateTextView();
+        updateIconView();
     }
 
     @Override
     public void onFailure(Throwable throwable) {
         mTemp = (mTemp != null && !mTemp.equals("ERROR")) ? mTemp : "ERROR";
+        mIcon = "-1d";
         updateTextView();
+        updateIconView();
     }
 
     private void updateTextView() {
         mTemperatureView.setText(makeTemperatureString(mTemp));
+    }
+
+    private void updateIconView() {
+        mIconView.setImageDrawable(iconProvider.getIcon(mIcon));
     }
 
     private void setCity(String city) {
