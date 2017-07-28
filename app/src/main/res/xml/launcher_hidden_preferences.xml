@@ -18,7 +18,8 @@
         android:key="pref_weatherDebug_units"
         android:title="Units"
         android:entryValues="@array/unitsValues"
-        android:defaultValue=""
+        android:defaultValue="metric"
+        android:summary="%s"
         android:entries="@array/unitsTexts" />
 
     <EditTextPreference

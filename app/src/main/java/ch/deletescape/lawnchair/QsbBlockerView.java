@@ -19,6 +19,8 @@ import android.widget.TextView;
 import com.kwabenaberko.openweathermaplib.implementation.OpenWeatherMapHelper;
 import com.kwabenaberko.openweathermaplib.models.CurrentWeather;
 
+import java.util.Locale;
+
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.pixelify.OnWeatherInfoListener;
 import ch.deletescape.lawnchair.pixelify.ShadowHostView;
@@ -139,7 +141,9 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
                     OpenWeatherMapHelper.CurrentWeatherCallback callback = new OpenWeatherMapHelper.CurrentWeatherCallback() {
                         @Override
                         public void onSuccess(CurrentWeather currentWeather) {
-                            temperature.setText(currentWeather.getMain().getTemp() + (isImperial ? "°F" : "°C"));
+                            String format = "%.0f%s";
+                            temperature.setText(String.format(Locale.US, format,
+                                    currentWeather.getMain().getTemp(), isImperial ? "°F" : "°C"));
                         }
 
                         @Override
