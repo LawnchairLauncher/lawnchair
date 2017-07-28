@@ -84,15 +84,13 @@
     <string name="title_change_settings" msgid="1376365968844349552">"Keisti nustatymus"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Pridėti piktogr. prie pagrindinio ekrano"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Skirta naujoms programoms"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"Pakeisti piktogramos formą"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Naudoti numatytuosius sistemos nustatymus"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Kvadratas"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Kvadratais suapvalintais kampais"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"Apskritimas"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"Ašara"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Taikomi piktogramos formos pakeitimai"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Nežinoma"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Pašalinti"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Ieškoti"</string>

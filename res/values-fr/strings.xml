@@ -70,7 +70,7 @@
     <string name="folder_name_format" msgid="6629239338071103179">"Dossier \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Fonds d\'écran"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Paramètres du domicile"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Paramètres de l\'écran d\'accueil"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Désactivé par votre administrateur"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"Vue d\'ensemble"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Autoriser la rotation de l\'écran d\'accueil"</string>
@@ -84,15 +84,13 @@
     <string name="title_change_settings" msgid="1376365968844349552">"Modifier les paramètres"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Ajouter l\'icône à l\'écran d\'accueil"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Pour les nouvelles applications"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"Modifier la forme des icônes"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Utiliser la valeur système par défaut"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Carré"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Squircle"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"Cercle"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"Goutte"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Application des modifications de forme des icônes…"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Inconnu"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Supprimer"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Rechercher"</string>

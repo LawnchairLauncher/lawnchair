@@ -84,15 +84,13 @@
     <string name="title_change_settings" msgid="1376365968844349552">"Параметрлерді өзгерту"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Негізгі экранға белгіше енгізу"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Жаңа қолданбаларға арналған"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"Белгіше пішінін өзгерту"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Жүйенің әдепкі параметрін пайдалану"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Шаршы"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Жұмыр төртбұрыш"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"Шеңбер"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"Тамшы"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Белгіше пішіні өзгерістері күшіне енуде"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Белгісіз"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Алып тастау"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Іздеу"</string>

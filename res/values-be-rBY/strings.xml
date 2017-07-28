@@ -84,15 +84,13 @@
     <string name="title_change_settings" msgid="1376365968844349552">"Змяніць налады"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Дадаць значок на Галоўны экран"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Для новых праграм"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"Змяніць форму значка"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Выкарыстоўваць стандартныя формы"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Квадрат"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Прамавугольнік са скругленымі вугламі"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"Круг"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"Сляза"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Змены формы значка прымяняюцца"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Невядома"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Выдаліць"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Шукаць"</string>

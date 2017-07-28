@@ -84,15 +84,13 @@
     <string name="title_change_settings" msgid="1376365968844349552">"ប្ដូរ​ការកំណត់"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"បញ្ចូល​រូបតំណាង​ទៅ​អេក្រង់​ដើម"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"សម្រាប់កម្មវិធីថ្មី"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"ប្តូររូបរាងរូបតំណាង"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"ប្រើលំនាំដើមរបស់ប្រព័ន្ធ"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"ការ៉េ"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"ការ៉េជ្រុងកោង"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"រង្វង់"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"តំណក់​ទឹកភ្នែក"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"កំពុងអនុវត្ត​ការប្តូររូបរាងរូបតំណាង"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"មិន​ស្គាល់"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"លុបចេញ"</string>
     <string name="abandoned_search" msgid="891119232568284442">"ស្វែងរក"</string>

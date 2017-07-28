@@ -84,15 +84,13 @@
     <string name="title_change_settings" msgid="1376365968844349552">"Тохиргоог өөрчлөх"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Нүүр хуудаст дүрс тэмдэг нэмэх"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Шинэ аппад зориулсан"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"Дүрс тэмдгийн хэлбэрийг өөрчлөх"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Системийн өгөгдмөл тохиргоог ашиглах"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Дөрвөлжин"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Мохоо өнцөгтэй дөрвөлжин"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"Дугуй"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"Дусал"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Дүрс тэмдгийн хэлбэрийг өөрчилж байна"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Тодорхойгүй"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Устгах"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Хайх"</string>
