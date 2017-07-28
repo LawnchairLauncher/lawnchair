@@ -151,6 +151,8 @@ public class BubbleTextView extends TextView
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
         } else if (display == DISPLAY_FOLDER) {
+            mHideText = FeatureFlags.hideAppLabels(context);
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
         }
         mCenterVertically = a.getBoolean(R.styleable.BubbleTextView_centerVertically, false);
