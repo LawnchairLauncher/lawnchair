@@ -455,4 +455,9 @@
 
     <!-- Default units to use, either 'metric' or 'imperial' -->
     <string name="default_units">metric</string>
+    <string name="pref_cat_weather">Weather</string>
+    <string name="pref_weather_title">Enable weather</string>
+    <string name="pref_weather_units">Weather Units</string>
+    <string name="pref_weather_city_summary">For best results include country code</string>
+    <string name="pref_weather_city_title">City</string>
 </resources>

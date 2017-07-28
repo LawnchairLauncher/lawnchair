@@ -37,6 +37,31 @@
             android:title="@string/show_google_now_tab_pref_title"
             android:defaultValue="true" />
     </PreferenceCategory>
+    
+    <PreferenceCategory
+        android:key="prefCat_weather"
+        android:title="@string/pref_cat_weather">
+
+        <SwitchPreference
+            android:key="pref_weather"
+            android:title="@string/pref_weather_title" />
+
+        <ListPreference
+            android:key="pref_weather_units"
+            android:title="@string/pref_weather_units"
+            android:entryValues="@array/unitsValues"
+            android:defaultValue="metric"
+            android:summary="%s"
+            android:dependency="pref_weather"
+            android:entries="@array/unitsTexts" />
+
+        <EditTextPreference
+            android:dependency="pref_weather"
+            android:key="pref_weather_city"
+            android:defaultValue="Lucerne, CH"
+            android:title="@string/pref_weather_city_title"
+            android:summary="@string/pref_weather_city_summary" />
+    </PreferenceCategory>
 
     <PreferenceCategory
         android:key="prefCat_misc"
