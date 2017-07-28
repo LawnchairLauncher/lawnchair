@@ -2399,16 +2399,7 @@ public class Launcher extends Activity
 
     @NonNull
     private Intent getWallpaperPickerIntent(View v, float offset) {
-        boolean useGoogleWallpaper =
-                PackageManagerHelper.isAppEnabled(getPackageManager(), "com.google.android.apps.wallpaper", 0);
-        getPackageManager().setComponentEnabledSetting(
-                new ComponentName(this, "ch.deletescape.wallpaperpicker.WallpaperPickerActivity"),
-                useGoogleWallpaper ? PackageManager.COMPONENT_ENABLED_STATE_DISABLED : PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                PackageManager.DONT_KILL_APP);
-
-        String pickerPackage = useGoogleWallpaper ? "com.google.android.apps.wallpaper" : "ch.deletescape.lawnchair";
         Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER)
-                .setPackage(pickerPackage)
                 .putExtra(Utilities.EXTRA_WALLPAPER_OFFSET, offset);
         intent.setSourceBounds(getViewBounds(v));
         return intent;
