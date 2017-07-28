@@ -42,7 +42,6 @@
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher_home"
         android:label="@string/app_name"
-        android:largeHeap="true"
         android:restoreAnyVersion="true"
         android:supportsRtl="true">
         <activity
