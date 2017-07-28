@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kwabenaberko.openweathermaplib.implementation.OpenWeatherMapHelper;
 import com.kwabenaberko.openweathermaplib.models.CurrentWeather;
@@ -19,6 +20,7 @@ import java.util.Locale;
 import ch.deletescape.lawnchair.BuildConfig;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAppState;
+import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 
 public class WeatherHelper implements OpenWeatherMapHelper.CurrentWeatherCallback, SharedPreferences.OnSharedPreferenceChangeListener, Runnable {
@@ -108,8 +110,8 @@ public class WeatherHelper implements OpenWeatherMapHelper.CurrentWeatherCallbac
                             "com.google.android.apps.gsa.velour.DynamicActivityTrampoline"));
                     intent.setSourceBounds(launcher.getViewBounds(mTemperatureView));
                     context.startActivity(intent, launcher.getActivityLaunchOptions(mTemperatureView));
-                } catch (ActivityNotFoundException e) {
-                    e.printStackTrace();
+                } catch (ActivityNotFoundException | IllegalArgumentException e) {
+                    Toast.makeText(context, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
                 }
             }
         });
