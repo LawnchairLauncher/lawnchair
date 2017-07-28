@@ -19,9 +19,11 @@ import ch.deletescape.lawnchair.weather.WeatherHelper;
 public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener, View.OnLongClickListener {
     public static final Property<QsbBlockerView, Integer> QSB_BLOCKER_VIEW_ALPHA = new QsbBlockerViewAlpha(Integer.TYPE, "bgAlpha");
     private final Paint mBgPaint = new Paint(1);
-    private int mState = 0;
     private View mView;
     private WeatherHelper weatherHelper;
+    private boolean switchToDate = false;
+    private boolean switching = false;
+    private boolean weatherShowing = false;
 
     public QsbBlockerView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
@@ -51,7 +53,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
 
     @Override
     protected void onMeasure(int i, int i2) {
-        if (mView != null && mState == 2) {
+        if (mView != null && weatherShowing) {
             DeviceProfile deviceProfile = Launcher.getLauncher(getContext()).getDeviceProfile();
             LayoutParams layoutParams = (LayoutParams) mView.getLayoutParams();
             int size = ((MeasureSpec.getSize(i) / deviceProfile.inv.numColumns) - deviceProfile.iconSizePx) / 2;
@@ -86,21 +88,14 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
         canvas.drawPaint(mBgPaint);
     }
 
-    private boolean switchToDate = false;
-    private boolean switching = false;
-    private boolean weatherShowing = false;
-
     public void setupView() {
         if (!FeatureFlags.showPixelBar(getContext())) {
             removeAllViews();
             return;
         }
         View view = mView;
-        int i = mState;
         mView = null;
-        mState = 2;
-        mState = 1;
-        if (view == null || i != 1 || switching) {
+        if (view == null || switching) {
             if (FeatureFlags.planes(getContext())) {
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.plane_widget, this, false);
             } else if ((FeatureFlags.showWeather(getContext()) && !switchToDate) || (switching && !switchToDate)) {
@@ -121,17 +116,17 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
             if (FeatureFlags.useFullWidthSearchbar(getContext())) {
                 mView.setVisibility(GONE);
             }
-            switching = false;
         } else {
             mView = view;
         }
-        if (i != mState) {
+        if (switching) {
             if (view != null) {
                 view.animate().setDuration(200).alpha(0.0f).withEndAction(new QsbBlockerViewViewRemover(this, view));
             }
             addView(mView);
             mView.setAlpha(0.0f);
             mView.animate().setDuration(200).alpha(1.0f);
+            switching = false;
         } else if (view != mView) {
             if (view != null) {
                 removeView(view);
