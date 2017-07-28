@@ -135,6 +135,7 @@ import ch.deletescape.lawnchair.util.ViewOnDrawExecutor;
 import ch.deletescape.lawnchair.widget.PendingAddWidgetInfo;
 import ch.deletescape.lawnchair.widget.WidgetHostViewLoader;
 import ch.deletescape.lawnchair.widget.WidgetsContainerView;
+import ch.deletescape.wallpaperpicker.WallpaperPickerActivity;
 
 /**
  * Default launcher application.
@@ -2402,11 +2403,11 @@ public class Launcher extends Activity
         boolean useGoogleWallpaper =
                 PackageManagerHelper.isAppEnabled(getPackageManager(), "com.google.android.apps.wallpaper", 0);
         getPackageManager().setComponentEnabledSetting(
-                new ComponentName(this, "ch.deletescape.wallpaperpicker.WallpaperPickerActivity"),
+                new ComponentName(this, WallpaperPickerActivity.class),
                 useGoogleWallpaper ? PackageManager.COMPONENT_ENABLED_STATE_DISABLED : PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP);
 
-        String pickerPackage = useGoogleWallpaper ? "com.google.android.apps.wallpaper" : "ch.deletescape.lawnchair";
+        String pickerPackage = useGoogleWallpaper ? "com.google.android.apps.wallpaper" : getApplicationInfo().packageName;
         Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER)
                 .setPackage(pickerPackage)
                 .putExtra(Utilities.EXTRA_WALLPAPER_OFFSET, offset);
