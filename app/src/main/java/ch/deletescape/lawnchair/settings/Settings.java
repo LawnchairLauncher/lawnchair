@@ -42,7 +42,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private static final String KEY_PREF_THEME = "pref_theme";
     private static final String KEY_PREF_HIDE_HOTSEAT = "pref_hideHotseat";
     private static final String KEY_PREF_PLANE = "pref_plane";
-    private static final String KEY_PREF_WEATHER_DEBUG = "pref_weatherDebug";
+    private static final String KEY_PREF_WEATHER = "pref_weather";
     private static Settings instance;
     private Launcher mLauncher;
 
@@ -133,7 +133,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case KEY_PREF_ICON_TEXT_SCALE:
                 case KEY_PREF_ENABLE_BACKPORT_SHORTCUTS:
                 case KEY_PREF_PLANE:
-                case KEY_PREF_WEATHER_DEBUG:
+                case KEY_PREF_WEATHER:
                     mLauncher.scheduleKill();
                     break;
                 case KEY_PREF_ICON_PACK_PACKAGE:
