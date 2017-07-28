@@ -102,7 +102,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
             switching = false;
             if (FeatureFlags.planes(getContext())) {
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.plane_widget, this, false);
-            } else if (FeatureFlags.weatherDebug(getContext()) && !switchToDate) {
+            } else if (FeatureFlags.showWeather(getContext()) && !switchToDate) {
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.weather_widget, this, false);
                 TextView temperature = mView.findViewById(R.id.weather_widget_temperature);
                 ImageView iconView = mView.findViewById(R.id.weather_widget_icon);
@@ -138,7 +138,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
 
     @Override
     public boolean onLongClick(View view) {
-        if (!FeatureFlags.weatherDebug(getContext())) {
+        if (!FeatureFlags.showWeather(getContext())) {
             return false;
         }
         switchToDate = !switchToDate;

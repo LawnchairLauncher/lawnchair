@@ -54,7 +54,7 @@ public final class FeatureFlags {
     public static final String KEY_PREF_THEME = "pref_theme";
     private static final String KEY_PREF_HIDE_HOTSEAT = "pref_hideHotseat";
     private static final String KEY_PREF_PLANE = "pref_plane";
-    private static final String KEY_PREF_WEATHER_DEBUG = "pref_weatherDebug";
+    private static final String KEY_PREF_WEATHER = "pref_weather";
     private static final String KEY_PREF_PULLDOWN_ACTION = "pref_pulldownAction";
 
     private FeatureFlags() {
@@ -102,8 +102,7 @@ public final class FeatureFlags {
     }
 
     public static boolean enableScreenRotation(Context context) {
-        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_ENABLE_SCREEN_ROTATION, false);
-        return enabled;
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_ENABLE_SCREEN_ROTATION, false);
     }
 
     public static boolean hideAppLabels(Context context) {
@@ -208,7 +207,7 @@ public final class FeatureFlags {
         return Utilities.getPrefs(context).getBoolean(KEY_PREF_PLANE, false);
     }
 
-    public static boolean weatherDebug(Context context) {
-        return Utilities.getPrefs(context).getBoolean(KEY_PREF_WEATHER_DEBUG, false);
+    public static boolean showWeather(Context context) {
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_WEATHER, false);
     }
 }

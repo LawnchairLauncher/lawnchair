@@ -20,8 +20,8 @@ import ch.deletescape.lawnchair.BuildConfig;
 import ch.deletescape.lawnchair.Utilities;
 
 public class WeatherHelper implements OpenWeatherMapHelper.CurrentWeatherCallback, SharedPreferences.OnSharedPreferenceChangeListener, Runnable {
-    private static final String KEY_UNITS = "pref_weatherDebug_units";
-    private static final String KEY_CITY = "pref_weatherDebug_city";
+    private static final String KEY_UNITS = "pref_weather_units";
+    private static final String KEY_CITY = "pref_weather_city";
     private static final int DELAY = 30 * 3600 * 1000;
     private TextView mTemperatureView;
     private boolean mIsImperial;
