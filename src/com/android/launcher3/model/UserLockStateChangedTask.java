@@ -85,7 +85,8 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
                     }
                     si.isDisabled &= ~ShortcutInfo.FLAG_DISABLED_LOCKED_USER;
                     si.updateFromDeepShortcutInfo(shortcut, context);
-                    si.iconBitmap = LauncherIcons.createShortcutIcon(shortcut, context);
+                    si.iconBitmap = LauncherIcons.createShortcutIcon(shortcut, context,
+                            si.iconBitmap);
                 } else {
                     si.isDisabled |= ShortcutInfo.FLAG_DISABLED_LOCKED_USER;
                 }

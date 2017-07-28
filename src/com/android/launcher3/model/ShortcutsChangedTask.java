@@ -85,10 +85,10 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
                     removedShortcutInfos.addAll(shortcutInfos);
                     continue;
                 }
-                for (ShortcutInfo shortcutInfo : shortcutInfos) {
+                for (final ShortcutInfo shortcutInfo : shortcutInfos) {
                     shortcutInfo.updateFromDeepShortcutInfo(fullDetails, context);
-                    shortcutInfo.iconBitmap =
-                            LauncherIcons.createShortcutIcon(fullDetails, context);
+                    shortcutInfo.iconBitmap = LauncherIcons.createShortcutIcon(fullDetails, context,
+                            shortcutInfo.iconBitmap);
                     updatedShortcutInfos.add(shortcutInfo);
                 }
             }

@@ -321,6 +321,19 @@ public class LauncherIcons {
     }
 
     public static Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfo, Context context,
+            final Bitmap fallbackIcon) {
+        Provider<Bitmap> fallbackIconProvider = new Provider<Bitmap>() {
+            @Override
+            public Bitmap get() {
+                // If the shortcut is pinned but no longer has an icon in the system,
+                // keep the current icon instead of reverting to the default icon.
+                return fallbackIcon;
+            }
+        };
+        return createShortcutIcon(shortcutInfo, context, true, fallbackIconProvider);
+    }
+
+    public static Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfo, Context context,
             boolean badged, @Nullable Provider<Bitmap> fallbackIconProvider) {
         LauncherAppState app = LauncherAppState.getInstance(context);
         Drawable unbadgedDrawable = DeepShortcutManager.getInstance(context)
