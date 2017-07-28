@@ -180,6 +180,14 @@
         <item name="iconDisplay">folder</item>
     </style>
 
+    <style name="WeatherWidget" />
+
+    <style name="WeatherWidget.Text">
+        <item name="android:shadowRadius">3.0</item>
+        <item name="android:shadowDy">0.5</item>
+        <item name="android:shadowColor">#33000000</item>
+    </style>
+
     <style name="Icon.DeepShortcut">
         <item name="android:gravity">start|center_vertical</item>
         <item name="android:textAlignment">viewStart</item>
