@@ -91,7 +91,10 @@ public class BlurDrawable extends Drawable implements BlurWallpaperProvider.List
     public void setBounds(int left, int top, int right, int bottom) {
         super.setBounds(left, top, right, bottom);
 
-        mTempBitmap = Bitmap.createBitmap(right - left, bottom - top,
+        int width = right - left;
+        int height = bottom - top;
+        if (width <= 0 || height <= 0) return;
+        mTempBitmap = Bitmap.createBitmap(width, height,
                 Bitmap.Config.ARGB_8888);
         mClipCanvas.setBitmap(mTempBitmap);
     }
@@ -116,7 +119,7 @@ public class BlurDrawable extends Drawable implements BlurWallpaperProvider.List
             drawTo.drawRect(mRect, mOpacityPaint);
         }
 
-        drawTo.drawBitmap(toDraw, blurTranslateX, translateY, mPaint);
+        drawTo.drawBitmap(toDraw, blurTranslateX, translateY - mProvider.getWallpaperYOffset(), mPaint);
 
         if (prepare()) {
             if (mBlurInvalid) {

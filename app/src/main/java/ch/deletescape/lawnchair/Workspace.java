@@ -1078,9 +1078,9 @@ public class Workspace extends PagedView
 
             if (computeXYFromRank) {
                 x = mLauncher.getHotseat().getCellXFromOrder((int) screenId);
-                y = mLauncher.getHotseat().getCellYFromOrder();
+                y = mLauncher.getHotseat().getCellYFromOrder((int) screenId);
             } else {
-                screenId = mLauncher.getHotseat().getOrderInHotseat(x);
+                screenId = mLauncher.getHotseat().getOrderInHotseat(x, y);
             }
         } else {
             // Show folder title if not in the hotseat
@@ -1500,7 +1500,9 @@ public class Workspace extends PagedView
     public void setHotseatTranslationAndAlpha(Direction direction, float translation, float alpha) {
         Property<View, Float> property = direction.viewProperty;
         // Skip the page indicator movement in the vertical bar layout
-        property.set(mPageIndicator, translation);
+        if (direction != Direction.Y || !mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+            property.set(mPageIndicator, translation);
+        }
         property.set(mLauncher.getHotseat(), translation);
         setHotseatAlphaAtIndex(alpha, direction.ordinal());
     }
@@ -1936,7 +1938,7 @@ public class Workspace extends PagedView
 
     float getSpringLoadedTranslationY() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        if (getChildCount() == 0) {
+        if (grid.isVerticalBarLayout() || getChildCount() == 0) {
             return 0;
         }
 
@@ -3615,7 +3617,8 @@ public class Workspace extends PagedView
     @Override
     public boolean onEnterScrollArea(int x, int y, int direction) {
         // Ignore the scroll area if we are dragging over the hot seat
-        if (mLauncher.getHotseat() != null) {
+        boolean isPortrait = !mLauncher.getDeviceProfile().isLandscape;
+        if (mLauncher.getHotseat() != null && isPortrait) {
             Rect r = new Rect();
             mLauncher.getHotseat().getHitRect(r);
             if (r.contains(x, y)) {

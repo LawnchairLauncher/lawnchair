@@ -18,6 +18,7 @@
     <dimen name="dynamic_grid_edge_margin">8dp</dimen>
     <dimen name="dynamic_grid_page_indicator_height">28dp</dimen>
     <dimen name="dynamic_grid_page_indicator_line_height">1dp</dimen>
+    <dimen name="dynamic_grid_page_indicator_gutter_width_left_nav_bar">38dp</dimen>
     <dimen name="dynamic_grid_page_indicator_gutter_width_right_nav_bar">48dp</dimen>
     <dimen name="dynamic_grid_icon_drawable_padding">8dp</dimen>
     <dimen name="dynamic_grid_overview_min_icon_zone_height">80dp</dimen>
@@ -34,6 +35,8 @@
 
     <!-- Drop target bar -->
     <dimen name="dynamic_grid_drop_target_size">48dp</dimen>
+    <dimen name="vert_drop_target_vertical_gap">20dp</dimen>
+    <dimen name="vert_drop_target_horizontal_gap">14dp</dimen>
 
     <!-- App Widget resize frame -->
     <dimen name="widget_handle_margin">13dp</dimen>
@@ -55,12 +58,14 @@
     <dimen name="all_apps_grid_view_start_margin">0dp</dimen>
     <dimen name="all_apps_search_bar_height">60dp</dimen>
     <dimen name="all_apps_search_bar_margin_top">12dp</dimen>
+    <dimen name="all_apps_list_bottom_padding">8dp</dimen>
     <dimen name="all_apps_search_bar_round_height">68dp</dimen>
     <dimen name="all_apps_search_bar_round_margin_bottom">20dp</dimen>
     <dimen name="all_apps_empty_search_message_top_offset">40dp</dimen>
     <dimen name="all_apps_caret_stroke_width">2dp</dimen>
     <dimen name="all_apps_caret_shadow_spread">1dp</dimen>
     <dimen name="all_apps_caret_size">13dp</dimen>
+    <dimen name="all_apps_caret_workspace_offset">4dp</dimen>
 
     <!-- Search bar in All Apps -->
     <dimen name="all_apps_header_max_elevation">3dp</dimen>

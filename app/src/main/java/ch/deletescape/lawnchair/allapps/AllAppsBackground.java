@@ -4,12 +4,16 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
+import ch.deletescape.lawnchair.DeviceProfile;
+import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.blur.BlurDrawable;
@@ -19,7 +23,7 @@ public class AllAppsBackground extends View {
 
     private final Paint mScrimPaint;
     private final Path mScrimPath;
-    private final BlurDrawable mBlurDrawable;
+    private final Drawable mBaseDrawable;
     private final boolean mBlurEnabled;
     private float mStatusBarHeight;
     private boolean mShowingScrim;
@@ -43,20 +47,26 @@ public class AllAppsBackground extends View {
 
         mBlurEnabled = BlurWallpaperProvider.isEnabled();
 
-        mBlurDrawable = LauncherAppState.getInstance().getLauncher().getBlurWallpaperProvider().createDrawable();
-        setBackground(mBlurDrawable);
+        if (mBlurEnabled) {
+            mBaseDrawable = LauncherAppState.getInstance().getLauncher().getBlurWallpaperProvider().createDrawable();
+        } else {
+            mBaseDrawable = new ColorDrawable();
+        }
+        super.setBackground(mBaseDrawable);
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mBlurDrawable.startListening();
+        if (mBaseDrawable instanceof BlurDrawable)
+            ((BlurDrawable) mBaseDrawable).startListening();
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mBlurDrawable.stopListening();
+        if (mBaseDrawable instanceof BlurDrawable)
+            ((BlurDrawable) mBaseDrawable).stopListening();
     }
 
     public void setStatusBarHeight(float height) {
@@ -86,22 +96,25 @@ public class AllAppsBackground extends View {
     }
 
     public void setWallpaperTranslation(float translation) {
-        setBackground(mBlurDrawable);
-        mBlurDrawable.setTranslation(translation);
+        if (mBaseDrawable instanceof BlurDrawable)
+            ((BlurDrawable) mBaseDrawable).setTranslation(translation);
     }
 
     @Override
     public void setBackgroundColor(int color) {
-        if (mBlurEnabled) {
-            mBlurDrawable.setOverlayColor(color);
+        if (mBaseDrawable instanceof BlurDrawable) {
+            ((BlurDrawable) mBaseDrawable).setOverlayColor(color);
         } else {
-            super.setBackgroundColor(color);
+            ((ColorDrawable) mBaseDrawable).setColor(color);
         }
     }
 
     public void setBlurOpacity(int opacity) {
-        if (mBlurEnabled) {
-            mBlurDrawable.setOpacity(opacity);
-        }
+        if (mBaseDrawable instanceof BlurDrawable)
+            ((BlurDrawable) mBaseDrawable).setOpacity(opacity);
+    }
+
+    public Drawable getBaseDrawable() {
+        return mBaseDrawable;
     }
 }

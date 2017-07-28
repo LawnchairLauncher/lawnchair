@@ -779,7 +779,7 @@ public class LauncherModel extends BroadcastReceiver
         if (context instanceof Launcher && screenId < 0 &&
                 container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             item.screenId = Launcher.getLauncher(context).getHotseat()
-                    .getOrderInHotseat(cellX);
+                    .getOrderInHotseat(cellX, cellY);
         } else {
             item.screenId = screenId;
         }
@@ -812,8 +812,8 @@ public class LauncherModel extends BroadcastReceiver
             // in the hotseat
             if (context instanceof Launcher && screen < 0 &&
                     container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                item.screenId = Launcher.getLauncher(context).getHotseat().getOrderInHotseat(item.cellX
-                );
+                item.screenId = Launcher.getLauncher(context).getHotseat()
+                        .getOrderInHotseat(item.cellX, item.cellY);
             } else {
                 item.screenId = screen;
             }
@@ -846,7 +846,7 @@ public class LauncherModel extends BroadcastReceiver
         if (context instanceof Launcher && screenId < 0 &&
                 container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             item.screenId = Launcher.getLauncher(context).getHotseat()
-                    .getOrderInHotseat(cellX);
+                    .getOrderInHotseat(cellX, cellY);
         } else {
             item.screenId = screenId;
         }
@@ -929,7 +929,7 @@ public class LauncherModel extends BroadcastReceiver
         if (context instanceof Launcher && screenId < 0 &&
                 container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             item.screenId = Launcher.getLauncher(context).getHotseat()
-                    .getOrderInHotseat(cellX);
+                    .getOrderInHotseat(cellX, cellY);
         } else {
             item.screenId = screenId;
         }

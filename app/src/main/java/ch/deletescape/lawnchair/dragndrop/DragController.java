@@ -703,6 +703,11 @@ public class DragController implements DragDriver.EventListener, TouchController
             // Do a quick dot product test to ensure that we are flinging upwards
             PointF upVec = new PointF(0f, -1f);
             theta = getAngleBetweenVectors(vel, upVec);
+        } else if (mLauncher.getDeviceProfile().isVerticalBarLayout() &&
+                mVelocityTracker.getXVelocity() < mFlingToDeleteThresholdVelocity) {
+            // Remove icon is on left side instead of top, so check if we are flinging to the left.
+            PointF leftVec = new PointF(-1f, 0f);
+            theta = getAngleBetweenVectors(vel, leftVec);
         }
         if (theta <= Math.toRadians(MAX_FLING_DEGREES)) {
             return vel;
