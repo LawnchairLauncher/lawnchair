@@ -10,7 +10,7 @@ def getChangelog = { ->
             commandLine 'git', 'log', '--format=%s', commitRange
             standardOutput = stdout
         }
-        return stdout.toString().trim().replace("\n", "\\n")
+        return stdout.toString().trim().replace("\n", "\\n").replace("\"", "\\\"")
     } else {
         return null
     }
