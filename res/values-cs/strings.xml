@@ -35,12 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"šířka %1$d, výška %2$d"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Chcete-li položku umístit ručně, klepněte na ni a podržte ji"</string>
     <string name="place_automatically" msgid="8064208734425456485">"Přidat automaticky"</string>
-    <!-- no translation found for all_apps_search_bar_hint (1390553134053255246) -->
-    <skip />
-    <!-- no translation found for all_apps_loading_message (5813968043155271636) -->
-    <skip />
-    <!-- no translation found for all_apps_no_search_results (3200346862396363786) -->
-    <skip />
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Hledat v aplikacích"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"Načítání aplikací…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"Dotazu „<xliff:g id="QUERY">%1$s</xliff:g>“ neodpovídají žádné aplikace"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Vyhledat další aplikace"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Oznámení"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Na této ploše již není místo."</string>
@@ -87,15 +84,13 @@
     <string name="title_change_settings" msgid="1376365968844349552">"Změnit nastavení"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Přidat ikonu na plochu"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Pro nové aplikace"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"Změnit tvar ikony"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Použít výchozí nastavení systému"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Čtverec"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Kruh/čtverec"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"Kruh"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"Slza"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Tvar ikony se mění"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Neznámé"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Odstranit"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Hledat"</string>

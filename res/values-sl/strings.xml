@@ -35,12 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Širina %1$d, višina %2$d"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Dotaknite se elementa in ga pridržite, da ga ročno dodate"</string>
     <string name="place_automatically" msgid="8064208734425456485">"Samodejno dodaj"</string>
-    <!-- no translation found for all_apps_search_bar_hint (1390553134053255246) -->
-    <skip />
-    <!-- no translation found for all_apps_loading_message (5813968043155271636) -->
-    <skip />
-    <!-- no translation found for all_apps_no_search_results (3200346862396363786) -->
-    <skip />
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Iskanje programov"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"Nalaganje aplikacij …"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"Ni aplikacij, ki bi ustrezale poizvedbi »<xliff:g id="QUERY">%1$s</xliff:g>«"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Iskanje več aplikacij"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Obvestila"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Na tem začetnem zaslonu ni več prostora."</string>
@@ -87,15 +84,13 @@
     <string name="title_change_settings" msgid="1376365968844349552">"Spremeni nastavitve"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Dodaj ikono na začetni zaslon"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Za nove aplikacije"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"Spremeni obliko ikon"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Uporabi privzeto nastavitev sistema"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Kvadrat"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Zaobljen kvadrat"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"Krog"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"Solza"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Uveljavljanje spremenjene oblike ikon"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Neznano"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Odstrani"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Iskanje"</string>

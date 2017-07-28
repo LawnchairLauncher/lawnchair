@@ -35,12 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d వెడల్పు X %2$d ఎత్తు"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"మాన్యువల్‌గా ఉంచడానికి నొక్కి &amp;amp పట్టుకోండి"</string>
     <string name="place_automatically" msgid="8064208734425456485">"స్వయంచాలకంగా జోడించు"</string>
-    <!-- no translation found for all_apps_search_bar_hint (1390553134053255246) -->
-    <skip />
-    <!-- no translation found for all_apps_loading_message (5813968043155271636) -->
-    <skip />
-    <!-- no translation found for all_apps_no_search_results (3200346862396363786) -->
-    <skip />
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"అప్లికేషన్‌లను శోధించండి"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"అప్లికేషన్‌లను లోడ్ చేస్తోంది…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"కి సరిపోలే అప్లికేషన్‌లేవీ కనుగొనబడలేదు"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"మరిన్ని అనువర్తనాల కోసం శోధించు"</string>
     <string name="notifications_header" msgid="1404149926117359025">"నోటిఫికేషన్‌లు"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ఈ హోమ్ స్క్రీన్‌లో ఖాళీ లేదు."</string>

@@ -35,12 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d വീതിയും %2$d ഉയരവും"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"സ്വമേധയാ സ്ഥാപിക്കുന്നതിന് സ്‌പർശിച്ചുപിടിക്കുക"</string>
     <string name="place_automatically" msgid="8064208734425456485">"സ്വയമേവ ചേർക്കുക"</string>
-    <!-- no translation found for all_apps_search_bar_hint (1390553134053255246) -->
-    <skip />
-    <!-- no translation found for all_apps_loading_message (5813968043155271636) -->
-    <skip />
-    <!-- no translation found for all_apps_no_search_results (3200346862396363786) -->
-    <skip />
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ആപ്പുകൾ തിരയുക"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"ആപ്പുകൾ ലോഡുചെയ്യുന്നു..."</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" എന്നതുമായി പൊരുത്തപ്പെടുന്ന ആപ്പുകളൊന്നും കണ്ടെത്തിയില്ല"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"കൂടുതൽ ആപ്പുകൾക്ക് തിരയുക"</string>
     <string name="notifications_header" msgid="1404149926117359025">"അറിയിപ്പുകൾ"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ഈ ഹോം സ്‌ക്രീനിൽ ഒഴിവൊന്നുമില്ല."</string>

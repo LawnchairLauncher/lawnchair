@@ -84,15 +84,13 @@
     <string name="title_change_settings" msgid="1376365968844349552">"Modificați setările"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Adaugă pictograme în ecranul de pornire"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Pentru aplicații noi"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"Schimbați forma pictogramei"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Folosiți setarea prestabilită a sistemului"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Pătrat"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Pătrat cu colțuri rotunjite"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"Cerc"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"Lacrimă"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Se aplică modificările aduse formei pictogramei"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Necunoscut"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Eliminați"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Căutați"</string>
