@@ -60,7 +60,6 @@ public final class FeatureFlags {
     private static final String KEY_PREF_WEATHER = "pref_weather";
     private static final String KEY_PREF_PULLDOWN_ACTION = "pref_pulldownAction";
     private static final String KEY_PREF_ENABLE_EDITING = "pref_enableEditing";
-    private static final String KEY_PREF_UGLIFY_WEATHER = "pref_uglyWeather";
     private static int darkThemeFlag;
 
     private FeatureFlags() {
@@ -240,9 +239,5 @@ public final class FeatureFlags {
 
     public static boolean enableEditing(Context context) {
         return Utilities.getPrefs(context).getBoolean(KEY_PREF_ENABLE_EDITING, true);
-    }
-
-    public static boolean uglifyWeather(Context context) {
-        return Utilities.getPrefs(context).getBoolean(KEY_PREF_UGLIFY_WEATHER, false);
     }
 }
