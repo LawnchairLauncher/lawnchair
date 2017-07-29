@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import java.util.Arrays;
 
 import ch.deletescape.lawnchair.CellLayout;
+import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.ShortcutAndWidgetContainer;
 
 /**
@@ -175,14 +176,21 @@ public class FocusLogic {
      */
     // TODO: get rid of the dynamic matrix creation
     public static int[][] createSparseMatrixWithHotseat(
-            CellLayout iconLayout, CellLayout hotseatLayout) {
+            CellLayout iconLayout, CellLayout hotseatLayout, DeviceProfile dp) {
 
         ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
         ViewGroup hotseatParent = hotseatLayout.getShortcutsAndWidgets();
 
+        boolean isHotseatHorizontal = !dp.isVerticalBarLayout();
+
         int m, n;
-        m = hotseatLayout.getCountX();
-        n = iconLayout.getCountY() + hotseatLayout.getCountY();
+        if (isHotseatHorizontal) {
+            m = hotseatLayout.getCountX();
+            n = iconLayout.getCountY() + hotseatLayout.getCountY();
+        } else {
+            m = iconLayout.getCountX() + hotseatLayout.getCountX();
+            n = hotseatLayout.getCountY();
+        }
         int[][] matrix = createFullMatrix(m, n);
         // Iterate thru the children of the workspace.
         for (int i = 0; i < iconParent.getChildCount(); i++) {
@@ -197,9 +205,15 @@ public class FocusLogic {
 
         // Iterate thru the children of the hotseat.
         for (int i = hotseatParent.getChildCount() - 1; i >= 0; i--) {
-            int cx = ((CellLayout.LayoutParams)
-                    hotseatParent.getChildAt(i).getLayoutParams()).cellX;
-            matrix[cx][iconLayout.getCountY()] = iconParent.getChildCount() + i;
+            if (isHotseatHorizontal) {
+                int cx = ((CellLayout.LayoutParams)
+                        hotseatParent.getChildAt(i).getLayoutParams()).cellX;
+                matrix[cx][iconLayout.getCountY()] = iconParent.getChildCount() + i;
+            } else {
+                int cy = ((CellLayout.LayoutParams)
+                        hotseatParent.getChildAt(i).getLayoutParams()).cellY;
+                matrix[iconLayout.getCountX()][cy] = iconParent.getChildCount() + i;
+            }
         }
         return matrix;
     }

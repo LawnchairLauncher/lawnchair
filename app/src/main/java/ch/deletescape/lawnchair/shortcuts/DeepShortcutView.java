@@ -40,6 +40,8 @@ public class DeepShortcutView extends FrameLayout {
         super.onFinishInflate();
         this.mBubbleText = findViewById(R.id.bubble_text);
         this.mIconView = findViewById(R.id.icon);
+        if (Launcher.getLauncher(getContext()).isEditingDisabled())
+            mBubbleText.setCompoundDrawables(null, null, null, null);
     }
 
     public BubbleTextView getBubbleText() {

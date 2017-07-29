@@ -17,6 +17,7 @@ import android.view.View.OnClickListener;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 
+import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
@@ -32,7 +33,7 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     protected boolean showMic;
     protected QsbConnector qsbConnector;
     private ObjectAnimator elevationAnimator;
-    private final BroadcastReceiver packageChangedReciever = new PackageChangedReciever(this);
+    private final BroadcastReceiver packageChangedReceiver = new PackageChangedReceiver(this);
     private boolean qsbHidden;
     private int mQsbViewId = 0;
     private boolean bM;
@@ -41,7 +42,7 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     protected abstract int getQsbView(boolean withMic);
 
     public BaseQsbView(Context context, AttributeSet attributeSet, int i) {
-        super(context, attributeSet, i);
+        super(FeatureFlags.applyDarkTheme(context, FeatureFlags.DARK_QSB), attributeSet, i);
         mLauncher = Launcher.getLauncher(context);
     }
 
@@ -85,7 +86,7 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
         SharedPreferences sharedPreferences = Utilities.getPrefs(getContext());
         applyVoiceSearchPreference(sharedPreferences);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        getContext().registerReceiver(packageChangedReciever, Util.createIntentFilter("android.intent.action.PACKAGE_CHANGED"));
+        getContext().registerReceiver(packageChangedReceiver, Util.createIntentFilter("android.intent.action.PACKAGE_CHANGED"));
         initializeQsbConnector();
         applyVisibility();
     }
@@ -95,7 +96,7 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
         super.onDetachedFromWindow();
         try {
             Utilities.getPrefs(getContext()).unregisterOnSharedPreferenceChangeListener(this);
-            getContext().unregisterReceiver(packageChangedReciever);
+            getContext().unregisterReceiver(packageChangedReceiver);
         } catch (IllegalArgumentException ignored) {
             // Not supposed to happen but we'll ignore it
         }
@@ -111,7 +112,9 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     }
 
     private void initializeQsbConnector() {
-        if (qsbConnector == null && !FeatureFlags.useFullWidthSearchbar(getContext()) && FeatureFlags.showGoogleNowTab(mLauncher)) {
+        DeviceProfile deviceProfile = mLauncher.getDeviceProfile();
+        if (qsbConnector == null && !FeatureFlags.useFullWidthSearchbar(getContext())
+                && FeatureFlags.showGoogleNowTab(mLauncher) && !deviceProfile.isLandscape && !deviceProfile.isTablet) {
             qsbConnector = (QsbConnector) mLauncher.getLayoutInflater().inflate(R.layout.qsb_connector, this, false);
             addView(qsbConnector, 0);
         } else if (FeatureFlags.useFullWidthSearchbar(getContext()) || !FeatureFlags.showGoogleNowTab(mLauncher)) {
@@ -254,10 +257,10 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
         }
     }
 
-    final class PackageChangedReciever extends BroadcastReceiver {
+    final class PackageChangedReceiver extends BroadcastReceiver {
         final /* synthetic */ BaseQsbView cp;
 
-        PackageChangedReciever(BaseQsbView qsbView) {
+        PackageChangedReceiver(BaseQsbView qsbView) {
             cp = qsbView;
         }
 

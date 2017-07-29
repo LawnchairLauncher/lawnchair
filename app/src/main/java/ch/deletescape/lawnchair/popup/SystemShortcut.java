@@ -46,6 +46,8 @@ public abstract class SystemShortcut {
 
         @Override
         public OnClickListener getOnClickListener(final Launcher launcher, final ItemInfo itemInfo) {
+            if (launcher.isEditingDisabled())
+                return null;
             if (launcher.getWidgetsForPackageUser(new PackageUserKey(itemInfo.getTargetComponent().getPackageName(), itemInfo.user)) == null) {
                 return null;
             }
@@ -59,26 +61,6 @@ public abstract class SystemShortcut {
         }
     }
 
-    public static class Delete extends SystemShortcut {
-        public Delete() {
-            super(R.drawable.ic_remove_no_shadow, R.string.remove_drop_target_label);
-        }
-
-        @Override
-        public OnClickListener getOnClickListener(final Launcher launcher, final ItemInfo itemInfo) {
-            if (itemInfo instanceof ch.deletescape.lawnchair.AppInfo) return null;
-            return new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    AbstractFloatingView.closeAllOpenViews(launcher);
-                    DeleteDropTarget.removeWorkspaceOrFolderItem(launcher, itemInfo, null);
-                    Workspace workspace = launcher.getWorkspace();
-                    workspace.removeWorkspaceItem(workspace.getHomescreenIconByItemId(itemInfo.id));
-                }
-            };
-        }
-    }
-
     public static class Edit extends SystemShortcut {
         public Edit() {
             super(R.drawable.ic_edit_no_shadow, R.string.edit_drop_target_label);
@@ -86,6 +68,8 @@ public abstract class SystemShortcut {
 
         @Override
         public OnClickListener getOnClickListener(final Launcher launcher, final ItemInfo itemInfo) {
+            if (launcher.isEditingDisabled())
+                return null;
             return new OnClickListener() {
                 @Override
                 public void onClick(View view) {

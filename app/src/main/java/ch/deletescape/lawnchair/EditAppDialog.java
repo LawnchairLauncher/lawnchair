@@ -1,6 +1,5 @@
 package ch.deletescape.lawnchair;
 
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
@@ -19,9 +18,9 @@ import android.widget.Toast;
 
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
 import ch.deletescape.lawnchair.iconpack.EditIconActivity;
+import ch.deletescape.lawnchair.model.PackageItemInfo;
 
-
-public class EditAppDialog extends Dialog {
+public class EditAppDialog extends Launcher.LauncherDialog {
     private static SharedPreferences sharedPrefs;
     private AppInfo info;
     private EditText title;
@@ -51,7 +50,6 @@ public class EditAppDialog extends Dialog {
         visibility = findViewById(R.id.visibility);
         ImageButton reset = findViewById(R.id.reset_title);
 
-        icon.setImageBitmap(info.iconBitmap);
         title.setText(info.title);
         packageName.setText(component.getPackageName());
         visibleState = !Utilities.isAppHidden(getContext(), component.flattenToString());
@@ -90,6 +88,15 @@ public class EditAppDialog extends Dialog {
             }
         };
         reset.setOnClickListener(resetTitle);
+
+        onResume();
+    }
+
+    @Override
+    public void onResume() {
+        ImageView icon = findViewById(R.id.icon);
+        launcher.getIconCache().getTitleAndIcon(info, null, false);
+        icon.setImageBitmap(info.iconBitmap);
     }
 
     @Override

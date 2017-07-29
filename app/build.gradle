@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 
 def getChangelog = { ->
@@ -9,7 +10,7 @@ def getChangelog = { ->
             commandLine 'git', 'log', '--format=%s', commitRange
             standardOutput = stdout
         }
-        return stdout.toString().trim().replace("\n", "\\n")
+        return stdout.toString().trim().replace("\n", "\\n").replace("\"", "\\\"")
     } else {
         return null
     }
@@ -17,7 +18,7 @@ def getChangelog = { ->
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.0"
+    buildToolsVersion "26.0.1"
 
     signingConfigs {
         travis {
@@ -33,9 +34,11 @@ android {
         applicationId "ch.deletescape.lawnchair"
 
         buildConfigField "boolean", "TRAVIS", System.getenv("TRAVIS") ?: "false"
+        buildConfigField "boolean", "TAGGED_BUILD", System.getenv("TRAVIS_TAG") ? "true" : "false"
         buildConfigField "int", "TRAVIS_BUILD_NUMBER", System.getenv("TRAVIS_BUILD_NUMBER") ?: "0"
         buildConfigField "String", "CHANGELOG", "\"${getChangelog()}\""
         buildConfigField "String", "MOBILE_CENTER_KEY", "\"" + System.getenv("MOBILE_CENTER_KEY") + "\""
+        buildConfigField "String", "OPENWEATHERMAP_KEY", "\"" + System.getenv("OPENWEATHERMAP_KEY") + "\""
 
         if (System.getenv("TRAVIS") == "true") {
             versionCode = Integer.valueOf(System.getenv("TRAVIS_BUILD_NUMBER"))
@@ -66,14 +69,19 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     def mobileCenterSdkVersion = '0.10.0'
-    def supportLibVersion = '26.0.0-beta2'
+    def supportLibVersion = '26.0.0'
     implementation "com.microsoft.azure.mobile:mobile-center-analytics:${mobileCenterSdkVersion}"
     implementation "com.microsoft.azure.mobile:mobile-center-crashes:${mobileCenterSdkVersion}"
     implementation "com.microsoft.azure.mobile:mobile-center-distribute:${mobileCenterSdkVersion}"
     implementation "com.android.support:support-v4:${supportLibVersion}"
     implementation "com.android.support:recyclerview-v7:${supportLibVersion}"
     implementation "com.android.support:palette-v7:${supportLibVersion}"
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation "com.android.support:cardview-v7:${supportLibVersion}"
+    compile 'com.github.KwabenBerko:OpenWeatherMap-Android-Library:v1.0.0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }
 
 

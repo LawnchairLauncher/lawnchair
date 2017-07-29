@@ -26,7 +26,6 @@ import android.view.ViewConfiguration;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,6 +47,7 @@ import ch.deletescape.lawnchair.accessibility.ShortcutMenuAccessibilityDelegate;
 import ch.deletescape.lawnchair.anim.PropertyListBuilder;
 import ch.deletescape.lawnchair.anim.PropertyResetListener;
 import ch.deletescape.lawnchair.badge.BadgeInfo;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragController;
 import ch.deletescape.lawnchair.dragndrop.DragLayer;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
@@ -182,8 +182,8 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         }
         ItemInfo itemInfo = (ItemInfo) bubbleTextView.getTag();
         if (mShortcutsItemView == null) {
-            deepShortcuts = Collections.EMPTY_LIST;
-            systemShortcuts = Collections.EMPTY_LIST;
+            deepShortcuts = Utilities.emptyList();
+            systemShortcuts = Utilities.emptyList();
         } else {
             deepShortcuts = mShortcutsItemView.getDeepShortcutViews(z);
             systemShortcuts = mShortcutsItemView.getSystemShortcutViews(z);
@@ -220,7 +220,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     private void addDummyViews(PopupPopulator.Item[] itemArr, boolean z) {
         Resources resources = getResources();
         int dimensionPixelSize = resources.getDimensionPixelSize(R.dimen.popup_items_spacing);
-        LayoutInflater layoutInflater = mLauncher.getLayoutInflater();
+        LayoutInflater layoutInflater = LayoutInflater.from(FeatureFlags.applyDarkTheme(mLauncher, FeatureFlags.DARK_SHORTCUTS));
         int length = itemArr.length;
         for (int i = 0; i < length; i++) {
             PopupPopulator.Item item;
@@ -557,6 +557,11 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     }
 
     @Override
+    public boolean supportsFlingToDelete() {
+        return true;
+    }
+
+    @Override
     public boolean supportsAppInfoDropTarget() {
         return true;
     }
@@ -569,6 +574,11 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     @Override
     public float getIntrinsicIconScaleFactor() {
         return 1.0f;
+    }
+
+    @Override
+    public void onFlingToDeleteCompleted() {
+        // Do nothing
     }
 
     @Override

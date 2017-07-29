@@ -17,10 +17,8 @@
  -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="folder_name" msgid="8551881338202938211" />
     <string name="activity_not_found" msgid="217823393239365967">"Aplikasi tidak dipasang."</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Sentuh &amp; tahan untuk mengambil widget."</string>
-    <string name="widget_dims_format" msgid="1386418557719032947">"%1$d × %2$d"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Tiada lagi ruang pada skrin Utama ini"</string>
     <string name="hotseat_out_of_space" msgid="6304886797358479361">"Tiada lagi ruang pada kerusi panas."</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Apl"</string>

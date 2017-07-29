@@ -126,7 +126,8 @@
     </declare-styleable>
 
     <declare-styleable name="SubPreference">
-        <attr name="content" format="reference"/>
+        <attr name="content" format="reference" />
+        <attr name="longClickContent" format="reference" />
     </declare-styleable>
 
     <attr name="materialPanelBgColor" format="color" />
@@ -147,5 +148,6 @@
     <attr name="roundSearchBarBgColor" format="color" />
     <attr name="roundSearchBarDividerColor" format="color" />
     <attr name="roundSearchBarHintColor" format="color" />
+    <attr name="roundSearchBarTextColor" format="color" />
 
 </resources>

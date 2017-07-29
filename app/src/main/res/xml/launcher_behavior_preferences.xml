@@ -8,19 +8,26 @@
         android:defaultValue="true"
         android:persistent="true" />
 
-    <SwitchPreference
-        android:key="pref_pulldownNotis"
-        android:title="@string/pull_down_notis_pref_title"
-        android:summaryOn="@string/pull_down_notis_pref_on"
-        android:summaryOff="@string/pull_down_notis_pref_off"
-        android:defaultValue="true"
+    <ListPreference
+        android:key="pref_pulldownAction"
+        android:title="@string/pull_down_action_pref_title"
+        android:entryValues="@array/pullDownActionValues"
+        android:entries="@array/pullDownActionTexts"
+        android:summary="%s"
+        android:defaultValue="1"
         android:persistent="true" />
 
     <SwitchPreference
-        android:key="pref_lightStatusBar"
+        android:key="pref_forceLightStatusBar"
         android:title="@string/light_statusbar_pref_title"
-        android:summaryOn="@string/light_statusbar_pref_on"
+        android:summaryOn="@string/light_statusbar_pref_force"
         android:summaryOff="@string/light_statusbar_pref_off"
+        android:defaultValue="false"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_showTopShadow"
+        android:title="@string/show_top_shadow_title"
         android:defaultValue="true"
         android:persistent="true" />
 
@@ -50,5 +57,11 @@
         android:summaryOn="@string/show_hidden_pref_on"
         android:summaryOff="@string/show_hidden_pref_off"
         android:defaultValue="false"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_enableEditing"
+        android:title="@string/enable_editing_pref_title"
+        android:defaultValue="true"
         android:persistent="true" />
 </PreferenceScreen>

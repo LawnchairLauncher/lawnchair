@@ -63,7 +63,7 @@ public class SuperGContainerView extends BaseQsbView {
         } else {
             bz = new TransformingTouchDelegate(this);
         }
-        mBlurEnabled = BlurWallpaperProvider.isEnabled();
+        mBlurEnabled = BlurWallpaperProvider.isEnabled(BlurWallpaperProvider.BLUR_QSB);
         if (mBlurEnabled) {
             mBlurDrawable = mLauncher.getBlurWallpaperProvider().createDrawable(100, false);
         }
@@ -75,11 +75,12 @@ public class SuperGContainerView extends BaseQsbView {
         if (mBlurEnabled) {
             mQsbView.setBackground(mBlurDrawable);
             mQsbView.setLayerType(LAYER_TYPE_SOFTWARE, null);
-            if (FeatureFlags.useWhiteGoogleIcon(getContext())) {
-                ((ImageView) findViewById(R.id.g_icon)).setColorFilter(Color.WHITE);
-                if (FeatureFlags.showVoiceSearchButton(getContext())) {
-                    ((ImageView) findViewById(R.id.mic_icon)).setColorFilter(Color.WHITE);
-                }
+        }
+        if (FeatureFlags.useWhiteGoogleIcon(getContext()) &&
+                (mBlurEnabled || FeatureFlags.useDarkTheme(FeatureFlags.DARK_QSB))) {
+            ((ImageView) findViewById(R.id.g_icon)).setColorFilter(Color.WHITE);
+            if (FeatureFlags.showVoiceSearchButton(getContext())) {
+                ((ImageView) findViewById(R.id.mic_icon)).setColorFilter(Color.WHITE);
             }
         }
     }
@@ -179,6 +180,8 @@ public class SuperGContainerView extends BaseQsbView {
 
     @Override
     protected void aL(Rect rect, Intent intent) {
+        DeviceProfile deviceProfile = mLauncher.getDeviceProfile();
+        if (deviceProfile.isLandscape || deviceProfile.isTablet) return;
         int height = mQsbView.getHeight() / 2;
         if (Utilities.isRtl(getResources())) {
             rect.right = height + getRight();

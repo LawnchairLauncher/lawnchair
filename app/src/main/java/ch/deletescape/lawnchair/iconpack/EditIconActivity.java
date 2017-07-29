@@ -1,6 +1,5 @@
 package ch.deletescape.lawnchair.iconpack;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -10,14 +9,10 @@ import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.UserHandle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,14 +32,14 @@ import ch.deletescape.lawnchair.config.FeatureFlags;
 public class EditIconActivity extends Activity implements CustomIconAdapter.Listener, IconPackAdapter.Listener {
 
     private static final int REQUEST_PICK_ICON = 0;
-    private static final int REQUEST_GRANT_PERMISSION = 1;
     private LauncherActivityInfoCompat mInfo;
     private SharedPreferences mPrefs;
-    private String mPendingData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FeatureFlags.applyDarkTheme(this);
+
+        FeatureFlags.enableScreenRotation(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_icon);
@@ -138,7 +133,10 @@ public class EditIconActivity extends Activity implements CustomIconAdapter.List
     }
 
     @Override
-    public void startPicker(Intent intent) {
+    public void startPicker(IconPackInfo iconPackInfo) {
+        Intent intent = new Intent(this, IconPickerActivity.class);
+        intent.putExtra("resolveInfo", iconPackInfo.resolveInfo);
+        intent.putExtra("packageName", iconPackInfo.packageName);
         startActivityForResult(intent, REQUEST_PICK_ICON);
     }
 
@@ -146,41 +144,14 @@ public class EditIconActivity extends Activity implements CustomIconAdapter.List
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_PICK_ICON) {
             if (resultCode == RESULT_OK) {
-                try {
-                    String dataUri = data.getData().toString();
-                    if (dataUri.startsWith("file") && !isPermissionGranted()) {
-                        mPendingData = dataUri;
-                        ActivityCompat.requestPermissions(
-                                this,
-                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                                REQUEST_GRANT_PERMISSION);
-                        return;
-                    }
-                    setAlternateIcon("uri/" + dataUri);
-                } catch (Exception e) {
-                    Toast.makeText(this, R.string.icon_pack_unsupported, Toast.LENGTH_SHORT).show();
-                }
+                String packageName = data.getStringExtra("packageName");
+                int resourceId = data.getIntExtra("resourceId", 0);
+                setAlternateIcon("resourceId/" + packageName + "/" + resourceId);
+                finish();
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_GRANT_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                setAlternateIcon("uri/" + mPendingData);
-            } else {
-                Toast.makeText(this, R.string.icon_pack_permission_denied, Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private boolean isPermissionGranted() {
-        return ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
     static class IconPackInfo {

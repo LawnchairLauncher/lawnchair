@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
@@ -88,7 +89,7 @@ public class ShortcutsItemView extends PopupItemView implements OnLongClickListe
         if (r0) {
             return false;
         } else {
-            r0 = mLauncher.isDraggingEnabled();
+            r0 = mLauncher.isDraggingEnabled() && !mLauncher.isEditingDisabled();
             if (r0) {
                 r0 = mLauncher.getDragController().isDragging();
                 if (!r0) {
@@ -98,6 +99,8 @@ public class ShortcutsItemView extends PopupItemView implements OnLongClickListe
                     mIconShift.y = mIconLastTouchPos.y - mLauncher.getDeviceProfile().iconSizePx;
                     PopupContainerWithArrow r2 = (PopupContainerWithArrow) getParent();
                     DragView dv = mLauncher.getWorkspace().beginDragShared(r5.getIconView(), r2, r5.getFinalInfo(), new ShortcutDragPreviewProvider(r5.getIconView(), mIconShift), new DragOptions());
+                    if (dv == null)
+                        return false;
                     dv.animateShift(-mIconShift.x, -mIconShift.y);
                     AbstractFloatingView.closeOpenContainer(mLauncher, 1);
                     LauncherAppState.getInstance().getLauncher().closeFolder();
@@ -122,7 +125,7 @@ public class ShortcutsItemView extends PopupItemView implements OnLongClickListe
         }
         if (item == PopupPopulator.Item.SYSTEM_SHORTCUT_ICON) {
             if (mSystemShortcutIcons == null) {
-                mSystemShortcutIcons = (LinearLayout) mLauncher.getLayoutInflater().inflate(R.layout.system_shortcut_icons, mShortcutsLayout, false);
+                mSystemShortcutIcons = (LinearLayout) LayoutInflater.from(view.getContext()).inflate(R.layout.system_shortcut_icons, mShortcutsLayout, false);
                 mShortcutsLayout.addView(mSystemShortcutIcons, 0);
             }
             mSystemShortcutIcons.addView(view, i);
@@ -222,7 +225,7 @@ public class ShortcutsItemView extends PopupItemView implements OnLongClickListe
     @Override
     public int getArrowColor(boolean z) {
         Context context = getContext();
-        if (z) {
+        if (z || mDeepShortcutViews.isEmpty()) {
             return Utilities.resolveAttributeData(context, R.attr.appPopupBgColor);
         } else {
             return Utilities.resolveAttributeData(context, R.attr.appPopupHeaderBgColor);

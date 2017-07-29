@@ -70,6 +70,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -85,6 +86,7 @@ import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.graphics.ShadowGenerator;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
+import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 import ch.deletescape.lawnchair.util.IconNormalizer;
 import ch.deletescape.lawnchair.util.PackageManagerHelper;
 
@@ -724,6 +726,7 @@ public final class Utilities {
         return spanned;
     }
 
+    @NonNull
     public static SharedPreferences getPrefs(Context context) {
         return context.getSharedPreferences(
                 LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
@@ -763,7 +766,7 @@ public final class Utilities {
     }
 
     public static boolean isAtLeastO() {
-        return Build.VERSION.SDK_INT >= 26;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
     }
 
     /**
@@ -934,7 +937,7 @@ public final class Utilities {
     }
 
     public static void showChangelog(Context context, boolean force) {
-        if (!BuildConfig.TRAVIS) return;
+        if (!BuildConfig.TRAVIS || BuildConfig.TAGGED_BUILD) return;
         final SharedPreferences prefs = getPrefs(context);
         if (force || BuildConfig.TRAVIS_BUILD_NUMBER != getPreviousBuildNumber(prefs)) {
             new AlertDialog.Builder(context)
@@ -971,9 +974,14 @@ public final class Utilities {
         if (!PackageManagerHelper.isAppEnabled(context.getPackageManager(), packageName, 0)) return;
         LauncherAppState instance = LauncherAppState.getInstance();
         instance.getModel().onPackageChanged(packageName, userHandle);
-        List queryForPinnedShortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(packageName, userHandle);
+        List<ShortcutInfoCompat> queryForPinnedShortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(packageName, userHandle);
         if (!queryForPinnedShortcuts.isEmpty()) {
             instance.getModel().updatePinnedShortcuts(packageName, queryForPinnedShortcuts, userHandle);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> emptyList() {
+        return Collections.EMPTY_LIST;
     }
 }

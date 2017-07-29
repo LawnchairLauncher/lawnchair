@@ -26,8 +26,11 @@ import ch.deletescape.lawnchair.pageindicators.CaretDrawable;
 public class AllAppsCaretController {
     // Determines when the caret should flip. Should be accessed via getThreshold()
     private static final float CARET_THRESHOLD = 0.015f;
+    private static final float CARET_THRESHOLD_LAND = 0.5f;
     // The velocity at which the caret will peak (i.e. exhibit a 90 degree bend)
     private static final float PEAK_VELOCITY = VerticalPullDetector.RELEASE_VELOCITY_PX_MS * .7f;
+
+    private Launcher mLauncher;
 
     private ObjectAnimator mCaretAnimator;
     private CaretDrawable mCaretDrawable;
@@ -35,6 +38,7 @@ public class AllAppsCaretController {
     private boolean mThresholdCrossed;
 
     public AllAppsCaretController(CaretDrawable caret, Launcher launcher) {
+        mLauncher = launcher;
         mCaretDrawable = caret;
 
         final long caretAnimationDuration = launcher.getResources().getInteger(
@@ -59,7 +63,8 @@ public class AllAppsCaretController {
      */
     public void updateCaret(float containerProgress, float velocity, boolean dragging) {
         // If we're in portrait and the shift is not 0 or 1, adjust the caret based on velocity
-        if (getThreshold() < containerProgress && containerProgress < 1 - getThreshold()) {
+        if (getThreshold() < containerProgress && containerProgress < 1 - getThreshold() &&
+                !mLauncher.useVerticalBarLayout()) {
             mThresholdCrossed = true;
 
             // How fast are we moving as a percentage of the peak velocity?
@@ -99,6 +104,11 @@ public class AllAppsCaretController {
     }
 
     private float getThreshold() {
+        // In landscape, just return the landscape threshold.
+        if (mLauncher.useVerticalBarLayout()) {
+            return CARET_THRESHOLD_LAND;
+        }
+
         // Before the threshold is crossed, it is reported as zero. This makes the caret immediately
         // responsive when a drag begins. After the threshold is crossed, we return the constant
         // value. This means the caret will start its state-based adjustment sooner. That is, we

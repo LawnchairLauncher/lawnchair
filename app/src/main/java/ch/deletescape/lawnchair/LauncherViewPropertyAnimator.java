@@ -73,12 +73,12 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
 
     @Override
     public Animator clone() {
-        throw new RuntimeException("Not implemented");
+      return super.clone();
     }
 
     @Override
     public void end() {
-        throw new RuntimeException("Not implemented");
+        super.end();
     }
 
     @Override
