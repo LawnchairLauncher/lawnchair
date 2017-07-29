@@ -15,7 +15,6 @@
         <SwitchPreference
             android:key="pref_enableWhiteGoogleIcon"
             android:title="@string/white_google_icon_pref_title"
-            android:dependency="pref_enableBlur"
             android:defaultValue="false"
             android:persistent="true" />
 

@@ -66,11 +66,12 @@ public class ExperimentalQsbWidget extends BaseQsbView {
         if (mBlurEnabled) {
             mQsbView.setBackground(mBlurDrawable);
             mQsbView.setLayerType(LAYER_TYPE_SOFTWARE, null);
-            if (FeatureFlags.useWhiteGoogleIcon(getContext())) {
-                ((ImageView) findViewById(R.id.g_icon)).setColorFilter(Color.WHITE);
-                if (FeatureFlags.showVoiceSearchButton(getContext())) {
-                    ((ImageView) findViewById(R.id.mic_icon)).setColorFilter(Color.WHITE);
-                }
+        }
+        if (FeatureFlags.useWhiteGoogleIcon(getContext()) &&
+                (mBlurEnabled || FeatureFlags.useDarkTheme(FeatureFlags.DARK_QSB))) {
+            ((ImageView) findViewById(R.id.g_icon)).setColorFilter(Color.WHITE);
+            if (FeatureFlags.showVoiceSearchButton(getContext())) {
+                ((ImageView) findViewById(R.id.mic_icon)).setColorFilter(Color.WHITE);
             }
         }
     }
