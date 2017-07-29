@@ -562,14 +562,12 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                     tmpRect.inset(-grid.allAppsIconSizePx / 2, 0);
                     if (ev.getX() < tmpRect.left || ev.getX() > tmpRect.right) {
                         mBoundsCheckLastTouchDownPos.set(x, y);
-                        return true;
                     }
                 } else {
                     // Check if the touch is outside all apps
                     if (ev.getX() < getPaddingLeft() ||
                             ev.getX() > (getWidth() - getPaddingRight())) {
                         mBoundsCheckLastTouchDownPos.set(x, y);
-                        return true;
                     }
                 }
                 break;
