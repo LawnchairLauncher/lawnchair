@@ -58,4 +58,10 @@
         android:summaryOff="@string/show_hidden_pref_off"
         android:defaultValue="false"
         android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_enableEditing"
+        android:title="@string/enable_editing_pref_title"
+        android:defaultValue="true"
+        android:persistent="true" />
 </PreferenceScreen>

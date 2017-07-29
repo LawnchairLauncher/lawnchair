@@ -460,4 +460,5 @@
     <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
     <string name="app_shortcuts">App shortcuts</string>
     <string name="blur_effect">Blur effect</string>
+    <string name="enable_editing_pref_title">Enable editing workspace</string>
 </resources>

@@ -89,7 +89,7 @@ public class ShortcutsItemView extends PopupItemView implements OnLongClickListe
         if (r0) {
             return false;
         } else {
-            r0 = mLauncher.isDraggingEnabled();
+            r0 = mLauncher.isDraggingEnabled() && !mLauncher.isEditingDisabled();
             if (r0) {
                 r0 = mLauncher.getDragController().isDragging();
                 if (!r0) {
@@ -99,6 +99,8 @@ public class ShortcutsItemView extends PopupItemView implements OnLongClickListe
                     mIconShift.y = mIconLastTouchPos.y - mLauncher.getDeviceProfile().iconSizePx;
                     PopupContainerWithArrow r2 = (PopupContainerWithArrow) getParent();
                     DragView dv = mLauncher.getWorkspace().beginDragShared(r5.getIconView(), r2, r5.getFinalInfo(), new ShortcutDragPreviewProvider(r5.getIconView(), mIconShift), new DragOptions());
+                    if (dv == null)
+                        return false;
                     dv.animateShift(-mIconShift.x, -mIconShift.y);
                     AbstractFloatingView.closeOpenContainer(mLauncher, 1);
                     LauncherAppState.getInstance().getLauncher().closeFolder();

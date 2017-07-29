@@ -2093,7 +2093,8 @@ public class Workspace extends PagedView
         View view = cellInfo.cell;
         if (view.isInTouchMode()) {
             this.mDragInfo = cellInfo;
-            view.setVisibility(INVISIBLE);
+            if (!mLauncher.isEditingDisabled())
+                view.setVisibility(INVISIBLE);
             if (options.isAccessibleDrag) {
                 this.mDragController.addDragListener(new AccessibleDragListenerAdapter(this, 2) {
                     @Override
@@ -2158,6 +2159,7 @@ public class Workspace extends PagedView
                 dragOptions.preDragCondition = showForIcon.createPreDragCondition(mLauncher.isAllAppsVisible());
             }
         }
+        if (mLauncher.isEditingDisabled()) return null;
         DragView startDrag = this.mDragController.startDrag(createDragBitmap, i2, i3, source, dragObject, point, rect, scaleAndPosition, dragOptions);
         startDrag.setIntrinsicIconScaleFactor(source.getIntrinsicIconScaleFactor());
         createDragBitmap.recycle();

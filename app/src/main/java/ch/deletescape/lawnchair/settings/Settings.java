@@ -45,6 +45,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private static final String KEY_PREF_HIDE_HOTSEAT = "pref_hideHotseat";
     private static final String KEY_PREF_PLANE = "pref_plane";
     private static final String KEY_PREF_WEATHER = "pref_weather";
+    private static final String KEY_PREF_ENABLE_EDITING = "pref_enableEditing";
     private static Settings instance;
     private Launcher mLauncher;
 

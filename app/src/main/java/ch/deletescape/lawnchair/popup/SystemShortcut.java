@@ -46,6 +46,8 @@ public abstract class SystemShortcut {
 
         @Override
         public OnClickListener getOnClickListener(final Launcher launcher, final ItemInfo itemInfo) {
+            if (launcher.isEditingDisabled())
+                return null;
             if (launcher.getWidgetsForPackageUser(new PackageUserKey(itemInfo.getTargetComponent().getPackageName(), itemInfo.user)) == null) {
                 return null;
             }
@@ -66,6 +68,8 @@ public abstract class SystemShortcut {
 
         @Override
         public OnClickListener getOnClickListener(final Launcher launcher, final ItemInfo itemInfo) {
+            if (launcher.isEditingDisabled())
+                return null;
             return new OnClickListener() {
                 @Override
                 public void onClick(View view) {

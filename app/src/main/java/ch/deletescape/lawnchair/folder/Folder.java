@@ -256,6 +256,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             }
         });
         mFolderName.setOnFocusChangeListener(this);
+        mFolderName.setEnabled(!mLauncher.isEditingDisabled());
 
         if (!Utilities.ATLEAST_MARSHMALLOW) {
             // We disable action mode in older OSes where floating selection menu is not yet

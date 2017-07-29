@@ -334,6 +334,8 @@ public class Launcher extends Activity
 
     private PopupDataProvider mPopupDataProvider;
 
+    private boolean mDisableEditing;
+
     @Thunk
     Runnable mBuildLayersRunnable = new Runnable() {
         @Override
@@ -934,6 +936,8 @@ public class Launcher extends Activity
             updateWallpaper = false;
             mBlurWallpaperProvider.updateAsync();
         }
+
+        mDisableEditing = !FeatureFlags.enableEditing(this);
     }
 
     @Override
@@ -1890,6 +1894,10 @@ public class Launcher extends Activity
 
     public boolean isWorkspaceLocked() {
         return mWorkspaceLoading || mPendingRequestArgs != null;
+    }
+
+    public boolean isEditingDisabled() {
+        return mDisableEditing;
     }
 
     public boolean isWorkspaceLoading() {
