@@ -15,10 +15,10 @@
         android:layout_weight="1">
 
         <TextView
-            android:id="@+android:id/title"
+            android:id="@android:id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLines="1"
+            android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceListItem"
             android:ellipsize="marquee"
             android:fadingEdge="horizontal" />

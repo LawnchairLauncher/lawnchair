@@ -21,24 +21,18 @@ import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParser;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 
-import ch.deletescape.lawnchair.Utilities;
-import ch.deletescape.lawnchair.iconpack.CustomIconDrawable;
-import ch.deletescape.lawnchair.iconpack.IconPack;
-import ch.deletescape.lawnchair.iconpack.IconPackProvider;
-import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherModel;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
-import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
-import ch.deletescape.lawnchair.util.PackageManagerHelper;
+import ch.deletescape.lawnchair.iconpack.CustomIconDrawable;
+import ch.deletescape.lawnchair.iconpack.IconPack;
+import ch.deletescape.lawnchair.iconpack.IconPackProvider;
 
 public class PixelIconProvider {
     private BroadcastReceiver mBroadcastReceiver;
@@ -207,7 +201,6 @@ public class PixelIconProvider {
         @Override
         public void onReceive(final Context context, final Intent intent) {
             for (UserHandle userHandle : UserManagerCompat.getInstance(context).getUserProfiles()) {
-                LauncherAppState instance = LauncherAppState.getInstance();
                 for (String calendar : mCalendars) {
                     Utilities.updatePackage(context, userHandle, calendar);
                 }
