@@ -52,10 +52,6 @@
   public float getBrightness();
 }
 
--keep class ch.deletescape.lawnchair.MemoryDumpActivity {
-  *;
-}
-
 -keep class ch.deletescape.lawnchair.PreloadIconDrawable {
   public float getAnimationProgress();
   public void setAnimationProgress(float);
@@ -75,7 +71,7 @@
   *;
 }
 
--dontwarn *
+-dontwarn javax.*
 
 -keep class ch.deletescape.lawnchair.DeferredHandler {
  *;
