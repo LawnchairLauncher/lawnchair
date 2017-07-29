@@ -58,7 +58,7 @@ class BlurDrawable internal constructor(private val mProvider: BlurWallpaperProv
             mBlurPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP)
         }
 
-        mDownsampleFactor = mProvider.downsampleFactor
+        mDownsampleFactor = BlurWallpaperProvider.DOWNSAMPLE_FACTOR
         initializeRenderScript(mProvider.context)
     }
 

@@ -21,8 +21,8 @@ import java.util.*
 
 class BlurWallpaperProvider(context: Context) {
 
-    val context: Context
-    private val mWallpaperManager: WallpaperManager
+    val context: Context = FeatureFlags.applyDarkTheme(context, FeatureFlags.DARK_BLUR)
+    private val mWallpaperManager: WallpaperManager = WallpaperManager.getInstance(context)
     private val mListeners = ArrayList<Listener>()
     private val mDisplayMetrics = DisplayMetrics()
     var wallpaper: Bitmap? = null
@@ -43,7 +43,6 @@ class BlurWallpaperProvider(context: Context) {
 
     private val mPath = Path()
 
-    val downsampleFactor = 8
     private var mWallpaperWidth: Int = 0
     private var mDisplayHeight: Int = 0
     var wallpaperYOffset: Float = 0.toFloat()
@@ -53,9 +52,6 @@ class BlurWallpaperProvider(context: Context) {
     private val mUpdateRunnable = Runnable { updateWallpaper() }
 
     init {
-        this.context = FeatureFlags.applyDarkTheme(context, FeatureFlags.DARK_BLUR)
-
-        mWallpaperManager = WallpaperManager.getInstance(context)
         isEnabled = mWallpaperManager.wallpaperInfo == null && FeatureFlags.isBlurEnabled(this.context)
         sEnabledFlag = enabledFlag
 
@@ -63,7 +59,7 @@ class BlurWallpaperProvider(context: Context) {
     }
 
     private fun updateBlurRadius() {
-        blurRadius = Utilities.getPrefs(context).getFloat("pref_blurRadius", 75f).toInt() / downsampleFactor
+        blurRadius = Utilities.getPrefs(context).getFloat("pref_blurRadius", 75f).toInt() / DOWNSAMPLE_FACTOR
         blurRadius = Math.max(1, Math.min(blurRadius, 25))
     }
 
@@ -146,8 +142,8 @@ class BlurWallpaperProvider(context: Context) {
     }
 
     fun blur(image: Bitmap): Bitmap {
-        val width = Math.round((image.width / downsampleFactor).toFloat())
-        val height = Math.round((image.height / downsampleFactor).toFloat())
+        val width = Math.round((image.width / DOWNSAMPLE_FACTOR).toFloat())
+        val height = Math.round((image.height / DOWNSAMPLE_FACTOR).toFloat())
 
         val inputBitmap = Bitmap.createScaledBitmap(image, width, height, false)
         val outputBitmap = Bitmap.createBitmap(inputBitmap)
@@ -166,7 +162,7 @@ class BlurWallpaperProvider(context: Context) {
 
         val canvas = Canvas(bitmap)
         canvas.save()
-        canvas.scale(downsampleFactor.toFloat(), downsampleFactor.toFloat())
+        canvas.scale(DOWNSAMPLE_FACTOR.toFloat(), DOWNSAMPLE_FACTOR.toFloat())
         canvas.drawBitmap(outputBitmap, 0f, 0f, mPaint)
         canvas.restore()
 
@@ -265,9 +261,10 @@ class BlurWallpaperProvider(context: Context) {
 
     companion object {
 
-        val BLUR_QSB = 1
-        val BLUR_FOLDER = 2
-        val BLUR_ALLAPPS = 4
+        const val BLUR_QSB = 1
+        const val BLUR_FOLDER = 2
+        const val BLUR_ALLAPPS = 4
+        const val DOWNSAMPLE_FACTOR = 8
 
         fun applyBlurBackground(activity: Activity) {
             if (!isEnabled) return

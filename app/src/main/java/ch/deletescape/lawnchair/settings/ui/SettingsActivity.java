@@ -108,7 +108,7 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        if (FeatureFlags.INSTANCE.getKEY_PREF_THEME().equals(key)) {
+        if (FeatureFlags.KEY_PREF_THEME.equals(key)) {
             FeatureFlags.INSTANCE.loadDarkThemePreference(this);
             recreate();
         }

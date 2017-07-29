@@ -60,11 +60,11 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
         showDialog()
     }
 
-    protected fun showDialog() {
+    private fun showDialog() {
         val packages = loadAvailableIconPacks()
         val adapter = IconAdapter(context, packages, getPersistedString(""))
         val builder = AlertDialog.Builder(context)
-        builder.setAdapter(adapter) { dialog, position ->
+        builder.setAdapter(adapter) { _, position ->
             val item = adapter.getItem(position)
             persistString(item)
             if (!item.isEmpty()) {
@@ -80,8 +80,7 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
 
     private fun loadAvailableIconPacks(): Map<String, IconPackInfo> {
         val iconPacks = HashMap<String, IconPackInfo>()
-        val list: MutableList<ResolveInfo>
-        list = pm.queryIntentActivities(Intent("com.novalauncher.THEME"), 0)
+        val list = pm.queryIntentActivities(Intent("com.novalauncher.THEME"), 0)
         list.addAll(pm.queryIntentActivities(Intent("org.adw.launcher.icons.ACTION_PICK_ICON"), 0))
         list.addAll(pm.queryIntentActivities(Intent("com.dlto.atom.launcher.THEME"), 0))
         list.addAll(pm.queryIntentActivities(Intent("android.intent.action.MAIN").addCategory("com.anddoes.launcher.THEME"), 0))
@@ -137,18 +136,15 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
         }
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var convertView = convertView
-            if (convertView == null) {
-                convertView = mLayoutInflater.inflate(R.layout.iconpack_dialog, null)
-            }
+            val view = convertView ?: mLayoutInflater.inflate(R.layout.iconpack_dialog, parent, false)
             val info = mSupportedPackages[position]
-            val txtView = convertView!!.findViewById<TextView>(R.id.title)
+            val txtView = view.findViewById<TextView>(R.id.title)
             txtView.text = info.label
-            val imgView = convertView.findViewById<ImageView>(R.id.icon)
+            val imgView = view.findViewById<ImageView>(R.id.icon)
             imgView.setImageDrawable(info.icon)
-            val radioButton = convertView.findViewById<RadioButton>(R.id.radio)
+            val radioButton = view.findViewById<RadioButton>(R.id.radio)
             radioButton.isChecked = info.packageName == mCurrentIconPack
-            return convertView
+            return view
         }
     }
 

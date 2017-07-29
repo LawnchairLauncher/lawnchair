@@ -28,36 +28,36 @@ import ch.deletescape.lawnchair.Utilities
  */
 object FeatureFlags {
 
-    private val KEY_PREF_LIGHT_STATUS_BAR = "pref_forceLightStatusBar"
-    private val KEY_PREF_PINCH_TO_OVERVIEW = "pref_pinchToOverview"
-    private val KEY_PREF_PULLDOWN_NOTIS = "pref_pulldownNotis"
-    private val KEY_PREF_HOTSEAT_EXTRACTED_COLORS = "pref_hotseatShouldUseExtractedColors"
-    private val KEY_PREF_HAPTIC_FEEDBACK = "pref_enableHapticFeedback"
-    private val KEY_PREF_KEEP_SCROLL_STATE = "pref_keepScrollState"
-    private val KEY_FULL_WIDTH_SEARCHBAR = "pref_fullWidthSearchbar"
-    private val KEY_SHOW_PIXEL_BAR = "pref_showPixelBar"
-    private val KEY_HOME_OPENS_DRAWER = "pref_homeOpensDrawer"
-    val KEY_SHOW_VOICE_SEARCH_BUTTON = "pref_showMic"
-    private val KEY_PREF_PIXEL_STYLE_ICONS = "pref_pixelStyleIcons"
-    private val KEY_PREF_HIDE_APP_LABELS = "pref_hideAppLabels"
-    private val KEY_PREF_ENABLE_SCREEN_ROTATION = "pref_enableScreenRotation"
-    private val KEY_PREF_FULL_WIDTH_WIDGETS = "pref_fullWidthWidgets"
-    private val KEY_PREF_SHOW_NOW_TAB = "pref_showGoogleNowTab"
-    private val KEY_PREF_TRANSPARENT_HOTSEAT = "pref_isHotseatTransparent"
-    private val KEY_PREF_ENABLE_DYNAMIC_UI = "pref_enableDynamicUi"
-    private val KEY_PREF_ENABLE_BLUR = "pref_enableBlur"
-    val KEY_PREF_WHITE_GOOGLE_ICON = "pref_enableWhiteGoogleIcon"
-    private val KEY_PREF_DARK_THEME = "pref_enableDarkTheme"
-    private val KEY_PREF_ROUND_SEARCH_BAR = "pref_useRoundSearchBar"
-    private val KEY_PREF_ENABLE_BACKPORT_SHORTCUTS = "pref_enableBackportShortcuts"
-    private val KEY_PREF_SHOW_TOP_SHADOW = "pref_showTopShadow"
-    val KEY_PREF_THEME = "pref_theme"
-    private val KEY_PREF_THEME_MODE = "pref_themeMode"
-    private val KEY_PREF_HIDE_HOTSEAT = "pref_hideHotseat"
-    private val KEY_PREF_PLANE = "pref_plane"
-    private val KEY_PREF_WEATHER = "pref_weather"
-    private val KEY_PREF_PULLDOWN_ACTION = "pref_pulldownAction"
-    private val KEY_PREF_ENABLE_EDITING = "pref_enableEditing"
+    private const val KEY_PREF_LIGHT_STATUS_BAR = "pref_forceLightStatusBar"
+    private const val KEY_PREF_PINCH_TO_OVERVIEW = "pref_pinchToOverview"
+    private const val KEY_PREF_PULLDOWN_NOTIS = "pref_pulldownNotis"
+    private const val KEY_PREF_HOTSEAT_EXTRACTED_COLORS = "pref_hotseatShouldUseExtractedColors"
+    private const val KEY_PREF_HAPTIC_FEEDBACK = "pref_enableHapticFeedback"
+    private const val KEY_PREF_KEEP_SCROLL_STATE = "pref_keepScrollState"
+    private const val KEY_FULL_WIDTH_SEARCHBAR = "pref_fullWidthSearchbar"
+    private const val KEY_SHOW_PIXEL_BAR = "pref_showPixelBar"
+    private const val KEY_HOME_OPENS_DRAWER = "pref_homeOpensDrawer"
+    const val KEY_SHOW_VOICE_SEARCH_BUTTON = "pref_showMic"
+    private const val KEY_PREF_PIXEL_STYLE_ICONS = "pref_pixelStyleIcons"
+    private const val KEY_PREF_HIDE_APP_LABELS = "pref_hideAppLabels"
+    private const val KEY_PREF_ENABLE_SCREEN_ROTATION = "pref_enableScreenRotation"
+    private const val KEY_PREF_FULL_WIDTH_WIDGETS = "pref_fullWidthWidgets"
+    private const val KEY_PREF_SHOW_NOW_TAB = "pref_showGoogleNowTab"
+    private const val KEY_PREF_TRANSPARENT_HOTSEAT = "pref_isHotseatTransparent"
+    private const val KEY_PREF_ENABLE_DYNAMIC_UI = "pref_enableDynamicUi"
+    private const val KEY_PREF_ENABLE_BLUR = "pref_enableBlur"
+    const val KEY_PREF_WHITE_GOOGLE_ICON = "pref_enableWhiteGoogleIcon"
+    private const val KEY_PREF_DARK_THEME = "pref_enableDarkTheme"
+    private const val KEY_PREF_ROUND_SEARCH_BAR = "pref_useRoundSearchBar"
+    private const val KEY_PREF_ENABLE_BACKPORT_SHORTCUTS = "pref_enableBackportShortcuts"
+    private const val KEY_PREF_SHOW_TOP_SHADOW = "pref_showTopShadow"
+    const val KEY_PREF_THEME = "pref_theme"
+    private const val KEY_PREF_THEME_MODE = "pref_themeMode"
+    private const val KEY_PREF_HIDE_HOTSEAT = "pref_hideHotseat"
+    private const val KEY_PREF_PLANE = "pref_plane"
+    private const val KEY_PREF_WEATHER = "pref_weather"
+    private const val KEY_PREF_PULLDOWN_ACTION = "pref_pulldownAction"
+    private const val KEY_PREF_ENABLE_EDITING = "pref_enableEditing"
     private var darkThemeFlag: Int = 0
 
     fun pinchToOverview(context: Context): Boolean {
@@ -133,11 +133,11 @@ object FeatureFlags {
         return Utilities.getPrefs(context).getBoolean(KEY_PREF_WHITE_GOOGLE_ICON, false)
     }
 
-    val DARK_QSB = 1
-    val DARK_FOLDER = 2
-    val DARK_ALLAPPS = 4
-    val DARK_SHORTCUTS = 8
-    val DARK_BLUR = 16
+    const val DARK_QSB = 1
+    const val DARK_FOLDER = 2
+    const val DARK_ALLAPPS = 4
+    const val DARK_SHORTCUTS = 8
+    const val DARK_BLUR = 16
 
     var currentTheme: Int = 0
     var useDarkTheme = true

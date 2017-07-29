@@ -42,7 +42,7 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     protected abstract int getQsbView(boolean withMic);
 
     public BaseQsbView(Context context, AttributeSet attributeSet, int i) {
-        super(FeatureFlags.INSTANCE.applyDarkTheme(context, FeatureFlags.INSTANCE.getDARK_QSB()), attributeSet, i);
+        super(FeatureFlags.INSTANCE.applyDarkTheme(context, FeatureFlags.DARK_QSB), attributeSet, i);
         mLauncher = Launcher.getLauncher(context);
     }
 
@@ -104,8 +104,8 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String str) {
-        if (FeatureFlags.INSTANCE.getKEY_SHOW_VOICE_SEARCH_BUTTON().equals(str) ||
-                FeatureFlags.INSTANCE.getKEY_PREF_WHITE_GOOGLE_ICON().equals(str)) {
+        if (FeatureFlags.KEY_SHOW_VOICE_SEARCH_BUTTON.equals(str) ||
+                FeatureFlags.KEY_PREF_WHITE_GOOGLE_ICON.equals(str)) {
             applyVoiceSearchPreference(sharedPreferences);
             applyVisibility();
         }

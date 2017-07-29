@@ -227,7 +227,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // reliable behavior when clicking the text field (since it will always gain focus on click).
         setFocusableInTouchMode(true);
 
-        if (BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.Companion.getBLUR_FOLDER())) {
+        if (BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.BLUR_FOLDER)) {
             int tintColor = Utilities.resolveAttributeData(context, R.attr.folderBgColorBlur);
 
             mBlurDrawable = BlurWallpaperProvider.Companion.getInstance().createDrawable(
@@ -516,7 +516,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
      */
     @SuppressLint("InflateParams")
     static Folder fromXml(Launcher launcher) {
-        return (Folder) LayoutInflater.from(FeatureFlags.INSTANCE.applyDarkTheme(launcher, FeatureFlags.INSTANCE.getDARK_FOLDER())).inflate(R.layout.user_folder_icon_normalized, null);
+        return (Folder) LayoutInflater.from(FeatureFlags.INSTANCE.applyDarkTheme(launcher, FeatureFlags.DARK_FOLDER)).inflate(R.layout.user_folder_icon_normalized, null);
     }
 
     private void prepareReveal() {

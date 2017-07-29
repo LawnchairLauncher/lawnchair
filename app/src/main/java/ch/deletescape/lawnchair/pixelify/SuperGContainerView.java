@@ -63,7 +63,7 @@ public class SuperGContainerView extends BaseQsbView {
         } else {
             bz = new TransformingTouchDelegate(this);
         }
-        mBlurEnabled = BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.Companion.getBLUR_QSB());
+        mBlurEnabled = BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.BLUR_QSB);
         if (mBlurEnabled) {
             mBlurDrawable = mLauncher.getBlurWallpaperProvider().createDrawable(100, false);
         }
@@ -77,7 +77,7 @@ public class SuperGContainerView extends BaseQsbView {
             mQsbView.setLayerType(LAYER_TYPE_SOFTWARE, null);
         }
         if (FeatureFlags.INSTANCE.useWhiteGoogleIcon(getContext()) &&
-                (mBlurEnabled || FeatureFlags.INSTANCE.useDarkTheme(FeatureFlags.INSTANCE.getDARK_QSB()))) {
+                (mBlurEnabled || FeatureFlags.INSTANCE.useDarkTheme(FeatureFlags.DARK_QSB))) {
             ((ImageView) findViewById(R.id.g_icon)).setColorFilter(Color.WHITE);
             if (FeatureFlags.INSTANCE.showVoiceSearchButton(getContext())) {
                 ((ImageView) findViewById(R.id.mic_icon)).setColorFilter(Color.WHITE);

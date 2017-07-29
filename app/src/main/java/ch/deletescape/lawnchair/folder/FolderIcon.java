@@ -137,7 +137,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private Alarm mOpenAlarm = new Alarm();
 
     public FolderIcon(Context context, AttributeSet attrs) {
-        super(FeatureFlags.INSTANCE.applyDarkTheme(context, FeatureFlags.INSTANCE.getDARK_FOLDER()), attrs);
+        super(FeatureFlags.INSTANCE.applyDarkTheme(context, FeatureFlags.DARK_FOLDER), attrs);
         init();
     }
 

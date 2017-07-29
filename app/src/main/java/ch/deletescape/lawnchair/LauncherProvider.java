@@ -68,7 +68,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final int DATABASE_VERSION = 27;
 
-    public static final String AUTHORITY = ProviderConfig.INSTANCE.getAUTHORITY();
+    public static final String AUTHORITY = ProviderConfig.AUTHORITY;
 
     static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
 
