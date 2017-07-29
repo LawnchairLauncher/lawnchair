@@ -75,6 +75,10 @@
   *;
 }
 
+-keep class com.kwabenaberko.openweathermaplib.* {
+  *;
+}
+
 -keep class ch.deletescape.lawnchair.DeferredHandler {
  *;
 }

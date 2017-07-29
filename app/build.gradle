@@ -51,8 +51,8 @@ android {
     buildTypes {
         debug {
             if (System.getenv("TRAVIS") == "true") {
-                minifyEnabled false //true
-                //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+                minifyEnabled true
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
                 if (System.getenv("TRAVIS_EVENT_TYPE") != "pull_request") {
                     signingConfig signingConfigs.travis
                 }
