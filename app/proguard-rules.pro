@@ -75,9 +75,7 @@
   *;
 }
 
--keep class com.kwabenaberko.openweathermaplib.* {
-  *;
-}
+-dontwarn class com.kwabenaberko.openweathermaplib.*
 
 -keep class ch.deletescape.lawnchair.DeferredHandler {
  *;
