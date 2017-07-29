@@ -179,6 +179,8 @@ public class SuperGContainerView extends BaseQsbView {
 
     @Override
     protected void aL(Rect rect, Intent intent) {
+        DeviceProfile deviceProfile = mLauncher.getDeviceProfile();
+        if (deviceProfile.isLandscape || deviceProfile.isTablet) return;
         int height = mQsbView.getHeight() / 2;
         if (Utilities.isRtl(getResources())) {
             rect.right = height + getRight();
