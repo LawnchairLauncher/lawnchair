@@ -46,6 +46,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Property;
 import android.util.SparseArray;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
@@ -2156,10 +2157,15 @@ public class Workspace extends PagedView
         if ((child instanceof BubbleTextView) && (!dragOptions.isAccessibleDrag)) {
             PopupContainerWithArrow showForIcon = PopupContainerWithArrow.showForIcon((BubbleTextView) child);
             if (showForIcon != null) {
+                if (mLauncher.isEditingDisabled()) {
+                    mLauncher.getDragLayer().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                    return null;
+                }
                 dragOptions.preDragCondition = showForIcon.createPreDragCondition(mLauncher.isAllAppsVisible());
             }
         }
-        if (mLauncher.isEditingDisabled()) return null;
+        if (mLauncher.isEditingDisabled())
+            return null;
         DragView startDrag = this.mDragController.startDrag(createDragBitmap, i2, i3, source, dragObject, point, rect, scaleAndPosition, dragOptions);
         startDrag.setIntrinsicIconScaleFactor(source.getIntrinsicIconScaleFactor());
         createDragBitmap.recycle();
