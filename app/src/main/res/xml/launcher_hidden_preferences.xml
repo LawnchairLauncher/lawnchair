@@ -9,4 +9,8 @@
     <SwitchPreference
         android:key="pref_plane"
         android:title="Amazing Plane" />
+
+    <SwitchPreference
+        android:key="pref_uglyWeather"
+        android:title="Uglify Weather" />
 </PreferenceScreen>
