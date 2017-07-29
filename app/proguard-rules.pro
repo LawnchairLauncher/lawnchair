@@ -72,6 +72,7 @@
 }
 
 -dontwarn javax.**
+-dontwarn org.codehaus.mojo.animal_sniffer.**
 
 -keep class ch.deletescape.lawnchair.DeferredHandler {
  *;
