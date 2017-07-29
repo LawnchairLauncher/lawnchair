@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package ch.deletescape.lawnchair.config;
+package ch.deletescape.lawnchair.config
 
-public class ProviderConfig {
+object ProviderConfig {
 
-    public static final String AUTHORITY = "ch.deletescape.lawnchair.settings";
+    val AUTHORITY = "ch.deletescape.lawnchair.settings"
 }

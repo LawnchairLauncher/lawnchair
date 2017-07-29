@@ -29,7 +29,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
         super(context, attributeSet);
         mBgPaint.setColor(-1);
         mBgPaint.setAlpha(0);
-        if (FeatureFlags.useFullWidthSearchbar(getContext())) {
+        if (FeatureFlags.INSTANCE.useFullWidthSearchbar(getContext())) {
             View.inflate(context, R.layout.qsb_wide_experiment, this);
         }
     }
@@ -43,7 +43,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (!FeatureFlags.useFullWidthSearchbar(getContext())) {
+        if (!FeatureFlags.INSTANCE.useFullWidthSearchbar(getContext())) {
             Workspace workspace = Launcher.getLauncher(getContext()).getWorkspace();
             workspace.setOnStateChangeListener(this);
             prepareStateChange(workspace.getState(), null);
@@ -89,16 +89,16 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
     }
 
     public void setupView() {
-        if (!FeatureFlags.showPixelBar(getContext())) {
+        if (!FeatureFlags.INSTANCE.showPixelBar(getContext())) {
             removeAllViews();
             return;
         }
         View view = mView;
         mView = null;
         if (view == null || switching) {
-            if (FeatureFlags.planes(getContext())) {
+            if (FeatureFlags.INSTANCE.planes(getContext())) {
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.plane_widget, this, false);
-            } else if ((FeatureFlags.showWeather(getContext()) && !switchToDate) || (switching && !switchToDate)) {
+            } else if ((FeatureFlags.INSTANCE.showWeather(getContext()) && !switchToDate) || (switching && !switchToDate)) {
                 weatherShowing = true;
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.weather_widget, this, false);
                 TextView temperature = mView.findViewById(R.id.weather_widget_temperature);
@@ -113,7 +113,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
                 mView.findViewById(R.id.date_text1).setOnLongClickListener(this);
                 mView.findViewById(R.id.date_text2).setOnLongClickListener(this);
             }
-            if (FeatureFlags.useFullWidthSearchbar(getContext())) {
+            if (FeatureFlags.INSTANCE.useFullWidthSearchbar(getContext())) {
                 mView.setVisibility(GONE);
             }
         } else {

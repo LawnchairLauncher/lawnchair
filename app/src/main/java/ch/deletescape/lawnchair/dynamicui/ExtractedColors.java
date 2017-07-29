@@ -180,11 +180,11 @@ public class ExtractedColors {
      * - 40% lightVibrant or 25% white otherwise
      */
     public int getHotseatColor(Context context) {
-        if (FeatureFlags.isTransparentHotseat(context)) {
+        if (FeatureFlags.INSTANCE.isTransparentHotseat(context)) {
             return Color.TRANSPARENT;
         }
         int hotseatColor;
-        boolean shouldUseExtractedColors = FeatureFlags.hotseatShouldUseExtractedColors(context);
+        boolean shouldUseExtractedColors = FeatureFlags.INSTANCE.hotseatShouldUseExtractedColors(context);
         if (getColor(IS_SUPER_LIGHT, 0) == 1) {
             if (shouldUseExtractedColors) {
                 int baseColor = getColor(HOTSEAT_DARK_MUTED_INDEX, getColor(HOTSEAT_DARK_VIBRANT_INDEX, Color.BLACK));
@@ -197,14 +197,14 @@ public class ExtractedColors {
                 int baseColor = getColor(HOTSEAT_LIGHT_MUTED_INDEX, getColor(HOTSEAT_LIGHT_VIBRANT_INDEX, Color.WHITE));
                 hotseatColor = ColorUtils.setAlphaComponent(baseColor, (int) (0.25f * 255));
             } else {
-                hotseatColor = ColorUtils.setAlphaComponent(FeatureFlags.useDarkTheme(FeatureFlags.DARK_ALLAPPS) ? Color.BLACK : Color.WHITE, (int) (0.18f * 255));
+                hotseatColor = ColorUtils.setAlphaComponent(FeatureFlags.INSTANCE.useDarkTheme(FeatureFlags.INSTANCE.getDARK_ALLAPPS()) ? Color.BLACK : Color.WHITE, (int) (0.18f * 255));
             }
         } else {
             if (shouldUseExtractedColors) {
                 int baseColor = getColor(HOTSEAT_LIGHT_VIBRANT_INDEX, getColor(HOTSEAT_LIGHT_MUTED_INDEX, Color.WHITE));
                 hotseatColor = ColorUtils.setAlphaComponent(baseColor, (int) (0.40f * 255));
             } else {
-                hotseatColor = ColorUtils.setAlphaComponent(FeatureFlags.useDarkTheme(FeatureFlags.DARK_ALLAPPS) ? Color.BLACK : Color.WHITE, (int) (0.25f * 255));
+                hotseatColor = ColorUtils.setAlphaComponent(FeatureFlags.INSTANCE.useDarkTheme(FeatureFlags.INSTANCE.getDARK_ALLAPPS()) ? Color.BLACK : Color.WHITE, (int) (0.25f * 255));
             }
         }
         return hotseatColor;

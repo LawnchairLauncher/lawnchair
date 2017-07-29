@@ -37,9 +37,9 @@ public class EditIconActivity extends Activity implements CustomIconAdapter.List
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FeatureFlags.applyDarkTheme(this);
+        FeatureFlags.INSTANCE.applyDarkTheme(this);
 
-        FeatureFlags.enableScreenRotation(this);
+        FeatureFlags.INSTANCE.enableScreenRotation(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_icon);
@@ -62,7 +62,7 @@ public class EditIconActivity extends Activity implements CustomIconAdapter.List
 
         setTitle(appInfo.originalTitle);
 
-        BlurWallpaperProvider.applyBlurBackground(this);
+        BlurWallpaperProvider.Companion.applyBlurBackground(this);
 
         RecyclerView iconRecyclerView = findViewById(R.id.iconRecyclerView);
         CustomIconAdapter iconAdapter = new CustomIconAdapter(this, mInfo, iconPacks);

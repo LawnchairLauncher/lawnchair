@@ -48,7 +48,7 @@ public class WidgetsContainerView extends BaseContainerView implements OnLongCli
     }
 
     private static int getTheme() {
-        return FeatureFlags.useDarkTheme ? R.style.WidgetContainerTheme_Dark : R.style.WidgetContainerTheme;
+        return FeatureFlags.INSTANCE.getUseDarkTheme() ? R.style.WidgetContainerTheme_Dark : R.style.WidgetContainerTheme;
     }
 
     public View getTouchDelegateTargetView() {

@@ -22,7 +22,7 @@ public abstract class DeepShortcutManager {
         DeepShortcutManager deepShortcutManager;
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                if (Utilities.isNycMR1OrAbove() && !FeatureFlags.enableBackportShortcuts(context))
+                if (Utilities.isNycMR1OrAbove() && !FeatureFlags.INSTANCE.enableBackportShortcuts(context))
                     sInstance = new DeepShortcutManagerNative(context.getApplicationContext());
                 else
                     sInstance = new DeepShortcutManagerBackport(context.getApplicationContext());

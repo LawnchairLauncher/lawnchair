@@ -54,11 +54,11 @@ import ch.deletescape.lawnchair.config.FeatureFlags;
 public class SettingsActivity extends Activity implements PreferenceFragment.OnPreferenceStartFragmentCallback, SharedPreferences.OnSharedPreferenceChangeListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FeatureFlags.applyDarkTheme(this);
+        FeatureFlags.INSTANCE.applyDarkTheme(this);
         super.onCreate(savedInstanceState);
 
-        if (FeatureFlags.currentTheme != 2)
-            BlurWallpaperProvider.applyBlurBackground(this);
+        if (FeatureFlags.INSTANCE.getCurrentTheme() != 2)
+            BlurWallpaperProvider.Companion.applyBlurBackground(this);
 
         if (savedInstanceState == null) {
             // Display the fragment as the main content.
@@ -108,8 +108,8 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        if (FeatureFlags.KEY_PREF_THEME.equals(key)) {
-            FeatureFlags.loadDarkThemePreference(this);
+        if (FeatureFlags.INSTANCE.getKEY_PREF_THEME().equals(key)) {
+            FeatureFlags.INSTANCE.loadDarkThemePreference(this);
             recreate();
         }
     }

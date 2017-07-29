@@ -220,7 +220,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     private void addDummyViews(PopupPopulator.Item[] itemArr, boolean z) {
         Resources resources = getResources();
         int dimensionPixelSize = resources.getDimensionPixelSize(R.dimen.popup_items_spacing);
-        LayoutInflater layoutInflater = LayoutInflater.from(FeatureFlags.applyDarkTheme(mLauncher, FeatureFlags.DARK_SHORTCUTS));
+        LayoutInflater layoutInflater = LayoutInflater.from(FeatureFlags.INSTANCE.applyDarkTheme(mLauncher, FeatureFlags.INSTANCE.getDARK_SHORTCUTS()));
         int length = itemArr.length;
         for (int i = 0; i < length; i++) {
             PopupPopulator.Item item;

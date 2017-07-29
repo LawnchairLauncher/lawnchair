@@ -167,7 +167,7 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     public void updateTopShadow() {
-        setBackground(FeatureFlags.showTopShadow(getContext()) ? mTopShadow : null);
+        setBackground(FeatureFlags.INSTANCE.showTopShadow(getContext()) ? mTopShadow : null);
     }
 
     public void setup(Launcher launcher, DragController dragController,
@@ -192,7 +192,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     public void onAccessibilityStateChanged(boolean isAccessibilityEnabled) {
         mIsAccesibilityEnabled = isAccessibilityEnabled;
-        mPinchListener = !FeatureFlags.pinchToOverview(getContext().getApplicationContext()) || isAccessibilityEnabled
+        mPinchListener = !FeatureFlags.INSTANCE.pinchToOverview(getContext().getApplicationContext()) || isAccessibilityEnabled
                 ? null : new PinchToOverviewListener(mLauncher);
     }
 

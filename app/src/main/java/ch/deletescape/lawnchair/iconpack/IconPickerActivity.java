@@ -19,7 +19,7 @@ public class IconPickerActivity extends Activity implements IconGridAdapter.List
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FeatureFlags.applyDarkTheme(this);
+        FeatureFlags.INSTANCE.applyDarkTheme(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_icon_picker);
@@ -40,7 +40,7 @@ public class IconPickerActivity extends Activity implements IconGridAdapter.List
         recyclerView.setAdapter(adapter);
         new PagerSnapHelper().attachToRecyclerView(recyclerView);
 
-        BlurWallpaperProvider.applyBlurBackground(this);
+        BlurWallpaperProvider.Companion.applyBlurBackground(this);
     }
 
     private boolean loadIconPack() {

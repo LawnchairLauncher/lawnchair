@@ -64,12 +64,12 @@ public class Hotseat extends FrameLayout {
         super(context, attrs, defStyle);
         mLauncher = Launcher.getLauncher(context);
         mHasVerticalHotseat = mLauncher.getDeviceProfile().isVerticalBarLayout();
-        if (FeatureFlags.isTransparentHotseat(context) || mHasVerticalHotseat) {
+        if (FeatureFlags.INSTANCE.isTransparentHotseat(context) || mHasVerticalHotseat) {
             setBackgroundColor(Color.TRANSPARENT);
         } else {
             mBackgroundColor = ColorUtils.setAlphaComponent(
                     Utilities.resolveAttributeData(context, R.attr.allAppsContainerColor), 0);
-            mBackground = BlurWallpaperProvider.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS) ?
+            mBackground = BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.Companion.getBLUR_ALLAPPS()) ?
                     mLauncher.getBlurWallpaperProvider().createDrawable(): new ColorDrawable(mBackgroundColor);
             setBackground(mBackground);
         }

@@ -116,7 +116,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     }
 
     public AllAppsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(FeatureFlags.applyDarkTheme(context, FeatureFlags.DARK_ALLAPPS), attrs, defStyleAttr);
+        super(FeatureFlags.INSTANCE.applyDarkTheme(context, FeatureFlags.INSTANCE.getDARK_ALLAPPS()), attrs, defStyleAttr);
         Resources res = context.getResources();
 
         mLauncher = Launcher.getLauncher(context);
@@ -135,7 +135,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         }
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
-        mUseRoundSearchBar = FeatureFlags.useRoundSearchBar(context);
+        mUseRoundSearchBar = FeatureFlags.INSTANCE.useRoundSearchBar(context);
     }
 
     /**
@@ -240,7 +240,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
      */
     public void reset() {
         // Reset the search bar and base recycler view after transitioning home
-        if (!FeatureFlags.keepScrollState(getContext())) {
+        if (!FeatureFlags.INSTANCE.keepScrollState(getContext())) {
             scrollToTop();
         }
         mSearchBarController.reset();

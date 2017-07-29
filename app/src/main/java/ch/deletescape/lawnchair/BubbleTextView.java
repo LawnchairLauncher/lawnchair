@@ -143,7 +143,7 @@ public class BubbleTextView extends TextView
         int display = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
         int defaultIconSize = grid.iconSizePx;
         if (display == DISPLAY_WORKSPACE) {
-            mHideText = FeatureFlags.hideAppLabels(context);
+            mHideText = FeatureFlags.INSTANCE.hideAppLabels(context);
             setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.iconTextSizePx);
             setTextColor(Utilities.getColor(getContext(), "pref_workspaceLabelColorHue", "-3", "pref_workspaceLabelColorVariation", "5"));
         } else if (display == DISPLAY_ALL_APPS) {
@@ -151,7 +151,7 @@ public class BubbleTextView extends TextView
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
         } else if (display == DISPLAY_FOLDER) {
-            mHideText = FeatureFlags.hideAppLabels(context);
+            mHideText = FeatureFlags.INSTANCE.hideAppLabels(context);
             setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
         }

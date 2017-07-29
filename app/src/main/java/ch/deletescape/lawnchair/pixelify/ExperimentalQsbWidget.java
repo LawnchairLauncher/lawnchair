@@ -49,7 +49,7 @@ public class ExperimentalQsbWidget extends BaseQsbView {
     public ExperimentalQsbWidget(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
 
-        mBlurEnabled = BlurWallpaperProvider.isEnabled(BlurWallpaperProvider.BLUR_QSB);
+        mBlurEnabled = BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.Companion.getBLUR_QSB());
         if (mBlurEnabled) {
             mBlurDrawable = mLauncher.getBlurWallpaperProvider().createDrawable(100, true);
         }
@@ -67,10 +67,10 @@ public class ExperimentalQsbWidget extends BaseQsbView {
             mQsbView.setBackground(mBlurDrawable);
             mQsbView.setLayerType(LAYER_TYPE_SOFTWARE, null);
         }
-        if (FeatureFlags.useWhiteGoogleIcon(getContext()) &&
-                (mBlurEnabled || FeatureFlags.useDarkTheme(FeatureFlags.DARK_QSB))) {
+        if (FeatureFlags.INSTANCE.useWhiteGoogleIcon(getContext()) &&
+                (mBlurEnabled || FeatureFlags.INSTANCE.useDarkTheme(FeatureFlags.INSTANCE.getDARK_QSB()))) {
             ((ImageView) findViewById(R.id.g_icon)).setColorFilter(Color.WHITE);
-            if (FeatureFlags.showVoiceSearchButton(getContext())) {
+            if (FeatureFlags.INSTANCE.showVoiceSearchButton(getContext())) {
                 ((ImageView) findViewById(R.id.mic_icon)).setColorFilter(Color.WHITE);
             }
         }

@@ -358,8 +358,8 @@ public class DeviceProfile {
                         hotseatBarHeightPx + hotseatLandGutterPx, 2 * edgeMarginPx);
             }
         } else {
-            int paddingBottom = (FeatureFlags.isTransparentHotseat(mContext) && FeatureFlags.hideHotseat(mContext) ? 0 : hotseatBarHeightPx) + pageIndicatorHeightPx;
-            if (FeatureFlags.allowFullWidthWidgets(mContext)) {
+            int paddingBottom = (FeatureFlags.INSTANCE.isTransparentHotseat(mContext) && FeatureFlags.INSTANCE.hideHotseat(mContext) ? 0 : hotseatBarHeightPx) + pageIndicatorHeightPx;
+            if (FeatureFlags.INSTANCE.allowFullWidthWidgets(mContext)) {
                 padding.set(0, 0, 0, paddingBottom);
             } else if (isTablet) {
                 // Pad the left and right of the workspace to ensure consistent spacing
@@ -493,8 +493,8 @@ public class DeviceProfile {
         float workspaceCellWidth = (float) getCurrentWidth() / inv.numColumns;
         float hotseatCellWidth = (float) getCurrentWidth() / inv.numHotseatIcons;
         int hotseatAdjustment = Math.round((workspaceCellWidth - hotseatCellWidth) / 2);
-        boolean transparentHotseat = FeatureFlags.isTransparentHotseat(mContext);
-        boolean hideHotseat = transparentHotseat && FeatureFlags.hideHotseat(mContext);
+        boolean transparentHotseat = FeatureFlags.INSTANCE.isTransparentHotseat(mContext);
+        boolean hideHotseat = transparentHotseat && FeatureFlags.INSTANCE.hideHotseat(mContext);
         if (hasVerticalBarLayout) {
             // Vertical hotseat -- The hotseat is fixed in the layout to be on the right of the
             //                     screen regardless of RTL

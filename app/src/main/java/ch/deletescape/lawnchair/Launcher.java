@@ -360,7 +360,7 @@ public class Launcher extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FeatureFlags.loadDarkThemePreference(this);
+        FeatureFlags.INSTANCE.loadDarkThemePreference(this);
         super.onCreate(savedInstanceState);
 
         setScreenOrientation();
@@ -400,7 +400,7 @@ public class Launcher extends Activity
 
         setContentView(R.layout.launcher);
 
-        mPlanesEnabled = FeatureFlags.planes(this);
+        mPlanesEnabled = FeatureFlags.INSTANCE.planes(this);
         setupViews();
         mDeviceProfile.layout(this, false /* notifyListeners */);
         mExtractedColors = new ExtractedColors();
@@ -441,7 +441,7 @@ public class Launcher extends Activity
     }
 
     private void setScreenOrientation() {
-        if(FeatureFlags.enableScreenRotation(this)) {
+        if(FeatureFlags.INSTANCE.enableScreenRotation(this)) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -935,7 +935,7 @@ public class Launcher extends Activity
             mBlurWallpaperProvider.updateAsync();
         }
 
-        mDisableEditing = !FeatureFlags.enableEditing(this);
+        mDisableEditing = !FeatureFlags.INSTANCE.enableEditing(this);
     }
 
     @Override
@@ -1152,7 +1152,7 @@ public class Launcher extends Activity
         setupOverviewPanel();
 
         // Setup the workspace
-        mWorkspace.setHapticFeedbackEnabled(FeatureFlags.enableHapticFeedback(this));
+        mWorkspace.setHapticFeedbackEnabled(FeatureFlags.INSTANCE.enableHapticFeedback(this));
         mWorkspace.setOnLongClickListener(this);
         mWorkspace.setup(mDragController);
         // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the
@@ -1653,7 +1653,7 @@ public class Launcher extends Activity
             // If we are already on home, then just animate back to the workspace,
             // otherwise, just wait until onResume to set the state back to Workspace
             if (alreadyOnHome) {
-                if (!FeatureFlags.homeOpensDrawer(this) || mState != State.WORKSPACE || mWorkspace.getCurrentPage() != 0 || mOverviewPanel.getVisibility() == View.VISIBLE) {
+                if (!FeatureFlags.INSTANCE.homeOpensDrawer(this) || mState != State.WORKSPACE || mWorkspace.getCurrentPage() != 0 || mOverviewPanel.getVisibility() == View.VISIBLE) {
                     showWorkspace(true);
                 } else {
                     showAppsView(true, false);
@@ -1671,7 +1671,7 @@ public class Launcher extends Activity
             }
 
             // Reset the apps view
-            if (!alreadyOnHome && mAppsView != null && !FeatureFlags.keepScrollState(this)) {
+            if (!alreadyOnHome && mAppsView != null && !FeatureFlags.INSTANCE.keepScrollState(this)) {
                 mAppsView.scrollToTop();
             }
 
@@ -3212,7 +3212,7 @@ public class Launcher extends Activity
     @Override
     public void bindScreens(ArrayList<Long> orderedScreenIds) {
         // Make sure the first screen is always at the start.
-        if (FeatureFlags.showPixelBar(this) && orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != 0) {
+        if (FeatureFlags.INSTANCE.showPixelBar(this) && orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != 0) {
             orderedScreenIds.remove(Workspace.FIRST_SCREEN_ID);
             orderedScreenIds.add(0, Workspace.FIRST_SCREEN_ID);
             mModel.updateWorkspaceScreenOrder(this, orderedScreenIds);
