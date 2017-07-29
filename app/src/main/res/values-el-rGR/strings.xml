@@ -39,7 +39,6 @@
     <string name="long_accessible_way_to_add">Πατήστε δύο φορές παρατεταμένα για επιλογή γραφικού στοιχείου ή χρήση προσαρμοσμένων ενεργειών.</string>
     <!-- The format string for the dimensions of a widget in the drawer -->
     <!-- There is a special version of this format string for Farsi -->
-    <string name="widget_dims_format">%1$d × %2$d</string>
     <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
     <string name="widget_accessible_dims_format">Πλάτος %1$d επί ύψος %2$d</string>
     <!-- All Apps -->

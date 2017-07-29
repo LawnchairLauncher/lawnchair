@@ -39,7 +39,6 @@
     <string name="long_accessible_way_to_add">Modul mozgatásához koppintson rá duplán és tartsa lenyomva, vagy használjon egyéni műveleteket.</string>
     <!-- The format string for the dimensions of a widget in the drawer -->
     <!-- There is a special version of this format string for Farsi -->
-    <string name="widget_dims_format">%1$d × %2$d</string>
     <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
     <string name="widget_accessible_dims_format">%1$d széles és %2$d magas</string>
     <!-- All Apps -->

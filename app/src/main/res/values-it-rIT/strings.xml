@@ -39,7 +39,6 @@
     <string name="long_accessible_way_to_add">Tocca due volte e tieni premuto per scegliere un widget o per utilizzare azioni personalizzate.</string>
     <!-- The format string for the dimensions of a widget in the drawer -->
     <!-- There is a special version of this format string for Farsi -->
-    <string name="widget_dims_format">%1$d \u00d7 %2$d</string>
     <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
     <string name="widget_accessible_dims_format">%1$d di larghezza per %2$d di altezza</string>
     <!-- All Apps -->

@@ -39,7 +39,6 @@
     <string name="long_accessible_way_to_add">Чтобы выбрать виджет, нажмите на него дважды и не отпускайте или выполните предложенные действия.</string>
     <!-- The format string for the dimensions of a widget in the drawer -->
     <!-- There is a special version of this format string for Farsi -->
-    <string name="widget_dims_format">%1$d x %2$d</string>
     <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
     <string name="widget_accessible_dims_format">Ширина %1$d, высота %2$d</string>
     <!-- All Apps -->
