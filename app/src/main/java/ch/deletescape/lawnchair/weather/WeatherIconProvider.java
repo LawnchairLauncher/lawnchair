@@ -24,24 +24,24 @@ public class WeatherIconProvider {
     }
 
     private void fillMap() {
-        ID_MAP.put("01d", R.drawable.weather_clear);
-        ID_MAP.put("01n", R.drawable.weather_clear_night);
-        ID_MAP.put("02d", R.drawable.weather_few_clouds);
-        ID_MAP.put("02n", R.drawable.weather_few_clouds_night);
-        ID_MAP.put("03d", R.drawable.weather_clouds);
-        ID_MAP.put("03n", R.drawable.weather_clouds_night);
-        ID_MAP.put("04d", R.drawable.weather_clouds);
-        ID_MAP.put("04n", R.drawable.weather_clouds_night);
-        ID_MAP.put("09d", R.drawable.weather_showers_day);
-        ID_MAP.put("09n", R.drawable.weather_showers_night);
-        ID_MAP.put("10d", R.drawable.weather_rain_day);
-        ID_MAP.put("10n", R.drawable.weather_rain_night);
-        ID_MAP.put("11d", R.drawable.weather_storm_day);
-        ID_MAP.put("11n", R.drawable.weather_storm_night);
-        ID_MAP.put("13d", R.drawable.weather_snow_scattered_day);
-        ID_MAP.put("13n", R.drawable.weather_snow_scattered_night);
-        ID_MAP.put("50d", R.drawable.weather_mist);
-        ID_MAP.put("50n", R.drawable.weather_mist);
+        ID_MAP.put("01d", R.drawable.weather_01);
+        ID_MAP.put("01n", R.drawable.weather_01n);
+        ID_MAP.put("02d", R.drawable.weather_02);
+        ID_MAP.put("02n", R.drawable.weather_02n);
+        ID_MAP.put("03d", R.drawable.weather_03);
+        ID_MAP.put("03n", R.drawable.weather_03n);
+        ID_MAP.put("04d", R.drawable.weather_04);
+        ID_MAP.put("04n", R.drawable.weather_04n);
+        ID_MAP.put("09d", R.drawable.weather_09);
+        ID_MAP.put("09n", R.drawable.weather_09n);
+        ID_MAP.put("10d", R.drawable.weather_10);
+        ID_MAP.put("10n", R.drawable.weather_10n);
+        ID_MAP.put("11d", R.drawable.weather_11);
+        ID_MAP.put("11n", R.drawable.weather_11n);
+        ID_MAP.put("13d", R.drawable.weather_13);
+        ID_MAP.put("13n", R.drawable.weather_13n);
+        ID_MAP.put("50d", R.drawable.weather_50);
+        ID_MAP.put("50n", R.drawable.weather_50n);
         ID_MAP.put("-1", R.drawable.weather_none_available);
     }
 }
