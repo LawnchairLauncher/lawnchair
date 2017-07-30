@@ -30,6 +30,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="ch.deletescape.lawnchair.permission.READ_SETTINGS" />
     <uses-permission android:name="ch.deletescape.lawnchair.permission.WRITE_SETTINGS" />
     <uses-permission android:name="ch.deletescape.lawnchair.permission.QSB" />
@@ -150,6 +151,14 @@
             android:name=".iconpack.IconPickerActivity"
             android:parentActivityName=".iconpack.EditIconActivity"
             android:theme="@style/SettingsTheme" />
+
+        <meta-data
+            android:name="com.google.android.awareness.API_KEY"
+            android:value="${awarenessApiKey}"/>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${awarenessApiKey}" />
     </application>
 
 </manifest>

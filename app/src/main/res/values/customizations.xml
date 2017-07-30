@@ -132,10 +132,12 @@
 
     <string-array name="weatherProviderTexts">
         <item>OpenWeatherMap</item>
+        <item>Google Awareness API</item>
     </string-array>
 
     <string-array name="weatherProviderValues">
         <item>0</item>
+        <item>1</item>
     </string-array>
 
     <string name="generalDefault" translatable="false">default</string>

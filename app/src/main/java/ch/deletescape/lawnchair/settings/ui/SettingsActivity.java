@@ -40,6 +40,7 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import ch.deletescape.lawnchair.BuildConfig;
 import ch.deletescape.lawnchair.DumbImportExportTask;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherFiles;
@@ -170,6 +171,11 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
             super.onCreate(savedInstanceState);
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
             addPreferencesFromResource(getContent());
+            if (getContent() == R.xml.launcher_pixel_style_preferences) {
+                boolean hasPermission = ContextCompat
+                        .checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+                findPreference("pref_weatherProvider").setEnabled(BuildConfig.AWARENESS_API_ENABLED && hasPermission);
+            }
         }
 
         @Override
