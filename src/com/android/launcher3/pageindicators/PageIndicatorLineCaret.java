@@ -21,7 +21,9 @@ import android.widget.ImageView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dynamicui.ExtractedColors;
+import com.android.launcher3.dynamicui.WallpaperColorInfo;
 
 /**
  * A PageIndicator that briefly shows a fraction of a line when moving between pages.
@@ -128,6 +130,10 @@ public class PageIndicatorLineCaret extends PageIndicator {
         mLauncher = Launcher.getLauncher(context);
         mLineHeight = res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_line_height);
         setCaretDrawable(new CaretDrawable(context));
+
+        boolean darkText = WallpaperColorInfo.getInstance(context).supportsDarkText();
+        mActiveAlpha = darkText ? BLACK_ALPHA : WHITE_ALPHA;
+        mLinePaint.setColor(darkText ? Color.BLACK : Color.WHITE);
     }
 
     @Override
@@ -219,6 +225,9 @@ public class PageIndicatorLineCaret extends PageIndicator {
      * - mostly opaque black if the hotseat is black (ignoring alpha)
      */
     public void updateColor(ExtractedColors extractedColors) {
+        if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+            return;
+        }
         int originalLineAlpha = mLinePaint.getAlpha();
         int color = extractedColors.getColor(ExtractedColors.HOTSEAT_INDEX);
         if (color != Color.TRANSPARENT) {

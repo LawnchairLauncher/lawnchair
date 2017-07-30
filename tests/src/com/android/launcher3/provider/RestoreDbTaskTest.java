@@ -47,11 +47,8 @@ public class RestoreDbTaskTest extends AndroidTestCase {
     }
 
     private int getCount(SQLiteDatabase db, String sql) {
-        Cursor c = db.rawQuery(sql, null);
-        try {
+        try (Cursor c = db.rawQuery(sql, null)) {
             return c.getCount();
-        } finally {
-            c.getCount();
         }
     }
 
@@ -59,7 +56,7 @@ public class RestoreDbTaskTest extends AndroidTestCase {
 
         private final long mProfileId;
 
-        public MyDatabaseHelper(long profileId) {
+        MyDatabaseHelper(long profileId) {
             super(getContext(), null, null);
             mProfileId = profileId;
         }

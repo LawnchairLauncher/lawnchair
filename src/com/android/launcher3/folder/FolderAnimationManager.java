@@ -69,7 +69,8 @@ public class FolderAnimationManager {
     private final int mDelay;
 
     private final TimeInterpolator mFolderInterpolator;
-    private final TimeInterpolator mLargeFolderPreviewItemInterpolator;
+    private final TimeInterpolator mLargeFolderPreviewItemOpenInterpolator;
+    private final TimeInterpolator mLargeFolderPreviewItemCloseInterpolator;
 
     private final PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0, 0);
 
@@ -105,8 +106,10 @@ public class FolderAnimationManager {
 
         mFolderInterpolator = AnimationUtils.loadInterpolator(mContext,
                 R.interpolator.folder_interpolator);
-        mLargeFolderPreviewItemInterpolator = AnimationUtils.loadInterpolator(mContext,
-                R.interpolator.large_folder_preview_item_interpolator);
+        mLargeFolderPreviewItemOpenInterpolator = AnimationUtils.loadInterpolator(mContext,
+                R.interpolator.large_folder_preview_item_open_interpolator);
+        mLargeFolderPreviewItemCloseInterpolator = AnimationUtils.loadInterpolator(mContext,
+                R.interpolator.large_folder_preview_item_close_interpolator);
     }
 
 
@@ -116,13 +119,14 @@ public class FolderAnimationManager {
     public AnimatorSet getAnimator() {
         final DragLayer.LayoutParams lp = (DragLayer.LayoutParams) mFolder.getLayoutParams();
         FolderIcon.PreviewLayoutRule rule = mFolderIcon.getLayoutRule();
-        final List<BubbleTextView> itemsInPreview = mFolderIcon.getItemsToDisplay();
+        final List<BubbleTextView> itemsInPreview = mFolderIcon.getPreviewItems();
 
         // Match position of the FolderIcon
         final Rect folderIconPos = new Rect();
         float scaleRelativeToDragLayer = mLauncher.getDragLayer()
                 .getDescendantRectRelativeToSelf(mFolderIcon, folderIconPos);
-        float initialSize = (mFolderIcon.mBackground.getRadius() * 2) * scaleRelativeToDragLayer;
+        int scaledRadius = mPreviewBackground.getScaledRadius();
+        float initialSize = (scaledRadius * 2) * scaleRelativeToDragLayer;
 
         // Match size/scale of icons in the preview
         float previewScale = rule.scaleForItem(0, itemsInPreview.size());
@@ -149,14 +153,9 @@ public class FolderAnimationManager {
         final int paddingOffsetY = (int) ((mFolder.getPaddingTop() + mContent.getPaddingTop())
                 * initialScale);
 
-        // Background can have a scaled radius in drag and drop mode.
-        int radiusDiff = mFolderIcon.mBackground.getScaledRadius()
-                - mFolderIcon.mBackground.getRadius();
-
-        int initialX = folderIconPos.left + mFolderIcon.mBackground.getOffsetX() - paddingOffsetX
-                - previewItemOffsetX + radiusDiff;
-        int initialY = folderIconPos.top + mFolderIcon.mBackground.getOffsetY() - paddingOffsetY
-                + radiusDiff;
+        int initialX = folderIconPos.left + mPreviewBackground.getOffsetX() - paddingOffsetX
+                - previewItemOffsetX;
+        int initialY = folderIconPos.top + mPreviewBackground.getOffsetY() - paddingOffsetY;
         final float xDistance = initialX - lp.x;
         final float yDistance = initialY - lp.y;
 
@@ -181,10 +180,10 @@ public class FolderAnimationManager {
         AnimatorSet a = LauncherAnimUtils.createAnimatorSet();
 
         // Initialize the Folder items' text.
-        PropertyResetListener colorResetListener = new PropertyResetListener(
+        PropertyResetListener colorResetListener = new PropertyResetListener<>(
                 BubbleTextView.TEXT_ALPHA_PROPERTY,
                 Color.alpha(Themes.getAttrColor(mContext, android.R.attr.textColorSecondary)));
-        for (BubbleTextView icon : mFolder.getItemsOnCurrentPage()) {
+        for (BubbleTextView icon : mFolder.getItemsOnPage(mFolder.mContent.getCurrentPage())) {
             if (mIsOpening) {
                 icon.setTextVisibility(false);
             }
@@ -198,13 +197,19 @@ public class FolderAnimationManager {
         play(a, getAnimator(mFolder, SCALE_PROPERTY, initialScale, finalScale));
         play(a, getAnimator(mFolderBackground, "color", initialColor, finalColor));
         play(a, mFolderIcon.mFolderName.createTextAlphaAnimator(!mIsOpening));
-        play(a, new RoundedRectRevealOutlineProvider(initialRadius, finalRadius, startRect,
-                endRect).createRevealAnimator(mFolder, !mIsOpening));
+        RoundedRectRevealOutlineProvider outlineProvider = new RoundedRectRevealOutlineProvider(
+                initialRadius, finalRadius, startRect, endRect) {
+            @Override
+            public boolean shouldRemoveElevationDuringAnimation() {
+                return true;
+            }
+        };
+        play(a, outlineProvider.createRevealAnimator(mFolder, !mIsOpening));
 
         // Animate the elevation midway so that the shadow is not noticeable in the background.
         int midDuration = mDuration / 2;
         Animator z = getAnimator(mFolder, View.TRANSLATION_Z, -mFolder.getElevation(), 0);
-        play(a, z, midDuration, midDuration);
+        play(a, z, mIsOpening ? midDuration : 0, midDuration);
 
         a.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -224,18 +229,28 @@ public class FolderAnimationManager {
             animator.setInterpolator(mFolderInterpolator);
         }
 
-        addPreviewItemAnimators(a, initialScale / scaleRelativeToDragLayer, previewItemOffsetX);
+        int radiusDiff = scaledRadius - mPreviewBackground.getRadius();
+        addPreviewItemAnimators(a, initialScale / scaleRelativeToDragLayer,
+                // Background can have a scaled radius in drag and drop mode, so we need to add the
+                // difference to keep the preview items centered.
+                previewItemOffsetX + radiusDiff, radiusDiff);
         return a;
     }
 
     /**
-     * Animate the items that are displayed in the preview.
+     * Animate the items on the current page.
      */
     private void addPreviewItemAnimators(AnimatorSet animatorSet, final float folderScale,
-            int previewItemOffsetX) {
+            int previewItemOffsetX, int previewItemOffsetY) {
         FolderIcon.PreviewLayoutRule rule = mFolderIcon.getLayoutRule();
-        final List<BubbleTextView> itemsInPreview = mFolderIcon.getItemsToDisplay();
+        boolean isOnFirstPage = mFolder.mContent.getCurrentPage() == 0;
+        final List<BubbleTextView> itemsInPreview = isOnFirstPage
+                ? mFolderIcon.getPreviewItems()
+                : mFolderIcon.getPreviewItemsOnPage(mFolder.mContent.getCurrentPage());
         final int numItemsInPreview = itemsInPreview.size();
+        final int numItemsInFirstPagePreview = isOnFirstPage
+                ? numItemsInPreview
+                : FolderIcon.NUM_ITEMS_IN_PREVIEW;
 
         TimeInterpolator previewItemInterpolator = getPreviewItemInterpolator();
 
@@ -248,8 +263,8 @@ public class FolderAnimationManager {
             btvLp.isLockedToGrid = true;
             cwc.setupLp(btv);
 
-            // Match scale of icons in the preview.
-            float previewScale = rule.scaleForItem(i, numItemsInPreview);
+            // Match scale of icons in the preview of the items on the first page.
+            float previewScale = rule.scaleForItem(i, numItemsInFirstPagePreview);
             float previewSize = rule.getIconSize() * previewScale;
             float iconScale = previewSize / itemsInPreview.get(i).getIconSize();
 
@@ -260,14 +275,14 @@ public class FolderAnimationManager {
             btv.setScaleY(scale);
 
             // Match positions of the icons in the folder with their positions in the preview
-            rule.computePreviewItemDrawingParams(i, numItemsInPreview, mTmpParams);
+            rule.computePreviewItemDrawingParams(i, numItemsInFirstPagePreview, mTmpParams);
             // The PreviewLayoutRule assumes that the icon size takes up the entire width so we
             // offset by the actual size.
             int iconOffsetX = (int) ((btvLp.width - btv.getIconSize()) * iconScale) / 2;
 
             final int previewPosX =
                     (int) ((mTmpParams.transX - iconOffsetX + previewItemOffsetX) / folderScale);
-            final int previewPosY = (int) (mTmpParams.transY / folderScale);
+            final int previewPosY = (int) ((mTmpParams.transY + previewItemOffsetY) / folderScale);
 
             final float xDistance = previewPosX - btvLp.x;
             final float yDistance = previewPosY - btvLp.y;
@@ -287,14 +302,15 @@ public class FolderAnimationManager {
             if (mFolder.getItemCount() > FolderIcon.NUM_ITEMS_IN_PREVIEW) {
                 // These delays allows the preview items to move as part of the Folder's motion,
                 // and its only necessary for large folders because of differing interpolators.
+                int delay = mIsOpening ? mDelay : mDelay * 2;
                 if (mIsOpening) {
-                    translationX.setStartDelay(mDelay);
-                    translationY.setStartDelay(mDelay);
-                    scaleAnimator.setStartDelay(mDelay);
+                    translationX.setStartDelay(delay);
+                    translationY.setStartDelay(delay);
+                    scaleAnimator.setStartDelay(delay);
                 }
-                translationX.setDuration(translationX.getDuration() - mDelay);
-                translationY.setDuration(translationY.getDuration() - mDelay);
-                scaleAnimator.setDuration(scaleAnimator.getDuration() - mDelay);
+                translationX.setDuration(translationX.getDuration() - delay);
+                translationY.setDuration(translationY.getDuration() - delay);
+                scaleAnimator.setDuration(scaleAnimator.getDuration() - delay);
             }
 
             animatorSet.addListener(new AnimatorListenerAdapter() {
@@ -337,7 +353,9 @@ public class FolderAnimationManager {
             // With larger folders, we want the preview items to reach their final positions faster
             // (when opening) and later (when closing) so that they appear aligned with the rest of
             // the folder items when they are both visible.
-            return mLargeFolderPreviewItemInterpolator;
+            return mIsOpening
+                    ? mLargeFolderPreviewItemOpenInterpolator
+                    : mLargeFolderPreviewItemCloseInterpolator;
         }
         return mFolderInterpolator;
     }

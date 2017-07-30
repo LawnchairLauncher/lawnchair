@@ -25,7 +25,7 @@
         <item name="android:windowShowWallpaper">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:colorEdgeEffect">#FF757575</item>
-        <item name="android:keyboardLayout">@layout/all_apps_search_container</item>
+        <item name="android:keyboardLayout">@layout/search_container_all_apps</item>
     </style>
 
     <style name="BaseLauncherThemeWithCustomAttrs" parent="@style/BaseLauncherTheme">
@@ -139,6 +139,13 @@
     <!-- Theme for the popup container -->
     <style name="PopupItem">
         <item name="android:colorControlHighlight">?attr/popupColorTertiary</item>
+    </style>
+    <style name="PopupGutter">
+        <item name="android:backgroundTintMode">multiply</item>
+        <item name="android:backgroundTint">?attr/popupColorSecondary</item>
+        <item name="android:background">@drawable/gutter_horizontal</item>
+        <item name="android:elevation">@dimen/notification_elevation</item>
+        <item name="android:outlineProvider">none</item>
     </style>
 
     <!-- Drop targets -->

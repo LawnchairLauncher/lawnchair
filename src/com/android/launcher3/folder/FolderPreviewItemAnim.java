@@ -25,16 +25,16 @@ import com.android.launcher3.LauncherAnimUtils;
  * Animates a Folder preview item.
  */
 class FolderPreviewItemAnim {
+
+    private static PreviewItemDrawingParams sTmpParams = new PreviewItemDrawingParams(0, 0, 0, 0);
+
     private ValueAnimator mValueAnimator;
 
     float finalScale;
     float finalTransX;
     float finalTransY;
 
-    private PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0, 0);
-
     /**
-     * @param folderIcon The FolderIcon this preview will be drawn in.
      * @param params layout params to animate
      * @param index0 original index of the item to be animated
      * @param items0 original number of items in the preview
@@ -43,20 +43,20 @@ class FolderPreviewItemAnim {
      * @param duration duration in ms of the animation
      * @param onCompleteRunnable runnable to execute upon animation completion
      */
-    FolderPreviewItemAnim(final FolderIcon folderIcon, final PreviewItemDrawingParams params,
-            int index0, int items0, int index1, int items1, int duration,
-            final Runnable onCompleteRunnable) {
-        folderIcon.computePreviewItemDrawingParams(index1, items1, mTmpParams);
+    FolderPreviewItemAnim(final PreviewItemManager previewItemManager,
+            final PreviewItemDrawingParams params, int index0, int items0, int index1, int items1,
+            int duration, final Runnable onCompleteRunnable) {
+        previewItemManager.computePreviewItemDrawingParams(index1, items1, sTmpParams);
 
-        finalScale = mTmpParams.scale;
-        finalTransX = mTmpParams.transX;
-        finalTransY = mTmpParams.transY;
+        finalScale = sTmpParams.scale;
+        finalTransX = sTmpParams.transX;
+        finalTransY = sTmpParams.transY;
 
-        folderIcon.computePreviewItemDrawingParams(index0, items0, mTmpParams);
+        previewItemManager.computePreviewItemDrawingParams(index0, items0, sTmpParams);
 
-        final float scale0 = mTmpParams.scale;
-        final float transX0 = mTmpParams.transX;
-        final float transY0 = mTmpParams.transY;
+        final float scale0 = sTmpParams.scale;
+        final float transX0 = sTmpParams.transX;
+        final float transY0 = sTmpParams.transY;
 
         mValueAnimator = LauncherAnimUtils.ofFloat(0f, 1.0f);
         mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener(){
@@ -66,7 +66,7 @@ class FolderPreviewItemAnim {
                 params.transX = transX0 + progress * (finalTransX - transX0);
                 params.transY = transY0 + progress * (finalTransY - transY0);
                 params.scale = scale0 + progress * (finalScale - scale0);
-                folderIcon.invalidate();
+                previewItemManager.onParamsChanged();
             }
         });
         mValueAnimator.addListener(new AnimatorListenerAdapter() {

@@ -39,12 +39,14 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 
 /**
  * A frame layout which contains a QSB. This internally uses fragment to bind the view, which
  * allows it to contain the logic for {@link Fragment#startActivityForResult(Intent, int)}.
+ *
+ * Note: AppWidgetManagerCompat can be disabled using FeatureFlags. In QSB, we should use
+ * AppWidgetManager directly, so that it keeps working in that case.
  */
 public class QsbContainerView extends FrameLayout {
 
@@ -106,7 +108,7 @@ public class QsbContainerView extends FrameLayout {
                 return QsbWidgetHostView.getDefaultView(container);
             }
 
-            AppWidgetManagerCompat widgetManager = AppWidgetManagerCompat.getInstance(activity);
+            AppWidgetManager widgetManager = AppWidgetManager.getInstance(activity);
             InvariantDeviceProfile idp = LauncherAppState.getIDP(activity);
 
             Bundle opts = new Bundle();
@@ -129,7 +131,8 @@ public class QsbContainerView extends FrameLayout {
                 }
 
                 widgetId = mQsbWidgetHost.allocateAppWidgetId();
-                isWidgetBound = widgetManager.bindAppWidgetIdIfAllowed(widgetId, mWidgetInfo, opts);
+                isWidgetBound = widgetManager.bindAppWidgetIdIfAllowed(
+                        widgetId, mWidgetInfo.getProfile(), mWidgetInfo.provider, opts);
                 if (!isWidgetBound) {
                     mQsbWidgetHost.deleteAppWidgetId(widgetId);
                     widgetId = -1;

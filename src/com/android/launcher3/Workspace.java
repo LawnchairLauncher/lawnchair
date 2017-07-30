@@ -52,8 +52,10 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.Toast;
+
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.Launcher.LauncherOverlay;
+import com.android.launcher3.LauncherAppWidgetHost.ProviderChangedListener;
 import com.android.launcher3.UninstallDropTarget.DropTargetSource;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.OverviewAccessibilityDelegate;
@@ -75,6 +77,7 @@ import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -85,6 +88,7 @@ import com.android.launcher3.util.VerticalFlingDetector;
 import com.android.launcher3.util.WallpaperOffsetInterpolator;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -300,8 +304,8 @@ public class Workspace extends PagedView
     boolean mScrollInteractionBegan;
     boolean mStartedSendingScrollEvents;
     float mLastOverlayScroll = 0;
-    // Total over scrollX in the overlay direction.
-    private int mUnboundedScrollX;
+    boolean mOverlayShown = false;
+
     private boolean mForceDrawAdjacentPages = false;
     // Total over scrollX in the overlay direction.
     private float mOverlayTranslation;
@@ -599,12 +603,12 @@ public class Workspace extends PagedView
             // In transposed layout, we add the QSB in the Grid. As workspace does not touch the
             // edges, we do not need a full width QSB.
             qsb = LayoutInflater.from(getContext())
-                    .inflate(R.layout.qsb_container,firstPage, false);
+                    .inflate(R.layout.search_container_workspace,firstPage, false);
         }
 
         CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, firstPage.getCountX(), 1);
         lp.canReorder = false;
-        if (!firstPage.addViewToCellLayout(qsb, 0, R.id.qsb_container, lp, true)) {
+        if (!firstPage.addViewToCellLayout(qsb, 0, R.id.search_container_workspace, lp, true)) {
             Log.e(TAG, "Failed to add to item at (0, 0) to CellLayout");
         }
     }
@@ -622,7 +626,7 @@ public class Workspace extends PagedView
         }
 
         // Recycle the QSB widget
-        View qsb = findViewById(R.id.qsb_container);
+        View qsb = findViewById(R.id.search_container_workspace);
         if (qsb != null) {
             ((ViewGroup) qsb.getParent()).removeView(qsb);
         }
@@ -665,6 +669,10 @@ public class Workspace extends PagedView
         newScreen.setOnLongClickListener(mLongClickListener);
         newScreen.setOnClickListener(mLauncher);
         newScreen.setSoundEffectsEnabled(false);
+
+        int paddingLeftRight = mLauncher.getDeviceProfile().cellLayoutPaddingLeftRightPx;
+        newScreen.setPadding(paddingLeftRight, 0, paddingLeftRight, 0);
+
         mWorkspaceScreens.put(screenId, newScreen);
         mScreenOrder.add(insertIndex, screenId);
         addView(newScreen, insertIndex);
@@ -1321,18 +1329,10 @@ public class Workspace extends PagedView
         onOverlayScrollChanged(0);
     }
 
-    @Override
-    protected int getUnboundedScrollX() {
-        if (isScrollingOverlay()) {
-            return mUnboundedScrollX;
-        }
-
-        return super.getUnboundedScrollX();
-    }
 
     private boolean isScrollingOverlay() {
         return mLauncherOverlay != null &&
-                ((mIsRtl && mUnboundedScrollX > mMaxScrollX) || (!mIsRtl && mUnboundedScrollX < 0));
+                ((mIsRtl && getUnboundedScrollX() > mMaxScrollX) || (!mIsRtl && getUnboundedScrollX() < 0));
     }
 
     @Override
@@ -1349,12 +1349,6 @@ public class Workspace extends PagedView
         } else {
             super.snapToDestination();
         }
-    }
-
-    @Override
-    public void scrollTo(int x, int y) {
-        mUnboundedScrollX = x;
-        super.scrollTo(x, y);
     }
 
     @Override
@@ -1410,7 +1404,7 @@ public class Workspace extends PagedView
     @Override
     protected boolean shouldFlingForVelocity(int velocityX) {
         // When the overlay is moving, the fling or settle transition is controlled by the overlay.
-        return Float.compare(mOverlayTranslation, 0) == 0 &&
+        return Float.compare(Math.abs(mOverlayTranslation), 0) == 0 &&
                 super.shouldFlingForVelocity(velocityX);
     }
 
@@ -1420,6 +1414,20 @@ public class Workspace extends PagedView
      * The overlay scroll is being controlled locally, just update our overlay effect
      */
     public void onOverlayScrollChanged(float scroll) {
+
+        if (Float.compare(scroll, 1f) == 0) {
+            if (!mOverlayShown) {
+                mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.SWIPE,
+                        Action.Direction.LEFT, ContainerType.WORKSPACE, 0);
+            }
+            mOverlayShown = true;
+        } else if (Float.compare(scroll, 0f) == 0) {
+            if (mOverlayShown) {
+                mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.SWIPE,
+                        Action.Direction.RIGHT, ContainerType.WORKSPACE, -1);
+            }
+            mOverlayShown = false;
+        }
         float offset = 0f;
         float slip = 0f;
 
@@ -1530,16 +1538,13 @@ public class Workspace extends PagedView
     }
 
     @Override
-    protected void getEdgeVerticalPosition(int[] pos) {
-        View child = getChildAt(getPageCount() - 1);
-        pos[0] = child.getTop();
-        pos[1] = child.getBottom();
-    }
-
-    @Override
-    protected void notifyPageSwitchListener() {
-        super.notifyPageSwitchListener();
-
+    protected void notifyPageSwitchListener(int prevPage) {
+        super.notifyPageSwitchListener(prevPage);
+        if (prevPage != mCurrentPage) {
+            int swipeDirection = (prevPage < mCurrentPage) ? Action.Direction.RIGHT : Action.Direction.LEFT;
+            mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.SWIPE,
+                    swipeDirection, ContainerType.WORKSPACE, prevPage);
+        }
         if (hasCustomContent() && getNextPage() == 0 && !mCustomContentShowing) {
             mCustomContentShowing = true;
             if (mCustomContentCallbacks != null) {
@@ -1634,16 +1639,21 @@ public class Workspace extends PagedView
     }
 
     private void updatePageAlphaValues() {
-        if (mWorkspaceFadeInAdjacentScreens &&
-                !workspaceInModalState() &&
-                !mIsSwitchingState) {
+        if (!workspaceInModalState() && !mIsSwitchingState) {
             int screenCenter = getScrollX() + getViewportWidth() / 2;
             for (int i = numCustomPages(); i < getChildCount(); i++) {
                 CellLayout child = (CellLayout) getChildAt(i);
                 if (child != null) {
                     float scrollProgress = getScrollProgress(screenCenter, child, i);
                     float alpha = 1 - Math.abs(scrollProgress);
-                    child.getShortcutsAndWidgets().setAlpha(alpha);
+                    if (mWorkspaceFadeInAdjacentScreens) {
+                        child.getShortcutsAndWidgets().setAlpha(alpha);
+                    } else {
+                        // Pages that are off-screen aren't important for accessibility.
+                        child.getShortcutsAndWidgets().setImportantForAccessibility(
+                                alpha > 0 ? IMPORTANT_FOR_ACCESSIBILITY_AUTO
+                                        : IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+                    }
                 }
             }
         }
@@ -1889,13 +1899,20 @@ public class Workspace extends PagedView
             return;
         }
 
+        ArrayList<Long> prevScreenOrder = (ArrayList<Long>) mScreenOrder.clone();
         mScreenOrder.clear();
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             CellLayout cl = ((CellLayout) getChildAt(i));
             mScreenOrder.add(getIdForScreen(cl));
         }
-        mLauncher.getUserEventDispatcher().logOverviewReorder();
+
+        for (int i = 0; i < prevScreenOrder.size(); i++) {
+            if (mScreenOrder.get(i) != prevScreenOrder.get(i)) {
+                mLauncher.getUserEventDispatcher().logOverviewReorder();
+                break;
+            }
+        }
         LauncherModel.updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
 
         // Re-enable auto layout transitions for page deletion.
@@ -2365,7 +2382,7 @@ public class Workspace extends PagedView
                 fi.performCreateAnimation(destInfo, v, sourceInfo, dragView, folderLocation, scale,
                         postAnimationRunnable);
             } else {
-                fi.prepareCreate(v);
+                fi.prepareCreateAnimation(v);
                 fi.addItem(destInfo);
                 fi.addItem(sourceInfo);
             }
@@ -3974,8 +3991,9 @@ public class Workspace extends PagedView
         }
     }
 
-    private void moveToScreen(int page, boolean animate) {
-        if (!workspaceInModalState()) {
+    void moveToDefaultScreen(boolean animate) {
+        int page = getDefaultPage();
+        if (!workspaceInModalState() && getNextPage() != page) {
             if (animate) {
                 snapToPage(page);
             } else {
@@ -3986,10 +4004,6 @@ public class Workspace extends PagedView
         if (child != null) {
             child.requestFocus();
         }
-    }
-
-    void moveToDefaultScreen(boolean animate) {
-        moveToScreen(getDefaultPage(), animate);
     }
 
     void moveToCustomContentScreen(boolean animate) {
@@ -4068,7 +4082,7 @@ public class Workspace extends PagedView
      * Used as a workaround to ensure that the AppWidgetService receives the
      * PACKAGE_ADDED broadcast before updating widgets.
      */
-    private class DeferredWidgetRefresh implements Runnable {
+    private class DeferredWidgetRefresh implements Runnable, ProviderChangedListener {
         private final ArrayList<LauncherAppWidgetInfo> mInfos;
         private final LauncherAppWidgetHost mHost;
         private final Handler mHandler;
@@ -4110,6 +4124,11 @@ public class Workspace extends PagedView
                     return false;
                 }
             });
+        }
+
+        @Override
+        public void notifyWidgetProvidersChanged() {
+            run();
         }
     }
 

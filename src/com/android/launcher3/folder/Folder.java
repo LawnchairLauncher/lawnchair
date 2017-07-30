@@ -791,12 +791,15 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         if (mFolderIcon != null) {
             mFolderIcon.setVisibility(View.VISIBLE);
             if (FeatureFlags.LAUNCHER3_NEW_FOLDER_ANIMATION) {
-                mFolderIcon.mFolderName.setTextVisibility(true);
                 mFolderIcon.setBackgroundVisible(true);
-                mFolderIcon.mBackground.fadeInBackgroundShadow();
+                mFolderIcon.mFolderName.setTextVisibility(true);
             }
             if (wasAnimated) {
-                mFolderIcon.mBackground.animateBackgroundStroke();
+                if (FeatureFlags.LAUNCHER3_NEW_FOLDER_ANIMATION) {
+                    mFolderIcon.mBackground.fadeInBackgroundShadow();
+                    mFolderIcon.mBackground.animateBackgroundStroke();
+                    mFolderIcon.onFolderClose(mContent.getCurrentPage());
+                }
                 if (mFolderIcon.hasBadge()) {
                     mFolderIcon.createBadgeScaleAnimator(0f, 1f).start();
                 }
@@ -818,6 +821,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         mSuppressFolderDeletion = false;
         clearDragInfo();
         mState = STATE_SMALL;
+        mContent.setCurrentPage(0);
     }
 
     public boolean acceptDrop(DragObject d) {
@@ -1280,7 +1284,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         };
         View finalChild = mContent.getLastItem();
         if (finalChild != null) {
-            mFolderIcon.performDestroyAnimation(finalChild, onCompleteRunnable);
+            mFolderIcon.performDestroyAnimation(onCompleteRunnable);
         } else {
             onCompleteRunnable.run();
         }
@@ -1355,8 +1359,11 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         }
         mContent.completePendingPageChanges();
 
-        if (d.dragInfo instanceof PendingAddShortcutInfo) {
-            PendingAddShortcutInfo pasi = (PendingAddShortcutInfo) d.dragInfo;
+        PendingAddShortcutInfo pasi = d.dragInfo instanceof PendingAddShortcutInfo
+                ? (PendingAddShortcutInfo) d.dragInfo : null;
+        ShortcutInfo pasiSi = pasi != null ? pasi.activityInfo.createShortcutInfo() : null;
+        if (pasi != null && pasiSi == null) {
+            // There is no ShortcutInfo, so we have to go through a configuration activity.
             pasi.container = mInfo.id;
             pasi.rank = mEmptyCellRank;
 
@@ -1366,7 +1373,9 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             mRearrangeOnClose = true;
         } else {
             final ShortcutInfo si;
-            if (d.dragInfo instanceof AppInfo) {
+            if (pasiSi != null) {
+                si = pasiSi;
+            } else if (d.dragInfo instanceof AppInfo) {
                 // Came from all apps -- make a copy.
                 si = ((AppInfo) d.dragInfo).makeShortcut();
             } else {
@@ -1513,18 +1522,17 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         return mItemsInReadingOrder;
     }
 
-    public List<BubbleTextView> getItemsOnCurrentPage() {
+    public List<BubbleTextView> getItemsOnPage(int page) {
         ArrayList<View> allItems = getItemsInReadingOrder();
-        int currentPage = mContent.getCurrentPage();
         int lastPage = mContent.getPageCount() - 1;
         int totalItemsInFolder = allItems.size();
         int itemsPerPage = mContent.itemsPerPage();
-        int numItemsOnCurrentPage = currentPage == lastPage
-                ? totalItemsInFolder - (itemsPerPage * currentPage)
+        int numItemsOnCurrentPage = page == lastPage
+                ? totalItemsInFolder - (itemsPerPage * page)
                 : itemsPerPage;
 
-        int startIndex = currentPage * itemsPerPage;
-        int endIndex = startIndex + numItemsOnCurrentPage;
+        int startIndex = page * itemsPerPage;
+        int endIndex = Math.min(startIndex + numItemsOnCurrentPage, allItems.size());
 
         List<BubbleTextView> itemsOnCurrentPage = new ArrayList<>(numItemsOnCurrentPage);
         for (int i = startIndex; i < endIndex; ++i) {

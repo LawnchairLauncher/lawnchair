@@ -81,9 +81,9 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
         mSupportsDarkText = wallpaperColors != null
                 ? (wallpaperColors.getColorHints()
                     & WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT) > 0 : false;
-        float[] hsl = new float[3];
-        ColorUtils.colorToHSL(mMainColor, hsl);
-        mIsDark = hsl[2] < 0.2f;
+        mIsDark = wallpaperColors != null
+                ? (wallpaperColors.getColorHints()
+                    & WallpaperColorsCompat.HINT_SUPPORTS_DARK_THEME) > 0 : false;
     }
 
     public void setOnThemeChangeListener(OnThemeChangeListener onThemeChangeListener) {

@@ -41,7 +41,6 @@ import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
-
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -52,7 +51,6 @@ import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.SQLiteCacheHelper;
 import com.android.launcher3.util.Thunk;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -70,7 +68,7 @@ public class IconCache {
     private static final int INITIAL_ICON_CACHE_CAPACITY = 50;
 
     // Empty class name is used for storing package default entry.
-    private static final String EMPTY_CLASS_NAME = ".";
+    public static final String EMPTY_CLASS_NAME = ".";
 
     private static final boolean DEBUG = false;
     private static final boolean DEBUG_IGNORE_CACHE = false;
@@ -91,7 +89,7 @@ public class IconCache {
 
     private final Context mContext;
     private final PackageManager mPackageManager;
-    private IconProvider mIconProvider;
+    private final IconProvider mIconProvider;
     @Thunk final UserManagerCompat mUserManager;
     private final LauncherAppsCompat mLauncherApps;
     private final HashMap<ComponentKey, CacheEntry> mCache =
@@ -122,7 +120,8 @@ public class IconCache {
     }
 
     private Drawable getFullResDefaultActivityIcon() {
-        return getFullResIcon(Resources.getSystem(), android.R.mipmap.sym_def_app_icon);
+        return getFullResIcon(Resources.getSystem(), Utilities.isAtLeastO() ?
+                android.R.drawable.sym_def_app_icon : android.R.mipmap.sym_def_app_icon);
     }
 
     private Drawable getFullResIcon(Resources resources, int iconId) {
@@ -193,7 +192,7 @@ public class IconCache {
      * Remove any records for the supplied package name from memory.
      */
     private void removeFromMemCacheLocked(String packageName, UserHandle user) {
-        HashSet<ComponentKey> forDeletion = new HashSet<ComponentKey>();
+        HashSet<ComponentKey> forDeletion = new HashSet<>();
         for (ComponentKey key: mCache.keySet()) {
             if (key.componentName.getPackageName().equals(packageName)
                     && key.user.equals(user)) {
@@ -219,7 +218,6 @@ public class IconCache {
             }
         } catch (NameNotFoundException e) {
             Log.d(TAG, "Package not found", e);
-            return;
         }
     }
 
@@ -264,7 +262,7 @@ public class IconCache {
             Set<String> ignorePackages) {
         long userSerial = mUserManager.getSerialNumberForUser(user);
         PackageManager pm = mContext.getPackageManager();
-        HashMap<String, PackageInfo> pkgInfoMap = new HashMap<String, PackageInfo>();
+        HashMap<String, PackageInfo> pkgInfoMap = new HashMap<>();
         for (PackageInfo info : pm.getInstalledPackages(PackageManager.GET_UNINSTALLED_PACKAGES)) {
             pkgInfoMap.put(info.packageName, info);
         }
@@ -274,7 +272,7 @@ public class IconCache {
             componentMap.put(app.getComponentName(), app);
         }
 
-        HashSet<Integer> itemsToRemove = new HashSet<Integer>();
+        HashSet<Integer> itemsToRemove = new HashSet<>();
         Stack<LauncherActivityInfo> appsToUpdate = new Stack<>();
 
         Cursor c = null;
@@ -704,7 +702,7 @@ public class IconCache {
         private final HashMap<String, PackageInfo> mPkgInfoMap;
         private final Stack<LauncherActivityInfo> mAppsToAdd;
         private final Stack<LauncherActivityInfo> mAppsToUpdate;
-        private final HashSet<String> mUpdatedPackages = new HashSet<String>();
+        private final HashSet<String> mUpdatedPackages = new HashSet<>();
 
         @Thunk SerializedIconUpdateTask(long userSerial, HashMap<String, PackageInfo> pkgInfoMap,
                 Stack<LauncherActivityInfo> appsToAdd,
@@ -753,7 +751,7 @@ public class IconCache {
     }
 
     private static final class IconDB extends SQLiteCacheHelper {
-        private final static int DB_VERSION = 16;
+        private final static int DB_VERSION = 17;
 
         private final static int RELEASE_VERSION = DB_VERSION +
                 (FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ? 0 : 1);

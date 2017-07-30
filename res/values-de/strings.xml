@@ -35,9 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d breit und %2$d hoch"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Zum manuellen Hinzufügen gedrückt halten"</string>
     <string name="place_automatically" msgid="8064208734425456485">"Automatisch hinzufügen"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"In Apps suchen"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"Apps werden geladen..."</string>
-    <string name="all_apps_no_search_results" msgid="6332185285860416787">"Keine Apps für \"<xliff:g id="QUERY">%1$s</xliff:g>\" gefunden"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Apps finden"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"Apps werden geladen…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"Keine Apps für \"<xliff:g id="QUERY">%1$s</xliff:g>\" gefunden"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Weitere Apps suchen"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Benachrichtigungen"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Auf diesem Startbildschirm ist kein Platz mehr vorhanden."</string>
@@ -79,17 +79,18 @@
     <string name="icon_badging_title" msgid="874121399231955394">"App-Benachrichtigungspunkte"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Aktiviert"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Deaktiviert"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"Benachrichtigungszugriff erforderlich"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Um dir Benachrichtigungspunkte anzeigen zu lassen, aktiviere die Benachrichtigungen für die App \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"Einstellungen ändern"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Symbol zu Startbildschirm hinzufügen"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Für neue Apps"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"Form des Symbols ändern"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Systemstandardeinstellung verwenden"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Quadrat"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Superkreis"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"Kreis"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"Träne"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Änderungen an der Form des Symbols werden übernommen"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Unbekannt"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Entfernen"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Suchen"</string>
