@@ -494,8 +494,8 @@ public class FolderPagedView extends PagedView {
     }
 
     @Override
-    protected void notifyPageSwitchListener() {
-        super.notifyPageSwitchListener();
+    protected void notifyPageSwitchListener(int prevPage) {
+        super.notifyPageSwitchListener(prevPage);
         if (mFolder != null) {
             mFolder.updateTextViewFocus();
         }
@@ -700,11 +700,5 @@ public class FolderPagedView extends PagedView {
 
     public int itemsPerPage() {
         return mMaxItemsPerPage;
-    }
-
-    @Override
-    protected void getEdgeVerticalPosition(int[] pos) {
-        pos[0] = 0;
-        pos[1] = getViewportHeight();
     }
 }

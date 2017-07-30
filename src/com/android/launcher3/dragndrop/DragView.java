@@ -16,23 +16,18 @@
 
 package com.android.launcher3.dragndrop;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.FloatArrayEvaluator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.pm.LauncherActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -44,13 +39,11 @@ import android.graphics.drawable.InsetDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.animation.DynamicAnimation;
+import android.support.animation.FloatPropertyCompat;
 import android.support.animation.SpringAnimation;
 import android.support.animation.SpringForce;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.ItemInfo;
@@ -76,12 +69,16 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import java.util.Arrays;
 import java.util.List;
 
-public class DragView extends FrameLayout {
+public class DragView extends View {
+    private static final ColorMatrix sTempMatrix1 = new ColorMatrix();
+    private static final ColorMatrix sTempMatrix2 = new ColorMatrix();
+
     public static final int COLOR_CHANGE_DURATION = 120;
     public static final int VIEW_ZOOM_DURATION = 150;
 
     @Thunk static float sDragAlpha = 1f;
 
+    private boolean mDrawBitmap = true;
     private Bitmap mBitmap;
     private Bitmap mCrossFadeBitmap;
     @Thunk Paint mPaint;
@@ -114,16 +111,11 @@ public class DragView extends FrameLayout {
     private int mAnimatedShiftY;
 
     // Below variable only needed IF FeatureFlags.LAUNCHER3_SPRING_ICONS is {@code true}
-    private SpringAnimation mSpringX, mSpringY;
-    private ImageView mFgImageView, mBgImageView;
+    private Drawable mBgSpringDrawable, mFgSpringDrawable;
+    private SpringFloatValue mTranslateX, mTranslateY;
     private Path mScaledMaskPath;
     private Drawable mBadge;
-
-    // Following three values are fine tuned with motion ux designer
-    private final static int STIFFNESS = 4000;
-    private final static float DAMPENING_RATIO = 1f;
-    private final static int PARALLAX_MAX_IN_DP = 8;
-    private final int mDelta;
+    private ColorMatrixColorFilter mBaseFilter;
 
     /**
      * Construct the drag view.
@@ -193,12 +185,11 @@ public class DragView extends FrameLayout {
 
         mBlurSizeOutline = getResources().getDimensionPixelSize(R.dimen.blur_size_medium_outline);
         setElevation(getResources().getDimension(R.dimen.drag_elevation));
-        setWillNotDraw(false);
-        mDelta = (int)(getResources().getDisplayMetrics().density * PARALLAX_MAX_IN_DP);
     }
 
     /**
-     * Initialize {@code #mIconDrawable} only if the icon type is app icon (not shortcut or folder).
+     * Initialize {@code #mIconDrawable} if the item can be represented using
+     * an {@link AdaptiveIconDrawable} or {@link FolderAdaptiveIcon}.
      */
     @TargetApi(Build.VERSION_CODES.O)
     public void setItemInfo(final ItemInfo info) {
@@ -206,7 +197,8 @@ public class DragView extends FrameLayout {
             return;
         }
         if (info.itemType != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
-                info.itemType != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+                info.itemType != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
+                info.itemType != LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
             return;
         }
         // Load the adaptive icon on a background thread and add the view in ui thread.
@@ -216,49 +208,101 @@ public class DragView extends FrameLayout {
             public void run() {
                 LauncherAppState appState = LauncherAppState.getInstance(mLauncher);
                 Object[] outObj = new Object[1];
-                Drawable dr = getFullDrawable(info, appState, outObj);
+                final Drawable dr = getFullDrawable(info, appState, outObj);
 
                 if (dr instanceof AdaptiveIconDrawable) {
                     int w = mBitmap.getWidth();
                     int h = mBitmap.getHeight();
-                    AdaptiveIconDrawable adaptiveIcon = (AdaptiveIconDrawable) dr;
-                    adaptiveIcon.setBounds(0, 0, w, h);
-                    float blurSizeOutline = mLauncher.getResources()
-                            .getDimension(R.dimen.blur_size_medium_outline);
-                    float normalizationScale = IconNormalizer.getInstance(mLauncher)
-                            .getScale(adaptiveIcon, null, null, null) * ((w - blurSizeOutline) / w);
+                    int blurMargin = (int) mLauncher.getResources()
+                            .getDimension(R.dimen.blur_size_medium_outline) / 2;
 
-                    final Path mask = getMaskPath(adaptiveIcon, normalizationScale);
-                    mFgImageView = setupImageView(adaptiveIcon.getForeground(), normalizationScale);
-                    mBgImageView = setupImageView(adaptiveIcon.getBackground(), normalizationScale);
-                    mSpringX = setupSpringAnimation(-w/4, w/4, DynamicAnimation.TRANSLATION_X);
-                    mSpringY = setupSpringAnimation(-h/4, h/4, DynamicAnimation.TRANSLATION_Y);
+                    Rect bounds = new Rect(0, 0, w, h);
+                    bounds.inset(blurMargin, blurMargin);
+                    Utilities.scaleRectAboutCenter(bounds,
+                            IconNormalizer.getInstance(mLauncher).getScale(dr, null, null, null));
+                    AdaptiveIconDrawable adaptiveIcon = (AdaptiveIconDrawable) dr;
+
+                    // Shrink very tiny bit so that the clip path is smaller than the original bitmap
+                    // that has anti aliased edges and shadows.
+                    Rect shrunkBounds = new Rect(bounds);
+                    Utilities.scaleRectAboutCenter(shrunkBounds, 0.98f);
+                    adaptiveIcon.setBounds(shrunkBounds);
+                    final Path mask = adaptiveIcon.getIconMask();
+
+                    mTranslateX = new SpringFloatValue(DragView.this,
+                            w * AdaptiveIconDrawable.getExtraInsetFraction());
+                    mTranslateY = new SpringFloatValue(DragView.this,
+                            h * AdaptiveIconDrawable.getExtraInsetFraction());
 
                     mBadge = getBadge(info, appState, outObj[0]);
-                    int blurMargin = (int) blurSizeOutline / 2;
-                    mBadge.setBounds(blurMargin, blurMargin, w - blurMargin, h - blurMargin);
+                    mBadge.setBounds(bounds);
+
+                    bounds.inset(
+                            (int) (-bounds.width() * AdaptiveIconDrawable.getExtraInsetFraction()),
+                            (int) (-bounds.height() * AdaptiveIconDrawable.getExtraInsetFraction())
+                    );
+                    mBgSpringDrawable = adaptiveIcon.getBackground();
+                    if (mBgSpringDrawable == null) {
+                        mBgSpringDrawable = new ColorDrawable(Color.TRANSPARENT);
+                    }
+                    mBgSpringDrawable.setBounds(bounds);
+                    mFgSpringDrawable = adaptiveIcon.getForeground();
+                    if (mFgSpringDrawable == null) {
+                        mFgSpringDrawable = new ColorDrawable(Color.TRANSPARENT);
+                    }
+                    mFgSpringDrawable.setBounds(bounds);
 
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
                             // Assign the variable on the UI thread to avoid race conditions.
                             mScaledMaskPath = mask;
-                            addView(mBgImageView);
-                            addView(mFgImageView);
-                            setWillNotDraw(true);
+
+                            // Do not draw the background in case of folder as its translucent
+                            mDrawBitmap = !(dr instanceof FolderAdaptiveIcon);
 
                             if (info.isDisabled()) {
                                 FastBitmapDrawable d = new FastBitmapDrawable(null);
                                 d.setIsDisabled(true);
-                                ColorFilter cf = d.getColorFilter();
-                                mBgImageView.setColorFilter(cf);
-                                mFgImageView.setColorFilter(cf);
-                                mBadge.setColorFilter(cf);
+                                mBaseFilter = (ColorMatrixColorFilter) d.getColorFilter();
                             }
+                            updateColorFilter();
                         }
                     });
                 }
             }});
+    }
+
+    @TargetApi(Build.VERSION_CODES.O)
+    private void updateColorFilter() {
+        if (mCurrentFilter == null) {
+            mPaint.setColorFilter(null);
+
+            if (mScaledMaskPath != null) {
+                mBgSpringDrawable.setColorFilter(mBaseFilter);
+                mBgSpringDrawable.setColorFilter(mBaseFilter);
+                mBadge.setColorFilter(mBaseFilter);
+            }
+        } else {
+            ColorMatrixColorFilter currentFilter = new ColorMatrixColorFilter(mCurrentFilter);
+            mPaint.setColorFilter(currentFilter);
+
+            if (mScaledMaskPath != null) {
+                if (mBaseFilter != null) {
+                    mBaseFilter.getColorMatrix(sTempMatrix1);
+                    sTempMatrix2.set(mCurrentFilter);
+                    sTempMatrix1.postConcat(sTempMatrix2);
+
+                    currentFilter = new ColorMatrixColorFilter(sTempMatrix1);
+                }
+
+                mBgSpringDrawable.setColorFilter(currentFilter);
+                mFgSpringDrawable.setColorFilter(currentFilter);
+                mBadge.setColorFilter(currentFilter);
+            }
+        }
+
+        invalidate();
     }
 
     /**
@@ -291,6 +335,14 @@ public class DragView extends FrameLayout {
                 return sm.getShortcutIconDrawable(si.get(0),
                         appState.getInvariantDeviceProfile().fillResIconDpi);
             }
+        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+            FolderAdaptiveIcon icon =  FolderAdaptiveIcon.createFolderAdaptiveIcon(
+                    mLauncher, info.id, new Point(mBitmap.getWidth(), mBitmap.getHeight()));
+            if (icon == null) {
+                return null;
+            }
+            outObj[0] = icon;
+            return icon;
         } else {
             return null;
         }
@@ -318,84 +370,17 @@ public class DragView extends FrameLayout {
             float insetFraction = (iconSize - badgeSize) / iconSize;
             return new InsetDrawable(new FastBitmapDrawable(badge),
                     insetFraction, insetFraction, 0, 0);
+        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+            return ((FolderAdaptiveIcon) obj).getBadge();
         } else {
             return mLauncher.getPackageManager()
                     .getUserBadgedIcon(new FixedSizeEmptyDrawable(iconSize), info.user);
         }
     }
 
-    private ImageView setupImageView(Drawable drawable, float normalizationScale) {
-        FrameLayout.LayoutParams params = new LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        ImageView imageViewOut = new ImageView(getContext());
-        imageViewOut.setLayoutParams(params);
-        imageViewOut.setScaleType(ImageView.ScaleType.FIT_XY);
-        imageViewOut.setScaleX(normalizationScale);
-        imageViewOut.setScaleY(normalizationScale);
-        imageViewOut.setImageDrawable(drawable);
-        return imageViewOut;
-    }
-
-    private SpringAnimation setupSpringAnimation(int minValue, int maxValue,
-            DynamicAnimation.ViewProperty property) {
-        SpringAnimation s = new SpringAnimation(mFgImageView, property, 0);
-        s.setMinValue(minValue).setMaxValue(maxValue);
-        s.setSpring(new SpringForce(0)
-                        .setDampingRatio(DAMPENING_RATIO)
-                        .setStiffness(STIFFNESS));
-        return s;
-    }
-
-    @TargetApi(Build.VERSION_CODES.O)
-    private Path getMaskPath(AdaptiveIconDrawable dr, float normalizationScale) {
-        Matrix m = new Matrix();
-        // Shrink very tiny bit so that the clip path is smaller than the original bitmap
-        // that has anti aliased edges and shadows.
-        float s = normalizationScale * .97f;
-        m.setScale(s, s, dr.getBounds().centerX(), dr.getBounds().centerY());
-        Path p = new Path();
-        dr.getIconMask().transform(m, p);
-        return p;
-    }
-
-    private void applySpring(int x, int y) {
-        if (mSpringX == null || mSpringY == null) {
-            return;
-        }
-        mSpringX.animateToFinalPosition(Utilities.boundToRange(x, -mDelta, mDelta));
-        mSpringY.animateToFinalPosition(Utilities.boundToRange(y, -mDelta, mDelta));
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        int w = right - left;
-        int h = bottom - top;
-        for (int i = 0; i < getChildCount(); i++) {
-            getChildAt(i).layout(-w / 4, -h / 4, w + w / 4, h + h / 4);
-        }
-    }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int w = mBitmap.getWidth();
-        int h = mBitmap.getHeight();
-        setMeasuredDimension(w, h);
-        for (int i = 0; i < getChildCount(); i++) {
-            getChildAt(i).measure(w, h);
-        }
-    }
-
-    @Override
-    protected void dispatchDraw(Canvas canvas) {
-        if (mScaledMaskPath != null) {
-            int cnt = canvas.save();
-            canvas.drawBitmap(mBitmap, 0.0f, 0.0f, mPaint);
-            canvas.clipPath(mScaledMaskPath);
-            super.dispatchDraw(canvas);
-            canvas.restoreToCount(cnt);
-            mBadge.draw(canvas);
-        } else {
-            super.dispatchDraw(canvas);
-        }
+        setMeasuredDimension(mBitmap.getWidth(), mBitmap.getHeight());
     }
 
     /** Sets the scale of the view over the normal workspace icon size. */
@@ -439,43 +424,37 @@ public class DragView extends FrameLayout {
         return mDragRegion;
     }
 
-    // Draws drag shadow for system DND.
-    @SuppressLint("WrongCall")
-    public void drawDragShadow(Canvas canvas) {
-        final int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
-        canvas.scale(getScaleX(), getScaleY());
-        onDraw(canvas);
-        canvas.restoreToCount(saveCount);
-    }
-
-    // Provides drag shadow metrics for system DND.
-    public void provideDragShadowMetrics(Point size, Point touch) {
-        size.set((int)(mBitmap.getWidth() * getScaleX()), (int)(mBitmap.getHeight() * getScaleY()));
-
-        final float xGrowth = mBitmap.getWidth() * (getScaleX() - 1);
-        final float yGrowth = mBitmap.getHeight() * (getScaleY() - 1);
-        touch.set(
-                mRegistrationX + (int)Math.round(xGrowth / 2),
-                mRegistrationY + (int)Math.round(yGrowth / 2));
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         mHasDrawn = true;
-        boolean crossFade = mCrossFadeProgress > 0 && mCrossFadeBitmap != null;
-        if (crossFade) {
-            int alpha = crossFade ? (int) (255 * (1 - mCrossFadeProgress)) : 255;
-            mPaint.setAlpha(alpha);
+
+        if (mDrawBitmap) {
+            // Always draw the bitmap to mask anti aliasing due to clipPath
+            boolean crossFade = mCrossFadeProgress > 0 && mCrossFadeBitmap != null;
+            if (crossFade) {
+                int alpha = crossFade ? (int) (255 * (1 - mCrossFadeProgress)) : 255;
+                mPaint.setAlpha(alpha);
+            }
+            canvas.drawBitmap(mBitmap, 0.0f, 0.0f, mPaint);
+            if (crossFade) {
+                mPaint.setAlpha((int) (255 * mCrossFadeProgress));
+                final int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
+                float sX = (mBitmap.getWidth() * 1.0f) / mCrossFadeBitmap.getWidth();
+                float sY = (mBitmap.getHeight() * 1.0f) / mCrossFadeBitmap.getHeight();
+                canvas.scale(sX, sY);
+                canvas.drawBitmap(mCrossFadeBitmap, 0.0f, 0.0f, mPaint);
+                canvas.restoreToCount(saveCount);
+            }
         }
-        canvas.drawBitmap(mBitmap, 0.0f, 0.0f, mPaint);
-        if (crossFade) {
-            mPaint.setAlpha((int) (255 * mCrossFadeProgress));
-            final int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
-            float sX = (mBitmap.getWidth() * 1.0f) / mCrossFadeBitmap.getWidth();
-            float sY = (mBitmap.getHeight() * 1.0f) / mCrossFadeBitmap.getHeight();
-            canvas.scale(sX, sY);
-            canvas.drawBitmap(mCrossFadeBitmap, 0.0f, 0.0f, mPaint);
-            canvas.restoreToCount(saveCount);
+
+        if (mScaledMaskPath != null) {
+            int cnt = canvas.save();
+            canvas.clipPath(mScaledMaskPath);
+            mBgSpringDrawable.draw(canvas);
+            canvas.translate(mTranslateX.mValue, mTranslateY.mValue);
+            mFgSpringDrawable.draw(canvas);
+            canvas.restoreToCount(cnt);
+            mBadge.draw(canvas);
         }
     }
 
@@ -512,8 +491,7 @@ public class DragView extends FrameLayout {
             animateFilterTo(m1.getArray());
         } else {
             if (mCurrentFilter == null) {
-                mPaint.setColorFilter(null);
-                invalidate();
+                updateColorFilter();
             } else {
                 animateFilterTo(new ColorMatrix().getArray());
             }
@@ -534,8 +512,7 @@ public class DragView extends FrameLayout {
 
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                mPaint.setColorFilter(new ColorMatrixColorFilter(mCurrentFilter));
-                invalidate();
+                updateColorFilter();
             }
         });
         mFilterAnimator.start();
@@ -590,8 +567,10 @@ public class DragView extends FrameLayout {
      * @param touchY the y coordinate the user touched in DragLayer coordinates
      */
     public void move(int touchX, int touchY) {
-        if (touchX > 0 && touchY > 0 && mLastTouchX > 0 && mLastTouchY > 0) {
-            applySpring(mLastTouchX - touchX, mLastTouchY - touchY);
+        if (touchX > 0 && touchY > 0 && mLastTouchX > 0 && mLastTouchY > 0
+                && mScaledMaskPath != null) {
+            mTranslateX.animateToPos(mLastTouchX - touchX);
+            mTranslateY.animateToPos(mLastTouchY - touchY);
         }
         mLastTouchX = touchX;
         mLastTouchY = touchY;
@@ -640,6 +619,48 @@ public class DragView extends FrameLayout {
 
     public float getInitialScale() {
         return mInitialScale;
+    }
+
+    private static class SpringFloatValue {
+
+        private static final FloatPropertyCompat<SpringFloatValue> VALUE =
+                new FloatPropertyCompat<SpringFloatValue>("value") {
+                    @Override
+                    public float getValue(SpringFloatValue object) {
+                        return object.mValue;
+                    }
+
+                    @Override
+                    public void setValue(SpringFloatValue object, float value) {
+                        object.mValue = value;
+                        object.mView.invalidate();
+                    }
+                };
+
+        // Following three values are fine tuned with motion ux designer
+        private final static int STIFFNESS = 4000;
+        private final static float DAMPENING_RATIO = 1f;
+        private final static int PARALLAX_MAX_IN_DP = 8;
+
+        private final View mView;
+        private final SpringAnimation mSpring;
+        private final float mDelta;
+
+        private float mValue;
+
+        public SpringFloatValue(View view, float range) {
+            mView = view;
+            mSpring = new SpringAnimation(this, VALUE, 0)
+                    .setMinValue(-range).setMaxValue(range)
+                    .setSpring(new SpringForce(0)
+                            .setDampingRatio(DAMPENING_RATIO)
+                            .setStiffness(STIFFNESS));
+            mDelta = view.getResources().getDisplayMetrics().density * PARALLAX_MAX_IN_DP;
+        }
+
+        public void animateToPos(float value) {
+            mSpring.animateToFinalPosition(Utilities.boundToRange(value, -mDelta, mDelta));
+        }
     }
 
     private static class FixedSizeEmptyDrawable extends ColorDrawable {

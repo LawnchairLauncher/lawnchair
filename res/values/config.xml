@@ -124,7 +124,7 @@
     <item type="id" name="preview_image_id" />
 
 <!-- Popup items -->
-    <integer name="config_popupOpenCloseDuration">220</integer>
+    <integer name="config_popupOpenCloseDuration">150</integer>
     <integer name="config_popupArrowOpenDuration">80</integer>
     <integer name="config_removeNotificationViewDuration">300</integer>
 
@@ -140,4 +140,10 @@
     <item type="id" name="action_resize" />
     <item type="id" name="action_deep_shortcuts" />
     <item type="id" name="action_dismiss_notification" />
+
+<!-- QSB IDs. DO not change -->
+    <item type="id" name="search_container_workspace" />
+    <item type="id" name="search_container_hotseat" />
+    <item type="id" name="search_container_all_apps" />
+
 </resources>

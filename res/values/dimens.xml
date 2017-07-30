@@ -16,8 +16,8 @@
 
 <resources>
 <!-- Dynamic Grid -->
-    <dimen name="dynamic_grid_edge_margin">16dp</dimen>
-    <dimen name="dynamic_grid_page_indicator_size">32dp</dimen>
+    <dimen name="dynamic_grid_edge_margin">8dp</dimen>
+    <dimen name="dynamic_grid_min_page_indicator_size">32dp</dimen>
     <dimen name="dynamic_grid_page_indicator_line_height">1dp</dimen>
     <dimen name="dynamic_grid_page_indicator_gutter_width">50dp</dimen>
     <dimen name="dynamic_grid_icon_drawable_padding">8dp</dimen>
@@ -30,7 +30,7 @@
     <!-- Minimum space between workspace and hotseat in spring loaded mode -->
     <dimen name="dynamic_grid_min_spring_loaded_space">8dp</dimen>
 
-    <!-- dynamic_grid_edge_margin / 2 -->
+    <dimen name="dynamic_grid_cell_layout_padding">5.5dp</dimen>
     <dimen name="dynamic_grid_cell_padding_x">8dp</dimen>
 
     <!-- Hotseat -->
@@ -213,6 +213,7 @@
     <dimen name="notification_footer_height">32dp</dimen>
     <dimen name="notification_header_text_size">13sp</dimen>
     <dimen name="notification_header_count_text_size">12sp</dimen>
+    <dimen name="notification_main_title_size">16sp</dimen>
     <dimen name="notification_main_text_size">14sp</dimen>
     <dimen name="notification_icon_size">24dp</dimen>
     <dimen name="notification_footer_icon_size">18dp</dimen>

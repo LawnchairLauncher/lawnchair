@@ -24,7 +24,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -35,6 +34,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
@@ -144,18 +144,8 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
             if (mSystemShortcutIcons == null) {
                 mSystemShortcutIcons = (LinearLayout) mLauncher.getLayoutInflater().inflate(
                         R.layout.system_shortcut_icons, mContent, false);
-
-                View divider = LayoutInflater.from(getContext()).inflate(
-                        R.layout.horizontal_divider, this, false);
-
                 boolean iconsAreBelowShortcuts = mShortcutsLayout.getChildCount() > 0;
-                if (iconsAreBelowShortcuts) {
-                    mContent.addView(divider);
-                    mContent.addView(mSystemShortcutIcons);
-                } else {
-                    mContent.addView(divider, 0);
-                    mContent.addView(mSystemShortcutIcons, 0);
-                }
+                mContent.addView(mSystemShortcutIcons, iconsAreBelowShortcuts ? -1 : 0);
             }
             mSystemShortcutIcons.addView(shortcutView, index);
         } else {
@@ -280,6 +270,9 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
             // Make sure the text and icon stay centered in the shortcut.
             animation.play(translateYFrom(shortcut.getBubbleText(), heightDiff / 2 * fromDir));
             animation.play(translateYFrom(shortcut.getIconView(), heightDiff / 2 * fromDir));
+            // Scale icons back up to full size.
+            animation.play(LauncherAnimUtils.ofPropertyValuesHolder(shortcut.getIconView(),
+                    new PropertyListBuilder().scale(1f).build()));
         }
         return animation;
     }

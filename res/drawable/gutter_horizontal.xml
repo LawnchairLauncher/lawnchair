@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This "gutter" has a shadow at the top and a subtler shadow on the bottom. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient android:type="linear"
+              android:angle="-90"
+              android:startColor="#ffE0E0E0"
+              android:centerColor="#ffffffff"
+              android:endColor="#ffF5F5F5" />
+</shape>

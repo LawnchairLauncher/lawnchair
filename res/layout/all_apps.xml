@@ -49,7 +49,7 @@
         <!-- DO NOT CHANGE THE ID -->
         <com.android.launcher3.allapps.AllAppsRecyclerView
             android:id="@+id/apps_list_view"
-            android:layout_below="@+id/search_container"
+            android:layout_below="@id/search_container_all_apps"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal|top"
@@ -62,7 +62,7 @@
          platform bug, which prevents using custom attributes in <include> tag -->
         <include
             layout="?android:attr/keyboardLayout"
-            android:id="@+id/search_container" />
+            android:id="@id/search_container_all_apps" />
 
         <include layout="@layout/all_apps_fast_scroller" />
 

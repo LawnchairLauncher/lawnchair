@@ -21,7 +21,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.InsetDrawable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
@@ -220,17 +219,16 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         });
 
         // Load the all apps recycler view
-        mAppsRecyclerView = (AllAppsRecyclerView) findViewById(R.id.apps_list_view);
+        mAppsRecyclerView = findViewById(R.id.apps_list_view);
         mAppsRecyclerView.setApps(mApps);
         mAppsRecyclerView.setLayoutManager(mLayoutManager);
         mAppsRecyclerView.setAdapter(mAdapter);
         mAppsRecyclerView.setHasFixedSize(true);
         if (FeatureFlags.LAUNCHER3_PHYSICS) {
             mAppsRecyclerView.setSpringAnimationHandler(mSpringAnimationHandler);
-            mAppsRecyclerView.addOnScrollListener(new SpringMotionOnScrollListener());
         }
 
-        mSearchContainer = findViewById(R.id.search_container);
+        mSearchContainer = findViewById(R.id.search_container_all_apps);
         mSearchUiManager = (SearchUiManager) mSearchContainer;
         mSearchUiManager.initialize(mApps, mAppsRecyclerView);
 
@@ -359,7 +357,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     @Override
     public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
-        targetParent.containerType = mAppsRecyclerView.getContainerType(v);
+        // This is filled in {@link AllAppsRecyclerView}
     }
 
     @Override
@@ -402,36 +400,5 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     public SpringAnimationHandler getSpringAnimationHandler() {
         return mSpringAnimationHandler;
-    }
-
-    public class SpringMotionOnScrollListener extends RecyclerView.OnScrollListener {
-
-        private int mScrollState = RecyclerView.SCROLL_STATE_IDLE;
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            if (mScrollState == RecyclerView.SCROLL_STATE_DRAGGING
-                    || (dx == 0 && dy == 0)) {
-                if (mSpringAnimationHandler.isRunning()){
-                    mSpringAnimationHandler.skipToEnd();
-                }
-                return;
-            }
-
-            int first = mLayoutManager.findFirstVisibleItemPosition();
-            int last = mLayoutManager.findLastVisibleItemPosition();
-
-            // We only show the spring animation when at the top or bottom, so we wait until the
-            // first or last row is visible to ensure that all animations run in sync.
-            if ((first == 0 && dy < 0) || (last == mAdapter.getItemCount() - 1 && dy > 0)) {
-                mSpringAnimationHandler.animateToFinalPosition(0);
-            }
-        }
-
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-            mScrollState = newState;
-        }
     }
 }

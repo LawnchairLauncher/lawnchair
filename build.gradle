@@ -35,26 +35,47 @@ android {
             applicationId 'com.android.launcher3'
             testApplicationId 'com.android.launcher3.tests'
         }
+
+        l3go {
+            applicationId 'com.android.launcher3'
+            testApplicationId 'com.android.launcher3.tests'
+        }
     }
     sourceSets {
         main {
             res.srcDirs = ['res']
-            java.srcDirs = ['src', 'src_flags']
+            java.srcDirs = ['src']
             manifest.srcFile 'AndroidManifest-common.xml'
-            proto.srcDirs 'protos/'
+            proto {
+                srcDir 'protos/'
+                srcDir 'proto_overrides/'
+            }
         }
 
         androidTest {
-            java.srcDirs = ['tests/src']
             res.srcDirs = ['tests/res']
+            java.srcDirs = ['tests/src']
             manifest.srcFile "tests/AndroidManifest-common.xml"
         }
 
         aosp {
+            java.srcDirs = ['src_flags']
             manifest.srcFile "AndroidManifest.xml"
         }
 
         aospAndroidTest {
+            manifest.srcFile "tests/AndroidManifest.xml"
+        }
+
+        l3go {
+            res.srcDirs = ['go/res']
+            java.srcDirs = ['go/src_flags']
+            // Note: we are using the Launcher3 manifest here because the gradle manifest-merger uses
+            // different attributes than the build system.
+            manifest.srcFile "AndroidManifest.xml"
+        }
+
+        l3goAndroidTest {
             manifest.srcFile "tests/AndroidManifest.xml"
         }
     }
@@ -71,10 +92,10 @@ dependencies {
     compile "com.android.support:support-dynamic-animation:${SUPPORT_LIBS_VERSION}"
     compile "com.android.support:recyclerview-v7:${SUPPORT_LIBS_VERSION}"
     compile "com.android.support:palette-v7:${SUPPORT_LIBS_VERSION}"
-    compile 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-2'
+    compile 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
 
     testCompile 'junit:junit:4.12'
-    androidTestCompile "org.mockito:mockito-core:1.+"
+    androidTestCompile "org.mockito:mockito-core:1.9.5"
     androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
     androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
     androidTestCompile 'com.android.support.test:runner:0.5'
@@ -92,6 +113,7 @@ protobuf {
                 task.builtins {
                     remove java
                     javanano {
+                        option "java_package=launcher_log_extension.proto|com.android.launcher3.userevent.nano"
                         option "java_package=launcher_log.proto|com.android.launcher3.userevent.nano"
                         option "java_package=launcher_dump.proto|com.android.launcher3.model.nano"
                         option "enum_style=java"
