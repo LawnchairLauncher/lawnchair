@@ -130,5 +130,13 @@
         <item>16</item>
     </string-array>
 
+    <string-array name="weatherProviderTexts">
+        <item>OpenWeatherMap</item>
+    </string-array>
+
+    <string-array name="weatherProviderValues">
+        <item>0</item>
+    </string-array>
+
     <string name="generalDefault" translatable="false">default</string>
 </resources>

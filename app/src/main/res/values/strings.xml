@@ -461,4 +461,5 @@
     <string name="app_shortcuts">App shortcuts</string>
     <string name="blur_effect">Blur effect</string>
     <string name="enable_editing_pref_title">Enable editing workspace</string>
+    <string name="pref_weather_provider">Weaher provider</string>
 </resources>

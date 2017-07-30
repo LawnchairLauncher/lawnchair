@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 
-import ch.deletescape.lawnchair.BuildConfig;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.R;
@@ -38,9 +37,10 @@ public class WeatherHelper implements SharedPreferences.OnSharedPreferenceChange
         iconProvider = new WeatherIconProvider(context);
         setupOnClickListener(context);
         mHandler = new Handler();
-        mApi = OWMWeatherAPI.Companion.create(BuildConfig.OPENWEATHERMAP_KEY);
-        mApi.setWeatherCallback(this);
         SharedPreferences prefs = Utilities.getPrefs(context);
+        mApi = WeatherAPI.Companion.create(context,
+                Integer.parseInt(prefs.getString("pref_weatherProvider", "0")));
+        mApi.setWeatherCallback(this);
         setCity(prefs.getString(KEY_CITY, "Lucerne, CH"));
         setUnits(prefs.getString(KEY_UNITS, "metric"));
         refresh();

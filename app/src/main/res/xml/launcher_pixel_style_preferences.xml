@@ -61,6 +61,16 @@
             android:defaultValue="Lucerne, CH"
             android:title="@string/pref_weather_city_title"
             android:summary="@string/pref_weather_city_summary" />
+
+        <ListPreference
+            android:key="pref_weatherProvider"
+            android:title="@string/pref_weather_provider"
+            android:entryValues="@array/weatherProviderValues"
+            android:defaultValue="0"
+            android:summary="%s"
+            android:dependency="pref_weather"
+            android:enabled="false"
+            android:entries="@array/weatherProviderTexts" />
     </PreferenceCategory>
 
     <PreferenceCategory

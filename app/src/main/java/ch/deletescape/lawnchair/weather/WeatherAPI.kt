@@ -1,5 +1,6 @@
 package ch.deletescape.lawnchair.weather
 
+import android.content.Context
 import java.util.*
 
 abstract class WeatherAPI {
@@ -43,5 +44,14 @@ abstract class WeatherAPI {
         val temperatureString: String
             get() = if (success) String.format(Locale.US, "%d°%s", temp, units.shortName)
                     else "ERROR"
+    }
+
+    companion object {
+        const val PROVIDER_OPENWEATHERMAP = 0
+
+        fun create(context: Context, provider: Int) = when (provider) {
+            PROVIDER_OPENWEATHERMAP -> OWMWeatherAPI()
+            else -> throw IllegalArgumentException("Provider must be either PROVIDER_OPENWEATHERMAP or PROVIDER_GOOGLE_AWARENESS")
+        }
     }
 }

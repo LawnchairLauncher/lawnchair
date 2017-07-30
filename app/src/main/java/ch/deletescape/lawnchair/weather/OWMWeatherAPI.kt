@@ -1,11 +1,12 @@
 package ch.deletescape.lawnchair.weather
 
+import ch.deletescape.lawnchair.BuildConfig
 import com.kwabenaberko.openweathermaplib.implementation.OpenWeatherMapHelper
 import com.kwabenaberko.openweathermaplib.models.CurrentWeather
 
-class OWMWeatherAPI(appId: String) : WeatherAPI(), OpenWeatherMapHelper.CurrentWeatherCallback {
+class OWMWeatherAPI() : WeatherAPI(), OpenWeatherMapHelper.CurrentWeatherCallback {
 
-    private val helper: OpenWeatherMapHelper = OpenWeatherMapHelper()
+    private val helper: OpenWeatherMapHelper = OpenWeatherMapHelper().apply { setAppId(BuildConfig.OPENWEATHERMAP_KEY) }
 
     override var city: String = ""
     override var units: Units = Units.METRIC
@@ -14,10 +15,6 @@ class OWMWeatherAPI(appId: String) : WeatherAPI(), OpenWeatherMapHelper.CurrentW
             field = value
             helper.setUnits(value.longName)
         }
-
-    init {
-        helper.setAppId(appId)
-    }
 
     override fun getCurrentWeather() {
         helper.getCurrentWeatherByCityName(city, this)
@@ -38,10 +35,5 @@ class OWMWeatherAPI(appId: String) : WeatherAPI(), OpenWeatherMapHelper.CurrentW
                 icon = "-1",
                 units = units
         ))
-    }
-
-    companion object {
-
-        fun create(appId: String) = OWMWeatherAPI(appId)
     }
 }

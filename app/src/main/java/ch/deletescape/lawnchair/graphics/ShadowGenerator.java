@@ -60,9 +60,13 @@ public class ShadowGenerator {
     }
 
     public synchronized Bitmap recreateIcon(Bitmap icon) {
+        return recreateIcon(icon, mIconSize);
+    }
+
+    public synchronized Bitmap recreateIcon(Bitmap icon, int size) {
         int[] offset = new int[2];
         Bitmap shadow = icon.extractAlpha(mBlurPaint, offset);
-        Bitmap result = Bitmap.createBitmap(mIconSize, mIconSize, Config.ARGB_8888);
+        Bitmap result = Bitmap.createBitmap(size, size, Config.ARGB_8888);
         mCanvas.setBitmap(result);
 
         // Draw ambient shadow
@@ -71,7 +75,7 @@ public class ShadowGenerator {
 
         // Draw key shadow
         mDrawPaint.setAlpha(KEY_SHADOW_ALPHA);
-        mCanvas.drawBitmap(shadow, offset[0], offset[1] + KEY_SHADOW_DISTANCE * mIconSize, mDrawPaint);
+        mCanvas.drawBitmap(shadow, offset[0], offset[1] + KEY_SHADOW_DISTANCE * size, mDrawPaint);
 
         // Draw the icon
         mDrawPaint.setAlpha(255);

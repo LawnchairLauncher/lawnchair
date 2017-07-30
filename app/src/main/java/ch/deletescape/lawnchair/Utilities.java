@@ -239,6 +239,10 @@ public final class Utilities {
         return ShadowGenerator.getInstance().recreateIcon(icon);
     }
 
+    public static Bitmap addShadowToIcon(Bitmap icon, int size) {
+        return ShadowGenerator.getInstance().recreateIcon(icon, size);
+    }
+
     /**
      * Adds the {@param badge} on top of {@param srcTgt} using the badge dimensions.
      */
