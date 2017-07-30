@@ -12,10 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kwabenaberko.openweathermaplib.implementation.OpenWeatherMapHelper;
-import com.kwabenaberko.openweathermaplib.models.CurrentWeather;
-
-import java.util.Locale;
+import org.jetbrains.annotations.NotNull;
 
 import ch.deletescape.lawnchair.BuildConfig;
 import ch.deletescape.lawnchair.Launcher;
@@ -23,18 +20,14 @@ import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 
-public class WeatherHelper implements OpenWeatherMapHelper.CurrentWeatherCallback, SharedPreferences.OnSharedPreferenceChangeListener, Runnable {
+public class WeatherHelper implements SharedPreferences.OnSharedPreferenceChangeListener, Runnable, WeatherAPI.WeatherCallback {
     private static final String KEY_UNITS = "pref_weather_units";
     private static final String KEY_CITY = "pref_weather_city";
     private static final int DELAY = 30 * 3600 * 1000;
+    private final WeatherAPI mApi;
+    private WeatherAPI.WeatherData mWeatherData;
     private TextView mTemperatureView;
-    private boolean mIsImperial;
-    private String mUnits;
-    private String mCity;
-    private String mTemp;
-    private OpenWeatherMapHelper mHelper;
     private Handler mHandler;
-    private String mIcon;
     private ImageView mIconView;
     private WeatherIconProvider iconProvider;
     private boolean stopped = false;
@@ -45,8 +38,8 @@ public class WeatherHelper implements OpenWeatherMapHelper.CurrentWeatherCallbac
         iconProvider = new WeatherIconProvider(context);
         setupOnClickListener(context);
         mHandler = new Handler();
-        mHelper = new OpenWeatherMapHelper();
-        mHelper.setAppId(BuildConfig.OPENWEATHERMAP_KEY);
+        mApi = OWMWeatherAPI.Companion.create(BuildConfig.OPENWEATHERMAP_KEY);
+        mApi.setWeatherCallback(this);
         SharedPreferences prefs = Utilities.getPrefs(context);
         setCity(prefs.getString(KEY_CITY, "Lucerne, CH"));
         setUnits(prefs.getString(KEY_UNITS, "metric"));
@@ -55,47 +48,32 @@ public class WeatherHelper implements OpenWeatherMapHelper.CurrentWeatherCallbac
 
     private void refresh() {
         if (!stopped) {
-            mHelper.getCurrentWeatherByCityName(mCity, this);
+            mApi.getCurrentWeather();
             mHandler.postDelayed(this, DELAY);
         }
     }
 
-    private String makeTemperatureString(String string) {
-        return String.format(mIsImperial ? "%s°F" : "%s°C", string);
-    }
-
     @Override
-    public void onSuccess(CurrentWeather currentWeather) {
-        mTemp = String.format(Locale.US, "%.0f", currentWeather.getMain().getTemp());
-        mIcon = currentWeather.getWeatherArray().get(0).getIcon();
-        updateTextView();
-        updateIconView();
-    }
-
-    @Override
-    public void onFailure(Throwable throwable) {
-        mTemp = (mTemp != null && !mTemp.equals("ERROR")) ? mTemp : "ERROR";
-        mIcon = "-1";
+    public void onWeatherData(@NotNull WeatherAPI.WeatherData data) {
+        mWeatherData = data;
         updateTextView();
         updateIconView();
     }
 
     private void updateTextView() {
-        mTemperatureView.setText(makeTemperatureString(mTemp));
+        mTemperatureView.setText(mWeatherData.getTemperatureString());
     }
 
     private void updateIconView() {
-        mIconView.setImageDrawable(iconProvider.getIcon(mIcon));
+        mIconView.setImageDrawable(iconProvider.getIcon(mWeatherData.getIcon()));
     }
 
     private void setCity(String city) {
-        mCity = city;
+        mApi.setCity(city);
     }
 
     private void setUnits(String units) {
-        mUnits = units;
-        mIsImperial = units.equals("imperial");
-        mHelper.setUnits(units);
+        mApi.setUnits(units.equals("imperial") ? WeatherAPI.Units.IMPERIAL : WeatherAPI.Units.METRIC);
     }
 
     private void setupOnClickListener(final Context context) {
@@ -121,11 +99,11 @@ public class WeatherHelper implements OpenWeatherMapHelper.CurrentWeatherCallbac
     public void onSharedPreferenceChanged(SharedPreferences sharedPrefs, String key) {
         switch (key) {
             case KEY_UNITS:
-                setUnits(sharedPrefs.getString(KEY_UNITS, mUnits));
+                setUnits(sharedPrefs.getString(KEY_UNITS, "metric"));
                 updateTextView();
                 break;
             case KEY_CITY:
-                setCity(sharedPrefs.getString(KEY_CITY, mCity));
+                setCity(sharedPrefs.getString(KEY_CITY, mApi.getCity()));
                 break;
         }
     }
