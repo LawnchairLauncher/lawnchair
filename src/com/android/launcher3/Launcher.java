@@ -958,6 +958,9 @@ public class Launcher extends BaseActivity
         } else if (mOnResumeState == State.WIDGETS) {
             showWidgetsView(false, false);
         }
+        if (mOnResumeState != State.APPS) {
+            tryAndUpdatePredictedApps();
+        }
         mOnResumeState = State.NONE;
 
         mPaused = false;
