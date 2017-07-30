@@ -10,7 +10,7 @@ android:
     - platform-tools
     - build-tools-26.0.1
     - android-26
-    - extra-google-google_play_services
+    - extra-google-m2repository
 before_install: 
   - chmod a+x ./scripts/deploy-*.sh
   - chmod a+x ./scripts/changelog.sh
