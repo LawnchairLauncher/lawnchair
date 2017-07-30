@@ -13,6 +13,9 @@ import ch.deletescape.lawnchair.R;
 
 class IconCategoryAdapter extends RecyclerView.Adapter<IconCategoryAdapter.Holder> implements IconGridAdapter.Listener {
 
+    private final int TYPE_LOADING = 0;
+    private final int TYPE_CATEGORY = 1;
+
     private List<IconPack.IconCategory> mCategoryList;
     private RecyclerView mRecyclerView;
 
@@ -35,8 +38,12 @@ class IconCategoryAdapter extends RecyclerView.Adapter<IconCategoryAdapter.Holde
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.icon_category, parent, false);
-        return new Holder(itemView);
+                .inflate(getItemLayout(viewType), parent, false);
+        return getItemViewType(viewType) == TYPE_CATEGORY ? new CategoryHolder(itemView) : new LoadingHolder(itemView);
+    }
+
+    private int getItemLayout(int viewType) {
+        return viewType == TYPE_CATEGORY ? R.layout.icon_category : R.layout.icon_category_loading;
     }
 
     @Override
@@ -45,8 +52,13 @@ class IconCategoryAdapter extends RecyclerView.Adapter<IconCategoryAdapter.Holde
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return mCategoryList.size() > 0 ? TYPE_CATEGORY : TYPE_LOADING;
+    }
+
+    @Override
     public int getItemCount() {
-        return mCategoryList.size();
+        return Math.max(mCategoryList.size(), 1);
     }
 
     public void setListener(IconGridAdapter.Listener listener) {
@@ -59,14 +71,35 @@ class IconCategoryAdapter extends RecyclerView.Adapter<IconCategoryAdapter.Holde
             mListener.onSelect(iconEntry);
     }
 
-    public class Holder extends RecyclerView.ViewHolder {
-
-        private final TextView title;
-        private final RecyclerView recyclerView;
-        private final IconGridAdapter adapter;
-        private final GridLayoutManager layoutManager;
+    public abstract class Holder extends RecyclerView.ViewHolder {
 
         public Holder(View itemView) {
+            super(itemView);
+        }
+
+        public abstract void bind(int position);
+    }
+
+    public class LoadingHolder extends Holder {
+
+        public LoadingHolder(View itemView) {
+            super(itemView);
+        }
+
+        @Override
+        public void bind(int position) {
+
+        }
+    }
+
+    public class CategoryHolder extends Holder {
+
+        private TextView title;
+        private RecyclerView recyclerView;
+        private IconGridAdapter adapter;
+        private GridLayoutManager layoutManager;
+
+        public CategoryHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(android.R.id.title);
             recyclerView = itemView.findViewById(R.id.iconRecyclerView);

@@ -428,7 +428,7 @@
     <string name="theme_dark">Dark</string>
     <string name="theme_black">Black</string>
     <string name="hide_hotseat_pref_title">Hide Dock</string>
-    <string name="all_icons">All icons</string>
+    <string name="all_icons">All Icons</string>
     <string name="pull_down_action_pref_title">Pull down action</string>
     <string name="pull_down_do_nothing">Do nothing</string>
     <string name="pull_down_notis">Show notifications</string>
@@ -462,4 +462,5 @@
     <string name="blur_effect">Blur effect</string>
     <string name="enable_editing_pref_title">Enable editing workspace</string>
     <string name="pref_weather_provider">Weaher provider</string>
+    <string name="loading">Loading...</string>
 </resources>
