@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:textAlignment="viewStart"
             android:fontFamily="sans-serif"
-            android:textSize="@dimen/notification_main_text_size"
+            android:textSize="@dimen/notification_main_title_size"
             android:textColor="?android:attr/textColorPrimary"
             android:lines="1"
             android:ellipsize="end" />

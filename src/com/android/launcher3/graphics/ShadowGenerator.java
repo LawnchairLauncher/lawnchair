@@ -53,27 +53,38 @@ public class ShadowGenerator {
     private final Canvas mCanvas;
     private final Paint mBlurPaint;
     private final Paint mDrawPaint;
+    private final BlurMaskFilter mDefaultBlurMaskFilter;
 
     private ShadowGenerator(Context context) {
         mIconSize = LauncherAppState.getIDP(context).iconBitmapSize;
         mCanvas = new Canvas();
         mBlurPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-        mBlurPaint.setMaskFilter(new BlurMaskFilter(mIconSize * BLUR_FACTOR, Blur.NORMAL));
         mDrawPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+        mDefaultBlurMaskFilter = new BlurMaskFilter(mIconSize * BLUR_FACTOR, Blur.NORMAL);
     }
 
     public synchronized Bitmap recreateIcon(Bitmap icon) {
+        return recreateIcon(icon, true, mDefaultBlurMaskFilter, AMBIENT_SHADOW_ALPHA,
+                KEY_SHADOW_ALPHA);
+    }
+
+    public synchronized Bitmap recreateIcon(Bitmap icon, boolean resize,
+            BlurMaskFilter blurMaskFilter, int ambientAlpha, int keyAlpha) {
+        int width = resize ? mIconSize : icon.getWidth();
+        int height = resize ? mIconSize : icon.getHeight();
         int[] offset = new int[2];
+
+        mBlurPaint.setMaskFilter(blurMaskFilter);
         Bitmap shadow = icon.extractAlpha(mBlurPaint, offset);
-        Bitmap result = Bitmap.createBitmap(mIconSize, mIconSize, Config.ARGB_8888);
+        Bitmap result = Bitmap.createBitmap(width, height, Config.ARGB_8888);
         mCanvas.setBitmap(result);
 
         // Draw ambient shadow
-        mDrawPaint.setAlpha(AMBIENT_SHADOW_ALPHA);
+        mDrawPaint.setAlpha(ambientAlpha);
         mCanvas.drawBitmap(shadow, offset[0], offset[1], mDrawPaint);
 
         // Draw key shadow
-        mDrawPaint.setAlpha(KEY_SHADOW_ALPHA);
+        mDrawPaint.setAlpha(keyAlpha);
         mCanvas.drawBitmap(shadow, offset[0], offset[1] + KEY_SHADOW_DISTANCE * mIconSize, mDrawPaint);
 
         // Draw the icon

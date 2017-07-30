@@ -44,6 +44,7 @@ import com.android.launcher3.IconCache.IconLoadRequest;
 import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.badge.BadgeRenderer;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.FolderIconPreviewVerifier;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.HolographicOutlineHelper;
@@ -438,6 +439,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
         super.setTextColor(colors);
     }
 
+    public boolean shouldTextBeVisible() {
+        // Text should be visible everywhere but the hotseat.
+        Object tag = getParent() instanceof FolderIcon ? ((View) getParent()).getTag() : getTag();
+        ItemInfo info = tag instanceof ItemInfo ? (ItemInfo) tag : null;
+        return info == null || info.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+    }
+
     public void setTextVisibility(boolean visible) {
         if (visible) {
             super.setTextColor(mTextColor);
@@ -459,7 +467,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
      * @param fadeIn Whether the text should fade in or fade out.
      */
     public ObjectAnimator createTextAlphaAnimator(boolean fadeIn) {
-        return ObjectAnimator.ofInt(this, TEXT_ALPHA_PROPERTY, fadeIn ? Color.alpha(mTextColor) : 0);
+        int toAlpha = shouldTextBeVisible() && fadeIn ? Color.alpha(mTextColor) : 0;
+        return ObjectAnimator.ofInt(this, TEXT_ALPHA_PROPERTY, toAlpha);
     }
 
     @Override

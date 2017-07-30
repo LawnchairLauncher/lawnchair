@@ -50,19 +50,26 @@ public class ColorExtractionAlgorithm {
     private static final float FIT_WEIGHT_S = 1.0f;
     private static final float FIT_WEIGHT_L = 10.0f;
 
+    public static final int MAIN_COLOR_LIGHT = 0xffb0b0b0;
+    public static final int SECONDARY_COLOR_LIGHT = 0xff9e9e9e;
+    public static final int MAIN_COLOR_DARK = 0xff212121;
+    public static final int SECONDARY_COLOR_DARK = 0xff000000;
+
     // Temporary variable to avoid allocations
     private float[] mTmpHSL = new float[3];
 
-    public @Nullable Pair<Integer, Integer> extractInto(WallpaperColorsCompat inWallpaperColors) {
+    public Pair<Integer, Integer> extractInto(WallpaperColorsCompat inWallpaperColors) {
         if (inWallpaperColors == null) {
-            return null;
+            return applyFallback(inWallpaperColors);
         }
 
         final List<Integer> mainColors = getMainColors(inWallpaperColors);
         final int mainColorsSize = mainColors.size();
+        final boolean supportsDarkText = (inWallpaperColors.getColorHints() &
+                WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT) != 0;
 
         if (mainColorsSize == 0) {
-            return null;
+            return applyFallback(inWallpaperColors);
         }
         // Tonal is not really a sort, it takes a color from the extracted
         // palette and finds a best fit amongst a collection of pre-defined
@@ -86,7 +93,7 @@ public class ColorExtractionAlgorithm {
 
         // Fail if not found
         if (bestColor == null) {
-            return null;
+            return applyFallback(inWallpaperColors);
         }
 
         int colorValue = bestColor;
@@ -101,14 +108,14 @@ public class ColorExtractionAlgorithm {
         TonalPalette palette = findTonalPalette(hsl[0], hsl[1]);
         if (palette == null) {
             Log.w(TAG, "Could not find a tonal palette!");
-            return null;
+            return applyFallback(inWallpaperColors);
         }
 
         // Figure out what's the main color index in the optimal palette
         int fitIndex = bestFit(palette, hsl[0], hsl[1], hsl[2]);
         if (fitIndex == -1) {
             Log.w(TAG, "Could not find best fit!");
-            return null;
+            return applyFallback(inWallpaperColors);
         }
 
         // Generate the 10 colors palette by offsetting each one of them
@@ -117,26 +124,46 @@ public class ColorExtractionAlgorithm {
         float[] s = fit(palette.s, hsl[1], fitIndex, 0.0f, 1.0f);
         float[] l = fit(palette.l, hsl[2], fitIndex, 0.0f, 1.0f);
 
-        final int textInversionIndex = h.length - 3;
+        int primaryIndex = fitIndex;
+        int mainColor = getColorInt(primaryIndex, h, s, l);
 
-        int primaryIndex;
-        int secondaryIndex;
+        // We might want use the fallback in case the extracted color is brighter than our
+        // light fallback or darker than our dark fallback.
+        ColorUtils.colorToHSL(mainColor, mTmpHSL);
+        final float mainLuminosity = mTmpHSL[2];
+        ColorUtils.colorToHSL(MAIN_COLOR_LIGHT, mTmpHSL);
+        final float lightLuminosity = mTmpHSL[2];
+        if (mainLuminosity > lightLuminosity) {
+            return applyFallback(inWallpaperColors);
+        }
+        ColorUtils.colorToHSL(MAIN_COLOR_DARK, mTmpHSL);
+        final float darkLuminosity = mTmpHSL[2];
+        if (mainLuminosity < darkLuminosity) {
+            return applyFallback(inWallpaperColors);
+        }
 
         // Dark colors:
         // Stops at 4th color, only lighter if dark text is supported
-        if (fitIndex < 2) {
-            primaryIndex = 0;
-        } else if (fitIndex < textInversionIndex) {
-            primaryIndex = Math.min(fitIndex, 3);
-        } else {
+        if (supportsDarkText) {
             primaryIndex = h.length - 1;
+        } else if (fitIndex < 2) {
+            primaryIndex = 0;
+        } else {
+            primaryIndex = Math.min(fitIndex, 3);
         }
-        secondaryIndex = primaryIndex + (primaryIndex >= 2 ? -2 : 2);
-
-        int mainColor = getColorInt(primaryIndex, h, s, l);
+        int secondaryIndex = primaryIndex + (primaryIndex >= 2 ? -2 : 2);
         int secondaryColor = getColorInt(secondaryIndex, h, s, l);
 
         return new Pair<>(mainColor, secondaryColor);
+    }
+
+    public static Pair<Integer, Integer> applyFallback(WallpaperColorsCompat inWallpaperColors) {
+        boolean light = inWallpaperColors != null
+                && (inWallpaperColors.getColorHints()
+                    & WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT)!= 0;
+        int innerColor = light ? MAIN_COLOR_LIGHT : MAIN_COLOR_DARK;
+        int outerColor = light ? SECONDARY_COLOR_LIGHT : SECONDARY_COLOR_DARK;
+        return new Pair<>(innerColor, outerColor);
     }
 
     private int getColorInt(int fitIndex, float[] h, float[] s, float[] l) {

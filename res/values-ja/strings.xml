@@ -35,9 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"幅 %1$d、高さ %2$d"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"押し続けると、手動で追加できます"</string>
     <string name="place_automatically" msgid="8064208734425456485">"自動的に追加"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"アプリを検索"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"アプリを読み込んでいます…"</string>
-    <string name="all_apps_no_search_results" msgid="6332185285860416787">"「<xliff:g id="QUERY">%1$s</xliff:g>」に一致するアプリは見つかりませんでした"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"アプリを検索"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"アプリを読み込んでいます…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"「<xliff:g id="QUERY">%1$s</xliff:g>」に一致するアプリは見つかりませんでした"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"他のアプリを検索"</string>
     <string name="notifications_header" msgid="1404149926117359025">"通知"</string>
     <string name="out_of_space" msgid="4691004494942118364">"このホーム画面に空きスペースがありません。"</string>
@@ -79,17 +79,18 @@
     <string name="icon_badging_title" msgid="874121399231955394">"通知ドット"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"ON"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"OFF"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"通知へのアクセス権限が必要"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"通知ドットを表示するには、「<xliff:g id="NAME">%1$s</xliff:g>」のアプリ通知を ON にしてください"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"設定を変更"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ホーム画面にアイコンを追加"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"新しいアプリをダウンロードしたときに"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"アイコンの形の変更"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"システムのデフォルトを使用"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"スクエア"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"スクワークル"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"サークル"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"ティアドロップ"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"アイコンの形の変更を適用しています"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"不明"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"削除"</string>
     <string name="abandoned_search" msgid="891119232568284442">"検索"</string>

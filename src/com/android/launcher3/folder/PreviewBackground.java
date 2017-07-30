@@ -88,7 +88,7 @@ public class PreviewBackground {
     public boolean isClipping = true;
 
     // Drawing / animation configurations
-    private static final float ACCEPT_SCALE_FACTOR = 1.25f;
+    private static final float ACCEPT_SCALE_FACTOR = 1.20f;
     private static final float ACCEPT_COLOR_MULTIPLIER = 1.5f;
 
     // Expressed on a scale from 0 to 255.
@@ -195,19 +195,28 @@ public class PreviewBackground {
         invalidate();
     }
 
+    public int getBgColor() {
+        int alpha = (int) Math.min(MAX_BG_OPACITY, BG_OPACITY * mColorMultiplier);
+        return ColorUtils.setAlphaComponent(mBgColor, alpha);
+    }
+
     public void drawBackground(Canvas canvas) {
         mPaint.setStyle(Paint.Style.FILL);
-        int alpha = (int) Math.min(MAX_BG_OPACITY, BG_OPACITY * mColorMultiplier);
-        mPaint.setColor(ColorUtils.setAlphaComponent(mBgColor, alpha));
+        mPaint.setColor(getBgColor());
 
         drawCircle(canvas, 0 /* deltaRadius */);
 
-        // Draw shadow.
+        drawShadow(canvas);
+    }
+
+    public void drawShadow(Canvas canvas) {
         if (mShadowShader == null) {
             return;
         }
+
         float radius = getScaledRadius();
         float shadowRadius = radius + mStrokeWidth;
+        mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(Color.BLACK);
         int offsetX = getOffsetX();
         int offsetY = getOffsetY();
@@ -219,7 +228,7 @@ public class PreviewBackground {
 
         } else {
             saveCount = canvas.save(Canvas.CLIP_SAVE_FLAG);
-            clipCanvasSoftware(canvas, Region.Op.DIFFERENCE);
+            canvas.clipPath(getClipPath(), Region.Op.DIFFERENCE);
         }
 
         mShaderMatrix.setScale(shadowRadius, shadowRadius);
@@ -295,17 +304,17 @@ public class PreviewBackground {
                 radius - deltaRadius, mPaint);
     }
 
-    // It is the callers responsibility to save and restore the canvas layers.
-    void clipCanvasSoftware(Canvas canvas, Region.Op op) {
+    public Path getClipPath() {
         mPath.reset();
         float r = getScaledRadius();
         mPath.addCircle(r + getOffsetX(), r + getOffsetY(), r, Path.Direction.CW);
-        canvas.clipPath(mPath, op);
+        return mPath;
     }
 
     // It is the callers responsibility to save and restore the canvas layers.
     void clipCanvasHardware(Canvas canvas) {
         mPaint.setColor(Color.BLACK);
+        mPaint.setStyle(Paint.Style.FILL);
         mPaint.setXfermode(mClipPorterDuffXfermode);
 
         float radius = getScaledRadius();
@@ -336,6 +345,7 @@ public class PreviewBackground {
         }
 
         mDrawingDelegate = null;
+        isClipping = true;
         invalidate();
     }
 

@@ -209,10 +209,8 @@ public class Launcher extends BaseActivity
 
     private boolean mIsSafeModeEnabled;
 
-    public static final int APPWIDGET_HOST_ID = 1024;
     public static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 500;
     private static final int ON_ACTIVITY_RESULT_ANIMATION_DELAY = 500;
-    private static final int ACTIVITY_START_DELAY = 1000;
 
     // How long to wait before the new-shortcut animation automatically pans the workspace
     private static final int NEW_APPS_PAGE_MOVE_DELAY = 500;
@@ -274,6 +272,7 @@ public class Launcher extends BaseActivity
     private boolean mHasFocus = false;
 
     private ObjectAnimator mScrimAnimator;
+    private boolean mShouldFadeInScrim;
 
     private PopupDataProvider mPopupDataProvider;
 
@@ -396,7 +395,10 @@ public class Launcher extends BaseActivity
 
         mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
 
-        mAppWidgetHost = new LauncherAppWidgetHost(this, APPWIDGET_HOST_ID);
+        mAppWidgetHost = new LauncherAppWidgetHost(this);
+        if (Utilities.ATLEAST_MARSHMALLOW) {
+            mAppWidgetHost.addProviderChangeListener(this);
+        }
         mAppWidgetHost.startListening();
 
         // If we are getting an onCreate, we can actually preempt onResume and unset mPaused here,
@@ -467,8 +469,12 @@ public class Launcher extends BaseActivity
             mLauncherCallbacks.onCreate(savedInstanceState);
         }
 
-        // Listen for broadcasts screen off
-        registerReceiver(mReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+        // Listen for broadcasts
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_USER_PRESENT); // When the device wakes up + keyguard is gone
+        registerReceiver(mReceiver, filter);
+        mShouldFadeInScrim = true;
 
         getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
                 Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
@@ -488,7 +494,7 @@ public class Launcher extends BaseActivity
     }
 
     @Override
-    public View findViewById(int id) {
+    public <T extends View> T findViewById(int id) {
         return mLauncherView.findViewById(id);
     }
 
@@ -783,7 +789,7 @@ public class Launcher extends BaseActivity
     }
 
     @Override
-    protected void onActivityResult(
+    public void onActivityResult(
             final int requestCode, final int resultCode, final Intent data) {
         handleActivityResult(requestCode, resultCode, data);
         if (mLauncherCallbacks != null) {
@@ -906,7 +912,7 @@ public class Launcher extends BaseActivity
             NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
         }
 
-        if (mIsResumeFromActionScreenOff && mDragLayer.getBackground() != null) {
+        if (mShouldFadeInScrim && mDragLayer.getBackground() != null) {
             if (mScrimAnimator != null) {
                 mScrimAnimator.cancel();
             }
@@ -923,6 +929,7 @@ public class Launcher extends BaseActivity
             mScrimAnimator.setStartDelay(getWindow().getTransitionBackgroundFadeDuration());
             mScrimAnimator.start();
         }
+        mShouldFadeInScrim = false;
     }
 
     @Override
@@ -1458,21 +1465,23 @@ public class Launcher extends BaseActivity
             mWorkspace.addInScreen(view, info);
         } else {
             // Adding a shortcut to a Folder.
-            final long folderIconId = container;
-            FolderIcon folderIcon = (FolderIcon) mWorkspace.getFirstMatch(new ItemOperator() {
-                @Override
-                public boolean evaluate(ItemInfo info, View view) {
-                    return info != null && info.id == folderIconId;
-                }
-            });
-
+            FolderIcon folderIcon = findFolderIcon(container);
             if (folderIcon != null) {
                 FolderInfo folderInfo = (FolderInfo) folderIcon.getTag();
                 folderInfo.add(info, args.rank, false);
             } else {
-                Log.e(TAG, "Could not find folder with id " + folderIconId + " to add shortcut.");
+                Log.e(TAG, "Could not find folder with id " + container + " to add shortcut.");
             }
         }
+    }
+
+    public FolderIcon findFolderIcon(final long folderIconId) {
+        return (FolderIcon) mWorkspace.getFirstMatch(new ItemOperator() {
+            @Override
+            public boolean evaluate(ItemInfo info, View view) {
+                return info != null && info.id == folderIconId;
+            }
+        });
     }
 
     /**
@@ -1534,6 +1543,11 @@ public class Launcher extends BaseActivity
                     }
                 }
                 mIsResumeFromActionScreenOff = true;
+                mShouldFadeInScrim = true;
+            } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
+                // ACTION_USER_PRESENT is sent after onStart/onResume. This covers the case where
+                // the user unlocked and the Launcher is not in the foreground.
+                mShouldFadeInScrim = false;
             }
         }
     };
@@ -2257,7 +2271,7 @@ public class Launcher extends BaseActivity
                 onClickFolderIcon(v);
             }
         } else if ((FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && v instanceof PageIndicator) ||
-                (v == mAllAppsButton && mAllAppsButton != null)) {
+            (v == mAllAppsButton && mAllAppsButton != null)) {
             onClickAllAppsButton(v);
         } else if (tag instanceof AppInfo) {
             startAppShortcutOrInfoActivity(v);
@@ -2308,8 +2322,9 @@ public class Launcher extends BaseActivity
     }
 
     /**
-     * Event handler for the "grid" button that appears on the home screen, which
-     * enters all apps mode.
+     * Event handler for the "grid" button or "caret" that appears on the home screen, which
+     * enters all apps mode. In verticalBarLayout the caret can be seen when all apps is open, and
+     * so in that case reverses the action.
      *
      * @param v The view that was clicked.
      */
@@ -2319,6 +2334,8 @@ public class Launcher extends BaseActivity
             getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
                     ControlType.ALL_APPS_BUTTON);
             showAppsView(true /* animated */, true /* updatePredictedApps */);
+        } else {
+            showWorkspace(true);
         }
     }
 
@@ -3046,7 +3063,6 @@ public class Launcher extends BaseActivity
             List<ComponentKey> apps = mLauncherCallbacks.getPredictedApps();
             if (apps != null) {
                 mAppsView.setPredictedApps(apps);
-                getUserEventDispatcher().setPredictedApps(apps);
             }
         }
     }

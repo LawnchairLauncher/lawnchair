@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.logging.UserEventDispatcher;
@@ -62,5 +63,10 @@ public abstract class BaseActivity extends Activity {
             mSystemUiController = new SystemUiController(getWindow());
         }
         return mSystemUiController;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

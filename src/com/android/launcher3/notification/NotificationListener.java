@@ -28,6 +28,7 @@ import android.service.notification.StatusBarNotification;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.ArraySet;
+import android.util.Log;
 import android.util.Pair;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.config.FeatureFlags;
@@ -46,6 +47,8 @@ import java.util.Set;
  */
 @TargetApi(Build.VERSION_CODES.O)
 public class NotificationListener extends NotificationListenerService {
+
+    public static final String TAG = "NotificationListener";
 
     private static final int MSG_NOTIFICATION_POSTED = 1;
     private static final int MSG_NOTIFICATION_REMOVED = 2;
@@ -71,9 +74,19 @@ public class NotificationListener extends NotificationListenerService {
                     mUiHandler.obtainMessage(message.what, message.obj).sendToTarget();
                     break;
                 case MSG_NOTIFICATION_FULL_REFRESH:
-                    final List<StatusBarNotification> activeNotifications = sIsConnected
-                            ? filterNotifications(getActiveNotifications())
-                            : new ArrayList<StatusBarNotification>();
+                    List<StatusBarNotification> activeNotifications;
+                    if (sIsConnected) {
+                        try {
+                            activeNotifications =  filterNotifications(getActiveNotifications());
+                        } catch (SecurityException ex) {
+                            Log.e(TAG, "SecurityException: failed to fetch notifications");
+                            activeNotifications = new ArrayList<StatusBarNotification>();
+
+                        }
+                    } else {
+                        activeNotifications = new ArrayList<StatusBarNotification>();
+                    }
+
                     mUiHandler.obtainMessage(message.what, activeNotifications).sendToTarget();
                     break;
             }
@@ -127,8 +140,9 @@ public class NotificationListener extends NotificationListenerService {
         }
         sNotificationsChangedListener = listener;
 
-        if (sNotificationListenerInstance != null) {
-            sNotificationListenerInstance.onNotificationFullRefresh();
+        NotificationListener notificationListener = getInstanceIfConnected();
+        if (notificationListener != null) {
+            notificationListener.onNotificationFullRefresh();
         }
     }
 

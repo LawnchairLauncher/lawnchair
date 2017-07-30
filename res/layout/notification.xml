@@ -28,6 +28,13 @@
         android:orientation="vertical"
         android:clipChildren="false">
 
+        <View
+            android:id="@+id/gutter_top"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:theme="@style/PopupGutter"
+            android:visibility="gone" />
+
         <FrameLayout
             android:id="@+id/header"
             android:layout_width="match_parent"
@@ -35,22 +42,23 @@
             android:paddingStart="@dimen/notification_padding_start"
             android:paddingEnd="@dimen/notification_padding_end"
             android:background="?attr/popupColorPrimary"
-            android:elevation="@dimen/notification_elevation">
+            android:elevation="@dimen/notification_elevation"
+            android:layout_below="@id/gutter_top" >
             <TextView
                 android:id="@+id/notification_text"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
-                android:gravity="center_vertical"
+                android:gravity="bottom"
                 android:text="@string/notifications_header"
                 android:textSize="@dimen/notification_header_text_size"
-                android:textColor="?android:attr/textColorSecondary" />
+                android:textColor="?android:attr/textColorPrimary" />
             <TextView
                 android:id="@+id/notification_count"
                 android:layout_width="@dimen/notification_icon_size"
                 android:layout_height="match_parent"
                 android:layout_gravity="end"
-                android:gravity="center"
+                android:gravity="bottom|center_horizontal"
                 android:textSize="@dimen/notification_header_count_text_size"
                 android:fontFamily="sans-serif-medium"
                 android:textColor="?android:attr/textColorPrimary" />
@@ -75,6 +83,14 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/notification_footer_height"
             android:layout_below="@id/divider" />
+
+        <View
+            android:id="@+id/gutter_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:theme="@style/PopupGutter"
+            android:visibility="gone"
+            android:layout_below="@id/footer" />
 
     </RelativeLayout>
 

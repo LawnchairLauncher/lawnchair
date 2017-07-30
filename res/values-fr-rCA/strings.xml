@@ -35,9 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d de largeur sur %2$d de hauteur"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Maintenez le doigt sur l\'élément pour le placer manuellement"</string>
     <string name="place_automatically" msgid="8064208734425456485">"Ajouter automatiquement"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Rechercher des applications"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"Chargement des applications en cours..."</string>
-    <string name="all_apps_no_search_results" msgid="6332185285860416787">"Aucune application trouvée correspondant à « <xliff:g id="QUERY">%1$s</xliff:g> »"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Rechercher dans les applications"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"Chargement des applications en cours…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"Aucune application trouvée correspondant à « <xliff:g id="QUERY">%1$s</xliff:g> »"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Rechercher plus d\'applications"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Notifications"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Pas d\'espace libre sur l\'écran d\'accueil."</string>
@@ -79,17 +79,18 @@
     <string name="icon_badging_title" msgid="874121399231955394">"Points de notification"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Activé"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Désactivé"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"L\'accès aux notifications est requis"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Pour afficher les points de notification, activez les notifications d\'application pour <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"Modifier les paramètres"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Ajouter l\'icône à l\'écran d\'accueil"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Pour les nouvelles applications"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"Modifier la forme de l\'icône"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Utiliser les valeurs système par défaut"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Carré"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Carré aux coins ronds"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"Cercle"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"Goutte"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Application des changements à la forme de l\'icône en cours…"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Inconnu"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Supprimer"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Rechercher"</string>
