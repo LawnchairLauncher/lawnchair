@@ -298,14 +298,74 @@ public class AlphabeticalAppsList {
         updateAdapterItems();
     }
 
+    private List<AppInfo> processPredictedAppComponents(List<ComponentKey> components) {
+        if (mComponentToAppMap.isEmpty()) {
+            // Apps have not been bound yet.
+            return Collections.emptyList();
+        }
+
+        List<AppInfo> predictedApps = new ArrayList<>();
+        for (ComponentKey ck : components) {
+            AppInfo info = mComponentToAppMap.get(ck);
+            if (info != null) {
+                predictedApps.add(info);
+            } else {
+                if (FeatureFlags.IS_DOGFOOD_BUILD) {
+                    Log.e(TAG, "Predicted app not found: " + ck);
+                }
+            }
+            // Stop at the number of predicted apps
+            if (predictedApps.size() == mNumPredictedAppsPerRow) {
+                break;
+            }
+        }
+        return predictedApps;
+    }
+
     /**
-     * Sets the current set of predicted apps.  Since this can be called before we get the full set
-     * of applications, we should merge the results only in onAppsUpdated() which is idempotent.
+     * Sets the current set of predicted apps.
+     *
+     * This can be called before we get the full set of applications, we should merge the results
+     * only in onAppsUpdated() which is idempotent.
+     *
+     * If the number of predicted apps is the same as the previous list of predicted apps,
+     * we can optimize by swapping them in place.
      */
     public void setPredictedApps(List<ComponentKey> apps) {
         mPredictedAppComponents.clear();
         mPredictedAppComponents.addAll(apps);
-        onAppsUpdated();
+
+        List<AppInfo> newPredictedApps = processPredictedAppComponents(apps);
+        // We only need to do work if any of the visible predicted apps have changed.
+        if (!newPredictedApps.equals(mPredictedApps)) {
+            if (newPredictedApps.size() == mPredictedApps.size()) {
+                swapInNewPredictedApps(newPredictedApps);
+            } else {
+                // We need to update the appIndex of all the items.
+                onAppsUpdated();
+            }
+        }
+    }
+
+    /**
+     * Swaps out the old predicted apps with the new predicted apps, in place. This optimization
+     * allows us to skip an entire relayout that would otherwise be called by notifyDataSetChanged.
+     *
+     * Note: This should only be called if the # of predicted apps is the same.
+     *       This method assumes that predicted apps are the first items in the adapter.
+     */
+    private void swapInNewPredictedApps(List<AppInfo> apps) {
+        mPredictedApps.clear();
+        mPredictedApps.addAll(apps);
+
+        int size = apps.size();
+        for (int i = 0; i < size; ++i) {
+            AppInfo info = apps.get(i);
+            AdapterItem appItem = AdapterItem.asPredictedApp(i, "", info, i);
+            mAdapterItems.set(i, appItem);
+            mFilteredApps.set(i, info);
+            mAdapter.notifyItemChanged(i);
+        }
     }
 
     /**
@@ -432,20 +492,7 @@ public class AlphabeticalAppsList {
         // Process the predicted app components
         mPredictedApps.clear();
         if (mPredictedAppComponents != null && !mPredictedAppComponents.isEmpty() && !hasFilter()) {
-            for (ComponentKey ck : mPredictedAppComponents) {
-                AppInfo info = mComponentToAppMap.get(ck);
-                if (info != null) {
-                    mPredictedApps.add(info);
-                } else {
-                    if (FeatureFlags.IS_DOGFOOD_BUILD) {
-                        Log.e(TAG, "Predicted app not found: " + ck);
-                    }
-                }
-                // Stop at the number of predicted apps
-                if (mPredictedApps.size() == mNumPredictedAppsPerRow) {
-                    break;
-                }
-            }
+            mPredictedApps.addAll(processPredictedAppComponents(mPredictedAppComponents));
 
             if (!mPredictedApps.isEmpty()) {
                 // Add a section for the predictions
