@@ -465,9 +465,6 @@ public class Launcher extends BaseActivity
         setOrientation();
 
         setContentView(mLauncherView);
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onCreate(savedInstanceState);
-        }
 
         // Listen for broadcasts
         IntentFilter filter = new IntentFilter();
@@ -478,6 +475,10 @@ public class Launcher extends BaseActivity
 
         getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
                 Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onCreate(savedInstanceState);
+        }
     }
 
     @Override
