@@ -55,7 +55,7 @@
             android:dependency="pref_weather"
             android:entries="@array/unitsTexts" />
 
-        <EditTextPreference
+        <ch.deletescape.lawnchair.preferences.CustomLocationPreference
             android:dependency="pref_weather"
             android:key="pref_weather_city"
             android:defaultValue="Lucerne, CH"
