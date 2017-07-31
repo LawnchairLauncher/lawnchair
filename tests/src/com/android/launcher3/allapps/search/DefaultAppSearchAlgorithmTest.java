@@ -16,85 +16,78 @@
 package com.android.launcher3.allapps.search;
 
 import android.content.ComponentName;
-import android.test.InstrumentationTestCase;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Utilities;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit tests for {@link DefaultAppSearchAlgorithm}
  */
-public class DefaultAppSearchAlgorithmTest extends InstrumentationTestCase {
+@RunWith(AndroidJUnit4.class)
+public class DefaultAppSearchAlgorithmTest {
+    private static final DefaultAppSearchAlgorithm.StringMatcher MATCHER =
+            DefaultAppSearchAlgorithm.StringMatcher.getInstance();
 
-    private List<AppInfo> mAppsList;
-    private DefaultAppSearchAlgorithm mAlgorithm;
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        mAppsList = new ArrayList<>();
-        getInstrumentation().runOnMainSync(new Runnable() {
-            @Override
-            public void run() {
-                mAlgorithm = new DefaultAppSearchAlgorithm(mAppsList);
-            }
-        });
-    }
-
+    @Test
     public void testMatches() {
-        assertTrue(mAlgorithm.matches(getInfo("white cow"), "cow"));
-        assertTrue(mAlgorithm.matches(getInfo("whiteCow"), "cow"));
-        assertTrue(mAlgorithm.matches(getInfo("whiteCOW"), "cow"));
-        assertTrue(mAlgorithm.matches(getInfo("whitecowCOW"), "cow"));
-        assertTrue(mAlgorithm.matches(getInfo("white2cow"), "cow"));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("white cow"), "cow", MATCHER));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("whiteCow"), "cow", MATCHER));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("whiteCOW"), "cow", MATCHER));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("whitecowCOW"), "cow", MATCHER));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("white2cow"), "cow", MATCHER));
 
-        assertFalse(mAlgorithm.matches(getInfo("whitecow"), "cow"));
-        assertFalse(mAlgorithm.matches(getInfo("whitEcow"), "cow"));
+        assertFalse(DefaultAppSearchAlgorithm.matches(getInfo("whitecow"), "cow", MATCHER));
+        assertFalse(DefaultAppSearchAlgorithm.matches(getInfo("whitEcow"), "cow", MATCHER));
 
-        assertTrue(mAlgorithm.matches(getInfo("whitecowCow"), "cow"));
-        assertTrue(mAlgorithm.matches(getInfo("whitecow cow"), "cow"));
-        assertFalse(mAlgorithm.matches(getInfo("whitecowcow"), "cow"));
-        assertFalse(mAlgorithm.matches(getInfo("whit ecowcow"), "cow"));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("whitecowCow"), "cow", MATCHER));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("whitecow cow"), "cow", MATCHER));
+        assertFalse(DefaultAppSearchAlgorithm.matches(getInfo("whitecowcow"), "cow", MATCHER));
+        assertFalse(DefaultAppSearchAlgorithm.matches(getInfo("whit ecowcow"), "cow", MATCHER));
 
-        assertTrue(mAlgorithm.matches(getInfo("cats&dogs"), "dog"));
-        assertTrue(mAlgorithm.matches(getInfo("cats&Dogs"), "dog"));
-        assertTrue(mAlgorithm.matches(getInfo("cats&Dogs"), "&"));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("cats&dogs"), "dog", MATCHER));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("cats&Dogs"), "dog", MATCHER));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("cats&Dogs"), "&", MATCHER));
 
-        assertTrue(mAlgorithm.matches(getInfo("2+43"), "43"));
-        assertFalse(mAlgorithm.matches(getInfo("2+43"), "3"));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("2+43"), "43", MATCHER));
+        assertFalse(DefaultAppSearchAlgorithm.matches(getInfo("2+43"), "3", MATCHER));
 
-        assertTrue(mAlgorithm.matches(getInfo("Q"), "q"));
-        assertTrue(mAlgorithm.matches(getInfo("  Q"), "q"));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("Q"), "q", MATCHER));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("  Q"), "q", MATCHER));
 
         // match lower case words
-        assertTrue(mAlgorithm.matches(getInfo("elephant"), "e"));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("elephant"), "e", MATCHER));
 
-        assertTrue(mAlgorithm.matches(getInfo("电子邮件"), "电"));
-        assertTrue(mAlgorithm.matches(getInfo("电子邮件"), "电子"));
-        assertFalse(mAlgorithm.matches(getInfo("电子邮件"), "子"));
-        assertFalse(mAlgorithm.matches(getInfo("电子邮件"), "邮件"));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("电子邮件"), "电", MATCHER));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("电子邮件"), "电子", MATCHER));
+        assertFalse(DefaultAppSearchAlgorithm.matches(getInfo("电子邮件"), "子", MATCHER));
+        assertFalse(DefaultAppSearchAlgorithm.matches(getInfo("电子邮件"), "邮件", MATCHER));
 
-        assertFalse(mAlgorithm.matches(getInfo("Bot"), "ba"));
-        assertFalse(mAlgorithm.matches(getInfo("bot"), "ba"));
+        assertFalse(DefaultAppSearchAlgorithm.matches(getInfo("Bot"), "ba", MATCHER));
+        assertFalse(DefaultAppSearchAlgorithm.matches(getInfo("bot"), "ba", MATCHER));
     }
 
+    @Test
     public void testMatchesVN() {
         if (!Utilities.ATLEAST_NOUGAT) {
             return;
         }
-        assertTrue(mAlgorithm.matches(getInfo("다운로드"), "다"));
-        assertTrue(mAlgorithm.matches(getInfo("드라이브"), "드"));
-        assertTrue(mAlgorithm.matches(getInfo("다운로드 드라이브"), "ㄷ"));
-        assertTrue(mAlgorithm.matches(getInfo("운로 드라이브"), "ㄷ"));
-        assertTrue(mAlgorithm.matches(getInfo("abc"), "åbç"));
-        assertTrue(mAlgorithm.matches(getInfo("Alpha"), "ål"));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("다운로드"), "다", MATCHER));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("드라이브"), "드", MATCHER));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("다운로드 드라이브"), "ㄷ", MATCHER));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("운로 드라이브"), "ㄷ", MATCHER));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("abc"), "åbç", MATCHER));
+        assertTrue(DefaultAppSearchAlgorithm.matches(getInfo("Alpha"), "ål", MATCHER));
 
-        assertFalse(mAlgorithm.matches(getInfo("다운로드 드라이브"), "ㄷㄷ"));
-        assertFalse(mAlgorithm.matches(getInfo("로드라이브"), "ㄷ"));
-        assertFalse(mAlgorithm.matches(getInfo("abc"), "åç"));
+        assertFalse(DefaultAppSearchAlgorithm.matches(getInfo("다운로드 드라이브"), "ㄷㄷ", MATCHER));
+        assertFalse(DefaultAppSearchAlgorithm.matches(getInfo("로드라이브"), "ㄷ", MATCHER));
+        assertFalse(DefaultAppSearchAlgorithm.matches(getInfo("abc"), "åç", MATCHER));
     }
 
     private AppInfo getInfo(String title) {

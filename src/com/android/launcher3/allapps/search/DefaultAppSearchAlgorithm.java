@@ -71,10 +71,6 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
         return result;
     }
 
-    public static boolean matches(AppInfo info, String query) {
-        return matches(info, query, StringMatcher.getInstance());
-    }
-
     public static boolean matches(AppInfo info, String query, StringMatcher matcher) {
         int queryLength = query.length();
 
