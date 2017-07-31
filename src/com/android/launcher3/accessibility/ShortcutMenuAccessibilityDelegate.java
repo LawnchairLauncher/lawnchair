@@ -50,8 +50,7 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
         if ((host.getParent() instanceof DeepShortcutView)) {
             info.addAction(mActions.get(ADD_TO_WORKSPACE));
         } else if (host instanceof NotificationMainView) {
-            NotificationMainView notificationView = (NotificationMainView) host;
-            if (notificationView.canChildBeDismissed(notificationView)) {
+            if (((NotificationMainView) host).canChildBeDismissed()) {
                 info.addAction(mActions.get(DISMISS_NOTIFICATION));
             }
         }
@@ -88,8 +87,7 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
             if (!(host instanceof NotificationMainView)) {
                 return false;
             }
-            NotificationMainView notificationView = (NotificationMainView) host;
-            notificationView.onChildDismissed(notificationView);
+            ((NotificationMainView) host).onChildDismissed();
             announceConfirmation(R.string.notification_dismissed);
             return true;
         }

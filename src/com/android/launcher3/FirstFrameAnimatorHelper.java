@@ -23,7 +23,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
 import android.view.ViewTreeObserver;
-
 import com.android.launcher3.util.Thunk;
 
 /*
@@ -33,10 +32,11 @@ import com.android.launcher3.util.Thunk;
  */
 public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
     implements ValueAnimator.AnimatorUpdateListener {
+    private static final String TAG = "FirstFrameAnimatorHlpr";
     private static final boolean DEBUG = false;
     private static final int MAX_DELAY = 1000;
     private static final int IDEAL_FRAME_DURATION = 16;
-    private View mTarget;
+    private final View mTarget;
     private long mStartFrame;
     private long mStartTime = -1;
     private boolean mHandlingOnAnimationUpdate;
@@ -77,7 +77,7 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
                     sGlobalFrameCounter++;
                     if (DEBUG) {
                         long newTime = System.currentTimeMillis();
-                        Log.d("FirstFrameAnimatorHelper", "TICK " + (newTime - mTime));
+                        Log.d(TAG, "TICK " + (newTime - mTime));
                         mTime = newTime;
                     }
                 }
@@ -139,7 +139,7 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
 
     public void print(ValueAnimator animation) {
         float flatFraction = animation.getCurrentPlayTime() / (float) animation.getDuration();
-        Log.d("FirstFrameAnimatorHelper", sGlobalFrameCounter +
+        Log.d(TAG, sGlobalFrameCounter +
               "(" + (sGlobalFrameCounter - mStartFrame) + ") " + mTarget + " dirty? " +
               mTarget.isDirty() + " " + flatFraction + " " + this + " " + animation);
     }

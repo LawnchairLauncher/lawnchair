@@ -35,9 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d bred gånger %2$d hög"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Placera manuellt genom att trycka länge"</string>
     <string name="place_automatically" msgid="8064208734425456485">"Lägg till automatiskt"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Sök efter appar"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"Läser in appar …"</string>
-    <string name="all_apps_no_search_results" msgid="6332185285860416787">"Det gick inte att hitta några appar som matchar <xliff:g id="QUERY">%1$s</xliff:g>"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Sök efter appar"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"Läser in appar …"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"Inga appar som matchar <xliff:g id="QUERY">%1$s</xliff:g> hittades"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Sök efter fler appar"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Aviseringar"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Det finns inte plats för mer på den här startskärmen."</string>
@@ -79,17 +79,18 @@
     <string name="icon_badging_title" msgid="874121399231955394">"Aviseringsprickar"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"På"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Av"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"Åtkomst till aviseringar krävs"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Aktivera appaviseringar för <xliff:g id="NAME">%1$s</xliff:g> om du vill att aviseringsprickar ska visas"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"Ändra inställningar"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Lägg till ikonen på startskärmen"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"För nya appar"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"Ändra form på ikoner"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Använd systemstandard"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Kvadrat"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Kvirkel"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"Cirkel"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"Droppe"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Ikonernas form ändras"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Okänt"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Ta bort"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Sök"</string>

@@ -16,15 +16,12 @@
 
 package com.android.launcher3.compat;
 
-import android.app.Activity;
-import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.UserHandle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
@@ -75,9 +72,6 @@ public abstract class AppWidgetManagerCompat {
 
     public abstract boolean bindAppWidgetIdIfAllowed(
             int appWidgetId, AppWidgetProviderInfo info, Bundle options);
-
-    public abstract void startConfigActivity(AppWidgetProviderInfo info, int widgetId,
-            Activity activity, AppWidgetHost host, int requestCode);
 
     public abstract LauncherAppWidgetProviderInfo findProvider(
             ComponentName provider, UserHandle user);

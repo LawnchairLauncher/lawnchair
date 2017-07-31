@@ -35,9 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d breed by %2$d hoog"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Raak en hou om self te plaas"</string>
     <string name="place_automatically" msgid="8064208734425456485">"Voeg outomaties by"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Deursoek programme"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"Laai tans programme …"</string>
-    <string name="all_apps_no_search_results" msgid="6332185285860416787">"Geen programme gevind wat met \"<xliff:g id="QUERY">%1$s</xliff:g>\" ooreenstem nie"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Deursoek programme"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"Laai tans programme …"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"Kon geen programme kry wat by \"<xliff:g id="QUERY">%1$s</xliff:g>\" pas nie"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Soek meer programme"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Kennisgewings"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Niks meer spasie op die tuisskerm nie."</string>
@@ -79,17 +79,18 @@
     <string name="icon_badging_title" msgid="874121399231955394">"Kennisgewingkolle"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Aan"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Af"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"Kennisgewingtoegang word benodig"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Skakel programkennisgewings vir <xliff:g id="NAME">%1$s</xliff:g> aan om kennisgewingkolle te sien"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"Verander instellings"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Voeg ikoon by tuisskerm"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Vir nuwe programme"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"Verander ikoon se vorm"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Gebruik stelselverstek"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Vierkant"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Sirkelvierkant"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"Sirkel"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"Traandruppel"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Pas ikoonvormveranderings toe"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Onbekend"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Verwyder"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Soek"</string>

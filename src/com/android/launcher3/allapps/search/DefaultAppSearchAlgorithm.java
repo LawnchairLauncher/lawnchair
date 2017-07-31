@@ -20,6 +20,7 @@ import android.os.Handler;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.util.ComponentKey;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,8 +62,9 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
         // apps that don't match all of the words in the query.
         final String queryTextLower = query.toLowerCase();
         final ArrayList<ComponentKey> result = new ArrayList<>();
+        StringMatcher matcher = StringMatcher.getInstance();
         for (AppInfo info : mApps) {
-            if (matches(info, queryTextLower)) {
+            if (matches(info, queryTextLower, matcher)) {
                 result.add(info.toComponentKey());
             }
         }
@@ -70,6 +72,10 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
     }
 
     public static boolean matches(AppInfo info, String query) {
+        return matches(info, query, StringMatcher.getInstance());
+    }
+
+    public static boolean matches(AppInfo info, String query, StringMatcher matcher) {
         int queryLength = query.length();
 
         String title = info.title.toString();
@@ -90,7 +96,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
             nextType = i < (titleLength - 1) ?
                     Character.getType(title.codePointAt(i + 1)) : Character.UNASSIGNED;
             if (isBreak(thisType, lastType, nextType) &&
-                    title.substring(i, i + queryLength).equalsIgnoreCase(query)) {
+                    matcher.matches(query, title.substring(i, i + queryLength))) {
                 return true;
             }
         }
@@ -106,6 +112,13 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
      *      4) Any capital character before a small character
      */
     private static boolean isBreak(int thisType, int prevType, int nextType) {
+        switch (prevType) {
+            case Character.UNASSIGNED:
+            case Character.SPACE_SEPARATOR:
+            case Character.LINE_SEPARATOR:
+            case Character.PARAGRAPH_SEPARATOR:
+                return true;
+        }
         switch (thisType) {
             case Character.UPPERCASE_LETTER:
                 if (nextType == Character.UPPERCASE_LETTER) {
@@ -134,6 +147,43 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
             default:
                 // Always a break point at first character
                 return  prevType == Character.UNASSIGNED;
+        }
+    }
+
+    public static class StringMatcher {
+
+        private static final char MAX_UNICODE = '\uFFFF';
+
+        private final Collator mCollator;
+
+        StringMatcher() {
+            // On android N and above, Collator uses ICU implementation which has a much better
+            // support for non-latin locales.
+            mCollator = Collator.getInstance();
+            mCollator.setStrength(Collator.PRIMARY);
+            mCollator.setDecomposition(Collator.CANONICAL_DECOMPOSITION);
+        }
+
+        /**
+         * Returns true if {@param query} is a prefix of {@param target}
+         */
+        public boolean matches(String query, String target) {
+            switch (mCollator.compare(query, target)) {
+                case 0:
+                    return true;
+                case -1:
+                    // The target string can contain a modifier which would make it larger than
+                    // the query string (even though the length is same). If the query becomes
+                    // larger after appending a unicode character, it was originally a prefix of
+                    // the target string and hence should match.
+                    return mCollator.compare(query + MAX_UNICODE, target) > -1;
+                default:
+                    return false;
+            }
+        }
+
+        public static StringMatcher getInstance() {
+            return new StringMatcher();
         }
     }
 }

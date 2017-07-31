@@ -111,21 +111,53 @@ public class SpringAnimationHandler<T> {
         mShouldComputeVelocity = true;
     }
 
-    public void animateToFinalPosition(float position) {
-        if (DEBUG) Log.d(TAG, "animateToFinalPosition#computeVelocity=" + mShouldComputeVelocity);
+    public void animateToFinalPosition(float position, int startValue) {
+        animateToFinalPosition(position, startValue, mShouldComputeVelocity);
+    }
+
+    /**
+     * @param position The final animation position.
+     * @param startValue < 0 if scrolling from start to end; > 0 if scrolling from end to start
+     *                   The magnitude of the number changes how the spring will move.
+     * @param setVelocity If true, we set the velocity to {@link #mCurrentVelocity} before
+     *                    starting the animation.
+     */
+    private void animateToFinalPosition(float position, int startValue, boolean setVelocity) {
+        if (DEBUG) {
+            Log.d(TAG, "animateToFinalPosition#position=" + position + ", startValue=" + startValue);
+        }
 
         if (mShouldComputeVelocity) {
-            computeVelocity();
-            setStartVelocity(mCurrentVelocity);
+            mCurrentVelocity = computeVelocity();
         }
 
         int size = mAnimations.size();
         for (int i = 0; i < size; ++i) {
+            mAnimations.get(i).setStartValue(startValue);
+            if (setVelocity) {
+                mAnimations.get(i).setStartVelocity(mCurrentVelocity);
+            }
             mAnimations.get(i).animateToFinalPosition(position);
         }
 
         reset();
     }
+
+    /**
+     * Similar to {@link #animateToFinalPosition(float, int)}, but used in cases where we want to
+     * manually set the velocity.
+     */
+    public void animateToPositionWithVelocity(float position, int startValue, float velocity) {
+        if (DEBUG) {
+            Log.d(TAG, "animateToPosition#pos=" + position + ", start=" + startValue
+                    + ", velocity=" + velocity);
+        }
+
+        mCurrentVelocity = velocity;
+        mShouldComputeVelocity = false;
+        animateToFinalPosition(position, startValue, true);
+    }
+
 
     public boolean isRunning() {
         // All the animations run at the same time so we can just check the first one.
@@ -150,25 +182,20 @@ public class SpringAnimationHandler<T> {
             mVelocityTracker = null;
         }
         mCurrentVelocity = 0;
+        mShouldComputeVelocity = false;
     }
 
-    private void setStartVelocity(float velocity) {
-        int size = mAnimations.size();
-        for (int i = 0; i < size; ++i) {
-            mAnimations.get(i).setStartVelocity(velocity);
-        }
-    }
 
-    private void computeVelocity() {
+    private float computeVelocity() {
         getVelocityTracker().computeCurrentVelocity(1000 /* millis */);
 
-        mCurrentVelocity = isVerticalDirection()
+        float velocity = isVerticalDirection()
                 ? getVelocityTracker().getYVelocity()
                 : getVelocityTracker().getXVelocity();
-        mCurrentVelocity *= VELOCITY_DAMPING_FACTOR;
-        mShouldComputeVelocity = false;
+        velocity *= VELOCITY_DAMPING_FACTOR;
 
-        if (DEBUG) Log.d(TAG, "computeVelocity=" + mCurrentVelocity);
+        if (DEBUG) Log.d(TAG, "computeVelocity=" + velocity);
+        return velocity;
     }
 
     private boolean isVerticalDirection() {
@@ -206,7 +233,6 @@ public class SpringAnimationHandler<T> {
      */
     public static SpringAnimation forView(View view, FloatPropertyCompat property, float finalPos) {
         SpringAnimation spring = new SpringAnimation(view, property, finalPos);
-        spring.setStartValue(1f);
         spring.setSpring(new SpringForce(finalPos));
         return spring;
     }

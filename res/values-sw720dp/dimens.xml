@@ -17,7 +17,6 @@
 <resources>
     <!-- All Apps -->
     <dimen name="all_apps_button_scale_down">8dp</dimen>
-    <dimen name="all_apps_search_bar_height">54dp</dimen>
     <dimen name="all_apps_empty_search_message_top_offset">64dp</dimen>
     <dimen name="all_apps_empty_search_bg_top_offset">180dp</dimen>
 

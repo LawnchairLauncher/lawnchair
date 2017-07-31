@@ -35,6 +35,7 @@ import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
+import android.support.annotation.Nullable;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.IconCache;
@@ -45,6 +46,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
+import com.android.launcher3.util.Provider;
 
 /**
  * Helper methods for generating various launcher icons
@@ -315,14 +317,41 @@ public class LauncherIcons {
 
     public static Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfo, Context context,
             boolean badged) {
+        return createShortcutIcon(shortcutInfo, context, badged, null);
+    }
+
+    public static Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfo, Context context,
+            final Bitmap fallbackIcon) {
+        Provider<Bitmap> fallbackIconProvider = new Provider<Bitmap>() {
+            @Override
+            public Bitmap get() {
+                // If the shortcut is pinned but no longer has an icon in the system,
+                // keep the current icon instead of reverting to the default icon.
+                return fallbackIcon;
+            }
+        };
+        return createShortcutIcon(shortcutInfo, context, true, fallbackIconProvider);
+    }
+
+    public static Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfo, Context context,
+            boolean badged, @Nullable Provider<Bitmap> fallbackIconProvider) {
         LauncherAppState app = LauncherAppState.getInstance(context);
         Drawable unbadgedDrawable = DeepShortcutManager.getInstance(context)
                 .getShortcutIconDrawable(shortcutInfo,
                         app.getInvariantDeviceProfile().fillResIconDpi);
         IconCache cache = app.getIconCache();
-        Bitmap unbadgedBitmap = unbadgedDrawable == null
-                ? cache.getDefaultIcon(Process.myUserHandle())
-                : LauncherIcons.createScaledBitmapWithoutShadow(unbadgedDrawable, context, 0);
+        Bitmap unbadgedBitmap = null;
+        if (unbadgedDrawable != null) {
+            unbadgedBitmap = LauncherIcons.createScaledBitmapWithoutShadow(
+                    unbadgedDrawable, context, 0);
+        } else {
+            if (fallbackIconProvider != null) {
+                unbadgedBitmap = fallbackIconProvider.get();
+            }
+            if (unbadgedBitmap == null) {
+                unbadgedBitmap = cache.getDefaultIcon(Process.myUserHandle());
+            }
+        }
 
         if (!badged) {
             return unbadgedBitmap;

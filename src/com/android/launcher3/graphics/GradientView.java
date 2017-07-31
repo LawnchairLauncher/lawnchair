@@ -18,13 +18,14 @@ package com.android.launcher3.graphics;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.RadialGradient;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -34,6 +35,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
+import com.android.launcher3.util.Themes;
 
 /**
  * Draws a translucent radial gradient background from an initial state with progress 0.0 to a
@@ -42,44 +44,44 @@ import com.android.launcher3.dynamicui.WallpaperColorInfo;
 public class GradientView extends View implements WallpaperColorInfo.OnChangeListener {
 
     private static final int DEFAULT_COLOR = Color.WHITE;
-    private static final float GRADIENT_ALPHA_MASK_LENGTH_DP = 300;
+    private static final int ALPHA_MASK_HEIGHT_DP = 500;
+    private static final int ALPHA_MASK_WIDTH_DP = 2;
+    private static final int ALPHA_COLORS = 0xBF;
     private static final boolean DEBUG = false;
 
-    private final Bitmap mFinalGradientMask;
     private final Bitmap mAlphaGradientMask;
 
+    private boolean mShowScrim = true;
     private int mColor1 = DEFAULT_COLOR;
     private int mColor2 = DEFAULT_COLOR;
     private int mWidth;
     private int mHeight;
     private final RectF mAlphaMaskRect = new RectF();
     private final RectF mFinalMaskRect = new RectF();
-    private final Paint mPaint = new Paint();
+    private final Paint mPaintWithScrim = new Paint();
+    private final Paint mPaintNoScrim = new Paint();
     private float mProgress;
-    private final int mMaskHeight;
+    private final int mMaskHeight, mMaskWidth;
     private final Context mAppContext;
     private final Paint mDebugPaint = DEBUG ? new Paint() : null;
     private final Interpolator mAccelerator = new AccelerateInterpolator();
     private final float mAlphaStart;
     private final WallpaperColorInfo mWallpaperColorInfo;
+    private final int mScrimColor;
 
     public GradientView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.mAppContext = context.getApplicationContext();
-        this.mMaskHeight = Utilities.pxFromDp(GRADIENT_ALPHA_MASK_LENGTH_DP,
+        this.mMaskHeight = Utilities.pxFromDp(ALPHA_MASK_HEIGHT_DP,
+                mAppContext.getResources().getDisplayMetrics());
+        this.mMaskWidth = Utilities.pxFromDp(ALPHA_MASK_WIDTH_DP,
                 mAppContext.getResources().getDisplayMetrics());
         Launcher launcher = Launcher.getLauncher(context);
         this.mAlphaStart = launcher.getDeviceProfile().isVerticalBarLayout() ? 0 : 100;
+        this.mScrimColor = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
         this.mWallpaperColorInfo = WallpaperColorInfo.getInstance(launcher);
         updateColors();
-
-        int finalAlpha = 0xBF;
-        mFinalGradientMask = Utilities.convertToAlphaMask(
-                Utilities.createOnePixBitmap(), finalAlpha);
-        Bitmap alphaMaskFromResource = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.all_apps_alpha_mask);
-        mAlphaGradientMask = Utilities.convertToAlphaMask(
-                alphaMaskFromResource, finalAlpha);
+        mAlphaGradientMask = createDitheredAlphaMask();
     }
 
     @Override
@@ -101,8 +103,10 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
     }
 
     private void updateColors() {
-        this.mColor1 = mWallpaperColorInfo.getMainColor();
-        this.mColor2 = mWallpaperColorInfo.getSecondaryColor();
+        this.mColor1 = ColorUtils.setAlphaComponent(mWallpaperColorInfo.getMainColor(),
+                ALPHA_COLORS);
+        this.mColor2 = ColorUtils.setAlphaComponent(mWallpaperColorInfo.getSecondaryColor(),
+                ALPHA_COLORS);
         if (mWidth + mHeight > 0) {
             createRadialShader();
         }
@@ -122,39 +126,74 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
     private void createRadialShader() {
         final float gradientCenterY = 1.05f;
         float radius = Math.max(mHeight, mWidth) * gradientCenterY;
-
         float posScreenBottom = (radius - mHeight) / radius; // center lives below screen
-        RadialGradient shader = new RadialGradient(
+
+        RadialGradient shaderNoScrim = new RadialGradient(
                 mWidth * 0.5f,
                 mHeight * gradientCenterY,
                 radius,
                 new int[] {mColor1, mColor1, mColor2},
                 new float[] {0f, posScreenBottom, 1f},
                 Shader.TileMode.CLAMP);
-        mPaint.setShader(shader);
+        mPaintNoScrim.setShader(shaderNoScrim);
+
+        int color1 = ColorUtils.compositeColors(mScrimColor,mColor1);
+        int color2 = ColorUtils.compositeColors(mScrimColor,mColor2);
+        RadialGradient shaderWithScrim = new RadialGradient(
+                mWidth * 0.5f,
+                mHeight * gradientCenterY,
+                radius,
+                new int[] { color1, color1, color2 },
+                new float[] {0f, posScreenBottom, 1f},
+                Shader.TileMode.CLAMP);
+        mPaintWithScrim.setShader(shaderWithScrim);
     }
 
     public void setProgress(float progress) {
+        setProgress(progress, true);
+    }
+
+    public void setProgress(float progress, boolean showScrim) {
         this.mProgress = progress;
+        this.mShowScrim = showScrim;
         invalidate();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
+        Paint paint = mShowScrim ? mPaintWithScrim : mPaintNoScrim;
+
         float head = 0.29f;
         float linearProgress = head + (mProgress * (1f - head));
         float startMaskY = (1f - linearProgress) * mHeight - mMaskHeight * linearProgress;
         float interpolatedAlpha = (255 - mAlphaStart) * mAccelerator.getInterpolation(mProgress);
-        mPaint.setAlpha((int) (mAlphaStart + interpolatedAlpha));
-        mAlphaMaskRect.set(0, startMaskY, mWidth, startMaskY + mMaskHeight);
-        mFinalMaskRect.set(0, startMaskY + mMaskHeight, mWidth, mHeight);
-        canvas.drawBitmap(mAlphaGradientMask, null, mAlphaMaskRect, mPaint);
-        canvas.drawBitmap(mFinalGradientMask, null, mFinalMaskRect, mPaint);
+        paint.setAlpha((int) (mAlphaStart + interpolatedAlpha));
+        float div = (float) Math.floor(startMaskY + mMaskHeight);
+        mAlphaMaskRect.set(0, startMaskY, mWidth, div);
+        mFinalMaskRect.set(0, div, mWidth, mHeight);
+        canvas.drawBitmap(mAlphaGradientMask, null, mAlphaMaskRect, paint);
+        canvas.drawRect(mFinalMaskRect, paint);
 
         if (DEBUG) {
             mDebugPaint.setColor(0xFF00FF00);
             canvas.drawLine(0, startMaskY, mWidth, startMaskY, mDebugPaint);
             canvas.drawLine(0, startMaskY + mMaskHeight, mWidth, startMaskY + mMaskHeight, mDebugPaint);
         }
+    }
+
+    public Bitmap createDitheredAlphaMask() {
+        Bitmap dst = Bitmap.createBitmap(mMaskWidth, mMaskHeight, Bitmap.Config.ALPHA_8);
+        Canvas c = new Canvas(dst);
+        Paint paint = new Paint(Paint.DITHER_FLAG);
+        LinearGradient lg = new LinearGradient(0, 0, 0, mMaskHeight,
+                new int[]{
+                        0x00FFFFFF,
+                        ColorUtils.setAlphaComponent(Color.WHITE, (int) (0xFF * 0.95)),
+                        0xFFFFFFFF},
+                new float[]{0f, 0.8f, 1f},
+                Shader.TileMode.CLAMP);
+        paint.setShader(lg);
+        c.drawRect(0, 0, mMaskWidth, mMaskHeight, paint);
+        return dst;
     }
 }

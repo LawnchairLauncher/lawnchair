@@ -28,6 +28,7 @@ import android.support.test.uiautomator.UiSelector;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppWidgetHost;
 import com.android.launcher3.LauncherAppWidgetHostView;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
@@ -285,7 +286,7 @@ public class BindWidgetTest extends LauncherInstrumentationTestCase {
             pendingInfo.minSpanY = item.minSpanY;
             Bundle options = WidgetHostViewLoader.getDefaultOptionsForWidget(mTargetContext, pendingInfo);
 
-            AppWidgetHost host = new AppWidgetHost(mTargetContext, Launcher.APPWIDGET_HOST_ID);
+            AppWidgetHost host = new LauncherAppWidgetHost(mTargetContext);
             int widgetId = host.allocateAppWidgetId();
             if (!mWidgetManager.bindAppWidgetIdIfAllowed(widgetId, info, options)) {
                 host.deleteAppWidgetId(widgetId);

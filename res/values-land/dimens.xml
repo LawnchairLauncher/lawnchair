@@ -26,9 +26,12 @@
 
     <!-- Dynamic grid -->
     <dimen name="dynamic_grid_overview_bar_item_width">120dp</dimen>
-    <dimen name="dynamic_grid_page_indicator_size">24dp</dimen>
-    <dimen name="dynamic_grid_icon_drawable_padding">8dp</dimen>
-    <dimen name="dynamic_grid_cell_padding_x">8dp</dimen>
+    <dimen name="dynamic_grid_min_page_indicator_size">48dp</dimen>
+    <dimen name="dynamic_grid_icon_drawable_padding">4dp</dimen>
+
+    <dimen name="dynamic_grid_cell_layout_padding">0dp</dimen>
+
+    <dimen name="folder_preview_padding">2dp</dimen>
 
     <!-- Hotseat -->
     <dimen name="dynamic_grid_hotseat_land_left_nav_bar_right_padding">18dp</dimen>
