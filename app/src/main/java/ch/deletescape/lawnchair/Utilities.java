@@ -678,6 +678,16 @@ public final class Utilities {
                 size, metrics));
     }
 
+    public static Paint.FontMetricsInt fontMetricsIntFromFontMetrics(Paint.FontMetrics fontMetrics) {
+        Paint.FontMetricsInt fontMetricsInt = new Paint.FontMetricsInt();
+        fontMetricsInt.ascent = Math.round(fontMetrics.ascent);
+        fontMetricsInt.bottom = Math.round(fontMetrics.bottom);
+        fontMetricsInt.descent = Math.round(fontMetrics.descent);
+        fontMetricsInt.leading = Math.round(fontMetrics.leading);
+        fontMetricsInt.top = Math.round(fontMetrics.top);
+        return fontMetricsInt;
+    }
+
     public static String createDbSelectionQuery(String columnName, Iterable<?> values) {
         return String.format(Locale.ENGLISH, "%s IN (%s)", columnName, TextUtils.join(", ", values));
     }
