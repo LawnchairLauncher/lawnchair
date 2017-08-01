@@ -35,9 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d వెడల్పు X %2$d ఎత్తు"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"మాన్యువల్‌గా ఉంచడానికి నొక్కి &amp;amp పట్టుకోండి"</string>
     <string name="place_automatically" msgid="8064208734425456485">"స్వయంచాలకంగా జోడించు"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"అనువర్తనాలను శోధించండి"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"అనువర్తనాలను లోడ్ చేస్తోంది…"</string>
-    <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"కి సరిపోలే అనువర్తనాలేవీ కనుగొనబడలేదు"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"అప్లికేషన్‌లను శోధించండి"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"అప్లికేషన్‌లను లోడ్ చేస్తోంది…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"కి సరిపోలే అప్లికేషన్‌లేవీ కనుగొనబడలేదు"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"మరిన్ని అనువర్తనాల కోసం శోధించు"</string>
     <string name="notifications_header" msgid="1404149926117359025">"నోటిఫికేషన్‌లు"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ఈ హోమ్ స్క్రీన్‌లో ఖాళీ లేదు."</string>
@@ -79,6 +79,9 @@
     <string name="icon_badging_title" msgid="874121399231955394">"నోటిఫికేషన్ డాట్‌లు"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"ఆన్"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"ఆఫ్"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"నోటిఫికేషన్ యాక్సెస్ అవసరం"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"నోటిఫికేషన్ డాట్‌లను చూపించడానికి <xliff:g id="NAME">%1$s</xliff:g>కు యాప్ నోటిఫికేషన్‌లను ఆన్ చేయండి"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"సెట్టింగ్‌లను మార్చు"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"హోమ్ స్క్రీన్‌కి చిహ్నాన్ని జోడించు"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"కొత్త అనువర్తనాల కోసం"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"చిహ్న ఆకారాన్ని మార్చు"</string>

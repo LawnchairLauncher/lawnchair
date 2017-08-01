@@ -35,9 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d വീതിയും %2$d ഉയരവും"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"സ്വമേധയാ സ്ഥാപിക്കുന്നതിന് സ്‌പർശിച്ചുപിടിക്കുക"</string>
     <string name="place_automatically" msgid="8064208734425456485">"സ്വയമേവ ചേർക്കുക"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"ആപ്പുകളെ തിരയുക"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"ആപ്പുകൾ ലോഡുചെയ്യുന്നു..."</string>
-    <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" എന്നതുമായി പൊരുത്തപ്പെടുന്ന ആപ്പ്‌സൊന്നും കണ്ടെത്തിയില്ല"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ആപ്പുകൾ തിരയുക"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"ആപ്പുകൾ ലോഡുചെയ്യുന്നു..."</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" എന്നതുമായി പൊരുത്തപ്പെടുന്ന ആപ്പുകളൊന്നും കണ്ടെത്തിയില്ല"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"കൂടുതൽ ആപ്പുകൾക്ക് തിരയുക"</string>
     <string name="notifications_header" msgid="1404149926117359025">"അറിയിപ്പുകൾ"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ഈ ഹോം സ്‌ക്രീനിൽ ഒഴിവൊന്നുമില്ല."</string>
@@ -79,6 +79,9 @@
     <string name="icon_badging_title" msgid="874121399231955394">"അറിയിപ്പ് ഡോട്ടുകൾ"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"ഓൺ"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"ഓഫ്"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"അറിയിപ്പിനായുള്ള ആക്‌സസ് ആവശ്യമാണ്"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"അറിയിപ്പ് ഡോട്ടുകൾ കാണിക്കുന്നതിന്, <xliff:g id="NAME">%1$s</xliff:g> എന്നയാളിനായുള്ള ആപ്പ് അറിയിപ്പുകൾ ഓണാക്കുക"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"ക്രമീകരണം മാറ്റുക"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ഹോം സ്ക്രീനിലേക്ക് ഐക്കൺ ചേർക്കുക"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"പുതിയ ആപ്പുകൾക്ക്"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"ഐക്കണിന്റെ ആകാരം മാറ്റുക"</string>
