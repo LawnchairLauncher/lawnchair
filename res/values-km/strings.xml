@@ -70,20 +70,27 @@
     <string name="folder_name_format" msgid="6629239338071103179">"ថត៖ <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"ធាតុ​ក្រាហ្វិក"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ផ្ទាំង​រូបភាព"</string>
-    <string name="settings_button_text" msgid="8119458837558863227">"ការកំណត់"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"ការកំណត់​ទំព័រដើម"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"បានបិទដំណើរការដោយអ្នកគ្រប់គ្រងរបស់អ្នក"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"សង្ខេប"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"អនុញ្ញាតការបងិ្វលអេក្រង់ដើម"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"នៅពេលដែលបង្វិលទូរស័ព្ទរបស់អ្នក"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"ការកំណត់អេក្រង់បច្ចុប្បន្នមិនអនុញ្ញាតការបង្វិលទេ"</string>
+    <string name="icon_badging_title" msgid="874121399231955394">"ស្លាកជូនដំណឹង"</string>
+    <string name="icon_badging_desc_on" msgid="2627952638544674079">"បើក"</string>
+    <string name="icon_badging_desc_off" msgid="5503319969924580241">"បិទ"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"តម្រូវ​ឲ្យមាន​សិទ្ធិចូល​ប្រើប្រាស់​ការជូនដំណឹង"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"ដើម្បីបង្ហាញស្លាកជូនដំណឹង សូមបើកការជូនដំណឹងកម្មវិធីសម្រាប់ <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"ប្ដូរ​ការកំណត់"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"បញ្ចូល​រូបតំណាង​ទៅ​អេក្រង់​ដើម"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"សម្រាប់កម្មវិធីថ្មី"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
-    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
-    <skip />
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"ប្តូររូបរាងរូបតំណាង"</string>
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"ប្រើលំនាំដើមរបស់ប្រព័ន្ធ"</string>
+    <string name="icon_shape_square" msgid="633575066111622774">"ការ៉េ"</string>
+    <string name="icon_shape_squircle" msgid="5658049910802669495">"ការ៉េជ្រុងកោង"</string>
+    <string name="icon_shape_circle" msgid="6550072265930144217">"រង្វង់"</string>
+    <string name="icon_shape_teardrop" msgid="4525869388200835463">"តំណក់​ទឹកភ្នែក"</string>
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"កំពុងអនុវត្ត​ការប្តូររូបរាងរូបតំណាង"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"មិន​ស្គាល់"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"លុបចេញ"</string>
     <string name="abandoned_search" msgid="891119232568284442">"ស្វែងរក"</string>
@@ -118,4 +125,7 @@
     <string name="widget_resized" msgid="9130327887929620">"ធាតុក្រាហ្វិកដែលបានប្តូរទំហំទៅទទឹងប្រវែង <xliff:g id="NUMBER_0">%1$s</xliff:g> កម្ពស់ប្រវែង <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ផ្លូវកាត់"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> ផ្លូវកាត់សម្រាប់ <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"ផ្លូវកាត់ចំនួន <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> និង​ការជូនដំណឹងចំនួន <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> សម្រាប់ <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"បដិសេធ"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"បាន​បដិសេធ​ការជូនដំណឹង"</string>
 </resources>

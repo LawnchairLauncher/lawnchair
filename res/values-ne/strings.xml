@@ -70,16 +70,26 @@
     <string name="folder_name_format" msgid="6629239338071103179">"फोल्डर: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"विजेटहरू"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"वालपेपरहरु"</string>
-    <string name="settings_button_text" msgid="8119458837558863227">"सेटिंङहरू"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"गृहपृष्ठका सेटिङहरू"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"तपाईँको प्रशासकद्वारा असक्षम गरिएको"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"परिदृश्य"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"गृह स्क्रिनलाई घुम्ने अनुमति दिनुहोस्"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फोनलाई घुमाइँदा"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"हालको प्रदर्शन सम्बन्धी सेटिङले घुमाउने सुविधालाई अनुमति दिँदैन"</string>
+    <string name="icon_badging_title" msgid="874121399231955394">"सूचनाको प्रतीक जनाउने थोप्लोहरू"</string>
+    <string name="icon_badging_desc_on" msgid="2627952638544674079">"सक्रिय छ"</string>
+    <string name="icon_badging_desc_off" msgid="5503319969924580241">"निष्क्रिय छ"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"सूचनासम्बन्धी पहुँच आवश्यक हुन्छ"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचनाको प्रतीक जनाउने थोप्लाहरू देखाउन <xliff:g id="NAME">%1$s</xliff:g> को अनुप्रयोगसम्बन्धी सूचनाहरूलाई सक्रिय गर्नुहोस्"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"सेटिङहरू बदल्नुहोस्"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"गृह स्क्रिनमा आइकन थप्नुहोस्"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नयाँ अनुप्रयोगका लागि"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"आइकनको आकार परिवर्तन गर्नुहोस्"</string>
-    <string name="icon_shape_no_override" msgid="3678524428085518367">"परिवर्तन नगर्नुहोस्"</string>
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"प्रणालीको पूर्वनिर्धारित सेटिङ प्रयोग गर्नुहोस्"</string>
+    <string name="icon_shape_square" msgid="633575066111622774">"वर्ग"</string>
+    <string name="icon_shape_squircle" msgid="5658049910802669495">"वर्गाकार वृत्त"</string>
+    <string name="icon_shape_circle" msgid="6550072265930144217">"वृत्त"</string>
+    <string name="icon_shape_teardrop" msgid="4525869388200835463">"आँसुको थोपा"</string>
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"आइकनको आकारमा गरिएका परिवर्तनहरू लागू गरिँदैछन्"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"हटाउनुहोस्"</string>
@@ -115,4 +125,7 @@
     <string name="widget_resized" msgid="9130327887929620">"विजेट चौडाइ <xliff:g id="NUMBER_0">%1$s</xliff:g> उचाइ <xliff:g id="NUMBER_1">%2$s</xliff:g> मा पुनः आकार मिलाइयो"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"सर्टकटहरू"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g> का <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> सर्टकटहरू"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> का <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> सर्टकट र <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> सूचनाहरू"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"खारेज गर्नुहोस्"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"सूचना खारेज गरियो"</string>
 </resources>

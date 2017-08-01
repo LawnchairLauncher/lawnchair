@@ -70,20 +70,27 @@
     <string name="folder_name_format" msgid="6629239338071103179">"Cartafol: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Fondos de pantalla"</string>
-    <string name="settings_button_text" msgid="8119458837558863227">"Configuración"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Configuración de inicio"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Función desactivada polo administrador"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"Visión xeral"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Permitir xirar a pantalla de inicio"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Ao xirar o teléfono"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"A configuración de visualización actual non permite xirar a pantalla"</string>
+    <string name="icon_badging_title" msgid="874121399231955394">"Puntos de notificacións"</string>
+    <string name="icon_badging_desc_on" msgid="2627952638544674079">"Activado"</string>
+    <string name="icon_badging_desc_off" msgid="5503319969924580241">"Desactivado"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"Necesítase acceso ás notificacións"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Para que se mostren os puntos de notificacións, activa as notificacións da aplicación <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"Cambiar configuración"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Engadir icona á pantalla de inicio"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Para novas aplicacións"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
-    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
-    <skip />
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"Cambiar forma das iconas"</string>
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"Usar valores predeterminados do sistema"</string>
+    <string name="icon_shape_square" msgid="633575066111622774">"Cadrado"</string>
+    <string name="icon_shape_squircle" msgid="5658049910802669495">"Cadrado de bordos redondeados"</string>
+    <string name="icon_shape_circle" msgid="6550072265930144217">"Círculo"</string>
+    <string name="icon_shape_teardrop" msgid="4525869388200835463">"Bágoa"</string>
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Aplicando cambios na forma das iconas"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Descoñecido"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Eliminar"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Buscar"</string>
@@ -118,4 +125,7 @@
     <string name="widget_resized" msgid="9130327887929620">"Cambiouse o tamaño do widget polo ancho <xliff:g id="NUMBER_0">%1$s</xliff:g> e a altura <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Atallos"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> atallos para <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> atallos e <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> notificacións para a aplicación <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"Ignorar"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"Ignorouse a notificación"</string>
 </resources>
