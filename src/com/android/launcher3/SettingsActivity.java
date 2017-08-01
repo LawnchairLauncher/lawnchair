@@ -34,7 +34,6 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.provider.Settings;
 import android.provider.Settings.System;
-import android.view.View;
 
 import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.notification.NotificationListener;
@@ -172,7 +171,7 @@ public class SettingsActivity extends Activity {
      * and updates the launcher badging setting subtext accordingly.
      */
     private static class IconBadgingObserver extends ContentObserver
-            implements View.OnClickListener {
+            implements Preference.OnPreferenceClickListener {
 
         private final ButtonPreference mBadgingPref;
         private final ContentResolver mResolver;
@@ -205,14 +204,16 @@ public class SettingsActivity extends Activity {
                     summary = R.string.title_missing_notification_access;
                 }
             }
-            mBadgingPref.setButtonOnClickListener(serviceEnabled ? null : this);
+            mBadgingPref.setWidgetFrameVisible(!serviceEnabled);
+            mBadgingPref.setOnPreferenceClickListener(serviceEnabled ? null : this);
             mBadgingPref.setSummary(summary);
 
         }
 
         @Override
-        public void onClick(View view) {
+        public boolean onPreferenceClick(Preference preference) {
             new NotificationAccessConfirmation().show(mFragmentManager, "notification_access");
+            return true;
         }
     }
 
