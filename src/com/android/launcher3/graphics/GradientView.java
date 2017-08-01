@@ -27,6 +27,7 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -46,7 +47,6 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
     private static final int DEFAULT_COLOR = Color.WHITE;
     private static final int ALPHA_MASK_HEIGHT_DP = 500;
     private static final int ALPHA_MASK_WIDTH_DP = 2;
-    private static final int ALPHA_COLORS = 0xBF;
     private static final boolean DEBUG = false;
 
     private final Bitmap mAlphaGradientMask;
@@ -62,7 +62,7 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
     private final Paint mPaintNoScrim = new Paint();
     private float mProgress;
     private final int mMaskHeight, mMaskWidth;
-    private final Context mAppContext;
+    private final int mAlphaColors;
     private final Paint mDebugPaint = DEBUG ? new Paint() : null;
     private final Interpolator mAccelerator = new AccelerateInterpolator();
     private final float mAlphaStart;
@@ -71,15 +71,14 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
 
     public GradientView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.mAppContext = context.getApplicationContext();
-        this.mMaskHeight = Utilities.pxFromDp(ALPHA_MASK_HEIGHT_DP,
-                mAppContext.getResources().getDisplayMetrics());
-        this.mMaskWidth = Utilities.pxFromDp(ALPHA_MASK_WIDTH_DP,
-                mAppContext.getResources().getDisplayMetrics());
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        this.mMaskHeight = Utilities.pxFromDp(ALPHA_MASK_HEIGHT_DP, dm);
+        this.mMaskWidth = Utilities.pxFromDp(ALPHA_MASK_WIDTH_DP, dm);
         Launcher launcher = Launcher.getLauncher(context);
         this.mAlphaStart = launcher.getDeviceProfile().isVerticalBarLayout() ? 0 : 100;
         this.mScrimColor = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
         this.mWallpaperColorInfo = WallpaperColorInfo.getInstance(launcher);
+        mAlphaColors = getResources().getInteger(R.integer.extracted_color_gradient_alpha);
         updateColors();
         mAlphaGradientMask = createDitheredAlphaMask();
     }
@@ -104,9 +103,9 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
 
     private void updateColors() {
         this.mColor1 = ColorUtils.setAlphaComponent(mWallpaperColorInfo.getMainColor(),
-                ALPHA_COLORS);
+                mAlphaColors);
         this.mColor2 = ColorUtils.setAlphaComponent(mWallpaperColorInfo.getSecondaryColor(),
-                ALPHA_COLORS);
+                mAlphaColors);
         if (mWidth + mHeight > 0) {
             createRadialShader();
         }
