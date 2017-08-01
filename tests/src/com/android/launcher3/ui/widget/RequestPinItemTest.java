@@ -15,23 +15,20 @@
  */
 package com.android.launcher3.ui.widget;
 
-import android.app.Activity;
-import android.app.Application;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.test.filters.LargeTest;
+import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.Until;
-import android.test.suitebuilder.annotation.LargeTest;
 import android.view.View;
 
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
@@ -40,50 +37,48 @@ import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.testcomponent.AppWidgetNoConfig;
 import com.android.launcher3.testcomponent.AppWidgetWithConfig;
 import com.android.launcher3.testcomponent.RequestPinItemActivity;
-import com.android.launcher3.ui.LauncherInstrumentationTestCase;
+import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.util.Condition;
-import com.android.launcher3.util.SimpleActivityMonitor;
 import com.android.launcher3.util.Wait;
+import com.android.launcher3.util.rule.LauncherActivityRule;
+import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.widget.WidgetCell;
 
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.util.UUID;
-import java.util.concurrent.Callable;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test to verify pin item request flow.
  */
 @LargeTest
-public class RequestPinItemTest  extends LauncherInstrumentationTestCase {
+@RunWith(AndroidJUnit4.class)
+public class RequestPinItemTest  extends AbstractLauncherUiTest {
 
-    private SimpleActivityMonitor mActivityMonitor;
-    private MainThreadExecutor mMainThreadExecutor;
+    @Rule public LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
+    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grandWidgetBind();
+    @Rule public ShellCommandRule mDefaultLauncherRule = ShellCommandRule.setDefaultLauncher();
 
     private String mCallbackAction;
     private String mShortcutId;
     private int mAppWidgetId;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
-        grantWidgetPermission();
-        setDefaultLauncher();
-
-        mActivityMonitor = new SimpleActivityMonitor();
-        ((Application) getInstrumentation().getTargetContext().getApplicationContext())
-                .registerActivityLifecycleCallbacks(mActivityMonitor);
-        mMainThreadExecutor = new MainThreadExecutor();
-
         mCallbackAction = UUID.randomUUID().toString();
         mShortcutId = UUID.randomUUID().toString();
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        ((Application) getInstrumentation().getTargetContext().getApplicationContext())
-                .unregisterActivityLifecycleCallbacks(mActivityMonitor);
-        super.tearDown();
-    }
-
+    @Test
     public void testPinWidgetNoConfig() throws Throwable {
         runTest("pinWidgetNoConfig", true, new ItemOperator() {
             @Override
@@ -96,6 +91,7 @@ public class RequestPinItemTest  extends LauncherInstrumentationTestCase {
         });
     }
 
+    @Test
     public void testPinWidgetNoConfig_customPreview() throws Throwable {
         // Command to set custom preview
         Intent command =  RequestPinItemActivity.getCommandIntent(
@@ -113,6 +109,7 @@ public class RequestPinItemTest  extends LauncherInstrumentationTestCase {
         }, command);
     }
 
+    @Test
     public void testPinWidgetWithConfig() throws Throwable {
         runTest("pinWidgetWithConfig", true, new ItemOperator() {
             @Override
@@ -125,6 +122,7 @@ public class RequestPinItemTest  extends LauncherInstrumentationTestCase {
         });
     }
 
+    @Test
     public void testPinShortcut() throws Throwable {
         // Command to set the shortcut id
         Intent command = RequestPinItemActivity.getCommandIntent(
@@ -149,7 +147,7 @@ public class RequestPinItemTest  extends LauncherInstrumentationTestCase {
         lockRotation(true);
 
         clearHomescreen();
-        startLauncher();
+        mActivityMonitor.startLauncher();
 
         // Open all apps and wait for load complete
         final UiObject2 appsContainer = openAllApps();
@@ -191,14 +189,14 @@ public class RequestPinItemTest  extends LauncherInstrumentationTestCase {
         }
 
         // Go back to home
-        mTargetContext.startActivity(getHomeIntent());
+        mActivityMonitor.returnToHome();
         assertTrue(Wait.atMost(new ItemSearchCondition(itemMatcher), DEFAULT_ACTIVITY_TIMEOUT));
     }
 
     /**
      * Condition for for an item
      */
-    private class ItemSearchCondition extends Condition implements Callable<Boolean> {
+    private class ItemSearchCondition extends Condition {
 
         private final ItemOperator mOp;
 
@@ -208,22 +206,7 @@ public class RequestPinItemTest  extends LauncherInstrumentationTestCase {
 
         @Override
         public boolean isTrue() throws Throwable {
-            return mMainThreadExecutor.submit(this).get();
-        }
-
-        @Override
-        public Boolean call() throws Exception {
-            // Find the resumed launcher
-            Launcher launcher = null;
-            for (Activity a : mActivityMonitor.resumed) {
-                if (a instanceof Launcher) {
-                    launcher = (Launcher) a;
-                }
-            }
-            if (launcher == null) {
-                return false;
-            }
-            return launcher.getWorkspace().getFirstMatch(mOp) != null;
+            return mMainThreadExecutor.submit(mActivityMonitor.itemExists(mOp)).get();
         }
     }
 }
