@@ -15,29 +15,26 @@
  */
 package com.android.launcher3.ui;
 
+import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
+import android.content.pm.LauncherActivityInfo;
 import android.graphics.Point;
-import android.os.ParcelFileDescriptor;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.SystemClock;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.BySelector;
 import android.support.test.uiautomator.Direction;
 import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.Until;
-import android.test.InstrumentationTestCase;
 import android.view.MotionEvent;
 
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherSettings;
@@ -45,25 +42,26 @@ import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
+import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.testcomponent.AppWidgetNoConfig;
 import com.android.launcher3.testcomponent.AppWidgetWithConfig;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
+import org.junit.Before;
+
 import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 /**
  * Base class for all instrumentation tests providing various utility methods.
  */
-public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
+public abstract class AbstractLauncherUiTest {
 
     public static final long DEFAULT_ACTIVITY_TIMEOUT = TimeUnit.SECONDS.toMillis(10);
     public static final long DEFAULT_BROADCAST_TIMEOUT_SECS = 5;
@@ -71,16 +69,15 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
     public static final long DEFAULT_UI_TIMEOUT = 3000;
     public static final long DEFAULT_WORKER_TIMEOUT_SECS = 5;
 
+    protected MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
     protected UiDevice mDevice;
     protected Context mTargetContext;
     protected String mTargetPackage;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    @Before
+    public void setUp() throws Exception {
         mDevice = UiDevice.getInstance(getInstrumentation());
-        mTargetContext = getInstrumentation().getTargetContext();
+        mTargetContext = InstrumentationRegistry.getTargetContext();
         mTargetPackage = mTargetContext.getPackageName();
     }
 
@@ -97,56 +94,15 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
         }
     }
 
-    /**
-     * Starts the launcher activity in the target package and returns the Launcher instance.
-     */
-    protected Launcher startLauncher() {
-        return (Launcher) getInstrumentation().startActivitySync(getHomeIntent());
-    }
-
-    protected Intent getHomeIntent() {
-        return new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_HOME)
-                .setPackage(mTargetPackage)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    }
-
-    /**
-     * Grants the launcher permission to bind widgets.
-     */
-    protected void grantWidgetPermission() throws IOException {
-        // Check bind widget permission
-        if (mTargetContext.getPackageManager().checkPermission(
-                mTargetPackage, android.Manifest.permission.BIND_APPWIDGET)
-                != PackageManager.PERMISSION_GRANTED) {
-            runShellCommand("appwidget grantbind --package " + mTargetPackage);
-        }
-    }
-
-    /**
-     * Sets the target launcher as default launcher.
-     */
-    protected void setDefaultLauncher() throws IOException {
-        ActivityInfo launcher = mTargetContext.getPackageManager()
-                .queryIntentActivities(getHomeIntent(), 0).get(0).activityInfo;
-        runShellCommand("cmd package set-home-activity " +
-                new ComponentName(launcher.packageName, launcher.name).flattenToString());
-    }
-
-    protected void runShellCommand(String command) throws IOException {
-        ParcelFileDescriptor pfd = getInstrumentation().getUiAutomation()
-                .executeShellCommand(command);
-
-        // Read the input stream fully.
-        FileInputStream fis = new ParcelFileDescriptor.AutoCloseInputStream(pfd);
-        while (fis.read() != -1);
-        fis.close();
+    protected Instrumentation getInstrumentation() {
+        return InstrumentationRegistry.getInstrumentation();
     }
 
     /**
      * Opens all apps and returns the recycler view
      */
     protected UiObject2 openAllApps() {
+        mDevice.waitForIdle();
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
             // clicking on the page indicator brings up all apps tray on non tablets.
             findViewById(R.id.page_indicator).click();
@@ -262,7 +218,7 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
 
     protected void resetLoaderState() {
         try {
-            runTestOnUiThread(new Runnable() {
+            mMainThreadExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
                     ManagedProfileHeuristic.markExistingUsersForNoFolderCreation(mTargetContext);
@@ -279,7 +235,7 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
      */
     protected <T> T getOnUiThread(final Callable<T> callback) {
         try {
-            return new MainThreadExecutor().submit(callback).get();
+            return mMainThreadExecutor.submit(callback).get();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -315,6 +271,10 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
         return By.res(mTargetPackage, name);
     }
 
+    protected LauncherActivityInfo getSettingsApp() {
+        return LauncherAppsCompat.getInstance(mTargetContext)
+                .getActivityList("com.android.settings", Process.myUserHandle()).get(0);
+    }
 
     /**
      * Broadcast receiver which blocks until the result is received.
