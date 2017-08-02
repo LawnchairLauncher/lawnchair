@@ -53,7 +53,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.Toast;
 
-import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.Launcher.LauncherOverlay;
 import com.android.launcher3.LauncherAppWidgetHost.ProviderChangedListener;
 import com.android.launcher3.UninstallDropTarget.DropTargetSource;
@@ -118,6 +117,8 @@ public class Workspace extends PagedView
 
     private static final int ADJACENT_SCREEN_DROP_DURATION = 300;
 
+    private static final int DEFAULT_PAGE = 0;
+
     private static final boolean MAP_NO_RECURSE = false;
     private static final boolean MAP_RECURSE = true;
 
@@ -125,12 +126,6 @@ public class Workspace extends PagedView
     public static final long EXTRA_EMPTY_SCREEN_ID = -201;
     // The is the first screen. It is always present, even if its empty.
     public static final long FIRST_SCREEN_ID = 0;
-
-    private final static long CUSTOM_CONTENT_SCREEN_ID = -301;
-
-    private static final long CUSTOM_CONTENT_GESTURE_DELAY = 200;
-    private long mTouchDownTime = -1;
-    private long mCustomContentShowTime = -1;
 
     private LayoutTransition mLayoutTransition;
     @Thunk final WallpaperManager mWallpaperManager;
@@ -154,11 +149,6 @@ public class Workspace extends PagedView
     @Thunk int[] mTargetCell = new int[2];
     private int mDragOverX = -1;
     private int mDragOverY = -1;
-
-    CustomContentCallbacks mCustomContentCallbacks;
-    boolean mCustomContentShowing;
-    private float mLastCustomContentScrollProgress = -1f;
-    private String mCustomContentDescription = "";
 
     /**
      * The CellLayout that is currently being dragged over
@@ -250,7 +240,6 @@ public class Workspace extends PagedView
     private boolean mUnlockWallpaperFromDefaultPageOnLayout;
 
     @Thunk Runnable mDelayedResizeRunnable;
-    private Runnable mDelayedSnapToPageRunnable;
 
     // Variables relating to the creation of user folders by hovering shortcuts over shortcuts
     private static final int FOLDER_CREATION_TIMEOUT = 0;
@@ -357,14 +346,6 @@ public class Workspace extends PagedView
     @Override
     public void setInsets(Rect insets) {
         mInsets.set(insets);
-
-        CellLayout customScreen = getScreenWithId(CUSTOM_CONTENT_SCREEN_ID);
-        if (customScreen != null) {
-            View customContent = customScreen.getShortcutsAndWidgets().getChildAt(0);
-            if (customContent instanceof Insettable) {
-                ((Insettable) customContent).setInsets(mInsets);
-            }
-        }
     }
 
     /**
@@ -378,8 +359,8 @@ public class Workspace extends PagedView
         float shrinkFactor = mLauncher.getDeviceProfile().workspaceSpringLoadShrinkFactor;
         int[] size = new int[2];
         if (getChildCount() > 0) {
-            // Use the first non-custom page to estimate the child position
-            CellLayout cl = (CellLayout) getChildAt(numCustomPages());
+            // Use the first page to estimate the child position
+            CellLayout cl = (CellLayout) getChildAt(0);
             boolean isWidget = itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
 
             Rect r = estimateItemPosition(cl, 0, 0, itemInfo.spanX, itemInfo.spanY);
@@ -432,7 +413,6 @@ public class Workspace extends PagedView
         }
 
         updateChildrenLayersEnabled(false);
-        mLauncher.onDragStarted();
         mLauncher.lockScreenOrientation();
         mLauncher.onInteractionBegin();
         // Prevent any Un/InstallShortcutReceivers from updating the db while we are dragging
@@ -502,7 +482,7 @@ public class Workspace extends PagedView
      * Initializes various states for this workspace.
      */
     protected void initWorkspace() {
-        mCurrentPage = getDefaultPage();
+        mCurrentPage = DEFAULT_PAGE;
         DeviceProfile grid = mLauncher.getDeviceProfile();
         setWillNotDraw(false);
         setClipChildren(false);
@@ -521,10 +501,6 @@ public class Workspace extends PagedView
     public void initParentViews(View parent) {
         super.initParentViews(parent);
         mPageIndicator.setAccessibilityDelegate(new OverviewAccessibilityDelegate());
-    }
-
-    private int getDefaultPage() {
-        return numCustomPages();
     }
 
     private void setupLayoutTransition() {
@@ -587,15 +563,8 @@ public class Workspace extends PagedView
 
     public void removeAllWorkspaceScreens() {
         // Disable all layout transitions before removing all pages to ensure that we don't get the
-        // transition animations competing with us changing the scroll when we add pages or the
-        // custom content screen
+        // transition animations competing with us changing the scroll when we add pages
         disableLayoutTransitions();
-
-        // Since we increment the current page when we call addCustomContentPage via bindScreens
-        // (and other places), we need to adjust the current page back when we clear the pages
-        if (hasCustomContent()) {
-            removeCustomContentPage();
-        }
 
         // Recycle the QSB widget
         View qsb = findViewById(R.id.search_container_workspace);
@@ -657,78 +626,6 @@ public class Workspace extends PagedView
         return newScreen;
     }
 
-    public void createCustomContentContainer() {
-        CellLayout customScreen = (CellLayout)
-                LayoutInflater.from(getContext()).inflate(R.layout.workspace_screen, this, false);
-        customScreen.disableDragTarget();
-        customScreen.disableJailContent();
-
-        mWorkspaceScreens.put(CUSTOM_CONTENT_SCREEN_ID, customScreen);
-        mScreenOrder.add(0, CUSTOM_CONTENT_SCREEN_ID);
-
-        // We want no padding on the custom content
-        customScreen.setPadding(0, 0, 0, 0);
-
-        addFullScreenPage(customScreen);
-
-        // Update the custom content hint
-        setCurrentPage(getCurrentPage() + 1);
-    }
-
-    public void removeCustomContentPage() {
-        CellLayout customScreen = getScreenWithId(CUSTOM_CONTENT_SCREEN_ID);
-        if (customScreen == null) {
-            throw new RuntimeException("Expected custom content screen to exist");
-        }
-
-        mWorkspaceScreens.remove(CUSTOM_CONTENT_SCREEN_ID);
-        mScreenOrder.remove(CUSTOM_CONTENT_SCREEN_ID);
-        removeView(customScreen);
-
-        if (mCustomContentCallbacks != null) {
-            mCustomContentCallbacks.onScrollProgressChanged(0);
-            mCustomContentCallbacks.onHide();
-        }
-
-        mCustomContentCallbacks = null;
-
-        // Update the custom content hint
-        setCurrentPage(getCurrentPage() - 1);
-    }
-
-    public void addToCustomContentPage(View customContent, CustomContentCallbacks callbacks,
-            String description) {
-        if (getPageIndexForScreenId(CUSTOM_CONTENT_SCREEN_ID) < 0) {
-            throw new RuntimeException("Expected custom content screen to exist");
-        }
-
-        // Add the custom content to the full screen custom page
-        CellLayout customScreen = getScreenWithId(CUSTOM_CONTENT_SCREEN_ID);
-        int spanX = customScreen.getCountX();
-        int spanY = customScreen.getCountY();
-        CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, spanX, spanY);
-        lp.canReorder  = false;
-        lp.isFullscreen = true;
-        if (customContent instanceof Insettable) {
-            ((Insettable)customContent).setInsets(mInsets);
-        }
-
-        // Verify that the child is removed from any existing parent.
-        if (customContent.getParent() instanceof ViewGroup) {
-            ViewGroup parent = (ViewGroup) customContent.getParent();
-            parent.removeView(customContent);
-        }
-        customScreen.removeAllViews();
-        customContent.setFocusable(true);
-        customContent.setOnKeyListener(new FullscreenKeyEventListener());
-        customContent.setOnFocusChangeListener(mLauncher.mFocusHandler
-                .getHideIndicatorOnFocusListener());
-        customScreen.addViewToCellLayout(customContent, 0, 0, lp, true);
-        mCustomContentDescription = description;
-
-        mCustomContentCallbacks = callbacks;
-    }
-
     public void addExtraEmptyScreenOnDrag() {
         boolean lastChildOnScreen = false;
         boolean childOnFinalScreen = false;
@@ -772,7 +669,6 @@ public class Workspace extends PagedView
         if (hasExtraEmptyScreen() || mScreenOrder.size() == 0) return;
         long finalScreenId = mScreenOrder.get(mScreenOrder.size() - 1);
 
-        if (finalScreenId == CUSTOM_CONTENT_SCREEN_ID) return;
         CellLayout finalScreen = mWorkspaceScreens.get(finalScreenId);
 
         // If the final screen is empty, convert it to the extra empty screen
@@ -781,7 +677,7 @@ public class Workspace extends PagedView
             mWorkspaceScreens.remove(finalScreenId);
             mScreenOrder.remove(finalScreenId);
 
-            // if this is the last non-custom content screen, convert it to the empty screen
+            // if this is the last screen, convert it to the empty screen
             mWorkspaceScreens.put(EXTRA_EMPTY_SCREEN_ID, finalScreen);
             mScreenOrder.add(EXTRA_EMPTY_SCREEN_ID);
 
@@ -877,9 +773,7 @@ public class Workspace extends PagedView
     }
 
     public boolean hasExtraEmptyScreen() {
-        int nScreens = getChildCount();
-        nScreens = nScreens - numCustomPages();
-        return mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_ID) && nScreens > 1;
+        return mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_ID) && getChildCount() > 1;
     }
 
     public long commitExtraEmptyScreen() {
@@ -960,7 +854,7 @@ public class Workspace extends PagedView
 
         // We enforce at least one page to add new items to. In the case that we remove the last
         // such screen, we convert the last screen to the empty screen
-        int minScreens = 1 + numCustomPages();
+        int minScreens = 1;
 
         int pageShift = 0;
         for (Long id: removeScreens) {
@@ -979,7 +873,7 @@ public class Workspace extends PagedView
 
                 removeView(cl);
             } else {
-                // if this is the last non-custom content screen, convert it to the empty screen
+                // if this is the last screen, convert it to the empty screen
                 mRemoveEmptyScreenRunnable = null;
                 mWorkspaceScreens.put(EXTRA_EMPTY_SCREEN_ID, cl);
                 mScreenOrder.add(EXTRA_EMPTY_SCREEN_ID);
@@ -1147,7 +1041,6 @@ public class Workspace extends PagedView
         case MotionEvent.ACTION_DOWN:
             mXDown = ev.getX();
             mYDown = ev.getY();
-            mTouchDownTime = System.currentTimeMillis();
             break;
         case MotionEvent.ACTION_POINTER_UP:
         case MotionEvent.ACTION_UP:
@@ -1159,17 +1052,6 @@ public class Workspace extends PagedView
             }
         }
         return super.onInterceptTouchEvent(ev);
-    }
-
-    @Override
-    public boolean onGenericMotionEvent(MotionEvent event) {
-        // Ignore pointer scroll events if the custom content doesn't allow scrolling.
-        if ((getScreenIdForPageIndex(getCurrentPage()) == CUSTOM_CONTENT_SCREEN_ID)
-                && (mCustomContentCallbacks != null)
-                && !mCustomContentCallbacks.isScrollingAllowed()) {
-            return false;
-        }
-        return super.onGenericMotionEvent(event);
     }
 
     protected void reinflateWidgetsIfNecessary() {
@@ -1213,24 +1095,6 @@ public class Workspace extends PagedView
             cancelCurrentPageLongPress();
         }
 
-        boolean passRightSwipesToCustomContent =
-                (mTouchDownTime - mCustomContentShowTime) > CUSTOM_CONTENT_GESTURE_DELAY;
-
-        boolean swipeInIgnoreDirection = mIsRtl ? deltaX < 0 : deltaX > 0;
-        boolean onCustomContentScreen =
-                getScreenIdForPageIndex(getCurrentPage()) == CUSTOM_CONTENT_SCREEN_ID;
-        if (swipeInIgnoreDirection && onCustomContentScreen && passRightSwipesToCustomContent) {
-            // Pass swipes to the right to the custom content page.
-            return;
-        }
-
-        if (onCustomContentScreen && (mCustomContentCallbacks != null)
-                && !mCustomContentCallbacks.isScrollingAllowed()) {
-            // Don't allow workspace scrolling if the current custom content screen doesn't allow
-            // scrolling.
-            return;
-        }
-
         if (theta > MAX_SWIPE_ANGLE) {
             // Above MAX_SWIPE_ANGLE, we don't want to ever start scrolling the workspace
             return;
@@ -1271,10 +1135,6 @@ public class Workspace extends PagedView
             mDelayedResizeRunnable = null;
         }
 
-        if (mDelayedSnapToPageRunnable != null) {
-            mDelayedSnapToPageRunnable.run();
-            mDelayedSnapToPageRunnable = null;
-        }
         if (mStripScreensOnPageStopMoving) {
             stripEmptyScreens();
             mStripScreensOnPageStopMoving = false;
@@ -1336,7 +1196,6 @@ public class Workspace extends PagedView
         }
 
         updatePageAlphaValues();
-        updateStateForCustomContent();
         enableHwLayersOnVisiblePages();
     }
 
@@ -1348,9 +1207,6 @@ public class Workspace extends PagedView
 
     @Override
     protected void overScroll(float amount) {
-        boolean shouldOverScroll = (amount <= 0 && (!hasCustomContent() || mIsRtl)) ||
-                (amount >= 0 && (!hasCustomContent() || !mIsRtl));
-
         boolean shouldScrollOverlay = mLauncherOverlay != null &&
                 ((amount <= 0 && !mIsRtl) || (amount >= 0 && mIsRtl));
 
@@ -1365,7 +1221,7 @@ public class Workspace extends PagedView
 
             mLastOverlayScroll = Math.abs(amount / getViewportWidth());
             mLauncherOverlay.onScrollChange(mLastOverlayScroll, mIsRtl);
-        } else if (shouldOverScroll) {
+        } else {
             dampedOverScroll(amount);
         }
 
@@ -1518,22 +1374,6 @@ public class Workspace extends PagedView
             mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.SWIPE,
                     swipeDirection, ContainerType.WORKSPACE, prevPage);
         }
-        if (hasCustomContent() && getNextPage() == 0 && !mCustomContentShowing) {
-            mCustomContentShowing = true;
-            if (mCustomContentCallbacks != null) {
-                mCustomContentCallbacks.onShow(false);
-                mCustomContentShowTime = System.currentTimeMillis();
-            }
-        } else if (hasCustomContent() && getNextPage() != 0 && mCustomContentShowing) {
-            mCustomContentShowing = false;
-            if (mCustomContentCallbacks != null) {
-                mCustomContentCallbacks.onHide();
-            }
-        }
-    }
-
-    protected CustomContentCallbacks getCustomContentCallbacks() {
-        return mCustomContentCallbacks;
     }
 
     protected void setWallpaperDimension() {
@@ -1558,26 +1398,6 @@ public class Workspace extends PagedView
             mUnlockWallpaperFromDefaultPageOnLayout = true;
             requestLayout();
         }
-    }
-
-    protected void snapToPage(int whichPage, Runnable r) {
-        snapToPage(whichPage, SLOW_PAGE_SNAP_ANIMATION_DURATION, r);
-    }
-
-    protected void snapToPage(int whichPage, int duration, Runnable r) {
-        if (mDelayedSnapToPageRunnable != null) {
-            mDelayedSnapToPageRunnable.run();
-        }
-        mDelayedSnapToPageRunnable = r;
-        snapToPage(whichPage, duration);
-    }
-
-    public void snapToScreenId(long screenId) {
-        snapToScreenId(screenId, null);
-    }
-
-    protected void snapToScreenId(long screenId, Runnable r) {
-        snapToPage(getPageIndexForScreenId(screenId), r);
     }
 
     @Override
@@ -1614,7 +1434,7 @@ public class Workspace extends PagedView
     private void updatePageAlphaValues() {
         if (!workspaceInModalState() && !mIsSwitchingState) {
             int screenCenter = getScrollX() + getViewportWidth() / 2;
-            for (int i = numCustomPages(); i < getChildCount(); i++) {
+            for (int i = 0; i < getChildCount(); i++) {
                 CellLayout child = (CellLayout) getChildAt(i);
                 if (child != null) {
                     float scrollProgress = getScrollProgress(screenCenter, child, i);
@@ -1629,66 +1449,6 @@ public class Workspace extends PagedView
                     }
                 }
             }
-        }
-    }
-
-    public boolean hasCustomContent() {
-        return (mScreenOrder.size() > 0 && mScreenOrder.get(0) == CUSTOM_CONTENT_SCREEN_ID);
-    }
-
-    public int numCustomPages() {
-        return hasCustomContent() ? 1 : 0;
-    }
-
-    public boolean isOnOrMovingToCustomContent() {
-        return hasCustomContent() && getNextPage() == 0;
-    }
-
-    private void updateStateForCustomContent() {
-        float translationX = 0;
-        float progress = 0;
-        if (hasCustomContent()) {
-            int index = mScreenOrder.indexOf(CUSTOM_CONTENT_SCREEN_ID);
-
-            int scrollDelta = getScrollX() - getScrollForPage(index) -
-                    getLayoutTransitionOffsetForPage(index);
-            float scrollRange = getScrollForPage(index + 1) - getScrollForPage(index);
-            translationX = scrollRange - scrollDelta;
-            progress = (scrollRange - scrollDelta) / scrollRange;
-
-            if (mIsRtl) {
-                translationX = Math.min(0, translationX);
-            } else {
-                translationX = Math.max(0, translationX);
-            }
-            progress = Math.max(0, progress);
-        }
-
-        if (Float.compare(progress, mLastCustomContentScrollProgress) == 0) return;
-
-        CellLayout cc = mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID);
-        if (progress > 0 && cc.getVisibility() != VISIBLE && !workspaceInModalState()) {
-            cc.setVisibility(VISIBLE);
-        }
-
-        mLastCustomContentScrollProgress = progress;
-
-        // We should only update the drag layer background alpha if we are not in all apps or the
-        // widgets tray
-        if (mState == State.NORMAL) {
-            mLauncher.getDragLayer().setBackgroundAlpha(progress == 1 ? 0 : progress * 0.8f);
-        }
-
-        if (mLauncher.getHotseat() != null) {
-            mLauncher.getHotseat().setTranslationX(translationX);
-        }
-
-        if (mPageIndicator != null) {
-            mPageIndicator.setTranslationX(translationX);
-        }
-
-        if (mCustomContentCallbacks != null) {
-            mCustomContentCallbacks.onScrollProgressChanged(progress);
         }
     }
 
@@ -1772,7 +1532,7 @@ public class Workspace extends PagedView
 
             int leftScreen = -1;
             int rightScreen = -1;
-            for (int i = numCustomPages(); i < screenCount; i++) {
+            for (int i = 0; i < screenCount; i++) {
                 final View child = getPageAt(i);
 
                 float left = child.getLeft() + child.getTranslationX() - getScrollX();
@@ -1785,8 +1545,7 @@ public class Workspace extends PagedView
             }
             if (mForceDrawAdjacentPages) {
                 // In overview mode, make sure that the two side pages are visible.
-                leftScreen = Utilities.boundToRange(getCurrentPage() - 1,
-                    numCustomPages(), rightScreen);
+                leftScreen = Utilities.boundToRange(getCurrentPage() - 1, 0, rightScreen);
                 rightScreen = Utilities.boundToRange(getCurrentPage() + 1,
                     leftScreen, getPageCount() - 1);
             }
@@ -1800,7 +1559,7 @@ public class Workspace extends PagedView
                 }
             }
 
-            for (int i = numCustomPages(); i < screenCount; i++) {
+            for (int i = 0; i < screenCount; i++) {
                 final CellLayout layout = (CellLayout) getPageAt(i);
                 // enable layers between left and right screen inclusive.
                 boolean enableLayer = leftScreen <= i && i <= rightScreen;
@@ -1843,19 +1602,6 @@ public class Workspace extends PagedView
     public void exitWidgetResizeMode() {
         DragLayer dragLayer = mLauncher.getDragLayer();
         dragLayer.clearResizeFrame();
-    }
-
-    @Override
-    protected void getFreeScrollPageRange(int[] range) {
-        getOverviewModePages(range);
-    }
-
-    private void getOverviewModePages(int[] range) {
-        int start = numCustomPages();
-        int end = getChildCount() - 1;
-
-        range[0] = Math.max(0, Math.min(start, getChildCount() - 1));
-        range[1] = Math.max(0, end);
     }
 
     public void onStartReordering() {
@@ -1990,7 +1736,7 @@ public class Workspace extends PagedView
         // TODO: Update the accessibility flags appropriately when dragging.
         if (!mLauncher.getAccessibilityDelegate().isInAccessibleDrag()) {
             int total = getPageCount();
-            for (int i = numCustomPages(); i < total; i++) {
+            for (int i = 0; i < total; i++) {
                 updateAccessibilityFlags((CellLayout) getPageAt(i), i);
             }
             setImportantForAccessibility((mState == State.NORMAL || mState == State.OVERVIEW)
@@ -2034,42 +1780,13 @@ public class Workspace extends PagedView
         invalidate(); // This will call dispatchDraw(), which calls getVisiblePages().
 
         updateChildrenLayersEnabled(false);
-        hideCustomContentIfNecessary();
     }
 
     public void onEndStateTransition() {
         mIsSwitchingState = false;
         updateChildrenLayersEnabled(false);
-        showCustomContentIfNecessary();
         mForceDrawAdjacentPages = false;
         mTransitionProgress = 1;
-    }
-
-    void updateCustomContentVisibility() {
-        int visibility = mState == Workspace.State.NORMAL ? VISIBLE : INVISIBLE;
-        setCustomContentVisibility(visibility);
-    }
-
-    void setCustomContentVisibility(int visibility) {
-        if (hasCustomContent()) {
-            mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID).setVisibility(visibility);
-        }
-    }
-
-    void showCustomContentIfNecessary() {
-        boolean show  = mState == Workspace.State.NORMAL;
-        if (show && hasCustomContent()) {
-            mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID).setVisibility(VISIBLE);
-        }
-    }
-
-    void hideCustomContentIfNecessary() {
-        boolean hide  = mState != Workspace.State.NORMAL;
-        if (hide && hasCustomContent()) {
-            disableLayoutTransitions();
-            mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID).setVisibility(INVISIBLE);
-            enableLayoutTransitions();
-        }
     }
 
     public void startDrag(CellLayout.CellInfo cellInfo, DragOptions options) {
@@ -2810,17 +2527,6 @@ public class Workspace extends PagedView
        xy[1] = mTempXY[1];
    }
 
-   /*
-    *
-    * Convert the 2D coordinate xy from this CellLayout's coordinate space to
-    * the parent View's coordinate space. The argument xy is modified with the return result.
-    *
-    */
-   void mapPointFromChildToSelf(View v, float[] xy) {
-       xy[0] += v.getLeft();
-       xy[1] += v.getTop();
-   }
-
     private boolean isDragWidget(DragObject d) {
         return (d.dragInfo instanceof LauncherAppWidgetInfo ||
                 d.dragInfo instanceof PendingAddWidgetInfo);
@@ -2949,7 +2655,7 @@ public class Workspace extends PagedView
         }
 
         // Always pick the current page.
-        if (layout == null && nextPage >= numCustomPages() && nextPage < getPageCount()) {
+        if (layout == null && nextPage >= 0 && nextPage < getPageCount()) {
             layout = (CellLayout) getChildAt(nextPage);
         }
         if (layout != mDragTargetLayout) {
@@ -2964,7 +2670,7 @@ public class Workspace extends PagedView
      * Returns the child CellLayout if the point is inside the page coordinates, null otherwise.
      */
     private CellLayout verifyInsidePage(int pageNo, float[] touchXy)  {
-        if (pageNo >= numCustomPages() && pageNo < getPageCount()) {
+        if (pageNo >= 0 && pageNo < getPageCount()) {
             CellLayout cl = (CellLayout) getChildAt(pageNo);
             mapPointFromSelfToChild(cl, touchXy);
             if (touchXy[0] >= 0 && touchXy[0] <= cl.getWidth() &&
@@ -3142,7 +2848,7 @@ public class Workspace extends PagedView
         if (!mLauncher.isHotseatLayout(cellLayout)
                 && screenId != getScreenIdForPageIndex(mCurrentPage)
                 && mState != State.SPRING_LOADED) {
-            snapToScreenId(screenId, null);
+            snapToPage(getPageIndexForScreenId(screenId));
         }
 
         if (info instanceof PendingAddItemInfo) {
@@ -3432,10 +3138,6 @@ public class Workspace extends PagedView
      */
     public CellLayout.CellInfo getDragInfo() {
         return mDragInfo;
-    }
-
-    public int getCurrentPageOffsetFromCustomContent() {
-        return getNextPage() - numCustomPages();
     }
 
     /**
@@ -3964,35 +3666,15 @@ public class Workspace extends PagedView
         }
     }
 
-    void moveToDefaultScreen(boolean animate) {
-        int page = getDefaultPage();
+    void moveToDefaultScreen() {
+        int page = DEFAULT_PAGE;
         if (!workspaceInModalState() && getNextPage() != page) {
-            if (animate) {
-                snapToPage(page);
-            } else {
-                setCurrentPage(page);
-            }
+            snapToPage(page);
         }
         View child = getChildAt(page);
         if (child != null) {
             child.requestFocus();
         }
-    }
-
-    void moveToCustomContentScreen(boolean animate) {
-        if (hasCustomContent()) {
-            int ccIndex = getPageIndexForScreenId(CUSTOM_CONTENT_SCREEN_ID);
-            if (animate) {
-                snapToPage(ccIndex);
-            } else {
-                setCurrentPage(ccIndex);
-            }
-            View child = getChildAt(ccIndex);
-            if (child != null) {
-                child.requestFocus();
-            }
-         }
-        exitWidgetResizeMode();
     }
 
     @Override
@@ -4002,16 +3684,12 @@ public class Workspace extends PagedView
 
     @Override
     protected String getCurrentPageDescription() {
-        if (hasCustomContent() && getNextPage() == 0) {
-            return mCustomContentDescription;
-        }
         int page = (mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage;
         return getPageDescription(page);
     }
 
     private String getPageDescription(int page) {
-        int delta = numCustomPages();
-        int nScreens = getChildCount() - delta;
+        int nScreens = getChildCount();
         int extraScreenId = mScreenOrder.indexOf(EXTRA_EMPTY_SCREEN_ID);
         if (extraScreenId >= 0 && nScreens > 1) {
             if (page == extraScreenId) {
@@ -4023,8 +3701,7 @@ public class Workspace extends PagedView
             // When the workspace is not loaded, we do not know how many screen will be bound.
             return getContext().getString(R.string.all_apps_home_button_label);
         }
-        return getContext().getString(R.string.workspace_scroll_format,
-                page + 1 - delta, nScreens);
+        return getContext().getString(R.string.workspace_scroll_format, page + 1, nScreens);
     }
 
     @Override

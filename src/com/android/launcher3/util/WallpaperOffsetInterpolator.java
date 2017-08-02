@@ -108,7 +108,7 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
     public float wallpaperOffsetForScroll(int scroll) {
         // To match the default wallpaper behavior in the system, we default to either the left
         // or right edge on initialization
-        int numScrollingPages = getNumScreensExcludingEmptyAndCustom();
+        int numScrollingPages = getNumScreensExcludingEmpty();
         if (mLockedToDefaultPage || numScrollingPages <= 1) {
             return mIsRtl ? 1f : 0f;
         }
@@ -125,10 +125,10 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
         int leftPageIndex;
         int rightPageIndex;
         if (mIsRtl) {
-            rightPageIndex = mWorkspace.numCustomPages();
+            rightPageIndex = 0;
             leftPageIndex = rightPageIndex + numScrollingPages - 1;
         } else {
-            leftPageIndex = mWorkspace.numCustomPages();
+            leftPageIndex = 0;
             rightPageIndex = leftPageIndex + numScrollingPages - 1;
         }
 
@@ -163,7 +163,7 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
     }
 
     private int numEmptyScreensToIgnore() {
-        int numScrollingPages = mWorkspace.getChildCount() - mWorkspace.numCustomPages();
+        int numScrollingPages = mWorkspace.getChildCount();
         if (numScrollingPages >= MIN_PARALLAX_PAGE_SPAN && mWorkspace.hasExtraEmptyScreen()) {
             return 1;
         } else {
@@ -171,8 +171,8 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
         }
     }
 
-    private int getNumScreensExcludingEmptyAndCustom() {
-        return mWorkspace.getChildCount() - numEmptyScreensToIgnore() - mWorkspace.numCustomPages();
+    private int getNumScreensExcludingEmpty() {
+        return mWorkspace.getChildCount() - numEmptyScreensToIgnore();
     }
 
     public void syncWithScroll() {
@@ -207,13 +207,13 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
     public void setFinalX(float x) {
         scheduleUpdate();
         mFinalOffset = Math.max(0f, Math.min(x, 1f));
-        if (getNumScreensExcludingEmptyAndCustom() != mNumScreens) {
+        if (getNumScreensExcludingEmpty() != mNumScreens) {
             if (mNumScreens > 0 && Float.compare(mCurrentOffset, mFinalOffset) != 0) {
                 // Don't animate if we're going from 0 screens, or if the final offset is the same
                 // as the current offset
                 animateToFinal();
             }
-            mNumScreens = getNumScreensExcludingEmptyAndCustom();
+            mNumScreens = getNumScreensExcludingEmpty();
         }
     }
 

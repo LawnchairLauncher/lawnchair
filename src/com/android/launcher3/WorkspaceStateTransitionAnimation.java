@@ -274,7 +274,6 @@ public class WorkspaceStateTransitionAnimation {
                 1.0f : 0f;
         float finalHotseatAlpha = (states.stateIsNormal || states.stateIsSpringLoaded ||
                 states.stateIsNormalHidden) ? 1f : 0f;
-        float finalQsbAlpha = (states.stateIsNormal || states.stateIsNormalHidden) ? 1f : 0f;
 
         float finalWorkspaceTranslationY = 0;
         if (states.stateIsOverview || states.stateIsOverviewHidden) {
@@ -284,7 +283,6 @@ public class WorkspaceStateTransitionAnimation {
         }
 
         final int childCount = mWorkspace.getChildCount();
-        final int customPageCount = mWorkspace.numCustomPages();
 
         mNewScale = 1.0f;
 
@@ -313,7 +311,7 @@ public class WorkspaceStateTransitionAnimation {
             } else if(states.stateIsNormalHidden) {
                 finalAlpha = (i == mWorkspace.getNextPage()) ? 1 : 0;
             } else if (states.stateIsNormal && mWorkspaceFadeInAdjacentScreens) {
-                finalAlpha = (i == toPage || i < customPageCount) ? 1f : 0f;
+                finalAlpha = (i == toPage) ? 1f : 0f;
             } else {
                 finalAlpha = 1f;
             }
@@ -426,7 +424,6 @@ public class WorkspaceStateTransitionAnimation {
             mWorkspace.getPageIndicator().setShouldAutoHide(!states.stateIsSpringLoaded);
 
             mWorkspace.createHotseatAlphaAnimator(finalHotseatAlpha).end();
-            mWorkspace.updateCustomContentVisibility();
             mWorkspace.setScaleX(mNewScale);
             mWorkspace.setScaleY(mNewScale);
             mWorkspace.setTranslationY(finalWorkspaceTranslationY);

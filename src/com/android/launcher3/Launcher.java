@@ -291,8 +291,6 @@ public class Launcher extends BaseActivity
     // it from the context.
     private SharedPreferences mSharedPrefs;
 
-    private boolean mMoveToDefaultScreenFromNewIntent;
-
     // This is set to the view that launched the activity that navigated the user away from
     // launcher. Since there is no callback for when the activity has finished launching, enable
     // the press state and keep this reference to reset the press state when we return to launcher.
@@ -420,8 +418,6 @@ public class Launcher extends BaseActivity
         ((AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE))
                 .addAccessibilityStateChangeListener(this);
 
-        lockAllApps();
-
         restoreState(savedInstanceState);
 
         if (LauncherAppState.PROFILE_STARTUP) {
@@ -508,10 +504,6 @@ public class Launcher extends BaseActivity
         mExtractedColors.notifyChange();
     }
 
-    public ExtractedColors getExtractedColors() {
-        return mExtractedColors;
-    }
-
     @Override
     public void onAppWidgetHostReset() {
         if (mAppWidgetHost != null) {
@@ -561,44 +553,6 @@ public class Launcher extends BaseActivity
     public void onLauncherProviderChanged() {
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onLauncherProviderChange();
-        }
-    }
-
-    /** To be overridden by subclasses to hint to Launcher that we have custom content */
-    protected boolean hasCustomContentToLeft() {
-        if (mLauncherCallbacks != null) {
-            return mLauncherCallbacks.hasCustomContentToLeft();
-        }
-        return false;
-    }
-
-    /**
-     * To be overridden by subclasses to populate the custom content container and call
-     * {@link #addToCustomContentPage}. This will only be invoked if
-     * {@link #hasCustomContentToLeft()} is {@code true}.
-     */
-    protected void populateCustomContentContainer() {
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.populateCustomContentContainer();
-        }
-    }
-
-    /**
-     * Invoked by subclasses to signal a change to the {@link #addToCustomContentPage} value to
-     * ensure the custom content page is added or removed if necessary.
-     */
-    protected void invalidateHasCustomContentToLeft() {
-        if (mWorkspace == null || mWorkspace.getScreenOrder().isEmpty()) {
-            // Not bound yet, wait for bindScreens to be called.
-            return;
-        }
-
-        if (!mWorkspace.hasCustomContent() && hasCustomContentToLeft()) {
-            // Create the custom content page and call the subclass to populate it.
-            mWorkspace.createCustomContentContainer();
-            populateCustomContentContainer();
-        } else if (mWorkspace.hasCustomContent() && !hasCustomContentToLeft()) {
-            mWorkspace.removeCustomContentPage();
         }
     }
 
@@ -801,7 +755,7 @@ public class Launcher extends BaseActivity
         }
     }
 
-    /** @Override for MNC */
+    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
             int[] grantResults) {
         PendingRequestArgs pendingArgs = mPendingRequestArgs;
@@ -1017,21 +971,6 @@ public class Launcher extends BaseActivity
             Log.d(TAG, "Time spent in onResume: " + (System.currentTimeMillis() - startTime));
         }
 
-        // We want to suppress callbacks about CustomContent being shown if we have just received
-        // onNewIntent while the user was present within launcher. In that case, we post a call
-        // to move the user to the main screen (which will occur after onResume). We don't want to
-        // have onHide (from onPause), then onShow, then onHide again, which we get if we don't
-        // suppress here.
-        if (mWorkspace.getCustomContentCallbacks() != null
-                && !mMoveToDefaultScreenFromNewIntent) {
-            // If we are resuming and the custom content is the current page, we call onShow().
-            // It is also possible that onShow will instead be called slightly after first layout
-            // if PagedView#setRestorePage was set to the custom content page in onCreate().
-            if (mWorkspace.isOnOrMovingToCustomContent()) {
-                mWorkspace.getCustomContentCallbacks().onShow(true);
-            }
-        }
-        mMoveToDefaultScreenFromNewIntent = false;
         updateInteraction(Workspace.State.NORMAL, mWorkspace.getState());
         mWorkspace.onResume();
 
@@ -1061,30 +1000,9 @@ public class Launcher extends BaseActivity
         mDragController.cancelDrag();
         mDragController.resetLastGestureUpTime();
 
-        // We call onHide() aggressively. The custom content callbacks should be able to
-        // debounce excess onHide calls.
-        if (mWorkspace.getCustomContentCallbacks() != null) {
-            mWorkspace.getCustomContentCallbacks().onHide();
-        }
-
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onPause();
         }
-    }
-
-    public interface CustomContentCallbacks {
-        // Custom content is completely shown. {@code fromResume} indicates whether this was caused
-        // by a onResume or by scrolling otherwise.
-        void onShow(boolean fromResume);
-
-        // Custom content is completely hidden
-        void onHide();
-
-        // Custom content scroll progress changed. From 0 (not showing) to 1 (fully showing).
-        void onScrollProgressChanged(float progress);
-
-        // Indicates whether the user is allowed to scroll away from the custom content.
-        boolean isScrollingAllowed();
     }
 
     public interface LauncherOverlay {
@@ -1134,16 +1052,6 @@ public class Launcher extends BaseActivity
             // setting, on devices with a locked orientation,
             return Utilities.isAtLeastO() || !getResources().getBoolean(R.bool.allow_rotation);
         }
-    }
-
-    public void addToCustomContentPage(View customContent,
-            CustomContentCallbacks callbacks, String description) {
-        mWorkspace.addToCustomContentPage(customContent, callbacks, description);
-    }
-
-    // The custom content needs to offset its content to account for the QSB
-    public int getTopOffsetForCustomContent() {
-        return mWorkspace.getPaddingTop();
     }
 
     @Override
@@ -1205,7 +1113,7 @@ public class Launcher extends BaseActivity
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
             // Ignore the menu key if we are currently dragging or are on the custom content screen
-            if (!isOnCustomContent() && !mDragController.isDragging()) {
+            if (!mDragController.isDragging()) {
                 // Close any open floating view
                 AbstractFloatingView.closeAllOpenViews(this);
 
@@ -1765,14 +1673,11 @@ public class Launcher extends BaseActivity
             if (shouldMoveToDefaultScreen && !mWorkspace.isTouchActive()
                     && callbackAllowsMoveToDefaultScreen) {
 
-                // We use this flag to suppress noisy callbacks above custom content state
-                // from onResume.
-                mMoveToDefaultScreenFromNewIntent = true;
                 mWorkspace.post(new Runnable() {
                     @Override
                     public void run() {
                         if (mWorkspace != null) {
-                            mWorkspace.moveToDefaultScreen(true);
+                            mWorkspace.moveToDefaultScreen();
                         }
                     }
                 });
@@ -1795,8 +1700,7 @@ public class Launcher extends BaseActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         if (mWorkspace.getChildCount() > 0) {
-            outState.putInt(RUNTIME_STATE_CURRENT_SCREEN,
-                    mWorkspace.getCurrentPageOffsetFromCustomContent());
+            outState.putInt(RUNTIME_STATE_CURRENT_SCREEN, mWorkspace.getNextPage());
 
         }
         super.onSaveInstanceState(outState);
@@ -1952,10 +1856,6 @@ public class Launcher extends BaseActivity
         }
     }
 
-    public boolean isOnCustomContent() {
-        return mWorkspace.isOnOrMovingToCustomContent();
-    }
-
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
@@ -2026,12 +1926,6 @@ public class Launcher extends BaseActivity
             completeAddAppWidget(appWidgetId, info, boundWidget, addFlowHandler.getProviderInfo(this));
             mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete, delay, false);
         }
-    }
-
-    protected void moveToCustomContentScreen(boolean animate) {
-        // Close any folders that may be open.
-        AbstractFloatingView.closeAllOpenViews(this, animate);
-        mWorkspace.moveToCustomContentScreen(animate);
     }
 
     public void addPendingItem(PendingAddItemInfo info, long container, long screenId,
@@ -2554,14 +2448,6 @@ public class Launcher extends BaseActivity
         mDragLayer.onAccessibilityStateChanged(enabled);
     }
 
-    public void onDragStarted() {
-        if (isOnCustomContent()) {
-            // Custom content screen doesn't participate in drag and drop. If on custom
-            // content screen, move to default.
-            moveWorkspaceToDefaultScreen();
-        }
-    }
-
     /**
      * Called when the user stops interacting with the launcher.
      * This implies that the user is now on the homescreen and is not doing housekeeping.
@@ -3072,14 +2958,6 @@ public class Launcher extends BaseActivity
         }
     }
 
-    void lockAllApps() {
-        // TODO
-    }
-
-    void unlockAllApps() {
-        // TODO
-    }
-
     @Override
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
         final boolean result = super.dispatchPopulateAccessibilityEvent(event);
@@ -3218,13 +3096,6 @@ public class Launcher extends BaseActivity
             mWorkspace.addExtraEmptyScreen();
         }
         bindAddScreens(orderedScreenIds);
-
-        // Create the custom content page (this call updates mDefaultScreen which calls
-        // setCurrentPage() so ensure that all pages are added before calling this).
-        if (hasCustomContentToLeft()) {
-            mWorkspace.createCustomContentContainer();
-            populateCustomContentContainer();
-        }
 
         // After we have added all the screens, if the wallpaper was locked to the default state,
         // then notify to indicate that it can be released and a proper wallpaper offset can be
@@ -3650,13 +3521,6 @@ public class Launcher extends BaseActivity
         return mDeviceProfile.isVerticalBarLayout();
     }
 
-    public int getSearchBarHeight() {
-        if (mLauncherCallbacks != null) {
-            return mLauncherCallbacks.getSearchBarHeight();
-        }
-        return LauncherCallbacks.SEARCH_BAR_HEIGHT_NORMAL;
-    }
-
     /**
      * Add the icons for all apps.
      *
@@ -3910,10 +3774,6 @@ public class Launcher extends BaseActivity
         return mState == State.WORKSPACE && !mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false);
     }
 
-    protected void moveWorkspaceToDefaultScreen() {
-        mWorkspace.moveToDefaultScreen(false);
-    }
-
     /**
      * $ adb shell dumpsys activity com.android.launcher3.Launcher [--all]
      */
@@ -3923,7 +3783,7 @@ public class Launcher extends BaseActivity
 
         if (args.length > 0 && TextUtils.equals(args[0], "--all")) {
             writer.println(prefix + "Workspace Items");
-            for (int i = mWorkspace.numCustomPages(); i < mWorkspace.getPageCount(); i++) {
+            for (int i = 0; i < mWorkspace.getPageCount(); i++) {
                 writer.println(prefix + "  Homescreen " + i);
 
                 ViewGroup layout = ((CellLayout) mWorkspace.getPageAt(i)).getShortcutsAndWidgets();

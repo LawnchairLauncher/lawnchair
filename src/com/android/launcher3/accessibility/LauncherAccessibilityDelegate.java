@@ -411,7 +411,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         CellLayout layout = (CellLayout) workspace.getPageAt(screenIndex);
 
         boolean found = layout.findCellForSpan(outCoordinates, info.spanX, info.spanY);
-        screenIndex = workspace.hasCustomContent() ? 1 : 0;
+        screenIndex = 0;
         while (!found && screenIndex < workspaceScreens.size()) {
             screenId = workspaceScreens.get(screenIndex);
             layout = (CellLayout) workspace.getPageAt(screenIndex);

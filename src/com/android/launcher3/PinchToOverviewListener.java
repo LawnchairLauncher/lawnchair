@@ -80,7 +80,7 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
-        if (mLauncher.mState != Launcher.State.WORKSPACE || mLauncher.isOnCustomContent()) {
+        if (mLauncher.mState != Launcher.State.WORKSPACE) {
             // Don't listen for the pinch gesture if on all apps, widget picker, -1, etc.
             return false;
         }

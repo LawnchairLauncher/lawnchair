@@ -1,11 +1,8 @@
 package com.android.launcher3.testing;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.View;
-import android.widget.FrameLayout;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
@@ -142,51 +139,6 @@ public class LauncherExtension extends Launcher {
             return false;
         }
 
-        CustomContentCallbacks mCustomContentCallbacks = new CustomContentCallbacks() {
-
-            // Custom content is completely shown. {@code fromResume} indicates whether this was caused
-            // by a onResume or by scrolling otherwise.
-            public void onShow(boolean fromResume) {
-            }
-
-            // Custom content is completely hidden
-            public void onHide() {
-            }
-
-            // Custom content scroll progress changed. From 0 (not showing) to 1 (fully showing).
-            public void onScrollProgressChanged(float progress) {
-
-            }
-
-            // Indicates whether the user is allowed to scroll away from the custom content.
-            public boolean isScrollingAllowed() {
-                return true;
-            }
-
-        };
-
-        @Override
-        public boolean hasCustomContentToLeft() {
-            return true;
-        }
-
-        @Override
-        public void populateCustomContentContainer() {
-            FrameLayout customContent = new FrameLayout(LauncherExtension.this);
-            customContent.setBackgroundColor(Color.GRAY);
-            addToCustomContentPage(customContent, mCustomContentCallbacks, "");
-        }
-
-        @Override
-        public View getQsbBar() {
-            return null;
-        }
-
-        @Override
-        public Bundle getAdditionalSearchWidgetOptions() {
-            return new Bundle();
-        }
-
         @Override
         public boolean shouldMoveToDefaultScreenOnHomeIntent() {
             return true;
@@ -201,11 +153,6 @@ public class LauncherExtension extends Launcher {
         public List<ComponentKeyMapper<AppInfo>> getPredictedApps() {
             // To debug app predictions, enable AlphabeticalAppsList#DEBUG_PREDICTIONS
             return new ArrayList<>();
-        }
-
-        @Override
-        public int getSearchBarHeight() {
-            return SEARCH_BAR_HEIGHT_NORMAL;
         }
 
         @Override
