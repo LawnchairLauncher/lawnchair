@@ -274,7 +274,6 @@ public class WorkspaceStateTransitionAnimation {
                 1.0f : 0f;
         float finalHotseatAlpha = (states.stateIsNormal || states.stateIsSpringLoaded ||
                 (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && states.stateIsNormalHidden)) ? 1f : 0f;
-        float finalOverviewPanelAlpha = states.stateIsOverview ? 1f : 0f;
         float finalQsbAlpha = (states.stateIsNormal ||
                 (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && states.stateIsNormalHidden)) ? 1f : 0f;
 
@@ -359,38 +358,47 @@ public class WorkspaceStateTransitionAnimation {
 
         final ViewGroup overviewPanel = mLauncher.getOverviewPanel();
 
+        float finalOverviewPanelAlpha = states.stateIsOverview ? 1f : 0f;
         if (animated) {
+            // This is true when transitioning between:
+            // - Overview <-> Workspace
+            // - Overview <-> Widget Tray
+            if (finalOverviewPanelAlpha != overviewPanel.getAlpha()) {
+                Animator overviewPanelAlpha = ObjectAnimator.ofFloat(
+                        overviewPanel, View.ALPHA, finalOverviewPanelAlpha);
+                overviewPanelAlpha.addListener(new AlphaUpdateListener(overviewPanel,
+                        accessibilityEnabled));
+                layerViews.addView(overviewPanel);
+
+                if (states.overviewToWorkspace) {
+                    overviewPanelAlpha.setInterpolator(new DecelerateInterpolator(2));
+                } else if (states.workspaceToOverview) {
+                    overviewPanelAlpha.setInterpolator(null);
+                }
+
+                overviewPanelAlpha.setDuration(duration);
+                mStateAnimator.play(overviewPanelAlpha);
+            }
+
             Animator scale = LauncherAnimUtils.ofPropertyValuesHolder(mWorkspace,
                     new PropertyListBuilder().scale(mNewScale)
                             .translationY(finalWorkspaceTranslationY).build())
                     .setDuration(duration);
             scale.setInterpolator(mZoomInInterpolator);
             mStateAnimator.play(scale);
-            Animator hotseatAlpha = mWorkspace.createHotseatAlphaAnimator(finalHotseatAlpha);
-
-            Animator overviewPanelAlpha = ObjectAnimator.ofFloat(
-                    overviewPanel, View.ALPHA, finalOverviewPanelAlpha);
-            overviewPanelAlpha.addListener(new AlphaUpdateListener(overviewPanel,
-                    accessibilityEnabled));
 
             // For animation optimization, we may need to provide the Launcher transition
             // with a set of views on which to force build and manage layers in certain scenarios.
-            layerViews.addView(overviewPanel);
             layerViews.addView(mLauncher.getHotseat());
             layerViews.addView(mWorkspace.getPageIndicator());
 
+            Animator hotseatAlpha = mWorkspace.createHotseatAlphaAnimator(finalHotseatAlpha);
             if (states.workspaceToOverview) {
                 hotseatAlpha.setInterpolator(new DecelerateInterpolator(2));
-                overviewPanelAlpha.setInterpolator(null);
             } else if (states.overviewToWorkspace) {
                 hotseatAlpha.setInterpolator(null);
-                overviewPanelAlpha.setInterpolator(new DecelerateInterpolator(2));
             }
-
-            overviewPanelAlpha.setDuration(duration);
             hotseatAlpha.setDuration(duration);
-
-            mStateAnimator.play(overviewPanelAlpha);
             mStateAnimator.play(hotseatAlpha);
             mStateAnimator.addListener(new AnimatorListenerAdapter() {
                 boolean canceled = false;
