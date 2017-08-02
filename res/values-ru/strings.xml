@@ -28,9 +28,9 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"Виджеты отключены в безопасном режиме"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Ярлык недоступен"</string>
     <string name="home_screen" msgid="806512411299847073">"Главный экран"</string>
-    <string name="custom_actions" msgid="3747508247759093328">"Пользовательские действия"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"Специальные действия"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Чтобы выбрать виджет, нажмите на значок и удерживайте его."</string>
-    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Чтобы выбрать виджет, нажмите на него дважды и не отпускайте или выполните предложенные действия."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Чтобы выбрать виджет или использовать специальные действия, нажмите на него дважды и не отпускайте."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d x %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Ширина %1$d, высота %2$d"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Нажмите и удерживайте, чтобы добавить вручную"</string>
@@ -90,7 +90,7 @@
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Квадрат с закругленными краями"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"Круг"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"Капля"</string>
-    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Применение изменений..."</string>
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Применение изменений…"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Неизвестно"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Удалить"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Найти"</string>

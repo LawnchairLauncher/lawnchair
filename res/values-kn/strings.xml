@@ -70,16 +70,26 @@
     <string name="folder_name_format" msgid="6629239338071103179">"ಫೋಲ್ಡರ್: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"ವಿಜೆಟ್‌ಗಳು"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ವಾಲ್‌ಪೇಪರ್‌ಗಳು"</string>
-    <string name="settings_button_text" msgid="8119458837558863227">"ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"ಮುಖಪುಟ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ನಿಮ್ಮ ನಿರ್ವಾಹಕರು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿದ್ದಾರೆ"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"ಅವಲೋಕನ"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"ಮುಖಪುಟ ತಿರುಗುವಿಕೆಯನ್ನು ಅನುಮತಿಸಿ"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ಫೋನ್‌ ತಿರುಗಿಸಿದಾಗ"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"ಪ್ರಸ್ತುತ ಪ್ರದರ್ಶನ ಸೆಟ್ಟಿಂಗ್ ತಿರುಗುವಿಕೆಯನ್ನು ಅನುಮತಿಸುವುದಿಲ್ಲ"</string>
+    <string name="icon_badging_title" msgid="874121399231955394">"ಅಧಿಸೂಚನೆ ಡಾಟ್‌ಗಳು"</string>
+    <string name="icon_badging_desc_on" msgid="2627952638544674079">"ಆನ್"</string>
+    <string name="icon_badging_desc_off" msgid="5503319969924580241">"ಆಫ್"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"ಅಧಿಸೂಚನೆ ಪ್ರವೇಶ ಅಗತ್ಯವಿದೆ"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"ಅಧಿಸೂಚನೆ ಚುಕ್ಕೆಗಳನ್ನು ತೋರಿಸಲು, <xliff:g id="NAME">%1$s</xliff:g> ಗೆ ಅಪ್ಲಿಕೇಶನ್‌ ಅಧಿಸೂಚನೆಗಳನ್ನು ಆನ್‌ ಮಾಡಿ"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"ಸೆಟ್ಟಿಂಗ್‌‌ಗಳನ್ನು ಬದಲಾಯಿಸಿ"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ಮುಖಪುಟದ ಪರದೆಗೆ ಐಕಾನ್ ಸೇರಿಸಿ"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ಹೊಸ ಅಪ್ಲಿಕೇಶನ್‌ಗಳಿಗೆ"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"ಐಕಾನ್ ಆಕಾರವನ್ನು ಬದಲಿಸಿ"</string>
-    <string name="icon_shape_no_override" msgid="3678524428085518367">"ಬದಲಿಸಬೇಡಿ"</string>
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"ಸಿಸ್ಟಂ ಡಿಫಾಲ್ಟ್ ಬಳಸಿ"</string>
+    <string name="icon_shape_square" msgid="633575066111622774">"ಚೌಕ"</string>
+    <string name="icon_shape_squircle" msgid="5658049910802669495">"ಚೌಕವೃತ್ತ"</string>
+    <string name="icon_shape_circle" msgid="6550072265930144217">"ವೃತ್ತ"</string>
+    <string name="icon_shape_teardrop" msgid="4525869388200835463">"ಕಂಬನಿ"</string>
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"ಐಕಾನ್ ಆಕಾರ ಬದಲಾವಣೆಯನ್ನು ಅನ್ವಯಿಸಲಾಗುತ್ತಿದೆ"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"ಅಪರಿಚಿತ"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ತೆಗೆದುಹಾಕಿ"</string>
@@ -115,4 +125,7 @@
     <string name="widget_resized" msgid="9130327887929620">"ವಿಜೆಟ್ ಅನ್ನು <xliff:g id="NUMBER_0">%1$s</xliff:g> ಅಗಲ <xliff:g id="NUMBER_1">%2$s</xliff:g> ಎತ್ತರಕ್ಕೆ ಮರುಗಾತ್ರಗೊಳಿಸಲಾಗಿದೆ"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g> ಗೆ <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> ಗಾಗಿ <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು ಮತ್ತು <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> ಅಧಿಸೂಚನೆಗಳು"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"ವಜಾಗೊಳಿಸಿ"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"ಅಧಿಸೂಚನೆಯನ್ನು ವಜಾಗೊಳಿಸಲಾಗಿದೆ"</string>
 </resources>
