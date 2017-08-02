@@ -35,9 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%2$d উচ্চতা অনুযায়ী %1$d প্রস্থ"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"নিজে যোগ করতে টাচ করে ধরে রাখুন"</string>
     <string name="place_automatically" msgid="8064208734425456485">"স্বয়ংক্রিয়ভাবে যোগ করুন"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"অ্যাপ্লিকেশানগুলি অনুসন্ধান করুন"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"অ্যাপ্লিকেশানগুলি লোড হচ্ছে..."</string>
-    <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" এর সাথে মেলে এমন কোনো অ্যাপ্লিকেশান পাওয়া যায়নি"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"অ্যাপ অনুসন্ধান করুন"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"অ্যাপ লোড হচ্ছে…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" এর সাথে মেলে এমন কোনো অ্যাপ পাওয়া যায়নি"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"আরো অ্যাপ্লিকেশানের জন্য অনুসন্ধান করুন"</string>
     <string name="notifications_header" msgid="1404149926117359025">"বিজ্ঞপ্তি"</string>
     <string name="out_of_space" msgid="4691004494942118364">"এই হোম স্ক্রীনে আর কোনো জায়গা নেই৷"</string>
@@ -79,6 +79,9 @@
     <string name="icon_badging_title" msgid="874121399231955394">"বিজ্ঞপ্তি ডট"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"চালু হয়েছে"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"বন্ধ আছে"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"বিজ্ঞপ্তিতে অ্যাক্সেস প্রয়োজন"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"বিজ্ঞপ্তির ডটগুলি দেখানোর জন্য, <xliff:g id="NAME">%1$s</xliff:g> এর অ্যাপ বিজ্ঞপ্তি চালু করুন"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"সেটিংস পরিবর্তন করুন"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"হোম স্ক্রিনে আইকন যোগ করুন"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"নতুন অ্যাপ্লিকেশানগুলির জন্যে"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"আইকনের আকৃতি পরিবর্তন করুন"</string>

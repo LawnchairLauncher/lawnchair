@@ -35,9 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d ਚੌੜਾਈ ਅਤੇ %2$d ਲੰਬਾਈ"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"ਹੱਥੀਂ ਰੱਖਣ ਲਈ ਸਪੱਰਸ਼ ਕਰੋ ਅਤੇ ਦਬਾਈ ਰੱਖੋ"</string>
     <string name="place_automatically" msgid="8064208734425456485">"ਸਵੈਚਲਿਤ ਤਰੀਕੇ ਨਾਲ ਸ਼ਾਮਲ ਕਰੋ"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"ਐਪਸ ਖੋਜੋ"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"ਐਪਾਂ ਨੂੰ ਲੋਡ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."</string>
-    <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ਨਾਲ ਮਿਲਦੀਆਂ ਕੋਈ ਵੀ ਐਪਾਂ ਨਹੀਂ ਮਿਲੀਆਂ"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ਐਪਾਂ ਖੋਜੋ"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"ਐਪਾਂ ਨੂੰ ਲੋਡ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ਨਾਲ ਮੇਲ ਖਾਂਦੀਆਂ ਕੋਈ ਐਪਾਂ ਨਹੀਂ ਮਿਲੀਆਂ"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"ਹੋਰ ਐਪਾਂ ਖੋਜੋ"</string>
     <string name="notifications_header" msgid="1404149926117359025">"ਸੂਚਨਾਵਾਂ"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ਇਸ ਹੋਮ ਸਕ੍ਰੀਨ ਲਈ ਹੋਰ ਖਾਲੀ ਸਥਾਨ ਨਹੀਂ ਹੈ।"</string>
@@ -79,6 +79,9 @@
     <string name="icon_badging_title" msgid="874121399231955394">"ਸੂਚਨਾ ਬਿੰਦੂ"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"ਚਾਲੂ"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"ਬੰਦ"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"ਸੂਚਨਾ ਪਹੁੰਚ ਲੋੜੀਂਦੀ ਹੈ"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"ਸੂਚਨਾ ਬਿੰਦੀਆਂ ਦਿਖਾਉਣ ਲਈ, <xliff:g id="NAME">%1$s</xliff:g> ਲਈ ਐਪ ਸੂਚਨਾਵਾਂ ਚਾਲੂ ਕਰੋ"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"ਸੈਟਿੰਗਾਂ ਬਦਲੋ"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ਮੁੱਖ ਸਕ੍ਰੀਨ \'ਤੇ ਪ੍ਰਤੀਕ ਸ਼ਾਮਲ ਕਰੋ"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ਨਵੀਆਂ ਐਪਾਂ ਲਈ"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"ਆਈਕਨ ਦੀ ਆਕ੍ਰਿਤੀ ਬਦਲੋ"</string>
