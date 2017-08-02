@@ -338,8 +338,10 @@ public class LauncherStateTransitionAnimation {
             toView.post(new StartAnimRunnable(animation, toView));
             mCurrentAnimation = animation;
         } else if (animType == PULLUP) {
-            // We are animating the content view alpha, so ensure we have a layer for it
-            layerViews.addView(contentView);
+            if (!FeatureFlags.LAUNCHER3_PHYSICS) {
+                // We are animating the content view alpha, so ensure we have a layer for it.
+                layerViews.addView(contentView);
+            }
 
             animation.addListener(new AnimatorListenerAdapter() {
                 @Override
