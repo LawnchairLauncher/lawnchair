@@ -103,7 +103,7 @@
   <string name="default_scroll_format">Σελίδα %1$d από %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">Αρχική οθόνη %1$d από %2$d</string>
-  <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
+  <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
   <string name="workspace_new_page">Νέα σελίδα αρχικής οθόνης</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
@@ -264,7 +264,7 @@
   <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
   <string name="blur_radius_pref_title">Ακτίνα θολότητας</string>
   <string name="white_google_icon_pref_title">Χρήση λευκού εικονιδίου Google</string>
-  <string name="hide_icon_labels_pref_title">Απόκρυψη ετικετών εικονιδίων στην Αρχική οθόνη</string>
+  <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
   <string name="workspace_label_color_hue_pref_title">Χρώμα ετικετών εικονιδίων στην Αρχική οθόνη</string>
   <string name="workspace_label_color_variation_pref_title">Παραλλαγή χρώματος των ετικετών εικονιδίων στην Αρχική οθόνη</string>
   <string name="all_apps_opacity_pref_title">Αδιαφάνεια συρταριού εφαρμογών</string>
@@ -293,7 +293,7 @@
   <string name="restart_lawnchair_pref_summary">Μπορεί να είναι χρήσιμη, εάν ορισμένες ρυθμίσεις δεν εφαρμόζονται σωστά</string>
   <string name="rebuild_icondb_pref_title">Αναδόμηση βάση δεδομένων των εικονιδίων</string>
   <string name="pinch_to_overview_pref_title">Πιέστε για επισκόπηση</string>
-  <string name="pinch_to_overview_pref_summary">Πιέστε στην αρχική οθόνη για να ανοίξετε την επισκόπηση</string>
+  <string name="pinch_to_overview_pref_summary">Pinch on the home screen to open the overview</string>
   <string name="light_statusbar_pref_title">Φωτεινή μπάρα ειδοποιήσεων</string>
   <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
   <string name="light_statusbar_pref_off">Η μπάρα ειδοποιήσεων θα εμφανίζει πάντοτε φωτεινά εικονίδια.</string>
@@ -301,7 +301,7 @@
   <string name="keep_scroll_state_pref_title">Αποθήκευση θέσης κύλισης</string>
   <string name="keep_scroll_state_pref_summary">Αποθήκευση της θέσης κύλισης στο συρτάρι εφαρμογών</string>
   <string name="home_opens_drawer_pref_title">Το κουμπί αρχικής οθόνης θα ανοίγει το συρτάρι εφαρμογών</string>
-  <string name="home_opens_drawer_pref_summary">Πατώντας το κουμπί αρχικής οθόνης θα ανοίγει το συρτάρι εφαρμογών</string>
+  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the home screen will open the app drawer</string>
   <string name="show_hidden_pref_title">Εμφάνιση κρυφών εφαρμογών</string>
   <string name="show_hidden_pref_on">Οι κρυφές εφαρμογές θα επανεμφανίζονται για να αλλάξετε τις ρυθμίσεις ορατότητας</string>
   <string name="show_hidden_pref_off">Οι κρυφές εφαρμογές δεν θα είναι ορατές</string>
