@@ -293,15 +293,15 @@
   <string name="restart_lawnchair_pref_summary">Hilfreich, wenn Einstellungen nicht korrekt angewendet wurden</string>
   <string name="rebuild_icondb_pref_title">Icon Datenbank neu generieren</string>
   <string name="pinch_to_overview_pref_title">Zoomgeste für Übersicht</string>
-  <string name="pinch_to_overview_pref_summary">Pinch on the home screen to open the overview</string>
+  <string name="pinch_to_overview_pref_summary">Zoomgeste auf dem Startbildschirm öffnet die Übersicht</string>
   <string name="light_statusbar_pref_title">Helle Statusleiste</string>
-  <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
+  <string name="light_statusbar_pref_force">Die Statusleiste zeigt dunkle Symbole</string>
   <string name="light_statusbar_pref_off">Die Statusleiste zeigt immer helle Symbole.</string>
   <string name="haptic_feedback_pref_title">Vibration aktivieren</string>
   <string name="keep_scroll_state_pref_title">Scrollposition speichern</string>
   <string name="keep_scroll_state_pref_summary">Speichert die Scrollposition in der App-Liste</string>
   <string name="home_opens_drawer_pref_title">Homebutton öffnet App-Liste</string>
-  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the home screen will open the app drawer</string>
+  <string name="home_opens_drawer_pref_summary">Antippen des Homebuttons auf dem Startbildschirm öffnet die App-Übersicht</string>
   <string name="show_hidden_pref_title">Versteckte Apps anzeigen</string>
   <string name="show_hidden_pref_on">Versteckte Apps werden angezeigt, um Einstellungen für die Sichtbarkeit zu ändern</string>
   <string name="show_hidden_pref_off">Versteckte Apps werden nicht angezeigt</string>
@@ -358,12 +358,12 @@
   <string name="default_text">Standard</string>
   <string name="edit_icon_reset">Zurücksetzen</string>
   <string name="show_top_shadow_title">Show top shadow</string>
-  <string name="pref_cat_homescreen">Home screen</string>
+  <string name="pref_cat_homescreen">Startbildschirm</string>
   <string name="pref_cat_miscellaneous">Verschiedenes</string>
   <string name="pref_cat_hotseat">Dock</string>
-  <string name="pref_cat_theme">Theme</string>
-  <string name="theme_pref_title">Theme</string>
-  <string name="theme_light">Light</string>
+  <string name="pref_cat_theme">Design</string>
+  <string name="theme_pref_title">Design</string>
+  <string name="theme_light">Hell</string>
   <string name="theme_dark">Dunkel</string>
   <string name="theme_black">Schwarz</string>
   <string name="hide_hotseat_pref_title">Dock ausblenden</string>
@@ -375,9 +375,9 @@
   <string name="pull_down_apps_search">App Suche</string>
   <string name="enable_screen_rotation">Bildschirmrotation aktivieren</string>
   <!-- Import/Export Strings -->
-  <string name="imexport_success">Success!</string>
-  <string name="imexport_error">Error: Failed to copy file</string>
-  <string name="imexport_no_backup_found">No backup found</string>
+  <string name="imexport_success">Erfolg!</string>
+  <string name="imexport_error">Fehler: Datei konnte nicht kopiert werden</string>
+  <string name="imexport_no_backup_found">Kein Backup gefunden</string>
   <string name="imexport_external_storage_unreadable">External storage is not readable (grant permission in settings)</string>
   <string name="imexport_external_storage_unwritable">External storage is not writable (grant permission in settings)</string>
   <string name="units_metric">Metrisch</string>
@@ -392,7 +392,7 @@
   <string name="pref_applyTheme">Apply theme on</string>
   <string name="pref_applyBlur">Apply blur on</string>
   <string name="search_bar">Search bar</string>
-  <string name="folder">Folder</string>
+  <string name="folder">Ordner</string>
   <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
   <string name="app_shortcuts">App shortcuts</string>
   <string name="blur_effect">Blur effect</string>
