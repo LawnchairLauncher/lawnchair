@@ -103,7 +103,7 @@
   <string name="default_scroll_format">Page %1$d sur %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">Écran d\'accueil %1$d sur %2$d</string>
-  <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
+  <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
   <string name="workspace_new_page">Nouvelle page d\'écran d\'accueil</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
@@ -264,7 +264,7 @@
   <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
   <string name="blur_radius_pref_title">Rayon du flou</string>
   <string name="white_google_icon_pref_title">Utiliser l\'icône blanche de Google</string>
-  <string name="hide_icon_labels_pref_title">Masquer libellés des icônes de l\'écran d\'accueil</string>
+  <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
   <string name="workspace_label_color_hue_pref_title">Couleur des libellés des icônes sur l\'écran d\'accueil</string>
   <string name="workspace_label_color_variation_pref_title">Variation de couleur libellés des icônes de l\'écran d\'accueil</string>
   <string name="all_apps_opacity_pref_title">Opacité du tiroir des applications</string>
@@ -293,7 +293,7 @@
   <string name="restart_lawnchair_pref_summary">Peut être utile si certains paramètres ne sont pas correctement appliqués</string>
   <string name="rebuild_icondb_pref_title">Reconstruire la base de données des icônes</string>
   <string name="pinch_to_overview_pref_title">Pincer pour afficher la vue d\'ensemble</string>
-  <string name="pinch_to_overview_pref_summary">Pincer à 2 doigts sur l\'écran d\'accueil pour ouvrir la vue d\'ensemble</string>
+  <string name="pinch_to_overview_pref_summary">Pinch on the home screen to open the overview</string>
   <string name="light_statusbar_pref_title">Barre d\'état claire</string>
   <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
   <string name="light_statusbar_pref_off">La barre d’état affichera toujours des icônes clairs.</string>
@@ -301,7 +301,7 @@
   <string name="keep_scroll_state_pref_title">Enregistrer la position du défilement</string>
   <string name="keep_scroll_state_pref_summary">Enregistre la position du défilement dans le tiroir des applications</string>
   <string name="home_opens_drawer_pref_title">Le bouton Home ouvre le tiroir des applications</string>
-  <string name="home_opens_drawer_pref_summary">Sur l’écran d’accueil, en appuyant sur le bouton home vous ouvrirez le tiroir des applications</string>
+  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the home screen will open the app drawer</string>
   <string name="show_hidden_pref_title">Afficher les applications cachées</string>
   <string name="show_hidden_pref_on">Les applications cachées seront affichées pour modifier les paramètres de visibilité</string>
   <string name="show_hidden_pref_off">Les applications cachées ne seront pas visilbles</string>
