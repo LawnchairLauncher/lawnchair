@@ -103,7 +103,7 @@
   <string name="default_scroll_format">第 %1$d 頁，共 %2$d 頁</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">主螢幕：第 %1$d 頁，共 %2$d 頁</string>
-  <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
+  <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
   <string name="workspace_new_page">新的主畫面頁面</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
@@ -263,7 +263,7 @@
   <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
   <string name="blur_radius_pref_title">模糊範圍</string>
   <string name="white_google_icon_pref_title">使用白色的 Google 圖示</string>
-  <string name="hide_icon_labels_pref_title">在主螢幕上隱藏圖示標籤</string>
+  <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
   <string name="workspace_label_color_hue_pref_title">主螢幕上的圖示標籤顏色</string>
   <string name="workspace_label_color_variation_pref_title">主螢幕上的圖示標籤顏色變化</string>
   <string name="all_apps_opacity_pref_title">抽屜透明度</string>
@@ -292,7 +292,7 @@
   <string name="restart_lawnchair_pref_summary">如果某些設置未正確應用，可能會有所幫助</string>
   <string name="rebuild_icondb_pref_title">重建圖示快取</string>
   <string name="pinch_to_overview_pref_title">捏合來概覽</string>
-  <string name="pinch_to_overview_pref_summary">在主螢幕捏合來概覽</string>
+  <string name="pinch_to_overview_pref_summary">Pinch on the home screen to open the overview</string>
   <string name="light_statusbar_pref_title">亮色狀態欄</string>
   <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
   <string name="light_statusbar_pref_off">狀態欄將一直顯示亮色圖示。</string>
@@ -300,7 +300,7 @@
   <string name="keep_scroll_state_pref_title">保持滾動軸位置</string>
   <string name="keep_scroll_state_pref_summary">在抽屜裡保持滾動軸位置</string>
   <string name="home_opens_drawer_pref_title">Home鍵打開應用抽屜</string>
-  <string name="home_opens_drawer_pref_summary">在主畫面按Home鍵打開應用抽屜</string>
+  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the home screen will open the app drawer</string>
   <string name="show_hidden_pref_title">顯示隱藏的應用程式</string>
   <string name="show_hidden_pref_on">顯示隱藏的應用程式來調整可見性設置</string>
   <string name="show_hidden_pref_off">不顯示隱藏的應用程式</string>
