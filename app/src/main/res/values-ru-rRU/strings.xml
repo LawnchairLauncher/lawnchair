@@ -262,10 +262,10 @@
   <string name="transparent_hotseat_pref_title">Прозрачный докбар</string>
   <string name="dynamic_ui_pref_title">Извлечь цвет акцента из обоев</string>
   <string name="blur_pref_title">Включить размытие</string>
-  <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
+  <string name="blur_pref_summary">Применить эффект размытия к некоторым частям интерфейса\nНе совместим с живыми обоями</string>
   <string name="blur_radius_pref_title">Радиус размытия</string>
   <string name="white_google_icon_pref_title">Использовать белый значок Google</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
+  <string name="hide_icon_labels_pref_title">Скрыть подписи значков на домашнем экране</string>
   <string name="workspace_label_color_hue_pref_title">Цвет подписи иконок</string>
   <string name="workspace_label_color_variation_pref_title">Вариация цвета подписей</string>
   <string name="all_apps_opacity_pref_title">Прозрачность меню приложений</string>
@@ -294,15 +294,15 @@
   <string name="restart_lawnchair_pref_summary">Может быть полезно, если некоторые параметры не применяются должным образом</string>
   <string name="rebuild_icondb_pref_title">Перестроение базы данных значков</string>
   <string name="pinch_to_overview_pref_title">«Pinch to zoom»</string>
-  <string name="pinch_to_overview_pref_summary">Pinch on the home screen to open the overview</string>
+  <string name="pinch_to_overview_pref_summary">Щипок для обзора домашнего экране</string>
   <string name="light_statusbar_pref_title">Светлая строка состояния</string>
-  <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
+  <string name="light_statusbar_pref_force">Статус-бар будет показывать черные значки</string>
   <string name="light_statusbar_pref_off">В строке состояния всегда будут отображаться светлые значки</string>
   <string name="haptic_feedback_pref_title">Включить вибрацию</string>
   <string name="keep_scroll_state_pref_title">Сохранять позицию прокрутки</string>
   <string name="keep_scroll_state_pref_summary">Сохраняет положение прокрутки в меню приложения</string>
   <string name="home_opens_drawer_pref_title">Кнопка «Домой» открывает меню приложений</string>
-  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the home screen will open the app drawer</string>
+  <string name="home_opens_drawer_pref_summary">Нажатие кнопки «Домой» на главном экране откроет меню приложений</string>
   <string name="show_hidden_pref_title">Показывать скрытые приложения</string>
   <string name="show_hidden_pref_on">Отображаются скрытые приложения для изменения настроек видимости</string>
   <string name="show_hidden_pref_off">Скрытые приложения не будут отображаться</string>
@@ -357,7 +357,7 @@
   <!-- Customization Color -->
   <string name="blue_grey">Серо-голубой</string>
   <string name="default_text">По умолчанию</string>
-  <string name="edit_icon_reset">Reset</string>
+  <string name="edit_icon_reset">Сбросить</string>
   <string name="show_top_shadow_title">Show top shadow</string>
   <string name="pref_cat_homescreen">Home screen</string>
   <string name="pref_cat_miscellaneous">Miscellaneous</string>
