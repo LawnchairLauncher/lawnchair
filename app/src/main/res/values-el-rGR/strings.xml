@@ -375,7 +375,7 @@
   <string name="pull_down_apps_search">Αναζήτηση εφαρμογών</string>
   <string name="enable_screen_rotation">Ενεργοποιήστε την περιστροφή οθόνης</string>
   <!-- Import/Export Strings -->
-  <string name="imexport_success">Επιτυχία!</string>
+  <string name="imexport_success">Επιτυχής!</string>
   <string name="imexport_error">Σφάλμα: Απέτυχε η αντιγραφή αρχείου</string>
   <string name="imexport_no_backup_found">Δεν βρέθηκε κανένα αντίγραφο ασφαλείας</string>
   <string name="imexport_external_storage_unreadable">Η εξωτερική μονάδα αποθήκευσης δεν είναι αναγνώσιμη (χορήγηση άδειας στις ρυθμίσεις)</string>
