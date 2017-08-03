@@ -23,7 +23,7 @@
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
-  <string name="work_folder_name">Εργασίας</string>
+  <string name="work_folder_name">Εργασία</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
   <string name="activity_not_found">Η εφαρμογή δεν είναι εγκατεστημένη.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
@@ -249,7 +249,7 @@
   <string name="notifications_header">Ειδοποιήσεις</string>
   <string name="widgets_bottom_sheet_title">Γραφικό στοιχείο %1$s.</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Ο Lawnchair είναι μια εφαρμογή εκκίνησης που δημιουργήθηκε από τον Till Kottmann (αλλιώς και deletescape). Βασίζεται στο Launcher3 από το AOSP.</string>
+  <string name="about_text">Ο Lawnchair είναι μια εφαρμογή εκκίνησης που δημιουργήθηκε από τον Till Kottmann (γνωστός και ως deletescape). Βασίζεται στον εκκινητή Launcher3 του ανοιχτού κώδικα λειτουργικού συστήματος Android (AOSP).</string>
   <string name="about_title">Σχετικά με</string>
   <string name="changelog_title">Αρχείο καταγραφής αλλαγών της κατασκευής #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
@@ -284,14 +284,14 @@
   <string name="import_export_pref_title">Εισαγωγή/Εξαγωγή</string>
   <string name="show_pixel_bar_pref_title">Εμφάνιση επάνω γραμμής τύπου Pixel</string>
   <string name="use_wide_searchbar_pref_title">Χρήση πλατιάς μπάρας αναζήτησης</string>
-  <string name="show_mic_pref_title">Εμφάνιση του κουμπιού Google Βοηθός</string>
+  <string name="show_mic_pref_title">Εμφάνιση του κουμπιού Βοηθός Google</string>
   <string name="use_round_searhbar">Χρήση στρογγυλής μπάρας αναζήτησης στο συρτάρι εφαρμογών</string>
   <string name="pixel_style_icons_pref_title">Χρήση κυκλικών εικονιδίων Pixel</string>
   <string name="pixel_style_icons_pref_summary">Όταν ενεργοποιηθούν τα κυκλικά εικονίδια, θα χρησιμοποιηθούν, όπου είναι δυνατόν</string>
   <string name="show_google_now_tab_pref_title">Εμφάνιση σελίδας Google Now</string>
   <string name="restart_lawnchair_pref_title">Κάντε επανεκκίνηση του Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">Μπορεί να είναι χρήσιμη, εάν ορισμένες ρυθμίσεις δεν εφαρμόζονται σωστά</string>
-  <string name="rebuild_icondb_pref_title">Αναδόμηση βάση δεδομένων των εικονιδίων</string>
+  <string name="rebuild_icondb_pref_title">Αναδόμηση βάσης δεδομένων των εικονιδίων</string>
   <string name="pinch_to_overview_pref_title">Πιέστε για επισκόπηση</string>
   <string name="pinch_to_overview_pref_summary">Πιέστε στην αρχική οθόνη με δύο δάχτυλα για να ανοίξετε την επισκόπηση αρχικών οθονών</string>
   <string name="light_statusbar_pref_title">Φωτεινή μπάρα ειδοποιήσεων</string>
@@ -395,8 +395,8 @@
   <string name="folder">Φάκελος</string>
   <string name="dock_allapps"><![CDATA[Μπάρα εφαρμογών & συρτάρι εφαρμογών]]></string>
   <string name="app_shortcuts">Συντομεύσεις εφαρμογών</string>
-  <string name="blur_effect">Blur effect</string>
-  <string name="enable_editing_pref_title">Enable editing workspace</string>
-  <string name="pref_weather_provider">Weather provider</string>
-  <string name="loading">Loading...</string>
+  <string name="blur_effect">Εφέ θολώματος</string>
+  <string name="enable_editing_pref_title">Ενεργοποίηση επεξεργασίας εικονιδίων</string>
+  <string name="pref_weather_provider">Πάροχος καιρού</string>
+  <string name="loading">Φόρτωση…</string>
 </resources>
