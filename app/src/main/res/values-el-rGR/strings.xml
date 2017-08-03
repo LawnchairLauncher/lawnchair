@@ -292,8 +292,8 @@
   <string name="restart_lawnchair_pref_title">Κάντε επανεκκίνηση του Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">Μπορεί να είναι χρήσιμη, εάν ορισμένες ρυθμίσεις δεν εφαρμόζονται σωστά</string>
   <string name="rebuild_icondb_pref_title">Αναδόμηση βάσης δεδομένων των εικονιδίων</string>
-  <string name="pinch_to_overview_pref_title">Πιέστε για επισκόπηση</string>
-  <string name="pinch_to_overview_pref_summary">Πιέστε στην αρχική οθόνη με δύο δάχτυλα για να ανοίξετε την επισκόπηση αρχικών οθονών</string>
+  <string name="pinch_to_overview_pref_title">Τσιμπήστε για επισκόπηση</string>
+  <string name="pinch_to_overview_pref_summary">Τσιμπήστε στην αρχική οθόνη για να ανοίξετε την επισκόπηση αρχικών οθονών</string>
   <string name="light_statusbar_pref_title">Φωτεινή μπάρα ειδοποιήσεων</string>
   <string name="light_statusbar_pref_force">Η μπάρα ειδοποιήσεων θα εμφανίζει σκοτεινά εικονίδια</string>
   <string name="light_statusbar_pref_off">Η μπάρα ειδοποιήσεων θα εμφανίζει πάντοτε φωτεινά εικονίδια.</string>
