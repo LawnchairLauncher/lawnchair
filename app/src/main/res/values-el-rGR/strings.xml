@@ -258,7 +258,7 @@
   <string name="hotseat_uses_extracted_colors_pref_title">Η μπάρα εφαρμογών χρησιμοποιεί χρώματα της ταπετσαρίας</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Η μπάρα εφαρμογών θα χρωματιστεί με χρώμα που εξάγεται από την ταπετσαρία</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Η μπάρα εφαρμογών θα χρωματιστεί γκρι, αλλά ρυθμιζόμενη από τη φωτεινότητα της ταπετσαρίας</string>
-  <string name="transparent_hotseat_pref_title">Διαφανή μπάρα εφαρμογών</string>
+  <string name="transparent_hotseat_pref_title">Διαφανής μπάρα εφαρμογών</string>
   <string name="dynamic_ui_pref_title">Εξαγωγή χρώματος έμφασης από την ταπετσαρία</string>
   <string name="blur_pref_title">Ενεργοποίηση θολότητας</string>
   <string name="blur_pref_summary">Εφαρμόστε το εφέ θολότητας τμηματικά σε μέρη του γραφικού περιβάλλοντος\nΜη συμβατό με ζωντανές ταπετσαρίες</string>
