@@ -280,8 +280,8 @@
   <string name="ui_pref_title">Περιβάλλον Χρήσης</string>
   <string name="pixel_style_pref_title">Χαρακτηριστικά Pixel</string>
   <string name="behavior_pref_title">Συμπεριφορά</string>
-  <string name="debug_pref_title">Εντοπισμός σφαλμάτων</string>
-  <string name="import_export_pref_title">Εισαγωγή/Εξαγωγή</string>
+  <string name="debug_pref_title">Αντιμετώπιση σφαλμάτων</string>
+  <string name="import_export_pref_title">Αντίγραφα ασφαλείας ρυθμίσεων</string>
   <string name="show_pixel_bar_pref_title">Εμφάνιση επάνω μπάρας γραφικών Pixel</string>
   <string name="use_wide_searchbar_pref_title">Χρήση πλατιάς μπάρας αναζήτησης</string>
   <string name="show_mic_pref_title">Εμφάνιση του κουμπιού Βοηθός Google</string>
