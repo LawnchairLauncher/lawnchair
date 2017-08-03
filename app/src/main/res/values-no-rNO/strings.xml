@@ -49,15 +49,15 @@
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
   <string name="all_apps_loading_message">Laster inn apper &#8230;</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_no_search_results">No Apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
+  <string name="all_apps_no_search_results">Ingen apper funnet i samsvar med \"<xliff:g example="Android"id="query">%1$s</xliff:g>\"</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">Søk etter flere apper</string>
   <!-- Drag and drop -->
   <skip></skip>
   <!-- Error message when user has filled a page -->
-  <string name="out_of_space">No more room on this Home screen.</string>
+  <string name="out_of_space">Ikke mer plass på denne siden.</string>
   <!-- Error message when user has filled the hotseat -->
-  <string name="hotseat_out_of_space">No more room in the Favorites tray</string>
+  <string name="hotseat_out_of_space">Ikke mer plass i favoritter-skuffen.</string>
   <!-- All applications label -->
   <string name="all_apps_button_label">App-liste</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
@@ -76,15 +76,13 @@
   <!-- Permission description -->
   <string name="permdesc_install_shortcut">Tillater en app å legge til snarveier uten brukerinnblanding.</string>
   <!-- Permission short label -->
-  <string name="permlab_read_settings">read Home settings and shortcuts</string>
+  <string name="permlab_read_settings">les hjem-innstillinger og snarveier</string>
   <!-- Permission description -->
-  <string name="permdesc_read_settings">Allows the app to read the settings and
-        shortcuts in Home.</string>
+  <string name="permdesc_read_settings">Tillater appen å lese innstillingene og snarveiene i hjem.</string>
   <!-- Permission short label -->
-  <string name="permlab_write_settings">write Home settings and shortcuts</string>
+  <string name="permlab_write_settings">skriv hjem-instillinger og snarveier</string>
   <!-- Permission description -->
-  <string name="permdesc_write_settings">Allows the app to change the settings and
-        shortcuts in Home.</string>
+  <string name="permdesc_write_settings">Tillater appen å endre innstillingene og snarveiene i hjem.</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission"><xliff:g example="Launcher3" id="app_name">%1$s </xliff:g> er ikke tillatt å starte telefonsamtaler</string>
   <!-- Widgets: -->
@@ -251,7 +249,7 @@
   <string name="notifications_header">Varsler</string>
   <string name="widgets_bottom_sheet_title">%1$s moduler</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
+  <string name="about_text">Lawnchair er en startside-app laget av Till Kottmann (aka deletescape). Den er basert på Launcher3 fra AOSP.</string>
   <string name="about_title">Om</string>
   <string name="changelog_title">Endringslogg for versjon #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
@@ -267,8 +265,8 @@
   <string name="blur_radius_pref_title">Uskarphetsradius</string>
   <string name="white_google_icon_pref_title">Bruk hvitt Google-ikon</string>
   <string name="hide_icon_labels_pref_title">Gjem ikon-etiketter på hjemskjerm</string>
-  <string name="workspace_label_color_hue_pref_title">Color of icon labels on homescreen</string>
-  <string name="workspace_label_color_variation_pref_title">Color variation of icon labels on homescreen</string>
+  <string name="workspace_label_color_hue_pref_title">Farge på ikon-etiketter på hjemskjerm</string>
+  <string name="workspace_label_color_variation_pref_title">Fargevariasjon av ikon-etiketter på hjemskjerm</string>
   <string name="all_apps_opacity_pref_title">Skuff-gjennomsiktighet</string>
   <string name="num_cols_pref_title">Antall kolonner</string>
   <string name="num_rows_pref_title">Antall rader</string>
@@ -278,7 +276,7 @@
   <string name="full_width_width_widgets_pref_title">Full bredde på moduler</string>
   <string name="full_width_widgets_pref_summary">Tillat moduler å spenne hele bredden uten padding</string>
   <string name="notification_access_pref_title">Varsling-merker og forhåndsvisning</string>
-  <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
+  <string name="notification_access_pref_summary">Gi Lawnchair tilgang til varslingene dine for å aktivere denne funksjonen</string>
   <string name="ui_pref_title">Brukergrensesnitt</string>
   <string name="pixel_style_pref_title">Pixel-stil</string>
   <string name="behavior_pref_title">Oppførsel</string>
@@ -298,7 +296,7 @@
   <string name="pinch_to_overview_pref_summary">Knip på hjemskjerm for å åpne oversikt</string>
   <string name="light_statusbar_pref_title">Lys statuslinje</string>
   <string name="light_statusbar_pref_force">Statuslinjen vil vise mørke ikoner</string>
-  <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
+  <string name="light_statusbar_pref_off">Statuslinjen vil alltid vise lyse ikoner</string>
   <string name="haptic_feedback_pref_title">Aktiver vibrasjon</string>
   <string name="keep_scroll_state_pref_title">Lagre bla-posisjon</string>
   <string name="keep_scroll_state_pref_summary">Lagrer bla-posisjonen i skuffen</string>
@@ -311,65 +309,65 @@
   <string name="import_db_title">Importér database</string>
   <string name="export_prefs_title">Eksportér innstillinger</string>
   <string name="import_prefs_title">Importér innstillinger</string>
-  <string name="notification_listener_label">Lawnchair - Notification badges</string>
-  <string name="color_extraction_label">Lawnchair - Color extraction</string>
+  <string name="notification_listener_label">Lawnchair - varslingmerker</string>
+  <string name="color_extraction_label">Lawnchair - fargeuthenting</string>
   <string name="test_title">Test</string>
-  <string name="visibility">Visibility</string>
+  <string name="visibility">Synlighet</string>
   <!-- Customization Color -->
-  <string name="white">White</string>
+  <string name="white">Hvit</string>
   <!-- Customization Color -->
-  <string name="black">Black</string>
+  <string name="black">Svart</string>
   <!-- Customization Color -->
-  <string name="red">Red</string>
+  <string name="red">Rød</string>
   <!-- Customization Color -->
-  <string name="pink">Pink</string>
+  <string name="pink">Rosa</string>
   <!-- Customization Color -->
-  <string name="purple">Purple</string>
+  <string name="purple">Lilla</string>
   <!-- Customization Color -->
-  <string name="deep_purple">Deep Purple</string>
+  <string name="deep_purple">Mørkelilla</string>
   <!-- Customization Color -->
   <string name="indigo">Indigo</string>
   <!-- Customization Color -->
-  <string name="blue">Blue</string>
+  <string name="blue">Blå</string>
   <!-- Customization Color -->
-  <string name="light_blue">Light Blue</string>
+  <string name="light_blue">Lyseblå</string>
   <!-- Customization Color -->
-  <string name="cyan">Cyan</string>
+  <string name="cyan">Turkis</string>
   <!-- Customization Color -->
-  <string name="teal">Teal</string>
+  <string name="teal">Blågrønn</string>
   <!-- Customization Color -->
-  <string name="green">Green</string>
+  <string name="green">Grønn</string>
   <!-- Customization Color -->
-  <string name="light_green">Light Green</string>
+  <string name="light_green">Lysegrønn</string>
   <!-- Customization Color -->
   <string name="lime">Lime</string>
   <!-- Customization Color -->
-  <string name="yellow">Yellow</string>
+  <string name="yellow">Gul</string>
   <!-- Customization Color -->
-  <string name="amber">Amber</string>
+  <string name="amber">Ravfarge</string>
   <!-- Customization Color -->
-  <string name="orange">Orange</string>
+  <string name="orange">Oransje</string>
   <!-- Customization Color -->
-  <string name="deep_orange">Deep Orange</string>
+  <string name="deep_orange">Mørkeoransje</string>
   <!-- Customization Color -->
-  <string name="brown">Brown</string>
+  <string name="brown">Brun</string>
   <!-- Customization Color -->
-  <string name="grey">Grey</string>
+  <string name="grey">Grå</string>
   <!-- Customization Color -->
-  <string name="blue_grey">Blue Grey</string>
-  <string name="default_text">Default</string>
-  <string name="edit_icon_reset">Reset</string>
-  <string name="show_top_shadow_title">Show top shadow</string>
-  <string name="pref_cat_homescreen">Home screen</string>
-  <string name="pref_cat_miscellaneous">Miscellaneous</string>
+  <string name="blue_grey">Blågrå</string>
+  <string name="default_text">Standard</string>
+  <string name="edit_icon_reset">Tilbakestill</string>
+  <string name="show_top_shadow_title">Vis topp-skygge</string>
+  <string name="pref_cat_homescreen">Hjemskjerm</string>
+  <string name="pref_cat_miscellaneous">Diverse</string>
   <string name="pref_cat_hotseat">Dock</string>
-  <string name="pref_cat_theme">Theme</string>
-  <string name="theme_pref_title">Theme</string>
-  <string name="theme_light">Light</string>
-  <string name="theme_dark">Dark</string>
-  <string name="theme_black">Black</string>
-  <string name="hide_hotseat_pref_title">Hide Dock</string>
-  <string name="all_icons">All Icons</string>
+  <string name="pref_cat_theme">Tema</string>
+  <string name="theme_pref_title">Tema</string>
+  <string name="theme_light">Lyst</string>
+  <string name="theme_dark">Mørkt</string>
+  <string name="theme_black">Svart</string>
+  <string name="hide_hotseat_pref_title">Skjul dock</string>
+  <string name="all_icons">Alle ikoner</string>
   <string name="pull_down_action_pref_title">Nedtrekkshandling</string>
   <string name="pull_down_do_nothing">Gjør ingenting</string>
   <string name="pull_down_notis">Vis varsler</string>
