@@ -282,7 +282,7 @@
   <string name="behavior_pref_title">Συμπεριφορά</string>
   <string name="debug_pref_title">Εντοπισμός σφαλμάτων</string>
   <string name="import_export_pref_title">Εισαγωγή/Εξαγωγή</string>
-  <string name="show_pixel_bar_pref_title">Εμφάνιση επάνω γραμμής τύπου Pixel</string>
+  <string name="show_pixel_bar_pref_title">Εμφάνιση επάνω μπάρας γραφικών Pixel</string>
   <string name="use_wide_searchbar_pref_title">Χρήση πλατιάς μπάρας αναζήτησης</string>
   <string name="show_mic_pref_title">Εμφάνιση του κουμπιού Βοηθός Google</string>
   <string name="use_round_searhbar">Χρήση στρογγυλής μπάρας αναζήτησης στο συρτάρι εφαρμογών</string>
