@@ -378,26 +378,26 @@
   <!-- Import/Export Strings -->
   <string name="imexport_success">Готово!</string>
   <string name="imexport_error">Ошибка: Не удалось скопировать файл</string>
-  <string name="imexport_no_backup_found">No backup found</string>
-  <string name="imexport_external_storage_unreadable">External storage is not readable (grant permission in settings)</string>
-  <string name="imexport_external_storage_unwritable">External storage is not writable (grant permission in settings)</string>
-  <string name="units_metric">Metric</string>
-  <string name="units_imperial">Imperial</string>
+  <string name="imexport_no_backup_found">Файлы резервных копий не найдены</string>
+  <string name="imexport_external_storage_unreadable">Внешнее хранилище недоступно для чтения (предоставить разрешения можно в настройках)</string>
+  <string name="imexport_external_storage_unwritable">Внешнее хранилище недоступно для записи (предоставить разрешения можно в настройках)</string>
+  <string name="units_metric">Метрическая</string>
+  <string name="units_imperial">Эмпирическая</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
-  <string name="pref_cat_weather">Weather</string>
-  <string name="pref_weather_title">Enable weather</string>
-  <string name="pref_weather_units">Weather Units</string>
-  <string name="pref_weather_city_summary">For best results include country code</string>
-  <string name="pref_weather_city_title">City</string>
-  <string name="none">None</string>
-  <string name="pref_applyTheme">Apply theme on</string>
-  <string name="pref_applyBlur">Apply blur on</string>
-  <string name="search_bar">Search bar</string>
-  <string name="folder">Folder</string>
-  <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
-  <string name="app_shortcuts">App shortcuts</string>
-  <string name="blur_effect">Blur effect</string>
-  <string name="enable_editing_pref_title">Enable editing workspace</string>
-  <string name="pref_weather_provider">Weather provider</string>
-  <string name="loading">Loading...</string>
+  <string name="pref_cat_weather">Погода</string>
+  <string name="pref_weather_title">Включить погоду</string>
+  <string name="pref_weather_units">Единицы измерения</string>
+  <string name="pref_weather_city_summary">Для наилучших результатов укажите код страны</string>
+  <string name="pref_weather_city_title">Город</string>
+  <string name="none">Пусто</string>
+  <string name="pref_applyTheme">Применить тему</string>
+  <string name="pref_applyBlur">Применить размытие</string>
+  <string name="search_bar">Строка поиска</string>
+  <string name="folder">Папка</string>
+  <string name="dock_allapps"><![CDATA[Док-бар и все приложения]]></string>
+  <string name="app_shortcuts">Ярлыки приложений</string>
+  <string name="blur_effect">Эффект размытия</string>
+  <string name="enable_editing_pref_title">Включить редактирование рабочего пространства</string>
+  <string name="pref_weather_provider">Поставщик погоды</string>
+  <string name="loading">Загрузка...</string>
 </resources>
