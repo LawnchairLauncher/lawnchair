@@ -103,7 +103,7 @@
   <string name="default_scroll_format">第%1$d页，共%2$d页</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">主屏幕 %1$d / %2$d</string>
-  <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
+  <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
   <string name="workspace_new_page">新页面</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
@@ -264,7 +264,7 @@
   <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
   <string name="blur_radius_pref_title">模糊程度</string>
   <string name="white_google_icon_pref_title">使用白色的 Google G 图标</string>
-  <string name="hide_icon_labels_pref_title">在主屏幕上隐藏应用标签</string>
+  <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
   <string name="workspace_label_color_hue_pref_title">主屏幕应用标签颜色</string>
   <string name="workspace_label_color_variation_pref_title">主屏幕应用标签颜色变化</string>
   <string name="all_apps_opacity_pref_title">抽屉背景透明度</string>
@@ -293,7 +293,7 @@
   <string name="restart_lawnchair_pref_summary">当设置出错时可能会有用</string>
   <string name="rebuild_icondb_pref_title">重建图标缓存</string>
   <string name="pinch_to_overview_pref_title">双指捏合打开概览页面</string>
-  <string name="pinch_to_overview_pref_summary">在主屏幕双指捏合以显示概览</string>
+  <string name="pinch_to_overview_pref_summary">Pinch on the home screen to open the overview</string>
   <string name="light_statusbar_pref_title">亮色状态栏</string>
   <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
   <string name="light_statusbar_pref_off">状态栏将始终显示白色图标。</string>
@@ -301,7 +301,7 @@
   <string name="keep_scroll_state_pref_title">记住滚动位置</string>
   <string name="keep_scroll_state_pref_summary">记住抽屉中滚动到了哪个位置</string>
   <string name="home_opens_drawer_pref_title">Home 键打开应用抽屉</string>
-  <string name="home_opens_drawer_pref_summary">在主屏幕按 Home 键将打开应用抽屉</string>
+  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the home screen will open the app drawer</string>
   <string name="show_hidden_pref_title">显示隐藏的应用</string>
   <string name="show_hidden_pref_on">更改可见性设置以显示隐藏应用</string>
   <string name="show_hidden_pref_off">隐藏的应用将不可见</string>
