@@ -264,7 +264,7 @@
   <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
   <string name="blur_radius_pref_title">Stärke des Unschärfeeffekts</string>
   <string name="white_google_icon_pref_title">Weiße Google Icons verwenden</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
+  <string name="hide_icon_labels_pref_title">Icon Beschriftungen auf dem Startbildschirm verstecken</string>
   <string name="workspace_label_color_hue_pref_title">Farbe der Symbolbeschriftung auf dem Startbildschirm</string>
   <string name="workspace_label_color_variation_pref_title">Farbvariation der Symbolbeschriftung auf dem Startbildschirm</string>
   <string name="all_apps_opacity_pref_title">Transparenz der App-Liste</string>
@@ -389,13 +389,13 @@
   <string name="pref_weather_city_summary">For best results include country code</string>
   <string name="pref_weather_city_title">Stadt</string>
   <string name="none">None</string>
-  <string name="pref_applyTheme">Apply theme on</string>
-  <string name="pref_applyBlur">Apply blur on</string>
-  <string name="search_bar">Search bar</string>
+  <string name="pref_applyTheme">Thema anwenden auf</string>
+  <string name="pref_applyBlur">Unschärfe anwenden auf</string>
+  <string name="search_bar">Suchleiste</string>
   <string name="folder">Ordner</string>
   <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
   <string name="app_shortcuts">App shortcuts</string>
-  <string name="blur_effect">Blur effect</string>
+  <string name="blur_effect">Unschärfe-Effekt</string>
   <string name="enable_editing_pref_title">Enable editing workspace</string>
   <string name="pref_weather_provider">Wetter-Anbieter</string>
   <string name="loading">Wird geladen...</string>
