@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ch.deletescape.lawnchair.shortcuts.ShortcutsItemView android:background="@drawable/bg_white_round_rect"
+    android:layout_width="@dimen/bg_popup_item_width"
+    android:layout_height="wrap_content"
+    android:elevation="@dimen/deep_shortcuts_elevation"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/deep_shortcuts"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+</ch.deletescape.lawnchair.shortcuts.ShortcutsItemView>

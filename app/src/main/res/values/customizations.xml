@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="unitsTexts">
+        <item>@string/units_metric</item>
+        <item>@string/units_imperial</item>
+    </string-array>
+    <string-array name="unitsValues">
+        <item>metric</item>
+        <item>imperial</item>
+    </string-array>
+
+    <string-array name="numRowsValues">
+        <item>default</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+    </string-array>
+
+    <string-array name="numRowsTexts">
+        <item>@string/default_text</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+    </string-array>
+
+    <string-array name="numColsValues">
+        <item>default</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+    </string-array>
+
+    <string-array name="numColsTexts">
+        <item>@string/default_text</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+    </string-array>
+
+    <string-array name="numHotseatIconsValues">
+        <item>default</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+    </string-array>
+
+    <string-array name="numHotseatIconsTexts">
+        <item>@string/default_text</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+    </string-array>
+
+    <string-array name="themeTexts">
+        <item>@string/theme_light</item>
+        <item>@string/theme_dark</item>
+        <item>@string/theme_black</item>
+    </string-array>
+
+    <string-array name="themeValues">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="pullDownActionTexts">
+        <item>@string/pull_down_do_nothing</item>
+        <item>@string/pull_down_notis</item>
+        <item>@string/pull_down_search</item>
+        <item>@string/pull_down_apps_search</item>
+    </string-array>
+
+    <string-array name="pullDownActionValues">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="blurModeTexts">
+        <item>@string/search_bar</item>
+        <item>@string/folder</item>
+        <item>@string/dock_allapps</item>
+    </string-array>
+
+    <string-array name="blurModeValues">
+        <item>1</item>
+        <item>2</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="themeModeTexts">
+        <item>@string/search_bar</item>
+        <item>@string/folder</item>
+        <item>@string/dock_allapps</item>
+        <item>@string/app_shortcuts</item>
+        <item>@string/blur_effect</item>
+    </string-array>
+
+    <string-array name="themeModeValues">
+        <item>1</item>
+        <item>2</item>
+        <item>4</item>
+        <item>8</item>
+        <item>16</item>
+    </string-array>
+
+    <string-array name="weatherProviderTexts">
+        <item>OpenWeatherMap</item>
+        <item>Google Awareness API</item>
+    </string-array>
+
+    <string-array name="weatherProviderValues">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
+    <string name="generalDefault" translatable="false">default</string>
+</resources>

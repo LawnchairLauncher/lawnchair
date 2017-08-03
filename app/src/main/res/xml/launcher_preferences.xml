@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2015 Google Inc.
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<PreferenceScreen android:title="Settings"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
+        android:title="@string/ui_pref_title"
+        android:icon="@drawable/ic_ui"
+        app:content="@xml/launcher_ui_preferences" />
+
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
+        android:title="@string/pixel_style_pref_title"
+        android:icon="@drawable/ic_google"
+        app:content="@xml/launcher_pixel_style_preferences" />
+
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
+        android:title="@string/behavior_pref_title"
+        android:icon="@drawable/ic_behavior"
+        app:content="@xml/launcher_behavior_preferences" />
+
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
+        android:title="@string/debug_pref_title"
+        android:icon="@drawable/ic_debug"
+        app:content="@xml/launcher_debug_preferences"
+        app:longClickContent="@xml/launcher_hidden_preferences" />
+
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
+        android:title="@string/import_export_pref_title"
+        android:icon="@drawable/ic_import_export"
+        app:content="@xml/launcher_backup_preferences" />
+
+    <ch.deletescape.lawnchair.settings.ui.AboutPreference
+        android:title="@string/about_title"
+        android:icon="@drawable/ic_information"
+        android:key="about"
+        android:summary="@string/about_text" />
+
+</PreferenceScreen>

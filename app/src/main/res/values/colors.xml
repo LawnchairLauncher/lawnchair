@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+/* //device/apps/common/assets/res/any/colors.xml
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<resources>
+    <!-- The color tints to apply to the text and drag view when hovering
+         over the delete target or the info target -->
+    <color name="delete_target_hover_tint">#FFC1C1C1</color>
+    <color name="uninstall_target_hover_tint">#FFF0592B</color>
+
+    <color name="focused_background">#80c6c5c5</color>
+
+    <color name="workspace_icon_text_color">#FFF</color>
+
+    <color name="workspace_edge_effect_color">#FFFFFFFF</color>
+    <color name="folder_edge_effect_color">#FF757575</color>
+    <color name="page_indicator_dot_color">#FFDDDDDD</color>
+
+    <color name="quantum_panel_text_color">#FF666666</color>
+    <color name="quantum_panel_text_color_dark">@color/workspace_icon_text_color</color>
+    <color name="quantum_panel_bg_color">#FFF5F5F5</color>
+    <color name="quantum_panel_bg_color_dark">#ff212121</color>
+
+    <color name="outline_color">#FFFFFFFF</color>
+    <color name="all_apps_divider_color">#1E000000</color>
+    <color name="all_apps_caret_color">#FFFFFFFF</color>
+    <color name="all_apps_caret_shadow_color">#22000000</color>
+    <color name="all_apps_container_color">#FFF2F2F2</color>
+    <color name="all_apps_statusbar_color">#28000000</color>
+
+    <color name="spring_loaded_panel_color">#40FFFFFF</color>
+    <color name="spring_loaded_highlighted_panel_border_color">#FFF</color>
+
+    <!-- Widgets view -->
+    <color name="widgets_view_item_text_color">#C4C4C4</color>
+
+    <color name="secondary_color">#0277BD</color>
+    <color name="accent_material_light">#4286f4</color>
+
+    <color name="wallpaper_picker_translucent_gray">#66212121</color>
+
+    <color name="qsb_connector">#fff2f2f2</color>
+    <color name="qsb_background">#ffffffff</color>
+    <color name="weather_widget_text_color">#ffffffff</color>
+    <color name="default_shadow_color_no_alpha">#ff000000</color>
+    <color name="popup_header_background_color">#ffeeeeee</color>
+    <color name="popup_background_color">#ffffffff</color>
+    <color name="notification_icon_default_color">#ff757575</color>
+    <color name="notification_color_beneath">#ffe0e0e0</color>
+    <color name="badge_color">#fff</color>
+</resources>

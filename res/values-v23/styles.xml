@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="SettingsTheme" parent="@android:style/Theme.Material.Light">
-        <item name="android:colorPrimaryDark">#e0e0e0</item>
-        <item name="android:colorAccent">@color/accent_material_light</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:titleTextColor">#3780f4</item>
-    </style>
-</resources>

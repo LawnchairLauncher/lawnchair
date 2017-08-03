@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+ -->
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="activity_not_found" msgid="217823393239365967">"Rakendus pole installitud."</string>
+    <string name="long_press_widget_to_add" msgid="7395697462851217506">"Vidina valimiseks puudutage seda pikalt."</string>
+    <string name="out_of_space" msgid="8365249326091984698">"Sellel avalehel pole enam ruumi."</string>
+    <string name="hotseat_out_of_space" msgid="6304886797358479361">"Kohandataval dokialal pole rohkem ruumi."</string>
+    <string name="all_apps_button_label" msgid="2578400570124163469">"Rakendused"</string>
+    <string name="all_apps_home_button_label" msgid="1022222300329398558">"Kodu"</string>
+    <string name="permlab_install_shortcut" msgid="1201690825493376489">"otseteede installimine"</string>
+    <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Võimaldab rakendusel lisada otseteid kasutaja sekkumiseta."</string>
+    <string name="permlab_read_settings" msgid="3452408290738106747">"avalehe seadete ja otseteede lugemine"</string>
+    <string name="permdesc_read_settings" msgid="5788109303585403679">"Võimaldab rakendusel lugeda avalehe seadeid ja otseteid."</string>
+    <string name="permlab_write_settings" msgid="1360567537236705628">"avalehe seadete ja otseteede kirjutamine"</string>
+    <string name="permdesc_write_settings" msgid="8530105489115785531">"Võimaldab rakendusel muuta avalehel seadeid ja otseteid."</string>
+    <string name="gadget_error_text" msgid="8359351016167075858">"Probleem vidina laadimisel"</string>
+    <string name="uninstall_system_app_text" msgid="6429814133777046491">"See on süsteemirakendus ja seda ei saa desinstallida."</string>
+    <string name="folder_hint_text" msgid="8633351560105748141">"Nimeta kaust"</string>
+    <string name="default_scroll_format" msgid="4057140866420001240">"Leht %1$d/%2$d"</string>
+    <string name="workspace_scroll_format" msgid="1704767047951143301">"Avakuva %1$d/%2$d"</string>
+    <string name="folder_opened" msgid="1262064100943801533">"Kaust on avatud, <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="folder_tap_to_close" msgid="1335478160661137579">"Puudutage kausta sulgemiseks"</string>
+    <string name="folder_tap_to_rename" msgid="5201612989905472442">"Puudutage uue nime salvestamiseks"</string>
+    <string name="folder_closed" msgid="3130534551370511932">"Kaust suletud"</string>
+    <string name="folder_renamed" msgid="7951233572858053642">"Kausta uus nimi: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format" msgid="3051680259794759037">"<xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="wallpaper_instructions" msgid="3524143401182707094">"Määra taustapilt"</string>
+    <string name="image_load_fail" msgid="7538534580694411837">"Kujutist ei õnnestunud laadida"</string>
+    <string name="wallpaper_load_fail" msgid="4800700444605404650">"Kujutist ei õnnestunud taustapildina laadida"</string>
+    <string name="wallpaper_set_fail" msgid="7023180794008631780">"Kujutist ei õnnestunud taustapildiks määrata"</string>
+    <plurals name="number_of_items_selected">
+        <item quantity="zero" msgid="9015111147509924344">"Valitud on %1$d"</item>
+        <item quantity="one" msgid="8409622005831789373">"Valitud on %1$d"</item>
+        <item quantity="other" msgid="479468347731745357">"Valitud on %1$d"</item>
+    </plurals>
+    <string name="wallpaper_accessibility_name" msgid="4093221025304876354">"%1$d/%2$d taustapildist"</string>
+    <string name="announce_selection" msgid="123723511662250539">"Valitud on <xliff:g id="LABEL">%1$s</xliff:g>"</string>
+    <string name="wallpaper_delete" msgid="1459353972739215344">"Kustuta"</string>
+    <string name="pick_image" msgid="3189640419551368385">"Minu fotod"</string>
+    <string name="pick_wallpaper" msgid="4628969645948454559">"Taustapildid"</string>
+    <string name="crop_wallpaper" msgid="4882870800623585836">"Taustapildi kärpimine"</string>
+</resources>

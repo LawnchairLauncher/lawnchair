@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ch.deletescape.lawnchair.popup.PopupContainerWithArrow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:elevation="@dimen/deep_shortcuts_elevation"
+    android:orientation="vertical"
+    android:paddingBottom="8.0dip"
+    android:paddingTop="8.0dip" />

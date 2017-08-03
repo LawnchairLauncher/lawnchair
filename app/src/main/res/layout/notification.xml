@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ch.deletescape.lawnchair.notification.NotificationItemView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/bg_popup_item_width"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_white_round_rect"
+    android:backgroundTint="?attr/notificationBeneathColor"
+    android:elevation="@dimen/deep_shortcuts_elevation">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:clipChildren="false"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/header"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/notification_header_height"
+            android:background="?attr/appPopupHeaderBgColor"
+            android:elevation="@dimen/notification_elevation"
+            android:paddingEnd="@dimen/notification_padding_end"
+            android:paddingStart="@dimen/notification_padding_start">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="start"
+                android:gravity="center_vertical"
+                android:text="@string/notifications_header"
+                android:textColor="?attr/appPopupTextColor"
+                android:textSize="@dimen/notification_header_text_size" />
+
+            <TextView
+                android:id="@+id/notification_count"
+                android:layout_width="@dimen/notification_icon_size"
+                android:layout_height="fill_parent"
+                android:layout_gravity="end"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="@dimen/notification_header_count_text_size" />
+        </FrameLayout>
+
+        <include
+            android:id="@+id/main_view"
+            layout="@layout/notification_main"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/notification_main_height"
+            android:layout_below="@id/header" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/popup_item_divider_height"
+            android:layout_below="@id/main_view"
+            android:background="?android:listDivider" />
+
+        <include
+            android:id="@+id/footer"
+            layout="@layout/notification_footer"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/notification_footer_height"
+            android:layout_below="@id/divider" />
+    </RelativeLayout>
+</ch.deletescape.lawnchair.notification.NotificationItemView>

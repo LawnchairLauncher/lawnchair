@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+-->
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Launcher theme -->
+    <style name="BaseLauncherTheme" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:colorAccent">@color/accent_material_light</item>
+    </style>
+
+    <style name="BaseLauncherTheme.Dark" parent="@android:style/Theme.DeviceDefault.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:colorAccent">@color/accent_material_light</item>
+    </style>
+
+    <style name="LauncherTheme" parent="@style/BaseLauncherTheme">
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">#00000000</item>
+        <item name="android:navigationBarColor">#00000000</item>
+
+        <item name="materialPanelBgColor">@color/quantum_panel_bg_color</item>
+        <item name="folderIconTextColor">@color/quantum_panel_text_color</item>
+        <item name="folderNameTextColor">#EE777777</item>
+        <item name="folderBgIntensity">245</item>
+        <item name="deepShortcutsHandleColor">?android:textColorSecondary</item>
+        <item name="appPopupTextColor">?android:textColorSecondary</item>
+        <item name="appPopupHeaderBgColor">@color/popup_header_background_color</item>
+        <item name="appPopupBgColor">@color/popup_background_color</item>
+        <item name="allAppsContainerColor">@color/all_apps_container_color</item>
+        <item name="allAppsContainerColorBlur">#00ffffff</item>
+        <item name="allAppsEmptySearchTextColor">#212121</item>
+        <item name="blurTintColor">#45ffffff</item>
+        <item name="notificationBeneathColor">@color/notification_color_beneath</item>
+        <item name="qsbBgColor">@android:color/white</item>
+        <item name="folderBgColorBlur">#75ffffff</item>
+        <item name="roundSearchBarBgColor">#10000000</item>
+        <item name="roundSearchBarDividerColor">#10111111</item>
+        <item name="roundSearchBarHintColor">@color/quantum_panel_text_color</item>
+        <item name="roundSearchBarTextColor">#4c4c4c</item>
+    </style>
+
+    <style name="LauncherTheme.Dark" parent="@style/BaseLauncherTheme.Dark">
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">#00000000</item>
+        <item name="android:navigationBarColor">#00000000</item>
+
+        <item name="materialPanelBgColor">@color/quantum_panel_bg_color_dark</item>
+        <item name="folderIconTextColor">@color/quantum_panel_text_color_dark</item>
+        <item name="folderNameTextColor">#EEEEEEEE</item>
+        <item name="folderBgIntensity">75</item>
+        <item name="deepShortcutsHandleColor">?android:textColorSecondary</item>
+        <item name="appPopupTextColor">?android:textColorSecondary</item>
+        <item name="appPopupHeaderBgColor">#ff101010</item>
+        <item name="appPopupBgColor">#ff212121</item>
+        <item name="allAppsContainerColor">#ff212121</item>
+        <item name="allAppsContainerColorBlur">#00212121</item>
+        <item name="allAppsEmptySearchTextColor">@android:color/white</item>
+        <item name="blurTintColor">#45212121</item>
+        <item name="notificationBeneathColor">#ff252525</item>
+        <item name="qsbBgColor">@color/quantum_panel_bg_color_dark</item>
+        <item name="folderBgColorBlur">#75212121</item>
+        <item name="roundSearchBarBgColor">#10ffffff</item>
+        <item name="roundSearchBarDividerColor">#10eeeeee</item>
+        <item name="roundSearchBarHintColor">@android:color/white</item>
+        <item name="roundSearchBarTextColor">@android:color/white</item>
+    </style>
+
+    <style name="LauncherTheme.Black" parent="LauncherTheme.Dark">
+        <item name="materialPanelBgColor">@android:color/black</item>
+        <item name="folderBgIntensity">0</item>
+        <item name="appPopupHeaderBgColor">@android:color/black</item>
+        <item name="appPopupBgColor">#ff101010</item>
+        <item name="allAppsContainerColor">@android:color/black</item>
+        <item name="allAppsContainerColorBlur">#00000000</item>
+        <item name="blurTintColor">#45000000</item>
+        <item name="notificationBeneathColor">#ff101010</item>
+        <item name="qsbBgColor">@android:color/black</item>
+        <item name="folderBgColorBlur">#75000000</item>
+    </style>
+
+    <style name="SettingsTheme" parent="@android:style/Theme.Material.Light">
+        <item name="android:colorAccent">@color/accent_material_light</item>
+        <item name="blurTintColor">#45ffffff</item>
+    </style>
+
+    <style name="SettingsTheme.Dark" parent="@android:style/Theme.Material">
+        <item name="android:colorPrimaryDark">#ff242424</item>
+        <item name="android:colorPrimary">#ff2d2d2d</item>
+        <item name="android:colorAccent">@color/accent_material_light</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="blurTintColor">#45212121</item>
+    </style>
+
+    <style name="SettingsTheme.Black" parent="SettingsTheme.Dark">
+        <item name="android:colorPrimaryDark">@android:color/black</item>
+        <item name="android:colorPrimary">@android:color/black</item>
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:listDivider">@android:color/transparent</item>
+    </style>
+
+    <!-- Theme for the widget container. -->
+    <style name="WidgetContainerTheme" parent="@style/SettingsTheme">
+        <item name="colorSecondary">@color/secondary_color</item>
+    </style>
+
+    <style name="WidgetContainerTheme.Dark" parent="@style/SettingsTheme.Dark">
+        <item name="colorSecondary">@color/secondary_color</item>
+    </style>
+
+    <!-- Overscroll effect -->
+    <style name="CustomOverscroll.Light" parent="@android:style/Theme.Material.Light">
+        <item name="android:colorEdgeEffect">@color/folder_edge_effect_color</item>
+        <item name="android:colorAccent">@color/accent_material_light</item>
+    </style>
+
+    <!-- <style name="CustomOverscroll.Dark">
+        <item name="android:colorEdgeEffect">@color/workspace_edge_effect_color</item>
+        <item name="android:colorAccent">@color/accent_material_light</item>
+    </style> -->
+
+    <!-- Different icons -->
+    <style name="Icon">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:textColor">@color/workspace_icon_text_color</item>
+        <item name="android:shadowRadius">2.0</item>
+        <item name="android:shadowColor">#B0000000</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+    </style>
+
+    <style name="Icon.AllApps">
+        <item name="android:background">@null</item>
+        <item name="android:textColor">@color/quantum_panel_text_color</item>
+        <item name="android:drawablePadding">@dimen/dynamic_grid_icon_drawable_padding</item>
+        <item name="android:shadowRadius">0</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+        <item name="customShadows">false</item>
+    </style>
+
+    <style name="Icon.Folder">
+        <item name="android:background">@null</item>
+        <item name="android:textColor">?attr/folderIconTextColor</item>
+        <item name="android:shadowRadius">0</item>
+        <item name="android:textSize">@dimen/folder_child_text_size</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="customShadows">false</item>
+        <item name="iconDisplay">folder</item>
+    </style>
+
+    <style name="WeatherWidget" />
+
+    <style name="WeatherWidget.Text">
+        <item name="android:shadowRadius">3.0</item>
+        <item name="android:shadowDy">0.5</item>
+        <item name="android:shadowColor">#33000000</item>
+    </style>
+
+    <!-- Drop targets -->
+    <style name="DropTargetButtonBase">
+        <item name="android:drawablePadding">7.5dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:textColor">#FFFFFFFF</item>
+        <item name="android:textSize">@dimen/drop_target_text_size</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:shadowColor">#FF000000</item>
+        <item name="android:shadowDx">0.0</item>
+        <item name="android:shadowDy">1.0</item>
+        <item name="android:shadowRadius">4.0</item>
+    </style>
+
+    <style name="DropTargetButton" parent="DropTargetButtonBase" />
+
+    <!-- Virtual preloaders -->
+    <style name="PreloadIcon">
+        <item name="background">@drawable/virtual_preload</item>
+        <item name="indicatorSize">4dp</item>
+        <item name="ringOutset">4dp</item>
+    </style>
+
+    <style name="PreloadIcon.Folder">
+        <item name="background">@drawable/virtual_preload_folder</item>
+        <item name="indicatorSize">4dp</item>
+        <item name="ringOutset">4dp</item>
+    </style>
+
+    <style name="WallpaperTheme" parent="@android:style/Theme.Material.Light">
+        <item name="android:actionBarStyle">@style/WallpaperCropperActionBar</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
+    <style name="WallpaperTheme.Picker" parent="WallpaperTheme">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowShowWallpaper">true</item>
+    </style>
+
+    <style name="WallpaperCropperActionBar" parent="@android:style/Widget.DeviceDefault.Light.ActionBar">
+        <item name="android:displayOptions">showCustom</item>
+        <item name="android:background">#88212121</item>
+        <item name="android:contentInsetEnd">0dp</item>
+        <item name="android:contentInsetLeft">0dp</item>
+        <item name="android:contentInsetRight">0dp</item>
+        <item name="android:contentInsetStart">0dp</item>
+    </style>
+
+    <style name="ActionBarSetWallpaperStyle" parent="@android:style/Widget.Material.Light.ActionButton">
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+    </style>
+
+    <style name="AllAppsNavBarProtection">
+        <item name="android:background">@color/default_shadow_color_no_alpha</item>
+        <item name="android:alpha">?android:spotShadowAlpha</item>
+    </style>
+
+    <style name="FastScrollerPopup">
+        <item name="android:textSize">@dimen/container_fastscroll_popup_text_size</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/container_fastscroll_popup_bg</item>
+        <item name="android:saveEnabled">false</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/container_fastscroll_popup_size</item>
+        <item name="android:minWidth">@dimen/container_fastscroll_popup_size</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:alpha">0.0</item>
+        <item name="android:elevation">3.0dip</item>
+    </style>
+</resources>

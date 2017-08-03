@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/system_shortcut_header_height"
+    android:background="?attr/appPopupHeaderBgColor"
+    android:gravity="end|center"
+    android:orientation="horizontal" />

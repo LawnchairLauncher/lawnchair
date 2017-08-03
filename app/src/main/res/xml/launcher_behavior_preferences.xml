@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:key="pref_pinchToOverview"
+        android:title="@string/pinch_to_overview_pref_title"
+        android:summary="@string/pinch_to_overview_pref_summary"
+        android:defaultValue="true"
+        android:persistent="true" />
+
+    <ListPreference
+        android:key="pref_pulldownAction"
+        android:title="@string/pull_down_action_pref_title"
+        android:entryValues="@array/pullDownActionValues"
+        android:entries="@array/pullDownActionTexts"
+        android:summary="%s"
+        android:defaultValue="1"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_forceLightStatusBar"
+        android:title="@string/light_statusbar_pref_title"
+        android:summaryOn="@string/light_statusbar_pref_force"
+        android:summaryOff="@string/light_statusbar_pref_off"
+        android:defaultValue="false"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_showTopShadow"
+        android:title="@string/show_top_shadow_title"
+        android:defaultValue="true"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_enableHapticFeedback"
+        android:title="@string/haptic_feedback_pref_title"
+        android:defaultValue="false"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_keepScrollState"
+        android:title="@string/keep_scroll_state_pref_title"
+        android:summary="@string/keep_scroll_state_pref_summary"
+        android:defaultValue="false"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_homeOpensDrawer"
+        android:title="@string/home_opens_drawer_pref_title"
+        android:summary="@string/home_opens_drawer_pref_summary"
+        android:defaultValue="true"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_showHidden"
+        android:title="@string/show_hidden_pref_title"
+        android:summaryOn="@string/show_hidden_pref_on"
+        android:summaryOff="@string/show_hidden_pref_off"
+        android:defaultValue="false"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_enableEditing"
+        android:title="@string/enable_editing_pref_title"
+        android:defaultValue="true"
+        android:persistent="true" />
+</PreferenceScreen>

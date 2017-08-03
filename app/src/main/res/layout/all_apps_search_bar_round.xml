@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+    <FrameLayout android:id="@+id/search_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/all_apps_search_bar_height"
+        android:layout_gravity="center|top"
+        android:paddingTop="@dimen/all_apps_search_bar_margin_top"
+        android:paddingBottom="@dimen/all_apps_search_bar_round_margin_bottom"
+        android:orientation="horizontal"
+        android:saveEnabled="false">
+
+        <ch.deletescape.lawnchair.ExtendedEditText
+            android:id="@+id/search_box_input"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_search_bar_round"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:layout_gravity="bottom"
+            android:imeOptions="actionSearch|flagNoExtractUi"
+            android:inputType="text|textNoSuggestions|textCapWords"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:textColor="?attr/roundSearchBarTextColor"
+            android:hint="@string/all_apps_search_bar_hint"
+            android:textColorHint="?attr/roundSearchBarHintColor"
+            android:textSize="16sp" />
+    </FrameLayout>
+
+    <View
+        android:id="@+id/search_bar_divider"
+        android:importantForAccessibility="no"
+        android:layout_width="match_parent"
+        android:layout_height="1.2dp"
+        android:background="?attr/roundSearchBarDividerColor"
+        android:focusable="false" />
+</merge>

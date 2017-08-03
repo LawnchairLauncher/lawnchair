@@ -1,25 +1,21 @@
 language: android
+dist: precise
 jdk: oraclejdk8
+branches:
+   except:
+   - l10n_alpha2
 android:
   components:
     - tools
     - platform-tools
-    - build-tools-26.0.0
+    - build-tools-26.0.1
     - android-26
-    - extra-google-google_play_services
     - extra-google-m2repository
-    - extra-android-m2repository
 before_install: 
-  - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then 
-      openssl enc -d -aes-256-cbc -in google-services.json.enc -out google-services.json -k $ENC_PASS; 
-    fi
   - chmod a+x ./scripts/deploy-*.sh
+  - chmod a+x ./scripts/changelog.sh
 script:
-  - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then 
-      bash ./gradlew assembleDebug check; 
-    else
-      bash ./gradlew assembleDebug check;
-    fi
+  - bash ./gradlew assembleDebug check;
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -28,8 +24,28 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.android/build-cache"
-before_deploy: ./scripts/deploy-telegram.sh
+
 deploy:
+  - provider: script
+    skip_cleanup: true
+    script: scripts/deploy-telegram.sh
+    on:
+      branch: alpha
+  - provider: script
+    skip_cleanup: true
+    script: scripts/deploy-telegram.sh
+    on:
+      branch: beta
+  - provider: script
+    skip_cleanup: true
+    script: scripts/deploy-telegram.sh
+    on:
+      branch: master
+  - provider: script
+    skip_cleanup: true
+    script: scripts/deploy-telegram.sh
+    on:
+      tags: true
   - provider: releases
     skip_cleanup: true
     api_key: $GITHUB_OAUTH_TOKEN
