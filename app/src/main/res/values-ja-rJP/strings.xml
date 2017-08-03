@@ -357,9 +357,9 @@
   <string name="default_text">デフォルト</string>
   <string name="edit_icon_reset">Reset</string>
   <string name="show_top_shadow_title">Show top shadow</string>
-  <string name="pref_cat_homescreen">Home screen</string>
+  <string name="pref_cat_homescreen">ホーム画面</string>
   <string name="pref_cat_miscellaneous">Miscellaneous</string>
-  <string name="pref_cat_hotseat">Dock</string>
+  <string name="pref_cat_hotseat">ドック</string>
   <string name="pref_cat_theme">Theme</string>
   <string name="theme_pref_title">Theme</string>
   <string name="theme_light">Light</string>
@@ -382,7 +382,7 @@
   <string name="units_metric">Metric</string>
   <string name="units_imperial">Imperial</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
-  <string name="pref_cat_weather">Weather</string>
+  <string name="pref_cat_weather">天気</string>
   <string name="pref_weather_title">Enable weather</string>
   <string name="pref_weather_units">Weather Units</string>
   <string name="pref_weather_city_summary">For best results include country code</string>
@@ -390,7 +390,7 @@
   <string name="none">None</string>
   <string name="pref_applyTheme">Apply theme on</string>
   <string name="pref_applyBlur">Apply blur on</string>
-  <string name="search_bar">Search bar</string>
+  <string name="search_bar">検索バー</string>
   <string name="folder">Folder</string>
   <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
   <string name="app_shortcuts">App shortcuts</string>
