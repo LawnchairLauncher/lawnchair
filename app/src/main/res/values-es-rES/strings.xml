@@ -245,7 +245,7 @@
   <string name="title_show_google_app_default">Mostrar aplicación de Google</string>
   <string name="label_search">Buscar</string>
   <string name="label_voice_search">Busqueda por voz</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d atajos y %2$d notificaciones para %3$s</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d accesos directos y %2$d notificaciones para %3$s</string>
   <string name="notifications_header">Notificaciones</string>
   <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
