@@ -278,7 +278,7 @@
   <string name="notification_access_pref_title">Εικονίδια ειδοποιήσεων και προεπισκόπηση</string>
   <string name="notification_access_pref_summary">Επιτρέψτε στο Lawnchair να αποκτήσει πρόσβαση στης ειδοποιήσεις σας για να ενεργοποιηθεί αυτό το χαρακτηριστικό</string>
   <string name="ui_pref_title">Περιβάλλον Χρήσης</string>
-  <string name="pixel_style_pref_title">Pixel στυλ</string>
+  <string name="pixel_style_pref_title">Χαρακτηριστικά Pixel</string>
   <string name="behavior_pref_title">Συμπεριφορά</string>
   <string name="debug_pref_title">Εντοπισμός σφαλμάτων</string>
   <string name="import_export_pref_title">Εισαγωγή/Εξαγωγή</string>
