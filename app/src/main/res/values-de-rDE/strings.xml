@@ -356,10 +356,10 @@
   <!-- Customization Color -->
   <string name="blue_grey">Blaugrau</string>
   <string name="default_text">Standard</string>
-  <string name="edit_icon_reset">Reset</string>
+  <string name="edit_icon_reset">Zurücksetzen</string>
   <string name="show_top_shadow_title">Show top shadow</string>
   <string name="pref_cat_homescreen">Home screen</string>
-  <string name="pref_cat_miscellaneous">Miscellaneous</string>
+  <string name="pref_cat_miscellaneous">Verschiedenes</string>
   <string name="pref_cat_hotseat">Dock</string>
   <string name="pref_cat_theme">Theme</string>
   <string name="theme_pref_title">Theme</string>
@@ -373,21 +373,21 @@
   <string name="pull_down_notis">Show notifications</string>
   <string name="pull_down_search">Open search</string>
   <string name="pull_down_apps_search">Apps search</string>
-  <string name="enable_screen_rotation">Enable screen rotation</string>
+  <string name="enable_screen_rotation">Bildschirmrotation aktivieren</string>
   <!-- Import/Export Strings -->
   <string name="imexport_success">Success!</string>
   <string name="imexport_error">Error: Failed to copy file</string>
   <string name="imexport_no_backup_found">No backup found</string>
   <string name="imexport_external_storage_unreadable">External storage is not readable (grant permission in settings)</string>
   <string name="imexport_external_storage_unwritable">External storage is not writable (grant permission in settings)</string>
-  <string name="units_metric">Metric</string>
+  <string name="units_metric">Metrisch</string>
   <string name="units_imperial">Imperial</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
-  <string name="pref_cat_weather">Weather</string>
-  <string name="pref_weather_title">Enable weather</string>
-  <string name="pref_weather_units">Weather Units</string>
+  <string name="pref_cat_weather">Wetter</string>
+  <string name="pref_weather_title">Wetter aktivieren</string>
+  <string name="pref_weather_units">Temperatureinheiten</string>
   <string name="pref_weather_city_summary">For best results include country code</string>
-  <string name="pref_weather_city_title">City</string>
+  <string name="pref_weather_city_title">Stadt</string>
   <string name="none">None</string>
   <string name="pref_applyTheme">Apply theme on</string>
   <string name="pref_applyBlur">Apply blur on</string>
@@ -397,6 +397,6 @@
   <string name="app_shortcuts">App shortcuts</string>
   <string name="blur_effect">Blur effect</string>
   <string name="enable_editing_pref_title">Enable editing workspace</string>
-  <string name="pref_weather_provider">Weather provider</string>
-  <string name="loading">Loading...</string>
+  <string name="pref_weather_provider">Wetter-Anbieter</string>
+  <string name="loading">Wird geladen...</string>
 </resources>
