@@ -237,7 +237,7 @@
   <!-- Title of activity for cropping wallpapers -->
   <string name="crop_wallpaper">Кадрировать обои</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
-  <string name="which_wallpaper_option_home_screen">Домашний экран</string>
+  <string name="which_wallpaper_option_home_screen">Главный экран</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
   <string name="which_wallpaper_option_lock_screen">Экран блокировки</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
@@ -265,7 +265,7 @@
   <string name="blur_pref_summary">Применить эффект размытия к некоторым частям интерфейса\nНе совместим с живыми обоями</string>
   <string name="blur_radius_pref_title">Радиус размытия</string>
   <string name="white_google_icon_pref_title">Использовать белый значок Google</string>
-  <string name="hide_icon_labels_pref_title">Скрыть подписи значков на домашнем экране</string>
+  <string name="hide_icon_labels_pref_title">Скрыть подписи значков на главном экране</string>
   <string name="workspace_label_color_hue_pref_title">Цвет подписи иконок</string>
   <string name="workspace_label_color_variation_pref_title">Вариация цвета подписей</string>
   <string name="all_apps_opacity_pref_title">Прозрачность меню приложений</string>
@@ -294,7 +294,7 @@
   <string name="restart_lawnchair_pref_summary">Может быть полезно, если некоторые параметры не применяются должным образом</string>
   <string name="rebuild_icondb_pref_title">Перестроение базы данных значков</string>
   <string name="pinch_to_overview_pref_title">«Pinch to zoom»</string>
-  <string name="pinch_to_overview_pref_summary">Щипок для обзора домашнего экране</string>
+  <string name="pinch_to_overview_pref_summary">Щипок для обзора главного экрана</string>
   <string name="light_statusbar_pref_title">Светлая строка состояния</string>
   <string name="light_statusbar_pref_force">Статус-бар будет показывать черные значки</string>
   <string name="light_statusbar_pref_off">В строке состояния всегда будут отображаться светлые значки</string>
@@ -359,7 +359,7 @@
   <string name="default_text">По умолчанию</string>
   <string name="edit_icon_reset">Сбросить</string>
   <string name="show_top_shadow_title">Показать тень сверху</string>
-  <string name="pref_cat_homescreen">Домашний экран</string>
+  <string name="pref_cat_homescreen">Главный экран</string>
   <string name="pref_cat_miscellaneous">Прочие настройки</string>
   <string name="pref_cat_hotseat">Док-бар</string>
   <string name="pref_cat_theme">Оформление</string>
