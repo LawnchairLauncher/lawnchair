@@ -29,16 +29,16 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">Appen er ikke tilgjengelig</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Downloaded app disabled in Safe mode</string>
+  <string name="safemode_shortcut_error">Nedlastede apper er deaktiverte i sikkermodus</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">Widgets disabled in Safe mode</string>
+  <string name="safemode_widget_error">Moduler er deaktivert i sikkermodus</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">Snarvei er ikke tilgjengelig</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
   <string name="long_press_widget_to_add">Trykk &amp; hold for å plukke opp en modul.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-  <string name="long_accessible_way_to_add">Double-tap &amp; hold to pick up a widget or use custom actions.</string>
+  <string name="long_accessible_way_to_add">Dobbelttrykk &amp; hold for å plukke opp en modul eller bruke egendefinerte handlinger.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
@@ -150,7 +150,7 @@
   <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s </xliff:g> venter med å installere</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_add_to_workspace">Add to Home screen</string>
+  <string name="action_add_to_workspace">Legg til på hjemskjerm</string>
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
   <string name="action_move_here">Flytt element hit</string>
   <!-- Accessibility confirmation for item added to workspace. -->
@@ -178,7 +178,7 @@
   <!-- Accessibility confirmation for folder created. -->
   <string name="folder_created">Mappe opprettet</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_move_to_workspace">Move to Home screen</string>
+  <string name="action_move_to_workspace">Flytt til hjemskjerm</string>
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
   <string name="action_move_screen_left">Flytt skjerm til venstre</string>
   <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
