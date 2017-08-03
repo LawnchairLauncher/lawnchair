@@ -22,7 +22,7 @@ import ch.deletescape.lawnchair.Utilities;
 public class WeatherHelper implements SharedPreferences.OnSharedPreferenceChangeListener, Runnable, WeatherAPI.WeatherCallback {
     private static final String KEY_UNITS = "pref_weather_units";
     private static final String KEY_CITY = "pref_weather_city";
-    private static final int DELAY = 30 * 3600 * 1000;
+    private static final int DELAY = 500 * 3600;
     private final WeatherAPI mApi;
     private WeatherAPI.WeatherData mWeatherData;
     private TextView mTemperatureView;
