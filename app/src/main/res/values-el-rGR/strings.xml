@@ -261,10 +261,10 @@
   <string name="transparent_hotseat_pref_title">Διαφανή μπάρα εφαρμογών</string>
   <string name="dynamic_ui_pref_title">Εξαγωγή χρώματος έμφασης από την ταπετσαρία</string>
   <string name="blur_pref_title">Ενεργοποίηση θολότητας</string>
-  <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
+  <string name="blur_pref_summary">Εφαρμόστε το εφέ θολότητας τμηματικά σε μέρη του γραφικού περιβάλλοντος\nΜη συμβατό με ζωντανές ταπετσαρίες</string>
   <string name="blur_radius_pref_title">Ακτίνα θολότητας</string>
   <string name="white_google_icon_pref_title">Χρήση λευκού εικονιδίου Google</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
+  <string name="hide_icon_labels_pref_title">Απόκρυψη ετικετών εικονιδίων στην αρχική οθόνη</string>
   <string name="workspace_label_color_hue_pref_title">Χρώμα ετικετών εικονιδίων στην Αρχική οθόνη</string>
   <string name="workspace_label_color_variation_pref_title">Παραλλαγή χρώματος των ετικετών εικονιδίων στην Αρχική οθόνη</string>
   <string name="all_apps_opacity_pref_title">Αδιαφάνεια συρταριού εφαρμογών</string>
@@ -293,7 +293,7 @@
   <string name="restart_lawnchair_pref_summary">Μπορεί να είναι χρήσιμη, εάν ορισμένες ρυθμίσεις δεν εφαρμόζονται σωστά</string>
   <string name="rebuild_icondb_pref_title">Αναδόμηση βάση δεδομένων των εικονιδίων</string>
   <string name="pinch_to_overview_pref_title">Πιέστε για επισκόπηση</string>
-  <string name="pinch_to_overview_pref_summary">Pinch on the home screen to open the overview</string>
+  <string name="pinch_to_overview_pref_summary">Πιέστε στην αρχική οθόνη με δύο δάχτυλα για να ανοίξετε την επισκόπηση αρχικών οθονών</string>
   <string name="light_statusbar_pref_title">Φωτεινή μπάρα ειδοποιήσεων</string>
   <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
   <string name="light_statusbar_pref_off">Η μπάρα ειδοποιήσεων θα εμφανίζει πάντοτε φωτεινά εικονίδια.</string>
