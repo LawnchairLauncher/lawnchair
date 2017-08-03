@@ -256,12 +256,12 @@
   <string name="icon_pack_preference_title">Paquete de iconos</string>
   <string name="icon_pack_preference_summary">Selecciona un paquete de iconos</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Utiliza el color del fondo de pantalla para el Dock</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">El dock se colorea con el color extraido del fondo de pantalla</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">El dock será gris ajustado al brillo del fondo de pantalla</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">El dock se colorea con un color extraído del fondo de pantalla</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">El dock será gris, pero ajustado por el brillo del fondo de pantalla</string>
   <string name="transparent_hotseat_pref_title">Dock transparente</string>
   <string name="dynamic_ui_pref_title">Extrae el color del fondo de pantalla</string>
   <string name="blur_pref_title">Habilitar desenfoque</string>
-  <string name="blur_pref_summary">Aplicar efecto desenfoque a las partes de la interfaz que no son compatibles con los fondos de pantallas animados</string>
+  <string name="blur_pref_summary">Aplicar efecto desenfoque a las partes de la interfaz\n No es compatible con fondos de pantalla animados</string>
   <string name="blur_radius_pref_title">Radio de desenfoque</string>
   <string name="white_google_icon_pref_title">Usa el icono blanco de Google</string>
   <string name="hide_icon_labels_pref_title">Ocultar el nombre de la aplicaciones en la pantalla de inicio</string>
