@@ -123,7 +123,7 @@
     <string name="default_scroll_format">Page %1$d of %2$d</string>
     <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
     <string name="workspace_scroll_format">Home screen %1$d of %2$d</string>
-    <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
+    <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
     <string name="workspace_new_page">New home screen page</string>
 
     <!-- Folder accessibility -->
@@ -324,7 +324,7 @@
     <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
     <string name="blur_radius_pref_title">Blur radius</string>
     <string name="white_google_icon_pref_title">Use white Google icon</string>
-    <string name="hide_icon_labels_pref_title">Hide icon labels on homescreen</string>
+    <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
     <string name="workspace_label_color_hue_pref_title">Color of icon labels on home screen</string>
     <string name="workspace_label_color_variation_pref_title">Color variation of icon labels on home screen</string>
     <string name="all_apps_opacity_pref_title">Drawer opacity</string>
@@ -353,7 +353,7 @@
     <string name="restart_lawnchair_pref_summary">Can be helpful if some settings are not properly applied</string>
     <string name="rebuild_icondb_pref_title">Rebuild Icon Database</string>
     <string name="pinch_to_overview_pref_title">Pinch to overview</string>
-    <string name="pinch_to_overview_pref_summary">Pinch on the homescreen to open the overview</string>
+    <string name="pinch_to_overview_pref_summary">Pinch on the home screen to open the overview</string>
     <string name="light_statusbar_pref_title">Light statusbar</string>
     <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
     <string name="light_statusbar_pref_off">The status bar will show light icons</string>
@@ -361,7 +361,7 @@
     <string name="keep_scroll_state_pref_title">Save scroll position</string>
     <string name="keep_scroll_state_pref_summary">Saves the scroll position in the drawer</string>
     <string name="home_opens_drawer_pref_title">Home button opens app drawer</string>
-    <string name="home_opens_drawer_pref_summary">Pressing the home button while on the homescreen will open the app drawer</string>
+    <string name="home_opens_drawer_pref_summary">Pressing the home button while on the home screen will open the app drawer</string>
     <string name="show_hidden_pref_title">Show hidden apps</string>
     <string name="show_hidden_pref_on">Hidden apps will be shown to change visibility settings</string>
     <string name="show_hidden_pref_off">Hidden apps won\'t be visible</string>
