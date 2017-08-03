@@ -23,283 +23,287 @@
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
-  <string name="work_folder_name">Arbejde</string>
+  <string name="work_folder_name">עבודה</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
-  <string name="activity_not_found">Appen er ikke installeret.</string>
+  <string name="activity_not_found">האפליקציה אינה מותקנת.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
-  <string name="activity_not_available">Appen er ikke tilgængelig</string>
+  <string name="activity_not_available">האפליקציה לא זמינה</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Downloadet app er deaktiveret i sikker tilstand</string>
+  <string name="safemode_shortcut_error">אפליקציה שהורדת הושבתה במצב בטוח</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">Widgets er deaktiveret i Beskyttet tilstand</string>
+  <string name="safemode_widget_error">ווידג\'טים מושבתים במצב בטוח</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
-  <string name="shortcut_not_available">Genvejen er ikke tilgængelig</string>
+  <string name="shortcut_not_available">קיצור הדרך אינו זמין</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">Tryk på en widget, og hold den nede for at vælge.</string>
+  <string name="long_press_widget_to_add">גע נגיעה רציפה בווידג\'ט כדי לבחור בו.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-  <string name="long_accessible_way_to_add">Tryk to gange, og hold fingeren nede for at vælge en widget eller bruge tilpassede handlinger.</string>
+  <string name="long_accessible_way_to_add">הקש פעמיים וגע נגיעה רציפה בווידג\'ט כדי לבחור בו, או השתמש בפעולות מותאמות אישית.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
-  <string name="widget_dims_format">%1$d × %2$d</string>
+  <string name="widget_dims_format">%1$d \u00d7 %2$d</string>
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
-  <string name="widget_accessible_dims_format">%1$d i bredden og %2$d i højden</string>
+  <string name="widget_accessible_dims_format">‏רוחב %1$d על גובה %2$d</string>
   <!-- All Apps -->
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
-  <string name="all_apps_search_bar_hint">Søg i Apps</string>
+  <string name="all_apps_search_bar_hint">חפש אפליקציות</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_loading_message">Indlæser apps…</string>
+  <string name="all_apps_loading_message">טוען אפליקציות…</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_no_search_results">Der blev ikke fundet nogen apps, som matcher \"<xliff:g id="QUERY">%1$s</xliff:g>\"</string>
+  <string name="all_apps_no_search_results">לא נמצאו אפליקציות התואמות ל-\"<xliff:g id="QUERY">%1$s</xliff:g>\"</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
-  <string name="all_apps_search_market_message">Søg efter flere apps</string>
+  <string name="all_apps_search_market_message">חפש אפליקציות נוספות</string>
   <!-- Drag and drop -->
   <skip></skip>
   <!-- Error message when user has filled a home screen -->
-  <string name="out_of_space">Der er ikke mere plads på denne startskærm.</string>
+  <string name="out_of_space">אין עוד מקום במסך דף הבית הזה.</string>
   <!-- Error message when user has filled the hotseat -->
-  <string name="hotseat_out_of_space">Der er ikke mere plads i bakken Foretrukne</string>
+  <string name="hotseat_out_of_space">אין עוד מקום במגש המועדפים</string>
   <!-- All applications label -->
-  <string name="all_apps_button_label">Liste med apps</string>
+  <string name="all_apps_button_label">רשימת אפליקציות</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
-  <string name="all_apps_home_button_label">Startskærm</string>
+  <string name="all_apps_home_button_label">דף הבית</string>
   <!-- Label for remove drop target. [CHAR_LIMIT=20] -->
-  <string name="remove_drop_target_label">Fjern</string>
+  <string name="remove_drop_target_label">הסר</string>
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
-  <string name="uninstall_drop_target_label">Afinstaller</string>
+  <string name="uninstall_drop_target_label">הסר התקנה</string>
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
-  <string name="app_info_drop_target_label">Oplysninger om appen</string>
+  <string name="app_info_drop_target_label">פרטי אפליקציה</string>
   <!-- Permissions: -->
   <skip></skip>
   <!-- Permission short label -->
-  <string name="permlab_install_shortcut">installere genveje</string>
+  <string name="permlab_install_shortcut">התקן קיצורי דרך</string>
   <!-- Permission description -->
-  <string name="permdesc_install_shortcut">Tillader, at en app tilføjer genveje uden brugerens indgriben.</string>
+  <string name="permdesc_install_shortcut">מאפשר לאפליקציה להוסיף קיצורי דרך ללא התערבות המשתמש.</string>
   <!-- Permission short label -->
-  <string name="permlab_read_settings">læs indstillinger og genveje for startskærmen</string>
+  <string name="permlab_read_settings">קרא הגדרות וקיצורי דרך של דף הבית</string>
   <!-- Permission description -->
-  <string name="permdesc_read_settings">Tillader, at appen læser indstillingerne og genvejene på startskærmen.</string>
+  <string name="permdesc_read_settings">מאפשר לאפליקציה לקרוא את ההגדרות וקיצורי הדרך בדף הבית.</string>
   <!-- Permission short label -->
-  <string name="permlab_write_settings">skrive indstillinger og genveje for startskærmen</string>
+  <string name="permlab_write_settings">כתוב הגדרות וקיצורי דרך של דף הבית</string>
   <!-- Permission description -->
-  <string name="permdesc_write_settings">Tillader, at appen ændrer indstillingerne og genvejene på startskærmen.</string>
+  <string name="permdesc_write_settings">מאפשר לאפליקציה לשנות את ההגדרות וקיצורי הדרך בדף הבית.</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
-  <string name="msg_no_phone_permission"><xliff:g id="APP_NAME">%1$s</xliff:g> har ikke tilladelse til at foretage telefonopkald</string>
+  <string name="msg_no_phone_permission"><xliff:g id="App_NAME">%1$s</xliff:g> אינו רשאי לבצע שיחות</string>
   <!-- Widgets: -->
   <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
-  <string name="gadget_error_text">Der er problemer med indlæsning af widgetten</string>
+  <string name="gadget_error_text">בעיה בטעינת ווידג\'ט</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
-  <string name="gadget_setup_text">Konfigurer</string>
+  <string name="gadget_setup_text">הגדרות</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
-  <string name="uninstall_system_app_text">Dette er en systemapp, som ikke kan afinstalleres.</string>
+  <string name="uninstall_system_app_text">זוהי אפליקציית מערכת ולא ניתן להסיר את התקנתה.</string>
   <!-- Default folder title -->
-  <string name="folder_hint_text">Unavngiven mappe</string>
+  <string name="folder_hint_text">תיקיה ללא שם</string>
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
-  <string name="disabled_app_label"><xliff:g id="APP_NAME">%1$s</xliff:g> er deaktiveret</string>
+  <string name="disabled_app_label"><xliff:g id="App_NAME">%1$s</xliff:g> מושבתת</string>
   <skip></skip>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
-  <string name="default_scroll_format">Side %1$d ud af %2$d</string>
+  <string name="default_scroll_format">‏דף %1$d מתוך %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
-  <string name="workspace_scroll_format">Startskærm %1$d ud af %2$d</string>
+  <string name="workspace_scroll_format">‏מסך דף בית %1$d מתוך %2$d</string>
   <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
-  <string name="workspace_new_page">Ny startskærm</string>
+  <string name="workspace_new_page">מסך דף בית חדש</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
-  <string name="folder_opened">Mappen er åben, <xliff:g id="WIDTH">%1$d</xliff:g> gange <xliff:g id="HEIGHT">%2$d</xliff:g></string>
+  <string name="folder_opened">תיקיה פתוחה, <xliff:g id="Width">%1$d</xliff:g> על <xliff:g id="Height">%2$d</xliff:g></string>
   <!-- Instruction that clicking outside will close folder -->
-  <string name="folder_tap_to_close">Tryk for at lukke mappen</string>
+  <string name="folder_tap_to_close">הקש כדי לסגור את התיקייה</string>
   <!-- Instruction that clicking outside will commit folder rename -->
-  <string name="folder_tap_to_rename">Tryk for at gemme omdøbningen</string>
+  <string name="folder_tap_to_rename">הקש כדי לשמור שינוי שם</string>
   <!-- Indication that folder closed -->
-  <string name="folder_closed">Mappen er lukket</string>
+  <string name="folder_closed">התיקיה נסגרה</string>
   <!-- Folder renamed format -->
-  <string name="folder_renamed">Mappen er omdøbt til <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="folder_renamed">שם התיקיה שונה ל-<xliff:g id="Name">%1$s</xliff:g></string>
   <!-- Folder name format -->
-  <string name="folder_name_format">Mappe: <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="folder_name_format">תיקיה: <xliff:g id="Name">%1$s</xliff:g></string>
   <!-- Strings for the customization mode -->
   <!-- Text for widget add button -->
-  <string name="widget_button_text">Widgets</string>
+  <string name="widget_button_text">ווידג\'טים</string>
   <!-- Text for wallpaper change button -->
-  <string name="wallpaper_button_text">Baggrunde</string>
+  <string name="wallpaper_button_text">טפטים</string>
   <!-- Text for settings button -->
-  <string name="settings_button_text">Indstillinger</string>
+  <string name="settings_button_text">הגדרות</string>
   <!-- Message shown when a feature is disabled by the administrator -->
-  <string name="msg_disabled_by_admin">Deaktiveret af din administrator</string>
+  <string name="msg_disabled_by_admin">הושבת על ידי מנהל המערכת שלך</string>
   <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
-  <string name="accessibility_action_overview">Oversigt</string>
+  <string name="accessibility_action_overview">סקירה כללית</string>
   <!-- Strings for settings -->
   <!-- Title for Allow Rotation setting. [CHAR LIMIT=50] -->
   <!-- Text explaining when the home screen will get rotated. [CHAR LIMIT=100] -->
   <!-- Text explaining that rotation is disabled in Display settings. 'Display' refers to the Display section in system settings [CHAR LIMIT=100] -->
   <!-- Label on an icon that references an uninstalled package, for which we have no information about when it might be installed. [CHAR_LIMIT=15] -->
-  <string name="package_state_unknown">Ukendt</string>
+  <string name="package_state_unknown">לא ידועה</string>
   <!-- Button for abandoned promises dialog, to removes this abandoned promise icon. -->
-  <string name="abandoned_clean_this">Fjern</string>
+  <string name="abandoned_clean_this">הסר</string>
   <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->
-  <string name="abandoned_search">Søg</string>
+  <string name="abandoned_search">חפש</string>
   <!-- Title for abandoned promise dialog. -->
-  <string name="abandoned_promises_title">Denne app er ikke installeret</string>
+  <string name="abandoned_promises_title">This app is not installed</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
-  <string name="abandoned_promise_explanation">Appen, der hører til dette ikon, er ikke installeret. Du kan fjerne den eller prøve at søge efter appen og installere den manuelt.</string>
+  <string name="abandoned_promise_explanation">The app for this icon isn\'t installed.
+        You can remove it, or search for the app and install it manually.
+    </string>
   <!-- Title for an app which is being downloaded. -->
-  <string name="app_downloading_title"><xliff:g id="NAME">%1$s</xliff:g> downloades. <xliff:g id="PROGRESS">%2$s</xliff:g> er gennemført</string>
+  <string name="app_downloading_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> downloading, <xliff:g example="30%" id="progress">%2$s</xliff:g> complete</string>
   <!-- Title for an app whose download has been started. -->
-  <string name="app_waiting_download_title"><xliff:g id="NAME">%1$s</xliff:g> venter på at installere</string>
+  <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> waiting to install</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_add_to_workspace">Føj til startskærm</string>
+  <string name="action_add_to_workspace">Add to Home screen</string>
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
-  <string name="action_move_here">Flyt elementet hertil</string>
+  <string name="action_move_here">Move item here</string>
   <!-- Accessibility confirmation for item added to workspace. -->
-  <string name="item_added_to_workspace">Elementet er føjet til startskærmen</string>
+  <string name="item_added_to_workspace">Item added to home screen</string>
   <!-- Accessibility confirmation for item removed. -->
-  <string name="item_removed">Elementet er fjernet</string>
+  <string name="item_removed">Item removed</string>
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
-  <string name="action_move">Flyt element</string>
+  <string name="action_move">Move item</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell">Flyt til række <xliff:g id="NUMBER_0">%1$s</xliff:g>, kolonne <xliff:g id="NUMBER_1">%2$s</xliff:g></string>
+  <string name="move_to_empty_cell">Move to row <xliff:g example="1" id="number">%1$s</xliff:g> column <xliff:g example="1" id="number">%2$s</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
-  <string name="move_to_position">Flyt til position <xliff:g id="NUMBER">%1$s</xliff:g></string>
+  <string name="move_to_position">Move to position <xliff:g example="1" id="number">%1$s</xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Flyt til foretrukne position <xliff:g id="NUMBER">%1$s</xliff:g></string>
+  <string name="move_to_hotseat_position">Move to favorites position <xliff:g example="1" id="number">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for item move. -->
-  <string name="item_moved">Elementet blev flyttet</string>
+  <string name="item_moved">Item moved</string>
   <!-- Accessibility description to move item into an existing folder. -->
-  <string name="add_to_folder">Føj til mappen: <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="add_to_folder">Add to folder: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
-  <string name="add_to_folder_with_app">Føj til mappen, der indeholder <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="add_to_folder_with_app">Add to folder with <xliff:g example="Messenger" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for item added to folder. -->
-  <string name="added_to_folder">Elementet blev føjet til mappen</string>
+  <string name="added_to_folder">Item added to folder</string>
   <!-- Accessibility description to create folder with another item. -->
-  <string name="create_folder_with">Opret mappe med: <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="create_folder_with">Create folder with: <xliff:g example="Game" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
-  <string name="folder_created">Mappen blev oprettet</string>
+  <string name="folder_created">Folder created</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_move_to_workspace">Flyt til startskærmen</string>
+  <string name="action_move_to_workspace">Move to Home screen</string>
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
-  <string name="action_move_screen_left">Flyt skærmen til venstre</string>
+  <string name="action_move_screen_left">Move screen to left</string>
   <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
-  <string name="action_move_screen_right">Flyt skærmen til højre</string>
+  <string name="action_move_screen_right">Move screen to right</string>
   <!-- Accessibility confirmation when a screen was moved. -->
-  <string name="screen_moved">Skærmen er flyttet</string>
+  <string name="screen_moved">Screen moved</string>
   <!-- Accessibility action to resize a widget. [CHAR_LIMIT=30] -->
-  <string name="action_resize">Tilpas størrelse</string>
+  <string name="action_resize">Resize</string>
   <!-- Accessibility action to increase width of a widget. [CHAR_LIMIT=30] -->
-  <string name="action_increase_width">Øg bredden</string>
+  <string name="action_increase_width">Increase width</string>
   <!-- Accessibility action to increase height of a widget. [CHAR_LIMIT=30] -->
-  <string name="action_increase_height">Øg højden</string>
+  <string name="action_increase_height">Increase height</string>
   <!-- Accessibility action to decrease width of a widget. [CHAR_LIMIT=30] -->
-  <string name="action_decrease_width">Reducer bredden</string>
+  <string name="action_decrease_width">Decrease width</string>
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
-  <string name="action_decrease_height">Reducer højden</string>
+  <string name="action_decrease_height">Decrease height</string>
   <!-- Accessibility confirmation for widget resize. -->
-  <string name="widget_resized">Størrelsen for widgetten er ændret til bredde <xliff:g id="NUMBER_0">%1$s</xliff:g> og højde <xliff:g id="NUMBER_1">%2$s</xliff:g></string>
+  <string name="widget_resized">Widget resized to width <xliff:g example="2" id="number">%1$s</xliff:g> height <xliff:g example="1" id="number">%2$s</xliff:g></string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
-  <string name="action_deep_shortcut">Genveje</string>
+  <string name="action_deep_shortcut">Shortcuts</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
-  <string name="shortcuts_menu_description"><xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> genveje til <xliff:g id="APP_NAME">%2$s</xliff:g></string>
-  <string name="edit_drop_target_label">Redigere</string>
+  <string name="shortcuts_menu_description"><xliff:g example="3" id="number_of_shortcuts">%1$d</xliff:g> shortcuts for <xliff:g example="Messenger" id="app_name">%2$s</xliff:g></string>
+  <string name="edit_drop_target_label">Edit</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
-  <string name="wallpaper_instructions">Angiv baggrund</string>
+  <string name="wallpaper_instructions">Set wallpaper</string>
   <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper picker cannot load it -->
-  <string name="image_load_fail">Billedet kunne ikke indlæses</string>
+  <string name="image_load_fail">Couldn\'t load image</string>
   <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper cropper cannot load it. The user will
          usually see this when using another app and trying to set
          an image as the wallpaper -->
-  <string name="wallpaper_load_fail">Billedet kunne ikke indlæses som baggrund</string>
+  <string name="wallpaper_load_fail">Couldn\'t load image as wallpaper</string>
   <!-- Error message when an image is selected as a wallpaper,
          but something goes wrong when the user clicks "Set wallpaper" -->
-  <string name="wallpaper_set_fail">Billedet kunne ikke indlæses som baggrund</string>
+  <string name="wallpaper_set_fail">Couldn\'t set image as wallpaper</string>
   <!-- Shown when wallpapers are selected in Wallpaper picker -->
   <!-- String indicating how many media item(s) is(are) selected
             eg. 1 selected [CHAR LIMIT=30] -->
   <plurals name="number_of_items_selected">
-    <item quantity="one">%1$d er valgt</item>
-    <item quantity="other">%1$d er valgt</item>
+    <item quantity="one">%1$d selected</item>
+    <item quantity="two">%1$d selected</item>
+    <item quantity="many">%1$d selected</item>
+    <item quantity="other">%1$d selected</item>
   </plurals>
   <!-- Accessibility string used as a label for a particular wallpaper in the Wallpaper Picker list.
          e.g. "Wallpaper 3 of 10" -->
-  <string name="wallpaper_accessibility_name">Baggrund %1$d af %2$d</string>
+  <string name="wallpaper_accessibility_name">Wallpaper %1$d of %2$d</string>
   <!-- Accessibility string used to announce that a wallpaper has been selected. -->
-  <string name="announce_selection"><xliff:g id="LABEL">%1$s</xliff:g> blev valgt</string>
+  <string name="announce_selection">Selected <xliff:g example="Wallpaper 3 of 10" id="label">%1$s</xliff:g></string>
   <!-- Label on button to delete wallpaper(s) -->
-  <string name="wallpaper_delete">Slet</string>
+  <string name="wallpaper_delete">Delete</string>
   <!-- Label on button in Wallpaper Picker to pick an image -->
-  <string name="pick_image">Mine billeder</string>
+  <string name="pick_image">My photos</string>
   <!-- Option in "Select wallpaper from" dialog box -->
-  <string name="pick_wallpaper">Baggrunde</string>
+  <string name="pick_wallpaper">Wallpapers</string>
   <!-- Title of activity for cropping wallpapers -->
-  <string name="crop_wallpaper">Beskær baggrunden</string>
+  <string name="crop_wallpaper">Crop wallpaper</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
-  <string name="which_wallpaper_option_home_screen">Startskærmen</string>
+  <string name="which_wallpaper_option_home_screen">Home screen</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
-  <string name="which_wallpaper_option_lock_screen">Låse skærm</string>
+  <string name="which_wallpaper_option_lock_screen">Lock screen</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
-  <string name="which_wallpaper_option_home_screen_and_lock_screen">Startskærm og låseskærm</string>
-  <string name="title_show_google_app">Vis %1$s</string>
-  <string name="title_show_google_app_default">Vis Google-app</string>
-  <string name="label_search">Søg</string>
-  <string name="label_voice_search">Voice søgning</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d genveje og %2$d notifikationer til %3$s</string>
-  <string name="notifications_header">Underretninger</string>
-  <string name="widgets_bottom_sheet_title">%1$s widgets</string>
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">Home screen and lock screen</string>
+  <string name="title_show_google_app">Show %1$s</string>
+  <string name="title_show_google_app_default">Show Google app</string>
+  <string name="label_search">Search</string>
+  <string name="label_voice_search">Voice search</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d shortcuts and %2$d notifications for %3$s</string>
+  <string name="notifications_header">התראות</string>
+  <string name="widgets_bottom_sheet_title">%1$s ווידג\'טים</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair er en Launcher app skabt af Till Kottmann (aka deletescape). Det er baseret på Launcher3 fra AOSP.</string>
-  <string name="about_title">Om</string>
-  <string name="changelog_title">Changelog for build #%d</string>
+  <string name="about_text">Lawnchair הוא יישום משגר שנוצרו על-ידי עד Kottmann (ידוע כ- deletescape). מבוסס על Launcher3 מ- AOSP.</string>
+  <string name="about_title">אודות</string>
+  <string name="changelog_title">רשימת שינויים לגירסא #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
-  <string name="icon_pack_preference_title">Ikon pakke</string>
-  <string name="icon_pack_preference_summary">Vælg et ikon Pack</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Dock anvender tapetfarver</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">Havnen vil blive farvet med en farve uddraget fra tapetet</string>
+  <string name="icon_pack_preference_title">ערכת אייקונים</string>
+  <string name="icon_pack_preference_summary">בחר ערכת סמלים</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Dock uses wallpaper colors</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
   <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
   <string name="transparent_hotseat_pref_title">Transparent Dock</string>
-  <string name="dynamic_ui_pref_title">Extract accent color from wallpaper</string>
-  <string name="dark_theme_pref_title">Enable dark theme</string>
-  <string name="blur_pref_title">Aktiver slør</string>
-  <string name="blur_radius_pref_title">Slør radius</string>
-  <string name="white_google_icon_pref_title">Brug hvidt Google ikon</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on homescreen</string>
-  <string name="workspace_label_color_hue_pref_title">Color of icon labels on homescreen</string>
-  <string name="workspace_label_color_variation_pref_title">Farvevariation af ikonetiketter på startskærmen</string>
-  <string name="all_apps_opacity_pref_title">Skuffe gennemsigtighed</string>
-  <string name="num_cols_pref_title">Number of columns</string>
-  <string name="num_rows_pref_title">Number of rows</string>
+  <string name="dynamic_ui_pref_title">חלץ צבע הדגשה של טפט</string>
+  <string name="dark_theme_pref_title">השתמש בערכת נושא כהה</string>
+  <string name="blur_pref_title">אפשר טשטוש</string>
+  <string name="blur_radius_pref_title">רדיוס טשטוש</string>
+  <string name="white_google_icon_pref_title">השתמש באייקון גוגל לבן</string>
+  <string name="hide_icon_labels_pref_title">הסתר תוויות סמלים על מסך הבית</string>
+  <string name="workspace_label_color_hue_pref_title">צבע תוויות סמלים על מסך הבית</string>
+  <string name="workspace_label_color_variation_pref_title">צבע וריאציה של תוויות סמלים על מסך הבית</string>
+  <string name="all_apps_opacity_pref_title">Drawer opacity</string>
+  <string name="num_cols_pref_title">מספר עמודות</string>
+  <string name="num_rows_pref_title">מספר שורות</string>
   <string name="num_hotseat_icons_pref_title">Number of icons in dock</string>
-  <string name="icon_scale_pref_title">Ikon størrelse</string>
-  <string name="icon_text_scale_pref_title">Ikon tekst størrelse</string>
+  <string name="icon_scale_pref_title">Icon scale</string>
+  <string name="icon_text_scale_pref_title">Icon text scale</string>
   <string name="full_width_width_widgets_pref_title">Full width widgets</string>
-  <string name="full_width_widgets_pref_summary">Tillad widgets at spænde over hele bredden uden polstring</string>
-  <string name="notification_access_pref_title">Notifikations tegn og forhåndsvisning</string>
-  <string name="notification_access_pref_summary">Tillad Lawnchair adgang til dine notifikationer for at aktivere denne egenskab</string>
+  <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
+  <string name="notification_access_pref_title">Notification badges and preview</string>
+  <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
   <string name="ui_pref_title">UI</string>
   <string name="pixel_style_pref_title">Pixel style</string>
-  <string name="behavior_pref_title">Adfærd</string>
-  <string name="debug_pref_title">Fejlfindnig</string>
-  <string name="import_export_pref_title">Importér/eksportér</string>
+  <string name="behavior_pref_title">Behavior</string>
+  <string name="debug_pref_title">Debug</string>
+  <string name="import_export_pref_title">Import/Export</string>
   <string name="show_pixel_bar_pref_title">Show Pixel top bar</string>
   <string name="use_wide_searchbar_pref_title">Use wide searchbar</string>
   <string name="show_mic_pref_title">Show Google Assistant button</string>
   <string name="use_round_searhbar">Use round apps searchbar</string>
   <string name="pixel_style_icons_pref_title">Use Pixel icons</string>
-  <string name="pixel_style_icons_pref_summary">Når aktiverede cirkulære ikoner anvendes, hvor det er muligt</string>
+  <string name="pixel_style_icons_pref_summary">When enabled circular icons will be used where possible</string>
   <string name="show_google_now_tab_pref_title">Show Google Now page</string>
   <string name="restart_lawnchair_pref_title">Restart Lawnchair</string>
-  <string name="restart_lawnchair_pref_summary">Kan være nyttigt, hvis nogle indstillinger ikke anvendes korrekt</string>
+  <string name="restart_lawnchair_pref_summary">Can be helpful if some settings are not properly applied</string>
   <string name="rebuild_icondb_pref_title">Rebuild Icon Database</string>
   <string name="pinch_to_overview_pref_title">Pinch to overview</string>
   <string name="pinch_to_overview_pref_summary">Pinch on the homescreen to open the overview</string>
   <string name="pull_down_notis_pref_title">Pull down to Notifications</string>
-  <string name="pull_down_notis_pref_on">Ved at trække ned på startskærmen udvides statuslinjen.</string>
-  <string name="pull_down_notis_pref_off">Når aktiveret trækker ned på Hjemmeskærmen udvides statuslinjen.</string>
+  <string name="pull_down_notis_pref_on">Pulling down on the Homescreen will expand the statusbar.</string>
+  <string name="pull_down_notis_pref_off">When enabled pulling down on the Homescreen expand the statusbar.</string>
   <string name="light_statusbar_pref_title">Light statusbar</string>
-  <string name="light_statusbar_pref_on">Statuslinjen kan vise mørke ikoner, når du bruger et lyst tapet.</string>
+  <string name="light_statusbar_pref_on">The status bar may show dark icons when using a light wallpaper.</string>
   <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
   <string name="haptic_feedback_pref_title">Enable vibration</string>
   <string name="keep_scroll_state_pref_title">Save scroll position</string>
