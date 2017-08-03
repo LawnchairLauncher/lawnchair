@@ -261,7 +261,7 @@
   <string name="transparent_hotseat_pref_title">Transparentes Dock</string>
   <string name="dynamic_ui_pref_title">Akzentfarbe an Hintergrundbild anpassen</string>
   <string name="blur_pref_title">Unschärfeeffekt verwenden</string>
-  <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
+  <string name="blur_pref_summary">Unschärfeeffekt auf Teile der Darstellung anwenden\nNicht mit Live-Hintergründen kompatibel</string>
   <string name="blur_radius_pref_title">Stärke des Unschärfeeffekts</string>
   <string name="white_google_icon_pref_title">Weiße Google Icons verwenden</string>
   <string name="hide_icon_labels_pref_title">Icon Beschriftungen auf dem Startbildschirm verstecken</string>
@@ -368,7 +368,7 @@
   <string name="theme_black">Schwarz</string>
   <string name="hide_hotseat_pref_title">Dock ausblenden</string>
   <string name="all_icons">Alle Icons</string>
-  <string name="pull_down_action_pref_title">Pull down action</string>
+  <string name="pull_down_action_pref_title">\'Ziehen\' - Aktion</string>
   <string name="pull_down_do_nothing">Nichts</string>
   <string name="pull_down_notis">Benachrichtigungsbereich anzeigen</string>
   <string name="pull_down_search">Suche öffnen</string>
@@ -378,25 +378,25 @@
   <string name="imexport_success">Erfolg!</string>
   <string name="imexport_error">Fehler: Datei konnte nicht kopiert werden</string>
   <string name="imexport_no_backup_found">Kein Backup gefunden</string>
-  <string name="imexport_external_storage_unreadable">External storage is not readable (grant permission in settings)</string>
-  <string name="imexport_external_storage_unwritable">External storage is not writable (grant permission in settings)</string>
+  <string name="imexport_external_storage_unreadable">Externer Speicher ist nicht lesbar (Berechtigung in den Einstellungen erforderlich)</string>
+  <string name="imexport_external_storage_unwritable">Externer Speicher ist nicht beschreibbar (Berechtigung in den Einstellungen erforderlich)</string>
   <string name="units_metric">Metrisch</string>
   <string name="units_imperial">Imperial</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <string name="pref_cat_weather">Wetter</string>
   <string name="pref_weather_title">Wetter aktivieren</string>
   <string name="pref_weather_units">Temperatureinheiten</string>
-  <string name="pref_weather_city_summary">For best results include country code</string>
+  <string name="pref_weather_city_summary">Für bessere Ergebnisse das Länderkürzel einfügen</string>
   <string name="pref_weather_city_title">Stadt</string>
-  <string name="none">None</string>
+  <string name="none">Keine</string>
   <string name="pref_applyTheme">Thema anwenden auf</string>
   <string name="pref_applyBlur">Unschärfe anwenden auf</string>
   <string name="search_bar">Suchleiste</string>
   <string name="folder">Ordner</string>
-  <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
-  <string name="app_shortcuts">App shortcuts</string>
+  <string name="dock_allapps"><![CDATA[Dock & alle Apps]]></string>
+  <string name="app_shortcuts">App-Verknüpfungen</string>
   <string name="blur_effect">Unschärfe-Effekt</string>
-  <string name="enable_editing_pref_title">Enable editing workspace</string>
+  <string name="enable_editing_pref_title">Arbeitsbereich bearbeiten</string>
   <string name="pref_weather_provider">Wetter-Anbieter</string>
   <string name="loading">Wird geladen...</string>
 </resources>
