@@ -164,7 +164,7 @@
   <!-- Accessibility description to move item inside a folder. -->
   <string name="move_to_position">Mover a la posición número <xliff:g id="NUMBER">%1$s</xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Mover a la posición número <xliff:g id="NUMBER">%1$s</xliff:g> de favoritos</string>
+  <string name="move_to_hotseat_position">Mover a posición de favoritos número <xliff:g example="1" id="number">%1$s </xliff:g></string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">Elemento movido</string>
   <!-- Accessibility description to move item into an existing folder. -->
