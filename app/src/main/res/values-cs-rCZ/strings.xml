@@ -391,15 +391,15 @@
   <string name="pref_weather_units">Jednotky počasí</string>
   <string name="pref_weather_city_summary">Pro lepší výsledky zadejte kód země</string>
   <string name="pref_weather_city_title">Město</string>
-  <string name="none">None</string>
-  <string name="pref_applyTheme">Apply theme on</string>
-  <string name="pref_applyBlur">Apply blur on</string>
-  <string name="search_bar">Search bar</string>
-  <string name="folder">Folder</string>
-  <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
-  <string name="app_shortcuts">App shortcuts</string>
-  <string name="blur_effect">Blur effect</string>
-  <string name="enable_editing_pref_title">Enable editing workspace</string>
-  <string name="pref_weather_provider">Weather provider</string>
-  <string name="loading">Loading...</string>
+  <string name="none">Nic</string>
+  <string name="pref_applyTheme">Použít motiv na</string>
+  <string name="pref_applyBlur">Použít rozostření na</string>
+  <string name="search_bar">Vyhledávací lišta</string>
+  <string name="folder">Složka</string>
+  <string name="dock_allapps"><![CDATA[Dok & všechny aplikace]]></string>
+  <string name="app_shortcuts">Zástupce aplikací</string>
+  <string name="blur_effect">Efekt rozostření</string>
+  <string name="enable_editing_pref_title">Povolit úpravu pracovního prostoru</string>
+  <string name="pref_weather_provider">Poskytovatel počasí</string>
+  <string name="loading">Načítání...</string>
 </resources>
