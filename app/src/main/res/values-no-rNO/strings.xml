@@ -51,7 +51,7 @@
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
   <string name="all_apps_no_search_results">No Apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
-  <string name="all_apps_search_market_message">Search for more apps</string>
+  <string name="all_apps_search_market_message">Søk etter flere apper</string>
   <!-- Drag and drop -->
   <skip></skip>
   <!-- Error message when user has filled a page -->
@@ -59,23 +59,22 @@
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">No more room in the Favorites tray</string>
   <!-- All applications label -->
-  <string name="all_apps_button_label">Apps list</string>
+  <string name="all_apps_button_label">App-liste</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
-  <string name="all_apps_home_button_label">Home</string>
+  <string name="all_apps_home_button_label">Hjem</string>
   <!-- Label for remove drop target. [CHAR_LIMIT=20] -->
-  <string name="remove_drop_target_label">Remove</string>
+  <string name="remove_drop_target_label">Fjern</string>
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
-  <string name="uninstall_drop_target_label">Uninstall</string>
+  <string name="uninstall_drop_target_label">Avinstaller</string>
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
-  <string name="app_info_drop_target_label">App info</string>
+  <string name="app_info_drop_target_label">App-info</string>
   <!-- Permissions: -->
   <skip></skip>
   <!-- Permission short label -->
-  <string name="permlab_install_shortcut">install shortcuts</string>
+  <string name="permlab_install_shortcut">installer snarveier</string>
   <!-- Permission description -->
-  <string name="permdesc_install_shortcut">Allows an app to add
-        shortcuts without user intervention.</string>
+  <string name="permdesc_install_shortcut">Tillater en app å legge til snarveier uten brukerinnblanding.</string>
   <!-- Permission short label -->
   <string name="permlab_read_settings">read Home settings and shortcuts</string>
   <!-- Permission description -->
@@ -87,89 +86,87 @@
   <string name="permdesc_write_settings">Allows the app to change the settings and
         shortcuts in Home.</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
-  <string name="msg_no_phone_permission"><xliff:g example="Launcher3" id="app_name">%1$s</xliff:g> is not allowed to make phone calls</string>
+  <string name="msg_no_phone_permission"><xliff:g example="Launcher3" id="app_name">%1$s </xliff:g> er ikke tillatt å starte telefonsamtaler</string>
   <!-- Widgets: -->
   <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
-  <string name="gadget_error_text">Problem loading widget</string>
+  <string name="gadget_error_text">Problem med lasting av modul</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
-  <string name="gadget_setup_text">Setup</string>
+  <string name="gadget_setup_text">Oppsett</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
-  <string name="uninstall_system_app_text">This is a system app and can\'t be uninstalled.</string>
+  <string name="uninstall_system_app_text">Dette er en system-app, og kan ikke avinstalleres.</string>
   <!-- Default folder title -->
-  <string name="folder_hint_text">Unnamed Folder</string>
+  <string name="folder_hint_text">Navnløs mappe</string>
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
-  <string name="disabled_app_label">Disabled <xliff:g example="Messenger" id="app_name">%1$s</xliff:g></string>
+  <string name="disabled_app_label">Deaktiverte <xliff:g example="Messenger" id="app_name">%1$s </xliff:g></string>
   <skip></skip>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
-  <string name="default_scroll_format">Page %1$d of %2$d</string>
+  <string name="default_scroll_format">Side %1$d av %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
-  <string name="workspace_scroll_format">Home screen %1$d of %2$d</string>
+  <string name="workspace_scroll_format">Hjemskjerm %1$d av %2$d</string>
   <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
-  <string name="workspace_new_page">New home screen page</string>
+  <string name="workspace_new_page">Ny hjemskjerm-side</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
-  <string name="folder_opened">Folder opened, <xliff:g example="5" id="width">%1$d</xliff:g> by <xliff:g example="3" id="height">%2$d</xliff:g></string>
+  <string name="folder_opened">Mappe åpnet, <xliff:g example="5" id="width">%1$d </xliff:g> bredde og <xliff:g example="3" id="height">%2$d </xliff:g> høyde</string>
   <!-- Instruction that clicking outside will close folder -->
-  <string name="folder_tap_to_close">Tap to close folder</string>
+  <string name="folder_tap_to_close">Trykk for å lukke mappe</string>
   <!-- Instruction that clicking outside will commit folder rename -->
-  <string name="folder_tap_to_rename">Tap to save rename</string>
+  <string name="folder_tap_to_rename">Trykk for å lagre navnendring</string>
   <!-- Indication that folder closed -->
-  <string name="folder_closed">Folder closed</string>
+  <string name="folder_closed">Mappe lukket</string>
   <!-- Folder renamed format -->
-  <string name="folder_renamed">Folder renamed to <xliff:g example="Games" id="name">%1$s</xliff:g></string>
+  <string name="folder_renamed">Mappe har endret navn til <xliff:g example="Games" id="name">%1$s </xliff:g></string>
   <!-- Folder name format -->
-  <string name="folder_name_format">Folder: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
+  <string name="folder_name_format">Mappe: <xliff:g example="Games" id="name">%1$s </xliff:g></string>
   <!-- Strings for the customization mode -->
   <!-- Text for widget add button -->
-  <string name="widget_button_text">Widgets</string>
+  <string name="widget_button_text">Moduler</string>
   <!-- Text for wallpaper change button -->
-  <string name="wallpaper_button_text">Wallpapers</string>
+  <string name="wallpaper_button_text">Bakgrunner</string>
   <!-- Text for settings button -->
-  <string name="settings_button_text">Settings</string>
+  <string name="settings_button_text">Innstillinger</string>
   <!-- Message shown when a feature is disabled by the administrator -->
-  <string name="msg_disabled_by_admin">Disabled by your admin</string>
+  <string name="msg_disabled_by_admin">Deaktivert av systemansvarlig</string>
   <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
-  <string name="accessibility_action_overview">Overview</string>
+  <string name="accessibility_action_overview">Oversikt</string>
   <!-- Strings for settings -->
   <!-- Title for Allow Rotation setting. [CHAR LIMIT=50] -->
   <!-- Text explaining when the home screen will get rotated. [CHAR LIMIT=100] -->
   <!-- Text explaining that rotation is disabled in Display settings. 'Display' refers to the Display section in system settings [CHAR LIMIT=100] -->
   <!-- Label on an icon that references an uninstalled package, for which we have no information about when it might be installed. [CHAR_LIMIT=15] -->
-  <string name="package_state_unknown">Unknown</string>
+  <string name="package_state_unknown">Ukjent</string>
   <!-- Button for abandoned promises dialog, to removes this abandoned promise icon. -->
-  <string name="abandoned_clean_this">Remove</string>
+  <string name="abandoned_clean_this">Fjern</string>
   <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->
-  <string name="abandoned_search">Search</string>
+  <string name="abandoned_search">Søk</string>
   <!-- Title for abandoned promise dialog. -->
-  <string name="abandoned_promises_title">This app is not installed</string>
+  <string name="abandoned_promises_title">Denne appen er ikke installert</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
-  <string name="abandoned_promise_explanation">The app for this icon isn\'t installed.
-        You can remove it, or search for the app and install it manually.
-    </string>
+  <string name="abandoned_promise_explanation">Appen for dette ikonet er ikke installert. Du kan fjerne det, eller søke etter appen og installere den manuelt.</string>
   <!-- Title for an app which is being downloaded. -->
-  <string name="app_downloading_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> downloading, <xliff:g example="30%" id="progress">%2$s</xliff:g> complete</string>
+  <string name="app_downloading_title"><xliff:g example="Messenger" id="name">%1$s </xliff:g> laster ned, <xliff:g example="30%" id="progress">%2$s </xliff:g> fullført</string>
   <!-- Title for an app whose download has been started. -->
-  <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> waiting to install</string>
+  <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s </xliff:g> venter med å installere</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
   <string name="action_add_to_workspace">Add to Home screen</string>
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
-  <string name="action_move_here">Move item here</string>
+  <string name="action_move_here">Flytt element hit</string>
   <!-- Accessibility confirmation for item added to workspace. -->
-  <string name="item_added_to_workspace">Item added to home screen</string>
+  <string name="item_added_to_workspace">Element lagt til på hjemskjerm</string>
   <!-- Accessibility confirmation for item removed. -->
-  <string name="item_removed">Item removed</string>
+  <string name="item_removed">Element fjernet</string>
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
-  <string name="action_move">Move item</string>
+  <string name="action_move">Flytt element</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell">Move to row <xliff:g example="1" id="number">%1$s</xliff:g> column <xliff:g example="1" id="number">%2$s</xliff:g></string>
+  <string name="move_to_empty_cell">Flytt til rad <xliff:g example="1" id="number">%1$s </xliff:g> kolonne <xliff:g example="1" id="number">%2$s </xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
-  <string name="move_to_position">Move to position <xliff:g example="1" id="number">%1$s</xliff:g></string>
+  <string name="move_to_position">Flytt til posisjon <xliff:g example="1" id="number">%1$s </xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Move to favorites position <xliff:g example="1" id="number">%1$s</xliff:g></string>
+  <string name="move_to_hotseat_position">Flytt til favoritter-posisjon <xliff:g example="1" id="number">%1$s </xliff:g></string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">Item moved</string>
   <!-- Accessibility description to move item into an existing folder. -->
@@ -267,34 +264,34 @@
   <string name="dynamic_ui_pref_title">Extract accent color from wallpaper</string>
   <string name="blur_pref_title">Enable blur</string>
   <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
-  <string name="blur_radius_pref_title">Blur radius</string>
-  <string name="white_google_icon_pref_title">Use white Google icon</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
+  <string name="blur_radius_pref_title">Uskarphetsradius</string>
+  <string name="white_google_icon_pref_title">Bruk hvitt Google-ikon</string>
+  <string name="hide_icon_labels_pref_title">Gjem ikon-etiketter på hjemskjerm</string>
   <string name="workspace_label_color_hue_pref_title">Color of icon labels on homescreen</string>
   <string name="workspace_label_color_variation_pref_title">Color variation of icon labels on homescreen</string>
-  <string name="all_apps_opacity_pref_title">Drawer opacity</string>
-  <string name="num_cols_pref_title">Number of columns</string>
-  <string name="num_rows_pref_title">Number of rows</string>
-  <string name="num_hotseat_icons_pref_title">Number of icons in dock</string>
-  <string name="icon_scale_pref_title">Icon scale</string>
-  <string name="icon_text_scale_pref_title">Icon text scale</string>
-  <string name="full_width_width_widgets_pref_title">Full width widgets</string>
-  <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
-  <string name="notification_access_pref_title">Notification badges and preview</string>
+  <string name="all_apps_opacity_pref_title">Skuff-gjennomsiktighet</string>
+  <string name="num_cols_pref_title">Antall kolonner</string>
+  <string name="num_rows_pref_title">Antall rader</string>
+  <string name="num_hotseat_icons_pref_title">Antall ikon i dock</string>
+  <string name="icon_scale_pref_title">Ikon-størrelse</string>
+  <string name="icon_text_scale_pref_title">Ikon-tekst-størrelse</string>
+  <string name="full_width_width_widgets_pref_title">Full bredde på moduler</string>
+  <string name="full_width_widgets_pref_summary">Tillat moduler å spenne hele bredden uten padding</string>
+  <string name="notification_access_pref_title">Varsling-merker og forhåndsvisning</string>
   <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
-  <string name="ui_pref_title">UI</string>
-  <string name="pixel_style_pref_title">Pixel style</string>
-  <string name="behavior_pref_title">Behavior</string>
-  <string name="debug_pref_title">Debug</string>
-  <string name="import_export_pref_title">Import/Export</string>
-  <string name="show_pixel_bar_pref_title">Show Pixel top bar</string>
-  <string name="use_wide_searchbar_pref_title">Use wide searchbar</string>
-  <string name="show_mic_pref_title">Show Google Assistant button</string>
-  <string name="use_round_searhbar">Use round apps searchbar</string>
-  <string name="pixel_style_icons_pref_title">Use Pixel icons</string>
-  <string name="pixel_style_icons_pref_summary">When enabled circular icons will be used where possible</string>
-  <string name="show_google_now_tab_pref_title">Show Google Now page</string>
-  <string name="restart_lawnchair_pref_title">Restart Lawnchair</string>
+  <string name="ui_pref_title">Brukergrensesnitt</string>
+  <string name="pixel_style_pref_title">Pixel-stil</string>
+  <string name="behavior_pref_title">Oppførsel</string>
+  <string name="debug_pref_title">Feilsøk</string>
+  <string name="import_export_pref_title">Importér/eksportér</string>
+  <string name="show_pixel_bar_pref_title">Vis Pixel-topplinje</string>
+  <string name="use_wide_searchbar_pref_title">Bruk bred søkelinje</string>
+  <string name="show_mic_pref_title">Vis Google Assistant-knapp</string>
+  <string name="use_round_searhbar">Bruk rund søkelinje</string>
+  <string name="pixel_style_icons_pref_title">Bruk Pixel-ikon</string>
+  <string name="pixel_style_icons_pref_summary">Når aktivert, brukes runde ikoner hvor det er mulig</string>
+  <string name="show_google_now_tab_pref_title">Vis Google Nå-siden</string>
+  <string name="restart_lawnchair_pref_title">Start Lawnchair på nytt</string>
   <string name="restart_lawnchair_pref_summary">Can be helpful if some settings are not properly applied</string>
   <string name="rebuild_icondb_pref_title">Rebuild Icon Database</string>
   <string name="pinch_to_overview_pref_title">Pinch to overview</string>
