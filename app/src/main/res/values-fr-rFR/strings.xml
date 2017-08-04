@@ -394,9 +394,9 @@
   <string name="search_bar">Barre de recherche</string>
   <string name="folder">Dossier</string>
   <string name="dock_allapps"><![CDATA[Dock & toutes les applications]]></string>
-  <string name="app_shortcuts">App shortcuts</string>
+  <string name="app_shortcuts">Raccourcis d\'application</string>
   <string name="blur_effect">Effet de flou</string>
-  <string name="enable_editing_pref_title">Enable editing workspace</string>
+  <string name="enable_editing_pref_title">Activer l\'édition de l\'espace de travail</string>
   <string name="pref_weather_provider">Fournisseur météo</string>
   <string name="loading">Chargement...</string>
 </resources>
