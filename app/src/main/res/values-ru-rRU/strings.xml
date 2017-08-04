@@ -256,10 +256,10 @@
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Набор значков</string>
   <string name="icon_pack_preference_summary">Выберите набор значков</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Докбар использует цвет обоев</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">Докбар будет окрашен в цвет, извлеченный из обоев</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">Цвет докбара будет серым, но яркость будет настроена яркостью обоев</string>
-  <string name="transparent_hotseat_pref_title">Прозрачный докбар</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Док-бар использует цвет обоев</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">Док-бар будет окрашен в цвет, извлеченный из обоев</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">Цвет док-бара будет серым, но яркость будет настроена яркостью обоев</string>
+  <string name="transparent_hotseat_pref_title">Прозрачный док-бар</string>
   <string name="dynamic_ui_pref_title">Извлечь цвет акцента из обоев</string>
   <string name="blur_pref_title">Включить размытие</string>
   <string name="blur_pref_summary">Применить эффект размытия к некоторым частям интерфейса\nНе совместим с живыми обоями</string>
