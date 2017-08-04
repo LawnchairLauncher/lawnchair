@@ -360,13 +360,13 @@
   <string name="show_top_shadow_title">显示顶部阴影</string>
   <string name="pref_cat_homescreen">主屏幕</string>
   <string name="pref_cat_miscellaneous">其它</string>
-  <string name="pref_cat_hotseat">Dock栏</string>
+  <string name="pref_cat_hotseat">Dock 栏</string>
   <string name="pref_cat_theme">主题</string>
   <string name="theme_pref_title">主题</string>
   <string name="theme_light">亮色主题</string>
   <string name="theme_dark">暗色主题</string>
   <string name="theme_black">黑色主题</string>
-  <string name="hide_hotseat_pref_title">隐藏Dock栏</string>
+  <string name="hide_hotseat_pref_title">隐藏 Dock 栏</string>
   <string name="all_icons">所有图标</string>
   <string name="pull_down_action_pref_title">下拉行为</string>
   <string name="pull_down_do_nothing">无操作</string>
