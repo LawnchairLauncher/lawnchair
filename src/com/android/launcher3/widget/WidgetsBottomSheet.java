@@ -88,7 +88,8 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
         mScrollInterpolator = new SwipeDetector.ScrollInterpolator();
         mInsets = new Rect();
         mSwipeDetector = new SwipeDetector(context, this, SwipeDetector.VERTICAL);
-        mGradientBackground = (GradientView) mLauncher.findViewById(R.id.gradient_bg);
+        mGradientBackground = (GradientView) mLauncher.getLayoutInflater().inflate(
+                R.layout.gradient_bg, mLauncher.getDragLayer(), false);
     }
 
     @Override
@@ -106,6 +107,8 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
 
         onWidgetsBound();
 
+        mLauncher.getDragLayer().addView(mGradientBackground);
+        mGradientBackground.setVisibility(VISIBLE);
         mLauncher.getDragLayer().addView(this);
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         setTranslationY(mTranslationYClosed);
@@ -212,11 +215,8 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
             mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mIsOpen = false;
                     mSwipeDetector.finishedScrolling();
-                    ((ViewGroup) getParent()).removeView(WidgetsBottomSheet.this);
-                    mLauncher.getSystemUiController().updateUiState(
-                            SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, 0);
+                    onCloseComplete();
                 }
             });
             mOpenCloseAnimator.setInterpolator(mSwipeDetector.isIdleState()
@@ -224,10 +224,16 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
             mOpenCloseAnimator.start();
         } else {
             setTranslationY(mTranslationYClosed);
-            mLauncher.getSystemUiController().updateUiState(
-                    SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, 0);
-            mIsOpen = false;
+            onCloseComplete();
         }
+    }
+
+    private void onCloseComplete() {
+        mIsOpen = false;
+        mLauncher.getDragLayer().removeView(mGradientBackground);
+        mLauncher.getDragLayer().removeView(WidgetsBottomSheet.this);
+        mLauncher.getSystemUiController().updateUiState(
+                SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, 0);
     }
 
     @Override
