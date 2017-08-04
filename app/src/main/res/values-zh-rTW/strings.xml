@@ -391,11 +391,11 @@
   <string name="pref_applyTheme">套用主題至</string>
   <string name="pref_applyBlur">套用模糊效果</string>
   <string name="search_bar">搜尋列</string>
-  <string name="folder">Folder</string>
-  <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
-  <string name="app_shortcuts">App shortcuts</string>
-  <string name="blur_effect">Blur effect</string>
-  <string name="enable_editing_pref_title">Enable editing workspace</string>
-  <string name="pref_weather_provider">Weather provider</string>
-  <string name="loading">Loading...</string>
+  <string name="folder">資料夾</string>
+  <string name="dock_allapps"><![CDATA[Dock欄與所有應用程式]]></string>
+  <string name="app_shortcuts">應用程式捷徑</string>
+  <string name="blur_effect">模糊效果</string>
+  <string name="enable_editing_pref_title">啟用編輯工作區</string>
+  <string name="pref_weather_provider">天氣供應商</string>
+  <string name="loading">載入中...</string>
 </resources>
