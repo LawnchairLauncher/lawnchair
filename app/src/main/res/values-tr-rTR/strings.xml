@@ -354,11 +354,11 @@
   <!-- Customization Color -->
   <string name="grey">Gri</string>
   <!-- Customization Color -->
-  <string name="blue_grey">Blue Grey</string>
-  <string name="default_text">Default</string>
-  <string name="edit_icon_reset">Reset</string>
-  <string name="show_top_shadow_title">Show top shadow</string>
-  <string name="pref_cat_homescreen">Home screen</string>
+  <string name="blue_grey">Mavi Gri</string>
+  <string name="default_text">Varsayılan</string>
+  <string name="edit_icon_reset">Sıfırla</string>
+  <string name="show_top_shadow_title">Üst gölgeyi göster</string>
+  <string name="pref_cat_homescreen">Ana ekran</string>
   <string name="pref_cat_miscellaneous">Diğer</string>
   <string name="pref_cat_hotseat">Alt Panel</string>
   <string name="pref_cat_theme">Tema</string>
