@@ -366,7 +366,7 @@
   <string name="theme_light">Clair</string>
   <string name="theme_dark">Sombre</string>
   <string name="theme_black">Noir</string>
-  <string name="hide_hotseat_pref_title">Hide Dock</string>
+  <string name="hide_hotseat_pref_title">Masquer le dock</string>
   <string name="all_icons">Toutes les icônes</string>
   <string name="pull_down_action_pref_title">Pull down action</string>
   <string name="pull_down_do_nothing">Ne rien faire</string>
