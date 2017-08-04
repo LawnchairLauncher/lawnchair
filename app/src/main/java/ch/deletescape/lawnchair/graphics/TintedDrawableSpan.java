@@ -22,6 +22,8 @@ import android.graphics.Paint.FontMetricsInt;
 import android.graphics.drawable.Drawable;
 import android.text.style.DynamicDrawableSpan;
 
+import ch.deletescape.lawnchair.Utilities;
+
 /**
  * {@link DynamicDrawableSpan} which draws a drawable tinted with the current paint color.
  */
@@ -39,6 +41,8 @@ public class TintedDrawableSpan extends DynamicDrawableSpan {
     @Override
     public int getSize(Paint paint, CharSequence text, int start, int end, FontMetricsInt fm) {
         fm = fm == null ? paint.getFontMetricsInt() : fm;
+        if (!Utilities.isNycOrAbove())
+            fm = Utilities.fontMetricsIntFromFontMetrics(paint.getFontMetrics());
         int iconSize = fm.bottom - fm.top;
         mDrawable.setBounds(0, 0, iconSize, iconSize);
         return super.getSize(paint, text, start, end, fm);

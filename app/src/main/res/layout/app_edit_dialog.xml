@@ -15,7 +15,7 @@
         <ImageView
             android:id="@+id/icon"
             android:layout_width="match_parent"
-            android:src="@mipmap/ic_launcher_home"
+            android:src="@mipmap/ic_launcher"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:layout_height="match_parent" />
 
