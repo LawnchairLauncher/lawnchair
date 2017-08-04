@@ -41,7 +41,6 @@
   <string name="long_accessible_way_to_add">ダブルタップ後に押し続けてウィジェットを選択するか、カスタム操作を使用してください。</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
-  <string name="widget_dims_format">%1$dx%2$d</string>
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
   <string name="widget_accessible_dims_format">幅 %1$d、高さ %2$d</string>
   <!-- All Apps -->
@@ -55,7 +54,7 @@
   <string name="all_apps_search_market_message">他のアプリを検索</string>
   <!-- Drag and drop -->
   <skip></skip>
-  <!-- Error message when user has filled a home screen -->
+  <!-- Error message when user has filled a page -->
   <string name="out_of_space">このホーム画面に空きスペースがありません。</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">お気に入りトレイに空きスペースがありません</string>
@@ -104,7 +103,7 @@
   <string name="default_scroll_format">%1$d/%2$dページ</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">ホーム画面: %1$d/%2$d</string>
-  <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
+  <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
   <string name="workspace_new_page">新しいホーム画面ページ</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
@@ -260,11 +259,11 @@
   <string name="hotseat_uses_extracted_colors_pref_off">ドックはグレーの色になりますが、壁紙の明るさによって調整されます。</string>
   <string name="transparent_hotseat_pref_title">透明なドック</string>
   <string name="dynamic_ui_pref_title">壁紙からアクセントの色を抽出する。</string>
-  <string name="dark_theme_pref_title">暗いテーマを有効にする</string>
   <string name="blur_pref_title">ぼかしを有効にする</string>
+  <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
   <string name="blur_radius_pref_title">ぼかしの範囲</string>
   <string name="white_google_icon_pref_title">白いGoogleアイコンを使用する</string>
-  <string name="hide_icon_labels_pref_title">ホーム画面のアイコンラベルを非表示にする</string>
+  <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
   <string name="workspace_label_color_hue_pref_title">ホーム画面のアイコンラベルの色</string>
   <string name="workspace_label_color_variation_pref_title">ホーム画面上のアイコンラベルの色の変化</string>
   <string name="all_apps_opacity_pref_title">アプリドロワー不透明度</string>
@@ -293,18 +292,15 @@
   <string name="restart_lawnchair_pref_summary">一部の設定が正しく適用されない場合に役立ちます</string>
   <string name="rebuild_icondb_pref_title">アイコンデータベースを再構築する</string>
   <string name="pinch_to_overview_pref_title">概要にピンチ</string>
-  <string name="pinch_to_overview_pref_summary">ホーム画面をピンチして概要を開きます</string>
-  <string name="pull_down_notis_pref_title">プルダウンから通知</string>
-  <string name="pull_down_notis_pref_on">ホーム画面をプルダウンするとステータスバーが開きます。</string>
-  <string name="pull_down_notis_pref_off">有効にすると、ホーム画面がプルダウンされ、ステータスバーが展開されます。</string>
+  <string name="pinch_to_overview_pref_summary">Pinch on the home screen to open the overview</string>
   <string name="light_statusbar_pref_title">明るいステータスバー</string>
-  <string name="light_statusbar_pref_on">明るい壁紙を使用する場合、ステータスバーには暗いアイコンを適用します。</string>
+  <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
   <string name="light_statusbar_pref_off">ステータスバーは常に明るいアイコンで表示されます。</string>
   <string name="haptic_feedback_pref_title">振動を有効にします</string>
   <string name="keep_scroll_state_pref_title">スクロール位置を保存</string>
   <string name="keep_scroll_state_pref_summary">アプリドロワーのスクロール位置を保存します。</string>
   <string name="home_opens_drawer_pref_title">ホームボタンでアプリドロワーを開きます</string>
-  <string name="home_opens_drawer_pref_summary">ホーム画面でホームボタンを押すと、アプリドロワーが開きます</string>
+  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the home screen will open the app drawer</string>
   <string name="show_hidden_pref_title">隠しアプリを表示する</string>
   <string name="show_hidden_pref_on">非表示のアプリケーションが表示され、表示設定が変更されます</string>
   <string name="show_hidden_pref_off">隠しアプリは表示されません</string>
@@ -359,4 +355,47 @@
   <!-- Customization Color -->
   <string name="blue_grey">ブルーグレー</string>
   <string name="default_text">デフォルト</string>
+  <string name="edit_icon_reset">リセット</string>
+  <string name="show_top_shadow_title">Show top shadow</string>
+  <string name="pref_cat_homescreen">ホーム画面</string>
+  <string name="pref_cat_miscellaneous">その他</string>
+  <string name="pref_cat_hotseat">ドック</string>
+  <string name="pref_cat_theme">Theme</string>
+  <string name="theme_pref_title">Theme</string>
+  <string name="theme_light">Light</string>
+  <string name="theme_dark">Dark</string>
+  <string name="theme_black">Black</string>
+  <string name="hide_hotseat_pref_title">ドックを隠す</string>
+  <string name="all_icons">All Icons</string>
+  <string name="pull_down_action_pref_title">Pull down action</string>
+  <string name="pull_down_do_nothing">Do nothing</string>
+  <string name="pull_down_notis">通知を表示</string>
+  <string name="pull_down_search">Open search</string>
+  <string name="pull_down_apps_search">Apps search</string>
+  <string name="enable_screen_rotation">画面の回転を有効にする</string>
+  <!-- Import/Export Strings -->
+  <string name="imexport_success">Success!</string>
+  <string name="imexport_error">Error: Failed to copy file</string>
+  <string name="imexport_no_backup_found">バックアップが見つかりません</string>
+  <string name="imexport_external_storage_unreadable">External storage is not readable (grant permission in settings)</string>
+  <string name="imexport_external_storage_unwritable">External storage is not writable (grant permission in settings)</string>
+  <string name="units_metric">Metric</string>
+  <string name="units_imperial">Imperial</string>
+  <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_cat_weather">天気</string>
+  <string name="pref_weather_title">Enable weather</string>
+  <string name="pref_weather_units">Weather Units</string>
+  <string name="pref_weather_city_summary">For best results include country code</string>
+  <string name="pref_weather_city_title">City</string>
+  <string name="none">None</string>
+  <string name="pref_applyTheme">Apply theme on</string>
+  <string name="pref_applyBlur">Apply blur on</string>
+  <string name="search_bar">検索バー</string>
+  <string name="folder">Folder</string>
+  <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
+  <string name="app_shortcuts">App shortcuts</string>
+  <string name="blur_effect">Blur effect</string>
+  <string name="enable_editing_pref_title">Enable editing workspace</string>
+  <string name="pref_weather_provider">Weather provider</string>
+  <string name="loading">Loading...</string>
 </resources>

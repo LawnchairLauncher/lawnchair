@@ -41,7 +41,6 @@
   <string name="long_accessible_way_to_add">Appuyer 2 fois et maintenir la pression pour sélectionner un widget ou utilisez une action personnalisée.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
-  <string name="widget_dims_format">%1$d x %2$d</string>
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
   <string name="widget_accessible_dims_format">%1$d de largeur et %2$d de hauteur</string>
   <!-- All Apps -->
@@ -55,7 +54,7 @@
   <string name="all_apps_search_market_message">Rechercher plus d\'applications</string>
   <!-- Drag and drop -->
   <skip></skip>
-  <!-- Error message when user has filled a home screen -->
+  <!-- Error message when user has filled a page -->
   <string name="out_of_space">Plus d\'espace libre sur cet écran d\'accueil.</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">Plus d\'espace libre dans la zone de favoris</string>
@@ -104,7 +103,7 @@
   <string name="default_scroll_format">Page %1$d sur %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">Écran d\'accueil %1$d sur %2$d</string>
-  <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
+  <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
   <string name="workspace_new_page">Nouvelle page d\'écran d\'accueil</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
@@ -253,7 +252,7 @@
   <string name="about_text">Lawnchair est un launcher créé par Till Kottmann (alias deletescape). Il est basé sur Launcher3 d\'AOSP.</string>
   <string name="about_title">A propos</string>
   <string name="changelog_title">Journal des modifications pour la build n°%d</string>
-  <string name="week_day_format">%1$s, %2$s</string>
+  <string name="week_day_format">%1$s%2$s</string>
   <string name="icon_pack_preference_title">Pack d\'icônes</string>
   <string name="icon_pack_preference_summary">Choisissez un pack d\'icônes</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Le dock utilise les couleurs du fond d\'écran</string>
@@ -261,11 +260,11 @@
   <string name="hotseat_uses_extracted_colors_pref_off">Le dock sera de couleur grise, mais ajusté par la luminosité du fond d\'écran</string>
   <string name="transparent_hotseat_pref_title">Dock transparent</string>
   <string name="dynamic_ui_pref_title">Extraire couleur accentuation du fond d\'écran</string>
-  <string name="dark_theme_pref_title">Activer le thème sombre</string>
   <string name="blur_pref_title">Activer le flou</string>
+  <string name="blur_pref_summary">Appliquer un effet de flou sur les parties de l\'interface\nNon compatible avec les écrans dynamiques</string>
   <string name="blur_radius_pref_title">Rayon du flou</string>
   <string name="white_google_icon_pref_title">Utiliser l\'icône blanche de Google</string>
-  <string name="hide_icon_labels_pref_title">Masquer libellés des icônes de l\'écran d\'accueil</string>
+  <string name="hide_icon_labels_pref_title">Masquer le nom des icônes sur l\'écran d\'accueil</string>
   <string name="workspace_label_color_hue_pref_title">Couleur des libellés des icônes sur l\'écran d\'accueil</string>
   <string name="workspace_label_color_variation_pref_title">Variation de couleur libellés des icônes de l\'écran d\'accueil</string>
   <string name="all_apps_opacity_pref_title">Opacité du tiroir des applications</string>
@@ -295,17 +294,14 @@
   <string name="rebuild_icondb_pref_title">Reconstruire la base de données des icônes</string>
   <string name="pinch_to_overview_pref_title">Pincer pour afficher la vue d\'ensemble</string>
   <string name="pinch_to_overview_pref_summary">Pincer à 2 doigts sur l\'écran d\'accueil pour ouvrir la vue d\'ensemble</string>
-  <string name="pull_down_notis_pref_title">Glisser vers le bas affiche les notifications</string>
-  <string name="pull_down_notis_pref_on">Glisser vers le bas sur l\'écran d\'accueil étendra la barre d\'état.</string>
-  <string name="pull_down_notis_pref_off">Si activé, glisser vers le bas sur l\'écran d\'accueil étend la barre d\'état.</string>
   <string name="light_statusbar_pref_title">Barre d\'état claire</string>
-  <string name="light_statusbar_pref_on">La barre d’État peut afficher des icônes sombres lors de l\'utilisation d\'un fond d\'écran clair.</string>
+  <string name="light_statusbar_pref_force">La barre d\'état affichera des icônes sombres</string>
   <string name="light_statusbar_pref_off">La barre d’état affichera toujours des icônes clairs.</string>
   <string name="haptic_feedback_pref_title">Activer les vibrations</string>
   <string name="keep_scroll_state_pref_title">Enregistrer la position du défilement</string>
   <string name="keep_scroll_state_pref_summary">Enregistre la position du défilement dans le tiroir des applications</string>
   <string name="home_opens_drawer_pref_title">Le bouton Home ouvre le tiroir des applications</string>
-  <string name="home_opens_drawer_pref_summary">Sur l’écran d’accueil, en appuyant sur le bouton home vous ouvrirez le tiroir des applications</string>
+  <string name="home_opens_drawer_pref_summary">Appuyer sur le bouton d\'accueil en étant sur l\'écran d\'accueil ouvrira la liste des applications</string>
   <string name="show_hidden_pref_title">Afficher les applications cachées</string>
   <string name="show_hidden_pref_on">Les applications cachées seront affichées pour modifier les paramètres de visibilité</string>
   <string name="show_hidden_pref_off">Les applications cachées ne seront pas visilbles</string>
@@ -360,4 +356,47 @@
   <!-- Customization Color -->
   <string name="blue_grey">Bleu Gris</string>
   <string name="default_text">Par défaut</string>
+  <string name="edit_icon_reset">Réinitialiser</string>
+  <string name="show_top_shadow_title">Affiche l\'ombre du haut</string>
+  <string name="pref_cat_homescreen">Écran d\'accueil</string>
+  <string name="pref_cat_miscellaneous">Divers</string>
+  <string name="pref_cat_hotseat">Dock</string>
+  <string name="pref_cat_theme">Thème</string>
+  <string name="theme_pref_title">Thème</string>
+  <string name="theme_light">Clair</string>
+  <string name="theme_dark">Sombre</string>
+  <string name="theme_black">Noir</string>
+  <string name="hide_hotseat_pref_title">Masquer le dock</string>
+  <string name="all_icons">Toutes les icônes</string>
+  <string name="pull_down_action_pref_title">Action pour un glissement vers le bas</string>
+  <string name="pull_down_do_nothing">Ne rien faire</string>
+  <string name="pull_down_notis">Afficher les notifications</string>
+  <string name="pull_down_search">Ouvrir la recherche</string>
+  <string name="pull_down_apps_search">Recherche d\'applications</string>
+  <string name="enable_screen_rotation">Activer la rotation de l\'écran</string>
+  <!-- Import/Export Strings -->
+  <string name="imexport_success">Réussi !</string>
+  <string name="imexport_error">Erreur : Impossible de copier le fichier</string>
+  <string name="imexport_no_backup_found">Aucune sauvegarde trouvée</string>
+  <string name="imexport_external_storage_unreadable">Le stockage externe n\'est pas lisible (activer la permissions dans les paramètres)</string>
+  <string name="imexport_external_storage_unwritable">Le stockage externe n\'est pas modifiable (activer la permissions dans les paramètres)</string>
+  <string name="units_metric">Métrique</string>
+  <string name="units_imperial">Impérial</string>
+  <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_cat_weather">Météo</string>
+  <string name="pref_weather_title">Activer la météo</string>
+  <string name="pref_weather_units">Unité météo</string>
+  <string name="pref_weather_city_summary">Pour de meilleurs résultats ajouter le code du pays</string>
+  <string name="pref_weather_city_title">Ville</string>
+  <string name="none">Aucun</string>
+  <string name="pref_applyTheme">Appliquer le thème sur</string>
+  <string name="pref_applyBlur">Appliquez le flou sur</string>
+  <string name="search_bar">Barre de recherche</string>
+  <string name="folder">Dossier</string>
+  <string name="dock_allapps"><![CDATA[Dock & toutes les applications]]></string>
+  <string name="app_shortcuts">Raccourcis d\'application</string>
+  <string name="blur_effect">Effet de flou</string>
+  <string name="enable_editing_pref_title">Activer l\'édition de l\'espace de travail</string>
+  <string name="pref_weather_provider">Fournisseur météo</string>
+  <string name="loading">Chargement...</string>
 </resources>

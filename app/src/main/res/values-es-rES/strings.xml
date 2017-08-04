@@ -29,7 +29,7 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">Aplicación no disponible</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Aplicación descargada deshabilitada en modo seguro</string>
+  <string name="safemode_shortcut_error">Aplicaciones descargadas están deshabilitadas en modo seguro</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">Widgets deshabilitados en modo seguro</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
@@ -38,10 +38,9 @@
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
   <string name="long_press_widget_to_add">Mantén pulsado el widget que quieras seleccionar.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-  <string name="long_accessible_way_to_add">Toca dos veces y mantén pulsado el widget que quieras seleccionar o utiliza acciones personalizadas.</string>
+  <string name="long_accessible_way_to_add">Toca dos veces y mantén pulsado para seleccionar un widget o utilizar acciones personalizadas.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
-  <string name="widget_dims_format">%1$d × %2$d</string>
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
   <string name="widget_accessible_dims_format">%1$d de ancho por %2$d de alto</string>
   <!-- All Apps -->
@@ -55,7 +54,7 @@
   <string name="all_apps_search_market_message">Buscar más aplicaciones</string>
   <!-- Drag and drop -->
   <skip></skip>
-  <!-- Error message when user has filled a home screen -->
+  <!-- Error message when user has filled a page -->
   <string name="out_of_space">No queda espacio en la pantalla de inicio.</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">La bandeja de favoritos está completa</string>
@@ -104,7 +103,7 @@
   <string name="default_scroll_format">Página %1$d de %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">Pantalla de inicio %1$d de %2$d</string>
-  <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
+  <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
   <string name="workspace_new_page">Nueva página de pantalla de inicio</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
@@ -165,7 +164,7 @@
   <!-- Accessibility description to move item inside a folder. -->
   <string name="move_to_position">Mover a la posición número <xliff:g id="NUMBER">%1$s</xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Mover a la posición número <xliff:g id="NUMBER">%1$s</xliff:g> de favoritos</string>
+  <string name="move_to_hotseat_position">Mover a posición de favoritos número <xliff:g example="1" id="number">%1$s </xliff:g></string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">Elemento movido</string>
   <!-- Accessibility description to move item into an existing folder. -->
@@ -246,7 +245,7 @@
   <string name="title_show_google_app_default">Mostrar aplicación de Google</string>
   <string name="label_search">Buscar</string>
   <string name="label_voice_search">Busqueda por voz</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d atajos y %2$d notificaciones para %3$s</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d accesos directos y %2$d notificaciones para %3$s</string>
   <string name="notifications_header">Notificaciones</string>
   <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
@@ -257,17 +256,17 @@
   <string name="icon_pack_preference_title">Paquete de iconos</string>
   <string name="icon_pack_preference_summary">Selecciona un paquete de iconos</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Utiliza el color del fondo de pantalla para el Dock</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">El dock se colorea con el color extraido del fondo de pantalla</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">El dock será gris ajustado al brillo del fondo de pantalla</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">El dock se colorea con un color extraído del fondo de pantalla</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">El dock será gris, pero ajustado por el brillo del fondo de pantalla</string>
   <string name="transparent_hotseat_pref_title">Dock transparente</string>
   <string name="dynamic_ui_pref_title">Extrae el color del fondo de pantalla</string>
-  <string name="dark_theme_pref_title">Habilitar tema oscuro</string>
   <string name="blur_pref_title">Habilitar desenfoque</string>
+  <string name="blur_pref_summary">Aplicar efecto desenfoque a las partes de la interfaz\n No es compatible con fondos de pantalla animados</string>
   <string name="blur_radius_pref_title">Radio de desenfoque</string>
   <string name="white_google_icon_pref_title">Usa el icono blanco de Google</string>
-  <string name="hide_icon_labels_pref_title">Ocultar el nombre de la aplicaciones en la pantalla de inicio</string>
-  <string name="workspace_label_color_hue_pref_title">Color y etiquetas de aplicaciones de la pantalla de inicio</string>
-  <string name="workspace_label_color_variation_pref_title">Variante de color para las etiquetas de las aplicaciones en la pantalla de inicio</string>
+  <string name="hide_icon_labels_pref_title">Ocultar etiquetas de aplicaciones en la pantalla de inicio</string>
+  <string name="workspace_label_color_hue_pref_title">Color de etiquetas de las aplicaciones de la pantalla de inicio</string>
+  <string name="workspace_label_color_variation_pref_title">Variación de color para las etiquetas de las aplicaciones en la pantalla de inicio</string>
   <string name="all_apps_opacity_pref_title">Opacidad del cajón de aplicaciones</string>
   <string name="num_cols_pref_title">Número de columnas</string>
   <string name="num_rows_pref_title">Número de filas</string>
@@ -277,11 +276,11 @@
   <string name="full_width_width_widgets_pref_title">Widgets de ancho completo</string>
   <string name="full_width_widgets_pref_summary">Permitir a los widgets mostrarse sobre todo el ancho sin relleno</string>
   <string name="notification_access_pref_title">Insignia en notificaciones y vista previa</string>
-  <string name="notification_access_pref_summary">Permitir a Lawnchair el acceso a las notificaciones</string>
+  <string name="notification_access_pref_summary">Permitir a Lawnchair el acceso a las notificaciones para habilitar ésta función</string>
   <string name="ui_pref_title">Interfaz de usuario</string>
   <string name="pixel_style_pref_title">Estilo Pixel</string>
   <string name="behavior_pref_title">Comportamiento</string>
-  <string name="debug_pref_title">Depurar</string>
+  <string name="debug_pref_title">Depuración</string>
   <string name="import_export_pref_title">Importar/Exportar</string>
   <string name="show_pixel_bar_pref_title">Mostrar barra superior al estilo Pixel</string>
   <string name="use_wide_searchbar_pref_title">Usar barra de busqueda amplia</string>
@@ -291,21 +290,18 @@
   <string name="pixel_style_icons_pref_summary">Cuando la opción esté habilitada, se utilizarán iconos circulares si es posible</string>
   <string name="show_google_now_tab_pref_title">Mostrar página de Google Now</string>
   <string name="restart_lawnchair_pref_title">Reiniciar Lawnchair</string>
-  <string name="restart_lawnchair_pref_summary">Util para los cambios que no se aplican correctamente</string>
+  <string name="restart_lawnchair_pref_summary">Puede ser útil si algunos ajustes no se aplican correctamente</string>
   <string name="rebuild_icondb_pref_title">Reconstruir la base de datos de iconos</string>
   <string name="pinch_to_overview_pref_title">Pellizcar para vista general</string>
-  <string name="pinch_to_overview_pref_summary">Pellizcar en el escritorio para abrir la vista general</string>
-  <string name="pull_down_notis_pref_title">Deslizar hacia abajo para abrir las notificaciones</string>
-  <string name="pull_down_notis_pref_on">Desliza hacia abajo la pantalla de inicio para expandir la barra de estado.</string>
-  <string name="pull_down_notis_pref_off">Cuando esté activado, deslizar hacia abajo para expandir la barra de estado.</string>
+  <string name="pinch_to_overview_pref_summary">Pellizcar en la pantalla principal para abrir la vista general</string>
   <string name="light_statusbar_pref_title">Barra de estado clara</string>
-  <string name="light_statusbar_pref_on">La barra de estado usará iconos oscuros cuando se use un fondo de pantalla claro.</string>
-  <string name="light_statusbar_pref_off">La barra de estado mostrará siempre iconos claros.</string>
+  <string name="light_statusbar_pref_force">La barra de estado mostrará iconos oscuros</string>
+  <string name="light_statusbar_pref_off">La barra de estado mostrará iconos claros</string>
   <string name="haptic_feedback_pref_title">Habilitar vibración</string>
   <string name="keep_scroll_state_pref_title">Mantener posición de desplazamiento</string>
-  <string name="keep_scroll_state_pref_summary">Guarda los cambios de la posición de desplazamiento del cajón</string>
+  <string name="keep_scroll_state_pref_summary">Guarda la posición de desplazamiento del cajón</string>
   <string name="home_opens_drawer_pref_title">El botón de inicio abre el cajón de aplicaciones</string>
-  <string name="home_opens_drawer_pref_summary">Al presionar el botón de inicio en la pantalla de inicio, se abrirá el cajón de aplicaciones</string>
+  <string name="home_opens_drawer_pref_summary">Al presionar el botón de inicio en la pantalla principal, se abrirá el cajón de aplicaciones</string>
   <string name="show_hidden_pref_title">Mostrar aplicaciones ocultas</string>
   <string name="show_hidden_pref_on">Se mostrarán las aplicaciones ocultas para cambiar los ajustes de visibilidad</string>
   <string name="show_hidden_pref_off">Las aplicaciones ocultas no serán visibles</string>
@@ -360,4 +356,47 @@
   <!-- Customization Color -->
   <string name="blue_grey">Gris azulado</string>
   <string name="default_text">Por defecto</string>
+  <string name="edit_icon_reset">Reiniciar</string>
+  <string name="show_top_shadow_title">Ver sombras superior de los objetos</string>
+  <string name="pref_cat_homescreen">Pantalla de inicio</string>
+  <string name="pref_cat_miscellaneous">Varios</string>
+  <string name="pref_cat_hotseat">Barra de aplicaciones</string>
+  <string name="pref_cat_theme">Temas</string>
+  <string name="theme_pref_title">Temas</string>
+  <string name="theme_light">Claro</string>
+  <string name="theme_dark">Oscuro</string>
+  <string name="theme_black">Negro</string>
+  <string name="hide_hotseat_pref_title">Ocultar la barra de aplicaciones</string>
+  <string name="all_icons">Todos los iconos</string>
+  <string name="pull_down_action_pref_title">Tire hacia abajo</string>
+  <string name="pull_down_do_nothing">No hacer nada </string>
+  <string name="pull_down_notis">Mostrar notificaciones</string>
+  <string name="pull_down_search">Abrir búsqueda</string>
+  <string name="pull_down_apps_search">Buscar aplicación</string>
+  <string name="enable_screen_rotation">Habilitar la rotación de la pantalla</string>
+  <!-- Import/Export Strings -->
+  <string name="imexport_success">¡Operación correcta!</string>
+  <string name="imexport_error">Error: Error al copiar el archivo</string>
+  <string name="imexport_no_backup_found">Ninguna copia de seguridad encontrada</string>
+  <string name="imexport_external_storage_unreadable">Almacenamiento externo no es legible (conceder permisos en ajustes)</string>
+  <string name="imexport_external_storage_unwritable">Almacenamiento externo no es legible (conceder permisos en ajustes)</string>
+  <string name="units_metric">Métrico</string>
+  <string name="units_imperial">Imperial</string>
+  <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_cat_weather">Clima</string>
+  <string name="pref_weather_title">Activar el clima</string>
+  <string name="pref_weather_units">Unidad de temperatura</string>
+  <string name="pref_weather_city_summary">Para obtener los mejores resultados incluyen código de país</string>
+  <string name="pref_weather_city_title">Ciudad</string>
+  <string name="none">Nada</string>
+  <string name="pref_applyTheme">Aplicar tema en</string>
+  <string name="pref_applyBlur">Aplique desenfoque de</string>
+  <string name="search_bar">Barra de búsqueda</string>
+  <string name="folder">Carpeta</string>
+  <string name="dock_allapps"><![CDATA[Base y todas las aplicaciones]]></string>
+  <string name="app_shortcuts">Acceso directo</string>
+  <string name="blur_effect">Efecto de desenfoque</string>
+  <string name="enable_editing_pref_title">Habilitar la edición del espacio de trabajo</string>
+  <string name="pref_weather_provider">Agregar proveedor de clima</string>
+  <string name="loading">Cargando...</string>
 </resources>

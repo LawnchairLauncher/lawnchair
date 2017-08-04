@@ -41,7 +41,6 @@
   <string name="long_accessible_way_to_add">Чтобы выбрать виджет, нажмите на него дважды и не отпускайте или выполните предложенные действия.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
-  <string name="widget_dims_format">%1$d x %2$d</string>
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
   <string name="widget_accessible_dims_format">Ширина %1$d, высота %2$d</string>
   <!-- All Apps -->
@@ -55,7 +54,7 @@
   <string name="all_apps_search_market_message">Искать другие приложения</string>
   <!-- Drag and drop -->
   <skip></skip>
-  <!-- Error message when user has filled a home screen -->
+  <!-- Error message when user has filled a page -->
   <string name="out_of_space">На этом экране все занято</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">В разделе \"Избранное\" больше нет места</string>
@@ -104,7 +103,7 @@
   <string name="default_scroll_format">Стр. %1$d из %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">Главный экран %1$d из %2$d</string>
-  <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
+  <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
   <string name="workspace_new_page">Новый экран</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
@@ -238,7 +237,7 @@
   <!-- Title of activity for cropping wallpapers -->
   <string name="crop_wallpaper">Кадрировать обои</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
-  <string name="which_wallpaper_option_home_screen">Домашний экран</string>
+  <string name="which_wallpaper_option_home_screen">Главный экран</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
   <string name="which_wallpaper_option_lock_screen">Экран блокировки</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
@@ -257,16 +256,16 @@
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Набор значков</string>
   <string name="icon_pack_preference_summary">Выберите набор значков</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Докбар использует цвет обоев</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">Докбар будет окрашен в цвет, извлеченный из обоев</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">Цвет докбара будет серым, но яркость будет настроена яркостью обоев</string>
-  <string name="transparent_hotseat_pref_title">Прозрачный докбар</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Док-бар использует цвет обоев</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">Док-бар будет окрашен в цвет, извлеченный из обоев</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">Цвет док-бара будет серым, но яркость будет настроена яркостью обоев</string>
+  <string name="transparent_hotseat_pref_title">Прозрачный док-бар</string>
   <string name="dynamic_ui_pref_title">Извлечь цвет акцента из обоев</string>
-  <string name="dark_theme_pref_title">Включить темную тему оформления</string>
   <string name="blur_pref_title">Включить размытие</string>
+  <string name="blur_pref_summary">Применить эффект размытия к некоторым частям интерфейса\nНе совместим с живыми обоями</string>
   <string name="blur_radius_pref_title">Радиус размытия</string>
   <string name="white_google_icon_pref_title">Использовать белый значок Google</string>
-  <string name="hide_icon_labels_pref_title">Скрыть подписи иконок на рабочем столе</string>
+  <string name="hide_icon_labels_pref_title">Скрыть подписи значков на главном экране</string>
   <string name="workspace_label_color_hue_pref_title">Цвет подписи иконок</string>
   <string name="workspace_label_color_variation_pref_title">Вариация цвета подписей</string>
   <string name="all_apps_opacity_pref_title">Прозрачность меню приложений</string>
@@ -294,13 +293,10 @@
   <string name="restart_lawnchair_pref_title">Перезапустить Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">Может быть полезно, если некоторые параметры не применяются должным образом</string>
   <string name="rebuild_icondb_pref_title">Перестроение базы данных значков</string>
-  <string name="pinch_to_overview_pref_title">«Pinch to zoom»</string>
-  <string name="pinch_to_overview_pref_summary">Показывать все рабочие столы по этому жесту</string>
-  <string name="pull_down_notis_pref_title">Уведомления по свайпу вниз</string>
-  <string name="pull_down_notis_pref_on">Панель уведомлений будет открываться по свайпу вниз</string>
-  <string name="pull_down_notis_pref_off">Если включено, панель уведомлений будет открываться по свайпу вниз</string>
+  <string name="pinch_to_overview_pref_title">Щипок для обзора</string>
+  <string name="pinch_to_overview_pref_summary">Щипок для обзора главного экрана</string>
   <string name="light_statusbar_pref_title">Светлая строка состояния</string>
-  <string name="light_statusbar_pref_on">Строка состояния может показывать темные значки при использовании светлых обоев</string>
+  <string name="light_statusbar_pref_force">Статус-бар будет показывать черные значки</string>
   <string name="light_statusbar_pref_off">В строке состояния всегда будут отображаться светлые значки</string>
   <string name="haptic_feedback_pref_title">Включить вибрацию</string>
   <string name="keep_scroll_state_pref_title">Сохранять позицию прокрутки</string>
@@ -361,4 +357,47 @@
   <!-- Customization Color -->
   <string name="blue_grey">Серо-голубой</string>
   <string name="default_text">По умолчанию</string>
+  <string name="edit_icon_reset">Сбросить</string>
+  <string name="show_top_shadow_title">Показать тень сверху</string>
+  <string name="pref_cat_homescreen">Главный экран</string>
+  <string name="pref_cat_miscellaneous">Прочие настройки</string>
+  <string name="pref_cat_hotseat">Док-бар</string>
+  <string name="pref_cat_theme">Оформление</string>
+  <string name="theme_pref_title">Тема</string>
+  <string name="theme_light">Светлая</string>
+  <string name="theme_dark">Тёмная</string>
+  <string name="theme_black">Чёрная</string>
+  <string name="hide_hotseat_pref_title">Скрыть док-бар</string>
+  <string name="all_icons">Все значки</string>
+  <string name="pull_down_action_pref_title">Действие по свайпу вниз</string>
+  <string name="pull_down_do_nothing">Нет действий</string>
+  <string name="pull_down_notis">Показать уведомления</string>
+  <string name="pull_down_search">Открыть поиск</string>
+  <string name="pull_down_apps_search">Поиск приложений</string>
+  <string name="enable_screen_rotation">Включить авто-поворот экрана</string>
+  <!-- Import/Export Strings -->
+  <string name="imexport_success">Готово!</string>
+  <string name="imexport_error">Ошибка: Не удалось скопировать файл</string>
+  <string name="imexport_no_backup_found">Файлы резервных копий не найдены</string>
+  <string name="imexport_external_storage_unreadable">Внешнее хранилище недоступно для чтения (предоставить разрешения можно в настройках)</string>
+  <string name="imexport_external_storage_unwritable">Внешнее хранилище недоступно для записи (предоставить разрешения можно в настройках)</string>
+  <string name="units_metric">Метрическая</string>
+  <string name="units_imperial">Эмпирическая</string>
+  <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_cat_weather">Погода</string>
+  <string name="pref_weather_title">Включить погоду</string>
+  <string name="pref_weather_units">Единицы измерения</string>
+  <string name="pref_weather_city_summary">Для наилучших результатов укажите код страны</string>
+  <string name="pref_weather_city_title">Город</string>
+  <string name="none">Пусто</string>
+  <string name="pref_applyTheme">Применить тему</string>
+  <string name="pref_applyBlur">Применить размытие</string>
+  <string name="search_bar">Строка поиска</string>
+  <string name="folder">Папка</string>
+  <string name="dock_allapps"><![CDATA[Док-бар и все приложения]]></string>
+  <string name="app_shortcuts">Ярлыки приложений</string>
+  <string name="blur_effect">Эффект размытия</string>
+  <string name="enable_editing_pref_title">Включить редактирование рабочего пространства</string>
+  <string name="pref_weather_provider">Поставщик погоды</string>
+  <string name="loading">Загрузка...</string>
 </resources>

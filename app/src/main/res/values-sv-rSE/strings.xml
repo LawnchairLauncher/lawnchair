@@ -41,7 +41,6 @@
   <string name="long_accessible_way_to_add">Tryck två gånger och håll kvar för att ta upp en widget eller använda anpassade åtgärder.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
-  <string name="widget_dims_format">%1$d × %2$d</string>
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
   <string name="widget_accessible_dims_format">%1$d bred och %2$d hög</string>
   <!-- All Apps -->
@@ -55,7 +54,7 @@
   <string name="all_apps_search_market_message">Sök efter fler appar</string>
   <!-- Drag and drop -->
   <skip></skip>
-  <!-- Error message when user has filled a home screen -->
+  <!-- Error message when user has filled a page -->
   <string name="out_of_space">Det finns inte plats för mer på den här startskärmen.</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">Favoritfältet är fullt</string>
@@ -104,7 +103,7 @@
   <string name="default_scroll_format">Sida %1$d av %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">Startskärm %1$d av %2$d</string>
-  <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
+  <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
   <string name="workspace_new_page">Ny sida på startskärmen</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
@@ -261,11 +260,11 @@
   <string name="hotseat_uses_extracted_colors_pref_off">Dockan kommer att färgas grå, men justeras av ljusstyrkan i bakgrundsbilden</string>
   <string name="transparent_hotseat_pref_title">Genomskinlig docka</string>
   <string name="dynamic_ui_pref_title">Använd accentfärg från bakgrundsbilden</string>
-  <string name="dark_theme_pref_title">Använd mörkt färgtema</string>
   <string name="blur_pref_title">Använd oskärpa</string>
+  <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
   <string name="blur_radius_pref_title">Radius för suddighet</string>
   <string name="white_google_icon_pref_title">Använd vit Google ikon</string>
-  <string name="hide_icon_labels_pref_title">Dölj ikonetiketter på hemskärmen</string>
+  <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
   <string name="workspace_label_color_hue_pref_title">Ikonetiketters färg på hemskärmen</string>
   <string name="workspace_label_color_variation_pref_title">Färgvariation av ikonetiketter på hemskärmen</string>
   <string name="all_apps_opacity_pref_title">Opacitet på applåda</string>
@@ -294,18 +293,15 @@
   <string name="restart_lawnchair_pref_summary">Kan vara användbart om vissa inställningar inte tillämpas korrekt</string>
   <string name="rebuild_icondb_pref_title">Återskapa ikondatabasen</string>
   <string name="pinch_to_overview_pref_title">Nyp för översikt</string>
-  <string name="pinch_to_overview_pref_summary">Nyp på startskärmen för att öppna översikten</string>
-  <string name="pull_down_notis_pref_title">Dra ner till Notifikationer</string>
-  <string name="pull_down_notis_pref_on">Genom att dra ner på Hemskärmen kommer statusfältet att expandera.</string>
-  <string name="pull_down_notis_pref_off">Genom att dra ner på Hemskärmen kommer statusfältet att expandera när detta aktiveras.</string>
+  <string name="pinch_to_overview_pref_summary">Pinch on the home screen to open the overview</string>
   <string name="light_statusbar_pref_title">Ljust statusfält</string>
-  <string name="light_statusbar_pref_on">Statusfältet kan visa mörka ikoner vid användning av ljusa bakgrunder.</string>
+  <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
   <string name="light_statusbar_pref_off">Statusfältet kommer alltid att visa ljusa ikoner.</string>
   <string name="haptic_feedback_pref_title">Aktivera vibration</string>
   <string name="keep_scroll_state_pref_title">Spara scrollposition</string>
   <string name="keep_scroll_state_pref_summary">Sparar scrollpositionen i applådan</string>
   <string name="home_opens_drawer_pref_title">Hemknappen öppnar applådan</string>
-  <string name="home_opens_drawer_pref_summary">Genom att trycka på hemknappen medan på hemskärmen kommer applådan att öppnas</string>
+  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the home screen will open the app drawer</string>
   <string name="show_hidden_pref_title">Visa dolda appar</string>
   <string name="show_hidden_pref_on">Dolda appar kommer visas för att ändra synlighetsinställningar</string>
   <string name="show_hidden_pref_off">Dolda appar kommer inte att synas</string>
@@ -360,4 +356,47 @@
   <!-- Customization Color -->
   <string name="blue_grey">Blågrå</string>
   <string name="default_text">Standard</string>
+  <string name="edit_icon_reset">Reset</string>
+  <string name="show_top_shadow_title">Show top shadow</string>
+  <string name="pref_cat_homescreen">Home screen</string>
+  <string name="pref_cat_miscellaneous">Miscellaneous</string>
+  <string name="pref_cat_hotseat">Dock</string>
+  <string name="pref_cat_theme">Theme</string>
+  <string name="theme_pref_title">Theme</string>
+  <string name="theme_light">Light</string>
+  <string name="theme_dark">Dark</string>
+  <string name="theme_black">Black</string>
+  <string name="hide_hotseat_pref_title">Hide Dock</string>
+  <string name="all_icons">All Icons</string>
+  <string name="pull_down_action_pref_title">Pull down action</string>
+  <string name="pull_down_do_nothing">Do nothing</string>
+  <string name="pull_down_notis">Show notifications</string>
+  <string name="pull_down_search">Open search</string>
+  <string name="pull_down_apps_search">Apps search</string>
+  <string name="enable_screen_rotation">Enable screen rotation</string>
+  <!-- Import/Export Strings -->
+  <string name="imexport_success">Success!</string>
+  <string name="imexport_error">Error: Failed to copy file</string>
+  <string name="imexport_no_backup_found">No backup found</string>
+  <string name="imexport_external_storage_unreadable">External storage is not readable (grant permission in settings)</string>
+  <string name="imexport_external_storage_unwritable">External storage is not writable (grant permission in settings)</string>
+  <string name="units_metric">Metric</string>
+  <string name="units_imperial">Imperial</string>
+  <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_cat_weather">Weather</string>
+  <string name="pref_weather_title">Enable weather</string>
+  <string name="pref_weather_units">Weather Units</string>
+  <string name="pref_weather_city_summary">For best results include country code</string>
+  <string name="pref_weather_city_title">City</string>
+  <string name="none">None</string>
+  <string name="pref_applyTheme">Apply theme on</string>
+  <string name="pref_applyBlur">Apply blur on</string>
+  <string name="search_bar">Search bar</string>
+  <string name="folder">Folder</string>
+  <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
+  <string name="app_shortcuts">App shortcuts</string>
+  <string name="blur_effect">Blur effect</string>
+  <string name="enable_editing_pref_title">Enable editing workspace</string>
+  <string name="pref_weather_provider">Weather provider</string>
+  <string name="loading">Loading...</string>
 </resources>

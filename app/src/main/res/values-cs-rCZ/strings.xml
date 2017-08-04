@@ -41,7 +41,6 @@
   <string name="long_accessible_way_to_add">Dvojitým klepnutím &amp; podržením vyberte widget, případně použijte vlastní akce.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
-  <string name="widget_dims_format">%1$d \u00d7 %2$d</string>
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
   <string name="widget_accessible_dims_format">%1$d široké a %2$d vysoké</string>
   <!-- All Apps -->
@@ -55,7 +54,7 @@
   <string name="all_apps_search_market_message">Vyhledat další aplikace</string>
   <!-- Drag and drop -->
   <skip></skip>
-  <!-- Error message when user has filled a home screen -->
+  <!-- Error message when user has filled a page -->
   <string name="out_of_space">Na této ploše již není místo.</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">Na panelu Oblíbené položky již není místo</string>
@@ -104,7 +103,7 @@
   <string name="default_scroll_format">Strana %1$d z %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">Plocha %1$d z %2$d</string>
-  <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
+  <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
   <string name="workspace_new_page">Nová stránka domovské obrazovky</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
@@ -121,7 +120,7 @@
   <string name="folder_name_format">Složka: <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Strings for the customization mode -->
   <!-- Text for widget add button -->
-  <string name="widget_button_text">Widgets</string>
+  <string name="widget_button_text">Widgety</string>
   <!-- Text for wallpaper change button -->
   <string name="wallpaper_button_text">Tapety</string>
   <!-- Text for settings button -->
@@ -264,8 +263,8 @@
   <string name="hotseat_uses_extracted_colors_pref_off">Dok bude zbarvený do šeda, ale jas bude nastaven podle tapety plochy</string>
   <string name="transparent_hotseat_pref_title">Průhledný dok</string>
   <string name="dynamic_ui_pref_title">Vybrat barevný odstín z tapety plochy</string>
-  <string name="dark_theme_pref_title">Povolit tmavý motiv</string>
   <string name="blur_pref_title">Povolit rozostření</string>
+  <string name="blur_pref_summary">Použít efekt rozostření na části rozhraní\nNení kompatibilní s živými tapetami</string>
   <string name="blur_radius_pref_title">Rádius rozostření</string>
   <string name="white_google_icon_pref_title">Použít bílou ikonu Google</string>
   <string name="hide_icon_labels_pref_title">Skrýt popisky ikon na domovské obrazovce</string>
@@ -298,11 +297,8 @@
   <string name="rebuild_icondb_pref_title">Znovu vytvořit databázi ikon</string>
   <string name="pinch_to_overview_pref_title">Přepnout na přehled</string>
   <string name="pinch_to_overview_pref_summary">Pro otevření přehledu klepněte na domovskou obrazovku</string>
-  <string name="pull_down_notis_pref_title">Zobrazit upozornění při potáhnutí dolů</string>
-  <string name="pull_down_notis_pref_on">Stavová lišta se rozbalí při potáhnutí prstem dolů po domovské obrazovce.</string>
-  <string name="pull_down_notis_pref_off">Po povolení potažení prstem dolů po domovské obrazovce se rozbalí stavová lišta.</string>
   <string name="light_statusbar_pref_title">Světlá stavová lišta</string>
-  <string name="light_statusbar_pref_on">Stavová lišta může zobrazovat tmavé ikony při použití světlé tapety.</string>
+  <string name="light_statusbar_pref_force">Ve stavové liště budou zobrazeny tmavé ikony</string>
   <string name="light_statusbar_pref_off">Ve stavové liště budou vždy zobrazeny světlé ikony.</string>
   <string name="haptic_feedback_pref_title">Povolit vibrace</string>
   <string name="keep_scroll_state_pref_title">Zachovat pozici rolování</string>
@@ -363,4 +359,47 @@
   <!-- Customization Color -->
   <string name="blue_grey">Modro šedá</string>
   <string name="default_text">Výchozí</string>
+  <string name="edit_icon_reset">Resetovat</string>
+  <string name="show_top_shadow_title">Zobrazit horní stíny</string>
+  <string name="pref_cat_homescreen">Domovská obrazovka</string>
+  <string name="pref_cat_miscellaneous">Různé</string>
+  <string name="pref_cat_hotseat">Dok</string>
+  <string name="pref_cat_theme">Motiv</string>
+  <string name="theme_pref_title">Motiv</string>
+  <string name="theme_light">Světlý</string>
+  <string name="theme_dark">Tmavý</string>
+  <string name="theme_black">Černý</string>
+  <string name="hide_hotseat_pref_title">Skrýt dok</string>
+  <string name="all_icons">Všechny ikony</string>
+  <string name="pull_down_action_pref_title">Akce při rozbalení</string>
+  <string name="pull_down_do_nothing">Nedělat nic</string>
+  <string name="pull_down_notis">Zobrazovat oznámení</string>
+  <string name="pull_down_search">Otevřít vyhledávání</string>
+  <string name="pull_down_apps_search">Vyhledávání v aplikacích</string>
+  <string name="enable_screen_rotation">Povolit otáčení obrazovky</string>
+  <!-- Import/Export Strings -->
+  <string name="imexport_success">Hotovo!</string>
+  <string name="imexport_error">Chyba: Nepodařilo se zkopírovat soubor</string>
+  <string name="imexport_no_backup_found">Nebyla nalezena žádná záloha</string>
+  <string name="imexport_external_storage_unreadable">Externí úložiště není ke čtení (udělte oprávnění v nastavení)</string>
+  <string name="imexport_external_storage_unwritable">Externí úložiště není zapisovatelné (udělte oprávnění v nastavení)</string>
+  <string name="units_metric">Metrické</string>
+  <string name="units_imperial">Imperiální</string>
+  <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_cat_weather">Počasí</string>
+  <string name="pref_weather_title">Povolit počasí</string>
+  <string name="pref_weather_units">Jednotky počasí</string>
+  <string name="pref_weather_city_summary">Pro lepší výsledky zadejte kód země</string>
+  <string name="pref_weather_city_title">Město</string>
+  <string name="none">Nic</string>
+  <string name="pref_applyTheme">Použít motiv na</string>
+  <string name="pref_applyBlur">Použít rozostření na</string>
+  <string name="search_bar">Vyhledávací lišta</string>
+  <string name="folder">Složka</string>
+  <string name="dock_allapps"><![CDATA[Dok & všechny aplikace]]></string>
+  <string name="app_shortcuts">Zástupce aplikací</string>
+  <string name="blur_effect">Efekt rozostření</string>
+  <string name="enable_editing_pref_title">Povolit úpravu pracovního prostoru</string>
+  <string name="pref_weather_provider">Poskytovatel počasí</string>
+  <string name="loading">Načítání...</string>
 </resources>

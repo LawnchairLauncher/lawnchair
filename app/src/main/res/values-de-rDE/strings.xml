@@ -41,7 +41,6 @@
   <string name="long_accessible_way_to_add">Berühren und halten, um ein Widget hinzuzufügen oder benutzerdefinierte Aktionen verwenden.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
-  <string name="widget_dims_format">%1$d \u00d7 %2$d</string>
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
   <string name="widget_accessible_dims_format">%1$d breit und %2$d hoch</string>
   <!-- All Apps -->
@@ -55,7 +54,7 @@
   <string name="all_apps_search_market_message">Weitere Apps suchen</string>
   <!-- Drag and drop -->
   <skip></skip>
-  <!-- Error message when user has filled a home screen -->
+  <!-- Error message when user has filled a page -->
   <string name="out_of_space">Auf diesem Startbildschirm ist kein Platz mehr vorhanden.</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">Das Dock ist bereits voll</string>
@@ -104,7 +103,7 @@
   <string name="default_scroll_format">Seite %1$d von %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">Startbildschirm %1$d von %2$d</string>
-  <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
+  <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
   <string name="workspace_new_page">Neue Startbildschirmseite</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
@@ -261,11 +260,11 @@
   <string name="hotseat_uses_extracted_colors_pref_off">Das Dock wird grau gefärbt, angepasst an die Helligkeit des Hintergrundbildes</string>
   <string name="transparent_hotseat_pref_title">Transparentes Dock</string>
   <string name="dynamic_ui_pref_title">Akzentfarbe an Hintergrundbild anpassen</string>
-  <string name="dark_theme_pref_title">Dunkles Design verwenden</string>
   <string name="blur_pref_title">Unschärfeeffekt verwenden</string>
+  <string name="blur_pref_summary">Unschärfeeffekt auf Teile der Darstellung anwenden\nNicht mit Live-Hintergründen kompatibel</string>
   <string name="blur_radius_pref_title">Stärke des Unschärfeeffekts</string>
   <string name="white_google_icon_pref_title">Weiße Google Icons verwenden</string>
-  <string name="hide_icon_labels_pref_title">Symbolbeschriftungen auf dem Startbildschirm verstecken</string>
+  <string name="hide_icon_labels_pref_title">Icon Beschriftungen auf dem Startbildschirm verstecken</string>
   <string name="workspace_label_color_hue_pref_title">Farbe der Symbolbeschriftung auf dem Startbildschirm</string>
   <string name="workspace_label_color_variation_pref_title">Farbvariation der Symbolbeschriftung auf dem Startbildschirm</string>
   <string name="all_apps_opacity_pref_title">Transparenz der App-Liste</string>
@@ -295,11 +294,8 @@
   <string name="rebuild_icondb_pref_title">Icon Datenbank neu generieren</string>
   <string name="pinch_to_overview_pref_title">Zoomgeste für Übersicht</string>
   <string name="pinch_to_overview_pref_summary">Zoomgeste auf dem Startbildschirm öffnet die Übersicht</string>
-  <string name="pull_down_notis_pref_title">Nach unten wischen um Benachrichtigungsleiste zu öffnen</string>
-  <string name="pull_down_notis_pref_on">Eine Wischbewegung nach unten auf dem Startbildschirm öffnet die Benachrichtigungsleiste.</string>
-  <string name="pull_down_notis_pref_off">Eine Wischbewegung nach unten auf dem Startbildschirm öffnet die Benachrichtigungsleiste</string>
   <string name="light_statusbar_pref_title">Helle Statusleiste</string>
-  <string name="light_statusbar_pref_on">Die Statusleiste zeigt dunkle Symbole an, wenn ein helles Hintergrundbild verwendet wird.</string>
+  <string name="light_statusbar_pref_force">Die Statusleiste zeigt dunkle Symbole</string>
   <string name="light_statusbar_pref_off">Die Statusleiste zeigt immer helle Symbole.</string>
   <string name="haptic_feedback_pref_title">Vibration aktivieren</string>
   <string name="keep_scroll_state_pref_title">Scrollposition speichern</string>
@@ -360,4 +356,47 @@
   <!-- Customization Color -->
   <string name="blue_grey">Blaugrau</string>
   <string name="default_text">Standard</string>
+  <string name="edit_icon_reset">Zurücksetzen</string>
+  <string name="show_top_shadow_title">Show top shadow</string>
+  <string name="pref_cat_homescreen">Startbildschirm</string>
+  <string name="pref_cat_miscellaneous">Verschiedenes</string>
+  <string name="pref_cat_hotseat">Dock</string>
+  <string name="pref_cat_theme">Design</string>
+  <string name="theme_pref_title">Design</string>
+  <string name="theme_light">Hell</string>
+  <string name="theme_dark">Dunkel</string>
+  <string name="theme_black">Schwarz</string>
+  <string name="hide_hotseat_pref_title">Dock ausblenden</string>
+  <string name="all_icons">Alle Icons</string>
+  <string name="pull_down_action_pref_title">\'Ziehen\' - Aktion</string>
+  <string name="pull_down_do_nothing">Nichts</string>
+  <string name="pull_down_notis">Benachrichtigungsbereich anzeigen</string>
+  <string name="pull_down_search">Suche öffnen</string>
+  <string name="pull_down_apps_search">App Suche</string>
+  <string name="enable_screen_rotation">Bildschirmrotation aktivieren</string>
+  <!-- Import/Export Strings -->
+  <string name="imexport_success">Erfolg!</string>
+  <string name="imexport_error">Fehler: Datei konnte nicht kopiert werden</string>
+  <string name="imexport_no_backup_found">Kein Backup gefunden</string>
+  <string name="imexport_external_storage_unreadable">Externer Speicher ist nicht lesbar (Berechtigung in den Einstellungen erforderlich)</string>
+  <string name="imexport_external_storage_unwritable">Externer Speicher ist nicht beschreibbar (Berechtigung in den Einstellungen erforderlich)</string>
+  <string name="units_metric">Metrisch</string>
+  <string name="units_imperial">Imperial</string>
+  <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_cat_weather">Wetter</string>
+  <string name="pref_weather_title">Wetter aktivieren</string>
+  <string name="pref_weather_units">Temperatureinheiten</string>
+  <string name="pref_weather_city_summary">Für bessere Ergebnisse das Länderkürzel einfügen</string>
+  <string name="pref_weather_city_title">Stadt</string>
+  <string name="none">Keine</string>
+  <string name="pref_applyTheme">Thema anwenden auf</string>
+  <string name="pref_applyBlur">Unschärfe anwenden auf</string>
+  <string name="search_bar">Suchleiste</string>
+  <string name="folder">Ordner</string>
+  <string name="dock_allapps"><![CDATA[Dock & alle Apps]]></string>
+  <string name="app_shortcuts">App-Verknüpfungen</string>
+  <string name="blur_effect">Unschärfe-Effekt</string>
+  <string name="enable_editing_pref_title">Arbeitsbereich bearbeiten</string>
+  <string name="pref_weather_provider">Wetter-Anbieter</string>
+  <string name="loading">Wird geladen...</string>
 </resources>
