@@ -26,17 +26,15 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.ContentObserver;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.provider.Settings;
-import android.provider.Settings.System;
 
 import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.notification.NotificationListener;
+import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
 
 /**
@@ -45,8 +43,8 @@ import com.android.launcher3.views.ButtonPreference;
 public class SettingsActivity extends Activity {
 
     private static final String ICON_BADGING_PREFERENCE_KEY = "pref_icon_badging";
-    // TODO: use Settings.Secure.NOTIFICATION_BADGING
-    private static final String NOTIFICATION_BADGING = "notification_badging";
+    /** Hidden field Settings.Secure.NOTIFICATION_BADGING */
+    public static final String NOTIFICATION_BADGING = "notification_badging";
     /** Hidden field Settings.Secure.ENABLED_NOTIFICATION_LISTENERS */
     private static final String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
 
@@ -88,12 +86,9 @@ public class SettingsActivity extends Activity {
 
                 // Register a content observer to listen for system setting changes while
                 // this UI is active.
-                resolver.registerContentObserver(
-                        Settings.System.getUriFor(System.ACCELEROMETER_ROTATION),
-                        false, mRotationLockObserver);
+                mRotationLockObserver.register(Settings.System.ACCELEROMETER_ROTATION);
 
                 // Initialize the UI once
-                mRotationLockObserver.onChange(true);
                 rotationPref.setDefaultValue(Utilities.getAllowRotationDefaultValue(getActivity()));
             }
 
@@ -107,13 +102,7 @@ public class SettingsActivity extends Activity {
                 // Listen to system notification badge settings while this UI is active.
                 mIconBadgingObserver = new IconBadgingObserver(
                         iconBadgingPref, resolver, getFragmentManager());
-                resolver.registerContentObserver(
-                        Settings.Secure.getUriFor(NOTIFICATION_BADGING),
-                        false, mIconBadgingObserver);
-                resolver.registerContentObserver(
-                        Settings.Secure.getUriFor(NOTIFICATION_ENABLED_LISTENERS),
-                        false, mIconBadgingObserver);
-                mIconBadgingObserver.onChange(true);
+                mIconBadgingObserver.register(NOTIFICATION_BADGING, NOTIFICATION_ENABLED_LISTENERS);
             }
 
             Preference iconShapeOverride = findPreference(IconShapeOverride.KEY_PREFERENCE);
@@ -129,11 +118,11 @@ public class SettingsActivity extends Activity {
         @Override
         public void onDestroy() {
             if (mRotationLockObserver != null) {
-                getActivity().getContentResolver().unregisterContentObserver(mRotationLockObserver);
+                mRotationLockObserver.unregister();
                 mRotationLockObserver = null;
             }
             if (mIconBadgingObserver != null) {
-                getActivity().getContentResolver().unregisterContentObserver(mIconBadgingObserver);
+                mIconBadgingObserver.unregister();
                 mIconBadgingObserver = null;
             }
             super.onDestroy();
@@ -144,22 +133,18 @@ public class SettingsActivity extends Activity {
      * Content observer which listens for system auto-rotate setting changes, and enables/disables
      * the launcher rotation setting accordingly.
      */
-    private static class SystemDisplayRotationLockObserver extends ContentObserver {
+    private static class SystemDisplayRotationLockObserver extends SettingsObserver.System {
 
         private final Preference mRotationPref;
-        private final ContentResolver mResolver;
 
         public SystemDisplayRotationLockObserver(
                 Preference rotationPref, ContentResolver resolver) {
-            super(new Handler());
+            super(resolver);
             mRotationPref = rotationPref;
-            mResolver = resolver;
         }
 
         @Override
-        public void onChange(boolean selfChange) {
-            boolean enabled = Settings.System.getInt(mResolver,
-                    Settings.System.ACCELEROMETER_ROTATION, 1) == 1;
+        public void onSettingChanged(boolean enabled) {
             mRotationPref.setEnabled(enabled);
             mRotationPref.setSummary(enabled
                     ? R.string.allow_rotation_desc : R.string.allow_rotation_blocked_desc);
@@ -170,7 +155,7 @@ public class SettingsActivity extends Activity {
      * Content observer which listens for system badging setting changes,
      * and updates the launcher badging setting subtext accordingly.
      */
-    private static class IconBadgingObserver extends ContentObserver
+    private static class IconBadgingObserver extends SettingsObserver.Secure
             implements Preference.OnPreferenceClickListener {
 
         private final ButtonPreference mBadgingPref;
@@ -179,15 +164,14 @@ public class SettingsActivity extends Activity {
 
         public IconBadgingObserver(ButtonPreference badgingPref, ContentResolver resolver,
                 FragmentManager fragmentManager) {
-            super(new Handler());
+            super(resolver);
             mBadgingPref = badgingPref;
             mResolver = resolver;
             mFragmentManager = fragmentManager;
         }
 
         @Override
-        public void onChange(boolean selfChange) {
-            boolean enabled = Settings.Secure.getInt(mResolver, NOTIFICATION_BADGING, 1) == 1;
+        public void onSettingChanged(boolean enabled) {
             int summary = enabled ? R.string.icon_badging_desc_on : R.string.icon_badging_desc_off;
 
             boolean serviceEnabled = true;
