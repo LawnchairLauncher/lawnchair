@@ -155,7 +155,7 @@
 
         <meta-data
             android:name="com.google.android.awareness.API_KEY"
-            android:value="${awarenessApiKey}"/>
+            android:value="${awarenessApiKey}" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
