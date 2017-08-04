@@ -293,7 +293,7 @@
   <string name="restart_lawnchair_pref_summary">Peut être utile si certains paramètres ne sont pas correctement appliqués</string>
   <string name="rebuild_icondb_pref_title">Reconstruire la base de données des icônes</string>
   <string name="pinch_to_overview_pref_title">Pincer pour afficher la vue d\'ensemble</string>
-  <string name="pinch_to_overview_pref_summary">Pinch on the home screen to open the overview</string>
+  <string name="pinch_to_overview_pref_summary">Pincer à 2 doigts sur l\'écran d\'accueil pour ouvrir la vue d\'ensemble</string>
   <string name="light_statusbar_pref_title">Barre d\'état claire</string>
   <string name="light_statusbar_pref_force">La barre d\'état affichera des icônes sombres</string>
   <string name="light_statusbar_pref_off">La barre d’état affichera toujours des icônes clairs.</string>
@@ -368,7 +368,7 @@
   <string name="theme_black">Noir</string>
   <string name="hide_hotseat_pref_title">Masquer le dock</string>
   <string name="all_icons">Toutes les icônes</string>
-  <string name="pull_down_action_pref_title">Pull down action</string>
+  <string name="pull_down_action_pref_title">Action pour un glissement vers le bas</string>
   <string name="pull_down_do_nothing">Ne rien faire</string>
   <string name="pull_down_notis">Afficher les notifications</string>
   <string name="pull_down_search">Ouvrir la recherche</string>
@@ -393,7 +393,7 @@
   <string name="pref_applyBlur">Appliquez le flou sur</string>
   <string name="search_bar">Barre de recherche</string>
   <string name="folder">Dossier</string>
-  <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
+  <string name="dock_allapps"><![CDATA[Dock & toutes les applications]]></string>
   <string name="app_shortcuts">App shortcuts</string>
   <string name="blur_effect">Effet de flou</string>
   <string name="enable_editing_pref_title">Enable editing workspace</string>
