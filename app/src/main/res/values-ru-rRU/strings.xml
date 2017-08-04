@@ -293,7 +293,7 @@
   <string name="restart_lawnchair_pref_title">Перезапустить Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">Может быть полезно, если некоторые параметры не применяются должным образом</string>
   <string name="rebuild_icondb_pref_title">Перестроение базы данных значков</string>
-  <string name="pinch_to_overview_pref_title">«Pinch to zoom»</string>
+  <string name="pinch_to_overview_pref_title">Щипок для обзора</string>
   <string name="pinch_to_overview_pref_summary">Щипок для обзора главного экрана</string>
   <string name="light_statusbar_pref_title">Светлая строка состояния</string>
   <string name="light_statusbar_pref_force">Статус-бар будет показывать черные значки</string>
