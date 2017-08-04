@@ -35,6 +35,7 @@ import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -184,7 +185,7 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                         .checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
                 findPreference("pref_weatherProvider").setEnabled(BuildConfig.AWARENESS_API_ENABLED && hasPermission);
                 String city = sharedPrefs.getString("pref_weather_city", "Lucerne, CH");
-                findPreference("pref_weather_city").setSummary(city);
+                findPreference("pref_weather_city").setSummary(!TextUtils.isEmpty(city) ? city : getString(R.string.pref_weather_city_summary));
                 Preference overrideShapePreference = findPreference("pref_override_icon_shape");
                 if (IconShapeOverride.Companion.isSupported(getActivity())) {
                     IconShapeOverride.Companion.handlePreferenceUi((ListPreference) overrideShapePreference);
