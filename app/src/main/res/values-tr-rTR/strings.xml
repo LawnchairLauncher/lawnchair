@@ -201,7 +201,7 @@
   <string name="action_deep_shortcut">Kısayollar</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
   <string name="shortcuts_menu_description"><xliff:g id="APP_NAME">%2$s</xliff:g> için <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> kısayol</string>
-  <string name="edit_drop_target_label">Edit</string>
+  <string name="edit_drop_target_label">Düzenle</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
   <string name="wallpaper_instructions">Duvar kağıdını ayarla</string>
   <!-- Error message when an image is selected as a wallpaper,
@@ -236,40 +236,40 @@
   <!-- Title of activity for cropping wallpapers -->
   <string name="crop_wallpaper">Duvar kağıdını kırp</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
-  <string name="which_wallpaper_option_home_screen">Home screen</string>
+  <string name="which_wallpaper_option_home_screen">Ana ekran</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
-  <string name="which_wallpaper_option_lock_screen">Lock screen</string>
+  <string name="which_wallpaper_option_lock_screen">Kilit ekranı</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
-  <string name="which_wallpaper_option_home_screen_and_lock_screen">Home screen and lock screen</string>
-  <string name="title_show_google_app">Show %1$s</string>
-  <string name="title_show_google_app_default">Show Google app</string>
-  <string name="label_search">Search</string>
-  <string name="label_voice_search">Voice search</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d shortcuts and %2$d notifications for %3$s</string>
-  <string name="notifications_header">Notifications</string>
-  <string name="widgets_bottom_sheet_title">%1$s widgets</string>
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">Ana ekran ve kilit ekranı</string>
+  <string name="title_show_google_app">%1$s göster</string>
+  <string name="title_show_google_app_default">Google uygulamasını göster</string>
+  <string name="label_search">Ara</string>
+  <string name="label_voice_search">Sesli arama</string>
+  <string name="shortcuts_menu_with_notifications_description">%3$s için %1$d kısayol ve %2$d bildirim</string>
+  <string name="notifications_header">Bildirimler</string>
+  <string name="widgets_bottom_sheet_title">%1$s widget</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair is a launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
-  <string name="about_title">About</string>
-  <string name="changelog_title">Changelog for build #%d</string>
+  <string name="about_text">Lawnchair, Till Kottmann (diğer adıyla deletescape) tarafından oluşturulan bir Başlatıcı uygulamasıdır. AOSP\'dan Launcher3\'e dayanıyor.</string>
+  <string name="about_title">Hakkında</string>
+  <string name="changelog_title">Bu yapıdaki değişiklikler #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
-  <string name="icon_pack_preference_title">Icon Pack</string>
-  <string name="icon_pack_preference_summary">Select an icon pack</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Dock uses wallpaper colors</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
-  <string name="transparent_hotseat_pref_title">Transparent Dock</string>
-  <string name="dynamic_ui_pref_title">Extract accent color from wallpaper</string>
-  <string name="blur_pref_title">Enable blur</string>
-  <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
-  <string name="blur_radius_pref_title">Blur radius</string>
-  <string name="white_google_icon_pref_title">Use white Google icon</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
-  <string name="workspace_label_color_hue_pref_title">Color of icon labels on home screen</string>
-  <string name="workspace_label_color_variation_pref_title">Color variation of icon labels on home screen</string>
-  <string name="all_apps_opacity_pref_title">Drawer opacity</string>
-  <string name="num_cols_pref_title">Number of columns</string>
-  <string name="num_rows_pref_title">Number of rows</string>
+  <string name="icon_pack_preference_title">Simge Paketi</string>
+  <string name="icon_pack_preference_summary">Simge paketini seçin</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Alt panel duvar kağıdı renklerini kullanır</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">Alt panel duvar kağıdından alınan bir renkle renklendirilir</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">Alt panel gri renkte olacak, ancak duvar kağıdı parlaklığıyla ayarlanacaktır</string>
+  <string name="transparent_hotseat_pref_title">Şeffaf Alt Panel</string>
+  <string name="dynamic_ui_pref_title">Vurgu rengini duvar kağıdından al</string>
+  <string name="blur_pref_title">Bulanıklığı etkinleştir</string>
+  <string name="blur_pref_summary">Arayüzün bazı kısımlarına bulanıklık efekti uygulayın\nCanlı duvar kağıtları ile uyumlu değil</string>
+  <string name="blur_radius_pref_title">Bulanıklık yarıçapı</string>
+  <string name="white_google_icon_pref_title">Beyaz Google simgesi kullanın</string>
+  <string name="hide_icon_labels_pref_title">Ana ekrandaki simge etiketlerini gizle</string>
+  <string name="workspace_label_color_hue_pref_title">Ana ekranda simge etiketlerinin rengi</string>
+  <string name="workspace_label_color_variation_pref_title">Ana ekranda simge etiketlerinin renk çeşitliliği</string>
+  <string name="all_apps_opacity_pref_title">Uygulama çekmecesi şeffaflığı</string>
+  <string name="num_cols_pref_title">Sütun sayısı</string>
+  <string name="num_rows_pref_title">Satır sayısı</string>
   <string name="num_hotseat_icons_pref_title">Number of icons in dock</string>
   <string name="icon_scale_pref_title">Icon scale</string>
   <string name="icon_text_scale_pref_title">Icon text scale</string>
