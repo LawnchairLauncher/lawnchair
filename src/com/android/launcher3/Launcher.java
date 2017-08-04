@@ -144,6 +144,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executor;
 
 /**
  * Default launcher application.
@@ -1854,6 +1855,8 @@ public class Launcher extends BaseActivity
         WallpaperColorInfo.getInstance(this).setOnThemeChangeListener(null);
 
         LauncherAnimUtils.onDestroyActivity();
+
+        clearPendingBinds();
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onDestroy();
@@ -3705,11 +3708,26 @@ public class Launcher extends BaseActivity
         }
 
         if (mAppsView != null) {
+            Executor pendingExecutor = getPendingExecutor();
+            if (pendingExecutor != null && mState != State.APPS) {
+                // Wait until the fade in animation has finished before setting all apps list.
+                mTmpAppsList = apps;
+                pendingExecutor.execute(mBindAllApplicationsRunnable);
+                return;
+            }
             mAppsView.setApps(apps);
         }
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.bindAllApplications(apps);
         }
+    }
+
+    /**
+     * Returns an Executor that will run after the launcher is first drawn (including after the
+     * initial fade in animation). Returns null if the first draw has already occurred.
+     */
+    public @Nullable Executor getPendingExecutor() {
+        return mPendingExecutor != null && mPendingExecutor.canQueue() ? mPendingExecutor : null;
     }
 
     /**
@@ -3904,6 +3922,12 @@ public class Launcher extends BaseActivity
         }
 
         if (mWidgetsView != null && allWidgets != null) {
+            Executor pendingExecutor = getPendingExecutor();
+            if (pendingExecutor != null && mState != State.WIDGETS) {
+                mAllWidgets = allWidgets;
+                pendingExecutor.execute(mBindAllWidgetsRunnable);
+                return;
+            }
             mWidgetsView.setWidgets(allWidgets);
             mAllWidgets = null;
         }
