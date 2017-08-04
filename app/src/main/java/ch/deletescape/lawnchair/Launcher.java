@@ -54,6 +54,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Process;
 import android.os.StrictMode;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
@@ -922,7 +923,7 @@ public class Launcher extends Activity
         if (kill) {
             kill = false;
             Log.v("Settings", "Die Motherf*cker!");
-            android.os.Process.killProcess(android.os.Process.myPid());
+            Process.killProcess(Process.myPid());
         }
 
         if (recreate) {
@@ -946,10 +947,9 @@ public class Launcher extends Activity
     }
 
     private void reloadIcons() {
-        UserHandle user = Utilities.myUserHandle();
         mIconCache.pip.updateIconPack();
-        mIconCache.updateIconsForAll(user);
-        LauncherAppState.getInstance().reloadAll(true);
+        mIconCache.clear();
+        Process.killProcess(Process.myPid());
     }
 
     @Override

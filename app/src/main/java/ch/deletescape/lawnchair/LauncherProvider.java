@@ -58,6 +58,7 @@ import ch.deletescape.lawnchair.LauncherSettings.WorkspaceScreens;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.config.ProviderConfig;
 import ch.deletescape.lawnchair.dynamicui.ExtractionUtils;
+import ch.deletescape.lawnchair.graphics.IconShapeOverride;
 import ch.deletescape.lawnchair.provider.RestoreDbTask;
 import ch.deletescape.lawnchair.util.ManagedProfileHeuristic;
 import ch.deletescape.lawnchair.util.NoLocaleSqliteContext;
@@ -82,7 +83,7 @@ public class LauncherProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         mListenerHandler = new Handler(mListenerWrapper);
-
+        IconShapeOverride.Companion.apply(getContext());
         LauncherAppState.setLauncherProvider(this);
         return true;
     }

@@ -100,7 +100,9 @@
         <Preference
             android:key="notification_access"
             android:title="@string/notification_access_pref_title"
-            android:summary="@string/notification_access_pref_summary" />
+            android:summary="@string/notification_access_pref_summary">
+            <intent android:action="android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS" />
+        </Preference>
     </PreferenceCategory>
 
     <PreferenceCategory

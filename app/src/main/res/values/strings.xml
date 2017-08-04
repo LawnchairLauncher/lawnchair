@@ -463,4 +463,11 @@
     <string name="enable_editing_pref_title">Enable editing workspace</string>
     <string name="pref_weather_provider">Weaher provider</string>
     <string name="loading">Loading...</string>
+    <string name="icon_shape_override_label">Change icon shape</string>
+    <string name="icon_shape_system_default">Do not change</string>
+    <string name="icon_shape_square">Square</string>
+    <string name="icon_shape_rounded_square">Rounded square</string>
+    <string name="icon_shape_squircle">Squircle</string>
+    <string name="icon_shape_circle">Circle</string>
+    <string name="icon_shape_teardrop">Teardrop</string>
 </resources>
