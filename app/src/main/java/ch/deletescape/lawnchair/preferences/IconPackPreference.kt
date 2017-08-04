@@ -51,7 +51,7 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     private fun setNone() {
-        icon = context.resources.getDrawable(R.mipmap.ic_launcher_home)
+        icon = context.resources.getDrawable(R.mipmap.ic_launcher)
         summary = "None"
     }
 
@@ -119,7 +119,7 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
 
             val res = context.resources
             val defaultLabel = "None"
-            val icon = res.getDrawable(R.mipmap.ic_launcher_home)
+            val icon = res.getDrawable(R.mipmap.ic_launcher)
             mSupportedPackages.add(0, IconPackInfo(defaultLabel, icon, ""))
         }
 
