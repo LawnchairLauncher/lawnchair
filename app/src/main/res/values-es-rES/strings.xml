@@ -276,11 +276,11 @@
   <string name="full_width_width_widgets_pref_title">Widgets de ancho completo</string>
   <string name="full_width_widgets_pref_summary">Permitir a los widgets mostrarse sobre todo el ancho sin relleno</string>
   <string name="notification_access_pref_title">Insignia en notificaciones y vista previa</string>
-  <string name="notification_access_pref_summary">Permitir a Lawnchair el acceso a las notificaciones</string>
+  <string name="notification_access_pref_summary">Permitir a Lawnchair el acceso a las notificaciones para habilitar ésta función</string>
   <string name="ui_pref_title">Interfaz de usuario</string>
   <string name="pixel_style_pref_title">Estilo Pixel</string>
   <string name="behavior_pref_title">Comportamiento</string>
-  <string name="debug_pref_title">Depurar</string>
+  <string name="debug_pref_title">Depuración</string>
   <string name="import_export_pref_title">Importar/Exportar</string>
   <string name="show_pixel_bar_pref_title">Mostrar barra superior al estilo Pixel</string>
   <string name="use_wide_searchbar_pref_title">Usar barra de busqueda amplia</string>
