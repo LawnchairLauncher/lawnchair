@@ -78,11 +78,11 @@
   <!-- Permission short label -->
   <string name="permlab_read_settings">Доступ к настройкам и ярлыкам главного экрана</string>
   <!-- Permission description -->
-  <string name="permdesc_read_settings">Приложение получит доступ к данным о настройках и ярлыках на главном экране.</string>
+  <string name="permdesc_read_settings">Разрешить приложению читать настройки и ярлыки на главном экране.</string>
   <!-- Permission short label -->
   <string name="permlab_write_settings">Изменение настроек и ярлыков главного экрана</string>
   <!-- Permission description -->
-  <string name="permdesc_write_settings">Приложение сможет изменять настройки и ярлыки на главном экране.</string>
+  <string name="permdesc_write_settings">Разрешить приложению изменять настройки и ярлыки на главном экране.</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission">Приложение <xliff:g id="APP_NAME">%1$s</xliff:g> не может делать телефонные звонки</string>
   <!-- Widgets: -->
