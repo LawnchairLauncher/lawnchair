@@ -290,7 +290,7 @@
   <string name="pixel_style_icons_pref_summary">Cuando la opción esté habilitada, se utilizarán iconos circulares si es posible</string>
   <string name="show_google_now_tab_pref_title">Mostrar página de Google Now</string>
   <string name="restart_lawnchair_pref_title">Reiniciar Lawnchair</string>
-  <string name="restart_lawnchair_pref_summary">Util para los cambios que no se aplican correctamente</string>
+  <string name="restart_lawnchair_pref_summary">Puede ser útil si algunos ajustes no se aplican correctamente</string>
   <string name="rebuild_icondb_pref_title">Reconstruir la base de datos de iconos</string>
   <string name="pinch_to_overview_pref_title">Pellizcar para vista general</string>
   <string name="pinch_to_overview_pref_summary">Pellizcar en el escritorio para abrir la vista general</string>
