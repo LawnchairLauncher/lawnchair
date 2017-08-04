@@ -380,7 +380,7 @@
   <string name="imexport_no_backup_found">Yedek bulunamadı</string>
   <string name="imexport_external_storage_unreadable">Harici depolama alanı okunamıyor (ayarlardan izin verin)</string>
   <string name="imexport_external_storage_unwritable">Harici depolama alanına yazılamıyor (ayarlardan izin verin)</string>
-  <string name="units_metric">Metrik</string>
+  <string name="units_metric">Metrik Ölçüm</string>
   <string name="units_imperial">Emperyal Ölçüm</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <string name="pref_cat_weather">Hava Durumu</string>
