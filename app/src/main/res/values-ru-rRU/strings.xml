@@ -166,17 +166,17 @@
   <!-- Accessibility description to move item to the hotseat. -->
   <string name="move_to_hotseat_position">Переместить в Избранное (<xliff:g id="NUMBER">%1$s</xliff:g>)</string>
   <!-- Accessibility confirmation for item move. -->
-  <string name="item_moved">Элемент перемещен.</string>
+  <string name="item_moved">Элемент перемещен</string>
   <!-- Accessibility description to move item into an existing folder. -->
-  <string name="add_to_folder">Добавить в папку <xliff:g id="NAME">%1$s</xliff:g>.</string>
+  <string name="add_to_folder">Добавить в папку <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
   <string name="add_to_folder_with_app">Добавить в папку с приложением \"<xliff:g id="NAME">%1$s</xliff:g>\"</string>
   <!-- Accessibility confirmation for item added to folder. -->
-  <string name="added_to_folder">Элемент добавлен в папку.</string>
+  <string name="added_to_folder">Элемент добавлен в папку</string>
   <!-- Accessibility description to create folder with another item. -->
-  <string name="create_folder_with">Создать папку с элементом <xliff:g id="NAME">%1$s</xliff:g>.</string>
+  <string name="create_folder_with">Создать папку с элементом <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
-  <string name="folder_created">Папка создана.</string>
+  <string name="folder_created">Папка создана</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
   <string name="action_move_to_workspace">Переместить на главный экран</string>
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
@@ -241,12 +241,12 @@
   <!-- Option for setting the wallpaper only on the lock screen. -->
   <string name="which_wallpaper_option_lock_screen">Экран блокировки</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
-  <string name="which_wallpaper_option_home_screen_and_lock_screen">Домашний экран и экран блокировки</string>
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">Главный экран и экран блокировки</string>
   <string name="title_show_google_app">Показать %1$s</string>
   <string name="title_show_google_app_default">Показать приложение Google</string>
   <string name="label_search">Поиск</string>
   <string name="label_voice_search">Голосовой поиск</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d шорткаты и %2$d уведомления для %3$s</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d ярлыки и %2$d уведомления для %3$s</string>
   <string name="notifications_header">Уведомления</string>
   <string name="widgets_bottom_sheet_title">%1$s: виджеты</string>
   <!-- About Lawnchair -->
