@@ -994,6 +994,10 @@ public final class Utilities {
         }
     }
 
+    public static Drawable getMyIcon(Context context) {
+        return context.getPackageManager().getApplicationIcon(context.getApplicationInfo());
+    }
+
     @SuppressWarnings("unchecked")
     public static <T> List<T> emptyList() {
         return Collections.EMPTY_LIST;

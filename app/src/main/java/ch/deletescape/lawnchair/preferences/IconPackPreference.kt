@@ -16,8 +16,8 @@ import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.TextView
 import ch.deletescape.lawnchair.R
+import ch.deletescape.lawnchair.Utilities
 import java.util.*
-
 
 class IconPackPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Preference(context, attrs, defStyleAttr) {
 
@@ -51,7 +51,7 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     private fun setNone() {
-        icon = context.resources.getDrawable(R.mipmap.ic_launcher)
+        icon = Utilities.getMyIcon(context)
         summary = "None"
     }
 
@@ -109,26 +109,23 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     private class IconAdapter internal constructor(context: Context, supportedPackages: Map<String, IconPackInfo>, internal var mCurrentIconPack: String) : BaseAdapter() {
-        internal var mSupportedPackages: ArrayList<IconPackInfo>
-        internal var mLayoutInflater: LayoutInflater
+        internal var supportedPackages: ArrayList<IconPackInfo> = ArrayList(supportedPackages.values)
+        internal var layoutInflater: LayoutInflater = LayoutInflater.from(context)
 
         init {
-            mLayoutInflater = LayoutInflater.from(context)
-            mSupportedPackages = ArrayList(supportedPackages.values)
-            Collections.sort(mSupportedPackages) { lhs, rhs -> lhs.label.toString().compareTo(rhs.label.toString(), ignoreCase = true) }
+            Collections.sort(this.supportedPackages) { lhs, rhs -> lhs.label.toString().compareTo(rhs.label.toString(), ignoreCase = true) }
 
-            val res = context.resources
             val defaultLabel = "None"
-            val icon = res.getDrawable(R.mipmap.ic_launcher)
-            mSupportedPackages.add(0, IconPackInfo(defaultLabel, icon, ""))
+            val icon = Utilities.getMyIcon(context)
+            this.supportedPackages.add(0, IconPackInfo(defaultLabel, icon, ""))
         }
 
         override fun getCount(): Int {
-            return mSupportedPackages.size
+            return supportedPackages.size
         }
 
         override fun getItem(position: Int): String {
-            return mSupportedPackages[position].packageName
+            return supportedPackages[position].packageName
         }
 
         override fun getItemId(position: Int): Long {
@@ -136,8 +133,8 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
         }
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val view = convertView ?: mLayoutInflater.inflate(R.layout.iconpack_dialog, parent, false)
-            val info = mSupportedPackages[position]
+            val view = convertView ?: layoutInflater.inflate(R.layout.iconpack_dialog, parent, false)
+            val info = supportedPackages[position]
             val txtView = view.findViewById<TextView>(R.id.title)
             txtView.text = info.label
             val imgView = view.findViewById<ImageView>(R.id.icon)
