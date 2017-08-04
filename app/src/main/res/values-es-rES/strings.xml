@@ -293,13 +293,13 @@
   <string name="restart_lawnchair_pref_summary">Puede ser útil si algunos ajustes no se aplican correctamente</string>
   <string name="rebuild_icondb_pref_title">Reconstruir la base de datos de iconos</string>
   <string name="pinch_to_overview_pref_title">Pellizcar para vista general</string>
-  <string name="pinch_to_overview_pref_summary">Pellizcar en el escritorio para abrir la vista general</string>
+  <string name="pinch_to_overview_pref_summary">Pellizcar en la pantalla principal para abrir la vista general</string>
   <string name="light_statusbar_pref_title">Barra de estado clara</string>
   <string name="light_statusbar_pref_force">La barra de estado mostrará iconos oscuros</string>
-  <string name="light_statusbar_pref_off">La barra de estado mostrará siempre iconos claros.</string>
+  <string name="light_statusbar_pref_off">La barra de estado mostrará iconos claros</string>
   <string name="haptic_feedback_pref_title">Habilitar vibración</string>
   <string name="keep_scroll_state_pref_title">Mantener posición de desplazamiento</string>
-  <string name="keep_scroll_state_pref_summary">Guarda los cambios de la posición de desplazamiento del cajón</string>
+  <string name="keep_scroll_state_pref_summary">Guarda la posición de desplazamiento del cajón</string>
   <string name="home_opens_drawer_pref_title">El botón de inicio abre el cajón de aplicaciones</string>
   <string name="home_opens_drawer_pref_summary">Al presionar el botón de inicio en la pantalla de inicio, se abrirá el cajón de aplicaciones</string>
   <string name="show_hidden_pref_title">Mostrar aplicaciones ocultas</string>
