@@ -1,6 +1,6 @@
 # Lawnchair - [![Travis](https://img.shields.io/travis/Deletescape-Media/Lawnchair.svg)](https://travis-ci.org/Deletescape-Media/Lawnchair) - [![Github All Releases](https://img.shields.io/github/downloads/Deletescape-Media/Lawnchair/total.svg)](https://github.com/Deletescape-Media/Lawnchair/releases) - [![Crowdin](https://d322cqt584bo4o.cloudfront.net/lawnchairandroid/localized.svg)](https://crowdin.com/project/lawnchairandroid) -[![Donate on PayPal](https://img.shields.io/badge/PayPal-Donate%20Now-brightgreen.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=E2EFKTUC62KDQ)
 
-![What in launcher creation?](meme.jpg)
+![Lawnchair](banner.png)
 
 Lawnchair is a free, open source launcher aiming at bringing Pixel Launcher features to other devices. 
 
