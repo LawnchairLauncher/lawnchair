@@ -17,6 +17,7 @@
 package ch.deletescape.lawnchair;
 
 import android.animation.ObjectAnimator;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -51,6 +52,7 @@ import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.graphics.IconPalette;
 import ch.deletescape.lawnchair.model.PackageItemInfo;
+import ch.deletescape.lawnchair.pixelify.ClockIconDrawable;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
@@ -225,14 +227,26 @@ public class BubbleTextView extends TextView
         }
         applyIconAndLabel(iconBitmap, shortcutInfo);
         setTag(shortcutInfo);
+        if (shortcutInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION)
+            applyClockIcon(shortcutInfo.getTargetComponent());
         if (z || shortcutInfo.isPromise()) {
             applyPromiseState(z);
         }
         applyBadgeState(shortcutInfo, false);
     }
 
+    private void applyClockIcon(ComponentName componentName) {
+        if (FeatureFlags.INSTANCE.animatedClockIcon(getContext()) &&
+                componentName != null &&
+                "com.google.android.deskclock/com.android.deskclock.DeskClock"
+                .equals(componentName.flattenToString())) {
+            setIcon(new ClockIconDrawable.Wrapper(getContext()));
+        }
+    }
+
     public void applyFromApplicationInfo(AppInfo info) {
         applyIconAndLabel(info.iconBitmap, info);
+        applyClockIcon(info.getTargetComponent());
 
         // We don't need to check the info since it's not a ShortcutInfo
         super.setTag(info);

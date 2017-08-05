@@ -62,4 +62,5 @@
     <color name="notification_icon_default_color">#ff757575</color>
     <color name="notification_color_beneath">#ffe0e0e0</color>
     <color name="badge_color">#fff</color>
+    <color name="blue_grey_100">#ffcfd8dc</color>
 </resources>

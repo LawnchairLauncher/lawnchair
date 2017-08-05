@@ -58,6 +58,7 @@ object FeatureFlags {
     private const val KEY_PREF_WEATHER = "pref_weather"
     private const val KEY_PREF_PULLDOWN_ACTION = "pref_pulldownAction"
     private const val KEY_PREF_ENABLE_EDITING = "pref_enableEditing"
+    private const val KEY_PREF_ANIMATED_CLOCK_ICON = "pref_animatedClockIcon"
     private var darkThemeFlag: Int = 0
 
     fun pinchToOverview(context: Context): Boolean {
@@ -226,5 +227,9 @@ object FeatureFlags {
 
     fun enableEditing(context: Context): Boolean {
         return Utilities.getPrefs(context).getBoolean(KEY_PREF_ENABLE_EDITING, true)
+    }
+
+    fun animatedClockIcon(context: Context): Boolean {
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_ANIMATED_CLOCK_ICON, false)
     }
 }
