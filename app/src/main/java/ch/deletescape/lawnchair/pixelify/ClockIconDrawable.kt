@@ -19,7 +19,7 @@ class ClockIconDrawable(val context: Context) : Drawable() {
     val hourLayer = originalIcon.getDrawable(1) as RotateDrawable
     val minuteLayer = originalIcon.getDrawable(2) as RotateDrawable
     val secondLayer = originalIcon.getDrawable(3) as RotateDrawable
-    val offset = GregorianCalendar().timeZone.rawOffset
+    val calendar = Calendar.getInstance() as Calendar
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     var background: Bitmap? = null
     var scale = 1f
@@ -27,10 +27,10 @@ class ClockIconDrawable(val context: Context) : Drawable() {
     private val TAG = "ClockIconDrawable"
 
     private fun updateLayers() {
-        val secondOfDay = (((System.currentTimeMillis() + offset) % (1000 * 60 * 60 * 24)) / 1000).toInt()
-        val second = secondOfDay % 60
-        val minute = (secondOfDay / 60) % 60
-        val hour = (secondOfDay / 60 / 60) % 12
+        calendar.timeInMillis = System.currentTimeMillis()
+        val second = calendar[Calendar.SECOND]
+        val minute = calendar[Calendar.MINUTE]
+        val hour = calendar[Calendar.HOUR_OF_DAY] % 12
 
         val secondLevel = second * 10000 / 60
         val minuteLevel = minute * 10000 / 60 + (secondLevel / 60)
