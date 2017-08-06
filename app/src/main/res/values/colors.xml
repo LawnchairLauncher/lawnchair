@@ -41,7 +41,6 @@
     <color name="all_apps_caret_shadow_color">#22000000</color>
     <color name="all_apps_container_color">#FFF2F2F2</color>
     <color name="all_apps_statusbar_color">#28000000</color>
-    <color name="all_apps_navbar_color">#28000000</color>
 
     <color name="spring_loaded_panel_color">#40FFFFFF</color>
     <color name="spring_loaded_highlighted_panel_border_color">#FFF</color>
@@ -62,5 +61,6 @@
     <color name="popup_background_color">#ffffffff</color>
     <color name="notification_icon_default_color">#ff757575</color>
     <color name="notification_color_beneath">#ffe0e0e0</color>
-    <color name="badge_color">#ff40c4ff</color>
+    <color name="badge_color">#fff</color>
+    <color name="blue_grey_100">#ffcfd8dc</color>
 </resources>

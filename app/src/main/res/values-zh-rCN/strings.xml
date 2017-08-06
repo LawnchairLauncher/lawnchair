@@ -41,7 +41,6 @@
   <string name="long_accessible_way_to_add">双击并长按即可选择小部件或使用自定义操作。</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
-  <string name="widget_dims_format">%1$d \u00d7 %2$d</string>
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
   <string name="widget_accessible_dims_format">宽 %1$d，高 %2$d</string>
   <!-- All Apps -->
@@ -55,7 +54,7 @@
   <string name="all_apps_search_market_message">搜索更多应用</string>
   <!-- Drag and drop -->
   <skip></skip>
-  <!-- Error message when user has filled a home screen -->
+  <!-- Error message when user has filled a page -->
   <string name="out_of_space">此主屏幕上已没有空间。</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">收藏栏已满</string>
@@ -103,16 +102,16 @@
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">第%1$d页，共%2$d页</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
-  <string name="workspace_scroll_format">第 %1$d 屏，主页面共 %2$d 屏</string>
-  <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
-  <string name="workspace_new_page">新主页面</string>
+  <string name="workspace_scroll_format">主屏幕 %1$d / %2$d</string>
+  <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
+  <string name="workspace_new_page">新页面</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
-  <string name="folder_opened">文件夹已打开，大小为<xliff:g id="WIDTH">%1$d</xliff:g>×<xliff:g id="HEIGHT">%2$d</xliff:g>。</string>
+  <string name="folder_opened">文件夹已打开，大小为<xliff:g id="WIDTH">%1$d</xliff:g>行×<xliff:g id="HEIGHT">%2$d</xliff:g>列。</string>
   <!-- Instruction that clicking outside will close folder -->
-  <string name="folder_tap_to_close">点按关闭文件夹。</string>
+  <string name="folder_tap_to_close">点按可关闭文件夹</string>
   <!-- Instruction that clicking outside will commit folder rename -->
-  <string name="folder_tap_to_rename">点按重命名。</string>
+  <string name="folder_tap_to_rename">点按可保存新名称</string>
   <!-- Indication that folder closed -->
   <string name="folder_closed">文件夹已关闭</string>
   <!-- Folder renamed format -->
@@ -189,13 +188,13 @@
   <!-- Accessibility action to resize a widget. [CHAR_LIMIT=30] -->
   <string name="action_resize">调整大小</string>
   <!-- Accessibility action to increase width of a widget. [CHAR_LIMIT=30] -->
-  <string name="action_increase_width">加宽</string>
+  <string name="action_increase_width">增加宽度</string>
   <!-- Accessibility action to increase height of a widget. [CHAR_LIMIT=30] -->
-  <string name="action_increase_height">增长</string>
+  <string name="action_increase_height">增加高度</string>
   <!-- Accessibility action to decrease width of a widget. [CHAR_LIMIT=30] -->
-  <string name="action_decrease_width">变窄</string>
+  <string name="action_decrease_width">减小宽度</string>
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
-  <string name="action_decrease_height">缩短</string>
+  <string name="action_decrease_height">降低高度</string>
   <!-- Accessibility confirmation for widget resize. -->
   <string name="widget_resized">小部件尺寸已调整为：宽度 <xliff:g id="NUMBER_0">%1$s</xliff:g>，高度 <xliff:g id="NUMBER_1">%2$s</xliff:g></string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
@@ -234,22 +233,23 @@
   <!-- Option in "Select wallpaper from" dialog box -->
   <string name="pick_wallpaper">壁纸</string>
   <!-- Title of activity for cropping wallpapers -->
-  <string name="crop_wallpaper">剪裁壁纸</string>
+  <string name="crop_wallpaper">裁剪壁纸</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
   <string name="which_wallpaper_option_home_screen">主屏幕</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
   <string name="which_wallpaper_option_lock_screen">锁屏界面</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
-  <string name="which_wallpaper_option_home_screen_and_lock_screen">主屏和锁屏界面</string>
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">主屏幕与锁定屏幕</string>
   <string name="title_show_google_app">显示 %1$s</string>
   <string name="title_show_google_app_default">显示 Google 应用</string>
   <string name="label_search">搜索</string>
   <string name="label_voice_search">语音搜索</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d 的快捷方式和 %3$s %2$d 通知</string>
+  <string name="shortcuts_menu_with_notifications_description">%3$s 有 %1$d 个快捷方式和 %2$d 个通知</string>
   <string name="notifications_header">通知</string>
   <string name="widgets_bottom_sheet_title">%1$s 小部件</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair 是 Till Kottmann （又名 deletescape）开发的一个启动器应用。它基于 AOSP 的 Launcher3。</string>
+  <string name="about_text">Lawnchair 是由Till Kottmann（又名deletescape）开发的启动器。它基于
+ Launcher3 from AOSP。</string>
   <string name="about_title">关于</string>
   <string name="changelog_title">#%d 版的更新日志</string>
   <string name="week_day_format">%1$s， %2$s</string>
@@ -260,22 +260,22 @@
   <string name="hotseat_uses_extracted_colors_pref_off">Dock 栏将会变成灰色，但会根据壁纸亮度作适当调整</string>
   <string name="transparent_hotseat_pref_title">透明化 Dock 栏</string>
   <string name="dynamic_ui_pref_title">主色调从壁纸取色</string>
-  <string name="dark_theme_pref_title">使用暗色主题</string>
   <string name="blur_pref_title">开启模糊</string>
-  <string name="blur_radius_pref_title">模糊度</string>
-  <string name="white_google_icon_pref_title">使用白色 Google 图标</string>
+  <string name="blur_pref_summary">为界面开启模糊效果\n不兼容动态壁纸</string>
+  <string name="blur_radius_pref_title">模糊程度</string>
+  <string name="white_google_icon_pref_title">使用白色的 Google G 图标</string>
   <string name="hide_icon_labels_pref_title">在主屏幕上隐藏图标标签</string>
-  <string name="workspace_label_color_hue_pref_title">主屏幕图标标签颜色</string>
-  <string name="workspace_label_color_variation_pref_title">主屏幕图标标签颜色变化</string>
-  <string name="all_apps_opacity_pref_title">抽屉透明度</string>
+  <string name="workspace_label_color_hue_pref_title">主屏幕应用标签颜色</string>
+  <string name="workspace_label_color_variation_pref_title">主屏幕应用标签颜色变化</string>
+  <string name="all_apps_opacity_pref_title">抽屉背景透明度</string>
   <string name="num_cols_pref_title">列数</string>
   <string name="num_rows_pref_title">行数</string>
   <string name="num_hotseat_icons_pref_title">Dock 栏图标数</string>
   <string name="icon_scale_pref_title">图标大小</string>
-  <string name="icon_text_scale_pref_title">图标字体大小</string>
-  <string name="full_width_width_widgets_pref_title">特宽小部件</string>
+  <string name="icon_text_scale_pref_title">图标标签大小</string>
+  <string name="full_width_width_widgets_pref_title">全宽小部件</string>
   <string name="full_width_widgets_pref_summary">允许小部件填充整个桌面宽度</string>
-  <string name="notification_access_pref_title">通知小圆点和预览</string>
+  <string name="notification_access_pref_title">通知角标与预览</string>
   <string name="notification_access_pref_summary">允许 Lawnchair 访问您的通知以启用此功能</string>
   <string name="ui_pref_title">界面</string>
   <string name="pixel_style_pref_title">Pixel 风格</string>
@@ -285,32 +285,30 @@
   <string name="show_pixel_bar_pref_title">显示 Pixel 顶栏</string>
   <string name="use_wide_searchbar_pref_title">使用宽搜索栏</string>
   <string name="show_mic_pref_title">显示 Google Assistant 按钮</string>
+  <string name="use_round_searhbar">使用圆角应用搜索栏</string>
   <string name="pixel_style_icons_pref_title">使用 Pixel 图标</string>
   <string name="pixel_style_icons_pref_summary">该项启用时会优先选择圆形图标</string>
-  <string name="show_google_now_tab_pref_title">显示 Google now 页面</string>
+  <string name="show_google_now_tab_pref_title">显示 Google Now 页面</string>
   <string name="restart_lawnchair_pref_title">重启 Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">当设置出错时可能会有用</string>
   <string name="rebuild_icondb_pref_title">重建图标缓存</string>
-  <string name="pinch_to_overview_pref_title">双指捏合以转到概览页面</string>
+  <string name="pinch_to_overview_pref_title">双指捏合打开概览页面</string>
   <string name="pinch_to_overview_pref_summary">在主屏幕双指捏合以显示概览</string>
-  <string name="pull_down_notis_pref_title">下拉显示通知</string>
-  <string name="pull_down_notis_pref_on">在主屏幕下拉将展开通知栏</string>
-  <string name="pull_down_notis_pref_off">启用后可以在主屏幕下拉展开通知栏。</string>
   <string name="light_statusbar_pref_title">亮色状态栏</string>
-  <string name="light_statusbar_pref_on">使用亮色的壁纸时，状态栏可能显示黑色图标。</string>
+  <string name="light_statusbar_pref_force">状态栏将始终显示暗色图标</string>
   <string name="light_statusbar_pref_off">状态栏将始终显示白色图标。</string>
   <string name="haptic_feedback_pref_title">启用震动</string>
   <string name="keep_scroll_state_pref_title">记住滚动位置</string>
   <string name="keep_scroll_state_pref_summary">记住抽屉中滚动到了哪个位置</string>
   <string name="home_opens_drawer_pref_title">Home 键打开应用抽屉</string>
-  <string name="home_opens_drawer_pref_summary">在主屏幕按 Home 键将打开应用抽屉</string>
+  <string name="home_opens_drawer_pref_summary">在主屏幕按主页面键将打开应用抽屉</string>
   <string name="show_hidden_pref_title">显示隐藏的应用</string>
   <string name="show_hidden_pref_on">更改可见性设置以显示隐藏应用</string>
   <string name="show_hidden_pref_off">隐藏的应用将不可见</string>
   <string name="export_db_title">导出数据库</string>
   <string name="import_db_title">导入数据库</string>
-  <string name="export_prefs_title">导出设置</string>
-  <string name="import_prefs_title">导入设置</string>
+  <string name="export_prefs_title">导出配置</string>
+  <string name="import_prefs_title">导入配置</string>
   <string name="notification_listener_label">Lawnchair - 通知角标</string>
   <string name="color_extraction_label">Lawnchair - 提取颜色</string>
   <string name="test_title">测试</string>
@@ -358,4 +356,47 @@
   <!-- Customization Color -->
   <string name="blue_grey">蓝灰色</string>
   <string name="default_text">默认</string>
+  <string name="edit_icon_reset">重置</string>
+  <string name="show_top_shadow_title">显示顶部阴影</string>
+  <string name="pref_cat_homescreen">主屏幕</string>
+  <string name="pref_cat_miscellaneous">其它</string>
+  <string name="pref_cat_hotseat">Dock栏</string>
+  <string name="pref_cat_theme">主题</string>
+  <string name="theme_pref_title">主题</string>
+  <string name="theme_light">亮色主题</string>
+  <string name="theme_dark">暗色主题</string>
+  <string name="theme_black">黑色主题</string>
+  <string name="hide_hotseat_pref_title">隐藏Dock栏</string>
+  <string name="all_icons">All Icons</string>
+  <string name="pull_down_action_pref_title">Pull down action</string>
+  <string name="pull_down_do_nothing">Do nothing</string>
+  <string name="pull_down_notis">Show notifications</string>
+  <string name="pull_down_search">Open search</string>
+  <string name="pull_down_apps_search">Apps search</string>
+  <string name="enable_screen_rotation">Enable screen rotation</string>
+  <!-- Import/Export Strings -->
+  <string name="imexport_success">Success!</string>
+  <string name="imexport_error">Error: Failed to copy file</string>
+  <string name="imexport_no_backup_found">No backup found</string>
+  <string name="imexport_external_storage_unreadable">External storage is not readable (grant permission in settings)</string>
+  <string name="imexport_external_storage_unwritable">External storage is not writable (grant permission in settings)</string>
+  <string name="units_metric">Metric</string>
+  <string name="units_imperial">Imperial</string>
+  <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_cat_weather">Weather</string>
+  <string name="pref_weather_title">Enable weather</string>
+  <string name="pref_weather_units">Weather Units</string>
+  <string name="pref_weather_city_summary">For best results include country code</string>
+  <string name="pref_weather_city_title">City</string>
+  <string name="none">None</string>
+  <string name="pref_applyTheme">Apply theme on</string>
+  <string name="pref_applyBlur">Apply blur on</string>
+  <string name="search_bar">Search bar</string>
+  <string name="folder">Folder</string>
+  <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
+  <string name="app_shortcuts">App shortcuts</string>
+  <string name="blur_effect">Blur effect</string>
+  <string name="enable_editing_pref_title">Enable editing workspace</string>
+  <string name="pref_weather_provider">Weather provider</string>
+  <string name="loading">Loading...</string>
 </resources>

@@ -9,9 +9,9 @@ import ch.deletescape.lawnchair.dragndrop.DragLayer;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 
 public class Settings implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final String KEY_PREF_LIGHT_STATUS_BAR = "pref_lightStatusBar";
+    private static final String KEY_PREF_LIGHT_STATUS_BAR = "pref_forceLightStatusBar";
     private static final String KEY_PREF_PINCH_TO_OVERVIEW = "pref_pinchToOverview";
-    private static final String KEY_PREF_PULLDOWN_SEARCH = "pref_pulldownSearch";
+    private static final String KEY_PREF_PULLDOWN_ACTION = "pref_pulldownAction";
     private static final String KEY_PREF_HOTSEAT_EXTRACTED_COLORS = "pref_hotseatShouldUseExtractedColors";
     private static final String KEY_PREF_HAPTIC_FEEDBACK = "pref_enableHapticFeedback";
     private static final String KEY_PREF_KEEP_SCROLL_STATE = "pref_keepScrollState";
@@ -28,15 +28,25 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private static final String KEY_PREF_ICON_PACK_PACKAGE = "pref_iconPackPackage";
     private static final String KEY_PREF_PIXEL_STYLE_ICONS = "pref_pixelStyleIcons";
     private static final String KEY_PREF_HIDE_APP_LABELS = "pref_hideAppLabels";
+    private static final String KEY_PREF_ENABLE_SCREEN_ROTATION = "pref_enableScreenRotation";
     private static final String KEY_PREF_FULL_WIDTH_WIDGETS = "pref_fullWidthWidgets";
     private static final String KEY_PREF_SHOW_NOW_TAB = "pref_showGoogleNowTab";
     private static final String KEY_PREF_TRANSPARENT_HOTSEAT = "pref_isHotseatTransparent";
     private static final String KEY_PREF_ENABLE_DYNAMIC_UI = "pref_enableDynamicUi";
     private static final String KEY_PREF_ENABLE_BLUR = "pref_enableBlur";
+    private static final String KEY_PREF_BLUR_MODE = "pref_blurMode";
     private static final String KEY_PREF_BLUR_RADIUS = "pref_blurRadius";
     private static final String KEY_PREF_WHITE_GOOGLE_ICON = "pref_enableWhiteGoogleIcon";
-    private static final String KEY_PREF_DARK_THEME = "pref_enableDarkTheme";
     private static final String KEY_PREF_ROUND_SEARCH_BAR = "pref_useRoundSearchBar";
+    private static final String KEY_PREF_ENABLE_BACKPORT_SHORTCUTS = "pref_enableBackportShortcuts";
+    private static final String KEY_PREF_SHOW_TOP_SHADOW = "pref_showTopShadow";
+    private static final String KEY_PREF_THEME = "pref_theme";
+    private static final String KEY_PREF_THEME_MODE = "pref_themeMode";
+    private static final String KEY_PREF_HIDE_HOTSEAT = "pref_hideHotseat";
+    private static final String KEY_PREF_PLANE = "pref_plane";
+    private static final String KEY_PREF_WEATHER = "pref_weather";
+    private static final String KEY_PREF_ENABLE_EDITING = "pref_enableEditing";
+    private static final String KEY_PREF_ANIMATED_CLOCK_ICON = "pref_animatedClockIcon";
     private static Settings instance;
     private Launcher mLauncher;
 
@@ -65,13 +75,13 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
             LauncherAppState las = LauncherAppState.getInstance();
             switch (key) {
                 case KEY_PREF_LIGHT_STATUS_BAR:
-                    mLauncher.activateLightStatusBar(false);
+                    mLauncher.getAllAppsController().updateLightStatusBar(mLauncher);
                     break;
                 case KEY_PREF_PINCH_TO_OVERVIEW:
                     DragLayer dragLayer = mLauncher.getDragLayer();
                     dragLayer.onAccessibilityStateChanged(dragLayer.mIsAccesibilityEnabled);
                     break;
-                case KEY_PREF_PULLDOWN_SEARCH:
+                case KEY_PREF_PULLDOWN_ACTION:
                     mLauncher.getWorkspace().initPullDown();
                     break;
                 case KEY_PREF_HOTSEAT_EXTRACTED_COLORS:
@@ -110,19 +120,27 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                     // Ignoring those as we do not need to apply anything special
                     break;
                 case KEY_PREF_ENABLE_BLUR:
+                case KEY_PREF_BLUR_MODE:
                 case KEY_PREF_BLUR_RADIUS:
                     mLauncher.scheduleUpdateWallpaper();
                     break;
-                case KEY_PREF_ICON_SCALE:
-                case KEY_PREF_ICON_TEXT_SCALE:
                 case KEY_FULL_WIDTH_SEARCHBAR:
                 case KEY_PREF_FULL_WIDTH_WIDGETS:
                 case KEY_PREF_ENABLE_DYNAMIC_UI:
-                case KEY_PREF_DARK_THEME:
+                case KEY_PREF_THEME:
+                case KEY_PREF_THEME_MODE:
                 case KEY_PREF_TRANSPARENT_HOTSEAT:
                 case KEY_PREF_ROUND_SEARCH_BAR:
                 case KEY_SHOW_PIXEL_BAR:
+                case KEY_PREF_HIDE_HOTSEAT:
                     mLauncher.scheduleRecreate();
+                    break;
+                case KEY_PREF_ICON_SCALE:
+                case KEY_PREF_ICON_TEXT_SCALE:
+                case KEY_PREF_ENABLE_BACKPORT_SHORTCUTS:
+                case KEY_PREF_PLANE:
+                case KEY_PREF_WEATHER:
+                    mLauncher.scheduleKill();
                     break;
                 case KEY_PREF_ICON_PACK_PACKAGE:
                 case KEY_PREF_PIXEL_STYLE_ICONS:
@@ -137,6 +155,9 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                     } else {
                         mLauncher.scheduleKill();
                     }
+                case KEY_PREF_SHOW_TOP_SHADOW:
+                    mLauncher.getDragLayer().updateTopShadow();
+                    break;
                 default:
                     las.reloadAll(false);
             }

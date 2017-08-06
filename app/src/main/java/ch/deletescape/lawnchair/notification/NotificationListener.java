@@ -158,9 +158,9 @@ public class NotificationListener extends NotificationListenerService {
         mWorkerHandler.obtainMessage(2, new Pair<>(PackageUserKey.fromNotification(statusBarNotification), NotificationKeyData.fromNotification(statusBarNotification))).sendToTarget();
     }
 
-    public List getNotificationsForKeys(List list) {
-        StatusBarNotification[] activeNotifications = getActiveNotifications((String[]) NotificationKeyData.extractKeysOnly(list).toArray(new String[list.size()]));
-        return activeNotifications == null ? Collections.EMPTY_LIST : Arrays.asList(activeNotifications);
+    public List<StatusBarNotification> getNotificationsForKeys(List<NotificationKeyData> list) {
+        StatusBarNotification[] activeNotifications = getActiveNotifications(NotificationKeyData.extractKeysOnly(list).toArray(new String[list.size()]));
+        return activeNotifications == null ? Utilities.<StatusBarNotification>emptyList() : Arrays.asList(activeNotifications);
     }
 
     private List<StatusBarNotification> filterNotifications(StatusBarNotification[] statusBarNotificationArr) {

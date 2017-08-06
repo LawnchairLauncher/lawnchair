@@ -24,6 +24,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 import ch.deletescape.lawnchair.BubbleTextView;
+import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 
@@ -78,6 +79,7 @@ public class DeepShortcutTextView extends BubbleTextView {
 
     @Override
     public boolean performClick() {
-        return mShouldPerformClick && super.performClick();
+        return (mShouldPerformClick || Launcher.getLauncher(getContext()).isEditingDisabled())
+                && super.performClick();
     }
 }

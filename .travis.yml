@@ -1,14 +1,18 @@
 language: android
+dist: precise
 jdk: oraclejdk8
 branches:
    except:
    - l10n_alpha2
+env:
+  - MAJOR_MINOR=1.0
 android:
   components:
     - tools
     - platform-tools
-    - build-tools-26.0.0
+    - build-tools-26.0.1
     - android-26
+    - extra-google-m2repository
 before_install: 
   - chmod a+x ./scripts/deploy-*.sh
   - chmod a+x ./scripts/changelog.sh

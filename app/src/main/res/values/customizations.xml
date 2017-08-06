@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string-array name="unitsTexts">
+        <item>@string/units_metric</item>
+        <item>@string/units_imperial</item>
+    </string-array>
+    <string-array name="unitsValues">
+        <item>metric</item>
+        <item>imperial</item>
+    </string-array>
+
     <string-array name="numRowsValues">
         <item>default</item>
         <item>3</item>
@@ -66,6 +75,88 @@
         <item>8</item>
         <item>9</item>
     </string-array>
+
+    <string-array name="themeTexts">
+        <item>@string/theme_light</item>
+        <item>@string/theme_dark</item>
+        <item>@string/theme_black</item>
+    </string-array>
+
+    <string-array name="themeValues">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="pullDownActionTexts">
+        <item>@string/pull_down_do_nothing</item>
+        <item>@string/pull_down_notis</item>
+        <item>@string/pull_down_search</item>
+        <item>@string/pull_down_apps_search</item>
+    </string-array>
+
+    <string-array name="pullDownActionValues">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="blurModeTexts">
+        <item>@string/search_bar</item>
+        <item>@string/folder</item>
+        <item>@string/dock_allapps</item>
+    </string-array>
+
+    <string-array name="blurModeValues">
+        <item>1</item>
+        <item>2</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="themeModeTexts">
+        <item>@string/search_bar</item>
+        <item>@string/folder</item>
+        <item>@string/dock_allapps</item>
+        <item>@string/app_shortcuts</item>
+        <item>@string/blur_effect</item>
+    </string-array>
+
+    <string-array name="themeModeValues">
+        <item>1</item>
+        <item>2</item>
+        <item>4</item>
+        <item>8</item>
+        <item>16</item>
+    </string-array>
+
+    <string-array name="weatherProviderTexts">
+        <item>OpenWeatherMap</item>
+        <item>Google Awareness API</item>
+    </string-array>
+
+    <string-array name="weatherProviderValues">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
+    <array name="icon_shape_override_paths_names">
+        <item>@string/icon_shape_system_default</item>
+        <item>@string/icon_shape_square</item>
+        <item>@string/icon_shape_rounded_square</item>
+        <item>@string/icon_shape_squircle</item>
+        <item>@string/icon_shape_circle</item>
+        <item>@string/icon_shape_teardrop</item>
+    </array>
+
+    <array name="icon_shape_override_paths_values">
+        <item />
+        <item>M50,0L100,0 100,100 0,100 0,0z</item>
+        <item>M50,0L70,0 A30,30,0,0 1 100,30 L100,70 A30,30,0,0 1 70,100 L30,100 A30,30,0,0 1 0,70 L 0,30 A30,30,0,0 1 30,0z</item>
+        <item>M50,0 C10,0 0,10 0,50 0,90 10,100 50,100 90,100 100,90 100,50 100,10 90,0 50,0 Z</item>
+        <item>M50 0C77.6 0 100 22.4 100 50C100 77.6 77.6 100 50 100C22.4 100 0 77.6 0 50C0 22.4 22.4 0 50 0Z</item>
+        <item>M50,0A50,50,0,0 1 100,50 L100,85 A15,15,0,0 1 85,100 L50,100 A50,50,0,0 1 50,0z</item>
+    </array>
 
     <string name="generalDefault" translatable="false">default</string>
 </resources>

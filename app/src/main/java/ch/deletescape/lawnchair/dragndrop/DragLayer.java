@@ -69,7 +69,6 @@ import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.keyboard.ViewGroupFocusHelper;
-import ch.deletescape.lawnchair.popup.PopupContainerWithArrow;
 import ch.deletescape.lawnchair.util.Thunk;
 import ch.deletescape.lawnchair.util.TouchController;
 
@@ -140,6 +139,8 @@ public class DragLayer extends InsettableFrameLayout {
     public boolean mIsAccesibilityEnabled;
     private boolean mPreventAllApps;
 
+    private final Drawable mTopShadow;
+
     /**
      * Used to create a new DragLayer from XML.
      *
@@ -160,6 +161,13 @@ public class DragLayer extends InsettableFrameLayout {
         mRightHoverDrawableActive = res.getDrawable(R.drawable.page_hover_right_active, null);
         mIsRtl = Utilities.isRtl(res);
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
+
+        mTopShadow = getBackground();
+        updateTopShadow();
+    }
+
+    public void updateTopShadow() {
+        setBackground(FeatureFlags.INSTANCE.showTopShadow(getContext()) ? mTopShadow : null);
     }
 
     public void setup(Launcher launcher, DragController dragController,
@@ -184,7 +192,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     public void onAccessibilityStateChanged(boolean isAccessibilityEnabled) {
         mIsAccesibilityEnabled = isAccessibilityEnabled;
-        mPinchListener = !FeatureFlags.pinchToOverview(getContext().getApplicationContext()) || isAccessibilityEnabled
+        mPinchListener = !FeatureFlags.INSTANCE.pinchToOverview(getContext().getApplicationContext()) || isAccessibilityEnabled
                 ? null : new PinchToOverviewListener(mLauncher);
     }
 
@@ -252,7 +260,7 @@ public class DragLayer extends InsettableFrameLayout {
                 } else if (!isEventOverDropTargetBar(ev)) {
                     return true;
                 }
-            } else if (topOpenView instanceof PopupContainerWithArrow) {
+            } else {
                 mPreventAllApps = true;
                 return false;
             }

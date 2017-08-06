@@ -79,6 +79,8 @@ import ch.deletescape.lawnchair.provider.LauncherDbUtils;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 import ch.deletescape.lawnchair.shortcuts.ShortcutKey;
+import ch.deletescape.lawnchair.shortcuts.backport.DeepShortcutManagerBackport;
+import ch.deletescape.lawnchair.shortcuts.backport.ShortcutCache;
 import ch.deletescape.lawnchair.util.ComponentKey;
 import ch.deletescape.lawnchair.util.CursorIconInfo;
 import ch.deletescape.lawnchair.util.FlagOp;
@@ -777,7 +779,7 @@ public class LauncherModel extends BroadcastReceiver
         if (context instanceof Launcher && screenId < 0 &&
                 container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             item.screenId = Launcher.getLauncher(context).getHotseat()
-                    .getOrderInHotseat(cellX);
+                    .getOrderInHotseat(cellX, cellY);
         } else {
             item.screenId = screenId;
         }
@@ -810,8 +812,8 @@ public class LauncherModel extends BroadcastReceiver
             // in the hotseat
             if (context instanceof Launcher && screen < 0 &&
                     container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                item.screenId = Launcher.getLauncher(context).getHotseat().getOrderInHotseat(item.cellX
-                );
+                item.screenId = Launcher.getLauncher(context).getHotseat()
+                        .getOrderInHotseat(item.cellX, item.cellY);
             } else {
                 item.screenId = screen;
             }
@@ -844,7 +846,7 @@ public class LauncherModel extends BroadcastReceiver
         if (context instanceof Launcher && screenId < 0 &&
                 container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             item.screenId = Launcher.getLauncher(context).getHotseat()
-                    .getOrderInHotseat(cellX);
+                    .getOrderInHotseat(cellX, cellY);
         } else {
             item.screenId = screenId;
         }
@@ -927,7 +929,7 @@ public class LauncherModel extends BroadcastReceiver
         if (context instanceof Launcher && screenId < 0 &&
                 container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             item.screenId = Launcher.getLauncher(context).getHotseat()
-                    .getOrderInHotseat(cellX);
+                    .getOrderInHotseat(cellX, cellY);
         } else {
             item.screenId = screenId;
         }
@@ -1331,7 +1333,7 @@ public class LauncherModel extends BroadcastReceiver
             } else {
                 ExtractionUtils.startColorExtractionService(context);
             }
-            BlurWallpaperProvider.getInstance().updateAsync();
+            BlurWallpaperProvider.Companion.getInstance().updateAsync();
         }
     }
 
@@ -1694,7 +1696,7 @@ public class LauncherModel extends BroadcastReceiver
                 if (item.screenId == Workspace.FIRST_SCREEN_ID) {
                     // Mark the first row as occupied (if the feature is enabled)
                     // in order to account for the QSB.
-                    screen.markCells(0, 0, countX + 1, 1, FeatureFlags.showPixelBar(mContext));
+                    screen.markCells(0, 0, countX + 1, 1, FeatureFlags.INSTANCE.showPixelBar(mContext));
                 }
                 occupied.put(item.screenId, screen);
             }
@@ -3032,11 +3034,19 @@ public class LauncherModel extends BroadcastReceiver
             final String[] packages = mPackages;
             FlagOp flagOp = FlagOp.NO_OP;
             StringFilter pkgFilter = StringFilter.of(new HashSet<>(Arrays.asList(packages)));
+            ShortcutCache shortcutCache = null;
+            DeepShortcutManager deepShortcutManager = DeepShortcutManager.getInstance(context);
+            if (deepShortcutManager instanceof DeepShortcutManagerBackport) {
+                shortcutCache = ((DeepShortcutManagerBackport) deepShortcutManager).getShortcutCache();
+            }
             switch (mOp) {
                 case OP_ADD: {
                     for (String aPackage : packages) {
                         mIconCache.updateIconsForPkg(aPackage, mUser);
                         mBgAllAppsList.addPackage(context, aPackage, mUser);
+                        if (shortcutCache != null) {
+                            shortcutCache.parsePackage(context, aPackage);
+                        }
                     }
 
                     ManagedProfileHeuristic heuristic = ManagedProfileHeuristic.get(context, mUser);
@@ -3050,6 +3060,10 @@ public class LauncherModel extends BroadcastReceiver
                         mIconCache.updateIconsForPkg(aPackage1, mUser);
                         mBgAllAppsList.updatePackage(context, aPackage1, mUser);
                         mApp.getWidgetCache().removePackage(aPackage1, mUser);
+                        if (shortcutCache != null) {
+                            shortcutCache.removePackage(aPackage1);
+                            shortcutCache.parsePackage(context, aPackage1);
+                        }
                     }
                     // Since package was just updated, the target must be available now.
                     flagOp = FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE);
@@ -3061,6 +3075,9 @@ public class LauncherModel extends BroadcastReceiver
                     }
                     for (String aPackage : packages) {
                         mIconCache.removeIconsForPkg(aPackage, mUser);
+                        if (shortcutCache != null) {
+                            shortcutCache.removePackage(aPackage);
+                        }
                     }
                     // Fall through
                 }
@@ -3068,6 +3085,9 @@ public class LauncherModel extends BroadcastReceiver
                     for (String aPackage : packages) {
                         mBgAllAppsList.removePackage(aPackage, mUser);
                         mApp.getWidgetCache().removePackage(aPackage, mUser);
+                        if (shortcutCache != null) {
+                            shortcutCache.removePackage(aPackage);
+                        }
                     }
                     flagOp = FlagOp.addFlag(ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE);
                     break;

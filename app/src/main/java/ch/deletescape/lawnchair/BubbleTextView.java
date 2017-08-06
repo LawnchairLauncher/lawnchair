@@ -17,6 +17,7 @@
 package ch.deletescape.lawnchair;
 
 import android.animation.ObjectAnimator;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -51,6 +52,7 @@ import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.graphics.IconPalette;
 import ch.deletescape.lawnchair.model.PackageItemInfo;
+import ch.deletescape.lawnchair.pixelify.ClockIconDrawable;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
@@ -143,7 +145,7 @@ public class BubbleTextView extends TextView
         int display = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
         int defaultIconSize = grid.iconSizePx;
         if (display == DISPLAY_WORKSPACE) {
-            mHideText = FeatureFlags.hideAppLabels(context);
+            mHideText = FeatureFlags.INSTANCE.hideAppLabels(context);
             setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.iconTextSizePx);
             setTextColor(Utilities.getColor(getContext(), "pref_workspaceLabelColorHue", "-3", "pref_workspaceLabelColorVariation", "5"));
         } else if (display == DISPLAY_ALL_APPS) {
@@ -151,6 +153,8 @@ public class BubbleTextView extends TextView
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
         } else if (display == DISPLAY_FOLDER) {
+            mHideText = FeatureFlags.INSTANCE.hideAppLabels(context);
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
         }
         mCenterVertically = a.getBoolean(R.styleable.BubbleTextView_centerVertically, false);
@@ -223,14 +227,26 @@ public class BubbleTextView extends TextView
         }
         applyIconAndLabel(iconBitmap, shortcutInfo);
         setTag(shortcutInfo);
+        if (shortcutInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION)
+            applyClockIcon(shortcutInfo.getTargetComponent());
         if (z || shortcutInfo.isPromise()) {
             applyPromiseState(z);
         }
         applyBadgeState(shortcutInfo, false);
     }
 
+    private void applyClockIcon(ComponentName componentName) {
+        if (FeatureFlags.INSTANCE.animatedClockIcon(getContext()) &&
+                componentName != null &&
+                "com.google.android.deskclock/com.android.deskclock.DeskClock"
+                .equals(componentName.flattenToString())) {
+            setIcon(ClockIconDrawable.Companion.create(getContext()));
+        }
+    }
+
     public void applyFromApplicationInfo(AppInfo info) {
         applyIconAndLabel(info.iconBitmap, info);
+        applyClockIcon(info.getTargetComponent());
 
         // We don't need to check the info since it's not a ShortcutInfo
         super.setTag(info);

@@ -21,24 +21,18 @@ import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParser;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 
-import ch.deletescape.lawnchair.Utilities;
-import ch.deletescape.lawnchair.iconpack.CustomIconDrawable;
-import ch.deletescape.lawnchair.iconpack.IconPack;
-import ch.deletescape.lawnchair.iconpack.IconPackProvider;
-import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherModel;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
-import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
-import ch.deletescape.lawnchair.util.PackageManagerHelper;
+import ch.deletescape.lawnchair.iconpack.CustomIconDrawable;
+import ch.deletescape.lawnchair.iconpack.IconPack;
+import ch.deletescape.lawnchair.iconpack.IconPackProvider;
 
 public class PixelIconProvider {
     private BroadcastReceiver mBroadcastReceiver;
@@ -136,9 +130,25 @@ public class PixelIconProvider {
             try {
                 InputStream inputStream = mContext.getContentResolver().openInputStream(uri);
                 return Drawable.createFromStream(inputStream, alternateIcon);
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
+            }
+        } else if (alternateIcon.startsWith("resourceId")) {
+            try {
+                String[] parts = alternateIcon.substring(11).split("/");
+                IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext, parts[0]);
+                return iconPack.getDrawable(Integer.parseInt(parts[1]));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (alternateIcon.startsWith("resource")) {
+            try {
+                String[] parts = alternateIcon.substring(9).split("/");
+                IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext, parts[0]);
+                return iconPack.getDrawable(parts[1]);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         return null;
@@ -151,7 +161,7 @@ public class PixelIconProvider {
             drawable = iconPack == null ? null : iconPack.getIcon(info);
         }
         boolean isRoundPack = isRoundIconPack(sIconPack);
-        if ((drawable == null && FeatureFlags.usePixelIcons(mContext)) ||
+        if ((drawable == null && FeatureFlags.INSTANCE.usePixelIcons(mContext)) ||
                 (isRoundPack && drawable instanceof CustomIconDrawable)) {
             Drawable roundIcon = getRoundIcon(info.getComponentName().getPackageName(), iconDpi);
             if (roundIcon != null)
@@ -191,7 +201,6 @@ public class PixelIconProvider {
         @Override
         public void onReceive(final Context context, final Intent intent) {
             for (UserHandle userHandle : UserManagerCompat.getInstance(context).getUserProfiles()) {
-                LauncherAppState instance = LauncherAppState.getInstance();
                 for (String calendar : mCalendars) {
                     Utilities.updatePackage(context, userHandle, calendar);
                 }

@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015 The Android Open Source Project
+ * Copyright (C) 2017 The MoKee Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,36 +17,56 @@
 
 package ch.deletescape.lawnchair.settings.ui;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
+import ch.deletescape.lawnchair.BuildConfig;
 import ch.deletescape.lawnchair.DumbImportExportTask;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherFiles;
 import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
+import ch.deletescape.lawnchair.graphics.IconShapeOverride;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
  */
-public class SettingsActivity extends Activity implements PreferenceFragment.OnPreferenceStartFragmentCallback {
+public class SettingsActivity extends Activity implements PreferenceFragment.OnPreferenceStartFragmentCallback, SharedPreferences.OnSharedPreferenceChangeListener {
+
+    private static SharedPreferences sharedPrefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FeatureFlags.applyDarkTheme(this);
-
+        FeatureFlags.INSTANCE.applyDarkTheme(this);
         super.onCreate(savedInstanceState);
 
-        BlurWallpaperProvider.applyBlurBackground(this);
+        if (FeatureFlags.INSTANCE.getCurrentTheme() != 2)
+            BlurWallpaperProvider.Companion.applyBlurBackground(this);
 
         if (savedInstanceState == null) {
             // Display the fragment as the main content.
@@ -53,6 +74,10 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                     .replace(android.R.id.content, new LauncherSettingsFragment())
                     .commit();
         }
+
+        sharedPrefs = Utilities.getPrefs(this);
+        sharedPrefs.registerOnSharedPreferenceChangeListener(this);
+        updateUpButton();
     }
 
     @Override
@@ -74,6 +99,10 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        updateUpButton();
+    }
+
+    private void updateUpButton() {
         getActionBar().setDisplayHomeAsUpEnabled(getFragmentManager().getBackStackEntryCount() != 0);
     }
 
@@ -86,10 +115,18 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+        if (FeatureFlags.KEY_PREF_THEME.equals(key)) {
+            FeatureFlags.INSTANCE.loadDarkThemePreference(this);
+            recreate();
+        }
+    }
+
     /**
      * This fragment shows the launcher preferences.
      */
-    public static class LauncherSettingsFragment extends PreferenceFragment {
+    public static class LauncherSettingsFragment extends PreferenceFragment implements AdapterView.OnItemLongClickListener {
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -99,19 +136,36 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
         }
 
         @Override
+        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+            View view = super.onCreateView(inflater, container, savedInstanceState);
+            if (view == null) return null;
+            ListView listView = view.findViewById(android.R.id.list);
+            listView.setOnItemLongClickListener(this);
+            return view;
+        }
+
+        @Override
         public void onResume() {
             super.onResume();
             getActivity().setTitle(R.string.settings_button_text);
         }
 
         @Override
-        public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
-            if (preference.getKey() != null && preference.getKey().equals("about")) {
-                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/deletescape-media/lawnchair"));
-                startActivity(i);
-                return true;
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            ListView listView = (ListView) parent;
+            ListAdapter listAdapter = listView.getAdapter();
+            Object item = listAdapter.getItem(position);
+
+            if (item instanceof SubPreference) {
+                SubPreference subPreference = (SubPreference) item;
+                if (subPreference.onLongClick(null)) {
+                    ((SettingsActivity) getActivity()).onPreferenceStartFragment(this, subPreference);
+                    return true;
+                } else {
+                    return false;
+                }
             }
-            return super.onPreferenceTreeClick(preferenceScreen, preference);
+            return item != null && item instanceof View.OnLongClickListener && ((View.OnLongClickListener) item).onLongClick(view);
         }
     }
 
@@ -125,15 +179,26 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
             super.onCreate(savedInstanceState);
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
             addPreferencesFromResource(getContent());
+            if (getContent() == R.xml.launcher_pixel_style_preferences) {
+                boolean hasPermission = ContextCompat
+                        .checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+                findPreference("pref_weatherProvider").setEnabled(BuildConfig.AWARENESS_API_ENABLED && hasPermission);
+                String city = sharedPrefs.getString("pref_weather_city", "Lucerne, CH");
+                findPreference("pref_weather_city").setSummary(city);
+                Preference overrideShapePreference = findPreference("pref_override_icon_shape");
+                if (IconShapeOverride.Companion.isSupported(getActivity())) {
+                    IconShapeOverride.Companion.handlePreferenceUi((ListPreference) overrideShapePreference);
+                } else {
+                    ((PreferenceCategory) findPreference("prefCat_homeScreen"))
+                            .removePreference(overrideShapePreference);
+                }
+            }
         }
 
         @Override
         public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
             if (preference.getKey() != null) {
                 switch (preference.getKey()) {
-                    case "notification_access":
-                        startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
-                        break;
                     case "kill":
                         LauncherAppState.getInstance().getLauncher().scheduleKill();
                         break;
@@ -141,24 +206,42 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                         LauncherAppState.getInstance().getLauncher().scheduleReloadIcons();
                         break;
                     case "export_db":
-                        DumbImportExportTask.exportDB(getActivity());
+                        if (checkStoragePermission())
+                            DumbImportExportTask.exportDB(getActivity());
                         break;
                     case "import_db":
-                        DumbImportExportTask.importDB(getActivity());
-                        LauncherAppState.getInstance().getLauncher().scheduleKill();
+                        if (checkStoragePermission()) {
+                            DumbImportExportTask.importDB(getActivity());
+                            LauncherAppState.getInstance().getLauncher().scheduleKill();
+                        }
                         break;
                     case "export_prefs":
-                        DumbImportExportTask.exportPrefs(getActivity());
+                        if (checkStoragePermission())
+                            DumbImportExportTask.exportPrefs(getActivity());
                         break;
                     case "import_prefs":
-                        DumbImportExportTask.importPrefs(getActivity());
-                        LauncherAppState.getInstance().getLauncher().scheduleKill();
+                        if (checkStoragePermission()) {
+                            DumbImportExportTask.importPrefs(getActivity());
+                            LauncherAppState.getInstance().getLauncher().scheduleKill();
+                        }
                         break;
                     default:
                         return false;
                 }
                 return true;
             }
+            return false;
+        }
+
+        private boolean checkStoragePermission() {
+            boolean granted = ContextCompat.checkSelfPermission(
+                    getActivity(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+            if (granted) return true;
+            ActivityCompat.requestPermissions(
+                    getActivity(),
+                    new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    0);
             return false;
         }
 

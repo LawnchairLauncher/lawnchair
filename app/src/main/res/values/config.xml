@@ -7,10 +7,6 @@
     <bool name="is_tablet">false</bool>
     <bool name="is_large_tablet">false</bool>
 
-    <!-- A string pointer to the original app name string. This allows derived projects to
-     easily override the app name without providing all translations -->
-    <string name="derived_app_name" translatable="false">@string/app_name</string>
-
     <!-- DragController -->
     <item type="id" name="drag_event_parity" />
 
@@ -64,6 +60,9 @@
 
     <!-- View ID to use for blocked area on the first screen -->
     <item type="id" name="workspace_blocked_row" />
+
+    <!-- Hotseat -->
+    <bool name="hotseat_transpose_layout_with_orientation">true</bool>
 
     <!-- View ID used by cell layout to jail its content -->
     <item type="id" name="cell_layout_jail_id" />

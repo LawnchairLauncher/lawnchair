@@ -38,6 +38,10 @@ import ch.deletescape.lawnchair.graphics.IconPalette;
 
 public class FastBitmapDrawable extends Drawable {
 
+    protected FastBitmapDrawable() {
+
+    }
+
     /**
      * The possible states that a FastBitmapDrawable can be in.
      */
@@ -97,7 +101,7 @@ public class FastBitmapDrawable extends Drawable {
     private static final ColorMatrix sTempFilterMatrix = new ColorMatrix();
 
     private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
-    private final Bitmap mBitmap;
+    private Bitmap mBitmap;
     private State mState = State.NORMAL;
 
     // The saturation and brightness are values that are mapped to REDUCED_FILTER_VALUE_SPACE and
@@ -124,7 +128,7 @@ public class FastBitmapDrawable extends Drawable {
 
     public IconPalette getIconPalette() {
         if (this.mIconPalette == null) {
-            this.mIconPalette = IconPalette.fromDominantColor(Utilities.findDominantColorByHue(this.mBitmap, 20));
+            this.mIconPalette = IconPalette.fromDominantColor(Utilities.findDominantColorByHue(mBitmap, 20));
         }
         return this.mIconPalette;
     }
@@ -178,6 +182,13 @@ public class FastBitmapDrawable extends Drawable {
 
     public Bitmap getBitmap() {
         return mBitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        if (mBitmap != null)
+            mBitmap.recycle();
+        mBitmap = bitmap;
+        invalidateSelf();
     }
 
     /**

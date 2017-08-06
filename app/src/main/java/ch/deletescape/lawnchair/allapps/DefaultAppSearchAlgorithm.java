@@ -127,6 +127,7 @@ public class DefaultAppSearchAlgorithm {
             case Character.CURRENCY_SYMBOL:
             case Character.OTHER_PUNCTUATION:
             case Character.DASH_PUNCTUATION:
+            case Character.OTHER_LETTER:
                 // Always a break point for a symbol
                 return true;
             default:

@@ -17,8 +17,6 @@
  -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name" msgid="649227358658669779">"Lawnchair"</string>
-    <string name="folder_name" msgid="7371454440695724752" />
     <string name="work_folder_name" msgid="3753320833950115786">"Work"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Aplikacija nije instalirana."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Aplikacija nije dostupna"</string>
@@ -27,7 +25,6 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"Prečica nije dostupna"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Dodirnite i zadržite da biste izabrali vidžet."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Dvaput dodirnite i zadržite da biste izabrali vidžet ili koristite prilagođene radnje."</string>
-    <string name="widget_dims_format" msgid="2370757736025621599">"%1$d×%2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"širina od %1$d i visina od %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Pretražite aplikacije"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Aplikacije se učitavaju…"</string>

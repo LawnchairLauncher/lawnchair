@@ -59,6 +59,7 @@
         <item name="roundSearchBarBgColor">#10000000</item>
         <item name="roundSearchBarDividerColor">#10111111</item>
         <item name="roundSearchBarHintColor">@color/quantum_panel_text_color</item>
+        <item name="roundSearchBarTextColor">#4c4c4c</item>
     </style>
 
     <style name="LauncherTheme.Dark" parent="@style/BaseLauncherTheme.Dark">
@@ -86,9 +87,21 @@
         <item name="roundSearchBarBgColor">#10ffffff</item>
         <item name="roundSearchBarDividerColor">#10eeeeee</item>
         <item name="roundSearchBarHintColor">@android:color/white</item>
+        <item name="roundSearchBarTextColor">@android:color/white</item>
     </style>
 
-    <style name="Theme" parent="@style/LauncherTheme" />
+    <style name="LauncherTheme.Black" parent="LauncherTheme.Dark">
+        <item name="materialPanelBgColor">@android:color/black</item>
+        <item name="folderBgIntensity">0</item>
+        <item name="appPopupHeaderBgColor">@android:color/black</item>
+        <item name="appPopupBgColor">#ff101010</item>
+        <item name="allAppsContainerColor">@android:color/black</item>
+        <item name="allAppsContainerColorBlur">#00000000</item>
+        <item name="blurTintColor">#45000000</item>
+        <item name="notificationBeneathColor">#ff101010</item>
+        <item name="qsbBgColor">@android:color/black</item>
+        <item name="folderBgColorBlur">#75000000</item>
+    </style>
 
     <style name="SettingsTheme" parent="@android:style/Theme.Material.Light">
         <item name="android:colorAccent">@color/accent_material_light</item>
@@ -96,13 +109,26 @@
     </style>
 
     <style name="SettingsTheme.Dark" parent="@android:style/Theme.Material">
+        <item name="android:colorPrimaryDark">#ff242424</item>
+        <item name="android:colorPrimary">#ff2d2d2d</item>
         <item name="android:colorAccent">@color/accent_material_light</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <item name="blurTintColor">#45212121</item>
     </style>
 
+    <style name="SettingsTheme.Black" parent="SettingsTheme.Dark">
+        <item name="android:colorPrimaryDark">@android:color/black</item>
+        <item name="android:colorPrimary">@android:color/black</item>
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:listDivider">@android:color/transparent</item>
+    </style>
+
     <!-- Theme for the widget container. -->
     <style name="WidgetContainerTheme" parent="@style/SettingsTheme">
+        <item name="colorSecondary">@color/secondary_color</item>
+    </style>
+
+    <style name="WidgetContainerTheme.Dark" parent="@style/SettingsTheme.Dark">
         <item name="colorSecondary">@color/secondary_color</item>
     </style>
 
@@ -152,21 +178,12 @@
         <item name="iconDisplay">folder</item>
     </style>
 
-    <style name="Icon.DeepShortcut">
-        <item name="android:gravity">start|center_vertical</item>
-        <item name="android:textAlignment">viewStart</item>
-        <item name="android:elevation">@dimen/deep_shortcuts_elevation</item>
-        <item name="android:paddingStart">@dimen/bg_pill_height</item>
-        <item name="android:paddingEnd">@dimen/deep_shortcut_padding_end</item>
-        <item name="android:drawableEnd">@drawable/deep_shortcuts_drag_handle</item>
-        <item name="android:drawablePadding">@dimen/deep_shortcut_drawable_padding</item>
-        <item name="android:textColor">#FF212121</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:fontFamily">sans-serif</item>
-        <item name="android:shadowRadius">0</item>
-        <item name="customShadows">false</item>
-        <item name="layoutHorizontal">true</item>
-        <item name="iconSizeOverride">@dimen/deep_shortcut_icon_size</item>
+    <style name="WeatherWidget" />
+
+    <style name="WeatherWidget.Text">
+        <item name="android:shadowRadius">3.0</item>
+        <item name="android:shadowDy">0.5</item>
+        <item name="android:shadowColor">#33000000</item>
     </style>
 
     <!-- Drop targets -->

@@ -1,15 +1,21 @@
 package ch.deletescape.lawnchair;
 
+import android.animation.TimeInterpolator;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.AttributeSet;
 import android.util.Pair;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
+
+import ch.deletescape.lawnchair.dragndrop.DragLayer;
+import ch.deletescape.lawnchair.util.FlingAnimation;
 
 public class UninstallDropTarget extends ButtonDropTarget {
 
@@ -79,6 +85,55 @@ public class UninstallDropTarget extends ButtonDropTarget {
         DropTargetResultCallback callback = d.dragSource instanceof DropTargetResultCallback
                 ? (DropTargetResultCallback) d.dragSource : null;
         startUninstallActivity(mLauncher, d.dragInfo, callback);
+    }
+
+    @Override
+    public void onFlingToDelete(final DragObject d, PointF vel) {
+        // Don't highlight the icon as it's animating
+        d.dragView.setColor(0);
+
+        final DragLayer dragLayer = mLauncher.getDragLayer();
+        FlingAnimation fling = new FlingAnimation(d, vel,
+                getIconRect(d.dragView.getMeasuredWidth(), d.dragView.getMeasuredHeight(),
+                        mDrawable.getIntrinsicWidth(), mDrawable.getIntrinsicHeight()),
+                dragLayer);
+
+        final int duration = fling.getDuration();
+        final long startTime = AnimationUtils.currentAnimationTimeMillis();
+
+        // NOTE: Because it takes time for the first frame of animation to actually be
+        // called and we expect the animation to be a continuation of the fling, we have
+        // to account for the time that has elapsed since the fling finished.  And since
+        // we don't have a startDelay, we will always get call to update when we call
+        // start() (which we want to ignore).
+        final TimeInterpolator tInterpolator = new TimeInterpolator() {
+            private int mCount = -1;
+            private float mOffset = 0f;
+
+            @Override
+            public float getInterpolation(float t) {
+                if (mCount < 0) {
+                    mCount++;
+                } else if (mCount == 0) {
+                    mOffset = Math.min(0.5f, (float) (AnimationUtils.currentAnimationTimeMillis() -
+                            startTime) / duration);
+                    mCount++;
+                }
+                return Math.min(1f, mOffset + t);
+            }
+        };
+
+        Runnable onAnimationEndRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mLauncher.exitSpringLoadedDragMode();
+                completeDrop(d);
+                mLauncher.getDragController().onDeferredEndFling(d);
+            }
+        };
+
+        dragLayer.animateView(d.dragView, fling, duration, tInterpolator, onAnimationEndRunnable,
+                DragLayer.ANIMATION_END_DISAPPEAR, null);
     }
 
     public static boolean startUninstallActivity(Launcher launcher, ItemInfo info) {

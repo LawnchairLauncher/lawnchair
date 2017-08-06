@@ -36,13 +36,14 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -53,9 +54,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Process;
 import android.os.StrictMode;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -79,6 +82,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.libraries.launcherclient.LauncherClient;
+import com.microsoft.azure.mobile.MobileCenter;
+import com.microsoft.azure.mobile.analytics.Analytics;
+import com.microsoft.azure.mobile.crashes.Crashes;
+import com.microsoft.azure.mobile.distribute.Distribute;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -127,11 +134,7 @@ import ch.deletescape.lawnchair.util.ViewOnDrawExecutor;
 import ch.deletescape.lawnchair.widget.PendingAddWidgetInfo;
 import ch.deletescape.lawnchair.widget.WidgetHostViewLoader;
 import ch.deletescape.lawnchair.widget.WidgetsContainerView;
-
-import com.microsoft.azure.mobile.MobileCenter;
-import com.microsoft.azure.mobile.analytics.Analytics;
-import com.microsoft.azure.mobile.crashes.Crashes;
-import com.microsoft.azure.mobile.distribute.Distribute;
+import ch.deletescape.wallpaperpicker.WallpaperPickerActivity;
 
 /**
  * Default launcher application.
@@ -258,6 +261,8 @@ public class Launcher extends Activity
 
     private boolean mPaused = true;
     private boolean mOnResumeNeedsLoad;
+    private boolean mPlanesEnabled;
+    private ObjectAnimator mPlanesAnimator;
 
     private ArrayList<Runnable> mBindOnResumeCallbacks = new ArrayList<>();
     private ArrayList<Runnable> mOnResumeCallbacks = new ArrayList<>();
@@ -328,6 +333,8 @@ public class Launcher extends Activity
 
     private PopupDataProvider mPopupDataProvider;
 
+    private boolean mDisableEditing;
+
     @Thunk
     Runnable mBuildLayersRunnable = new Runnable() {
         @Override
@@ -350,13 +357,15 @@ public class Launcher extends Activity
 
     private BlurWallpaperProvider mBlurWallpaperProvider;
 
-    private Dialog mCurrentDialog;
+    private LauncherDialog mCurrentDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FeatureFlags.applyDarkThemePreference(this);
+        FeatureFlags.INSTANCE.loadDarkThemePreference(this);
         super.onCreate(savedInstanceState);
-        
+
+        setScreenOrientation();
+
         if(!BuildConfig.MOBILE_CENTER_KEY.equalsIgnoreCase("null"))
             MobileCenter.start(getApplication(), BuildConfig.MOBILE_CENTER_KEY, Analytics.class, Crashes.class, Distribute.class);
 
@@ -364,7 +373,10 @@ public class Launcher extends Activity
         app.setMLauncher(this);
 
         // Load configuration-specific DeviceProfile
-        mDeviceProfile = app.getInvariantDeviceProfile().profile;
+        mDeviceProfile = getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE ?
+                app.getInvariantDeviceProfile().landscapeProfile
+                : app.getInvariantDeviceProfile().portraitProfile;
 
         mSharedPrefs = Utilities.getPrefs(this);
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
@@ -389,6 +401,7 @@ public class Launcher extends Activity
 
         setContentView(R.layout.launcher);
 
+        mPlanesEnabled = FeatureFlags.INSTANCE.planes(this);
         setupViews();
         mDeviceProfile.layout(this, false /* notifyListeners */);
         mExtractedColors = new ExtractedColors();
@@ -426,6 +439,14 @@ public class Launcher extends Activity
         Settings.init(this);
 
         Utilities.showChangelog(this);
+    }
+
+    private void setScreenOrientation() {
+        if(FeatureFlags.INSTANCE.enableScreenRotation(this)) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
     }
 
     public PopupDataProvider getPopupDataProvider() {
@@ -473,21 +494,44 @@ public class Launcher extends Activity
         return mAllAppsController;
     }
 
+    public void activateLightSystemBars(boolean activate, boolean statusBar, boolean navigationBar) {
+        if (statusBar)
+            activateLightStatusBar(activate);
+        if (navigationBar)
+            activateLightNavigationBar(activate);
+    }
+
     /**
      * Sets the status bar to be light or not. Light status bar means dark icons.
      *
      * @param activate if true, make sure the status bar is light, otherwise base on wallpaper.
      */
     public void activateLightStatusBar(boolean activate) {
-        boolean lightStatusBar = activate || (FeatureFlags.lightStatusBar(getApplicationContext())
-                && mExtractedColors.getColor(ExtractedColors.STATUS_BAR_INDEX,
-                ExtractedColors.DEFAULT_DARK) == ExtractedColors.DEFAULT_LIGHT);
         int oldSystemUiFlags = getWindow().getDecorView().getSystemUiVisibility();
         int newSystemUiFlags = oldSystemUiFlags;
-        if (lightStatusBar) {
+        if (activate) {
             newSystemUiFlags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
         } else {
             newSystemUiFlags &= ~(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+        if (newSystemUiFlags != oldSystemUiFlags) {
+            final int systemUiFlags = newSystemUiFlags;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    getWindow().getDecorView().setSystemUiVisibility(systemUiFlags);
+                }
+            });
+        }
+    }
+
+    public void activateLightNavigationBar(boolean activate) {
+        int oldSystemUiFlags = getWindow().getDecorView().getSystemUiVisibility();
+        int newSystemUiFlags = oldSystemUiFlags;
+        if (activate) {
+            newSystemUiFlags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+        } else {
+            newSystemUiFlags &= ~(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }
         if (newSystemUiFlags != oldSystemUiFlags) {
             final int systemUiFlags = newSystemUiFlags;
@@ -721,7 +765,7 @@ public class Launcher extends Activity
             } else {
                 // TODO: Show a snack bar with link to settings
                 Toast.makeText(this, getString(R.string.msg_no_phone_permission,
-                        getString(R.string.derived_app_name)), Toast.LENGTH_SHORT).show();
+                        getString(R.string.app_name)), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -810,6 +854,7 @@ public class Launcher extends Activity
     protected void onResume() {
         super.onResume();
 
+        setScreenOrientation();
         // Restore the previous launcher state
         if (mOnResumeState == State.WORKSPACE) {
             showWorkspace(false);
@@ -866,6 +911,10 @@ public class Launcher extends Activity
 
         mLauncherTab.getClient().onResume();
 
+        if (mCurrentDialog != null) {
+            mCurrentDialog.onResume();
+        }
+
         if (reloadIcons) {
             reloadIcons = false;
             reloadIcons();
@@ -874,7 +923,7 @@ public class Launcher extends Activity
         if (kill) {
             kill = false;
             Log.v("Settings", "Die Motherf*cker!");
-            android.os.Process.killProcess(android.os.Process.myPid());
+            Process.killProcess(Process.myPid());
         }
 
         if (recreate) {
@@ -886,13 +935,21 @@ public class Launcher extends Activity
             updateWallpaper = false;
             mBlurWallpaperProvider.updateAsync();
         }
+
+        mDisableEditing = !FeatureFlags.INSTANCE.enableEditing(this);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        mBlurWallpaperProvider.updateAsync();
     }
 
     private void reloadIcons() {
-        UserHandle user = Utilities.myUserHandle();
         mIconCache.pip.updateIconPack();
-        mIconCache.updateIconsForAll(user);
-        LauncherAppState.getInstance().reloadAll(true);
+        mIconCache.clear();
+        Process.killProcess(Process.myPid());
     }
 
     @Override
@@ -964,7 +1021,7 @@ public class Launcher extends Activity
                 closeFolder();
 
                 // Close any shortcuts containers
-                closeShortcutsContainer();
+                closeFloatingContainer();
 
                 // Stop resizing any widgets
                 mWorkspace.exitWidgetResizeMode();
@@ -1073,6 +1130,11 @@ public class Launcher extends Activity
         mQsbContainer = mDragLayer.findViewById(R.id.qsb_container);
         mWorkspace.initParentViews(mDragLayer);
 
+        if (mPlanesEnabled) {
+            Log.d(TAG, "inflating planes");
+            getLayoutInflater().inflate(R.layout.planes, (ViewGroup) mLauncherView, true);
+        }
+
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
@@ -1090,7 +1152,7 @@ public class Launcher extends Activity
         setupOverviewPanel();
 
         // Setup the workspace
-        mWorkspace.setHapticFeedbackEnabled(FeatureFlags.enableHapticFeedback(this));
+        mWorkspace.setHapticFeedbackEnabled(FeatureFlags.INSTANCE.enableHapticFeedback(this));
         mWorkspace.setOnLongClickListener(this);
         mWorkspace.setup(mDragController);
         // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the
@@ -1585,13 +1647,13 @@ public class Launcher extends Activity
             mWorkspace.exitWidgetResizeMode();
 
             closeFolder(alreadyOnHome);
-            closeShortcutsContainer(alreadyOnHome);
+            closeFloatingContainer(alreadyOnHome);
             exitSpringLoadedDragMode();
 
             // If we are already on home, then just animate back to the workspace,
             // otherwise, just wait until onResume to set the state back to Workspace
             if (alreadyOnHome) {
-                if (!FeatureFlags.homeOpensDrawer(this) || mState != State.WORKSPACE || mWorkspace.getCurrentPage() != 0 || mOverviewPanel.getVisibility() == View.VISIBLE) {
+                if (!FeatureFlags.INSTANCE.homeOpensDrawer(this) || mState != State.WORKSPACE || mWorkspace.getCurrentPage() != 0 || mOverviewPanel.getVisibility() == View.VISIBLE) {
                     showWorkspace(true);
                 } else {
                     showAppsView(true, false);
@@ -1609,7 +1671,7 @@ public class Launcher extends Activity
             }
 
             // Reset the apps view
-            if (!alreadyOnHome && mAppsView != null && !FeatureFlags.keepScrollState(this)) {
+            if (!alreadyOnHome && mAppsView != null && !FeatureFlags.INSTANCE.keepScrollState(this)) {
                 mAppsView.scrollToTop();
             }
 
@@ -1638,6 +1700,26 @@ public class Launcher extends Activity
                     }
                 });
             }
+        }
+
+        if (mPlanesEnabled && mPlanesAnimator == null) {
+            int height = findViewById(R.id.launcher).getHeight();
+            final View planes = findViewById(R.id.planes);
+            mPlanesAnimator = ObjectAnimator.ofFloat(planes, "translationY", height, -height);
+            mPlanesAnimator.setDuration(2000);
+            mPlanesAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    planes.setVisibility(View.GONE);
+                    mPlanesAnimator = null;
+                }
+
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    planes.setVisibility(View.VISIBLE);
+                }
+            });
+            mPlanesAnimator.start();
         }
 
         dismissDialog();
@@ -1669,7 +1751,7 @@ public class Launcher extends Activity
         // this state is reflected.
         // TODO: Move folderInfo.isOpened out of the model and make it a UI state.
         closeFolder(false);
-        closeShortcutsContainer(false);
+        closeFloatingContainer(false);
 
         if (mPendingRequestArgs != null) {
             outState.putParcelable(RUNTIME_STATE_PENDING_REQUEST_ARGS, mPendingRequestArgs);
@@ -1810,6 +1892,10 @@ public class Launcher extends Activity
 
     public boolean isWorkspaceLocked() {
         return mWorkspaceLoading || mPendingRequestArgs != null;
+    }
+
+    public boolean isEditingDisabled() {
+        return mDisableEditing;
     }
 
     public boolean isWorkspaceLoading() {
@@ -2177,7 +2263,7 @@ public class Launcher extends Activity
         }
     }
 
-    protected void onLongClickAllAppsHandle() {
+    public void onLongClickAllAppsHandle() {
         if (!isAppsViewVisible()) {
             showAppsView(true, true);
         }
@@ -2323,11 +2409,11 @@ public class Launcher extends Activity
         boolean useGoogleWallpaper =
                 PackageManagerHelper.isAppEnabled(getPackageManager(), "com.google.android.apps.wallpaper", 0);
         getPackageManager().setComponentEnabledSetting(
-                new ComponentName(this, "ch.deletescape.wallpaperpicker.WallpaperPickerActivity"),
+                new ComponentName(this, WallpaperPickerActivity.class),
                 useGoogleWallpaper ? PackageManager.COMPONENT_ENABLED_STATE_DISABLED : PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP);
 
-        String pickerPackage = useGoogleWallpaper ? "com.google.android.apps.wallpaper" : "ch.deletescape.lawnchair";
+        String pickerPackage = useGoogleWallpaper ? "com.google.android.apps.wallpaper" : getApplicationInfo().packageName;
         Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER)
                 .setPackage(pickerPackage)
                 .putExtra(Utilities.EXTRA_WALLPAPER_OFFSET, offset);
@@ -2378,7 +2464,7 @@ public class Launcher extends Activity
                 StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll()
                         .penaltyLog().build());
 
-                if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+                if (info instanceof ShortcutInfo && ((ShortcutInfo) info).useDeepShortcutManager) {
                     String id = ((ShortcutInfo) info).getDeepShortcutId();
                     String packageName = intent.getPackage();
                     DeepShortcutManager.getInstance(this).startShortcut(
@@ -2667,23 +2753,14 @@ public class Launcher extends Activity
         getDragLayer().sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
     }
 
-    public void closeShortcutsContainer() {
-        closeShortcutsContainer(true);
+    public void closeFloatingContainer() {
+        closeFloatingContainer(true);
     }
 
-    public void closeShortcutsContainer(boolean animate) {
+    public void closeFloatingContainer(boolean animate) {
         AbstractFloatingView topOpenView = AbstractFloatingView.getTopOpenView(this);
-        if (topOpenView instanceof PopupContainerWithArrow) {
+        if (topOpenView != null)
             topOpenView.close(animate);
-        }
-        /*DeepShortcutsContainer deepShortcutsContainer = getOpenShortcutsContainer();
-        if (deepShortcutsContainer != null) {
-            if (animate) {
-                deepShortcutsContainer.animateClose();
-            } else {
-                deepShortcutsContainer.close();
-            }
-        }*/
     }
 
     public View getTopFloatingView() {
@@ -2934,7 +3011,7 @@ public class Launcher extends Activity
         mUserPresent = false;
         updateAutoAdvanceState();
         closeFolder();
-        closeShortcutsContainer();
+        closeFloatingContainer();
 
         // Send an accessibility event to announce the context change
         getWindow().getDecorView()
@@ -3135,7 +3212,7 @@ public class Launcher extends Activity
     @Override
     public void bindScreens(ArrayList<Long> orderedScreenIds) {
         // Make sure the first screen is always at the start.
-        if (FeatureFlags.showPixelBar(this) && orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != 0) {
+        if (FeatureFlags.INSTANCE.showPixelBar(this) && orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != 0) {
             orderedScreenIds.remove(Workspace.FIRST_SCREEN_ID);
             orderedScreenIds.add(0, Workspace.FIRST_SCREEN_ID);
             mModel.updateWorkspaceScreenOrder(this, orderedScreenIds);
@@ -3553,6 +3630,17 @@ public class Launcher extends Activity
         return bounceAnim;
     }
 
+    public boolean useVerticalBarLayout() {
+        return mDeviceProfile.isVerticalBarLayout();
+    }
+
+/*    public int getSearchBarHeight() {
+        if (mLauncherCallbacks != null) {
+            return mLauncherCallbacks.getSearchBarHeight();
+        }
+        return LauncherCallbacks.SEARCH_BAR_HEIGHT_NORMAL;
+    }*/
+
     /**
      * A runnable that we can dequeue and re-enqueue when all applications are bound (to prevent
      * multiple calls to bind the same list.)
@@ -3838,7 +3926,7 @@ public class Launcher extends Activity
         return icon;
     }
 
-    public void openDialog(Dialog dialog) {
+    public void openDialog(LauncherDialog dialog) {
         dismissDialog();
         mCurrentDialog = dialog;
         mCurrentDialog.setOnDismissListener(this);
@@ -3861,7 +3949,7 @@ public class Launcher extends Activity
         if (context instanceof Launcher) {
             return (Launcher) context;
         }
-        return ((Launcher) ((ContextWrapper) context).getBaseContext());
+        return LauncherAppState.getInstance().getLauncher();
     }
 
     /**
@@ -3906,6 +3994,25 @@ public class Launcher extends Activity
         @Override
         public void run() {
             Launcher.this.bindAllWidgets(Launcher.this.mAllWidgets);
+        }
+    }
+
+    public static class LauncherDialog extends Dialog {
+
+        public LauncherDialog(@NonNull Context context) {
+            super(context);
+        }
+
+        public LauncherDialog(@NonNull Context context, int themeResId) {
+            super(context, themeResId);
+        }
+
+        protected LauncherDialog(@NonNull Context context, boolean cancelable, @Nullable OnCancelListener cancelListener) {
+            super(context, cancelable, cancelListener);
+        }
+
+        public void onResume() {
+
         }
     }
 }

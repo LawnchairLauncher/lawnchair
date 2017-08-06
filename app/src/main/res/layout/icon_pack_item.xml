@@ -15,7 +15,7 @@
         android:scaleType="fitCenter"
         android:layout_width="@dimen/icon_preview_size"
         android:layout_height="@dimen/icon_preview_size"
-        tools:src="@mipmap/ic_launcher_home" />
+        tools:src="@mipmap/ic_launcher" />
 
     <TextView
         android:id="@android:id/title"

@@ -70,6 +70,7 @@ import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.badge.BadgeRenderer;
 import ch.deletescape.lawnchair.badge.FolderBadgeInfo;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragLayer;
 import ch.deletescape.lawnchair.dragndrop.DragView;
 import ch.deletescape.lawnchair.util.Thunk;
@@ -141,7 +142,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public FolderIcon(Context context) {
-        super(context);
+        this(context, null);
         init();
     }
 
@@ -532,7 +533,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
         public void setup(Context context, DisplayMetrics dm, DeviceProfile grid, View invalidateDelegate,
                           int availableSpace, int topPadding) {
-            BG_INTENSITY = Utilities.resolveAttributeData(context, R.attr.folderBgIntensity);
+            BG_INTENSITY = Utilities.resolveAttributeData(
+                    FeatureFlags.INSTANCE.applyDarkTheme(context, FeatureFlags.DARK_FOLDER),
+                    R.attr.folderBgIntensity);
 
             mInvalidateDelegate = invalidateDelegate;
 
@@ -638,7 +641,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
             paint.reset();
             paint.setAntiAlias(true);
-            paint.setColor(Color.argb(160, 245, 245, 245));
+            paint.setColor(Color.argb(160, BG_INTENSITY, BG_INTENSITY, BG_INTENSITY));
 
             float radius = getScaledRadius();
             canvas.drawCircle(radius, radius, radius, paint);

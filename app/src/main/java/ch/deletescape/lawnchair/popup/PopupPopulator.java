@@ -29,12 +29,7 @@ import ch.deletescape.lawnchair.util.PackageUserKey;
 
 public class PopupPopulator {
     static final int NUM_DYNAMIC = 2;
-    private static final Comparator SHORTCUT_RANK_COMPARATOR = new C04871();
-
-    static final class C04871 implements Comparator<ShortcutInfoCompat> {
-        C04871() {
-        }
-
+    private static final Comparator<ShortcutInfoCompat> SHORTCUT_RANK_COMPARATOR = new Comparator<ShortcutInfoCompat>() {
         @Override
         public int compare(ShortcutInfoCompat shortcutInfoCompat, ShortcutInfoCompat shortcutInfoCompat2) {
             if (shortcutInfoCompat.isDeclaredInManifest() && !shortcutInfoCompat2.isDeclaredInManifest()) {
@@ -45,7 +40,7 @@ public class PopupPopulator {
             }
             return 1;
         }
-    }
+    };
 
     static final class C04892 implements Runnable {
         final /* synthetic */ ComponentName val$activity;
@@ -230,7 +225,7 @@ public class PopupPopulator {
         return itemArr2;
     }
 
-    public static List sortAndFilterShortcuts(List list, String str) {
+    public static List sortAndFilterShortcuts(List<ShortcutInfoCompat> list, String str) {
         int i = 0;
         if (str != null) {
             Iterator it = list.iterator();

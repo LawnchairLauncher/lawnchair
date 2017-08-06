@@ -42,6 +42,7 @@ import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
@@ -70,6 +71,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -85,6 +87,7 @@ import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.graphics.ShadowGenerator;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
+import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 import ch.deletescape.lawnchair.util.IconNormalizer;
 import ch.deletescape.lawnchair.util.PackageManagerHelper;
 
@@ -197,6 +200,8 @@ public final class Utilities {
             Drawable icon, UserHandle user, Context context) {
         float scale = IconNormalizer.getInstance().getScale(icon, null);
         Bitmap bitmap = createIconBitmap(icon, context, scale);
+        if (Utilities.isAtLeastO() && icon instanceof AdaptiveIconDrawable)
+            bitmap = addShadowToIcon(bitmap, bitmap.getWidth());
         return badgeIconForUser(bitmap, user, context);
     }
 
@@ -235,6 +240,14 @@ public final class Utilities {
      */
     public static Bitmap addShadowToIcon(Bitmap icon) {
         return ShadowGenerator.getInstance().recreateIcon(icon);
+    }
+
+    public static Bitmap addShadowToIcon(Bitmap icon, int size) {
+        return ShadowGenerator.getInstance().recreateIcon(icon, size);
+    }
+
+    public static Bitmap getShadowForIcon(Bitmap icon, int size) {
+        return ShadowGenerator.getInstance().createShadow(icon, size);
     }
 
     /**
@@ -672,6 +685,16 @@ public final class Utilities {
                 size, metrics));
     }
 
+    public static Paint.FontMetricsInt fontMetricsIntFromFontMetrics(Paint.FontMetrics fontMetrics) {
+        Paint.FontMetricsInt fontMetricsInt = new Paint.FontMetricsInt();
+        fontMetricsInt.ascent = Math.round(fontMetrics.ascent);
+        fontMetricsInt.bottom = Math.round(fontMetrics.bottom);
+        fontMetricsInt.descent = Math.round(fontMetrics.descent);
+        fontMetricsInt.leading = Math.round(fontMetrics.leading);
+        fontMetricsInt.top = Math.round(fontMetrics.top);
+        return fontMetricsInt;
+    }
+
     public static String createDbSelectionQuery(String columnName, Iterable<?> values) {
         return String.format(Locale.ENGLISH, "%s IN (%s)", columnName, TextUtils.join(", ", values));
     }
@@ -724,6 +747,7 @@ public final class Utilities {
         return spanned;
     }
 
+    @NonNull
     public static SharedPreferences getPrefs(Context context) {
         return context.getSharedPreferences(
                 LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
@@ -763,7 +787,7 @@ public final class Utilities {
     }
 
     public static boolean isAtLeastO() {
-        return Build.VERSION.SDK_INT >= 26;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
     }
 
     /**
@@ -905,13 +929,13 @@ public final class Utilities {
     }
 
     public static int getDynamicAccent(Context context) {
-        if (!FeatureFlags.isDynamicUiEnabled(context)) return getColorAccent(context);
+        if (!FeatureFlags.INSTANCE.isDynamicUiEnabled(context)) return getColorAccent(context);
         return getColor(context, ExtractedColors.VIBRANT_INDEX, getColorAccent(context));
     }
 
     public static int getDynamicBadgeColor(Context context) {
         int defaultColor = context.getResources().getColor(R.color.badge_color);
-        if (!FeatureFlags.isDynamicUiEnabled(context)) return defaultColor;
+        if (!FeatureFlags.INSTANCE.isDynamicUiEnabled(context)) return defaultColor;
         return getColor(context, ExtractedColors.VIBRANT_INDEX, defaultColor);
     }
 
@@ -934,7 +958,7 @@ public final class Utilities {
     }
 
     public static void showChangelog(Context context, boolean force) {
-        if (!BuildConfig.TRAVIS) return;
+        if (!BuildConfig.TRAVIS || BuildConfig.TAGGED_BUILD) return;
         final SharedPreferences prefs = getPrefs(context);
         if (force || BuildConfig.TRAVIS_BUILD_NUMBER != getPreviousBuildNumber(prefs)) {
             new AlertDialog.Builder(context)
@@ -971,9 +995,18 @@ public final class Utilities {
         if (!PackageManagerHelper.isAppEnabled(context.getPackageManager(), packageName, 0)) return;
         LauncherAppState instance = LauncherAppState.getInstance();
         instance.getModel().onPackageChanged(packageName, userHandle);
-        List queryForPinnedShortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(packageName, userHandle);
+        List<ShortcutInfoCompat> queryForPinnedShortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(packageName, userHandle);
         if (!queryForPinnedShortcuts.isEmpty()) {
             instance.getModel().updatePinnedShortcuts(packageName, queryForPinnedShortcuts, userHandle);
         }
+    }
+
+    public static Drawable getMyIcon(Context context) {
+        return context.getPackageManager().getApplicationIcon(context.getApplicationInfo());
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> emptyList() {
+        return Collections.EMPTY_LIST;
     }
 }
