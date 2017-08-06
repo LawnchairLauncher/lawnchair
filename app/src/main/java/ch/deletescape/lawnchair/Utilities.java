@@ -200,7 +200,7 @@ public final class Utilities {
             Drawable icon, UserHandle user, Context context) {
         float scale = IconNormalizer.getInstance().getScale(icon, null);
         Bitmap bitmap = createIconBitmap(icon, context, scale);
-        if (icon instanceof AdaptiveIconDrawable)
+        if (Utilities.isAtLeastO() && icon instanceof AdaptiveIconDrawable)
             bitmap = addShadowToIcon(bitmap, bitmap.getWidth());
         return badgeIconForUser(bitmap, user, context);
     }
@@ -244,6 +244,10 @@ public final class Utilities {
 
     public static Bitmap addShadowToIcon(Bitmap icon, int size) {
         return ShadowGenerator.getInstance().recreateIcon(icon, size);
+    }
+
+    public static Bitmap getShadowForIcon(Bitmap icon, int size) {
+        return ShadowGenerator.getInstance().createShadow(icon, size);
     }
 
     /**

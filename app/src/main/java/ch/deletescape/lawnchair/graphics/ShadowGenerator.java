@@ -85,6 +85,24 @@ public class ShadowGenerator {
         return result;
     }
 
+    public synchronized Bitmap createShadow(Bitmap icon, int size) {
+        int[] offset = new int[2];
+        Bitmap shadow = icon.extractAlpha(mBlurPaint, offset);
+        Bitmap result = Bitmap.createBitmap(size, size, Config.ARGB_8888);
+        mCanvas.setBitmap(result);
+
+        // Draw ambient shadow
+        mDrawPaint.setAlpha(AMBIENT_SHADOW_ALPHA);
+        mCanvas.drawBitmap(shadow, offset[0], offset[1], mDrawPaint);
+
+        // Draw key shadow
+        mDrawPaint.setAlpha(KEY_SHADOW_ALPHA);
+        mCanvas.drawBitmap(shadow, offset[0], offset[1] + KEY_SHADOW_DISTANCE * size, mDrawPaint);
+
+        mCanvas.setBitmap(null);
+        return result;
+    }
+
     public static ShadowGenerator getInstance() {
         synchronized (LOCK) {
             if (sShadowGenerator == null) {
