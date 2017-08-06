@@ -105,7 +105,6 @@ public class Hotseat extends FrameLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mContent = findViewById(R.id.layout);
-        refresh();
         mContent.setIsHotseat(true);
 
         refresh();
