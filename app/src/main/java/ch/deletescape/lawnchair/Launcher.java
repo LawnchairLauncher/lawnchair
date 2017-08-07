@@ -47,7 +47,6 @@ import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -437,7 +436,6 @@ public class Launcher extends Activity
             mSharedPrefs.edit().putBoolean("requiresIconCacheReload", false).apply();
             reloadIcons();
         }
-        getWindow().setNavigationBarColor(Color.TRANSPARENT);
         Settings.init(this);
 
         Utilities.showChangelog(this);
