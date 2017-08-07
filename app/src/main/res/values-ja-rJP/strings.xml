@@ -19,7 +19,6 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- General -->
-  <skip></skip>
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
@@ -53,7 +52,6 @@
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">他のアプリを検索</string>
   <!-- Drag and drop -->
-  <skip></skip>
   <!-- Error message when user has filled a page -->
   <string name="out_of_space">このホーム画面に空きスペースがありません。</string>
   <!-- Error message when user has filled the hotseat -->
@@ -70,7 +68,6 @@
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
   <string name="app_info_drop_target_label">アプリ情報</string>
   <!-- Permissions: -->
-  <skip></skip>
   <!-- Permission short label -->
   <string name="permlab_install_shortcut">ショートカットのインストール</string>
   <!-- Permission description -->
@@ -86,7 +83,6 @@
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission">「<xliff:g id="APP_NAME">%1$s</xliff:g>」から電話をかけることはできません</string>
   <!-- Widgets: -->
-  <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">ウィジェットを表示できません</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
@@ -98,7 +94,6 @@
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
   <string name="disabled_app_label">「<xliff:g id="APP_NAME">%1$s</xliff:g>」は無効です</string>
-  <skip></skip>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">%1$d/%2$dページ</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
@@ -249,9 +244,7 @@
   <string name="widgets_bottom_sheet_title">%1$s ウィジェット</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair はTill Kottmann（ deletescape としても知られています）によって作成されたランチャーアプリです。それは AOSP の Launcher3 に基づいて出来ています。</string>
-  <string name="about_title">About</string>
   <string name="changelog_title">ビルド #%d のための変更履歴</string>
-  <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">アイコンパック</string>
   <string name="icon_pack_preference_summary">アイコンパックを選択</string>
   <string name="hotseat_uses_extracted_colors_pref_title">ドックは壁紙の色を使用します</string>
@@ -260,10 +253,10 @@
   <string name="transparent_hotseat_pref_title">透明なドック</string>
   <string name="dynamic_ui_pref_title">壁紙からアクセントの色を抽出する。</string>
   <string name="blur_pref_title">ぼかしを有効にする</string>
-  <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
+  <string name="blur_pref_summary">ぼかし効果を部分的にインターフェースに適用します\nまたライブ壁紙とは互換性はありません</string>
   <string name="blur_radius_pref_title">ぼかしの範囲</string>
   <string name="white_google_icon_pref_title">白いGoogleアイコンを使用する</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
+  <string name="hide_icon_labels_pref_title">ホーム画面のアイコンラベルを非表示にする</string>
   <string name="workspace_label_color_hue_pref_title">ホーム画面のアイコンラベルの色</string>
   <string name="workspace_label_color_variation_pref_title">ホーム画面上のアイコンラベルの色の変化</string>
   <string name="all_apps_opacity_pref_title">アプリドロワー不透明度</string>
@@ -276,7 +269,6 @@
   <string name="full_width_widgets_pref_summary">ウィジェットがパディングなしで幅全体にまたがることを許可する</string>
   <string name="notification_access_pref_title">通知バッジとプレビュー</string>
   <string name="notification_access_pref_summary">Lawnchairにこの機能を有効にするための通知にアクセスさせる</string>
-  <string name="ui_pref_title">UI</string>
   <string name="pixel_style_pref_title">Pixel スタイル</string>
   <string name="behavior_pref_title">動作</string>
   <string name="debug_pref_title">デバッグ</string>
@@ -292,15 +284,15 @@
   <string name="restart_lawnchair_pref_summary">一部の設定が正しく適用されない場合に役立ちます</string>
   <string name="rebuild_icondb_pref_title">アイコンデータベースを再構築する</string>
   <string name="pinch_to_overview_pref_title">概要にピンチ</string>
-  <string name="pinch_to_overview_pref_summary">Pinch on the home screen to open the overview</string>
+  <string name="pinch_to_overview_pref_summary">ホーム画面をピンチして概要を開きます</string>
   <string name="light_statusbar_pref_title">明るいステータスバー</string>
-  <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
+  <string name="light_statusbar_pref_force">ステータスバーは常に暗いアイコンで表示されます。</string>
   <string name="light_statusbar_pref_off">ステータスバーは常に明るいアイコンで表示されます。</string>
   <string name="haptic_feedback_pref_title">振動を有効にします</string>
   <string name="keep_scroll_state_pref_title">スクロール位置を保存</string>
   <string name="keep_scroll_state_pref_summary">アプリドロワーのスクロール位置を保存します。</string>
   <string name="home_opens_drawer_pref_title">ホームボタンでアプリドロワーを開きます</string>
-  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the home screen will open the app drawer</string>
+  <string name="home_opens_drawer_pref_summary">ホーム画面でホームボタンを押すと、アプリドロワーが開きます</string>
   <string name="show_hidden_pref_title">隠しアプリを表示する</string>
   <string name="show_hidden_pref_on">非表示のアプリケーションが表示され、表示設定が変更されます</string>
   <string name="show_hidden_pref_off">隠しアプリは表示されません</string>
@@ -356,46 +348,42 @@
   <string name="blue_grey">ブルーグレー</string>
   <string name="default_text">デフォルト</string>
   <string name="edit_icon_reset">リセット</string>
-  <string name="show_top_shadow_title">Show top shadow</string>
   <string name="pref_cat_homescreen">ホーム画面</string>
   <string name="pref_cat_miscellaneous">その他</string>
   <string name="pref_cat_hotseat">ドック</string>
-  <string name="pref_cat_theme">Theme</string>
-  <string name="theme_pref_title">Theme</string>
-  <string name="theme_light">Light</string>
-  <string name="theme_dark">Dark</string>
-  <string name="theme_black">Black</string>
+  <string name="pref_cat_theme">テーマ</string>
+  <string name="theme_pref_title">テーマ</string>
+  <string name="theme_light">明るい</string>
+  <string name="theme_dark">暗い</string>
+  <string name="theme_black">黒</string>
   <string name="hide_hotseat_pref_title">ドックを隠す</string>
-  <string name="all_icons">All Icons</string>
-  <string name="pull_down_action_pref_title">Pull down action</string>
-  <string name="pull_down_do_nothing">Do nothing</string>
+  <string name="all_icons">全てのアイコン</string>
+  <string name="pull_down_action_pref_title">プルダウンの動作</string>
+  <string name="pull_down_do_nothing">何もしない</string>
   <string name="pull_down_notis">通知を表示</string>
-  <string name="pull_down_search">Open search</string>
-  <string name="pull_down_apps_search">Apps search</string>
+  <string name="pull_down_search">検索を開く</string>
+  <string name="pull_down_apps_search">アプリを検索</string>
   <string name="enable_screen_rotation">画面の回転を有効にする</string>
   <!-- Import/Export Strings -->
-  <string name="imexport_success">Success!</string>
-  <string name="imexport_error">Error: Failed to copy file</string>
+  <string name="imexport_success">成功しました！</string>
+  <string name="imexport_error">エラー : ファイルをコピーできませんでした</string>
   <string name="imexport_no_backup_found">バックアップが見つかりません</string>
-  <string name="imexport_external_storage_unreadable">External storage is not readable (grant permission in settings)</string>
-  <string name="imexport_external_storage_unwritable">External storage is not writable (grant permission in settings)</string>
-  <string name="units_metric">Metric</string>
-  <string name="units_imperial">Imperial</string>
+  <string name="imexport_external_storage_unreadable">外部ストレージを読み取ることができません (設定で権限を許可して下さい)</string>
+  <string name="imexport_external_storage_unwritable">外部ストレージに書き込むことができません (設定で権限を許可して下さい)</string>
+  <string name="units_metric">メトリック法（摂氏）</string>
+  <string name="units_imperial">インペリアル法（華氏）</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <string name="pref_cat_weather">天気</string>
-  <string name="pref_weather_title">Enable weather</string>
-  <string name="pref_weather_units">Weather Units</string>
-  <string name="pref_weather_city_summary">For best results include country code</string>
-  <string name="pref_weather_city_title">City</string>
-  <string name="none">None</string>
-  <string name="pref_applyTheme">Apply theme on</string>
-  <string name="pref_applyBlur">Apply blur on</string>
+  <string name="pref_weather_title">天気情報を有効にする</string>
+  <string name="pref_weather_units">天気の単位</string>
+  <string name="pref_weather_city_summary">国コードを含めると最良の結果を返します（例: Tokyo,JP）</string>
+  <string name="pref_weather_city_title">都市</string>
+  <string name="none">設定しない</string>
+  <string name="pref_applyTheme">テーマの適用範囲</string>
+  <string name="pref_applyBlur">ぼかしの適用範囲</string>
   <string name="search_bar">検索バー</string>
-  <string name="folder">Folder</string>
-  <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
-  <string name="app_shortcuts">App shortcuts</string>
-  <string name="blur_effect">Blur effect</string>
-  <string name="enable_editing_pref_title">Enable editing workspace</string>
-  <string name="pref_weather_provider">Weather provider</string>
-  <string name="loading">Loading...</string>
+  <string name="folder">フォルダ</string>
+  <string name="blur_effect">ぼかし効果</string>
+  <string name="pref_weather_provider">天気プロバイダ</string>
+  <string name="loading">読み込んでいます...</string>
 </resources>
