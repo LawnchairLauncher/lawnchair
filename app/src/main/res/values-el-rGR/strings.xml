@@ -19,7 +19,6 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- General -->
-  <skip></skip>
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
@@ -53,11 +52,10 @@
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">Αναζήτηση για περισσότερες εφαρμογές</string>
   <!-- Drag and drop -->
-  <skip></skip>
   <!-- Error message when user has filled a page -->
-  <string name="out_of_space">Δεν υπάρχει χώρος σε αυτήν την Αρχική οθόνη.</string>
+  <string name="out_of_space">Δεν υπάρχει χώρος σε αυτήν την οθόνη.</string>
   <!-- Error message when user has filled the hotseat -->
-  <string name="hotseat_out_of_space">Δεν υπάρχει επιπλέον χώρος στην περιοχή Αγαπημένα</string>
+  <string name="hotseat_out_of_space">Δεν υπάρχει επιπλέον χώρος στην περιοχή Αγαπημένα.</string>
   <!-- All applications label -->
   <string name="all_apps_button_label">Λίστα εφαρμογών</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
@@ -70,7 +68,6 @@
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
   <string name="app_info_drop_target_label">Πληροφορίες εφαρμογής</string>
   <!-- Permissions: -->
-  <skip></skip>
   <!-- Permission short label -->
   <string name="permlab_install_shortcut">εγκατάσταση συντομεύσεων</string>
   <!-- Permission description -->
@@ -86,7 +83,6 @@
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission">Η εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> δεν επιτρέπεται να πραγματοποιεί τηλεφωνικές κλήσεις</string>
   <!-- Widgets: -->
-  <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">Παρουσιάστηκε πρόβλημα στη φόρτωση του γραφικού στοιχείου</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
@@ -98,7 +94,6 @@
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
   <string name="disabled_app_label">Η εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> είναι απενεργοποιημένη</string>
-  <skip></skip>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">Σελίδα %1$d από %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
@@ -242,7 +237,7 @@
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
   <string name="which_wallpaper_option_home_screen_and_lock_screen">Αρχική οθόνη και οθόνη κλειδώματος</string>
   <string name="title_show_google_app">Εμφάνιση %1$s</string>
-  <string name="title_show_google_app_default">Εμφάνιση Google app</string>
+  <string name="title_show_google_app_default">Εμφάνιση εφαρμογής Google</string>
   <string name="label_search">Αναζήτηση</string>
   <string name="label_voice_search">Φωνητική αναζήτηση</string>
   <string name="shortcuts_menu_with_notifications_description">%1$d συντομεύσεις και %2$d ειδοποιήσεις για %3$s</string>
@@ -354,7 +349,7 @@
   <!-- Customization Color -->
   <string name="grey">Γκρι</string>
   <!-- Customization Color -->
-  <string name="blue_grey">Μπλεγκρί</string>
+  <string name="blue_grey">Μπλε Γκρι</string>
   <string name="default_text">Προεπιλογή</string>
   <string name="edit_icon_reset">Επαναφορά</string>
   <string name="show_top_shadow_title">Εμφάνιση σκιάς στην κορυφή της αρχικής οθόνης</string>
@@ -371,20 +366,20 @@
   <string name="pull_down_action_pref_title">Ενέργεια τραβήγματος προς τα κάτω</string>
   <string name="pull_down_do_nothing">Να μη γίνει καμία ενέργεια</string>
   <string name="pull_down_notis">Εμφάνιση ειδοποιήσεων</string>
-  <string name="pull_down_search">Άνοιγμα αναζήτησης</string>
+  <string name="pull_down_search">Άνοιγμα αναζήτησης Google</string>
   <string name="pull_down_apps_search">Αναζήτηση εφαρμογών</string>
-  <string name="enable_screen_rotation">Ενεργοποιήστε την περιστροφή οθόνης</string>
+  <string name="enable_screen_rotation">Ενεργοποίηση περιστροφής οθόνης</string>
   <!-- Import/Export Strings -->
   <string name="imexport_success">Επιτυχής!</string>
   <string name="imexport_error">Σφάλμα: Απέτυχε η αντιγραφή αρχείου</string>
   <string name="imexport_no_backup_found">Δεν βρέθηκε κανένα αντίγραφο ασφαλείας</string>
   <string name="imexport_external_storage_unreadable">Η εξωτερική μονάδα αποθήκευσης δεν είναι αναγνώσιμη (χορήγηση άδειας στις ρυθμίσεις)</string>
   <string name="imexport_external_storage_unwritable">Η εξωτερική μονάδα αποθήκευσης δεν είναι εγγράψιμη (χορήγηση άδειας στις ρυθμίσεις)</string>
-  <string name="units_metric">Μετρικό</string>
-  <string name="units_imperial">Αγγλοσαξονικό</string>
+  <string name="units_metric">Μετρικό (°C)</string>
+  <string name="units_imperial">Αγγλοσαξονικό (°F)</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <string name="pref_cat_weather">Καιρός</string>
-  <string name="pref_weather_title">Ενεργοποίηση του καιρού</string>
+  <string name="pref_weather_title">Ενεργοποίηση καιρού</string>
   <string name="pref_weather_units">Μονάδα μέτρησης καιρού</string>
   <string name="pref_weather_city_summary">Για καλύτερα αποτελέσματα να συμπεριλάβετε και τον κωδικό χώρας</string>
   <string name="pref_weather_city_title">Πόλη</string>
