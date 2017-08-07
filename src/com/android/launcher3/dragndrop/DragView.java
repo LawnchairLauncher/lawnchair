@@ -218,6 +218,12 @@ public class DragView extends View {
 
                     Rect bounds = new Rect(0, 0, w, h);
                     bounds.inset(blurMargin, blurMargin);
+                    // Badge is applied after icon normalization so the bounds for badge should not
+                    // be scaled down due to icon normalization.
+                    Rect badgeBounds = new Rect(bounds);
+                    mBadge = getBadge(info, appState, outObj[0]);
+                    mBadge.setBounds(badgeBounds);
+
                     Utilities.scaleRectAboutCenter(bounds,
                             IconNormalizer.getInstance(mLauncher).getScale(dr, null, null, null));
                     AdaptiveIconDrawable adaptiveIcon = (AdaptiveIconDrawable) dr;
@@ -233,9 +239,6 @@ public class DragView extends View {
                             w * AdaptiveIconDrawable.getExtraInsetFraction());
                     mTranslateY = new SpringFloatValue(DragView.this,
                             h * AdaptiveIconDrawable.getExtraInsetFraction());
-
-                    mBadge = getBadge(info, appState, outObj[0]);
-                    mBadge.setBounds(bounds);
 
                     bounds.inset(
                             (int) (-bounds.width() * AdaptiveIconDrawable.getExtraInsetFraction()),
