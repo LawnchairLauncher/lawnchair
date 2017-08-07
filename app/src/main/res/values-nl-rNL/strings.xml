@@ -19,7 +19,6 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- General -->
-  <skip></skip>
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
@@ -29,9 +28,9 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">App is niet beschikbaar</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Gedownloade app uitgeschakeld in veilige modus</string>
+  <string name="safemode_shortcut_error">Gedownloade apps zijn uitgeschakeld in veilige modus</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">Widgets uitgeschakeld in veilige modus</string>
+  <string name="safemode_widget_error">Widgets zijn uitgeschakeld in veilige modus</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">Snelkoppeling is niet beschikbaar</string>
   <!-- Widgets -->
@@ -53,9 +52,8 @@
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">Meer apps zoeken</string>
   <!-- Drag and drop -->
-  <skip></skip>
   <!-- Error message when user has filled a page -->
-  <string name="out_of_space">Er is geen ruimte meer op dit startscherm.</string>
+  <string name="out_of_space">Er is geen ruimte meer op deze pagina.</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">Geen ruimte meer in het vak \'Favorieten\'</string>
   <!-- All applications label -->
@@ -68,9 +66,8 @@
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
   <string name="uninstall_drop_target_label">Deïnstalleren</string>
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
-  <string name="app_info_drop_target_label">App-info</string>
+  <string name="app_info_drop_target_label">App info</string>
   <!-- Permissions: -->
-  <skip></skip>
   <!-- Permission short label -->
   <string name="permlab_install_shortcut">snelkoppeling instellen</string>
   <!-- Permission description -->
@@ -86,7 +83,6 @@
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission"><xliff:g example="Launcher3" id="app_name">%1$s </xliff:g> is niet toegestaan om te telefoneren</string>
   <!-- Widgets: -->
-  <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">Probleem met het laden van widget</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
@@ -98,7 +94,6 @@
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
   <string name="disabled_app_label">Uitgezet <xliff:g example="Messenger" id="app_name">%1$s</xliff:g></string>
-  <skip></skip>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">Pagina %1$d van %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
@@ -261,10 +256,10 @@
   <string name="transparent_hotseat_pref_title">Doorzichtige favorietenbalk</string>
   <string name="dynamic_ui_pref_title">Haal accent kleur van achtergrond</string>
   <string name="blur_pref_title">Blur inschakelen</string>
-  <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
-  <string name="blur_radius_pref_title">Blur radius</string>
+  <string name="blur_pref_summary">Blur effect toepassen op delen van de interface\nNiet compatibel met live wallpapers</string>
+  <string name="blur_radius_pref_title">Blur grootte</string>
   <string name="white_google_icon_pref_title">Gebruik wit Google icoon</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
+  <string name="hide_icon_labels_pref_title">Verberg icoon labels op startscherm</string>
   <string name="workspace_label_color_hue_pref_title">Kleur van de icoon labels op startscherm</string>
   <string name="workspace_label_color_variation_pref_title">Kleurvariatie van de icoon labels op startscherm</string>
   <string name="all_apps_opacity_pref_title">Ondoorzichtigheid applicatiescherm</string>
@@ -293,15 +288,15 @@
   <string name="restart_lawnchair_pref_summary">Kan nuttig zijn als sommige instellingen niet goed zijn toegepast</string>
   <string name="rebuild_icondb_pref_title">Icoon database herbouwen</string>
   <string name="pinch_to_overview_pref_title">Knijpen om naar overzicht te gaan</string>
-  <string name="pinch_to_overview_pref_summary">Pinch on the home screen to open the overview</string>
+  <string name="pinch_to_overview_pref_summary">Knijpen op startscherm om het overzicht te openen</string>
   <string name="light_statusbar_pref_title">Lichte statusbalk</string>
-  <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
+  <string name="light_statusbar_pref_force">De statusbalk altijd donkere iconen laten tonen</string>
   <string name="light_statusbar_pref_off">De statusbalk weergeeft altijd lichte iconen.</string>
   <string name="haptic_feedback_pref_title">Activeer trillen</string>
   <string name="keep_scroll_state_pref_title">Onthoudt scrollpositie</string>
   <string name="keep_scroll_state_pref_summary">Onthoudt de scrollpositie in het applicatiescherm</string>
   <string name="home_opens_drawer_pref_title">Home-knop opent applicatiescherm</string>
-  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the home screen will open the app drawer</string>
+  <string name="home_opens_drawer_pref_summary">Op de home knop drukken op het startscherm opent de app lade</string>
   <string name="show_hidden_pref_title">Laat verborgen applicaties zien</string>
   <string name="show_hidden_pref_on">Laat verborgen applicaties zien om de zichtbaarheidsinstellingen aan te passen</string>
   <string name="show_hidden_pref_off">Laat verborgen applicaties niet zien</string>
@@ -357,46 +352,46 @@
   <string name="blue_grey">Blauwgrijs</string>
   <string name="default_text">Standaard</string>
   <string name="edit_icon_reset">Reset</string>
-  <string name="show_top_shadow_title">Show top shadow</string>
-  <string name="pref_cat_homescreen">Home screen</string>
-  <string name="pref_cat_miscellaneous">Miscellaneous</string>
+  <string name="show_top_shadow_title">Schaduw weergeven</string>
+  <string name="pref_cat_homescreen">Startscherm</string>
+  <string name="pref_cat_miscellaneous">Diversen</string>
   <string name="pref_cat_hotseat">Dock</string>
-  <string name="pref_cat_theme">Theme</string>
-  <string name="theme_pref_title">Theme</string>
-  <string name="theme_light">Light</string>
-  <string name="theme_dark">Dark</string>
-  <string name="theme_black">Black</string>
-  <string name="hide_hotseat_pref_title">Hide Dock</string>
-  <string name="all_icons">All Icons</string>
-  <string name="pull_down_action_pref_title">Pull down action</string>
-  <string name="pull_down_do_nothing">Do nothing</string>
-  <string name="pull_down_notis">Show notifications</string>
-  <string name="pull_down_search">Open search</string>
-  <string name="pull_down_apps_search">Apps search</string>
-  <string name="enable_screen_rotation">Enable screen rotation</string>
+  <string name="pref_cat_theme">Thema</string>
+  <string name="theme_pref_title">Thema</string>
+  <string name="theme_light">Licht</string>
+  <string name="theme_dark">Donker</string>
+  <string name="theme_black">Zwart</string>
+  <string name="hide_hotseat_pref_title">Verberg dock</string>
+  <string name="all_icons">Alle iconen</string>
+  <string name="pull_down_action_pref_title">Actie bij omlaag trekken</string>
+  <string name="pull_down_do_nothing">Niets doen</string>
+  <string name="pull_down_notis">Notificaties weergeven</string>
+  <string name="pull_down_search">Zoeken openen</string>
+  <string name="pull_down_apps_search">App zoeken</string>
+  <string name="enable_screen_rotation">Scherm rotatie activeren</string>
   <!-- Import/Export Strings -->
-  <string name="imexport_success">Success!</string>
-  <string name="imexport_error">Error: Failed to copy file</string>
-  <string name="imexport_no_backup_found">No backup found</string>
-  <string name="imexport_external_storage_unreadable">External storage is not readable (grant permission in settings)</string>
-  <string name="imexport_external_storage_unwritable">External storage is not writable (grant permission in settings)</string>
-  <string name="units_metric">Metric</string>
-  <string name="units_imperial">Imperial</string>
+  <string name="imexport_success">Succesvol!</string>
+  <string name="imexport_error">Fout: Kan het bestand niet kopiëren</string>
+  <string name="imexport_no_backup_found">Geen back-up gevonden</string>
+  <string name="imexport_external_storage_unreadable">Externe opslag is niet leesbaar (machtigen toekennen in instellingen)</string>
+  <string name="imexport_external_storage_unwritable">Externe opslag is niet schrijfbaar (machtigen toekennen in instellingen)</string>
+  <string name="units_metric">Metrisch systeem</string>
+  <string name="units_imperial">Imperiaal systeem</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
-  <string name="pref_cat_weather">Weather</string>
-  <string name="pref_weather_title">Enable weather</string>
-  <string name="pref_weather_units">Weather Units</string>
-  <string name="pref_weather_city_summary">For best results include country code</string>
-  <string name="pref_weather_city_title">City</string>
-  <string name="none">None</string>
-  <string name="pref_applyTheme">Apply theme on</string>
-  <string name="pref_applyBlur">Apply blur on</string>
-  <string name="search_bar">Search bar</string>
-  <string name="folder">Folder</string>
-  <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
-  <string name="app_shortcuts">App shortcuts</string>
+  <string name="pref_cat_weather">Weer</string>
+  <string name="pref_weather_title">Weer inschakelen</string>
+  <string name="pref_weather_units">Weer eenheden</string>
+  <string name="pref_weather_city_summary">Voeg landcode toe voor de beste resultaten</string>
+  <string name="pref_weather_city_title">Stad</string>
+  <string name="none">Geen</string>
+  <string name="pref_applyTheme">Thema toepassen op</string>
+  <string name="pref_applyBlur">Blur toepassen op</string>
+  <string name="search_bar">Zoekbalk</string>
+  <string name="folder">Map</string>
+  <string name="dock_allapps"><![CDATA[Dock & alle apps]]></string>
+  <string name="app_shortcuts">App snelkoppelingen</string>
   <string name="blur_effect">Blur effect</string>
-  <string name="enable_editing_pref_title">Enable editing workspace</string>
-  <string name="pref_weather_provider">Weather provider</string>
-  <string name="loading">Loading...</string>
+  <string name="enable_editing_pref_title">Aanpassen van werkomgeving activeren</string>
+  <string name="pref_weather_provider">Weer aanbieder</string>
+  <string name="loading">Laden...</string>
 </resources>
