@@ -18,7 +18,7 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Launcher theme -->
-    <style name="BaseLauncherTheme" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
+    <style name="BaseLauncherTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowShowWallpaper">true</item>
@@ -26,7 +26,7 @@
         <item name="android:colorAccent">@color/accent_material_light</item>
     </style>
 
-    <style name="BaseLauncherTheme.Dark" parent="@android:style/Theme.DeviceDefault.NoActionBar">
+    <style name="BaseLauncherTheme.Dark" parent="@android:style/Theme.Material.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowShowWallpaper">true</item>
@@ -229,7 +229,7 @@
         <item name="android:windowShowWallpaper">true</item>
     </style>
 
-    <style name="WallpaperCropperActionBar" parent="@android:style/Widget.DeviceDefault.Light.ActionBar">
+    <style name="WallpaperCropperActionBar" parent="@android:style/Widget.Material.Light.ActionBar">
         <item name="android:displayOptions">showCustom</item>
         <item name="android:background">#88212121</item>
         <item name="android:contentInsetEnd">0dp</item>
