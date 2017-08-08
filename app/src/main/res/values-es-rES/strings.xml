@@ -251,7 +251,7 @@
   <string name="icon_pack_preference_title">Paquete de iconos</string>
   <string name="icon_pack_preference_summary">Selecciona un paquete de iconos</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Utiliza el color del fondo de pantalla para el Dock</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">El dock se colorea con un color extraído del fondo de pantalla</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">El dock se colorea con el color extraido del fondo de pantalla</string>
   <string name="hotseat_uses_extracted_colors_pref_off">El dock será gris, pero ajustado por el brillo del fondo de pantalla</string>
   <string name="transparent_hotseat_pref_title">Dock transparente</string>
   <string name="dynamic_ui_pref_title">Extrae el color del fondo de pantalla</string>
@@ -394,4 +394,12 @@
   <string name="enable_editing_pref_title">Habilitar la edición del espacio de trabajo</string>
   <string name="pref_weather_provider">Proveedor de tiempo</string>
   <string name="loading">Cargando...</string>
+  <string name="icon_shape_override_label">Cambiar el aspecto de los iconos</string>
+  <string name="icon_shape_system_default">No aplicar cambios</string>
+  <string name="icon_shape_square">Cuadrado</string>
+  <string name="icon_shape_rounded_square">Cuadrado redondeado</string>
+  <string name="icon_shape_squircle">Esquinas redondeadas</string>
+  <string name="icon_shape_circle">Circulo</string>
+  <string name="icon_shape_teardrop">Lagrima</string>
+  <string name="animated_clock_icon_title">Icono de reloj animado</string>
 </resources>
