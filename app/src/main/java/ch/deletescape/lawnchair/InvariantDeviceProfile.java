@@ -225,6 +225,7 @@ public class InvariantDeviceProfile {
                             a.getFloat(R.styleable.InvariantDeviceProfile_minHeightDps, 0),
                             numRows,
                             numColumns,
+                            numColumns,
                             a.getInt(R.styleable.InvariantDeviceProfile_numFolderRows, numRows),
                             a.getInt(R.styleable.InvariantDeviceProfile_numFolderColumns, numColumns),
                             iconSize,
