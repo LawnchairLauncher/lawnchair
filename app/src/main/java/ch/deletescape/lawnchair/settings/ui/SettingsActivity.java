@@ -192,6 +192,7 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                     ((PreferenceCategory) findPreference("prefCat_homeScreen"))
                             .removePreference(overrideShapePreference);
                 }
+                findPreference("about_version").setSummary(BuildConfig.VERSION_NAME);
             }
         }
 

@@ -43,10 +43,9 @@
         android:icon="@drawable/ic_import_export"
         app:content="@xml/launcher_backup_preferences" />
 
-    <ch.deletescape.lawnchair.settings.ui.AboutPreference
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:title="@string/about_title"
         android:icon="@drawable/ic_information"
-        android:key="about"
-        android:summary="@string/about_text" />
+        app:content="@xml/launcher_about_preferences" />
 
 </PreferenceScreen>
