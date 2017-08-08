@@ -394,4 +394,12 @@
   <string name="enable_editing_pref_title">Aktiver redigering av arbeidsområde</string>
   <string name="pref_weather_provider">Værleverandør</string>
   <string name="loading">Laster inn ...</string>
+  <string name="icon_shape_override_label">Endre ikon-form</string>
+  <string name="icon_shape_system_default">Ikke endre</string>
+  <string name="icon_shape_square">Kvadrat</string>
+  <string name="icon_shape_rounded_square">Avrundet kvadrat</string>
+  <string name="icon_shape_squircle">Kvadrat-sirkel</string>
+  <string name="icon_shape_circle">Sirkel</string>
+  <string name="icon_shape_teardrop">Dråpe</string>
+  <string name="animated_clock_icon_title">Animert klokke-ikon</string>
 </resources>
