@@ -1005,7 +1005,11 @@ public final class Utilities {
         return context.getPackageManager().getApplicationIcon(context.getApplicationInfo());
     }
 
-    @SuppressWarnings("unchecked")
+    public static boolean isAwarenessApiEnabled(Context context) {
+        SharedPreferences prefs = getPrefs(context);
+        return "1".equals(prefs.getString("pref_weatherProvider", "0"));
+    }
+
     public static <T> List<T> emptyList() {
         return Collections.EMPTY_LIST;
     }

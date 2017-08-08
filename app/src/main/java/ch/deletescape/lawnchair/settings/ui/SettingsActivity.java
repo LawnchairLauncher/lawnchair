@@ -21,17 +21,14 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -185,7 +182,9 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                         .checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
                 findPreference("pref_weatherProvider").setEnabled(BuildConfig.AWARENESS_API_ENABLED && hasPermission);
                 String city = sharedPrefs.getString("pref_weather_city", "Lucerne, CH");
-                findPreference("pref_weather_city").setSummary(!TextUtils.isEmpty(city) ? city : getString(R.string.pref_weather_city_summary));
+                Preference prefWeatherCity = findPreference("pref_weather_city");
+                prefWeatherCity.setEnabled(!Utilities.isAwarenessApiEnabled(getActivity()));
+                prefWeatherCity.setSummary(!TextUtils.isEmpty(city) ? city : getString(R.string.pref_weather_city_summary));
                 Preference overrideShapePreference = findPreference("pref_override_icon_shape");
                 if (IconShapeOverride.Companion.isSupported(getActivity())) {
                     IconShapeOverride.Companion.handlePreferenceUi((ListPreference) overrideShapePreference);
@@ -241,7 +240,7 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
             if (granted) return true;
             ActivityCompat.requestPermissions(
                     getActivity(),
-                    new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     0);
             return false;
         }
