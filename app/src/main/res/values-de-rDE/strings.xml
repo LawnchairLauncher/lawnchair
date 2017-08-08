@@ -394,4 +394,12 @@
   <string name="enable_editing_pref_title">Arbeitsbereich bearbeiten</string>
   <string name="pref_weather_provider">Wetter-Anbieter</string>
   <string name="loading">Wird geladen...</string>
+  <string name="icon_shape_override_label">Icon-Form ändern</string>
+  <string name="icon_shape_system_default">Nicht ändern</string>
+  <string name="icon_shape_square">Quadrat</string>
+  <string name="icon_shape_rounded_square">Abgerundetes Quadrat</string>
+  <string name="icon_shape_squircle">Squircle</string>
+  <string name="icon_shape_circle">Rund</string>
+  <string name="icon_shape_teardrop">Tränenform</string>
+  <string name="animated_clock_icon_title">Animiertes Uhren Icon</string>
 </resources>
