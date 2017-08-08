@@ -149,9 +149,15 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
 
     @Override
     public void onLoad(boolean success) {
-        switchToDate = !success;
-        switching = true;
-        setupView(true);
+        if (weatherShowing && !success) {
+            switchToDate = true;
+            switching = true;
+            setupView(false);
+        } else if (!weatherShowing && success) {
+            switchToDate = false;
+            switching = true;
+            setupView(false);
+        }
     }
 
     private final class QsbBlockerViewViewRemover implements Runnable {
