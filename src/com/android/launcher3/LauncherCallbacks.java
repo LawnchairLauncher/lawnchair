@@ -21,7 +21,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
-import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.ComponentKeyMapper;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -91,7 +91,7 @@ public interface LauncherCallbacks {
      */
     boolean shouldMoveToDefaultScreenOnHomeIntent();
     boolean hasSettings();
-    List<ComponentKey> getPredictedApps();
+    List<ComponentKeyMapper<AppInfo>> getPredictedApps();
     int SEARCH_BAR_HEIGHT_NORMAL = 0, SEARCH_BAR_HEIGHT_TALL = 1;
     /** Must return one of {@link #SEARCH_BAR_HEIGHT_NORMAL} or {@link #SEARCH_BAR_HEIGHT_TALL} */
     int getSearchBarHeight();

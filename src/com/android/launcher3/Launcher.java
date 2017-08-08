@@ -113,7 +113,6 @@ import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -121,6 +120,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.RunnableWithId;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -2424,7 +2424,7 @@ public class Launcher extends BaseActivity
         }
 
         // Check for abandoned promise
-        if ((v instanceof BubbleTextView) && shortcut.isPromise()) {
+        if ((v instanceof BubbleTextView) && shortcut.hasPromiseIconUi()) {
             String packageName = shortcut.intent.getComponent() != null ?
                     shortcut.intent.getComponent().getPackageName() : shortcut.intent.getPackage();
             if (!TextUtils.isEmpty(packageName)) {
@@ -3068,7 +3068,7 @@ public class Launcher extends BaseActivity
      */
     public void tryAndUpdatePredictedApps() {
         if (mLauncherCallbacks != null) {
-            List<ComponentKey> apps = mLauncherCallbacks.getPredictedApps();
+            List<ComponentKeyMapper<AppInfo>> apps = mLauncherCallbacks.getPredictedApps();
             if (apps != null) {
                 mAppsView.setPredictedApps(apps);
             }
