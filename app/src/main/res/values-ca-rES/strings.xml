@@ -22,8 +22,11 @@
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
+  <string name="work_folder_name">Treball</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
+  <string name="activity_not_found">L\'app no està instal·lada.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
+  <string name="activity_not_available">L\'aplicació no està disponible</string>
   <!-- SafeMode shortcut error string -->
   <!-- SafeMode widget error string -->
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
