@@ -393,4 +393,12 @@
   <string name="enable_editing_pref_title">啟用編輯工作區</string>
   <string name="pref_weather_provider">天氣供應商</string>
   <string name="loading">載入中...</string>
+  <string name="icon_shape_override_label">更換圖示造型</string>
+  <string name="icon_shape_system_default">不要變更</string>
+  <string name="icon_shape_square">正方形</string>
+  <string name="icon_shape_rounded_square">圓角方形</string>
+  <string name="icon_shape_squircle">圓角正方形</string>
+  <string name="icon_shape_circle">圓形</string>
+  <string name="icon_shape_teardrop">水滴型</string>
+  <string name="animated_clock_icon_title">動態時鐘圖示</string>
 </resources>
