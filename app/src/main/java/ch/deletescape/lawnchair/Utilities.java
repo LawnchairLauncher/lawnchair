@@ -903,17 +903,6 @@ public final class Utilities {
         return android.os.Process.myUserHandle();
     }
 
-    public static Bitmap addNotificationBadgeToIcon(Bitmap icon) {
-        Bitmap b = icon.copy(Bitmap.Config.ARGB_8888, true);
-        Canvas c = new Canvas(b);
-        Paint badgePaint = new Paint();
-        badgePaint.setStyle(Paint.Style.FILL);
-        badgePaint.setColor(Utilities.getColorAccent(LauncherAppState.getInstance().getContext()));
-        int radius = b.getWidth() / 12;
-        c.drawCircle(b.getWidth() - (radius + 15), radius + 15, radius, badgePaint);
-        return b;
-    }
-
     public static <T> HashSet<T> singletonHashSet(T obj) {
         HashSet<T> hashSet = new HashSet<>(1);
         hashSet.add(obj);
