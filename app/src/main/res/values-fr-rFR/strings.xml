@@ -394,4 +394,12 @@
   <string name="enable_editing_pref_title">Activer l\'édition de l\'espace de travail</string>
   <string name="pref_weather_provider">Fournisseur météo</string>
   <string name="loading">Chargement...</string>
+  <string name="icon_shape_override_label">Changer la forme des icons</string>
+  <string name="icon_shape_system_default">Ne pas changer</string>
+  <string name="icon_shape_square">Carée</string>
+  <string name="icon_shape_rounded_square">Carée arrondi</string>
+  <string name="icon_shape_squircle">Carrecle</string>
+  <string name="icon_shape_circle">Cercle</string>
+  <string name="icon_shape_teardrop">Larme</string>
+  <string name="animated_clock_icon_title">Icon d\'horloge animé</string>
 </resources>
