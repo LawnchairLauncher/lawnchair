@@ -30,7 +30,7 @@
   <!-- SafeMode shortcut error string -->
   <string name="safemode_shortcut_error">第三方应用在安全模式下被停用</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">安全模式下不允许使用微件</string>
+  <string name="safemode_widget_error">安全模式下不允许使用小部件</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">无法使用快捷方式</string>
   <!-- Widgets -->
@@ -393,4 +393,12 @@
   <string name="enable_editing_pref_title">启用编辑工作区</string>
   <string name="pref_weather_provider">天气提供商</string>
   <string name="loading">正在加载…</string>
+  <string name="icon_shape_override_label">更改图标形状</string>
+  <string name="icon_shape_system_default">请勿修改</string>
+  <string name="icon_shape_square">方形</string>
+  <string name="icon_shape_rounded_square">圆角方形</string>
+  <string name="icon_shape_squircle">方圆形</string>
+  <string name="icon_shape_circle">圆形</string>
+  <string name="icon_shape_teardrop">泪珠形</string>
+  <string name="animated_clock_icon_title">动态时钟图标</string>
 </resources>
