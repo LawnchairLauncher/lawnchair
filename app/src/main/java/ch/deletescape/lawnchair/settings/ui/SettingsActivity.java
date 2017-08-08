@@ -168,7 +168,7 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
         }
     }
 
-    public static class SubSettingsFragment extends PreferenceFragment {
+    public static class SubSettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
 
         private static final String TITLE = "title";
         private static final String CONTENT_RES_ID = "content_res_id";
@@ -179,7 +179,9 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
             addPreferencesFromResource(getContent());
             if (getContent() == R.xml.launcher_pixel_style_preferences) {
-                findPreference("pref_weatherProvider").setEnabled(BuildConfig.AWARENESS_API_ENABLED);
+                Preference prefWeatherProvider = findPreference("pref_weatherProvider");
+                prefWeatherProvider.setEnabled(BuildConfig.AWARENESS_API_ENABLED);
+                prefWeatherProvider.setOnPreferenceChangeListener(this);
                 String city = sharedPrefs.getString("pref_weather_city", "Lucerne, CH");
                 Preference prefWeatherCity = findPreference("pref_weather_city");
                 prefWeatherCity.setSummary(!TextUtils.isEmpty(city) ? city : getString(R.string.pref_weather_city_summary));
@@ -198,6 +200,19 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                     getPreferenceScreen().removePreference(findPreference("pref_enableBackportShortcuts"));
                 }
             }
+        }
+
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
+            if (preference.getKey() != null) {
+                switch (preference.getKey()) {
+                    case "pref_weatherProvider":
+                        getPreferenceScreen().findPreference("pref_weather_city").setEnabled(Integer.valueOf(newValue.toString()) == 0);
+                        break;
+                }
+                return true;
+            }
+            return false;
         }
 
         @Override
@@ -277,5 +292,6 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
             fragment.setArguments(b);
             return fragment;
         }
+
     }
 }
