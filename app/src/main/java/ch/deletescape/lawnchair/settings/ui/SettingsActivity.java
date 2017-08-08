@@ -40,6 +40,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import ch.deletescape.lawnchair.BuildConfig;
 import ch.deletescape.lawnchair.DumbImportExportTask;
@@ -178,9 +179,7 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
             addPreferencesFromResource(getContent());
             if (getContent() == R.xml.launcher_pixel_style_preferences) {
-                boolean hasPermission = ContextCompat
-                        .checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-                findPreference("pref_weatherProvider").setEnabled(BuildConfig.AWARENESS_API_ENABLED && hasPermission);
+                findPreference("pref_weatherProvider").setEnabled(BuildConfig.AWARENESS_API_ENABLED);
                 String city = sharedPrefs.getString("pref_weather_city", "Lucerne, CH");
                 Preference prefWeatherCity = findPreference("pref_weather_city");
                 prefWeatherCity.setSummary(!TextUtils.isEmpty(city) ? city : getString(R.string.pref_weather_city_summary));
@@ -226,6 +225,11 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                             LauncherAppState.getInstance().getLauncher().scheduleKill();
                         }
                         break;
+                    case "pref_weatherProvider":
+                        if (!checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                            Toast.makeText(getActivity(), R.string.location_permission_warn, Toast.LENGTH_SHORT).show();
+                        }
+                        break;
                     default:
                         return false;
                 }
@@ -235,13 +239,17 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
         }
 
         private boolean checkStoragePermission() {
+            return checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
+        private boolean checkPermission(String permission) {
             boolean granted = ContextCompat.checkSelfPermission(
                     getActivity(),
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+                    permission) == PackageManager.PERMISSION_GRANTED;
             if (granted) return true;
             ActivityCompat.requestPermissions(
                     getActivity(),
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    new String[]{permission},
                     0);
             return false;
         }

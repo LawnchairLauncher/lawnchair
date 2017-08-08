@@ -475,4 +475,5 @@
     <string name="about_version">Version</string>
     <string name="about_icon_designer">App Icon Designer</string>
     <string name="about_contributors_title">Contributors</string>
+    <string name="location_permission_warn">Location permission is required to switch to another provider!</string>
 </resources>
