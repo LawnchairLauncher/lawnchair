@@ -352,7 +352,7 @@
   <string name="blue_grey">Bleu Gris</string>
   <string name="default_text">Par défaut</string>
   <string name="edit_icon_reset">Réinitialiser</string>
-  <string name="show_top_shadow_title">Affiche l\'ombre du haut</string>
+  <string name="show_top_shadow_title">Afficher l\'ombre du haut</string>
   <string name="pref_cat_homescreen">Écran d\'accueil</string>
   <string name="pref_cat_miscellaneous">Divers</string>
   <string name="pref_cat_hotseat">Dock</string>
@@ -401,5 +401,9 @@
   <string name="icon_shape_squircle">Carrecle</string>
   <string name="icon_shape_circle">Cercle</string>
   <string name="icon_shape_teardrop">Larme</string>
-  <string name="animated_clock_icon_title">Icon d\'horloge animé</string>
+  <string name="animated_clock_icon_title">Icône de l\'horloge animée</string>
+  <string name="about_summary_title">Résumé</string>
+  <string name="about_version">Version</string>
+  <string name="about_icon_designer">Designer des icônes de l\'application</string>
+  <string name="about_contributors_title">Donateurs</string>
 </resources>
