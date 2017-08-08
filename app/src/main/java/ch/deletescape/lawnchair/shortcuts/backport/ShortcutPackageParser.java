@@ -46,7 +46,8 @@ public class ShortcutPackageParser {
 
         //long startTime = System.currentTimeMillis();
         loadPackageResources();
-        parseManifest();
+        int cookie = loadApkIntoAssetManager();
+        parseManifest(cookie);
         //Log.i(TAG, "Took " + (System.currentTimeMillis() - startTime) + "ms to parse manifest");
     }
 
@@ -56,8 +57,21 @@ public class ShortcutPackageParser {
         mAssets = mResources.getAssets();
     }
 
-    private void parseManifest() throws IOException, XmlPullParserException {
-        XmlPullParser parser = mAssets.openXmlResourceParser(ANDROID_MANIFEST_FILENAME);
+    @SuppressLint("PrivateApi")
+    private int loadApkIntoAssetManager() throws PackageManager.NameNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        ApplicationInfo info = mContext.getPackageManager().getApplicationInfo(mPackageName,
+                PackageManager.GET_META_DATA | PackageManager.GET_SHARED_LIBRARY_FILES);
+
+        Method addAssetPath = AssetManager.class.getDeclaredMethod("addAssetPath", String.class);
+        int cookie = (int) addAssetPath.invoke(mAssets, info.publicSourceDir);
+        if (cookie == 0) {
+            throw new RuntimeException("Failed adding asset path: " + info.publicSourceDir);
+        }
+        return cookie;
+    }
+
+    private void parseManifest(int cookie) throws IOException, XmlPullParserException {
+        XmlPullParser parser = mAssets.openXmlResourceParser(cookie, ANDROID_MANIFEST_FILENAME);
 
         parser.next();
         parser.next();
