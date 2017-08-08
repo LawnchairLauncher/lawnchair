@@ -397,4 +397,12 @@
   <string name="enable_editing_pref_title">Povolit úpravu pracovního prostoru</string>
   <string name="pref_weather_provider">Poskytovatel počasí</string>
   <string name="loading">Načítání...</string>
+  <string name="icon_shape_override_label">Změna tvaru ikony</string>
+  <string name="icon_shape_system_default">Neměnit</string>
+  <string name="icon_shape_square">Čtverec</string>
+  <string name="icon_shape_rounded_square">Zaoblený čtverec</string>
+  <string name="icon_shape_squircle">Čtverec a kruh</string>
+  <string name="icon_shape_circle">Kruh</string>
+  <string name="icon_shape_teardrop">Slza</string>
+  <string name="animated_clock_icon_title">Ikona animovaných hodin</string>
 </resources>
