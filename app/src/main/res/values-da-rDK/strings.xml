@@ -19,7 +19,6 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- General -->
-  <skip></skip>
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
@@ -53,7 +52,6 @@
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">Søg efter flere apps</string>
   <!-- Drag and drop -->
-  <skip></skip>
   <!-- Error message when user has filled a page -->
   <string name="out_of_space">Der er ikke mere plads på denne startskærm.</string>
   <!-- Error message when user has filled the hotseat -->
@@ -70,7 +68,6 @@
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
   <string name="app_info_drop_target_label">Oplysninger om appen</string>
   <!-- Permissions: -->
-  <skip></skip>
   <!-- Permission short label -->
   <string name="permlab_install_shortcut">installere genveje</string>
   <!-- Permission description -->
@@ -86,7 +83,6 @@
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission"><xliff:g id="APP_NAME">%1$s</xliff:g> har ikke tilladelse til at foretage telefonopkald</string>
   <!-- Widgets: -->
-  <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">Der er problemer med indlæsning af widgetten</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
@@ -98,7 +94,6 @@
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
   <string name="disabled_app_label"><xliff:g id="APP_NAME">%1$s</xliff:g> er deaktiveret</string>
-  <skip></skip>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">Side %1$d ud af %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
@@ -120,7 +115,6 @@
   <string name="folder_name_format">Mappe: <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Strings for the customization mode -->
   <!-- Text for widget add button -->
-  <string name="widget_button_text">Widgets</string>
   <!-- Text for wallpaper change button -->
   <string name="wallpaper_button_text">Baggrunde</string>
   <!-- Text for settings button -->
@@ -247,156 +241,51 @@
   <string name="label_voice_search">Voice søgning</string>
   <string name="shortcuts_menu_with_notifications_description">%1$d genveje og %2$d notifikationer til %3$s</string>
   <string name="notifications_header">Underretninger</string>
-  <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair er en Launcher app skabt af Till Kottmann (aka deletescape). Det er baseret på Launcher3 fra AOSP.</string>
   <string name="about_title">Om</string>
-  <string name="changelog_title">Changelog for build #%d</string>
-  <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Ikon pakke</string>
   <string name="icon_pack_preference_summary">Vælg et ikon Pack</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Dock anvender tapetfarver</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Havnen vil blive farvet med en farve uddraget fra tapetet</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
-  <string name="transparent_hotseat_pref_title">Transparent Dock</string>
-  <string name="dynamic_ui_pref_title">Extract accent color from wallpaper</string>
   <string name="blur_pref_title">Aktiver slør</string>
-  <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
   <string name="blur_radius_pref_title">Slør radius</string>
   <string name="white_google_icon_pref_title">Brug hvidt Google ikon</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
   <string name="workspace_label_color_hue_pref_title">Color of icon labels on homescreen</string>
   <string name="workspace_label_color_variation_pref_title">Farvevariation af ikonetiketter på startskærmen</string>
   <string name="all_apps_opacity_pref_title">Skuffe gennemsigtighed</string>
-  <string name="num_cols_pref_title">Number of columns</string>
-  <string name="num_rows_pref_title">Number of rows</string>
-  <string name="num_hotseat_icons_pref_title">Number of icons in dock</string>
   <string name="icon_scale_pref_title">Ikon størrelse</string>
   <string name="icon_text_scale_pref_title">Ikon tekst størrelse</string>
-  <string name="full_width_width_widgets_pref_title">Full width widgets</string>
   <string name="full_width_widgets_pref_summary">Tillad widgets at spænde over hele bredden uden polstring</string>
   <string name="notification_access_pref_title">Notifikations tegn og forhåndsvisning</string>
   <string name="notification_access_pref_summary">Tillad Lawnchair adgang til dine notifikationer for at aktivere denne egenskab</string>
-  <string name="ui_pref_title">UI</string>
-  <string name="pixel_style_pref_title">Pixel style</string>
   <string name="behavior_pref_title">Adfærd</string>
   <string name="debug_pref_title">Fejlfindnig</string>
   <string name="import_export_pref_title">Importér/eksportér</string>
-  <string name="show_pixel_bar_pref_title">Show Pixel top bar</string>
-  <string name="use_wide_searchbar_pref_title">Use wide searchbar</string>
-  <string name="show_mic_pref_title">Show Google Assistant button</string>
-  <string name="use_round_searhbar">Use round apps searchbar</string>
-  <string name="pixel_style_icons_pref_title">Use Pixel icons</string>
   <string name="pixel_style_icons_pref_summary">Når aktiverede cirkulære ikoner anvendes, hvor det er muligt</string>
-  <string name="show_google_now_tab_pref_title">Show Google Now page</string>
-  <string name="restart_lawnchair_pref_title">Restart Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">Kan være nyttigt, hvis nogle indstillinger ikke anvendes korrekt</string>
-  <string name="rebuild_icondb_pref_title">Rebuild Icon Database</string>
-  <string name="pinch_to_overview_pref_title">Pinch to overview</string>
-  <string name="pinch_to_overview_pref_summary">Pinch on the home screen to open the overview</string>
-  <string name="light_statusbar_pref_title">Light statusbar</string>
-  <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
   <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
-  <string name="haptic_feedback_pref_title">Enable vibration</string>
-  <string name="keep_scroll_state_pref_title">Save scroll position</string>
-  <string name="keep_scroll_state_pref_summary">Saves the scroll position in the drawer</string>
-  <string name="home_opens_drawer_pref_title">Home button opens app drawer</string>
-  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the home screen will open the app drawer</string>
-  <string name="show_hidden_pref_title">Show hidden apps</string>
-  <string name="show_hidden_pref_on">Hidden apps will be shown to change visibility settings</string>
-  <string name="show_hidden_pref_off">Hidden apps won\'t be visible</string>
-  <string name="export_db_title">Export database</string>
-  <string name="import_db_title">Import database</string>
-  <string name="export_prefs_title">Export settings</string>
-  <string name="import_prefs_title">Import settings</string>
-  <string name="notification_listener_label">Lawnchair - Notification badges</string>
-  <string name="color_extraction_label">Lawnchair - Color extraction</string>
-  <string name="test_title">Test</string>
-  <string name="visibility">Visibility</string>
   <!-- Customization Color -->
-  <string name="white">White</string>
   <!-- Customization Color -->
-  <string name="black">Black</string>
   <!-- Customization Color -->
-  <string name="red">Red</string>
   <!-- Customization Color -->
-  <string name="pink">Pink</string>
   <!-- Customization Color -->
-  <string name="purple">Purple</string>
   <!-- Customization Color -->
-  <string name="deep_purple">Deep Purple</string>
   <!-- Customization Color -->
-  <string name="indigo">Indigo</string>
   <!-- Customization Color -->
-  <string name="blue">Blue</string>
   <!-- Customization Color -->
-  <string name="light_blue">Light Blue</string>
   <!-- Customization Color -->
-  <string name="cyan">Cyan</string>
   <!-- Customization Color -->
-  <string name="teal">Teal</string>
   <!-- Customization Color -->
-  <string name="green">Green</string>
   <!-- Customization Color -->
-  <string name="light_green">Light Green</string>
   <!-- Customization Color -->
-  <string name="lime">Lime</string>
   <!-- Customization Color -->
-  <string name="yellow">Yellow</string>
   <!-- Customization Color -->
-  <string name="amber">Amber</string>
   <!-- Customization Color -->
-  <string name="orange">Orange</string>
   <!-- Customization Color -->
-  <string name="deep_orange">Deep Orange</string>
   <!-- Customization Color -->
-  <string name="brown">Brown</string>
   <!-- Customization Color -->
-  <string name="grey">Grey</string>
   <!-- Customization Color -->
-  <string name="blue_grey">Blue Grey</string>
-  <string name="default_text">Default</string>
-  <string name="edit_icon_reset">Reset</string>
-  <string name="show_top_shadow_title">Show top shadow</string>
-  <string name="pref_cat_homescreen">Home screen</string>
-  <string name="pref_cat_miscellaneous">Miscellaneous</string>
-  <string name="pref_cat_hotseat">Dock</string>
-  <string name="pref_cat_theme">Theme</string>
-  <string name="theme_pref_title">Theme</string>
-  <string name="theme_light">Light</string>
-  <string name="theme_dark">Dark</string>
-  <string name="theme_black">Black</string>
-  <string name="hide_hotseat_pref_title">Hide Dock</string>
-  <string name="all_icons">All Icons</string>
-  <string name="pull_down_action_pref_title">Pull down action</string>
-  <string name="pull_down_do_nothing">Do nothing</string>
-  <string name="pull_down_notis">Show notifications</string>
-  <string name="pull_down_search">Open search</string>
-  <string name="pull_down_apps_search">Apps search</string>
-  <string name="enable_screen_rotation">Enable screen rotation</string>
   <!-- Import/Export Strings -->
-  <string name="imexport_success">Success!</string>
-  <string name="imexport_error">Error: Failed to copy file</string>
-  <string name="imexport_no_backup_found">No backup found</string>
-  <string name="imexport_external_storage_unreadable">External storage is not readable (grant permission in settings)</string>
-  <string name="imexport_external_storage_unwritable">External storage is not writable (grant permission in settings)</string>
-  <string name="units_metric">Metric</string>
-  <string name="units_imperial">Imperial</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
-  <string name="pref_cat_weather">Weather</string>
-  <string name="pref_weather_title">Enable weather</string>
-  <string name="pref_weather_units">Weather Units</string>
-  <string name="pref_weather_city_summary">For best results include country code</string>
-  <string name="pref_weather_city_title">City</string>
-  <string name="none">None</string>
-  <string name="pref_applyTheme">Apply theme on</string>
-  <string name="pref_applyBlur">Apply blur on</string>
-  <string name="search_bar">Search bar</string>
-  <string name="folder">Folder</string>
-  <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
-  <string name="app_shortcuts">App shortcuts</string>
-  <string name="blur_effect">Blur effect</string>
-  <string name="enable_editing_pref_title">Enable editing workspace</string>
-  <string name="pref_weather_provider">Weather provider</string>
-  <string name="loading">Loading...</string>
 </resources>

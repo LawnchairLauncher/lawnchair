@@ -19,7 +19,6 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- General -->
-  <skip></skip>
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
@@ -53,7 +52,6 @@
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">Wyszukaj więcej aplikacji</string>
   <!-- Drag and drop -->
-  <skip></skip>
   <!-- Error message when user has filled a page -->
   <string name="out_of_space">Brak miejsca na tym ekranie głównym.</string>
   <!-- Error message when user has filled the hotseat -->
@@ -70,7 +68,6 @@
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
   <string name="app_info_drop_target_label">O aplikacji</string>
   <!-- Permissions: -->
-  <skip></skip>
   <!-- Permission short label -->
   <string name="permlab_install_shortcut">instalowanie skrótów</string>
   <!-- Permission description -->
@@ -86,7 +83,6 @@
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission"><xliff:g id="APP_NAME">%1$s</xliff:g> nie może wykonywać połączeń telefonicznych</string>
   <!-- Widgets: -->
-  <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">Problem podczas ładowania widżetu</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
@@ -98,7 +94,6 @@
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
   <string name="disabled_app_label">Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> jest wyłączona</string>
-  <skip></skip>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">Strona %1$d z %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
@@ -262,10 +257,10 @@
   <string name="transparent_hotseat_pref_title">Przezroczysty dock</string>
   <string name="dynamic_ui_pref_title">Pobierz kolor dominujący z tapety</string>
   <string name="blur_pref_title">Włącz rozmycie</string>
-  <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
+  <string name="blur_pref_summary">Zastosuj efekt rozmycia do części interfejsu\nNie jest zgodny z żywymi tapetami</string>
   <string name="blur_radius_pref_title">Promień rozmycia</string>
   <string name="white_google_icon_pref_title">Użyj białej ikony Google</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
+  <string name="hide_icon_labels_pref_title">Ukryj etykiety ikon na ekranie głównym</string>
   <string name="workspace_label_color_hue_pref_title">Kolor etykiet na pulpicie</string>
   <string name="workspace_label_color_variation_pref_title">Odcień koloru etykiet na pulpicie</string>
   <string name="all_apps_opacity_pref_title">Przezroczystość szuflady</string>
@@ -294,15 +289,15 @@
   <string name="restart_lawnchair_pref_summary">Może być pomocne gdy niektóre ustawienia nie zostaną zastosowane poprawnie</string>
   <string name="rebuild_icondb_pref_title">Przebuduj bazę danych ikon</string>
   <string name="pinch_to_overview_pref_title">Uszczypnij dla podglądu ekranów</string>
-  <string name="pinch_to_overview_pref_summary">Pinch on the home screen to open the overview</string>
+  <string name="pinch_to_overview_pref_summary">Wykonaj gest uszczypnięcia na ekranie głównym aby zobaczyć podgląd ekranów</string>
   <string name="light_statusbar_pref_title">Jasny pasek stanu</string>
-  <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
+  <string name="light_statusbar_pref_force">Pasek stanu wyświetli ciemne ikony</string>
   <string name="light_statusbar_pref_off">Pasek stanu będzie zawsze pokazywać jasne ikony.</string>
   <string name="haptic_feedback_pref_title">Włącz wibracje</string>
   <string name="keep_scroll_state_pref_title">Zachowanie pozycji przewijania</string>
   <string name="keep_scroll_state_pref_summary">Zapisuje pozycję przewijania w szufladzie</string>
   <string name="home_opens_drawer_pref_title">Przycisk home do otwierania szuflady</string>
-  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the home screen will open the app drawer</string>
+  <string name="home_opens_drawer_pref_summary">Naciśnięcie przycisku Home na ekranie głównym otworzy szufladę z aplikacjami</string>
   <string name="show_hidden_pref_title">Pokaż ukryte aplikacje</string>
   <string name="show_hidden_pref_on">Ukryte aplikacje będą pokazane by zmienić ustawienia widoczności</string>
   <string name="show_hidden_pref_off">Ukryte aplikacje nie będą widoczne</string>
@@ -357,47 +352,55 @@
   <!-- Customization Color -->
   <string name="blue_grey">Niebieskoszary</string>
   <string name="default_text">Domyślny</string>
-  <string name="edit_icon_reset">Reset</string>
-  <string name="show_top_shadow_title">Show top shadow</string>
-  <string name="pref_cat_homescreen">Home screen</string>
-  <string name="pref_cat_miscellaneous">Miscellaneous</string>
+  <string name="edit_icon_reset">Resetuj</string>
+  <string name="show_top_shadow_title">Pokaż górny cień</string>
+  <string name="pref_cat_homescreen">Ekran główny</string>
+  <string name="pref_cat_miscellaneous">Różne</string>
   <string name="pref_cat_hotseat">Dock</string>
-  <string name="pref_cat_theme">Theme</string>
-  <string name="theme_pref_title">Theme</string>
-  <string name="theme_light">Light</string>
-  <string name="theme_dark">Dark</string>
-  <string name="theme_black">Black</string>
-  <string name="hide_hotseat_pref_title">Hide Dock</string>
-  <string name="all_icons">All Icons</string>
-  <string name="pull_down_action_pref_title">Pull down action</string>
-  <string name="pull_down_do_nothing">Do nothing</string>
-  <string name="pull_down_notis">Show notifications</string>
-  <string name="pull_down_search">Open search</string>
-  <string name="pull_down_apps_search">Apps search</string>
-  <string name="enable_screen_rotation">Enable screen rotation</string>
+  <string name="pref_cat_theme">Motyw</string>
+  <string name="theme_pref_title">Motyw</string>
+  <string name="theme_light">Jasny</string>
+  <string name="theme_dark">Ciemny</string>
+  <string name="theme_black">Czarny</string>
+  <string name="hide_hotseat_pref_title">Ukryj dock</string>
+  <string name="all_icons">Wszystkie ikony</string>
+  <string name="pull_down_action_pref_title">Akcja dla przeciągnięcia w dół</string>
+  <string name="pull_down_do_nothing">Nic nie rób</string>
+  <string name="pull_down_notis">Pokaż powiadomienia</string>
+  <string name="pull_down_search">Otwórz wyszukiwarkę</string>
+  <string name="pull_down_apps_search">Wyszukiwanie aplikacji</string>
+  <string name="enable_screen_rotation">Włącz obracanie ekranu</string>
   <!-- Import/Export Strings -->
-  <string name="imexport_success">Success!</string>
-  <string name="imexport_error">Error: Failed to copy file</string>
-  <string name="imexport_no_backup_found">No backup found</string>
-  <string name="imexport_external_storage_unreadable">External storage is not readable (grant permission in settings)</string>
-  <string name="imexport_external_storage_unwritable">External storage is not writable (grant permission in settings)</string>
-  <string name="units_metric">Metric</string>
-  <string name="units_imperial">Imperial</string>
+  <string name="imexport_success">Sukces!</string>
+  <string name="imexport_error">Błąd: Nie można skopiować plików</string>
+  <string name="imexport_no_backup_found">Nie znaleziono kopii zapasowej</string>
+  <string name="imexport_external_storage_unreadable">Pamięć zewnętrzna nie jest do odczytu (udziel uprawnień w ustawieniach)</string>
+  <string name="imexport_external_storage_unwritable">Pamięć zewnętrzna nie jest zapisywalna (udziel uprawnień w ustawieniach)</string>
+  <string name="units_metric">Metryczne</string>
+  <string name="units_imperial">Imperialne</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
-  <string name="pref_cat_weather">Weather</string>
-  <string name="pref_weather_title">Enable weather</string>
-  <string name="pref_weather_units">Weather Units</string>
-  <string name="pref_weather_city_summary">For best results include country code</string>
-  <string name="pref_weather_city_title">City</string>
-  <string name="none">None</string>
-  <string name="pref_applyTheme">Apply theme on</string>
-  <string name="pref_applyBlur">Apply blur on</string>
-  <string name="search_bar">Search bar</string>
-  <string name="folder">Folder</string>
-  <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
-  <string name="app_shortcuts">App shortcuts</string>
-  <string name="blur_effect">Blur effect</string>
-  <string name="enable_editing_pref_title">Enable editing workspace</string>
-  <string name="pref_weather_provider">Weather provider</string>
-  <string name="loading">Loading...</string>
+  <string name="pref_cat_weather">Pogoda</string>
+  <string name="pref_weather_title">Włącz pogodę</string>
+  <string name="pref_weather_units">Jednostki pogodowe</string>
+  <string name="pref_weather_city_summary">Aby uzyskać najlepsze wyniki, należy podać kod kraju</string>
+  <string name="pref_weather_city_title">Miasto</string>
+  <string name="none">Brak</string>
+  <string name="pref_applyTheme">Zastosuj motyw</string>
+  <string name="pref_applyBlur">Zastosuj rozmycie</string>
+  <string name="search_bar">Pasek wyszukiwania</string>
+  <string name="folder">Katalog</string>
+  <string name="dock_allapps"><![CDATA[Dock i wszystkie aplikacje]]></string>
+  <string name="app_shortcuts">Skróty aplikacji</string>
+  <string name="blur_effect">Efekt rozmycia</string>
+  <string name="enable_editing_pref_title">Włącz obszar roboczy edycji</string>
+  <string name="pref_weather_provider">Dostawca pogody</string>
+  <string name="loading">Ładowanie...</string>
+  <string name="icon_shape_override_label">Zmień kształt ikony</string>
+  <string name="icon_shape_system_default">Nie zmieniaj</string>
+  <string name="icon_shape_square">Kwadrat</string>
+  <string name="icon_shape_rounded_square">Zaokrąglony kwadrat</string>
+  <string name="icon_shape_squircle">Squircle</string>
+  <string name="icon_shape_circle">Okrąg</string>
+  <string name="icon_shape_teardrop">Łza</string>
+  <string name="animated_clock_icon_title">Animowana ikona zegara</string>
 </resources>

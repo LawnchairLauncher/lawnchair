@@ -19,7 +19,6 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- General -->
-  <skip></skip>
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
@@ -47,13 +46,12 @@
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_bar_hint">Поиск приложений</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_loading_message">Загрузка…</string>
+  <string name="all_apps_loading_message">Загрузка приложений...</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
   <string name="all_apps_no_search_results">По запросу \"<xliff:g id="QUERY">%1$s</xliff:g>\" ничего не найдено</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">Искать другие приложения</string>
   <!-- Drag and drop -->
-  <skip></skip>
   <!-- Error message when user has filled a page -->
   <string name="out_of_space">На этом экране все занято</string>
   <!-- Error message when user has filled the hotseat -->
@@ -70,7 +68,6 @@
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
   <string name="app_info_drop_target_label">О приложении</string>
   <!-- Permissions: -->
-  <skip></skip>
   <!-- Permission short label -->
   <string name="permlab_install_shortcut">Создание ярлыков</string>
   <!-- Permission description -->
@@ -78,15 +75,14 @@
   <!-- Permission short label -->
   <string name="permlab_read_settings">Доступ к настройкам и ярлыкам главного экрана</string>
   <!-- Permission description -->
-  <string name="permdesc_read_settings">Приложение получит доступ к данным о настройках и ярлыках на главном экране.</string>
+  <string name="permdesc_read_settings">Разрешить приложению читать настройки и ярлыки на главном экране.</string>
   <!-- Permission short label -->
   <string name="permlab_write_settings">Изменение настроек и ярлыков главного экрана</string>
   <!-- Permission description -->
-  <string name="permdesc_write_settings">Приложение сможет изменять настройки и ярлыки на главном экране.</string>
+  <string name="permdesc_write_settings">Разрешить приложению изменять настройки и ярлыки на главном экране.</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission">Приложение <xliff:g id="APP_NAME">%1$s</xliff:g> не может делать телефонные звонки</string>
   <!-- Widgets: -->
-  <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">Не удалось загрузить виджет</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
@@ -98,7 +94,6 @@
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
   <string name="disabled_app_label">Приложение <xliff:g id="APP_NAME">%1$s</xliff:g> отключено</string>
-  <skip></skip>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">Стр. %1$d из %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
@@ -166,17 +161,17 @@
   <!-- Accessibility description to move item to the hotseat. -->
   <string name="move_to_hotseat_position">Переместить в Избранное (<xliff:g id="NUMBER">%1$s</xliff:g>)</string>
   <!-- Accessibility confirmation for item move. -->
-  <string name="item_moved">Элемент перемещен.</string>
+  <string name="item_moved">Элемент перемещен</string>
   <!-- Accessibility description to move item into an existing folder. -->
-  <string name="add_to_folder">Добавить в папку <xliff:g id="NAME">%1$s</xliff:g>.</string>
+  <string name="add_to_folder">Добавить в папку <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
   <string name="add_to_folder_with_app">Добавить в папку с приложением \"<xliff:g id="NAME">%1$s</xliff:g>\"</string>
   <!-- Accessibility confirmation for item added to folder. -->
-  <string name="added_to_folder">Элемент добавлен в папку.</string>
+  <string name="added_to_folder">Элемент добавлен в папку</string>
   <!-- Accessibility description to create folder with another item. -->
-  <string name="create_folder_with">Создать папку с элементом <xliff:g id="NAME">%1$s</xliff:g>.</string>
+  <string name="create_folder_with">Создать папку с элементом <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
-  <string name="folder_created">Папка создана.</string>
+  <string name="folder_created">Папка создана</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
   <string name="action_move_to_workspace">Переместить на главный экран</string>
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
@@ -241,16 +236,16 @@
   <!-- Option for setting the wallpaper only on the lock screen. -->
   <string name="which_wallpaper_option_lock_screen">Экран блокировки</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
-  <string name="which_wallpaper_option_home_screen_and_lock_screen">Домашний экран и экран блокировки</string>
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">Главный экран и экран блокировки</string>
   <string name="title_show_google_app">Показать %1$s</string>
   <string name="title_show_google_app_default">Показать приложение Google</string>
   <string name="label_search">Поиск</string>
   <string name="label_voice_search">Голосовой поиск</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d шорткаты и %2$d уведомления для %3$s</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d ярлыки и %2$d уведомления для %3$s</string>
   <string name="notifications_header">Уведомления</string>
-  <string name="widgets_bottom_sheet_title">%1$s: виджеты</string>
+  <string name="widgets_bottom_sheet_title">%1$s виджетов</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair - это лаунчер, созданный Till Kottmann (aka deletescape). Он основан на Launcher3 из AOSP.</string>
+  <string name="about_text">Lawnchair - это лаунчер, созданный Till Kottmann (aka deletescape). Лаунчер основан на Launcher3 из AOSP.</string>
   <string name="about_title">О программе</string>
   <string name="changelog_title">Изменения в сборке #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
@@ -266,7 +261,7 @@
   <string name="blur_radius_pref_title">Радиус размытия</string>
   <string name="white_google_icon_pref_title">Использовать белый значок Google</string>
   <string name="hide_icon_labels_pref_title">Скрыть подписи значков на главном экране</string>
-  <string name="workspace_label_color_hue_pref_title">Цвет подписи иконок</string>
+  <string name="workspace_label_color_hue_pref_title">Цвет подписи значков</string>
   <string name="workspace_label_color_variation_pref_title">Вариация цвета подписей</string>
   <string name="all_apps_opacity_pref_title">Прозрачность меню приложений</string>
   <string name="num_cols_pref_title">Количество столбцов</string>
@@ -287,8 +282,8 @@
   <string name="use_wide_searchbar_pref_title">Строка поиска как в Android O</string>
   <string name="show_mic_pref_title">Показать кнопку Google Ассистента</string>
   <string name="use_round_searhbar">Использовать круглую строку поиска</string>
-  <string name="pixel_style_icons_pref_title">Использовать иконки Pixel</string>
-  <string name="pixel_style_icons_pref_summary">Когда включено, приложение использует круглую иконку, где это возможно</string>
+  <string name="pixel_style_icons_pref_title">Использовать значки Pixel</string>
+  <string name="pixel_style_icons_pref_summary">Когда включено, приложение использует круглые значки, где это возможно</string>
   <string name="show_google_now_tab_pref_title">Показывать страницу Google Now</string>
   <string name="restart_lawnchair_pref_title">Перезапустить Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">Может быть полезно, если некоторые параметры не применяются должным образом</string>
@@ -400,4 +395,16 @@
   <string name="enable_editing_pref_title">Включить редактирование рабочего пространства</string>
   <string name="pref_weather_provider">Поставщик погоды</string>
   <string name="loading">Загрузка...</string>
+  <string name="icon_shape_override_label">Изменить форму значка</string>
+  <string name="icon_shape_system_default">Не изменять</string>
+  <string name="icon_shape_square">Квадратная</string>
+  <string name="icon_shape_rounded_square">Скругленный квадрат</string>
+  <string name="icon_shape_squircle">Округлый квадрат</string>
+  <string name="icon_shape_circle">Круглая</string>
+  <string name="icon_shape_teardrop">Капля слезы</string>
+  <string name="animated_clock_icon_title">Анимированный значок часов</string>
+  <string name="about_summary_title">Описание</string>
+  <string name="about_version">Версия</string>
+  <string name="about_icon_designer">Дизайнер значка приложения</string>
+  <string name="about_contributors_title">Участники</string>
 </resources>

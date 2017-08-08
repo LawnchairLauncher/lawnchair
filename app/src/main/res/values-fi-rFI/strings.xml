@@ -19,7 +19,6 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- General -->
-  <skip></skip>
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
@@ -53,7 +52,6 @@
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">Hae lisää sovelluksia</string>
   <!-- Drag and drop -->
-  <skip></skip>
   <!-- Error message when user has filled a page -->
   <string name="out_of_space">Tässä aloitusruudussa ei ole enää tilaa.</string>
   <!-- Error message when user has filled the hotseat -->
@@ -70,7 +68,6 @@
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
   <string name="app_info_drop_target_label">Sovelluksen tiedot</string>
   <!-- Permissions: -->
-  <skip></skip>
   <!-- Permission short label -->
   <string name="permlab_install_shortcut">asenna pikakuvakkeita</string>
   <!-- Permission description -->
@@ -86,7 +83,6 @@
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission"><xliff:g id="APP_NAME">%1$s</xliff:g> ei saa soittaa puheluita.</string>
   <!-- Widgets: -->
-  <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">Ongelma ladattaessa widgetiä</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
@@ -98,7 +94,6 @@
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
   <string name="disabled_app_label"><xliff:g id="APP_NAME">%1$s</xliff:g> poistettiin käytöstä</string>
-  <skip></skip>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">Sivu %1$d / %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
@@ -241,18 +236,10 @@
   <string name="which_wallpaper_option_lock_screen">Lukitusnäyttö</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
   <string name="which_wallpaper_option_home_screen_and_lock_screen">Aloitus- ja lukitusnäyttö</string>
-  <string name="title_show_google_app">Show %1$s</string>
-  <string name="title_show_google_app_default">Show Google app</string>
-  <string name="label_search">Search</string>
-  <string name="label_voice_search">Voice search</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d shortcuts and %2$d notifications for %3$s</string>
   <string name="notifications_header">Ilmoitukset</string>
-  <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair on käynnistysohjelma, jonka on luonut Till Kottmann (Deletescape). Se pohjautuu Launcher3 -käynnistysohjelmaan.</string>
   <string name="about_title">Tietoja</string>
-  <string name="changelog_title">Changelog for build #%d</string>
-  <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Kuvakepaketti</string>
   <string name="icon_pack_preference_summary">Valitse kuvakepaketti</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Telakka käyttää taustakuvan värejä</string>
@@ -261,10 +248,8 @@
   <string name="transparent_hotseat_pref_title">Läpikuultava telakka</string>
   <string name="dynamic_ui_pref_title">Poimi aksenttiväri taustakuvasta</string>
   <string name="blur_pref_title">Käytä sumennusta</string>
-  <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
   <string name="blur_radius_pref_title">Sumennuksen Säde</string>
   <string name="white_google_icon_pref_title">Käytä valkoista Google-kuvaketta</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
   <string name="workspace_label_color_hue_pref_title">Kuvaketekstien väri aloitusnäytöllä</string>
   <string name="workspace_label_color_variation_pref_title">Color variation of icon labels on homescreen</string>
   <string name="all_apps_opacity_pref_title">Sovellusvalikon opasiteetti</string>
@@ -273,44 +258,14 @@
   <string name="num_hotseat_icons_pref_title">Kuvakkeiden lukumäärä telakassa</string>
   <string name="icon_scale_pref_title">Kuvakkeen skaalaus</string>
   <string name="icon_text_scale_pref_title">Kuvakkeen tekstin skaalaus</string>
-  <string name="full_width_width_widgets_pref_title">Full width widgets</string>
-  <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
   <string name="notification_access_pref_title">Ilmoitusten merkit ja esikatselu</string>
   <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
   <string name="ui_pref_title">Käyttöliittymä</string>
-  <string name="pixel_style_pref_title">Pixel style</string>
-  <string name="behavior_pref_title">Behavior</string>
-  <string name="debug_pref_title">Debug</string>
   <string name="import_export_pref_title">Tuo/Vie</string>
-  <string name="show_pixel_bar_pref_title">Show Pixel top bar</string>
-  <string name="use_wide_searchbar_pref_title">Use wide searchbar</string>
   <string name="show_mic_pref_title">Näytä Google Assistant-painike</string>
-  <string name="use_round_searhbar">Use round apps searchbar</string>
   <string name="pixel_style_icons_pref_title">Käytä Pixel-kuvakkeita</string>
-  <string name="pixel_style_icons_pref_summary">When enabled circular icons will be used where possible</string>
-  <string name="show_google_now_tab_pref_title">Show Google Now page</string>
   <string name="restart_lawnchair_pref_title">Käynnistä Lawnchair uudelleen</string>
-  <string name="restart_lawnchair_pref_summary">Can be helpful if some settings are not properly applied</string>
-  <string name="rebuild_icondb_pref_title">Rebuild Icon Database</string>
-  <string name="pinch_to_overview_pref_title">Pinch to overview</string>
-  <string name="pinch_to_overview_pref_summary">Pinch on the home screen to open the overview</string>
-  <string name="light_statusbar_pref_title">Light statusbar</string>
-  <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
   <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
-  <string name="haptic_feedback_pref_title">Enable vibration</string>
-  <string name="keep_scroll_state_pref_title">Save scroll position</string>
-  <string name="keep_scroll_state_pref_summary">Saves the scroll position in the drawer</string>
-  <string name="home_opens_drawer_pref_title">Home button opens app drawer</string>
-  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the home screen will open the app drawer</string>
-  <string name="show_hidden_pref_title">Show hidden apps</string>
-  <string name="show_hidden_pref_on">Hidden apps will be shown to change visibility settings</string>
-  <string name="show_hidden_pref_off">Hidden apps won\'t be visible</string>
-  <string name="export_db_title">Export database</string>
-  <string name="import_db_title">Import database</string>
-  <string name="export_prefs_title">Export settings</string>
-  <string name="import_prefs_title">Import settings</string>
-  <string name="notification_listener_label">Lawnchair - Notification badges</string>
-  <string name="color_extraction_label">Lawnchair - Color extraction</string>
   <string name="test_title">Testi</string>
   <string name="visibility">Näkyvyys</string>
   <!-- Customization Color -->
@@ -324,9 +279,7 @@
   <!-- Customization Color -->
   <string name="purple">Violetti</string>
   <!-- Customization Color -->
-  <string name="deep_purple">Deep Purple</string>
   <!-- Customization Color -->
-  <string name="indigo">Indigo</string>
   <!-- Customization Color -->
   <string name="blue">Sininen</string>
   <!-- Customization Color -->
@@ -334,7 +287,6 @@
   <!-- Customization Color -->
   <string name="cyan">Turkoosi</string>
   <!-- Customization Color -->
-  <string name="teal">Teal</string>
   <!-- Customization Color -->
   <string name="green">Vihreä</string>
   <!-- Customization Color -->
@@ -348,7 +300,6 @@
   <!-- Customization Color -->
   <string name="orange">Oranssi</string>
   <!-- Customization Color -->
-  <string name="deep_orange">Deep Orange</string>
   <!-- Customization Color -->
   <string name="brown">Ruskea</string>
   <!-- Customization Color -->
@@ -356,47 +307,6 @@
   <!-- Customization Color -->
   <string name="blue_grey">Siniharmaa</string>
   <string name="default_text">Oletus</string>
-  <string name="edit_icon_reset">Reset</string>
-  <string name="show_top_shadow_title">Show top shadow</string>
-  <string name="pref_cat_homescreen">Home screen</string>
-  <string name="pref_cat_miscellaneous">Miscellaneous</string>
-  <string name="pref_cat_hotseat">Dock</string>
-  <string name="pref_cat_theme">Theme</string>
-  <string name="theme_pref_title">Theme</string>
-  <string name="theme_light">Light</string>
-  <string name="theme_dark">Dark</string>
-  <string name="theme_black">Black</string>
-  <string name="hide_hotseat_pref_title">Hide Dock</string>
-  <string name="all_icons">All Icons</string>
-  <string name="pull_down_action_pref_title">Pull down action</string>
-  <string name="pull_down_do_nothing">Do nothing</string>
-  <string name="pull_down_notis">Show notifications</string>
-  <string name="pull_down_search">Open search</string>
-  <string name="pull_down_apps_search">Apps search</string>
-  <string name="enable_screen_rotation">Enable screen rotation</string>
   <!-- Import/Export Strings -->
-  <string name="imexport_success">Success!</string>
-  <string name="imexport_error">Error: Failed to copy file</string>
-  <string name="imexport_no_backup_found">No backup found</string>
-  <string name="imexport_external_storage_unreadable">External storage is not readable (grant permission in settings)</string>
-  <string name="imexport_external_storage_unwritable">External storage is not writable (grant permission in settings)</string>
-  <string name="units_metric">Metric</string>
-  <string name="units_imperial">Imperial</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
-  <string name="pref_cat_weather">Weather</string>
-  <string name="pref_weather_title">Enable weather</string>
-  <string name="pref_weather_units">Weather Units</string>
-  <string name="pref_weather_city_summary">For best results include country code</string>
-  <string name="pref_weather_city_title">City</string>
-  <string name="none">None</string>
-  <string name="pref_applyTheme">Apply theme on</string>
-  <string name="pref_applyBlur">Apply blur on</string>
-  <string name="search_bar">Search bar</string>
-  <string name="folder">Folder</string>
-  <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
-  <string name="app_shortcuts">App shortcuts</string>
-  <string name="blur_effect">Blur effect</string>
-  <string name="enable_editing_pref_title">Enable editing workspace</string>
-  <string name="pref_weather_provider">Weather provider</string>
-  <string name="loading">Loading...</string>
 </resources>

@@ -19,7 +19,6 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- General -->
-  <skip></skip>
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
@@ -53,7 +52,6 @@
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">חפש אפליקציות נוספות</string>
   <!-- Drag and drop -->
-  <skip></skip>
   <!-- Error message when user has filled a page -->
   <string name="out_of_space">אין עוד מקום במסך דף הבית הזה.</string>
   <!-- Error message when user has filled the hotseat -->
@@ -70,7 +68,6 @@
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
   <string name="app_info_drop_target_label">פרטי אפליקציה</string>
   <!-- Permissions: -->
-  <skip></skip>
   <!-- Permission short label -->
   <string name="permlab_install_shortcut">התקן קיצורי דרך</string>
   <!-- Permission description -->
@@ -86,7 +83,6 @@
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission"><xliff:g id="App_NAME">%1$s</xliff:g> אינו רשאי לבצע שיחות</string>
   <!-- Widgets: -->
-  <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">בעיה בטעינת ווידג\'ט</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
@@ -98,20 +94,19 @@
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
   <string name="disabled_app_label"><xliff:g id="App_NAME">%1$s</xliff:g> מושבתת</string>
-  <skip></skip>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">‏דף %1$d מתוך %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">‏מסך דף בית %1$d מתוך %2$d</string>
   <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
-  <string name="workspace_new_page">מסך דף בית חדש</string>
+  <string name="workspace_new_page">דף חדש</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
-  <string name="folder_opened">תיקיה פתוחה, <xliff:g id="Width">%1$d</xliff:g> על <xliff:g id="Height">%2$d</xliff:g></string>
+  <string name="folder_opened">תיקיה נפתחה, <xliff:g id="Width">%1$d</xliff:g> על <xliff:g id="Height">%2$d</xliff:g></string>
   <!-- Instruction that clicking outside will close folder -->
-  <string name="folder_tap_to_close">הקש כדי לסגור את התיקייה</string>
+  <string name="folder_tap_to_close">לחץ על מנת לסגור את התיקייה</string>
   <!-- Instruction that clicking outside will commit folder rename -->
-  <string name="folder_tap_to_rename">הקש כדי לשמור שינוי שם</string>
+  <string name="folder_tap_to_rename">לחץ כדי לשמור שינוי שם</string>
   <!-- Indication that folder closed -->
   <string name="folder_closed">התיקיה נסגרה</string>
   <!-- Folder renamed format -->
@@ -140,116 +135,107 @@
   <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->
   <string name="abandoned_search">חפש</string>
   <!-- Title for abandoned promise dialog. -->
-  <string name="abandoned_promises_title">This app is not installed</string>
+  <string name="abandoned_promises_title">אפליקציה זו איננה מותקנת</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
-  <string name="abandoned_promise_explanation">The app for this icon isn\'t installed.
-        You can remove it, or search for the app and install it manually.
-    </string>
+  <string name="abandoned_promise_explanation">האפליקציה בשביל אייקון זה איננה מותקנת.
+תוכל למחוק אותו, או לחפש את האפליקציה ולהתקין אותו ידנית.    </string>
   <!-- Title for an app which is being downloaded. -->
-  <string name="app_downloading_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> downloading, <xliff:g example="30%" id="progress">%2$s</xliff:g> complete</string>
+  <string name="app_downloading_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> ההורדה, <xliff:g example="30%" id="progress">%2$s</xliff:g> הסתיימה</string>
   <!-- Title for an app whose download has been started. -->
-  <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> waiting to install</string>
+  <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> מחכה להתקנה</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
   <string name="action_add_to_workspace">Add to Home screen</string>
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
-  <string name="action_move_here">Move item here</string>
+  <string name="action_move_here">הזז לכאן</string>
   <!-- Accessibility confirmation for item added to workspace. -->
-  <string name="item_added_to_workspace">Item added to home screen</string>
+  <string name="item_added_to_workspace">נוסף בהצלחה לשולחן העבודה</string>
   <!-- Accessibility confirmation for item removed. -->
-  <string name="item_removed">Item removed</string>
+  <string name="item_removed">נמחק בהצלחה</string>
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
-  <string name="action_move">Move item</string>
+  <string name="action_move">הזז אובייקט</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell">Move to row <xliff:g example="1" id="number">%1$s</xliff:g> column <xliff:g example="1" id="number">%2$s</xliff:g></string>
+  <string name="move_to_empty_cell">העבר אל שורה <xliff:g example="1" id="number">%1$s</xliff:g> עמודה <xliff:g example="1" id="number">%2$s</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
-  <string name="move_to_position">Move to position <xliff:g example="1" id="number">%1$s</xliff:g></string>
+  <string name="move_to_position">הזז למיקום <xliff:g example="1" id="number">%1$s</xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Move to favorites position <xliff:g example="1" id="number">%1$s</xliff:g></string>
+  <string name="move_to_hotseat_position">הזז למיקום המועדפים <xliff:g example="1" id="number">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for item move. -->
-  <string name="item_moved">Item moved</string>
+  <string name="item_moved">הוזז בהצלחה</string>
   <!-- Accessibility description to move item into an existing folder. -->
-  <string name="add_to_folder">Add to folder: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
+  <string name="add_to_folder">הזז לתיקייה: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
-  <string name="add_to_folder_with_app">Add to folder with <xliff:g example="Messenger" id="name">%1$s</xliff:g></string>
+  <string name="add_to_folder_with_app">הזז לתיקייה המכילה <xliff:g example="Messenger" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for item added to folder. -->
-  <string name="added_to_folder">Item added to folder</string>
+  <string name="added_to_folder">הפריט נוסף לתיקייה</string>
   <!-- Accessibility description to create folder with another item. -->
-  <string name="create_folder_with">Create folder with: <xliff:g example="Game" id="name">%1$s</xliff:g></string>
+  <string name="create_folder_with">צור תיקייה עם: <xliff:g example="Game" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
-  <string name="folder_created">Folder created</string>
+  <string name="folder_created">התיקייה נוצרה</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
   <string name="action_move_to_workspace">Move to Home screen</string>
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
-  <string name="action_move_screen_left">Move screen to left</string>
+  <string name="action_move_screen_left">הזז מסך שמאלה</string>
   <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
-  <string name="action_move_screen_right">Move screen to right</string>
+  <string name="action_move_screen_right">הזז מסך ימינה</string>
   <!-- Accessibility confirmation when a screen was moved. -->
-  <string name="screen_moved">Screen moved</string>
+  <string name="screen_moved">המסך הועבר</string>
   <!-- Accessibility action to resize a widget. [CHAR_LIMIT=30] -->
-  <string name="action_resize">Resize</string>
+  <string name="action_resize">שנה גודל</string>
   <!-- Accessibility action to increase width of a widget. [CHAR_LIMIT=30] -->
-  <string name="action_increase_width">Increase width</string>
+  <string name="action_increase_width">הגדל רוחב</string>
   <!-- Accessibility action to increase height of a widget. [CHAR_LIMIT=30] -->
-  <string name="action_increase_height">Increase height</string>
+  <string name="action_increase_height">הגדל אורך</string>
   <!-- Accessibility action to decrease width of a widget. [CHAR_LIMIT=30] -->
-  <string name="action_decrease_width">Decrease width</string>
+  <string name="action_decrease_width">הקטן רוחב</string>
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
-  <string name="action_decrease_height">Decrease height</string>
+  <string name="action_decrease_height">הקטן אורך</string>
   <!-- Accessibility confirmation for widget resize. -->
-  <string name="widget_resized">Widget resized to width <xliff:g example="2" id="number">%1$s</xliff:g> height <xliff:g example="1" id="number">%2$s</xliff:g></string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
-  <string name="action_deep_shortcut">Shortcuts</string>
+  <string name="action_deep_shortcut">קיצורי דרך</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
-  <string name="shortcuts_menu_description"><xliff:g example="3" id="number_of_shortcuts">%1$d</xliff:g> shortcuts for <xliff:g example="Messenger" id="app_name">%2$s</xliff:g></string>
-  <string name="edit_drop_target_label">Edit</string>
+  <string name="edit_drop_target_label">ערוך</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
-  <string name="wallpaper_instructions">Set wallpaper</string>
+  <string name="wallpaper_instructions">הגדר רקע</string>
   <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper picker cannot load it -->
-  <string name="image_load_fail">Couldn\'t load image</string>
+  <string name="image_load_fail">לא היה ניתן לטעון את התמונה</string>
   <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper cropper cannot load it. The user will
          usually see this when using another app and trying to set
          an image as the wallpaper -->
-  <string name="wallpaper_load_fail">Couldn\'t load image as wallpaper</string>
+  <string name="wallpaper_load_fail">לא ניתן היה להגדיר את התמונה כטפט</string>
   <!-- Error message when an image is selected as a wallpaper,
          but something goes wrong when the user clicks "Set wallpaper" -->
-  <string name="wallpaper_set_fail">Couldn\'t set image as wallpaper</string>
+  <string name="wallpaper_set_fail">לא ניתן היה להגדיר את התמונה כרקע</string>
   <!-- Shown when wallpapers are selected in Wallpaper picker -->
   <!-- String indicating how many media item(s) is(are) selected
             eg. 1 selected [CHAR LIMIT=30] -->
-  <plurals name="number_of_items_selected">
-    <item quantity="one">%1$d selected</item>
-    <item quantity="two">%1$d selected</item>
-    <item quantity="many">%1$d selected</item>
-    <item quantity="other">%1$d selected</item>
-  </plurals>
   <!-- Accessibility string used as a label for a particular wallpaper in the Wallpaper Picker list.
          e.g. "Wallpaper 3 of 10" -->
-  <string name="wallpaper_accessibility_name">Wallpaper %1$d of %2$d</string>
+  <string name="wallpaper_accessibility_name">רקע %1$d מ-%2$d</string>
   <!-- Accessibility string used to announce that a wallpaper has been selected. -->
-  <string name="announce_selection">Selected <xliff:g example="Wallpaper 3 of 10" id="label">%1$s</xliff:g></string>
+  <string name="announce_selection">נבחר <xliff:g example="Wallpaper 3 of 10" id="label">%1$s </xliff:g></string>
   <!-- Label on button to delete wallpaper(s) -->
-  <string name="wallpaper_delete">Delete</string>
+  <string name="wallpaper_delete">מחק</string>
   <!-- Label on button in Wallpaper Picker to pick an image -->
-  <string name="pick_image">My photos</string>
+  <string name="pick_image">התמונות שלי</string>
   <!-- Option in "Select wallpaper from" dialog box -->
-  <string name="pick_wallpaper">Wallpapers</string>
+  <string name="pick_wallpaper">רקעים</string>
   <!-- Title of activity for cropping wallpapers -->
-  <string name="crop_wallpaper">Crop wallpaper</string>
+  <string name="crop_wallpaper">חתוך רקע</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
-  <string name="which_wallpaper_option_home_screen">Home screen</string>
+  <string name="which_wallpaper_option_home_screen">מסך הבית</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
-  <string name="which_wallpaper_option_lock_screen">Lock screen</string>
+  <string name="which_wallpaper_option_lock_screen">מסך הנעילה</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
-  <string name="which_wallpaper_option_home_screen_and_lock_screen">Home screen and lock screen</string>
-  <string name="title_show_google_app">Show %1$s</string>
-  <string name="title_show_google_app_default">Show Google app</string>
-  <string name="label_search">Search</string>
-  <string name="label_voice_search">Voice search</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d shortcuts and %2$d notifications for %3$s</string>
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">מסכי הבית והנעילה</string>
+  <string name="title_show_google_app">הצג %1$s</string>
+  <string name="title_show_google_app_default">הצגת מסך Google</string>
+  <string name="label_search">חיפוש</string>
+  <string name="label_voice_search">חיפוש קולי</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d קיצורי דרך ו %2$d התראות עבור %3$s</string>
   <string name="notifications_header">התראות</string>
   <string name="widgets_bottom_sheet_title">%1$s ווידג\'טים</string>
   <!-- About Lawnchair -->
@@ -259,148 +245,86 @@
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">ערכת אייקונים</string>
   <string name="icon_pack_preference_summary">בחר ערכת סמלים</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Dock uses wallpaper colors</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
-  <string name="transparent_hotseat_pref_title">Transparent Dock</string>
   <string name="dynamic_ui_pref_title">חלץ צבע הדגשה של טפט</string>
   <string name="blur_pref_title">אפשר טשטוש</string>
-  <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
   <string name="blur_radius_pref_title">רדיוס טשטוש</string>
   <string name="white_google_icon_pref_title">השתמש באייקון גוגל לבן</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
   <string name="workspace_label_color_hue_pref_title">צבע תוויות סמלים על מסך הבית</string>
   <string name="workspace_label_color_variation_pref_title">צבע וריאציה של תוויות סמלים על מסך הבית</string>
-  <string name="all_apps_opacity_pref_title">Drawer opacity</string>
   <string name="num_cols_pref_title">מספר עמודות</string>
   <string name="num_rows_pref_title">מספר שורות</string>
-  <string name="num_hotseat_icons_pref_title">Number of icons in dock</string>
-  <string name="icon_scale_pref_title">Icon scale</string>
-  <string name="icon_text_scale_pref_title">Icon text scale</string>
-  <string name="full_width_width_widgets_pref_title">Full width widgets</string>
-  <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
-  <string name="notification_access_pref_title">Notification badges and preview</string>
   <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
-  <string name="ui_pref_title">UI</string>
-  <string name="pixel_style_pref_title">Pixel style</string>
-  <string name="behavior_pref_title">Behavior</string>
-  <string name="debug_pref_title">Debug</string>
-  <string name="import_export_pref_title">Import/Export</string>
-  <string name="show_pixel_bar_pref_title">Show Pixel top bar</string>
-  <string name="use_wide_searchbar_pref_title">Use wide searchbar</string>
-  <string name="show_mic_pref_title">Show Google Assistant button</string>
-  <string name="use_round_searhbar">Use round apps searchbar</string>
-  <string name="pixel_style_icons_pref_title">Use Pixel icons</string>
-  <string name="pixel_style_icons_pref_summary">When enabled circular icons will be used where possible</string>
-  <string name="show_google_now_tab_pref_title">Show Google Now page</string>
-  <string name="restart_lawnchair_pref_title">Restart Lawnchair</string>
-  <string name="restart_lawnchair_pref_summary">Can be helpful if some settings are not properly applied</string>
-  <string name="rebuild_icondb_pref_title">Rebuild Icon Database</string>
-  <string name="pinch_to_overview_pref_title">Pinch to overview</string>
-  <string name="pinch_to_overview_pref_summary">Pinch on the home screen to open the overview</string>
-  <string name="light_statusbar_pref_title">Light statusbar</string>
-  <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
+  <string name="ui_pref_title">ממשק משתמש</string>
   <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
-  <string name="haptic_feedback_pref_title">Enable vibration</string>
-  <string name="keep_scroll_state_pref_title">Save scroll position</string>
-  <string name="keep_scroll_state_pref_summary">Saves the scroll position in the drawer</string>
-  <string name="home_opens_drawer_pref_title">Home button opens app drawer</string>
-  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the home screen will open the app drawer</string>
-  <string name="show_hidden_pref_title">Show hidden apps</string>
-  <string name="show_hidden_pref_on">Hidden apps will be shown to change visibility settings</string>
-  <string name="show_hidden_pref_off">Hidden apps won\'t be visible</string>
-  <string name="export_db_title">Export database</string>
-  <string name="import_db_title">Import database</string>
-  <string name="export_prefs_title">Export settings</string>
-  <string name="import_prefs_title">Import settings</string>
-  <string name="notification_listener_label">Lawnchair - Notification badges</string>
-  <string name="color_extraction_label">Lawnchair - Color extraction</string>
-  <string name="test_title">Test</string>
-  <string name="visibility">Visibility</string>
   <!-- Customization Color -->
-  <string name="white">White</string>
+  <string name="white">לבן</string>
   <!-- Customization Color -->
-  <string name="black">Black</string>
+  <string name="black">שחור</string>
   <!-- Customization Color -->
-  <string name="red">Red</string>
+  <string name="red">אדום</string>
   <!-- Customization Color -->
-  <string name="pink">Pink</string>
+  <string name="pink">ורוד</string>
   <!-- Customization Color -->
-  <string name="purple">Purple</string>
+  <string name="purple">סגול</string>
   <!-- Customization Color -->
-  <string name="deep_purple">Deep Purple</string>
+  <string name="deep_purple">סגול כהה</string>
   <!-- Customization Color -->
-  <string name="indigo">Indigo</string>
+  <string name="indigo">כחול כהה</string>
   <!-- Customization Color -->
-  <string name="blue">Blue</string>
+  <string name="blue">כחול</string>
   <!-- Customization Color -->
-  <string name="light_blue">Light Blue</string>
+  <string name="light_blue">תכלת</string>
   <!-- Customization Color -->
-  <string name="cyan">Cyan</string>
+  <string name="cyan">טורקיז</string>
   <!-- Customization Color -->
-  <string name="teal">Teal</string>
+  <string name="teal">כחול-ירקרק</string>
   <!-- Customization Color -->
-  <string name="green">Green</string>
+  <string name="green">ירוק</string>
   <!-- Customization Color -->
-  <string name="light_green">Light Green</string>
+  <string name="light_green">ירוק בהיר</string>
   <!-- Customization Color -->
-  <string name="lime">Lime</string>
+  <string name="lime">ליים</string>
   <!-- Customization Color -->
-  <string name="yellow">Yellow</string>
+  <string name="yellow">צהוב</string>
   <!-- Customization Color -->
-  <string name="amber">Amber</string>
+  <string name="amber">אמבר</string>
   <!-- Customization Color -->
-  <string name="orange">Orange</string>
+  <string name="orange">כתום</string>
   <!-- Customization Color -->
-  <string name="deep_orange">Deep Orange</string>
+  <string name="deep_orange">כתום כהה</string>
   <!-- Customization Color -->
-  <string name="brown">Brown</string>
+  <string name="brown">חום</string>
   <!-- Customization Color -->
-  <string name="grey">Grey</string>
+  <string name="grey">אפור</string>
   <!-- Customization Color -->
-  <string name="blue_grey">Blue Grey</string>
-  <string name="default_text">Default</string>
-  <string name="edit_icon_reset">Reset</string>
-  <string name="show_top_shadow_title">Show top shadow</string>
-  <string name="pref_cat_homescreen">Home screen</string>
-  <string name="pref_cat_miscellaneous">Miscellaneous</string>
-  <string name="pref_cat_hotseat">Dock</string>
-  <string name="pref_cat_theme">Theme</string>
-  <string name="theme_pref_title">Theme</string>
-  <string name="theme_light">Light</string>
-  <string name="theme_dark">Dark</string>
-  <string name="theme_black">Black</string>
-  <string name="hide_hotseat_pref_title">Hide Dock</string>
-  <string name="all_icons">All Icons</string>
-  <string name="pull_down_action_pref_title">Pull down action</string>
-  <string name="pull_down_do_nothing">Do nothing</string>
-  <string name="pull_down_notis">Show notifications</string>
-  <string name="pull_down_search">Open search</string>
-  <string name="pull_down_apps_search">Apps search</string>
-  <string name="enable_screen_rotation">Enable screen rotation</string>
+  <string name="blue_grey">אפור כחול</string>
+  <string name="default_text">ברירת מחדל</string>
+  <string name="edit_icon_reset">איפוס</string>
+  <string name="show_top_shadow_title">הצג צללית עליונה</string>
+  <string name="pref_cat_homescreen">מסך הבית</string>
+  <string name="pref_cat_miscellaneous">שונות</string>
+  <string name="pref_cat_theme">ערכת נושא</string>
+  <string name="theme_pref_title">ערכת נושא</string>
+  <string name="theme_light">בהיר</string>
+  <string name="theme_dark">כהה</string>
+  <string name="theme_black">שחור</string>
+  <string name="all_icons">כל האייקונים</string>
+  <string name="pull_down_action_pref_title">פעולת החלקה למטה</string>
+  <string name="pull_down_do_nothing">אל תעשה דבר</string>
+  <string name="pull_down_notis">הצג חלונית התראות</string>
+  <string name="pull_down_search">פתח חיפוש</string>
+  <string name="pull_down_apps_search">חיפוש יישומים</string>
+  <string name="enable_screen_rotation">אפשר סיבוב מסך</string>
   <!-- Import/Export Strings -->
-  <string name="imexport_success">Success!</string>
-  <string name="imexport_error">Error: Failed to copy file</string>
-  <string name="imexport_no_backup_found">No backup found</string>
-  <string name="imexport_external_storage_unreadable">External storage is not readable (grant permission in settings)</string>
-  <string name="imexport_external_storage_unwritable">External storage is not writable (grant permission in settings)</string>
-  <string name="units_metric">Metric</string>
-  <string name="units_imperial">Imperial</string>
+  <string name="imexport_success">הצלחה!</string>
+  <string name="imexport_error">שגיאה: לא ניתן להעתיק קובץ</string>
+  <string name="imexport_no_backup_found">לא נמצא גיבוי</string>
+  <string name="imexport_external_storage_unreadable">אחסון חיצוני אינו קריא (אנא הענק הרשאה בהגדרות)</string>
+  <string name="imexport_external_storage_unwritable">אחסון חיצוני אינו קריא (אנא הענק הרשאה בהגדרות)</string>
+  <string name="units_metric">מטרי</string>
+  <string name="units_imperial">אימפריאלי</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
-  <string name="pref_cat_weather">Weather</string>
-  <string name="pref_weather_title">Enable weather</string>
-  <string name="pref_weather_units">Weather Units</string>
-  <string name="pref_weather_city_summary">For best results include country code</string>
-  <string name="pref_weather_city_title">City</string>
-  <string name="none">None</string>
-  <string name="pref_applyTheme">Apply theme on</string>
-  <string name="pref_applyBlur">Apply blur on</string>
-  <string name="search_bar">Search bar</string>
-  <string name="folder">Folder</string>
-  <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
-  <string name="app_shortcuts">App shortcuts</string>
-  <string name="blur_effect">Blur effect</string>
-  <string name="enable_editing_pref_title">Enable editing workspace</string>
-  <string name="pref_weather_provider">Weather provider</string>
-  <string name="loading">Loading...</string>
+  <string name="pref_cat_weather">מזג אוויר</string>
+  <string name="pref_weather_title">אפשר מזג אוויר</string>
+  <string name="pref_weather_units">יחידות מזג אוויר</string>
 </resources>

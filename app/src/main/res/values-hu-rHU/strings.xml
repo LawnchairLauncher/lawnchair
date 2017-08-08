@@ -19,7 +19,6 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- General -->
-  <skip></skip>
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
@@ -53,7 +52,6 @@
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">További alkalmazások keresése</string>
   <!-- Drag and drop -->
-  <skip></skip>
   <!-- Error message when user has filled a page -->
   <string name="out_of_space">Nincs több hely ezen a kezdőképernyőn.</string>
   <!-- Error message when user has filled the hotseat -->
@@ -70,7 +68,6 @@
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
   <string name="app_info_drop_target_label">Alkalmazásinformáció</string>
   <!-- Permissions: -->
-  <skip></skip>
   <!-- Permission short label -->
   <string name="permlab_install_shortcut">parancsikonok telepítése</string>
   <!-- Permission description -->
@@ -86,7 +83,6 @@
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission">A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> nem kezdeményezhet telefonhívásokat</string>
   <!-- Widgets: -->
-  <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">Probléma történt a modul betöltésekor</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
@@ -98,7 +94,6 @@
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
   <string name="disabled_app_label">A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> letiltva</string>
-  <skip></skip>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">%2$d/%1$d. oldal</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
@@ -201,7 +196,7 @@
   <string name="action_deep_shortcut">Gyorsparancsok</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
   <string name="shortcuts_menu_description"><xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> gyorsparancs a(z) <xliff:g id="APP_NAME">%2$s</xliff:g> számára</string>
-  <string name="edit_drop_target_label">Edit</string>
+  <string name="edit_drop_target_label">Szerkesztés</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
   <string name="wallpaper_instructions">Háttérkép beállítása</string>
   <!-- Error message when an image is selected as a wallpaper,
@@ -236,167 +231,175 @@
   <!-- Title of activity for cropping wallpapers -->
   <string name="crop_wallpaper">Háttérkép körbevágása</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
-  <string name="which_wallpaper_option_home_screen">Home screen</string>
+  <string name="which_wallpaper_option_home_screen">Kezdőképernyő</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
-  <string name="which_wallpaper_option_lock_screen">Lock screen</string>
+  <string name="which_wallpaper_option_lock_screen">Képernyőzár</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
-  <string name="which_wallpaper_option_home_screen_and_lock_screen">Home screen and lock screen</string>
-  <string name="title_show_google_app">Show %1$s</string>
-  <string name="title_show_google_app_default">Show Google app</string>
-  <string name="label_search">Search</string>
-  <string name="label_voice_search">Voice search</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d shortcuts and %2$d notifications for %3$s</string>
-  <string name="notifications_header">Notifications</string>
-  <string name="widgets_bottom_sheet_title">%1$s widgets</string>
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">Kezdőképernyő és képernyőzár</string>
+  <string name="title_show_google_app">%1$s megjelenítése</string>
+  <string name="title_show_google_app_default">Google alkalmazás megjelenítése</string>
+  <string name="label_search">Keresés</string>
+  <string name="label_voice_search">Hangalapú keresés</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d parancsikon és %2$d értesítés ehhez: %3$s</string>
+  <string name="notifications_header">Értesítések</string>
+  <string name="widgets_bottom_sheet_title">%1$s modul</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
-  <string name="about_title">About</string>
-  <string name="changelog_title">Changelog for build #%d</string>
+  <string name="about_text">A Lawnchair egy kezdőképernyő-alkalmazás, melyet Till Kottmann (aka deletescape) készített. Az AOSP-ben található Launcher3 adja az alapját.</string>
+  <string name="about_title">Névjegy</string>
+  <string name="changelog_title">Változások a #%d verzióban</string>
   <string name="week_day_format">%1$s, %2$s</string>
-  <string name="icon_pack_preference_title">Icon Pack</string>
-  <string name="icon_pack_preference_summary">Select an icon Pack</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Dock uses wallpaper colors</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
-  <string name="transparent_hotseat_pref_title">Transparent Dock</string>
-  <string name="dynamic_ui_pref_title">Extract accent color from wallpaper</string>
-  <string name="blur_pref_title">Enable blur</string>
-  <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
-  <string name="blur_radius_pref_title">Blur radius</string>
-  <string name="white_google_icon_pref_title">Use white Google icon</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
-  <string name="workspace_label_color_hue_pref_title">Color of icon labels on homescreen</string>
-  <string name="workspace_label_color_variation_pref_title">Color variation of icon labels on homescreen</string>
-  <string name="all_apps_opacity_pref_title">Drawer opacity</string>
-  <string name="num_cols_pref_title">Number of columns</string>
-  <string name="num_rows_pref_title">Number of rows</string>
-  <string name="num_hotseat_icons_pref_title">Number of icons in dock</string>
-  <string name="icon_scale_pref_title">Icon scale</string>
-  <string name="icon_text_scale_pref_title">Icon text scale</string>
-  <string name="full_width_width_widgets_pref_title">Full width widgets</string>
-  <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
-  <string name="notification_access_pref_title">Notification badges and preview</string>
-  <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
-  <string name="ui_pref_title">UI</string>
-  <string name="pixel_style_pref_title">Pixel style</string>
-  <string name="behavior_pref_title">Behavior</string>
-  <string name="debug_pref_title">Debug</string>
-  <string name="import_export_pref_title">Import/Export</string>
-  <string name="show_pixel_bar_pref_title">Show Pixel top bar</string>
-  <string name="use_wide_searchbar_pref_title">Use wide searchbar</string>
-  <string name="show_mic_pref_title">Show Google Assistant button</string>
-  <string name="use_round_searhbar">Use round apps searchbar</string>
-  <string name="pixel_style_icons_pref_title">Use Pixel icons</string>
-  <string name="pixel_style_icons_pref_summary">When enabled circular icons will be used where possible</string>
-  <string name="show_google_now_tab_pref_title">Show Google Now page</string>
-  <string name="restart_lawnchair_pref_title">Restart Lawnchair</string>
-  <string name="restart_lawnchair_pref_summary">Can be helpful if some settings are not properly applied</string>
-  <string name="rebuild_icondb_pref_title">Rebuild Icon Database</string>
-  <string name="pinch_to_overview_pref_title">Pinch to overview</string>
-  <string name="pinch_to_overview_pref_summary">Pinch on the home screen to open the overview</string>
-  <string name="light_statusbar_pref_title">Light statusbar</string>
-  <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
-  <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
-  <string name="haptic_feedback_pref_title">Enable vibration</string>
-  <string name="keep_scroll_state_pref_title">Save scroll position</string>
-  <string name="keep_scroll_state_pref_summary">Saves the scroll position in the drawer</string>
-  <string name="home_opens_drawer_pref_title">Home button opens app drawer</string>
-  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the home screen will open the app drawer</string>
-  <string name="show_hidden_pref_title">Show hidden apps</string>
-  <string name="show_hidden_pref_on">Hidden apps will be shown to change visibility settings</string>
-  <string name="show_hidden_pref_off">Hidden apps won\'t be visible</string>
-  <string name="export_db_title">Export database</string>
-  <string name="import_db_title">Import database</string>
-  <string name="export_prefs_title">Export settings</string>
-  <string name="import_prefs_title">Import settings</string>
-  <string name="notification_listener_label">Lawnchair - Notification badges</string>
-  <string name="color_extraction_label">Lawnchair - Color extraction</string>
-  <string name="test_title">Test</string>
-  <string name="visibility">Visibility</string>
+  <string name="icon_pack_preference_title">Ikoncsomag</string>
+  <string name="icon_pack_preference_summary">Ikoncsomag kiválasztása</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">A dokk a háttérkép színeit használja</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">A dokk a háttérképből kinyert színnel lesz színezve</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">A dokk szürke lesz, de a háttérkép fényerejéhez lesz igazítva</string>
+  <string name="transparent_hotseat_pref_title">Átlátszó dokk</string>
+  <string name="dynamic_ui_pref_title">A kiemelő szín kinyerése a háttérképből</string>
+  <string name="blur_pref_title">Homályosítás engedélyezése</string>
+  <string name="blur_pref_summary">Homályosítás effekt engedélyezése a felületen\n Nem kompatibilis élő háttérképekkel</string>
+  <string name="blur_radius_pref_title">Homályosítás sugara</string>
+  <string name="white_google_icon_pref_title">Fehér Google ikon használata</string>
+  <string name="hide_icon_labels_pref_title">A kezdőképernyő ikonok címkéinek elrejtése</string>
+  <string name="workspace_label_color_hue_pref_title">A kezdőképernyő ikonok címkéinek színe</string>
+  <string name="workspace_label_color_variation_pref_title">A kezdőképernyő ikonok címkéinek színvariációja</string>
+  <string name="all_apps_opacity_pref_title">Alkalmazásfiók áttetszősége</string>
+  <string name="num_cols_pref_title">Oszlopok száma</string>
+  <string name="num_rows_pref_title">Sorok száma</string>
+  <string name="num_hotseat_icons_pref_title">Dokk ikonok száma</string>
+  <string name="icon_scale_pref_title">Ikonok mérete</string>
+  <string name="icon_text_scale_pref_title">Ikonok szövegének mérete</string>
+  <string name="full_width_width_widgets_pref_title">Teljes szélességű modulok</string>
+  <string name="full_width_widgets_pref_summary">Engedélyezi, hogy a modulok átíveljenek a teljes szélességben keret nélkül</string>
+  <string name="notification_access_pref_title">Értesítés bogyók és előnézetek</string>
+  <string name="notification_access_pref_summary">Engedélyezze a Lawnchairnek, hogy hozzáférjen az értesítésekhez a funkció használatához</string>
+  <string name="ui_pref_title">Felhasználói felület</string>
+  <string name="pixel_style_pref_title">Pixel stílus</string>
+  <string name="behavior_pref_title">Viselkedés</string>
+  <string name="debug_pref_title">Hibakeresés</string>
+  <string name="import_export_pref_title">Mentés/visszaállítás</string>
+  <string name="show_pixel_bar_pref_title">Pixel felső sáv</string>
+  <string name="use_wide_searchbar_pref_title">Széles keresősáv</string>
+  <string name="show_mic_pref_title">Google Segéd gomb</string>
+  <string name="use_round_searhbar">Kerek alkalmazáskereső sáv</string>
+  <string name="pixel_style_icons_pref_title">Pixel ikonok használata</string>
+  <string name="pixel_style_icons_pref_summary">Kör alakú ikonok használata, ha lehetséges</string>
+  <string name="show_google_now_tab_pref_title">Google Now oldal</string>
+  <string name="restart_lawnchair_pref_title">Lawnchair újraindítása</string>
+  <string name="restart_lawnchair_pref_summary">Segíthet, ha egyes beállítások nem kerülnek alkalmazásra</string>
+  <string name="rebuild_icondb_pref_title">Ikon adatbázis újraépítése</string>
+  <string name="pinch_to_overview_pref_title">Csípő mozdulat az áttekintéshez</string>
+  <string name="pinch_to_overview_pref_summary">Csípő mozdulat a kezdőképernyőn az áttekintő nézet megnyitásához</string>
+  <string name="light_statusbar_pref_title">Világos állapotsáv</string>
+  <string name="light_statusbar_pref_force">Az állapotsor mindig sötét ikonokat fog mutatni</string>
+  <string name="light_statusbar_pref_off">Az állapotsor mindig világos ikonokat fog mutatni</string>
+  <string name="haptic_feedback_pref_title">Rezgés engedélyezése</string>
+  <string name="keep_scroll_state_pref_title">Görgetési pozíció mentése</string>
+  <string name="keep_scroll_state_pref_summary">Görgetési pozíció mentése az alkalmazásfiókban</string>
+  <string name="home_opens_drawer_pref_title">A Home gomb megnyitja az alkalmazásfiókot</string>
+  <string name="home_opens_drawer_pref_summary">A kezdőképernyőn nyomott Home gomb megnyitja az alkalmazásfiókot</string>
+  <string name="show_hidden_pref_title">Rejtett alkalmazások megjelenítése</string>
+  <string name="show_hidden_pref_on">A rejtett alkalmazások meg fognak jelenni, hogy módosíthassa a láthatósági beállításokat</string>
+  <string name="show_hidden_pref_off">A rejtett alkalmazások nem lesznek láthatóak</string>
+  <string name="export_db_title">Adatbázis mentése</string>
+  <string name="import_db_title">Adatbázis visszaállítása</string>
+  <string name="export_prefs_title">Beállítások mentése</string>
+  <string name="import_prefs_title">Beállítások visszaállítása</string>
+  <string name="notification_listener_label">Lawnchair - Értesítési bogyók</string>
+  <string name="color_extraction_label">Lawnchair - Szín kinyerés</string>
+  <string name="test_title">Teszt</string>
+  <string name="visibility">Láthatóság</string>
   <!-- Customization Color -->
-  <string name="white">White</string>
+  <string name="white">Fehér</string>
   <!-- Customization Color -->
-  <string name="black">Black</string>
+  <string name="black">Fekete</string>
   <!-- Customization Color -->
-  <string name="red">Red</string>
+  <string name="red">Piros</string>
   <!-- Customization Color -->
-  <string name="pink">Pink</string>
+  <string name="pink">Rózsaszín</string>
   <!-- Customization Color -->
-  <string name="purple">Purple</string>
+  <string name="purple">Lila</string>
   <!-- Customization Color -->
-  <string name="deep_purple">Deep Purple</string>
+  <string name="deep_purple">Mélylila</string>
   <!-- Customization Color -->
-  <string name="indigo">Indigo</string>
+  <string name="indigo">Indigó</string>
   <!-- Customization Color -->
-  <string name="blue">Blue</string>
+  <string name="blue">Kék</string>
   <!-- Customization Color -->
-  <string name="light_blue">Light Blue</string>
+  <string name="light_blue">Világoskék</string>
   <!-- Customization Color -->
-  <string name="cyan">Cyan</string>
+  <string name="cyan">Zöldeskék</string>
   <!-- Customization Color -->
-  <string name="teal">Teal</string>
+  <string name="teal">Pávakék</string>
   <!-- Customization Color -->
-  <string name="green">Green</string>
+  <string name="green">Zöld</string>
   <!-- Customization Color -->
-  <string name="light_green">Light Green</string>
+  <string name="light_green">Világoszöld</string>
   <!-- Customization Color -->
   <string name="lime">Lime</string>
   <!-- Customization Color -->
-  <string name="yellow">Yellow</string>
+  <string name="yellow">Sárga</string>
   <!-- Customization Color -->
-  <string name="amber">Amber</string>
+  <string name="amber">Borostyán</string>
   <!-- Customization Color -->
-  <string name="orange">Orange</string>
+  <string name="orange">Narancs</string>
   <!-- Customization Color -->
-  <string name="deep_orange">Deep Orange</string>
+  <string name="deep_orange">Mélynarancs</string>
   <!-- Customization Color -->
-  <string name="brown">Brown</string>
+  <string name="brown">Barna</string>
   <!-- Customization Color -->
-  <string name="grey">Grey</string>
+  <string name="grey">Szürke</string>
   <!-- Customization Color -->
-  <string name="blue_grey">Blue Grey</string>
-  <string name="default_text">Default</string>
-  <string name="edit_icon_reset">Reset</string>
-  <string name="show_top_shadow_title">Show top shadow</string>
-  <string name="pref_cat_homescreen">Home screen</string>
-  <string name="pref_cat_miscellaneous">Miscellaneous</string>
-  <string name="pref_cat_hotseat">Dock</string>
-  <string name="pref_cat_theme">Theme</string>
-  <string name="theme_pref_title">Theme</string>
-  <string name="theme_light">Light</string>
-  <string name="theme_dark">Dark</string>
-  <string name="theme_black">Black</string>
-  <string name="hide_hotseat_pref_title">Hide Dock</string>
-  <string name="all_icons">All Icons</string>
-  <string name="pull_down_action_pref_title">Pull down action</string>
-  <string name="pull_down_do_nothing">Do nothing</string>
-  <string name="pull_down_notis">Show notifications</string>
-  <string name="pull_down_search">Open search</string>
-  <string name="pull_down_apps_search">Apps search</string>
-  <string name="enable_screen_rotation">Enable screen rotation</string>
+  <string name="blue_grey">Szürkéskék</string>
+  <string name="default_text">Alapértelmezett</string>
+  <string name="edit_icon_reset">Alaphelyzetbe állítás</string>
+  <string name="show_top_shadow_title">Felső árnyék megjelenítése</string>
+  <string name="pref_cat_homescreen">Kezdőképernyő</string>
+  <string name="pref_cat_miscellaneous">Egyéb</string>
+  <string name="pref_cat_hotseat">Dokk</string>
+  <string name="pref_cat_theme">Téma</string>
+  <string name="theme_pref_title">Téma</string>
+  <string name="theme_light">Világos</string>
+  <string name="theme_dark">Sötét</string>
+  <string name="theme_black">Fekete</string>
+  <string name="hide_hotseat_pref_title">Dokk elrejtése</string>
+  <string name="all_icons">Összes ikon</string>
+  <string name="pull_down_action_pref_title">Lehúzási művelet</string>
+  <string name="pull_down_do_nothing">Nincs művelet</string>
+  <string name="pull_down_notis">Értesítések megjelenítése</string>
+  <string name="pull_down_search">Keresés megnyitása</string>
+  <string name="pull_down_apps_search">Alkalmazások keresése</string>
+  <string name="enable_screen_rotation">Képernyőforgatás engedélyezése</string>
   <!-- Import/Export Strings -->
-  <string name="imexport_success">Success!</string>
-  <string name="imexport_error">Error: Failed to copy file</string>
-  <string name="imexport_no_backup_found">No backup found</string>
-  <string name="imexport_external_storage_unreadable">External storage is not readable (grant permission in settings)</string>
-  <string name="imexport_external_storage_unwritable">External storage is not writable (grant permission in settings)</string>
-  <string name="units_metric">Metric</string>
-  <string name="units_imperial">Imperial</string>
+  <string name="imexport_success">Kész!</string>
+  <string name="imexport_error">Hiba: Nem sikerült a fájl másolása</string>
+  <string name="imexport_no_backup_found">Nem található biztonsági mentés</string>
+  <string name="imexport_external_storage_unreadable">A tárhely nem olvasható (engedélyezze a hozzáférést a beállításokban)</string>
+  <string name="imexport_external_storage_unwritable">A tárhely nem írható (engedélyezze a hozzáférést a beállításokban)</string>
+  <string name="units_metric">Metrikus</string>
+  <string name="units_imperial">Angolszász</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
-  <string name="pref_cat_weather">Weather</string>
-  <string name="pref_weather_title">Enable weather</string>
-  <string name="pref_weather_units">Weather Units</string>
-  <string name="pref_weather_city_summary">For best results include country code</string>
-  <string name="pref_weather_city_title">City</string>
-  <string name="none">None</string>
-  <string name="pref_applyTheme">Apply theme on</string>
-  <string name="pref_applyBlur">Apply blur on</string>
-  <string name="search_bar">Search bar</string>
-  <string name="folder">Folder</string>
-  <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
-  <string name="app_shortcuts">App shortcuts</string>
-  <string name="blur_effect">Blur effect</string>
-  <string name="enable_editing_pref_title">Enable editing workspace</string>
-  <string name="pref_weather_provider">Weather provider</string>
-  <string name="loading">Loading...</string>
+  <string name="pref_cat_weather">Időjárás</string>
+  <string name="pref_weather_title">Időjárás engedélyezése</string>
+  <string name="pref_weather_units">Időjárás mértékegysége</string>
+  <string name="pref_weather_city_summary">A legjobb eredmény érdekében adja meg az országkódot is</string>
+  <string name="pref_weather_city_title">Település</string>
+  <string name="none">Nincs</string>
+  <string name="pref_applyTheme">Téma alkalmazása ezen</string>
+  <string name="pref_applyBlur">Homályosítás alkalmazása ezen</string>
+  <string name="search_bar">Keresősáv</string>
+  <string name="folder">Mappa</string>
+  <string name="dock_allapps"><![CDATA[Dokk és alkalmazásfiók]]></string>
+  <string name="app_shortcuts">Alkalmazás parancsikonok</string>
+  <string name="blur_effect">Homályosítás effekt</string>
+  <string name="enable_editing_pref_title">Szerkesztési munkamenet engedélyezése</string>
+  <string name="pref_weather_provider">Időjárás szolgáltató</string>
+  <string name="loading">Betöltés...</string>
+  <string name="icon_shape_override_label">Ikon alakjának cseréje</string>
+  <string name="icon_shape_system_default">Ne cserélje</string>
+  <string name="icon_shape_square">Négyzet</string>
+  <string name="icon_shape_rounded_square">Lekerekített négyzet</string>
+  <string name="icon_shape_squircle">Négyzetes kör</string>
+  <string name="icon_shape_circle">Kör</string>
+  <string name="icon_shape_teardrop">Könnycsepp</string>
+  <string name="animated_clock_icon_title">Animált óra ikon</string>
 </resources>

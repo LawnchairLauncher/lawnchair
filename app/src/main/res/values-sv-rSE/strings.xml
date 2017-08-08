@@ -19,7 +19,6 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- General -->
-  <skip></skip>
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
@@ -53,7 +52,6 @@
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">Sök efter fler appar</string>
   <!-- Drag and drop -->
-  <skip></skip>
   <!-- Error message when user has filled a page -->
   <string name="out_of_space">Det finns inte plats för mer på den här startskärmen.</string>
   <!-- Error message when user has filled the hotseat -->
@@ -70,7 +68,6 @@
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
   <string name="app_info_drop_target_label">Info om appen</string>
   <!-- Permissions: -->
-  <skip></skip>
   <!-- Permission short label -->
   <string name="permlab_install_shortcut">installera genvägar</string>
   <!-- Permission description -->
@@ -86,7 +83,6 @@
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission"><xliff:g id="APP_NAME">%1$s</xliff:g> har inte behörighet att ringa samtal</string>
   <!-- Widgets: -->
-  <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">Det gick inte att läsa in widgeten</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
@@ -98,7 +94,6 @@
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
   <string name="disabled_app_label"><xliff:g id="APP_NAME">%1$s</xliff:g> har inaktiverats</string>
-  <skip></skip>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">Sida %1$d av %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
@@ -252,7 +247,6 @@
   <string name="about_text">Lawnchair är en hemskärm-app skapad av Till Kottmann (deletescape). Den är baserad på Launcher3 från AOSP.</string>
   <string name="about_title">Om</string>
   <string name="changelog_title">Ändringar för version #%d</string>
-  <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Ikonpaket</string>
   <string name="icon_pack_preference_summary">Välj ett ikonpaket</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Dockan använder färger från bakgrundsbilden</string>
@@ -261,10 +255,8 @@
   <string name="transparent_hotseat_pref_title">Genomskinlig docka</string>
   <string name="dynamic_ui_pref_title">Använd accentfärg från bakgrundsbilden</string>
   <string name="blur_pref_title">Använd oskärpa</string>
-  <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
   <string name="blur_radius_pref_title">Radius för suddighet</string>
   <string name="white_google_icon_pref_title">Använd vit Google ikon</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
   <string name="workspace_label_color_hue_pref_title">Ikonetiketters färg på hemskärmen</string>
   <string name="workspace_label_color_variation_pref_title">Färgvariation av ikonetiketter på hemskärmen</string>
   <string name="all_apps_opacity_pref_title">Opacitet på applåda</string>
@@ -293,15 +285,12 @@
   <string name="restart_lawnchair_pref_summary">Kan vara användbart om vissa inställningar inte tillämpas korrekt</string>
   <string name="rebuild_icondb_pref_title">Återskapa ikondatabasen</string>
   <string name="pinch_to_overview_pref_title">Nyp för översikt</string>
-  <string name="pinch_to_overview_pref_summary">Pinch on the home screen to open the overview</string>
   <string name="light_statusbar_pref_title">Ljust statusfält</string>
-  <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
   <string name="light_statusbar_pref_off">Statusfältet kommer alltid att visa ljusa ikoner.</string>
   <string name="haptic_feedback_pref_title">Aktivera vibration</string>
   <string name="keep_scroll_state_pref_title">Spara scrollposition</string>
   <string name="keep_scroll_state_pref_summary">Sparar scrollpositionen i applådan</string>
   <string name="home_opens_drawer_pref_title">Hemknappen öppnar applådan</string>
-  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the home screen will open the app drawer</string>
   <string name="show_hidden_pref_title">Visa dolda appar</string>
   <string name="show_hidden_pref_on">Dolda appar kommer visas för att ändra synlighetsinställningar</string>
   <string name="show_hidden_pref_off">Dolda appar kommer inte att synas</string>
@@ -311,7 +300,6 @@
   <string name="import_prefs_title">Import inställningar</string>
   <string name="notification_listener_label">Lawnchair - Notifikationsmärken</string>
   <string name="color_extraction_label">Lawnchair - Färgutvinning</string>
-  <string name="test_title">Test</string>
   <string name="visibility">Synlighet</string>
   <!-- Customization Color -->
   <string name="white">Vit</string>
@@ -326,13 +314,11 @@
   <!-- Customization Color -->
   <string name="deep_purple">Mörklila</string>
   <!-- Customization Color -->
-  <string name="indigo">Indigo</string>
   <!-- Customization Color -->
   <string name="blue">Blå</string>
   <!-- Customization Color -->
   <string name="light_blue">Ljusblå</string>
   <!-- Customization Color -->
-  <string name="cyan">Cyan</string>
   <!-- Customization Color -->
   <string name="teal">Blågrön</string>
   <!-- Customization Color -->
@@ -340,13 +326,11 @@
   <!-- Customization Color -->
   <string name="light_green">Ljusgrön</string>
   <!-- Customization Color -->
-  <string name="lime">Lime</string>
   <!-- Customization Color -->
   <string name="yellow">Gul</string>
   <!-- Customization Color -->
   <string name="amber">Bärnsten</string>
   <!-- Customization Color -->
-  <string name="orange">Orange</string>
   <!-- Customization Color -->
   <string name="deep_orange">Mörkorange</string>
   <!-- Customization Color -->
@@ -356,47 +340,6 @@
   <!-- Customization Color -->
   <string name="blue_grey">Blågrå</string>
   <string name="default_text">Standard</string>
-  <string name="edit_icon_reset">Reset</string>
-  <string name="show_top_shadow_title">Show top shadow</string>
-  <string name="pref_cat_homescreen">Home screen</string>
-  <string name="pref_cat_miscellaneous">Miscellaneous</string>
-  <string name="pref_cat_hotseat">Dock</string>
-  <string name="pref_cat_theme">Theme</string>
-  <string name="theme_pref_title">Theme</string>
-  <string name="theme_light">Light</string>
-  <string name="theme_dark">Dark</string>
-  <string name="theme_black">Black</string>
-  <string name="hide_hotseat_pref_title">Hide Dock</string>
-  <string name="all_icons">All Icons</string>
-  <string name="pull_down_action_pref_title">Pull down action</string>
-  <string name="pull_down_do_nothing">Do nothing</string>
-  <string name="pull_down_notis">Show notifications</string>
-  <string name="pull_down_search">Open search</string>
-  <string name="pull_down_apps_search">Apps search</string>
-  <string name="enable_screen_rotation">Enable screen rotation</string>
   <!-- Import/Export Strings -->
-  <string name="imexport_success">Success!</string>
-  <string name="imexport_error">Error: Failed to copy file</string>
-  <string name="imexport_no_backup_found">No backup found</string>
-  <string name="imexport_external_storage_unreadable">External storage is not readable (grant permission in settings)</string>
-  <string name="imexport_external_storage_unwritable">External storage is not writable (grant permission in settings)</string>
-  <string name="units_metric">Metric</string>
-  <string name="units_imperial">Imperial</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
-  <string name="pref_cat_weather">Weather</string>
-  <string name="pref_weather_title">Enable weather</string>
-  <string name="pref_weather_units">Weather Units</string>
-  <string name="pref_weather_city_summary">For best results include country code</string>
-  <string name="pref_weather_city_title">City</string>
-  <string name="none">None</string>
-  <string name="pref_applyTheme">Apply theme on</string>
-  <string name="pref_applyBlur">Apply blur on</string>
-  <string name="search_bar">Search bar</string>
-  <string name="folder">Folder</string>
-  <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
-  <string name="app_shortcuts">App shortcuts</string>
-  <string name="blur_effect">Blur effect</string>
-  <string name="enable_editing_pref_title">Enable editing workspace</string>
-  <string name="pref_weather_provider">Weather provider</string>
-  <string name="loading">Loading...</string>
 </resources>

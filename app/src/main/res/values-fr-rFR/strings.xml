@@ -19,11 +19,10 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <!-- General -->
-  <skip></skip>
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
-  <string name="work_folder_name">Android Work</string>
+  <string name="work_folder_name">Travail</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
   <string name="activity_not_found">L\'application n\'est pas installée.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
@@ -53,7 +52,6 @@
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">Rechercher plus d\'applications</string>
   <!-- Drag and drop -->
-  <skip></skip>
   <!-- Error message when user has filled a page -->
   <string name="out_of_space">Plus d\'espace libre sur cet écran d\'accueil.</string>
   <!-- Error message when user has filled the hotseat -->
@@ -70,7 +68,6 @@
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
   <string name="app_info_drop_target_label">Infos sur l\'application</string>
   <!-- Permissions: -->
-  <skip></skip>
   <!-- Permission short label -->
   <string name="permlab_install_shortcut">installer des raccourcis</string>
   <!-- Permission description -->
@@ -86,7 +83,6 @@
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission">L\'application <xliff:g id="APP_NAME">%1$s</xliff:g> n\'est pas autorisée à passer des appels téléphoniques.</string>
   <!-- Widgets: -->
-  <skip></skip>
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">Problème lors du chargement du widget.</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
@@ -98,7 +94,6 @@
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
   <string name="disabled_app_label"><xliff:g id="APP_NAME">%1$s</xliff:g> est désactivé.</string>
-  <skip></skip>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">Page %1$d sur %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
@@ -357,7 +352,7 @@
   <string name="blue_grey">Bleu Gris</string>
   <string name="default_text">Par défaut</string>
   <string name="edit_icon_reset">Réinitialiser</string>
-  <string name="show_top_shadow_title">Affiche l\'ombre du haut</string>
+  <string name="show_top_shadow_title">Afficher l\'ombre du haut</string>
   <string name="pref_cat_homescreen">Écran d\'accueil</string>
   <string name="pref_cat_miscellaneous">Divers</string>
   <string name="pref_cat_hotseat">Dock</string>
@@ -399,4 +394,16 @@
   <string name="enable_editing_pref_title">Activer l\'édition de l\'espace de travail</string>
   <string name="pref_weather_provider">Fournisseur météo</string>
   <string name="loading">Chargement...</string>
+  <string name="icon_shape_override_label">Changer la forme des icons</string>
+  <string name="icon_shape_system_default">Ne pas changer</string>
+  <string name="icon_shape_square">Carée</string>
+  <string name="icon_shape_rounded_square">Carée arrondi</string>
+  <string name="icon_shape_squircle">Carrecle</string>
+  <string name="icon_shape_circle">Cercle</string>
+  <string name="icon_shape_teardrop">Larme</string>
+  <string name="animated_clock_icon_title">Icône de l\'horloge animée</string>
+  <string name="about_summary_title">Résumé</string>
+  <string name="about_version">Version</string>
+  <string name="about_icon_designer">Designer des icônes de l\'application</string>
+  <string name="about_contributors_title">Donateurs</string>
 </resources>
