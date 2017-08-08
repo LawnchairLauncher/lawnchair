@@ -980,7 +980,7 @@ public final class Utilities {
         String[] lines = BuildConfig.CHANGELOG.split("\n");
         for (String line : lines) {
             if (line.startsWith("Merge pull request")) continue;
-            if (line.startsWith("[no ci]")) {
+            if (line.contains("[no ci]")) {
                 line = line.replace("[no ci]", "");
             }
             builder
