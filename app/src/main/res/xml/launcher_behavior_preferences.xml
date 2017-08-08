@@ -2,6 +2,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreference
+        android:key="pref_enableBackportShortcuts"
+        android:title="@string/pref_backport_shortcuts"
+        android:summary="@string/shortcut_backport_warning" />
+
+    <SwitchPreference
         android:key="pref_pinchToOverview"
         android:title="@string/pinch_to_overview_pref_title"
         android:summary="@string/pinch_to_overview_pref_summary"

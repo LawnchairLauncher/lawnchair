@@ -193,6 +193,10 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                 }
             } else if (getContent() == R.xml.launcher_about_preferences) {
                 findPreference("about_version").setSummary(BuildConfig.VERSION_NAME);
+            } else if (getContent() == R.xml.launcher_behavior_preferences) {
+                if (Utilities.isNycMR1OrAbove()) {
+                    getPreferenceScreen().removePreference(findPreference("pref_enableBackportShortcuts"));
+                }
             }
         }
 

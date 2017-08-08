@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <SwitchPreference
-        android:key="pref_enableBackportShortcuts"
-        android:title="Backport shortcuts"
-        android:summary="Very experimental and slow. Do not report bugs if this is enabled" />
-
     <SwitchPreference
         android:key="pref_plane"
         android:title="Amazing Plane" />
