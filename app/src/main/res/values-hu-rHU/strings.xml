@@ -394,4 +394,12 @@
   <string name="enable_editing_pref_title">Szerkesztési munkamenet engedélyezése</string>
   <string name="pref_weather_provider">Időjárás szolgáltató</string>
   <string name="loading">Betöltés...</string>
+  <string name="icon_shape_override_label">Ikon alakjának cseréje</string>
+  <string name="icon_shape_system_default">Ne cserélje</string>
+  <string name="icon_shape_square">Négyzet</string>
+  <string name="icon_shape_rounded_square">Lekerekített négyzet</string>
+  <string name="icon_shape_squircle">Négyzetes kör</string>
+  <string name="icon_shape_circle">Kör</string>
+  <string name="icon_shape_teardrop">Könnycsepp</string>
+  <string name="animated_clock_icon_title">Animált óra ikon</string>
 </resources>
