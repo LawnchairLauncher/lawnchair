@@ -16,7 +16,7 @@ import android.widget.TextView;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.weather.WeatherHelper;
 
-public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener, View.OnLongClickListener {
+public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener, View.OnLongClickListener, WeatherHelper.OnWeatherLoadListener {
     public static final Property<QsbBlockerView, Integer> QSB_BLOCKER_VIEW_ALPHA = new QsbBlockerViewAlpha(Integer.TYPE, "bgAlpha");
     private final Paint mBgPaint = new Paint(1);
     private View mView;
@@ -47,7 +47,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
             Workspace workspace = Launcher.getLauncher(getContext()).getWorkspace();
             workspace.setOnStateChangeListener(this);
             prepareStateChange(workspace.getState(), null);
-            setupView();
+            setupView(true);
         }
     }
 
@@ -88,7 +88,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
         canvas.drawPaint(mBgPaint);
     }
 
-    public void setupView() {
+    public void setupView(boolean startListener) {
         if (!FeatureFlags.INSTANCE.showPixelBar(getContext())) {
             removeAllViews();
             return;
@@ -103,7 +103,8 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.weather_widget, this, false);
                 TextView temperature = mView.findViewById(R.id.weather_widget_temperature);
                 ImageView iconView = mView.findViewById(R.id.weather_widget_icon);
-                weatherHelper = new WeatherHelper(temperature, iconView, getContext());
+                weatherHelper = startListener || weatherHelper == null ? new WeatherHelper(temperature, iconView, getContext()) : weatherHelper;
+                weatherHelper.setListener(this);
                 mView.findViewById(R.id.weather_widget_time).setOnLongClickListener(this);
                 temperature.setOnLongClickListener(this);
                 iconView.setOnLongClickListener(this);
@@ -142,8 +143,15 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
         if (weatherHelper != null) {
             weatherHelper.stop();
         }
-        setupView();
+        setupView(true);
         return true;
+    }
+
+    @Override
+    public void onLoad(boolean success) {
+        switchToDate = !success;
+        switching = true;
+        setupView(true);
     }
 
     private final class QsbBlockerViewViewRemover implements Runnable {
