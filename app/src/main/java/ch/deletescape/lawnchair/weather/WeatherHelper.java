@@ -38,6 +38,7 @@ public class WeatherHelper implements SharedPreferences.OnSharedPreferenceChange
         setupOnClickListener(context);
         mHandler = new Handler();
         SharedPreferences prefs = Utilities.getPrefs(context);
+        prefs.registerOnSharedPreferenceChangeListener(this);
         mApi = WeatherAPI.Companion.create(context,
                 Integer.parseInt(prefs.getString("pref_weatherProvider", "0")));
         mApi.setWeatherCallback(this);
