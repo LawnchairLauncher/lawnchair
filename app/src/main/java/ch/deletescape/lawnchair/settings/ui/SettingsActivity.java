@@ -183,8 +183,8 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                 findPreference("pref_weatherProvider").setEnabled(BuildConfig.AWARENESS_API_ENABLED && hasPermission);
                 String city = sharedPrefs.getString("pref_weather_city", "Lucerne, CH");
                 Preference prefWeatherCity = findPreference("pref_weather_city");
-                prefWeatherCity.setEnabled(!Utilities.isAwarenessApiEnabled(getActivity()));
                 prefWeatherCity.setSummary(!TextUtils.isEmpty(city) ? city : getString(R.string.pref_weather_city_summary));
+                prefWeatherCity.setEnabled(!Utilities.isAwarenessApiEnabled(getActivity()));
                 Preference overrideShapePreference = findPreference("pref_override_icon_shape");
                 if (IconShapeOverride.Companion.isSupported(getActivity())) {
                     IconShapeOverride.Companion.handlePreferenceUi((ListPreference) overrideShapePreference);
