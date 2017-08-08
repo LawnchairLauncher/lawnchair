@@ -33,7 +33,6 @@ import android.preference.PreferenceScreen;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -123,17 +122,7 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
         }
     }
 
-    /**
-     * This fragment shows the launcher preferences.
-     */
-    public static class LauncherSettingsFragment extends PreferenceFragment implements AdapterView.OnItemLongClickListener {
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
-            addPreferencesFromResource(R.xml.launcher_preferences);
-        }
+    private abstract static class BaseFragment extends PreferenceFragment implements AdapterView.OnItemLongClickListener {
 
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -142,12 +131,6 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
             ListView listView = view.findViewById(android.R.id.list);
             listView.setOnItemLongClickListener(this);
             return view;
-        }
-
-        @Override
-        public void onResume() {
-            super.onResume();
-            getActivity().setTitle(R.string.settings_button_text);
         }
 
         @Override
@@ -169,7 +152,26 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
         }
     }
 
-    public static class SubSettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
+    /**
+     * This fragment shows the launcher preferences.
+     */
+    public static class LauncherSettingsFragment extends BaseFragment {
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
+            addPreferencesFromResource(R.xml.launcher_preferences);
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            getActivity().setTitle(R.string.settings_button_text);
+        }
+    }
+
+    public static class SubSettingsFragment extends BaseFragment implements Preference.OnPreferenceChangeListener {
 
         private static final String TITLE = "title";
         private static final String CONTENT_RES_ID = "content_res_id";
