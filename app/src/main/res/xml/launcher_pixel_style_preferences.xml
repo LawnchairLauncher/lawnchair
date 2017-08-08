@@ -80,6 +80,7 @@
         <ch.deletescape.lawnchair.preferences.ApiKeyPreference
             android:dependency="pref_weather"
             android:key="pref_weatherApiKey"
+            android:defaultValue="17a6438b1d63d5b05f7039e7cb52cde7"
             android:title="@string/pref_weather_api_key_title" />
 
         <ListPreference
