@@ -402,4 +402,8 @@
   <string name="icon_shape_circle">Rund</string>
   <string name="icon_shape_teardrop">Tränenform</string>
   <string name="animated_clock_icon_title">Animiertes Uhren Icon</string>
+  <string name="about_summary_title">Übersicht</string>
+  <string name="about_version">Version</string>
+  <string name="about_icon_designer">App-Icon Designer</string>
+  <string name="about_contributors_title">Mitwirkende</string>
 </resources>
