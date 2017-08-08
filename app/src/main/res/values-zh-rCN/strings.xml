@@ -401,4 +401,8 @@
   <string name="icon_shape_circle">圆形</string>
   <string name="icon_shape_teardrop">泪珠形</string>
   <string name="animated_clock_icon_title">动态时钟图标</string>
+  <string name="about_summary_title">概述</string>
+  <string name="about_version">版本</string>
+  <string name="about_icon_designer">图标设计者</string>
+  <string name="about_contributors_title">贡献者</string>
 </resources>
