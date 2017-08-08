@@ -395,4 +395,12 @@
   <string name="enable_editing_pref_title">Włącz obszar roboczy edycji</string>
   <string name="pref_weather_provider">Dostawca pogody</string>
   <string name="loading">Ładowanie...</string>
+  <string name="icon_shape_override_label">Zmień kształt ikony</string>
+  <string name="icon_shape_system_default">Nie zmieniaj</string>
+  <string name="icon_shape_square">Kwadrat</string>
+  <string name="icon_shape_rounded_square">Zaokrąglony kwadrat</string>
+  <string name="icon_shape_squircle">Squircle</string>
+  <string name="icon_shape_circle">Okrąg</string>
+  <string name="icon_shape_teardrop">Łza</string>
+  <string name="animated_clock_icon_title">Animowana ikona zegara</string>
 </resources>
