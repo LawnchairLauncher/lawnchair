@@ -403,4 +403,8 @@
   <string name="icon_shape_circle">Круглая</string>
   <string name="icon_shape_teardrop">Капля слезы</string>
   <string name="animated_clock_icon_title">Анимированный значок часов</string>
+  <string name="about_summary_title">Описание</string>
+  <string name="about_version">Версия</string>
+  <string name="about_icon_designer">Дизайнер значка приложения</string>
+  <string name="about_contributors_title">Участники</string>
 </resources>
