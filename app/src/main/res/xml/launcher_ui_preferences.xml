@@ -141,6 +141,29 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:key="prefCat_drawer"
+        android:title="@string/pref_cat_drawer">
+        <ListPreference
+            android:key="pref_numColsDrawer"
+            android:title="@string/num_cols_drawer_pref_title"
+            android:entries="@array/numColsTexts"
+            android:entryValues="@array/numColsValues"
+            android:defaultValue="@string/generalDefault"
+            android:summary="%s"
+            android:persistent="true" />
+
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_allAppsOpacitySB"
+            android:title="@string/all_apps_opacity_pref_title"
+            app:minValue="0"
+            app:maxValue="1"
+            app:defaultValue="1"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100"
+            android:persistent="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:key="prefCat_theme"
         android:title="@string/pref_cat_theme">
         <SwitchPreference
@@ -186,16 +209,6 @@
             app:maxValue="150"
             app:defaultValue="75"
             app:summaryFormat="%.0f"
-            android:persistent="true" />
-
-        <ch.deletescape.lawnchair.preferences.SeekbarPreference
-            android:key="pref_allAppsOpacitySB"
-            android:title="@string/all_apps_opacity_pref_title"
-            app:minValue="0"
-            app:maxValue="1"
-            app:defaultValue="1"
-            app:summaryFormat="%.0f%%"
-            app:summaryMultiplier="100"
             android:persistent="true" />
     </PreferenceCategory>
 </PreferenceScreen>

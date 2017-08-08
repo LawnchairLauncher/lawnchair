@@ -476,4 +476,6 @@
     <string name="about_icon_designer">App Icon Designer</string>
     <string name="about_contributors_title">Contributors</string>
     <string name="location_permission_warn">Location permission is required to switch to another provider!</string>
+    <string name="num_cols_drawer_pref_title">Number of columns in drawer</string>
+    <string name="pref_cat_drawer">Drawer</string>
 </resources>

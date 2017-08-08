@@ -21,6 +21,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private static final String KEY_PREF_ALL_APPS_OPACITY = "pref_allAppsOpacitySB";
     private static final String KEY_PREF_SHOW_HIDDEN_APPS = "pref_showHidden";
     private static final String KEY_PREF_NUM_COLS = "pref_numCols";
+    private static final String KEY_PREF_NUM_COLS_DRAWER = "pref_numColsDrawer";
     private static final String KEY_PREF_NUM_ROWS = "pref_numRows";
     private static final String KEY_PREF_NUM_HOTSEAT_ICONS = "pref_numHotseatIcons";
     private static final String KEY_PREF_ICON_SCALE = "pref_iconScaleSB";
@@ -98,6 +99,8 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case KEY_PREF_SHOW_HIDDEN_APPS:
                     las.reloadAllApps();
                     break;
+
+                case KEY_PREF_NUM_COLS_DRAWER:
                 case KEY_PREF_NUM_COLS:
                 case KEY_PREF_NUM_ROWS:
                     las.getInvariantDeviceProfile().customizationHook(mLauncher);

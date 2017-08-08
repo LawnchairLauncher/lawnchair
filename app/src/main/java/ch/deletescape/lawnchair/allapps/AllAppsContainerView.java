@@ -315,8 +315,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mContentBounds.set(mContainerPaddingLeft, 0, widthPx - mContainerPaddingRight, heightPx);
 
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        if (mNumAppsPerRow != grid.inv.numColumns) {
-            mNumAppsPerRow = grid.inv.numColumns;
+        if (mNumAppsPerRow != grid.inv.numColumnsDrawer) {
+            mNumAppsPerRow = grid.inv.numColumnsDrawer;
 
             mAppsRecyclerView.setNumAppsPerRow(grid, mNumAppsPerRow);
             mAdapter.setNumAppsPerRow(mNumAppsPerRow);

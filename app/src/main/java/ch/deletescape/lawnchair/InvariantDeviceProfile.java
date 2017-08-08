@@ -61,6 +61,8 @@ public class InvariantDeviceProfile {
     public int numRows;
     public int numColumns;
 
+    public int numColumnsDrawer;
+
     /**
      * Number of icons per row and column in the folder.
      */
@@ -88,19 +90,20 @@ public class InvariantDeviceProfile {
     }
 
     public InvariantDeviceProfile(Context context, InvariantDeviceProfile p) {
-        this(context, p.name, p.minWidthDps, p.minHeightDps, p.numRows, p.numColumns,
+        this(context, p.name, p.minWidthDps, p.minHeightDps, p.numRows, p.numColumns, p.numColumnsDrawer,
                 p.numFolderRows, p.numFolderColumns,
                 p.iconSize, p.iconTextSize, p.numHotseatIcons, p.hotseatIconSize,
                 p.defaultLayoutId);
     }
 
-    InvariantDeviceProfile(Context context, String n, float w, float h, int r, int c, int fr, int fc,
+    InvariantDeviceProfile(Context context, String n, float w, float h, int r, int c, int cd, int fr, int fc,
                            float is, float its, int hs, float his, int dlId) {
         name = n;
         minWidthDps = w;
         minHeightDps = h;
         numRows = r;
         numColumns = c;
+        numColumnsDrawer = cd;
         numFolderRows = fr;
         numFolderColumns = fc;
         iconSize = is;
@@ -133,6 +136,7 @@ public class InvariantDeviceProfile {
         InvariantDeviceProfile closestProfile = closestProfiles.get(0);
         numRows = closestProfile.numRows;
         numColumns = closestProfile.numColumns;
+        numColumnsDrawer = closestProfile.numColumns;
         numHotseatIcons = closestProfile.numHotseatIcons;
         defaultLayoutId = closestProfile.defaultLayoutId;
         numFolderRows = closestProfile.numFolderRows;
@@ -182,6 +186,9 @@ public class InvariantDeviceProfile {
         }
         if (!prefs.getString("pref_numCols", valueDefault).equals(valueDefault)) {
             numColumns = Integer.valueOf(prefs.getString("pref_numCols", ""));
+        }
+        if (!prefs.getString("pref_numColsDrawer", valueDefault).equals(valueDefault)) {
+            numColumnsDrawer = Integer.valueOf(prefs.getString("pref_numColsDrawer", ""));
         }
         if (!prefs.getString("pref_numHotseatIcons", valueDefault).equals(valueDefault)) {
             numHotseatIcons = Integer.valueOf(prefs.getString("pref_numHotseatIcons", ""));
