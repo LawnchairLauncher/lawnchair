@@ -41,7 +41,7 @@ public class WeatherHelper implements SharedPreferences.OnSharedPreferenceChange
         SharedPreferences prefs = Utilities.getPrefs(context);
         prefs.registerOnSharedPreferenceChangeListener(this);
         mApi = WeatherAPI.Companion.create(context,
-                Integer.parseInt(prefs.getString("pref_weatherProvider", "0")));
+                Integer.parseInt(prefs.getString("pref_weatherProvider", "1")));
         mApi.setWeatherCallback(this);
         setCity(prefs.getString(KEY_CITY, "Lucerne, CH"));
         setUnits(prefs.getString(KEY_UNITS, "metric"));

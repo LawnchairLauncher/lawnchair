@@ -69,6 +69,7 @@
             android:dependency="pref_weather"
             android:entries="@array/unitsTexts" />
 
+
         <ch.deletescape.lawnchair.preferences.CustomLocationPreference
             android:dependency="pref_weather"
             android:key="pref_weather_city"
@@ -76,11 +77,16 @@
             android:title="@string/pref_weather_city_title"
             android:summary="@string/pref_weather_city_summary" />
 
+        <ch.deletescape.lawnchair.preferences.ApiKeyPreference
+            android:dependency="pref_weather"
+            android:key="pref_weatherApiKey"
+            android:title="@string/pref_weather_api_key_title" />
+
         <ListPreference
             android:key="pref_weatherProvider"
             android:title="@string/pref_weather_provider"
             android:entryValues="@array/weatherProviderValues"
-            android:defaultValue="0"
+            android:defaultValue="1"
             android:summary="%s"
             android:dependency="pref_weather"
             android:enabled="false"

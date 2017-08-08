@@ -480,4 +480,7 @@
     <string name="pref_cat_drawer">Drawer</string>
     <string name="shortcut_backport_warning">This could be slow, use at your own risk</string>
     <string name="pref_backport_shortcuts">Backport shortcuts</string>
+    <string name="weather_api_key_set">API key set</string>
+    <string name="weather_api_key_not_set">API key not set</string>
+    <string name="pref_weather_api_key_title">API key</string>
 </resources>

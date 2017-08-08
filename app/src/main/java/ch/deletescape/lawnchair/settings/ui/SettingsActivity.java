@@ -21,6 +21,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -179,13 +180,12 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
             addPreferencesFromResource(getContent());
             if (getContent() == R.xml.launcher_pixel_style_preferences) {
+                Preference prefWeatherEnabled = findPreference("pref_weather");
+                prefWeatherEnabled.setOnPreferenceChangeListener(this);
                 Preference prefWeatherProvider = findPreference("pref_weatherProvider");
                 prefWeatherProvider.setEnabled(BuildConfig.AWARENESS_API_ENABLED);
                 prefWeatherProvider.setOnPreferenceChangeListener(this);
-                String city = sharedPrefs.getString("pref_weather_city", "Lucerne, CH");
-                Preference prefWeatherCity = findPreference("pref_weather_city");
-                prefWeatherCity.setSummary(!TextUtils.isEmpty(city) ? city : getString(R.string.pref_weather_city_summary));
-                prefWeatherCity.setEnabled(!Utilities.isAwarenessApiEnabled(getActivity()));
+                updateEnabledState(Utilities.getPrefs(getActivity()).getString("pref_weatherProvider", "1"));
                 Preference overrideShapePreference = findPreference("pref_override_icon_shape");
                 if (IconShapeOverride.Companion.isSupported(getActivity())) {
                     IconShapeOverride.Companion.handlePreferenceUi((ListPreference) overrideShapePreference);
@@ -202,12 +202,26 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
             }
         }
 
+        private void updateEnabledState(String weatherProvider) {
+            boolean awarenessApiEnabled = weatherProvider.equals("1");
+            Preference prefWeatherCity = findPreference("pref_weather_city");
+            Preference prefWeatherApiKey = findPreference("pref_weatherApiKey");
+            prefWeatherCity.setEnabled(!awarenessApiEnabled);
+            prefWeatherApiKey.setEnabled(!awarenessApiEnabled);
+        }
+
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             if (preference.getKey() != null) {
                 switch (preference.getKey()) {
                     case "pref_weatherProvider":
-                        getPreferenceScreen().findPreference("pref_weather_city").setEnabled(Integer.valueOf(newValue.toString()) == 0);
+                        updateEnabledState((String) newValue);
+                        break;
+                    case "pref_weather":
+                        Context context = getActivity();
+                        if (FeatureFlags.INSTANCE.showWeather(context) && Utilities.isAwarenessApiEnabled(context)) {
+                            checkPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+                        }
                         break;
                 }
                 return true;

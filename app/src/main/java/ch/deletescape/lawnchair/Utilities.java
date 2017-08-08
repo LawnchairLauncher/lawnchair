@@ -996,7 +996,7 @@ public final class Utilities {
 
     public static boolean isAwarenessApiEnabled(Context context) {
         SharedPreferences prefs = getPrefs(context);
-        return "1".equals(prefs.getString("pref_weatherProvider", "0"));
+        return "1".equals(prefs.getString("pref_weatherProvider", "1"));
     }
 
     public static <T> List<T> emptyList() {
