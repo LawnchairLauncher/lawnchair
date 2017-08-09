@@ -403,4 +403,12 @@
   <string name="icon_shape_circle">Okrąg</string>
   <string name="icon_shape_teardrop">Łza</string>
   <string name="animated_clock_icon_title">Animowana ikona zegara</string>
+  <string name="about_summary_title">Podsumowanie</string>
+  <string name="about_version">Wersja</string>
+  <string name="about_icon_designer">Projekt ikony aplikacji</string>
+  <string name="about_contributors_title">Współtwórcy</string>
+  <string name="location_permission_warn">Aby zmienić dostawcę pogodowego wymagane jest uprawienie do lokalizacji!</string>
+  <string name="num_cols_drawer_pref_title">Liczba kolumn w szufladzie</string>
+  <string name="pref_cat_drawer">Szuflada</string>
+  <string name="shortcut_backport_warning">To może spowolnić urządzenie, używaj na własne ryzyko</string>
 </resources>
