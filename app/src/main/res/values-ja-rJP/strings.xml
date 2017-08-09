@@ -244,7 +244,9 @@
   <string name="widgets_bottom_sheet_title">%1$s ウィジェット</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair はTill Kottmann（ deletescape としても知られています）によって作成されたランチャーアプリです。それは AOSP の Launcher3 に基づいて出来ています。</string>
+  <string name="about_title">Lawnchair について</string>
   <string name="changelog_title">ビルド #%d のための変更履歴</string>
+  <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">アイコンパック</string>
   <string name="icon_pack_preference_summary">アイコンパックを選択</string>
   <string name="hotseat_uses_extracted_colors_pref_title">ドックは壁紙の色を使用します</string>
@@ -269,6 +271,7 @@
   <string name="full_width_widgets_pref_summary">ウィジェットがパディングなしで幅全体にまたがることを許可する</string>
   <string name="notification_access_pref_title">通知バッジとプレビュー</string>
   <string name="notification_access_pref_summary">Lawnchairにこの機能を有効にするための通知にアクセスさせる</string>
+  <string name="ui_pref_title">UI</string>
   <string name="pixel_style_pref_title">Pixel スタイル</string>
   <string name="behavior_pref_title">動作</string>
   <string name="debug_pref_title">デバッグ</string>
@@ -348,6 +351,7 @@
   <string name="blue_grey">ブルーグレー</string>
   <string name="default_text">デフォルト</string>
   <string name="edit_icon_reset">リセット</string>
+  <string name="show_top_shadow_title">上部にシャドウを表示する</string>
   <string name="pref_cat_homescreen">ホーム画面</string>
   <string name="pref_cat_miscellaneous">その他</string>
   <string name="pref_cat_hotseat">ドック</string>
@@ -383,7 +387,22 @@
   <string name="pref_applyBlur">ぼかしの適用範囲</string>
   <string name="search_bar">検索バー</string>
   <string name="folder">フォルダ</string>
+  <string name="dock_allapps"><![CDATA[ドックとドロワー]]></string>
+  <string name="app_shortcuts">アプリ ショートカット</string>
   <string name="blur_effect">ぼかし効果</string>
+  <string name="enable_editing_pref_title">ホーム画面の編集を有効にする</string>
   <string name="pref_weather_provider">天気プロバイダ</string>
   <string name="loading">読み込んでいます...</string>
+  <string name="icon_shape_override_label">アイコンの形を変更</string>
+  <string name="icon_shape_system_default">変更しない</string>
+  <string name="animated_clock_icon_title">時計アイコンのアニメーション</string>
+  <string name="about_summary_title">概要</string>
+  <string name="about_version">バージョン</string>
+  <string name="about_icon_designer">アイコンデザイナー</string>
+  <string name="about_contributors_title">貢献者</string>
+  <string name="location_permission_warn">位置情報のアクセス許可は、別のプロバイダに切り替える為に必要です！</string>
+  <string name="num_cols_drawer_pref_title">ドロワーの列数</string>
+  <string name="pref_cat_drawer">ドロワー</string>
+  <string name="shortcut_backport_warning">動作が遅くなる可能性があります。自己責任で使用してください。</string>
+  <string name="about_changelog">変更履歴</string>
 </resources>
