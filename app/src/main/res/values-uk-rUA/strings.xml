@@ -139,9 +139,11 @@
   <!-- Accessibility description to move item inside a folder. -->
   <!-- Accessibility description to move item to the hotseat. -->
   <!-- Accessibility confirmation for item move. -->
+  <string name="item_moved">Елемент переміщено</string>
   <!-- Accessibility description to move item into an existing folder. -->
   <!-- Accessibility description to move item into an existing folder containing an app. -->
   <!-- Accessibility confirmation for item added to folder. -->
+  <string name="added_to_folder">Товар додано до папки</string>
   <!-- Accessibility description to create folder with another item. -->
   <!-- Accessibility confirmation for folder created. -->
   <string name="folder_created">Папку створено</string>
@@ -211,9 +213,14 @@
   <!-- About Lawnchair -->
   <string name="about_title">Про додаток</string>
   <string name="changelog_title">Зміни в додатку #%d</string>
+  <string name="transparent_hotseat_pref_title">Прозорий док-бар</string>
+  <string name="blur_pref_title">Увімкнути розмиття</string>
   <string name="blur_radius_pref_title">Радіус розмиття</string>
   <string name="haptic_feedback_pref_title">Увімкнути вібрацію</string>
+  <string name="test_title">Тест</string>
+  <string name="visibility">Видимість</string>
   <!-- Customization Color -->
+  <string name="white">Білий</string>
   <!-- Customization Color -->
   <string name="black">Чорний</string>
   <!-- Customization Color -->
@@ -221,7 +228,9 @@
   <!-- Customization Color -->
   <string name="pink">Рожевий</string>
   <!-- Customization Color -->
+  <string name="purple">Пурпуровий</string>
   <!-- Customization Color -->
+  <string name="deep_purple">Багряний</string>
   <!-- Customization Color -->
   <!-- Customization Color -->
   <!-- Customization Color -->
