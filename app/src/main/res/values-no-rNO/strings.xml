@@ -402,4 +402,13 @@
   <string name="icon_shape_circle">Sirkel</string>
   <string name="icon_shape_teardrop">Dråpe</string>
   <string name="animated_clock_icon_title">Animert klokke-ikon</string>
+  <string name="about_summary_title">Sammendrag</string>
+  <string name="about_version">Versjon</string>
+  <string name="about_icon_designer">App-ikon-designer</string>
+  <string name="about_contributors_title">Bidragsytere</string>
+  <string name="location_permission_warn">Posisjonstillatelse er nødvendig for å kunne bytte til en annen leverandør!</string>
+  <string name="num_cols_drawer_pref_title">Antall kolonner i skuff</string>
+  <string name="pref_cat_drawer">Skuff</string>
+  <string name="shortcut_backport_warning">Dette kan gå tregt, bruk på eget ansvar</string>
+  <string name="pref_backport_shortcuts">Backport-snarveier</string>
 </resources>
