@@ -643,7 +643,8 @@ public class Workspace extends PagedView
         newScreen.setSoundEffectsEnabled(false);
 
         int paddingLeftRight = mLauncher.getDeviceProfile().cellLayoutPaddingLeftRightPx;
-        newScreen.setPadding(paddingLeftRight, 0, paddingLeftRight, 0);
+        int paddingBottom = mLauncher.getDeviceProfile().cellLayoutBottomPaddingPx;
+        newScreen.setPadding(paddingLeftRight, 0, paddingLeftRight, paddingBottom);
 
         mWorkspaceScreens.put(screenId, newScreen);
         mScreenOrder.add(insertIndex, screenId);
