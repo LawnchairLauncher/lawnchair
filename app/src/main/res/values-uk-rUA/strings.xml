@@ -51,6 +51,7 @@
   <string name="all_apps_search_market_message">Пошук інших додатків</string>
   <!-- Drag and drop -->
   <!-- Error message when user has filled a page -->
+  <string name="out_of_space">На цьому головному екрані більше немає місця.</string>
   <!-- Error message when user has filled the hotseat -->
   <!-- All applications label -->
   <string name="all_apps_button_label">Перелік додатків</string>
@@ -67,6 +68,7 @@
   <!-- Permission short label -->
   <string name="permlab_install_shortcut">встановити ярлики</string>
   <!-- Permission description -->
+  <string name="permdesc_install_shortcut">Дозволяє програмі самостійно додавати ярлики.</string>
   <!-- Permission short label -->
   <!-- Permission description -->
   <!-- Permission short label -->
@@ -74,6 +76,7 @@
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <!-- Widgets: -->
   <!-- Text to show user in place of a gadget when we can't display it properly -->
+  <string name="gadget_error_text">Проблема з завантаженням віджета</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
   <string name="gadget_setup_text">Установка</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
@@ -83,6 +86,7 @@
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
+  <string name="default_scroll_format">Сторінка %1$d з %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">Домашній екран %1$d з %2$d</string>
   <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
@@ -173,20 +177,42 @@
   <string name="wallpaper_load_fail">Не вдалося завантажити зображення як фоновий малюнок</string>
   <!-- Error message when an image is selected as a wallpaper,
          but something goes wrong when the user clicks "Set wallpaper" -->
+  <string name="wallpaper_set_fail">Не вдалося зробити зображення фоновим малюнком</string>
   <!-- Shown when wallpapers are selected in Wallpaper picker -->
   <!-- String indicating how many media item(s) is(are) selected
             eg. 1 selected [CHAR LIMIT=30] -->
+  <plurals name="number_of_items_selected">
+    <item quantity="one">Обрано: %1$d</item>
+    <item quantity="few">Обрано: %1$d</item>
+    <item quantity="other">Обрано: %1$d</item>
+  </plurals>
   <!-- Accessibility string used as a label for a particular wallpaper in the Wallpaper Picker list.
          e.g. "Wallpaper 3 of 10" -->
+  <string name="wallpaper_accessibility_name">Фоновий малюнок %1$d з %2$d</string>
   <!-- Accessibility string used to announce that a wallpaper has been selected. -->
+  <string name="announce_selection">Вибрано <xliff:g example="Wallpaper 3 of 10" id="label">%1$s </xliff:g></string>
   <!-- Label on button to delete wallpaper(s) -->
+  <string name="wallpaper_delete">Видалити</string>
   <!-- Label on button in Wallpaper Picker to pick an image -->
   <!-- Option in "Select wallpaper from" dialog box -->
+  <string name="pick_wallpaper">Фонові малюнки</string>
   <!-- Title of activity for cropping wallpapers -->
+  <string name="crop_wallpaper">Обрізати фоновий малюнок</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
+  <string name="which_wallpaper_option_home_screen">Головний екран</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
+  <string name="which_wallpaper_option_lock_screen">Екран блокування</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">Головний екран та екран блокування</string>
+  <string name="title_show_google_app">Показати %1$s</string>
+  <string name="label_search">Пошук</string>
+  <string name="label_voice_search">Голосовий пошук</string>
+  <string name="notifications_header">Сповіщення</string>
   <!-- About Lawnchair -->
+  <string name="about_title">Про додаток</string>
+  <string name="changelog_title">Зміни в додатку #%d</string>
+  <string name="blur_radius_pref_title">Радіус розмиття</string>
+  <string name="haptic_feedback_pref_title">Увімкнути вібрацію</string>
   <!-- Customization Color -->
   <!-- Customization Color -->
   <!-- Customization Color -->
