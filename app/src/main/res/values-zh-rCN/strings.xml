@@ -24,20 +24,20 @@
   <!-- Work folder name -->
   <string name="work_folder_name">工作文件夹</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
-  <string name="activity_not_found">未安装该应用。</string>
+  <string name="activity_not_found">应用未安装。</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">应用不可用</string>
   <!-- SafeMode shortcut error string -->
   <string name="safemode_shortcut_error">第三方应用在安全模式下被停用</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">安全模式下不允许使用小部件</string>
+  <string name="safemode_widget_error">安全模式下不允许使用微件</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">无法使用快捷方式</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">触摸并按住微件即可选择。</string>
+  <string name="long_press_widget_to_add">触摸并按住小部件即可选择。</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-  <string name="long_accessible_way_to_add">双击并长按即可选择微件或使用自定义操作。</string>
+  <string name="long_accessible_way_to_add">双击并长按即可选择小部件或使用自定义操作。</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
@@ -84,7 +84,7 @@
   <string name="msg_no_phone_permission">不允许使用“<xliff:g id="APP_NAME">%1$s</xliff:g>”拨打电话</string>
   <!-- Widgets: -->
   <!-- Text to show user in place of a gadget when we can't display it properly -->
-  <string name="gadget_error_text">加载微件时出现问题</string>
+  <string name="gadget_error_text">加载小部件时出现问题</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
   <string name="gadget_setup_text">设置</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
@@ -115,7 +115,7 @@
   <string name="folder_name_format">文件夹：<xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Strings for the customization mode -->
   <!-- Text for widget add button -->
-  <string name="widget_button_text">微件</string>
+  <string name="widget_button_text">小部件</string>
   <!-- Text for wallpaper change button -->
   <string name="wallpaper_button_text">壁纸</string>
   <!-- Text for settings button -->
@@ -191,7 +191,7 @@
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
   <string name="action_decrease_height">降低高度</string>
   <!-- Accessibility confirmation for widget resize. -->
-  <string name="widget_resized">微件尺寸已调整为：宽度 <xliff:g id="NUMBER_0">%1$s</xliff:g>，高度 <xliff:g id="NUMBER_1">%2$s</xliff:g></string>
+  <string name="widget_resized">小部件尺寸已调整为：宽度 <xliff:g id="NUMBER_0">%1$s</xliff:g>，高度 <xliff:g id="NUMBER_1">%2$s</xliff:g></string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
   <string name="action_deep_shortcut">快捷方式</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
@@ -241,7 +241,7 @@
   <string name="label_voice_search">语音搜索</string>
   <string name="shortcuts_menu_with_notifications_description">%3$s 有 %1$d 个快捷方式和 %2$d 个通知</string>
   <string name="notifications_header">通知</string>
-  <string name="widgets_bottom_sheet_title">%1$s 微件</string>
+  <string name="widgets_bottom_sheet_title">%1$s 小部件</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair 是 Till Kottmann（又名deletescape）基于 AOSP 的 Launcher3 所开发的启动器应用程序。</string>
   <string name="about_title">关于</string>
@@ -267,8 +267,8 @@
   <string name="num_hotseat_icons_pref_title">Dock 栏图标数</string>
   <string name="icon_scale_pref_title">图标大小</string>
   <string name="icon_text_scale_pref_title">图标标签大小</string>
-  <string name="full_width_width_widgets_pref_title">全宽微件</string>
-  <string name="full_width_widgets_pref_summary">允许微件填充整个桌面宽度</string>
+  <string name="full_width_width_widgets_pref_title">全宽小部件</string>
+  <string name="full_width_widgets_pref_summary">允许小部件填充整个桌面宽度</string>
   <string name="notification_access_pref_title">通知角标与预览</string>
   <string name="notification_access_pref_summary">允许 Lawnchair 访问您的通知以启用此功能</string>
   <string name="ui_pref_title">界面</string>
@@ -354,7 +354,7 @@
   <string name="show_top_shadow_title">显示顶部阴影</string>
   <string name="pref_cat_homescreen">主屏幕</string>
   <string name="pref_cat_miscellaneous">其它</string>
-  <string name="pref_cat_hotseat">Dock栏</string>
+  <string name="pref_cat_hotseat">Dock 栏</string>
   <string name="pref_cat_theme">主题</string>
   <string name="theme_pref_title">主题</string>
   <string name="theme_light">亮色主题</string>
@@ -381,7 +381,7 @@
   <string name="pref_weather_title">启用天气</string>
   <string name="pref_weather_units">天气单位</string>
   <string name="pref_weather_city_summary">为了获得最佳结果，请输入国家/地区代码</string>
-  <string name="pref_weather_city_title">城市</string>
+  <string name="pref_weather_city_title">地区</string>
   <string name="none">无</string>
   <string name="pref_applyTheme">应用主题至</string>
   <string name="pref_applyBlur">应用模糊效果</string>
@@ -405,4 +405,9 @@
   <string name="about_version">版本</string>
   <string name="about_icon_designer">图标设计者</string>
   <string name="about_contributors_title">贡献者</string>
+  <string name="location_permission_warn">切换到另一个提供商需要获得位置权限 ！😇</string>
+  <string name="num_cols_drawer_pref_title">抽屉中的网格列数</string>
+  <string name="pref_cat_drawer">抽屉</string>
+  <string name="shortcut_backport_warning">该功能可能引起桌面性能下降，请自行承担后果。😶</string>
+  <string name="pref_backport_shortcuts">导入快捷方式</string>
 </resources>
