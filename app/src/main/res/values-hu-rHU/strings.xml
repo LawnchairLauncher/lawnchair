@@ -402,4 +402,13 @@
   <string name="icon_shape_circle">Kör</string>
   <string name="icon_shape_teardrop">Könnycsepp</string>
   <string name="animated_clock_icon_title">Animált óra ikon</string>
+  <string name="about_summary_title">Összegzés</string>
+  <string name="about_version">Verzió</string>
+  <string name="about_icon_designer">Alkalmazásikon tervező</string>
+  <string name="about_contributors_title">Közreműködők</string>
+  <string name="location_permission_warn">Tartózkodási hely hozzáférés szükséges másik kiszolgálóra váltáshoz!</string>
+  <string name="num_cols_drawer_pref_title">Oszlopok száma az alkalmazásfiókban</string>
+  <string name="pref_cat_drawer">Alkalmazásfiók</string>
+  <string name="shortcut_backport_warning">Ez lassú lehet, csak saját felelősségére használja</string>
+  <string name="pref_backport_shortcuts">Alkalmazás parancsikonok</string>
 </resources>
