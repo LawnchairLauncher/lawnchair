@@ -48,6 +48,9 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private static final String KEY_PREF_WEATHER = "pref_weather";
     private static final String KEY_PREF_ENABLE_EDITING = "pref_enableEditing";
     private static final String KEY_PREF_ANIMATED_CLOCK_ICON = "pref_animatedClockIcon";
+    private static final String KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR = "pref_allAppsCustomLabelColor";
+    private static final String KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR_HUE = "pref_allAppsCustomLabelColorHue";
+    private static final String KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR_VARITATION = "pref_allAppsCustomLabelColorVariation";
     private static Settings instance;
     private Launcher mLauncher;
 
@@ -136,6 +139,9 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case KEY_PREF_ROUND_SEARCH_BAR:
                 case KEY_SHOW_PIXEL_BAR:
                 case KEY_PREF_HIDE_HOTSEAT:
+                case KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR:
+                case KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR_HUE:
+                case KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR_VARITATION:
                     mLauncher.scheduleRecreate();
                     break;
                 case KEY_PREF_ICON_SCALE:
