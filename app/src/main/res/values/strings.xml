@@ -483,4 +483,5 @@
     <string name="weather_api_key_set">API key set</string>
     <string name="weather_api_key_not_set">API key not set</string>
     <string name="pref_weather_api_key_title">API key</string>
+    <string name="about_changelog">Changelog</string>
 </resources>

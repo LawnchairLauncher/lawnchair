@@ -964,7 +964,7 @@ public final class Utilities {
     }
 
     @NonNull
-    private static String getChangelog() {
+    public static String getChangelog() {
         StringBuilder builder = new StringBuilder();
         String[] lines = BuildConfig.CHANGELOG.split("\n");
         for (String line : lines) {
