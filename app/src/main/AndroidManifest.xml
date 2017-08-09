@@ -105,6 +105,16 @@
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".kustomsupport.AutoFinishTransparentActivity"
+            android:theme="@style/Theme.Transparent" />
+
+        <provider
+            android:authorities="ch.deletescape.lawnchair.kustomsupport.kustom5secsprovider"
+            android:name=".kustomsupport.Kustom5SecsProvider"
+            android:exported="true"
+            android:grantUriPermissions="true" />
+
 
         <provider
             android:name=".LauncherProvider"
