@@ -394,4 +394,21 @@
   <string name="enable_editing_pref_title">Aanpassen van werkomgeving activeren</string>
   <string name="pref_weather_provider">Weer aanbieder</string>
   <string name="loading">Laden...</string>
+  <string name="icon_shape_override_label">Wijzig vorm icoon</string>
+  <string name="icon_shape_system_default">Niet wijzigen</string>
+  <string name="icon_shape_square">Vierkant</string>
+  <string name="icon_shape_rounded_square">Afgerond vierkant</string>
+  <string name="icon_shape_squircle">Vierkantcirkel</string>
+  <string name="icon_shape_circle">Cirkel</string>
+  <string name="icon_shape_teardrop">Druppel</string>
+  <string name="animated_clock_icon_title">Geanimeerd klok icoon</string>
+  <string name="about_summary_title">Samenvatting</string>
+  <string name="about_version">Versie</string>
+  <string name="about_icon_designer">App Icoon Designer</string>
+  <string name="about_contributors_title">Bijdragers</string>
+  <string name="location_permission_warn">Locatie toestemming is vereist om naar een andere provider over te schakelen!</string>
+  <string name="num_cols_drawer_pref_title">Aantal kolommen in de app lade</string>
+  <string name="pref_cat_drawer">Lade</string>
+  <string name="shortcut_backport_warning">Dit kan traag zijn, gebruiken op eigen risico</string>
+  <string name="pref_backport_shortcuts">Backport snelkoppelingen</string>
 </resources>
