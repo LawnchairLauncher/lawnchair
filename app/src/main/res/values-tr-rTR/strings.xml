@@ -394,4 +394,21 @@
   <string name="enable_editing_pref_title">Düzenleme çalışma alanını etkinleştir</string>
   <string name="pref_weather_provider">Hava durumu sağlayıcı</string>
   <string name="loading">Yükleniyor...</string>
+  <string name="icon_shape_override_label">Simge şeklini değiştir</string>
+  <string name="icon_shape_system_default">Değiştirme</string>
+  <string name="icon_shape_square">Kare</string>
+  <string name="icon_shape_rounded_square">Yuvarlatılmış kare</string>
+  <string name="icon_shape_squircle">Yuvarlatılmış köşeler</string>
+  <string name="icon_shape_circle">Daire</string>
+  <string name="icon_shape_teardrop">Gözyaşı</string>
+  <string name="animated_clock_icon_title">Hareketli saat simgesi</string>
+  <string name="about_summary_title">Özet</string>
+  <string name="about_version">Sürüm</string>
+  <string name="about_icon_designer">Uygulama Simgesi Tasarımcısı</string>
+  <string name="about_contributors_title">Katkıda Bulunanlar</string>
+  <string name="location_permission_warn">Başka bir sağlayıcıya geçmek için konum izni gerekiyor!</string>
+  <string name="num_cols_drawer_pref_title">Çekmecedeki sütunların sayısı</string>
+  <string name="pref_cat_drawer">Çekmece</string>
+  <string name="shortcut_backport_warning">Bu yavaş olabilir, kendi sorumluluğunuzda kullanın</string>
+  <string name="pref_backport_shortcuts">Kısayolları geri yükle</string>
 </resources>
