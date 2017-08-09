@@ -260,8 +260,8 @@
   <string name="blur_radius_pref_title">Blur grootte</string>
   <string name="white_google_icon_pref_title">Gebruik wit Google icoon</string>
   <string name="hide_icon_labels_pref_title">Verberg icoon labels op startscherm</string>
-  <string name="workspace_label_color_hue_pref_title">Kleur van de icoon labels op startscherm</string>
-  <string name="workspace_label_color_variation_pref_title">Kleurvariatie van de icoon labels op startscherm</string>
+  <string name="workspace_label_color_hue_pref_title">Kleur van icoon labels op startscherm</string>
+  <string name="workspace_label_color_variation_pref_title">Kleurvariatie van icoon labels op startscherm</string>
   <string name="all_apps_opacity_pref_title">Ondoorzichtigheid applicatiescherm</string>
   <string name="num_cols_pref_title">Aantal kolommen</string>
   <string name="num_rows_pref_title">Aantal rijen</string>
@@ -411,4 +411,8 @@
   <string name="pref_cat_drawer">Lade</string>
   <string name="shortcut_backport_warning">Dit kan traag zijn, gebruiken op eigen risico</string>
   <string name="pref_backport_shortcuts">Backport snelkoppelingen</string>
+  <string name="weather_api_key_set">API sleutel ingesteld</string>
+  <string name="weather_api_key_not_set">API sleutel niet ingesteld</string>
+  <string name="pref_weather_api_key_title">API sleutel</string>
+  <string name="about_changelog">Changelog</string>
 </resources>
