@@ -215,8 +215,11 @@
   <string name="haptic_feedback_pref_title">Увімкнути вібрацію</string>
   <!-- Customization Color -->
   <!-- Customization Color -->
+  <string name="black">Чорний</string>
   <!-- Customization Color -->
+  <string name="red">Червоний</string>
   <!-- Customization Color -->
+  <string name="pink">Рожевий</string>
   <!-- Customization Color -->
   <!-- Customization Color -->
   <!-- Customization Color -->
@@ -236,4 +239,18 @@
   <!-- Customization Color -->
   <!-- Import/Export Strings -->
   <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_weather_city_title">Місто</string>
+  <string name="none">НІчого</string>
+  <string name="pref_applyTheme">Застосувати тему до додатка</string>
+  <string name="pref_applyBlur">Застосувати розмиття</string>
+  <string name="folder">Папка</string>
+  <string name="loading">Завантаження...</string>
+  <string name="icon_shape_override_label">Змінити форму значка</string>
+  <string name="icon_shape_system_default">Не змінюйте</string>
+  <string name="icon_shape_square">Квадратний</string>
+  <string name="icon_shape_rounded_square">Округлий квадрат</string>
+  <string name="icon_shape_squircle">Округлий квадрат</string>
+  <string name="icon_shape_circle">Коло</string>
+  <string name="about_version">Версія додатку</string>
+  <string name="pref_cat_drawer">Меню додатків</string>
 </resources>
