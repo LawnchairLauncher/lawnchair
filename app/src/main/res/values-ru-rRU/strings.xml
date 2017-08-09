@@ -412,4 +412,11 @@
   <string name="pref_cat_drawer">Меню приложений</string>
   <string name="shortcut_backport_warning">Это может привести к медленной работе приложения, используйте на свой страх и риск</string>
   <string name="pref_backport_shortcuts">Адаптировать ярлыки</string>
+  <string name="weather_api_key_set">API ключ установлен</string>
+  <string name="weather_api_key_not_set">API ключ не установлен</string>
+  <string name="pref_weather_api_key_title">API ключ</string>
+  <string name="about_changelog">Изменения</string>
+  <string name="pref_all_apps_custom_label_color">Использовать свой цвет подписи</string>
+  <string name="pref_all_apps_label_color_variation">Вариация цвета подписей значков в меню приложений</string>
+  <string name="pref_all_apps_label_color">Цвет подписи значков в меню приложений</string>
 </resources>
