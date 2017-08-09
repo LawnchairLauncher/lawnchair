@@ -261,8 +261,10 @@
   <string name="transparent_hotseat_pref_title">منصة شفافة</string>
   <string name="dynamic_ui_pref_title">استخراج لون مميز من صورة الخلفية</string>
   <string name="blur_pref_title">تفعيل التمويه</string>
+  <string name="blur_pref_summary">تطبيق التمويه على قسم من واجهة النظام\n غير متوافق مع الخلفيات الحية</string>
   <string name="blur_radius_pref_title">نسبة التمويه</string>
   <string name="white_google_icon_pref_title">استخدم رمز جوجل باللون الأبيض</string>
+  <string name="hide_icon_labels_pref_title">إخفاء تسميات الأيقونات في الشاشة الرئيسية</string>
   <string name="workspace_label_color_hue_pref_title">لون تسميات الرموز على الشاشة الرئيسية</string>
   <string name="workspace_label_color_variation_pref_title">تباين الألوان لتسميات الرموز على الشاشة الرئيسية</string>
   <string name="all_apps_opacity_pref_title">شفافية قائمة التطبيقات</string>
@@ -291,12 +293,15 @@
   <string name="restart_lawnchair_pref_summary">يمكن أن يكون مفيداً إذا لم يتم تطبيق بعض الإعدادات بشكل صحيح</string>
   <string name="rebuild_icondb_pref_title">إعادة إنشاء قاعدة بيانات الأيقونة</string>
   <string name="pinch_to_overview_pref_title">اقبض بإصبعين لنظرة عامة</string>
+  <string name="pinch_to_overview_pref_summary">اقبض باصعين على الشاشة الرئيسية لفتح النظرة العامة</string>
   <string name="light_statusbar_pref_title">شريط حالة فاتح</string>
+  <string name="light_statusbar_pref_force">شريط المعلومات سيظهر أيقونات داكنة</string>
   <string name="light_statusbar_pref_off">شريط المعلومات سيظهر دائماً الأيقونات بلون فاتح.</string>
   <string name="haptic_feedback_pref_title">تفعيل الإهتزاز</string>
   <string name="keep_scroll_state_pref_title">حفظ موضع التمرير</string>
   <string name="keep_scroll_state_pref_summary">حفظ موضع التمرير في قائمة التطبيقات</string>
   <string name="home_opens_drawer_pref_title">زر الصفحة الرئيسية يفتح قائمة التطبيقات</string>
+  <string name="home_opens_drawer_pref_summary">الضغط على زر الصفحة الرئيسية عند التواجد على الشاشة الرئيسية يقوم بفتح قائمة التطبيقات</string>
   <string name="show_hidden_pref_title">أظهار التطبيقات المخفية</string>
   <string name="show_hidden_pref_on">التطبيقات المخفية سوف تظهر لتغيير إعدادات الوضوح</string>
   <string name="show_hidden_pref_off">التطبيقات المخفية لن تكون مرئية</string>
@@ -351,6 +356,20 @@
   <!-- Customization Color -->
   <string name="blue_grey">أزرق رمادي</string>
   <string name="default_text">الافتراضي</string>
+  <string name="edit_icon_reset">إعادة ضبط</string>
+  <string name="pref_cat_homescreen">الشاشة الرئيسية</string>
+  <string name="pref_cat_miscellaneous">متفرقات</string>
+  <string name="pref_cat_theme">السمة</string>
+  <string name="theme_pref_title">السمة</string>
+  <string name="theme_light">فاتح</string>
+  <string name="theme_dark">داكن</string>
+  <string name="theme_black">أسود</string>
+  <string name="all_icons">كل الأيقونات</string>
+  <string name="pull_down_do_nothing">لا تفعل شيئًا</string>
+  <string name="pull_down_notis">إظهار الإشعارات</string>
+  <string name="pull_down_search">فتح البحث</string>
+  <string name="pull_down_apps_search">البحث عن تطبيقات</string>
+  <string name="enable_screen_rotation">تمكين تدوير الشاشة</string>
   <!-- Import/Export Strings -->
   <!-- Default units to use, either 'metric' or 'imperial' -->
 </resources>
