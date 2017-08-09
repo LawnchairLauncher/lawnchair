@@ -365,7 +365,7 @@ public class DeviceProfile {
         if (isVerticalBarLayout()) {
             hotseatBarSizePx = iconSizePx;
         }
-        hotseatCellHeightPx = iconSizePx + iconDrawablePaddingPx;
+        hotseatCellHeightPx = iconSizePx;
 
         if (!isVerticalBarLayout()) {
             int expectedWorkspaceHeight = availableHeightPx - hotseatBarSizePx
