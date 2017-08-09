@@ -405,4 +405,13 @@
   <string name="icon_shape_circle">Kruh</string>
   <string name="icon_shape_teardrop">Slza</string>
   <string name="animated_clock_icon_title">Ikona animovaných hodin</string>
+  <string name="about_summary_title">Shrnutí</string>
+  <string name="about_version">Verze</string>
+  <string name="about_icon_designer">Návrhář ikon aplikací</string>
+  <string name="about_contributors_title">Přispěvatelé</string>
+  <string name="location_permission_warn">Při přepnutí na jiného poskytovatele je třeba udělit oprávnění k zjišťování polohy!</string>
+  <string name="num_cols_drawer_pref_title">Počet sloupců v zobrazení seznamu aplikací</string>
+  <string name="pref_cat_drawer">Seznam aplikací</string>
+  <string name="shortcut_backport_warning">To by mohlo být pomalé, použijte na vlastní riziko</string>
+  <string name="pref_backport_shortcuts">Zkratky zpětné kompatibility</string>
 </resources>
