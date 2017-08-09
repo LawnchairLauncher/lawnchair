@@ -405,4 +405,9 @@
   <string name="about_version">版本</string>
   <string name="about_icon_designer">應用程式圖示的設計人員</string>
   <string name="about_contributors_title">貢獻者</string>
+  <string name="location_permission_warn">需要位置權限才能切換到其他氣象資料提供</string>
+  <string name="num_cols_drawer_pref_title">應用程式抽屜的列數</string>
+  <string name="pref_cat_drawer">應用程式抽屜</string>
+  <string name="shortcut_backport_warning">該功能有可能會導致桌面性能下降，後果請自行承擔</string>
+  <string name="pref_backport_shortcuts">向前移植的應用程式快捷操作</string>
 </resources>
