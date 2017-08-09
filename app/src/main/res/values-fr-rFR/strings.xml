@@ -256,7 +256,7 @@
   <string name="transparent_hotseat_pref_title">Dock transparent</string>
   <string name="dynamic_ui_pref_title">Extraire couleur accentuation du fond d\'écran</string>
   <string name="blur_pref_title">Activer le flou</string>
-  <string name="blur_pref_summary">Appliquer un effet de flou sur les parties de l\'interface\nNon compatible avec les écrans dynamiques</string>
+  <string name="blur_pref_summary">Appliquer un effet de flou sur des parties de l\'interface\nNon compatible avec les fonds d\'écrans animés</string>
   <string name="blur_radius_pref_title">Rayon du flou</string>
   <string name="white_google_icon_pref_title">Utiliser l\'icône blanche de Google</string>
   <string name="hide_icon_labels_pref_title">Masquer le nom des icônes sur l\'écran d\'accueil</string>
@@ -291,12 +291,12 @@
   <string name="pinch_to_overview_pref_summary">Pincer à 2 doigts sur l\'écran d\'accueil pour ouvrir la vue d\'ensemble</string>
   <string name="light_statusbar_pref_title">Barre d\'état claire</string>
   <string name="light_statusbar_pref_force">La barre d\'état affichera des icônes sombres</string>
-  <string name="light_statusbar_pref_off">La barre d’état affichera toujours des icônes clairs.</string>
+  <string name="light_statusbar_pref_off">La barre d’état affichera toujours des icônes claires</string>
   <string name="haptic_feedback_pref_title">Activer les vibrations</string>
   <string name="keep_scroll_state_pref_title">Enregistrer la position du défilement</string>
   <string name="keep_scroll_state_pref_summary">Enregistre la position du défilement dans le tiroir des applications</string>
   <string name="home_opens_drawer_pref_title">Le bouton Home ouvre le tiroir des applications</string>
-  <string name="home_opens_drawer_pref_summary">Appuyer sur le bouton d\'accueil en étant sur l\'écran d\'accueil ouvrira la liste des applications</string>
+  <string name="home_opens_drawer_pref_summary">Appuyer sur le bouton d\'accueil en étant sur l\'écran d\'accueil ouvrira la tiroir des applications</string>
   <string name="show_hidden_pref_title">Afficher les applications cachées</string>
   <string name="show_hidden_pref_on">Les applications cachées seront affichées pour modifier les paramètres de visibilité</string>
   <string name="show_hidden_pref_off">Les applications cachées ne seront pas visilbles</string>
@@ -373,8 +373,8 @@
   <string name="imexport_success">Réussi !</string>
   <string name="imexport_error">Erreur : Impossible de copier le fichier</string>
   <string name="imexport_no_backup_found">Aucune sauvegarde trouvée</string>
-  <string name="imexport_external_storage_unreadable">Le stockage externe n\'est pas lisible (activer la permissions dans les paramètres)</string>
-  <string name="imexport_external_storage_unwritable">Le stockage externe n\'est pas modifiable (activer la permissions dans les paramètres)</string>
+  <string name="imexport_external_storage_unreadable">Le stockage externe n\'est pas lisible (activer la permission dans les paramètres)</string>
+  <string name="imexport_external_storage_unwritable">Le stockage externe n\'est pas modifiable (activer la permission dans les paramètres)</string>
   <string name="units_metric">Métrique</string>
   <string name="units_imperial">Impérial</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
@@ -394,10 +394,10 @@
   <string name="enable_editing_pref_title">Activer l\'édition de l\'espace de travail</string>
   <string name="pref_weather_provider">Fournisseur météo</string>
   <string name="loading">Chargement...</string>
-  <string name="icon_shape_override_label">Changer la forme des icons</string>
+  <string name="icon_shape_override_label">Changer la forme des icônes</string>
   <string name="icon_shape_system_default">Ne pas changer</string>
-  <string name="icon_shape_square">Carée</string>
-  <string name="icon_shape_rounded_square">Carée arrondi</string>
+  <string name="icon_shape_square">Carré</string>
+  <string name="icon_shape_rounded_square">Carré arrondi</string>
   <string name="icon_shape_squircle">Carrecle</string>
   <string name="icon_shape_circle">Cercle</string>
   <string name="icon_shape_teardrop">Larme</string>
@@ -406,4 +406,9 @@
   <string name="about_version">Version</string>
   <string name="about_icon_designer">Designer des icônes de l\'application</string>
   <string name="about_contributors_title">Donateurs</string>
+  <string name="location_permission_warn">L\'autorisation de position est requise pour passer à un autre fournisseur !</string>
+  <string name="num_cols_drawer_pref_title">Nombre de colonnes dans le tiroir des applications</string>
+  <string name="pref_cat_drawer">Tiroir des applications</string>
+  <string name="shortcut_backport_warning">Cela pourrait être lent, utilisez à vos risques et périls</string>
+  <string name="pref_backport_shortcuts">Rétro-porter les raccourcis</string>
 </resources>
