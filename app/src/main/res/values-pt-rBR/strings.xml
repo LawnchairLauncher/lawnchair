@@ -394,4 +394,21 @@
   <string name="enable_editing_pref_title">Habilitar edição de espaço de trabalho</string>
   <string name="pref_weather_provider">Provedor de previsão do tempo</string>
   <string name="loading">Carregando...</string>
+  <string name="icon_shape_override_label">Alterar o formato dos Icones</string>
+  <string name="icon_shape_system_default">Não mudar</string>
+  <string name="icon_shape_square">Quadrado</string>
+  <string name="icon_shape_rounded_square">Cantos arredondados</string>
+  <string name="icon_shape_squircle">Quadrado redondo</string>
+  <string name="icon_shape_circle">Círculo</string>
+  <string name="icon_shape_teardrop">Lágrima</string>
+  <string name="animated_clock_icon_title">Ícone do relógio animado</string>
+  <string name="about_summary_title">Resumo</string>
+  <string name="about_version">Versão</string>
+  <string name="about_icon_designer">Criador do Ícones</string>
+  <string name="about_contributors_title">Colaboradores</string>
+  <string name="location_permission_warn">Permissão de localização necessária para mudar de provedor!</string>
+  <string name="num_cols_drawer_pref_title">Número de colunas na exibição em grade de aplicativos</string>
+  <string name="pref_cat_drawer">Gaveta de apps</string>
+  <string name="shortcut_backport_warning">Isto pode ser lento, use a seu próprio risco</string>
+  <string name="pref_backport_shortcuts">Retro-compatibilidade de atalhos</string>
 </resources>
