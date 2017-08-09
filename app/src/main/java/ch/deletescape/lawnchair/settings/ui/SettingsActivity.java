@@ -42,6 +42,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.Random;
+
 import ch.deletescape.lawnchair.BuildConfig;
 import ch.deletescape.lawnchair.DumbImportExportTask;
 import ch.deletescape.lawnchair.LauncherAppState;
@@ -201,6 +203,11 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                 if (Utilities.isNycMR1OrAbove()) {
                     getPreferenceScreen().removePreference(findPreference("pref_enableBackportShortcuts"));
                 }
+            } else if (getContent() == R.xml.launcher_hidden_preferences) {
+                Preference eminemPref = findPreference("random_eminem_quote");
+                String[] eminemQuotes = getResources().getStringArray(R.array.eminem_quotes);
+                int index = new Random().nextInt(eminemQuotes.length);
+                eminemPref.setSummary(eminemQuotes[index]);
             }
         }
 
