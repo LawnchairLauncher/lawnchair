@@ -245,7 +245,7 @@
   <string name="notifications_header">Уведомления</string>
   <string name="widgets_bottom_sheet_title">%1$s виджетов</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair - это лаунчер, созданный Till Kottmann (aka deletescape). Лаунчер основан на Launcher3 из AOSP.</string>
+  <string name="about_text">Lawnchair - это лаунчер, созданный Till Kottmann (aka deletescape). Он основан на Launcher3 из AOSP.</string>
   <string name="about_title">О программе</string>
   <string name="changelog_title">Изменения в сборке #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
@@ -411,4 +411,5 @@
   <string name="num_cols_drawer_pref_title">Количество столбцов в меню приложений</string>
   <string name="pref_cat_drawer">Меню приложений</string>
   <string name="shortcut_backport_warning">Это может привести к медленной работе приложения, используйте на свой страх и риск</string>
+  <string name="pref_backport_shortcuts">Адаптировать ярлыки</string>
 </resources>
