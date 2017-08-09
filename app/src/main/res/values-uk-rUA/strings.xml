@@ -35,6 +35,7 @@
   <string name="shortcut_not_available">Ярлик недоступний</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
+  <string name="long_press_widget_to_add">Торкніться &amp; та утримуйте, щоб обрати віджети.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
@@ -144,21 +145,32 @@
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
   <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
   <!-- Accessibility confirmation when a screen was moved. -->
+  <string name="screen_moved">Екран переміщено</string>
   <!-- Accessibility action to resize a widget. [CHAR_LIMIT=30] -->
+  <string name="action_resize">Змінити розмір</string>
   <!-- Accessibility action to increase width of a widget. [CHAR_LIMIT=30] -->
+  <string name="action_increase_width">Збільшити ширину</string>
   <!-- Accessibility action to increase height of a widget. [CHAR_LIMIT=30] -->
+  <string name="action_increase_height">Збільшити висоту</string>
   <!-- Accessibility action to decrease width of a widget. [CHAR_LIMIT=30] -->
+  <string name="action_decrease_width">Зменшити ширину</string>
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
+  <string name="action_decrease_height">Зменшити висоту</string>
   <!-- Accessibility confirmation for widget resize. -->
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
+  <string name="action_deep_shortcut">Ярлики</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
+  <string name="edit_drop_target_label">Редагувати</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
+  <string name="wallpaper_instructions">Встановити фоновий малюнок</string>
   <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper picker cannot load it -->
+  <string name="image_load_fail">Не вдалося завантажити зображення</string>
   <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper cropper cannot load it. The user will
          usually see this when using another app and trying to set
          an image as the wallpaper -->
+  <string name="wallpaper_load_fail">Не вдалося завантажити зображення як фоновий малюнок</string>
   <!-- Error message when an image is selected as a wallpaper,
          but something goes wrong when the user clicks "Set wallpaper" -->
   <!-- Shown when wallpapers are selected in Wallpaper picker -->
