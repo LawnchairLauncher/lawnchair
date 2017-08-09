@@ -80,6 +80,7 @@ public class InvariantDeviceProfile {
      */
     public int numHotseatIcons;
     float hotseatIconSize;
+    float hotseatIconSizeOriginal;
     int defaultLayoutId;
 
     DeviceProfile landscapeProfile;
@@ -149,6 +150,7 @@ public class InvariantDeviceProfile {
         searchHeightAddition = iconBitmapSize;
         iconTextSize = interpolatedDeviceProfileOut.iconTextSize;
         hotseatIconSize = interpolatedDeviceProfileOut.hotseatIconSize;
+        hotseatIconSizeOriginal = hotseatIconSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
         customizationHook(context);
