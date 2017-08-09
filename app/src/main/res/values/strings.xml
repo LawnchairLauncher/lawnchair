@@ -457,10 +457,10 @@
     <string name="pref_applyBlur">Apply blur on</string>
     <string name="search_bar">Search bar</string>
     <string name="folder">Folder</string>
-    <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
+    <string name="dock_allapps"><![CDATA[Dock & drawer]]></string>
     <string name="app_shortcuts">App shortcuts</string>
     <string name="blur_effect">Blur effect</string>
-    <string name="enable_editing_pref_title">Enable editing workspace</string>
+    <string name="enable_editing_pref_title">Enable editing homescreen</string>
     <string name="pref_weather_provider">Weather provider</string>
     <string name="loading">Loading...</string>
     <string name="icon_shape_override_label">Change icon shape</string>
