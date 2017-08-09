@@ -153,15 +153,15 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
 
     public List<String> getShortcutIdsForItem(ItemInfo itemInfo) {
         if (!DeepShortcutManager.supportsShortcuts(itemInfo)) {
-            return Utilities.emptyList();
+            return Collections.emptyList();
         }
         ComponentName targetComponent = itemInfo.getTargetComponent();
         if (targetComponent == null) {
-            return Utilities.emptyList();
+            return Collections.emptyList();
         }
         List<String> list = mDeepShortcutMap.get(new ComponentKey(targetComponent, itemInfo.user));
         if (list == null) {
-            list = Utilities.emptyList();
+            list = Collections.emptyList();
         }
         return list;
     }
@@ -175,13 +175,13 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
 
     public List<NotificationKeyData> getNotificationKeysForItem(ItemInfo itemInfo) {
         BadgeInfo badgeInfoForItem = getBadgeInfoForItem(itemInfo);
-        return badgeInfoForItem == null ? Utilities.<NotificationKeyData>emptyList() : badgeInfoForItem.getNotificationKeys();
+        return badgeInfoForItem == null ? Collections.<NotificationKeyData>emptyList() : badgeInfoForItem.getNotificationKeys();
     }
 
     public List<StatusBarNotification> getStatusBarNotificationsForKeys(List<NotificationKeyData> list) {
         NotificationListener instanceIfConnected = NotificationListener.getInstanceIfConnected();
         if (instanceIfConnected == null) {
-            return Utilities.emptyList();
+            return Collections.emptyList();
         }
         return instanceIfConnected.getNotificationsForKeys(list);
     }

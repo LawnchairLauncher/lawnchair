@@ -160,7 +160,7 @@ public class NotificationListener extends NotificationListenerService {
 
     public List<StatusBarNotification> getNotificationsForKeys(List<NotificationKeyData> list) {
         StatusBarNotification[] activeNotifications = getActiveNotifications(NotificationKeyData.extractKeysOnly(list).toArray(new String[list.size()]));
-        return activeNotifications == null ? Utilities.<StatusBarNotification>emptyList() : Arrays.asList(activeNotifications);
+        return activeNotifications == null ? Collections.<StatusBarNotification>emptyList() : Arrays.asList(activeNotifications);
     }
 
     private List<StatusBarNotification> filterNotifications(StatusBarNotification[] statusBarNotificationArr) {

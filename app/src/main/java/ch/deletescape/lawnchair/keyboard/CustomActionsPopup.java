@@ -9,11 +9,11 @@ import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
-import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.accessibility.LauncherAccessibilityDelegate;
 import ch.deletescape.lawnchair.popup.PopupContainerWithArrow;
 
@@ -35,7 +35,7 @@ public class CustomActionsPopup implements OnMenuItemClickListener {
 
     private List<AccessibilityAction> getActionList() {
         if (this.mIcon == null || (!(this.mIcon.getTag() instanceof ItemInfo))) {
-            return Utilities.emptyList();
+            return Collections.emptyList();
         }
         AccessibilityNodeInfo obtain = AccessibilityNodeInfo.obtain();
         //this.mDelegate.addSupportedActions(this.mIcon, obtain, true);

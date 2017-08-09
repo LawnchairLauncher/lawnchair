@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -27,7 +28,7 @@ import ch.deletescape.lawnchair.util.SQLiteCacheHelper;
 public class ShortcutCache {
 
     private static final String TAG = "ShortcutCache";
-    private static final String[] PROJECTION = new String[] {ShortcutDB.COLUMN_COMPONENT, ShortcutDB.COLUMN_PACKAGE, ShortcutDB.COLUMN_SHORTCUT_XML};
+    private static final String[] PROJECTION = new String[]{ShortcutDB.COLUMN_COMPONENT, ShortcutDB.COLUMN_PACKAGE, ShortcutDB.COLUMN_SHORTCUT_XML};
     private final ShortcutDB mShortcutDB;
     private List<ShortcutInfoCompat> mShortcutList = new ArrayList<>();
     private MultiHashMap<String, ShortcutInfoCompat> mShortcutsMap = new MultiHashMap<>();
@@ -121,7 +122,7 @@ public class ShortcutCache {
 
     private void deleteFromDB(String packageName) {
         String selection = ShortcutDB.COLUMN_PACKAGE + " = ?";
-        String[] selectionArgs = { packageName };
+        String[] selectionArgs = {packageName};
         mShortcutDB.delete(selection, selectionArgs);
     }
 
@@ -131,7 +132,7 @@ public class ShortcutCache {
         } else if (mShortcutsMap.containsKey(packageName)) {
             return mShortcutsMap.get(packageName);
         } else {
-            return Utilities.emptyList();
+            return Collections.emptyList();
         }
     }
 
