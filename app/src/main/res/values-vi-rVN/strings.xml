@@ -22,10 +22,15 @@
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
+  <string name="work_folder_name">Work</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
+  <string name="activity_not_found">App isn\'t installed.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
+  <string name="activity_not_available">App isn\'t available</string>
   <!-- SafeMode shortcut error string -->
+  <string name="safemode_shortcut_error">Downloaded apps are disabled in SafeMode</string>
   <!-- SafeMode widget error string -->
+  <string name="safemode_widget_error">Widgets are disabled in SafeMode</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">Shortcut isn\'t available</string>
   <!-- Widgets -->
@@ -119,45 +124,81 @@
   <!-- Text for settings button -->
   <string name="settings_button_text">Settings</string>
   <!-- Message shown when a feature is disabled by the administrator -->
+  <string name="msg_disabled_by_admin">Disabled by your admin</string>
   <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
+  <string name="accessibility_action_overview">Overview</string>
   <!-- Strings for settings -->
   <!-- Title for Allow Rotation setting. [CHAR LIMIT=50] -->
   <!-- Text explaining when the home screen will get rotated. [CHAR LIMIT=100] -->
   <!-- Text explaining that rotation is disabled in Display settings. 'Display' refers to the Display section in system settings [CHAR LIMIT=100] -->
   <!-- Label on an icon that references an uninstalled package, for which we have no information about when it might be installed. [CHAR_LIMIT=15] -->
+  <string name="package_state_unknown">Unknown</string>
   <!-- Button for abandoned promises dialog, to removes this abandoned promise icon. -->
+  <string name="abandoned_clean_this">Remove</string>
   <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->
+  <string name="abandoned_search">Search</string>
   <!-- Title for abandoned promise dialog. -->
+  <string name="abandoned_promises_title">This app is not installed</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
+  <string name="abandoned_promise_explanation">The app for this icon isn\'t installed.
+        You can remove it, or search for the app and install it manually.
+    </string>
   <!-- Title for an app which is being downloaded. -->
+  <string name="app_downloading_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> downloading, <xliff:g example="30%" id="progress">%2$s</xliff:g> complete</string>
   <!-- Title for an app whose download has been started. -->
+  <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> waiting to install</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
+  <string name="action_add_to_workspace">Add to home screen</string>
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
+  <string name="action_move_here">Move item here</string>
   <!-- Accessibility confirmation for item added to workspace. -->
+  <string name="item_added_to_workspace">Item added to home screen</string>
   <!-- Accessibility confirmation for item removed. -->
+  <string name="item_removed">Item removed</string>
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
+  <string name="action_move">Move item</string>
   <!-- Accessibility description to move item to empty cell. -->
+  <string name="move_to_empty_cell">Move to row <xliff:g example="1" id="number">%1$s</xliff:g> column <xliff:g example="1" id="number">%2$s</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
+  <string name="move_to_position">Move to position <xliff:g example="1" id="number">%1$s</xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
+  <string name="move_to_hotseat_position">Move to favorites position <xliff:g example="1" id="number">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for item move. -->
+  <string name="item_moved">Item moved</string>
   <!-- Accessibility description to move item into an existing folder. -->
+  <string name="add_to_folder">Add to folder: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
+  <string name="add_to_folder_with_app">Add to folder with <xliff:g example="Messenger" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for item added to folder. -->
+  <string name="added_to_folder">Item added to folder</string>
   <!-- Accessibility description to create folder with another item. -->
+  <string name="create_folder_with">Create folder with: <xliff:g example="Game" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
+  <string name="folder_created">Folder created</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
+  <string name="action_move_to_workspace">Move to home screen</string>
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
+  <string name="action_move_screen_left">Move screen to left</string>
   <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
+  <string name="action_move_screen_right">Move screen to right</string>
   <!-- Accessibility confirmation when a screen was moved. -->
+  <string name="screen_moved">Screen moved</string>
   <!-- Accessibility action to resize a widget. [CHAR_LIMIT=30] -->
+  <string name="action_resize">Resize</string>
   <!-- Accessibility action to increase width of a widget. [CHAR_LIMIT=30] -->
+  <string name="action_increase_width">Increase width</string>
   <!-- Accessibility action to increase height of a widget. [CHAR_LIMIT=30] -->
+  <string name="action_increase_height">Increase height</string>
   <!-- Accessibility action to decrease width of a widget. [CHAR_LIMIT=30] -->
+  <string name="action_decrease_width">Decrease width</string>
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
+  <string name="action_decrease_height">Decrease height</string>
   <!-- Accessibility confirmation for widget resize. -->
+  <string name="widget_resized">Widget resized to width <xliff:g example="2" id="number">%1$s</xliff:g> height <xliff:g example="1" id="number">%2$s</xliff:g></string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
+  <string name="action_deep_shortcut">Shortcuts</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
   <!-- Error message when an image is selected as a wallpaper,
