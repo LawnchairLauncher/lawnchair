@@ -975,8 +975,9 @@ public final class Utilities {
             builder
                     .append("- ")
                     .append(line.trim())
-                    .append("\n");
+                    .append('\n');
         }
+        builder.deleteCharAt(builder.lastIndexOf("\n"));
         return builder.toString();
     }
 
