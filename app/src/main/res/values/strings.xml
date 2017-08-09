@@ -484,4 +484,7 @@
     <string name="weather_api_key_not_set">API key not set</string>
     <string name="pref_weather_api_key_title">API key</string>
     <string name="about_changelog">Changelog</string>
+    <string name="pref_all_apps_custom_label_color">Use custom label color</string>
+    <string name="pref_all_apps_label_color_variation">Color variation of icon labels in app drawer</string>
+    <string name="pref_all_apps_label_color">Color of icon labels in drawer</string>
 </resources>

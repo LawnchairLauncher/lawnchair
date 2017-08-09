@@ -161,6 +161,30 @@
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"
             android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_allAppsCustomLabelColor"
+            android:title="@string/pref_all_apps_custom_label_color" />
+
+        <ListPreference
+            android:key="pref_allAppsLabelColorHue"
+            android:title="@string/pref_all_apps_label_color"
+            android:entries="@array/color_index_entries"
+            android:entryValues="@array/color_index_values"
+            android:defaultValue="-3"
+            android:dependency="pref_allAppsCustomLabelColor"
+            android:summary="%s"
+            android:persistent="true" />
+
+        <ListPreference
+            android:key="pref_allAppsLabelColorVariation"
+            android:title="@string/pref_all_apps_label_color_variation"
+            android:entries="@array/color_variation_entries"
+            android:entryValues="@array/color_variation_values"
+            android:defaultValue="5"
+            android:summary="%s"
+            android:dependency="pref_allAppsCustomLabelColor"
+            android:persistent="true" />
     </PreferenceCategory>
 
     <PreferenceCategory
