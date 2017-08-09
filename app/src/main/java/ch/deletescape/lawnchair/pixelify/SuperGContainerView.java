@@ -130,20 +130,19 @@ public class SuperGContainerView extends BaseQsbView {
 
     @Override
     protected void onMeasure(int i, int i2) {
-        int i3;
         LayoutParams layoutParams;
         int i4 = -getResources().getDimensionPixelSize(R.dimen.qsb_overlap_margin);
         DeviceProfile deviceProfile = mLauncher.getDeviceProfile();
         Rect workspacePadding = deviceProfile.getWorkspacePadding(sTempRect);
         int size = MeasureSpec.getSize(i) - i4;
         int i5 = (size - workspacePadding.left) - workspacePadding.right;
-        size = DeviceProfile.calculateCellWidth(i5, deviceProfile.inv.numColumns) * deviceProfile.inv.numColumns;
+        size = DeviceProfile.calculateCellWidth(i5, deviceProfile.inv.numColumnsOriginal) * deviceProfile.inv.numColumnsOriginal;
         i4 += workspacePadding.left + ((i5 - size) / 2);
-        i3 = size;
+        int oldSize = size;
         size = i4;
         if (mQsbView != null) {
             layoutParams = (LayoutParams) mQsbView.getLayoutParams();
-            layoutParams.width = i3 / deviceProfile.inv.numColumns;
+            layoutParams.width = oldSize / deviceProfile.inv.numColumnsOriginal;
             if (showMic) {
                 layoutParams.width = Math.max(layoutParams.width, getResources().getDimensionPixelSize(R.dimen.qsb_min_width_with_mic));
             }

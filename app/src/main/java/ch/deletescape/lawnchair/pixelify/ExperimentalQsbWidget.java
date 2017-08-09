@@ -81,7 +81,7 @@ public class ExperimentalQsbWidget extends BaseQsbView {
         if (this.mQsbView != null) {
             DeviceProfile deviceProfile = this.mLauncher.getDeviceProfile();
             int size = MeasureSpec.getSize(i);
-            ((LayoutParams) this.mQsbView.getLayoutParams()).width = size - (DeviceProfile.calculateCellWidth(size, deviceProfile.inv.numColumns) - deviceProfile.iconSizePx);
+            ((LayoutParams) this.mQsbView.getLayoutParams()).width = size - (DeviceProfile.calculateCellWidth(size, deviceProfile.inv.numColumnsOriginal) - deviceProfile.iconSizePxOriginal);
         }
         super.onMeasure(i, i2);
     }

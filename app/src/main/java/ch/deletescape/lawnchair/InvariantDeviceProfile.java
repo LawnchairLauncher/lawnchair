@@ -60,6 +60,7 @@ public class InvariantDeviceProfile {
      */
     public int numRows;
     public int numColumns;
+    public int numColumnsOriginal;
 
     public int numColumnsDrawer;
 
@@ -136,6 +137,7 @@ public class InvariantDeviceProfile {
         InvariantDeviceProfile closestProfile = closestProfiles.get(0);
         numRows = closestProfile.numRows;
         numColumns = closestProfile.numColumns;
+        numColumnsOriginal = numColumns;
         numColumnsDrawer = closestProfile.numColumns;
         numHotseatIcons = closestProfile.numHotseatIcons;
         defaultLayoutId = closestProfile.defaultLayoutId;

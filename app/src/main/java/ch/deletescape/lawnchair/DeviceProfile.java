@@ -86,6 +86,7 @@ public class DeviceProfile {
 
     // Workspace icons
     public int iconSizePx;
+    public int iconSizePxOriginal;
     public int iconTextSizePx;
     public int iconDrawablePaddingPx;
     public int iconDrawablePaddingOriginalPx;
@@ -245,6 +246,7 @@ public class DeviceProfile {
     private void updateIconSize(float scale, int drawablePadding, Resources res,
                                 DisplayMetrics dm) {
         iconSizePx = (int) (Utilities.pxFromDp(inv.iconSize, dm) * scale);
+        iconSizePxOriginal = iconSizePx;
         iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
         iconDrawablePaddingPx = drawablePadding;
         hotseatIconSizePx = (int) (Utilities.pxFromDp(inv.hotseatIconSize, dm) * scale);
