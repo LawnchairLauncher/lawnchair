@@ -19,7 +19,6 @@ package ch.deletescape.lawnchair.config
 import android.app.Activity
 import android.content.Context
 import android.view.ContextThemeWrapper
-import ch.deletescape.lawnchair.Launcher
 import ch.deletescape.lawnchair.R
 import ch.deletescape.lawnchair.Utilities
 
@@ -59,6 +58,7 @@ object FeatureFlags {
     private const val KEY_PREF_PULLDOWN_ACTION = "pref_pulldownAction"
     private const val KEY_PREF_ENABLE_EDITING = "pref_enableEditing"
     private const val KEY_PREF_ANIMATED_CLOCK_ICON = "pref_animatedClockIcon"
+    private const val KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR = "pref_allAppsCustomLabelColor"
     private var darkThemeFlag: Int = 0
 
     fun pinchToOverview(context: Context): Boolean {
@@ -231,5 +231,9 @@ object FeatureFlags {
 
     fun animatedClockIcon(context: Context): Boolean {
         return Utilities.getPrefs(context).getBoolean(KEY_PREF_ANIMATED_CLOCK_ICON, false)
+    }
+
+    fun useCustomAllAppsTextColor(context: Context): Boolean {
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR, false)
     }
 }

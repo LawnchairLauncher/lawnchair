@@ -71,7 +71,6 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -964,7 +963,7 @@ public final class Utilities {
     }
 
     @NonNull
-    private static String getChangelog() {
+    public static String getChangelog() {
         StringBuilder builder = new StringBuilder();
         String[] lines = BuildConfig.CHANGELOG.split("\n");
         for (String line : lines) {
@@ -975,8 +974,9 @@ public final class Utilities {
             builder
                     .append("- ")
                     .append(line.trim())
-                    .append("\n");
+                    .append('\n');
         }
+        builder.deleteCharAt(builder.lastIndexOf("\n"));
         return builder.toString();
     }
 
@@ -997,9 +997,5 @@ public final class Utilities {
     public static boolean isAwarenessApiEnabled(Context context) {
         SharedPreferences prefs = getPrefs(context);
         return "1".equals(prefs.getString("pref_weatherProvider", "1"));
-    }
-
-    public static <T> List<T> emptyList() {
-        return Collections.EMPTY_LIST;
     }
 }

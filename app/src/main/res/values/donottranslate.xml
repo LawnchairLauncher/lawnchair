@@ -18,4 +18,26 @@
 <resources>
     <!-- Time format for Weather Widget -->
     <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
+
+    <string-array name="eminem_quotes">
+        <item>Shut the fuck up</item>
+        <item>Trying to buy me some time then I remembered this magic trick\nDun da dun da dun duun Go-Go Gadget Dick!</item>
+        <item>Wait what if there is an explanation for this shit?\nWhat she tripped, fell, landed on his dick?</item>
+        <item>Dicks too short of a word for my dick, get of my antidisestablishmentarianism you prick</item>
+        <item>Where the fuck is Kanye when you need him?</item>
+        <item>I want you to feel me like my stepfather felt me.</item>
+        <item>Killing pedestrians, raping lesbians, while they are screaming: LETS JUST BE FRIENDS</item>
+        <item>Chubba chubba chubba chubba chubba chubbie I don\'t have any lines to go right here so, chubba teletubbie!</item>
+        <item>Somewhere deep down there\'s a decent man in me, he just can\'t be found.</item>
+        <item>Love is evil, spell it backwards, I’ll show ya.</item>
+        <item>I\'d rather have a babie through my penis than be married again.</item>
+        <item>I\'m over here Sue, you\'re talkin to the plant, look!</item>
+        <item>And Dr. Dre said, Nothing you idiots, Dr. Dre IS DEAD!</item>
+        <item>I guess I\'m a CRIMINAL</item>
+        <item>I think Kim Kardashian\'s a man</item>
+        <item>I\'m not a baby sitter.</item>
+        <item>My earliest memory was raping the babysitter when I was 5… She was 15.</item>
+        <item>Go fuck yourself.</item>
+        <item>You call me the champ, call me the space shuttle destroyer.\nI just blew up the challenger, matter fact I need a lawyer</item>
+    </string-array>
 </resources>
