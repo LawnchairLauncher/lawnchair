@@ -59,6 +59,7 @@ public class InvariantDeviceProfile {
      * Number of icons per row and column in the workspace.
      */
     public int numRows;
+    public int numRowsOriginal;
     public int numColumns;
     public int numColumnsOriginal;
 
@@ -140,6 +141,7 @@ public class InvariantDeviceProfile {
 
         InvariantDeviceProfile closestProfile = closestProfiles.get(0);
         numRows = closestProfile.numRows;
+        numRowsOriginal = numRows;
         numColumns = closestProfile.numColumns;
         numColumnsOriginal = numColumns;
         numColumnsDrawer = closestProfile.numColumns;

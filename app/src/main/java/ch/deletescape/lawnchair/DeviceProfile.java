@@ -293,6 +293,8 @@ public class DeviceProfile {
         if (!FeatureFlags.INSTANCE.hideAllAppsAppLabels(mContext)) {
             allAppsCellHeightPx += Utilities.calculateTextHeight(allAppsIconTextSizePx);
         }
+        int defaultAllAppsCellHeight = calculateCellHeight(availableHeightPx, inv.numRowsOriginal);
+        allAppsCellHeightPx = Math.max(allAppsCellHeightPx, defaultAllAppsCellHeight);
         dragViewScale = iconSizePx;
 
         // Hotseat
