@@ -257,7 +257,7 @@ public class DeviceProfile {
         }
         float usedHotseatWidth = (hotseatCellWidthPx * inv.numHotseatIcons);
         if (usedAllAppsWidth > maxWorkspaceWidth) {
-            allAppsScale = maxWorkspaceWidth / usedHotseatWidth;
+            hotseatScale = maxWorkspaceWidth / usedHotseatWidth;
         }
         updateIconSize(workspaceScale, allAppsScale, hotseatScale, workspaceDrawablePadding, allAppsDrawablePadding, res, dm);
     }
