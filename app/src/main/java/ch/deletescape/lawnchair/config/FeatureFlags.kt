@@ -39,6 +39,7 @@ object FeatureFlags {
     const val KEY_SHOW_VOICE_SEARCH_BUTTON = "pref_showMic"
     private const val KEY_PREF_PIXEL_STYLE_ICONS = "pref_pixelStyleIcons"
     private const val KEY_PREF_HIDE_APP_LABELS = "pref_hideAppLabels"
+    private const val KEY_PREF_HIDE_ALL_APPS_APP_LABELS = "pref_hideAllAppsAppLabels"
     private const val KEY_PREF_ENABLE_SCREEN_ROTATION = "pref_enableScreenRotation"
     private const val KEY_PREF_FULL_WIDTH_WIDGETS = "pref_fullWidthWidgets"
     private const val KEY_PREF_SHOW_NOW_TAB = "pref_showGoogleNowTab"
@@ -108,6 +109,10 @@ object FeatureFlags {
 
     fun hideAppLabels(context: Context): Boolean {
         return Utilities.getPrefs(context).getBoolean(KEY_PREF_HIDE_APP_LABELS, false)
+    }
+
+    fun hideAllAppsAppLabels(context: Context): Boolean {
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_HIDE_ALL_APPS_APP_LABELS, false)
     }
 
     fun allowFullWidthWidgets(context: Context): Boolean {

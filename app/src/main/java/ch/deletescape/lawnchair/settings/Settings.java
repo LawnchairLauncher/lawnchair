@@ -32,6 +32,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private static final String KEY_PREF_ICON_PACK_PACKAGE = "pref_iconPackPackage";
     private static final String KEY_PREF_PIXEL_STYLE_ICONS = "pref_pixelStyleIcons";
     private static final String KEY_PREF_HIDE_APP_LABELS = "pref_hideAppLabels";
+    private static final String KEY_PREF_HIDE_ALL_APPS_APP_LABELS = "pref_hideAllAppsAppLabels";
     private static final String KEY_PREF_ENABLE_SCREEN_ROTATION = "pref_enableScreenRotation";
     private static final String KEY_PREF_FULL_WIDTH_WIDGETS = "pref_fullWidthWidgets";
     private static final String KEY_PREF_SHOW_NOW_TAB = "pref_showGoogleNowTab";
@@ -103,6 +104,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                     applyAllAppsOpacity(prefs);
                     break;
                 case KEY_PREF_SHOW_HIDDEN_APPS:
+                case KEY_PREF_HIDE_ALL_APPS_APP_LABELS:
                     las.reloadAllApps();
                     break;
 

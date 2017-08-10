@@ -173,6 +173,13 @@
             android:persistent="true" />
 
         <SwitchPreference
+            android:key="pref_hideAllAppsAppLabels"
+            android:title="@string/hide_all_apps_icon_labels_pref_title"
+            android:defaultValue="false"
+            android:disableDependentsState="true"
+            android:persistent="true" />
+
+        <SwitchPreference
             android:key="pref_allAppsCustomLabelColor"
             android:title="@string/pref_all_apps_custom_label_color" />
 
