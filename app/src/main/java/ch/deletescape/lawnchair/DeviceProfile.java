@@ -268,7 +268,7 @@ public class DeviceProfile {
             allAppsDrawablePadding = 0;
         }
         float usedHotseatWidth = (hotseatCellWidthPx * inv.numHotseatIcons);
-        float maxHotseatWidth = maxWorkspaceWidth - getHotseatAdjustment();
+        float maxHotseatWidth = availableWidthPx - getHotseatAdjustment();
         if (usedAllAppsWidth > maxHotseatWidth) {
             hotseatScale = maxHotseatWidth / usedHotseatWidth;
         }
@@ -667,6 +667,6 @@ public class DeviceProfile {
     }
 
     public final int getHotseatHeight() {
-        return (hotseatBarHeightPx - hotseatIconSizePxOriginal) + hotseatIconSizePx;
+        return (hotseatBarHeightPx - iconSizePxOriginal) + hotseatCellHeightPx;
     }
 }
