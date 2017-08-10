@@ -1283,7 +1283,7 @@ public class Launcher extends Activity
         BubbleTextView favorite = (BubbleTextView) getLayoutInflater().inflate(R.layout.app_icon,
                 parent, false);
         favorite.applyFromShortcutInfo(info);
-        favorite.setCompoundDrawablePadding(mDeviceProfile.iconDrawablePaddingPx);
+        favorite.setCompoundDrawablePadding(mDeviceProfile.hotseatIconDrawablePaddingPx);
         favorite.setOnClickListener(this);
         favorite.setOnFocusChangeListener(mFocusHandler);
         return favorite;
