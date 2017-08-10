@@ -111,11 +111,11 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case KEY_PREF_NUM_COLS_DRAWER:
                 case KEY_PREF_NUM_COLS:
                 case KEY_PREF_NUM_ROWS:
-                    las.getInvariantDeviceProfile().customizationHook(mLauncher);
+                    las.getInvariantDeviceProfile().refresh(mLauncher);
                     mLauncher.getWorkspace().refreshChildren();
                     break;
                 case KEY_PREF_NUM_HOTSEAT_ICONS:
-                    las.getInvariantDeviceProfile().customizationHook(mLauncher);
+                    las.getInvariantDeviceProfile().refresh(mLauncher);
                     mLauncher.runOnUiThread(
                             new Runnable() {
                                 @Override

@@ -207,6 +207,14 @@ public class DeviceProfile {
         mBadgeRenderer = new BadgeRenderer(context, iconSizePx);
     }
 
+    public void refresh() {
+        Resources res = mContext.getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        updateAvailableDimensions(dm, res, mContext);
+        computeAllAppsButtonSize(mContext);
+        mBadgeRenderer = new BadgeRenderer(mContext, iconSizePx);
+    }
+
     public void addLauncherLayoutChangedListener(LauncherLayoutChangeListener listener) {
         if (!mListeners.contains(listener)) {
             mListeners.add(listener);

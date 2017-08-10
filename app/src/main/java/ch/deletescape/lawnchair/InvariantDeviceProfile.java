@@ -184,7 +184,13 @@ public class InvariantDeviceProfile {
         }
     }
 
-    public void customizationHook(Context context) {
+    public void refresh(Context context) {
+        landscapeProfile.refresh();
+        portraitProfile.refresh();
+        customizationHook(context);
+    }
+
+    private void customizationHook(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics dm = new DisplayMetrics();
