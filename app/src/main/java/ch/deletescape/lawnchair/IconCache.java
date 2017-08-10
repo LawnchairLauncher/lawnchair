@@ -479,8 +479,8 @@ public class IconCache {
         CacheEntry entry = cacheLocked(application.componentName, info, user,
                 false, useLowResIcon);
         application.originalTitle = Utilities.trim(entry.title);
-        String key = "alias_" + application.componentName.flattenToString();
-        application.title = Utilities.getPrefs(mContext).getString(key, application.originalTitle.toString());
+        String key = application.componentName.flattenToString();
+        application.title = Utilities.getPrefs(mContext).itemAlias(key, application.originalTitle.toString());
         application.contentDescription = entry.contentDescription;
         application.iconBitmap = getNonNullIcon(entry, user);
         application.usingLowResIcon = entry.isLowResIcon;
@@ -494,8 +494,8 @@ public class IconCache {
                 false, application.usingLowResIcon);
         if (entry.icon != null && !isDefaultIcon(entry.icon, application.user)) {
             application.originalTitle = Utilities.trim(entry.title);
-            String key = "alias_" + application.componentName.flattenToString();
-            application.title = Utilities.getPrefs(mContext).getString(key, application.originalTitle.toString());
+            String key = application.componentName.flattenToString();
+            application.title = Utilities.getPrefs(mContext).itemAlias(key, application.originalTitle.toString());
             application.contentDescription = entry.contentDescription;
             application.iconBitmap = entry.icon;
             application.usingLowResIcon = entry.isLowResIcon;
@@ -549,8 +549,8 @@ public class IconCache {
         Bitmap iBitmap = getNonNullIcon(entry, user);
         shortcutInfo.setIcon(iBitmap);
         String title = Utilities.trim(entry.title);
-        String key = "alias_" + component.flattenToString();
-        shortcutInfo.title = Utilities.getPrefs(mContext).getString(key, title);
+        String key = component.flattenToString();
+        shortcutInfo.title = Utilities.getPrefs(mContext).itemAlias(key, title);
         shortcutInfo.contentDescription = entry.contentDescription;
         shortcutInfo.usingFallbackIcon = isDefaultIcon(entry.icon, user);
         shortcutInfo.usingLowResIcon = entry.isLowResIcon;

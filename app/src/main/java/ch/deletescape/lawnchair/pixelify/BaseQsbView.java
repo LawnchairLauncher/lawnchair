@@ -7,7 +7,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -23,9 +22,11 @@ import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
+import ch.deletescape.lawnchair.config.PreferenceProvider;
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.util.PackageManagerHelper;
 
-public abstract class BaseQsbView extends FrameLayout implements OnClickListener, OnSharedPreferenceChangeListener {
+public abstract class BaseQsbView extends FrameLayout implements OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TEXT_ASSIST = "com.google.android.googlequicksearchbox.TEXT_ASSIST";
     private static final String VOICE_ASSIST = Intent.ACTION_VOICE_COMMAND;
     protected View mQsbView;
@@ -46,9 +47,9 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
         mLauncher = Launcher.getLauncher(context);
     }
 
-    public void applyVoiceSearchPreference(SharedPreferences prefs) {
-        showMic = FeatureFlags.INSTANCE.showVoiceSearchButton(getContext());
-        boolean useWhiteLogo = FeatureFlags.INSTANCE.useWhiteGoogleIcon(getContext());
+    public void applyVoiceSearchPreference() {
+        showMic = Utilities.getPrefs(getContext()).showVoiceSearchButton();
+        boolean useWhiteLogo = Utilities.getPrefs(getContext()).useWhiteGoogleIcon();
         int qsbView = getQsbView(showMic);
         if (qsbView != mQsbViewId || mUseWhiteLogo != useWhiteLogo) {
             mQsbViewId = qsbView;
@@ -80,11 +81,11 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (!FeatureFlags.INSTANCE.showPixelBar(getContext())) {
+        if (!Utilities.getPrefs(getContext()).showPixelBar()) {
             return;
         }
-        SharedPreferences sharedPreferences = Utilities.getPrefs(getContext());
-        applyVoiceSearchPreference(sharedPreferences);
+        IPreferenceProvider sharedPreferences = PreferenceProvider.INSTANCE.getPreferences(getContext());
+        applyVoiceSearchPreference();
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         getContext().registerReceiver(packageChangedReceiver, Util.createIntentFilter("android.intent.action.PACKAGE_CHANGED"));
         initializeQsbConnector();
@@ -106,18 +107,18 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String str) {
         if (FeatureFlags.KEY_SHOW_VOICE_SEARCH_BUTTON.equals(str) ||
                 FeatureFlags.KEY_PREF_WHITE_GOOGLE_ICON.equals(str)) {
-            applyVoiceSearchPreference(sharedPreferences);
+            applyVoiceSearchPreference();
             applyVisibility();
         }
     }
 
     private void initializeQsbConnector() {
         DeviceProfile deviceProfile = mLauncher.getDeviceProfile();
-        if (qsbConnector == null && !FeatureFlags.INSTANCE.useFullWidthSearchbar(getContext())
-                && FeatureFlags.INSTANCE.showGoogleNowTab(mLauncher) && !deviceProfile.isLandscape && !deviceProfile.isTablet) {
+        if (qsbConnector == null && !Utilities.getPrefs(getContext()).useFullWidthSearchbar()
+                && Utilities.getPrefs(mLauncher).showGoogleNowTab() && !deviceProfile.isLandscape && !deviceProfile.isTablet) {
             qsbConnector = (QsbConnector) mLauncher.getLayoutInflater().inflate(R.layout.qsb_connector, this, false);
             addView(qsbConnector, 0);
-        } else if (FeatureFlags.INSTANCE.useFullWidthSearchbar(getContext()) || !FeatureFlags.INSTANCE.showGoogleNowTab(mLauncher)) {
+        } else if (Utilities.getPrefs(getContext()).useFullWidthSearchbar() || !Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
             removeView(qsbConnector);
         }
     }

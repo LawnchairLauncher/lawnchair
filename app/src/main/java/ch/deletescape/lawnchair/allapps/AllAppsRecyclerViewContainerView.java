@@ -29,6 +29,7 @@ import ch.deletescape.lawnchair.ClickShadowView;
 import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 
 /**
@@ -69,7 +70,7 @@ public class AllAppsRecyclerViewContainerView extends FrameLayout
     }
 
     private int getSearchBar() {
-        return FeatureFlags.INSTANCE.useRoundSearchBar(getContext()) ?
+        return Utilities.getPrefs(getContext()).useRoundSearchBar() ?
                 R.layout.all_apps_search_bar_round :
                 R.layout.all_apps_search_bar;
     }

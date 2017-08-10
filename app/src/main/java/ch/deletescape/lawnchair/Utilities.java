@@ -24,7 +24,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -83,9 +82,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ch.deletescape.lawnchair.config.FeatureFlags;
+import ch.deletescape.lawnchair.config.PreferenceProvider;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.graphics.ShadowGenerator;
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
+import ch.deletescape.lawnchair.preferences.PreferenceFlags;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 import ch.deletescape.lawnchair.util.IconNormalizer;
@@ -103,7 +104,6 @@ public final class Utilities {
 
     private static final Pattern sTrimPattern =
             Pattern.compile("^[\\s|\\p{javaSpaceChar}]*(.*)[\\s|\\p{javaSpaceChar}]*$");
-    private static final String KEY_PREVIOUS_BUILD_NUMBER = "previousBuildNumber";
 
     static {
         sCanvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.DITHER_FLAG,
@@ -748,9 +748,8 @@ public final class Utilities {
     }
 
     @NonNull
-    public static SharedPreferences getPrefs(Context context) {
-        return context.getSharedPreferences(
-                LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
+    public static IPreferenceProvider getPrefs(Context context) {
+        return PreferenceProvider.INSTANCE.getPreferences(context);
     }
 
     public static boolean isPowerSaverOn(Context context) {
@@ -836,8 +835,8 @@ public final class Utilities {
         }
     }
 
-    public static int getColor(Context context, String huePrefName, String defaultHue, String variationPrefName, String defaultVariation) {
-        int hueId = Integer.valueOf(Utilities.getPrefs(context).getString(huePrefName, defaultHue));
+    public static int getLabelColor(Context context) {
+        int hueId = Integer.valueOf(Utilities.getPrefs(context).labelColorHue());
         if (hueId < 0) {
             switch (hueId) {
                 case -2:
@@ -849,7 +848,7 @@ public final class Utilities {
             }
         }
         String[] hueArray = getHueArray(hueId, context);
-        int variation = Integer.valueOf(Utilities.getPrefs(context).getString(variationPrefName, defaultVariation));
+        int variation = Integer.valueOf(Utilities.getPrefs(context).labelColorVariation());
         return Color.parseColor(hueArray[variation]);
     }
 
@@ -910,21 +909,21 @@ public final class Utilities {
     }
 
     public static void setAppVisibility(Context context, String key, boolean visible) {
-        getPrefs(context).edit().putBoolean("visibility_" + key, visible).apply();
+        getPrefs(context).appVisibility(context, key, visible, false);
     }
 
-    public static boolean isAppHidden(Context context, String key) {
-        return !getPrefs(context).getBoolean("visibility_" + key, true);
+    public static boolean isAppHidden(Context context,String key) {
+        return !getPrefs(context).appVisibility(context, key);
     }
 
     public static int getDynamicAccent(Context context) {
-        if (!FeatureFlags.INSTANCE.isDynamicUiEnabled(context)) return getColorAccent(context);
+        if (!Utilities.getPrefs(context).isDynamicUiEnabled()) return getColorAccent(context);
         return getColor(context, ExtractedColors.VIBRANT_INDEX, getColorAccent(context));
     }
 
     public static int getDynamicBadgeColor(Context context) {
         int defaultColor = context.getResources().getColor(R.color.badge_color);
-        if (!FeatureFlags.INSTANCE.isDynamicUiEnabled(context)) return defaultColor;
+        if (!Utilities.getPrefs(context).isDynamicUiEnabled()) return defaultColor;
         return getColor(context, ExtractedColors.VIBRANT_INDEX, defaultColor);
     }
 
@@ -934,12 +933,12 @@ public final class Utilities {
         return typedValue.data;
     }
 
-    private static int getPreviousBuildNumber(SharedPreferences prefs) {
-        return prefs.getInt(KEY_PREVIOUS_BUILD_NUMBER, 0);
+    private static int getPreviousBuildNumber(IPreferenceProvider prefs) {
+        return prefs.previousBuildNumber();
     }
 
-    private static void setBuildNumber(SharedPreferences prefs, int buildNumber) {
-        prefs.edit().putInt(KEY_PREVIOUS_BUILD_NUMBER, buildNumber).apply();
+    private static void setBuildNumber(IPreferenceProvider prefs, int buildNumber) {
+        prefs.previousBuildNumber(buildNumber, false);
     }
 
     public static void showChangelog(Context context) {
@@ -948,7 +947,7 @@ public final class Utilities {
 
     public static void showChangelog(Context context, boolean force) {
         if (!BuildConfig.TRAVIS || BuildConfig.TAGGED_BUILD) return;
-        final SharedPreferences prefs = getPrefs(context);
+        final IPreferenceProvider prefs = getPrefs(context);
         if (force || BuildConfig.TRAVIS_BUILD_NUMBER != getPreviousBuildNumber(prefs)) {
             new AlertDialog.Builder(context)
                     .setTitle(String.format(context.getString(R.string.changelog_title), BuildConfig.TRAVIS_BUILD_NUMBER))
@@ -995,11 +994,29 @@ public final class Utilities {
     }
 
     public static boolean isAwarenessApiEnabled(Context context) {
-        SharedPreferences prefs = getPrefs(context);
-        return "1".equals(prefs.getString("pref_weatherProvider", "1"));
+        IPreferenceProvider prefs = getPrefs(context);
+        return PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS.equals(prefs.weatherProvider());
     }
 
     public static <T> List<T> emptyList() {
         return Collections.EMPTY_LIST;
+    }
+
+    public static boolean isComponentClock(ComponentName componentName, boolean stockAppOnly) {
+        if (componentName == null) {
+            return false;
+        }
+
+        if (stockAppOnly) {
+            return "com.google.android.deskclock/com.android.deskclock.DeskClock".equals(componentName.flattenToString());
+        }
+
+        // TODO: Maybe we can add all apps that end with .clockpackage/.DeskClock/.clock/???
+        // Or that contain .clock./.deskclock or end with those?
+        ArrayList<String> clockApps = new ArrayList<>();
+        clockApps.add("com.google.android.deskclock/com.android.deskclock.DeskClock"); // Stock
+        clockApps.add("com.sec.android.app.clockpackage/com.sec.android.app.clockpackage.ClockPackage"); // Samsung
+
+        return clockApps.contains(componentName.flattenToString());
     }
 }

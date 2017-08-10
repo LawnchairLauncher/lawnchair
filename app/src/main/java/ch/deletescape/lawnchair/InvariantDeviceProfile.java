@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
+import ch.deletescape.lawnchair.preferences.PreferenceFlags;
 import ch.deletescape.lawnchair.util.Thunk;
 
 public class InvariantDeviceProfile {
@@ -179,29 +181,29 @@ public class InvariantDeviceProfile {
         Display display = wm.getDefaultDisplay();
         DisplayMetrics dm = new DisplayMetrics();
         display.getMetrics(dm);
-        SharedPreferences prefs = Utilities.getPrefs(context.getApplicationContext());
-        String valueDefault = "default";
-        if (!prefs.getString("pref_numRows", valueDefault).equals(valueDefault)) {
-            numRows = Integer.valueOf(prefs.getString("pref_numRows", ""));
+        IPreferenceProvider prefs = Utilities.getPrefs(context);
+        String valueDefault = PreferenceFlags.PREF_DEFAULT_STRING;
+        if (!prefs.numRows(valueDefault).equals(valueDefault)) {
+            numRows = Integer.valueOf(prefs.numRows(""));
         }
-        if (!prefs.getString("pref_numCols", valueDefault).equals(valueDefault)) {
-            numColumns = Integer.valueOf(prefs.getString("pref_numCols", ""));
+        if (!prefs.numCols(valueDefault).equals(valueDefault)) {
+            numColumns = Integer.valueOf(prefs.numCols(""));
         }
-        if (!prefs.getString("pref_numColsDrawer", valueDefault).equals(valueDefault)) {
-            numColumnsDrawer = Integer.valueOf(prefs.getString("pref_numColsDrawer", ""));
+        if (!prefs.numColsDrawer(valueDefault).equals(valueDefault)) {
+            numColumnsDrawer = Integer.valueOf(prefs.numColsDrawer(""));
         }
-        if (!prefs.getString("pref_numHotseatIcons", valueDefault).equals(valueDefault)) {
-            numHotseatIcons = Integer.valueOf(prefs.getString("pref_numHotseatIcons", ""));
+        if (!prefs.hotseatIcons(valueDefault).equals(valueDefault)) {
+            numHotseatIcons = Integer.valueOf(prefs.hotseatIcons(""));
         }
-        if (prefs.getFloat("pref_iconScaleSB", 1f) != 1f) {
-            float iconScale = prefs.getFloat("pref_iconScaleSB", 1f);
+        if (prefs.iconScaleSB() != 1f) {
+            float iconScale = prefs.iconScaleSB();
             iconSize *= iconScale;
             hotseatIconSize *= iconScale;
             iconBitmapSize = Math.max(1, Utilities.pxFromDp(iconSize, dm));
             fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
         }
-        if (prefs.getFloat("pref_iconTextScaleSB", 1f) != 1f) {
-            iconTextSize *= prefs.getFloat("pref_iconTextScaleSB", 1f);
+        if (prefs.iconTextScaleSB() != 1f) {
+            iconTextSize *= prefs.iconTextScaleSB();
         }
     }
 

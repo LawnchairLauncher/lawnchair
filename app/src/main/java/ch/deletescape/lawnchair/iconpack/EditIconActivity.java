@@ -3,7 +3,6 @@ package ch.deletescape.lawnchair.iconpack;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
@@ -28,18 +27,19 @@ import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 
 public class EditIconActivity extends Activity implements CustomIconAdapter.Listener, IconPackAdapter.Listener {
 
     private static final int REQUEST_PICK_ICON = 0;
     private LauncherActivityInfoCompat mInfo;
-    private SharedPreferences mPrefs;
+    private IPreferenceProvider mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FeatureFlags.INSTANCE.applyDarkTheme(this);
 
-        FeatureFlags.INSTANCE.enableScreenRotation(this);
+        Utilities.getPrefs(this).enableScreenRotation();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_icon);
@@ -116,14 +116,14 @@ public class EditIconActivity extends Activity implements CustomIconAdapter.List
 
     private void setAlternateIcon(String alternateIcon) {
         String key = mInfo.getComponentName().flattenToString();
-        mPrefs.edit().putString("alternateIcon_" + key, alternateIcon).apply();
+        Utilities.getPrefs(this).alternateIcon(key, alternateIcon, false);
         updateCache();
         finish();
     }
 
     private void resetIcon() {
         String key = mInfo.getComponentName().flattenToString();
-        mPrefs.edit().remove("alternateIcon_" + key).apply();
+        Utilities.getPrefs(this).removeAlternateIcon(key);
         updateCache();
         finish();
     }

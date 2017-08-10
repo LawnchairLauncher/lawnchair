@@ -135,7 +135,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         }
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
-        mUseRoundSearchBar = FeatureFlags.INSTANCE.useRoundSearchBar(context);
+        mUseRoundSearchBar = Utilities.getPrefs(context).useRoundSearchBar();
     }
 
     /**
@@ -240,7 +240,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
      */
     public void reset() {
         // Reset the search bar and base recycler view after transitioning home
-        if (!FeatureFlags.INSTANCE.keepScrollState(getContext())) {
+        if (!Utilities.getPrefs(getContext()).keepScrollState()) {
             scrollToTop();
         }
         mSearchBarController.reset();

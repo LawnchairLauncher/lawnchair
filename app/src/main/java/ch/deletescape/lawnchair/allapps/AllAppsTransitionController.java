@@ -110,12 +110,12 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 .resolveAttributeData(FeatureFlags.INSTANCE.applyDarkTheme(l, FeatureFlags.DARK_ALLAPPS), R.attr.allAppsContainerColor);
         mAllAppsBackgroundColorBlur = Utilities
                 .resolveAttributeData(FeatureFlags.INSTANCE.applyDarkTheme(l, FeatureFlags.DARK_BLUR), R.attr.allAppsContainerColorBlur);
-        mTransparentHotseat = FeatureFlags.INSTANCE.isTransparentHotseat(l);
-        mLightStatusBar = FeatureFlags.INSTANCE.lightStatusBar(l);
+        mTransparentHotseat = Utilities.getPrefs(l).isTransparentHotseat();
+        mLightStatusBar = Utilities.getPrefs(l).lightStatusBar(false);
     }
 
     public void updateLightStatusBar(Context context) {
-        mLightStatusBar = FeatureFlags.INSTANCE.lightStatusBar(context);
+        mLightStatusBar = Utilities.getPrefs(context).lightStatusBar(false);
         updateLightStatusBar(mProgress * mShiftRange);
     }
 

@@ -2,12 +2,13 @@ package ch.deletescape.lawnchair.weather
 
 import android.content.Context
 import ch.deletescape.lawnchair.Utilities
+import ch.deletescape.lawnchair.preferences.PreferenceFlags
 import com.kwabenaberko.openweathermaplib.implementation.OpenWeatherMapHelper
 import com.kwabenaberko.openweathermaplib.models.CurrentWeather
 
 class OWMWeatherAPI(context: Context) : WeatherAPI(), OpenWeatherMapHelper.CurrentWeatherCallback {
 
-    private val apiKey = Utilities.getPrefs(context).getString("pref_weatherApiKey", "17a6438b1d63d5b05f7039e7cb52cde7")
+    private val apiKey = Utilities.getPrefs(context).weatherApiKey()
     private val helper = OpenWeatherMapHelper().apply { setAppId(apiKey) }
 
     override var city: String = ""

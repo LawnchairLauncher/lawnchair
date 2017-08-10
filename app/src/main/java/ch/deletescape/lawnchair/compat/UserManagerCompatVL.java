@@ -28,10 +28,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import ch.deletescape.lawnchair.Utilities;
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.util.LongArrayMap;
 
 public class UserManagerCompatVL extends UserManagerCompat {
-    private static final String USER_CREATION_TIME_KEY = "user_creation_time_";
 
     protected LongArrayMap<UserHandle> mUsers;
     protected HashMap<UserHandle, Long> mUserToSerialMap;
@@ -92,12 +92,12 @@ public class UserManagerCompatVL extends UserManagerCompat {
 
     @Override
     public long getUserCreationTime(UserHandle user) {
-        SharedPreferences prefs = Utilities.getPrefs(mContext);
-        String key = USER_CREATION_TIME_KEY + getSerialNumberForUser(user);
-        if (!prefs.contains(key)) {
-            prefs.edit().putLong(key, System.currentTimeMillis()).apply();
+        IPreferenceProvider prefs = Utilities.getPrefs(mContext);
+        Long key = getSerialNumberForUser(user);
+        if (!prefs.userCreationTimeKeyExists(key)) {
+            prefs.userCreationTimeKey(key, System.currentTimeMillis(), false);
         }
-        return prefs.getLong(key, 0);
+        return prefs.userCreationTimeKey(key);
     }
 
     @Override
