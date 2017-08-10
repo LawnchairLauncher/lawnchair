@@ -70,6 +70,8 @@ public class InvariantDeviceProfile {
     public int numFolderRows;
     public int numFolderColumns;
     public float iconSize;
+    public float allAppsIconSize;
+    public float iconSizeOriginal;
     public int iconBitmapSize;
     public int fillResIconDpi;
     public float iconTextSize;
@@ -146,6 +148,7 @@ public class InvariantDeviceProfile {
         numFolderColumns = closestProfile.numFolderColumns;
 
         iconSize = interpolatedDeviceProfileOut.iconSize;
+        iconSizeOriginal = iconSize;
         iconBitmapSize = Utilities.pxFromDp(iconSize, dm);
         searchHeightAddition = iconBitmapSize;
         iconTextSize = interpolatedDeviceProfileOut.iconTextSize;
@@ -200,10 +203,18 @@ public class InvariantDeviceProfile {
         if (prefs.getFloat("pref_iconScaleSB", 1f) != 1f) {
             float iconScale = prefs.getFloat("pref_iconScaleSB", 1f);
             iconSize *= iconScale;
-            hotseatIconSize *= iconScale;
-            iconBitmapSize = Math.max(1, Utilities.pxFromDp(iconSize, dm));
-            fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
         }
+        if (prefs.getFloat("pref_hotseatIconScale", 1f) != 1f) {
+            float iconScale = prefs.getFloat("pref_hotseatIconScale", 1f);
+            hotseatIconSize *= iconScale;
+        }
+        if (prefs.getFloat("pref_allAppsIconScale", 1f) != 1f) {
+            float iconScale = prefs.getFloat("pref_allAppsIconScale", 1f);
+            allAppsIconSize *= iconScale;
+        }
+        float maxSize = Math.max(Math.max(iconSize, allAppsIconSize), hotseatIconSize);
+        iconBitmapSize = Math.max(1, Utilities.pxFromDp(maxSize, dm));
+        fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
         if (prefs.getFloat("pref_iconTextScaleSB", 1f) != 1f) {
             iconTextSize *= prefs.getFloat("pref_iconTextScaleSB", 1f);
         }

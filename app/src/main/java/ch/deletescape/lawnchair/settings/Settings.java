@@ -25,6 +25,8 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private static final String KEY_PREF_NUM_ROWS = "pref_numRows";
     private static final String KEY_PREF_NUM_HOTSEAT_ICONS = "pref_numHotseatIcons";
     private static final String KEY_PREF_ICON_SCALE = "pref_iconScaleSB";
+    private static final String KEY_PREF_HOTSEAT_ICON_SCALE = "pref_hotseatIconScale";
+    private static final String KEY_PREF_ALL_APPS_ICON_SCALE = "pref_allAppsIconScale";
     private static final String KEY_PREF_ICON_TEXT_SCALE = "pref_iconTextScaleSB";
     private static final String KEY_PREF_ICON_PACK_PACKAGE = "pref_iconPackPackage";
     private static final String KEY_PREF_PIXEL_STYLE_ICONS = "pref_pixelStyleIcons";
@@ -145,6 +147,8 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                     mLauncher.scheduleRecreate();
                     break;
                 case KEY_PREF_ICON_SCALE:
+                case KEY_PREF_HOTSEAT_ICON_SCALE:
+                case KEY_PREF_ALL_APPS_ICON_SCALE:
                 case KEY_PREF_ICON_TEXT_SCALE:
                 case KEY_PREF_ENABLE_BACKPORT_SHORTCUTS:
                 case KEY_PREF_PLANE:
