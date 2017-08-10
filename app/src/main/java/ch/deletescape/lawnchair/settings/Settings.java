@@ -110,7 +110,6 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                     break;
 
                 case KEY_PREF_NUM_COLS_DRAWER:
-                case KEY_PREF_NUM_ROWS_DRAWER:
                 case KEY_PREF_NUM_COLS:
                 case KEY_PREF_NUM_ROWS:
                     las.getInvariantDeviceProfile().refresh(mLauncher);
@@ -159,6 +158,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case KEY_PREF_ENABLE_BACKPORT_SHORTCUTS:
                 case KEY_PREF_PLANE:
                 case KEY_PREF_WEATHER:
+                case KEY_PREF_NUM_ROWS_DRAWER:
                     mLauncher.scheduleKill();
                     break;
                 case KEY_PREF_ICON_PACK_PACKAGE:
