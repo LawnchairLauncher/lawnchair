@@ -64,6 +64,7 @@ public class InvariantDeviceProfile {
     public int numColumnsOriginal;
 
     public int numColumnsDrawer;
+    public int numRowsDrawer;
 
     /**
      * Number of icons per row and column in the folder.
@@ -146,6 +147,7 @@ public class InvariantDeviceProfile {
         numColumns = closestProfile.numColumns;
         numColumnsOriginal = numColumns;
         numColumnsDrawer = numColumns;
+        numRowsDrawer = numRows;
         numHotseatIcons = closestProfile.numHotseatIcons;
         numHotseatIconsOriginal = numHotseatIcons;
         defaultLayoutId = closestProfile.defaultLayoutId;
@@ -215,6 +217,11 @@ public class InvariantDeviceProfile {
             numColumnsDrawer = Integer.valueOf(prefs.getString("pref_numColsDrawer", ""));
         } else {
             numColumnsDrawer = numColumnsOriginal;
+        }
+        if (!prefs.getString("pref_numRowsDrawer", valueDefault).equals(valueDefault)) {
+            numRowsDrawer = Integer.valueOf(prefs.getString("pref_numRowsDrawer", ""));
+        } else {
+            numRowsDrawer = numRowsOriginal;
         }
         if (!prefs.getString("pref_numHotseatIcons", valueDefault).equals(valueDefault)) {
             numHotseatIcons = Integer.valueOf(prefs.getString("pref_numHotseatIcons", ""));

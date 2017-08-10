@@ -162,6 +162,15 @@
             android:summary="%s"
             android:persistent="true" />
 
+        <ListPreference
+            android:key="pref_numRowsDrawer"
+            android:title="@string/pref_num_rows_drawer"
+            android:entryValues="@array/numRowsValues"
+            android:entries="@array/numRowsTexts"
+            android:defaultValue="@string/generalDefault"
+            android:summary="%s"
+            android:persistent="true" />
+
         <ch.deletescape.lawnchair.preferences.SeekbarPreference
             android:key="pref_allAppsOpacitySB"
             android:title="@string/all_apps_opacity_pref_title"

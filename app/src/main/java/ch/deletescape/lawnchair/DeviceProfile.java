@@ -259,8 +259,12 @@ public class DeviceProfile {
             workspaceDrawablePadding = 0;
         }
         float usedAllAppsWidth = (allAppsCellWidthPx * inv.numColumnsDrawer);
-        if (usedAllAppsWidth > maxWorkspaceWidth) {
-            allAppsScale = maxWorkspaceWidth / usedAllAppsWidth;
+        float usedAllAppsHeight = (allAppsCellHeightPx * inv.numRowsDrawer);
+        int maxAllAppsHeight = getAllAppsPageHeight(res);
+        if (usedAllAppsWidth > maxWorkspaceWidth || usedAllAppsHeight > maxAllAppsHeight) {
+            float heightScale = maxAllAppsHeight / usedAllAppsHeight;
+            float widthScale = maxWorkspaceWidth / usedAllAppsWidth;
+            allAppsScale = Math.min(heightScale, widthScale);
             allAppsDrawablePadding = 0;
         }
         float usedHotseatWidth = (hotseatCellWidthPx * inv.numHotseatIcons);
@@ -293,10 +297,6 @@ public class DeviceProfile {
         if (!FeatureFlags.INSTANCE.hideAllAppsAppLabels(mContext)) {
             allAppsCellHeightPx += Utilities.calculateTextHeight(allAppsIconTextSizePx);
         }
-        // Workaround to fix crowded drawer but keep everything in the drawer independent from
-        // dock, etc.
-        allAppsCellHeightPx += allAppsCellHeightPx / 2;
-        dragViewScale = iconSizePx;
 
         // Hotseat
         hotseatCellWidthPx = hotseatIconSizePx;
@@ -339,6 +339,10 @@ public class DeviceProfile {
         folderIconPreviewPadding = res.getDimensionPixelSize(R.dimen.folder_preview_padding);
     }
 
+    private int getAllAppsPageHeight(Resources res) {
+        return getCurrentHeight() - res.getDimensionPixelSize(R.dimen.all_apps_search_bar_height);
+    }
+
     public void updateInsets(Rect insets) {
         mInsets.set(insets);
     }
@@ -365,6 +369,11 @@ public class DeviceProfile {
             }
             return new Point(availableWidthPx - 2 * gap, dropTargetBarSizePx);
         }
+    }
+
+    public int getAllAppsCellHeight(Context context) {
+        Resources res = context.getResources();
+        return calculateCellHeight(getAllAppsPageHeight(res), inv.numRowsDrawer);
     }
 
     public Point getCellSize() {
