@@ -70,7 +70,7 @@ public class Hotseat extends FrameLayout {
             mBackgroundColor = ColorUtils.setAlphaComponent(
                     Utilities.resolveAttributeData(context, R.attr.allAppsContainerColor), 0);
             mBackground = BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS) ?
-                    mLauncher.getBlurWallpaperProvider().createDrawable(): new ColorDrawable(mBackgroundColor);
+                    mLauncher.getBlurWallpaperProvider().createDrawable() : new ColorDrawable(mBackgroundColor);
             setBackground(mBackground);
         }
     }
@@ -118,6 +118,7 @@ public class Hotseat extends FrameLayout {
         } else {
             mContent.setGridSize(grid.inv.numHotseatIcons, 1);
         }
+        mContent.requestLayout();
     }
 
     void resetLayout() {

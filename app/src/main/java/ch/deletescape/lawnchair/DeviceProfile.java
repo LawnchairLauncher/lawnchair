@@ -207,6 +207,14 @@ public class DeviceProfile {
         mBadgeRenderer = new BadgeRenderer(context, iconSizePx);
     }
 
+    public void refresh() {
+        Resources res = mContext.getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        updateAvailableDimensions(dm, res, mContext);
+        computeAllAppsButtonSize(mContext);
+        mBadgeRenderer = new BadgeRenderer(mContext, iconSizePx);
+    }
+
     public void addLauncherLayoutChangedListener(LauncherLayoutChangeListener listener) {
         if (!mListeners.contains(listener)) {
             mListeners.add(listener);
@@ -256,8 +264,9 @@ public class DeviceProfile {
             allAppsDrawablePadding = 0;
         }
         float usedHotseatWidth = (hotseatCellWidthPx * inv.numHotseatIcons);
-        if (usedAllAppsWidth > maxWorkspaceWidth) {
-            hotseatScale = maxWorkspaceWidth / usedHotseatWidth;
+        float maxHotseatWidth = maxWorkspaceWidth - getHotseatAdjustment();
+        if (usedAllAppsWidth > maxHotseatWidth) {
+            hotseatScale = maxHotseatWidth / usedHotseatWidth;
         }
         updateIconSize(workspaceScale, allAppsScale, hotseatScale, workspaceDrawablePadding, allAppsDrawablePadding, res, dm);
     }
@@ -284,6 +293,8 @@ public class DeviceProfile {
         if (!Utilities.getPrefs(mContext).hideAllAppsAppLabels()) {
             allAppsCellHeightPx += Utilities.calculateTextHeight(allAppsIconTextSizePx);
         }
+        int defaultAllAppsCellHeight = calculateCellHeight(availableHeightPx, inv.numRowsOriginal);
+        allAppsCellHeightPx = Math.max(allAppsCellHeightPx, defaultAllAppsCellHeight);
         dragViewScale = iconSizePx;
 
         // Hotseat
@@ -519,9 +530,7 @@ public class DeviceProfile {
         // icons in the hotseat are a different size, and so don't line up perfectly. To account for
         // this, we pad the left and right of the hotseat with half of the difference of a workspace
         // cell vs a hotseat cell.
-        float workspaceCellWidth = (float) getCurrentWidth() / inv.numColumns;
-        float hotseatCellWidth = (float) getCurrentWidth() / inv.numHotseatIcons;
-        int hotseatAdjustment = Math.round((workspaceCellWidth - hotseatCellWidth) / 2);
+        int hotseatAdjustment = getHotseatAdjustment();
         boolean transparentHotseat = Utilities.getPrefs(mContext).isTransparentHotseat();
         boolean hideHotseat = transparentHotseat && Utilities.getPrefs(mContext).hideHotseat();
         if (hasVerticalBarLayout) {
@@ -610,6 +619,12 @@ public class DeviceProfile {
                 mListeners.get(i).onLauncherLayoutChanged();
             }
         }
+    }
+
+    private int getHotseatAdjustment() {
+        float workspaceCellWidth = (float) getCurrentWidth() / inv.numColumns;
+        float hotseatCellWidth = (float) getCurrentWidth() / inv.numHotseatIcons;
+        return Math.round((workspaceCellWidth - hotseatCellWidth) / 2);
     }
 
     private int getCurrentWidth() {

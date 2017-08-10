@@ -18,7 +18,6 @@ package ch.deletescape.lawnchair.allapps;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
@@ -257,10 +256,9 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
                 // Ensure the all apps icon height matches the workspace icons
                 DeviceProfile profile = mLauncher.getDeviceProfile();
-                Point cellSize = profile.getCellSize();
                 GridLayoutManager.LayoutParams lp =
                         (GridLayoutManager.LayoutParams) icon.getLayoutParams();
-                lp.height = cellSize.y;
+                lp.height = profile.allAppsCellHeightPx;
                 icon.setLayoutParams(lp);
                 return new ViewHolder(icon);
             }
