@@ -28,6 +28,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private static final String KEY_PREF_HOTSEAT_ICON_SCALE = "pref_hotseatIconScale";
     private static final String KEY_PREF_ALL_APPS_ICON_SCALE = "pref_allAppsIconScale";
     private static final String KEY_PREF_ICON_TEXT_SCALE = "pref_iconTextScaleSB";
+    private static final String KEY_PREF_ALL_APPS_ICON_TEXT_SCALE = "pref_allAppsIconTextScale";
     private static final String KEY_PREF_ICON_PACK_PACKAGE = "pref_iconPackPackage";
     private static final String KEY_PREF_PIXEL_STYLE_ICONS = "pref_pixelStyleIcons";
     private static final String KEY_PREF_HIDE_APP_LABELS = "pref_hideAppLabels";
@@ -150,6 +151,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case KEY_PREF_HOTSEAT_ICON_SCALE:
                 case KEY_PREF_ALL_APPS_ICON_SCALE:
                 case KEY_PREF_ICON_TEXT_SCALE:
+                case KEY_PREF_ALL_APPS_ICON_TEXT_SCALE:
                 case KEY_PREF_ENABLE_BACKPORT_SHORTCUTS:
                 case KEY_PREF_PLANE:
                 case KEY_PREF_WEATHER:

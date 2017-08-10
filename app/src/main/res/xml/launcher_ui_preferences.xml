@@ -205,6 +205,16 @@
             app:summaryMultiplier="100"
             app:defaultValue="1.0"
             android:persistent="true" />
+
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_allAppsIconTextScale"
+            android:title="@string/icon_text_scale_pref_title"
+            app:minValue="0.3"
+            app:maxValue="1.5"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100"
+            app:defaultValue="1.0"
+            android:persistent="true" />
     </PreferenceCategory>
 
     <PreferenceCategory

@@ -75,6 +75,7 @@ public class InvariantDeviceProfile {
     public int iconBitmapSize;
     public int fillResIconDpi;
     public float iconTextSize;
+    public float allAppsIconTextSize;
     public int searchHeightAddition;
 
     /**
@@ -152,6 +153,7 @@ public class InvariantDeviceProfile {
         iconBitmapSize = Utilities.pxFromDp(iconSize, dm);
         searchHeightAddition = iconBitmapSize;
         iconTextSize = interpolatedDeviceProfileOut.iconTextSize;
+        allAppsIconTextSize = iconTextSize;
         hotseatIconSize = interpolatedDeviceProfileOut.hotseatIconSize;
         hotseatIconSizeOriginal = hotseatIconSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
@@ -217,6 +219,9 @@ public class InvariantDeviceProfile {
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
         if (prefs.getFloat("pref_iconTextScaleSB", 1f) != 1f) {
             iconTextSize *= prefs.getFloat("pref_iconTextScaleSB", 1f);
+        }
+        if (prefs.getFloat("pref_alllAppsIconTextScale", 1f) != 1f) {
+            allAppsIconTextSize *= prefs.getFloat("pref_alllAppsIconTextScale", 1f);
         }
     }
 

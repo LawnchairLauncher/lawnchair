@@ -254,7 +254,7 @@ public class DeviceProfile {
         hotseatIconSizePxOriginal = (int) (Utilities.pxFromDp(inv.hotseatIconSizeOriginal, dm) * scale);
         allAppsIconSizePx = (int) (Utilities.pxFromDp(inv.allAppsIconSize, dm) * scale);
         allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
-        allAppsIconTextSizePx = iconTextSizePx;
+        allAppsIconTextSizePx = (int) (Utilities.pxFromSp(inv.allAppsIconTextSize, dm) * scale);
 
         cellWidthPx = iconSizePx;
         cellHeightPx = iconSizePx + iconDrawablePaddingPx
