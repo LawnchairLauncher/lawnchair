@@ -115,6 +115,8 @@ public class DeviceProfile {
     public int allAppsButtonVisualSize;
     public int allAppsIconSizePx;
     public int allAppsIconDrawablePaddingPx;
+    public int allAppsCellHeightPx;
+    public int allAppsCellWidthPx;
     public float allAppsIconTextSizePx;
 
     // Drop Target
@@ -231,34 +233,53 @@ public class DeviceProfile {
     private void updateAvailableDimensions(DisplayMetrics dm, Resources res, Context context) {
         // Check to see if the icons fit in the new available height.  If not, then we need to
         // shrink the icon size.
-        float scale = 1f;
-        int drawablePadding = iconDrawablePaddingOriginalPx;
-        updateIconSize(1f, drawablePadding, res, dm);
-        float usedHeight = (cellHeightPx * inv.numRows);
+        float workspaceScale = 1f;
+        float allAppsScale = 1f;
+        float hotseatScale = 1f;
+        int workspaceDrawablePadding = iconDrawablePaddingOriginalPx;
+        int allAppsDrawablePadding = iconDrawablePaddingOriginalPx;
+        updateIconSize(1f, 1f, 1f, workspaceDrawablePadding, allAppsDrawablePadding, res, dm);
 
-        int maxHeight = (availableHeightPx - getTotalWorkspacePadding().y);
-        if (usedHeight > maxHeight) {
-            scale = maxHeight / usedHeight;
-            drawablePadding = 0;
+        float usedWorkspaceHeight = (cellHeightPx * inv.numRows);
+        float usedWorkspaceWidth = (cellWidthPx * inv.numColumns);
+        int maxWorkspaceHeight = (availableHeightPx - getTotalWorkspacePadding().y);
+        int maxWorkspaceWidth = (availableWidthPx - getTotalWorkspacePadding().x);
+        if (usedWorkspaceHeight > maxWorkspaceHeight || usedWorkspaceWidth > maxWorkspaceWidth) {
+            float heightScale = maxWorkspaceHeight / usedWorkspaceHeight;
+            float widthScale = maxWorkspaceWidth / usedWorkspaceWidth;
+            workspaceScale = Math.min(heightScale, widthScale);
+            workspaceDrawablePadding = 0;
         }
-        updateIconSize(scale, drawablePadding, res, dm);
+        float usedAllAppsWidth = (allAppsCellWidthPx * inv.numColumnsDrawer);
+        if (usedAllAppsWidth > maxWorkspaceWidth) {
+            allAppsScale = maxWorkspaceWidth / usedAllAppsWidth;
+            allAppsDrawablePadding = 0;
+        }
+        float usedHotseatWidth = (hotseatCellWidthPx * inv.numHotseatIcons);
+        if (usedAllAppsWidth > maxWorkspaceWidth) {
+            allAppsScale = maxWorkspaceWidth / usedHotseatWidth;
+        }
+        updateIconSize(workspaceScale, allAppsScale, hotseatScale, workspaceDrawablePadding, allAppsDrawablePadding, res, dm);
     }
 
-    private void updateIconSize(float scale, int drawablePadding, Resources res,
-                                DisplayMetrics dm) {
-        iconSizePx = (int) (Utilities.pxFromDp(inv.iconSize, dm) * scale);
-        iconSizePxOriginal = (int) (Utilities.pxFromDp(inv.iconSizeOriginal, dm) * scale);
-        iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
-        iconDrawablePaddingPx = drawablePadding;
-        hotseatIconSizePx = (int) (Utilities.pxFromDp(inv.hotseatIconSize, dm) * scale);
-        hotseatIconSizePxOriginal = (int) (Utilities.pxFromDp(inv.hotseatIconSizeOriginal, dm) * scale);
-        allAppsIconSizePx = (int) (Utilities.pxFromDp(inv.allAppsIconSize, dm) * scale);
-        allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
-        allAppsIconTextSizePx = (int) (Utilities.pxFromSp(inv.allAppsIconTextSize, dm) * scale);
+    private void updateIconSize(float workspaceScale, float allAppsScale, float hotseatScale, int workspaceDrawablePadding, int allAppsDrawablePadding,
+                                Resources res, DisplayMetrics dm) {
+        iconSizePx = (int) (Utilities.pxFromDp(inv.iconSize, dm) * workspaceScale);
+        iconSizePxOriginal = (int) (Utilities.pxFromDp(inv.iconSizeOriginal, dm) * workspaceScale);
+        iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * workspaceScale);
+        iconDrawablePaddingPx = workspaceDrawablePadding;
+        hotseatIconSizePx = (int) (Utilities.pxFromDp(inv.hotseatIconSize, dm) * hotseatScale);
+        hotseatIconSizePxOriginal = (int) (Utilities.pxFromDp(inv.hotseatIconSizeOriginal, dm) * hotseatScale);
+        allAppsIconSizePx = (int) (Utilities.pxFromDp(inv.allAppsIconSize, dm) * allAppsScale);
+        allAppsIconDrawablePaddingPx = allAppsDrawablePadding;
+        allAppsIconTextSizePx = (int) (Utilities.pxFromSp(inv.allAppsIconTextSize, dm) * allAppsScale);
 
         cellWidthPx = iconSizePx;
         cellHeightPx = iconSizePx + iconDrawablePaddingPx
                 + Utilities.calculateTextHeight(iconTextSizePx);
+        allAppsCellWidthPx = allAppsIconSizePx;
+        allAppsCellWidthPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx
+                + Utilities.calculateTextHeight(allAppsIconTextSizePx);
         dragViewScale = iconSizePx;
 
         // Hotseat

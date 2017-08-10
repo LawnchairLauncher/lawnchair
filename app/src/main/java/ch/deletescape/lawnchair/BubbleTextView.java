@@ -240,7 +240,7 @@ public class BubbleTextView extends TextView
         if (FeatureFlags.INSTANCE.animatedClockIcon(getContext()) &&
                 componentName != null &&
                 "com.google.android.deskclock/com.android.deskclock.DeskClock"
-                .equals(componentName.flattenToString())) {
+                        .equals(componentName.flattenToString())) {
             setIcon(ClockIconDrawable.Companion.create(getContext()));
         }
     }
