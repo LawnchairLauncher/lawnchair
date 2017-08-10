@@ -8,6 +8,47 @@ import ch.deletescape.lawnchair.config.PreferenceProvider
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors
 
 open class PreferenceImpl : IPreferenceProvider {
+    override fun hotseatIconScale(): Float {
+        return getFloat(PreferenceFlags.KEY_PREF_HOTSEAT_ICON_SCALE, 1f)
+    }
+
+    override fun hotseatIconScale(value: Float, commit: Boolean) {
+       setFloat(PreferenceFlags.KEY_PREF_HOTSEAT_ICON_SCALE, value, commit)
+    }
+
+    override fun allAppsIconScale(): Float {
+        return getFloat(PreferenceFlags.KEY_PREF_ALL_APPS_ICON_SCALE, 1f)
+    }
+
+    override fun allAppsIconScale(value: Float, commit: Boolean) {
+        setFloat(PreferenceFlags.KEY_PREF_ALL_APPS_ICON_SCALE, value, commit)
+    }
+
+    override fun alllAppsIconTextScale(): Float {
+        return getFloat(PreferenceFlags.KEY_PREF_ALL_APPS_ICON_TEXT_SCALE, 1f)
+    }
+
+    override fun alllAppsIconTextScale(value: Float, commit: Boolean) {
+        setFloat(PreferenceFlags.KEY_PREF_ALL_APPS_ICON_TEXT_SCALE, value, commit)
+    }
+
+    override fun useCustomAllAppsTextColor(context: Context): Boolean {
+        return getBoolean(PreferenceFlags.KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR, false)
+    }
+
+    override fun useCustomAllAppsTextColor(value: Boolean, commit: Boolean) {
+        setBoolean(PreferenceFlags.KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR, value, commit)
+    }
+
+
+    override fun hideAllAppsAppLabels(): Boolean {
+        return getBoolean(PreferenceFlags.KEY_PREF_HIDE_ALL_APPS_APP_LABELS, false)
+    }
+
+    override fun hideAllAppsAppLabels(value: Boolean, commit: Boolean) {
+        setBoolean(PreferenceFlags.KEY_PREF_HIDE_ALL_APPS_APP_LABELS, value, commit)
+    }
+
     override fun animateClockIconAlternativeClockApps(): Boolean {
         return false;
     }

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;

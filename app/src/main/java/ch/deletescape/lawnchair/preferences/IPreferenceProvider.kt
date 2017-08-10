@@ -39,6 +39,8 @@ interface IPreferenceProvider {
     fun enableScreenRotation(value: Boolean, commit: Boolean = false)
     fun hideAppLabels(): Boolean
     fun hideAppLabels(value: Boolean, commit: Boolean = false)
+    fun hideAllAppsAppLabels(): Boolean
+    fun hideAllAppsAppLabels(value: Boolean, commit: Boolean = false)
     fun allowFullWidthWidgets(): Boolean
     fun allowFullWidthWidgets(value: Boolean, commit: Boolean = false)
     fun showGoogleNowTab(): Boolean
@@ -70,6 +72,8 @@ interface IPreferenceProvider {
     fun animatedClockIcon(): Boolean
     fun animatedClockIcon(value: Boolean, commit: Boolean = false)
     fun animateClockIconAlternativeClockApps(): Boolean
+    fun useCustomAllAppsTextColor(context: Context): Boolean
+    fun useCustomAllAppsTextColor(value: Boolean, commit: Boolean)
 
     fun theme(): String
     fun theme(value: String, commit: Boolean = false)
@@ -139,6 +143,12 @@ interface IPreferenceProvider {
     fun allAppsOpacity(value: Float, commit: Boolean = false)
     fun showHidden(): Boolean
     fun showHidden(value: Boolean, commit: Boolean = false)
+    fun hotseatIconScale(): Float
+    fun hotseatIconScale(value: Float, commit: Boolean = false)
+    fun allAppsIconScale(): Float
+    fun allAppsIconScale(value: Float, commit: Boolean = false)
+    fun alllAppsIconTextScale(): Float
+    fun alllAppsIconTextScale(value: Float, commit: Boolean = false)
 
     // -----------------
     // GENERAL - BITS

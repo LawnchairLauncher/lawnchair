@@ -64,7 +64,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                     applyAllAppsOpacity(preferences);
                     break;
                 case PreferenceFlags.KEY_PREF_SHOW_HIDDEN_APPS:
-                case KEY_PREF_HIDE_ALL_APPS_APP_LABELS:
+                case PreferenceFlags.KEY_PREF_HIDE_ALL_APPS_APP_LABELS:
                     las.reloadAllApps();
                     break;
 
@@ -109,14 +109,14 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR_VARITATION:
                     mLauncher.scheduleRecreate();
                     break;
-                case KEY_PREF_ICON_SCALE:
-                case KEY_PREF_HOTSEAT_ICON_SCALE:
-                case KEY_PREF_ALL_APPS_ICON_SCALE:
-                case KEY_PREF_ICON_TEXT_SCALE:
-                case KEY_PREF_ALL_APPS_ICON_TEXT_SCALE:
-                case KEY_PREF_ENABLE_BACKPORT_SHORTCUTS:
-                case KEY_PREF_PLANE:
-                case KEY_PREF_WEATHER:
+                case PreferenceFlags.KEY_PREF_ICON_SCALE:
+                case PreferenceFlags.KEY_PREF_HOTSEAT_ICON_SCALE:
+                case PreferenceFlags.KEY_PREF_ALL_APPS_ICON_SCALE:
+                case PreferenceFlags.KEY_PREF_ICON_TEXT_SCALE:
+                case PreferenceFlags.KEY_PREF_ALL_APPS_ICON_TEXT_SCALE:
+                case PreferenceFlags.KEY_PREF_ENABLE_BACKPORT_SHORTCUTS:
+                case PreferenceFlags.KEY_PREF_PLANE:
+                case PreferenceFlags.KEY_PREF_WEATHER:
                     mLauncher.scheduleKill();
                     break;
                 case PreferenceFlags.KEY_PREF_ICON_PACK_PACKAGE:

@@ -124,8 +124,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     private int getAppIconTextColor(Context context, int allAppsAlpha) {
-        if (FeatureFlags.INSTANCE.useCustomAllAppsTextColor(context)) {
-            return Utilities.getColor(context, "pref_allAppsLabelColorHue", "-3", "pref_allAppsLabelColorVariation", "5");
+        if (Utilities.getPrefs(context).useCustomAllAppsTextColor(context)) {
+            return Utilities.getLabelColor(context);
         } else if (FeatureFlags.INSTANCE.useDarkTheme(FeatureFlags.DARK_ALLAPPS)) {
             return Color.WHITE;
         } else if ((allAppsAlpha < 128 && !BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS)) || allAppsAlpha < 50) {

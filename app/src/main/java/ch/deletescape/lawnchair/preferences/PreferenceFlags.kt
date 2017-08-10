@@ -22,6 +22,9 @@ object PreferenceFlags {
     const val KEY_ICON_SCALE_SB = "pref_iconScaleSB"
     const val KEY_ICON_TEXT_SCALE_SB = "pref_iconTextScaleSB"
     const val KEY_BLUR_RADIUS = "pref_blurRadius"
+    const val KEY_PREF_HOTSEAT_ICON_SCALE = "pref_hotseatIconScale"
+    const val KEY_PREF_ALL_APPS_ICON_SCALE = "pref_allAppsIconScale"
+    const val KEY_PREF_ALL_APPS_ICON_TEXT_SCALE = "pref_alllAppsIconTextScale"
 
     //Ints
     const val KEY_BLUR_MODE = "pref_blurMode"
@@ -58,6 +61,7 @@ object PreferenceFlags {
     const val KEY_PREF_ICON_PACK_PACKAGE = "pref_iconPackPackage"
     const val KEY_PREF_PIXEL_STYLE_ICONS = "pref_pixelStyleIcons"
     const val KEY_PREF_HIDE_APP_LABELS = "pref_hideAppLabels"
+    const val KEY_PREF_HIDE_ALL_APPS_APP_LABELS = "pref_hideAllAppsAppLabels"
     const val KEY_PREF_ENABLE_SCREEN_ROTATION = "pref_enableScreenRotation"
     const val KEY_PREF_FULL_WIDTH_WIDGETS = "pref_fullWidthWidgets"
     const val KEY_PREF_SHOW_NOW_TAB = "pref_showGoogleNowTab"
@@ -76,6 +80,7 @@ object PreferenceFlags {
     const val KEY_PREF_PLANE = "pref_plane"
     const val KEY_PREF_WEATHER = "pref_weather"
     const val KEY_PREF_ENABLE_EDITING = "pref_enableEditing"
+    const val KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR = "pref_allAppsCustomLabelColor"
 
     const val KEY_APP_VISIBILITY_PREFIX = "visibility_"
     const val KEY_PREVIOUS_BUILD_NUMBER = "previousBuildNumber"
