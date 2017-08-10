@@ -275,11 +275,16 @@ public class DeviceProfile {
         allAppsIconTextSizePx = (int) (Utilities.pxFromSp(inv.allAppsIconTextSize, dm) * allAppsScale);
 
         cellWidthPx = iconSizePx;
-        cellHeightPx = iconSizePx + iconDrawablePaddingPx
-                + Utilities.calculateTextHeight(iconTextSizePx);
+        cellHeightPx = iconSizePx + iconDrawablePaddingPx;
+        Context context = LauncherAppState.getInstance().getContext();
+        if (!FeatureFlags.INSTANCE.hideAppLabels(context)) {
+            cellHeightPx += Utilities.calculateTextHeight(iconTextSizePx);
+        }
         allAppsCellWidthPx = allAppsIconSizePx;
-        allAppsCellWidthPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx
-                + Utilities.calculateTextHeight(allAppsIconTextSizePx);
+        allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx;
+        if (!FeatureFlags.INSTANCE.hideAllAppsAppLabels(context)) {
+            allAppsCellHeightPx += Utilities.calculateTextHeight(allAppsIconTextSizePx);
+        }
         dragViewScale = iconSizePx;
 
         // Hotseat
