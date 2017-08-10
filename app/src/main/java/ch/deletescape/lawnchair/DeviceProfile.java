@@ -293,8 +293,9 @@ public class DeviceProfile {
         if (!FeatureFlags.INSTANCE.hideAllAppsAppLabels(mContext)) {
             allAppsCellHeightPx += Utilities.calculateTextHeight(allAppsIconTextSizePx);
         }
-        int defaultAllAppsCellHeight = calculateCellHeight(availableHeightPx, inv.numRowsOriginal);
-        allAppsCellHeightPx = Math.max(allAppsCellHeightPx, defaultAllAppsCellHeight);
+        // Workaround to fix crowded drawer but keep everything in the drawer independent from
+        // dock, etc.
+        allAppsCellHeightPx += allAppsCellHeightPx / 2;
         dragViewScale = iconSizePx;
 
         // Hotseat
