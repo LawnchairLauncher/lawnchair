@@ -150,6 +150,7 @@ public class InvariantDeviceProfile {
 
         iconSize = interpolatedDeviceProfileOut.iconSize;
         iconSizeOriginal = iconSize;
+        allAppsIconSize = iconSize;
         iconBitmapSize = Utilities.pxFromDp(iconSize, dm);
         searchHeightAddition = iconBitmapSize;
         iconTextSize = interpolatedDeviceProfileOut.iconTextSize;
