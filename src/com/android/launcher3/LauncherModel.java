@@ -689,4 +689,8 @@ public class LauncherModel extends BroadcastReceiver
     public static Looper getWorkerLooper() {
         return sWorkerThread.getLooper();
     }
+
+    public static void setWorkerPriority(final int priority) {
+        Process.setThreadPriority(sWorkerThread.getThreadId(), priority);
+    }
 }
