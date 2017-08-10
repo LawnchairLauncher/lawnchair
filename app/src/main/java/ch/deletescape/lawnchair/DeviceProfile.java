@@ -276,13 +276,12 @@ public class DeviceProfile {
 
         cellWidthPx = iconSizePx;
         cellHeightPx = iconSizePx + iconDrawablePaddingPx;
-        Context context = LauncherAppState.getInstance().getContext();
-        if (!FeatureFlags.INSTANCE.hideAppLabels(context)) {
+        if (!FeatureFlags.INSTANCE.hideAppLabels(mContext)) {
             cellHeightPx += Utilities.calculateTextHeight(iconTextSizePx);
         }
         allAppsCellWidthPx = allAppsIconSizePx;
         allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx;
-        if (!FeatureFlags.INSTANCE.hideAllAppsAppLabels(context)) {
+        if (!FeatureFlags.INSTANCE.hideAllAppsAppLabels(mContext)) {
             allAppsCellHeightPx += Utilities.calculateTextHeight(allAppsIconTextSizePx);
         }
         dragViewScale = iconSizePx;
