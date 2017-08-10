@@ -70,7 +70,6 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -963,7 +962,7 @@ public final class Utilities {
     }
 
     @NonNull
-    private static String getChangelog() {
+    public static String getChangelog() {
         StringBuilder builder = new StringBuilder();
         String[] lines = BuildConfig.CHANGELOG.split("\n");
         for (String line : lines) {
@@ -974,8 +973,9 @@ public final class Utilities {
             builder
                     .append("- ")
                     .append(line.trim())
-                    .append("\n");
+                    .append('\n');
         }
+        builder.deleteCharAt(builder.lastIndexOf("\n"));
         return builder.toString();
     }
 
@@ -996,10 +996,6 @@ public final class Utilities {
     public static boolean isAwarenessApiEnabled(Context context) {
         IPreferenceProvider prefs = getPrefs(context);
         return PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS.equals(prefs.weatherProvider());
-    }
-
-    public static <T> List<T> emptyList() {
-        return Collections.EMPTY_LIST;
     }
 
     public static boolean isComponentClock(ComponentName componentName, boolean stockAppOnly) {

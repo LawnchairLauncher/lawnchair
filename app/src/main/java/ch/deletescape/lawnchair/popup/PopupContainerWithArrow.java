@@ -26,6 +26,7 @@ import android.view.ViewConfiguration;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -182,8 +183,8 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         }
         ItemInfo itemInfo = (ItemInfo) bubbleTextView.getTag();
         if (mShortcutsItemView == null) {
-            deepShortcuts = Utilities.emptyList();
-            systemShortcuts = Utilities.emptyList();
+            deepShortcuts = Collections.emptyList();
+            systemShortcuts = Collections.emptyList();
         } else {
             deepShortcuts = mShortcutsItemView.getDeepShortcutViews(z);
             systemShortcuts = mShortcutsItemView.getSystemShortcutViews(z);

@@ -56,7 +56,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
         if (mView != null && weatherShowing) {
             DeviceProfile deviceProfile = Launcher.getLauncher(getContext()).getDeviceProfile();
             LayoutParams layoutParams = (LayoutParams) mView.getLayoutParams();
-            int size = ((MeasureSpec.getSize(i) / deviceProfile.inv.numColumns) - deviceProfile.iconSizePx) / 2;
+            int size = ((MeasureSpec.getSize(i) / deviceProfile.inv.numColumnsOriginal) - deviceProfile.iconSizePxOriginal) / 2;
             layoutParams.rightMargin = size;
             layoutParams.leftMargin = size;
         }

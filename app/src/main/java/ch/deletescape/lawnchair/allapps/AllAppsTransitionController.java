@@ -9,7 +9,6 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.MotionEvent;
@@ -125,7 +124,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     private int getAppIconTextColor(Context context, int allAppsAlpha) {
-        if (FeatureFlags.INSTANCE.useDarkTheme(FeatureFlags.DARK_ALLAPPS)) {
+        if (FeatureFlags.INSTANCE.useCustomAllAppsTextColor(context)) {
+            return Utilities.getColor(context, "pref_allAppsLabelColorHue", "-3", "pref_allAppsLabelColorVariation", "5");
+        } else if (FeatureFlags.INSTANCE.useDarkTheme(FeatureFlags.DARK_ALLAPPS)) {
             return Color.WHITE;
         } else if ((allAppsAlpha < 128 && !BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS)) || allAppsAlpha < 50) {
             return Color.WHITE;
@@ -289,13 +290,13 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         boolean useDarkTheme = FeatureFlags.INSTANCE.useDarkTheme(FeatureFlags.DARK_ALLAPPS);
         boolean darkStatusBar = useDarkTheme ||
                 (BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS) &&
-                !mLauncher.getExtractedColors().isLightStatusBar() &&
-                allAppsAlpha < 52);
+                        !mLauncher.getExtractedColors().isLightStatusBar() &&
+                        allAppsAlpha < 52);
 
         boolean darkNavigationBar = useDarkTheme ||
                 (BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS) &&
-                !mLauncher.getExtractedColors().isLightNavigationBar() &&
-                allAppsAlpha < 52);
+                        !mLauncher.getExtractedColors().isLightNavigationBar() &&
+                        allAppsAlpha < 52);
 
         if (Utilities.ATLEAST_MARSHMALLOW) {
             // Use a light status bar (dark icons) if all apps is behind at least half of the status

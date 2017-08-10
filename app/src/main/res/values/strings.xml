@@ -325,6 +325,7 @@
     <string name="blur_radius_pref_title">Blur radius</string>
     <string name="white_google_icon_pref_title">Use white Google icon</string>
     <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
+    <string name="hide_all_apps_icon_labels_pref_title">Hide icon labels in drawer</string>
     <string name="workspace_label_color_hue_pref_title">Color of icon labels on home screen</string>
     <string name="workspace_label_color_variation_pref_title">Color variation of icon labels on home screen</string>
     <string name="all_apps_opacity_pref_title">Drawer opacity</string>
@@ -457,10 +458,10 @@
     <string name="pref_applyBlur">Apply blur on</string>
     <string name="search_bar">Search bar</string>
     <string name="folder">Folder</string>
-    <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
+    <string name="dock_allapps"><![CDATA[Dock & drawer]]></string>
     <string name="app_shortcuts">App shortcuts</string>
     <string name="blur_effect">Blur effect</string>
-    <string name="enable_editing_pref_title">Enable editing workspace</string>
+    <string name="enable_editing_pref_title">Enable editing homescreen</string>
     <string name="pref_weather_provider">Weather provider</string>
     <string name="loading">Loading...</string>
     <string name="icon_shape_override_label">Change icon shape</string>
@@ -483,4 +484,8 @@
     <string name="weather_api_key_set">API key set</string>
     <string name="weather_api_key_not_set">API key not set</string>
     <string name="pref_weather_api_key_title">API key</string>
+    <string name="about_changelog">Changelog</string>
+    <string name="pref_all_apps_custom_label_color">Use custom label color</string>
+    <string name="pref_all_apps_label_color_variation">Color variation of icon labels in app drawer</string>
+    <string name="pref_all_apps_label_color">Color of icon labels in drawer</string>
 </resources>

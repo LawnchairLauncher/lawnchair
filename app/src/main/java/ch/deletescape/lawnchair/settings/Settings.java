@@ -11,6 +11,9 @@ import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.preferences.PreferenceFlags;
 
 public class Settings implements SharedPreferences.OnSharedPreferenceChangeListener {
+    private static final String KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR = "pref_allAppsCustomLabelColor";
+    private static final String KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR_HUE = "pref_allAppsCustomLabelColorHue";
+    private static final String KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR_VARITATION = "pref_allAppsCustomLabelColorVariation";
     private static Settings instance;
     private Launcher mLauncher;
     private IPreferenceProvider preferences;
@@ -61,6 +64,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                     applyAllAppsOpacity(preferences);
                     break;
                 case PreferenceFlags.KEY_PREF_SHOW_HIDDEN_APPS:
+                case KEY_PREF_HIDE_ALL_APPS_APP_LABELS:
                     las.reloadAllApps();
                     break;
 
@@ -100,13 +104,19 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case PreferenceFlags.KEY_PREF_ROUND_SEARCH_BAR:
                 case PreferenceFlags.KEY_SHOW_PIXEL_BAR:
                 case PreferenceFlags.KEY_PREF_HIDE_HOTSEAT:
+                case KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR:
+                case KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR_HUE:
+                case KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR_VARITATION:
                     mLauncher.scheduleRecreate();
                     break;
-                case PreferenceFlags.KEY_PREF_ICON_SCALE:
-                case PreferenceFlags.KEY_PREF_ICON_TEXT_SCALE:
-                case PreferenceFlags.KEY_PREF_ENABLE_BACKPORT_SHORTCUTS:
-                case PreferenceFlags.KEY_PREF_PLANE:
-                case PreferenceFlags.KEY_PREF_WEATHER:
+                case KEY_PREF_ICON_SCALE:
+                case KEY_PREF_HOTSEAT_ICON_SCALE:
+                case KEY_PREF_ALL_APPS_ICON_SCALE:
+                case KEY_PREF_ICON_TEXT_SCALE:
+                case KEY_PREF_ALL_APPS_ICON_TEXT_SCALE:
+                case KEY_PREF_ENABLE_BACKPORT_SHORTCUTS:
+                case KEY_PREF_PLANE:
+                case KEY_PREF_WEATHER:
                     mLauncher.scheduleKill();
                     break;
                 case PreferenceFlags.KEY_PREF_ICON_PACK_PACKAGE:

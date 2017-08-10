@@ -108,9 +108,13 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
     public float wallpaperOffsetForScroll(int scroll) {
         // To match the default wallpaper behavior in the system, we default to either the left
         // or right edge on initialization
+        // Lawnchair edit: Default to the center when there is only one Page
         int numScrollingPages = getNumScreensExcludingEmpty();
-        if (mLockedToDefaultPage || numScrollingPages <= 1) {
-            return mIsRtl ? 1f : 0f;
+        float edge = mIsRtl ? 1f : 0f;
+        if (numScrollingPages <= 1) {
+            return mWallpaperIsLiveWallpaper ? edge : 0.5f;
+        } else if (mLockedToDefaultPage) {
+            return edge;
         }
 
         // Distribute the wallpaper parallax over a minimum of MIN_PARALLAX_PAGE_SPAN workspace
