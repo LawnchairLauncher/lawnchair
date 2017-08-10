@@ -262,8 +262,8 @@ public class DeviceProfile {
         dragViewScale = iconSizePx;
 
         // Hotseat
-        hotseatCellWidthPx = iconSizePx;
-        hotseatCellHeightPx = iconSizePx;
+        hotseatCellWidthPx = hotseatIconSizePx;
+        hotseatCellHeightPx = hotseatIconSizePx;
 
         if (!isVerticalBarLayout()) {
             int expectedWorkspaceHeight = availableHeightPx - getHotseatHeight()
