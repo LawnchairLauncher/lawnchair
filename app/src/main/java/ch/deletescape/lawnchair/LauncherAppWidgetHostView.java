@@ -65,7 +65,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     @Override
     public void setAppWidget(int appWidgetId, AppWidgetProviderInfo info) {
         super.setAppWidget(appWidgetId, info);
-        if (FeatureFlags.INSTANCE.allowFullWidthWidgets(getContext()) && info != null) {
+        if (Utilities.getPrefs(getContext()).allowFullWidthWidgets() && info != null) {
             setPadding(0, 0, 0, 0);
         }
     }

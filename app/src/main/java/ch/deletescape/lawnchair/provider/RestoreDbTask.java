@@ -37,8 +37,6 @@ import ch.deletescape.lawnchair.Utilities;
  */
 public class RestoreDbTask {
 
-    private static final String RESTORE_TASK_PENDING = "restore_task_pending";
-
     private static final String INFO_COLUMN_NAME = "name";
     private static final String INFO_COLUMN_DEFAULT_VALUE = "dflt_value";
 
@@ -130,10 +128,10 @@ public class RestoreDbTask {
     }
 
     public static boolean isPending(Context context) {
-        return Utilities.getPrefs(context).getBoolean(RESTORE_TASK_PENDING, false);
+        return Utilities.getPrefs(context).restoreTaskPending();
     }
 
     public static void setPending(Context context, boolean isPending) {
-        Utilities.getPrefs(context).edit().putBoolean(RESTORE_TASK_PENDING, isPending).apply();
+        Utilities.getPrefs(context).restoreTaskPending(isPending, false);
     }
 }

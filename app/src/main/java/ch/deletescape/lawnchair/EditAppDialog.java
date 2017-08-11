@@ -18,10 +18,10 @@ import android.widget.Toast;
 
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
 import ch.deletescape.lawnchair.iconpack.EditIconActivity;
-import ch.deletescape.lawnchair.model.PackageItemInfo;
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 
 public class EditAppDialog extends Launcher.LauncherDialog {
-    private static SharedPreferences sharedPrefs;
+    private static IPreferenceProvider sharedPrefs;
     private AppInfo info;
     private EditText title;
     private Switch visibility;
@@ -108,7 +108,7 @@ public class EditAppDialog extends Launcher.LauncherDialog {
         String titleS = title.getText().toString();
         if (!titleS.trim().equals(info.title.toString().trim())) {
             info.title = titleS.trim();
-            sharedPrefs.edit().putString("alias_" + key, titleS).apply();
+            sharedPrefs.itemAlias(key, titleS, false);
         }
         LauncherAppState app = LauncherAppState.getInstanceNoCreate();
         if (app != null) {

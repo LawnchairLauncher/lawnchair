@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
@@ -28,7 +29,7 @@ public class DeepShortcutManagerBackport extends DeepShortcutManager {
     public DeepShortcutManagerBackport(Context context) {
         mContext = context;
         mLauncherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
-        mEnableBackport = FeatureFlags.INSTANCE.enableBackportShortcuts(context);
+        mEnableBackport = Utilities.getPrefs(context).enableBackportShortcuts();
     }
 
     @Override

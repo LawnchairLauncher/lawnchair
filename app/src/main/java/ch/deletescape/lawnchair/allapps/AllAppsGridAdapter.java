@@ -279,7 +279,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_SEARCH_DIVIDER:
                 ImageView divider = (ImageView) mLayoutInflater.inflate(
                         R.layout.all_apps_search_divider, parent, false);
-                if (!FeatureFlags.INSTANCE.useRoundSearchBar(mLauncher))
+                if (!Utilities.getPrefs(mLauncher).useRoundSearchBar())
                     divider.setImageDrawable(new ColorDrawable(Utilities.getDynamicAccent(parent.getContext())));
                 return new ViewHolder(divider);
             case VIEW_TYPE_SEARCH_MARKET_DIVIDER:

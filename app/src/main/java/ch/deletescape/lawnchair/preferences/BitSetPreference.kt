@@ -13,9 +13,9 @@ class BitSetPreference(context: Context?, attrs: AttributeSet?) :
     val prefs = Utilities.getPrefs(context)
     val defaultValue = (1 shl 30) - 1
     var persistedInt: Int
-        get() = prefs.getInt(key, defaultValue)
+        get() = prefs.getIntPref(key, defaultValue)
         set(value) {
-            prefs.edit().putInt(key, value).apply()
+            prefs.setIntPref(key, value)
         }
 
     override fun getPersistedStringSet(defaultReturnValue: MutableSet<String>?): MutableSet<String> {

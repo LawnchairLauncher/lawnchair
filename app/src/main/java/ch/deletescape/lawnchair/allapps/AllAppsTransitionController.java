@@ -28,6 +28,7 @@ import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
+import ch.deletescape.lawnchair.config.ThemeProvider;
 import ch.deletescape.lawnchair.util.TouchController;
 
 /**
@@ -105,16 +106,14 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mShiftRange = DEFAULT_SHIFT_RANGE;
         mProgress = 1f;
         mEvaluator = new ArgbEvaluator();
-        mAllAppsBackgroundColor = Utilities
-                .resolveAttributeData(FeatureFlags.INSTANCE.applyDarkTheme(l, FeatureFlags.DARK_ALLAPPS), R.attr.allAppsContainerColor);
-        mAllAppsBackgroundColorBlur = Utilities
-                .resolveAttributeData(FeatureFlags.INSTANCE.applyDarkTheme(l, FeatureFlags.DARK_BLUR), R.attr.allAppsContainerColorBlur);
-        mTransparentHotseat = FeatureFlags.INSTANCE.isTransparentHotseat(l);
-        mLightStatusBar = FeatureFlags.INSTANCE.lightStatusBar(l);
+        mAllAppsBackgroundColor = Utilities.getThemer().allAppsBackgroundColor(l);
+        mAllAppsBackgroundColorBlur = Utilities.getThemer().allAppsBackgroundColorBlur(l);
+        mTransparentHotseat = Utilities.getPrefs(l).isTransparentHotseat();
+        mLightStatusBar = Utilities.getPrefs(l).lightStatusBar(false);
     }
 
     public void updateLightStatusBar(Context context) {
-        mLightStatusBar = FeatureFlags.INSTANCE.lightStatusBar(context);
+        mLightStatusBar = Utilities.getPrefs(context).lightStatusBar(false);
         updateLightStatusBar(mProgress * mShiftRange);
     }
 
@@ -124,8 +123,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     private int getAppIconTextColor(Context context, int allAppsAlpha) {
-        if (FeatureFlags.INSTANCE.useCustomAllAppsTextColor(context)) {
-            return Utilities.getColor(context, "pref_allAppsLabelColorHue", "-3", "pref_allAppsLabelColorVariation", "5");
+        if (Utilities.getPrefs(context).useCustomAllAppsTextColor(context)) {
+            return Utilities.getLabelColor(context);
         } else if (FeatureFlags.INSTANCE.useDarkTheme(FeatureFlags.DARK_ALLAPPS)) {
             return Color.WHITE;
         } else if ((allAppsAlpha < 128 && !BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS)) || allAppsAlpha < 50) {

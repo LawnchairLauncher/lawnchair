@@ -17,6 +17,7 @@ import ch.deletescape.lawnchair.LauncherAppState
 import ch.deletescape.lawnchair.R
 import ch.deletescape.lawnchair.Utilities
 import ch.deletescape.lawnchair.config.FeatureFlags
+import ch.deletescape.lawnchair.preferences.PreferenceFlags
 import java.util.*
 
 class BlurWallpaperProvider(context: Context) {
@@ -52,23 +53,23 @@ class BlurWallpaperProvider(context: Context) {
     private val mUpdateRunnable = Runnable { updateWallpaper() }
 
     init {
-        isEnabled = mWallpaperManager.wallpaperInfo == null && FeatureFlags.isBlurEnabled(this.context)
+        isEnabled = mWallpaperManager.wallpaperInfo == null && Utilities.getPrefs(context).isBlurEnabled()
         sEnabledFlag = enabledFlag
 
         updateBlurRadius()
     }
 
     private fun updateBlurRadius() {
-        blurRadius = Utilities.getPrefs(context).getFloat("pref_blurRadius", 75f).toInt() / DOWNSAMPLE_FACTOR
+        blurRadius = Utilities.getPrefs(context).blurRadius().toInt() / DOWNSAMPLE_FACTOR
         blurRadius = Math.max(1, Math.min(blurRadius, 25))
     }
 
     private val enabledFlag: Int
-        get() = Utilities.getPrefs(context).getInt("pref_blurMode", (1 shl 30) - 1)
+        get() = Utilities.getPrefs(context).blurMode()
 
     private fun updateWallpaper() {
         val launcher = LauncherAppState.getInstance().launcher
-        val enabled = mWallpaperManager.wallpaperInfo == null && FeatureFlags.isBlurEnabled(context)
+        val enabled = mWallpaperManager.wallpaperInfo == null && Utilities.getPrefs(context).isBlurEnabled()
         if (enabled != isEnabled || enabledFlag != sEnabledFlag) {
             launcher.scheduleKill()
         }
@@ -90,7 +91,7 @@ class BlurWallpaperProvider(context: Context) {
         this.wallpaper = null
         placeholder = createPlaceholder(wallpaper.width, wallpaper.height)
         launcher.runOnUiThread(mNotifyRunnable)
-        if (FeatureFlags.isVibrancyEnabled(context)) {
+        if (Utilities.getPrefs(context).isVibrancyEnabled()) {
             wallpaper = applyVibrancy(wallpaper, tintColor)
         }
         this.wallpaper = blur(wallpaper)

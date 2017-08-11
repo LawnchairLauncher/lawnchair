@@ -44,6 +44,7 @@ import java.util.Set;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.util.PackageManagerHelper;
 import ch.deletescape.lawnchair.util.Thunk;
 
@@ -62,27 +63,24 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     private static final String APP_SHORTCUT_TYPE_KEY = "isAppShortcut";
     private static final String USER_HANDLE_KEY = "userHandle";
 
-    // The set of shortcuts that are pending install
-    private static final String APPS_PENDING_INSTALL = "apps_to_install";
-
     public static final int NEW_SHORTCUT_BOUNCE_DURATION = 450;
     public static final int NEW_SHORTCUT_STAGGER_DELAY = 85;
 
     private static final Object sLock = new Object();
 
     private static void addToInstallQueue(
-            SharedPreferences sharedPrefs, PendingInstallShortcutInfo info) {
+            IPreferenceProvider sharedPrefs, PendingInstallShortcutInfo info) {
         synchronized (sLock) {
             String encoded = info.encodeToString();
             if (encoded != null) {
-                Set<String> strings = sharedPrefs.getStringSet(APPS_PENDING_INSTALL, null);
+                Set<String> strings = sharedPrefs.appsPendingInstalls();
                 if (strings == null) {
                     strings = new HashSet<>(1);
                 } else {
                     strings = new HashSet<>(strings);
                 }
                 strings.add(encoded);
-                sharedPrefs.edit().putStringSet(APPS_PENDING_INSTALL, strings).apply();
+                sharedPrefs.appsPendingInstalls(strings, false);
             }
         }
     }
@@ -92,9 +90,9 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         if (packageNames.isEmpty()) {
             return;
         }
-        SharedPreferences sp = Utilities.getPrefs(context);
+        IPreferenceProvider sp = Utilities.getPrefs(context);
         synchronized (sLock) {
-            Set<String> strings = sp.getStringSet(APPS_PENDING_INSTALL, null);
+            Set<String> strings = sp.appsPendingInstalls();
             if (strings != null) {
                 Set<String> newStrings = new HashSet<>(strings);
                 Iterator<String> newStringsIter = newStrings.iterator();
@@ -106,15 +104,15 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                         newStringsIter.remove();
                     }
                 }
-                sp.edit().putStringSet(APPS_PENDING_INSTALL, newStrings).apply();
+                sp.appsPendingInstalls(newStrings, false);
             }
         }
     }
 
     private static ArrayList<PendingInstallShortcutInfo> getAndClearInstallQueue(
-            SharedPreferences sharedPrefs, Context context) {
+            IPreferenceProvider sharedPrefs, Context context) {
         synchronized (sLock) {
-            Set<String> strings = sharedPrefs.getStringSet(APPS_PENDING_INSTALL, null);
+            Set<String> strings = sharedPrefs.appsPendingInstalls();
             if (strings == null) {
                 return new ArrayList<>();
             }
@@ -126,7 +124,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     infos.add(info);
                 }
             }
-            sharedPrefs.edit().putStringSet(APPS_PENDING_INSTALL, new HashSet<String>()).apply();
+            sharedPrefs.appsPendingInstalls(new HashSet<String>(), false);
             return infos;
         }
     }
@@ -208,7 +206,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     }
 
     static void flushInstallQueue(Context context) {
-        SharedPreferences sp = Utilities.getPrefs(context);
+        IPreferenceProvider sp = Utilities.getPrefs(context);
         ArrayList<PendingInstallShortcutInfo> installQueue = getAndClearInstallQueue(sp, context);
         if (!installQueue.isEmpty()) {
             Iterator<PendingInstallShortcutInfo> iter = installQueue.iterator();

@@ -13,6 +13,8 @@ import android.provider.Settings.Global
 import android.text.TextUtils
 import android.util.Log
 import ch.deletescape.lawnchair.*
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider
+import ch.deletescape.lawnchair.preferences.PreferenceFlags
 import java.lang.reflect.Field
 
 @TargetApi(Build.VERSION_CODES.O)
@@ -23,9 +25,7 @@ class IconShapeOverride {
         override fun onPreferenceChange(preference: Preference, obj: Any): Boolean {
             val str = obj as String
             if (getAppliedValue(context) != str) {
-                prefs(context).edit()
-                        .putString("pref_override_icon_shape", str)
-                        .commit()
+                prefs(context).overrideIconShape(str, true)
                 LauncherAppState.getInstance().iconCache.clear()
                 Process.killProcess(Process.myPid())
             }
@@ -66,7 +66,7 @@ class IconShapeOverride {
                         systemResField.set(null, ResourcesOverride(Resources.getSystem(), configResId, appliedValue))
                     } catch (e: Throwable) {
                         Log.e("IconShapeOverride", "Unable to override icon shape", e)
-                        prefs(context).edit().remove("pref_override_icon_shape").apply()
+                        prefs(context).removeOverrideIconShape()
                     }
 
                 }
@@ -84,10 +84,10 @@ class IconShapeOverride {
             get() = Resources.getSystem().getIdentifier("config_icon_mask", "string", "android")
 
         private fun getAppliedValue(context: Context): String {
-            return prefs(context).getString("pref_override_icon_shape", "")
+            return prefs(context).overrideIconShape()
         }
 
-        private fun prefs(context: Context): SharedPreferences {
+        private fun prefs(context: Context): IPreferenceProvider {
             return Utilities.getPrefs(context)
         }
 

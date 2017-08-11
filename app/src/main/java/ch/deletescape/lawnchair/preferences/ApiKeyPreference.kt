@@ -27,7 +27,7 @@ class ApiKeyPreference : EditTextPreference {
     }
 
     private fun updateSummary() {
-        val apiKey = sharedPreferences.getString("pref_weatherApiKey", "17a6438b1d63d5b05f7039e7cb52cde7")
+        val apiKey = sharedPreferences.getString(PreferenceFlags.KEY_WEATHER_API_KEY, PreferenceFlags.PREF_DEFAULT_WEATHER_API_KEY)
         if (!TextUtils.isEmpty(apiKey))
             setSummary(apiKey.replace("[A-Za-z0-9]".toRegex(), "*"))
         else

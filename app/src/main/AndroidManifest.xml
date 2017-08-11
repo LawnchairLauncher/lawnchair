@@ -8,16 +8,16 @@
         android:label="@string/permlab_install_shortcut"
         android:protectionLevel="dangerous" />
     <permission
-        android:name="ch.deletescape.lawnchair.permission.QSB"
+        android:name="${applicationId}.permission.QSB"
         android:label="QSB"
         android:protectionLevel="normal" />
     <permission
-        android:name="ch.deletescape.lawnchair.permission.READ_SETTINGS"
+        android:name="${applicationId}.permission.READ_SETTINGS"
         android:description="@string/permdesc_read_settings"
         android:label="@string/permlab_read_settings"
         android:protectionLevel="normal" />
     <permission
-        android:name="ch.deletescape.lawnchair.permission.WRITE_SETTINGS"
+        android:name="${applicationId}.permission.WRITE_SETTINGS"
         android:description="@string/permdesc_write_settings"
         android:label="@string/permlab_write_settings"
         android:protectionLevel="signatureOrSystem" />
@@ -31,9 +31,9 @@
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="ch.deletescape.lawnchair.permission.READ_SETTINGS" />
-    <uses-permission android:name="ch.deletescape.lawnchair.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="ch.deletescape.lawnchair.permission.QSB" />
+    <uses-permission android:name="${applicationId}.permission.READ_SETTINGS" />
+    <uses-permission android:name="${applicationId}.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="${applicationId}.permission.QSB" />
 
     <application
         android:name=".App"
@@ -110,7 +110,7 @@
             android:theme="@style/Theme.Transparent" />
 
         <provider
-            android:authorities="ch.deletescape.lawnchair.kustomsupport.kustom5secsprovider"
+            android:authorities="${applicationId}.kustomsupport.kustom5secsprovider"
             android:name=".kustomsupport.Kustom5SecsProvider"
             android:exported="true"
             android:grantUriPermissions="true" />
@@ -118,7 +118,7 @@
 
         <provider
             android:name=".LauncherProvider"
-            android:authorities="ch.deletescape.lawnchair.settings"
+            android:authorities="${applicationId}.settings"
             android:exported="true"
             android:readPermission="ch.deletescape.lawnchair.permission.READ_SETTINGS"
             android:writePermission="ch.deletescape.lawnchair.permission.WRITE_SETTINGS" />

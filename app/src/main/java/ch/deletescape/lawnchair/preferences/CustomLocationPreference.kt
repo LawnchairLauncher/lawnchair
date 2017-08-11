@@ -43,7 +43,7 @@ class CustomLocationPreference : EditTextPreference {
     }
 
     private fun updateSummary() {
-        val city = sharedPreferences.getString("pref_weather_city", "Lucerne, CH")
+        val city = sharedPreferences.getString(PreferenceFlags.KEY_WEATHER_CITY, PreferenceFlags.PREF_WEATHER_DEFAULT_CITY)
         summary = if (!TextUtils.isEmpty(city)) city else context.getString(R.string.pref_weather_city_summary)
     }
 

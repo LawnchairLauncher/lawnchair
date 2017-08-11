@@ -9,7 +9,7 @@ import android.util.Log
 import android.view.Window
 import android.view.WindowManager
 import ch.deletescape.lawnchair.Launcher
-import ch.deletescape.lawnchair.config.FeatureFlags
+import ch.deletescape.lawnchair.Utilities
 
 class LauncherClient(private val mLauncher: Launcher, targetPackage: String, overlayEnabled: Boolean) {
     private var mCurrentCallbacks: OverlayCallbacks? = null
@@ -54,7 +54,7 @@ class LauncherClient(private val mLauncher: Launcher, targetPackage: String, ove
     constructor(launcher: Launcher, overlayEnabled: Boolean) : this(launcher, "com.google.android.googlequicksearchbox", overlayEnabled)
 
     private fun applyWindowToken() {
-        if (!isConnected || !FeatureFlags.showGoogleNowTab(mLauncher)) {
+        if (!isConnected || !Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
             return
         }
 
@@ -140,7 +140,7 @@ class LauncherClient(private val mLauncher: Launcher, targetPackage: String, ove
     }
 
     fun endMove() {
-        if (!isConnected || !FeatureFlags.showGoogleNowTab(mLauncher)) {
+        if (!isConnected || !Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
             return
         }
 
@@ -152,7 +152,7 @@ class LauncherClient(private val mLauncher: Launcher, targetPackage: String, ove
     }
 
     fun hideOverlay(animate: Boolean) {
-        if (!isConnected || !FeatureFlags.showGoogleNowTab(mLauncher)) {
+        if (!isConnected || !Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
             return
         }
 
@@ -164,7 +164,7 @@ class LauncherClient(private val mLauncher: Launcher, targetPackage: String, ove
     }
 
     fun openOverlay(animate: Boolean) {
-        if (!isConnected || !FeatureFlags.showGoogleNowTab(mLauncher)) {
+        if (!isConnected || !Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
             return
         }
 
@@ -176,13 +176,13 @@ class LauncherClient(private val mLauncher: Launcher, targetPackage: String, ove
     }
 
     fun onAttachedToWindow() {
-        if (!mDestroyed && FeatureFlags.showGoogleNowTab(mLauncher)) {
+        if (!mDestroyed && Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
             setWindowAttrs(mLauncher.window.attributes)
         }
     }
 
     fun onDestroy() {
-        if (FeatureFlags.showGoogleNowTab(mLauncher)) {
+        if (Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
             removeClient(!mLauncher.isChangingConfigurations)
         }
     }
@@ -192,13 +192,13 @@ class LauncherClient(private val mLauncher: Launcher, targetPackage: String, ove
     }
 
     fun onDetachedFromWindow() {
-        if (!mDestroyed && FeatureFlags.showGoogleNowTab(mLauncher)) {
+        if (!mDestroyed && Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
             setWindowAttrs(null)
         }
     }
 
     fun onStart() {
-        if (!mDestroyed && FeatureFlags.showGoogleNowTab(mLauncher)) {
+        if (!mDestroyed && Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
             activityState = activityState or 1
             if (mOverlay != null && mWindowAttrs != null) {
                 try {
@@ -211,7 +211,7 @@ class LauncherClient(private val mLauncher: Launcher, targetPackage: String, ove
     }
 
     fun onStop() {
-        if (!mDestroyed && FeatureFlags.showGoogleNowTab(mLauncher)) {
+        if (!mDestroyed && Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
             activityState = activityState and -2
             if (mOverlay != null && mWindowAttrs != null) {
                 try {
@@ -224,7 +224,7 @@ class LauncherClient(private val mLauncher: Launcher, targetPackage: String, ove
     }
 
     fun onPause() {
-        if (mDestroyed || !FeatureFlags.showGoogleNowTab(mLauncher)) {
+        if (mDestroyed || !Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
             return
         }
         activityState = activityState and -3
@@ -238,7 +238,7 @@ class LauncherClient(private val mLauncher: Launcher, targetPackage: String, ove
     }
 
     fun onResume() {
-        if (mDestroyed || !FeatureFlags.showGoogleNowTab(mLauncher)) {
+        if (mDestroyed || !Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
             return
         }
 
@@ -254,7 +254,7 @@ class LauncherClient(private val mLauncher: Launcher, targetPackage: String, ove
     }
 
     fun reconnect() {
-        if (mDestroyed || mState != 0 || !FeatureFlags.showGoogleNowTab(mLauncher)) {
+        if (mDestroyed || mState != 0 || !Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
             return
         }
 
@@ -286,7 +286,7 @@ class LauncherClient(private val mLauncher: Launcher, targetPackage: String, ove
     }
 
     fun startMove() {
-        if (!isConnected || !FeatureFlags.showGoogleNowTab(mLauncher)) {
+        if (!isConnected || !Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
             return
         }
 
@@ -298,7 +298,7 @@ class LauncherClient(private val mLauncher: Launcher, targetPackage: String, ove
     }
 
     fun updateMove(progressX: Float) {
-        if (!isConnected || !FeatureFlags.showGoogleNowTab(mLauncher)) {
+        if (!isConnected || !Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
             return
         }
 

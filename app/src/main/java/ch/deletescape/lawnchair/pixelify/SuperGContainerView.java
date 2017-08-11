@@ -17,6 +17,7 @@ import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.blur.BlurDrawable;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.util.TransformingTouchDelegate;
 
 public class SuperGContainerView extends BaseQsbView {
@@ -58,7 +59,7 @@ public class SuperGContainerView extends BaseQsbView {
 
     public SuperGContainerView(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
-        if (FeatureFlags.INSTANCE.useFullWidthSearchbar(getContext())) {
+        if (Utilities.getPrefs(getContext()).useFullWidthSearchbar()) {
             bz = null;
         } else {
             bz = new TransformingTouchDelegate(this);
@@ -76,19 +77,19 @@ public class SuperGContainerView extends BaseQsbView {
             mQsbView.setBackground(mBlurDrawable);
             mQsbView.setLayerType(LAYER_TYPE_SOFTWARE, null);
         }
-        if (FeatureFlags.INSTANCE.useWhiteGoogleIcon(getContext()) &&
+        if (Utilities.getPrefs(getContext()).useWhiteGoogleIcon() &&
                 (mBlurEnabled || FeatureFlags.INSTANCE.useDarkTheme(FeatureFlags.DARK_QSB))) {
             ((ImageView) findViewById(R.id.g_icon)).setColorFilter(Color.WHITE);
-            if (FeatureFlags.INSTANCE.showVoiceSearchButton(getContext())) {
+            if (Utilities.getPrefs(getContext()).showVoiceSearchButton()) {
                 ((ImageView) findViewById(R.id.mic_icon)).setColorFilter(Color.WHITE);
             }
         }
     }
 
     @Override
-    public void applyVoiceSearchPreference(SharedPreferences prefs) {
-        if (!FeatureFlags.INSTANCE.useFullWidthSearchbar(getContext())) {
-            super.applyVoiceSearchPreference(prefs);
+    public void applyVoiceSearchPreference() {
+        if (!Utilities.getPrefs(getContext()).useFullWidthSearchbar()) {
+            super.applyVoiceSearchPreference();
             if (bz != null) {
                 bz.setDelegateView(mQsbView);
             }
@@ -118,7 +119,7 @@ public class SuperGContainerView extends BaseQsbView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (!FeatureFlags.INSTANCE.showPixelBar(getContext())) {
+        if (!Utilities.getPrefs(getContext()).showPixelBar()) {
             return;
         }
         if (bz != null) {
@@ -160,7 +161,7 @@ public class SuperGContainerView extends BaseQsbView {
     @Override
     protected void onLayout(boolean z, int i, int i2, int i3, int i4) {
         super.onLayout(z, i, i2, i3, i4);
-        if (bz != null && mQsbView != null && FeatureFlags.INSTANCE.showPixelBar(getContext())) {
+        if (bz != null && mQsbView != null && Utilities.getPrefs(getContext()).showPixelBar()) {
             int i5 = 0;
             if (Utilities.isRtl(getResources())) {
                 i5 = mQsbView.getLeft() - mLauncher.getDeviceProfile().getWorkspacePadding(sTempRect).left;

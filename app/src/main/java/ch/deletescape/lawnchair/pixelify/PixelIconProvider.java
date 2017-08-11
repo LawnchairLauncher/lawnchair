@@ -33,13 +33,14 @@ import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.iconpack.CustomIconDrawable;
 import ch.deletescape.lawnchair.iconpack.IconPack;
 import ch.deletescape.lawnchair.iconpack.IconPackProvider;
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 
 public class PixelIconProvider {
     private BroadcastReceiver mBroadcastReceiver;
     private PackageManager mPackageManager;
     private IconPack sIconPack;
     private Context mContext;
-    private final SharedPreferences mPrefs;
+    private final IPreferenceProvider mPrefs;
 
     private ArrayList<String> mCalendars;
 
@@ -108,7 +109,7 @@ public class PixelIconProvider {
     }
 
     private IconPack getIconPackForComponent(ComponentName componentName) {
-        String alternateIcon = mPrefs.getString("alternateIcon_" + componentName.flattenToString(), null);
+        String alternateIcon = mPrefs.alternateIcon(componentName.flattenToString());
         if (alternateIcon == null) return sIconPack;
         if (alternateIcon.startsWith("iconPacks")) {
             String[] parts = alternateIcon.split("/");
@@ -122,7 +123,7 @@ public class PixelIconProvider {
     }
 
     private Drawable getIconForComponent(ComponentName componentName) {
-        String alternateIcon = mPrefs.getString("alternateIcon_" + componentName.flattenToString(), null);
+        String alternateIcon = mPrefs.alternateIcon(componentName.flattenToString());
         if (alternateIcon == null) return null;
         if (alternateIcon.startsWith("uri")) {
             alternateIcon = alternateIcon.substring(4);
@@ -161,7 +162,7 @@ public class PixelIconProvider {
             drawable = iconPack == null ? null : iconPack.getIcon(info);
         }
         boolean isRoundPack = isRoundIconPack(sIconPack);
-        if ((drawable == null && FeatureFlags.INSTANCE.usePixelIcons(mContext)) ||
+        if ((drawable == null && Utilities.getPrefs(mContext).usePixelIcons()) ||
                 (isRoundPack && drawable instanceof CustomIconDrawable)) {
             Drawable roundIcon = getRoundIcon(info.getComponentName().getPackageName(), iconDpi);
             if (roundIcon != null)

@@ -1,7 +1,6 @@
 package ch.deletescape.lawnchair.iconpack;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.util.ArrayMap;
@@ -19,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import ch.deletescape.lawnchair.Utilities;
+import ch.deletescape.lawnchair.preferences.PreferenceFlags;
 
 public class IconPackProvider {
     private static Map<String, IconPack> iconPacks = new ArrayMap<>();
@@ -28,8 +28,7 @@ public class IconPackProvider {
     }
 
     public static IconPack loadAndGetIconPack(Context context) {
-        SharedPreferences prefs = Utilities.getPrefs(context);
-        String packageName = prefs.getString("pref_iconPackPackage", "");
+        String packageName = Utilities.getPrefs(context).iconPackPackage();
         return loadAndGetIconPack(context, packageName);
     }
 

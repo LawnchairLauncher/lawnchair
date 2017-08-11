@@ -107,6 +107,7 @@ import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
+import ch.deletescape.lawnchair.config.PreferenceProvider;
 import ch.deletescape.lawnchair.dragndrop.DragController;
 import ch.deletescape.lawnchair.dragndrop.DragLayer;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
@@ -120,6 +121,8 @@ import ch.deletescape.lawnchair.model.WidgetsModel;
 import ch.deletescape.lawnchair.notification.NotificationListener;
 import ch.deletescape.lawnchair.popup.PopupContainerWithArrow;
 import ch.deletescape.lawnchair.popup.PopupDataProvider;
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
+import ch.deletescape.lawnchair.preferences.PreferenceFlags;
 import ch.deletescape.lawnchair.settings.Settings;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.ShortcutKey;
@@ -175,8 +178,6 @@ public class Launcher extends Activity
     private static final String RUNTIME_STATE_PENDING_REQUEST_ARGS = "launcher.request_args";
     // Type: ActivityResultInfo
     private static final String RUNTIME_STATE_PENDING_ACTIVITY_RESULT = "launcher.activity_result";
-
-    static final String APPS_VIEW_SHOWN = "launcher.apps_view_shown";
 
     /**
      * The different states that Launcher can be in.
@@ -308,7 +309,7 @@ public class Launcher extends Activity
 
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
-    private SharedPreferences mSharedPrefs;
+    private IPreferenceProvider mSharedPrefs;
 
     // Holds the page that we need to animate to, and the icon views that we need to animate up
     // when we scroll to that page on resume.
@@ -380,7 +381,7 @@ public class Launcher extends Activity
                 app.getInvariantDeviceProfile().landscapeProfile
                 : app.getInvariantDeviceProfile().portraitProfile;
 
-        mSharedPrefs = Utilities.getPrefs(this);
+        mSharedPrefs = PreferenceProvider.INSTANCE.getPreferences(this);
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
         mModel = app.setLauncher(this);
         mIconCache = app.getIconCache();
@@ -403,7 +404,7 @@ public class Launcher extends Activity
 
         setContentView(R.layout.launcher);
 
-        mPlanesEnabled = FeatureFlags.INSTANCE.planes(this);
+        mPlanesEnabled = Utilities.getPrefs(this).planes();
         setupViews();
         mDeviceProfile.layout(this, false /* notifyListeners */);
         mExtractedColors = new ExtractedColors();
@@ -434,8 +435,8 @@ public class Launcher extends Activity
 
         mLauncherTab = new LauncherTab(this);
 
-        if (mSharedPrefs.getBoolean("requiresIconCacheReload", true)) {
-            mSharedPrefs.edit().putBoolean("requiresIconCacheReload", false).apply();
+        if (mSharedPrefs.requiresIconCacheReload()) {
+            mSharedPrefs.requiresIconCacheReload(false, false);
             reloadIcons();
         }
 
@@ -453,7 +454,7 @@ public class Launcher extends Activity
     }
 
     private void setScreenOrientation() {
-        if (FeatureFlags.INSTANCE.enableScreenRotation(this)) {
+        if (Utilities.getPrefs(this).enableScreenRotation()) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -947,7 +948,7 @@ public class Launcher extends Activity
             mBlurWallpaperProvider.updateAsync();
         }
 
-        mDisableEditing = !FeatureFlags.INSTANCE.enableEditing(this);
+        mDisableEditing = !Utilities.getPrefs(this).enableEditing();
     }
 
     @Override
@@ -1163,7 +1164,7 @@ public class Launcher extends Activity
         setupOverviewPanel();
 
         // Setup the workspace
-        mWorkspace.setHapticFeedbackEnabled(FeatureFlags.INSTANCE.enableHapticFeedback(this));
+        mWorkspace.setHapticFeedbackEnabled(Utilities.getPrefs(this).enableHapticFeedback());
         mWorkspace.setOnLongClickListener(this);
         mWorkspace.setup(mDragController);
         // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the
@@ -1664,7 +1665,7 @@ public class Launcher extends Activity
             // If we are already on home, then just animate back to the workspace,
             // otherwise, just wait until onResume to set the state back to Workspace
             if (alreadyOnHome) {
-                if (!FeatureFlags.INSTANCE.homeOpensDrawer(this) || mState != State.WORKSPACE || mWorkspace.getCurrentPage() != 0 || mOverviewPanel.getVisibility() == View.VISIBLE) {
+                if (!Utilities.getPrefs(this).homeOpensDrawer() || mState != State.WORKSPACE || mWorkspace.getCurrentPage() != 0 || mOverviewPanel.getVisibility() == View.VISIBLE) {
                     showWorkspace(true);
                 } else {
                     showAppsView(true, false);
@@ -1682,7 +1683,7 @@ public class Launcher extends Activity
             }
 
             // Reset the apps view
-            if (!alreadyOnHome && mAppsView != null && !FeatureFlags.INSTANCE.keepScrollState(this)) {
+            if (!alreadyOnHome && mAppsView != null && !Utilities.getPrefs(this).keepScrollState()) {
                 mAppsView.scrollToTop();
             }
 
@@ -3223,7 +3224,7 @@ public class Launcher extends Activity
     @Override
     public void bindScreens(ArrayList<Long> orderedScreenIds) {
         // Make sure the first screen is always at the start.
-        if (FeatureFlags.INSTANCE.showPixelBar(this) && orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != 0) {
+        if (Utilities.getPrefs(this).showPixelBar() && orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != 0) {
             orderedScreenIds.remove(Workspace.FIRST_SCREEN_ID);
             orderedScreenIds.add(0, Workspace.FIRST_SCREEN_ID);
             mModel.updateWorkspaceScreenOrder(this, orderedScreenIds);
@@ -3903,10 +3904,10 @@ public class Launcher extends Activity
 
 
     private void markAppsViewShown() {
-        if (mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false)) {
+        if (mSharedPrefs.appsViewShown()) {
             return;
         }
-        mSharedPrefs.edit().putBoolean(APPS_VIEW_SHOWN, true).apply();
+        mSharedPrefs.appsViewShown(true, false);
     }
 
     private boolean shouldShowDiscoveryBounce() {
@@ -3916,7 +3917,7 @@ public class Launcher extends Activity
         if (!mIsResumeFromActionScreenOff) {
             return false;
         }
-        return !mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false);
+        return !mSharedPrefs.appsViewShown();
     }
 
     /**

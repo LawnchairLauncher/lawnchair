@@ -33,6 +33,8 @@ import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
 import ch.deletescape.lawnchair.compat.PackageInstallerCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
+import ch.deletescape.lawnchair.config.ProviderConfig;
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.util.GridOccupancy;
 import ch.deletescape.lawnchair.util.LongArrayMap;
 
@@ -46,8 +48,6 @@ public class GridSizeMigrationTask {
 
     private static final String TAG = "GridSizeMigrationTask";
 
-    private static final String KEY_MIGRATION_SRC_WORKSPACE_SIZE = "migration_src_workspace_size";
-    private static final String KEY_MIGRATION_SRC_HOTSEAT_COUNT = "migration_src_hotseat_count";
 
     // These are carefully selected weights for various item types (Math.random?), to allow for
     // the least absurd migration experience.
@@ -112,7 +112,7 @@ public class GridSizeMigrationTask {
     private boolean applyOperations() throws Exception {
         // Update items
         if (!mUpdateOperations.isEmpty()) {
-            mContext.getContentResolver().applyBatch(LauncherProvider.AUTHORITY, mUpdateOperations);
+            mContext.getContentResolver().applyBatch(ProviderConfig.AUTHORITY, mUpdateOperations);
         }
 
         if (!mEntryToRemove.isEmpty()) {
@@ -248,7 +248,7 @@ public class GridSizeMigrationTask {
      */
     protected void migrateScreen(long screenId) {
         // If we are migrating the first screen, do not touch the first row.
-        int startY = FeatureFlags.INSTANCE.showPixelBar(LauncherAppState.getInstance().getContext()) && screenId == Workspace.FIRST_SCREEN_ID ? 1 : 0;
+        int startY = Utilities.getPrefs(LauncherAppState.getInstance().getContext()).showPixelBar() && screenId == Workspace.FIRST_SCREEN_ID ? 1 : 0;
 
         ArrayList<DbEntry> items = loadWorkspaceEntries(screenId);
 
@@ -865,13 +865,13 @@ public class GridSizeMigrationTask {
      * @return false if the migration failed.
      */
     public static boolean migrateGridIfNeeded(Context context) {
-        SharedPreferences prefs = Utilities.getPrefs(context);
+        IPreferenceProvider prefs = Utilities.getPrefs(context);
         InvariantDeviceProfile idp = LauncherAppState.getInstance().getInvariantDeviceProfile();
 
         String gridSizeString = getPointString(idp.numColumns, idp.numRows);
 
-        if (gridSizeString.equals(prefs.getString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, "")) &&
-                idp.numHotseatIcons != prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, idp.numHotseatIcons)) {
+        if (gridSizeString.equals(prefs.migrationSrcWorkspaceSize("")) &&
+                idp.numHotseatIcons != prefs.migrationSrcHotseatCount(idp.numHotseatIcons)) {
             // Skip if workspace and hotseat sizes have not changed.
             return true;
         }
@@ -882,7 +882,7 @@ public class GridSizeMigrationTask {
 
             HashSet<String> validPackages = getValidPackages(context);
             // Hotseat
-            int srcHotseatCount = prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, idp.numHotseatIcons);
+            int srcHotseatCount = prefs.migrationSrcHotseatCount(idp.numHotseatIcons);
             if (srcHotseatCount != idp.numHotseatIcons) {
                 // Migrate hotseat.
 
@@ -892,8 +892,7 @@ public class GridSizeMigrationTask {
 
             // Grid size
             Point targetSize = new Point(idp.numColumns, idp.numRows);
-            Point sourceSize = parsePoint(prefs.getString(
-                    KEY_MIGRATION_SRC_WORKSPACE_SIZE, gridSizeString));
+            Point sourceSize = parsePoint(prefs.migrationSrcWorkspaceSize(gridSizeString));
 
             if (new MultiStepMigrationTask(validPackages, context).migrate(sourceSize, targetSize)) {
                 dbChanged = true;
@@ -919,10 +918,8 @@ public class GridSizeMigrationTask {
                     + (System.currentTimeMillis() - migrationStartTime));
 
             // Save current configuration, so that the migration does not run again.
-            prefs.edit()
-                    .putString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, gridSizeString)
-                    .putInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, idp.numHotseatIcons)
-                    .apply();
+            prefs.migrationSrcWorkspaceSize(gridSizeString, false);
+            prefs.migrationSrcHotseatCount(idp.numHotseatIcons, false);
         }
     }
 

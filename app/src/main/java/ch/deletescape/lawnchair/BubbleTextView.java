@@ -48,11 +48,11 @@ import java.text.NumberFormat;
 import ch.deletescape.lawnchair.IconCache.IconLoadRequest;
 import ch.deletescape.lawnchair.badge.BadgeInfo;
 import ch.deletescape.lawnchair.badge.BadgeRenderer;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.graphics.IconPalette;
 import ch.deletescape.lawnchair.model.PackageItemInfo;
 import ch.deletescape.lawnchair.pixelify.ClockIconDrawable;
+import ch.deletescape.lawnchair.preferences.PreferenceFlags;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
@@ -145,16 +145,16 @@ public class BubbleTextView extends TextView
         int display = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
         int defaultIconSize = grid.iconSizePx;
         if (display == DISPLAY_WORKSPACE) {
-            mHideText = FeatureFlags.INSTANCE.hideAppLabels(context);
+            mHideText = Utilities.getPrefs(context).hideAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.iconTextSizePx);
-            setTextColor(Utilities.getColor(getContext(), "pref_workspaceLabelColorHue", "-3", "pref_workspaceLabelColorVariation", "5"));
+            setTextColor(Utilities.getLabelColor(getContext()));
         } else if (display == DISPLAY_ALL_APPS) {
-            mHideText = FeatureFlags.INSTANCE.hideAllAppsAppLabels(context);
+            mHideText = Utilities.getPrefs(context).hideAllAppsAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
         } else if (display == DISPLAY_FOLDER) {
-            mHideText = FeatureFlags.INSTANCE.hideAppLabels(context);
+            mHideText = Utilities.getPrefs(context).hideAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
         }
@@ -237,10 +237,8 @@ public class BubbleTextView extends TextView
     }
 
     private void applyClockIcon(ComponentName componentName) {
-        if (FeatureFlags.INSTANCE.animatedClockIcon(getContext()) &&
-                componentName != null &&
-                "com.google.android.deskclock/com.android.deskclock.DeskClock"
-                        .equals(componentName.flattenToString())) {
+        if (Utilities.getPrefs(getContext()).animatedClockIcon() &&
+                Utilities.isComponentClock(componentName, !Utilities.getPrefs(getContext()).animateClockIconAlternativeClockApps())) {
             setIcon(ClockIconDrawable.Companion.create(getContext()));
         }
     }
