@@ -82,6 +82,8 @@ object PreferenceFlags {
     const val KEY_PREF_WEATHER = "pref_weather"
     const val KEY_PREF_ENABLE_EDITING = "pref_enableEditing"
     const val KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR = "pref_allAppsCustomLabelColor"
+    const val KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR_HUE = "pref_allAppsCustomLabelColorHue"
+    const val KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR_VARITATION = "pref_allAppsCustomLabelColorVariation"
 
     const val KEY_APP_VISIBILITY_PREFIX = "visibility_"
     const val KEY_PREVIOUS_BUILD_NUMBER = "previousBuildNumber"

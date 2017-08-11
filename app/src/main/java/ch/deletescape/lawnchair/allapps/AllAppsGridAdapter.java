@@ -167,6 +167,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private Intent mMarketSearchIntent;
 
     private int mAppIconTextColor;
+    private int mAppIconTextMaxLines;
 
     public AllAppsGridAdapter(Launcher launcher, AlphabeticalAppsList apps, View.OnClickListener
             iconClickListener, View.OnLongClickListener iconLongClickListener) {
@@ -268,7 +269,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_SEARCH_MARKET:
                 TextView searchMarketView = (TextView) mLayoutInflater.inflate(R.layout.all_apps_search_market,
                         parent, false);
-                searchMarketView.setTextColor(Utilities.getDynamicAccent(mLauncher));
+                searchMarketView.setTextColor(Utilities.getThemer().allAppsSearchBarHintTextColor(mLauncher));
                 searchMarketView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -280,11 +281,13 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 ImageView divider = (ImageView) mLayoutInflater.inflate(
                         R.layout.all_apps_search_divider, parent, false);
                 if (!Utilities.getPrefs(mLauncher).useRoundSearchBar())
-                    divider.setImageDrawable(new ColorDrawable(Utilities.getDynamicAccent(parent.getContext())));
+                    divider.setImageDrawable(new ColorDrawable(Utilities.getThemer().allAppsSearchBarHintTextColor(mLauncher)));
                 return new ViewHolder(divider);
             case VIEW_TYPE_SEARCH_MARKET_DIVIDER:
-                return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.all_apps_divider, parent, false));
+                ImageView marketDivider = (ImageView)mLayoutInflater.inflate(
+                        R.layout.all_apps_divider, parent, false);
+                marketDivider.setImageDrawable(new ColorDrawable(Utilities.getThemer().allAppsSearchBarHintTextColor(mLauncher)));
+                return new ViewHolder(marketDivider);
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -299,6 +302,10 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 icon.applyFromApplicationInfo(info);
                 icon.setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
                 icon.setTextColor(mAppIconTextColor);
+                // TODO: currently this cuts off the text
+//                icon.setLines(mAppIconTextMaxLines);
+//                icon.setMaxLines(mAppIconTextMaxLines);
+//                icon.setSingleLine(mAppIconTextMaxLines == 1);
                 break;
             }
             case VIEW_TYPE_EMPTY_SEARCH:
@@ -338,7 +345,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         return item.viewType;
     }
 
-    public void setAppIconTextColor(int color) {
+    public void setAppIconTextStyle(int color, int maxLines) {
         mAppIconTextColor = color;
+        mAppIconTextMaxLines = maxLines;
     }
 }
