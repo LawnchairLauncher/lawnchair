@@ -32,7 +32,6 @@ import android.widget.FrameLayout;
 import java.util.ArrayList;
 
 import ch.deletescape.lawnchair.badge.BadgeRenderer;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 
 public class DeviceProfile {
 
@@ -297,8 +296,9 @@ public class DeviceProfile {
         allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx;
         if (!Utilities.getPrefs(mContext).hideAllAppsAppLabels()) {
             allAppsCellHeightPx += Utilities.calculateTextHeight(allAppsIconTextSizePx);
+        }
         cellHeightPx = iconSizePx;
-        if (!Utilities.getPrefs(mContext).hideAppLabels() {
+        if (!Utilities.getPrefs(mContext).hideAppLabels()) {
             cellHeightPx += iconDrawablePaddingPx + Utilities.calculateTextHeight(iconTextSizePx);
         }
         allAppsCellWidthPx = allAppsIconSizePx;
