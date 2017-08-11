@@ -107,7 +107,6 @@ public class DeviceProfile {
     public int hotseatCellHeightPx;
     public int hotseatIconSizePx;
     public int hotseatIconSizePxOriginal;
-    public int hotseatIconDrawablePaddingPx;
     private int hotseatBarHeightPx;
     private int hotseatBarTopPaddingPx;
     private int hotseatLandGutterPx;
@@ -247,7 +246,8 @@ public class DeviceProfile {
         float hotseatScale = 1f;
         int workspaceDrawablePadding = iconDrawablePaddingOriginalPx;
         int allAppsDrawablePadding = iconDrawablePaddingOriginalPx;
-        updateIconSize(1f, 1f, 1f, workspaceDrawablePadding, allAppsDrawablePadding, res, dm);
+        updateIconSize(1f, 1f, 1f, workspaceDrawablePadding,
+                allAppsDrawablePadding, res, dm);
 
         float usedWorkspaceHeight = (cellHeightPx * inv.numRows);
         float usedWorkspaceWidth = (cellWidthPx * inv.numColumns);
@@ -273,7 +273,8 @@ public class DeviceProfile {
         if (usedAllAppsWidth > maxHotseatWidth) {
             hotseatScale = maxHotseatWidth / usedHotseatWidth;
         }
-        updateIconSize(workspaceScale, allAppsScale, hotseatScale, workspaceDrawablePadding, allAppsDrawablePadding, res, dm);
+        updateIconSize(workspaceScale, allAppsScale, hotseatScale, workspaceDrawablePadding,
+                allAppsDrawablePadding, res, dm);
     }
 
     private void updateIconSize(float workspaceScale, float allAppsScale, float hotseatScale, int workspaceDrawablePadding, int allAppsDrawablePadding,
@@ -283,7 +284,6 @@ public class DeviceProfile {
         iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * workspaceScale);
         iconDrawablePaddingPx = workspaceDrawablePadding;
         hotseatIconSizePx = (int) (Utilities.pxFromDp(inv.hotseatIconSize, dm) * hotseatScale);
-        hotseatIconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * hotseatScale);
         hotseatIconSizePxOriginal = (int) (Utilities.pxFromDp(inv.hotseatIconSizeOriginal, dm) * hotseatScale);
         allAppsIconSizePx = (int) (Utilities.pxFromDp(inv.allAppsIconSize, dm) * allAppsScale);
         allAppsIconDrawablePaddingPx = allAppsDrawablePadding;
@@ -302,7 +302,7 @@ public class DeviceProfile {
 
         // Hotseat
         hotseatCellWidthPx = hotseatIconSizePx;
-        hotseatCellHeightPx = hotseatIconSizePx + hotseatIconDrawablePaddingPx;
+        hotseatCellHeightPx = hotseatIconSizePx;
 
         if (!isVerticalBarLayout()) {
             int expectedWorkspaceHeight = availableHeightPx - getHotseatHeight()
@@ -669,6 +669,6 @@ public class DeviceProfile {
     }
 
     public final int getHotseatHeight() {
-        return (hotseatBarHeightPx - iconSizePxOriginal) + hotseatCellHeightPx;
+        return (hotseatBarHeightPx - hotseatIconSizePxOriginal) + hotseatIconSizePx;
     }
 }
