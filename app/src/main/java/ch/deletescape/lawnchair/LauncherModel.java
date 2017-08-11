@@ -68,7 +68,7 @@ import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
 import ch.deletescape.lawnchair.compat.PackageInstallerCompat;
 import ch.deletescape.lawnchair.compat.PackageInstallerCompat.PackageInstallInfo;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
-import ch.deletescape.lawnchair.config.FeatureFlags;
+import ch.deletescape.lawnchair.config.ProviderConfig;
 import ch.deletescape.lawnchair.dynamicui.ExtractionUtils;
 import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.folder.FolderIcon;
@@ -714,7 +714,7 @@ public class LauncherModel extends BroadcastReceiver
 
                 }
                 try {
-                    cr.applyBatch(LauncherProvider.AUTHORITY, ops);
+                    cr.applyBatch(ProviderConfig.AUTHORITY, ops);
                 } catch (Exception ignored) {
 
                 }
@@ -1130,7 +1130,7 @@ public class LauncherModel extends BroadcastReceiver
                 }
 
                 try {
-                    cr.applyBatch(LauncherProvider.AUTHORITY, ops);
+                    cr.applyBatch(ProviderConfig.AUTHORITY, ops);
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }

@@ -50,7 +50,7 @@ open class PreferenceImpl : IPreferenceProvider {
     }
 
     override fun animateClockIconAlternativeClockApps(): Boolean {
-        return false;
+        return false
     }
 
     override fun lightStatusBarKeyCache(default: Boolean): Boolean {
@@ -126,7 +126,7 @@ open class PreferenceImpl : IPreferenceProvider {
     }
 
     override fun appsPendingInstalls(): Set<String>? {
-        return mSharedPref.getStringSet(PreferenceFlags.APPS_PENDING_INSTALL, null);
+        return mSharedPref.getStringSet(PreferenceFlags.APPS_PENDING_INSTALL, null)
     }
 
     override fun appsPendingInstalls(value: Set<String>, commit: Boolean) {
@@ -637,7 +637,7 @@ open class PreferenceImpl : IPreferenceProvider {
     // Helper functions and class
     // ----------------
 
-    private var mSharedPref: SharedPreferences;
+    private var mSharedPref: SharedPreferences
 
     constructor(context: Context) {
         mSharedPref = context.getApplicationContext().getSharedPreferences(
@@ -645,7 +645,7 @@ open class PreferenceImpl : IPreferenceProvider {
     }
 
     private fun setBoolean(pref: String, value: Boolean, commit: Boolean) {
-        commitOrApply(mSharedPref.edit().putBoolean(pref, value), commit);
+        commitOrApply(mSharedPref.edit().putBoolean(pref, value), commit)
     }
 
     private fun getBoolean(pref: String, default: Boolean): Boolean {
@@ -653,7 +653,7 @@ open class PreferenceImpl : IPreferenceProvider {
     }
 
     private fun setString(pref: String, value: String, commit: Boolean) {
-        commitOrApply(mSharedPref.edit().putString(pref, value), commit);
+        commitOrApply(mSharedPref.edit().putString(pref, value), commit)
     }
 
     private fun getString(pref: String, default: String): String {
@@ -661,7 +661,7 @@ open class PreferenceImpl : IPreferenceProvider {
     }
 
     private fun setInt(pref: String, value: Int, commit: Boolean) {
-        commitOrApply(mSharedPref.edit().putInt(pref, value), commit);
+        commitOrApply(mSharedPref.edit().putInt(pref, value), commit)
     }
 
     private fun getInt(pref: String, default: Int): Int {
@@ -669,7 +669,7 @@ open class PreferenceImpl : IPreferenceProvider {
     }
 
     private fun setFloat(pref: String, value: Float, commit: Boolean) {
-        commitOrApply(mSharedPref.edit().putFloat(pref, value), commit);
+        commitOrApply(mSharedPref.edit().putFloat(pref, value), commit)
     }
 
     private fun getFloat(pref: String, default: Float): Float {
@@ -677,7 +677,7 @@ open class PreferenceImpl : IPreferenceProvider {
     }
 
     private fun setLong(pref: String, value: Long, commit: Boolean) {
-        commitOrApply(mSharedPref.edit().putLong(pref, value), commit);
+        commitOrApply(mSharedPref.edit().putLong(pref, value), commit)
     }
 
     private fun getLong(pref: String, default: Long): Long {

@@ -70,8 +70,6 @@ public class LauncherProvider extends ContentProvider {
 
     private static final int DATABASE_VERSION = 27;
 
-    public static final String AUTHORITY = ProviderConfig.AUTHORITY;
-
     private static final String RESTRICTION_PACKAGE_NAME = "workspace.configuration.package.name";
 
     private final ChangeListenerWrapper mListenerWrapper = new ChangeListenerWrapper();

@@ -82,9 +82,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ch.deletescape.lawnchair.config.PreferenceProvider;
+import ch.deletescape.lawnchair.config.ThemeProvider;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.graphics.ShadowGenerator;
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
+import ch.deletescape.lawnchair.preferences.IThemer;
 import ch.deletescape.lawnchair.preferences.PreferenceFlags;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
@@ -749,6 +751,11 @@ public final class Utilities {
     @NonNull
     public static IPreferenceProvider getPrefs(Context context) {
         return PreferenceProvider.INSTANCE.getPreferences(context);
+    }
+
+    @NonNull
+    public static IThemer getThemer() {
+        return ThemeProvider.INSTANCE.getThemer();
     }
 
     public static boolean isPowerSaverOn(Context context) {

@@ -3,6 +3,7 @@ package ch.deletescape.lawnchair;
 import android.app.Application;
 
 import ch.deletescape.lawnchair.config.PreferenceProvider;
+import ch.deletescape.lawnchair.config.ThemeProvider;
 import ch.deletescape.lawnchair.preferences.PreferenceImpl;
 
 public class App extends Application {

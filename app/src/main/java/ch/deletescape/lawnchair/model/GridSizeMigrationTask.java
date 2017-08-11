@@ -33,6 +33,7 @@ import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
 import ch.deletescape.lawnchair.compat.PackageInstallerCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
+import ch.deletescape.lawnchair.config.ProviderConfig;
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.util.GridOccupancy;
 import ch.deletescape.lawnchair.util.LongArrayMap;
@@ -111,7 +112,7 @@ public class GridSizeMigrationTask {
     private boolean applyOperations() throws Exception {
         // Update items
         if (!mUpdateOperations.isEmpty()) {
-            mContext.getContentResolver().applyBatch(LauncherProvider.AUTHORITY, mUpdateOperations);
+            mContext.getContentResolver().applyBatch(ProviderConfig.AUTHORITY, mUpdateOperations);
         }
 
         if (!mEntryToRemove.isEmpty()) {

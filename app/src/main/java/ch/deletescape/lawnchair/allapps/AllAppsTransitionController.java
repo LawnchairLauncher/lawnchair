@@ -28,6 +28,7 @@ import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
+import ch.deletescape.lawnchair.config.ThemeProvider;
 import ch.deletescape.lawnchair.util.TouchController;
 
 /**
@@ -105,10 +106,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mShiftRange = DEFAULT_SHIFT_RANGE;
         mProgress = 1f;
         mEvaluator = new ArgbEvaluator();
-        mAllAppsBackgroundColor = Utilities
-                .resolveAttributeData(FeatureFlags.INSTANCE.applyDarkTheme(l, FeatureFlags.DARK_ALLAPPS), R.attr.allAppsContainerColor);
-        mAllAppsBackgroundColorBlur = Utilities
-                .resolveAttributeData(FeatureFlags.INSTANCE.applyDarkTheme(l, FeatureFlags.DARK_BLUR), R.attr.allAppsContainerColorBlur);
+        mAllAppsBackgroundColor = Utilities.getThemer().allAppsBackgroundColor(l);
+        mAllAppsBackgroundColorBlur = Utilities.getThemer().allAppsBackgroundColorBlur(l);
         mTransparentHotseat = Utilities.getPrefs(l).isTransparentHotseat();
         mLightStatusBar = Utilities.getPrefs(l).lightStatusBar(false);
     }

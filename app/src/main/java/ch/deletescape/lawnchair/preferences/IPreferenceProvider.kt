@@ -1,17 +1,78 @@
 package ch.deletescape.lawnchair.preferences
 
-import android.content.ComponentName
 import android.content.Context
 import android.content.SharedPreferences
 
 interface IPreferenceProvider {
 
+    // -------------------
+    // SORTED by Feature
+    // -------------------
+
+    // -------------------
+    // 1) App Theme
+    // -------------------
+
+    fun theme(): String
+    fun theme(value: String, commit: Boolean = false)
+    fun darkTheme(): Boolean
+    fun darkTheme(value: Boolean, commit: Boolean = false)
+    fun themeMode(): Int
+    fun themeMode(value: Int, commit: Boolean = false)
+
+    fun migrateThemePref(context: Context)
+    fun migratePullDownPref(context: Context)
+
+    // -------------------
+    // 2) All Apps Drawer
+    // -------------------
+
+    fun allAppsOpacity(): Float
+    fun allAppsOpacity(value: Float, commit: Boolean = false)
+    /*
+     * defines if hidden apps should be shown in drawer for changing their hidden state
+     */
+    fun showHidden(): Boolean
+    fun showHidden(value: Boolean, commit: Boolean = false)
+    fun allAppsIconScale(): Float
+    fun allAppsIconScale(value: Float, commit: Boolean = false)
+    fun alllAppsIconTextScale(): Float
+    fun alllAppsIconTextScale(value: Float, commit: Boolean = false)
+    fun useCustomAllAppsTextColor(context: Context): Boolean
+    fun useCustomAllAppsTextColor(value: Boolean, commit: Boolean)
+
+    // -------------------
+    // 3) Desktop
+    // -------------------
+
+    /*
+     * defines if a pinch gesture opens the desktop edit page
+     */
+    fun pinchToOverview(): Boolean
+    fun pinchToOverview(value: Boolean, commit: Boolean = false)
+
+    // -------------------
+    // 4) Weather
+    // -------------------
+
+    fun weatherProvider(): String
+    fun weatherProvider(value: String, commit: Boolean = false)
+    fun weatherApiKey(): String
+    fun weatherApiKey(value: String, commit: Boolean = false)
+    fun weatherCity(): String
+    fun weatherCity(value: String, commit: Boolean = false)
+    fun weatherUnit(): String
+    fun weatherUnit(value: String, commit: Boolean = false)
+
+    // --------------
+    // Unsorted...
+    // --------------
+
     // -----------------
     // FEATURES
     // -----------------
 
-    fun pinchToOverview(): Boolean
-    fun pinchToOverview(value: Boolean, commit: Boolean = false)
+
     // When enabled the status bar may show dark icons based on the top of the wallpaper.
     fun lightStatusBar(default: Boolean): Boolean
     fun lightStatusBar(value: Boolean, commit: Boolean = false)
@@ -72,22 +133,11 @@ interface IPreferenceProvider {
     fun animatedClockIcon(): Boolean
     fun animatedClockIcon(value: Boolean, commit: Boolean = false)
     fun animateClockIconAlternativeClockApps(): Boolean
-    fun useCustomAllAppsTextColor(context: Context): Boolean
-    fun useCustomAllAppsTextColor(value: Boolean, commit: Boolean)
 
-    fun theme(): String
-    fun theme(value: String, commit: Boolean = false)
-    fun darkTheme(): Boolean
-    fun darkTheme(value: Boolean, commit: Boolean = false)
-    fun themeMode(): Int
-    fun themeMode(value: Int, commit: Boolean = false)
     fun pulldownAction(): String
     fun pulldownAction(value: String, commit: Boolean = false)
     fun pulldownNotis(): Boolean
     fun pulldownNotis(value: Boolean, commit: Boolean = false)
-
-    fun migrateThemePref(context: Context)
-    fun migratePullDownPref(context: Context)
 
     // -----------------
     // PREFERENCES
@@ -108,14 +158,6 @@ interface IPreferenceProvider {
     fun appVisibility(context: Context, key: String): Boolean
     fun previousBuildNumber() : Int
     fun previousBuildNumber(value: Int, commit: Boolean = false)
-    fun weatherProvider(): String
-    fun weatherProvider(value: String, commit: Boolean = false)
-    fun weatherApiKey(): String
-    fun weatherApiKey(value: String, commit: Boolean = false)
-    fun weatherCity(): String
-    fun weatherCity(value: String, commit: Boolean = false)
-    fun weatherUnit(): String
-    fun weatherUnit(value: String, commit: Boolean = false)
     fun overrideIconShape(): String
     fun overrideIconShape(value: String, commit: Boolean = false)
     fun removeOverrideIconShape(commit: Boolean = false)
@@ -139,16 +181,11 @@ interface IPreferenceProvider {
     fun iconTextScaleSB(value: Float, commit: Boolean = false)
     fun iconPackPackage(): String
     fun iconPackPackage(value: String, commit: Boolean = false)
-    fun allAppsOpacity(): Float
-    fun allAppsOpacity(value: Float, commit: Boolean = false)
-    fun showHidden(): Boolean
-    fun showHidden(value: Boolean, commit: Boolean = false)
     fun hotseatIconScale(): Float
     fun hotseatIconScale(value: Float, commit: Boolean = false)
-    fun allAppsIconScale(): Float
-    fun allAppsIconScale(value: Float, commit: Boolean = false)
-    fun alllAppsIconTextScale(): Float
-    fun alllAppsIconTextScale(value: Float, commit: Boolean = false)
+
+
+
 
     // -----------------
     // GENERAL - BITS
