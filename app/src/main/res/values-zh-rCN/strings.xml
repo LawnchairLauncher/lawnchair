@@ -26,18 +26,18 @@
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
   <string name="activity_not_found">未安装该应用。</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
-  <string name="activity_not_available">应用不可用</string>
+  <string name="activity_not_available">无法使用该应用</string>
   <!-- SafeMode shortcut error string -->
   <string name="safemode_shortcut_error">第三方应用在安全模式下被停用</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">安全模式下不允许使用小部件</string>
+  <string name="safemode_widget_error">安全模式下无法使用小部件</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
-  <string name="shortcut_not_available">无法使用快捷方式</string>
+  <string name="shortcut_not_available">无法创建快捷方式</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">触摸并按住微件即可选择。</string>
+  <string name="long_press_widget_to_add">触摸并按住小部件即可选择。</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-  <string name="long_accessible_way_to_add">双击并长按即可选择微件或使用自定义操作。</string>
+  <string name="long_accessible_way_to_add">双击并长按即可选择小部件或者使用自定义操作。</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
@@ -46,7 +46,7 @@
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_bar_hint">搜索应用</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_loading_message">正在加载应用……</string>
+  <string name="all_apps_loading_message">加载应用中……</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
   <string name="all_apps_no_search_results">未找到与“<xliff:g id="QUERY">%1$s</xliff:g>”相符的应用</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
@@ -84,7 +84,7 @@
   <string name="msg_no_phone_permission">不允许使用“<xliff:g id="APP_NAME">%1$s</xliff:g>”拨打电话</string>
   <!-- Widgets: -->
   <!-- Text to show user in place of a gadget when we can't display it properly -->
-  <string name="gadget_error_text">加载微件时出现问题</string>
+  <string name="gadget_error_text">加载小部件时出现错误</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
   <string name="gadget_setup_text">设置</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
@@ -115,7 +115,7 @@
   <string name="folder_name_format">文件夹：<xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Strings for the customization mode -->
   <!-- Text for widget add button -->
-  <string name="widget_button_text">微件</string>
+  <string name="widget_button_text">小部件</string>
   <!-- Text for wallpaper change button -->
   <string name="wallpaper_button_text">壁纸</string>
   <!-- Text for settings button -->
