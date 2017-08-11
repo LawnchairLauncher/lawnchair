@@ -2438,10 +2438,7 @@ public class Launcher extends Activity
      * on the home screen.
      */
     public void onClickSettingsButton(View v) {
-        Intent intent = new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
-                .setPackage(getPackageName());
-        intent.setSourceBounds(getViewBounds(v));
-        startActivity(intent, getActivityLaunchOptions(v));
+        Utilities.getPrefs(this).showSettings(this, v);
     }
 
     public View.OnTouchListener getHapticFeedbackTouchListener() {
