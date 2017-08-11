@@ -1,13 +1,25 @@
 package ch.deletescape.lawnchair.preferences
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.view.View
+import ch.deletescape.lawnchair.Launcher
 import ch.deletescape.lawnchair.LauncherFiles
 import ch.deletescape.lawnchair.config.FeatureFlags
 import ch.deletescape.lawnchair.config.PreferenceProvider
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors
 
 open class PreferenceImpl : IPreferenceProvider {
+
+    override fun showSettings(launcher: Launcher, view: View) {
+        val intent = Intent(Intent.ACTION_APPLICATION_PREFERENCES)
+                .setPackage(launcher.getPackageName())
+        intent.sourceBounds = launcher.getViewBounds(view)
+        launcher.startActivity(intent, launcher.getActivityLaunchOptions(view))
+    }
+
     override fun numRowsDrawer(default: String): String {
         return getString(PreferenceFlags.KEY_PREF_NUM_ROWS_DRAWER, default)
     }

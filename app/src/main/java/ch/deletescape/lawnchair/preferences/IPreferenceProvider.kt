@@ -1,7 +1,10 @@
 package ch.deletescape.lawnchair.preferences
 
+import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
+import android.view.View
+import ch.deletescape.lawnchair.Launcher
 
 interface IPreferenceProvider {
 
@@ -223,9 +226,11 @@ interface IPreferenceProvider {
     fun appsViewShown(value: Boolean, commit: Boolean = false)
 
     // -----------------
-    // LISTENER
+    // LISTENER, FUNCTIONS
     // -----------------
 
     fun registerOnSharedPreferenceChangeListener(listener: SharedPreferences.OnSharedPreferenceChangeListener)
     fun unregisterOnSharedPreferenceChangeListener(listener: SharedPreferences.OnSharedPreferenceChangeListener)
+
+    fun showSettings(launcher: Launcher, view: View)
 }
