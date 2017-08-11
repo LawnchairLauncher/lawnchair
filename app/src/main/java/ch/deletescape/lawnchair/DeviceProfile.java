@@ -268,7 +268,7 @@ public class DeviceProfile {
             allAppsDrawablePadding = heightScale < widthScale ? 0 : allAppsDrawablePadding;
         }
         float usedHotseatWidth = (hotseatCellWidthPx * inv.numHotseatIcons);
-        float maxHotseatWidth = availableWidthPx - getHotseatAdjustment();
+        float maxHotseatWidth = availableWidthPx - (getHotseatAdjustment() * 2 + getTotalWorkspacePadding().x);
         if (usedHotseatWidth > maxHotseatWidth) {
             hotseatScale = maxHotseatWidth / usedHotseatWidth;
         }
@@ -297,6 +297,14 @@ public class DeviceProfile {
         allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx;
         if (!Utilities.getPrefs(mContext).hideAllAppsAppLabels()) {
             allAppsCellHeightPx += Utilities.calculateTextHeight(allAppsIconTextSizePx);
+        cellHeightPx = iconSizePx;
+        if (!Utilities.getPrefs(mContext).hideAppLabels() {
+            cellHeightPx += iconDrawablePaddingPx + Utilities.calculateTextHeight(iconTextSizePx);
+        }
+        allAppsCellWidthPx = allAppsIconSizePx;
+        allAppsCellHeightPx = allAppsIconSizePx;
+        if (!Utilities.getPrefs(mContext).hideAllAppsAppLabels()) {
+            allAppsCellHeightPx += allAppsIconDrawablePaddingPx + Utilities.calculateTextHeight(allAppsIconTextSizePx);
         }
 
         // Hotseat
