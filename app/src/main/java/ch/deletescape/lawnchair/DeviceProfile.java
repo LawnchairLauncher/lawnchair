@@ -289,14 +289,14 @@ public class DeviceProfile {
         allAppsIconTextSizePx = (int) (Utilities.pxFromSp(inv.allAppsIconTextSize, dm) * allAppsScale);
 
         cellWidthPx = iconSizePx;
-        cellHeightPx = iconSizePx + iconDrawablePaddingPx;
+        cellHeightPx = iconSizePx;
         if (!FeatureFlags.INSTANCE.hideAppLabels(mContext)) {
-            cellHeightPx += Utilities.calculateTextHeight(iconTextSizePx);
+            cellHeightPx += iconDrawablePaddingPx + Utilities.calculateTextHeight(iconTextSizePx);
         }
         allAppsCellWidthPx = allAppsIconSizePx;
-        allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx;
+        allAppsCellHeightPx = allAppsIconSizePx;
         if (!FeatureFlags.INSTANCE.hideAllAppsAppLabels(mContext)) {
-            allAppsCellHeightPx += Utilities.calculateTextHeight(allAppsIconTextSizePx);
+            allAppsCellHeightPx += allAppsIconDrawablePaddingPx + Utilities.calculateTextHeight(allAppsIconTextSizePx);
         }
 
         // Hotseat
