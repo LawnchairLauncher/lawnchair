@@ -117,6 +117,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case PreferenceFlags.KEY_PREF_ENABLE_BACKPORT_SHORTCUTS:
                 case PreferenceFlags.KEY_PREF_PLANE:
                 case PreferenceFlags.KEY_PREF_WEATHER:
+                case PreferenceFlags.KEY_PREF_NUM_ROWS_DRAWER:
                     mLauncher.scheduleKill();
                     break;
                 case PreferenceFlags.KEY_PREF_ICON_PACK_PACKAGE:

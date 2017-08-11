@@ -74,7 +74,6 @@ public class DeviceProfile {
     public final Rect defaultWidgetPadding;
     private final int defaultPageSpacingPx;
     private final int topWorkspacePadding;
-    private float dragViewScale;
     public float workspaceSpringLoadShrinkFactor;
     public final int workspaceSpringLoadedBottomSpace;
 
@@ -246,7 +245,8 @@ public class DeviceProfile {
         float hotseatScale = 1f;
         int workspaceDrawablePadding = iconDrawablePaddingOriginalPx;
         int allAppsDrawablePadding = iconDrawablePaddingOriginalPx;
-        updateIconSize(1f, 1f, 1f, workspaceDrawablePadding, allAppsDrawablePadding, res, dm);
+        updateIconSize(1f, 1f, 1f, workspaceDrawablePadding,
+                allAppsDrawablePadding, res, dm);
 
         float usedWorkspaceHeight = (cellHeightPx * inv.numRows);
         float usedWorkspaceWidth = (cellWidthPx * inv.numColumns);
@@ -256,19 +256,24 @@ public class DeviceProfile {
             float heightScale = maxWorkspaceHeight / usedWorkspaceHeight;
             float widthScale = maxWorkspaceWidth / usedWorkspaceWidth;
             workspaceScale = Math.min(heightScale, widthScale);
-            workspaceDrawablePadding = 0;
+            workspaceDrawablePadding = heightScale < widthScale ? 0 : workspaceDrawablePadding;
         }
         float usedAllAppsWidth = (allAppsCellWidthPx * inv.numColumnsDrawer);
-        if (usedAllAppsWidth > maxWorkspaceWidth) {
-            allAppsScale = maxWorkspaceWidth / usedAllAppsWidth;
-            allAppsDrawablePadding = 0;
+        float usedAllAppsHeight = (allAppsCellHeightPx * inv.numRowsDrawer);
+        int maxAllAppsHeight = getAllAppsPageHeight(res);
+        if (usedAllAppsWidth > maxWorkspaceWidth || usedAllAppsHeight > maxAllAppsHeight) {
+            float heightScale = maxAllAppsHeight / usedAllAppsHeight;
+            float widthScale = maxWorkspaceWidth / usedAllAppsWidth;
+            allAppsScale = Math.min(heightScale, widthScale);
+            allAppsDrawablePadding = heightScale < widthScale ? 0 : allAppsDrawablePadding;
         }
         float usedHotseatWidth = (hotseatCellWidthPx * inv.numHotseatIcons);
-        float maxHotseatWidth = maxWorkspaceWidth - getHotseatAdjustment();
+        float maxHotseatWidth = availableWidthPx - getHotseatAdjustment();
         if (usedAllAppsWidth > maxHotseatWidth) {
             hotseatScale = maxHotseatWidth / usedHotseatWidth;
         }
-        updateIconSize(workspaceScale, allAppsScale, hotseatScale, workspaceDrawablePadding, allAppsDrawablePadding, res, dm);
+        updateIconSize(workspaceScale, allAppsScale, hotseatScale, workspaceDrawablePadding,
+                allAppsDrawablePadding, res, dm);
     }
 
     private void updateIconSize(float workspaceScale, float allAppsScale, float hotseatScale, int workspaceDrawablePadding, int allAppsDrawablePadding,
@@ -293,9 +298,6 @@ public class DeviceProfile {
         if (!Utilities.getPrefs(mContext).hideAllAppsAppLabels()) {
             allAppsCellHeightPx += Utilities.calculateTextHeight(allAppsIconTextSizePx);
         }
-        int defaultAllAppsCellHeight = calculateCellHeight(availableHeightPx, inv.numRowsOriginal);
-        allAppsCellHeightPx = Math.max(allAppsCellHeightPx, defaultAllAppsCellHeight);
-        dragViewScale = iconSizePx;
 
         // Hotseat
         hotseatCellWidthPx = hotseatIconSizePx;
@@ -338,6 +340,10 @@ public class DeviceProfile {
         folderIconPreviewPadding = res.getDimensionPixelSize(R.dimen.folder_preview_padding);
     }
 
+    private int getAllAppsPageHeight(Resources res) {
+        return getCurrentHeight() - res.getDimensionPixelSize(R.dimen.all_apps_search_bar_height);
+    }
+
     public void updateInsets(Rect insets) {
         mInsets.set(insets);
     }
@@ -364,6 +370,11 @@ public class DeviceProfile {
             }
             return new Point(availableWidthPx - 2 * gap, dropTargetBarSizePx);
         }
+    }
+
+    public int getAllAppsCellHeight(Context context) {
+        Resources res = context.getResources();
+        return calculateCellHeight(getAllAppsPageHeight(res), inv.numRowsDrawer);
     }
 
     public Point getCellSize() {
@@ -404,7 +415,7 @@ public class DeviceProfile {
             } else if (isTablet) {
                 // Pad the left and right of the workspace to ensure consistent spacing
                 // between all icons
-                float gapScale = 1f + (dragViewScale - 1f) / 2f;
+                float gapScale = 0.5f;
                 int width = getCurrentWidth();
                 int height = getCurrentHeight();
                 // The amount of screen space available for left/right padding.

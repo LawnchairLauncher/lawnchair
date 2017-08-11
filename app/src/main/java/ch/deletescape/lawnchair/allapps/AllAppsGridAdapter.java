@@ -258,7 +258,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 DeviceProfile profile = mLauncher.getDeviceProfile();
                 GridLayoutManager.LayoutParams lp =
                         (GridLayoutManager.LayoutParams) icon.getLayoutParams();
-                lp.height = profile.allAppsCellHeightPx;
+                lp.height = profile.getAllAppsCellHeight(mLauncher);
                 icon.setLayoutParams(lp);
                 return new ViewHolder(icon);
             }

@@ -2,13 +2,14 @@ package ch.deletescape.lawnchair.preferences
 
 object PreferenceFlags {
 
-    // TODO: group by "function" + eventually add descriptions?
+    // TODO: maybe put all strings into resources? This way the resource string can be used in preference xml as well => more safety
 
     // Strings representing Integer or the string "default"
     const val KEY_NUM_ROWS = "pref_numRows"
     const val KEY_NUM_COLS = "pref_numCols"
     const val KEY_NUM_COLS_DRAWER = "pref_numColsDrawer"
     const val KEY_HOTSEAT_ICONS = "pref_numHotseatIcons"
+    const val KEY_PREF_NUM_ROWS_DRAWER = "pref_numRowsDrawer"
 
     // Strings
     const val KEY_WEATHER_PROVIDER = "pref_weatherProvider"

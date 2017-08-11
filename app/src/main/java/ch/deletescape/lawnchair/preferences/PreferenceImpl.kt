@@ -8,6 +8,22 @@ import ch.deletescape.lawnchair.config.PreferenceProvider
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors
 
 open class PreferenceImpl : IPreferenceProvider {
+    override fun numRowsDrawer(default: String): String {
+        return getString(PreferenceFlags.KEY_PREF_NUM_ROWS_DRAWER, default)
+    }
+
+    override fun numRowsDrawer(value: String, commit: Boolean) {
+        setString(PreferenceFlags.KEY_PREF_NUM_ROWS_DRAWER, value, commit)
+    }
+
+    override fun numHotseatIcons(default: String): String {
+        return getString(PreferenceFlags.KEY_PREF_NUM_HOTSEAT_ICONS, default)
+    }
+
+    override fun numHotseatIcons(value: String, commit: Boolean) {
+        setString(PreferenceFlags.KEY_PREF_NUM_HOTSEAT_ICONS, value, commit)
+    }
+
     override fun hotseatIconScale(): Float {
         return getFloat(PreferenceFlags.KEY_PREF_HOTSEAT_ICON_SCALE, 1f)
     }

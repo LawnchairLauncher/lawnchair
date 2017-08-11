@@ -72,7 +72,6 @@ interface IPreferenceProvider {
     // FEATURES
     // -----------------
 
-
     // When enabled the status bar may show dark icons based on the top of the wallpaper.
     fun lightStatusBar(default: Boolean): Boolean
     fun lightStatusBar(value: Boolean, commit: Boolean = false)
@@ -173,6 +172,10 @@ interface IPreferenceProvider {
     fun numCols(value: String, commit: Boolean = false)
     fun numColsDrawer(default: String): String
     fun numColsDrawer(value: String, commit: Boolean = false)
+    fun numRowsDrawer(default: String): String
+    fun numRowsDrawer(value: String, commit: Boolean = false)
+    fun numHotseatIcons(default: String): String
+    fun numHotseatIcons(value: String, commit: Boolean = false)
     fun hotseatIcons(default: String): String
     fun hotseatIcons(value: String, commit: Boolean = false)
     fun iconScaleSB(): Float
@@ -183,9 +186,6 @@ interface IPreferenceProvider {
     fun iconPackPackage(value: String, commit: Boolean = false)
     fun hotseatIconScale(): Float
     fun hotseatIconScale(value: Float, commit: Boolean = false)
-
-
-
 
     // -----------------
     // GENERAL - BITS
