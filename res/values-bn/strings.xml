@@ -27,7 +27,7 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ডাউনলোড করা অ্যাপ্লিকেশান নিরাপদ মোডে অক্ষম রয়েছে"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"সুরক্ষিত মোডে উইজেট নিষ্ক্রিয় থাকে"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"শর্টকাটগুলি অনুপলব্ধ"</string>
-    <string name="home_screen" msgid="806512411299847073">"হোম স্ক্রীন"</string>
+    <string name="home_screen" msgid="806512411299847073">"হোম স্ক্রিন"</string>
     <string name="custom_actions" msgid="3747508247759093328">"কাস্টম অ্যাকশন"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"একটি উইজেট তুলতে তা স্পর্শ করে ধরে রাখুন৷"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"কোনো উইজেট বেছে নিতে দুবার-আলতো চেপে ধরে থাকুন অথবা কাস্টম ক্রিয়াগুলি ব্যবহার করুন৷"</string>
@@ -60,7 +60,7 @@
     <string name="folder_hint_text" msgid="6617836969016293992">"নামবিহীন ফোল্ডার"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> অক্ষম করা হয়েছে"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"%2$dটির মধ্যে %1$dটি পৃষ্ঠা"</string>
-    <string name="workspace_scroll_format" msgid="8458889198184077399">"%2$dটির %1$d নম্বর হোম স্ক্রীন"</string>
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"%2$dটির %1$d নম্বর হোম স্ক্রিন"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"নতুন হোম স্ক্রীনের পৃষ্ঠা"</string>
     <string name="folder_opened" msgid="94695026776264709">"ফোল্ডার খোলা হয়েছে, <xliff:g id="WIDTH">%1$d</xliff:g> বাই <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="4625795376335528256">"ফোল্ডার বন্ধ করতে আলতো চাপ দিন"</string>
