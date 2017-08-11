@@ -257,7 +257,7 @@ public class DeviceProfile {
             float heightScale = maxWorkspaceHeight / usedWorkspaceHeight;
             float widthScale = maxWorkspaceWidth / usedWorkspaceWidth;
             workspaceScale = Math.min(heightScale, widthScale);
-            workspaceDrawablePadding = 0;
+            workspaceDrawablePadding = heightScale < widthScale ? 0 : workspaceDrawablePadding;
         }
         float usedAllAppsWidth = (allAppsCellWidthPx * inv.numColumnsDrawer);
         float usedAllAppsHeight = (allAppsCellHeightPx * inv.numRowsDrawer);
@@ -266,7 +266,7 @@ public class DeviceProfile {
             float heightScale = maxAllAppsHeight / usedAllAppsHeight;
             float widthScale = maxWorkspaceWidth / usedAllAppsWidth;
             allAppsScale = Math.min(heightScale, widthScale);
-            allAppsDrawablePadding = 0;
+            allAppsDrawablePadding = heightScale < widthScale ? 0 : allAppsDrawablePadding;
         }
         float usedHotseatWidth = (hotseatCellWidthPx * inv.numHotseatIcons);
         float maxHotseatWidth = availableWidthPx - getHotseatAdjustment();
