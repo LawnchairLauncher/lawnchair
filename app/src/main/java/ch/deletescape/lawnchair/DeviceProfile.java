@@ -268,7 +268,7 @@ public class DeviceProfile {
             allAppsDrawablePadding = heightScale < widthScale ? 0 : allAppsDrawablePadding;
         }
         float usedHotseatWidth = (hotseatCellWidthPx * inv.numHotseatIcons);
-        float maxHotseatWidth = availableWidthPx - getHotseatAdjustment();
+        float maxHotseatWidth = availableWidthPx - (getHotseatAdjustment() * 2 + getTotalWorkspacePadding().x);
         if (usedHotseatWidth > maxHotseatWidth) {
             hotseatScale = maxHotseatWidth / usedHotseatWidth;
         }
