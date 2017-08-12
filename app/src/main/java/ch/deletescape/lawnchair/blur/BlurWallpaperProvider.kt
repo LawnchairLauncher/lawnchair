@@ -30,10 +30,11 @@ class BlurWallpaperProvider(context: Context) {
         private set
     var placeholder: Bitmap? = null
         private set
-    private var mOffset: Float = 0.toFloat()
+    private var mOffset: Float = 0.5f
     var blurRadius = 25
         private set
     private val mNotifyRunnable = Runnable {
+        setWallpaperOffset(0.5f)
         for (listener in mListeners) {
             listener.onWallpaperChanged()
         }
@@ -46,7 +47,7 @@ class BlurWallpaperProvider(context: Context) {
 
     private var mWallpaperWidth: Int = 0
     private var mDisplayHeight: Int = 0
-    var wallpaperYOffset: Float = 0.toFloat()
+    var wallpaperYOffset: Float = 0f
         private set
     private val sCanvas = Canvas()
 
