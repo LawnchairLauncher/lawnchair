@@ -8,7 +8,7 @@ import com.kwabenaberko.openweathermaplib.models.CurrentWeather
 
 class OWMWeatherAPI(context: Context) : WeatherAPI(), OpenWeatherMapHelper.CurrentWeatherCallback {
 
-    private val apiKey = Utilities.getPrefs(context).weatherApiKey()
+    private val apiKey = Utilities.getPrefs(context).weatherApiKey
     private val helper = OpenWeatherMapHelper().apply { setAppId(apiKey) }
 
     override var city: String = ""

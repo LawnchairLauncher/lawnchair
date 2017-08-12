@@ -70,7 +70,7 @@ public class AllAppsRecyclerViewContainerView extends FrameLayout
     }
 
     private int getSearchBar() {
-        return Utilities.getPrefs(getContext()).useRoundSearchBar() ?
+        return Utilities.getPrefs(getContext()).getUseRoundSearchBar() ?
                 R.layout.all_apps_search_bar_round :
                 R.layout.all_apps_search_bar;
     }

@@ -135,7 +135,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         }
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
-        mUseRoundSearchBar = Utilities.getPrefs(context).useRoundSearchBar();
+        mUseRoundSearchBar = Utilities.getPrefs(context).getUseRoundSearchBar();
     }
 
     /**
@@ -240,7 +240,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
      */
     public void reset() {
         // Reset the search bar and base recycler view after transitioning home
-        if (!Utilities.getPrefs(getContext()).keepScrollState()) {
+        if (!Utilities.getPrefs(getContext()).getKeepScrollState()) {
             scrollToTop();
         }
         mSearchBarController.reset();

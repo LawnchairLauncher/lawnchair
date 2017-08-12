@@ -65,8 +65,6 @@ import ch.deletescape.lawnchair.ShortcutInfo;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.allapps.AllAppsTransitionController;
-import ch.deletescape.lawnchair.config.FeatureFlags;
-import ch.deletescape.lawnchair.config.PreferenceProvider;
 import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.keyboard.ViewGroupFocusHelper;
@@ -168,7 +166,7 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     public void updateTopShadow() {
-        setBackground(Utilities.getPrefs(getContext()).showTopShadow() ? mTopShadow : null);
+        setBackground(Utilities.getPrefs(getContext()).getShowTopShadow() ? mTopShadow : null);
     }
 
     public void setup(Launcher launcher, DragController dragController,
@@ -193,7 +191,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     public void onAccessibilityStateChanged(boolean isAccessibilityEnabled) {
         mIsAccesibilityEnabled = isAccessibilityEnabled;
-        mPinchListener = !Utilities.getPrefs(getContext()).pinchToOverview() || isAccessibilityEnabled
+        mPinchListener = !Utilities.getPrefs(getContext()).getPinchToOverview() || isAccessibilityEnabled
                 ? null : new PinchToOverviewListener(mLauncher);
     }
 

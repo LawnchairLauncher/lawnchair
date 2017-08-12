@@ -48,8 +48,8 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     }
 
     public void applyVoiceSearchPreference() {
-        showMic = Utilities.getPrefs(getContext()).showVoiceSearchButton();
-        boolean useWhiteLogo = Utilities.getPrefs(getContext()).useWhiteGoogleIcon();
+        showMic = Utilities.getPrefs(getContext()).getShowVoiceSearchButton();
+        boolean useWhiteLogo = Utilities.getPrefs(getContext()).getUseWhiteGoogleIcon();
         int qsbView = getQsbView(showMic);
         if (qsbView != mQsbViewId || mUseWhiteLogo != useWhiteLogo) {
             mQsbViewId = qsbView;
@@ -81,7 +81,7 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (!Utilities.getPrefs(getContext()).showPixelBar()) {
+        if (!Utilities.getPrefs(getContext()).getShowPixelBar()) {
             return;
         }
         IPreferenceProvider sharedPreferences = PreferenceProvider.INSTANCE.getPreferences(getContext());
@@ -114,11 +114,11 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
 
     private void initializeQsbConnector() {
         DeviceProfile deviceProfile = mLauncher.getDeviceProfile();
-        if (qsbConnector == null && !Utilities.getPrefs(getContext()).useFullWidthSearchbar()
-                && Utilities.getPrefs(mLauncher).showGoogleNowTab() && !deviceProfile.isLandscape && !deviceProfile.isTablet) {
+        if (qsbConnector == null && !Utilities.getPrefs(getContext()).getUseFullWidthSearchBar()
+                && Utilities.getPrefs(mLauncher).getShowGoogleNowTab() && !deviceProfile.isLandscape && !deviceProfile.isTablet) {
             qsbConnector = (QsbConnector) mLauncher.getLayoutInflater().inflate(R.layout.qsb_connector, this, false);
             addView(qsbConnector, 0);
-        } else if (Utilities.getPrefs(getContext()).useFullWidthSearchbar() || !Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
+        } else if (Utilities.getPrefs(getContext()).getUseFullWidthSearchBar() || !Utilities.getPrefs(mLauncher).getShowGoogleNowTab()) {
             removeView(qsbConnector);
         }
     }

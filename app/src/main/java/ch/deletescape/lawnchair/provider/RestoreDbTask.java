@@ -128,10 +128,10 @@ public class RestoreDbTask {
     }
 
     public static boolean isPending(Context context) {
-        return Utilities.getPrefs(context).restoreTaskPending();
+        return Utilities.getPrefs(context).getRestoreTaskPending();
     }
 
     public static void setPending(Context context, boolean isPending) {
-        Utilities.getPrefs(context).restoreTaskPending(isPending, false);
+        Utilities.getPrefs(context).setRestoreTaskPending(isPending);
     }
 }

@@ -842,7 +842,7 @@ public final class Utilities {
     }
 
     public static int getLabelColor(Context context) {
-        int hueId = Integer.valueOf(Utilities.getPrefs(context).labelColorHue());
+        int hueId = Integer.valueOf(Utilities.getPrefs(context).getLabelColorHue());
         if (hueId < 0) {
             switch (hueId) {
                 case -2:
@@ -854,7 +854,7 @@ public final class Utilities {
             }
         }
         String[] hueArray = getHueArray(hueId, context);
-        int variation = Integer.valueOf(Utilities.getPrefs(context).labelColorVariation());
+        int variation = Integer.valueOf(Utilities.getPrefs(context).getLabelColorVariation());
         return Color.parseColor(hueArray[variation]);
     }
 
@@ -923,13 +923,13 @@ public final class Utilities {
     }
 
     public static int getDynamicAccent(Context context) {
-        if (!Utilities.getPrefs(context).isDynamicUiEnabled()) return getColorAccent(context);
+        if (!Utilities.getPrefs(context).getEnableDynamicUi()) return getColorAccent(context);
         return getColor(context, ExtractedColors.VIBRANT_INDEX, getColorAccent(context));
     }
 
     public static int getDynamicBadgeColor(Context context) {
         int defaultColor = context.getResources().getColor(R.color.badge_color);
-        if (!Utilities.getPrefs(context).isDynamicUiEnabled()) return defaultColor;
+        if (!Utilities.getPrefs(context).getEnableDynamicUi()) return defaultColor;
         return getColor(context, ExtractedColors.VIBRANT_INDEX, defaultColor);
     }
 
@@ -940,11 +940,11 @@ public final class Utilities {
     }
 
     private static int getPreviousBuildNumber(IPreferenceProvider prefs) {
-        return prefs.previousBuildNumber();
+        return prefs.getPreviousBuildNumber();
     }
 
     private static void setBuildNumber(IPreferenceProvider prefs, int buildNumber) {
-        prefs.previousBuildNumber(buildNumber, false);
+        prefs.setPreviousBuildNumber(buildNumber);
     }
 
     public static void showChangelog(Context context) {
@@ -1002,7 +1002,7 @@ public final class Utilities {
 
     public static boolean isAwarenessApiEnabled(Context context) {
         IPreferenceProvider prefs = getPrefs(context);
-        return PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS.equals(prefs.weatherProvider());
+        return PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS.equals(prefs.getWeatherProvider());
     }
 
     public static boolean isComponentClock(ComponentName componentName, boolean stockAppOnly) {

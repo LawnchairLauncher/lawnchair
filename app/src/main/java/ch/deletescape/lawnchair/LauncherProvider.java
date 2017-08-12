@@ -350,8 +350,8 @@ public class LauncherProvider extends ContentProvider {
                 String extractedColors = extras.getString(
                         LauncherSettings.Settings.EXTRA_EXTRACTED_COLORS);
                 int wallpaperId = extras.getInt(LauncherSettings.Settings.EXTRA_WALLPAPER_ID);
-                Utilities.getPrefs(getContext()).extractedColorsPreference(extractedColors, false);
-                Utilities.getPrefs(getContext()).wallpaperId(wallpaperId, false);
+                Utilities.getPrefs(getContext()).setExtractedColorsPreference(extractedColors);
+                Utilities.getPrefs(getContext()).setWallpaperId(wallpaperId);
                 mListenerHandler.sendEmptyMessage(ChangeListenerWrapper.MSG_EXTRACTED_COLORS_CHANGED);
                 Bundle result = new Bundle();
                 result.putString(LauncherSettings.Settings.EXTRA_VALUE, extractedColors);
@@ -364,7 +364,7 @@ public class LauncherProvider extends ContentProvider {
             case LauncherSettings.Settings.METHOD_WAS_EMPTY_DB_CREATED: {
                 Bundle result = new Bundle();
                 result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
-                        Utilities.getPrefs(getContext()).emptyDatabaseCreated());
+                        Utilities.getPrefs(getContext()).getEmptyDatabaseCreated());
                 return result;
             }
             case LauncherSettings.Settings.METHOD_DELETE_EMPTY_FOLDERS: {
@@ -469,7 +469,7 @@ public class LauncherProvider extends ContentProvider {
     synchronized private void loadDefaultFavoritesIfNecessary() {
         IPreferenceProvider sp = Utilities.getPrefs(getContext());
 
-        if (sp.emptyDatabaseCreated()) {
+        if (sp.getEmptyDatabaseCreated()) {
             Log.d(TAG, "loading default workspace");
 
             AppWidgetHost widgetHost = new AppWidgetHost(getContext(), Launcher.APPWIDGET_HOST_ID);
@@ -616,7 +616,7 @@ public class LauncherProvider extends ContentProvider {
             }
 
             // Set the flag for empty DB
-            Utilities.getPrefs(mContext).emptyDatabaseCreated(true, false);
+            Utilities.getPrefs(mContext).setEmptyDatabaseCreated(true);
 
             // When a new DB is created, remove all previously stored managed profile information.
             ManagedProfileHeuristic.processAllUsers(Collections.<UserHandle>emptyList(),

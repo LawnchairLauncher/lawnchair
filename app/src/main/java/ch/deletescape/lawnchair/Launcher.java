@@ -362,7 +362,7 @@ public class Launcher extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FeatureFlags.INSTANCE.loadDarkThemePreference(this);
+        FeatureFlags.INSTANCE.loadThemePreference(this);
         super.onCreate(savedInstanceState);
 
         setScreenOrientation();
@@ -402,7 +402,7 @@ public class Launcher extends Activity
 
         setContentView(R.layout.launcher);
 
-        mPlanesEnabled = Utilities.getPrefs(this).planes();
+        mPlanesEnabled = Utilities.getPrefs(this).getEnablePlanes();
         setupViews();
         mDeviceProfile.layout(this, false /* notifyListeners */);
         mExtractedColors = new ExtractedColors();
@@ -433,8 +433,8 @@ public class Launcher extends Activity
 
         mLauncherTab = new LauncherTab(this);
 
-        if (mSharedPrefs.requiresIconCacheReload()) {
-            mSharedPrefs.requiresIconCacheReload(false, false);
+        if (mSharedPrefs.getRequiresIconCacheReload()) {
+            mSharedPrefs.setRequiresIconCacheReload(false);
             reloadIcons();
         }
 
@@ -452,7 +452,7 @@ public class Launcher extends Activity
     }
 
     private void setScreenOrientation() {
-        if (Utilities.getPrefs(this).enableScreenRotation()) {
+        if (Utilities.getPrefs(this).getEnableScreenRotation()) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -946,7 +946,7 @@ public class Launcher extends Activity
             mBlurWallpaperProvider.updateAsync();
         }
 
-        mDisableEditing = !Utilities.getPrefs(this).enableEditing();
+        mDisableEditing = !Utilities.getPrefs(this).getEnableEditing();
     }
 
     @Override
@@ -1162,7 +1162,7 @@ public class Launcher extends Activity
         setupOverviewPanel();
 
         // Setup the workspace
-        mWorkspace.setHapticFeedbackEnabled(Utilities.getPrefs(this).enableHapticFeedback());
+        mWorkspace.setHapticFeedbackEnabled(Utilities.getPrefs(this).getEnableHapticFeedback());
         mWorkspace.setOnLongClickListener(this);
         mWorkspace.setup(mDragController);
         // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the
@@ -1663,7 +1663,7 @@ public class Launcher extends Activity
             // If we are already on home, then just animate back to the workspace,
             // otherwise, just wait until onResume to set the state back to Workspace
             if (alreadyOnHome) {
-                if (!Utilities.getPrefs(this).homeOpensDrawer() || mState != State.WORKSPACE || mWorkspace.getCurrentPage() != 0 || mOverviewPanel.getVisibility() == View.VISIBLE) {
+                if (!Utilities.getPrefs(this).getHomeOpensDrawer() || mState != State.WORKSPACE || mWorkspace.getCurrentPage() != 0 || mOverviewPanel.getVisibility() == View.VISIBLE) {
                     showWorkspace(true);
                 } else {
                     showAppsView(true, false);
@@ -1681,7 +1681,7 @@ public class Launcher extends Activity
             }
 
             // Reset the apps view
-            if (!alreadyOnHome && mAppsView != null && !Utilities.getPrefs(this).keepScrollState()) {
+            if (!alreadyOnHome && mAppsView != null && !Utilities.getPrefs(this).getKeepScrollState()) {
                 mAppsView.scrollToTop();
             }
 
@@ -3219,7 +3219,7 @@ public class Launcher extends Activity
     @Override
     public void bindScreens(ArrayList<Long> orderedScreenIds) {
         // Make sure the first screen is always at the start.
-        if (Utilities.getPrefs(this).showPixelBar() && orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != 0) {
+        if (Utilities.getPrefs(this).getShowPixelBar() && orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != 0) {
             orderedScreenIds.remove(Workspace.FIRST_SCREEN_ID);
             orderedScreenIds.add(0, Workspace.FIRST_SCREEN_ID);
             mModel.updateWorkspaceScreenOrder(this, orderedScreenIds);
@@ -3899,10 +3899,10 @@ public class Launcher extends Activity
 
 
     private void markAppsViewShown() {
-        if (mSharedPrefs.appsViewShown()) {
+        if (mSharedPrefs.getAppsViewShown()) {
             return;
         }
-        mSharedPrefs.appsViewShown(true, false);
+        mSharedPrefs.setAppsViewShown(true);
     }
 
     private boolean shouldShowDiscoveryBounce() {
@@ -3912,7 +3912,7 @@ public class Launcher extends Activity
         if (!mIsResumeFromActionScreenOff) {
             return false;
         }
-        return !mSharedPrefs.appsViewShown();
+        return !mSharedPrefs.getAppsViewShown();
     }
 
     /**

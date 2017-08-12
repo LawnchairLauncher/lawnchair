@@ -121,7 +121,7 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         if (FeatureFlags.KEY_PREF_THEME.equals(key)) {
-            FeatureFlags.INSTANCE.loadDarkThemePreference(this);
+            FeatureFlags.INSTANCE.loadThemePreference(this);
             recreate();
         }
     }
@@ -191,7 +191,7 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                 Preference prefWeatherProvider = findPreference(PreferenceFlags.KEY_WEATHER_PROVIDER);
                 prefWeatherProvider.setEnabled(BuildConfig.AWARENESS_API_ENABLED);
                 prefWeatherProvider.setOnPreferenceChangeListener(this);
-                updateEnabledState(Utilities.getPrefs(getActivity()).weatherProvider());
+                updateEnabledState(Utilities.getPrefs(getActivity()).getWeatherProvider());
                 Preference overrideShapePreference = findPreference(PreferenceFlags.KEY_OVERRIDE_ICON_SHAPE);
                 if (IconShapeOverride.Companion.isSupported(getActivity())) {
                     IconShapeOverride.Companion.handlePreferenceUi((ListPreference) overrideShapePreference);
@@ -233,7 +233,7 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                         break;
                     case FeatureFlags.KEY_PREF_WEATHER:
                         Context context = getActivity();
-                        if (Utilities.getPrefs(context).showWeather() && Utilities.isAwarenessApiEnabled(context)) {
+                        if (Utilities.getPrefs(context).getShowWeather() && Utilities.isAwarenessApiEnabled(context)) {
                             checkPermission(Manifest.permission.ACCESS_FINE_LOCATION);
                         }
                         break;

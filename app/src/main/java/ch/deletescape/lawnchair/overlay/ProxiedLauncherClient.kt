@@ -60,14 +60,14 @@ class ProxiedLauncherClient(private val launcher: Launcher) : ILauncherClient {
                 launcher.runOnUiThread { notifyStatusChanged(0) }
             }
         } else {
-            if (Utilities.getPrefs(launcher).showGoogleNowTab()) {
+            if (Utilities.getPrefs(launcher).showGoogleNowTab) {
                 connectProxy()
             }
         }
     }
 
     override fun onStart() {
-        if (!destroyed && Utilities.getPrefs(launcher).showGoogleNowTab()) {
+        if (!destroyed && Utilities.getPrefs(launcher).showGoogleNowTab) {
             activityState = activityState or 1
             if (windowAttrs != null) {
                 try {
@@ -80,7 +80,7 @@ class ProxiedLauncherClient(private val launcher: Launcher) : ILauncherClient {
     }
 
     override fun onStop() {
-        if (!destroyed && Utilities.getPrefs(launcher).showGoogleNowTab()) {
+        if (!destroyed && Utilities.getPrefs(launcher).showGoogleNowTab) {
             activityState = activityState and -2
             if (windowAttrs != null) {
                 try {
@@ -93,7 +93,7 @@ class ProxiedLauncherClient(private val launcher: Launcher) : ILauncherClient {
     }
 
     override fun onPause() {
-        if (destroyed || !Utilities.getPrefs(launcher).showGoogleNowTab()) {
+        if (destroyed || !Utilities.getPrefs(launcher).showGoogleNowTab) {
             return
         }
         activityState = activityState and -3
@@ -107,7 +107,7 @@ class ProxiedLauncherClient(private val launcher: Launcher) : ILauncherClient {
     }
 
     override fun onResume() {
-        if (destroyed || !Utilities.getPrefs(launcher).showGoogleNowTab()) {
+        if (destroyed || !Utilities.getPrefs(launcher).showGoogleNowTab) {
             return
         }
 
@@ -123,19 +123,19 @@ class ProxiedLauncherClient(private val launcher: Launcher) : ILauncherClient {
     }
 
     override fun onDestroy() {
-        if (Utilities.getPrefs(launcher).showGoogleNowTab()) {
+        if (Utilities.getPrefs(launcher).showGoogleNowTab) {
             removeClient(!launcher.isChangingConfigurations)
         }
     }
 
     override fun onAttachedToWindow() {
-        if (!destroyed && Utilities.getPrefs(launcher).showGoogleNowTab()) {
+        if (!destroyed && Utilities.getPrefs(launcher).showGoogleNowTab) {
             setWindowAttrs(launcher.window.attributes)
         }
     }
 
     override fun onDetachedFromWindow() {
-        if (!destroyed && Utilities.getPrefs(launcher).showGoogleNowTab()) {
+        if (!destroyed && Utilities.getPrefs(launcher).showGoogleNowTab) {
             setWindowAttrs(null)
         }
     }
@@ -217,7 +217,7 @@ class ProxiedLauncherClient(private val launcher: Launcher) : ILauncherClient {
     }
 
     private inline fun ifConnected(body: () -> Unit) {
-        if (!isConnected || !Utilities.getPrefs(launcher).showGoogleNowTab()) {
+        if (!isConnected || !Utilities.getPrefs(launcher).showGoogleNowTab) {
             return
         }
 

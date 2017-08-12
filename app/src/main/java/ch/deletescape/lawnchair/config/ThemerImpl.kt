@@ -24,7 +24,7 @@ open class ThemerImpl : IThemer {
     }
 
     override fun allAppsFastScrollerPopupTintColor(context: Context): Int? {
-        if (Utilities.getPrefs(context).isDynamicUiEnabled()) {
+        if (Utilities.getPrefs(context).enableDynamicUi) {
             val tint = Utilities.getDynamicAccent(context)
             if (tint != -1) {
                 return tint
@@ -35,7 +35,7 @@ open class ThemerImpl : IThemer {
 
     override fun allAppsFastScrollerPopupTextColor(context: Context): Int {
         var color = Color.WHITE
-        if (Utilities.getPrefs(context).isDynamicUiEnabled()) {
+        if (Utilities.getPrefs(context).enableDynamicUi) {
             val tint = Utilities.getDynamicAccent(context)
             if (tint != -1) {
                 color = Utilities.getColor(context, ExtractedColors.VIBRANT_FOREGROUND_INDEX, Color.WHITE)
@@ -45,7 +45,7 @@ open class ThemerImpl : IThemer {
     }
 
     override fun allAppsIconTextColor(context: Context, allAppsAlpha: Int): Int {
-        if (Utilities.getPrefs(context).useCustomAllAppsTextColor(context)) {
+        if (Utilities.getPrefs(context).useCustomAllAppsTextColor) {
             return Utilities.getLabelColor(context)
         } else if (FeatureFlags.useDarkTheme(FeatureFlags.DARK_ALLAPPS)) {
             return Color.WHITE

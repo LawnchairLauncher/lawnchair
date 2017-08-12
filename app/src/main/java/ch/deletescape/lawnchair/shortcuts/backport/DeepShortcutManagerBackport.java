@@ -29,7 +29,7 @@ public class DeepShortcutManagerBackport extends DeepShortcutManager {
     public DeepShortcutManagerBackport(Context context) {
         mContext = context;
         mLauncherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
-        mEnableBackport = Utilities.getPrefs(context).enableBackportShortcuts();
+        mEnableBackport = Utilities.getPrefs(context).getEnableBackportShortcuts();
     }
 
     @Override

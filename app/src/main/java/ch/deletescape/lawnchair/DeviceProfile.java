@@ -289,21 +289,21 @@ public class DeviceProfile {
 
         cellWidthPx = iconSizePx;
         cellHeightPx = iconSizePx + iconDrawablePaddingPx;
-        if (!Utilities.getPrefs(mContext).hideAppLabels()) {
+        if (!Utilities.getPrefs(mContext).getHideAppLabels()) {
             cellHeightPx += Utilities.calculateTextHeight(iconTextSizePx);
         }
         allAppsCellWidthPx = allAppsIconSizePx;
         allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx;
-        if (!Utilities.getPrefs(mContext).hideAllAppsAppLabels()) {
+        if (!Utilities.getPrefs(mContext).getHideAllAppsAppLabels()) {
             allAppsCellHeightPx += Utilities.calculateTextHeight(allAppsIconTextSizePx);
         }
         cellHeightPx = iconSizePx;
-        if (!Utilities.getPrefs(mContext).hideAppLabels()) {
+        if (!Utilities.getPrefs(mContext).getHideAppLabels()) {
             cellHeightPx += iconDrawablePaddingPx + Utilities.calculateTextHeight(iconTextSizePx);
         }
         allAppsCellWidthPx = allAppsIconSizePx;
         allAppsCellHeightPx = allAppsIconSizePx;
-        if (!Utilities.getPrefs(mContext).hideAllAppsAppLabels()) {
+        if (!Utilities.getPrefs(mContext).getHideAllAppsAppLabels()) {
             allAppsCellHeightPx += allAppsIconDrawablePaddingPx + Utilities.calculateTextHeight(allAppsIconTextSizePx);
         }
 
@@ -417,8 +417,8 @@ public class DeviceProfile {
                         getHotseatHeight() + hotseatLandGutterPx, 2 * edgeMarginPx);
             }
         } else {
-            int paddingBottom = (Utilities.getPrefs(mContext).isTransparentHotseat() && Utilities.getPrefs(mContext).hideHotseat() ? 0 : hotseatBarHeightPx) + pageIndicatorHeightPx;
-            if (Utilities.getPrefs(mContext).allowFullWidthWidgets()) {
+            int paddingBottom = (Utilities.getPrefs(mContext).getTransparentHotseat() && Utilities.getPrefs(mContext).getHideHotseat() ? 0 : hotseatBarHeightPx) + pageIndicatorHeightPx;
+            if (Utilities.getPrefs(mContext).getAllowFullWidthWidgets()) {
                 padding.set(0, 0, 0, paddingBottom);
             } else if (isTablet) {
                 // Pad the left and right of the workspace to ensure consistent spacing
@@ -550,8 +550,8 @@ public class DeviceProfile {
         // this, we pad the left and right of the hotseat with half of the difference of a workspace
         // cell vs a hotseat cell.
         int hotseatAdjustment = getHotseatAdjustment();
-        boolean transparentHotseat = Utilities.getPrefs(mContext).isTransparentHotseat();
-        boolean hideHotseat = transparentHotseat && Utilities.getPrefs(mContext).hideHotseat();
+        boolean transparentHotseat = Utilities.getPrefs(mContext).getTransparentHotseat();
+        boolean hideHotseat = transparentHotseat && Utilities.getPrefs(mContext).getHideHotseat();
         if (hasVerticalBarLayout) {
             // Vertical hotseat -- The hotseat is fixed in the layout to be on the right of the
             //                     screen regardless of RTL

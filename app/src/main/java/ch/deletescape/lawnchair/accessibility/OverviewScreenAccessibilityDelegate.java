@@ -88,7 +88,7 @@ public class OverviewScreenAccessibilityDelegate extends AccessibilityDelegate {
             info.addAction(mActions.get(MOVE_FORWARD));
         }
 
-        int startIndex = Utilities.getPrefs(host.getContext()).showPixelBar() ? 1 : 0;
+        int startIndex = Utilities.getPrefs(host.getContext()).getShowPixelBar() ? 1 : 0;
         if (index > startIndex) {
             info.addAction(mActions.get(MOVE_BACKWARD));
         }

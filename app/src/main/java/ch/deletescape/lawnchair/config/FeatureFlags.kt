@@ -71,14 +71,14 @@ object FeatureFlags {
 
     fun pullDownAction(context: Context): Int {
         Utilities.getPrefs(context).migratePullDownPref(context)
-        return Integer.parseInt(PreferenceProvider.getPreferences(context).pulldownAction())
+        return Integer.parseInt(PreferenceProvider.getPreferences(context).pulldownAction)
     }
 
-    fun loadDarkThemePreference(context: Context) {
+    fun loadThemePreference(context: Context) {
         val prefs = PreferenceProvider.getPreferences(context)
-        currentTheme = Integer.parseInt(prefs.theme())
+        currentTheme = Integer.parseInt(prefs.theme)
         useDarkTheme = currentTheme != 0
-        darkThemeFlag = prefs.themeMode()
+        darkThemeFlag = prefs.themeMode
     }
 
     fun useDarkTheme(flag: Int): Boolean {
@@ -95,7 +95,7 @@ object FeatureFlags {
 
     fun applyDarkTheme(activity: Activity) {
         Utilities.getPrefs(activity).migrateThemePref(activity)
-        loadDarkThemePreference(activity)
+        loadThemePreference(activity)
         if (FeatureFlags.useDarkTheme)
             activity.setTheme(SETTINGS_THEMES[currentTheme])
     }

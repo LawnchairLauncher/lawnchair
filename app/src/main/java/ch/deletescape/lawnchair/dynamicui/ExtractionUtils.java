@@ -69,7 +69,7 @@ public class ExtractionUtils {
         }
         final IPreferenceProvider sharedPrefs = Utilities.getPrefs(context);
         int wallpaperId = getWallpaperId(WallpaperManager.getInstance(context));
-        int savedWallpaperId = sharedPrefs.wallpaperId();
+        int savedWallpaperId = sharedPrefs.getWallpaperId();
         return wallpaperId != savedWallpaperId;
     }
 
@@ -117,8 +117,8 @@ public class ExtractionUtils {
     private static boolean hasExtractionPreferencesChanged(Context context) {
         IPreferenceProvider prefs = Utilities.getPrefs(context);
         boolean result = false;
-        boolean hotseatColoringValue = prefs.hotseatShouldUseExtractedColors(true);
-        boolean lightStatusBarValue = prefs.lightStatusBar(true);
+        boolean hotseatColoringValue = prefs.getHotseatShouldUseExtractedColors();
+        boolean lightStatusBarValue = prefs.getLightStatusBar();
         if (prefs.hotseatShouldUseExtractedColorsCache(!hotseatColoringValue) != hotseatColoringValue) {
             result = true;
             prefs.hotseatShouldUseExtractedColorsCache(hotseatColoringValue, false);

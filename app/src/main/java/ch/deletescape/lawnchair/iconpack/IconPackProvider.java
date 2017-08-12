@@ -28,7 +28,7 @@ public class IconPackProvider {
     }
 
     public static IconPack loadAndGetIconPack(Context context) {
-        String packageName = Utilities.getPrefs(context).iconPackPackage();
+        String packageName = Utilities.getPrefs(context).getIconPackPackage();
         return loadAndGetIconPack(context, packageName);
     }
 

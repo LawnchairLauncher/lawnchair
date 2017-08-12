@@ -60,7 +60,7 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
     }
 
     public void updateCenterWallpaper() {
-        mCenterWallpaper = Utilities.getPrefs(mWorkspace.getContext()).centerWallpaper();
+        mCenterWallpaper = Utilities.getPrefs(mWorkspace.getContext()).getCenterWallpaper();
         syncWithScroll();
     }
 

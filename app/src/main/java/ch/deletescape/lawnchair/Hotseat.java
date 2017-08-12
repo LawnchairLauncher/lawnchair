@@ -64,7 +64,7 @@ public class Hotseat extends FrameLayout {
         super(context, attrs, defStyle);
         mLauncher = Launcher.getLauncher(context);
         mHasVerticalHotseat = mLauncher.getDeviceProfile().isVerticalBarLayout();
-        if (Utilities.getPrefs(context).isTransparentHotseat() || mHasVerticalHotseat) {
+        if (Utilities.getPrefs(context).getTransparentHotseat() || mHasVerticalHotseat) {
             setBackgroundColor(Color.TRANSPARENT);
         } else {
             mBackgroundColor = ColorUtils.setAlphaComponent(

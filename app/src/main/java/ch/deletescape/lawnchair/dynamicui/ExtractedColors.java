@@ -105,7 +105,7 @@ public class ExtractedColors {
      * These were saved there in {@link ColorExtractionService}.
      */
     public void load(Context context) {
-        String encodedString = Utilities.getPrefs(context).extractedColorsPreference();
+        String encodedString = Utilities.getPrefs(context).getExtractedColorsPreference();
 
         decodeFromString(encodedString);
 
@@ -180,11 +180,11 @@ public class ExtractedColors {
      * - 40% lightVibrant or 25% white otherwise
      */
     public int getHotseatColor(Context context) {
-        if (Utilities.getPrefs(context).isTransparentHotseat()) {
+        if (Utilities.getPrefs(context).getTransparentHotseat()) {
             return Color.TRANSPARENT;
         }
         int hotseatColor;
-        boolean shouldUseExtractedColors = Utilities.getPrefs(context).hotseatShouldUseExtractedColors(true);
+        boolean shouldUseExtractedColors = Utilities.getPrefs(context).getHotseatShouldUseExtractedColors();
         if (getColor(IS_SUPER_LIGHT, 0) == 1) {
             if (shouldUseExtractedColors) {
                 int baseColor = getColor(HOTSEAT_DARK_MUTED_INDEX, getColor(HOTSEAT_DARK_VIBRANT_INDEX, Color.BLACK));

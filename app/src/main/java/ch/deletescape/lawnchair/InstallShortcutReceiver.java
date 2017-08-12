@@ -73,14 +73,14 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         synchronized (sLock) {
             String encoded = info.encodeToString();
             if (encoded != null) {
-                Set<String> strings = sharedPrefs.appsPendingInstalls();
+                Set<String> strings = sharedPrefs.getAppsPendingInstalls();
                 if (strings == null) {
                     strings = new HashSet<>(1);
                 } else {
                     strings = new HashSet<>(strings);
                 }
                 strings.add(encoded);
-                sharedPrefs.appsPendingInstalls(strings, false);
+                sharedPrefs.setAppsPendingInstalls(strings);
             }
         }
     }
@@ -92,7 +92,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
         IPreferenceProvider sp = Utilities.getPrefs(context);
         synchronized (sLock) {
-            Set<String> strings = sp.appsPendingInstalls();
+            Set<String> strings = sp.getAppsPendingInstalls();
             if (strings != null) {
                 Set<String> newStrings = new HashSet<>(strings);
                 Iterator<String> newStringsIter = newStrings.iterator();
@@ -104,7 +104,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                         newStringsIter.remove();
                     }
                 }
-                sp.appsPendingInstalls(newStrings, false);
+                sp.setAppsPendingInstalls(newStrings);
             }
         }
     }
@@ -112,7 +112,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     private static ArrayList<PendingInstallShortcutInfo> getAndClearInstallQueue(
             IPreferenceProvider sharedPrefs, Context context) {
         synchronized (sLock) {
-            Set<String> strings = sharedPrefs.appsPendingInstalls();
+            Set<String> strings = sharedPrefs.getAppsPendingInstalls();
             if (strings == null) {
                 return new ArrayList<>();
             }
@@ -124,7 +124,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     infos.add(info);
                 }
             }
-            sharedPrefs.appsPendingInstalls(new HashSet<String>(), false);
+            sharedPrefs.setAppsPendingInstalls(new HashSet<String>());
             return infos;
         }
     }

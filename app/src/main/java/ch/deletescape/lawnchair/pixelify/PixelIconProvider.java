@@ -162,7 +162,7 @@ public class PixelIconProvider {
             drawable = iconPack == null ? null : iconPack.getIcon(info);
         }
         boolean isRoundPack = isRoundIconPack(sIconPack);
-        if ((drawable == null && Utilities.getPrefs(mContext).usePixelIcons()) ||
+        if ((drawable == null && Utilities.getPrefs(mContext).getUsePixelIcons()) ||
                 (isRoundPack && drawable instanceof CustomIconDrawable)) {
             Drawable roundIcon = getRoundIcon(info.getComponentName().getPackageName(), iconDpi);
             if (roundIcon != null)

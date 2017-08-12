@@ -108,12 +108,12 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mEvaluator = new ArgbEvaluator();
         mAllAppsBackgroundColor = Utilities.getThemer().allAppsBackgroundColor(l);
         mAllAppsBackgroundColorBlur = Utilities.getThemer().allAppsBackgroundColorBlur(l);
-        mTransparentHotseat = Utilities.getPrefs(l).isTransparentHotseat();
-        mLightStatusBar = Utilities.getPrefs(l).lightStatusBar(false);
+        mTransparentHotseat = Utilities.getPrefs(l).getTransparentHotseat();
+        mLightStatusBar = Utilities.getPrefs(l).getLightStatusBar();
     }
 
     public void updateLightStatusBar(Context context) {
-        mLightStatusBar = Utilities.getPrefs(context).lightStatusBar(false);
+        mLightStatusBar = Utilities.getPrefs(context).getLightStatusBar();
         updateLightStatusBar(mProgress * mShiftRange);
     }
 

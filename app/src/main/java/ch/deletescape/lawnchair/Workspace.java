@@ -67,6 +67,7 @@ import ch.deletescape.lawnchair.accessibility.OverviewAccessibilityDelegate;
 import ch.deletescape.lawnchair.accessibility.OverviewScreenAccessibilityDelegate;
 import ch.deletescape.lawnchair.accessibility.WorkspaceAccessibilityHelper;
 import ch.deletescape.lawnchair.badge.FolderBadgeInfo;
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragController;
@@ -367,8 +368,8 @@ public class Workspace extends PagedView
         mOverviewModeShrinkFactor =
                 res.getInteger(R.integer.config_workspaceOverviewShrinkPercentage) / 100f;
 
-        mBlurQsb = Utilities.getPrefs(context).isBlurEnabled();
-        mFullWidthQsb = Utilities.getPrefs(context).useFullWidthSearchbar();
+        mBlurQsb = BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.BLUR_QSB);
+        mFullWidthQsb = Utilities.getPrefs(context).getUseFullWidthSearchBar();
 
         setOnHierarchyChangeListener(this);
         setHapticFeedbackEnabled(false);
@@ -587,7 +588,7 @@ public class Workspace extends PagedView
         // Add the first page
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, 0);
 
-        if (!Utilities.getPrefs(getContext()).showPixelBar())
+        if (!Utilities.getPrefs(getContext()).getShowPixelBar())
             return;
 
         // Always add a QSB on the first screen.
@@ -601,7 +602,7 @@ public class Workspace extends PagedView
 
         CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, firstPage.getCountX(), 1);
         lp.canReorder = false;
-        if (!firstPage.addViewToCellLayout(qsb, 0, getEmbeddedQsbId(), lp, Utilities.getPrefs(getContext()).showPixelBar())) {
+        if (!firstPage.addViewToCellLayout(qsb, 0, getEmbeddedQsbId(), lp, Utilities.getPrefs(getContext()).getShowPixelBar())) {
             Log.e(TAG, "Failed to add to item at (0, 0) to CellLayout");
         }
     }
@@ -973,7 +974,7 @@ public class Workspace extends PagedView
             long id = mWorkspaceScreens.keyAt(i);
             CellLayout cl = mWorkspaceScreens.valueAt(i);
             // FIRST_SCREEN_ID can never be removed.
-            if ((!Utilities.getPrefs(getContext()).showPixelBar() || id != FIRST_SCREEN_ID) && cl.getShortcutsAndWidgets().getChildCount() == 0) {
+            if ((!Utilities.getPrefs(getContext()).getShowPixelBar() || id != FIRST_SCREEN_ID) && cl.getShortcutsAndWidgets().getChildCount() == 0) {
                 removeScreens.add(id);
             }
         }
@@ -4150,7 +4151,7 @@ public class Workspace extends PagedView
     }
 
     public void updateQsbVisibility() {
-        boolean visible = Utilities.getPrefs(getContext()).showPixelBar();
+        boolean visible = Utilities.getPrefs(getContext()).getShowPixelBar();
         View qsb = findViewById(getEmbeddedQsbId());
         if (qsb != null) {
             qsb.setVisibility(visible ? View.VISIBLE : View.GONE);

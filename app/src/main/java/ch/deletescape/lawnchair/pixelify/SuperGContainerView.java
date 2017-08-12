@@ -59,7 +59,7 @@ public class SuperGContainerView extends BaseQsbView {
 
     public SuperGContainerView(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
-        if (Utilities.getPrefs(getContext()).useFullWidthSearchbar()) {
+        if (Utilities.getPrefs(getContext()).getUseFullWidthSearchBar()) {
             bz = null;
         } else {
             bz = new TransformingTouchDelegate(this);
@@ -77,10 +77,10 @@ public class SuperGContainerView extends BaseQsbView {
             mQsbView.setBackground(mBlurDrawable);
             mQsbView.setLayerType(LAYER_TYPE_SOFTWARE, null);
         }
-        if (Utilities.getPrefs(getContext()).useWhiteGoogleIcon() &&
+        if (Utilities.getPrefs(getContext()).getUseWhiteGoogleIcon() &&
                 (mBlurEnabled || FeatureFlags.INSTANCE.useDarkTheme(FeatureFlags.DARK_QSB))) {
             ((ImageView) findViewById(R.id.g_icon)).setColorFilter(Color.WHITE);
-            if (Utilities.getPrefs(getContext()).showVoiceSearchButton()) {
+            if (Utilities.getPrefs(getContext()).getShowVoiceSearchButton()) {
                 ((ImageView) findViewById(R.id.mic_icon)).setColorFilter(Color.WHITE);
             }
         }
@@ -88,7 +88,7 @@ public class SuperGContainerView extends BaseQsbView {
 
     @Override
     public void applyVoiceSearchPreference() {
-        if (!Utilities.getPrefs(getContext()).useFullWidthSearchbar()) {
+        if (!Utilities.getPrefs(getContext()).getUseFullWidthSearchBar()) {
             super.applyVoiceSearchPreference();
             if (bz != null) {
                 bz.setDelegateView(mQsbView);
@@ -119,7 +119,7 @@ public class SuperGContainerView extends BaseQsbView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (!Utilities.getPrefs(getContext()).showPixelBar()) {
+        if (!Utilities.getPrefs(getContext()).getShowPixelBar()) {
             return;
         }
         if (bz != null) {
@@ -161,7 +161,7 @@ public class SuperGContainerView extends BaseQsbView {
     @Override
     protected void onLayout(boolean z, int i, int i2, int i3, int i4) {
         super.onLayout(z, i, i2, i3, i4);
-        if (bz != null && mQsbView != null && Utilities.getPrefs(getContext()).showPixelBar()) {
+        if (bz != null && mQsbView != null && Utilities.getPrefs(getContext()).getShowPixelBar()) {
             int i5 = 0;
             if (Utilities.isRtl(getResources())) {
                 i5 = mQsbView.getLeft() - mLauncher.getDeviceProfile().getWorkspacePadding(sTempRect).left;

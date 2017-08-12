@@ -230,26 +230,26 @@ public class InvariantDeviceProfile {
         } else {
             numHotseatIcons = numHotseatIconsOriginal;
         }
-        if (prefs.iconScaleSB() != 1f) {
-            float iconScale = prefs.iconScaleSB();
+        if (prefs.getIconScaleSB() != 1f) {
+            float iconScale = prefs.getIconScaleSB();
             iconSize *= iconScale;
         }
-        if (prefs.hotseatIconScale() != 1f) {
-            float iconScale = prefs.hotseatIconScale();
+        if (prefs.getHotseatIconScale() != 1f) {
+            float iconScale = prefs.getHotseatIconScale();
             hotseatIconSize *= iconScale;
         }
-        if (prefs.allAppsIconScale() != 1f) {
-            float iconScale = prefs.allAppsIconScale();
+        if (prefs.getAllAppsIconScale() != 1f) {
+            float iconScale = prefs.getAllAppsIconScale();
             allAppsIconSize *= iconScale;
         }
         float maxSize = Math.max(Math.max(iconSize, allAppsIconSize), hotseatIconSize);
         iconBitmapSize = Math.max(1, Utilities.pxFromDp(maxSize, dm));
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
-        if (prefs.iconTextScaleSB() != 1f) {
-            iconTextSize *= prefs.iconTextScaleSB();
+        if (prefs.getIconTextScaleSB() != 1f) {
+            iconTextSize *= prefs.getIconTextScaleSB();
         }
-        if (prefs.alllAppsIconTextScale() != 1f) {
-            allAppsIconTextSize *= prefs.alllAppsIconTextScale();
+        if (prefs.getAllAppsIconTextScale() != 1f) {
+            allAppsIconTextSize *= prefs.getAllAppsIconTextScale();
         }
     }
 

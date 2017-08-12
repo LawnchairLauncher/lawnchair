@@ -2,7 +2,6 @@ package ch.deletescape.lawnchair.graphics
 
 import android.annotation.TargetApi
 import android.content.Context
-import android.content.SharedPreferences
 import android.content.res.Resources
 import android.os.Build
 import android.os.Process
@@ -12,9 +11,10 @@ import android.preference.Preference.OnPreferenceChangeListener
 import android.provider.Settings.Global
 import android.text.TextUtils
 import android.util.Log
-import ch.deletescape.lawnchair.*
+import ch.deletescape.lawnchair.LauncherAppState
+import ch.deletescape.lawnchair.Utilities
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider
-import ch.deletescape.lawnchair.preferences.PreferenceFlags
+import ch.deletescape.lawnchair.preferences.blockingEdit
 import java.lang.reflect.Field
 
 @TargetApi(Build.VERSION_CODES.O)
@@ -25,7 +25,7 @@ class IconShapeOverride {
         override fun onPreferenceChange(preference: Preference, obj: Any): Boolean {
             val str = obj as String
             if (getAppliedValue(context) != str) {
-                prefs(context).overrideIconShape(str, true)
+                prefs(context).blockingEdit { overrideIconShape = str }
                 LauncherAppState.getInstance().iconCache.clear()
                 Process.killProcess(Process.myPid())
             }
@@ -84,7 +84,7 @@ class IconShapeOverride {
             get() = Resources.getSystem().getIdentifier("config_icon_mask", "string", "android")
 
         private fun getAppliedValue(context: Context): String {
-            return prefs(context).overrideIconShape()
+            return prefs(context).overrideIconShape
         }
 
         private fun prefs(context: Context): IPreferenceProvider {

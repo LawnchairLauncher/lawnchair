@@ -145,16 +145,16 @@ public class BubbleTextView extends TextView
         int display = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
         int defaultIconSize = grid.iconSizePx;
         if (display == DISPLAY_WORKSPACE) {
-            mHideText = Utilities.getPrefs(context).hideAppLabels();
+            mHideText = Utilities.getPrefs(context).getHideAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.iconTextSizePx);
             setTextColor(Utilities.getLabelColor(getContext()));
         } else if (display == DISPLAY_ALL_APPS) {
-            mHideText = Utilities.getPrefs(context).hideAllAppsAppLabels();
+            mHideText = Utilities.getPrefs(context).getHideAllAppsAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
         } else if (display == DISPLAY_FOLDER) {
-            mHideText = Utilities.getPrefs(context).hideAppLabels();
+            mHideText = Utilities.getPrefs(context).getHideAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
         }
@@ -237,8 +237,8 @@ public class BubbleTextView extends TextView
     }
 
     private void applyClockIcon(ComponentName componentName) {
-        if (Utilities.getPrefs(getContext()).animatedClockIcon() &&
-                Utilities.isComponentClock(componentName, !Utilities.getPrefs(getContext()).animateClockIconAlternativeClockApps())) {
+        if (Utilities.getPrefs(getContext()).getAnimatedClockIcon() &&
+                Utilities.isComponentClock(componentName, !Utilities.getPrefs(getContext()).getAnimateClockIconAlternativeClockApps())) {
             setIcon(ClockIconDrawable.Companion.create(getContext()));
         }
     }
