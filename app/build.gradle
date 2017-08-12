@@ -69,7 +69,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     def mobileCenterSdkVersion = '0.10.0'
     def supportLibVersion = '26.0.1'
     implementation "com.microsoft.azure.mobile:mobile-center-analytics:${mobileCenterSdkVersion}"
@@ -82,6 +82,7 @@ dependencies {
     implementation 'com.github.KwabenBerko:OpenWeatherMap-Android-Library:v1.0.0'
     implementation 'com.google.android.gms:play-services-awareness:11.0.4'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation project(':launcherclient')
 }
 repositories {
     mavenCentral()

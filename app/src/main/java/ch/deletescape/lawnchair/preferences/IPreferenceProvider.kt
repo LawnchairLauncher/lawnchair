@@ -1,6 +1,5 @@
 package ch.deletescape.lawnchair.preferences
 
-import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.view.View

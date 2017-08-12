@@ -1,4 +1,4 @@
-package com.google.android.libraries.launcherclient
+package ch.deletescape.lawnchair.overlay
 
 import android.content.*
 import android.content.pm.PackageManager
@@ -10,42 +10,35 @@ import android.view.Window
 import android.view.WindowManager
 import ch.deletescape.lawnchair.Launcher
 import ch.deletescape.lawnchair.Utilities
+import com.google.android.libraries.launcherclient.ILauncherOverlay
+import com.google.android.libraries.launcherclient.ILauncherOverlayCallback
 
-class LauncherClient(private val mLauncher: Launcher, targetPackage: String, overlayEnabled: Boolean) {
-    private var mCurrentCallbacks: OverlayCallbacks? = null
-    private var mDestroyed: Boolean = false
-    private var mIsServiceConnected: Boolean = false
+class LauncherClientImpl(private val launcher: Launcher, targetPackage: String, overlayEnabled: Boolean) : ILauncherClient {
+    private var currentCallbacks: OverlayCallbacks? = null
+    private var destroyed = false
+    private var serviceConnected = false
     private var activityState: Int = 0
-    private var mOverlay: ILauncherOverlay? = null
-    private val mServiceConnection: OverlayServiceConnection
-    private val mServiceConnectionOptions: Int
-    private val mServiceIntent: Intent
-    private var mServiceStatus: Int = 0
-    private var mState: Int = 0
-    private val mUpdateReceiver: BroadcastReceiver
-    private var mWindowAttrs: WindowManager.LayoutParams? = null
+    private var overlay: ILauncherOverlay? = null
+    private val serviceConnection = OverlayServiceConnection()
+    private val serviceConnectionOptions = 3
+    private val serviceIntent = getServiceIntent(launcher)
+    private var serviceStatus = -1
+    private var state = 0
+    private var windowAttrs: WindowManager.LayoutParams? = null
+    private val updateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            reconnect()
+        }
+    }
 
     init {
-        mUpdateReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                reconnect()
-            }
-        }
-        mDestroyed = false
-        mIsServiceConnected = false
-        mServiceStatus = -1
-        mServiceIntent = LauncherClient.getServiceIntent(mLauncher)
-        mState = 0
-        mServiceConnection = OverlayServiceConnection()
-        mServiceConnectionOptions = if (overlayEnabled) 3 else 2
-
         val filter = IntentFilter(Intent.ACTION_PACKAGE_ADDED)
         filter.addDataScheme("package")
         filter.addDataSchemeSpecificPart(targetPackage, PatternMatcher.PATTERN_LITERAL)
-        mLauncher.registerReceiver(mUpdateReceiver, filter)
+        launcher.registerReceiver(updateReceiver, filter)
 
         if (version < 1) {
-            LauncherClient.Pb(mLauncher)
+            Pb(launcher)
         }
 
         reconnect()
@@ -54,31 +47,31 @@ class LauncherClient(private val mLauncher: Launcher, targetPackage: String, ove
     constructor(launcher: Launcher, overlayEnabled: Boolean) : this(launcher, "com.google.android.googlequicksearchbox", overlayEnabled)
 
     private fun applyWindowToken() {
-        if (!isConnected || !Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
+        if (!isConnected || !Utilities.getPrefs(launcher).showGoogleNowTab()) {
             return
         }
 
         try {
-            if (mCurrentCallbacks == null) {
-                mCurrentCallbacks = OverlayCallbacks()
+            if (currentCallbacks == null) {
+                currentCallbacks = OverlayCallbacks()
             }
 
-            mCurrentCallbacks!!.setClient(this)
+            currentCallbacks!!.setClient(this)
             if (version >= 3) {
                 val bundle = Bundle()
-                bundle.putParcelable("layout_params", mWindowAttrs)
-                bundle.putParcelable("configuration", mLauncher.resources.configuration)
-                bundle.putInt("client_options", mServiceConnectionOptions)
-                mOverlay!!.windowAttached2(bundle, mCurrentCallbacks!!)
+                bundle.putParcelable("layout_params", windowAttrs)
+                bundle.putParcelable("configuration", launcher.resources.configuration)
+                bundle.putInt("client_options", serviceConnectionOptions)
+                overlay!!.windowAttached2(bundle, currentCallbacks!!)
             } else {
-                mOverlay!!.windowAttached(mWindowAttrs!!, mCurrentCallbacks!!, mServiceConnectionOptions)
+                overlay!!.windowAttached(windowAttrs!!, currentCallbacks!!, serviceConnectionOptions)
             }
             if (version >= 4) {
-                mOverlay!!.setActivityState(activityState)
+                overlay!!.setActivityState(activityState)
             } else if (activityState and 2 == 0) {
-                mOverlay!!.onPause()
+                overlay!!.onPause()
             } else {
-                mOverlay!!.onResume()
+                overlay!!.onResume()
             }
         } catch (ignored: RemoteException) {
         }
@@ -87,7 +80,7 @@ class LauncherClient(private val mLauncher: Launcher, targetPackage: String, ove
 
     private fun connectSafely(context: Context, conn: ServiceConnection, flags: Int): Boolean {
         try {
-            return context.bindService(mServiceIntent, conn, flags or Context.BIND_AUTO_CREATE)
+            return context.bindService(serviceIntent, conn, flags or Context.BIND_AUTO_CREATE)
         } catch (e: SecurityException) {
             Log.e("DrawerOverlayClient", "Unable to connect to overlay service")
             return false
@@ -95,114 +88,114 @@ class LauncherClient(private val mLauncher: Launcher, targetPackage: String, ove
 
     }
 
-    val isConnected: Boolean
-        get() = mOverlay != null
+    override val isConnected: Boolean
+        get() = overlay != null
 
     private fun notifyStatusChanged(status: Int) {
-        if (mServiceStatus == status) {
+        if (serviceStatus == status) {
             return
         }
 
-        mServiceStatus = status
+        serviceStatus = status
     }
 
     private fun removeClient(removeAppConnection: Boolean) {
-        mDestroyed = true
-        if (mIsServiceConnected) {
-            mLauncher.unbindService(mServiceConnection)
-            mIsServiceConnected = false
+        destroyed = true
+        if (serviceConnected) {
+            launcher.unbindService(serviceConnection)
+            serviceConnected = false
         }
-        mLauncher.unregisterReceiver(mUpdateReceiver)
+        launcher.unregisterReceiver(updateReceiver)
 
-        if (mCurrentCallbacks != null) {
-            mCurrentCallbacks!!.clear()
-            mCurrentCallbacks = null
+        if (currentCallbacks != null) {
+            currentCallbacks!!.clear()
+            currentCallbacks = null
         }
 
         if (removeAppConnection && sApplicationConnection != null) {
-            mLauncher.applicationContext.unbindService(sApplicationConnection!!)
+            launcher.applicationContext.unbindService(sApplicationConnection!!)
             sApplicationConnection = null
         }
     }
 
     private fun setWindowAttrs(windowAttrs: WindowManager.LayoutParams?) {
-        mWindowAttrs = windowAttrs
-        if (mWindowAttrs != null) {
+        this.windowAttrs = windowAttrs
+        if (this.windowAttrs != null) {
             applyWindowToken()
-        } else if (mOverlay != null) {
+        } else if (overlay != null) {
             try {
-                mOverlay!!.windowDetached(mLauncher.isChangingConfigurations)
+                overlay!!.windowDetached(launcher.isChangingConfigurations)
             } catch (ignored: RemoteException) {
             }
 
-            mOverlay = null
+            overlay = null
         }
     }
 
-    fun endMove() {
-        if (!isConnected || !Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
+    override fun endMove() {
+        if (!isConnected || !Utilities.getPrefs(launcher).showGoogleNowTab()) {
             return
         }
 
         try {
-            mOverlay!!.endScroll()
+            overlay!!.endScroll()
         } catch (ignored: RemoteException) {
         }
 
     }
 
-    fun hideOverlay(animate: Boolean) {
-        if (!isConnected || !Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
+    override fun hideOverlay(animate: Boolean) {
+        if (!isConnected || !Utilities.getPrefs(launcher).showGoogleNowTab()) {
             return
         }
 
         try {
-            mOverlay!!.closeOverlay(if (animate) 1 else 0)
+            overlay!!.closeOverlay(if (animate) 1 else 0)
         } catch (ignored: RemoteException) {
         }
 
     }
 
-    fun openOverlay(animate: Boolean) {
-        if (!isConnected || !Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
+    override fun openOverlay(animate: Boolean) {
+        if (!isConnected || !Utilities.getPrefs(launcher).showGoogleNowTab()) {
             return
         }
 
         try {
-            mOverlay!!.openOverlay(if (animate) 1 else 0)
+            overlay!!.openOverlay(if (animate) 1 else 0)
         } catch (ignored: RemoteException) {
         }
 
     }
 
-    fun onAttachedToWindow() {
-        if (!mDestroyed && Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
-            setWindowAttrs(mLauncher.window.attributes)
+    override fun onAttachedToWindow() {
+        if (!destroyed && Utilities.getPrefs(launcher).showGoogleNowTab()) {
+            setWindowAttrs(launcher.window.attributes)
         }
     }
 
-    fun onDestroy() {
-        if (Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
-            removeClient(!mLauncher.isChangingConfigurations)
+    override fun onDestroy() {
+        if (Utilities.getPrefs(launcher).showGoogleNowTab()) {
+            removeClient(!launcher.isChangingConfigurations)
         }
     }
 
-    fun remove() {
+    override fun remove() {
         removeClient(true)
     }
 
-    fun onDetachedFromWindow() {
-        if (!mDestroyed && Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
+    override fun onDetachedFromWindow() {
+        if (!destroyed && Utilities.getPrefs(launcher).showGoogleNowTab()) {
             setWindowAttrs(null)
         }
     }
 
-    fun onStart() {
-        if (!mDestroyed && Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
+    override fun onStart() {
+        if (!destroyed && Utilities.getPrefs(launcher).showGoogleNowTab()) {
             activityState = activityState or 1
-            if (mOverlay != null && mWindowAttrs != null) {
+            if (windowAttrs != null) {
                 try {
-                    mOverlay!!.setActivityState(activityState)
+                    overlay?.setActivityState(activityState)
                 } catch (e: RemoteException) {
                 }
 
@@ -210,12 +203,12 @@ class LauncherClient(private val mLauncher: Launcher, targetPackage: String, ove
         }
     }
 
-    fun onStop() {
-        if (!mDestroyed && Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
+    override fun onStop() {
+        if (!destroyed && Utilities.getPrefs(launcher).showGoogleNowTab()) {
             activityState = activityState and -2
-            if (mOverlay != null && mWindowAttrs != null) {
+            if (windowAttrs != null) {
                 try {
-                    mOverlay!!.setActivityState(activityState)
+                    overlay?.setActivityState(activityState)
                 } catch (e: RemoteException) {
                 }
 
@@ -223,30 +216,30 @@ class LauncherClient(private val mLauncher: Launcher, targetPackage: String, ove
         }
     }
 
-    fun onPause() {
-        if (mDestroyed || !Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
+    override fun onPause() {
+        if (destroyed || !Utilities.getPrefs(launcher).showGoogleNowTab()) {
             return
         }
         activityState = activityState and -3
-        if (mOverlay != null && mWindowAttrs != null) {
+        if (windowAttrs != null) {
             try {
-                mOverlay!!.onPause()
+                overlay?.onPause()
             } catch (ignored: RemoteException) {
             }
 
         }
     }
 
-    fun onResume() {
-        if (mDestroyed || !Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
+    override fun onResume() {
+        if (destroyed || !Utilities.getPrefs(launcher).showGoogleNowTab()) {
             return
         }
 
         activityState = activityState or 2
         reconnect()
-        if (mOverlay != null && mWindowAttrs != null) {
+        if (windowAttrs != null) {
             try {
-                mOverlay!!.onResume()
+                overlay?.onResume()
             } catch (ignored: RemoteException) {
             }
 
@@ -254,56 +247,56 @@ class LauncherClient(private val mLauncher: Launcher, targetPackage: String, ove
     }
 
     fun reconnect() {
-        if (mDestroyed || mState != 0 || !Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
+        if (destroyed || state != 0 || !Utilities.getPrefs(launcher).showGoogleNowTab()) {
             return
         }
 
-        if (sApplicationConnection != null && sApplicationConnection!!.packageName != mServiceIntent.`package`) {
-            mLauncher.applicationContext.unbindService(sApplicationConnection!!)
+        if (sApplicationConnection != null && sApplicationConnection!!.packageName != serviceIntent.`package`) {
+            launcher.applicationContext.unbindService(sApplicationConnection!!)
         }
 
         if (sApplicationConnection == null) {
-            sApplicationConnection = AppServiceConnection(mServiceIntent.`package`)
+            sApplicationConnection = AppServiceConnection(serviceIntent.`package`)
 
-            if (!connectSafely(mLauncher.applicationContext, sApplicationConnection!!, Context.BIND_WAIVE_PRIORITY)) {
+            if (!connectSafely(launcher.applicationContext, sApplicationConnection!!, Context.BIND_WAIVE_PRIORITY)) {
                 sApplicationConnection = null
             }
         }
 
         if (sApplicationConnection != null) {
-            mState = 2
+            state = 2
 
-            if (!connectSafely(mLauncher, mServiceConnection, Context.BIND_ADJUST_WITH_ACTIVITY)) {
-                mState = 0
+            if (!connectSafely(launcher, serviceConnection, Context.BIND_ADJUST_WITH_ACTIVITY)) {
+                state = 0
             } else {
-                mIsServiceConnected = true
+                serviceConnected = true
             }
         }
 
-        if (mState == 0) {
-            mLauncher.runOnUiThread { notifyStatusChanged(0) }
+        if (state == 0) {
+            launcher.runOnUiThread { notifyStatusChanged(0) }
         }
     }
 
-    fun startMove() {
-        if (!isConnected || !Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
+    override fun startMove() {
+        if (!isConnected || !Utilities.getPrefs(launcher).showGoogleNowTab()) {
             return
         }
 
         try {
-            mOverlay!!.startScroll()
+            overlay!!.startScroll()
         } catch (ignored: RemoteException) {
         }
 
     }
 
-    fun updateMove(progressX: Float) {
-        if (!isConnected || !Utilities.getPrefs(mLauncher).showGoogleNowTab()) {
+    override fun updateMove(progress: Float) {
+        if (!isConnected || !Utilities.getPrefs(launcher).showGoogleNowTab()) {
             return
         }
 
         try {
-            mOverlay!!.onScroll(progressX)
+            overlay!!.onScroll(progress)
         } catch (ignored: RemoteException) {
         }
 
@@ -324,7 +317,7 @@ class LauncherClient(private val mLauncher: Launcher, targetPackage: String, ove
     }
 
     private inner class OverlayCallbacks : ILauncherOverlayCallback.Stub(), Handler.Callback {
-        private var mClient: LauncherClient? = null
+        private var mClient: LauncherClientImpl? = null
         private val mUIHandler: Handler
         private var mWindow: Window? = null
         private var mWindowHidden: Boolean = false
@@ -380,37 +373,37 @@ class LauncherClient(private val mLauncher: Launcher, targetPackage: String, ove
                 hideActivityNonUI(false)
             }
 
-            mLauncher.runOnUiThread { mLauncher.workspace.onOverlayScrollChanged(progress) }
+            launcher.runOnUiThread { launcher.workspace.onOverlayScrollChanged(progress) }
         }
 
         override fun overlayStatusChanged(status: Int) {
             Message.obtain(mUIHandler, 4, status, 0).sendToTarget()
         }
 
-        fun setClient(client: LauncherClient) {
+        fun setClient(client: LauncherClientImpl) {
             mClient = client
-            mWindowManager = client.mLauncher.windowManager
+            mWindowManager = client.launcher.windowManager
 
             val p = Point()
             mWindowManager!!.defaultDisplay.getRealSize(p)
             mWindowShift = Math.max(p.x, p.y)
 
-            mWindow = client.mLauncher.window
+            mWindow = client.launcher.window
         }
     }
 
     private inner class OverlayServiceConnection : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            mState = 1
-            mOverlay = ILauncherOverlay.Stub.asInterface(service)
-            if (mWindowAttrs != null) {
+            state = 1
+            overlay = ILauncherOverlay.Stub.asInterface(service)
+            if (windowAttrs != null) {
                 applyWindowToken()
             }
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
-            mState = 0
-            mOverlay = null
+            state = 0
+            overlay = null
             notifyStatusChanged(0)
         }
     }
@@ -431,7 +424,7 @@ class LauncherClient(private val mLauncher: Launcher, targetPackage: String, ove
         }
 
         private fun Pb(context: Context) {
-            val resolveService = context.packageManager.resolveService(LauncherClient.getServiceIntent(context), PackageManager.GET_META_DATA)
+            val resolveService = context.packageManager.resolveService(getServiceIntent(context), PackageManager.GET_META_DATA)
             if (resolveService == null || resolveService.serviceInfo.metaData == null) {
                 version = 1
             } else {

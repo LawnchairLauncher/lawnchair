@@ -40,7 +40,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -83,7 +82,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.libraries.launcherclient.LauncherClient;
 import com.microsoft.azure.mobile.MobileCenter;
 import com.microsoft.azure.mobile.analytics.Analytics;
 import com.microsoft.azure.mobile.crashes.Crashes;
@@ -119,10 +117,10 @@ import ch.deletescape.lawnchair.keyboard.CustomActionsPopup;
 import ch.deletescape.lawnchair.keyboard.ViewGroupFocusHelper;
 import ch.deletescape.lawnchair.model.WidgetsModel;
 import ch.deletescape.lawnchair.notification.NotificationListener;
+import ch.deletescape.lawnchair.overlay.ILauncherClient;
 import ch.deletescape.lawnchair.popup.PopupContainerWithArrow;
 import ch.deletescape.lawnchair.popup.PopupDataProvider;
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
-import ch.deletescape.lawnchair.preferences.PreferenceFlags;
 import ch.deletescape.lawnchair.settings.Settings;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.ShortcutKey;
@@ -3968,7 +3966,7 @@ public class Launcher extends Activity
         mWorkspace.setLauncherOverlay(overlay);
     }
 
-    public LauncherClient getClient() {
+    public ILauncherClient getClient() {
         return mLauncherTab.getClient();
     }
 

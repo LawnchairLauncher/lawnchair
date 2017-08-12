@@ -16,20 +16,20 @@
 
 package ch.deletescape.lawnchair;
 
-import com.google.android.libraries.launcherclient.LauncherClient;
 import ch.deletescape.lawnchair.Launcher.LauncherOverlay;
+import ch.deletescape.lawnchair.overlay.ILauncherClient;
 
 public class LauncherTab {
 
-    private LauncherClient mLauncherClient;
+    private ILauncherClient mLauncherClient;
 
     public LauncherTab(Launcher launcher) {
-        mLauncherClient = new LauncherClient(launcher, true);
+        mLauncherClient = ILauncherClient.Companion.create(launcher);
 
         launcher.setLauncherOverlay(new LauncherOverlays());
     }
 
-    protected LauncherClient getClient() {
+    protected ILauncherClient getClient() {
         return mLauncherClient;
     }
 
