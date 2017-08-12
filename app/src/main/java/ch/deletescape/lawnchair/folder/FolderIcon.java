@@ -769,6 +769,13 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
 
+        canvas.save();
+
+        if (getMeasuredWidth() > getMeasuredHeight()) {
+            int translationX = (getMeasuredWidth() - getMeasuredHeight()) / 2;
+            canvas.translate(translationX, 0);
+        }
+
         if (mReferenceDrawable != null) {
             computePreviewDrawingParams(mReferenceDrawable);
         }
@@ -781,7 +788,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         if (mFolder.getItemCount() == 0 && !mAnimating) return;
 
         canvas.save();
-
 
         if (mPreviewLayoutRule.clipToBackground()) {
             mBackground.clipCanvas(canvas);
@@ -812,6 +818,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             this.mTempSpaceForBadgeOffset.set(getWidth() - this.mTempBounds.right, this.mTempBounds.top);
             this.mBadgeRenderer.draw(canvas, this.mBadgeInfo, this.mTempBounds, max, this.mTempSpaceForBadgeOffset);
         }
+
+        canvas.restore();
     }
 
     private Drawable getTopDrawable(TextView v) {
