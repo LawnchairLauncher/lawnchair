@@ -35,6 +35,7 @@ object PreferenceFlags {
     const val KEY_HOTSEAT_SHOULD_USE_EXTRACTED_COLORS = "pref_hotseatShouldUseExtractedColors"
     const val KEY_HOTSEAT_SHOULD_USE_EXTRACTED_COLORS_CACHE = KEY_HOTSEAT_SHOULD_USE_EXTRACTED_COLORS + "_cache"
     const val KEY_LIGHT_STATUS_BAR = "pref_lightStatusBar"
+    const val KEY_CENTER_WALLPAPER = "pref_centerWallpaper"
 
     // Various
     const val KEY_WS_LABEL_COLOR_HUE = "pref_workspaceLabelColorHue"

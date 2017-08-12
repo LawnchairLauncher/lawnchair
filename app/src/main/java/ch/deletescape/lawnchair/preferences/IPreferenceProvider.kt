@@ -52,6 +52,8 @@ interface IPreferenceProvider {
      */
     fun pinchToOverview(): Boolean
     fun pinchToOverview(value: Boolean, commit: Boolean = false)
+    fun centerWallpaper(): Boolean
+    fun centerWallpaper(value: Boolean, commit: Boolean = false)
 
     // -------------------
     // 4) Weather

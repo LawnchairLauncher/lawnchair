@@ -4162,4 +4162,8 @@ public class Workspace extends PagedView
             }
         }
     }
+
+    public WallpaperOffsetInterpolator getWallpaperOffset() {
+        return mWallpaperOffset;
+    }
 }

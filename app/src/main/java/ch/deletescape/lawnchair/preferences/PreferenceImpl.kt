@@ -1,6 +1,5 @@
 package ch.deletescape.lawnchair.preferences
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -15,7 +14,7 @@ open class PreferenceImpl : IPreferenceProvider {
 
     override fun showSettings(launcher: Launcher, view: View) {
         val intent = Intent(Intent.ACTION_APPLICATION_PREFERENCES)
-                .setPackage(launcher.getPackageName())
+                .setPackage(launcher.packageName)
         intent.sourceBounds = launcher.getViewBounds(view)
         launcher.startActivity(intent, launcher.getActivityLaunchOptions(view))
     }
@@ -557,6 +556,14 @@ open class PreferenceImpl : IPreferenceProvider {
         setBoolean(FeatureFlags.KEY_PREF_PINCH_TO_OVERVIEW, value, commit)
     }
 
+    override fun centerWallpaper(): Boolean {
+        return getBoolean(PreferenceFlags.KEY_CENTER_WALLPAPER, true)
+    }
+
+    override fun centerWallpaper(value: Boolean, commit: Boolean) {
+        setBoolean(PreferenceFlags.KEY_CENTER_WALLPAPER, value, commit)
+    }
+
     override fun lightStatusBar(default: Boolean): Boolean {
         return getBoolean(FeatureFlags.KEY_PREF_LIGHT_STATUS_BAR, default)
     }
@@ -668,7 +675,7 @@ open class PreferenceImpl : IPreferenceProvider {
     private var mSharedPref: SharedPreferences
 
     constructor(context: Context) {
-        mSharedPref = context.getApplicationContext().getSharedPreferences(
+        mSharedPref = context.applicationContext.getSharedPreferences(
                 LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
     }
 

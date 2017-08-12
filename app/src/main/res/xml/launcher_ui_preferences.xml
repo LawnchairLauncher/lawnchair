@@ -97,6 +97,12 @@
             android:defaultValue="false"
             android:summary="@string/full_width_widgets_pref_summary" />
 
+        <SwitchPreference
+            android:key="pref_centerWallpaper"
+            android:persistent="true"
+            android:title="@string/center_wallpaper_pref_title"
+            android:defaultValue="true" />
+
         <Preference
             android:key="notification_access"
             android:title="@string/notification_access_pref_title"

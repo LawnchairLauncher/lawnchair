@@ -42,6 +42,8 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
     int mNumScreens;
     int mNumPagesForWallpaperParallax;
 
+    private boolean mCenterWallpaper;
+
     public WallpaperOffsetInterpolator(Workspace workspace) {
         mChoreographer = Choreographer.getInstance();
         mInterpolator = new DecelerateInterpolator(1.5f);
@@ -49,11 +51,17 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
         mWorkspace = workspace;
         mWallpaperManager = WallpaperManager.getInstance(workspace.getContext());
         mIsRtl = Utilities.isRtl(workspace.getResources());
+        updateCenterWallpaper();
     }
 
     @Override
     public void doFrame(long frameTimeNanos) {
         updateOffset(false);
+    }
+
+    public void updateCenterWallpaper() {
+        mCenterWallpaper = Utilities.getPrefs(mWorkspace.getContext()).centerWallpaper();
+        syncWithScroll();
     }
 
     private void updateOffset(boolean force) {
@@ -112,7 +120,7 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
         int numScrollingPages = getNumScreensExcludingEmpty();
         float edge = mIsRtl ? 1f : 0f;
         if (numScrollingPages <= 1) {
-            return mWallpaperIsLiveWallpaper ? edge : 0.5f;
+            return (mWallpaperIsLiveWallpaper || !mCenterWallpaper) ? edge : 0.5f;
         } else if (mLockedToDefaultPage) {
             return edge;
         }

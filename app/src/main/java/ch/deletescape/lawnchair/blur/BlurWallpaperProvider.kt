@@ -34,7 +34,8 @@ class BlurWallpaperProvider(context: Context) {
     var blurRadius = 25
         private set
     private val mNotifyRunnable = Runnable {
-        setWallpaperOffset(0.5f)
+        if (Utilities.getPrefs(context).centerWallpaper())
+            setWallpaperOffset(0.5f)
         for (listener in mListeners) {
             listener.onWallpaperChanged()
         }
