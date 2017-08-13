@@ -73,6 +73,7 @@ public abstract class SystemShortcut {
             return new OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    AbstractFloatingView.closeAllOpenViews(launcher);
                     Intent i = new Intent(Intent.ACTION_MAIN).setComponent(itemInfo.getTargetComponent());
                     LauncherActivityInfoCompat laic = LauncherActivityInfoCompat.create(launcher, itemInfo.user, i);
                     ch.deletescape.lawnchair.AppInfo appInfo = new ch.deletescape.lawnchair.AppInfo(launcher, laic, itemInfo.user, launcher.getIconCache());
