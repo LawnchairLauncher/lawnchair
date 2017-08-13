@@ -211,4 +211,8 @@
     <dimen name="folder_background_radius">2dp</dimen>
     <dimen name="icon_preview_size">48dp</dimen>
     <dimen name="icon_grid_column_width">80dp</dimen>
+    <dimen name="all_apps_vertical_row_height">80dp</dimen>
+    <dimen name="all_apps_vertical_row_padding">16.0dip</dimen>
+    <dimen name="all_apps_vertical_icon_size">48.0dip</dimen>
+    <dimen name="all_apps_vertical_icon_padding">16.0dip</dimen>
 </resources>

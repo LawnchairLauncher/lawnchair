@@ -27,6 +27,7 @@
             <enum name="folder" value="2" />
             <enum name="widget_section" value="3" />
             <enum name="deep_shortcut" value="4" />
+            <enum name="all_apps_vertical" value="5" />
         </attr>
         <attr name="deferShadowGeneration" format="boolean" />
         <attr name="customShadows" format="boolean" />

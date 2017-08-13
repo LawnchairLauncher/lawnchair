@@ -26,6 +26,7 @@ import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.ShortcutAndWidgetContainer;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
+import ch.deletescape.lawnchair.allapps.theme.IAllAppsThemer;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.config.ThemeProvider;
@@ -57,6 +58,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private boolean mLightStatusBar;
 
     private AllAppsContainerView mAppsView;
+    private final IAllAppsThemer mTheme;
     private int mAllAppsBackgroundColor;
     private int mAllAppsBackgroundColorBlur;
     private Workspace mWorkspace;
@@ -106,8 +108,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mShiftRange = DEFAULT_SHIFT_RANGE;
         mProgress = 1f;
         mEvaluator = new ArgbEvaluator();
-        mAllAppsBackgroundColor = Utilities.getThemer().allAppsBackgroundColor(l);
-        mAllAppsBackgroundColorBlur = Utilities.getThemer().allAppsBackgroundColorBlur(l);
+        mTheme = Utilities.getThemer().allAppsTheme(l);
+        mAllAppsBackgroundColor = mTheme.getBackgroundColor();
+        mAllAppsBackgroundColorBlur = mTheme.getBackgroundColorBlur();
         mTransparentHotseat = Utilities.getPrefs(l).getTransparentHotseat();
         mLightStatusBar = Utilities.getPrefs(l).getLightStatusBar();
     }
@@ -117,11 +120,11 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         updateLightStatusBar(mProgress * mShiftRange);
     }
 
-    public void setAllAppsAlpha(Context context, int allAppsAlpha) {
+    public void setAllAppsAlpha(int allAppsAlpha) {
         this.allAppsAlpha = allAppsAlpha;
         mAppsView.setAppIconTextStyle(
-                Utilities.getThemer().allAppsIconTextColor(context, allAppsAlpha),
-                Utilities.getThemer().allAppsIconTextLines(context));
+                mTheme.iconTextColor(allAppsAlpha),
+                mTheme.getIconTextLines());
     }
 
     @Override

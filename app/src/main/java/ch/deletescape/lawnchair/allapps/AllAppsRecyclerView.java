@@ -97,7 +97,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                 getResources().getDisplayMetrics().heightPixels, View.MeasureSpec.AT_MOST);
 
         // Icons
-        BubbleTextView icon = (BubbleTextView) adapter.onCreateViewHolder(this,
+        View icon = adapter.onCreateViewHolder(this,
                 AllAppsGridAdapter.VIEW_TYPE_ICON).mContent;
         int iconHeight = icon.getLayoutParams().height;
         mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_ICON, iconHeight);

@@ -53,6 +53,7 @@ import ch.deletescape.lawnchair.LauncherTransitionable;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
+import ch.deletescape.lawnchair.allapps.theme.IAllAppsThemer;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.folder.Folder;
@@ -106,6 +107,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private final Point mBoundsCheckLastTouchDownPos = new Point(-1, -1);
 
     private AllAppsBackground mAllAppsBackground;
+    private IAllAppsThemer mTheme;
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -136,6 +138,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
         mUseRoundSearchBar = Utilities.getPrefs(context).getUseRoundSearchBar();
+        mTheme = Utilities.getThemer().allAppsTheme(context);
     }
 
     /**
@@ -264,13 +267,13 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         mSearchContainer = findViewById(R.id.search_container);
         mSearchInput = findViewById(R.id.search_box_input);
-        int hintAndCursorColor = Utilities.getThemer().allAppsSearchBarHintTextColor(getContext());
+        int hintAndCursorColor = mTheme.getSearchBarHintTextColor();
         if (!mUseRoundSearchBar)
             mSearchInput.setHintTextColor(hintAndCursorColor);
         mSearchInput.setCursorColor(hintAndCursorColor);
 
-        if (Utilities.getThemer().allAppsSearchTextColor(getContext()) != null) {
-            mSearchInput.setTextColor(Utilities.getThemer().allAppsSearchTextColor(getContext()));
+        if (mTheme.getSearchTextColor() != 0) {
+            mSearchInput.setTextColor(mTheme.getSearchTextColor());
         }
 
         // Update the hint to contain the icon.
@@ -322,10 +325,12 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         if (mNumAppsPerRow != grid.inv.numColumnsDrawer) {
             mNumAppsPerRow = grid.inv.numColumnsDrawer;
 
-            mAppsRecyclerView.setNumAppsPerRow(grid, mNumAppsPerRow);
-            mAdapter.setNumAppsPerRow(mNumAppsPerRow);
-            mApps.setNumAppsPerRow(mNumAppsPerRow, new FullMergeAlgorithm());
-            if (mNumAppsPerRow > 0) {
+            int numAppsPerRow = mTheme.numIconPerRow(mNumAppsPerRow);
+
+            mAppsRecyclerView.setNumAppsPerRow(grid, numAppsPerRow);
+            mAdapter.setNumAppsPerRow(numAppsPerRow);
+            mApps.setNumAppsPerRow(numAppsPerRow, new FullMergeAlgorithm());
+            if (numAppsPerRow > 0) {
                 int rvPadding = mAppsRecyclerView.getPaddingStart(); // Assumes symmetry
                 final int thumbMaxWidth =
                         getResources().getDimensionPixelSize(
@@ -459,6 +464,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         // Return if global dragging is not enabled or we are already dragging
         if (!mLauncher.isDraggingEnabled()) return false;
         if (mLauncher.getDragController().isDragging()) return false;
+
+        if (v instanceof AllAppsIconRowView)
+            v = ((AllAppsIconRowView) v).icon;
 
         // Start the drag
         DragOptions dragOptions = new DragOptions();

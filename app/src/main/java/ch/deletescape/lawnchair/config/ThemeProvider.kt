@@ -1,8 +1,5 @@
 package ch.deletescape.lawnchair.config
 
-import ch.deletescape.lawnchair.preferences.IThemer
-import ch.deletescape.lawnchair.preferences.ThemerImpl
-
 object ThemeProvider {
 
     // single instance for whole app
@@ -12,7 +9,7 @@ object ThemeProvider {
         themerIMPL = flags;
     }
 
-    fun getThemer() : IThemer  {
+    fun getThemer() : IThemer {
         if (themerIMPL == null)
             return ThemerImpl()
         return themerIMPL as IThemer;

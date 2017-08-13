@@ -86,7 +86,7 @@ import ch.deletescape.lawnchair.config.ThemeProvider;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.graphics.ShadowGenerator;
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
-import ch.deletescape.lawnchair.preferences.IThemer;
+import ch.deletescape.lawnchair.config.IThemer;
 import ch.deletescape.lawnchair.preferences.PreferenceFlags;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;

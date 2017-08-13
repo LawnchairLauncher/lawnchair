@@ -18,6 +18,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -359,7 +360,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         int xOffset;
         if (isAlignedWithStart()) {
             // Aligning with the drag handle.
-            xOffset = ((iconWidth / 2) - (resources.getDimensionPixelSize(R.dimen.deep_shortcut_drag_handle_size) / 2)) - resources.getDimensionPixelSize(R.dimen.popup_padding_end);
+            xOffset = Math.max(0, ((iconWidth / 2) - (resources.getDimensionPixelSize(R.dimen.deep_shortcut_drag_handle_size) / 2)) - resources.getDimensionPixelSize(R.dimen.popup_padding_end));
         } else {
             // Aligning with the shortcut icon.
             xOffset = ((iconWidth / 2) - (resources.getDimensionPixelSize(R.dimen.deep_shortcut_icon_size) / 2)) - resources.getDimensionPixelSize(R.dimen.popup_padding_start);

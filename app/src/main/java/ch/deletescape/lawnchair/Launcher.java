@@ -98,6 +98,7 @@ import ch.deletescape.lawnchair.DropTarget.DragObject;
 import ch.deletescape.lawnchair.LauncherSettings.Favorites;
 import ch.deletescape.lawnchair.accessibility.LauncherAccessibilityDelegate;
 import ch.deletescape.lawnchair.allapps.AllAppsContainerView;
+import ch.deletescape.lawnchair.allapps.AllAppsIconRowView;
 import ch.deletescape.lawnchair.allapps.AllAppsTransitionController;
 import ch.deletescape.lawnchair.allapps.DefaultAppSearchController;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
@@ -2183,6 +2184,9 @@ public class Launcher extends Activity
             }
             return;
         }
+
+        if (v instanceof AllAppsIconRowView)
+            v = ((AllAppsIconRowView) v).icon;
 
         Object tag = v.getTag();
         if (tag instanceof ShortcutInfo) {

@@ -166,6 +166,7 @@
             android:entryValues="@array/numColsValues"
             android:defaultValue="@string/generalDefault"
             android:summary="%s"
+            android:dependency="pref_verticalDrawerLayout"
             android:persistent="true" />
 
         <ListPreference
@@ -175,6 +176,14 @@
             android:entries="@array/numRowsTexts"
             android:defaultValue="@string/generalDefault"
             android:summary="%s"
+            android:dependency="pref_verticalDrawerLayout"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_verticalDrawerLayout"
+            android:title="@string/vertical_drawer_layout_pref_title"
+            android:defaultValue="false"
+            android:disableDependentsState="true"
             android:persistent="true" />
 
         <ch.deletescape.lawnchair.preferences.SeekbarPreference
@@ -191,6 +200,7 @@
             android:key="pref_hideAllAppsAppLabels"
             android:title="@string/hide_all_apps_icon_labels_pref_title"
             android:defaultValue="false"
+            android:dependency="pref_verticalDrawerLayout"
             android:disableDependentsState="true"
             android:persistent="true" />
 

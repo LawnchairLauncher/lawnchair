@@ -104,6 +104,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case PreferenceFlags.KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR:
                 case PreferenceFlags.KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR_HUE:
                 case PreferenceFlags.KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR_VARITATION:
+                case PreferenceFlags.KEY_PREF_DRAWER_VERTICAL_LAYOUT:
                     mLauncher.scheduleRecreate();
                     break;
                 case PreferenceFlags.KEY_PREF_ICON_SCALE:
@@ -143,6 +144,6 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
 
     private void applyAllAppsOpacity(IPreferenceProvider prefs) {
         int tmp = (int) (prefs.getAllAppsOpacity() * 255);
-        mLauncher.getAllAppsController().setAllAppsAlpha(mLauncher, tmp);
+        mLauncher.getAllAppsController().setAllAppsAlpha(tmp);
     }
 }
