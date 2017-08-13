@@ -56,7 +56,7 @@ class ClockIconDrawable(val context: Context, val adaptive: Boolean) : Drawable(
             val width = bounds.right - bounds.left
             val height = bounds.bottom - bounds.top
 
-            val inset = convertDpToPixel(-11f)
+            val inset = (-0.2f * width).toInt()
 
             background = getBackground(width, height)
             originalIcon.setBounds(inset, inset, width - inset, height - inset)
