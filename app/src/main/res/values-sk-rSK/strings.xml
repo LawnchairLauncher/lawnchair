@@ -389,8 +389,10 @@
   <string name="pref_applyBlur">Použiť rozostrenie na</string>
   <string name="search_bar">Vyhľadávací panel</string>
   <string name="folder">Priečinok</string>
+  <string name="dock_allapps"><![CDATA[Dock & všetky aplikácie]]></string>
   <string name="app_shortcuts">Zástupca aplikácií</string>
   <string name="blur_effect">Efekt rozostrenia</string>
+  <string name="enable_editing_pref_title">Povoliť úpravu domácej obrazovky</string>
   <string name="pref_weather_provider">Poskytovateľ počasia</string>
   <string name="loading">Načítavam...</string>
   <string name="icon_shape_override_label">Zmena tvaru ikony</string>
@@ -410,4 +412,11 @@
   <string name="pref_cat_drawer">Ponuka aplikácií</string>
   <string name="shortcut_backport_warning">Mohlo by to byť pomalé, používajte na vlastné riziko</string>
   <string name="pref_backport_shortcuts">Backport odkazy</string>
+  <string name="weather_api_key_set">API kľúč nastavený</string>
+  <string name="weather_api_key_not_set">API kľúč nie je nastavený</string>
+  <string name="pref_weather_api_key_title">API kľúč</string>
+  <string name="about_changelog">Zoznam zmien</string>
+  <string name="pref_all_apps_custom_label_color">Vybrať vlastné farby menoviek</string>
+  <string name="pref_all_apps_label_color_variation">Farebné variácie menoviek ikon v ponuke aplikácií</string>
+  <string name="pref_all_apps_label_color">Farba menoviek ikon v ponuke</string>
 </resources>
