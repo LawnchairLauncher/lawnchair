@@ -6,6 +6,8 @@ import android.service.notification.StatusBarNotification;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.deletescape.lawnchair.Utilities;
+
 public class NotificationKeyData {
     public int count;
     public final String notificationKey;
@@ -19,7 +21,8 @@ public class NotificationKeyData {
 
     public static NotificationKeyData fromNotification(StatusBarNotification statusBarNotification) {
         Notification notification = statusBarNotification.getNotification();
-        return new NotificationKeyData(statusBarNotification.getKey(), null /*notification.getShortcutId() compat required*/, notification.number);
+        String shortcutId = Utilities.isAtLeastO() ? notification.getShortcutId() : null;
+        return new NotificationKeyData(statusBarNotification.getKey(), shortcutId, notification.number);
     }
 
     public static List<String> extractKeysOnly(List<NotificationKeyData> list) {
