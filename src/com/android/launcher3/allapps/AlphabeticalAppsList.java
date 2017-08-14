@@ -362,6 +362,7 @@ public class AlphabeticalAppsList {
         for (int i = 0; i < size; ++i) {
             AppInfo info = apps.get(i);
             AdapterItem appItem = AdapterItem.asPredictedApp(i, "", info, i);
+            appItem.rowAppIndex = i;
             mAdapterItems.set(i, appItem);
             mFilteredApps.set(i, info);
             mAdapter.notifyItemChanged(i);
