@@ -411,11 +411,12 @@
   <string name="pref_cat_drawer">Alkalmazásfiók</string>
   <string name="shortcut_backport_warning">Ez lassú lehet, csak saját felelősségére használja</string>
   <string name="pref_backport_shortcuts">Alkalmazás parancsikonok</string>
-  <string name="weather_api_key_set">API kulcs beállítva</string>
   <string name="weather_api_key_not_set">API kulcs nincs beállítva</string>
   <string name="pref_weather_api_key_title">API kulcs</string>
   <string name="about_changelog">Változások</string>
   <string name="pref_all_apps_custom_label_color">Egyéni címkeszín</string>
   <string name="pref_all_apps_label_color_variation">Ikoncímkék színvariációja az alkalmazásfiókban</string>
   <string name="pref_all_apps_label_color">Ikoncímkék színe az alkalmazásfiókban</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
 </resources>
