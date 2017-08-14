@@ -20,7 +20,7 @@
 
     <Preference
         android:title="@string/about_translators"
-        android:key="@string/about_translators" />
+        android:key="about_translators" />
 
     <Preference
         android:title="@string/about_icon_designer"
