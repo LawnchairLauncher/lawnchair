@@ -28,9 +28,9 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">L\'application n\'est pas disponible</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">L\'application téléchargée est désactivée en mode sans échec</string>
+  <string name="safemode_shortcut_error">Les applications téléchargées sont désactivées en mode sécurisé</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">Les widgets sont désactivés en mode sans échec</string>
+  <string name="safemode_widget_error">Les widgets sont désactivés en mode sécurisé</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">Le raccourci n\'est pas disponible</string>
   <!-- Widgets -->
@@ -406,9 +406,16 @@
   <string name="about_version">Version</string>
   <string name="about_icon_designer">Designer des icônes de l\'application</string>
   <string name="about_contributors_title">Donateurs</string>
-  <string name="location_permission_warn">L\'autorisation de position est requise pour passer à un autre fournisseur !</string>
+  <string name="location_permission_warn">L\'autorisation d\'utiliser la localisation est requise pour passer à un autre fournisseur !</string>
   <string name="num_cols_drawer_pref_title">Nombre de colonnes dans le tiroir des applications</string>
   <string name="pref_cat_drawer">Tiroir des applications</string>
   <string name="shortcut_backport_warning">Cela pourrait être lent, utilisez à vos risques et périls</string>
   <string name="pref_backport_shortcuts">Rétro-porter les raccourcis</string>
+  <string name="weather_api_key_set">Clé API définie</string>
+  <string name="weather_api_key_not_set">Clé API non définie</string>
+  <string name="pref_weather_api_key_title">Clé API</string>
+  <string name="about_changelog">Journal des modifications</string>
+  <string name="pref_all_apps_custom_label_color">Utiliser une couleur de libellé personnalisée</string>
+  <string name="pref_all_apps_label_color_variation">Variation de couleur des libellés des icônes dans le tiroir des applications</string>
+  <string name="pref_all_apps_label_color">Couleur des libellés des icônes dans le tiroir des applications</string>
 </resources>
