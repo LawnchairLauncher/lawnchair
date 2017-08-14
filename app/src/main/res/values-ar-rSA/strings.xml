@@ -357,6 +357,7 @@
   <string name="blue_grey">أزرق رمادي</string>
   <string name="default_text">الافتراضي</string>
   <string name="edit_icon_reset">إعادة ضبط</string>
+  <string name="show_top_shadow_title">إظهار الظل العلوي</string>
   <string name="pref_cat_homescreen">الشاشة الرئيسية</string>
   <string name="pref_cat_miscellaneous">متفرقات</string>
   <string name="pref_cat_theme">السمة</string>
@@ -372,4 +373,12 @@
   <string name="enable_screen_rotation">تمكين تدوير الشاشة</string>
   <!-- Import/Export Strings -->
   <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_cat_weather">الطقس</string>
+  <string name="pref_weather_title">تمكين الطقس</string>
+  <string name="pref_weather_city_title">المدينة</string>
+  <string name="enable_editing_pref_title">تمكين تعديل الشاشة الرئيسية</string>
+  <string name="icon_shape_circle">دائرة</string>
+  <string name="about_summary_title">الملخص</string>
+  <string name="about_version">الإصدار</string>
+  <string name="about_changelog">سِجل التغييرات</string>
 </resources>
