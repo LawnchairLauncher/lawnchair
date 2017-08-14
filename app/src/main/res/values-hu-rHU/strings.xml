@@ -259,9 +259,9 @@
   <string name="blur_pref_summary">Homályosítás effekt engedélyezése a felületen\n Nem kompatibilis élő háttérképekkel</string>
   <string name="blur_radius_pref_title">Homályosítás sugara</string>
   <string name="white_google_icon_pref_title">Fehér Google ikon használata</string>
-  <string name="hide_icon_labels_pref_title">A kezdőképernyő ikonok címkéinek elrejtése</string>
-  <string name="workspace_label_color_hue_pref_title">A kezdőképernyő ikonok címkéinek színe</string>
-  <string name="workspace_label_color_variation_pref_title">A kezdőképernyő ikonok címkéinek színvariációja</string>
+  <string name="hide_icon_labels_pref_title">Ikonok címkéinek elrejtése</string>
+  <string name="workspace_label_color_hue_pref_title">Ikoncímkék színe a kezdőképernyőn</string>
+  <string name="workspace_label_color_variation_pref_title">Ikoncímkék színvariációja a kezdőképernyőn</string>
   <string name="all_apps_opacity_pref_title">Alkalmazásfiók áttetszősége</string>
   <string name="num_cols_pref_title">Oszlopok száma</string>
   <string name="num_rows_pref_title">Sorok száma</string>
@@ -295,8 +295,8 @@
   <string name="haptic_feedback_pref_title">Rezgés engedélyezése</string>
   <string name="keep_scroll_state_pref_title">Görgetési pozíció mentése</string>
   <string name="keep_scroll_state_pref_summary">Görgetési pozíció mentése az alkalmazásfiókban</string>
-  <string name="home_opens_drawer_pref_title">A Home gomb megnyitja az alkalmazásfiókot</string>
-  <string name="home_opens_drawer_pref_summary">A kezdőképernyőn nyomott Home gomb megnyitja az alkalmazásfiókot</string>
+  <string name="home_opens_drawer_pref_title">Alkalmazásfiók megnyitása home gombbal</string>
+  <string name="home_opens_drawer_pref_summary">A kezdőképernyőn nyomott home gomb megnyitja az alkalmazásfiókot</string>
   <string name="show_hidden_pref_title">Rejtett alkalmazások megjelenítése</string>
   <string name="show_hidden_pref_on">A rejtett alkalmazások meg fognak jelenni, hogy módosíthassa a láthatósági beállításokat</string>
   <string name="show_hidden_pref_off">A rejtett alkalmazások nem lesznek láthatóak</string>
@@ -391,7 +391,7 @@
   <string name="dock_allapps"><![CDATA[Dokk és alkalmazásfiók]]></string>
   <string name="app_shortcuts">Alkalmazás parancsikonok</string>
   <string name="blur_effect">Homályosítás effekt</string>
-  <string name="enable_editing_pref_title">Szerkesztési munkamenet engedélyezése</string>
+  <string name="enable_editing_pref_title">Kezdőképernyő szerkesztése</string>
   <string name="pref_weather_provider">Időjárás szolgáltató</string>
   <string name="loading">Betöltés...</string>
   <string name="icon_shape_override_label">Ikon alakjának cseréje</string>
@@ -411,4 +411,11 @@
   <string name="pref_cat_drawer">Alkalmazásfiók</string>
   <string name="shortcut_backport_warning">Ez lassú lehet, csak saját felelősségére használja</string>
   <string name="pref_backport_shortcuts">Alkalmazás parancsikonok</string>
+  <string name="weather_api_key_set">API kulcs beállítva</string>
+  <string name="weather_api_key_not_set">API kulcs nincs beállítva</string>
+  <string name="pref_weather_api_key_title">API kulcs</string>
+  <string name="about_changelog">Változások</string>
+  <string name="pref_all_apps_custom_label_color">Egyéni címkeszín</string>
+  <string name="pref_all_apps_label_color_variation">Ikoncímkék színvariációja az alkalmazásfiókban</string>
+  <string name="pref_all_apps_label_color">Ikoncímkék színe az alkalmazásfiókban</string>
 </resources>
