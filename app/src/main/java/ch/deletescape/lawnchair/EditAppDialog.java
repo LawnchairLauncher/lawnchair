@@ -38,8 +38,7 @@ public class EditAppDialog extends Launcher.LauncherDialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_edit_dialog);
 
-        ComponentName component = info.getComponentName();
-        final ComponentName finalComponent = component;
+        final ComponentName component = info.getComponentName();
         setTitle(info.getTitle());
 
         title = findViewById(R.id.title);
@@ -49,33 +48,40 @@ public class EditAppDialog extends Launcher.LauncherDialog {
         ImageButton reset = findViewById(R.id.reset_title);
 
         title.setText(info.getTitle());
-        packageName.setText(component.getPackageName());
+        if (component != null) {
+            packageName.setText(component.getPackageName());
+            if (info instanceof AppInfo)
+                visibleState = !Utilities.isAppHidden(getContext(), component.flattenToString());
+        } else {
+            packageName.setVisibility(View.GONE);
+        }
         if (info instanceof AppInfo)
-            visibleState = !Utilities.isAppHidden(getContext(), component.flattenToString());
-        visibility.setChecked(visibleState);
+            visibility.setChecked(visibleState);
+        else
+            findViewById(R.id.visibility_container).setVisibility(View.GONE);
 
-        View.OnClickListener editIcon = new View.OnClickListener() {
+        icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 launcher.startEditIcon(info);
             }
-        };
-        icon.setOnClickListener(editIcon);
+        });
 
-        View.OnLongClickListener olcl = new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                try {
-                    LauncherAppsCompat.getInstance(launcher).showAppDetailsForProfile(finalComponent, Utilities.myUserHandle());
-                    return true;
-                } catch (SecurityException | ActivityNotFoundException e) {
-                    Toast.makeText(launcher, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-                    Log.e("EditAppDialog", "Unable to launch settings", e);
+        if (component != null) {
+            icon.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    try {
+                        LauncherAppsCompat.getInstance(launcher).showAppDetailsForProfile(component, Utilities.myUserHandle());
+                        return true;
+                    } catch (SecurityException | ActivityNotFoundException e) {
+                        Toast.makeText(launcher, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
+                        Log.e("EditAppDialog", "Unable to launch settings", e);
+                    }
+                    return false;
                 }
-                return false;
-            }
-        };
-        icon.setOnLongClickListener(olcl);
+            });
+        }
 
         View.OnClickListener resetTitle = new View.OnClickListener() {
             @Override

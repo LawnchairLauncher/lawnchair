@@ -9,7 +9,6 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
         android:orientation="horizontal">
 
         <ImageView
@@ -56,8 +55,10 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/visibility_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <TextView

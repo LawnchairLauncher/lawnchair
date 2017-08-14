@@ -45,7 +45,8 @@ public abstract class SystemShortcut {
         public OnClickListener getOnClickListener(final Launcher launcher, final ItemInfo itemInfo) {
             if (launcher.isEditingDisabled())
                 return null;
-            if (launcher.getWidgetsForPackageUser(new PackageUserKey(itemInfo.getTargetComponent().getPackageName(), itemInfo.user)) == null) {
+            if (itemInfo.getTargetComponent() == null ||
+                    launcher.getWidgetsForPackageUser(new PackageUserKey(itemInfo.getTargetComponent().getPackageName(), itemInfo.user)) == null) {
                 return null;
             }
             return new OnClickListener() {

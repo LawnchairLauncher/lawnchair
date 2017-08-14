@@ -193,10 +193,12 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             updateNotificationHeader();
         }
         int size = deepShortcuts.size() + systemShortcuts.size();
-        if (list2.size() == 0) {
-            setContentDescription(getContext().getString(R.string.shortcuts_menu_description, size, bubbleTextView.getContentDescription().toString()));
-        } else {
-            setContentDescription(getContext().getString(R.string.shortcuts_menu_with_notifications_description, size, list2.size(), bubbleTextView.getContentDescription().toString()));
+        if (bubbleTextView.getContentDescription() != null) {
+            if (list2.size() == 0) {
+                setContentDescription(getContext().getString(R.string.shortcuts_menu_description, size, bubbleTextView.getContentDescription().toString()));
+            } else {
+                setContentDescription(getContext().getString(R.string.shortcuts_menu_with_notifications_description, size, list2.size(), bubbleTextView.getContentDescription().toString()));
+            }
         }
         if (isAlignedWithStart()) {
             size = R.dimen.popup_arrow_horizontal_offset_start;

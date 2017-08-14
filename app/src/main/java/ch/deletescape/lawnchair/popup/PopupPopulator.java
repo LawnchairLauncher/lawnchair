@@ -73,6 +73,10 @@ public class PopupPopulator {
 
         @Override
         public void run() {
+            for (int i3 = 0; i3 < val$systemShortcuts.size(); i3++) {
+                val$uiHandler.post(new UpdateSystemShortcutChild((View) val$systemShortcutViews.get(i3), (SystemShortcut) val$systemShortcuts.get(i3), val$launcher, val$originalInfo));
+            }
+            if (val$activity == null) return;
             List statusBarNotificationsForKeys;
             String str;
             if (val$notificationView != null) {
@@ -99,16 +103,10 @@ public class PopupPopulator {
                 val$uiHandler.post(new UpdateShortcutChild(val$container, (DeepShortcutView) val$shortcutViews.get(i2), shortcutInfo, shortcutInfoCompat));
                 i2++;
             }
-            for (int i3 = 0; i3 < val$systemShortcuts.size(); i3++) {
-                val$uiHandler.post(new UpdateSystemShortcutChild((View) val$systemShortcutViews.get(i3), (SystemShortcut) val$systemShortcuts.get(i3), val$launcher, val$originalInfo));
-            }
-            Handler handler = val$uiHandler;
-            final Launcher launcher = val$launcher;
-            final ItemInfo itemInfo = val$originalInfo;
-            handler.post(new Runnable() {
+            val$uiHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    launcher.refreshAndBindWidgetsForPackageUser(PackageUserKey.fromItemInfo(itemInfo));
+                    val$launcher.refreshAndBindWidgetsForPackageUser(PackageUserKey.fromItemInfo(val$originalInfo));
                 }
             });
         }
