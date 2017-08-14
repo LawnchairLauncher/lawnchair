@@ -19,11 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ch.deletescape.lawnchair.AppInfo;
 import ch.deletescape.lawnchair.EditableItemInfo;
 import ch.deletescape.lawnchair.LauncherSettings;
 import ch.deletescape.lawnchair.R;
-import ch.deletescape.lawnchair.ShortcutInfo;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;

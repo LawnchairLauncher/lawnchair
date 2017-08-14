@@ -23,7 +23,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.ImageView;
 
 import ch.deletescape.lawnchair.BubbleTextView;
 import ch.deletescape.lawnchair.HolographicOutlineHelper;

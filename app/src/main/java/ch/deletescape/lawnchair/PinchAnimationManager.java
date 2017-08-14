@@ -184,7 +184,7 @@ public class PinchAnimationManager {
             if (duration == 0) {
                 ((CellLayout) page).setBackgroundAlpha(alpha);
             } else {
-                ObjectAnimator.ofFloat(page, "backgroundAlpha", alpha)
+                ObjectAnimator.ofFloat((CellLayout) page, "backgroundAlpha", alpha)
                         .setDuration(duration).start();
             }
         }

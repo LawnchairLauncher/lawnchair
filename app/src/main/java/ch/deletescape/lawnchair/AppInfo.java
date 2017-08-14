@@ -24,8 +24,6 @@ import android.os.Parcel;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
-
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.util.ComponentKey;

@@ -1,7 +1,6 @@
 package ch.deletescape.lawnchair.popup;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,7 +12,6 @@ import ch.deletescape.lawnchair.InfoDropTarget;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
-import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.util.PackageUserKey;
 import ch.deletescape.lawnchair.util.Themes;
 import ch.deletescape.lawnchair.widget.WidgetsBottomSheet;

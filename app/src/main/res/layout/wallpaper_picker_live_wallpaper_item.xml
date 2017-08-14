@@ -39,7 +39,7 @@
         android:id="@+id/wallpaper_item_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="1"
+        android:singleLine="true"
         android:ellipsize="marquee"
         android:gravity="center"
         android:padding="4dp"
