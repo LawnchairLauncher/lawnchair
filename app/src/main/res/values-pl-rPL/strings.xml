@@ -26,9 +26,9 @@
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
   <string name="activity_not_found">Aplikacja nie jest zainstalowana.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
-  <string name="activity_not_available">Aplikacja niedostępna</string>
+  <string name="activity_not_available">Aplikacja jest niedostępna</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Pobrana aplikacja została wyłączona w trybie awaryjnym</string>
+  <string name="safemode_shortcut_error">Pobrane aplikacje zostały wyłączone w trybie awaryjnym</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">Widżety są wyłączone w trybie bezpiecznym</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
@@ -411,4 +411,12 @@
   <string name="num_cols_drawer_pref_title">Liczba kolumn w szufladzie</string>
   <string name="pref_cat_drawer">Szuflada</string>
   <string name="shortcut_backport_warning">To może spowolnić urządzenie, używaj na własne ryzyko</string>
+  <string name="pref_backport_shortcuts">Skróty</string>
+  <string name="weather_api_key_set">Zestaw kluczy API</string>
+  <string name="weather_api_key_not_set">Nie ustawiony klucz API</string>
+  <string name="pref_weather_api_key_title">Klucz API</string>
+  <string name="about_changelog">Dziennik zmian</string>
+  <string name="pref_all_apps_custom_label_color">Użyj niestandardowego koloru etykiety</string>
+  <string name="pref_all_apps_label_color_variation">Odmiany koloru etykiet ikon w szufladzie aplikacji</string>
+  <string name="pref_all_apps_label_color">Kolor etykiet ikon w szufladzie</string>
 </resources>
