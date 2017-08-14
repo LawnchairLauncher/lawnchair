@@ -381,4 +381,6 @@
   <string name="about_summary_title">الملخص</string>
   <string name="about_version">الإصدار</string>
   <string name="about_changelog">سِجل التغييرات</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
 </resources>
