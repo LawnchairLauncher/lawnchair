@@ -173,7 +173,7 @@ public class AppInfo extends ItemInfoWithIcon implements EditableItemInfo {
         return isDisabled != 0;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String getTitle() {
         return (String) title;
@@ -210,19 +210,19 @@ public class AppInfo extends ItemInfoWithIcon implements EditableItemInfo {
         launcher.getIconCache().getTitleAndIcon(this, null, false);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public Bitmap getIconBitmap(IconCache iconCache) {
         return iconBitmap;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public UserHandle getUser() {
         return user;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public ComponentName getComponentName() {
         return componentName;

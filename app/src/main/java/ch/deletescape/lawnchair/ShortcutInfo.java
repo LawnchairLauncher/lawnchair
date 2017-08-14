@@ -27,6 +27,7 @@ import android.os.Build;
 import android.os.Parcel;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import ch.deletescape.lawnchair.LauncherSettings.Favorites;
@@ -408,7 +409,7 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
         return isDisabled != 0;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String getTitle() {
         return (String) title;
@@ -416,12 +417,12 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
 
     @Nullable
     @Override
-    public String getTitle(@NotNull Context context) {
+    public String getTitle(@NonNull Context context) {
         return (String) title;
     }
 
     @Override
-    public void setTitle(@NotNull Context context, @Nullable String title) {
+    public void setTitle(@NonNull Context context, @Nullable String title) {
         if (title == null)
             this.title = originalTitle;
         updateDatabase(context, title, null, false);
@@ -433,12 +434,12 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
 
     @Nullable
     @Override
-    public String getIcon(@NotNull Context context) {
+    public String getIcon(@NonNull Context context) {
         return null;
     }
 
     @Override
-    public void setIcon(@NotNull Context context, @Nullable String icon) {
+    public void setIcon(@NonNull Context context, @Nullable String icon) {
         Intent i = new Intent(Intent.ACTION_MAIN).setComponent(getComponentName());
         LauncherActivityInfoCompat laic = LauncherActivityInfoCompat.create(context, user, i);
         Drawable drawable = Launcher.getLauncher(context).getIconCache().pip.getAlternateIcon(icon, laic);
@@ -453,23 +454,23 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
     }
 
     @Override
-    public void reloadIcon(@NotNull Launcher launcher) {
+    public void reloadIcon(@NonNull Launcher launcher) {
 
     }
 
-    @NotNull
+    @NonNull
     @Override
     public Bitmap getIconBitmap(@NonNull IconCache iconCache) {
         return getIcon(iconCache);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public UserHandle getUser() {
         return user;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public ComponentName getComponentName() {
         return getTargetComponent();
