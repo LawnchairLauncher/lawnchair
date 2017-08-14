@@ -411,4 +411,11 @@
   <string name="pref_cat_drawer">Çekmece</string>
   <string name="shortcut_backport_warning">Bu yavaş olabilir, kendi sorumluluğunuzda kullanın</string>
   <string name="pref_backport_shortcuts">Kısayolları geri yükle</string>
+  <string name="weather_api_key_set">API anahtarını ayarla</string>
+  <string name="weather_api_key_not_set">API anahtarı ayarlanmadı</string>
+  <string name="pref_weather_api_key_title">API anahtarı</string>
+  <string name="about_changelog">Değişiklik</string>
+  <string name="pref_all_apps_custom_label_color">Özel etiket rengi kullan</string>
+  <string name="pref_all_apps_label_color_variation">Uygulama çekmecesinde ki simge etiketlerinin renk çeşitliliği</string>
+  <string name="pref_all_apps_label_color">Uygulama çekmecesi içindeki simge etiketlerinin rengi</string>
 </resources>
