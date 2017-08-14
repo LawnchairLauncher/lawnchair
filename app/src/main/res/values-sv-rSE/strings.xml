@@ -411,11 +411,12 @@
   <string name="pref_cat_drawer">Applåda</string>
   <string name="shortcut_backport_warning">Detta kan vara långsamt. Använd på egen risk</string>
   <string name="pref_backport_shortcuts">Bakåtporta genvägar</string>
-  <string name="weather_api_key_set">API nyckeluppsättning</string>
   <string name="weather_api_key_not_set">API nyckel inte angiven</string>
   <string name="pref_weather_api_key_title">API nyckel</string>
   <string name="about_changelog">Ändringslogg</string>
   <string name="pref_all_apps_custom_label_color">Använd skräddarsydd etikettfärg</string>
   <string name="pref_all_apps_label_color_variation">Färgvariation av ikonetiketter i applådan</string>
   <string name="pref_all_apps_label_color">Färg av ikonetiketter i applådan</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
 </resources>
