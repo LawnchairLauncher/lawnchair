@@ -45,6 +45,7 @@ import android.util.LongSparseArray;
 import android.util.MutableInt;
 import android.util.Pair;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
@@ -861,6 +862,22 @@ public class LauncherModel extends BroadcastReceiver
         values.put(LauncherSettings.Favorites.SCREEN, item.screenId);
 
         updateItemInDatabaseHelper(context, values, item);
+    }
+
+    static void modifyItemInDatabase(Context context, final ItemInfo item, String alias, Bitmap bitmap, boolean updateIcon) {
+        final ContentValues values = new ContentValues();
+        values.put(LauncherSettings.Favorites.TITLE_ALIAS, alias);
+        if (updateIcon)
+            values.put(LauncherSettings.Favorites.CUSTOM_ICON, getBytes(bitmap));
+
+        updateItemInDatabaseHelper(context, values, item);
+    }
+
+    static byte[] getBytes(Bitmap bitmap) {
+        if (bitmap == null) return null;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
+        return stream.toByteArray();
     }
 
     /**
@@ -1803,6 +1820,8 @@ public class LauncherModel extends BroadcastReceiver
                             LauncherSettings.Favorites.PROFILE_ID);
                     final int optionsIndex = c.getColumnIndexOrThrow(
                             LauncherSettings.Favorites.OPTIONS);
+                    final int titleAliasIndex = c.getColumnIndexOrThrow
+                            (LauncherSettings.Favorites.TITLE_ALIAS);
                     final CursorIconInfo cursorIconInfo = new CursorIconInfo(mContext, c);
 
                     final LongSparseArray<UserHandle> allUsers = new LongSparseArray<>();
@@ -1843,6 +1862,7 @@ public class LauncherModel extends BroadcastReceiver
                     Intent intent;
                     UserHandle user;
                     String targetPackage;
+                    String titleAlias;
 
                     while (!mStopped && c.moveToNext()) {
                         try {
@@ -1863,6 +1883,7 @@ public class LauncherModel extends BroadcastReceiver
                                     int disabledState = 0;
                                     boolean itemReplaced = false;
                                     targetPackage = null;
+                                    titleAlias = c.getString(titleAliasIndex);
                                     if (user == null) {
                                         // User has been deleted remove the item.
                                         itemsToRemove.add(id);
@@ -2056,6 +2077,8 @@ public class LauncherModel extends BroadcastReceiver
 
                                     if (info != null) {
                                         info.id = id;
+                                        info.onLoadTitleAlias(titleAlias);
+                                        info.onLoadCustomIcon(cursorIconInfo.loadCustomIcon(c));
                                         info.intent = intent;
                                         info.container = container;
                                         info.screenId = c.getInt(screenIndex);

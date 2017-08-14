@@ -24,8 +24,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Parcel;
 import android.os.UserHandle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import ch.deletescape.lawnchair.LauncherSettings.Favorites;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
@@ -37,7 +42,19 @@ import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 /**
  * Represents a launchable icon on the workspaces and in folders.
  */
-public class ShortcutInfo extends ItemInfoWithIcon {
+public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
+
+    public static final Creator<ShortcutInfo> CREATOR = new Creator<ShortcutInfo>() {
+        @Override
+        public ShortcutInfo createFromParcel(Parcel parcel) {
+            return new ShortcutInfo(parcel);
+        }
+
+        @Override
+        public ShortcutInfo[] newArray(int i) {
+            return new ShortcutInfo[i];
+        }
+    };
 
     public static final int DEFAULT = 0;
 
@@ -97,6 +114,8 @@ public class ShortcutInfo extends ItemInfoWithIcon {
      * The application icon.
      */
     private Bitmap mIcon;
+
+    private Bitmap mCustomIcon;
 
     /**
      * Indicates that the icon is disabled due to safe mode restrictions.
@@ -179,11 +198,14 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         return promisedIntent != null ? promisedIntent : intent;
     }
 
+    public CharSequence originalTitle;
+
     ShortcutInfo(Intent intent, CharSequence title, CharSequence contentDescription,
                  Bitmap icon, UserHandle user) {
         this();
         this.intent = intent;
         this.title = Utilities.trim(title);
+        this.originalTitle = this.title;
         this.contentDescription = contentDescription;
         mIcon = icon;
         this.user = user;
@@ -192,6 +214,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     public ShortcutInfo(ShortcutInfo info) {
         super(info);
         title = info.title;
+        originalTitle = title;
         intent = new Intent(info.intent);
         iconResource = info.iconResource;
         mIcon = info.mIcon; // TODO: should make a copy here.  maybe we don't need this ctor at all
@@ -209,6 +232,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     public ShortcutInfo(AppInfo info) {
         super(info);
         title = Utilities.trim(info.title);
+        originalTitle = title;
         intent = new Intent(info.intent);
         flags = info.flags;
         isDisabled = info.isDisabled;
@@ -217,6 +241,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     public ShortcutInfo(LauncherActivityInfoCompat info, Context context) {
         user = info.getUser();
         title = Utilities.trim(info.getLabel());
+        originalTitle = title;
         contentDescription = UserManagerCompat.getInstance(context)
                 .getBadgedLabelForUser(info.getLabel(), info.getUser());
         intent = AppInfo.makeLaunchIntent(context, info, info.getUser());
@@ -227,7 +252,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     /**
      * Creates a {@link ShortcutInfo} from a {@link ShortcutInfoCompat}.
      */
-    @TargetApi(Build.VERSION_CODES.N)
+    @TargetApi(Build.VERSION_CODES.N_MR1)
     public ShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
         user = shortcutInfo.getUserHandle();
         itemType = LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
@@ -236,14 +261,24 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         updateFromDeepShortcutInfo(shortcutInfo, context);
     }
 
+    public ShortcutInfo(Parcel in) {
+        title = in.readString();
+        originalTitle = in.readString();
+        intent = in.readParcelable(Intent.class.getClassLoader());
+        promisedIntent = in.readParcelable(Intent.class.getClassLoader());
+        mIcon = in.readParcelable(Bitmap.class.getClassLoader());
+        mCustomIcon = in.readParcelable(Bitmap.class.getClassLoader());
+    }
+
     public void setIcon(Bitmap b) {
         mIcon = b;
     }
 
     public Bitmap getIcon(IconCache iconCache) {
-        if (mIcon == null) {
+        if (mCustomIcon != null)
+            return mCustomIcon;
+        if (mIcon == null)
             updateIcon(iconCache);
-        }
         return mIcon;
     }
 
@@ -374,5 +409,102 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     @Override
     public boolean isDisabled() {
         return isDisabled != 0;
+    }
+
+    @NotNull
+    @Override
+    public String getTitle() {
+        return (String) title;
+    }
+
+    @Nullable
+    @Override
+    public String getTitle(@NotNull Context context) {
+        return (String) title;
+    }
+
+    @Override
+    public void setTitle(@NotNull Context context, @Nullable String title) {
+        if (title == null)
+            this.title = originalTitle;
+        updateDatabase(context, title, null, false);
+    }
+
+    private void updateDatabase(Context context, String title, Bitmap icon, boolean updateIcon) {
+        LauncherModel.modifyItemInDatabase(context, this, title, icon, updateIcon);
+    }
+
+    @Nullable
+    @Override
+    public String getIcon(@NotNull Context context) {
+        return null;
+    }
+
+    @Override
+    public void setIcon(@NotNull Context context, @Nullable String icon) {
+        Intent i = new Intent(Intent.ACTION_MAIN).setComponent(getComponentName());
+        LauncherActivityInfoCompat laic = LauncherActivityInfoCompat.create(context, user, i);
+        Drawable drawable = Launcher.getLauncher(context).getIconCache().pip.getAlternateIcon(icon, laic);
+        Bitmap bitmap = null;
+        if (drawable != null) {
+            bitmap = Utilities.createBadgedIconBitmap(drawable, user, context);
+            mCustomIcon = bitmap;
+        } else {
+            mCustomIcon = null;
+        }
+        updateDatabase(context, (String) title, bitmap, true);
+    }
+
+    @Override
+    public void reloadIcon(@NotNull Launcher launcher) {
+
+    }
+
+    @NotNull
+    @Override
+    public Bitmap getIconBitmap(@NonNull IconCache iconCache) {
+        return getIcon(iconCache);
+    }
+
+    @NotNull
+    @Override
+    public UserHandle getUser() {
+        return user;
+    }
+
+    @NotNull
+    @Override
+    public ComponentName getComponentName() {
+        return getTargetComponent();
+    }
+
+    @Override
+    public int getType() {
+        return itemType;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString((String) title);
+        parcel.writeString((String) originalTitle);
+        parcel.writeParcelable(intent, 0);
+        parcel.writeParcelable(promisedIntent, 0);
+        parcel.writeParcelable(mIcon, 0);
+        parcel.writeParcelable(mCustomIcon, 0);
+    }
+
+    public void onLoadTitleAlias(String titleAlias) {
+        if (titleAlias == null) titleAlias = (String) title;
+        originalTitle = title;
+        title = titleAlias;
+    }
+
+    public void onLoadCustomIcon(Bitmap customIcon) {
+        mCustomIcon = customIcon;
     }
 }

@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.UserHandle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -21,8 +20,10 @@ import java.util.List;
 import java.util.Map;
 
 import ch.deletescape.lawnchair.AppInfo;
-import ch.deletescape.lawnchair.LauncherAppState;
+import ch.deletescape.lawnchair.EditableItemInfo;
+import ch.deletescape.lawnchair.LauncherSettings;
 import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.ShortcutInfo;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
@@ -32,7 +33,7 @@ import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 public class EditIconActivity extends Activity implements CustomIconAdapter.Listener, IconPackAdapter.Listener {
 
     private static final int REQUEST_PICK_ICON = 0;
-    private LauncherActivityInfoCompat mInfo;
+    private EditableItemInfo mInfo;
     private IPreferenceProvider mPrefs;
 
     @Override
@@ -46,12 +47,12 @@ public class EditIconActivity extends Activity implements CustomIconAdapter.List
 
         mPrefs = Utilities.getPrefs(getApplicationContext());
 
-        ComponentName componentName = getIntent().getExtras().getParcelable("componentName");
-        UserHandle user = getIntent().getExtras().getParcelable("userHandle");
-        Intent intent = new Intent();
-        intent.setComponent(componentName);
-        mInfo = LauncherActivityInfoCompat.create(this, user, intent);
-        AppInfo appInfo = new AppInfo(this, mInfo, user, LauncherAppState.getInstance().getIconCache());
+        mInfo = getIntent().getExtras().getParcelable("itemInfo");
+        if (mInfo == null) {
+            finish();
+            return;
+        }
+        ComponentName component = mInfo.getComponentName();
         List<IconPackInfo> iconPacks = new ArrayList<>(loadAvailableIconPacks().values());
         Collections.sort(iconPacks, new Comparator<IconPackInfo>() {
             @Override
@@ -60,15 +61,19 @@ public class EditIconActivity extends Activity implements CustomIconAdapter.List
             }
         });
 
-        setTitle(appInfo.originalTitle);
+        setTitle(mInfo.getTitle());
 
         BlurWallpaperProvider.Companion.applyBlurBackground(this);
 
-        RecyclerView iconRecyclerView = findViewById(R.id.iconRecyclerView);
-        CustomIconAdapter iconAdapter = new CustomIconAdapter(this, mInfo, iconPacks);
-        iconAdapter.setListener(this);
-        iconRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        iconRecyclerView.setAdapter(iconAdapter);
+        if (mInfo.getType() == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+            RecyclerView iconRecyclerView = findViewById(R.id.iconRecyclerView);
+            Intent i = new Intent(Intent.ACTION_MAIN).setComponent(component);
+            LauncherActivityInfoCompat laic = LauncherActivityInfoCompat.create(this, mInfo.getUser(), i);
+            CustomIconAdapter iconAdapter = new CustomIconAdapter(this, laic, iconPacks);
+            iconAdapter.setListener(this);
+            iconRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+            iconRecyclerView.setAdapter(iconAdapter);
+        }
 
         RecyclerView iconPackRecyclerView = findViewById(R.id.iconPackRecyclerView);
         IconPackAdapter iconPackAdapter = new IconPackAdapter(this, iconPacks);
@@ -115,21 +120,19 @@ public class EditIconActivity extends Activity implements CustomIconAdapter.List
     }
 
     private void setAlternateIcon(String alternateIcon) {
-        String key = mInfo.getComponentName().flattenToString();
-        Utilities.getPrefs(this).alternateIcon(key, alternateIcon, false);
-        updateCache();
+        Intent data = new Intent();
+        data.putExtra("alternateIcon", alternateIcon);
+        setResult(RESULT_OK, data);
         finish();
     }
 
     private void resetIcon() {
-        String key = mInfo.getComponentName().flattenToString();
-        Utilities.getPrefs(this).removeAlternateIcon(key);
-        updateCache();
+        setResult(RESULT_OK, new Intent());
         finish();
     }
 
     private void updateCache() {
-        Utilities.updatePackage(this, mInfo.getUser(), mInfo.getComponentName().getPackageName());
+        //Utilities.updatePackage(this, mInfo.getUser(), mInfo.getComponentName().getPackageName());
     }
 
     @Override
