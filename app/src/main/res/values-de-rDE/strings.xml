@@ -411,11 +411,13 @@
   <string name="pref_cat_drawer">Übersicht</string>
   <string name="shortcut_backport_warning">Dies könnte langsam sein, nutzen auf eigene Gefahr</string>
   <string name="pref_backport_shortcuts">Verknüpfungen zurücksetzen</string>
-  <string name="weather_api_key_set">API-Schlüssel festgelegt</string>
   <string name="weather_api_key_not_set">API-Schlüssel nicht festgelegt</string>
   <string name="pref_weather_api_key_title">API-Schlüssel</string>
   <string name="about_changelog">Änderungsprotokoll</string>
   <string name="pref_all_apps_custom_label_color">Verwende benutzerdefinierte Label-Farbe</string>
   <string name="pref_all_apps_label_color_variation">Farbvariationen der Icon-Labels in der App-Übersicht</string>
   <string name="pref_all_apps_label_color">Farbe der Icon-Labels in der Übersicht</string>
+  <string name="vertical_drawer_layout_pref_title">Als vertikale Liste darstellen</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
 </resources>
