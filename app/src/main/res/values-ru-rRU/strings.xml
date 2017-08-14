@@ -261,6 +261,7 @@
   <string name="blur_radius_pref_title">Радиус размытия</string>
   <string name="white_google_icon_pref_title">Использовать белый значок Google</string>
   <string name="hide_icon_labels_pref_title">Скрыть подписи значков на главном экране</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Скрыть подписи значков в меню приложений</string>
   <string name="workspace_label_color_hue_pref_title">Цвет подписи значков</string>
   <string name="workspace_label_color_variation_pref_title">Вариация цвета подписей</string>
   <string name="all_apps_opacity_pref_title">Прозрачность меню приложений</string>
@@ -412,11 +413,16 @@
   <string name="pref_cat_drawer">Меню приложений</string>
   <string name="shortcut_backport_warning">Это может привести к медленной работе приложения, используйте на свой страх и риск</string>
   <string name="pref_backport_shortcuts">Адаптировать ярлыки</string>
-  <string name="weather_api_key_set">API ключ установлен</string>
   <string name="weather_api_key_not_set">API ключ не установлен</string>
   <string name="pref_weather_api_key_title">API ключ</string>
   <string name="about_changelog">Изменения</string>
   <string name="pref_all_apps_custom_label_color">Использовать свой цвет подписи</string>
   <string name="pref_all_apps_label_color_variation">Вариация цвета подписей значков в меню приложений</string>
   <string name="pref_all_apps_label_color">Цвет подписи значков в меню приложений</string>
+  <string name="pref_num_rows_drawer">Количество строк в меню приложений</string>
+  <string name="center_wallpaper_pref_title">Центрировать обои, если имеется только один экран</string>
+  <string name="vertical_drawer_layout_pref_title">Отображать в виде вертикального списка</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
 </resources>
