@@ -260,6 +260,7 @@
   <string name="blur_radius_pref_title">Rayon du flou</string>
   <string name="white_google_icon_pref_title">Utiliser l\'icône blanche de Google</string>
   <string name="hide_icon_labels_pref_title">Masquer le nom des icônes sur l\'écran d\'accueil</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Masquer le nom des icônes dans le tiroir des applications</string>
   <string name="workspace_label_color_hue_pref_title">Couleur des libellés des icônes sur l\'écran d\'accueil</string>
   <string name="workspace_label_color_variation_pref_title">Variation de couleur libellés des icônes de l\'écran d\'accueil</string>
   <string name="all_apps_opacity_pref_title">Opacité du tiroir des applications</string>
@@ -411,11 +412,15 @@
   <string name="pref_cat_drawer">Tiroir des applications</string>
   <string name="shortcut_backport_warning">Cela pourrait être lent, utilisez à vos risques et périls</string>
   <string name="pref_backport_shortcuts">Rétro-porter les raccourcis</string>
-  <string name="weather_api_key_set">Clé API définie</string>
   <string name="weather_api_key_not_set">Clé API non définie</string>
   <string name="pref_weather_api_key_title">Clé API</string>
   <string name="about_changelog">Journal des modifications</string>
   <string name="pref_all_apps_custom_label_color">Utiliser une couleur de libellé personnalisée</string>
   <string name="pref_all_apps_label_color_variation">Variation de couleur des libellés des icônes dans le tiroir des applications</string>
   <string name="pref_all_apps_label_color">Couleur des libellés des icônes dans le tiroir des applications</string>
+  <string name="pref_num_rows_drawer">Nombre de lignes dans le tiroir des applications</string>
+  <string name="center_wallpaper_pref_title">Centrer le fond d\'écran quand il n\'y a qu\'une page</string>
+  <string name="vertical_drawer_layout_pref_title">Affichage en liste verticale</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
 </resources>
