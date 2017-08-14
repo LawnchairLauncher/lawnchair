@@ -415,4 +415,7 @@
   <string name="weather_api_key_not_set">API sleutel niet ingesteld</string>
   <string name="pref_weather_api_key_title">API sleutel</string>
   <string name="about_changelog">Changelog</string>
+  <string name="pref_all_apps_custom_label_color">Gebruik aangepaste labelkleur</string>
+  <string name="pref_all_apps_label_color_variation">Kleurvariatie van icoon labels in applicatiescherm</string>
+  <string name="pref_all_apps_label_color">Kleur van icoon labels in applicatiescherm</string>
 </resources>
