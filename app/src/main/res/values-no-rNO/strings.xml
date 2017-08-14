@@ -411,4 +411,11 @@
   <string name="pref_cat_drawer">Skuff</string>
   <string name="shortcut_backport_warning">Dette kan gå tregt, bruk på eget ansvar</string>
   <string name="pref_backport_shortcuts">Backport-snarveier</string>
+  <string name="weather_api_key_set">API-nøkkel satt</string>
+  <string name="weather_api_key_not_set">API-nøkkel ikke satt</string>
+  <string name="pref_weather_api_key_title">API-nøkkel</string>
+  <string name="about_changelog">Endringslogg</string>
+  <string name="pref_all_apps_custom_label_color">Bruk egendefinert etikettfarge</string>
+  <string name="pref_all_apps_label_color_variation">Fargevariasjon på ikon-etiketter i skuff</string>
+  <string name="pref_all_apps_label_color">Farge på ikon-etiketter i skuff</string>
 </resources>
