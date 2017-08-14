@@ -2111,7 +2111,7 @@ public class Workspace extends PagedView
         }
     }
 
-    public void beginDragShared(View child, DragSource source, DragOptions options) {
+    public DragView beginDragShared(View child, DragSource source, DragOptions options) {
         Object dragObject = child.getTag();
         if (!(dragObject instanceof ItemInfo)) {
             String msg = "Drag started with a view that has no tag set. This "
@@ -2119,7 +2119,7 @@ public class Workspace extends PagedView
                     + "View: " + child + "  tag: " + child.getTag();
             throw new IllegalStateException(msg);
         }
-        beginDragShared(child, source, (ItemInfo) dragObject,
+        return beginDragShared(child, source, (ItemInfo) dragObject,
                 new DragPreviewProvider(child), options);
     }
 

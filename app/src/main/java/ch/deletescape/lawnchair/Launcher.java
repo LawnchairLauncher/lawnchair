@@ -3956,7 +3956,7 @@ public class Launcher extends Activity
         mCurrentDialog = null;
     }
 
-    public static Launcher getLauncher(Context context) {
+    @NonNull public static Launcher getLauncher(Context context) {
         if (context instanceof Launcher) {
             return (Launcher) context;
         }

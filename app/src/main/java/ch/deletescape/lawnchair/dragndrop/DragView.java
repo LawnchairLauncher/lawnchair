@@ -74,6 +74,7 @@ public class DragView extends View {
     private int mLastTouchY;
     private int mAnimatedShiftX;
     private int mAnimatedShiftY;
+    private boolean mAnimationStarted;
     private final int[] mTempLoc = new int[2];
 
 
@@ -295,6 +296,7 @@ public class DragView extends View {
         post(new Runnable() {
             @Override
             public void run() {
+                mAnimationStarted = true;
                 mAnim.start();
             }
         });
@@ -318,19 +320,37 @@ public class DragView extends View {
         applyTranslation();
     }
 
-    public void animateShift(final int shiftX, final int shiftY) {
-        if (mAnim.isStarted()) {
-            return;
-        }
+    public void shift(final int shiftX, final int shiftY) {
         mAnimatedShiftX = shiftX;
         mAnimatedShiftY = shiftY;
         applyTranslation();
+    }
+
+    public void animateShift(int shiftX, int shiftY) {
+        animateShift(shiftX, shiftY, false);
+    }
+
+    public void animateShift(int shiftX, int shiftY, final boolean inverse) {
+        final int baseShiftX = mAnimatedShiftX;
+        final int baseShiftY = mAnimatedShiftY;
+        final int targetShiftX = shiftX - baseShiftX;
+        final int targetShiftY = shiftY - baseShiftY;
+        mAnimatedShiftX = shiftX;
+        mAnimatedShiftY = shiftY;
+        applyTranslation();
+        if (!mAnim.isRunning()) {
+            if (mAnimationStarted) {
+                mAnim = LauncherAnimUtils.ofFloat(0f, 1f);
+                mAnim.setDuration(VIEW_ZOOM_DURATION);
+            }
+            mAnim.start();
+        }
         mAnim.addUpdateListener(new AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                float fraction = 1 - animation.getAnimatedFraction();
-                mAnimatedShiftX = (int) (fraction * shiftX);
-                mAnimatedShiftY = (int) (fraction * shiftY);
+                float fraction = inverse ? animation.getAnimatedFraction() : (1 - animation.getAnimatedFraction());
+                mAnimatedShiftX = baseShiftX + (int) (fraction * targetShiftX);
+                mAnimatedShiftY = baseShiftY + (int) (fraction * targetShiftY);
                 applyTranslation();
             }
         });
