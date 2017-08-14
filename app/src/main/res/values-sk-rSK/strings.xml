@@ -412,11 +412,12 @@
   <string name="pref_cat_drawer">Ponuka aplikácií</string>
   <string name="shortcut_backport_warning">Mohlo by to byť pomalé, používajte na vlastné riziko</string>
   <string name="pref_backport_shortcuts">Backport odkazy</string>
-  <string name="weather_api_key_set">API kľúč nastavený</string>
   <string name="weather_api_key_not_set">API kľúč nie je nastavený</string>
   <string name="pref_weather_api_key_title">API kľúč</string>
   <string name="about_changelog">Zoznam zmien</string>
   <string name="pref_all_apps_custom_label_color">Vybrať vlastné farby menoviek</string>
   <string name="pref_all_apps_label_color_variation">Farebné variácie menoviek ikon v ponuke aplikácií</string>
   <string name="pref_all_apps_label_color">Farba menoviek ikon v ponuke</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
 </resources>
