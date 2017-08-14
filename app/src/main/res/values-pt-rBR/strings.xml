@@ -411,4 +411,6 @@
   <string name="pref_cat_drawer">Gaveta de apps</string>
   <string name="shortcut_backport_warning">Isto pode ser lento, use a seu próprio risco</string>
   <string name="pref_backport_shortcuts">Retro-compatibilidade de atalhos</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
 </resources>
