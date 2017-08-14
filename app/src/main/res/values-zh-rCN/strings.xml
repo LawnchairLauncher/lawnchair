@@ -24,13 +24,13 @@
   <!-- Work folder name -->
   <string name="work_folder_name">工作文件夹</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
-  <string name="activity_not_found">应用未安装。</string>
+  <string name="activity_not_found">该应用未安装。</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">应用不可用</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">第三方应用在安全模式下被停用</string>
+  <string name="safemode_shortcut_error">第三方应用无法在安全模式下启用</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">安全模式下不允许使用微件</string>
+  <string name="safemode_widget_error">安全模式下不允许使用小部件</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">无法使用快捷方式</string>
   <!-- Widgets -->
@@ -46,7 +46,7 @@
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_bar_hint">搜索应用</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_loading_message">正在加载应用……</string>
+  <string name="all_apps_loading_message">加载应用中……</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
   <string name="all_apps_no_search_results">未找到与“<xliff:g id="QUERY">%1$s</xliff:g>”相符的应用</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
@@ -66,7 +66,7 @@
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
   <string name="uninstall_drop_target_label">卸载</string>
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
-  <string name="app_info_drop_target_label">应用详情</string>
+  <string name="app_info_drop_target_label">应用信息</string>
   <!-- Permissions: -->
   <!-- Permission short label -->
   <string name="permlab_install_shortcut">添加快捷方式</string>
@@ -99,14 +99,14 @@
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">主屏幕 %1$d / %2$d</string>
   <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
-  <string name="workspace_new_page">新页面</string>
+  <string name="workspace_new_page">新主屏幕</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
   <string name="folder_opened">文件夹已打开，大小为<xliff:g id="WIDTH">%1$d</xliff:g>行×<xliff:g id="HEIGHT">%2$d</xliff:g>列。</string>
   <!-- Instruction that clicking outside will close folder -->
-  <string name="folder_tap_to_close">点按可关闭文件夹</string>
+  <string name="folder_tap_to_close">点击可关闭文件夹</string>
   <!-- Instruction that clicking outside will commit folder rename -->
-  <string name="folder_tap_to_rename">点按可保存新名称</string>
+  <string name="folder_tap_to_rename">触摸完成重命名</string>
   <!-- Indication that folder closed -->
   <string name="folder_closed">文件夹已关闭</string>
   <!-- Folder renamed format -->
@@ -410,4 +410,11 @@
   <string name="pref_cat_drawer">抽屉</string>
   <string name="shortcut_backport_warning">该功能可能引起桌面性能下降，请自行承担后果。😶</string>
   <string name="pref_backport_shortcuts">导入快捷方式</string>
+  <string name="weather_api_key_set">API 密钥设置</string>
+  <string name="weather_api_key_not_set">API 密钥未设置</string>
+  <string name="pref_weather_api_key_title">API 密钥</string>
+  <string name="about_changelog">更新日志​​​​​</string>
+  <string name="pref_all_apps_custom_label_color">使用自定义标签颜色</string>
+  <string name="pref_all_apps_label_color_variation">应用抽屉里的图标标签的颜色变化</string>
+  <string name="pref_all_apps_label_color">抽屉里的图标标签的颜色</string>
 </resources>
