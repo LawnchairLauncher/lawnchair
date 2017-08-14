@@ -654,7 +654,8 @@ public class Launcher extends Activity
             } else {
                 mEditingItem.setIcon(this, null);
             }
-            Utilities.updatePackage(this, mEditingItem.getUser(), mEditingItem.getComponentName().getPackageName());
+            if (mEditingItem.getComponentName() != null)
+                Utilities.updatePackage(this, mEditingItem.getUser(), mEditingItem.getComponentName().getPackageName());
         }
 
         if (requestCode == REQUEST_BIND_APPWIDGET) {

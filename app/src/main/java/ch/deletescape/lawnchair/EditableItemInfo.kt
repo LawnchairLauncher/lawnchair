@@ -18,5 +18,5 @@ interface EditableItemInfo : Parcelable {
 
     val type: Int
     val user: UserHandle
-    val componentName: ComponentName
+    val componentName: ComponentName?
 }

@@ -65,7 +65,7 @@ public class EditIconActivity extends Activity implements CustomIconAdapter.List
 
         BlurWallpaperProvider.Companion.applyBlurBackground(this);
 
-        if (mInfo.getType() == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+        if (mInfo.getType() == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION && mInfo.getComponentName() != null) {
             RecyclerView iconRecyclerView = findViewById(R.id.iconRecyclerView);
             Intent i = new Intent(Intent.ACTION_MAIN).setComponent(component);
             LauncherActivityInfoCompat laic = LauncherActivityInfoCompat.create(this, mInfo.getUser(), i);
