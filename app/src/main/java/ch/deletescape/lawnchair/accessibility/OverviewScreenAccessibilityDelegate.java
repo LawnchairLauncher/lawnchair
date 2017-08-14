@@ -27,7 +27,6 @@ import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 
 public class OverviewScreenAccessibilityDelegate extends AccessibilityDelegate {
 

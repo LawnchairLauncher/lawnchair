@@ -2,7 +2,6 @@ package ch.deletescape.lawnchair.weather
 
 import android.content.Context
 import ch.deletescape.lawnchair.Utilities
-import ch.deletescape.lawnchair.preferences.PreferenceFlags
 import com.kwabenaberko.openweathermaplib.implementation.OpenWeatherMapHelper
 import com.kwabenaberko.openweathermaplib.models.CurrentWeather
 

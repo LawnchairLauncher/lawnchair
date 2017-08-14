@@ -6,8 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import java.util.List;
-
 import ch.deletescape.lawnchair.R;
 
 public class IconGridAdapter extends RecyclerView.Adapter<IconGridAdapter.Holder> {

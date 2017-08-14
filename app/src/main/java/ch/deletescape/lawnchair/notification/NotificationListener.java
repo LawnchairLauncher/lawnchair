@@ -13,9 +13,7 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import ch.deletescape.lawnchair.LauncherModel;
 import ch.deletescape.lawnchair.Utilities;
@@ -163,48 +161,35 @@ public class NotificationListener extends NotificationListenerService {
         return activeNotifications == null ? Collections.<StatusBarNotification>emptyList() : Arrays.asList(activeNotifications);
     }
 
-    private List<StatusBarNotification> filterNotifications(StatusBarNotification[] statusBarNotificationArr) {
-        int i = 0;
-        if (statusBarNotificationArr == null) {
+    private List<StatusBarNotification> filterNotifications(StatusBarNotification[] notifications) {
+        if (notifications == null) {
             return null;
         }
-        Set<Integer> hashSet = new HashSet<>();
-        for (int i2 = 0; i2 < statusBarNotificationArr.length; i2++) {
-            if (shouldBeFilteredOut(statusBarNotificationArr[i2])) {
-                hashSet.add(i2);
+        List<StatusBarNotification> filteredNotifications = new ArrayList<>();
+        for (StatusBarNotification notification : notifications) {
+            if (!shouldBeFilteredOut(notification)) {
+                filteredNotifications.add(notification);
             }
         }
-        List<StatusBarNotification> arrayList = new ArrayList<>(statusBarNotificationArr.length - hashSet.size());
-        while (i < statusBarNotificationArr.length) {
-            if (!hashSet.contains(i)) {
-                arrayList.add(statusBarNotificationArr[i]);
-            }
-            i++;
-        }
-        return arrayList;
+        return filteredNotifications;
     }
 
     private boolean shouldBeFilteredOut(StatusBarNotification statusBarNotification) {
-        boolean z = true;
-        boolean z2 = false;
         getCurrentRanking().getRanking(statusBarNotification.getKey(), mTempRanking);
         if (Utilities.isAtLeastO() && !mTempRanking.canShowBadge()) {
             return true;
         }
         Notification notification = statusBarNotification.getNotification();
-        if ((!Utilities.isAtLeastO() || mTempRanking.getChannel().getId().equals("miscellaneous")) && (notification.flags & 2) != 0) {
+        if ((!Utilities.isAtLeastO() || mTempRanking.getChannel().getId().equals("miscellaneous")) && (notification.flags & Notification.FLAG_ONGOING_EVENT) != 0) {
             return true;
         }
-        boolean z3;
-        z3 = (notification.flags & 512) != 0;
-        CharSequence charSequence = notification.extras.getCharSequence("android.title");
-        CharSequence charSequence2 = notification.extras.getCharSequence("android.text");
-        if (TextUtils.isEmpty(charSequence)) {
-            z2 = TextUtils.isEmpty(charSequence2);
+        boolean isGroupSummary = (notification.flags & Notification.FLAG_GROUP_SUMMARY) != 0;
+        CharSequence title = notification.extras.getCharSequence("android.title");
+        CharSequence text = notification.extras.getCharSequence("android.text");
+        boolean isEmpty = false;
+        if (TextUtils.isEmpty(title)) {
+            isEmpty = TextUtils.isEmpty(text);
         }
-        if (!z3) {
-            z = z2;
-        }
-        return z;
+        return isGroupSummary || isEmpty;
     }
 }

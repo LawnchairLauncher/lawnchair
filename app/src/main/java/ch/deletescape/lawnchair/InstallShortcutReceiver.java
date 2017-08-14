@@ -19,7 +19,6 @@ package ch.deletescape.lawnchair;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -133,6 +132,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     // processAllPendingInstalls() is called.
     private static boolean mUseInstallQueue = false;
 
+    @Override
     public void onReceive(Context context, Intent data) {
         if (!ACTION_INSTALL_SHORTCUT.equals(data.getAction())) {
             return;

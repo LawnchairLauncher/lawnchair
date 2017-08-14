@@ -1,15 +1,12 @@
 package ch.deletescape.lawnchair.weather
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-
-import java.util.HashMap
-
 import ch.deletescape.lawnchair.R
 import ch.deletescape.lawnchair.Utilities
+import java.util.*
 
 class WeatherIconProvider(private val context: Context) {
 

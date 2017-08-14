@@ -18,7 +18,6 @@ import android.graphics.drawable.ShapeDrawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -620,48 +619,47 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
     protected void animateClose() {
         if (mIsOpen) {
-            int i;
             if (mOpenCloseAnimator != null) {
                 mOpenCloseAnimator.cancel();
             }
             mIsOpen = false;
             AnimatorSet createAnimatorSet = LauncherAnimUtils.createAnimatorSet();
             int itemCount = getItemCount();
-            int i2 = 0;
-            for (i = 0; i < itemCount; i++) {
+            int openItemCount = 0;
+            for (int i = 0; i < itemCount; i++) {
                 if (getItemViewAt(i).isOpenOrOpening()) {
-                    i2++;
+                    openItemCount++;
                 }
             }
-            long integer = (long) getResources().getInteger(R.integer.config_deepShortcutCloseDuration);
-            long integer2 = (long) getResources().getInteger(R.integer.config_deepShortcutArrowOpenDuration);
-            long integer3 = (long) getResources().getInteger(R.integer.config_deepShortcutCloseStagger);
+            long deepShortcutCloseDuration = (long) getResources().getInteger(R.integer.config_deepShortcutCloseDuration);
+            long deepShortcutArrowOpenDuration = (long) getResources().getInteger(R.integer.config_deepShortcutArrowOpenDuration);
+            long deepShortcutCloseStagger = (long) getResources().getInteger(R.integer.config_deepShortcutCloseStagger);
             TimeInterpolator logAccelerateInterpolator = new LogAccelerateInterpolator(100, 0);
-            i = mIsAboveIcon ? itemCount - i2 : 0;
-            for (int i3 = i; i3 < i + i2; i3++) {
-                PopupItemView itemViewAt = getItemViewAt(i3);
-                Animator createCloseAnimation = itemViewAt.createCloseAnimation(mIsAboveIcon, mIsLeftAligned, integer);
+            int i = mIsAboveIcon ? itemCount - openItemCount : 0;
+            for (int j = i; j < i + openItemCount; j++) {
+                PopupItemView itemViewAt = getItemViewAt(j);
+                Animator closeAnimation = itemViewAt.createCloseAnimation(mIsAboveIcon, mIsLeftAligned, deepShortcutCloseDuration);
                 if (mIsAboveIcon) {
-                    itemCount = i3 - i;
+                    itemCount = j - i;
                 } else {
-                    itemCount = (i2 - i3) - 1;
+                    itemCount = (openItemCount - j) - 1;
                 }
-                createCloseAnimation.setStartDelay(((long) itemCount) * integer3);
+                closeAnimation.setStartDelay(((long) itemCount) * deepShortcutCloseStagger);
                 Animator ofFloat = ObjectAnimator.ofFloat(itemViewAt, View.ALPHA, 0.0f);
-                ofFloat.setStartDelay((((long) itemCount) * integer3) + integer2);
-                ofFloat.setDuration(integer - integer2);
+                ofFloat.setStartDelay((((long) itemCount) * deepShortcutCloseStagger) + deepShortcutArrowOpenDuration);
+                ofFloat.setDuration(deepShortcutCloseDuration - deepShortcutArrowOpenDuration);
                 ofFloat.setInterpolator(logAccelerateInterpolator);
                 createAnimatorSet.play(ofFloat);
                 final PopupItemView popupItemView = itemViewAt;
-                createCloseAnimation.addListener(new AnimatorListenerAdapter() {
+                closeAnimation.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animator) {
                         popupItemView.setVisibility(INVISIBLE);
                     }
                 });
-                createAnimatorSet.play(createCloseAnimation);
+                createAnimatorSet.play(closeAnimation);
             }
-            Animator duration = createArrowScaleAnim(0.0f).setDuration(integer2);
+            Animator duration = createArrowScaleAnim(0.0f).setDuration(deepShortcutArrowOpenDuration);
             duration.setStartDelay(0);
             createAnimatorSet.play(duration);
             createAnimatorSet.addListener(new C04858());

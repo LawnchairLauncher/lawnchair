@@ -8,7 +8,6 @@ import android.view.View
 import ch.deletescape.lawnchair.Launcher
 import ch.deletescape.lawnchair.LauncherFiles
 import ch.deletescape.lawnchair.config.FeatureFlags
-import ch.deletescape.lawnchair.config.PreferenceProvider
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors
 import kotlin.reflect.KProperty
 
@@ -169,7 +168,7 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
 
     override val blurMode by IntPref(PreferenceFlags.KEY_BLUR_MODE, (1 shl 30) - 1)
     override val blurRadius by FloatPref(PreferenceFlags.KEY_BLUR_RADIUS, 75f)
-    
+
     override var appsViewShown by MutableBooleanPref(PreferenceFlags.APPS_VIEW_SHOWN, false)
 
     override var requiresIconCacheReload by MutableBooleanPref(PreferenceFlags.KEY_REQUIRES_ICON_CACHE_RELOAD, true)

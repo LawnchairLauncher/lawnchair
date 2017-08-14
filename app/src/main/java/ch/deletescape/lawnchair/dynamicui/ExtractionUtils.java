@@ -19,7 +19,6 @@ package ch.deletescape.lawnchair.dynamicui;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.graphics.Palette;
@@ -28,7 +27,6 @@ import java.util.List;
 
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
-import ch.deletescape.lawnchair.preferences.PreferenceFlags;
 
 /**
  * Contains helper fields and methods related to extracting colors from the wallpaper.

@@ -11,14 +11,12 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import ch.deletescape.lawnchair.Utilities;
-import ch.deletescape.lawnchair.preferences.PreferenceFlags;
 
 public class IconPackProvider {
     private static Map<String, IconPack> iconPacks = new ArrayMap<>();
@@ -46,30 +44,11 @@ public class IconPackProvider {
         if ("".equals(packageName)) {
             iconPacks.put("", null);
         }
-        clearCache(context, packageName);
         try {
             iconPacks.put(packageName, parseAppFilter(context, packageName));
         } catch (Exception e) {
             Toast.makeText(context, "Invalid IconPack", Toast.LENGTH_SHORT).show();
             iconPacks.put(packageName, null);
-        }
-    }
-
-    private static void clearCache(Context context, String packageName) {
-        File cacheFolder = new File(context.getCacheDir(), "iconpack");
-        File indicatorFile = new File(cacheFolder, packageName);
-        if (cacheFolder.exists()) {
-            if (!indicatorFile.exists()) {
-                for (File file : cacheFolder.listFiles()) {
-                    file.delete();
-                }
-            }
-        } else {
-            cacheFolder.mkdir();
-            try {
-                indicatorFile.createNewFile();
-            } catch (IOException e) {
-            }
         }
     }
 
@@ -87,45 +66,54 @@ public class IconPackProvider {
             }
             String name = parser.getName();
             try {
-                if (name.equals("item")) {
-                    String comp = parser.getAttributeValue(null, "component");
-                    String drawable = parser.getAttributeValue(null, "drawable");
-                    if (drawable != null && comp != null) {
-                        IconInfo iconInfo;
-                        if (!entries.containsKey(comp)) {
-                            iconInfo = new IconInfo();
-                            entries.put(comp, iconInfo);
-                        } else {
-                            iconInfo = entries.get(comp);
+                switch (name) {
+                    case "item": {
+                        String comp = parser.getAttributeValue(null, "component");
+                        String drawable = parser.getAttributeValue(null, "drawable");
+                        if (drawable != null && comp != null) {
+                            IconInfo iconInfo;
+                            if (!entries.containsKey(comp)) {
+                                iconInfo = new IconInfo();
+                                entries.put(comp, iconInfo);
+                            } else {
+                                iconInfo = entries.get(comp);
+                            }
+                            iconInfo.drawable = drawable;
                         }
-                        iconInfo.drawable = drawable;
+                        break;
                     }
-                } else if (name.equals("iconback")) {
-                    iconBack = getImg(parser);
-                } else if (name.equals("iconupon")) {
-                    iconUpon = getImg(parser);
-                } else if (name.equals("iconmask")) {
-                    iconMask = getImg(parser);
-                } else if (name.equals("scale")) {
-                    scale = Float.parseFloat(parser.getAttributeValue(null, "factor"));
-                } else if (name.equals("calendar")) {
-                    String comp = parser.getAttributeValue(null, "component");
-                    String prefix = parser.getAttributeValue(null, "prefix");
-                    if (prefix != null && comp != null) {
-                        IconInfo iconInfo;
-                        if (!entries.containsKey(comp)) {
-                            iconInfo = new IconInfo();
-                            entries.put(comp, iconInfo);
-                        } else {
-                            iconInfo = entries.get(comp);
-                        }
-                        iconInfo.prefix = prefix;
-                        try {
-                            String calendar = comp.split("/")[0].split("\\{")[1];
-                            calendars.add(calendar);
-                        } catch (Exception ignored) {
+                    case "iconback":
+                        iconBack = getImg(parser);
+                        break;
+                    case "iconupon":
+                        iconUpon = getImg(parser);
+                        break;
+                    case "iconmask":
+                        iconMask = getImg(parser);
+                        break;
+                    case "scale":
+                        scale = Float.parseFloat(parser.getAttributeValue(null, "factor"));
+                        break;
+                    case "calendar": {
+                        String comp = parser.getAttributeValue(null, "component");
+                        String prefix = parser.getAttributeValue(null, "prefix");
+                        if (prefix != null && comp != null) {
+                            IconInfo iconInfo;
+                            if (!entries.containsKey(comp)) {
+                                iconInfo = new IconInfo();
+                                entries.put(comp, iconInfo);
+                            } else {
+                                iconInfo = entries.get(comp);
+                            }
+                            iconInfo.prefix = prefix;
+                            try {
+                                String calendar = comp.split("/")[0].split("\\{")[1];
+                                calendars.add(calendar);
+                            } catch (Exception ignored) {
 
+                            }
                         }
+                        break;
                     }
                 }
             } catch (Exception ignored) {

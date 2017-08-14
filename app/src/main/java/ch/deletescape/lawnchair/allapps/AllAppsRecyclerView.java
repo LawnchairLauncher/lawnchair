@@ -25,7 +25,6 @@ import android.view.View;
 import java.util.List;
 
 import ch.deletescape.lawnchair.BaseRecyclerView;
-import ch.deletescape.lawnchair.BubbleTextView;
 import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.Launcher;
 
@@ -206,6 +205,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     public void setAdapter(Adapter adapter) {
         super.setAdapter(adapter);
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
             public void onChanged() {
                 mCachedScrollPositions.clear();
             }

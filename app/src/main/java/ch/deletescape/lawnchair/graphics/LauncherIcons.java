@@ -12,6 +12,7 @@ import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
@@ -73,25 +74,10 @@ public class LauncherIcons {
     }
 
     public static Bitmap createBadgedIconBitmap(Drawable drawable, UserHandle userHandle, Context context, int i) {
-        float f = 1.0f;
         IconNormalizer instance = IconNormalizer.getInstance();
-        if (!Utilities.isAtLeastO() || i < 26) {
-            f = instance.getScale(drawable, null);
-        } /*else {
-            boolean[] zArr = new boolean[1];
-            AdaptiveIconDrawable adaptiveIconDrawable = (AdaptiveIconDrawable) context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
-            adaptiveIconDrawable.setBounds(0, 0, 1, 1);
-            f = instance.getScale(drawable, null, adaptiveIconDrawable.getIconMask(), zArr);
-            if ((zArr[0] ^ 1) != 0) {
-                Drawable wrapToAdaptiveIconDrawable = wrapToAdaptiveIconDrawable(context, drawable, f);
-                if (wrapToAdaptiveIconDrawable != drawable) {
-                    f = instance.getScale(wrapToAdaptiveIconDrawable, null, null, null);
-                    drawable = wrapToAdaptiveIconDrawable;
-                }
-            }
-        }*/
+        float f = instance.getScale(drawable, null);
         Bitmap createIconBitmap = createIconBitmap(drawable, context, f);
-        if (Utilities.isAtLeastO() /*&& (drawable instanceof AdaptiveIconDrawable)*/) {
+        if (Utilities.isAtLeastO() && (drawable instanceof AdaptiveIconDrawable)) {
             createIconBitmap = ShadowGenerator.getInstance().recreateIcon(createIconBitmap);
         }
         return badgeIconForUser(createIconBitmap, userHandle, context);
@@ -110,23 +96,8 @@ public class LauncherIcons {
 
     public static Bitmap createScaledBitmapWithoutShadow(Drawable drawable, Context context, int i) {
         RectF rectF = new RectF();
-        float f = 1.0f;
         IconNormalizer instance = IconNormalizer.getInstance();
-        if (!Utilities.isAtLeastO() || i < 26) {
-            f = instance.getScale(drawable, rectF);
-        } /*else {
-                boolean[] zArr = new boolean[1];
-                AdaptiveIconDrawable adaptiveIconDrawable = (AdaptiveIconDrawable) context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
-                adaptiveIconDrawable.setBounds(0, 0, 1, 1);
-                f = instance.getScale(drawable, rectF, adaptiveIconDrawable.getIconMask(), zArr);
-                if (Utilities.isAtLeastO() && (zArr[0] ^ 1) != 0) {
-                    Drawable wrapToAdaptiveIconDrawable = wrapToAdaptiveIconDrawable(context, drawable, f);
-                    if (wrapToAdaptiveIconDrawable != drawable) {
-                        f = instance.getScale(wrapToAdaptiveIconDrawable, rectF, null, null);
-                        drawable = wrapToAdaptiveIconDrawable;
-                    }
-                }
-            }*/
+        float f = instance.getScale(drawable, rectF);
         return createIconBitmap(drawable, context, Math.min(f, ShadowGenerator.getScaleForBounds(rectF)));
     }
 
@@ -146,14 +117,7 @@ public class LauncherIcons {
 
     public static Bitmap createIconBitmap(Drawable drawable, Context context) {
         float f = 1.0f;
-        /*if (Utilities.isAtLeastO() && (drawable instanceof AdaptiveIconDrawable)) {
-            f = ShadowGenerator.getScaleForBounds(new RectF(0.0f, 0.0f, 0.0f, 0.0f));
-        }*/
-        Bitmap createIconBitmap = createIconBitmap(drawable, context, f);
-        /*if (Utilities.isAtLeastO() && (drawable instanceof AdaptiveIconDrawable)) {
-            return ShadowGenerator.getInstance(context).recreateIcon(createIconBitmap);
-        }*/
-        return createIconBitmap;
+        return createIconBitmap(drawable, context, f);
     }
 
     public static Bitmap createIconBitmap(Drawable drawable, Context context, float f) {
@@ -195,7 +159,7 @@ public class LauncherIcons {
             int i2 = (i - intrinsicHeight) / 2;
             int i3 = (i - intrinsicWidth) / 2;
             sOldBounds.set(drawable.getBounds());
-            if (Utilities.isAtLeastO() /*&& (drawable instanceof AdaptiveIconDrawable)*/) {
+            if (Utilities.isAtLeastO() && (drawable instanceof AdaptiveIconDrawable)) {
                 i2 = Math.min(i2, i3);
                 intrinsicWidth = Math.max(intrinsicHeight, intrinsicWidth);
                 drawable.setBounds(i2, i2, i2 + intrinsicWidth, intrinsicWidth + i2);
@@ -210,24 +174,6 @@ public class LauncherIcons {
             canvas.setBitmap(null);
         }
         return createBitmap;
-    }
-
-    static Drawable wrapToAdaptiveIconDrawable(Context context, Drawable drawable, float f) {
-        //if (!Utilities.isAtLeastO()) {
-        return drawable;
-        //}
-        /*try {
-            if (drawable instanceof AdaptiveIconDrawable) {
-                return drawable;
-            }
-            AdaptiveIconDrawable adaptiveIconDrawable = (AdaptiveIconDrawable) context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
-            FixedScaleDrawable fixedScaleDrawable = (FixedScaleDrawable) adaptiveIconDrawable.getForeground();
-            fixedScaleDrawable.setDrawable(drawable);
-            fixedScaleDrawable.setScale(f);
-            return adaptiveIconDrawable;
-        } catch (Exception e) {
-            return drawable;
-        }*/
     }
 
     public static Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfoCompat, Context context) {

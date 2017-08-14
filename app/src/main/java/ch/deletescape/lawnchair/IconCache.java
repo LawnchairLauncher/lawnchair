@@ -224,16 +224,6 @@ public class IconCache {
     }
 
     /**
-     * Updates the entries related to all packages in memory and persistent DB.
-     */
-    public void updateIconsForAll(final UserHandle user) {
-        long userSerial = mUserManager.getSerialNumberForUser(user);
-        for (LauncherActivityInfoCompat app : mLauncherApps.getActivityList(null, user)) {
-            updateIconInDBAndMemCache(app, userSerial);
-        }
-    }
-
-    /**
      * Removes the entries related to the given package in memory and persistent DB.
      */
     public synchronized void removeIconsForPkg(String packageName, UserHandle user) {
@@ -364,30 +354,6 @@ public class IconCache {
         // create bitmap if it was already created during loader.
         ContentValues values = updateCacheAndGetContentValues(app, false);
         addIconToDB(values, app.getComponentName(), info, userSerial);
-    }
-
-    @Thunk
-    void updateIconInDBAndMemCache(LauncherActivityInfoCompat app, long userSerial) {
-        // Reuse the existing entry if it already exists in the DB. This ensures that we do not
-        // create bitmap if it was already created during loader.
-        final ComponentKey key = new ComponentKey(app.getComponentName(), app.getUser());
-        CacheEntry entry;
-        entry = mCache.get(key);
-        if (entry == null) {
-            return;
-        }
-        Bitmap tmp = entry.icon;
-        entry.icon = Utilities.createBadgedIconBitmap(
-                pip.getIcon(app, mIconDpi), app.getUser(),
-                mContext);
-        if (entry.icon.equals(tmp)) {
-            return;
-        }
-        mCache.put(key, entry);
-
-        Bitmap lowResIcon = generateLowResIcon(entry.icon, mActivityBgColor);
-        ContentValues values = newContentValues(entry.icon, lowResIcon, entry.title.toString());
-        mIconDb.update(values, "componentName = ? AND profileID = ?", new String[]{app.getComponentName().flattenToString(), "" + userSerial});
     }
 
     /**

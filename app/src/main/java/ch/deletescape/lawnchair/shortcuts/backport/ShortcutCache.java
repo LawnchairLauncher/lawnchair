@@ -126,7 +126,7 @@ public class ShortcutCache {
         mShortcutDB.delete(selection, selectionArgs);
     }
 
-    public List<ShortcutInfoCompat> query(String packageName, ComponentName componentName) {
+    public List<ShortcutInfoCompat> query(String packageName) {
         if (packageName == null) {
             return mShortcutList;
         } else if (mShortcutsMap.containsKey(packageName)) {
