@@ -247,6 +247,7 @@
   <string name="about_text">Lawnchair är en hemskärm-app skapad av Till Kottmann (deletescape). Den är baserad på Launcher3 från AOSP.</string>
   <string name="about_title">Om</string>
   <string name="changelog_title">Ändringar för version #%d</string>
+  <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Ikonpaket</string>
   <string name="icon_pack_preference_summary">Välj ett ikonpaket</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Dockan använder färger från bakgrundsbilden</string>
@@ -255,8 +256,10 @@
   <string name="transparent_hotseat_pref_title">Genomskinlig docka</string>
   <string name="dynamic_ui_pref_title">Använd accentfärg från bakgrundsbilden</string>
   <string name="blur_pref_title">Använd oskärpa</string>
+  <string name="blur_pref_summary">Tillämpa suddig effekt på delar av gränssnittet\nInte kompatibelt med levande bakgrunder</string>
   <string name="blur_radius_pref_title">Radius för suddighet</string>
   <string name="white_google_icon_pref_title">Använd vit Google ikon</string>
+  <string name="hide_icon_labels_pref_title">Dölj ikonetiketter på hemskärmen</string>
   <string name="workspace_label_color_hue_pref_title">Ikonetiketters färg på hemskärmen</string>
   <string name="workspace_label_color_variation_pref_title">Färgvariation av ikonetiketter på hemskärmen</string>
   <string name="all_apps_opacity_pref_title">Opacitet på applåda</string>
@@ -285,12 +288,15 @@
   <string name="restart_lawnchair_pref_summary">Kan vara användbart om vissa inställningar inte tillämpas korrekt</string>
   <string name="rebuild_icondb_pref_title">Återskapa ikondatabasen</string>
   <string name="pinch_to_overview_pref_title">Nyp för översikt</string>
+  <string name="pinch_to_overview_pref_summary">Nyp på startskärmen för att öppna översikten</string>
   <string name="light_statusbar_pref_title">Ljust statusfält</string>
+  <string name="light_statusbar_pref_force">Statusfältet kommer alltid att visa mörka ikoner</string>
   <string name="light_statusbar_pref_off">Statusfältet kommer alltid att visa ljusa ikoner.</string>
   <string name="haptic_feedback_pref_title">Aktivera vibration</string>
   <string name="keep_scroll_state_pref_title">Spara scrollposition</string>
   <string name="keep_scroll_state_pref_summary">Sparar scrollpositionen i applådan</string>
   <string name="home_opens_drawer_pref_title">Hemknappen öppnar applådan</string>
+  <string name="home_opens_drawer_pref_summary">Genom att trycka på hemknappen medan på hemskärmen kommer applådan att öppnas</string>
   <string name="show_hidden_pref_title">Visa dolda appar</string>
   <string name="show_hidden_pref_on">Dolda appar kommer visas för att ändra synlighetsinställningar</string>
   <string name="show_hidden_pref_off">Dolda appar kommer inte att synas</string>
@@ -300,6 +306,7 @@
   <string name="import_prefs_title">Import inställningar</string>
   <string name="notification_listener_label">Lawnchair - Notifikationsmärken</string>
   <string name="color_extraction_label">Lawnchair - Färgutvinning</string>
+  <string name="test_title">Test</string>
   <string name="visibility">Synlighet</string>
   <!-- Customization Color -->
   <string name="white">Vit</string>
@@ -314,11 +321,13 @@
   <!-- Customization Color -->
   <string name="deep_purple">Mörklila</string>
   <!-- Customization Color -->
+  <string name="indigo">Indigo</string>
   <!-- Customization Color -->
   <string name="blue">Blå</string>
   <!-- Customization Color -->
   <string name="light_blue">Ljusblå</string>
   <!-- Customization Color -->
+  <string name="cyan">Cyan</string>
   <!-- Customization Color -->
   <string name="teal">Blågrön</string>
   <!-- Customization Color -->
@@ -326,11 +335,13 @@
   <!-- Customization Color -->
   <string name="light_green">Ljusgrön</string>
   <!-- Customization Color -->
+  <string name="lime">Lime</string>
   <!-- Customization Color -->
   <string name="yellow">Gul</string>
   <!-- Customization Color -->
   <string name="amber">Bärnsten</string>
   <!-- Customization Color -->
+  <string name="orange">Orange</string>
   <!-- Customization Color -->
   <string name="deep_orange">Mörkorange</string>
   <!-- Customization Color -->
@@ -340,6 +351,71 @@
   <!-- Customization Color -->
   <string name="blue_grey">Blågrå</string>
   <string name="default_text">Standard</string>
+  <string name="edit_icon_reset">Återställ</string>
+  <string name="show_top_shadow_title">Visa övre skugga</string>
+  <string name="pref_cat_homescreen">Hemskärm</string>
+  <string name="pref_cat_miscellaneous">Övrigt</string>
+  <string name="pref_cat_hotseat">Docka</string>
+  <string name="pref_cat_theme">Tema</string>
+  <string name="theme_pref_title">Tema</string>
+  <string name="theme_light">Ljus</string>
+  <string name="theme_dark">Mörk</string>
+  <string name="theme_black">Svart</string>
+  <string name="hide_hotseat_pref_title">Dölj dockan</string>
+  <string name="all_icons">Alla ikoner</string>
+  <string name="pull_down_action_pref_title">Åtgärd vid nerdragning</string>
+  <string name="pull_down_do_nothing">Gör ingenting</string>
+  <string name="pull_down_notis">Visa notifikationer</string>
+  <string name="pull_down_search">Öppna Sök</string>
+  <string name="pull_down_apps_search">Sök appar</string>
+  <string name="enable_screen_rotation">Aktivera skärmrotation</string>
   <!-- Import/Export Strings -->
+  <string name="imexport_success">Utfört!</string>
+  <string name="imexport_error">Fel: Det gick inte att kopiera filen</string>
+  <string name="imexport_no_backup_found">Ingen säkerhetskopia hittad</string>
+  <string name="imexport_external_storage_unreadable">Extern lagring är inte läsbar (bevilja tillstånd i inställningar)</string>
+  <string name="imexport_external_storage_unwritable">Extern lagring är inte skrivbar (bevilja tillstånd i inställningar)</string>
+  <string name="units_metric">Metrisk</string>
+  <string name="units_imperial">Imperial</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_cat_weather">Väder</string>
+  <string name="pref_weather_title">Aktivera väder</string>
+  <string name="pref_weather_units">Väderenhet</string>
+  <string name="pref_weather_city_summary">För bästa resultat inkluderar landskoden</string>
+  <string name="pref_weather_city_title">Stad</string>
+  <string name="none">Inget</string>
+  <string name="pref_applyTheme">Tillämpa tema på</string>
+  <string name="pref_applyBlur">Tillämpa suddighet på</string>
+  <string name="search_bar">Sökfält</string>
+  <string name="folder">Mapp</string>
+  <string name="dock_allapps"><![CDATA[Dock & låda]]></string>
+  <string name="app_shortcuts">Appgenvägarna</string>
+  <string name="blur_effect">Suddig effekt</string>
+  <string name="enable_editing_pref_title">Aktivera redigering av hemskärm</string>
+  <string name="pref_weather_provider">Väderleverantör</string>
+  <string name="loading">Laddar...</string>
+  <string name="icon_shape_override_label">Ändra ikonform</string>
+  <string name="icon_shape_system_default">Ändra inte</string>
+  <string name="icon_shape_square">Fyrkant</string>
+  <string name="icon_shape_rounded_square">Rundad fyrkant</string>
+  <string name="icon_shape_squircle">Kvirkel</string>
+  <string name="icon_shape_circle">Cirkel</string>
+  <string name="icon_shape_teardrop">Tårdropp</string>
+  <string name="animated_clock_icon_title">Animerade klockikon</string>
+  <string name="about_summary_title">Sammanfattning</string>
+  <string name="about_version">Version</string>
+  <string name="about_icon_designer">App ikon designer</string>
+  <string name="about_contributors_title">Medverkande</string>
+  <string name="location_permission_warn">Positionstillstånd krävs för att byta till en annan leverantör!</string>
+  <string name="num_cols_drawer_pref_title">Antal kolumner i applådan</string>
+  <string name="pref_cat_drawer">Applåda</string>
+  <string name="shortcut_backport_warning">Detta kan vara långsamt. Använd på egen risk</string>
+  <string name="pref_backport_shortcuts">Bakåtporta genvägar</string>
+  <string name="weather_api_key_set">API nyckeluppsättning</string>
+  <string name="weather_api_key_not_set">API nyckel inte angiven</string>
+  <string name="pref_weather_api_key_title">API nyckel</string>
+  <string name="about_changelog">Ändringslogg</string>
+  <string name="pref_all_apps_custom_label_color">Använd skräddarsydd etikettfärg</string>
+  <string name="pref_all_apps_label_color_variation">Färgvariation av ikonetiketter i applådan</string>
+  <string name="pref_all_apps_label_color">Färg av ikonetiketter i applådan</string>
 </resources>
