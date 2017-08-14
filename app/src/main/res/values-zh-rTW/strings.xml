@@ -28,14 +28,14 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">應用程式目前無法使用</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">在安全模式中無法使用「已下載的應用程式」功能</string>
+  <string name="safemode_shortcut_error">安全模式中已下載應用程式功能會被停用</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">在安全模式下無法使用小工具</string>
+  <string name="safemode_widget_error">在安全模式中無法使用小工具</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
-  <string name="shortcut_not_available">目前無法使用捷徑</string>
+  <string name="shortcut_not_available">無法使用捷徑</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">輕觸並按住小工具即可選取。</string>
+  <string name="long_press_widget_to_add">輕觸 &amp; 並按住即可選取小工具。</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
   <string name="long_accessible_way_to_add">輕觸兩下並按住小工具即可選取，您也可以使用自訂動作。</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
@@ -410,4 +410,11 @@
   <string name="pref_cat_drawer">應用程式抽屜</string>
   <string name="shortcut_backport_warning">該功能有可能會導致桌面性能下降，後果請自行承擔</string>
   <string name="pref_backport_shortcuts">向前移植的應用程式快捷操作</string>
+  <string name="weather_api_key_set">API Key 設定</string>
+  <string name="weather_api_key_not_set">API Key 尚未設定</string>
+  <string name="pref_weather_api_key_title">API Key</string>
+  <string name="about_changelog">更新日誌</string>
+  <string name="pref_all_apps_custom_label_color">使用自訂標籤顏色</string>
+  <string name="pref_all_apps_label_color_variation">應用程式抽屜圖示標籤的顏色變化</string>
+  <string name="pref_all_apps_label_color">應用程式抽屜圖示的標籤顏色</string>
 </resources>
