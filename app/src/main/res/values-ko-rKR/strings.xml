@@ -259,6 +259,7 @@
   <string name="blur_radius_pref_title">블러 값</string>
   <string name="white_google_icon_pref_title">흰색 구글 아이콘 사용</string>
   <string name="hide_icon_labels_pref_title">홈 화면의 아이콘 이름 숨기기</string>
+  <string name="hide_all_apps_icon_labels_pref_title">앱 서랍의 아이콘 이름 숨기기</string>
   <string name="workspace_label_color_hue_pref_title">홈 화면 아이콘 이름 색상</string>
   <string name="workspace_label_color_variation_pref_title">홈 화면 아이콘 이름 색상 값</string>
   <string name="all_apps_opacity_pref_title">앱 서랍 투명도</string>
@@ -410,11 +411,15 @@
   <string name="pref_cat_drawer">앱 서랍</string>
   <string name="shortcut_backport_warning">기기가 느려질 수 있습니다, 주의하세요.</string>
   <string name="pref_backport_shortcuts">바로가기 불러오기</string>
-  <string name="weather_api_key_set">API key set</string>
   <string name="weather_api_key_not_set">API key가 설정되지 않았습니다.</string>
   <string name="pref_weather_api_key_title">API 키</string>
   <string name="about_changelog">변경 내역</string>
   <string name="pref_all_apps_custom_label_color">사용자 지정 이름 색상 사용</string>
   <string name="pref_all_apps_label_color_variation">앱 서랍 아이콘 이름 색상 값</string>
   <string name="pref_all_apps_label_color">서랍 아이콘 이름 색상</string>
+  <string name="pref_num_rows_drawer">앱 서랍 행 갯수</string>
+  <string name="center_wallpaper_pref_title">홈 화면이 하나일때 배경화면 가운데 표시</string>
+  <string name="vertical_drawer_layout_pref_title">세로 목록으로 표시</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
 </resources>
