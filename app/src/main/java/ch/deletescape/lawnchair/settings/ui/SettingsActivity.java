@@ -19,6 +19,7 @@ package ch.deletescape.lawnchair.settings.ui;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -201,7 +202,7 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                 }
             } else if (getContent() == R.xml.launcher_about_preferences) {
                 findPreference("about_version").setSummary(BuildConfig.VERSION_NAME);
-                if(BuildConfig.TRAVIS && !BuildConfig.TAGGED_BUILD){
+                if (BuildConfig.TRAVIS && !BuildConfig.TAGGED_BUILD) {
                     findPreference("about_changelog").setSummary(Utilities.getChangelog());
                 }
             } else if (getContent() == R.xml.launcher_behavior_preferences) {
@@ -277,6 +278,12 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                         if (!checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
                             Toast.makeText(getActivity(), R.string.location_permission_warn, Toast.LENGTH_SHORT).show();
                         }
+                        break;
+                    case "about_translators":
+                        Dialog dialog = new Dialog(getActivity());
+                        dialog.setTitle(R.string.about_translators);
+                        dialog.setContentView(R.layout.dialog_translators);
+                        dialog.show();
                         break;
                     default:
                         return false;
