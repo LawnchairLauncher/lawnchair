@@ -28,7 +28,7 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">Приложение недоступно</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Скачанное приложение отключено в безопасном режиме</string>
+  <string name="safemode_shortcut_error">Скачанные приложения отключены в безопасном режиме</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">Виджеты отключены в безопасном режиме</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
@@ -161,7 +161,7 @@
   <!-- Accessibility description to move item to the hotseat. -->
   <string name="move_to_hotseat_position">Переместить в Избранное (<xliff:g id="NUMBER">%1$s</xliff:g>)</string>
   <!-- Accessibility confirmation for item move. -->
-  <string name="item_moved">Элемент перемещен</string>
+  <string name="item_moved">Элемент перемещен.</string>
   <!-- Accessibility description to move item into an existing folder. -->
   <string name="add_to_folder">Добавить в папку <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
@@ -230,7 +230,7 @@
   <!-- Option in "Select wallpaper from" dialog box -->
   <string name="pick_wallpaper">Обои</string>
   <!-- Title of activity for cropping wallpapers -->
-  <string name="crop_wallpaper">Кадрировать обои</string>
+  <string name="crop_wallpaper">Обрезать обои</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
   <string name="which_wallpaper_option_home_screen">Главный экран</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
@@ -295,7 +295,7 @@
   <string name="light_statusbar_pref_off">В строке состояния всегда будут отображаться светлые значки</string>
   <string name="haptic_feedback_pref_title">Включить вибрацию</string>
   <string name="keep_scroll_state_pref_title">Сохранять позицию прокрутки</string>
-  <string name="keep_scroll_state_pref_summary">Сохраняет положение прокрутки в меню приложения</string>
+  <string name="keep_scroll_state_pref_summary">Сохраняет положение прокрутки в меню приложений</string>
   <string name="home_opens_drawer_pref_title">Кнопка «Домой» открывает меню приложений</string>
   <string name="home_opens_drawer_pref_summary">Нажатие кнопки «Домой» на главном экране откроет меню приложений</string>
   <string name="show_hidden_pref_title">Показывать скрытые приложения</string>
@@ -377,7 +377,7 @@
   <string name="imexport_external_storage_unreadable">Внешнее хранилище недоступно для чтения (предоставить разрешения можно в настройках)</string>
   <string name="imexport_external_storage_unwritable">Внешнее хранилище недоступно для записи (предоставить разрешения можно в настройках)</string>
   <string name="units_metric">Метрическая</string>
-  <string name="units_imperial">Эмпирическая</string>
+  <string name="units_imperial">Британская</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <string name="pref_cat_weather">Погода</string>
   <string name="pref_weather_title">Включить погоду</string>
@@ -401,7 +401,7 @@
   <string name="icon_shape_rounded_square">Скругленный квадрат</string>
   <string name="icon_shape_squircle">Округлый квадрат</string>
   <string name="icon_shape_circle">Круглая</string>
-  <string name="icon_shape_teardrop">Капля слезы</string>
+  <string name="icon_shape_teardrop">Каплевидная</string>
   <string name="animated_clock_icon_title">Анимированный значок часов</string>
   <string name="about_summary_title">Описание</string>
   <string name="about_version">Версия</string>
