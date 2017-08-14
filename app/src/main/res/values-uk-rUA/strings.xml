@@ -377,10 +377,11 @@
   <string name="location_permission_warn">Потрібно дозвіл на розатшування, щоби переключитися на іншого постачальника!</string>
   <string name="num_cols_drawer_pref_title">Кількість колонок у меню додатків</string>
   <string name="pref_cat_drawer">Меню додатків</string>
-  <string name="weather_api_key_set">API ключ встановлено</string>
   <string name="weather_api_key_not_set">API ключ не встановлено</string>
   <string name="pref_weather_api_key_title">API ключ</string>
   <string name="about_changelog">Перелік змін</string>
   <string name="pref_all_apps_custom_label_color">Використовувати свій колір</string>
   <string name="pref_all_apps_label_color">Колір значків у меню додатків</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
 </resources>
