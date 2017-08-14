@@ -28,11 +28,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import ch.deletescape.lawnchair.AppInfo;
@@ -42,7 +40,6 @@ import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.allapps.theme.IAllAppsThemer;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 
 /**
  * The grid view adapter of all the apps.
@@ -286,7 +283,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                     divider.setImageDrawable(new ColorDrawable(mTheme.getSearchBarHintTextColor()));
                 return new ViewHolder(divider);
             case VIEW_TYPE_SEARCH_MARKET_DIVIDER:
-                ImageView marketDivider = (ImageView)mLayoutInflater.inflate(
+                ImageView marketDivider = (ImageView) mLayoutInflater.inflate(
                         R.layout.all_apps_divider, parent, false);
                 marketDivider.setImageDrawable(new ColorDrawable(mTheme.getSearchBarHintTextColor()));
                 return new ViewHolder(marketDivider);

@@ -7,12 +7,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.jetbrains.annotations.NotNull;
 
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAppState;
@@ -56,7 +55,7 @@ public class WeatherHelper implements SharedPreferences.OnSharedPreferenceChange
     }
 
     @Override
-    public void onWeatherData(@NotNull WeatherAPI.WeatherData data) {
+    public void onWeatherData(@NonNull WeatherAPI.WeatherData data) {
         mWeatherData = data;
         updateTextView();
         updateIconView();
@@ -101,7 +100,7 @@ public class WeatherHelper implements SharedPreferences.OnSharedPreferenceChange
     }
 
     @Override
-    public void onSharedPreferenceChanged(@NotNull SharedPreferences sharedPrefs, @NotNull String key) {
+    public void onSharedPreferenceChanged(@NonNull SharedPreferences sharedPrefs, @NonNull String key) {
         switch (key) {
             case PreferenceFlags.KEY_WEATHER_UNITS:
                 setUnits(sharedPrefs.getString(PreferenceFlags.KEY_WEATHER_UNITS, PreferenceFlags.PREF_WEATHER_UNIT_METRIC));

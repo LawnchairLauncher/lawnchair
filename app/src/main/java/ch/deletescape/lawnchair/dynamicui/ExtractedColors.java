@@ -24,7 +24,6 @@ import android.util.Log;
 
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.config.FeatureFlags;
-import ch.deletescape.lawnchair.preferences.PreferenceFlags;
 
 /**
  * Saves and loads colors extracted from the wallpaper, as well as the associated wallpaper id.

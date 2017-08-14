@@ -430,7 +430,7 @@ class LauncherClientImpl(private val launcher: Launcher, targetPackage: String, 
             } else {
                 version = resolveService.serviceInfo.metaData.getInt("service.api.version", 1)
             }
-            Log.v("LauncherClient", "version: ${version}")
+            Log.v("LauncherClient", "version: $version")
         }
     }
 }

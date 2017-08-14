@@ -52,7 +52,6 @@ import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.graphics.IconPalette;
 import ch.deletescape.lawnchair.model.PackageItemInfo;
 import ch.deletescape.lawnchair.pixelify.ClockIconDrawable;
-import ch.deletescape.lawnchair.preferences.PreferenceFlags;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan

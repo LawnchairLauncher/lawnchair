@@ -17,7 +17,6 @@ import ch.deletescape.lawnchair.LauncherAppState
 import ch.deletescape.lawnchair.R
 import ch.deletescape.lawnchair.Utilities
 import ch.deletescape.lawnchair.config.FeatureFlags
-import ch.deletescape.lawnchair.preferences.PreferenceFlags
 import java.util.*
 
 class BlurWallpaperProvider(context: Context) {
@@ -277,7 +276,7 @@ class BlurWallpaperProvider(context: Context) {
 
             val drawable = BlurWallpaperProvider.instance.createDrawable()
             drawable.setOverlayColor(color)
-            activity.findViewById<View>(android.R.id.content).setBackground(drawable)
+            activity.findViewById<View>(android.R.id.content).background = drawable
         }
 
         private var isEnabled: Boolean = false

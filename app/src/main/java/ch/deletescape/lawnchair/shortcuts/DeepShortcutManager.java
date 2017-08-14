@@ -13,7 +13,6 @@ import ch.deletescape.lawnchair.EditableItemInfo;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.LauncherSettings;
 import ch.deletescape.lawnchair.Utilities;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.shortcuts.backport.DeepShortcutManagerBackport;
 
 public abstract class DeepShortcutManager {

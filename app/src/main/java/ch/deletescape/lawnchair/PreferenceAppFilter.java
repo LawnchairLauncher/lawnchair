@@ -2,10 +2,8 @@ package ch.deletescape.lawnchair;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
-import ch.deletescape.lawnchair.preferences.PreferenceFlags;
 
 public class PreferenceAppFilter implements AppFilter {
 

@@ -32,7 +32,6 @@ import android.widget.RemoteViews;
 
 import java.util.ArrayList;
 
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragLayer.TouchCompleteListener;
 
 /**

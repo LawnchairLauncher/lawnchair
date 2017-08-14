@@ -22,10 +22,6 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         super(context, attributeSet, i);
     }
 
-    public WidgetsRecyclerView(Context context, AttributeSet attributeSet, int i, int i2) {
-        this(context, attributeSet, i);
-    }
-
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();

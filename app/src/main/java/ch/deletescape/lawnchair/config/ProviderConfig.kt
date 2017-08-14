@@ -24,6 +24,6 @@ object ProviderConfig {
     var AUTHORITY = BuildConfig.APPLICATION_ID + ".settings"
 
     fun init(packageName: String) {
-        AUTHORITY = packageName + ".settings";
+        AUTHORITY = packageName + ".settings"
     }
 }

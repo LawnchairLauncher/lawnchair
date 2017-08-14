@@ -128,12 +128,10 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     private boolean updateBadgeIcon(BadgeInfo badgeInfo) {
         NotificationInfo notificationInfo = null;
         boolean hasNotificationToShow = badgeInfo.hasNotificationToShow();
-        NotificationListener instanceIfConnected = NotificationListener.getInstanceIfConnected();
-        if (instanceIfConnected == null || badgeInfo.getNotificationKeys().size() < 1) {
-            notificationInfo = null;
-        } else {
+        NotificationListener listener = NotificationListener.getInstanceIfConnected();
+        if (listener != null && badgeInfo.getNotificationKeys().size() >= 1) {
             for (Object o : badgeInfo.getNotificationKeys()) {
-                StatusBarNotification[] activeNotifications = instanceIfConnected.getActiveNotifications(new String[]{((NotificationKeyData) o).notificationKey});
+                StatusBarNotification[] activeNotifications = listener.getActiveNotifications(new String[]{((NotificationKeyData) o).notificationKey});
                 if (activeNotifications.length == 1) {
                     notificationInfo = new NotificationInfo(mLauncher, activeNotifications[0]);
                     if (notificationInfo.shouldShowIconInBadge()) {
@@ -141,7 +139,6 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
                     }
                 }
             }
-            //notificationInfo = null;
         }
         badgeInfo.setNotificationToShow(notificationInfo);
         return hasNotificationToShow || badgeInfo.hasNotificationToShow();

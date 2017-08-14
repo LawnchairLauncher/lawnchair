@@ -21,6 +21,7 @@ import android.content.Context
 import android.view.ContextThemeWrapper
 import ch.deletescape.lawnchair.R
 import ch.deletescape.lawnchair.Utilities
+import ch.deletescape.lawnchair.preferences.PreferenceProvider
 
 /**
  * Defines a set of flags used to control various launcher behaviors

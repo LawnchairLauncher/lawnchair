@@ -30,7 +30,6 @@ import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 
 /**
  * A container for RecyclerView to allow for the click shadow view to be shown behind an icon that

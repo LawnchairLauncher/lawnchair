@@ -20,13 +20,11 @@ import android.animation.ObjectAnimator;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
 import ch.deletescape.lawnchair.allapps.theme.IAllAppsThemer;
-import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 
 /**
  * The fast scroller popup that shows the section name the list will jump to.

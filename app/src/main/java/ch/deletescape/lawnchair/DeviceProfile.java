@@ -200,7 +200,7 @@ public class DeviceProfile {
         }
 
         // Calculate the remaining vars
-        updateAvailableDimensions(dm, res, context);
+        updateAvailableDimensions(dm, res);
         computeAllAppsButtonSize(context);
         mBadgeRenderer = new BadgeRenderer(context, iconSizePx);
     }
@@ -208,7 +208,7 @@ public class DeviceProfile {
     public void refresh() {
         Resources res = mContext.getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
-        updateAvailableDimensions(dm, res, mContext);
+        updateAvailableDimensions(dm, res);
         computeAllAppsButtonSize(mContext);
         mBadgeRenderer = new BadgeRenderer(mContext, iconSizePx);
     }
@@ -236,7 +236,7 @@ public class DeviceProfile {
                 .getDimensionPixelSize(R.dimen.all_apps_button_scale_down);
     }
 
-    private void updateAvailableDimensions(DisplayMetrics dm, Resources res, Context context) {
+    private void updateAvailableDimensions(DisplayMetrics dm, Resources res) {
         // Check to see if the icons fit in the new available height.  If not, then we need to
         // shrink the icon size.
         float workspaceScale = 1f;
@@ -519,7 +519,6 @@ public class DeviceProfile {
     public void layout(Launcher launcher, boolean notifyListeners) {
         FrameLayout.LayoutParams lp;
         boolean hasVerticalBarLayout = isVerticalBarLayout();
-        final boolean isLayoutRtl = Utilities.isRtl(launcher.getResources());
 
         // Layout the search bar space
         Point searchBarBounds = getSearchBarDimensForWidgetOpts();

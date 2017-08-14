@@ -7,7 +7,6 @@ import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
@@ -29,7 +28,6 @@ import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.allapps.theme.IAllAppsThemer;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
-import ch.deletescape.lawnchair.config.ThemeProvider;
 import ch.deletescape.lawnchair.util.TouchController;
 
 /**

@@ -8,7 +8,6 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.Gravity;
@@ -131,8 +130,8 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
                 .getDimensionPixelSize(R.dimen.resize_frame_background_padding);
         mTouchTargetWidth = 2 * mBackgroundPadding;
 
-mMinHSpan=1;  
-mMinVSpan=1;   
+        mMinHSpan = 1;
+        mMinVSpan = 1;
 
         // When we create the resize frame, we first mark all cells as unoccupied. The appropriate
         // cells (same if not resized, or different) will be marked as occupied when the resize
@@ -457,7 +456,7 @@ mMinVSpan=1;
                 }
             });
             AnimatorSet set = LauncherAnimUtils.createAnimatorSet();
-          set.playTogether(oa, leftOa, rightOa, topOa, bottomOa);
+            set.playTogether(oa, leftOa, rightOa, topOa, bottomOa);
 
             set.setDuration(SNAP_DURATION);
             set.start();

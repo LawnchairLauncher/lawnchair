@@ -33,7 +33,6 @@ import android.widget.FrameLayout;
 
 import ch.deletescape.lawnchair.blur.BlurDrawable;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 
 public class Hotseat extends FrameLayout {

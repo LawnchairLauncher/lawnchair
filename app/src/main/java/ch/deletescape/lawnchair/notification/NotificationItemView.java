@@ -3,7 +3,6 @@ package ch.deletescape.lawnchair.notification;
 import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;

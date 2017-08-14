@@ -7,14 +7,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import ch.deletescape.lawnchair.AbstractFloatingView;
-import ch.deletescape.lawnchair.DeleteDropTarget;
 import ch.deletescape.lawnchair.EditAppDialog;
 import ch.deletescape.lawnchair.EditableItemInfo;
 import ch.deletescape.lawnchair.InfoDropTarget;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
-import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.util.PackageUserKey;
 import ch.deletescape.lawnchair.util.Themes;

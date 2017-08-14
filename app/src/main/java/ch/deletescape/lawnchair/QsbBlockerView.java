@@ -13,7 +13,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.weather.WeatherHelper;
 
 public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener, View.OnLongClickListener, WeatherHelper.OnWeatherLoadListener {

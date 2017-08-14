@@ -18,7 +18,6 @@ package ch.deletescape.lawnchair;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
@@ -99,14 +98,14 @@ public class InvariantDeviceProfile {
     public InvariantDeviceProfile() {
     }
 
-    public InvariantDeviceProfile(Context context, InvariantDeviceProfile p) {
-        this(context, p.name, p.minWidthDps, p.minHeightDps, p.numRows, p.numColumns, p.numColumnsDrawer,
+    public InvariantDeviceProfile(InvariantDeviceProfile p) {
+        this(p.name, p.minWidthDps, p.minHeightDps, p.numRows, p.numColumns, p.numColumnsDrawer,
                 p.numFolderRows, p.numFolderColumns,
                 p.iconSize, p.iconTextSize, p.numHotseatIcons, p.hotseatIconSize,
                 p.defaultLayoutId);
     }
 
-    InvariantDeviceProfile(Context context, String n, float w, float h, int r, int c, int cd, int fr, int fc,
+    InvariantDeviceProfile(String n, float w, float h, int r, int c, int cd, int fr, int fc,
                            float is, float its, int hs, float his, int dlId) {
         name = n;
         minWidthDps = w;
@@ -267,7 +266,7 @@ public class InvariantDeviceProfile {
                     int numRows = a.getInt(R.styleable.InvariantDeviceProfile_numRows, 0);
                     int numColumns = a.getInt(R.styleable.InvariantDeviceProfile_numColumns, 0);
                     float iconSize = a.getFloat(R.styleable.InvariantDeviceProfile_iconSize, 0);
-                    profiles.add(new InvariantDeviceProfile(context,
+                    profiles.add(new InvariantDeviceProfile(
                             a.getString(R.styleable.InvariantDeviceProfile_name),
                             a.getFloat(R.styleable.InvariantDeviceProfile_minWidthDps, 0),
                             a.getFloat(R.styleable.InvariantDeviceProfile_minHeightDps, 0),
@@ -351,7 +350,7 @@ public class InvariantDeviceProfile {
 
         InvariantDeviceProfile out = new InvariantDeviceProfile();
         for (int i = 0; i < points.size() && i < KNEARESTNEIGHBOR; ++i) {
-            p = new InvariantDeviceProfile(context, points.get(i));
+            p = new InvariantDeviceProfile(points.get(i));
             float w = weight(width, height, p.minWidthDps, p.minHeightDps, WEIGHT_POWER);
             weights += w;
             out.add(p.multiply(w));

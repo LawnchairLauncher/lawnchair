@@ -24,7 +24,6 @@ import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.text.InputType;

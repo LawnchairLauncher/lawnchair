@@ -22,8 +22,8 @@ import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
-import ch.deletescape.lawnchair.config.PreferenceProvider;
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
+import ch.deletescape.lawnchair.preferences.PreferenceProvider;
 import ch.deletescape.lawnchair.util.PackageManagerHelper;
 
 public abstract class BaseQsbView extends FrameLayout implements OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
