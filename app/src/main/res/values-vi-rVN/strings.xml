@@ -348,4 +348,6 @@
   <string name="enable_editing_pref_title">Enable editing homescreen</string>
   <string name="pref_weather_provider">Weather provider</string>
   <string name="loading">Loading...</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
 </resources>
