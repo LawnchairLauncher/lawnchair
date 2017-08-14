@@ -410,11 +410,13 @@
   <string name="pref_cat_drawer">抽屉</string>
   <string name="shortcut_backport_warning">该功能可能引起桌面性能下降，请自行承担后果。😶</string>
   <string name="pref_backport_shortcuts">导入快捷方式</string>
-  <string name="weather_api_key_set">API 密钥设置</string>
   <string name="weather_api_key_not_set">API 密钥未设置</string>
   <string name="pref_weather_api_key_title">API 密钥</string>
   <string name="about_changelog">更新日志​​​​​</string>
   <string name="pref_all_apps_custom_label_color">使用自定义标签颜色</string>
   <string name="pref_all_apps_label_color_variation">应用抽屉里的图标标签的颜色变化</string>
   <string name="pref_all_apps_label_color">抽屉里的图标标签的颜色</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">M月dd日EEEE</string>
 </resources>
