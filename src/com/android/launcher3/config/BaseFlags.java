@@ -57,8 +57,6 @@ abstract class BaseFlags {
     public static final boolean PULLDOWN_SEARCH = false;
     // When enabled the status bar may show dark icons based on the top of the wallpaper.
     public static final boolean LIGHT_STATUS_BAR = false;
-    // When enabled icons are badged with the number of notifications associated with that app.
-    public static final boolean BADGE_ICONS = true;
     // When enabled, icons not supporting {@link AdaptiveIconDrawable} will be wrapped in {@link FixedScaleDrawable}.
     public static final boolean LEGACY_ICON_TREATMENT = true;
     // When enabled, adaptive icons would have shadows baked when being stored to icon cache.
