@@ -404,11 +404,12 @@
   <string name="num_cols_drawer_pref_title">ドロワーの列数</string>
   <string name="pref_cat_drawer">ドロワー</string>
   <string name="shortcut_backport_warning">動作が遅くなる可能性があります。自己責任で使用してください。</string>
-  <string name="weather_api_key_set">API キーが設定されました</string>
   <string name="weather_api_key_not_set">API キーが設定されていません</string>
   <string name="pref_weather_api_key_title">API キー</string>
   <string name="about_changelog">変更履歴</string>
   <string name="pref_all_apps_custom_label_color">選択したラベルの色を使用する</string>
   <string name="pref_all_apps_label_color_variation">アプリドロワーのアイコンラベルの色の変化</string>
   <string name="pref_all_apps_label_color">ドロワーのアイコンラベルの色</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
 </resources>
