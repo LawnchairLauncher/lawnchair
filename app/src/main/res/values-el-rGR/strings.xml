@@ -411,4 +411,11 @@
   <string name="pref_cat_drawer">Συρτάρι εφαρμογών</string>
   <string name="shortcut_backport_warning">Αυτό μπορεί να είναι αργό, να χρησιμοποιηθεί με δική σας ευθύνη</string>
   <string name="pref_backport_shortcuts">Ενεργοποίηση συντομεύσεων εφαρμογών</string>
+  <string name="weather_api_key_set">Το κλειδί API καταχωρήθηκε</string>
+  <string name="weather_api_key_not_set">Δεν έχει οριστεί κλειδί API</string>
+  <string name="pref_weather_api_key_title">Κλειδί API</string>
+  <string name="about_changelog">Αρχείο καταγραφής αλλαγών</string>
+  <string name="pref_all_apps_custom_label_color">Χρήση προσαρμοσμένου χρώματος ετικέτας εικονιδίων</string>
+  <string name="pref_all_apps_label_color_variation">Παραλλαγή χρώματος των ετικετών εικονιδίων στο συρτάρι εφαρμογών</string>
+  <string name="pref_all_apps_label_color">Χρώμα των ετικετών εικονιδίων στο συρτάρι εφαρμογών</string>
 </resources>
