@@ -259,6 +259,7 @@
   <string name="blur_radius_pref_title">模糊範圍</string>
   <string name="white_google_icon_pref_title">使用白色的 Google 圖示</string>
   <string name="hide_icon_labels_pref_title">在主畫面上隱藏圖示標籤</string>
+  <string name="hide_all_apps_icon_labels_pref_title">在應用程式清單裡隱藏圖示</string>
   <string name="workspace_label_color_hue_pref_title">主螢幕上的圖示標籤顏色</string>
   <string name="workspace_label_color_variation_pref_title">主螢幕上的圖示標籤顏色變化</string>
   <string name="all_apps_opacity_pref_title">抽屜透明度</string>
@@ -410,11 +411,16 @@
   <string name="pref_cat_drawer">應用程式抽屜</string>
   <string name="shortcut_backport_warning">該功能有可能會導致桌面性能下降，後果請自行承擔</string>
   <string name="pref_backport_shortcuts">向前移植的應用程式快捷操作</string>
-  <string name="weather_api_key_set">API Key 設定</string>
   <string name="weather_api_key_not_set">API Key 尚未設定</string>
   <string name="pref_weather_api_key_title">API Key</string>
   <string name="about_changelog">更新日誌</string>
   <string name="pref_all_apps_custom_label_color">使用自訂標籤顏色</string>
   <string name="pref_all_apps_label_color_variation">應用程式抽屜圖示標籤的顏色變化</string>
   <string name="pref_all_apps_label_color">應用程式抽屜圖示的標籤顏色</string>
+  <string name="pref_num_rows_drawer">應用程式清單的行數</string>
+  <string name="center_wallpaper_pref_title">當僅有一頁時，置中桌布</string>
+  <string name="vertical_drawer_layout_pref_title">顯示為縱向清單</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">M月dd日EEEE</string>
 </resources>
