@@ -411,11 +411,12 @@
   <string name="pref_cat_drawer">ड्रोवर</string>
   <string name="shortcut_backport_warning">यह धीमी गति से किया जा सकता है, अपने स्वयं के जोखिम पर उपयोग करें</string>
   <string name="pref_backport_shortcuts">बैकपोर्टेड शॉर्टकट</string>
-  <string name="weather_api_key_set">API कुंजी सेट</string>
   <string name="weather_api_key_not_set">API कुंजी सेट नहीं है</string>
   <string name="pref_weather_api_key_title">एपीआई कुंजी</string>
   <string name="about_changelog">परिवर्तन लॉग</string>
   <string name="pref_all_apps_custom_label_color">कस्टम लेबल रंग का उपयोग करें</string>
   <string name="pref_all_apps_label_color_variation">ऐप ड्रॉवर में आइकन लेबल्स का रंग भिन्नता</string>
   <string name="pref_all_apps_label_color">दराज में आइकन लेबल का रंग</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
 </resources>
