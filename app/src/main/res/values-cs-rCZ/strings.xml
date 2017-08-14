@@ -414,8 +414,9 @@
   <string name="pref_cat_drawer">Seznam aplikací</string>
   <string name="shortcut_backport_warning">To by mohlo být pomalé, použijte na vlastní riziko</string>
   <string name="pref_backport_shortcuts">Zkratky zpětné kompatibility</string>
-  <string name="weather_api_key_set">API klíč nastaven</string>
   <string name="weather_api_key_not_set">API klíč není nastaven</string>
   <string name="pref_weather_api_key_title">API klíč</string>
   <string name="about_changelog">Seznam změn</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
 </resources>
