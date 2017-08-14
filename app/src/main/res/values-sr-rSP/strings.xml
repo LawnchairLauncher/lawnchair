@@ -138,57 +138,111 @@
   <string name="abandoned_promises_title">Ова апликација није инсталирана</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
+  <string name="abandoned_promise_explanation">Апликација за ову икону није инсталирана. Можете да је уклоните или да потражите апликацију и инсталирате је ручно.    </string>
   <!-- Title for an app which is being downloaded. -->
+  <string name="app_downloading_title"><xliff:g id="Name">%1$s</xliff:g> се преузима, завршено је <xliff:g id="Progress">%2$s</xliff:g></string>
   <!-- Title for an app whose download has been started. -->
+  <string name="app_waiting_download_title"><xliff:g id="Name">%1$s</xliff:g> чека на инсталирање</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
+  <string name="action_add_to_workspace">Додај на почетни екран</string>
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
+  <string name="action_move_here">Премести ставку овде</string>
   <!-- Accessibility confirmation for item added to workspace. -->
+  <string name="item_added_to_workspace">Ставка је додата на почетни екран</string>
   <!-- Accessibility confirmation for item removed. -->
+  <string name="item_removed">Ставка је уклоњена</string>
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
+  <string name="action_move">Премести ставку</string>
   <!-- Accessibility description to move item to empty cell. -->
+  <string name="move_to_empty_cell">Премести у ред <xliff:g id="Number_0">%1$s</xliff:g> и колону <xliff:g id="Number_1">%2$s</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
+  <string name="move_to_position">Премести на <xliff:g id="Number">%1$s</xliff:g>. позицију</string>
   <!-- Accessibility description to move item to the hotseat. -->
+  <string name="move_to_hotseat_position">Премести на <xliff:g id="Number">%1$s</xliff:g>. позицију у омиљеним</string>
   <!-- Accessibility confirmation for item move. -->
+  <string name="item_moved">Ставка је премештена</string>
   <!-- Accessibility description to move item into an existing folder. -->
+  <string name="add_to_folder">Додај у директоријум: <xliff:g id="Name">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
+  <string name="add_to_folder_with_app">Додај у директоријум у коме је <xliff:g id="Name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for item added to folder. -->
+  <string name="added_to_folder">Ставка је додата у директоријум</string>
   <!-- Accessibility description to create folder with another item. -->
+  <string name="create_folder_with">Направите директоријум са: <xliff:g id="Name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
+  <string name="folder_created">Директоријум је направљен</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
+  <string name="action_move_to_workspace">Премести на почетни екран</string>
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
+  <string name="action_move_screen_left">Помери екран улево</string>
   <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
+  <string name="action_move_screen_right">Помери екран удесно</string>
   <!-- Accessibility confirmation when a screen was moved. -->
+  <string name="screen_moved">Екран је померен</string>
   <!-- Accessibility action to resize a widget. [CHAR_LIMIT=30] -->
+  <string name="action_resize">Промени величину</string>
   <!-- Accessibility action to increase width of a widget. [CHAR_LIMIT=30] -->
+  <string name="action_increase_width">Повећај ширину</string>
   <!-- Accessibility action to increase height of a widget. [CHAR_LIMIT=30] -->
+  <string name="action_increase_height">Повећај висину</string>
   <!-- Accessibility action to decrease width of a widget. [CHAR_LIMIT=30] -->
+  <string name="action_decrease_width">Смањи ширину</string>
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
+  <string name="action_decrease_height">Смањи висину</string>
   <!-- Accessibility confirmation for widget resize. -->
+  <string name="widget_resized">Величина виџета је промењена на ширину <xliff:g id="Number_0">%1$s</xliff:g> и висину <xliff:g id="Number_1">%2$s</xliff:g></string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
+  <string name="action_deep_shortcut">Пречице</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
+  <string name="shortcuts_menu_description"><xliff:g id="Number_OF_SHORTCUTS">%1$d</xliff:g> пречице за <xliff:g id="App_NAME">%2$s</xliff:g></string>
+  <string name="edit_drop_target_label">Уреди</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
+  <string name="wallpaper_instructions">Подеси позадину</string>
   <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper picker cannot load it -->
+  <string name="image_load_fail">Није могуће учитати слику</string>
   <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper cropper cannot load it. The user will
          usually see this when using another app and trying to set
          an image as the wallpaper -->
+  <string name="wallpaper_load_fail">Није могуће учитати слику као позадину</string>
   <!-- Error message when an image is selected as a wallpaper,
          but something goes wrong when the user clicks "Set wallpaper" -->
+  <string name="wallpaper_set_fail">Учитавање слике као позадине није успело</string>
   <!-- Shown when wallpapers are selected in Wallpaper picker -->
   <!-- String indicating how many media item(s) is(are) selected
             eg. 1 selected [CHAR LIMIT=30] -->
+  <plurals name="number_of_items_selected">
+    <item quantity="one">%1$d изабрано</item>
+    <item quantity="few">%1$d изабрано</item>
+    <item quantity="other">%1$d изабрано</item>
+  </plurals>
   <!-- Accessibility string used as a label for a particular wallpaper in the Wallpaper Picker list.
          e.g. "Wallpaper 3 of 10" -->
+  <string name="wallpaper_accessibility_name">Позадина %1$d од %2$d</string>
   <!-- Accessibility string used to announce that a wallpaper has been selected. -->
+  <string name="announce_selection">Изабрана је <xliff:g id="Label">%1$s</xliff:g></string>
   <!-- Label on button to delete wallpaper(s) -->
+  <string name="wallpaper_delete">Обриши</string>
   <!-- Label on button in Wallpaper Picker to pick an image -->
+  <string name="pick_image">Моје фотографије</string>
   <!-- Option in "Select wallpaper from" dialog box -->
+  <string name="pick_wallpaper">Позадине</string>
   <!-- Title of activity for cropping wallpapers -->
+  <string name="crop_wallpaper">Опсеци позадину</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
+  <string name="which_wallpaper_option_home_screen">Почетни екран</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
+  <string name="which_wallpaper_option_lock_screen">Закључан екран</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">Почетни екран и Закључан екран</string>
+  <string name="title_show_google_app">Прикажи %1$s</string>
+  <string name="title_show_google_app_default">Прикажи Google апликацију</string>
+  <string name="label_search">Тражи</string>
+  <string name="label_voice_search">Гласовна претрага</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d пречице и обавештења о %2$d за %3$s</string>
+  <string name="notifications_header">Обавештења</string>
   <string name="widgets_bottom_sheet_title">%1$s виџети</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair је апликација за покретање коју је креирао Till Kottmann (aka deletescape). Заснован је на Launcher3 из AOSP-а.</string>
@@ -285,8 +339,10 @@
   <string name="pref_applyBlur">Примени замућење на</string>
   <string name="search_bar">Трака за претрагу</string>
   <string name="folder">Фасцикла</string>
+  <string name="dock_allapps"><![CDATA[Док и Drawer]]></string>
   <string name="app_shortcuts">Пречица апликације</string>
   <string name="blur_effect">Ефекат замућења</string>
+  <string name="enable_editing_pref_title">Омогући уређивање почетног екрана</string>
   <string name="pref_weather_provider">Пружалац услуга временских прилика</string>
   <string name="loading">Учитава...</string>
   <string name="icon_shape_override_label">Промени облик иконе</string>
@@ -306,4 +362,11 @@
   <string name="pref_cat_drawer">Drawer - Фиока</string>
   <string name="shortcut_backport_warning">Ово би могло бити споро, користити на сопствени ризик</string>
   <string name="pref_backport_shortcuts">Backport пречица</string>
+  <string name="weather_api_key_set">API кључеви</string>
+  <string name="weather_api_key_not_set">API кључеви нису подешени</string>
+  <string name="pref_weather_api_key_title">API кључ</string>
+  <string name="about_changelog">Историја измена</string>
+  <string name="pref_all_apps_custom_label_color">Боја по избору</string>
+  <string name="pref_all_apps_label_color_variation">Варијација боје назива икона на drawer-у</string>
+  <string name="pref_all_apps_label_color">Боја ознаке икона у drawer-у</string>
 </resources>
