@@ -63,4 +63,16 @@
     <color name="notification_color_beneath">#ffe0e0e0</color>
     <color name="badge_color">#fff</color>
     <color name="blue_grey_100">#ffcfd8dc</color>
+    <color name="search_bar_text_color">#4c4c4c</color>
+    <color name="date_widget_text_color">#ffffffff</color>
+    <color name="date_widget_day_ambient_shadow">#66000000</color>
+    <color name="date_widget_day_key_shadow">#33000000</color>
+    <color name="date_widget_date_ambient_shadow">#44000000</color>
+    <color name="date_widget_date_key_shadow">#22000000</color>
+    <color name="drop_target_text_color">#fff</color>
+    <color name="overview_button_text_color">#fff</color>
+    <color name="plane_color">#fff</color>
+    <color name="folder_name_highlight_color">#ffCCCCCC</color>
+    <color name="folder_name_hint_color">#ff808080</color>
+    <color name="wallpaper_picker_item_label_text_color">#fff</color>
 </resources>

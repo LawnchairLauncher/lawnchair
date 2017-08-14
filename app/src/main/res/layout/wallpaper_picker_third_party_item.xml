@@ -35,5 +35,5 @@
         android:gravity="center"
         android:layout_gravity="center"
         android:drawablePadding="4dp"
-        android:textColor="@android:color/white" />
+        android:textColor="@color/wallpaper_picker_item_label_text_color" />
 </ch.deletescape.wallpaperpicker.CheckableFrameLayout>
