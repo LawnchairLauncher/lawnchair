@@ -411,11 +411,12 @@
   <string name="pref_cat_drawer">Lade</string>
   <string name="shortcut_backport_warning">Dit kan traag zijn, gebruiken op eigen risico</string>
   <string name="pref_backport_shortcuts">Backport snelkoppelingen</string>
-  <string name="weather_api_key_set">API sleutel ingesteld</string>
   <string name="weather_api_key_not_set">API sleutel niet ingesteld</string>
   <string name="pref_weather_api_key_title">API sleutel</string>
   <string name="about_changelog">Changelog</string>
   <string name="pref_all_apps_custom_label_color">Gebruik aangepaste labelkleur</string>
   <string name="pref_all_apps_label_color_variation">Kleurvariatie van icoon labels in applicatiescherm</string>
   <string name="pref_all_apps_label_color">Kleur van icoon labels in applicatiescherm</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
 </resources>
