@@ -260,6 +260,7 @@
   <string name="blur_radius_pref_title">Bulanıklık yarıçapı</string>
   <string name="white_google_icon_pref_title">Beyaz Google simgesi kullanın</string>
   <string name="hide_icon_labels_pref_title">Ana ekrandaki simge etiketlerini gizle</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Çekmecedeki simge etiketlerini gizle</string>
   <string name="workspace_label_color_hue_pref_title">Ana ekranda simge etiketlerinin rengi</string>
   <string name="workspace_label_color_variation_pref_title">Ana ekranda simge etiketlerinin renk çeşitliliği</string>
   <string name="all_apps_opacity_pref_title">Uygulama çekmecesi şeffaflığı</string>
@@ -411,11 +412,15 @@
   <string name="pref_cat_drawer">Çekmece</string>
   <string name="shortcut_backport_warning">Bu yavaş olabilir, kendi sorumluluğunuzda kullanın</string>
   <string name="pref_backport_shortcuts">Kısayolları geri yükle</string>
-  <string name="weather_api_key_set">API anahtarını ayarla</string>
   <string name="weather_api_key_not_set">API anahtarı ayarlanmadı</string>
   <string name="pref_weather_api_key_title">API anahtarı</string>
   <string name="about_changelog">Değişiklik</string>
   <string name="pref_all_apps_custom_label_color">Özel etiket rengi kullan</string>
   <string name="pref_all_apps_label_color_variation">Uygulama çekmecesinde ki simge etiketlerinin renk çeşitliliği</string>
   <string name="pref_all_apps_label_color">Uygulama çekmecesi içindeki simge etiketlerinin rengi</string>
+  <string name="pref_num_rows_drawer">Çekmecedeki satır sayısı</string>
+  <string name="center_wallpaper_pref_title">Yalnızca bir sayfa olduğunda duvar kağıdını ortala</string>
+  <string name="vertical_drawer_layout_pref_title">Dikey liste olarak görüntüle</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
 </resources>
