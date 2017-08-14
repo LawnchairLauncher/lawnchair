@@ -41,7 +41,7 @@ class ProxiedLauncherClient(private val launcher: Launcher) : ILauncherClient {
 
     private fun connectProxy() {
         sProxyConnection = ProxyServiceConnection(PROXY_PACKAGE)
-        connectSafely(launcher, sProxyConnection!!)
+        connectSafely(launcher.applicationContext, sProxyConnection!!)
     }
 
     private fun connectSafely(context: Context, conn: ServiceConnection, flags: Int = 0): Boolean {
