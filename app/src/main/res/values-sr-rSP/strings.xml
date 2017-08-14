@@ -362,11 +362,12 @@
   <string name="pref_cat_drawer">Drawer - Фиока</string>
   <string name="shortcut_backport_warning">Ово би могло бити споро, користити на сопствени ризик</string>
   <string name="pref_backport_shortcuts">Backport пречица</string>
-  <string name="weather_api_key_set">API кључеви</string>
   <string name="weather_api_key_not_set">API кључеви нису подешени</string>
   <string name="pref_weather_api_key_title">API кључ</string>
   <string name="about_changelog">Историја измена</string>
   <string name="pref_all_apps_custom_label_color">Боја по избору</string>
   <string name="pref_all_apps_label_color_variation">Варијација боје назива икона на drawer-у</string>
   <string name="pref_all_apps_label_color">Боја ознаке икона у drawer-у</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
 </resources>
