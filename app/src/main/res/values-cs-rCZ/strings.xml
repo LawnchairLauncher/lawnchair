@@ -394,7 +394,7 @@
   <string name="dock_allapps"><![CDATA[Dok & všechny aplikace]]></string>
   <string name="app_shortcuts">Zástupce aplikací</string>
   <string name="blur_effect">Efekt rozostření</string>
-  <string name="enable_editing_pref_title">Povolit úpravu pracovního prostoru</string>
+  <string name="enable_editing_pref_title">Povolit úpravu domovské obrazovky</string>
   <string name="pref_weather_provider">Poskytovatel počasí</string>
   <string name="loading">Načítání...</string>
   <string name="icon_shape_override_label">Změna tvaru ikony</string>
@@ -414,4 +414,8 @@
   <string name="pref_cat_drawer">Seznam aplikací</string>
   <string name="shortcut_backport_warning">To by mohlo být pomalé, použijte na vlastní riziko</string>
   <string name="pref_backport_shortcuts">Zkratky zpětné kompatibility</string>
+  <string name="weather_api_key_set">API klíč nastaven</string>
+  <string name="weather_api_key_not_set">API klíč není nastaven</string>
+  <string name="pref_weather_api_key_title">API klíč</string>
+  <string name="about_changelog">Seznam změn</string>
 </resources>
