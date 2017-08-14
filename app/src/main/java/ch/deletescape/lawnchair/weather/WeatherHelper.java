@@ -55,7 +55,7 @@ public class WeatherHelper implements SharedPreferences.OnSharedPreferenceChange
     }
 
     @Override
-    public void onWeatherData(@NonNull @NotNull WeatherAPI.WeatherData data) {
+    public void onWeatherData(@NonNull WeatherAPI.WeatherData data) {
         mWeatherData = data;
         updateTextView();
         updateIconView();
@@ -100,7 +100,7 @@ public class WeatherHelper implements SharedPreferences.OnSharedPreferenceChange
     }
 
     @Override
-    public void onSharedPreferenceChanged(@NotNull SharedPreferences sharedPrefs, @NotNull String key) {
+    public void onSharedPreferenceChanged(@NonNull SharedPreferences sharedPrefs, @NonNull String key) {
         switch (key) {
             case PreferenceFlags.KEY_WEATHER_UNITS:
                 setUnits(sharedPrefs.getString(PreferenceFlags.KEY_WEATHER_UNITS, PreferenceFlags.PREF_WEATHER_UNIT_METRIC));
