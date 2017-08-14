@@ -21,8 +21,11 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.ImageView;
 
+import ch.deletescape.lawnchair.BubbleTextView;
 import ch.deletescape.lawnchair.HolographicOutlineHelper;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.Utilities;
@@ -58,7 +61,7 @@ public class ShortcutDragPreviewProvider extends DragPreviewProvider {
     }
 
     private Bitmap drawScaledPreview(Canvas canvas, Bitmap.Config config) {
-        Drawable d = mView.getBackground();
+        Drawable d = getDrawable();
         Rect bounds = getDrawableBounds(d);
 
         int size = Launcher.getLauncher(mView.getContext()).getDeviceProfile().iconSizePx;
@@ -78,10 +81,18 @@ public class ShortcutDragPreviewProvider extends DragPreviewProvider {
         return b;
     }
 
+    @Nullable
+    private Drawable getDrawable() {
+        Drawable d = mView.getBackground();
+        if (d == null && mView instanceof BubbleTextView)
+            d = ((BubbleTextView) mView).getIcon();
+        return d;
+    }
+
     @Override
     public float getScaleAndPosition(Bitmap preview, int[] outPos) {
         Launcher launcher = Launcher.getLauncher(mView.getContext());
-        int iconSize = getDrawableBounds(mView.getBackground()).width();
+        int iconSize = getDrawableBounds(getDrawable()).width();
         float scale = launcher.getDragLayer().getLocationInDragLayer(mView, outPos);
 
         int iconLeft = mView.getPaddingStart();

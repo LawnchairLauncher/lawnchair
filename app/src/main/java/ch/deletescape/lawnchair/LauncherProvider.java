@@ -66,7 +66,7 @@ import ch.deletescape.lawnchair.util.Thunk;
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "LauncherProvider";
 
-    private static final int DATABASE_VERSION = 27;
+    private static final int DATABASE_VERSION = 29;
 
     private static final String RESTRICTION_PACKAGE_NAME = "workspace.configuration.package.name";
 
@@ -642,10 +642,11 @@ public class LauncherProvider extends ContentProvider {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             switch (oldVersion) {
-                case 27: {
-                    // DB Upgraded successfully
-                    return;
-                }
+                case 27:
+                    db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.TITLE_ALIAS + " TEXT;");
+                case 28:
+                    db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.CUSTOM_ICON + " BLOB;");
+                case 29: return;
             }
 
             // DB was not upgraded

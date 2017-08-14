@@ -795,6 +795,10 @@ public final class Utilities {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
     }
 
+    public static void stackTrace() {
+        (new Throwable()).printStackTrace();
+    }
+
     /**
      * An extension of {@link BitmapDrawable} which returns the bitmap pixel size as intrinsic size.
      * This allows the badging to be done based on the action bitmap size rather than

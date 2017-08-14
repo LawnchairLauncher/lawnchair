@@ -20,7 +20,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Parcel;
 import android.os.UserHandle;
+import android.support.annotation.NonNull;
+
+import org.jetbrains.annotations.NotNull;
 
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
@@ -30,7 +34,19 @@ import ch.deletescape.lawnchair.util.PackageManagerHelper;
 /**
  * Represents an app in AllAppsView.
  */
-public class AppInfo extends ItemInfoWithIcon {
+public class AppInfo extends ItemInfoWithIcon implements EditableItemInfo {
+
+    public static final Creator<AppInfo> CREATOR = new Creator<AppInfo>() {
+        @Override
+        public AppInfo createFromParcel(Parcel parcel) {
+            return new AppInfo(parcel);
+        }
+
+        @Override
+        public AppInfo[] newArray(int i) {
+            return new AppInfo[i];
+        }
+    };
 
     /**
      * The intent used to start the application.
@@ -96,6 +112,18 @@ public class AppInfo extends ItemInfoWithIcon {
         this.user = user;
     }
 
+    public AppInfo(Parcel in) {
+        componentName = in.readParcelable(ComponentName.class.getClassLoader());
+        container = ItemInfo.NO_ID;
+        flags = in.readInt();
+        isDisabled = in.readInt();
+        originalTitle = in.readString();
+        title = in.readString();
+        contentDescription = in.readString();
+        iconBitmap = in.readParcelable(Bitmap.class.getClassLoader());
+        usingLowResIcon = in.readByte() != 0;
+    }
+
     public static int initFlags(LauncherActivityInfoCompat info) {
         int appFlags = info.getApplicationInfo().flags;
         int flags = 0;
@@ -145,5 +173,82 @@ public class AppInfo extends ItemInfoWithIcon {
     @Override
     public boolean isDisabled() {
         return isDisabled != 0;
+    }
+
+    @NotNull
+    @Override
+    public String getTitle() {
+        return (String) title;
+    }
+
+    @Override
+    public String getTitle(@NonNull Context context) {
+        return Utilities.getPrefs(context).itemAlias(getTargetComponent().flattenToString(), (String) originalTitle);
+    }
+
+    @Override
+    public String getIcon(@NonNull Context context) {
+        return Utilities.getPrefs(context).alternateIcon(getTargetComponent().flattenToString());
+    }
+
+    @Override
+    public void setTitle(@NonNull Context context, String title) {
+        if (title == null)
+            title = (String) originalTitle;
+        this.title = title;
+        Utilities.getPrefs(context).itemAlias(getTargetComponent().flattenToString(), title, false);
+    }
+
+    @Override
+    public void setIcon(@NonNull Context context, String icon) {
+        if (icon == null)
+            Utilities.getPrefs(context).removeAlternateIcon(getTargetComponent().flattenToString());
+        else
+            Utilities.getPrefs(context).alternateIcon(getTargetComponent().flattenToString(), icon, false);
+    }
+
+    @Override
+    public void reloadIcon(@NonNull Launcher launcher) {
+        launcher.getIconCache().getTitleAndIcon(this, null, false);
+    }
+
+    @NotNull
+    @Override
+    public Bitmap getIconBitmap(IconCache iconCache) {
+        return iconBitmap;
+    }
+
+    @NotNull
+    @Override
+    public UserHandle getUser() {
+        return user;
+    }
+
+    @NotNull
+    @Override
+    public ComponentName getComponentName() {
+        return componentName;
+    }
+
+    @Override
+    public int getType() {
+        return LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeParcelable(componentName, 0);
+        parcel.writeInt(flags);
+        parcel.writeInt(isDisabled);
+        parcel.writeString((String) originalTitle);
+        parcel.writeString((String) title);
+        parcel.writeString((String) contentDescription);
+        parcel.writeParcelable(iconBitmap, 0);
+        parcel.writeByte((byte) (usingLowResIcon ? 1 : 0));
     }
 }

@@ -9,7 +9,9 @@ import android.os.UserHandle;
 
 import java.util.List;
 
+import ch.deletescape.lawnchair.EditableItemInfo;
 import ch.deletescape.lawnchair.ItemInfo;
+import ch.deletescape.lawnchair.LauncherSettings;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.shortcuts.backport.DeepShortcutManagerBackport;
 
@@ -32,7 +34,11 @@ public abstract class DeepShortcutManager {
     }
 
     public static boolean supportsShortcuts(ItemInfo itemInfo) {
-        return itemInfo.itemType == 0 && !itemInfo.isDisabled();
+        return itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION && !itemInfo.isDisabled();
+    }
+
+    public static boolean supportsEdit(ItemInfo itemInfo) {
+        return !itemInfo.isDisabled() && itemInfo instanceof EditableItemInfo;
     }
 
     public abstract boolean wasLastCallSuccess();

@@ -8,6 +8,7 @@ import android.view.View.OnClickListener;
 
 import ch.deletescape.lawnchair.AbstractFloatingView;
 import ch.deletescape.lawnchair.EditAppDialog;
+import ch.deletescape.lawnchair.EditableItemInfo;
 import ch.deletescape.lawnchair.InfoDropTarget;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
@@ -72,10 +73,7 @@ public abstract class SystemShortcut {
                 @Override
                 public void onClick(View view) {
                     AbstractFloatingView.closeAllOpenViews(launcher);
-                    Intent i = new Intent(Intent.ACTION_MAIN).setComponent(itemInfo.getTargetComponent());
-                    LauncherActivityInfoCompat laic = LauncherActivityInfoCompat.create(launcher, itemInfo.user, i);
-                    ch.deletescape.lawnchair.AppInfo appInfo = new ch.deletescape.lawnchair.AppInfo(launcher, laic, itemInfo.user, launcher.getIconCache());
-                    launcher.openDialog(new EditAppDialog(launcher, appInfo, launcher));
+                    launcher.openDialog(new EditAppDialog(launcher, (EditableItemInfo) itemInfo, launcher));
                 }
             };
         }

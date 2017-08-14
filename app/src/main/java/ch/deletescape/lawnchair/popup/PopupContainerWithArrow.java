@@ -146,7 +146,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             return null;
         }
         ItemInfo itemInfo = (ItemInfo) bubbleTextView.getTag();
-        if (!DeepShortcutManager.supportsShortcuts(itemInfo)) {
+        if (!DeepShortcutManager.supportsEdit(itemInfo)) {
             return null;
         }
         PopupDataProvider popupDataProvider = launcher.getPopupDataProvider();

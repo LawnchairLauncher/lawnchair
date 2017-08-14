@@ -465,8 +465,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         if (!mLauncher.isDraggingEnabled()) return false;
         if (mLauncher.getDragController().isDragging()) return false;
 
-        if (v instanceof AllAppsIconRowView)
-            v = ((AllAppsIconRowView) v).icon;
+        if (v instanceof AllAppsIconRowView) {
+            ((AllAppsIconRowView) v).beginDrag(this);
+            return false;
+        }
 
         // Start the drag
         DragOptions dragOptions = new DragOptions();
