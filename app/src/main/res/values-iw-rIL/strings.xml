@@ -327,4 +327,6 @@
   <string name="pref_cat_weather">מזג אוויר</string>
   <string name="pref_weather_title">אפשר מזג אוויר</string>
   <string name="pref_weather_units">יחידות מזג אוויר</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
 </resources>
