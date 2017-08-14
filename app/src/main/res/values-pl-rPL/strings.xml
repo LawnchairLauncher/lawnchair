@@ -412,11 +412,12 @@
   <string name="pref_cat_drawer">Szuflada</string>
   <string name="shortcut_backport_warning">To może spowolnić urządzenie, używaj na własne ryzyko</string>
   <string name="pref_backport_shortcuts">Skróty</string>
-  <string name="weather_api_key_set">Zestaw kluczy API</string>
   <string name="weather_api_key_not_set">Nie ustawiony klucz API</string>
   <string name="pref_weather_api_key_title">Klucz API</string>
   <string name="about_changelog">Dziennik zmian</string>
   <string name="pref_all_apps_custom_label_color">Użyj niestandardowego koloru etykiety</string>
   <string name="pref_all_apps_label_color_variation">Odmiany koloru etykiet ikon w szufladzie aplikacji</string>
   <string name="pref_all_apps_label_color">Kolor etykiet ikon w szufladzie</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
 </resources>
