@@ -224,8 +224,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAppsRecyclerView.setLayoutManager(mLayoutManager);
         mAppsRecyclerView.setAdapter(mAdapter);
         mAppsRecyclerView.setHasFixedSize(true);
-        // Removes the animation that can occur when updating the predicted apps in place.
-        mAppsRecyclerView.getItemAnimator().setChangeDuration(0);
+        // No animations will occur when changes occur to the items in this RecyclerView.
+        mAppsRecyclerView.setItemAnimator(null);
         if (FeatureFlags.LAUNCHER3_PHYSICS) {
             mAppsRecyclerView.setSpringAnimationHandler(mSpringAnimationHandler);
         }
