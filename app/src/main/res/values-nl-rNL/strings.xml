@@ -393,7 +393,7 @@
   <string name="blur_effect">Blur effect</string>
   <string name="enable_editing_pref_title">Aanpassen van werkomgeving activeren</string>
   <string name="pref_weather_provider">Weer aanbieder</string>
-  <string name="loading">Laden...</string>
+  <string name="loading">Laden…</string>
   <string name="icon_shape_override_label">Wijzig vorm icoon</string>
   <string name="icon_shape_system_default">Niet wijzigen</string>
   <string name="icon_shape_square">Vierkant</string>
