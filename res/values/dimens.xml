@@ -54,7 +54,6 @@
     <dimen name="vert_drop_target_horizontal_gap">14dp</dimen>
 
 <!-- App Widget resize frame -->
-    <dimen name="default_widget_padding">8dp</dimen>
     <dimen name="widget_handle_margin">13dp</dimen>
     <dimen name="resize_frame_background_padding">24dp</dimen>
 

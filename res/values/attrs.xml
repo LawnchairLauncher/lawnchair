@@ -143,4 +143,19 @@
     <declare-styleable name="RecyclerViewFastScroller">
         <attr name="canThumbDetach" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="CustomAppWidgetProviderInfo">
+        <attr name="providerId" format="integer" />
+
+        <attr name="android:label" />
+        <attr name="android:initialLayout" />
+        <attr name="android:icon" />
+        <attr name="android:previewImage" />
+        <attr name="android:resizeMode" />
+
+        <attr name="numRows" />
+        <attr name="numColumns" />
+        <attr name="numMinRows" format="integer" />
+        <attr name="numMinColumns" format="integer" />
+    </declare-styleable>
 </resources>

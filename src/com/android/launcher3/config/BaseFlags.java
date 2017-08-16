@@ -61,6 +61,9 @@ abstract class BaseFlags {
     // When enabled, the qsb will be moved to the hotseat.
     public static final boolean QSB_IN_HOTSEAT = true;
 
+    // When true, custom widgets are loaded using CustomWidgetParser.
+    public static final boolean ENABLE_CUSTOM_WIDGETS = false;
+
     // Features to control Launcher3Go behavior
     public static final boolean GO_DISABLE_WIDGETS = false;
 }

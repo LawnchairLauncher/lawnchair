@@ -22,7 +22,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.UserHandle;
@@ -412,7 +411,8 @@ public class WidgetPreviewLoader {
 
             // Draw icon in the center.
             try {
-                Drawable icon = info.getIcon(launcher, mIconCache);
+                Drawable icon =
+                        mIconCache.getFullResIcon(info.provider.getPackageName(), info.icon);
                 if (icon != null) {
                     int appIconSize = launcher.getDeviceProfile().iconSizePx;
                     int iconSize = (int) Math.min(appIconSize * scale,

@@ -136,6 +136,7 @@ import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetsContainerView;
+import com.android.launcher3.widget.custom.CustomWidgetParser;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -295,15 +296,6 @@ public class Launcher extends BaseActivity
     // launcher. Since there is no callback for when the activity has finished launching, enable
     // the press state and keep this reference to reset the press state when we return to launcher.
     private BubbleTextView mWaitingForResume;
-
-    protected static final HashMap<String, CustomAppWidget> sCustomAppWidgets =
-        new HashMap<>();
-
-    static {
-        if (TestingUtils.ENABLE_CUSTOM_WIDGET_TEST) {
-            TestingUtils.addDummyWidget(sCustomAppWidgets);
-        }
-    }
 
     // Exiting spring loaded mode happens with a delay. This runnable object triggers the
     // state transition. If another state transition happened during this delay,
@@ -1408,17 +1400,13 @@ public class Launcher extends BaseActivity
             appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(appWidgetId);
         }
 
-        if (appWidgetInfo.isCustomWidget) {
-            appWidgetId = LauncherAppWidgetInfo.CUSTOM_WIDGET_ID;
-        }
-
         LauncherAppWidgetInfo launcherInfo;
         launcherInfo = new LauncherAppWidgetInfo(appWidgetId, appWidgetInfo.provider);
         launcherInfo.spanX = itemInfo.spanX;
         launcherInfo.spanY = itemInfo.spanY;
         launcherInfo.minSpanX = itemInfo.minSpanX;
         launcherInfo.minSpanY = itemInfo.minSpanY;
-        launcherInfo.user = appWidgetInfo.getUser();
+        launcherInfo.user = appWidgetInfo.getProfile();
 
         getModelWriter().addItemToDatabase(launcherInfo,
                 itemInfo.container, itemInfo.screenId, itemInfo.cellX, itemInfo.cellY);
@@ -1968,7 +1956,7 @@ public class Launcher extends BaseActivity
      */
     private void addAppWidgetFromDrop(PendingAddWidgetInfo info) {
         AppWidgetHostView hostView = info.boundWidget;
-        int appWidgetId;
+        final int appWidgetId;
         WidgetAddFlowHandler addFlowHandler = info.getHandler();
         if (hostView != null) {
             // In the case where we've prebound the widget, we remove it from the DragLayer
@@ -1985,7 +1973,13 @@ public class Launcher extends BaseActivity
         } else {
             // In this case, we either need to start an activity to get permission to bind
             // the widget, or we need to start an activity to configure the widget, or both.
-            appWidgetId = getAppWidgetHost().allocateAppWidgetId();
+            if (FeatureFlags.ENABLE_CUSTOM_WIDGETS &&
+                    info.itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET) {
+                appWidgetId = CustomWidgetParser.getWidgetIdForCustomProvider(
+                        this, info.componentName);
+            } else {
+                appWidgetId = getAppWidgetHost().allocateAppWidgetId();
+            }
             Bundle options = info.bindOptions;
 
             boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
@@ -3192,7 +3186,8 @@ public class Launcher extends BaseActivity
                             (FolderInfo) item);
                     break;
                 }
-                case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET: {
+                case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET: {
                     view = inflateAppWidget((LauncherAppWidgetInfo) item);
                     if (view == null) {
                         continue;
@@ -3880,14 +3875,6 @@ public class Launcher extends BaseActivity
             }
         }
         return super.onKeyShortcut(keyCode, event);
-    }
-
-    public static CustomAppWidget getCustomAppWidget(String name) {
-        return sCustomAppWidgets.get(name);
-    }
-
-    public static HashMap<String, CustomAppWidget> getCustomAppWidgets() {
-        return sCustomAppWidgets;
     }
 
     public static Launcher getLauncher(Context context) {

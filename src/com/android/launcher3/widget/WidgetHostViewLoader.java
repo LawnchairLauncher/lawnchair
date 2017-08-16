@@ -85,7 +85,7 @@ public class WidgetHostViewLoader implements DragController.DragListener {
     private boolean preloadWidget() {
         final LauncherAppWidgetProviderInfo pInfo = mInfo.info;
 
-        if (pInfo.isCustomWidget) {
+        if (pInfo.isCustomWidget()) {
             return false;
         }
         final Bundle options = getDefaultOptionsForWidget(mLauncher, mInfo);
