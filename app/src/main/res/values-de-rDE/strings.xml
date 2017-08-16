@@ -260,6 +260,7 @@
   <string name="blur_radius_pref_title">Stärke des Unschärfeeffekts</string>
   <string name="white_google_icon_pref_title">Weiße Google Icons verwenden</string>
   <string name="hide_icon_labels_pref_title">Icon Beschriftungen auf dem Startbildschirm verstecken</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Symbolbeschriftungen in der App-Übersicht ausblenden</string>
   <string name="workspace_label_color_hue_pref_title">Farbe der Symbolbeschriftung auf dem Startbildschirm</string>
   <string name="workspace_label_color_variation_pref_title">Farbvariation der Symbolbeschriftung auf dem Startbildschirm</string>
   <string name="all_apps_opacity_pref_title">Transparenz der App-Liste</string>
@@ -393,7 +394,7 @@
   <string name="blur_effect">Unschärfe-Effekt</string>
   <string name="enable_editing_pref_title">Arbeitsbereich bearbeiten</string>
   <string name="pref_weather_provider">Wetter-Anbieter</string>
-  <string name="loading">Wird geladen...</string>
+  <string name="loading">Wird geladen…</string>
   <string name="icon_shape_override_label">Icon-Form ändern</string>
   <string name="icon_shape_system_default">Nicht ändern</string>
   <string name="icon_shape_square">Quadrat</string>
@@ -417,7 +418,10 @@
   <string name="pref_all_apps_custom_label_color">Verwende benutzerdefinierte Label-Farbe</string>
   <string name="pref_all_apps_label_color_variation">Farbvariationen der Icon-Labels in der App-Übersicht</string>
   <string name="pref_all_apps_label_color">Farbe der Icon-Labels in der Übersicht</string>
+  <string name="pref_num_rows_drawer">Anzahl der Reihen in der Übersicht</string>
+  <string name="center_wallpaper_pref_title">Hintergrund zentrieren, wenn nur eine Seite vorhanden ist</string>
   <string name="vertical_drawer_layout_pref_title">Als vertikale Liste darstellen</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">EEEE, d. MMMM</string>
 </resources>
