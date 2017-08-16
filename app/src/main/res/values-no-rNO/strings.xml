@@ -260,6 +260,7 @@
   <string name="blur_radius_pref_title">Uskarphetsradius</string>
   <string name="white_google_icon_pref_title">Bruk hvitt Google-ikon</string>
   <string name="hide_icon_labels_pref_title">Gjem ikon-etiketter på hjemskjerm</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Skjul ikon-etiketter i skuff</string>
   <string name="workspace_label_color_hue_pref_title">Farge på ikon-etiketter på hjemskjerm</string>
   <string name="workspace_label_color_variation_pref_title">Fargevariasjon av ikon-etiketter på hjemskjerm</string>
   <string name="all_apps_opacity_pref_title">Skuff-gjennomsiktighet</string>
@@ -393,7 +394,7 @@
   <string name="blur_effect">Uskarphetseffekt</string>
   <string name="enable_editing_pref_title">Aktiver redigering av arbeidsområde</string>
   <string name="pref_weather_provider">Værleverandør</string>
-  <string name="loading">Laster inn ...</string>
+  <string name="loading">Laster inn …</string>
   <string name="icon_shape_override_label">Endre ikon-form</string>
   <string name="icon_shape_system_default">Ikke endre</string>
   <string name="icon_shape_square">Kvadrat</string>
@@ -417,6 +418,10 @@
   <string name="pref_all_apps_custom_label_color">Bruk egendefinert etikettfarge</string>
   <string name="pref_all_apps_label_color_variation">Fargevariasjon på ikon-etiketter i skuff</string>
   <string name="pref_all_apps_label_color">Farge på ikon-etiketter i skuff</string>
+  <string name="pref_num_rows_drawer">Antall rader i skuff</string>
+  <string name="center_wallpaper_pref_title">Sentrer bakgrunn når det bare er én side</string>
+  <string name="vertical_drawer_layout_pref_title">Vis som vertikal liste</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">EEEE, d. MMMM</string>
 </resources>
