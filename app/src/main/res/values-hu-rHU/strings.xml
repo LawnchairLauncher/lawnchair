@@ -260,6 +260,7 @@
   <string name="blur_radius_pref_title">Homályosítás sugara</string>
   <string name="white_google_icon_pref_title">Fehér Google ikon használata</string>
   <string name="hide_icon_labels_pref_title">Ikonok címkéinek elrejtése</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Ikoncímkék elrejtése az alkalmazásfiókban</string>
   <string name="workspace_label_color_hue_pref_title">Ikoncímkék színe a kezdőképernyőn</string>
   <string name="workspace_label_color_variation_pref_title">Ikoncímkék színvariációja a kezdőképernyőn</string>
   <string name="all_apps_opacity_pref_title">Alkalmazásfiók áttetszősége</string>
@@ -393,7 +394,7 @@
   <string name="blur_effect">Homályosítás effekt</string>
   <string name="enable_editing_pref_title">Kezdőképernyő szerkesztése</string>
   <string name="pref_weather_provider">Időjárás szolgáltató</string>
-  <string name="loading">Betöltés...</string>
+  <string name="loading">Betöltés…</string>
   <string name="icon_shape_override_label">Ikon alakjának cseréje</string>
   <string name="icon_shape_system_default">Ne cserélje</string>
   <string name="icon_shape_square">Négyzet</string>
@@ -417,6 +418,10 @@
   <string name="pref_all_apps_custom_label_color">Egyéni címkeszín</string>
   <string name="pref_all_apps_label_color_variation">Ikoncímkék színvariációja az alkalmazásfiókban</string>
   <string name="pref_all_apps_label_color">Ikoncímkék színe az alkalmazásfiókban</string>
+  <string name="pref_num_rows_drawer">Sorok száma az alkalmazásfiókban</string>
+  <string name="center_wallpaper_pref_title">Háttérkép középre igazítása, ha csak egy lap van</string>
+  <string name="vertical_drawer_layout_pref_title">Megjelenítés függőleges listaként</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">MMMM d., EEEE</string>
 </resources>
