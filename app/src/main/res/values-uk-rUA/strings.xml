@@ -155,11 +155,8 @@
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
   <string name="action_move">Перемістити елемент</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell">Перемістити в рядок <xliff:g example="1" id="number">%1$s</xliff:g> стовпець <xliff:g example="1" id="number">%2$s</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
-  <string name="move_to_position">Перемістити на <xliff:g example="1" id="number">%1$s</xliff:g> місце</string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Перемістити у вибране на <xliff:g example="1" id="number">%1$s</xliff:g> місце</string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">Елемент переміщено</string>
   <!-- Accessibility description to move item into an existing folder. -->
@@ -191,7 +188,6 @@
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
   <string name="action_decrease_height">Зменшити висоту</string>
   <!-- Accessibility confirmation for widget resize. -->
-  <string name="widget_resized">Розміри віджета змінено на <xliff:g example="2" id="number">%1$s</xliff:g> завширшки та <xliff:g example="1" id="number">%2$s</xliff:g></string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
   <string name="action_deep_shortcut">Ярлики</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
@@ -361,7 +357,6 @@
   <string name="blur_effect">Ефект розмиття</string>
   <string name="enable_editing_pref_title">Дозволити редагування головного екрану</string>
   <string name="pref_weather_provider">Постачальник погоди</string>
-  <string name="loading">Завантаження...</string>
   <string name="icon_shape_override_label">Змінити форму значка</string>
   <string name="icon_shape_system_default">Не змінюйте</string>
   <string name="icon_shape_square">Квадратний</string>
