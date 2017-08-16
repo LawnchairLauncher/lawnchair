@@ -364,7 +364,7 @@
   <string name="theme_black">Noir</string>
   <string name="hide_hotseat_pref_title">Masquer le dock</string>
   <string name="all_icons">Toutes les icônes</string>
-  <string name="pull_down_action_pref_title">Action pour un glissement vers le bas</string>
+  <string name="pull_down_action_pref_title">Glissement vers le bas</string>
   <string name="pull_down_do_nothing">Ne rien faire</string>
   <string name="pull_down_notis">Afficher les notifications</string>
   <string name="pull_down_search">Ouvrir la recherche</string>
@@ -394,7 +394,7 @@
   <string name="blur_effect">Effet de flou</string>
   <string name="enable_editing_pref_title">Activer l\'édition de l\'espace de travail</string>
   <string name="pref_weather_provider">Fournisseur météo</string>
-  <string name="loading">Chargement...</string>
+  <string name="loading">Chargement…</string>
   <string name="icon_shape_override_label">Changer la forme des icônes</string>
   <string name="icon_shape_system_default">Ne pas changer</string>
   <string name="icon_shape_square">Carré</string>
@@ -423,4 +423,5 @@
   <string name="vertical_drawer_layout_pref_title">Affichage en liste verticale</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">EEEE d MMMM</string>
 </resources>
