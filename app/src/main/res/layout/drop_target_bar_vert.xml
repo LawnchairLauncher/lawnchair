@@ -17,7 +17,7 @@
     android:layout_width="@dimen/dynamic_grid_drop_target_size"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    android:layout_gravity="left"
+    android:layout_gravity="start"
     android:focusable="false"
     android:paddingTop="@dimen/vert_drop_target_vertical_gap">
 

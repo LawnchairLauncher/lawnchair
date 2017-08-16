@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2007 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2007 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,8 +14,7 @@
 -->
 
 <!-- Full screen view projects under the status bar and contains the background -->
-<ch.deletescape.lawnchair.LauncherRootView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ch.deletescape.lawnchair.LauncherRootView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/launcher"
     android:layout_width="match_parent"
@@ -42,18 +40,20 @@
             launcher:pageIndicator="@id/page_indicator" />
 
         <!-- DO NOT CHANGE THE ID -->
-        <include layout="@layout/hotseat"
+        <include
+            layout="@layout/hotseat"
             android:id="@+id/hotseat"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             launcher:layout_ignoreInsets="true" />
 
         <include
             android:id="@+id/drop_target_bar"
             layout="@layout/drop_target_bar_vert" />
 
-        <include layout="@layout/overview_panel"
+        <include
+            layout="@layout/overview_panel"
             android:id="@+id/overview_panel"
             android:visibility="gone" />
 
@@ -61,7 +61,7 @@
             android:id="@+id/page_indicator"
             android:layout_width="@dimen/dynamic_grid_page_indicator_height"
             android:layout_height="@dimen/dynamic_grid_page_indicator_height"
-            android:layout_gravity="bottom|left"/>
+            android:layout_gravity="bottom|start" />
 
         <!-- A place holder view instead of the QSB in transposed layout -->
         <View
@@ -73,13 +73,15 @@
             layout="@layout/qsb_container"
             android:id="@+id/qsb_container" />
 
-        <include layout="@layout/widgets_view"
+        <include
+            layout="@layout/widgets_view"
             android:id="@+id/widgets_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />
 
-        <include layout="@layout/all_apps"
+        <include
+            layout="@layout/all_apps"
             android:id="@+id/apps_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
