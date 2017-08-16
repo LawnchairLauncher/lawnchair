@@ -2,6 +2,11 @@ package ch.deletescape.lawnchair.weather
 
 import android.annotation.SuppressLint
 import android.content.Context
+import com.google.android.gms.awareness.Awareness
+import com.google.android.gms.awareness.snapshot.WeatherResult
+import com.google.android.gms.awareness.state.Weather
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.common.api.ResultCallback
 import java.util.*
 
 class AwarenessWeatherAPI(context: Context) : WeatherAPI(), ResultCallback<WeatherResult> {
