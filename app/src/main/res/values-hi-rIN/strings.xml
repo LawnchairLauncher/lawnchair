@@ -135,7 +135,7 @@
   <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->
   <string name="abandoned_search">खोजें</string>
   <!-- Title for abandoned promise dialog. -->
-  <string name="abandoned_promises_title">यह ऐप्स इंस्टॉल नहीं है</string>
+  <string name="abandoned_promises_title">यह ऐप स्थापित नहीं है</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
   <string name="abandoned_promise_explanation">इस आइकन का ऐप्स इंस्टॉल नहीं है. आप उसे निकाल सकते हैं या ऐप्स की खोज करके उसे मैन्युअल रूप से इंस्टॉल कर सकते हैं.    </string>
@@ -155,11 +155,8 @@
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
   <string name="action_move">आइटम को ले जाएं</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell">पंक्ति <xliff:g id="Number_0">%1$s</xliff:g> स्तंभ <xliff:g id="Number_1">%2$s</xliff:g> पर ले जाएं</string>
   <!-- Accessibility description to move item inside a folder. -->
-  <string name="move_to_position"><xliff:g id="Number">%1$s</xliff:g> स्थिति पर ले जाएं</string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position"><xliff:g id="Number">%1$s</xliff:g> स्थिति पर ले जाएं</string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">आइटम हटाया गया</string>
   <!-- Accessibility description to move item into an existing folder. -->
@@ -191,7 +188,6 @@
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
   <string name="action_decrease_height">ऊंचाई घटाएं</string>
   <!-- Accessibility confirmation for widget resize. -->
-  <string name="widget_resized">विजेट का आकार बदलकर उसकी चौड़ाई <xliff:g id="Number_0">%1$s</xliff:g> और ऊंचाई <xliff:g id="Number_1">%2$s</xliff:g> कर दी गई</string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
   <string name="action_deep_shortcut">शॉर्टकट</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
@@ -393,7 +389,6 @@
   <string name="blur_effect">धुंधला प्रभाव</string>
   <string name="enable_editing_pref_title">होम स्क्रीन संपादन सक्षम करें</string>
   <string name="pref_weather_provider">मौसम प्रदाता</string>
-  <string name="loading">लोड हो रहा है...</string>
   <string name="icon_shape_override_label">आइकोन आकार परिवर्तित करें</string>
   <string name="icon_shape_system_default">न बदलें</string>
   <string name="icon_shape_square">चोकोण</string>
