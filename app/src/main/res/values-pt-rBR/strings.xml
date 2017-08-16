@@ -260,6 +260,7 @@
   <string name="blur_radius_pref_title">Raio de desfoque</string>
   <string name="white_google_icon_pref_title">Usar o ícone branco da Google</string>
   <string name="hide_icon_labels_pref_title">Ocultar rótulos dos ícones na tela inicial</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Esconder texto dos ícones na gaveta de apps</string>
   <string name="workspace_label_color_hue_pref_title">Cor dos rótulos dos ícones na tela inicial</string>
   <string name="workspace_label_color_variation_pref_title">Variação de cor dos rótulos dos ícones na tela inicial</string>
   <string name="all_apps_opacity_pref_title">Opacidade de gaveta</string>
@@ -393,7 +394,7 @@
   <string name="blur_effect">Efeito de desfoque</string>
   <string name="enable_editing_pref_title">Habilitar edição de espaço de trabalho</string>
   <string name="pref_weather_provider">Provedor de previsão do tempo</string>
-  <string name="loading">Carregando...</string>
+  <string name="loading">Carregando…</string>
   <string name="icon_shape_override_label">Alterar o formato dos Icones</string>
   <string name="icon_shape_system_default">Não mudar</string>
   <string name="icon_shape_square">Quadrado</string>
@@ -411,6 +412,16 @@
   <string name="pref_cat_drawer">Gaveta de apps</string>
   <string name="shortcut_backport_warning">Isto pode ser lento, use a seu próprio risco</string>
   <string name="pref_backport_shortcuts">Retro-compatibilidade de atalhos</string>
+  <string name="weather_api_key_not_set">Chave da API não definida</string>
+  <string name="pref_weather_api_key_title">Chave da API</string>
+  <string name="about_changelog">Histórico de mudanças</string>
+  <string name="pref_all_apps_custom_label_color">Usar a cor da etiqueta personalizada</string>
+  <string name="pref_all_apps_label_color_variation">Variação de cor do texto dos ícones na gaveta de apps</string>
+  <string name="pref_all_apps_label_color">Cor do texto dos ícones na gaveta de apps</string>
+  <string name="pref_num_rows_drawer">Número de linhas na gaveta de apps</string>
+  <string name="center_wallpaper_pref_title">Centralizar papel de parede quando houver apenas uma página</string>
+  <string name="vertical_drawer_layout_pref_title">Exibir como lista vertical</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
 </resources>
