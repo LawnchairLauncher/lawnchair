@@ -393,7 +393,6 @@
   <string name="blur_effect">Suddig effekt</string>
   <string name="enable_editing_pref_title">Aktivera redigering av hemskärm</string>
   <string name="pref_weather_provider">Väderleverantör</string>
-  <string name="loading">Laddar...</string>
   <string name="icon_shape_override_label">Ändra ikonform</string>
   <string name="icon_shape_system_default">Ändra inte</string>
   <string name="icon_shape_square">Fyrkant</string>
