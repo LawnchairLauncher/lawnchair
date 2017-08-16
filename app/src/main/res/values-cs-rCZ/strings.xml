@@ -263,6 +263,7 @@
   <string name="blur_radius_pref_title">Rádius rozostření</string>
   <string name="white_google_icon_pref_title">Použít bílou ikonu Google</string>
   <string name="hide_icon_labels_pref_title">Skrýt popisky ikon na domovské obrazovce</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Skrýt popisky ikon v seznamu aplikací</string>
   <string name="workspace_label_color_hue_pref_title">Barva popisků ikon na domovské obrazovce</string>
   <string name="workspace_label_color_variation_pref_title">Barevné variace popisků ikon na domovské obrazovce</string>
   <string name="all_apps_opacity_pref_title">Průhlednost menu aplikací</string>
@@ -396,7 +397,7 @@
   <string name="blur_effect">Efekt rozostření</string>
   <string name="enable_editing_pref_title">Povolit úpravu domovské obrazovky</string>
   <string name="pref_weather_provider">Poskytovatel počasí</string>
-  <string name="loading">Načítání...</string>
+  <string name="loading">Načítání…</string>
   <string name="icon_shape_override_label">Změna tvaru ikony</string>
   <string name="icon_shape_system_default">Neměnit</string>
   <string name="icon_shape_square">Čtverec</string>
@@ -417,6 +418,13 @@
   <string name="weather_api_key_not_set">API klíč není nastaven</string>
   <string name="pref_weather_api_key_title">API klíč</string>
   <string name="about_changelog">Seznam změn</string>
+  <string name="pref_all_apps_custom_label_color">Použít vlastní barvu</string>
+  <string name="pref_all_apps_label_color_variation">Barevné variace popisků ikon v seznamu aplikací</string>
+  <string name="pref_all_apps_label_color">Barva popisků ikon v seznamu aplikací</string>
+  <string name="pref_num_rows_drawer">Počet sloupců v seznamu aplikací</string>
+  <string name="center_wallpaper_pref_title">Tapeta na střed, je-li pouze jedna strana</string>
+  <string name="vertical_drawer_layout_pref_title">Zobrazit jako svislý seznam</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
 </resources>
