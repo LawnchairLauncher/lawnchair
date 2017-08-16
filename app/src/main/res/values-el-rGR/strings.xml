@@ -423,4 +423,5 @@
   <string name="vertical_drawer_layout_pref_title">Εμφάνιση ως κάθετη λίστα εφαρμογών</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
 </resources>
