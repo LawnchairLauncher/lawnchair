@@ -28,7 +28,7 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">Приложение недоступно</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Скачанные приложения отключены в безопасном режиме</string>
+  <string name="safemode_shortcut_error">Загруженные приложения отключены в безопасном режиме</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">Виджеты отключены в безопасном режиме</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
@@ -37,7 +37,7 @@
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
   <string name="long_press_widget_to_add">Чтобы выбрать виджет, нажмите на значок и удерживайте его.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-  <string name="long_accessible_way_to_add">Чтобы выбрать виджет, нажмите на него дважды и не отпускайте или выполните предложенные действия.</string>
+  <string name="long_accessible_way_to_add">Двойное нажатие и удержание для выбора виджета и настройки пользовательских действий.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
@@ -46,7 +46,7 @@
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_bar_hint">Поиск приложений</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_loading_message">Загрузка приложений...</string>
+  <string name="all_apps_loading_message">Загрузка приложений…</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
   <string name="all_apps_no_search_results">По запросу \"<xliff:g id="QUERY">%1$s</xliff:g>\" ничего не найдено</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
@@ -161,7 +161,7 @@
   <!-- Accessibility description to move item to the hotseat. -->
   <string name="move_to_hotseat_position">Переместить в Избранное (<xliff:g id="NUMBER">%1$s</xliff:g>)</string>
   <!-- Accessibility confirmation for item move. -->
-  <string name="item_moved">Элемент перемещен.</string>
+  <string name="item_moved">Элемент перемещен</string>
   <!-- Accessibility description to move item into an existing folder. -->
   <string name="add_to_folder">Добавить в папку <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
@@ -292,7 +292,7 @@
   <string name="pinch_to_overview_pref_title">Щипок для обзора</string>
   <string name="pinch_to_overview_pref_summary">Щипок для обзора главного экрана</string>
   <string name="light_statusbar_pref_title">Светлая строка состояния</string>
-  <string name="light_statusbar_pref_force">Статус-бар будет показывать черные значки</string>
+  <string name="light_statusbar_pref_force">В строке состояния будут отображаться темные значки</string>
   <string name="light_statusbar_pref_off">В строке состояния всегда будут отображаться светлые значки</string>
   <string name="haptic_feedback_pref_title">Включить вибрацию</string>
   <string name="keep_scroll_state_pref_title">Сохранять позицию прокрутки</string>
@@ -395,7 +395,7 @@
   <string name="blur_effect">Эффект размытия</string>
   <string name="enable_editing_pref_title">Включить редактирование главного экрана</string>
   <string name="pref_weather_provider">Поставщик погоды</string>
-  <string name="loading">Загрузка...</string>
+  <string name="loading">Загрузка…</string>
   <string name="icon_shape_override_label">Изменить форму значка</string>
   <string name="icon_shape_system_default">Не изменять</string>
   <string name="icon_shape_square">Квадратная</string>
@@ -415,7 +415,7 @@
   <string name="pref_backport_shortcuts">Адаптировать ярлыки</string>
   <string name="weather_api_key_not_set">API ключ не установлен</string>
   <string name="pref_weather_api_key_title">API ключ</string>
-  <string name="about_changelog">Изменения</string>
+  <string name="about_changelog">Список изменений</string>
   <string name="pref_all_apps_custom_label_color">Использовать свой цвет подписи</string>
   <string name="pref_all_apps_label_color_variation">Вариация цвета подписей значков в меню приложений</string>
   <string name="pref_all_apps_label_color">Цвет подписи значков в меню приложений</string>
@@ -424,5 +424,5 @@
   <string name="vertical_drawer_layout_pref_title">Отображать в виде вертикального списка</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
-  <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
+  <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
 </resources>
