@@ -155,11 +155,8 @@
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
   <string name="action_move">Премести ставку</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell">Премести у ред <xliff:g id="Number_0">%1$s</xliff:g> и колону <xliff:g id="Number_1">%2$s</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
-  <string name="move_to_position">Премести на <xliff:g id="Number">%1$s</xliff:g>. позицију</string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Премести на <xliff:g id="Number">%1$s</xliff:g>. позицију у омиљеним</string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">Ставка је премештена</string>
   <!-- Accessibility description to move item into an existing folder. -->
@@ -191,7 +188,6 @@
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
   <string name="action_decrease_height">Смањи висину</string>
   <!-- Accessibility confirmation for widget resize. -->
-  <string name="widget_resized">Величина виџета је промењена на ширину <xliff:g id="Number_0">%1$s</xliff:g> и висину <xliff:g id="Number_1">%2$s</xliff:g></string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
   <string name="action_deep_shortcut">Пречице</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
@@ -261,6 +257,7 @@
   <string name="blur_radius_pref_title">Радијус замућења</string>
   <string name="white_google_icon_pref_title">Користи белу Google икону</string>
   <string name="hide_icon_labels_pref_title">Сакриј називе икона на почетном екрану</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Сакриј етикете икона у drawer-у</string>
   <string name="workspace_label_color_hue_pref_title">Боја назива икона на почетном екрану</string>
   <string name="workspace_label_color_variation_pref_title">Варијација боје назива икона на почетном екрану</string>
   <string name="all_apps_opacity_pref_title">Провидност Drawerа</string>
@@ -294,27 +291,77 @@
   <string name="light_statusbar_pref_force">На статусној траци ће се приказати тамне иконе</string>
   <string name="light_statusbar_pref_off">На статусној траци ће се приказати светле иконе</string>
   <string name="haptic_feedback_pref_title">Омогући вибрацију</string>
+  <string name="keep_scroll_state_pref_title">Сачувај позицију померања</string>
+  <string name="keep_scroll_state_pref_summary">Сачувај позицију померање у drawer-у</string>
+  <string name="home_opens_drawer_pref_title">Почетни тастер отвара drawer</string>
+  <string name="home_opens_drawer_pref_summary">Притиском на почетни тастер док се на почетном екрану отвара се drawer</string>
+  <string name="show_hidden_pref_title">Прикажи скривене апликације</string>
+  <string name="show_hidden_pref_on">Скривене апликације ће бити приказане да би променили поставке видљивости</string>
+  <string name="show_hidden_pref_off">Скривене апликације неће бити видљиве</string>
+  <string name="export_db_title">Извоз базе података</string>
+  <string name="import_db_title">Увоз базе података</string>
+  <string name="export_prefs_title">Извези подешавања</string>
+  <string name="import_prefs_title">Увези подешавања</string>
+  <string name="notification_listener_label">Lawnchair - Значке нотификације</string>
+  <string name="color_extraction_label">Lawnchair - Екстракције боје</string>
+  <string name="test_title">Тест</string>
+  <string name="visibility">Видљивост</string>
   <!-- Customization Color -->
+  <string name="white">Бела</string>
   <!-- Customization Color -->
+  <string name="black">Црна</string>
   <!-- Customization Color -->
+  <string name="red">Црвена</string>
   <!-- Customization Color -->
+  <string name="pink">Ружичаста</string>
   <!-- Customization Color -->
+  <string name="purple">Љубичаста</string>
   <!-- Customization Color -->
+  <string name="deep_purple">Тамноружичаста</string>
   <!-- Customization Color -->
+  <string name="indigo">Индиго</string>
   <!-- Customization Color -->
+  <string name="blue">Плава</string>
   <!-- Customization Color -->
+  <string name="light_blue">Светло плава</string>
   <!-- Customization Color -->
+  <string name="cyan">Цијан</string>
   <!-- Customization Color -->
+  <string name="teal">Плавозелена</string>
   <!-- Customization Color -->
+  <string name="green">Зелена</string>
   <!-- Customization Color -->
+  <string name="light_green">Светло зелена</string>
   <!-- Customization Color -->
+  <string name="lime">Лимета</string>
   <!-- Customization Color -->
+  <string name="yellow">Жута</string>
   <!-- Customization Color -->
+  <string name="amber">Тамножута</string>
   <!-- Customization Color -->
+  <string name="orange">Наранџаста</string>
   <!-- Customization Color -->
+  <string name="deep_orange">Тамнонаранџаста</string>
   <!-- Customization Color -->
+  <string name="brown">Смеђа</string>
   <!-- Customization Color -->
+  <string name="grey">Сива</string>
   <!-- Customization Color -->
+  <string name="blue_grey">Плавосива</string>
+  <string name="default_text">Подразумевано</string>
+  <string name="edit_icon_reset">Поништи</string>
+  <string name="show_top_shadow_title">Прикажи сенку на врху</string>
+  <string name="pref_cat_homescreen">Почетни екран</string>
+  <string name="pref_cat_miscellaneous">Разно</string>
+  <string name="pref_cat_hotseat">Док</string>
+  <string name="pref_cat_theme">Тема</string>
+  <string name="theme_pref_title">Тема</string>
+  <string name="theme_light">Светло</string>
+  <string name="theme_dark">Тамно</string>
+  <string name="theme_black">Црно</string>
+  <string name="hide_hotseat_pref_title">Сакри Док</string>
+  <string name="all_icons">Све иконе</string>
+  <string name="pull_down_action_pref_title">Повуци акцију</string>
   <string name="pull_down_do_nothing">Не ради ништа</string>
   <string name="pull_down_notis">Приказуј обавештења</string>
   <string name="pull_down_search">Отвори претрагу</string>
@@ -344,7 +391,6 @@
   <string name="blur_effect">Ефекат замућења</string>
   <string name="enable_editing_pref_title">Омогући уређивање почетног екрана</string>
   <string name="pref_weather_provider">Пружалац услуга временских прилика</string>
-  <string name="loading">Учитава...</string>
   <string name="icon_shape_override_label">Промени облик иконе</string>
   <string name="icon_shape_system_default">Не мењај</string>
   <string name="icon_shape_square">Квадрат</string>
@@ -368,6 +414,10 @@
   <string name="pref_all_apps_custom_label_color">Боја по избору</string>
   <string name="pref_all_apps_label_color_variation">Варијација боје назива икона на drawer-у</string>
   <string name="pref_all_apps_label_color">Боја ознаке икона у drawer-у</string>
+  <string name="pref_num_rows_drawer">Број колона у drawer-у</string>
+  <string name="center_wallpaper_pref_title">Центар позадине када постоји само једна страница</string>
+  <string name="vertical_drawer_layout_pref_title">Приказати као вертикалну листу</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">ГГГГ, ММММ д</string>
 </resources>
