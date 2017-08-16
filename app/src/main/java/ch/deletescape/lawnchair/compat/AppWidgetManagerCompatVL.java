@@ -157,10 +157,9 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
     public HashMap<ComponentKey, AppWidgetProviderInfo> getAllProvidersMap() {
         HashMap<ComponentKey, AppWidgetProviderInfo> result = new HashMap<>();
         for (UserHandle user : mUserManager.getUserProfiles()) {
-            UserHandle userHandle = user;
             for (AppWidgetProviderInfo info :
                     mAppWidgetManager.getInstalledProvidersForProfile(user)) {
-                result.put(new ComponentKey(info.provider, userHandle), info);
+                result.put(new ComponentKey(info.provider, user), info);
             }
         }
         return result;

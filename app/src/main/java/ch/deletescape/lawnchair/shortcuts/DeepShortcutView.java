@@ -53,10 +53,9 @@ public class DeepShortcutView extends FrameLayout {
     }
 
     public Point getIconCenter() {
-        Point point = sTempPoint;
         int measuredHeight = getMeasuredHeight() / 2;
         sTempPoint.x = measuredHeight;
-        point.y = measuredHeight;
+        sTempPoint.y = measuredHeight;
         if (Utilities.isRtl(getResources())) {
             sTempPoint.x = getMeasuredWidth() - sTempPoint.x;
         }

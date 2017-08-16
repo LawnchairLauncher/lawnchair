@@ -305,10 +305,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     @Override
     public boolean onLongClick(View v) {
-        if (this.mLauncher.isDraggingEnabled()) {
-            return startDrag(v, new DragOptions());
-        }
-        return true;
+        return !mLauncher.isDraggingEnabled() || startDrag(v, new DragOptions());
     }
 
     public boolean startDrag(View v, DragOptions options) {

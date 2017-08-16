@@ -2,11 +2,6 @@ package ch.deletescape.lawnchair.weather
 
 import android.annotation.SuppressLint
 import android.content.Context
-import com.google.android.gms.awareness.Awareness
-import com.google.android.gms.awareness.snapshot.WeatherResult
-import com.google.android.gms.awareness.state.Weather
-import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.common.api.ResultCallback
 import java.util.*
 
 class AwarenessWeatherAPI(context: Context) : WeatherAPI(), ResultCallback<WeatherResult> {
@@ -57,7 +52,7 @@ class AwarenessWeatherAPI(context: Context) : WeatherAPI(), ResultCallback<Weath
     }
 
     private fun getWeatherIcon(condition: IntArray): String {
-        val conditions = condition.fold(0) { acc, i -> acc or CONDITIONS[i]}
+        val conditions = condition.fold(0) { acc, i -> acc or CONDITIONS[i] }
         if (conditions and CONDITION_STORMY != 0)
             return WeatherIconProvider.CONDITION_STORM
         if (conditions and CONDITION_SNOWY != 0 || conditions and CONDITION_ICY != 0)

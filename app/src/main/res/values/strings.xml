@@ -463,7 +463,7 @@
     <string name="blur_effect">Blur effect</string>
     <string name="enable_editing_pref_title">Enable editing homescreen</string>
     <string name="pref_weather_provider">Weather provider</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
     <string name="icon_shape_override_label">Change icon shape</string>
     <string name="icon_shape_system_default">Do not change</string>
     <string name="icon_shape_square">Square</string>

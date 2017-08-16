@@ -133,9 +133,7 @@ public class GridSizeMigrationTask {
     protected boolean migrateHotseat() throws Exception {
         ArrayList<DbEntry> items = loadHotseatEntries();
 
-        int requiredCount = mDestHotseatSize;
-
-        while (items.size() > requiredCount) {
+        while (items.size() > mDestHotseatSize) {
             // Pick the center item by default.
             DbEntry toRemove = items.get(items.size() / 2);
 

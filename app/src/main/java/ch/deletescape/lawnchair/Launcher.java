@@ -604,13 +604,12 @@ public class Launcher extends Activity
                 completeRestoreAppWidget(appWidgetId, LauncherAppWidgetInfo.RESTORE_COMPLETED);
                 break;
             case REQUEST_BIND_PENDING_APPWIDGET: {
-                int widgetId = appWidgetId;
                 LauncherAppWidgetInfo widgetInfo =
-                        completeRestoreAppWidget(widgetId, LauncherAppWidgetInfo.FLAG_UI_NOT_READY);
+                        completeRestoreAppWidget(appWidgetId, LauncherAppWidgetInfo.FLAG_UI_NOT_READY);
                 if (widgetInfo != null) {
                     // Since the view was just bound, also launch the configure activity if needed
                     LauncherAppWidgetProviderInfo provider = mAppWidgetManager
-                            .getLauncherAppWidgetInfo(widgetId);
+                            .getLauncherAppWidgetInfo(appWidgetId);
                     if (provider != null && provider.configure != null) {
                         startRestoredWidgetReconfigActivity(provider, widgetInfo);
                     }
@@ -1429,7 +1428,7 @@ public class Launcher extends Activity
         }
     };
 
-    public void updateIconBadges(final Set set) {
+    public void updateIconBadges(final Set<PackageUserKey> set) {
         Runnable anonymousClass13 = new Runnable() {
             @Override
             public void run() {
@@ -3779,8 +3778,8 @@ public class Launcher extends Activity
             }
             if (!removed.isEmpty()) {
                 ItemInfoMatcher ofComponents;
-                HashSet hashSet = new HashSet();
-                HashSet hashSet2 = new HashSet();
+                HashSet<ComponentName> hashSet = new HashSet<>();
+                HashSet<ShortcutKey> hashSet2 = new HashSet<>();
                 for (ShortcutInfo shortcutInfo : removed) {
                     if (shortcutInfo.itemType == 6) {
                         hashSet2.add(ShortcutKey.fromItemInfo(shortcutInfo));
@@ -3922,10 +3921,7 @@ public class Launcher extends Activity
     }
 
     private boolean shouldShowDiscoveryBounce() {
-        if (mState != State.WORKSPACE) {
-            return false;
-        }
-        if (!mIsResumeFromActionScreenOff) {
+        if (mState != State.WORKSPACE || !mIsResumeFromActionScreenOff) {
             return false;
         }
         return !mSharedPrefs.getAppsViewShown();
@@ -3968,7 +3964,8 @@ public class Launcher extends Activity
         mCurrentDialog = null;
     }
 
-    @NonNull public static Launcher getLauncher(Context context) {
+    @NonNull
+    public static Launcher getLauncher(Context context) {
         if (context instanceof Launcher) {
             return (Launcher) context;
         }

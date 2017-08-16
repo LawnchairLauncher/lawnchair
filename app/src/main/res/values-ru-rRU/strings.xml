@@ -44,7 +44,7 @@
     <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
     <string name="all_apps_search_bar_hint">Поиск приложений</string>
     <!-- Loading apps text. [CHAR_LIMIT=50] -->
-    <string name="all_apps_loading_message">Загрузка приложений...</string>
+    <string name="all_apps_loading_message">Загрузка приложений…</string>
     <!-- No-search-results text. [CHAR_LIMIT=50] -->
     <string name="all_apps_no_search_results">По запросу \"<xliff:g id="QUERY">%1$s</xliff:g>\" ничего не найдено</string>
     <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
@@ -392,7 +392,7 @@
     <string name="blur_effect">Эффект размытия</string>
     <string name="enable_editing_pref_title">Включить редактирование рабочего пространства</string>
     <string name="pref_weather_provider">Поставщик погоды</string>
-    <string name="loading">Загрузка...</string>
+    <string name="loading">Загрузка…</string>
     <string name="icon_shape_override_label">Изменить форму значка</string>
     <string name="icon_shape_system_default">Не изменять</string>
     <string name="icon_shape_square">Квадратная</string>

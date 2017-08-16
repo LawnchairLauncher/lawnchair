@@ -261,9 +261,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                                        float scaleRelativeToDragLayer, Runnable postAnimationRunnable) {
 
         // These correspond two the drawable and view that the icon was dropped _onto_
-        Drawable animateDrawable = prepareCreate(destView);
-
-        mReferenceDrawable = animateDrawable;
+        mReferenceDrawable = prepareCreate(destView);
 
         addItem(destInfo);
         // This will animate the first item from it's position as an icon into its

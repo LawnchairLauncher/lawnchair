@@ -70,7 +70,6 @@ public abstract class ShortcutConfigActivityInfo {
                 return super.startConfigActivity(activity, i);
             }
             try {
-                Activity activity2 = activity;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     activity.startIntentSenderForResult((IntentSender) LauncherApps.class.getDeclaredMethod("getShortcutConfigActivityIntent", new Class[]{LauncherActivityInfo.class}).invoke(activity.getSystemService(LauncherApps.class), this.mInfo), i, null, 0, 0, 0);
                 }

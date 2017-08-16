@@ -432,8 +432,7 @@ public class IconCache {
     }
 
     private Bitmap getNonNullIcon(CacheEntry entry, UserHandle user) {
-        Bitmap b = entry.icon == null ? getDefaultIcon(user) : entry.icon;
-        return b;
+        return entry.icon == null ? getDefaultIcon(user) : entry.icon;
     }
 
     /**

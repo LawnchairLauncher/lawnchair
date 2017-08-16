@@ -176,8 +176,7 @@ public abstract class BaseRecyclerView extends RecyclerView
      * VisibleHeight = View height - top padding - bottom padding
      */
     protected int getVisibleHeight() {
-        int visibleHeight = getHeight() - mBackgroundPadding.top - mBackgroundPadding.bottom;
-        return visibleHeight;
+        return getHeight() - mBackgroundPadding.top - mBackgroundPadding.bottom;
     }
 
     /**
@@ -191,8 +190,7 @@ public abstract class BaseRecyclerView extends RecyclerView
      * AvailableScrollBarHeight = Total height of the visible view - thumb height
      */
     protected int getAvailableScrollBarHeight() {
-        int availableScrollBarHeight = getVisibleHeight() - mScrollbar.getThumbHeight();
-        return availableScrollBarHeight;
+        return getVisibleHeight() - mScrollbar.getThumbHeight();
     }
 
     /**

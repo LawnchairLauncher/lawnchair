@@ -53,9 +53,8 @@ public class UserManagerCompatVL extends UserManagerCompat {
             if (users != null) {
                 for (UserHandle user : users) {
                     long serial = mUserManager.getSerialNumberForUser(user);
-                    UserHandle userCompat = user;
-                    mUsers.put(serial, userCompat);
-                    mUserToSerialMap.put(userCompat, serial);
+                    mUsers.put(serial, user);
+                    mUserToSerialMap.put(user, serial);
                 }
             }
         }

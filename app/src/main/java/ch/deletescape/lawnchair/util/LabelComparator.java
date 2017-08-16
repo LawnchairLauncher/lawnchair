@@ -10,11 +10,7 @@ public class LabelComparator implements Comparator<String> {
     public int compare(String str, String str2) {
         boolean isLetterOrDigit;
         boolean i = false;
-        if (str.length() > 0) {
-            isLetterOrDigit = Character.isLetterOrDigit(str.codePointAt(0));
-        } else {
-            isLetterOrDigit = false;
-        }
+        isLetterOrDigit = str.length() > 0 && Character.isLetterOrDigit(str.codePointAt(0));
         if (str2.length() > 0) {
             i = Character.isLetterOrDigit(str2.codePointAt(0));
         }

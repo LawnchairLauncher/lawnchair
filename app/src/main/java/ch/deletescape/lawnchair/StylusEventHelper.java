@@ -1,5 +1,6 @@
 package ch.deletescape.lawnchair;
 
+import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -43,14 +44,10 @@ public class StylusEventHelper {
      * @param listener The listener to call for stylus events.
      * @param view     Optional view associated with the touch events.
      */
-    public StylusEventHelper(StylusButtonListener listener, View view) {
+    public StylusEventHelper(StylusButtonListener listener, @NonNull View view) {
         mListener = listener;
         mView = view;
-        if (mView != null) {
-            mSlop = ViewConfiguration.get(mView.getContext()).getScaledTouchSlop();
-        } else {
-            mSlop = ViewConfiguration.getTouchSlop();
-        }
+        mSlop = ViewConfiguration.get(mView.getContext()).getScaledTouchSlop();
     }
 
     public boolean onMotionEvent(MotionEvent event) {
