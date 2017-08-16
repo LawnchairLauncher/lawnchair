@@ -394,7 +394,7 @@
   <string name="blur_effect">Bulanıklık efekti</string>
   <string name="enable_editing_pref_title">Düzenleme çalışma alanını etkinleştir</string>
   <string name="pref_weather_provider">Hava durumu sağlayıcı</string>
-  <string name="loading">Yükleniyor...</string>
+  <string name="loading">Yükleniyor…</string>
   <string name="icon_shape_override_label">Simge şeklini değiştir</string>
   <string name="icon_shape_system_default">Değiştirme</string>
   <string name="icon_shape_square">Kare</string>
@@ -423,4 +423,5 @@
   <string name="vertical_drawer_layout_pref_title">Dikey liste olarak görüntüle</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">GGGG, AAAA g</string>
 </resources>
