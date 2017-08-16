@@ -155,11 +155,8 @@
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
   <string name="action_move">항목 이동</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell"><xliff:g id="Number_0">%1$s</xliff:g>행 <xliff:g id="Number_1">%2$s</xliff:g>열로 이동</string>
   <!-- Accessibility description to move item inside a folder. -->
-  <string name="move_to_position"><xliff:g id="Number">%1$s</xliff:g>번 위치로 이동</string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">즐겨찾는 <xliff:g id="Number">%1$s</xliff:g>번 위치로 이동</string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">항목을 이동했습니다.</string>
   <!-- Accessibility description to move item into an existing folder. -->
@@ -191,7 +188,6 @@
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
   <string name="action_decrease_height">높이 줄이기</string>
   <!-- Accessibility confirmation for widget resize. -->
-  <string name="widget_resized">폭 <xliff:g example="2" id="number">%1$s</xliff:g> 높이 <xliff:g example="1" id="number">%2$s</xliff:g>으로 조정 됨</string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
   <string name="action_deep_shortcut">바로가기</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
@@ -393,7 +389,6 @@
   <string name="blur_effect">블러 효과</string>
   <string name="enable_editing_pref_title">홈 화면 변경 허락하기</string>
   <string name="pref_weather_provider">날씨 공급자</string>
-  <string name="loading">불러오는 중...</string>
   <string name="icon_shape_override_label">아이콘 변경</string>
   <string name="icon_shape_system_default">변경 금지</string>
   <string name="icon_shape_square">사각형</string>
@@ -422,4 +417,5 @@
   <string name="vertical_drawer_layout_pref_title">세로 목록으로 표시</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">MMMM d EEEE</string>
 </resources>
