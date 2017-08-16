@@ -392,7 +392,7 @@
   <string name="blur_effect">ぼかし効果</string>
   <string name="enable_editing_pref_title">ホーム画面の編集を有効にする</string>
   <string name="pref_weather_provider">天気プロバイダ</string>
-  <string name="loading">読み込んでいます...</string>
+  <string name="loading">読み込んでいます…</string>
   <string name="icon_shape_override_label">アイコンの形を変更</string>
   <string name="icon_shape_system_default">変更しない</string>
   <string name="animated_clock_icon_title">時計アイコンのアニメーション</string>
