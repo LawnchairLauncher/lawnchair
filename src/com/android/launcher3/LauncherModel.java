@@ -138,18 +138,15 @@ public class LauncherModel extends BroadcastReceiver
         public int getCurrentWorkspaceScreen();
         public void clearPendingBinds();
         public void startBinding();
-        public void bindItems(ArrayList<ItemInfo> shortcuts, int start, int end,
-                              boolean forceAnimateIcons);
+        public void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons);
         public void bindScreens(ArrayList<Long> orderedScreenIds);
         public void finishFirstPageBind(ViewOnDrawExecutor executor);
         public void finishBindingItems();
-        public void bindAppWidget(LauncherAppWidgetInfo info);
         public void bindAllApplications(ArrayList<AppInfo> apps);
+        public void bindAppsAddedOrUpdated(ArrayList<AppInfo> apps);
         public void bindAppsAdded(ArrayList<Long> newScreens,
                                   ArrayList<ItemInfo> addNotAnimated,
-                                  ArrayList<ItemInfo> addAnimated,
-                                  ArrayList<AppInfo> addedApps);
-        public void bindAppsUpdated(ArrayList<AppInfo> apps);
+                                  ArrayList<ItemInfo> addAnimated);
         public void bindPromiseAppProgressUpdated(PromiseAppInfo app);
         public void bindShortcutsChanged(ArrayList<ShortcutInfo> updated,
                 ArrayList<ShortcutInfo> removed, UserHandle user);
@@ -537,7 +534,7 @@ public class LauncherModel extends BroadcastReceiver
                     scheduleCallbackTask(new CallbackTask() {
                         @Override
                         public void execute(Callbacks callbacks) {
-                            callbacks.bindAppsAdded(null, null, null, arrayList);
+                            callbacks.bindAppsAddedOrUpdated(arrayList);
                         }
                     });
                 }

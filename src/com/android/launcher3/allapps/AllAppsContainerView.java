@@ -132,18 +132,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     }
 
     /**
-     * Adds new apps to the list.
+     * Adds or updates existing apps in the list
      */
-    public void addApps(List<AppInfo> apps) {
-        mApps.addApps(apps);
-        mSearchUiManager.refreshSearchResult();
-    }
-
-    /**
-     * Updates existing apps in the list
-     */
-    public void updateApps(List<AppInfo> apps) {
-        mApps.updateApps(apps);
+    public void addOrUpdateApps(List<AppInfo> apps) {
+        mApps.addOrUpdateApps(apps);
         mSearchUiManager.refreshSearchResult();
     }
 

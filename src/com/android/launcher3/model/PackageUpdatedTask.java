@@ -147,49 +147,26 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 break;
         }
 
-        ArrayList<AppInfo> added = null;
-        ArrayList<AppInfo> modified = null;
-        final ArrayList<AppInfo> removedApps = new ArrayList<>();
+        final ArrayList<AppInfo> addedOrModified = new ArrayList<>();
+        addedOrModified.addAll(appsList.added);
+        appsList.added.clear();
+        addedOrModified.addAll(appsList.modified);
+        appsList.modified.clear();
 
-        if (appsList.added.size() > 0) {
-            added = new ArrayList<>(appsList.added);
-            appsList.added.clear();
-        }
-        if (appsList.modified.size() > 0) {
-            modified = new ArrayList<>(appsList.modified);
-            appsList.modified.clear();
-        }
-        if (appsList.removed.size() > 0) {
-            removedApps.addAll(appsList.removed);
-            appsList.removed.clear();
-        }
+        final ArrayList<AppInfo> removedApps = new ArrayList<>(appsList.removed);
+        appsList.removed.clear();
 
         final ArrayMap<ComponentName, AppInfo> addedOrUpdatedApps = new ArrayMap<>();
-
-        if (added != null) {
-            final ArrayList<AppInfo> addedApps = added;
+        if (!addedOrModified.isEmpty()) {
             scheduleCallbackTask(new CallbackTask() {
                 @Override
                 public void execute(Callbacks callbacks) {
-                    callbacks.bindAppsAdded(null, null, null, addedApps);
+                    callbacks.bindAppsAddedOrUpdated(addedOrModified);
                 }
             });
-            for (AppInfo ai : added) {
+            for (AppInfo ai : addedOrModified) {
                 addedOrUpdatedApps.put(ai.componentName, ai);
             }
-        }
-
-        if (modified != null) {
-            final ArrayList<AppInfo> modifiedFinal = modified;
-            for (AppInfo ai : modified) {
-                addedOrUpdatedApps.put(ai.componentName, ai);
-            }
-            scheduleCallbackTask(new CallbackTask() {
-                @Override
-                public void execute(Callbacks callbacks) {
-                    callbacks.bindAppsUpdated(modifiedFinal);
-                }
-            });
         }
 
         // Update shortcut infos
