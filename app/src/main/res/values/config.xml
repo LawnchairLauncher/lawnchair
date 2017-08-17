@@ -13,8 +13,8 @@
     <!-- AllApps & Launcher transitions -->
     <!-- The alpha of the AppsCustomize bg in spring loaded mode -->
     <integer name="config_workspaceScrimAlpha">30</integer>
-    <integer name="config_allAppsTransitionTime">100</integer>
-    <integer name="config_overviewTransitionTime">250</integer>
+    <integer name="config_allAppsTransitionTime">80</integer>
+    <integer name="config_overviewTransitionTime">200</integer>
 
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">90</integer>
@@ -23,9 +23,9 @@
 
     <!-- Fade/zoom in/out duration & scale in a Launcher overlay transition.
          Note: This should be less than the config_overlayTransitionTime as they happen together. -->
-    <integer name="config_overlayRevealTime">220</integer>
-    <integer name="config_overlaySlideRevealTime">320</integer>
-    <integer name="config_overlayTransitionTime">300</integer>
+    <integer name="config_overlayRevealTime">200</integer>
+    <integer name="config_overlaySlideRevealTime">290</integer>
+    <integer name="config_overlayTransitionTime">280</integer>
     <integer name="config_overlayItemsAlphaStagger">60</integer>
 
     <!-- This constant stores the ratio of the all apps button drawable which
@@ -37,19 +37,19 @@
     <!-- Workspace -->
     <!-- The duration (in ms) of the fade animation on the object outlines, used when
          we are dragging objects around on the home screen. -->
-    <integer name="config_dragOutlineFadeTime">900</integer>
+    <integer name="config_dragOutlineFadeTime">870</integer>
 
     <!-- The alpha value at which to show the most recent drop visualization outline. -->
     <integer name="config_dragOutlineMaxAlpha">128</integer>
 
     <!-- Parameters controlling the animation for when an item is dropped on the home screen,
          and it animates from its old position to the new one. -->
-    <integer name="config_dropAnimMinDuration">100</integer>
-    <integer name="config_dropAnimMaxDuration">500</integer>
+    <integer name="config_dropAnimMinDuration">90</integer>
+    <integer name="config_dropAnimMaxDuration">450</integer>
 
     <!-- The duration of the UserFolder opening and closing animation -->
-    <integer name="config_folderExpandDuration">120</integer>
-    <integer name="config_materialFolderExpandDuration">200</integer>
+    <integer name="config_folderExpandDuration">110</integer>
+    <integer name="config_materialFolderExpandDuration">180</integer>
     <integer name="config_materialFolderExpandStagger">60</integer>
 
     <!-- The distance at which the animation should take the max duration -->
@@ -68,10 +68,10 @@
     <item type="id" name="cell_layout_jail_id" />
 
     <!-- Deep shortcuts -->
-    <integer name="config_deepShortcutOpenDuration">220</integer>
-    <integer name="config_deepShortcutArrowOpenDuration">80</integer>
+    <integer name="config_deepShortcutOpenDuration">200</integer>
+    <integer name="config_deepShortcutArrowOpenDuration">70</integer>
     <integer name="config_deepShortcutOpenStagger">40</integer>
-    <integer name="config_deepShortcutCloseDuration">150</integer>
+    <integer name="config_deepShortcutCloseDuration">140</integer>
     <integer name="config_deepShortcutCloseStagger">20</integer>
 
     <!-- Accessibility actions -->
@@ -86,5 +86,5 @@
     <item type="id" name="action_resize" />
     <item type="id" name="action_deep_shortcuts" />
 
-    <integer name="config_removeNotificationViewDuration">300</integer>
+    <integer name="config_removeNotificationViewDuration">150</integer>
 </resources>
