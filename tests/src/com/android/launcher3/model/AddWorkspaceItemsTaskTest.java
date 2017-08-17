@@ -131,7 +131,7 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
         // only info2 should be added because info was already added to the workspace
         // in setupWorkspaceWithHoles()
         verify(callbacks).bindAppsAdded(any(ArrayList.class), notAnimated.capture(),
-                animated.capture(), isNull(ArrayList.class));
+                animated.capture());
         assertTrue(notAnimated.getValue().isEmpty());
 
         assertEquals(1, animated.getValue().size());

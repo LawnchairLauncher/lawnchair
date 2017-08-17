@@ -374,20 +374,13 @@ public class AlphabeticalAppsList {
      */
     public void setApps(List<AppInfo> apps) {
         mComponentToAppMap.clear();
-        addApps(apps);
+        addOrUpdateApps(apps);
     }
 
     /**
-     * Adds new apps to the list.
+     * Adds or updates existing apps in the list
      */
-    public void addApps(List<AppInfo> apps) {
-        updateApps(apps);
-    }
-
-    /**
-     * Updates existing apps in the list
-     */
-    public void updateApps(List<AppInfo> apps) {
+    public void addOrUpdateApps(List<AppInfo> apps) {
         for (AppInfo app : apps) {
             mComponentToAppMap.put(app.toComponentKey(), app);
         }

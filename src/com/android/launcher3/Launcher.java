@@ -3249,13 +3249,13 @@ public class Launcher extends BaseActivity
         }
     }
 
+    @Override
     public void bindAppsAdded(final ArrayList<Long> newScreens,
                               final ArrayList<ItemInfo> addNotAnimated,
-                              final ArrayList<ItemInfo> addAnimated,
-                              final ArrayList<AppInfo> addedApps) {
+                              final ArrayList<ItemInfo> addAnimated) {
         Runnable r = new Runnable() {
             public void run() {
-                bindAppsAdded(newScreens, addNotAnimated, addAnimated, addedApps);
+                bindAppsAdded(newScreens, addNotAnimated, addAnimated);
             }
         };
         if (waitUntilResume(r)) {
@@ -3270,20 +3270,14 @@ public class Launcher extends BaseActivity
         // We add the items without animation on non-visible pages, and with
         // animations on the new page (which we will try and snap to).
         if (addNotAnimated != null && !addNotAnimated.isEmpty()) {
-            bindItems(addNotAnimated, 0,
-                    addNotAnimated.size(), false);
+            bindItems(addNotAnimated, false);
         }
         if (addAnimated != null && !addAnimated.isEmpty()) {
-            bindItems(addAnimated, 0,
-                    addAnimated.size(), true);
+            bindItems(addAnimated, true);
         }
 
         // Remove the extra empty screen
         mWorkspace.removeExtraEmptyScreen(false, false);
-
-        if (addedApps != null && mAppsView != null) {
-            mAppsView.addApps(addedApps);
-        }
     }
 
     /**
@@ -3292,11 +3286,10 @@ public class Launcher extends BaseActivity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     @Override
-    public void bindItems(final ArrayList<ItemInfo> items, final int start, final int end,
-                          final boolean forceAnimateIcons) {
+    public void bindItems(final List<ItemInfo> items, final boolean forceAnimateIcons) {
         Runnable r = new Runnable() {
             public void run() {
-                bindItems(items, start, end, forceAnimateIcons);
+                bindItems(items, forceAnimateIcons);
             }
         };
         if (waitUntilResume(r)) {
@@ -3309,7 +3302,8 @@ public class Launcher extends BaseActivity
         final boolean animateIcons = forceAnimateIcons && canRunNewAppsAnimation();
         Workspace workspace = mWorkspace;
         long newItemsScreenId = -1;
-        for (int i = start; i < end; i++) {
+        int end = items.size();
+        for (int i = 0; i < end; i++) {
             final ItemInfo item = items.get(i);
 
             // Short circuit if we are loading dock items for a configuration which has no dock
@@ -3334,19 +3328,10 @@ public class Launcher extends BaseActivity
                     break;
                 }
                 case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET: {
-                    LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) item;
-                    if (mIsSafeModeEnabled) {
-                        view = new PendingAppWidgetHostView(this, info, mIconCache, true);
-                    } else {
-                        LauncherAppWidgetProviderInfo providerInfo =
-                                mAppWidgetManager.getLauncherAppWidgetInfo(info.appWidgetId);
-                        if (providerInfo == null) {
-                            deleteWidgetInfo(info);
-                            continue;
-                        }
-                        view = mAppWidgetHost.createView(this, info.appWidgetId, providerInfo);
+                    view = bindAppWidget((LauncherAppWidgetInfo) item);
+                    if (view == null) {
+                        continue;
                     }
-                    prepareAppWidget((AppWidgetHostView) view, info);
                     break;
                 }
                 default:
@@ -3416,26 +3401,15 @@ public class Launcher extends BaseActivity
 
     /**
      * Add the views for a widget to the workspace.
-     *
-     * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindAppWidget(final LauncherAppWidgetInfo item) {
-        Runnable r = new Runnable() {
-            public void run() {
-                bindAppWidget(item);
-            }
-        };
-        if (waitUntilResume(r)) {
-            return;
-        }
-
+    public View bindAppWidget(LauncherAppWidgetInfo item) {
         if (mIsSafeModeEnabled) {
             PendingAppWidgetHostView view =
                     new PendingAppWidgetHostView(this, item, mIconCache, true);
             prepareAppWidget(view, item);
             mWorkspace.addInScreen(view, item);
             mWorkspace.requestLayout();
-            return;
+            return view;
         }
 
         final long start = DEBUG_WIDGETS ? SystemClock.uptimeMillis() : 0;
@@ -3465,7 +3439,7 @@ public class Launcher extends BaseActivity
                             + ", as the provider is null");
                 }
                 getModelWriter().deleteItemFromDatabase(item);
-                return;
+                return null;
             }
 
             // If we do not have a valid id, try to bind an id.
@@ -3533,7 +3507,7 @@ public class Launcher extends BaseActivity
             if (appWidgetInfo == null) {
                 FileLog.e(TAG, "Removing invalid widget: id=" + item.appWidgetId);
                 deleteWidgetInfo(item);
-                return;
+                return null;
             }
 
             item.minSpanX = appWidgetInfo.minSpanX;
@@ -3550,6 +3524,7 @@ public class Launcher extends BaseActivity
             Log.d(TAG, "bound widget id="+item.appWidgetId+" in "
                     + (SystemClock.uptimeMillis()-start) + "ms");
         }
+        return view;
     }
 
     /**
@@ -3744,10 +3719,10 @@ public class Launcher extends BaseActivity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindAppsUpdated(final ArrayList<AppInfo> apps) {
+    public void bindAppsAddedOrUpdated(final ArrayList<AppInfo> apps) {
         Runnable r = new Runnable() {
             public void run() {
-                bindAppsUpdated(apps);
+                bindAppsAddedOrUpdated(apps);
             }
         };
         if (waitUntilResume(r)) {
@@ -3755,7 +3730,7 @@ public class Launcher extends BaseActivity
         }
 
         if (mAppsView != null) {
-            mAppsView.updateApps(apps);
+            mAppsView.addOrUpdateApps(apps);
         }
     }
 

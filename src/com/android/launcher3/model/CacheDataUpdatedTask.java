@@ -77,7 +77,7 @@ public class CacheDataUpdatedTask extends BaseModelUpdateTask {
             scheduleCallbackTask(new CallbackTask() {
                 @Override
                 public void execute(Callbacks callbacks) {
-                    callbacks.bindAppsUpdated(updatedApps);
+                    callbacks.bindAppsAddedOrUpdated(updatedApps);
                 }
             });
         }
