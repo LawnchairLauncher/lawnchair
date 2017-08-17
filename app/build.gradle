@@ -28,7 +28,7 @@ android {
         }
     }
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 26
         applicationId "ch.deletescape.lawnchair"
 
