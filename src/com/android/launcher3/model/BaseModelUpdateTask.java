@@ -26,6 +26,7 @@ import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
 
 import java.util.ArrayList;
@@ -94,19 +95,12 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
 
 
     public void bindUpdatedShortcuts(
-            ArrayList<ShortcutInfo> updatedShortcuts, UserHandle user) {
-        bindUpdatedShortcuts(updatedShortcuts, new ArrayList<ShortcutInfo>(), user);
-    }
-
-    public void bindUpdatedShortcuts(
-            final ArrayList<ShortcutInfo> updatedShortcuts,
-            final ArrayList<ShortcutInfo> removedShortcuts,
-            final UserHandle user) {
-        if (!updatedShortcuts.isEmpty() || !removedShortcuts.isEmpty()) {
+            final ArrayList<ShortcutInfo> updatedShortcuts, final UserHandle user) {
+        if (!updatedShortcuts.isEmpty()) {
             scheduleCallbackTask(new CallbackTask() {
                 @Override
                 public void execute(Callbacks callbacks) {
-                    callbacks.bindShortcutsChanged(updatedShortcuts, removedShortcuts, user);
+                    callbacks.bindShortcutsChanged(updatedShortcuts, user);
                 }
             });
         }
@@ -129,6 +123,18 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
             @Override
             public void execute(Callbacks callbacks) {
                 callbacks.bindAllWidgets(widgets);
+            }
+        });
+    }
+
+    public void deleteAndBindComponentsRemoved(final ItemInfoMatcher matcher) {
+        getModelWriter().deleteItemsFromDatabase(matcher);
+
+        // Call the components-removed callback
+        scheduleCallbackTask(new CallbackTask() {
+            @Override
+            public void execute(Callbacks callbacks) {
+                callbacks.bindWorkspaceComponentsRemoved(matcher);
             }
         });
     }
