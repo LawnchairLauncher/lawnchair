@@ -1307,9 +1307,7 @@ public class Launcher extends BaseActivity
         mDragController.addDropTarget(mWorkspace);
         mDropTargetBar.setup(mDragController);
 
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
-            mAllAppsController.setupViews(mAppsView, mHotseat, mWorkspace);
-        }
+        mAllAppsController.setupViews(mAppsView, mHotseat, mWorkspace);
 
         if (TestingUtils.MEMORY_DUMP_ENABLED) {
             TestingUtils.addWeightWatcher(this);
@@ -2277,7 +2275,7 @@ public class Launcher extends BaseActivity
             if (v instanceof FolderIcon) {
                 onClickFolderIcon(v);
             }
-        } else if ((FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && v instanceof PageIndicator) ||
+        } else if ((v instanceof PageIndicator) ||
             (v == mAllAppsButton && mAllAppsButton != null)) {
             onClickAllAppsButton(v);
         } else if (tag instanceof AppInfo) {

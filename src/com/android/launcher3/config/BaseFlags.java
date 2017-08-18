@@ -34,7 +34,6 @@ abstract class BaseFlags {
     public static boolean LAUNCHER3_DISABLE_ICON_NORMALIZATION = false;
     public static boolean LAUNCHER3_LEGACY_FOLDER_ICON = false;
     public static boolean LAUNCHER3_DISABLE_PINCH_TO_OVERVIEW = false;
-    public static boolean LAUNCHER3_ALL_APPS_PULL_UP = true;
     public static boolean LAUNCHER3_NEW_FOLDER_ANIMATION = true;
     // When enabled allows to use any point on the fast scrollbar to start dragging.
     public static final boolean LAUNCHER3_DIRECT_SCROLL = true;

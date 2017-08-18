@@ -273,9 +273,8 @@ public class WorkspaceStateTransitionAnimation {
         float finalBackgroundAlpha = (states.stateIsSpringLoaded || states.stateIsOverview) ?
                 1.0f : 0f;
         float finalHotseatAlpha = (states.stateIsNormal || states.stateIsSpringLoaded ||
-                (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && states.stateIsNormalHidden)) ? 1f : 0f;
-        float finalQsbAlpha = (states.stateIsNormal ||
-                (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && states.stateIsNormalHidden)) ? 1f : 0f;
+                states.stateIsNormalHidden) ? 1f : 0f;
+        float finalQsbAlpha = (states.stateIsNormal || states.stateIsNormalHidden) ? 1f : 0f;
 
         float finalWorkspaceTranslationY = 0;
         if (states.stateIsOverview || states.stateIsOverviewHidden) {
@@ -312,8 +311,7 @@ public class WorkspaceStateTransitionAnimation {
             if (states.stateIsOverviewHidden) {
                 finalAlpha = 0f;
             } else if(states.stateIsNormalHidden) {
-                finalAlpha = (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP &&
-                        i == mWorkspace.getNextPage()) ? 1 : 0;
+                finalAlpha = (i == mWorkspace.getNextPage()) ? 1 : 0;
             } else if (states.stateIsNormal && mWorkspaceFadeInAdjacentScreens) {
                 finalAlpha = (i == toPage || i < customPageCount) ? 1f : 0f;
             } else {
@@ -322,7 +320,7 @@ public class WorkspaceStateTransitionAnimation {
 
             // If we are animating to/from the small state, then hide the side pages and fade the
             // current page in
-            if (!FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && !mWorkspace.isSwitchingState()) {
+            if (!FeatureFlags.NO_ALL_APPS_ICON && !mWorkspace.isSwitchingState()) {
                 if (states.workspaceToAllApps || states.allAppsToWorkspace) {
                     boolean isCurrentPage = (i == toPage);
                     if (states.allAppsToWorkspace && isCurrentPage) {
