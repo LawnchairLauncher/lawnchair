@@ -11,6 +11,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewDebug;
 
+import static com.android.launcher3.util.SystemUiController.FLAG_DARK_NAV;
+import static com.android.launcher3.util.SystemUiController.UI_STATE_ROOT_VIEW;
+
 public class LauncherRootView extends InsettableFrameLayout {
 
     private final Paint mOpaquePaint;
@@ -44,20 +47,28 @@ public class LauncherRootView extends InsettableFrameLayout {
     @TargetApi(23)
     @Override
     protected boolean fitSystemWindows(Rect insets) {
-        boolean rawInsetsChanged = !mInsets.equals(insets);
         mDrawSideInsetBar = (insets.right > 0 || insets.left > 0) &&
                 (!Utilities.ATLEAST_MARSHMALLOW ||
-                getContext().getSystemService(ActivityManager.class).isLowRamDevice());
-        mRightInsetBarWidth = insets.right;
-        mLeftInsetBarWidth = insets.left;
-        setInsets(mDrawSideInsetBar ? new Rect(0, insets.top, 0, insets.bottom) : insets);
+                        getContext().getSystemService(ActivityManager.class).isLowRamDevice());
+        if (mDrawSideInsetBar) {
+            mLeftInsetBarWidth = insets.left;
+            mRightInsetBarWidth = insets.right;
+            insets = new Rect(0, insets.top, 0, insets.bottom);
+        } else {
+            mLeftInsetBarWidth = mRightInsetBarWidth = 0;
+        }
+        Launcher.getLauncher(getContext()).getSystemUiController().updateUiState(
+                UI_STATE_ROOT_VIEW, mDrawSideInsetBar ? FLAG_DARK_NAV : 0);
 
-        if (mAlignedView != null && mDrawSideInsetBar) {
+        boolean rawInsetsChanged = !mInsets.equals(insets);
+        setInsets(insets);
+
+        if (mAlignedView != null) {
             // Apply margins on aligned view to handle left/right insets.
             MarginLayoutParams lp = (MarginLayoutParams) mAlignedView.getLayoutParams();
-            if (lp.leftMargin != insets.left || lp.rightMargin != insets.right) {
-                lp.leftMargin = insets.left;
-                lp.rightMargin = insets.right;
+            if (lp.leftMargin != mLeftInsetBarWidth || lp.rightMargin != mRightInsetBarWidth) {
+                lp.leftMargin = mLeftInsetBarWidth;
+                lp.rightMargin = mRightInsetBarWidth;
                 mAlignedView.setLayoutParams(lp);
             }
         }
