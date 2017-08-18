@@ -3328,7 +3328,7 @@ public class Launcher extends BaseActivity
                     break;
                 }
                 case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET: {
-                    view = bindAppWidget((LauncherAppWidgetInfo) item);
+                    view = inflateAppWidget((LauncherAppWidgetInfo) item);
                     if (view == null) {
                         continue;
                     }
@@ -3402,13 +3402,19 @@ public class Launcher extends BaseActivity
     /**
      * Add the views for a widget to the workspace.
      */
-    public View bindAppWidget(LauncherAppWidgetInfo item) {
+    public void bindAppWidget(LauncherAppWidgetInfo item) {
+        View view = inflateAppWidget(item);
+        if (view != null) {
+            mWorkspace.addInScreen(view, item);
+            mWorkspace.requestLayout();
+        }
+    }
+
+    private View inflateAppWidget(LauncherAppWidgetInfo item) {
         if (mIsSafeModeEnabled) {
             PendingAppWidgetHostView view =
                     new PendingAppWidgetHostView(this, item, mIconCache, true);
             prepareAppWidget(view, item);
-            mWorkspace.addInScreen(view, item);
-            mWorkspace.requestLayout();
             return view;
         }
 
@@ -3517,8 +3523,6 @@ public class Launcher extends BaseActivity
             view = new PendingAppWidgetHostView(this, item, mIconCache, false);
         }
         prepareAppWidget(view, item);
-        mWorkspace.addInScreen(view, item);
-        mWorkspace.requestLayout();
 
         if (DEBUG_WIDGETS) {
             Log.d(TAG, "bound widget id="+item.appWidgetId+" in "
