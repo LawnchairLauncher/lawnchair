@@ -119,6 +119,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.util.ActivityResultInfo;
+import com.android.launcher3.util.RunnableWithId;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
@@ -145,6 +146,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
+
+import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_APPS;
+import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_WIDGETS;
 
 /**
  * Default launcher application.
@@ -246,7 +250,6 @@ public class Launcher extends BaseActivity
 
     // Main container view and the model for the widget tray screen.
     @Thunk WidgetsContainerView mWidgetsView;
-    @Thunk MultiHashMap<PackageItemInfo, WidgetItem> mAllWidgets;
 
     // We set the state in both onCreate and then onNewIntent in some cases, which causes both
     // scroll issues (because the workspace may not have been measured yet) and extra work.
@@ -3113,22 +3116,18 @@ public class Launcher extends BaseActivity
      *
      * @return {@code true} if we are currently paused. The caller might be able to skip some work
      */
-    @Thunk boolean waitUntilResume(Runnable run, boolean deletePreviousRunnables) {
+    @Thunk boolean waitUntilResume(Runnable run) {
         if (mPaused) {
             if (LOGD) Log.d(TAG, "Deferring update until onResume");
-            if (deletePreviousRunnables) {
-                while (mBindOnResumeCallbacks.remove(run)) {
-                }
+            if (run instanceof RunnableWithId) {
+                // Remove any runnables which have the same id
+                while (mBindOnResumeCallbacks.remove(run)) { }
             }
             mBindOnResumeCallbacks.add(run);
             return true;
         } else {
             return false;
         }
-    }
-
-    private boolean waitUntilResume(Runnable run) {
-        return waitUntilResume(run, false);
     }
 
     public void addOnResumeCallback(Runnable run) {
@@ -3664,25 +3663,17 @@ public class Launcher extends BaseActivity
     }
 
     /**
-     * A runnable that we can dequeue and re-enqueue when all applications are bound (to prevent
-     * multiple calls to bind the same list.)
-     */
-    @Thunk ArrayList<AppInfo> mTmpAppsList;
-    private final Runnable mBindAllApplicationsRunnable = new Runnable() {
-        public void run() {
-            bindAllApplications(mTmpAppsList);
-            mTmpAppsList = null;
-        }
-    };
-
-    /**
      * Add the icons for all apps.
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void bindAllApplications(final ArrayList<AppInfo> apps) {
-        if (waitUntilResume(mBindAllApplicationsRunnable, true)) {
-            mTmpAppsList = apps;
+        Runnable r = new RunnableWithId(RUNNABLE_ID_BIND_APPS) {
+            public void run() {
+                bindAllApplications(apps);
+            }
+        };
+        if (waitUntilResume(r)) {
             return;
         }
 
@@ -3690,10 +3681,10 @@ public class Launcher extends BaseActivity
             Executor pendingExecutor = getPendingExecutor();
             if (pendingExecutor != null && mState != State.APPS) {
                 // Wait until the fade in animation has finished before setting all apps list.
-                mTmpAppsList = apps;
-                pendingExecutor.execute(mBindAllApplicationsRunnable);
+                pendingExecutor.execute(r);
                 return;
             }
+
             mAppsView.setApps(apps);
         }
         if (mLauncherCallbacks != null) {
@@ -3887,28 +3878,25 @@ public class Launcher extends BaseActivity
         }
     }
 
-    private final Runnable mBindAllWidgetsRunnable = new Runnable() {
+    @Override
+    public void bindAllWidgets(final MultiHashMap<PackageItemInfo, WidgetItem> allWidgets) {
+        Runnable r = new RunnableWithId(RUNNABLE_ID_BIND_WIDGETS) {
+            @Override
             public void run() {
-                bindAllWidgets(mAllWidgets);
+                bindAllWidgets(allWidgets);
             }
         };
-
-    @Override
-    public void bindAllWidgets(MultiHashMap<PackageItemInfo, WidgetItem> allWidgets) {
-        if (waitUntilResume(mBindAllWidgetsRunnable, true)) {
-            mAllWidgets = allWidgets;
+        if (waitUntilResume(r)) {
             return;
         }
 
         if (mWidgetsView != null && allWidgets != null) {
             Executor pendingExecutor = getPendingExecutor();
             if (pendingExecutor != null && mState != State.WIDGETS) {
-                mAllWidgets = allWidgets;
-                pendingExecutor.execute(mBindAllWidgetsRunnable);
+                pendingExecutor.execute(r);
                 return;
             }
             mWidgetsView.setWidgets(allWidgets);
-            mAllWidgets = null;
         }
 
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
