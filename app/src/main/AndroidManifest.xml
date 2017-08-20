@@ -171,6 +171,10 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${awarenessApiKey}" />
+        
+        <meta-data 
+            android:name="android.max_aspect"
+            android:value="2.1" />
     </application>
 
 </manifest>
