@@ -18,6 +18,7 @@ package com.android.launcher3.util;
 
 import android.content.ComponentName;
 import android.os.UserHandle;
+import android.util.SparseLongArray;
 
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
@@ -66,6 +67,32 @@ public abstract class ItemInfoMatcher {
         return filtered;
     }
 
+    /**
+     * Returns a new matcher with returns true if either this or {@param matcher} returns true.
+     */
+    public ItemInfoMatcher or(final ItemInfoMatcher matcher) {
+       final ItemInfoMatcher that = this;
+        return new ItemInfoMatcher() {
+            @Override
+            public boolean matches(ItemInfo info, ComponentName cn) {
+                return that.matches(info, cn) || matcher.matches(info, cn);
+            }
+        };
+    }
+
+    /**
+     * Returns a new matcher with returns true if both this and {@param matcher} returns true.
+     */
+    public ItemInfoMatcher and(final ItemInfoMatcher matcher) {
+        final ItemInfoMatcher that = this;
+        return new ItemInfoMatcher() {
+            @Override
+            public boolean matches(ItemInfo info, ComponentName cn) {
+                return that.matches(info, cn) && matcher.matches(info, cn);
+            }
+        };
+    }
+
     public static ItemInfoMatcher ofUser(final UserHandle user) {
         return new ItemInfoMatcher() {
             @Override
@@ -101,6 +128,16 @@ public abstract class ItemInfoMatcher {
             public boolean matches(ItemInfo info, ComponentName cn) {
                 return info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
                         keys.contains(ShortcutKey.fromItemInfo(info));
+            }
+        };
+    }
+
+    public static ItemInfoMatcher ofItemIds(
+            final LongArrayMap<Boolean> ids, final Boolean matchDefault) {
+        return new ItemInfoMatcher() {
+            @Override
+            public boolean matches(ItemInfo info, ComponentName cn) {
+                return ids.get(info.id, matchDefault);
             }
         };
     }

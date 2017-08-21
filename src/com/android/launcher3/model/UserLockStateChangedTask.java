@@ -29,9 +29,11 @@ import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.ItemInfoMatcher;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -70,17 +72,19 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
 
         // Update the workspace to reflect the changes to updated shortcuts residing on it.
         ArrayList<ShortcutInfo> updatedShortcutInfos = new ArrayList<>();
-        ArrayList<ShortcutInfo> deletedShortcutInfos = new ArrayList<>();
+        HashSet<ShortcutKey> removedKeys = new HashSet<>();
+
         for (ItemInfo itemInfo : dataModel.itemsIdMap) {
             if (itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
                     && mUser.equals(itemInfo.user)) {
                 ShortcutInfo si = (ShortcutInfo) itemInfo;
                 if (isUserUnlocked) {
-                    ShortcutInfoCompat shortcut = pinnedShortcuts.get(ShortcutKey.fromItemInfo(si));
+                    ShortcutKey key = ShortcutKey.fromItemInfo(si);
+                    ShortcutInfoCompat shortcut = pinnedShortcuts.get(key);
                     // We couldn't verify the shortcut during loader. If its no longer available
                     // (probably due to clear data), delete the workspace item as well
                     if (shortcut == null) {
-                        deletedShortcutInfos.add(si);
+                        removedKeys.add(key);
                         continue;
                     }
                     si.isDisabled &= ~ShortcutInfo.FLAG_DISABLED_LOCKED_USER;
@@ -93,9 +97,9 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
                 updatedShortcutInfos.add(si);
             }
         }
-        bindUpdatedShortcuts(updatedShortcutInfos, deletedShortcutInfos, mUser);
-        if (!deletedShortcutInfos.isEmpty()) {
-            getModelWriter().deleteItemsFromDatabase(deletedShortcutInfos);
+        bindUpdatedShortcuts(updatedShortcutInfos, mUser);
+        if (!removedKeys.isEmpty()) {
+            deleteAndBindComponentsRemoved(ItemInfoMatcher.ofShortcutKeys(removedKeys));
         }
 
         // Remove shortcut id map for that user
