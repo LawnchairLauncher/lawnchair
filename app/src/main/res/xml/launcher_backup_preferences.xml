@@ -13,10 +13,10 @@
     <PreferenceCategory android:title="@string/backup_import_title">
 
         <Preference
-            android:key="import_db"
-            android:title="@string/import_db_title" />
-        <Preference
             android:key="import_prefs"
             android:title="@string/import_prefs_title" />
+        <Preference
+            android:key="import_db"
+            android:title="@string/import_db_title" />
     </PreferenceCategory>
 </PreferenceScreen>
