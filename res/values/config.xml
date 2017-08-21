@@ -9,7 +9,7 @@
     <bool name="is_large_tablet">false</bool>
     <bool name="allow_rotation">false</bool>
 
-    <integer name="extracted_color_gradient_alpha">191</integer>
+    <integer name="extracted_color_gradient_alpha">153</integer>
 
     <!-- A string pointer to the original app name string. This allows derived projects to
      easily override the app name without providing all translations -->
