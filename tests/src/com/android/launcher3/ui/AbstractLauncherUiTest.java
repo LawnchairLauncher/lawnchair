@@ -103,7 +103,7 @@ public abstract class AbstractLauncherUiTest {
      */
     protected UiObject2 openAllApps() {
         mDevice.waitForIdle();
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
+        if (FeatureFlags.NO_ALL_APPS_ICON) {
             // clicking on the page indicator brings up all apps tray on non tablets.
             findViewById(R.id.page_indicator).click();
         } else {

@@ -80,13 +80,11 @@ import com.android.launcher3.widget.WidgetsContainerView;
 public class LauncherStateTransitionAnimation {
 
     /**
-     * animation used for all apps and widget tray when
-     *{@link FeatureFlags#LAUNCHER3_ALL_APPS_PULL_UP} is {@code false}
+     * animation used for the widget tray
      */
     public static final int CIRCULAR_REVEAL = 0;
     /**
-     * animation used for all apps and not widget tray when
-     *{@link FeatureFlags#LAUNCHER3_ALL_APPS_PULL_UP} is {@code true}
+     * animation used for all apps tray
      */
     public static final int PULLUP = 1;
 
@@ -154,13 +152,9 @@ public class LauncherStateTransitionAnimation {
                 mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
             }
         };
-        int animType = CIRCULAR_REVEAL;
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
-            animType = PULLUP;
-        }
         // Only animate the search bar if animating from spring loaded mode back to all apps
         startAnimationToOverlay(
-                Workspace.State.NORMAL_HIDDEN, buttonView, toView, animated, animType, cb);
+                Workspace.State.NORMAL_HIDDEN, buttonView, toView, animated, PULLUP, cb);
     }
 
     /**
@@ -193,12 +187,8 @@ public class LauncherStateTransitionAnimation {
 
         if (fromState == Launcher.State.APPS || fromState == Launcher.State.APPS_SPRING_LOADED
                 || mAllAppsController.isTransitioning()) {
-            int animType = CIRCULAR_REVEAL;
-            if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
-                animType = PULLUP;
-            }
             startAnimationToWorkspaceFromAllApps(fromWorkspaceState, toWorkspaceState,
-                    animated, animType, onCompleteRunnable);
+                    animated, PULLUP, onCompleteRunnable);
         } else if (fromState == Launcher.State.WIDGETS ||
                 fromState == Launcher.State.WIDGETS_SPRING_LOADED) {
             startAnimationToWorkspaceFromWidgets(fromWorkspaceState, toWorkspaceState,
@@ -235,8 +225,7 @@ public class LauncherStateTransitionAnimation {
         playCommonTransitionAnimations(toWorkspaceState,
                 animated, initialized, animation, layerViews);
         if (!animated || !initialized) {
-            if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP &&
-                    toWorkspaceState == Workspace.State.NORMAL_HIDDEN) {
+            if (toWorkspaceState == Workspace.State.NORMAL_HIDDEN) {
                 mAllAppsController.finishPullUp();
             }
             toView.setTranslationX(0.0f);
@@ -527,8 +516,7 @@ public class LauncherStateTransitionAnimation {
         playCommonTransitionAnimations(toWorkspaceState,
                 animated, initialized, animation, layerViews);
         if (!animated || !initialized) {
-            if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP &&
-                    fromWorkspaceState == Workspace.State.NORMAL_HIDDEN) {
+            if (fromWorkspaceState == Workspace.State.NORMAL_HIDDEN) {
                 mAllAppsController.finishPullDown();
             }
             fromView.setVisibility(View.GONE);
