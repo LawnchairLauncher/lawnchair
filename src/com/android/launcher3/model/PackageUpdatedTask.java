@@ -43,6 +43,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import java.util.ArrayList;
@@ -172,7 +173,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
         // Update shortcut infos
         if (mOp == OP_ADD || flagOp != FlagOp.NO_OP) {
             final ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<>();
-            final ArrayList<ShortcutInfo> removedShortcuts = new ArrayList<>();
+            final LongArrayMap<Boolean> removedShortcuts = new LongArrayMap<>();
             final ArrayList<LauncherAppWidgetInfo> widgets = new ArrayList<>();
 
             synchronized (dataModel) {
@@ -213,7 +214,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                         }
 
                                         if ((intent == null) || (appInfo == null)) {
-                                            removedShortcuts.add(si);
+                                            removedShortcuts.put(si.id, true);
                                             continue;
                                         }
                                         si.intent = intent;
@@ -267,9 +268,9 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 }
             }
 
-            bindUpdatedShortcuts(updatedShortcuts, removedShortcuts, mUser);
+            bindUpdatedShortcuts(updatedShortcuts, mUser);
             if (!removedShortcuts.isEmpty()) {
-                getModelWriter().deleteItemsFromDatabase(removedShortcuts);
+                deleteAndBindComponentsRemoved(ItemInfoMatcher.ofItemIds(removedShortcuts, false));
             }
 
             if (!widgets.isEmpty()) {
@@ -306,22 +307,12 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
         }
 
         if (!removedPackages.isEmpty() || !removedComponents.isEmpty()) {
-            getModelWriter().deleteItemsFromDatabase(
-                    ItemInfoMatcher.ofPackages(removedPackages, mUser));
-            getModelWriter().deleteItemsFromDatabase(
-                    ItemInfoMatcher.ofComponents(removedComponents, mUser));
+            ItemInfoMatcher removeMatch = ItemInfoMatcher.ofPackages(removedPackages, mUser)
+                    .or(ItemInfoMatcher.ofComponents(removedComponents, mUser));
+            deleteAndBindComponentsRemoved(removeMatch);
 
             // Remove any queued items from the install queue
             InstallShortcutReceiver.removeFromInstallQueue(context, removedPackages, mUser);
-
-            // Call the components-removed callback
-            scheduleCallbackTask(new CallbackTask() {
-                @Override
-                public void execute(Callbacks callbacks) {
-                    callbacks.bindWorkspaceComponentsRemoved(
-                            removedPackages, removedComponents, mUser);
-                }
-            });
         }
 
         if (!removedApps.isEmpty()) {

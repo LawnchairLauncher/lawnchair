@@ -56,6 +56,7 @@ import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
@@ -148,13 +149,10 @@ public class LauncherModel extends BroadcastReceiver
                                   ArrayList<ItemInfo> addNotAnimated,
                                   ArrayList<ItemInfo> addAnimated);
         public void bindPromiseAppProgressUpdated(PromiseAppInfo app);
-        public void bindShortcutsChanged(ArrayList<ShortcutInfo> updated,
-                ArrayList<ShortcutInfo> removed, UserHandle user);
+        public void bindShortcutsChanged(ArrayList<ShortcutInfo> updated, UserHandle user);
         public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
         public void bindRestoreItemsChange(HashSet<ItemInfo> updates);
-        public void bindWorkspaceComponentsRemoved(
-                HashSet<String> packageNames, HashSet<ComponentName> components,
-                UserHandle user);
+        public void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher);
         public void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
         public void bindAllWidgets(MultiHashMap<PackageItemInfo, WidgetItem> widgets);
         public void onPageBoundSynchronously(int page);

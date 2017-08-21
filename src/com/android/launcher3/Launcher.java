@@ -3761,16 +3761,12 @@ public class Launcher extends BaseActivity
      * Implementation of the method from LauncherModel.Callbacks.
      *
      * @param updated list of shortcuts which have changed.
-     * @param removed list of shortcuts which were deleted in the background. This can happen when
-     *                an app gets removed from the system or some of its components are no longer
-     *                available.
      */
     @Override
-    public void bindShortcutsChanged(final ArrayList<ShortcutInfo> updated,
-            final ArrayList<ShortcutInfo> removed, final UserHandle user) {
+    public void bindShortcutsChanged(final ArrayList<ShortcutInfo> updated, final UserHandle user) {
         Runnable r = new Runnable() {
             public void run() {
-                bindShortcutsChanged(updated, removed, user);
+                bindShortcutsChanged(updated, user);
             }
         };
         if (waitUntilResume(r)) {
@@ -3779,31 +3775,6 @@ public class Launcher extends BaseActivity
 
         if (!updated.isEmpty()) {
             mWorkspace.updateShortcuts(updated);
-        }
-
-        if (!removed.isEmpty()) {
-            HashSet<ComponentName> removedComponents = new HashSet<>();
-            HashSet<ShortcutKey> removedDeepShortcuts = new HashSet<>();
-
-            for (ShortcutInfo si : removed) {
-                if (si.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-                    removedDeepShortcuts.add(ShortcutKey.fromItemInfo(si));
-                } else {
-                    removedComponents.add(si.getTargetComponent());
-                }
-            }
-
-            if (!removedComponents.isEmpty()) {
-                ItemInfoMatcher matcher = ItemInfoMatcher.ofComponents(removedComponents, user);
-                mWorkspace.removeItemsByMatcher(matcher);
-                mDragController.onAppsRemoved(matcher);
-            }
-
-            if (!removedDeepShortcuts.isEmpty()) {
-                ItemInfoMatcher matcher = ItemInfoMatcher.ofShortcutKeys(removedDeepShortcuts);
-                mWorkspace.removeItemsByMatcher(matcher);
-                mDragController.onAppsRemoved(matcher);
-            }
         }
     }
 
@@ -3834,28 +3805,17 @@ public class Launcher extends BaseActivity
      * package-removal should clear all items by package name.
      */
     @Override
-    public void bindWorkspaceComponentsRemoved(
-            final HashSet<String> packageNames, final HashSet<ComponentName> components,
-            final UserHandle user) {
+    public void bindWorkspaceComponentsRemoved(final ItemInfoMatcher matcher) {
         Runnable r = new Runnable() {
             public void run() {
-                bindWorkspaceComponentsRemoved(packageNames, components, user);
+                bindWorkspaceComponentsRemoved(matcher);
             }
         };
         if (waitUntilResume(r)) {
             return;
         }
-        if (!packageNames.isEmpty()) {
-            ItemInfoMatcher matcher = ItemInfoMatcher.ofPackages(packageNames, user);
-            mWorkspace.removeItemsByMatcher(matcher);
-            mDragController.onAppsRemoved(matcher);
-
-        }
-        if (!components.isEmpty()) {
-            ItemInfoMatcher matcher = ItemInfoMatcher.ofComponents(components, user);
-            mWorkspace.removeItemsByMatcher(matcher);
-            mDragController.onAppsRemoved(matcher);
-        }
+        mWorkspace.removeItemsByMatcher(matcher);
+        mDragController.onAppsRemoved(matcher);
     }
 
     @Override
