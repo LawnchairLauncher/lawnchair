@@ -108,8 +108,7 @@ public class AppsSearchContainerLayout extends FrameLayout
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP &&
-                !mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+        if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
             getLayoutParams().height = mLauncher.getDragLayer().getInsets().top + mMinHeight;
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
