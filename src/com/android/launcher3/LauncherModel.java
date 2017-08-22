@@ -1739,7 +1739,7 @@ public class LauncherModel extends BroadcastReceiver
                 // Fail if we don't have any apps
                 // TODO: Fix this. Only fail for the current user.
                 if (apps == null || apps.isEmpty()) {
-                    return;
+                    continue;
                 }
                 boolean quietMode = mUserManager.isQuietModeEnabled(user);
                 // Create the ApplicationInfos
