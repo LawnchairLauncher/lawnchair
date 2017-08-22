@@ -20,7 +20,8 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.launcher3">
-    <uses-sdk android:targetSdkVersion="23" android:minSdkVersion="21"/>
+    <uses-sdk android:targetSdkVersion="26" android:minSdkVersion="21"/>
+    <uses-feature android:glEsVersion="0x00020000" android:required="false"/>
     <!--
     Manifest entries specific to Launcher3. This is merged with AndroidManifest-common.xml.
     Refer comments around specific entries on how to extend individual components.
@@ -43,11 +44,15 @@
         android:protectionLevel="signatureOrSystem"
         android:label="@string/permlab_write_settings"
         android:description="@string/permdesc_write_settings"/>
+    <permission android:name="com.google.android.apps.nexuslauncher.permission.QSB"
+        android:protectionLevel="normal"
+        android:label="QSB" />
 
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
     <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
     <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.READ_SETTINGS" />
     <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.QSB" />
 
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
@@ -60,6 +65,12 @@
         android:largeHeap="@bool/config_largeHeap"
         android:restoreAnyVersion="true"
         android:supportsRtl="true" >
+
+        <receiver android:name="com.android.launcher3.pixel.WeatherUpdateReceiver" android:permission="android.permission.CAPTURE_AUDIO_HOTWORD">
+            <intent-filter>
+                <action android:name="com.google.android.apps.nexuslauncher.updateweather"/>
+            </intent-filter>
+        </receiver>
 
         <!--
         Main launcher activity. When extending only change the name, and keep all the
