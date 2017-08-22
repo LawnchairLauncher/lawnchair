@@ -47,7 +47,7 @@ class IconShapeOverride {
     companion object {
 
         fun isSupported(context: Context): Boolean {
-            if (!Utilities.isAtLeastO() || Global.getInt(context.contentResolver, "development_settings_enabled", 0) != 1) {
+            if (!Utilities.isAtLeastO()) {
                 return false
             }
             try {
