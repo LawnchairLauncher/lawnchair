@@ -128,8 +128,7 @@ public class IconCache {
         mLowResCanvas = new Canvas();
         mLowResPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
 
-        mIconProvider = Utilities.getOverrideObject(
-                IconProvider.class, context, R.string.icon_provider_class);
+        mIconProvider = new com.android.launcher3.pixel.DynamicIconProvider(mContext);
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
 
         mActivityBgColor = Themes.getColorPrimary(context, R.style.LauncherTheme);
