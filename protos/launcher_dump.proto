@@ -15,7 +15,7 @@
  */
 syntax = "proto2";
 
-option java_package = "com.android.launcher3.model";
+option java_package = "com.android.launcher3.model.nano";
 option java_outer_classname = "LauncherDumpProto";
 
 package model;

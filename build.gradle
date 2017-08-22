@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.1'
+        classpath 'com.android.tools.build:gradle:2.3.3'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
     }
 }
@@ -65,7 +65,7 @@ repositories {
     jcenter()
 }
 
-final String SUPPORT_LIBS_VERSION = '26.0.0-SNAPSHOT'
+final String SUPPORT_LIBS_VERSION = '26.+'
 dependencies {
     compile "com.android.support:support-v4:${SUPPORT_LIBS_VERSION}"
     compile "com.android.support:recyclerview-v7:${SUPPORT_LIBS_VERSION}"
