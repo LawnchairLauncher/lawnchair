@@ -28,6 +28,7 @@ import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dynamicui.ExtractionUtils;
+import com.android.launcher3.pixel.NexusAppFilter;
 import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.TestingUtils;
@@ -95,7 +96,7 @@ public class LauncherAppState {
         mWidgetCache = new WidgetPreviewLoader(mContext, mIconCache);
 
         mModel = new LauncherModel(this, mIconCache,
-                Utilities.getOverrideObject(AppFilter.class, mContext, R.string.app_filter_class));
+                new NexusAppFilter());
 
         LauncherAppsCompat.getInstance(mContext).addOnAppsChangedCallback(mModel);
 
