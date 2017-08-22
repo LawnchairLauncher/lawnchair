@@ -58,7 +58,7 @@
     <string name="gadget_setup_text" msgid="8274003207686040488">"Nastavenie"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Toto je systémová aplikácia a nedá sa odinštalovať."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Nepomenovaný priečinok"</string>
-    <string name="disabled_app_label" msgid="6673129024321402780">"Aplikácia <xliff:g id="APP_NAME">%1$s</xliff:g> je zakázaná"</string>
+    <string name="disabled_app_label" msgid="6673129024321402780">"Aplikácia <xliff:g id="APP_NAME">%1$s</xliff:g> je deaktivovaná"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Stránka %1$d z %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Plocha %1$d z %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Nová stránka plochy"</string>

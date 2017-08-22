@@ -42,7 +42,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
         return supportsDrop(getContext(), info);
     }
 
-    public static boolean supportsDrop(Context context, Object info) {
+    public static boolean supportsDrop(Context context, ItemInfo info) {
         UserManager userManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
         Bundle restrictions = userManager.getUserRestrictions();
         if (restrictions.getBoolean(UserManager.DISALLOW_APPS_CONTROL, false)
@@ -56,21 +56,13 @@ public class UninstallDropTarget extends ButtonDropTarget {
     /**
      * @return the component name that should be uninstalled or null.
      */
-    private static ComponentName getUninstallTarget(Context context, Object item) {
+    private static ComponentName getUninstallTarget(Context context, ItemInfo item) {
         Intent intent = null;
         UserHandle user = null;
-        if (item instanceof AppInfo) {
-            AppInfo info = (AppInfo) item;
-            intent = info.intent;
-            user = info.user;
-        } else if (item instanceof ShortcutInfo) {
-            ShortcutInfo info = (ShortcutInfo) item;
-            if (info.itemType == LauncherSettings.BaseLauncherColumns.ITEM_TYPE_APPLICATION) {
-                // Do not use restore/target intent here as we cannot uninstall an app which is
-                // being installed/restored.
-                intent = info.intent;
-                user = info.user;
-            }
+        if (item != null &&
+                item.itemType == LauncherSettings.BaseLauncherColumns.ITEM_TYPE_APPLICATION) {
+            intent = item.getIntent();
+            user = item.user;
         }
         if (intent != null) {
             LauncherActivityInfo info = LauncherAppsCompat.getInstance(context)

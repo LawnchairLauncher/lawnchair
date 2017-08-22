@@ -56,6 +56,7 @@ import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
@@ -138,26 +139,20 @@ public class LauncherModel extends BroadcastReceiver
         public int getCurrentWorkspaceScreen();
         public void clearPendingBinds();
         public void startBinding();
-        public void bindItems(ArrayList<ItemInfo> shortcuts, int start, int end,
-                              boolean forceAnimateIcons);
+        public void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons);
         public void bindScreens(ArrayList<Long> orderedScreenIds);
         public void finishFirstPageBind(ViewOnDrawExecutor executor);
         public void finishBindingItems();
-        public void bindAppWidget(LauncherAppWidgetInfo info);
         public void bindAllApplications(ArrayList<AppInfo> apps);
+        public void bindAppsAddedOrUpdated(ArrayList<AppInfo> apps);
         public void bindAppsAdded(ArrayList<Long> newScreens,
                                   ArrayList<ItemInfo> addNotAnimated,
-                                  ArrayList<ItemInfo> addAnimated,
-                                  ArrayList<AppInfo> addedApps);
-        public void bindAppsUpdated(ArrayList<AppInfo> apps);
+                                  ArrayList<ItemInfo> addAnimated);
         public void bindPromiseAppProgressUpdated(PromiseAppInfo app);
-        public void bindShortcutsChanged(ArrayList<ShortcutInfo> updated,
-                ArrayList<ShortcutInfo> removed, UserHandle user);
+        public void bindShortcutsChanged(ArrayList<ShortcutInfo> updated, UserHandle user);
         public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
         public void bindRestoreItemsChange(HashSet<ItemInfo> updates);
-        public void bindWorkspaceComponentsRemoved(
-                HashSet<String> packageNames, HashSet<ComponentName> components,
-                UserHandle user);
+        public void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher);
         public void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
         public void bindAllWidgets(MultiHashMap<PackageItemInfo, WidgetItem> widgets);
         public void onPageBoundSynchronously(int page);
@@ -537,7 +532,7 @@ public class LauncherModel extends BroadcastReceiver
                     scheduleCallbackTask(new CallbackTask() {
                         @Override
                         public void execute(Callbacks callbacks) {
-                            callbacks.bindAppsAdded(null, null, null, arrayList);
+                            callbacks.bindAppsAddedOrUpdated(arrayList);
                         }
                     });
                 }
@@ -688,5 +683,9 @@ public class LauncherModel extends BroadcastReceiver
      */
     public static Looper getWorkerLooper() {
         return sWorkerThread.getLooper();
+    }
+
+    public static void setWorkerPriority(final int priority) {
+        Process.setThreadPriority(sWorkerThread.getThreadId(), priority);
     }
 }
