@@ -58,6 +58,7 @@ import ch.deletescape.lawnchair.graphics.TriangleShape;
 import ch.deletescape.lawnchair.notification.NotificationItemView;
 import ch.deletescape.lawnchair.notification.NotificationKeyData;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
+import ch.deletescape.lawnchair.shortcuts.DeepShortcutView;
 import ch.deletescape.lawnchair.shortcuts.ShortcutsItemView;
 import ch.deletescape.lawnchair.util.PackageUserKey;
 
@@ -121,107 +122,104 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         return popupContainerWithArrow;
     }
 
-    public void populateAndShow(BubbleTextView bubbleTextView, List list, List list2, List list3) {
-        List deepShortcuts;
-        List systemShortcuts;
-        Resources resources = getResources();
-        int popupArrowWidth = resources.getDimensionPixelSize(R.dimen.popup_arrow_width);
-        int popupArrowHeight = resources.getDimensionPixelSize(R.dimen.popup_arrow_height);
-        int popupArrowVerticalOffset = resources.getDimensionPixelSize(R.dimen.popup_arrow_vertical_offset);
-        mOriginalIcon = bubbleTextView;
-        PopupPopulator.Item[] itemsToPopulate = PopupPopulator.getItemsToPopulate(list, list2, list3);
-        addDummyViews(itemsToPopulate, list2.size() > 1);
-        measure(0, 0);
-        orientAboutIcon(bubbleTextView, popupArrowHeight + popupArrowVerticalOffset);
-        boolean z = mIsAboveIcon;
-        if (z) {
+    public void populateAndShow(final BubbleTextView originalIcon, final List<String> shortcutIds,
+                                final List<NotificationKeyData> notificationKeys, List<SystemShortcut> systemShortcuts) {
+        final Resources resources = getResources();
+        final int arrowWidth = resources.getDimensionPixelSize(R.dimen.popup_arrow_width);
+        final int arrowHeight = resources.getDimensionPixelSize(R.dimen.popup_arrow_height);
+        final int arrowVerticalOffset = resources.getDimensionPixelSize(
+                R.dimen.popup_arrow_vertical_offset);
+        mOriginalIcon = originalIcon;
+        // Add dummy views first, and populate with real info when ready.
+        PopupPopulator.Item[] itemsToPopulate = PopupPopulator
+                .getItemsToPopulate(shortcutIds, notificationKeys, systemShortcuts);
+        addDummyViews(itemsToPopulate, notificationKeys.size() > 1);
+        measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+        orientAboutIcon(originalIcon, arrowHeight + arrowVerticalOffset);
+        boolean reverseOrder = mIsAboveIcon;
+        if (reverseOrder) {
             removeAllViews();
             mNotificationItemView = null;
             mShortcutsItemView = null;
-            addDummyViews(PopupPopulator.reverseItems(itemsToPopulate), list2.size() > 1);
-            measure(0, 0);
-            orientAboutIcon(bubbleTextView, popupArrowHeight + popupArrowVerticalOffset);
+            itemsToPopulate = PopupPopulator.reverseItems(itemsToPopulate);
+            addDummyViews(itemsToPopulate, notificationKeys.size() > 1);
+            measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+            orientAboutIcon(originalIcon, arrowHeight + arrowVerticalOffset);
         }
-        ItemInfo itemInfo = (ItemInfo) bubbleTextView.getTag();
-        if (mShortcutsItemView == null) {
-            deepShortcuts = Collections.emptyList();
-            systemShortcuts = Collections.emptyList();
-        } else {
-            deepShortcuts = mShortcutsItemView.getDeepShortcutViews(z);
-            systemShortcuts = mShortcutsItemView.getSystemShortcutViews(z);
-        }
+        ItemInfo originalItemInfo = (ItemInfo) originalIcon.getTag();
+        List<DeepShortcutView> shortcutViews = mShortcutsItemView == null
+                ? Collections.<DeepShortcutView>emptyList()
+                : mShortcutsItemView.getDeepShortcutViews(reverseOrder);
+        List<View> systemShortcutViews = mShortcutsItemView == null
+                ? Collections.<View>emptyList()
+                : mShortcutsItemView.getSystemShortcutViews(reverseOrder);
         if (mNotificationItemView != null) {
             updateNotificationHeader();
         }
-        int size = deepShortcuts.size() + systemShortcuts.size();
-        if (bubbleTextView.getContentDescription() != null) {
-            if (list2.size() == 0) {
-                setContentDescription(getContext().getString(R.string.shortcuts_menu_description, size, bubbleTextView.getContentDescription().toString()));
-            } else {
-                setContentDescription(getContext().getString(R.string.shortcuts_menu_with_notifications_description, size, list2.size(), bubbleTextView.getContentDescription().toString()));
-            }
-        }
-        if (isAlignedWithStart()) {
-            size = R.dimen.popup_arrow_horizontal_offset_start;
+        int numShortcuts = shortcutViews.size() + systemShortcutViews.size();
+        int numNotifications = notificationKeys.size();
+        if (numNotifications == 0) {
+            setContentDescription(getContext().getString(R.string.shortcuts_menu_description,
+                    numShortcuts, originalIcon.getContentDescription().toString()));
         } else {
-            size = R.dimen.popup_arrow_horizontal_offset_end;
+            setContentDescription(getContext().getString(
+                    R.string.shortcuts_menu_with_notifications_description, numShortcuts,
+                    numNotifications, originalIcon.getContentDescription().toString()));
         }
-        mArrow = addArrowView(resources.getDimensionPixelSize(size), popupArrowVerticalOffset, popupArrowWidth, popupArrowHeight);
-        mArrow.setPivotX((float) (popupArrowWidth / 2));
-        View view = mArrow;
-        if (mIsAboveIcon) {
-            size = 0;
-        } else {
-            size = popupArrowHeight;
-        }
-        view.setPivotY((float) size);
+        // Add the arrow.
+        final int arrowHorizontalOffset = resources.getDimensionPixelSize(isAlignedWithStart() ?
+                R.dimen.popup_arrow_horizontal_offset_start :
+                R.dimen.popup_arrow_horizontal_offset_end);
+        mArrow = addArrowView(arrowHorizontalOffset, arrowVerticalOffset, arrowWidth, arrowHeight);
+        mArrow.setPivotX(arrowWidth / 2);
+        mArrow.setPivotY(mIsAboveIcon ? 0 : arrowHeight);
         animateOpen();
         mLauncher.getDragController().addDragListener(this);
         mOriginalIcon.forceHideBadge(true);
-        new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(PopupPopulator.createUpdateRunnable(mLauncher, itemInfo, new Handler(Looper.getMainLooper()), this, list, deepShortcuts, list2, mNotificationItemView, list3, systemShortcuts));
+        // Load the shortcuts on a background thread and update the container as it animates.
+        final Looper workerLooper = LauncherModel.getWorkerLooper();
+        new Handler(workerLooper).postAtFrontOfQueue(PopupPopulator.createUpdateRunnable(
+                mLauncher, originalItemInfo, new Handler(Looper.getMainLooper()),
+                this, shortcutIds, shortcutViews, notificationKeys, mNotificationItemView,
+                systemShortcuts, systemShortcutViews));
     }
 
-    private void addDummyViews(PopupPopulator.Item[] itemArr, boolean z) {
-        Resources resources = getResources();
-        int dimensionPixelSize = resources.getDimensionPixelSize(R.dimen.popup_items_spacing);
-        LayoutInflater layoutInflater = LayoutInflater.from(FeatureFlags.INSTANCE.applyDarkTheme(mLauncher, FeatureFlags.DARK_SHORTCUTS));
-        int length = itemArr.length;
-        for (int i = 0; i < length; i++) {
-            PopupPopulator.Item item;
-            PopupPopulator.Item item2 = itemArr[i];
-            if (i < length - 1) {
-                item = itemArr[i + 1];
-            } else {
-                item = null;
-            }
-            View inflate = layoutInflater.inflate(item2.layoutId, this, false);
-            if (item2 == PopupPopulator.Item.NOTIFICATION) {
-                int dimensionPixelSize2;
-                mNotificationItemView = (NotificationItemView) inflate;
-                if (z) {
-                    dimensionPixelSize2 = resources.getDimensionPixelSize(R.dimen.notification_footer_height);
-                } else {
-                    dimensionPixelSize2 = 0;
-                }
-                inflate.findViewById(R.id.footer).getLayoutParams().height = dimensionPixelSize2;
+    private void addDummyViews(PopupPopulator.Item[] itemTypesToPopulate,
+                               boolean notificationFooterHasIcons) {
+        final Resources res = getResources();
+        final int spacing = res.getDimensionPixelSize(R.dimen.popup_items_spacing);
+        final LayoutInflater inflater = mLauncher.getLayoutInflater();
+        int numItems = itemTypesToPopulate.length;
+        for (int i = 0; i < numItems; i++) {
+            PopupPopulator.Item itemTypeToPopulate = itemTypesToPopulate[i];
+            PopupPopulator.Item nextItemTypeToPopulate =
+                    i < numItems - 1 ? itemTypesToPopulate[i + 1] : null;
+            final View item = inflater.inflate(itemTypeToPopulate.layoutId, this, false);
+            if (itemTypeToPopulate == PopupPopulator.Item.NOTIFICATION) {
+                mNotificationItemView = (NotificationItemView) item;
+                int footerHeight = notificationFooterHasIcons ?
+                        res.getDimensionPixelSize(R.dimen.notification_footer_height) : 0;
+                item.findViewById(R.id.footer).getLayoutParams().height = footerHeight;
                 mNotificationItemView.getMainView().setAccessibilityDelegate(mAccessibilityDelegate);
-            } else if (item2 == PopupPopulator.Item.SHORTCUT) {
-                inflate.setAccessibilityDelegate(mAccessibilityDelegate);
+            } else if (itemTypeToPopulate == PopupPopulator.Item.SHORTCUT) {
+                item.setAccessibilityDelegate(mAccessibilityDelegate);
             }
-            boolean b = item != null && item2.isShortcut ^ item.isShortcut;
-            if (item2.isShortcut) {
+            boolean shouldAddBottomMargin = nextItemTypeToPopulate != null
+                    && itemTypeToPopulate.isShortcut ^ nextItemTypeToPopulate.isShortcut;
+            if (itemTypeToPopulate.isShortcut) {
                 if (mShortcutsItemView == null) {
-                    mShortcutsItemView = (ShortcutsItemView) layoutInflater.inflate(R.layout.shortcuts_item, this, false);
+                    mShortcutsItemView = (ShortcutsItemView) inflater.inflate(
+                            R.layout.shortcuts_item, this, false);
                     addView(mShortcutsItemView);
                 }
-                mShortcutsItemView.addShortcutView(inflate, item2);
-                if (b) {
-                    ((LayoutParams) mShortcutsItemView.getLayoutParams()).bottomMargin = dimensionPixelSize;
+                mShortcutsItemView.addShortcutView(item, itemTypeToPopulate);
+                if (shouldAddBottomMargin) {
+                    ((LayoutParams) mShortcutsItemView.getLayoutParams()).bottomMargin = spacing;
                 }
             } else {
-                addView(inflate);
-                if (b) {
-                    ((LayoutParams) inflate.getLayoutParams()).bottomMargin = dimensionPixelSize;
+                addView(item);
+                if (shouldAddBottomMargin) {
+                    ((LayoutParams) item.getLayoutParams()).bottomMargin = spacing;
                 }
             }
         }
