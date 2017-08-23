@@ -188,7 +188,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                                boolean notificationFooterHasIcons) {
         final Resources res = getResources();
         final int spacing = res.getDimensionPixelSize(R.dimen.popup_items_spacing);
-        final LayoutInflater inflater = mLauncher.getLayoutInflater();
+        LayoutInflater inflater = LayoutInflater.from(FeatureFlags.INSTANCE.applyDarkTheme(mLauncher, FeatureFlags.DARK_SHORTCUTS));
         int numItems = itemTypesToPopulate.length;
         for (int i = 0; i < numItems; i++) {
             PopupPopulator.Item itemTypeToPopulate = itemTypesToPopulate[i];
