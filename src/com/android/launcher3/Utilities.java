@@ -85,7 +85,7 @@ public final class Utilities {
     private static final Matrix sInverseMatrix = new Matrix();
 
     public static boolean isAtLeastO() {
-        return BuildCompat.isAtLeastO();
+        return Build.VERSION.SDK_INT >= 26;
     }
 
     public static final boolean ATLEAST_NOUGAT_MR1 =
