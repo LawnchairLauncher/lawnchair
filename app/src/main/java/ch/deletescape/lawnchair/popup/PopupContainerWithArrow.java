@@ -1,13 +1,26 @@
+/*
+ * Copyright (C) 2016 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package ch.deletescape.lawnchair.popup;
-
 import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.CornerPathEffect;
@@ -15,6 +28,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
@@ -26,12 +40,6 @@ import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import ch.deletescape.lawnchair.AbstractFloatingView;
 import ch.deletescape.lawnchair.BubbleTextView;
 import ch.deletescape.lawnchair.DragSource;
@@ -41,6 +49,7 @@ import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAnimUtils;
 import ch.deletescape.lawnchair.LauncherModel;
+import ch.deletescape.lawnchair.LauncherSettings;
 import ch.deletescape.lawnchair.LogAccelerateInterpolator;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
@@ -61,67 +70,77 @@ import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutView;
 import ch.deletescape.lawnchair.shortcuts.ShortcutsItemView;
 import ch.deletescape.lawnchair.util.PackageUserKey;
-
-public class PopupContainerWithArrow extends AbstractFloatingView implements DragSource, DragController.DragListener {
-    private LauncherAccessibilityDelegate mAccessibilityDelegate;
-    private View mArrow;
-    private boolean mDeferContainerRemoval;
-    private PointF mInterceptTouchDown;
-    protected boolean mIsAboveIcon;
-    private boolean mIsLeftAligned;
-    private final boolean mIsRtl;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+/**
+ * A container for shortcuts to deep links within apps.
+ */
+@TargetApi(Build.VERSION_CODES.N)
+public class PopupContainerWithArrow extends AbstractFloatingView implements DragSource,
+        DragController.DragListener {
     protected final Launcher mLauncher;
-    private NotificationItemView mNotificationItemView;
-    protected Animator mOpenCloseAnimator;
-    protected BubbleTextView mOriginalIcon;
-    private AnimatorSet mReduceHeightAnimatorSet;
-    public ShortcutsItemView mShortcutsItemView;
     private final int mStartDragThreshold;
-    private final Rect mTempRect;
-
-    public PopupContainerWithArrow(Context context, AttributeSet attributeSet, int i) {
-        super(context, attributeSet, i);
-        mTempRect = new Rect();
-        mInterceptTouchDown = new PointF();
+    private LauncherAccessibilityDelegate mAccessibilityDelegate;
+    private final boolean mIsRtl;
+    public ShortcutsItemView mShortcutsItemView;
+    private NotificationItemView mNotificationItemView;
+    protected BubbleTextView mOriginalIcon;
+    private final Rect mTempRect = new Rect();
+    private PointF mInterceptTouchDown = new PointF();
+    private boolean mIsLeftAligned;
+    protected boolean mIsAboveIcon;
+    private View mArrow;
+    protected Animator mOpenCloseAnimator;
+    private boolean mDeferContainerRemoval;
+    private AnimatorSet mReduceHeightAnimatorSet;
+    public PopupContainerWithArrow(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         mLauncher = Launcher.getLauncher(context);
-        mStartDragThreshold = getResources().getDimensionPixelSize(R.dimen.deep_shortcuts_start_drag_threshold);
+        mStartDragThreshold = getResources().getDimensionPixelSize(
+                R.dimen.deep_shortcuts_start_drag_threshold);
         mAccessibilityDelegate = new ShortcutMenuAccessibilityDelegate(mLauncher);
         mIsRtl = Utilities.isRtl(getResources());
     }
-
-    public PopupContainerWithArrow(Context context, AttributeSet attributeSet) {
-        this(context, attributeSet, 0);
+    public PopupContainerWithArrow(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
     }
-
     public PopupContainerWithArrow(Context context) {
         this(context, null, 0);
     }
-
     public LauncherAccessibilityDelegate getAccessibilityDelegate() {
         return mAccessibilityDelegate;
     }
-
-    public static PopupContainerWithArrow showForIcon(BubbleTextView bubbleTextView) {
-        Launcher launcher = Launcher.getLauncher(bubbleTextView.getContext());
+    /**
+     * Shows the notifications and deep shortcuts associated with {@param icon}.
+     * @return the container if shown or null.
+     */
+    public static PopupContainerWithArrow showForIcon(BubbleTextView icon) {
+        Launcher launcher = Launcher.getLauncher(icon.getContext());
         if (getOpen(launcher) != null) {
-            bubbleTextView.clearFocus();
+            // There is already an items container open, so don't open this one.
+            icon.clearFocus();
             return null;
         }
-        ItemInfo itemInfo = (ItemInfo) bubbleTextView.getTag();
-        if (!DeepShortcutManager.supportsEdit(itemInfo)) {
+        ItemInfo itemInfo = (ItemInfo) icon.getTag();
+        if (!DeepShortcutManager.supportsShortcuts(itemInfo)) {
             return null;
         }
         PopupDataProvider popupDataProvider = launcher.getPopupDataProvider();
-        List shortcutIdsForItem = popupDataProvider.getShortcutIdsForItem(itemInfo);
-        List notificationKeysForItem = popupDataProvider.getNotificationKeysForItem(itemInfo);
-        List enabledSystemShortcutsForItem = popupDataProvider.getEnabledSystemShortcutsForItem(itemInfo);
-        PopupContainerWithArrow popupContainerWithArrow = (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(R.layout.popup_container, launcher.getDragLayer(), false);
-        popupContainerWithArrow.setVisibility(INVISIBLE);
-        launcher.getDragLayer().addView(popupContainerWithArrow);
-        popupContainerWithArrow.populateAndShow(bubbleTextView, shortcutIdsForItem, notificationKeysForItem, enabledSystemShortcutsForItem);
-        return popupContainerWithArrow;
+        List<String> shortcutIds = popupDataProvider.getShortcutIdsForItem(itemInfo);
+        List<NotificationKeyData> notificationKeys = popupDataProvider
+                .getNotificationKeysForItem(itemInfo);
+        List<SystemShortcut> systemShortcuts = popupDataProvider
+                .getEnabledSystemShortcutsForItem(itemInfo);
+        final PopupContainerWithArrow container =
+                (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
+                        R.layout.popup_container, launcher.getDragLayer(), false);
+        container.setVisibility(View.INVISIBLE);
+        launcher.getDragLayer().addView(container);
+        container.populateAndShow(icon, shortcutIds, notificationKeys, systemShortcuts);
+        return container;
     }
-
     public void populateAndShow(final BubbleTextView originalIcon, final List<String> shortcutIds,
                                 final List<NotificationKeyData> notificationKeys, List<SystemShortcut> systemShortcuts) {
         final Resources resources = getResources();
@@ -183,7 +202,6 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 this, shortcutIds, shortcutViews, notificationKeys, mNotificationItemView,
                 systemShortcuts, systemShortcutViews));
     }
-
     private void addDummyViews(PopupPopulator.Item[] itemTypesToPopulate,
                                boolean notificationFooterHasIcons) {
         final Resources res = getResources();
@@ -224,18 +242,17 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             }
         }
     }
-
-    protected PopupItemView getItemViewAt(int i) {
+    protected PopupItemView getItemViewAt(int index) {
         if (!mIsAboveIcon) {
-            i++;
+            // Opening down, so arrow is the first view.
+            index++;
         }
-        return (PopupItemView) getChildAt(i);
+        return (PopupItemView) getChildAt(index);
     }
-
     protected int getItemCount() {
+        // All children except the arrow are items.
         return getChildCount() - 1;
     }
-
     private void animateOpen() {
         setVisibility(View.VISIBLE);
         mIsOpen = true;
@@ -292,7 +309,6 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         mOpenCloseAnimator = shortcutAnims;
         shortcutAnims.start();
     }
-
     /**
      * Orients this container above or below the given icon, aligning with the left or right.
      *
@@ -396,106 +412,110 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             setY(y);
         }
     }
-
     private boolean isAlignedWithStart() {
-        return !(!this.mIsLeftAligned || this.mIsRtl) || !this.mIsLeftAligned && this.mIsRtl;
-
+        return mIsLeftAligned && !mIsRtl || !mIsLeftAligned && mIsRtl;
     }
-
-    private View addArrowView(int i, int i2, int i3, int i4) {
-        int i5 = 0;
-        PopupContainerWithArrow.LayoutParams layoutParams = new LayoutParams(i3, i4);
+    /**
+     * Adds an arrow view pointing at the original icon.
+     * @param horizontalOffset the horizontal offset of the arrow, so that it
+     *                              points at the center of the original icon
+     */
+    private View addArrowView(int horizontalOffset, int verticalOffset, int width, int height) {
+        LayoutParams layoutParams = new LayoutParams(width, height);
         if (mIsLeftAligned) {
             layoutParams.gravity = Gravity.LEFT;
-            layoutParams.leftMargin = i;
+            layoutParams.leftMargin = horizontalOffset;
         } else {
             layoutParams.gravity = Gravity.RIGHT;
-            layoutParams.rightMargin = i;
+            layoutParams.rightMargin = horizontalOffset;
         }
         if (mIsAboveIcon) {
-            layoutParams.topMargin = i2;
+            layoutParams.topMargin = verticalOffset;
         } else {
-            layoutParams.bottomMargin = i2;
+            layoutParams.bottomMargin = verticalOffset;
         }
-        View view = new View(getContext());
+        View arrowView = new View(getContext());
         if (Gravity.isVertical(((FrameLayout.LayoutParams) getLayoutParams()).gravity)) {
-            view.setVisibility(INVISIBLE);
+            // This is only true if there wasn't room for the container next to the icon,
+            // so we centered it instead. In that case we don't want to show the arrow.
+            arrowView.setVisibility(INVISIBLE);
         } else {
-            ShapeDrawable shapeDrawable = new ShapeDrawable(TriangleShape.create((float) i3, (float) i4, !mIsAboveIcon));
-            Paint paint = shapeDrawable.getPaint();
-            paint.setColor(((PopupItemView) getChildAt(mIsAboveIcon ? getChildCount() - 1 : 0)).getArrowColor(mIsAboveIcon));
-            paint.setPathEffect(new CornerPathEffect((float) getResources().getDimensionPixelSize(R.dimen.popup_arrow_corner_radius)));
-            view.setBackground(shapeDrawable);
-            view.setElevation(getElevation());
+            ShapeDrawable arrowDrawable = new ShapeDrawable(TriangleShape.create(
+                    width, height, !mIsAboveIcon));
+            Paint arrowPaint = arrowDrawable.getPaint();
+            // Note that we have to use getChildAt() instead of getItemViewAt(),
+            // since the latter expects the arrow which hasn't been added yet.
+            PopupItemView itemAttachedToArrow = (PopupItemView)
+                    (getChildAt(mIsAboveIcon ? getChildCount() - 1 : 0));
+            arrowPaint.setColor(itemAttachedToArrow.getArrowColor(mIsAboveIcon));
+            // The corner path effect won't be reflected in the shadow, but shouldn't be noticeable.
+            int radius = getResources().getDimensionPixelSize(R.dimen.popup_arrow_corner_radius);
+            arrowPaint.setPathEffect(new CornerPathEffect(radius));
+            arrowView.setBackground(arrowDrawable);
+            arrowView.setElevation(getElevation());
         }
-        if (mIsAboveIcon) {
-            i5 = getChildCount();
-        }
-        addView(view, i5, layoutParams);
-        return view;
+        addView(arrowView, mIsAboveIcon ? getChildCount() : 0, layoutParams);
+        return arrowView;
     }
-
     @Override
     public View getExtendedTouchView() {
         return mOriginalIcon;
     }
-
+    /**
+     * Determines when the deferred drag should be started.
+     *
+     * Current behavior:
+     * - Start the drag if the touch passes a certain distance from the original touch down.
+     */
     public DragOptions.PreDragCondition createPreDragCondition(final boolean originIsAllApps) {
         return new DragOptions.PreDragCondition() {
             @Override
-            public boolean shouldStartDrag(double d) {
-                return d > ((double) PopupContainerWithArrow.this.mStartDragThreshold);
+            public boolean shouldStartDrag(double distanceDragged) {
+                return distanceDragged > mStartDragThreshold;
             }
-
             @Override
             public void onPreDragStart(DropTarget.DragObject dragObject) {
-                PopupContainerWithArrow.this.mOriginalIcon.setVisibility(INVISIBLE);
+                mOriginalIcon.setVisibility(INVISIBLE);
             }
-
             @Override
-            public void onPreDragEnd(DropTarget.DragObject dragObject, boolean makeOriginalVisible) {
-                if (makeOriginalVisible || originIsAllApps) {
-                    PopupContainerWithArrow.this.mOriginalIcon.setVisibility(VISIBLE);
-                    if (!PopupContainerWithArrow.this.mIsAboveIcon) {
-                        PopupContainerWithArrow.this.mOriginalIcon.setTextVisibility(false);
+            public void onPreDragEnd(DropTarget.DragObject dragObject, boolean dragStarted) {
+                if (!dragStarted || originIsAllApps) {
+                    mOriginalIcon.setVisibility(VISIBLE);
+                    if (!mIsAboveIcon) {
+                        mOriginalIcon.setTextVisibility(false);
                     }
                 }
             }
         };
     }
-
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent motionEvent) {
-        boolean z = false;
-        if (motionEvent.getAction() == 0) {
-            mInterceptTouchDown.set(motionEvent.getX(), motionEvent.getY());
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            mInterceptTouchDown.set(ev.getX(), ev.getY());
             return false;
         }
-        if (Math.hypot((double) (mInterceptTouchDown.x - motionEvent.getX()), (double) (mInterceptTouchDown.y - motionEvent.getY())) > ((double) ViewConfiguration.get(getContext()).getScaledTouchSlop())) {
-            z = true;
-        }
-        return z;
+        // Stop sending touch events to deep shortcut views if user moved beyond touch slop.
+        return Math.hypot(mInterceptTouchDown.x - ev.getX(), mInterceptTouchDown.y - ev.getY())
+                > ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
-
-    public void updateNotificationHeader(Set set) {
-        if (set.contains(PackageUserKey.fromItemInfo((ItemInfo) mOriginalIcon.getTag()))) {
+    /**
+     * Updates the notification header if the original icon's badge updated.
+     */
+    public void updateNotificationHeader(Set<PackageUserKey> updatedBadges) {
+        ItemInfo itemInfo = (ItemInfo) mOriginalIcon.getTag();
+        PackageUserKey packageUser = PackageUserKey.fromItemInfo(itemInfo);
+        if (updatedBadges.contains(packageUser)) {
             updateNotificationHeader();
         }
     }
-
     private void updateNotificationHeader() {
-        BadgeInfo badgeInfoForItem = mLauncher.getPopupDataProvider().getBadgeInfoForItem((ItemInfo) mOriginalIcon.getTag());
-        if (mNotificationItemView != null && badgeInfoForItem != null) {
-            IconPalette iconPalette;
-            if (mOriginalIcon.getIcon() instanceof FastBitmapDrawable) {
-                iconPalette = ((FastBitmapDrawable) mOriginalIcon.getIcon()).getIconPalette();
-            } else {
-                iconPalette = null;
-            }
-            mNotificationItemView.updateHeader(badgeInfoForItem.getNotificationCount(), iconPalette);
+        ItemInfo itemInfo = (ItemInfo) mOriginalIcon.getTag();
+        BadgeInfo badgeInfo = mLauncher.getPopupDataProvider().getBadgeInfoForItem(itemInfo);
+        if (mNotificationItemView != null && badgeInfo != null) {
+            IconPalette palette = ((FastBitmapDrawable) mOriginalIcon.getIcon()).getIconPalette();
+            mNotificationItemView.updateHeader(badgeInfo.getNotificationCount(), palette);
         }
     }
-
     public void trimNotifications(Map<PackageUserKey, BadgeInfo> updatedBadges) {
         if (mNotificationItemView == null) {
             return;
@@ -549,41 +569,49 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         mNotificationItemView.trimNotifications(NotificationKeyData.extractKeysOnly(
                 badgeInfo.getNotificationKeys()));
     }
-
     @Override
     protected void onWidgetsBound() {
         if (mShortcutsItemView != null) {
             mShortcutsItemView.enableWidgetsIfExist(mOriginalIcon);
         }
     }
-
-    private ObjectAnimator createArrowScaleAnim(float f) {
-        return LauncherAnimUtils.ofPropertyValuesHolder(mArrow, new PropertyListBuilder().scale(f).build());
+    private ObjectAnimator createArrowScaleAnim(float scale) {
+        return LauncherAnimUtils.ofPropertyValuesHolder(
+                mArrow, new PropertyListBuilder().scale(scale).build());
     }
-
-    public Animator reduceNotificationViewHeight(int i, int i2) {
+    /**
+     * Animates the height of the notification item and the translationY of other items accordingly.
+     */
+    public Animator reduceNotificationViewHeight(int heightToRemove, int duration) {
         if (mReduceHeightAnimatorSet != null) {
             mReduceHeightAnimatorSet.cancel();
         }
-        final int i3 = mIsAboveIcon ? i : -i;
+        final int translateYBy = mIsAboveIcon ? heightToRemove : -heightToRemove;
         mReduceHeightAnimatorSet = LauncherAnimUtils.createAnimatorSet();
-        mReduceHeightAnimatorSet.play(mNotificationItemView.animateHeightRemoval(i));
-        AnimatorListener propertyResetListener = new PropertyResetListener(TRANSLATION_Y, 0.0f);
-        for (int i4 = 0; i4 < getItemCount(); i4++) {
-            PopupItemView itemViewAt = getItemViewAt(i4);
-            if (mIsAboveIcon || itemViewAt != mNotificationItemView) {
-                Animator duration = ObjectAnimator.ofFloat(itemViewAt, TRANSLATION_Y, new float[]{itemViewAt.getTranslationY() + ((float) i3)}).setDuration((long) i2);
-                duration.addListener(propertyResetListener);
-                mReduceHeightAnimatorSet.play(duration);
+        mReduceHeightAnimatorSet.play(mNotificationItemView.animateHeightRemoval(heightToRemove));
+        PropertyResetListener<View, Float> resetTranslationYListener
+                = new PropertyResetListener<>(TRANSLATION_Y, 0f);
+        for (int i = 0; i < getItemCount(); i++) {
+            final PopupItemView itemView = getItemViewAt(i);
+            if (!mIsAboveIcon && itemView == mNotificationItemView) {
+                // The notification view is already in the right place when container is below icon.
+                continue;
             }
+            ValueAnimator translateItem = ObjectAnimator.ofFloat(itemView, TRANSLATION_Y,
+                    itemView.getTranslationY() + translateYBy).setDuration(duration);
+            translateItem.addListener(resetTranslationYListener);
+            mReduceHeightAnimatorSet.play(translateItem);
         }
         mReduceHeightAnimatorSet.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animator) {
-                if (PopupContainerWithArrow.this.mIsAboveIcon) {
-                    PopupContainerWithArrow.this.setTranslationY(PopupContainerWithArrow.this.getTranslationY() + ((float) i3));
+            public void onAnimationEnd(Animator animation) {
+                if (mIsAboveIcon) {
+                    // All the items, including the notification item, translated down, but the
+                    // container itself did not. This means the items would jump back to their
+                    // original translation unless we update the container's translationY here.
+                    setTranslationY(getTranslationY() + translateYBy);
                 }
-                PopupContainerWithArrow.this.mReduceHeightAnimatorSet = null;
+                mReduceHeightAnimatorSet = null;
             }
         });
         return mReduceHeightAnimatorSet;
@@ -591,64 +619,65 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
     @Override
     public boolean supportsFlingToDelete() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean supportsAppInfoDropTarget() {
         return true;
     }
-
     @Override
     public boolean supportsDeleteDropTarget() {
         return false;
     }
-
     @Override
     public float getIntrinsicIconScaleFactor() {
-        return 1.0f;
+        return 1f;
     }
 
     @Override
     public void onFlingToDeleteCompleted() {
-        // Do nothing
+
     }
 
     @Override
-    public void onDropCompleted(View view, DropTarget.DragObject dragObject, boolean z, boolean z2) {
-        if (!z2) {
-            dragObject.dragView.remove();
+    public void onDropCompleted(View target, DropTarget.DragObject d, boolean isFlingToDelete,
+                                boolean success) {
+        if (!success) {
+            d.dragView.remove();
             mLauncher.showWorkspace(true);
             mLauncher.getDropTargetBar().onDragEnd();
         }
     }
-
     @Override
-    public void onDragStart(DropTarget.DragObject dragObject, DragOptions dragOptions) {
+    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
+        // Either the original icon or one of the shortcuts was dragged.
+        // Hide the container, but don't remove it yet because that interferes with touch events.
         mDeferContainerRemoval = true;
         animateClose();
     }
-
     @Override
     public void onDragEnd() {
         if (!mIsOpen) {
             if (mOpenCloseAnimator != null) {
+                // Close animation is running.
                 mDeferContainerRemoval = false;
-            } else if (mDeferContainerRemoval) {
-                closeComplete();
+            } else {
+                // Close animation is not running.
+                if (mDeferContainerRemoval) {
+                    closeComplete();
+                }
             }
         }
     }
-
     @Override
-    protected void handleClose(boolean z) {
-        if (z) {
+    protected void handleClose(boolean animate) {
+        if (animate) {
             animateClose();
         } else {
             closeComplete();
         }
     }
-
     protected void animateClose() {
         if (!mIsOpen) {
             return;
@@ -712,7 +741,9 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         shortcutAnims.start();
         mOriginalIcon.forceHideBadge(false);
     }
-
+    /**
+     * Closes the folder without animation.
+     */
     protected void closeComplete() {
         if (mOpenCloseAnimator != null) {
             mOpenCloseAnimator.cancel();
@@ -720,19 +751,21 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         }
         mIsOpen = false;
         mDeferContainerRemoval = false;
-        mOriginalIcon.setTextVisibility(!(((ItemInfo) mOriginalIcon.getTag()).container == -101));
+        boolean isInHotseat = ((ItemInfo) mOriginalIcon.getTag()).container
+                == LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+        mOriginalIcon.setTextVisibility(!isInHotseat);
         mOriginalIcon.forceHideBadge(false);
         mLauncher.getDragController().removeDragListener(this);
         mLauncher.getDragLayer().removeView(this);
     }
-
     @Override
-    protected boolean isOfType(int i) {
-        return (i & 2) != 0;
+    protected boolean isOfType(int type) {
+        return (type & 2) != 0;
     }
-
+    /**
+     * Returns a DeepShortcutsContainer which is already open or null
+     */
     public static PopupContainerWithArrow getOpen(Launcher launcher) {
-        return (PopupContainerWithArrow) AbstractFloatingView.getOpenView(launcher, 2);
+        return (PopupContainerWithArrow) getOpenView(launcher, 2);
     }
-
 }
