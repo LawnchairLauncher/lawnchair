@@ -1,123 +1,130 @@
+/*
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ch.deletescape.lawnchair.notification;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.os.Handler;
-import android.os.Handler.Callback;
 import android.os.Looper;
 import android.os.Message;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
+
+import ch.deletescape.lawnchair.LauncherModel;
+import ch.deletescape.lawnchair.config.FeatureFlags;
+import ch.deletescape.lawnchair.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import ch.deletescape.lawnchair.LauncherModel;
 import ch.deletescape.lawnchair.Utilities;
-import ch.deletescape.lawnchair.util.PackageUserKey;
 
+/**
+ * A {@link NotificationListenerService} that sends updates to its
+ * {@link NotificationsChangedListener} when notifications are posted or canceled,
+ * as well and when this service first connects. An instance of NotificationListener,
+ * and its methods for getting notifications, can be obtained via {@link #getInstanceIfConnected()}.
+ */
 public class NotificationListener extends NotificationListenerService {
-    private static boolean sIsConnected;
+
+    private static final int MSG_NOTIFICATION_POSTED = 1;
+    private static final int MSG_NOTIFICATION_REMOVED = 2;
+    private static final int MSG_NOTIFICATION_FULL_REFRESH = 3;
+
     private static NotificationListener sNotificationListenerInstance = null;
     private static NotificationsChangedListener sNotificationsChangedListener;
+    private static boolean sIsConnected;
+
+    private final Handler mWorkerHandler;
+    private final Handler mUiHandler;
+
     private Ranking mTempRanking = new Ranking();
-    private Callback mUiCallback = new C04642();
-    private final Handler mUiHandler = new Handler(Looper.getMainLooper(), mUiCallback);
-    private Callback mWorkerCallback = new C04631();
-    private final Handler mWorkerHandler = new Handler(LauncherModel.getWorkerLooper(), mWorkerCallback);
 
-    final class C04631 implements Callback {
-        C04631() {
-        }
-
+    private Handler.Callback mWorkerCallback = new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
             switch (message.what) {
-                case 1:
-                    NotificationListener.this.mUiHandler.obtainMessage(message.what, message.obj).sendToTarget();
+                case MSG_NOTIFICATION_POSTED:
+                    mUiHandler.obtainMessage(message.what, message.obj).sendToTarget();
                     break;
-                case 2:
-                    NotificationListener.this.mUiHandler.obtainMessage(message.what, message.obj).sendToTarget();
+                case MSG_NOTIFICATION_REMOVED:
+                    mUiHandler.obtainMessage(message.what, message.obj).sendToTarget();
                     break;
-                case 3:
-                    Object wrap1;
-                    if (NotificationListener.sIsConnected) {
-                        wrap1 = NotificationListener.this.filterNotifications(NotificationListener.this.getActiveNotifications());
-                    } else {
-                        wrap1 = new ArrayList();
-                    }
-                    NotificationListener.this.mUiHandler.obtainMessage(message.what, wrap1).sendToTarget();
+                case MSG_NOTIFICATION_FULL_REFRESH:
+                    final List<StatusBarNotification> activeNotifications = sIsConnected
+                            ? filterNotifications(getActiveNotifications())
+                            : new ArrayList<StatusBarNotification>();
+                    mUiHandler.obtainMessage(message.what, activeNotifications).sendToTarget();
                     break;
             }
             return true;
         }
-    }
+    };
 
-    final class C04642 implements Callback {
-        C04642() {
-        }
-
+    private Handler.Callback mUiCallback = new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
             switch (message.what) {
-                case 1:
-                    if (NotificationListener.sNotificationsChangedListener != null) {
-                        NotificationPostedMsg notificationPostedMsg = (NotificationPostedMsg) message.obj;
-                        NotificationListener.sNotificationsChangedListener.onNotificationPosted(notificationPostedMsg.packageUserKey, notificationPostedMsg.notificationKey, notificationPostedMsg.shouldBeFilteredOut);
-                        break;
+                case MSG_NOTIFICATION_POSTED:
+                    if (sNotificationsChangedListener != null) {
+                        NotificationPostedMsg msg = (NotificationPostedMsg) message.obj;
+                        sNotificationsChangedListener.onNotificationPosted(msg.packageUserKey,
+                                msg.notificationKey, msg.shouldBeFilteredOut);
                     }
                     break;
-                case 2:
-                    if (NotificationListener.sNotificationsChangedListener != null) {
-                        Pair c0017b = (Pair) message.obj;
-                        NotificationListener.sNotificationsChangedListener.onNotificationRemoved((PackageUserKey) c0017b.first, (NotificationKeyData) c0017b.second);
-                        break;
+                case MSG_NOTIFICATION_REMOVED:
+                    if (sNotificationsChangedListener != null) {
+                        Pair<PackageUserKey, NotificationKeyData> pair
+                                = (Pair<PackageUserKey, NotificationKeyData>) message.obj;
+                        sNotificationsChangedListener.onNotificationRemoved(pair.first, pair.second);
                     }
                     break;
-                case 3:
-                    if (NotificationListener.sNotificationsChangedListener != null) {
-                        NotificationListener.sNotificationsChangedListener.onNotificationFullRefresh((List<StatusBarNotification>) message.obj);
-                        break;
+                case MSG_NOTIFICATION_FULL_REFRESH:
+                    if (sNotificationsChangedListener != null) {
+                        sNotificationsChangedListener.onNotificationFullRefresh(
+                                (List<StatusBarNotification>) message.obj);
                     }
                     break;
             }
             return true;
         }
-    }
-
-    class NotificationPostedMsg {
-        NotificationKeyData notificationKey;
-        PackageUserKey packageUserKey;
-        boolean shouldBeFilteredOut;
-
-        NotificationPostedMsg(StatusBarNotification statusBarNotification) {
-            packageUserKey = PackageUserKey.fromNotification(statusBarNotification);
-            notificationKey = NotificationKeyData.fromNotification(statusBarNotification);
-            shouldBeFilteredOut = NotificationListener.this.shouldBeFilteredOut(statusBarNotification);
-        }
-    }
-
-    public interface NotificationsChangedListener {
-        void onNotificationFullRefresh(List<StatusBarNotification> list);
-
-        void onNotificationPosted(PackageUserKey packageUserKey, NotificationKeyData notificationKeyData, boolean z);
-
-        void onNotificationRemoved(PackageUserKey packageUserKey, NotificationKeyData notificationKeyData);
-    }
+    };
 
     public NotificationListener() {
+        super();
+        mWorkerHandler = new Handler(LauncherModel.getWorkerLooper(), mWorkerCallback);
+        mUiHandler = new Handler(Looper.getMainLooper(), mUiCallback);
         sNotificationListenerInstance = this;
     }
 
-    public static NotificationListener getInstanceIfConnected() {
+    public static @Nullable NotificationListener getInstanceIfConnected() {
         return sIsConnected ? sNotificationListenerInstance : null;
     }
 
-    public static void setNotificationsChangedListener(NotificationsChangedListener notificationsChangedListener) {
-        sNotificationsChangedListener = notificationsChangedListener;
+    public static void setNotificationsChangedListener(NotificationsChangedListener listener) {
+        sNotificationsChangedListener = listener;
+
         if (sNotificationListenerInstance != null) {
             sNotificationListenerInstance.onNotificationFullRefresh();
         }
@@ -135,7 +142,7 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private void onNotificationFullRefresh() {
-        mWorkerHandler.obtainMessage(3).sendToTarget();
+        mWorkerHandler.obtainMessage(MSG_NOTIFICATION_FULL_REFRESH).sendToTarget();
     }
 
     @Override
@@ -145,51 +152,95 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     @Override
-    public void onNotificationPosted(StatusBarNotification statusBarNotification) {
-        super.onNotificationPosted(statusBarNotification);
-        mWorkerHandler.obtainMessage(1, new NotificationPostedMsg(statusBarNotification)).sendToTarget();
+    public void onNotificationPosted(final StatusBarNotification sbn) {
+        super.onNotificationPosted(sbn);
+        mWorkerHandler.obtainMessage(MSG_NOTIFICATION_POSTED, new NotificationPostedMsg(sbn))
+                .sendToTarget();
+    }
+
+    /**
+     * An object containing data to send to MSG_NOTIFICATION_POSTED targets.
+     */
+    private class NotificationPostedMsg {
+        PackageUserKey packageUserKey;
+        NotificationKeyData notificationKey;
+        boolean shouldBeFilteredOut;
+
+        NotificationPostedMsg(StatusBarNotification sbn) {
+            packageUserKey = PackageUserKey.fromNotification(sbn);
+            notificationKey = NotificationKeyData.fromNotification(sbn);
+            shouldBeFilteredOut = shouldBeFilteredOut(sbn);
+        }
     }
 
     @Override
-    public void onNotificationRemoved(StatusBarNotification statusBarNotification) {
-        super.onNotificationRemoved(statusBarNotification);
-        mWorkerHandler.obtainMessage(2, new Pair<>(PackageUserKey.fromNotification(statusBarNotification), NotificationKeyData.fromNotification(statusBarNotification))).sendToTarget();
+    public void onNotificationRemoved(final StatusBarNotification sbn) {
+        super.onNotificationRemoved(sbn);
+        Pair<PackageUserKey, NotificationKeyData> packageUserKeyAndNotificationKey
+                = new Pair<>(PackageUserKey.fromNotification(sbn),
+                NotificationKeyData.fromNotification(sbn));
+        mWorkerHandler.obtainMessage(MSG_NOTIFICATION_REMOVED, packageUserKeyAndNotificationKey)
+                .sendToTarget();
     }
 
-    public List<StatusBarNotification> getNotificationsForKeys(List<NotificationKeyData> list) {
-        StatusBarNotification[] activeNotifications = getActiveNotifications(NotificationKeyData.extractKeysOnly(list).toArray(new String[list.size()]));
-        return activeNotifications == null ? Collections.<StatusBarNotification>emptyList() : Arrays.asList(activeNotifications);
+    /** This makes a potentially expensive binder call and should be run on a background thread. */
+    public List<StatusBarNotification> getNotificationsForKeys(List<NotificationKeyData> keys) {
+        StatusBarNotification[] notifications = NotificationListener.this
+                .getActiveNotifications(NotificationKeyData.extractKeysOnly(keys)
+                        .toArray(new String[keys.size()]));
+        return notifications == null ? Collections.EMPTY_LIST : Arrays.asList(notifications);
     }
 
-    private List<StatusBarNotification> filterNotifications(StatusBarNotification[] notifications) {
-        if (notifications == null) {
-            return null;
+    /**
+     * Filter out notifications that don't have an intent
+     * or are headers for grouped notifications.
+     *
+     * @see #shouldBeFilteredOut(StatusBarNotification)
+     */
+    private List<StatusBarNotification> filterNotifications(
+            StatusBarNotification[] notifications) {
+        if (notifications == null) return null;
+        Set<Integer> removedNotifications = new HashSet<>();
+        for (int i = 0; i < notifications.length; i++) {
+            if (shouldBeFilteredOut(notifications[i])) {
+                removedNotifications.add(i);
+            }
         }
-        List<StatusBarNotification> filteredNotifications = new ArrayList<>();
-        for (StatusBarNotification notification : notifications) {
-            if (!shouldBeFilteredOut(notification)) {
-                filteredNotifications.add(notification);
+        List<StatusBarNotification> filteredNotifications = new ArrayList<>(
+                notifications.length - removedNotifications.size());
+        for (int i = 0; i < notifications.length; i++) {
+            if (!removedNotifications.contains(i)) {
+                filteredNotifications.add(notifications[i]);
             }
         }
         return filteredNotifications;
     }
 
-    private boolean shouldBeFilteredOut(StatusBarNotification statusBarNotification) {
-        getCurrentRanking().getRanking(statusBarNotification.getKey(), mTempRanking);
-        if (Utilities.isAtLeastO() && !mTempRanking.canShowBadge()) {
+    private boolean shouldBeFilteredOut(StatusBarNotification sbn) {
+        if (!Utilities.isAtLeastO()) return false;
+        getCurrentRanking().getRanking(sbn.getKey(), mTempRanking);
+        if (!mTempRanking.canShowBadge()) {
             return true;
         }
-        Notification notification = statusBarNotification.getNotification();
-        if ((!Utilities.isAtLeastO() || mTempRanking.getChannel().getId().equals("miscellaneous")) && (notification.flags & Notification.FLAG_ONGOING_EVENT) != 0) {
-            return true;
+        Notification notification = sbn.getNotification();
+        if (mTempRanking.getChannel().getId().equals(NotificationChannel.DEFAULT_CHANNEL_ID)) {
+            // Special filtering for the default, legacy "Miscellaneous" channel.
+            if ((notification.flags & Notification.FLAG_ONGOING_EVENT) != 0) {
+                return true;
+            }
         }
-        boolean isGroupSummary = (notification.flags & Notification.FLAG_GROUP_SUMMARY) != 0;
-        CharSequence title = notification.extras.getCharSequence("android.title");
-        CharSequence text = notification.extras.getCharSequence("android.text");
-        boolean isEmpty = false;
-        if (TextUtils.isEmpty(title)) {
-            isEmpty = TextUtils.isEmpty(text);
-        }
-        return isGroupSummary || isEmpty;
+        boolean isGroupHeader = (notification.flags & Notification.FLAG_GROUP_SUMMARY) != 0;
+        CharSequence title = notification.extras.getCharSequence(Notification.EXTRA_TITLE);
+        CharSequence text = notification.extras.getCharSequence(Notification.EXTRA_TEXT);
+        boolean missingTitleAndText = TextUtils.isEmpty(title) && TextUtils.isEmpty(text);
+        return (isGroupHeader || missingTitleAndText);
+    }
+
+    public interface NotificationsChangedListener {
+        void onNotificationPosted(PackageUserKey postedPackageUserKey,
+                                  NotificationKeyData notificationKey, boolean shouldBeFilteredOut);
+        void onNotificationRemoved(PackageUserKey removedPackageUserKey,
+                                   NotificationKeyData notificationKey);
+        void onNotificationFullRefresh(List<StatusBarNotification> activeNotifications);
     }
 }

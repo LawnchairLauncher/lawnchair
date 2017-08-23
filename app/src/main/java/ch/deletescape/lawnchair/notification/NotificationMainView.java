@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ch.deletescape.lawnchair.notification;
 
 import android.animation.ObjectAnimator;
@@ -18,79 +34,94 @@ import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.util.Themes;
 
+/**
+ * A {@link android.widget.FrameLayout} that contains a single notification,
+ * e.g. icon + title + text.
+ */
 public class NotificationMainView extends FrameLayout implements SwipeHelper.Callback {
-    private int mBackgroundColor;
+
     private NotificationInfo mNotificationInfo;
     private ViewGroup mTextAndBackground;
-    private TextView mTextView;
+    private int mBackgroundColor;
     private TextView mTitleView;
+    private TextView mTextView;
 
     public NotificationMainView(Context context) {
         this(context, null, 0);
     }
 
-    public NotificationMainView(Context context, AttributeSet attributeSet) {
-        this(context, attributeSet, 0);
+    public NotificationMainView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
     }
 
-    public NotificationMainView(Context context, AttributeSet attributeSet, int i) {
-        super(context, attributeSet, i);
+    public NotificationMainView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        this.mTextAndBackground = findViewById(R.id.text_and_background);
-        ColorDrawable colorDrawable = (ColorDrawable) this.mTextAndBackground.getBackground();
-        this.mBackgroundColor = getResources().getColor(R.color.popup_background_color);
-        this.mTextAndBackground.setBackground(new RippleDrawable(ColorStateList.valueOf(Themes.getAttrColor(getContext(), 16843820)), colorDrawable, null));
-        this.mTitleView = this.mTextAndBackground.findViewById(R.id.title);
-        this.mTextView = this.mTextAndBackground.findViewById(R.id.text);
+
+        mTextAndBackground = (ViewGroup) findViewById(R.id.text_and_background);
+        ColorDrawable colorBackground = (ColorDrawable) mTextAndBackground.getBackground();
+        mBackgroundColor = colorBackground.getColor();
+        RippleDrawable rippleBackground = new RippleDrawable(ColorStateList.valueOf(
+                Themes.getAttrColor(getContext(), android.R.attr.colorControlHighlight)),
+                colorBackground, null);
+        mTextAndBackground.setBackground(rippleBackground);
+        mTitleView = (TextView) mTextAndBackground.findViewById(R.id.title);
+        mTextView = (TextView) mTextAndBackground.findViewById(R.id.text);
     }
 
-    public void applyNotificationInfo(NotificationInfo notificationInfo, View view) {
-        applyNotificationInfo(notificationInfo, view, false);
+    public void applyNotificationInfo(NotificationInfo mainNotification, View iconView) {
+        applyNotificationInfo(mainNotification, iconView, false);
     }
 
-    public void applyNotificationInfo(NotificationInfo notificationInfo, View view, boolean z) {
-        this.mNotificationInfo = notificationInfo;
-        CharSequence charSequence = this.mNotificationInfo.title;
-        CharSequence charSequence2 = this.mNotificationInfo.text;
-        if (TextUtils.isEmpty(charSequence) || TextUtils.isEmpty(charSequence2)) {
-            this.mTitleView.setMaxLines(2);
-            TextView textView = this.mTitleView;
-            if (!TextUtils.isEmpty(charSequence)) {
-                charSequence2 = charSequence;
-            }
-            textView.setText(charSequence2);
-            this.mTextView.setVisibility(GONE);
+    /**
+     * Sets the content of this view, animating it after a new icon shifts up if necessary.
+     */
+    public void applyNotificationInfo(NotificationInfo mainNotification, View iconView,
+                                      boolean animate) {
+        mNotificationInfo = mainNotification;
+        CharSequence title = mNotificationInfo.title;
+        CharSequence text = mNotificationInfo.text;
+        if (!TextUtils.isEmpty(title) && !TextUtils.isEmpty(text)) {
+            mTitleView.setText(title);
+            mTextView.setText(text);
         } else {
-            this.mTitleView.setText(charSequence);
-            this.mTextView.setText(charSequence2);
+            mTitleView.setMaxLines(2);
+            mTitleView.setText(TextUtils.isEmpty(title) ? text : title);
+            mTextView.setVisibility(GONE);
         }
-        view.setBackground(this.mNotificationInfo.getIconForBackground(getContext(), this.mBackgroundColor));
-        if (this.mNotificationInfo.intent != null) {
-            setOnClickListener(this.mNotificationInfo);
+        iconView.setBackground(mNotificationInfo.getIconForBackground(getContext(),
+                mBackgroundColor));
+        if (mNotificationInfo.intent != null) {
+            setOnClickListener(mNotificationInfo);
         }
-        setTranslationX(0.0f);
+        setTranslationX(0);
+        // Add a dummy ItemInfo so that logging populates the correct container and item types
+        // instead of DEFAULT_CONTAINERTYPE and DEFAULT_ITEMTYPE, respectively.
         setTag(new ItemInfo());
-        if (z) {
-            ObjectAnimator.ofFloat(this.mTextAndBackground, ALPHA, new float[]{0.0f, 1.0f}).setDuration(150).start();
+        if (animate) {
+            ObjectAnimator.ofFloat(mTextAndBackground, ALPHA, 0, 1).setDuration(150).start();
         }
     }
 
     public NotificationInfo getNotificationInfo() {
-        return this.mNotificationInfo;
+        return mNotificationInfo;
     }
 
+
+    // SwipeHelper.Callback's
+
     @Override
-    public View getChildAtPosition(MotionEvent motionEvent) {
+    public View getChildAtPosition(MotionEvent ev) {
         return this;
     }
 
     @Override
-    public boolean canChildBeDismissed(View view) {
-        return this.mNotificationInfo != null && this.mNotificationInfo.dismissable;
+    public boolean canChildBeDismissed(View v) {
+        return mNotificationInfo != null && mNotificationInfo.dismissable;
     }
 
     @Override
@@ -99,30 +130,32 @@ public class NotificationMainView extends FrameLayout implements SwipeHelper.Cal
     }
 
     @Override
-    public void onBeginDrag(View view) {
+    public void onBeginDrag(View v) {
     }
 
     @Override
-    public void onChildDismissed(View view) {
+    public void onChildDismissed(View v) {
         Launcher launcher = Launcher.getLauncher(getContext());
-        launcher.getPopupDataProvider().cancelNotification(this.mNotificationInfo.notificationKey);
+        launcher.getPopupDataProvider().cancelNotification(
+                mNotificationInfo.notificationKey);
     }
 
     @Override
-    public void onDragCancelled(View view) {
+    public void onDragCancelled(View v) {
     }
 
     @Override
-    public void onChildSnappedBack(View view, float f) {
+    public void onChildSnappedBack(View animView, float targetLeft) {
     }
 
     @Override
-    public boolean updateSwipeProgress(View view, boolean z, float f) {
+    public boolean updateSwipeProgress(View animView, boolean dismissable, float swipeProgress) {
+        // Don't fade out.
         return true;
     }
 
     @Override
     public float getFalsingThresholdFactor() {
-        return 1.0f;
+        return 1;
     }
 }

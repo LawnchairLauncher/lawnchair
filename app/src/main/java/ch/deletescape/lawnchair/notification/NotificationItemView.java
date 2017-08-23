@@ -1,11 +1,29 @@
+/*
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ch.deletescape.lawnchair.notification;
 
 import android.animation.Animator;
+import android.app.Notification;
 import android.content.Context;
 import android.graphics.Rect;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -16,41 +34,33 @@ import ch.deletescape.lawnchair.anim.PillHeightRevealOutlineProvider;
 import ch.deletescape.lawnchair.graphics.IconPalette;
 import ch.deletescape.lawnchair.popup.PopupItemView;
 
+/**
+ * A {@link FrameLayout} that contains a header, main view and a footer.
+ * The main view contains the icon and text (title + subtext) of the first notification.
+ * The footer contains: A list of just the icons of all the notifications past the first one.
+ * @see NotificationFooterLayout
+ */
 public class NotificationItemView extends PopupItemView {
+
     private static final Rect sTempRect = new Rect();
-    private boolean mAnimatingNextIcon;
-    private NotificationFooterLayout mFooter;
+
     private TextView mHeaderCount;
-    private View mDivider;
     private NotificationMainView mMainView;
-    private int mNotificationHeaderTextColor;
+    private NotificationFooterLayout mFooter;
     private SwipeHelper mSwipeHelper;
-
-    final class C04621 implements NotificationFooterLayout.IconAnimationEndListener {
-        C04621() {
-        }
-
-        @Override
-        public void onIconAnimationEnd(NotificationInfo notificationInfo) {
-            if (notificationInfo != null) {
-                NotificationItemView.this.mMainView.applyNotificationInfo(notificationInfo, NotificationItemView.this.mIconView, true);
-                NotificationItemView.this.mMainView.setVisibility(VISIBLE);
-            }
-            NotificationItemView.this.mAnimatingNextIcon = false;
-        }
-    }
+    private boolean mAnimatingNextIcon;
+    private int mNotificationHeaderTextColor = Notification.COLOR_DEFAULT;
 
     public NotificationItemView(Context context) {
         this(context, null, 0);
     }
 
-    public NotificationItemView(Context context, AttributeSet attributeSet) {
-        this(context, attributeSet, 0);
+    public NotificationItemView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
     }
 
-    public NotificationItemView(Context context, AttributeSet attributeSet, int i) {
-        super(context, attributeSet, i);
-        mNotificationHeaderTextColor = 0;
+    public NotificationItemView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
     }
 
     @Override
@@ -58,9 +68,8 @@ public class NotificationItemView extends PopupItemView {
         super.onFinishInflate();
         mHeaderCount = findViewById(R.id.notification_count);
         mMainView = findViewById(R.id.main_view);
-        mDivider = findViewById(R.id.divider);
         mFooter = findViewById(R.id.footer);
-        mSwipeHelper = new SwipeHelper(0, mMainView, getContext());
+        mSwipeHelper = new SwipeHelper(SwipeHelper.X, mMainView, getContext());
         mSwipeHelper.setDisableHardwareLayers(true);
     }
 
@@ -69,68 +78,90 @@ public class NotificationItemView extends PopupItemView {
     }
 
     public int getHeightMinusFooter() {
-        return getHeight() - (mFooter.getParent() == null ? 0 : mFooter.getHeight());
+        int footerHeight = mFooter.getParent() == null ? 0 : mFooter.getHeight();
+        return getHeight() - footerHeight;
     }
 
-    public Animator animateHeightRemoval(int i) {
-        return new PillHeightRevealOutlineProvider(mPillRect, getBackgroundRadius(), getHeight() - i).createRevealAnimator(this, true);
+    public Animator animateHeightRemoval(int heightToRemove) {
+        final int newHeight = getHeight() - heightToRemove;
+        return new PillHeightRevealOutlineProvider(mPillRect,
+                getBackgroundRadius(), newHeight).createRevealAnimator(this, true /* isReversed */);
     }
 
-    public void updateHeader(int i, IconPalette iconPalette) {
-        mHeaderCount.setText(i <= 1 ? "" : String.valueOf(i));
-        if (iconPalette != null) {
-            if (mNotificationHeaderTextColor == 0) {
-                mNotificationHeaderTextColor = IconPalette.resolveContrastColor(getContext(),
-                        iconPalette.dominantColor, getResources().getColor(R.color.popup_header_background_color));
+    public void updateHeader(int notificationCount, @Nullable IconPalette palette) {
+        mHeaderCount.setText(notificationCount <= 1 ? "" : String.valueOf(notificationCount));
+        if (palette != null) {
+            if (mNotificationHeaderTextColor == Notification.COLOR_DEFAULT) {
+                mNotificationHeaderTextColor =
+                        IconPalette.resolveContrastColor(getContext(), palette.dominantColor,
+                                getResources().getColor(R.color.popup_header_background_color));
             }
             mHeaderCount.setTextColor(mNotificationHeaderTextColor);
         }
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent motionEvent) {
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (mMainView.getNotificationInfo() == null) {
+            // The notification hasn't been populated yet.
             return false;
         }
         getParent().requestDisallowInterceptTouchEvent(true);
-        return mSwipeHelper.onInterceptTouchEvent(motionEvent);
+        return mSwipeHelper.onInterceptTouchEvent(ev);
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent motionEvent) {
+    public boolean onTouchEvent(MotionEvent ev) {
         if (mMainView.getNotificationInfo() == null) {
+            // The notification hasn't been populated yet.
             return false;
         }
-        return mSwipeHelper.onTouchEvent(motionEvent) || super.onTouchEvent(motionEvent);
+        return mSwipeHelper.onTouchEvent(ev) || super.onTouchEvent(ev);
     }
 
-    public void applyNotificationInfos(List list) {
-        if (!list.isEmpty()) {
-            mMainView.applyNotificationInfo((NotificationInfo) list.get(0), mIconView);
-            mDivider.setVisibility(list.size() > 1 ? VISIBLE : INVISIBLE);
-            for (int i = 1; i < list.size(); i++) {
-                mFooter.addNotificationInfo((NotificationInfo) list.get(i));
-            }
-            mFooter.commitNotificationInfos();
-        }
-    }
-
-    public void trimNotifications(List list) {
-        if (list.contains(mMainView.getNotificationInfo().notificationKey) || mAnimatingNextIcon) {
-            mFooter.trimNotifications(list);
+    public void applyNotificationInfos(final List<NotificationInfo> notificationInfos) {
+        if (notificationInfos.isEmpty()) {
             return;
         }
-        mAnimatingNextIcon = true;
-        mMainView.setVisibility(INVISIBLE);
-        mMainView.setTranslationX(0.0f);
-        mIconView.getGlobalVisibleRect(sTempRect);
-        mFooter.animateFirstNotificationTo(sTempRect, new C04621());
+
+        NotificationInfo mainNotification = notificationInfos.get(0);
+        mMainView.applyNotificationInfo(mainNotification, mIconView);
+
+        for (int i = 1; i < notificationInfos.size(); i++) {
+            mFooter.addNotificationInfo(notificationInfos.get(i));
+        }
+        mFooter.commitNotificationInfos();
+    }
+
+    public void trimNotifications(final List<String> notificationKeys) {
+        boolean dismissedMainNotification = !notificationKeys.contains(
+                mMainView.getNotificationInfo().notificationKey);
+        if (dismissedMainNotification && !mAnimatingNextIcon) {
+            // Animate the next icon into place as the new main notification.
+            mAnimatingNextIcon = true;
+            mMainView.setVisibility(INVISIBLE);
+            mMainView.setTranslationX(0);
+            mIconView.getGlobalVisibleRect(sTempRect);
+            mFooter.animateFirstNotificationTo(sTempRect,
+                    new NotificationFooterLayout.IconAnimationEndListener() {
+                        @Override
+                        public void onIconAnimationEnd(NotificationInfo newMainNotification) {
+                            if (newMainNotification != null) {
+                                mMainView.applyNotificationInfo(newMainNotification, mIconView, true);
+                                mMainView.setVisibility(VISIBLE);
+                            }
+                            mAnimatingNextIcon = false;
+                        }
+                    });
+        } else {
+            mFooter.trimNotifications(notificationKeys);
+        }
     }
 
     @Override
-    public int getArrowColor(boolean z) {
+    public int getArrowColor(boolean isArrowAttachedToBottom) {
         Context context = getContext();
-        if (z) {
+        if (isArrowAttachedToBottom) {
             return Utilities.resolveAttributeData(context, R.attr.appPopupBgColor);
         } else {
             return Utilities.resolveAttributeData(context, R.attr.appPopupHeaderBgColor);

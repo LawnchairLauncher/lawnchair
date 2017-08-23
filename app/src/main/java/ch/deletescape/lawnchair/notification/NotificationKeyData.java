@@ -1,42 +1,66 @@
+/*
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ch.deletescape.lawnchair.notification;
 
 import android.app.Notification;
 import android.service.notification.StatusBarNotification;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ch.deletescape.lawnchair.Utilities;
 
+/**
+ * The key data associated with the notification, used to determine what to include
+ * in badges and dummy popup views before they are populated.
+ *
+ * @see NotificationInfo for the full data used when populating the dummy views.
+ */
 public class NotificationKeyData {
-    public int count;
     public final String notificationKey;
     public final String shortcutId;
+    public int count;
 
-    private NotificationKeyData(String str, String str2, int i) {
-        this.notificationKey = str;
-        this.shortcutId = str2;
-        this.count = Math.max(1, i);
+    private NotificationKeyData(String notificationKey, String shortcutId, int count) {
+        this.notificationKey = notificationKey;
+        this.shortcutId = shortcutId;
+        this.count = Math.max(1, count);
     }
 
-    public static NotificationKeyData fromNotification(StatusBarNotification statusBarNotification) {
-        Notification notification = statusBarNotification.getNotification();
-        String shortcutId = Utilities.isAtLeastO() ? notification.getShortcutId() : null;
-        return new NotificationKeyData(statusBarNotification.getKey(), shortcutId, notification.number);
+    public static NotificationKeyData fromNotification(StatusBarNotification sbn) {
+        Notification notif = sbn.getNotification();
+        return new NotificationKeyData(sbn.getKey(), Utilities.isAtLeastO() ? notif.getShortcutId() : null, notif.number);
     }
 
-    public static List<String> extractKeysOnly(List<NotificationKeyData> list) {
-        List<String> arrayList = new ArrayList<>(list.size());
-        for (NotificationKeyData notificationKeyData : list) {
-            arrayList.add(notificationKeyData.notificationKey);
+    public static List<String> extractKeysOnly(@NonNull List<NotificationKeyData> notificationKeys) {
+        List<String> keysOnly = new ArrayList<>(notificationKeys.size());
+        for (NotificationKeyData notificationKeyData : notificationKeys) {
+            keysOnly.add(notificationKeyData.notificationKey);
         }
-        return arrayList;
+        return keysOnly;
     }
 
+    @Override
     public boolean equals(Object obj) {
-        if (obj instanceof NotificationKeyData) {
-            return ((NotificationKeyData) obj).notificationKey.equals(this.notificationKey);
+        if (!(obj instanceof NotificationKeyData)) {
+            return false;
         }
-        return false;
+        // Only compare the keys.
+        return ((NotificationKeyData) obj).notificationKey.equals(notificationKey);
     }
 }
