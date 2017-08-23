@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
@@ -76,46 +77,6 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     public ShortcutsItemView mShortcutsItemView;
     private final int mStartDragThreshold;
     private final Rect mTempRect;
-
-    final class C04792 extends AnimatorListenerAdapter {
-        C04792() {
-        }
-
-        @Override
-        public void onAnimationEnd(Animator animator) {
-            PopupContainerWithArrow.this.mOpenCloseAnimator = null;
-            Utilities.sendCustomAccessibilityEvent(PopupContainerWithArrow.this, 32, PopupContainerWithArrow.this.getContext().getString(R.string.action_deep_shortcut));
-        }
-    }
-
-    final class C04825 extends AnimatorListenerAdapter {
-        C04825() {
-        }
-
-        @Override
-        public void onAnimationEnd(Animator animator) {
-            PopupContainerWithArrow.this.removeView(PopupContainerWithArrow.this.mNotificationItemView);
-            PopupContainerWithArrow.this.mNotificationItemView = null;
-            if (PopupContainerWithArrow.this.getItemCount() == 0) {
-                PopupContainerWithArrow.this.close(false);
-            }
-        }
-    }
-
-    final class C04858 extends AnimatorListenerAdapter {
-        C04858() {
-        }
-
-        @Override
-        public void onAnimationEnd(Animator animator) {
-            PopupContainerWithArrow.this.mOpenCloseAnimator = null;
-            if (PopupContainerWithArrow.this.mDeferContainerRemoval) {
-                PopupContainerWithArrow.this.setVisibility(INVISIBLE);
-            } else {
-                PopupContainerWithArrow.this.closeComplete();
-            }
-        }
-    }
 
     public PopupContainerWithArrow(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
@@ -278,46 +239,60 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     }
 
     private void animateOpen() {
-        Animator ofFloat;
-        setVisibility(VISIBLE);
+        setVisibility(View.VISIBLE);
         mIsOpen = true;
-        AnimatorSet createAnimatorSet = LauncherAnimUtils.createAnimatorSet();
-        int itemCount = getItemCount();
-        long integer = (long) getResources().getInteger(R.integer.config_deepShortcutOpenDuration);
-        long integer2 = (long) getResources().getInteger(R.integer.config_deepShortcutArrowOpenDuration);
-        long j = integer - integer2;
-        long integer3 = (long) getResources().getInteger(R.integer.config_deepShortcutOpenStagger);
-        TimeInterpolator logAccelerateInterpolator = new LogAccelerateInterpolator(100, 0);
-        TimeInterpolator decelerateInterpolator = new DecelerateInterpolator();
+        final AnimatorSet shortcutAnims = LauncherAnimUtils.createAnimatorSet();
+        final int itemCount = getItemCount();
+        final long duration = getResources().getInteger(
+                R.integer.config_deepShortcutOpenDuration);
+        final long arrowScaleDuration = getResources().getInteger(
+                R.integer.config_deepShortcutArrowOpenDuration);
+        final long arrowScaleDelay = duration - arrowScaleDuration;
+        final long stagger = getResources().getInteger(
+                R.integer.config_deepShortcutOpenStagger);
+        final TimeInterpolator fadeInterpolator = new LogAccelerateInterpolator(100, 0);
+        // Animate shortcuts
+        DecelerateInterpolator interpolator = new DecelerateInterpolator();
         for (int i = 0; i < itemCount; i++) {
-            PopupItemView itemViewAt = getItemViewAt(i);
-            itemViewAt.setVisibility(INVISIBLE);
-            itemViewAt.setAlpha(0.0f);
-            Animator createOpenAnimation = itemViewAt.createOpenAnimation(mIsAboveIcon, mIsLeftAligned);
-            final PopupItemView popupItemView = itemViewAt;
-            createOpenAnimation.addListener(new AnimatorListenerAdapter() {
+            final PopupItemView popupItemView = getItemViewAt(i);
+            popupItemView.setVisibility(INVISIBLE);
+            popupItemView.setAlpha(0);
+            Animator anim = popupItemView.createOpenAnimation(mIsAboveIcon, mIsLeftAligned);
+            anim.addListener(new AnimatorListenerAdapter() {
                 @Override
-                public void onAnimationStart(Animator animator) {
+                public void onAnimationStart(Animator animation) {
                     popupItemView.setVisibility(VISIBLE);
                 }
             });
-            createOpenAnimation.setDuration(integer);
-            createOpenAnimation.setStartDelay(((long) (mIsAboveIcon ? (itemCount - i) - 1 : i)) * integer3);
-            createOpenAnimation.setInterpolator(decelerateInterpolator);
-            createAnimatorSet.play(createOpenAnimation);
-            ofFloat = ObjectAnimator.ofFloat(itemViewAt, View.ALPHA, 1.0f);
-            ofFloat.setInterpolator(logAccelerateInterpolator);
-            ofFloat.setDuration(j);
-            createAnimatorSet.play(ofFloat);
+            anim.setDuration(duration);
+            int animationIndex = mIsAboveIcon ? itemCount - i - 1 : i;
+            anim.setStartDelay(stagger * animationIndex);
+            anim.setInterpolator(interpolator);
+            shortcutAnims.play(anim);
+            Animator fadeAnim = ObjectAnimator.ofFloat(popupItemView, View.ALPHA, 1);
+            fadeAnim.setInterpolator(fadeInterpolator);
+            // We want the shortcut to be fully opaque before the arrow starts animating.
+            fadeAnim.setDuration(arrowScaleDelay);
+            shortcutAnims.play(fadeAnim);
         }
-        createAnimatorSet.addListener(new C04792());
-        mArrow.setScaleX(0.0f);
-        mArrow.setScaleY(0.0f);
-        ofFloat = createArrowScaleAnim(1.0f).setDuration(integer2);
-        ofFloat.setStartDelay(j);
-        createAnimatorSet.play(ofFloat);
-        mOpenCloseAnimator = createAnimatorSet;
-        createAnimatorSet.start();
+        shortcutAnims.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mOpenCloseAnimator = null;
+                Utilities.sendCustomAccessibilityEvent(
+                        PopupContainerWithArrow.this,
+                        AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
+                        getContext().getString(R.string.action_deep_shortcut));
+            }
+        });
+        // Animate the arrow
+        mArrow.setScaleX(0);
+        mArrow.setScaleY(0);
+        Animator arrowScale = createArrowScaleAnim(1).setDuration(arrowScaleDuration);
+        arrowScale.setStartDelay(arrowScaleDelay);
+        shortcutAnims.play(arrowScale);
+        mOpenCloseAnimator = shortcutAnims;
+        shortcutAnims.start();
     }
 
     /**
@@ -523,42 +498,58 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         }
     }
 
-    public void trimNotifications(Map map) {
-        if (mNotificationItemView != null) {
-            BadgeInfo badgeInfo = (BadgeInfo) map.get(PackageUserKey.fromItemInfo((ItemInfo) mOriginalIcon.getTag()));
-            if (badgeInfo == null || badgeInfo.getNotificationKeys().size() == 0) {
-                final View itemViewAt;
-                AnimatorSet createAnimatorSet = LauncherAnimUtils.createAnimatorSet();
-                int integer = getResources().getInteger(R.integer.config_removeNotificationViewDuration);
-                final int dimensionPixelSize = getResources().getDimensionPixelSize(R.dimen.popup_items_spacing);
-                createAnimatorSet.play(reduceNotificationViewHeight(mNotificationItemView.getHeightMinusFooter() + dimensionPixelSize, integer));
-                if (mIsAboveIcon) {
-                    itemViewAt = getItemViewAt(getItemCount() - 2);
-                } else {
-                    itemViewAt = mNotificationItemView;
-                }
-                if (itemViewAt != null) {
-                    ValueAnimator duration = ValueAnimator.ofFloat(new float[]{1.0f, 0.0f}).setDuration((long) integer);
-                    duration.addUpdateListener(new AnimatorUpdateListener() {
-                        @Override
-                        public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                            ((MarginLayoutParams) itemViewAt.getLayoutParams()).bottomMargin = (int) ((Float) valueAnimator.getAnimatedValue() * ((float) dimensionPixelSize));
-                        }
-                    });
-                    createAnimatorSet.play(duration);
-                }
-                Animator duration2 = ObjectAnimator.ofFloat(mNotificationItemView, ALPHA, new float[]{0.0f}).setDuration((long) integer);
-                duration2.addListener(new C04825());
-                createAnimatorSet.play(duration2);
-                long integer2 = (long) getResources().getInteger(R.integer.config_deepShortcutArrowOpenDuration);
-                createArrowScaleAnim(0.0f).setDuration(integer2).setStartDelay(0);
-                createArrowScaleAnim(1.0f).setDuration(integer2).setStartDelay((long) (((double) integer) - (((double) integer2) * 1.5d)));
-                createAnimatorSet.playSequentially(duration2/*, r3*/);
-                createAnimatorSet.start();
-                return;
-            }
-            mNotificationItemView.trimNotifications(NotificationKeyData.extractKeysOnly(badgeInfo.getNotificationKeys()));
+    public void trimNotifications(Map<PackageUserKey, BadgeInfo> updatedBadges) {
+        if (mNotificationItemView == null) {
+            return;
         }
+        ItemInfo originalInfo = (ItemInfo) mOriginalIcon.getTag();
+        BadgeInfo badgeInfo = updatedBadges.get(PackageUserKey.fromItemInfo(originalInfo));
+        if (badgeInfo == null || badgeInfo.getNotificationKeys().size() == 0) {
+            AnimatorSet removeNotification = LauncherAnimUtils.createAnimatorSet();
+            final int duration = getResources().getInteger(
+                    R.integer.config_removeNotificationViewDuration);
+            final int spacing = getResources().getDimensionPixelSize(R.dimen.popup_items_spacing);
+            removeNotification.play(reduceNotificationViewHeight(
+                    mNotificationItemView.getHeightMinusFooter() + spacing, duration));
+            final View removeMarginView = mIsAboveIcon ? getItemViewAt(getItemCount() - 2)
+                    : mNotificationItemView;
+            if (removeMarginView != null) {
+                ValueAnimator removeMargin = ValueAnimator.ofFloat(1, 0).setDuration(duration);
+                removeMargin.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                        ((MarginLayoutParams) removeMarginView.getLayoutParams()).bottomMargin
+                                = (int) (spacing * (float) valueAnimator.getAnimatedValue());
+                    }
+                });
+                removeNotification.play(removeMargin);
+            }
+            Animator fade = ObjectAnimator.ofFloat(mNotificationItemView, ALPHA, 0)
+                    .setDuration(duration);
+            fade.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    removeView(mNotificationItemView);
+                    mNotificationItemView = null;
+                    if (getItemCount() == 0) {
+                        close(false);
+                        return;
+                    }
+                }
+            });
+            removeNotification.play(fade);
+            final long arrowScaleDuration = getResources().getInteger(
+                    R.integer.config_deepShortcutArrowOpenDuration);
+            Animator hideArrow = createArrowScaleAnim(0).setDuration(arrowScaleDuration);
+            hideArrow.setStartDelay(0);
+            Animator showArrow = createArrowScaleAnim(1).setDuration(arrowScaleDuration);
+            showArrow.setStartDelay((long) (duration - arrowScaleDuration * 1.5));
+            removeNotification.playSequentially(hideArrow, showArrow);
+            removeNotification.start();
+            return;
+        }
+        mNotificationItemView.trimNotifications(NotificationKeyData.extractKeysOnly(
+                badgeInfo.getNotificationKeys()));
     }
 
     @Override
@@ -661,55 +652,67 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     }
 
     protected void animateClose() {
-        if (mIsOpen) {
-            if (mOpenCloseAnimator != null) {
-                mOpenCloseAnimator.cancel();
-            }
-            mIsOpen = false;
-            AnimatorSet createAnimatorSet = LauncherAnimUtils.createAnimatorSet();
-            int itemCount = getItemCount();
-            int openItemCount = 0;
-            for (int i = 0; i < itemCount; i++) {
-                if (getItemViewAt(i).isOpenOrOpening()) {
-                    openItemCount++;
-                }
-            }
-            long deepShortcutCloseDuration = (long) getResources().getInteger(R.integer.config_deepShortcutCloseDuration);
-            long deepShortcutArrowOpenDuration = (long) getResources().getInteger(R.integer.config_deepShortcutArrowOpenDuration);
-            long deepShortcutCloseStagger = (long) getResources().getInteger(R.integer.config_deepShortcutCloseStagger);
-            TimeInterpolator logAccelerateInterpolator = new LogAccelerateInterpolator(100, 0);
-            int i = mIsAboveIcon ? itemCount - openItemCount : 0;
-            for (int j = i; j < i + openItemCount; j++) {
-                PopupItemView itemViewAt = getItemViewAt(j);
-                Animator closeAnimation = itemViewAt.createCloseAnimation(mIsAboveIcon, mIsLeftAligned, deepShortcutCloseDuration);
-                if (mIsAboveIcon) {
-                    itemCount = j - i;
-                } else {
-                    itemCount = (openItemCount - j) - 1;
-                }
-                closeAnimation.setStartDelay(((long) itemCount) * deepShortcutCloseStagger);
-                Animator ofFloat = ObjectAnimator.ofFloat(itemViewAt, View.ALPHA, 0.0f);
-                ofFloat.setStartDelay((((long) itemCount) * deepShortcutCloseStagger) + deepShortcutArrowOpenDuration);
-                ofFloat.setDuration(deepShortcutCloseDuration - deepShortcutArrowOpenDuration);
-                ofFloat.setInterpolator(logAccelerateInterpolator);
-                createAnimatorSet.play(ofFloat);
-                final PopupItemView popupItemView = itemViewAt;
-                closeAnimation.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animator) {
-                        popupItemView.setVisibility(INVISIBLE);
-                    }
-                });
-                createAnimatorSet.play(closeAnimation);
-            }
-            Animator duration = createArrowScaleAnim(0.0f).setDuration(deepShortcutArrowOpenDuration);
-            duration.setStartDelay(0);
-            createAnimatorSet.play(duration);
-            createAnimatorSet.addListener(new C04858());
-            mOpenCloseAnimator = createAnimatorSet;
-            createAnimatorSet.start();
-            mOriginalIcon.forceHideBadge(false);
+        if (!mIsOpen) {
+            return;
         }
+        if (mOpenCloseAnimator != null) {
+            mOpenCloseAnimator.cancel();
+        }
+        mIsOpen = false;
+        final AnimatorSet shortcutAnims = LauncherAnimUtils.createAnimatorSet();
+        final int itemCount = getItemCount();
+        int numOpenShortcuts = 0;
+        for (int i = 0; i < itemCount; i++) {
+            if (getItemViewAt(i).isOpenOrOpening()) {
+                numOpenShortcuts++;
+            }
+        }
+        final long duration = getResources().getInteger(
+                R.integer.config_deepShortcutCloseDuration);
+        final long arrowScaleDuration = getResources().getInteger(
+                R.integer.config_deepShortcutArrowOpenDuration);
+        final long stagger = getResources().getInteger(
+                R.integer.config_deepShortcutCloseStagger);
+        final TimeInterpolator fadeInterpolator = new LogAccelerateInterpolator(100, 0);
+        int firstOpenItemIndex = mIsAboveIcon ? itemCount - numOpenShortcuts : 0;
+        for (int i = firstOpenItemIndex; i < firstOpenItemIndex + numOpenShortcuts; i++) {
+            final PopupItemView view = getItemViewAt(i);
+            Animator anim;
+            anim = view.createCloseAnimation(mIsAboveIcon, mIsLeftAligned, duration);
+            int animationIndex = mIsAboveIcon ? i - firstOpenItemIndex
+                    : numOpenShortcuts - i - 1;
+            anim.setStartDelay(stagger * animationIndex);
+            Animator fadeAnim = ObjectAnimator.ofFloat(view, View.ALPHA, 0);
+            // Don't start fading until the arrow is gone.
+            fadeAnim.setStartDelay(stagger * animationIndex + arrowScaleDuration);
+            fadeAnim.setDuration(duration - arrowScaleDuration);
+            fadeAnim.setInterpolator(fadeInterpolator);
+            shortcutAnims.play(fadeAnim);
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    view.setVisibility(INVISIBLE);
+                }
+            });
+            shortcutAnims.play(anim);
+        }
+        Animator arrowAnim = createArrowScaleAnim(0).setDuration(arrowScaleDuration);
+        arrowAnim.setStartDelay(0);
+        shortcutAnims.play(arrowAnim);
+        shortcutAnims.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mOpenCloseAnimator = null;
+                if (mDeferContainerRemoval) {
+                    setVisibility(INVISIBLE);
+                } else {
+                    closeComplete();
+                }
+            }
+        });
+        mOpenCloseAnimator = shortcutAnims;
+        shortcutAnims.start();
+        mOriginalIcon.forceHideBadge(false);
     }
 
     protected void closeComplete() {
