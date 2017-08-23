@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="SettingsTheme" parent="@android:style/Theme.DeviceDefault.Settings">
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:actionBarTheme">@style/SettingsTheme.ActionBar</item>
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+    </style>
+</resources>

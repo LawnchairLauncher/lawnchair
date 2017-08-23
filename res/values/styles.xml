@@ -25,15 +25,27 @@
         <item name="android:windowShowWallpaper">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:colorEdgeEffect">#FF757575</item>
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
     </style>
-
     <style name="LauncherTheme" parent="@style/BaseLauncherTheme"></style>
 
-    <!-- Theme for the widget container. Overridden on API 26. -->
-    <style name="WidgetContainerTheme" parent="@android:style/Theme.DeviceDefault.Settings">
-        <item name="android:colorEdgeEffect">?android:attr/textColorSecondaryInverse</item>
-        <item name="android:textColorPrimary">?android:attr/textColorPrimaryInverse</item>
-        <item name="android:textColorSecondary">?android:attr/textColorSecondaryInverse</item>
+    <style name="SettingsTheme" parent="@android:style/Theme.DeviceDefault.Settings">
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:actionBarTheme">@style/SettingsTheme.ActionBar</item>
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="SettingsTheme.ActionBar">
+        <item name="android:textColorPrimary">@color/colorAccent</item>
+        <item name="android:colorControlNormal">@color/colorAccent</item>
+    </style>
+
+    <style name="WidgetContainerTheme" parent="@style/SettingsTheme">
+        <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
     </style>
 
     <style name="FastScrollerPopup" >

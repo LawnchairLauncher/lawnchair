@@ -49,4 +49,10 @@
 
     <color name="legacy_icon_background">#FFFFFF</color>
     <color name="icon_background">#ff4285f4</color>
+
+    <!-- Pixel -->
+    <color name="colorPrimary">#fff5f5f5</color>
+    <color name="colorPrimaryDark">#ffe0e0e0</color>
+    <color name="colorSecondary">#ffeeeeee</color>
+    <color name="colorAccent">#ff4286f4</color>
 </resources>

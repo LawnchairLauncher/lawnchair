@@ -17,11 +17,6 @@
 */
 -->
 <resources>
-    <!-- Theme for the widget container. -->
-    <style name="WidgetContainerTheme" parent="@android:style/Theme.DeviceDefault.Settings">
-        <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
-    </style>
-
     <!-- From O and above, we show a dark nav bar in all-apps -->
     <style name="AllAppsNavBarProtection">
         <item name="android:alpha">0.6</item>
