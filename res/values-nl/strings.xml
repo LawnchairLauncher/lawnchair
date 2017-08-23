@@ -123,4 +123,6 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> snelkoppelingen en <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> meldingen voor <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Sluiten"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Melding gesloten"</string>
+    <string name="label_search">Zoeken</string>
+    <string name="week_day_format">%1$s, %2$s</string>
 </resources>

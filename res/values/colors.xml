@@ -55,4 +55,7 @@
     <color name="colorPrimaryDark">#ffe0e0e0</color>
     <color name="colorSecondary">#ffeeeeee</color>
     <color name="colorAccent">#ff4286f4</color>
+
+    <color name="qsb_connector">#fff2f2f2</color>
+    <color name="qsb_background">#ffffffff</color>
 </resources>
