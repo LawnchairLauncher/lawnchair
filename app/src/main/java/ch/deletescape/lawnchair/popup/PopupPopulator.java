@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.service.notification.StatusBarNotification;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -27,252 +29,250 @@ import ch.deletescape.lawnchair.shortcuts.DeepShortcutView;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 import ch.deletescape.lawnchair.util.PackageUserKey;
 
+/**
+ * Contains logic relevant to populating a {@link PopupContainerWithArrow}. In particular,
+ * this class determines which items appear in the container, and in what order.
+ */
 public class PopupPopulator {
+    public static final int MAX_ITEMS = 4;
     static final int NUM_DYNAMIC = 2;
-    private static final Comparator<ShortcutInfoCompat> SHORTCUT_RANK_COMPARATOR = new Comparator<ShortcutInfoCompat>() {
-        @Override
-        public int compare(ShortcutInfoCompat shortcutInfoCompat, ShortcutInfoCompat shortcutInfoCompat2) {
-            if (shortcutInfoCompat.isDeclaredInManifest() && !shortcutInfoCompat2.isDeclaredInManifest()) {
-                return -1;
-            }
-            if (shortcutInfoCompat.isDeclaredInManifest() || !shortcutInfoCompat2.isDeclaredInManifest()) {
-                return Integer.compare(shortcutInfoCompat.getRank(), shortcutInfoCompat2.getRank());
-            }
-            return 1;
-        }
-    };
-
-    static final class C04892 implements Runnable {
-        final /* synthetic */ ComponentName val$activity;
-        final /* synthetic */ PopupContainerWithArrow val$container;
-        final /* synthetic */ Launcher val$launcher;
-        final /* synthetic */ List val$notificationKeys;
-        final /* synthetic */ NotificationItemView val$notificationView;
-        final /* synthetic */ ItemInfo val$originalInfo;
-        final /* synthetic */ List val$shortcutIds;
-        final /* synthetic */ List val$shortcutViews;
-        final /* synthetic */ List val$systemShortcutViews;
-        final /* synthetic */ List val$systemShortcuts;
-        final /* synthetic */ Handler val$uiHandler;
-        final /* synthetic */ UserHandle val$user;
-
-        C04892(NotificationItemView notificationItemView, Launcher launcher, List list, Handler handler, ComponentName componentName, List list2, UserHandle userHandle, List list3, PopupContainerWithArrow popupContainerWithArrow, List list4, List list5, ItemInfo itemInfo) {
-            val$notificationView = notificationItemView;
-            val$launcher = launcher;
-            val$notificationKeys = list;
-            val$uiHandler = handler;
-            val$activity = componentName;
-            val$shortcutIds = list2;
-            val$user = userHandle;
-            val$shortcutViews = list3;
-            val$container = popupContainerWithArrow;
-            val$systemShortcuts = list4;
-            val$systemShortcutViews = list5;
-            val$originalInfo = itemInfo;
-        }
-
-        @Override
-        public void run() {
-            for (int i3 = 0; i3 < val$systemShortcuts.size(); i3++) {
-                val$uiHandler.post(new UpdateSystemShortcutChild((View) val$systemShortcutViews.get(i3), (SystemShortcut) val$systemShortcuts.get(i3), val$launcher, val$originalInfo));
-            }
-            if (val$activity == null) return;
-            List statusBarNotificationsForKeys;
-            String str;
-            if (val$notificationView != null) {
-                statusBarNotificationsForKeys = val$launcher.getPopupDataProvider().getStatusBarNotificationsForKeys(val$notificationKeys);
-                List<NotificationInfo> arrayList = new ArrayList<>(statusBarNotificationsForKeys.size());
-                for (int i = 0; i < statusBarNotificationsForKeys.size(); i++) {
-                    arrayList.add(new NotificationInfo(val$launcher, (StatusBarNotification) statusBarNotificationsForKeys.get(i)));
-                }
-                val$uiHandler.post(new UpdateNotificationChild(val$notificationView, arrayList));
-            }
-            List queryForShortcutsContainer = DeepShortcutManager.getInstance(val$launcher).queryForShortcutsContainer(val$activity, val$shortcutIds, val$user);
-            if (val$notificationKeys.isEmpty()) {
-                str = null;
-            } else {
-                str = ((NotificationKeyData) val$notificationKeys.get(0)).shortcutId;
-            }
-            statusBarNotificationsForKeys = PopupPopulator.sortAndFilterShortcuts(queryForShortcutsContainer, str);
-            int i2 = 0;
-            while (i2 < statusBarNotificationsForKeys.size() && i2 < val$shortcutViews.size()) {
-                ShortcutInfoCompat shortcutInfoCompat = (ShortcutInfoCompat) statusBarNotificationsForKeys.get(i2);
-                ShortcutInfo shortcutInfo = new ShortcutInfo(shortcutInfoCompat, val$launcher);
-                shortcutInfo.iconBitmap = LauncherIcons.createShortcutIcon(shortcutInfoCompat, val$launcher, false);
-                shortcutInfo.rank = i2;
-                val$uiHandler.post(new UpdateShortcutChild(val$container, (DeepShortcutView) val$shortcutViews.get(i2), shortcutInfo, shortcutInfoCompat));
-                i2++;
-            }
-            val$uiHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    val$launcher.refreshAndBindWidgetsForPackageUser(PackageUserKey.fromItemInfo(val$originalInfo));
-                }
-            });
-        }
-    }
-
+    private static final int MAX_SHORTCUTS_IF_NOTIFICATIONS = 2;
     public enum Item {
         SHORTCUT(R.layout.deep_shortcut, true),
         NOTIFICATION(R.layout.notification, false),
         SYSTEM_SHORTCUT(R.layout.system_shortcut, true),
         SYSTEM_SHORTCUT_ICON(R.layout.system_shortcut_icon_only, true);
-
-        public final boolean isShortcut;
         public final int layoutId;
-
-        Item(int i, boolean z) {
-            layoutId = i;
-            isShortcut = z;
+        public final boolean isShortcut;
+        Item(int layoutId, boolean isShortcut) {
+            this.layoutId = layoutId;
+            this.isShortcut = isShortcut;
         }
     }
-
-    static class UpdateNotificationChild implements Runnable {
-        private List<NotificationInfo> mNotificationInfos;
-        private NotificationItemView mNotificationView;
-
-        public UpdateNotificationChild(NotificationItemView notificationItemView, List<NotificationInfo> list) {
-            mNotificationView = notificationItemView;
-            mNotificationInfos = list;
+    public static @NonNull
+    Item[] getItemsToPopulate(@NonNull List<String> shortcutIds,
+                              @NonNull List<NotificationKeyData> notificationKeys,
+                              @NonNull List<SystemShortcut> systemShortcuts) {
+        boolean hasNotifications = notificationKeys.size() > 0;
+        int numNotificationItems = hasNotifications ? 1 : 0;
+        int numShortcuts = shortcutIds.size();
+        if (hasNotifications && numShortcuts > MAX_SHORTCUTS_IF_NOTIFICATIONS) {
+            numShortcuts = MAX_SHORTCUTS_IF_NOTIFICATIONS;
         }
-
+        int numItems = Math.min(MAX_ITEMS, numShortcuts + numNotificationItems)
+                + systemShortcuts.size();
+        Item[] items = new Item[numItems];
+        for (int i = 0; i < numItems; i++) {
+            items[i] = Item.SHORTCUT;
+        }
+        if (hasNotifications) {
+            // The notification layout is always first.
+            items[0] = Item.NOTIFICATION;
+        }
+        // The system shortcuts are always last.
+        boolean iconsOnly = !shortcutIds.isEmpty();
+        for (int i = 0; i < systemShortcuts.size(); i++) {
+            items[numItems - 1 - i] = iconsOnly ? Item.SYSTEM_SHORTCUT_ICON : Item.SYSTEM_SHORTCUT;
+        }
+        return items;
+    }
+    public static Item[] reverseItems(Item[] items) {
+        if (items == null) return null;
+        int numItems = items.length;
+        Item[] reversedArray = new Item[numItems];
+        for (int i = 0; i < numItems; i++) {
+            reversedArray[i] = items[numItems - i - 1];
+        }
+        return reversedArray;
+    }
+    /**
+     * Sorts shortcuts in rank order, with manifest shortcuts coming before dynamic shortcuts.
+     */
+    private static final Comparator<ShortcutInfoCompat> SHORTCUT_RANK_COMPARATOR
+            = new Comparator<ShortcutInfoCompat>() {
+        @Override
+        public int compare(ShortcutInfoCompat a, ShortcutInfoCompat b) {
+            if (a.isDeclaredInManifest() && !b.isDeclaredInManifest()) {
+                return -1;
+            }
+            if (!a.isDeclaredInManifest() && b.isDeclaredInManifest()) {
+                return 1;
+            }
+            return Integer.compare(a.getRank(), b.getRank());
+        }
+    };
+    /**
+     * Filters the shortcuts so that only MAX_ITEMS or fewer shortcuts are retained.
+     * We want the filter to include both static and dynamic shortcuts, so we always
+     * include NUM_DYNAMIC dynamic shortcuts, if at least that many are present.
+     *
+     * @param shortcutIdToRemoveFirst An id that should be filtered out first, if any.
+     * @return a subset of shortcuts, in sorted order, with size <= MAX_ITEMS.
+     */
+    public static List<ShortcutInfoCompat> sortAndFilterShortcuts(
+            List<ShortcutInfoCompat> shortcuts, @Nullable String shortcutIdToRemoveFirst) {
+        // Remove up to one specific shortcut before sorting and doing somewhat fancy filtering.
+        if (shortcutIdToRemoveFirst != null) {
+            Iterator<ShortcutInfoCompat> shortcutIterator = shortcuts.iterator();
+            while (shortcutIterator.hasNext()) {
+                if (shortcutIterator.next().getId().equals(shortcutIdToRemoveFirst)) {
+                    shortcutIterator.remove();
+                    break;
+                }
+            }
+        }
+        Collections.sort(shortcuts, SHORTCUT_RANK_COMPARATOR);
+        if (shortcuts.size() <= MAX_ITEMS) {
+            return shortcuts;
+        }
+        // The list of shortcuts is now sorted with static shortcuts followed by dynamic
+        // shortcuts. We want to preserve this order, but only keep MAX_ITEMS.
+        List<ShortcutInfoCompat> filteredShortcuts = new ArrayList<>(MAX_ITEMS);
+        int numDynamic = 0;
+        int size = shortcuts.size();
+        for (int i = 0; i < size; i++) {
+            ShortcutInfoCompat shortcut = shortcuts.get(i);
+            int filteredSize = filteredShortcuts.size();
+            if (filteredSize < MAX_ITEMS) {
+                // Always add the first MAX_ITEMS to the filtered list.
+                filteredShortcuts.add(shortcut);
+                if (shortcut.isDynamic()) {
+                    numDynamic++;
+                }
+                continue;
+            }
+            // At this point, we have MAX_ITEMS already, but they may all be static.
+            // If there are dynamic shortcuts, remove static shortcuts to add them.
+            if (shortcut.isDynamic() && numDynamic < NUM_DYNAMIC) {
+                numDynamic++;
+                int lastStaticIndex = filteredSize - numDynamic;
+                filteredShortcuts.remove(lastStaticIndex);
+                filteredShortcuts.add(shortcut);
+            }
+        }
+        return filteredShortcuts;
+    }
+    public static Runnable createUpdateRunnable(final Launcher launcher, final ItemInfo originalInfo,
+                                                final Handler uiHandler, final PopupContainerWithArrow container,
+                                                final List<String> shortcutIds, final List<DeepShortcutView> shortcutViews,
+                                                final List<NotificationKeyData> notificationKeys,
+                                                final NotificationItemView notificationView, final List<SystemShortcut> systemShortcuts,
+                                                final List<View> systemShortcutViews) {
+        final ComponentName activity = originalInfo.getTargetComponent();
+        final UserHandle user = originalInfo.user;
+        return new Runnable() {
+            @Override
+            public void run() {
+                if (notificationView != null) {
+                    List<StatusBarNotification> notifications = launcher.getPopupDataProvider()
+                            .getStatusBarNotificationsForKeys(notificationKeys);
+                    List<NotificationInfo> infos = new ArrayList<>(notifications.size());
+                    for (int i = 0; i < notifications.size(); i++) {
+                        StatusBarNotification notification = notifications.get(i);
+                        infos.add(new NotificationInfo(launcher, notification));
+                    }
+                    uiHandler.post(new UpdateNotificationChild(notificationView, infos));
+                }
+                List<ShortcutInfoCompat> shortcuts = DeepShortcutManager.getInstance(launcher)
+                        .queryForShortcutsContainer(activity, shortcutIds, user);
+                String shortcutIdToDeDupe = notificationKeys.isEmpty() ? null
+                        : notificationKeys.get(0).shortcutId;
+                shortcuts = PopupPopulator.sortAndFilterShortcuts(shortcuts, shortcutIdToDeDupe);
+                for (int i = 0; i < shortcuts.size() && i < shortcutViews.size(); i++) {
+                    final ShortcutInfoCompat shortcut = shortcuts.get(i);
+                    ShortcutInfo si = new ShortcutInfo(shortcut, launcher);
+                    // Use unbadged icon for the menu.
+                    si.iconBitmap = LauncherIcons.createShortcutIcon(
+                            shortcut, launcher, false /* badged */);
+                    si.rank = i;
+                    uiHandler.post(new UpdateShortcutChild(container, shortcutViews.get(i),
+                            si, shortcut));
+                }
+                // This ensures that mLauncher.getWidgetsForPackageUser()
+                // doesn't return null (it puts all the widgets in memory).
+                for (int i = 0; i < systemShortcuts.size(); i++) {
+                    final SystemShortcut systemShortcut = systemShortcuts.get(i);
+                    uiHandler.post(new UpdateSystemShortcutChild(container,
+                            systemShortcutViews.get(i), systemShortcut, launcher, originalInfo));
+                }
+                uiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        launcher.refreshAndBindWidgetsForPackageUser(
+                                PackageUserKey.fromItemInfo(originalInfo));
+                    }
+                });
+            }
+        };
+    }
+    /** Updates the shortcut child of this container based on the given shortcut info. */
+    private static class UpdateShortcutChild implements Runnable {
+        private final PopupContainerWithArrow mContainer;
+        private final DeepShortcutView mShortcutChild;
+        private final ShortcutInfo mShortcutChildInfo;
+        private final ShortcutInfoCompat mDetail;
+        public UpdateShortcutChild(PopupContainerWithArrow container, DeepShortcutView shortcutChild,
+                                   ShortcutInfo shortcutChildInfo, ShortcutInfoCompat detail) {
+            mContainer = container;
+            mShortcutChild = shortcutChild;
+            mShortcutChildInfo = shortcutChildInfo;
+            mDetail = detail;
+        }
+        @Override
+        public void run() {
+            mShortcutChild.applyShortcutInfo(mShortcutChildInfo, mDetail,
+                    mContainer.mShortcutsItemView);
+        }
+    }
+    /** Updates the notification child based on the given notification info. */
+    private static class UpdateNotificationChild implements Runnable {
+        private NotificationItemView mNotificationView;
+        private List<NotificationInfo> mNotificationInfos;
+        public UpdateNotificationChild(NotificationItemView notificationView,
+                                       List<NotificationInfo> notificationInfos) {
+            mNotificationView = notificationView;
+            mNotificationInfos = notificationInfos;
+        }
         @Override
         public void run() {
             mNotificationView.applyNotificationInfos(mNotificationInfos);
         }
     }
-
-    static class UpdateShortcutChild implements Runnable {
-        private final PopupContainerWithArrow mContainer;
-        private final ShortcutInfoCompat mDetail;
-        private final DeepShortcutView mShortcutChild;
-        private final ShortcutInfo mShortcutChildInfo;
-
-        public UpdateShortcutChild(PopupContainerWithArrow popupContainerWithArrow, DeepShortcutView deepShortcutView, ShortcutInfo shortcutInfo, ShortcutInfoCompat shortcutInfoCompat) {
-            mContainer = popupContainerWithArrow;
-            mShortcutChild = deepShortcutView;
-            mShortcutChildInfo = shortcutInfo;
-            mDetail = shortcutInfoCompat;
-        }
-
-        @Override
-        public void run() {
-            mShortcutChild.applyShortcutInfo(mShortcutChildInfo, mDetail, mContainer.mShortcutsItemView);
-        }
-    }
-
-    static class UpdateSystemShortcutChild implements Runnable {
-        private final ItemInfo mItemInfo;
-        private final Launcher mLauncher;
+    /** Updates the system shortcut child based on the given shortcut info. */
+    private static class UpdateSystemShortcutChild implements Runnable {
         private final View mSystemShortcutChild;
         private final SystemShortcut mSystemShortcutInfo;
-
-        public UpdateSystemShortcutChild(View view, SystemShortcut systemShortcut, Launcher launcher, ItemInfo itemInfo) {
-            mSystemShortcutChild = view;
+        private final Launcher mLauncher;
+        private final ItemInfo mItemInfo;
+        public UpdateSystemShortcutChild(PopupContainerWithArrow container, View systemShortcutChild,
+                                         SystemShortcut systemShortcut, Launcher launcher, ItemInfo originalInfo) {
+            mSystemShortcutChild = systemShortcutChild;
             mSystemShortcutInfo = systemShortcut;
             mLauncher = launcher;
-            mItemInfo = itemInfo;
+            mItemInfo = originalInfo;
         }
-
         @Override
         public void run() {
-            PopupPopulator.initializeSystemShortcut(mSystemShortcutChild.getContext(), mSystemShortcutChild, mSystemShortcutInfo);
-            mSystemShortcutChild.setOnClickListener(mSystemShortcutInfo.getOnClickListener(mLauncher, mItemInfo));
+            final Context context = mSystemShortcutChild.getContext();
+            initializeSystemShortcut(context, mSystemShortcutChild, mSystemShortcutInfo);
+            mSystemShortcutChild.setOnClickListener(mSystemShortcutInfo
+                    .getOnClickListener(mLauncher, mItemInfo));
         }
     }
-
-    public static Item[] getItemsToPopulate(List list, List list2, List list3) {
-        int i = 2;
-        int i2 = 1;
-        int i3 = 0;
-        int size = list.size();
-        boolean i4 = list2.size() > 0;
-        if (!i4) {
-            i2 = 0;
-        }
-        if (!i4 || size <= 2) {
-            i = size;
-        }
-        i = list3.size() + Math.min(4, i2 + i);
-        Item[] itemArr = new Item[i];
-        for (i2 = 0; i2 < i; i2++) {
-            itemArr[i2] = Item.SHORTCUT;
-        }
-        if (i4) {
-            itemArr[0] = Item.NOTIFICATION;
-        }
-        i4 = !list.isEmpty();
-        while (i3 < list3.size()) {
-            itemArr[(i - 1) - i3] = i4 ? Item.SYSTEM_SHORTCUT_ICON : Item.SYSTEM_SHORTCUT;
-            i3++;
-        }
-        return itemArr;
-    }
-
-    public static Item[] reverseItems(Item[] itemArr) {
-        if (itemArr == null) {
-            return null;
-        }
-        int length = itemArr.length;
-        Item[] itemArr2 = new Item[length];
-        for (int i = 0; i < length; i++) {
-            itemArr2[i] = itemArr[(length - i) - 1];
-        }
-        return itemArr2;
-    }
-
-    public static List sortAndFilterShortcuts(List<ShortcutInfoCompat> list, String str) {
-        int i = 0;
-        if (str != null) {
-            Iterator it = list.iterator();
-            while (it.hasNext()) {
-                if (((ShortcutInfoCompat) it.next()).getId().equals(str)) {
-                    it.remove();
-                    break;
-                }
-            }
-        }
-        Collections.sort(list, SHORTCUT_RANK_COMPARATOR);
-        if (list.size() <= 4) {
-            return list;
-        }
-        List<ShortcutInfoCompat> arrayList = new ArrayList<>(4);
-        int size = list.size();
-        for (int i2 = 0; i2 < size; i2++) {
-            ShortcutInfoCompat shortcutInfoCompat = list.get(i2);
-            int size2 = arrayList.size();
-            if (size2 < 4) {
-                int i3;
-                arrayList.add(shortcutInfoCompat);
-                if (shortcutInfoCompat.isDynamic()) {
-                    i3 = i + 1;
-                } else {
-                    i3 = i;
-                }
-                i = i3;
-            } else if (shortcutInfoCompat.isDynamic() && i < NUM_DYNAMIC) {
-                i++;
-                arrayList.remove(size2 - i);
-                arrayList.add(shortcutInfoCompat);
-            }
-        }
-        return arrayList;
-    }
-
-    public static Runnable createUpdateRunnable(Launcher launcher, ItemInfo itemInfo, Handler handler, PopupContainerWithArrow popupContainerWithArrow, List list, List list2, List list3, NotificationItemView notificationItemView, List list4, List list5) {
-        return new C04892(notificationItemView, launcher, list3, handler, itemInfo.getTargetComponent(), list, itemInfo.user, list2, popupContainerWithArrow, list4, list5, itemInfo);
-    }
-
-    public static void initializeSystemShortcut(Context context, View view, SystemShortcut systemShortcut) {
+    public static void initializeSystemShortcut(Context context, View view, SystemShortcut info) {
         if (view instanceof DeepShortcutView) {
-            DeepShortcutView deepShortcutView = (DeepShortcutView) view;
-            deepShortcutView.getIconView().setBackground(systemShortcut.getIcon(context, 16843282));
-            deepShortcutView.getBubbleText().setText(systemShortcut.getLabel(context));
+            // Expanded system shortcut, with both icon and text shown on white background.
+            final DeepShortcutView shortcutView = (DeepShortcutView) view;
+            shortcutView.getIconView().setBackground(info.getIcon(context,
+                    android.R.attr.textColorTertiary));
+            shortcutView.getBubbleText().setText(info.getLabel(context));
         } else if (view instanceof ImageView) {
-            ImageView imageView = (ImageView) view;
-            imageView.setImageDrawable(systemShortcut.getIcon(context, 16842906));
-            imageView.setContentDescription(systemShortcut.getLabel(context));
+            // Only the system shortcut icon shows on a gray background header.
+            final ImageView shortcutIcon = (ImageView) view;
+            shortcutIcon.setImageDrawable(info.getIcon(context,
+                    android.R.attr.textColorHint));
+            shortcutIcon.setContentDescription(info.getLabel(context));
         }
-        view.setTag(systemShortcut);
+        view.setTag(info);
     }
 }
