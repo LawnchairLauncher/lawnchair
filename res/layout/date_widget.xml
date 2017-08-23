@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.android.launcher3.pixel.DateWidgetView
+    android:gravity="end|center"
+    android:layout_gravity="end"
+    android:orientation="vertical"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto">
+
+    <com.android.launcher3.pixel.DoubleShadowTextClock
+        android:textSize="36.0dip"
+        android:textColor="#ffffffff"
+        android:id="@+id/date_text1"
+        android:paddingBottom="4.0dip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:includeFontPadding="false"
+        android:fontFamily="sans-serif-light"
+        launcher:ambientShadowColor="#44000000"
+        launcher:keyShadowColor="#22000000"
+        launcher:ambientShadowBlur="6.0dip"
+        launcher:keyShadowBlur="2.0dip"
+        launcher:keyShadowOffset="0.5dip" />
+
+    <com.android.launcher3.pixel.DoubleShadowTextClock
+        android:textSize="12.0sp"
+        android:textColor="#ffffffff"
+        android:id="@+id/date_text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:includeFontPadding="false"
+        android:textAllCaps="true"
+        android:fontFamily="sans-serif"
+        launcher:ambientShadowColor="#66000000"
+        launcher:keyShadowColor="#33000000"
+        launcher:ambientShadowBlur="2.0dip"
+        launcher:keyShadowBlur="1.0dip"
+        launcher:keyShadowOffset="0.5dip" />
+
+</com.android.launcher3.pixel.DateWidgetView>

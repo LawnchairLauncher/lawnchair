@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.launcher3.CellLayout.ContainerType;
+import com.android.launcher3.pixel.QsbBlockerView;
 
 public class ShortcutAndWidgetContainer extends ViewGroup {
     static final String TAG = "ShortcutAndWidgetContainer";
@@ -111,7 +112,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         if (!lp.isFullscreen) {
             final DeviceProfile profile = mLauncher.getDeviceProfile();
 
-            if (child instanceof LauncherAppWidgetHostView) {
+            if (child instanceof LauncherAppWidgetHostView || child instanceof QsbBlockerView) {
                 lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX,
                         profile.appWidgetScale.x, profile.appWidgetScale.y);
                 // Widgets have their own padding

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView
+    android:layout_gravity="start|center"
+    android:id="@+id/g_icon"
+    android:background="@drawable/bg_qsb_pill"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/qsb_button_height"
+    android:src="@drawable/ic_super_g_color"
+    android:scaleType="center"
+    android:contentDescription="@string/label_search"
+    android:elevation="@dimen/qsb_button_elevation"
+    xmlns:android="http://schemas.android.com/apk/res/android" />

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<View
+    android:layout_gravity="start|center"
+    android:background="@color/qsb_connector"
+    android:id="@+id/qsb_connector"
+    android:layout_width="0.0dip"
+    android:layout_height="@dimen/qsb_button_height"
+    xmlns:android="http://schemas.android.com/apk/res/android" />
