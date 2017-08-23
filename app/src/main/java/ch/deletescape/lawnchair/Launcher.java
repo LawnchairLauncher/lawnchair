@@ -961,13 +961,6 @@ public class Launcher extends Activity
         mDisableEditing = Utilities.getPrefs(this).getLockDesktop();
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        mBlurWallpaperProvider.updateAsync();
-    }
-
     private void reloadIcons() {
         mIconCache.pip.updateIconPack();
         mIconCache.clear();
