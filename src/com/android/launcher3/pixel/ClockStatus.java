@@ -26,15 +26,15 @@ public class ClockStatus extends FastBitmapDrawable implements Runnable
             this.drawInternal(canvas);
             return;
         }
-        if (!this.dr.cO()) {
+        if (!this.dr.bitmapAvailable()) {
             super.draw(canvas);
             return;
         }
         this.ds.setTimeInMillis(System.currentTimeMillis());
         final Rect bounds = this.getBounds();
-        final Drawable cm = this.dr.cM(this.ds);
+        final Drawable cm = this.dr.updateTime(this.ds);
         cm.setBounds(bounds);
-        final float cn = this.dr.cN();
+        final float cn = this.dr.getScale();
         canvas.scale(cn, cn, bounds.exactCenterX(), bounds.exactCenterY());
         cm.draw(canvas);
         this.unscheduleSelf(this);

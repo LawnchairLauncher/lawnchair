@@ -15,7 +15,7 @@ public class DynamicDrawableFactory extends DrawableFactory
     }
 
     public FastBitmapDrawable newIcon(final Bitmap bitmap, final ItemInfo itemInfo) {
-        if (itemInfo != null && itemInfo.itemType == 0 && ClockUpdateReceiver.dl.equals(itemInfo.getTargetComponent())) {
+        if (itemInfo != null && itemInfo.itemType == 0 && ClockUpdateReceiver.componentName.equals(itemInfo.getTargetComponent())) {
             final ClockStatus b = new ClockStatus(bitmap, this.du);
             b.setFilterBitmap(true);
             return b;
