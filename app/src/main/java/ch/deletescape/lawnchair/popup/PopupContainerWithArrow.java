@@ -322,29 +322,28 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
     /**
      * Orients this container above or below the given icon, aligning with the left or right.
-     * <p>
+     *
      * These are the preferred orientations, in order (RTL prefers right-aligned over left):
      * - Above and left-aligned
      * - Above and right-aligned
      * - Below and left-aligned
      * - Below and right-aligned
-     * <p>
+     *
      * So we always align left if there is enough horizontal space
      * and align above if there is enough vertical space.
      */
     private void orientAboutIcon(BubbleTextView icon, int arrowHeight) {
         int width = getMeasuredWidth();
         int height = getMeasuredHeight() + arrowHeight;
-
         DragLayer dragLayer = mLauncher.getDragLayer();
         dragLayer.getDescendantRectRelativeToSelf(icon, mTempRect);
         Rect insets = dragLayer.getInsets();
-
         // Align left (right in RTL) if there is room.
         int leftAlignedX = mTempRect.left + icon.getPaddingLeft();
         int rightAlignedX = mTempRect.right - width - icon.getPaddingRight();
         int x = leftAlignedX;
-        boolean canBeLeftAligned = leftAlignedX + width < dragLayer.getRight() - insets.right;
+        boolean canBeLeftAligned = leftAlignedX + width + insets.left
+                < dragLayer.getRight() - insets.right;
         boolean canBeRightAligned = rightAlignedX > dragLayer.getLeft() + insets.left;
         if (!canBeLeftAligned || (mIsRtl && canBeRightAligned)) {
             x = rightAlignedX;
@@ -353,21 +352,26 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         if (mIsRtl) {
             x -= dragLayer.getWidth() - width;
         }
-
         // Offset x so that the arrow and shortcut icons are center-aligned with the original icon.
         int iconWidth = icon.getWidth() - icon.getTotalPaddingLeft() - icon.getTotalPaddingRight();
         iconWidth *= icon.getScaleX();
         Resources resources = getResources();
         int xOffset;
         if (isAlignedWithStart()) {
-            // Aligning with the drag handle.
-            xOffset = Math.max(0, ((iconWidth / 2) - (resources.getDimensionPixelSize(R.dimen.deep_shortcut_drag_handle_size) / 2)) - resources.getDimensionPixelSize(R.dimen.popup_padding_end));
-        } else {
             // Aligning with the shortcut icon.
-            xOffset = ((iconWidth / 2) - (resources.getDimensionPixelSize(R.dimen.deep_shortcut_icon_size) / 2)) - resources.getDimensionPixelSize(R.dimen.popup_padding_start);
+            int shortcutIconWidth = resources.getDimensionPixelSize(R.dimen.deep_shortcut_icon_size);
+            int shortcutPaddingStart = resources.getDimensionPixelSize(
+                    R.dimen.popup_padding_start);
+            xOffset = iconWidth / 2 - shortcutIconWidth / 2 - shortcutPaddingStart;
+        } else {
+            // Aligning with the drag handle.
+            int shortcutDragHandleWidth = resources.getDimensionPixelSize(
+                    R.dimen.deep_shortcut_drag_handle_size);
+            int shortcutPaddingEnd = resources.getDimensionPixelSize(
+                    R.dimen.popup_padding_end);
+            xOffset = iconWidth / 2 - shortcutDragHandleWidth / 2 - shortcutPaddingEnd;
         }
         x += mIsLeftAligned ? xOffset : -xOffset;
-
         // Open above icon if there is room.
         int iconHeight = icon.getIcon().getBounds().height();
         int y = mTempRect.top + icon.getPaddingTop() - height;
@@ -375,12 +379,49 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         if (!mIsAboveIcon) {
             y = mTempRect.top + icon.getPaddingTop() + iconHeight;
         }
-
         // Insets are added later, so subtract them now.
+        if (mIsRtl) {
+            x += insets.right;
+        } else {
+            x -= insets.left;
+        }
         y -= insets.top;
-
-        setX(x);
-        setY(y);
+        if (y < dragLayer.getTop() || y + height > dragLayer.getBottom()) {
+            // The container is opening off the screen, so just center it in the drag layer instead.
+            ((FrameLayout.LayoutParams) getLayoutParams()).gravity = Gravity.CENTER_VERTICAL;
+            // Put the container next to the icon, preferring the right side in ltr (left in rtl).
+            int rightSide = leftAlignedX + iconWidth - insets.left;
+            int leftSide = rightAlignedX - iconWidth - insets.left;
+            if (!mIsRtl) {
+                if (rightSide + width < dragLayer.getRight()) {
+                    x = rightSide;
+                    mIsLeftAligned = true;
+                } else {
+                    x = leftSide;
+                    mIsLeftAligned = false;
+                }
+            } else {
+                if (leftSide > dragLayer.getLeft()) {
+                    x = leftSide;
+                    mIsLeftAligned = false;
+                } else {
+                    x = rightSide;
+                    mIsLeftAligned = true;
+                }
+            }
+            mIsAboveIcon = true;
+        }
+        if (x < dragLayer.getLeft() || x + width > dragLayer.getRight()) {
+            // If we are still off screen, center horizontally too.
+            ((FrameLayout.LayoutParams) getLayoutParams()).gravity |= Gravity.CENTER_HORIZONTAL;
+        }
+        int gravity = ((FrameLayout.LayoutParams) getLayoutParams()).gravity;
+        if (!Gravity.isHorizontal(gravity)) {
+            setX(x);
+        }
+        if (!Gravity.isVertical(gravity)) {
+            setY(y);
+        }
     }
 
     private boolean isAlignedWithStart() {
