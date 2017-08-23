@@ -57,7 +57,7 @@ object FeatureFlags {
     const val KEY_PREF_PLANE = "pref_plane"
     const val KEY_PREF_WEATHER = "pref_weather"
     const val KEY_PREF_PULLDOWN_ACTION = "pref_pulldownAction"
-    const val KEY_PREF_ENABLE_EDITING = "pref_enableEditing"
+    const val KEY_PREF_LOCK_DESKTOP = "pref_lockDesktop"
     const val KEY_PREF_ANIMATED_CLOCK_ICON = "pref_animatedClockIcon"
     private var darkThemeFlag: Int = 0
 

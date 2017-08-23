@@ -88,7 +88,7 @@ interface IPreferenceProvider {
     val hideHotseat: Boolean
     val enablePlanes: Boolean
     val showWeather: Boolean
-    val enableEditing: Boolean
+    val lockDesktop: Boolean
     val animatedClockIcon: Boolean
     val animateClockIconAlternativeClockApps: Boolean
 

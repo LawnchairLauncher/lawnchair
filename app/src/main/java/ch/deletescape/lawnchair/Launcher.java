@@ -958,7 +958,7 @@ public class Launcher extends Activity
             mBlurWallpaperProvider.updateAsync();
         }
 
-        mDisableEditing = !Utilities.getPrefs(this).getEnableEditing();
+        mDisableEditing = Utilities.getPrefs(this).getLockDesktop();
     }
 
     @Override
