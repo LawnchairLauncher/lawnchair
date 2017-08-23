@@ -19,6 +19,9 @@
     q=<query> to the data to the intent -->
     <string name="market_search_intent" translatable="false">market://search?c=apps</string>
 
+    <!-- String representing the intent to delete a package.-->
+    <string name="delete_package_intent" translatable="false">#Intent;action=android.intent.action.DELETE;launchFlags=0x10800000;end</string>
+
     <!-- Values for icon shape overrides. These should correspond to entries defined
      in icon_shape_override_paths_names -->
     <string-array translatable="false" name="icon_shape_override_paths_values">
