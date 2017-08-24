@@ -21,7 +21,6 @@ import android.content.SharedPreferences;
 import android.content.pm.LauncherActivityInfo;
 import android.os.Process;
 import android.os.UserHandle;
-import android.support.v4.os.BuildCompat;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
@@ -34,6 +33,7 @@ import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 
@@ -78,7 +78,7 @@ public class ManagedProfileHeuristic {
         mModel = LauncherAppState.getInstance(context).getModel();
         mIconCache = LauncherAppState.getInstance(context).getIconCache();
         mAddIconsToHomescreen =
-                !BuildCompat.isAtLeastO() || SessionCommitReceiver.isEnabled(context);
+                !Utilities.isAtLeastO() || SessionCommitReceiver.isEnabled(context);
     }
 
     public void processPackageRemoved(String[] packages) {

@@ -26,7 +26,6 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.provider.Settings;
 import android.provider.Settings.System;
-import android.support.v4.os.BuildCompat;
 
 import com.android.launcher3.graphics.IconShapeOverride;
 
@@ -85,7 +84,7 @@ public class SettingsActivity extends Activity {
             }
 
             Preference iconBadgingPref = findPreference(ICON_BADGING_PREFERENCE_KEY);
-            if (!BuildCompat.isAtLeastO()) {
+            if (!Utilities.isAtLeastO()) {
                 getPreferenceScreen().removePreference(
                         findPreference(SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY));
                 getPreferenceScreen().removePreference(iconBadgingPref);
