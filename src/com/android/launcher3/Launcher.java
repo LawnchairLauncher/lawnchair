@@ -272,7 +272,6 @@ public class Launcher extends BaseActivity
     private IconCache mIconCache;
     private LauncherAccessibilityDelegate mAccessibilityDelegate;
     private final Handler mHandler = new Handler();
-    private boolean mIsResumeFromActionScreenOff;
     private boolean mHasFocus = false;
 
     private ObjectAnimator mScrimAnimator;
@@ -1046,7 +1045,6 @@ public class Launcher extends BaseActivity
         if (shouldShowDiscoveryBounce()) {
             mAllAppsController.showDiscoveryBounce();
         }
-        mIsResumeFromActionScreenOff = false;
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onResume();
         }
@@ -1548,7 +1546,6 @@ public class Launcher extends BaseActivity
                         mAppsView.reset();
                     }
                 }
-                mIsResumeFromActionScreenOff = true;
                 mShouldFadeInScrim = true;
             } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
                 // ACTION_USER_PRESENT is sent after onStart/onResume. This covers the case where
@@ -3910,16 +3907,7 @@ public class Launcher extends BaseActivity
     }
 
     private boolean shouldShowDiscoveryBounce() {
-        if (mState != State.WORKSPACE) {
-            return false;
-        }
-        if (mLauncherCallbacks != null && mLauncherCallbacks.shouldShowDiscoveryBounce()) {
-            return true;
-        }
-        if (!mIsResumeFromActionScreenOff) {
-            return false;
-        }
-        return !mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false);
+        return mState == State.WORKSPACE && !mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false);
     }
 
     protected void moveWorkspaceToDefaultScreen() {

@@ -95,6 +95,4 @@ public interface LauncherCallbacks {
     int SEARCH_BAR_HEIGHT_NORMAL = 0, SEARCH_BAR_HEIGHT_TALL = 1;
     /** Must return one of {@link #SEARCH_BAR_HEIGHT_NORMAL} or {@link #SEARCH_BAR_HEIGHT_TALL} */
     int getSearchBarHeight();
-
-    boolean shouldShowDiscoveryBounce();
 }
