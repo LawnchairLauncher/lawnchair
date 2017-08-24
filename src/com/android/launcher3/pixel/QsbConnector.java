@@ -17,14 +17,14 @@ import android.view.View;
 
 public class QsbConnector extends View
 {
-    private static final Property l;
-    private int m;
-    private ObjectAnimator n;
-    private final int o;
-    private final BroadcastReceiver p;
+    private static final Property alphaProperty;
+    private int alpha;
+    private ObjectAnimator revealAnimator;
+    private final int qsbBackgroundColor;
+    private final BroadcastReceiver packageChangeReceiver;
 
     static {
-        l = new g(Integer.class, "overlayAlpha");
+        alphaProperty = new AlphaPropertyOverride(Integer.class, "overlayAlpha");
     }
 
     public QsbConnector(final Context context) {
@@ -37,19 +37,25 @@ public class QsbConnector extends View
 
     public QsbConnector(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
-        this.p = new h(this);
-        this.m = 0;
-        this.o = (this.getResources().getColor(R.color.qsb_background) & 0xFFFFFF);
+        this.packageChangeReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                retrieveGoogleQsbBackground();
+            }
+        };
+
+        this.alpha = 0;
+        this.qsbBackgroundColor = (this.getResources().getColor(R.color.qsb_background) & 0xFFFFFF);
     }
 
-    private void h() {
-        if (this.n != null) {
-            this.n.end();
-            this.n = null;
+    private void stopRevealAnimation() {
+        if (this.revealAnimator != null) {
+            this.revealAnimator.end();
+            this.revealAnimator = null;
         }
     }
 
-    private void i() {
+    private void retrieveGoogleQsbBackground() {
         Drawable drawable = null;
         try {
             final Context context = this.getContext();
@@ -74,76 +80,63 @@ public class QsbConnector extends View
         this.setBackground(drawable);
     }
 
-    private void j(final int m) {
-        if (this.m != m) {
-            this.m = m;
+    private void updateAlpha(final int m) {
+        if (this.alpha != m) {
+            this.alpha = m;
             this.invalidate();
         }
     }
 
-    public void g(final boolean b) {
-        if (b) {
-            this.h();
-            this.j(255);
-            (this.n = ObjectAnimator.ofInt(this, QsbConnector.l, new int[] { 0 })).setInterpolator(new AccelerateDecelerateInterpolator());
-            this.n.start();
+    public void changeVisibility(final boolean makeVisible) {
+        if (makeVisible) {
+            this.stopRevealAnimation();
+            this.updateAlpha(255);
+            (this.revealAnimator = ObjectAnimator.ofInt(this, QsbConnector.alphaProperty, new int[] { 0 })).setInterpolator(new AccelerateDecelerateInterpolator());
+            this.revealAnimator.start();
         }
         else {
-            this.j(0);
+            this.updateAlpha(0);
         }
     }
 
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        this.i();
-        this.getContext().registerReceiver(this.p, Util.createIntentFilter("android.intent.action.PACKAGE_ADDED", "android.intent.action.PACKAGE_CHANGED", "android.intent.action.PACKAGE_REMOVED"));
+        this.retrieveGoogleQsbBackground();
+        this.getContext().registerReceiver(this.packageChangeReceiver, Util.createIntentFilter("android.intent.action.PACKAGE_ADDED", "android.intent.action.PACKAGE_CHANGED", "android.intent.action.PACKAGE_REMOVED"));
     }
 
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        this.getContext().unregisterReceiver(this.p);
+        this.getContext().unregisterReceiver(this.packageChangeReceiver);
     }
 
     protected void onDraw(final Canvas canvas) {
-        if (this.m > 0) {
-            canvas.drawColor(android.support.v4.graphics.ColorUtils.setAlphaComponent(this.o, this.m));
+        if (this.alpha > 0) {
+            canvas.drawColor(android.support.v4.graphics.ColorUtils.setAlphaComponent(this.qsbBackgroundColor, this.alpha));
         }
     }
 
     protected boolean onSetAlpha(final int n) {
         if (n == 0) {
-            this.h();
+            this.stopRevealAnimation();
         }
         return super.onSetAlpha(n);
     }
 
-    static class g extends Property<QsbConnector, Integer>
+    static class AlphaPropertyOverride extends Property<QsbConnector, Integer>
     {
-        g(final Class clazz, final String s) {
+        AlphaPropertyOverride(final Class clazz, final String s) {
             super(clazz, s);
         }
 
         @Override
         public Integer get(final QsbConnector qsbConnector) {
-            return qsbConnector.m;
+            return qsbConnector.alpha;
         }
 
         @Override
-        public void set(final QsbConnector qsbConnector, final Integer n) {
-            qsbConnector.j(n);
-        }
-    }
-
-    static class h extends BroadcastReceiver
-    {
-        private QsbConnector ab;
-
-        h(QsbConnector ab) {
-            this.ab = ab;
-        }
-
-        public void onReceive(Context context, Intent intent) {
-            this.ab.i();
+        public void set(final QsbConnector qsbConnector, final Integer newAlpha) {
+            qsbConnector.updateAlpha(newAlpha);
         }
     }
 }

@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -56,7 +55,7 @@ public abstract class Qsb extends FrameLayout implements View.OnClickListener {
             mObjectAnimator = ObjectAnimator.ofFloat(mQsbView, "elevation", 0.0f, qsbButtonElevation).setDuration(200L);
             mObjectAnimator.setInterpolator(mADInterpolator);
             if (qsbHidden) {
-                hideQsb();
+                hideQsbImmediately();
             }
             mQsbView.setOnClickListener(this);
         }
@@ -123,7 +122,7 @@ public abstract class Qsb extends FrameLayout implements View.OnClickListener {
         if (hasWindowFocus()) {
             windowHasFocus = true;
         } else {
-            hideQsb();
+            hideQsbImmediately();
         }
     }
 
@@ -131,9 +130,9 @@ public abstract class Qsb extends FrameLayout implements View.OnClickListener {
     public void onWindowFocusChanged(boolean newWindowHasFocus) {
         super.onWindowFocusChanged(newWindowHasFocus);
         if (!newWindowHasFocus && windowHasFocus) {
-            hideQsb();
+            hideQsbImmediately();
         } else if (newWindowHasFocus && !windowHasFocus) {
-            showQsb(true);
+            changeVisibility(true);
         }
     }
 
@@ -141,10 +140,10 @@ public abstract class Qsb extends FrameLayout implements View.OnClickListener {
     protected void onWindowVisibilityChanged(int paramInt)
     {
         super.onWindowVisibilityChanged(paramInt);
-        showQsb(false);
+        changeVisibility(false);
     }
 
-    private void hideQsb() { //bb
+    private void hideQsbImmediately() { //bb
         windowHasFocus = false;
         qsbHidden = true;
         if (mQsbView != null) {
@@ -161,7 +160,7 @@ public abstract class Qsb extends FrameLayout implements View.OnClickListener {
         }
     }
 
-    private void showQsb(boolean animated) { //bc
+    private void changeVisibility(boolean makeVisible) { //bc
         windowHasFocus = false;
         if (qsbHidden) {
             qsbHidden = false;
@@ -169,14 +168,14 @@ public abstract class Qsb extends FrameLayout implements View.OnClickListener {
                 mQsbView.setAlpha(1.0f);
                 if (elevationAnimator != null) {
                     elevationAnimator.start();
-                    if (!animated) {
+                    if (!makeVisible) {
                         elevationAnimator.end();
                     }
                 }
             }
             if (qsbConnector != null) {
                 qsbConnector.setAlpha(1.0f);
-                qsbConnector.g(animated);
+                qsbConnector.changeVisibility(makeVisible);
             }
         }
     }
