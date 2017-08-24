@@ -104,6 +104,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                         SessionCommitReceiver.queueAppIconAddition(context, packages[i], mUser);
                     }
                 }
+                flagOp = FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE);
                 break;
             }
             case OP_UPDATE:
@@ -170,12 +171,12 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
             }
         }
 
+        final LongArrayMap<Boolean> removedShortcuts = new LongArrayMap<>();
+
         // Update shortcut infos
         if (mOp == OP_ADD || flagOp != FlagOp.NO_OP) {
             final ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<>();
-            final LongArrayMap<Boolean> removedShortcuts = new LongArrayMap<>();
             final ArrayList<LauncherAppWidgetInfo> widgets = new ArrayList<>();
-
             synchronized (dataModel) {
                 for (ItemInfo info : dataModel.itemsIdMap) {
                     if (info instanceof ShortcutInfo && mUser.equals(info.user)) {
@@ -196,6 +197,12 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                         ComponentName cn = si.getTargetComponent();
                         if (cn != null && matcher.matches(si, cn)) {
                             AppInfo appInfo = addedOrUpdatedApps.get(cn);
+
+                            if (mOp == OP_REMOVE
+                                    && si.hasStatusFlag(ShortcutInfo.FLAG_SUPPORTS_WEB_UI)) {
+                                removedShortcuts.put(si.id, false);
+                                continue;
+                            }
 
                             // For system apps, package manager send OP_UPDATE when an
                             // app is enabled.
@@ -220,7 +227,6 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                         si.intent = intent;
                                     }
                                 }
-
                                 si.status = ShortcutInfo.DEFAULT;
                                 infoUpdated = true;
                                 if (si.itemType == Favorites.ITEM_TYPE_APPLICATION) {
@@ -308,7 +314,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
 
         if (!removedPackages.isEmpty() || !removedComponents.isEmpty()) {
             ItemInfoMatcher removeMatch = ItemInfoMatcher.ofPackages(removedPackages, mUser)
-                    .or(ItemInfoMatcher.ofComponents(removedComponents, mUser));
+                    .or(ItemInfoMatcher.ofComponents(removedComponents, mUser))
+                    .and(ItemInfoMatcher.ofItemIds(removedShortcuts, true));
             deleteAndBindComponentsRemoved(removeMatch);
 
             // Remove any queued items from the install queue
