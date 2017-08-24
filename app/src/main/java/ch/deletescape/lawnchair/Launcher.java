@@ -1861,13 +1861,13 @@ public class Launcher extends Activity
 
     public void onPullDownAction(int pullDownAction) {
         switch (pullDownAction) {
-            case 1:
+            case FeatureFlags.PULLDOWN_NOTIFICATIONS:
                 openNotifications();
                 break;
-            case 2:
+            case FeatureFlags.PULLDOWN_SEARCH:
                 startSearch("", false, null, false);
                 break;
-            case 3:
+            case FeatureFlags.PULLDOWN_APPS_SEARCH:
                 onLongClickAllAppsHandle();
                 break;
         }
@@ -1877,6 +1877,15 @@ public class Launcher extends Activity
     private void openNotifications() {
         try {
             Class.forName("android.app.StatusBarManager").getMethod("expandNotificationsPanel").invoke(getSystemService("statusbar"));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("ResourceType")
+    public void closeNotifications() {
+        try {
+            Class.forName("android.app.StatusBarManager").getMethod("collapsePanels").invoke(getSystemService("statusbar"));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
