@@ -1,13 +1,8 @@
 package com.android.launcher3.pixel;
 
-import android.content.ActivityNotFoundException;
-import android.content.ContentUris;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.net.Uri;
-import android.provider.CalendarContract;
 import android.text.Editable;
 import android.text.TextPaint;
 import android.text.TextWatcher;
@@ -31,14 +26,6 @@ public class DateWidgetView extends LinearLayout implements TextWatcher {
 
     public DateWidgetView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, CalendarContract.CONTENT_URI.buildUpon().appendPath("time").build()));
-                } catch (ActivityNotFoundException ex) { }
-            }
-        });
     }
 
     @Override
