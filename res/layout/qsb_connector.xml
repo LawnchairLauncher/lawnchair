@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<View
+<com.android.launcher3.pixel.QsbConnector
     android:layout_gravity="start|center"
     android:background="@color/qsb_connector"
     android:id="@+id/qsb_connector"

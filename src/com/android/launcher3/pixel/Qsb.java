@@ -27,7 +27,7 @@ public abstract class Qsb extends FrameLayout implements View.OnClickListener {
     private ObjectAnimator mObjectAnimator; //getInstanceUI
     protected View mQsbView; //bF
     private float qsbButtonElevation; //bG
-    protected View qsbConnector; //bH
+    protected QsbConnector qsbConnector; //bH
     private final Interpolator mADInterpolator = new AccelerateDecelerateInterpolator(); //bI
     private ObjectAnimator elevationAnimator; //bJ
     protected boolean qsbHidden; //bM
@@ -77,13 +77,13 @@ public abstract class Qsb extends FrameLayout implements View.OnClickListener {
         }
 
         if (!mLauncher.useVerticalBarLayout()) {
-            addView(qsbConnector = mLauncher.getLayoutInflater().inflate(R.layout.qsb_connector, this, false), 0);
-            final int color = getResources().getColor(R.color.qsb_connector);
+            addView(qsbConnector = (QsbConnector) mLauncher.getLayoutInflater().inflate(R.layout.qsb_connector, this, false), 0);
+            /*final int color = getResources().getColor(R.color.qsb_connector);
             final int color2 = getResources().getColor(R.color.qsb_background);
             final ColorDrawable background = new ColorDrawable(color);
             qsbConnector.setBackground(background);
             (elevationAnimator = ObjectAnimator.ofObject(background, "color", mArgbEvaluator, color2, color)).setDuration(200L);
-            elevationAnimator.setInterpolator(mADInterpolator);
+            elevationAnimator.setInterpolator(mADInterpolator);*/
         }
     }
 
@@ -176,12 +176,7 @@ public abstract class Qsb extends FrameLayout implements View.OnClickListener {
             }
             if (qsbConnector != null) {
                 qsbConnector.setAlpha(1.0f);
-                if (mObjectAnimator != null) {
-                    mObjectAnimator.start();
-                    if (!animated) {
-                        mObjectAnimator.end();
-                    }
-                }
+                qsbConnector.g(animated);
             }
         }
     }
