@@ -76,7 +76,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private float mShiftStart;      // [0, mShiftRange]
     private float mShiftRange;      // changes depending on the orientation
     private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
-    private boolean dontOpenNotifications;
+    private int openNotificationState;
 
     // Velocity of the container. Unit is in px/ms.
     private float mContainerVelocity;
@@ -174,7 +174,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         cancelAnimation();
         mCurrentAnimation = LauncherAnimUtils.createAnimatorSet();
         mShiftStart = mAppsView.getTranslationY();
-        dontOpenNotifications = !FeatureFlags.PULLDOWN_NOTIFICATIONS || (mProgress != 1);
+        openNotificationState = (FeatureFlags.PULLDOWN_NOTIFICATIONS && mProgress == 1) ? 0 : -1;
         preparePull(start);
     }
 
@@ -184,19 +184,21 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             return false;   // early termination.
         }
 
-        if (!dontOpenNotifications && mProgress == 1) {
+        if (openNotificationState == 0 && mProgress == 1) {
             if (velocity > 2.5) {
-                dontOpenNotifications = true;
+                openNotificationState = 1;
                 mLauncher.openNotifications();
             } else if (velocity < 0) {
-                dontOpenNotifications = true;
+                openNotificationState = -1;
             }
         }
 
-        mContainerVelocity = velocity;
+        if (openNotificationState != 1) {
+            mContainerVelocity = velocity;
 
-        float shift = Math.min(Math.max(0, mShiftStart + displacement), mShiftRange);
-        setProgress(shift / mShiftRange);
+            float shift = Math.min(Math.max(0, mShiftStart + displacement), mShiftRange);
+            setProgress(shift / mShiftRange);
+        }
 
         return true;
     }
@@ -208,7 +210,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         }
 
         if (fling) {
-            if (velocity < 0) {
+            if (velocity < 0 && openNotificationState != 1) {
                 calculateDuration(velocity, mAppsView.getTranslationY());
 
                 if (!mLauncher.isAllAppsVisible()) {
