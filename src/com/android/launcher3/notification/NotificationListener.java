@@ -28,6 +28,7 @@ import android.support.v4.util.Pair;
 import android.text.TextUtils;
 
 import com.android.launcher3.LauncherModel;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.PackageUserKey;
 
@@ -218,15 +219,17 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private boolean shouldBeFilteredOut(StatusBarNotification sbn) {
-        getCurrentRanking().getRanking(sbn.getKey(), mTempRanking);
-        if (!mTempRanking.canShowBadge()) {
-            return true;
-        }
         Notification notification = sbn.getNotification();
-        if (mTempRanking.getChannel().getId().equals(NotificationChannel.DEFAULT_CHANNEL_ID)) {
-            // Special filtering for the default, legacy "Miscellaneous" channel.
-            if ((notification.flags & Notification.FLAG_ONGOING_EVENT) != 0) {
+        if (Utilities.isAtLeastO()) {
+            getCurrentRanking().getRanking(sbn.getKey(), mTempRanking);
+            if (!mTempRanking.canShowBadge()) {
                 return true;
+            }
+            if (mTempRanking.getChannel().getId().equals(NotificationChannel.DEFAULT_CHANNEL_ID)) {
+                // Special filtering for the default, legacy "Miscellaneous" channel.
+                if ((notification.flags & Notification.FLAG_ONGOING_EVENT) != 0) {
+                    return true;
+                }
             }
         }
         boolean isGroupHeader = (notification.flags & Notification.FLAG_GROUP_SUMMARY) != 0;
