@@ -22,6 +22,7 @@ import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.Themes;
@@ -75,6 +76,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private float mShiftStart;      // [0, mShiftRange]
     private float mShiftRange;      // changes depending on the orientation
     private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
+    private boolean dontOpenNotifications;
 
     // Velocity of the container. Unit is in px/ms.
     private float mContainerVelocity;
@@ -125,6 +127,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                         directionsToDetectScroll |= VerticalPullDetector.DIRECTION_DOWN;
                     } else {
                         directionsToDetectScroll |= VerticalPullDetector.DIRECTION_UP;
+                        if (FeatureFlags.PULLDOWN_NOTIFICATIONS)
+                            directionsToDetectScroll |= VerticalPullDetector.DIRECTION_DOWN;
                     }
                 } else {
                     if (isInDisallowRecatchBottomZone()) {
@@ -170,6 +174,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         cancelAnimation();
         mCurrentAnimation = LauncherAnimUtils.createAnimatorSet();
         mShiftStart = mAppsView.getTranslationY();
+        dontOpenNotifications = !FeatureFlags.PULLDOWN_NOTIFICATIONS || (mProgress != 1);
         preparePull(start);
     }
 
@@ -177,6 +182,15 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     public boolean onDrag(float displacement, float velocity) {
         if (mAppsView == null) {
             return false;   // early termination.
+        }
+
+        if (!dontOpenNotifications && mProgress == 1) {
+            if (velocity > 2) {
+                dontOpenNotifications = true;
+                mLauncher.openNotifications();
+            } else if (velocity < 0) {
+                dontOpenNotifications = true;
+            }
         }
 
         mContainerVelocity = velocity;

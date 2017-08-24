@@ -55,6 +55,7 @@ import android.os.SystemClock;
 import android.os.Trace;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationManagerCompat;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -1951,6 +1952,15 @@ public class Launcher extends BaseActivity
 
         // We need to show the workspace after starting the search
         showWorkspace(true);
+    }
+
+    @SuppressWarnings("ResourceType")
+    public void openNotifications() {
+        try {
+            Class.forName("android.app.StatusBarManager").getMethod("expandNotificationsPanel").invoke(getSystemService("statusbar"));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
