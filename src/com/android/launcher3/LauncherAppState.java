@@ -162,6 +162,12 @@ public class LauncherAppState {
     }
 
     private static LauncherProvider getLocalProvider(Context context) {
+        if (!Utilities.ATLEAST_NOUGAT) {
+            ContentProviderClient cl = context.getContentResolver().acquireContentProviderClient(LauncherProvider.AUTHORITY);
+            LauncherProvider provider = (LauncherProvider) cl.getLocalContentProvider();
+            cl.release();
+            return provider;
+        }
         try (ContentProviderClient cl = context.getContentResolver()
                 .acquireContentProviderClient(LauncherProvider.AUTHORITY)) {
             return (LauncherProvider) cl.getLocalContentProvider();
