@@ -38,8 +38,8 @@ object PreferenceFlags {
     const val KEY_CENTER_WALLPAPER = "pref_centerWallpaper"
 
     // Various
-    const val KEY_WS_LABEL_COLOR_HUE = "pref_workspaceLabelColorHue"
-    const val KEY_WS_LABEL_COLOR_VARIATION = "pref_workspaceLabelColorVariation"
+    const val KEY_PREF_WS_LABEL_COLOR = "pref_workspaceLabelColor"
+    const val KEY_PREF_ALL_APPS_LABEL_COLOR = "pref_workspaceLabelColor"
     const val KEY_EXTRACTED_COLORS_PREFERENCE = "pref_extractedColors"
     const val KEY_WALLPAPER_ID_PREFERENCE = "pref_wallpaperId"
 

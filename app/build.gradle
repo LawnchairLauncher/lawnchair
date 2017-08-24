@@ -88,6 +88,7 @@ dependencies {
     implementation 'com.github.KwabenBerko:OpenWeatherMap-Android-Library:v1.0.0'
     implementation 'com.google.android.gms:play-services-awareness:11.0.4'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation 'com.pavelsikun:vintage-chroma:1.5'
     implementation project(':launcherclient')
 }
 repositories {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="SettingsTheme" parent="@android:style/Theme.Material.Light">
+    <style name="SettingsTheme" parent="@style/Theme.AppCompat.Light">
         <item name="android:colorPrimaryDark">#e0e0e0</item>
         <item name="android:colorAccent">@color/accent_material_light</item>
         <item name="android:windowLightStatusBar">true</item>

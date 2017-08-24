@@ -842,69 +842,6 @@ public final class Utilities {
         }
     }
 
-    public static int getLabelColor(Context context) {
-        int hueId = Integer.valueOf(Utilities.getPrefs(context).getLabelColorHue());
-        if (hueId < 0) {
-            switch (hueId) {
-                case -2:
-                    return Color.BLACK;
-                case -1:
-                    return Color.TRANSPARENT;
-                default:
-                    return Color.WHITE;
-            }
-        }
-        String[] hueArray = getHueArray(hueId, context);
-        int variation = Integer.valueOf(Utilities.getPrefs(context).getLabelColorVariation());
-        return Color.parseColor(hueArray[variation]);
-    }
-
-    private static String[] getHueArray(int hueId, Context context) {
-        Resources res = context.getResources();
-        switch (hueId) {
-            case 0:
-                return res.getStringArray(R.array.arr_red);
-            case 1:
-                return res.getStringArray(R.array.arr_pink);
-            case 2:
-                return res.getStringArray(R.array.arr_purple);
-            case 3:
-                return res.getStringArray(R.array.arr_deep_purple);
-            case 4:
-                return res.getStringArray(R.array.arr_indigo);
-            case 5:
-                return res.getStringArray(R.array.arr_blue);
-            case 6:
-                return res.getStringArray(R.array.arr_light_blue);
-            case 7:
-                return res.getStringArray(R.array.arr_cyan);
-            case 8:
-                return res.getStringArray(R.array.arr_teal);
-            case 9:
-                return res.getStringArray(R.array.arr_green);
-            case 10:
-                return res.getStringArray(R.array.arr_light_green);
-            case 11:
-                return res.getStringArray(R.array.arr_lime);
-            case 12:
-                return res.getStringArray(R.array.arr_yellow);
-            case 13:
-                return res.getStringArray(R.array.arr_amber);
-            case 14:
-                return res.getStringArray(R.array.arr_orange);
-            case 15:
-                return res.getStringArray(R.array.arr_deep_orange);
-            case 16:
-                return res.getStringArray(R.array.arr_brown);
-            case 17:
-                return res.getStringArray(R.array.arr_grey);
-            case 18:
-                return res.getStringArray(R.array.arr_blue_grey);
-            default:
-                return null;
-        }
-    }
-
     public static UserHandle myUserHandle() {
         return android.os.Process.myUserHandle();
     }

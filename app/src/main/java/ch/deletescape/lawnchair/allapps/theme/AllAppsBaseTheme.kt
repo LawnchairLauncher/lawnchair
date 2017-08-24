@@ -17,7 +17,7 @@ open class AllAppsBaseTheme(val context: Context) : IAllAppsThemer {
 
     override fun iconTextColor(backgroundAlpha: Int): Int {
         if (Utilities.getPrefs(context).useCustomAllAppsTextColor) {
-            return Utilities.getLabelColor(context)
+            return Utilities.getPrefs(context).allAppsLabelColor
         } else if (FeatureFlags.useDarkTheme(FeatureFlags.DARK_ALLAPPS)) {
             return Color.WHITE
         } else if (backgroundAlpha < 128 && !BlurWallpaperProvider.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS) || backgroundAlpha < 50) {

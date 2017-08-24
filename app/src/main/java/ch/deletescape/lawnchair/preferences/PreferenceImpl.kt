@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.view.View
 import ch.deletescape.lawnchair.Launcher
 import ch.deletescape.lawnchair.LauncherFiles
@@ -12,6 +13,8 @@ import ch.deletescape.lawnchair.dynamicui.ExtractedColors
 import kotlin.reflect.KProperty
 
 open class PreferenceImpl(context: Context) : IPreferenceProvider {
+    override val workSpaceLabelColor by IntPref(PreferenceFlags.KEY_PREF_WS_LABEL_COLOR, Color.WHITE)
+    override val allAppsLabelColor by IntPref(PreferenceFlags.KEY_PREF_ALL_APPS_LABEL_COLOR, Color.BLACK)
 
     override fun showSettings(launcher: Launcher, view: View) {
         val intent = Intent(Intent.ACTION_APPLICATION_PREFERENCES)
@@ -162,9 +165,6 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override fun removeAlternateIcon(key: String) {
         sharedPrefs.edit().remove(PreferenceFlags.KEY_ALTERNATE_ICON_PREFIX + key).apply()
     }
-
-    override val labelColorHue by StringPref(PreferenceFlags.KEY_WS_LABEL_COLOR_HUE, "-3")
-    override val labelColorVariation by StringPref(PreferenceFlags.KEY_WS_LABEL_COLOR_VARIATION, "5")
 
     override val blurMode by IntPref(PreferenceFlags.KEY_BLUR_MODE, (1 shl 30) - 1)
     override val blurRadius by FloatPref(PreferenceFlags.KEY_BLUR_RADIUS, 75f)

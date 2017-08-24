@@ -32,7 +32,7 @@ class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: Attri
         max = ta.getFloat(R.styleable.SeekbarPreference_maxValue, 100f)
         multiplier = ta.getInt(R.styleable.SeekbarPreference_summaryMultiplier, 1)
         format = ta.getString(R.styleable.SeekbarPreference_summaryFormat)
-        defaultValue = ta.getFloat(R.styleable.SeekbarPreference_defaultValue, min)
+        defaultValue = ta.getFloat(R.styleable.SeekbarPreference_defaultSeekbarValue, min)
         if (format == null) {
             format = "%.2f"
         }

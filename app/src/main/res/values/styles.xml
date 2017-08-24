@@ -103,12 +103,12 @@
         <item name="folderBgColorBlur">#75000000</item>
     </style>
 
-    <style name="SettingsTheme" parent="@android:style/Theme.Material.Light">
+    <style name="SettingsTheme" parent="@style/Theme.AppCompat.Light">
         <item name="android:colorAccent">@color/accent_material_light</item>
         <item name="blurTintColor">#45ffffff</item>
     </style>
 
-    <style name="SettingsTheme.Dark" parent="@android:style/Theme.Material">
+    <style name="SettingsTheme.Dark" parent="@style/Theme.AppCompat">
         <item name="android:colorPrimaryDark">#ff242424</item>
         <item name="android:colorPrimary">#ff2d2d2d</item>
         <item name="android:colorAccent">@color/accent_material_light</item>

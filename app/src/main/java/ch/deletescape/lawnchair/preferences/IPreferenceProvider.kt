@@ -100,8 +100,8 @@ interface IPreferenceProvider {
 
     val blurRadius: Float
     val blurMode : Int
-    val labelColorHue: String
-    val labelColorVariation: String
+    val workSpaceLabelColor: Int
+    val allAppsLabelColor: Int
     fun alternateIcon(key: String): String?
     fun alternateIcon(key: String, alternateIcon: String, commit: Boolean = false)
     fun removeAlternateIcon(key: String)
