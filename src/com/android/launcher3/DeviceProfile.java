@@ -267,6 +267,10 @@ public class DeviceProfile {
     }
 
     DeviceProfile getMultiWindowProfile(Context context, Point mwSize) {
+        // We take the minimum sizes of this profile and it's multi-window variant to ensure that
+        // the system decor is always excluded.
+        mwSize.set(Math.min(availableWidthPx, mwSize.x), Math.min(availableHeightPx, mwSize.y));
+
         // In multi-window mode, we can have widthPx = availableWidthPx
         // and heightPx = availableHeightPx because Launcher uses the InvariantDeviceProfiles'
         // widthPx and heightPx values where it's needed.
