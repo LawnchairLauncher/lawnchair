@@ -174,7 +174,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         cancelAnimation();
         mCurrentAnimation = LauncherAnimUtils.createAnimatorSet();
         mShiftStart = mAppsView.getTranslationY();
-        openNotificationState = (FeatureFlags.PULLDOWN_NOTIFICATIONS && mProgress == 1) ? 0 : -1;
+        openNotificationState = (FeatureFlags.PULLDOWN_NOTIFICATIONS && mProgress == 1) ? 1 : 0;
         preparePull(start);
     }
 
@@ -184,16 +184,22 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             return false;   // early termination.
         }
 
-        if (openNotificationState == 0 && mProgress == 1) {
-            if (velocity > 2.5) {
-                openNotificationState = 1;
-                mLauncher.openNotifications();
-            } else if (velocity < 0) {
-                openNotificationState = -1;
+        if (mProgress == 1) {
+            boolean notOpenedYet = openNotificationState == 1;
+            if (notOpenedYet || openNotificationState == 2) {
+                if (velocity > 2.4) {
+                    openNotificationState = 3;
+                    mLauncher.openNotifications();
+                } else if (notOpenedYet && velocity < 0) {
+                    openNotificationState = 0;
+                }
+            } else if (openNotificationState == 3 && velocity < -0.5) {
+                openNotificationState = 2;
+                mLauncher.closeNotifications();
             }
         }
 
-        if (openNotificationState != 1) {
+        if (openNotificationState < 2) {
             mContainerVelocity = velocity;
 
             float shift = Math.min(Math.max(0, mShiftStart + displacement), mShiftRange);
@@ -210,7 +216,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         }
 
         if (fling) {
-            if (velocity < 0 && openNotificationState != 1) {
+            if (velocity < 0 && openNotificationState < 2) {
                 calculateDuration(velocity, mAppsView.getTranslationY());
 
                 if (!mLauncher.isAllAppsVisible()) {

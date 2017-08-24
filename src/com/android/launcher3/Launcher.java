@@ -1963,6 +1963,15 @@ public class Launcher extends BaseActivity
         }
     }
 
+    @SuppressWarnings("ResourceType")
+    public void closeNotifications() {
+        try {
+            Class.forName("android.app.StatusBarManager").getMethod("collapsePanels").invoke(getSystemService("statusbar"));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     /**
      * Starts the global search activity. This code is a copied from SearchManager
      */
