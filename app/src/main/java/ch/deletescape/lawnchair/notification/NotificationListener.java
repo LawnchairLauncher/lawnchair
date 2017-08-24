@@ -217,13 +217,12 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private boolean shouldBeFilteredOut(StatusBarNotification sbn) {
-        if (!Utilities.ATLEAST_OREO) return false;
         getCurrentRanking().getRanking(sbn.getKey(), mTempRanking);
-        if (!mTempRanking.canShowBadge()) {
+        if (Utilities.ATLEAST_OREO && !mTempRanking.canShowBadge()) {
             return true;
         }
         Notification notification = sbn.getNotification();
-        if (mTempRanking.getChannel().getId().equals(NotificationChannel.DEFAULT_CHANNEL_ID)) {
+        if (Utilities.ATLEAST_OREO && mTempRanking.getChannel().getId().equals(NotificationChannel.DEFAULT_CHANNEL_ID)) {
             // Special filtering for the default, legacy "Miscellaneous" channel.
             if ((notification.flags & Notification.FLAG_ONGOING_EVENT) != 0) {
                 return true;
