@@ -22,6 +22,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -34,6 +35,7 @@ import ch.deletescape.lawnchair.LauncherAnimUtils;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.anim.PropertyListBuilder;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.dragndrop.DragView;
 import ch.deletescape.lawnchair.popup.PopupContainerWithArrow;
@@ -132,7 +134,8 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
         if (shortcutType == PopupPopulator.Item.SYSTEM_SHORTCUT_ICON) {
             // System shortcut icons are added to a header that is separate from the full shortcuts.
             if (mSystemShortcutIcons == null) {
-                mSystemShortcutIcons = (LinearLayout) mLauncher.getLayoutInflater().inflate(
+                LayoutInflater layoutInflater = LayoutInflater.from(FeatureFlags.INSTANCE.applyDarkTheme(mLauncher, FeatureFlags.DARK_SHORTCUTS));
+                mSystemShortcutIcons = (LinearLayout) layoutInflater.inflate(
                         R.layout.system_shortcut_icons, mShortcutsLayout, false);
                 mShortcutsLayout.addView(mSystemShortcutIcons, 0);
             }

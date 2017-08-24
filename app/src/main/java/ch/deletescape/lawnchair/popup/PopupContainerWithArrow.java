@@ -67,6 +67,7 @@ import ch.deletescape.lawnchair.allapps.AllAppsIconRowView;
 import ch.deletescape.lawnchair.anim.PropertyListBuilder;
 import ch.deletescape.lawnchair.anim.PropertyResetListener;
 import ch.deletescape.lawnchair.badge.BadgeInfo;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragController;
 import ch.deletescape.lawnchair.dragndrop.DragLayer;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
@@ -236,7 +237,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                                boolean notificationFooterHasIcons) {
         final Resources res = getResources();
         final int spacing = res.getDimensionPixelSize(R.dimen.popup_items_spacing);
-        final LayoutInflater inflater = mLauncher.getLayoutInflater();
+        final LayoutInflater inflater = LayoutInflater.from(FeatureFlags.INSTANCE.applyDarkTheme(mLauncher, FeatureFlags.DARK_SHORTCUTS));
 
         int numItems = itemTypesToPopulate.length;
         for (int i = 0; i < numItems; i++) {

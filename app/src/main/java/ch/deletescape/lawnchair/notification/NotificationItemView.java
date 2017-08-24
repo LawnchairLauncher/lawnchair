@@ -23,6 +23,7 @@ import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -45,6 +46,7 @@ public class NotificationItemView extends PopupItemView {
     private static final Rect sTempRect = new Rect();
 
     private TextView mHeaderCount;
+    private View mDivider;
     private NotificationMainView mMainView;
     private NotificationFooterLayout mFooter;
     private SwipeHelper mSwipeHelper;
@@ -68,6 +70,7 @@ public class NotificationItemView extends PopupItemView {
         super.onFinishInflate();
         mHeaderCount = findViewById(R.id.notification_count);
         mMainView = findViewById(R.id.main_view);
+        mDivider = findViewById(R.id.divider);
         mFooter = findViewById(R.id.footer);
         mSwipeHelper = new SwipeHelper(SwipeHelper.X, mMainView, getContext());
         mSwipeHelper.setDisableHardwareLayers(true);
@@ -127,6 +130,7 @@ public class NotificationItemView extends PopupItemView {
         NotificationInfo mainNotification = notificationInfos.get(0);
         mMainView.applyNotificationInfo(mainNotification, mIconView);
 
+        mDivider.setVisibility(notificationInfos.size() > 1 ? VISIBLE : INVISIBLE);
         for (int i = 1; i < notificationInfos.size(); i++) {
             mFooter.addNotificationInfo(notificationInfos.get(i));
         }
