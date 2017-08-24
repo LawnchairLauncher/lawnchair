@@ -80,6 +80,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private float mShiftStart;      // [0, mShiftRange]
     private float mShiftRange;      // changes depending on the orientation
     private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
+    private boolean dontOpenNotifications;
 
     // Velocity of the container. Unit is in px/ms.
     private float mContainerVelocity;
@@ -99,6 +100,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private int allAppsAlpha;
 
+    private final int mPullDownAction;
+
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
         mDetector = new VerticalPullDetector(l);
@@ -111,6 +114,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mAllAppsBackgroundColorBlur = mTheme.getBackgroundColorBlur();
         mTransparentHotseat = Utilities.getPrefs(l).getTransparentHotseat();
         mLightStatusBar = Utilities.getPrefs(l).getLightStatusBar();
+        mPullDownAction = FeatureFlags.INSTANCE.pullDownAction(l);
     }
 
     public void updateLightStatusBar(Context context) {
@@ -147,6 +151,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                         directionsToDetectScroll |= VerticalPullDetector.DIRECTION_DOWN;
                     } else {
                         directionsToDetectScroll |= VerticalPullDetector.DIRECTION_UP;
+                        if (mPullDownAction != 0)
+                            directionsToDetectScroll |= VerticalPullDetector.DIRECTION_DOWN;
                     }
                 } else {
                     if (isInDisallowRecatchBottomZone()) {
@@ -212,6 +218,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         cancelAnimation();
         mCurrentAnimation = LauncherAnimUtils.createAnimatorSet();
         mShiftStart = mAppsView.getTranslationY();
+        dontOpenNotifications = mPullDownAction == 0 || (mProgress != 1);
         preparePull(start);
     }
 
@@ -219,6 +226,15 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     public boolean onDrag(float displacement, float velocity) {
         if (mAppsView == null) {
             return false;   // early termination.
+        }
+
+        if (!dontOpenNotifications && mProgress == 1) {
+            if (velocity > 2) {
+                dontOpenNotifications = true;
+                mLauncher.onPullDownAction(mPullDownAction);
+            } else if (velocity < 0) {
+                dontOpenNotifications = true;
+            }
         }
 
         mContainerVelocity = velocity;

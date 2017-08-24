@@ -623,7 +623,7 @@ public class Workspace extends PagedView
                     if (workspaceInModalState()) return false;
                     if (shouldConsumeTouch(v)) return true;
                     if (super.onTouch(v, ev)) {
-                        onPullDownAction();
+                        mLauncher.onPullDownAction(mPullDownAction);
                         return true;
                     }
                     return false;
@@ -635,7 +635,7 @@ public class Workspace extends PagedView
                 public boolean onTouch(View v, MotionEvent ev) {
                     if (shouldConsumeTouch(v)) return true;
                     if (super.onTouch(v, ev)) {
-                        onPullDownAction();
+                        mLauncher.onPullDownAction(mPullDownAction);
                         return true;
                     }
                     return false;
@@ -644,30 +644,6 @@ public class Workspace extends PagedView
         } else {
             layout.setOnTouchListener(null);
             layout.setOnInterceptTouchListener(null);
-        }
-    }
-
-    private void onPullDownAction() {
-        switch (mPullDownAction) {
-            case 1:
-                expandStatusbar();
-                break;
-            case 2:
-                mLauncher.startSearch("", false, null, false);
-                break;
-            case 3:
-                mLauncher.onLongClickAllAppsHandle();
-                break;
-        }
-    }
-
-    private void expandStatusbar() {
-        try {
-            Class StatusBarManager = Class.forName("android.app.StatusBarManager");
-            Object o = StatusBarManager.cast(getContext().getSystemService("statusbar"));
-            StatusBarManager.getDeclaredMethod("expandNotificationsPanel").invoke(o);
-        } catch (Exception ignored) {
-            Log.e("expandStatusbar", "", ignored);
         }
     }
 

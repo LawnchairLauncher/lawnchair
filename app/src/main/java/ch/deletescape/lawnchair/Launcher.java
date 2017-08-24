@@ -58,6 +58,7 @@ import android.os.StrictMode;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationManagerCompat;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -1856,6 +1857,29 @@ public class Launcher extends Activity
 
         // We need to show the workspace after starting the search
         showWorkspace(true);
+    }
+
+    public void onPullDownAction(int pullDownAction) {
+        switch (pullDownAction) {
+            case 1:
+                openNotifications();
+                break;
+            case 2:
+                startSearch("", false, null, false);
+                break;
+            case 3:
+                onLongClickAllAppsHandle();
+                break;
+        }
+    }
+
+    @SuppressLint("PrivateApi")
+    private void openNotifications() {
+        try {
+            Class.forName("android.app.StatusBarManager").getMethod("expandNotificationsPanel").invoke(getSystemService("statusbar"));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
