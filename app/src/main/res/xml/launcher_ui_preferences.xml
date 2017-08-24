@@ -64,7 +64,7 @@
             app:maxValue="1.5"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"
-            app:defaultValue="1.0"
+            app:defaultSeekbarValue="1.0"
             android:persistent="true" />
 
         <ch.deletescape.lawnchair.preferences.SeekbarPreference
@@ -74,7 +74,7 @@
             app:maxValue="1.5"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"
-            app:defaultValue="1.0"
+            app:defaultSeekbarValue="1.0"
             android:persistent="true" />
 
         <SwitchPreference
@@ -139,7 +139,7 @@
             app:maxValue="1.5"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"
-            app:defaultValue="1.0"
+            app:defaultSeekbarValue="1.0"
             android:persistent="true" />
     </PreferenceCategory>
 
@@ -178,7 +178,7 @@
             android:title="@string/all_apps_opacity_pref_title"
             app:minValue="0"
             app:maxValue="1"
-            app:defaultValue="1"
+            app:defaultSeekbarValue="1"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"
             android:persistent="true" />
@@ -209,7 +209,7 @@
             app:maxValue="1.5"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"
-            app:defaultValue="1.0"
+            app:defaultSeekbarValue="1.0"
             android:persistent="true" />
 
         <ch.deletescape.lawnchair.preferences.SeekbarPreference
@@ -219,7 +219,7 @@
             app:maxValue="1.5"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"
-            app:defaultValue="1.0"
+            app:defaultSeekbarValue="1.0"
             android:persistent="true" />
     </PreferenceCategory>
 
@@ -267,7 +267,7 @@
             android:dependency="pref_enableBlur"
             app:minValue="10"
             app:maxValue="150"
-            app:defaultValue="75"
+            app:defaultSeekbarValue="75"
             app:summaryFormat="%.0f"
             android:persistent="true" />
     </PreferenceCategory>
