@@ -229,7 +229,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         }
 
         if (!dontOpenNotifications && mProgress == 1) {
-            if (velocity > 2) {
+            if (velocity > 2.5) {
                 dontOpenNotifications = true;
                 mLauncher.onPullDownAction(mPullDownAction);
             } else if (velocity < 0) {
