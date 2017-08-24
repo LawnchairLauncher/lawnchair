@@ -392,7 +392,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         // Offset x so that the arrow and shortcut icons are center-aligned with the original icon.
         int iconWidth = icon.getWidth();
         if (!(icon.getParent() instanceof AllAppsIconRowView))
-            iconWidth -= icon.getTotalPaddingLeft() - icon.getTotalPaddingRight();
+            iconWidth -= icon.getTotalPaddingLeft() + icon.getTotalPaddingRight();
         iconWidth *= icon.getScaleX();
         Resources resources = getResources();
         int xOffset;
