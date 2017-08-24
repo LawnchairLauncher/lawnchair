@@ -849,7 +849,7 @@ public class Launcher extends Activity
         super.onStop();
         FirstFrameAnimatorHelper.setIsVisible(false);
 
-        if (Utilities.isNycMR1OrAbove()) {
+        if (Utilities.ATLEAST_NOUGAT_MR1) {
             mAppWidgetHost.stopListening();
         }
 
@@ -861,7 +861,7 @@ public class Launcher extends Activity
         super.onStart();
         FirstFrameAnimatorHelper.setIsVisible(true);
 
-        if (Utilities.isNycMR1OrAbove()) {
+        if (Utilities.ATLEAST_NOUGAT_MR1) {
             mAppWidgetHost.startListening();
         }
 

@@ -18,7 +18,7 @@ public abstract class WallpaperManagerCompat {
     public static WallpaperManagerCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                if (Utilities.isNycOrAbove()) {
+                if (Utilities.ATLEAST_NOUGAT) {
                     sInstance = new WallpaperManagerCompatVN(context.getApplicationContext());
                 } else {
                     sInstance = new WallpaperManagerCompatV16(context.getApplicationContext());

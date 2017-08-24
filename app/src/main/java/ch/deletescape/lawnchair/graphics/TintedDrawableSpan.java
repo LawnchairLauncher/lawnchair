@@ -41,7 +41,7 @@ public class TintedDrawableSpan extends DynamicDrawableSpan {
     @Override
     public int getSize(Paint paint, CharSequence text, int start, int end, FontMetricsInt fm) {
         fm = fm == null ? paint.getFontMetricsInt() : fm;
-        if (!Utilities.isNycOrAbove())
+        if (!Utilities.ATLEAST_NOUGAT)
             fm = Utilities.fontMetricsIntFromFontMetrics(paint.getFontMetrics());
         int iconSize = fm.bottom - fm.top;
         mDrawable.setBounds(0, 0, iconSize, iconSize);

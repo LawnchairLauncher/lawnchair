@@ -90,7 +90,7 @@ public abstract class DragDriver {
 
     public static DragDriver create(Context context, DragController dragController,
                                     DragObject dragObject, DragOptions options) {
-        if (Utilities.isNycOrAbove() && options.systemDndStartPoint != null) {
+        if (Utilities.ATLEAST_NOUGAT && options.systemDndStartPoint != null) {
             return new SystemDragDriver(dragController, context, dragObject);
         } else {
             return new InternalDragDriver(dragController);

@@ -47,7 +47,7 @@ class IconShapeOverride {
     companion object {
 
         fun isSupported(context: Context): Boolean {
-            if (!Utilities.isAtLeastO()) {
+            if (!Utilities.ATLEAST_OREO) {
                 return false
             }
             try {
@@ -59,7 +59,7 @@ class IconShapeOverride {
         }
 
         fun apply(context: Context) {
-            if (Utilities.isAtLeastO()) {
+            if (Utilities.ATLEAST_OREO) {
                 val appliedValue = getAppliedValue(context)
                 if (!TextUtils.isEmpty(appliedValue) && isSupported(context)) {
                     try {

@@ -43,7 +43,7 @@ public class NotificationInfo implements OnClickListener {
         Notification notification = statusBarNotification.getNotification();
         title = notification.extras.getCharSequence("android.title");
         text = notification.extras.getCharSequence("android.text");
-        mBadgeIcon = Utilities.isAtLeastO() ? notification.getBadgeIconType() :
+        mBadgeIcon = Utilities.ATLEAST_OREO ? notification.getBadgeIconType() :
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? 2 : 1; // We need some kind of compat for this
         if (mBadgeIcon != 1 && Utilities.ATLEAST_MARSHMALLOW) {
             icon = notification.getLargeIcon();

@@ -77,7 +77,7 @@ public class LauncherIcons {
         IconNormalizer instance = IconNormalizer.getInstance();
         float f = instance.getScale(drawable, null);
         Bitmap createIconBitmap = createIconBitmap(drawable, context, f);
-        if (Utilities.isAtLeastO() && (drawable instanceof AdaptiveIconDrawable)) {
+        if (Utilities.ATLEAST_OREO && (drawable instanceof AdaptiveIconDrawable)) {
             createIconBitmap = ShadowGenerator.getInstance().recreateIcon(createIconBitmap);
         }
         return badgeIconForUser(createIconBitmap, userHandle, context);
@@ -159,7 +159,7 @@ public class LauncherIcons {
             int i2 = (i - intrinsicHeight) / 2;
             int i3 = (i - intrinsicWidth) / 2;
             sOldBounds.set(drawable.getBounds());
-            if (Utilities.isAtLeastO() && (drawable instanceof AdaptiveIconDrawable)) {
+            if (Utilities.ATLEAST_OREO && (drawable instanceof AdaptiveIconDrawable)) {
                 i2 = Math.min(i2, i3);
                 intrinsicWidth = Math.max(intrinsicHeight, intrinsicWidth);
                 drawable.setBounds(i2, i2, i2 + intrinsicWidth, intrinsicWidth + i2);

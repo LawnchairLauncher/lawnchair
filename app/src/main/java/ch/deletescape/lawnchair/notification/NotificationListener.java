@@ -217,7 +217,7 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private boolean shouldBeFilteredOut(StatusBarNotification sbn) {
-        if (!Utilities.isAtLeastO()) return false;
+        if (!Utilities.ATLEAST_OREO) return false;
         getCurrentRanking().getRanking(sbn.getKey(), mTempRanking);
         if (!mTempRanking.canShowBadge()) {
             return true;

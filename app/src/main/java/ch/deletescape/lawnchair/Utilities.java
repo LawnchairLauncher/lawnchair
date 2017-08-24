@@ -114,19 +114,20 @@ public final class Utilities {
     private static final int[] sLoc0 = new int[2];
     private static final int[] sLoc1 = new int[2];
 
-    public static boolean isNycMR1OrAbove() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1;
-    }
-
-    public static boolean isNycOrAbove() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
-    }
-
     public static final boolean ATLEAST_MARSHMALLOW =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
 
     public static final boolean ATLEAST_LOLLIPOP_MR1 =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1;
+
+    public static final boolean ATLEAST_NOUGAT =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
+
+    public static final boolean ATLEAST_NOUGAT_MR1 =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1;
+
+    public static final boolean ATLEAST_OREO =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
 
     // An intent extra to indicate the horizontal scroll of the wallpaper.
     public static final String EXTRA_WALLPAPER_OFFSET = "ch.deletescape.lawnchair.WALLPAPER_OFFSET";
@@ -201,7 +202,7 @@ public final class Utilities {
             Drawable icon, UserHandle user, Context context) {
         float scale = IconNormalizer.getInstance().getScale(icon, null);
         Bitmap bitmap = createIconBitmap(icon, context, scale);
-        if (Utilities.isAtLeastO() && icon instanceof AdaptiveIconDrawable)
+        if (ATLEAST_OREO && icon instanceof AdaptiveIconDrawable)
             bitmap = addShadowToIcon(bitmap, bitmap.getWidth());
         return badgeIconForUser(bitmap, user, context);
     }
@@ -764,7 +765,7 @@ public final class Utilities {
     }
 
     public static boolean isWallapaperAllowed(Context context) {
-        if (isNycOrAbove()) {
+        if (ATLEAST_NOUGAT) {
             try {
                 WallpaperManager wm = context.getSystemService(WallpaperManager.class);
                 return (Boolean) wm.getClass().getDeclaredMethod("isSetWallpaperAllowed")
@@ -789,10 +790,6 @@ public final class Utilities {
      */
     public static boolean isEmpty(Collection c) {
         return c == null || c.isEmpty();
-    }
-
-    public static boolean isAtLeastO() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
     }
 
     public static void stackTrace() {

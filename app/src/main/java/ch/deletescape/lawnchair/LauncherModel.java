@@ -1345,7 +1345,7 @@ public class LauncherModel extends BroadcastReceiver
                 }
             }
         } else if (Intent.ACTION_WALLPAPER_CHANGED.equals(action)) {
-            if (Utilities.isNycOrAbove()) {
+            if (Utilities.ATLEAST_NOUGAT) {
                 ExtractionUtils.startColorExtractionServiceIfNecessary(context);
             } else {
                 ExtractionUtils.startColorExtractionService(context);
@@ -2913,7 +2913,7 @@ public class LauncherModel extends BroadcastReceiver
      * use partial updates similar to {@link UserManagerCompat}
      */
     public void refreshShortcutsIfRequired() {
-        if (Utilities.isNycMR1OrAbove()) {
+        if (Utilities.ATLEAST_NOUGAT_MR1) {
             sWorker.removeCallbacks(mShortcutPermissionCheckRunnable);
             sWorker.post(mShortcutPermissionCheckRunnable);
         }

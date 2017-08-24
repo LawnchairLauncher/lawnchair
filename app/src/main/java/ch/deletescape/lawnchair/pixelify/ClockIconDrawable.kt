@@ -111,7 +111,7 @@ class ClockIconDrawable(val context: Context, val adaptive: Boolean) : Drawable(
 
     companion object {
         fun create(context: Context): Drawable {
-            if (Utilities.isAtLeastO()) {
+            if (Utilities.ATLEAST_OREO) {
                 return Wrapper(AdaptiveIconDrawable(
                         ColorDrawable(context.resources.getColor(R.color.blue_grey_100)),
                         ClockIconDrawable(context, true)), true)
