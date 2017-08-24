@@ -287,7 +287,7 @@ public class DragController implements DragDriver.EventListener, TouchController
             listener.onDragStart(mDragObject, mOptions);
         }
         if (mOptions.preDragCondition != null) {
-            mOptions.preDragCondition.onPreDragEnd(mDragObject, false);
+            mOptions.preDragCondition.onPreDragEnd(mDragObject, true);
         }
         mOptions.deferDragCondition.onDragStart();
         mIsDragDeferred = false;
@@ -387,7 +387,7 @@ public class DragController implements DragDriver.EventListener, TouchController
 
     private void callOnDragEnd() {
         if (this.mIsInPreDrag && this.mOptions.preDragCondition != null) {
-            this.mOptions.preDragCondition.onPreDragEnd(this.mDragObject, true);
+            this.mOptions.preDragCondition.onPreDragEnd(this.mDragObject, false);
         }
         this.mIsInPreDrag = false;
         for (DragListener onDragEnd : this.mListeners) {

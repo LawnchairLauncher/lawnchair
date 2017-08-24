@@ -101,7 +101,7 @@ public class ShortcutsItemView extends PopupItemView implements OnLongClickListe
                     if (dv == null)
                         return false;
                     dv.animateShift(-mIconShift.x, -mIconShift.y);
-                    AbstractFloatingView.closeOpenContainer(mLauncher, 1);
+                    AbstractFloatingView.closeOpenContainer(mLauncher, AbstractFloatingView.TYPE_FOLDER);
                     LauncherAppState.getInstance().getLauncher().closeFolder();
                     return false;
                 }
