@@ -16,7 +16,10 @@ def getChangelog = { ->
 }
 
 Properties localProps = new Properties()
-localProps.load(project.rootProject.file('local.properties').newDataInputStream())
+File localPropsFile = project.rootProject.file('local.properties')
+if (localPropsFile.exists()) {
+    localProps.load(localPropsFile.newDataInputStream())
+}
 
 android {
     compileSdkVersion 26
