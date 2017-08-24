@@ -21,9 +21,10 @@ import android.support.v7.widget.RecyclerView.Adapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
@@ -55,40 +56,67 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
     private final WidgetPreviewLoader mWidgetPreviewLoader;
     private final LayoutInflater mLayoutInflater;
-
-    private final View.OnClickListener mIconClickListener;
-    private final View.OnLongClickListener mIconLongClickListener;
-
-    private final ArrayList<WidgetListRowEntry> mEntries = new ArrayList<>();
     private final AlphabeticIndexCompat mIndexer;
 
+    private final OnClickListener mIconClickListener;
+    private final OnLongClickListener mIconLongClickListener;
     private final int mIndent;
+    private ArrayList<WidgetListRowEntry> mEntries = new ArrayList<>();
+    private final WidgetsDiffReporter mDiffReporter;
 
-    public WidgetsListAdapter(View.OnClickListener iconClickListener,
-            View.OnLongClickListener iconLongClickListener,
-            Context context) {
-        mLayoutInflater = LayoutInflater.from(context);
-        mWidgetPreviewLoader = LauncherAppState.getInstance(context).getWidgetCache();
-
-        mIndexer = new AlphabeticIndexCompat(context);
-
+    public WidgetsListAdapter(Context context, LayoutInflater layoutInflater,
+            WidgetPreviewLoader widgetPreviewLoader, AlphabeticIndexCompat indexCompat,
+            OnClickListener iconClickListener, OnLongClickListener iconLongClickListener,
+            WidgetsDiffReporter diffReporter) {
+        mLayoutInflater = layoutInflater;
+        mWidgetPreviewLoader = widgetPreviewLoader;
+        mIndexer = indexCompat;
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
         mIndent = context.getResources().getDimensionPixelSize(R.dimen.widget_section_indent);
+        mDiffReporter = diffReporter;
     }
 
-    public void setWidgets(MultiHashMap<PackageItemInfo, WidgetItem> widgets) {
-        mEntries.clear();
-        WidgetItemComparator widgetComparator = new WidgetItemComparator();
+    public void setNotifyListener() {
+        mDiffReporter.setListener(new WidgetsDiffReporter.NotifyListener() {
+            @Override
+            public void notifyDataSetChanged() {
+                WidgetsListAdapter.this.notifyDataSetChanged();
+            }
 
+            @Override
+            public void notifyItemChanged(int index) {
+                WidgetsListAdapter.this.notifyItemChanged(index);
+            }
+
+            @Override
+            public void notifyItemInserted(int index) {
+                WidgetsListAdapter.this.notifyItemInserted(index);
+            }
+
+            @Override
+            public void notifyItemRemoved(int index) {
+                WidgetsListAdapter.this.notifyItemRemoved(index);
+            }
+        });
+    }
+
+    /**
+     * Update the widget list.
+     */
+    public void setWidgets(MultiHashMap<PackageItemInfo, WidgetItem> widgets) {
+        ArrayList<WidgetListRowEntry> tempEntries = new ArrayList<>();
+
+        WidgetItemComparator widgetComparator = new WidgetItemComparator();
         for (Map.Entry<PackageItemInfo, ArrayList<WidgetItem>> entry : widgets.entrySet()) {
             WidgetListRowEntry row = new WidgetListRowEntry(entry.getKey(), entry.getValue());
             row.titleSectionName = mIndexer.computeSectionName(row.pkgItem.title);
             Collections.sort(row.widgets, widgetComparator);
-            mEntries.add(row);
+            tempEntries.add(row);
         }
-
-        Collections.sort(mEntries, new WidgetListRowEntryComparator());
+        WidgetListRowEntryComparator rowComparator = new WidgetListRowEntryComparator();
+        Collections.sort(tempEntries, rowComparator);
+        mDiffReporter.process(mEntries, tempEntries, rowComparator);
     }
 
     @Override
