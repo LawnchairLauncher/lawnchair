@@ -30,6 +30,7 @@
 
     <style name="BaseLauncherThemeWithCustomAttrs" parent="@style/BaseLauncherTheme">
         <item name="allAppsScrimColor">#CCFFFFFF</item>
+        <item name="allAppsNavBarScrimColor">#66FFFFFF</item>
         <item name="popupColorPrimary">#FFF</item>
         <item name="popupColorSecondary">#F5F5F5</item> <!-- Gray 100 -->
         <item name="popupColorTertiary">#E0E0E0</item> <!-- Gray 300 -->
@@ -62,6 +63,7 @@
         <item name="android:colorControlHighlight">#A0FFFFFF</item>
         <item name="android:colorPrimary">#FF333333</item>
         <item name="allAppsScrimColor">#7A000000</item>
+        <item name="allAppsNavBarScrimColor">#80000000</item>
         <item name="popupColorPrimary">?android:attr/colorPrimary</item>
         <item name="popupColorSecondary">#424242</item> <!-- Gray 800 -->
         <item name="popupColorTertiary">#757575</item> <!-- Gray 600 -->
@@ -101,12 +103,6 @@
         <item name="android:saveEnabled">false</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:includeFontPadding">false</item>
-    </style>
-
-    <!-- Style for nav bar background in all-apps screen -->
-    <style name="AllAppsNavBarProtection">
-        <item name="android:alpha">?android:attr/spotShadowAlpha</item>
-        <item name="android:background">@color/default_shadow_color_no_alpha</item>
     </style>
 
     <!-- Base theme for BubbleTextView and sub classes -->
