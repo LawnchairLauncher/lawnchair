@@ -60,6 +60,19 @@ public class PackageManagerHelper {
         return info != null && (info.flags & ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0;
     }
 
+    public static boolean isAppEnabled(PackageManager pm, String packageName) {
+        return isAppEnabled(pm, packageName, 0);
+    }
+
+    public static boolean isAppEnabled(PackageManager pm, String packageName, int flags) {
+        try {
+            ApplicationInfo info = pm.getApplicationInfo(packageName, flags);
+            return info != null && info.enabled;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
     /**
      * Returns whether the target app is suspended for a given user as per
      * {@link android.app.admin.DevicePolicyManager#isPackageSuspended}.
