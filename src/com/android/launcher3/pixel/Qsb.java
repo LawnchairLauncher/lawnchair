@@ -189,18 +189,19 @@ public abstract class Qsb extends FrameLayout implements View.OnClickListener {
     }
 
     private void applyVisibility() { //bg
+        int visibility = View.GONE;
         try {
-            boolean appEnabled = getContext().getPackageManager().getApplicationInfo("com.google.android.googlequicksearchbox", 0).enabled;
-            int visibility = appEnabled ? View.VISIBLE : View.GONE;
-
-            if (mQsbView != null) {
-                mQsbView.setVisibility(visibility);
-            }
-            if (qsbConnector != null) {
-                qsbConnector.setVisibility(visibility);
-            }
+            if (getContext().getPackageManager().getApplicationInfo("com.google.android.googlequicksearchbox", 0).enabled)
+                visibility = View.VISIBLE;
         }
         catch (Exception ex) { }
+
+        if (mQsbView != null) {
+            mQsbView.setVisibility(visibility);
+        }
+        if (qsbConnector != null) {
+            qsbConnector.setVisibility(visibility);
+        }
     }
 
     final class FastTextSearchReceiver extends BroadcastReceiver {
