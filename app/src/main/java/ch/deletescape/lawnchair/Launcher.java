@@ -58,7 +58,6 @@ import android.os.StrictMode;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationManagerCompat;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -165,6 +164,11 @@ public class Launcher extends Activity
     private static final int REQUEST_EDIT_ICON = 14;
 
     private static final float BOUNCE_ANIMATION_TENSION = 1.3f;
+    
+    private static final int SOFT_INPUT_MODE_DEFAULT =
+            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN;
+    private static final int SOFT_INPUT_MODE_ALL_APPS =
+            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
 
     // The Intent extra that defines whether to ignore the launch animation
     static final String INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION =
@@ -2948,7 +2952,7 @@ public class Launcher extends Activity
         }
 
         // Change the state *after* we've called all the transition code
-        mState = State.WORKSPACE;
+        setState(State.WORKSPACE);
 
         // Resume the auto-advance of widgets
         mUserPresent = true;
@@ -2990,10 +2994,25 @@ public class Launcher extends Activity
         mWorkspace.setVisibility(View.VISIBLE);
         mStateTransitionAnimation.startAnimationToWorkspace(mState, mWorkspace.getState(),
                 Workspace.State.OVERVIEW, animated, postAnimRunnable);
-        mState = State.WORKSPACE;
+        setState(State.WORKSPACE);
         // If animated from long press, then don't allow any of the controller in the drag
         // layer to intercept any remaining touch.
         mWorkspace.requestDisallowInterceptTouchEvent(animated);
+    }
+
+    private void setState(State state) {
+        mState = state;
+        updateSoftInputMode();
+    }
+
+    private void updateSoftInputMode() {
+        final int mode;
+        if (isAppsViewVisible()) {
+            mode = SOFT_INPUT_MODE_ALL_APPS;
+        } else {
+            mode = SOFT_INPUT_MODE_DEFAULT;
+        }
+        getWindow().setSoftInputMode(mode);
     }
 
     /**
@@ -3053,7 +3072,7 @@ public class Launcher extends Activity
         }
 
         // Change the state *after* we've called all the transition code
-        mState = toState;
+        setState(toState);
 
         // Pause the auto-advance of widgets until we are out of AllApps
         mUserPresent = false;
@@ -3086,11 +3105,11 @@ public class Launcher extends Activity
                 null /* onCompleteRunnable */);
 
         if (isAppsViewVisible()) {
-            mState = State.APPS_SPRING_LOADED;
+            setState(State.APPS_SPRING_LOADED);
         } else if (isWidgetsViewVisible()) {
-            mState = State.WIDGETS_SPRING_LOADED;
+            setState(State.WIDGETS_SPRING_LOADED);
         } else {
-            mState = State.WORKSPACE_SPRING_LOADED;
+            setState(State.WORKSPACE_SPRING_LOADED);
         }
     }
 
