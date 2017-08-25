@@ -224,4 +224,5 @@
     <dimen name="qsb_touch_extension">20.0dip</dimen>
     <dimen name="qsb_shadow_blur_radius">1.0dip</dimen>
     <dimen name="qsb_key_shadow_offset">1.0dip</dimen>
+    <dimen name="qsb_connector_gradient_end_padding">20.0dip</dimen>
 </resources>

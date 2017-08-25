@@ -58,4 +58,5 @@
 
     <color name="qsb_connector">#fff2f2f2</color>
     <color name="qsb_background">#ffffffff</color>
+    <color name="qsb_connector_gradient_end_color">#66ffffff</color>
 </resources>

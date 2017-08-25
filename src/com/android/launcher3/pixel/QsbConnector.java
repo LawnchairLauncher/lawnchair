@@ -56,28 +56,7 @@ public class QsbConnector extends View
     }
 
     private void retrieveGoogleQsbBackground() {
-        Drawable drawable = null;
-        try {
-            final Context context = this.getContext();
-            final Resources resourcesForApplication = context.getPackageManager().getResourcesForApplication("com.google.android.googlequicksearchbox");
-            final int identifier = resourcesForApplication.getIdentifier("bg_pixel_qsb_connector", "drawable", "com.google.android.googlequicksearchbox");
-            if (identifier == 0) {
-                return;
-            }
-            final Context context2 = this.getContext();
-            try {
-                drawable = resourcesForApplication.getDrawable(identifier, context2.getTheme());
-                if (drawable == null) {
-                    this.setBackgroundResource(R.color.qsb_connector);
-                    return;
-                }
-            }
-            catch (Exception ex) {
-                Log.d("QsbConnector", "Error loading connector background", ex);
-            }
-        }
-        catch (Exception ex3) {}
-        this.setBackground(drawable);
+        this.setBackground(getResources().getDrawable(R.drawable.bg_pixel_qsb_connector, getContext().getTheme()));
     }
 
     private void updateAlpha(final int m) {
