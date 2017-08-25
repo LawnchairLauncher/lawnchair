@@ -100,7 +100,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private int allAppsAlpha;
 
-    private final int mPullDownAction;
+    private int mPullDownAction;
 
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
@@ -114,7 +114,11 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mAllAppsBackgroundColorBlur = mTheme.getBackgroundColorBlur();
         mTransparentHotseat = Utilities.getPrefs(l).getTransparentHotseat();
         mLightStatusBar = Utilities.getPrefs(l).getLightStatusBar();
-        mPullDownAction = FeatureFlags.INSTANCE.pullDownAction(l);
+        initPullDown(l);
+    }
+
+    public void initPullDown(Context context) {
+        mPullDownAction = FeatureFlags.INSTANCE.pullDownAction(context);
     }
 
     public void updateLightStatusBar(Context context) {

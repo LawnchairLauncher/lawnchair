@@ -189,7 +189,6 @@ public class Workspace extends PagedView
     private View mQsbView;
     private BaseQsbView mSearchBar;
     private int mLastScrollX;
-    private int mPullDownAction;
 
     // State variable that indicates whether the pages are small (ie when you're
     // in all apps or customize mode)
@@ -607,46 +606,6 @@ public class Workspace extends PagedView
         }
     }
 
-    public void initPullDown() {
-        mPullDownAction = FeatureFlags.INSTANCE.pullDownAction(getContext());
-        for (CellLayout layout : mWorkspaceScreens) {
-            initPullDown(layout);
-        }
-    }
-
-    public void initPullDown(CellLayout layout) {
-        if (mPullDownAction != 0) {
-            layout.setOnTouchListener(new VerticalFlingDetector(mLauncher) {
-                // detect fling when touch started from empty space
-                @Override
-                public boolean onTouch(View v, MotionEvent ev) {
-                    if (workspaceInModalState()) return false;
-                    if (shouldConsumeTouch(v)) return true;
-                    if (super.onTouch(v, ev)) {
-                        mLauncher.onPullDownAction(mPullDownAction);
-                        return true;
-                    }
-                    return false;
-                }
-            });
-            layout.setOnInterceptTouchListener(new VerticalFlingDetector(mLauncher) {
-                // detect fling when touch started from on top of the icons
-                @Override
-                public boolean onTouch(View v, MotionEvent ev) {
-                    if (shouldConsumeTouch(v)) return true;
-                    if (super.onTouch(v, ev)) {
-                        mLauncher.onPullDownAction(mPullDownAction);
-                        return true;
-                    }
-                    return false;
-                }
-            });
-        } else {
-            layout.setOnTouchListener(null);
-            layout.setOnInterceptTouchListener(null);
-        }
-    }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -724,9 +683,6 @@ public class Workspace extends PagedView
         if (mLauncher.getAccessibilityDelegate().isInAccessibleDrag()) {
             newScreen.enableAccessibleDrag(true, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
         }
-
-        mPullDownAction = FeatureFlags.INSTANCE.pullDownAction(getContext());
-        initPullDown(newScreen);
 
         return newScreen;
     }
