@@ -138,8 +138,10 @@ public class DragController implements DragDriver.EventListener, TouchController
         }
 
         // Hide soft keyboard, if visible
-        mLauncher.getSystemService(InputMethodManager.class)
-                .hideSoftInputFromWindow(mWindowToken, 0);
+        try {
+            mLauncher.getSystemService(InputMethodManager.class)
+                    .hideSoftInputFromWindow(mWindowToken, 0);
+        } catch (NoSuchMethodError ex) { }
 
         mOptions = options;
         if (mOptions.systemDndStartPoint != null) {
