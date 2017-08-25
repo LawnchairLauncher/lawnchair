@@ -349,8 +349,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             ViewGroup.LayoutParams navBarBgLp = navBarBg.getLayoutParams();
             navBarBgLp.height = insets.bottom;
             navBarBg.setLayoutParams(navBarBgLp);
-            navBarBg.setVisibility(FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS
-                    ? View.INVISIBLE : View.VISIBLE);
         }
     }
 
