@@ -18,6 +18,7 @@ package ch.deletescape.lawnchair.config
 
 import android.app.Activity
 import android.content.Context
+import android.support.annotation.IntDef
 import android.view.ContextThemeWrapper
 import ch.deletescape.lawnchair.R
 import ch.deletescape.lawnchair.Utilities
@@ -69,6 +70,10 @@ object FeatureFlags {
 
     var currentTheme: Int = 0
     var useDarkTheme = true
+
+    const val PULLDOWN_NOTIFICATIONS = 1
+    const val PULLDOWN_SEARCH = 2
+    const val PULLDOWN_APPS_SEARCH = 3
 
     fun pullDownAction(context: Context): Int {
         Utilities.getPrefs(context).migratePullDownPref(context)
