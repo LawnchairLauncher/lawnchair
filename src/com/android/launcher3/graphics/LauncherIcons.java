@@ -38,6 +38,7 @@ import android.os.UserHandle;
 import android.support.annotation.Nullable;
 
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
@@ -192,13 +193,16 @@ public class LauncherIcons {
      * Adds the {@param badge} on top of {@param srcTgt} using the badge dimensions.
      */
     public static Bitmap badgeWithBitmap(Bitmap srcTgt, Bitmap badge, Context context) {
+        return badgeWithDrawable(srcTgt, new FastBitmapDrawable(badge), context);
+    }
+
+    public static Bitmap badgeWithDrawable(Bitmap srcTgt, Drawable badge, Context context) {
         int badgeSize = context.getResources().getDimensionPixelSize(R.dimen.profile_badge_size);
         synchronized (sCanvas) {
             sCanvas.setBitmap(srcTgt);
-            sCanvas.drawBitmap(badge, new Rect(0, 0, badge.getWidth(), badge.getHeight()),
-                    new Rect(srcTgt.getWidth() - badgeSize,
-                            srcTgt.getHeight() - badgeSize, srcTgt.getWidth(), srcTgt.getHeight()),
-                    new Paint(Paint.FILTER_BITMAP_FLAG));
+            int iconSize = srcTgt.getWidth();
+            badge.setBounds(iconSize - badgeSize, iconSize - badgeSize, iconSize, iconSize);
+            badge.draw(sCanvas);
             sCanvas.setBitmap(null);
         }
         return srcTgt;

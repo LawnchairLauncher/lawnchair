@@ -184,7 +184,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
     public void applyFromShortcutInfo(ShortcutInfo info, boolean promiseStateChanged) {
         applyIconAndLabel(info.iconBitmap, info);
         setTag(info);
-        if (promiseStateChanged || info.isPromise()) {
+        if (promiseStateChanged || (info.hasPromiseIconUi())) {
             applyPromiseState(promiseStateChanged);
         }
 
@@ -481,7 +481,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
     public void applyPromiseState(boolean promiseStateChanged) {
         if (getTag() instanceof ShortcutInfo) {
             ShortcutInfo info = (ShortcutInfo) getTag();
-            final boolean isPromise = info.isPromise();
+            final boolean isPromise = info.hasPromiseIconUi();
             final int progressLevel = isPromise ?
                     ((info.hasStatusFlag(ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE) ?
                             info.getInstallProgress() : 0)) : 100;

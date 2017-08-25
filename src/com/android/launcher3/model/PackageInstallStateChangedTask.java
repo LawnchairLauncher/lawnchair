@@ -94,7 +94,7 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
                 if (info instanceof ShortcutInfo) {
                     ShortcutInfo si = (ShortcutInfo) info;
                     ComponentName cn = si.getTargetComponent();
-                    if (si.isPromise() && (cn != null)
+                    if (si.hasPromiseIconUi() && (cn != null)
                             && mInstallInfo.packageName.equals(cn.getPackageName())) {
                         si.setInstallProgress(mInstallInfo.progress);
                         if (mInstallInfo.state == PackageInstallerCompat.STATUS_FAILED) {

@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import android.annotation.TargetApi;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -57,6 +58,11 @@ public class ShortcutInfo extends ItemInfoWithIcon {
      * Indicates that the widget restore has started.
      */
     public static final int FLAG_RESTORE_STARTED = 8; //0B1000;
+
+    /**
+     * Web UI supported.
+     */
+    public static final int FLAG_SUPPORTS_WEB_UI = 16; //0B10000;
 
     /**
      * Indicates if it represents a common type mentioned in {@link CommonAppTypeParser}.
@@ -188,6 +194,10 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         return hasStatusFlag(FLAG_RESTORED_ICON | FLAG_AUTOINSTALL_ICON);
     }
 
+    public boolean hasPromiseIconUi() {
+        return isPromise() && !hasStatusFlag(FLAG_SUPPORTS_WEB_UI);
+    }
+
     public int getInstallProgress() {
         return mInstallProgress;
     }
@@ -225,5 +235,19 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     @Override
     public boolean isDisabled() {
         return isDisabled != 0;
+    }
+
+    @Override
+    public ComponentName getTargetComponent() {
+        ComponentName cn = super.getTargetComponent();
+        if (cn == null && (itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
+                || hasStatusFlag(FLAG_SUPPORTS_WEB_UI))) {
+            // Legacy shortcuts and promise icons with web UI may not have a componentName but just
+            // a packageName. In that case create a dummy componentName instead of adding additional
+            // check everywhere.
+            String pkg = intent.getPackage();
+            return pkg == null ? null : new ComponentName(pkg, IconCache.EMPTY_CLASS_NAME);
+        }
+        return cn;
     }
 }
