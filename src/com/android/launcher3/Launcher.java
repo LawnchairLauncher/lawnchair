@@ -437,7 +437,8 @@ public class Launcher extends BaseActivity
         mDefaultKeySsb = new SpannableStringBuilder();
         Selection.setSelection(mDefaultKeySsb, 0);
 
-        mLauncherTab = new LauncherTab(this);
+        if (PackageManagerHelper.isAppEnabled(getPackageManager(), "com.google.android.googlequicksearchbox"))
+            mLauncherTab = new LauncherTab(this);
 
         mRotationEnabled = getResources().getBoolean(R.bool.allow_rotation);
         // In case we are on a device with locked rotation, we should look at preferences to check
@@ -1069,7 +1070,8 @@ public class Launcher extends BaseActivity
         }
         mIsResumeFromActionScreenOff = false;
 
-        mLauncherTab.getClient().onResume();
+        if (mLauncherTab != null)
+            mLauncherTab.getClient().onResume();
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onResume();
@@ -1093,7 +1095,8 @@ public class Launcher extends BaseActivity
             mWorkspace.getCustomContentCallbacks().onHide();
         }
 
-        mLauncherTab.getClient().onPause();
+        if (mLauncherTab != null)
+            mLauncherTab.getClient().onPause();
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onPause();
@@ -1609,7 +1612,8 @@ public class Launcher extends BaseActivity
         FirstFrameAnimatorHelper.initializeDrawListener(getWindow().getDecorView());
         mAttached = true;
 
-        mLauncherTab.getClient().onAttachedToWindow();
+        if (mLauncherTab != null)
+            mLauncherTab.getClient().onAttachedToWindow();
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onAttachedToWindow();
@@ -1624,7 +1628,8 @@ public class Launcher extends BaseActivity
             mAttached = false;
         }
 
-        mLauncherTab.getClient().onDetachedFromWindow();
+        if (mLauncherTab != null)
+            mLauncherTab.getClient().onDetachedFromWindow();
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onDetachedFromWindow();
@@ -1789,7 +1794,8 @@ public class Launcher extends BaseActivity
                 mWidgetsView.scrollToTop();
             }
 
-            mLauncherTab.getClient().hideOverlay(true);
+            if (mLauncherTab != null)
+                mLauncherTab.getClient().hideOverlay(true);
 
             if (mLauncherCallbacks != null) {
                 mLauncherCallbacks.onHomeIntent();
@@ -1896,7 +1902,8 @@ public class Launcher extends BaseActivity
 
         LauncherAnimUtils.onDestroyActivity();
 
-        mLauncherTab.getClient().onDestroy();
+        if (mLauncherTab != null)
+            mLauncherTab.getClient().onDestroy();
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onDestroy();

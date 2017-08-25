@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.util.PackageManagerHelper;
 
 
 public abstract class Qsb extends FrameLayout implements View.OnClickListener {
@@ -189,12 +190,7 @@ public abstract class Qsb extends FrameLayout implements View.OnClickListener {
     }
 
     private void applyVisibility() { //bg
-        int visibility = View.GONE;
-        try {
-            if (getContext().getPackageManager().getApplicationInfo("com.google.android.googlequicksearchbox", 0).enabled)
-                visibility = View.VISIBLE;
-        }
-        catch (Exception ex) { }
+        int visibility = PackageManagerHelper.isAppEnabled(getContext().getPackageManager(), "com.google.android.googlequicksearchbox") ? View.VISIBLE : View.GONE;
 
         if (mQsbView != null) {
             mQsbView.setVisibility(visibility);
