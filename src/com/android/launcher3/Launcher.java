@@ -2574,12 +2574,8 @@ public class Launcher extends BaseActivity
 
         String pickerPackage = getString(R.string.wallpaper_picker_package);
         boolean hasTargetPackage = TextUtils.isEmpty(pickerPackage);
-        try {
-            if (!hasTargetPackage && getPackageManager().getApplicationInfo(pickerPackage, 0).enabled) {
-                intent.setPackage(pickerPackage);
-            }
-        } catch (Exception ex) {
-        }
+        if (!hasTargetPackage && PackageManagerHelper.isAppEnabled(getPackageManager(), pickerPackage))
+            intent.setPackage(pickerPackage);
 
         intent.setSourceBounds(getViewBounds(v));
         try {
