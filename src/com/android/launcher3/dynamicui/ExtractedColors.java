@@ -97,6 +97,9 @@ public class ExtractedColors {
         String encodedString = Utilities.getPrefs(context).getString(
                 ExtractionUtils.EXTRACTED_COLORS_PREFERENCE_KEY, VERSION + "");
 
+        if (!Utilities.ATLEAST_NOUGAT)
+            encodedString = "1,771751935,0,"; //0x2DFFFFFF
+
         decodeFromString(encodedString);
 
         if (mColors[VERSION_INDEX] != VERSION) {

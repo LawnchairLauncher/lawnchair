@@ -482,10 +482,10 @@ public class Launcher extends BaseActivity
 
     private void loadExtractedColorsAndColorItems() {
         // TODO: do this in pre-N as well, once the extraction part is complete.
+        mExtractedColors.load(this);
+        mHotseat.updateColor(mExtractedColors, !mPaused);
+        mWorkspace.getPageIndicator().updateColor(mExtractedColors);
         if (Utilities.ATLEAST_NOUGAT) {
-            mExtractedColors.load(this);
-            mHotseat.updateColor(mExtractedColors, !mPaused);
-            mWorkspace.getPageIndicator().updateColor(mExtractedColors);
             boolean lightStatusBar = (FeatureFlags.LIGHT_STATUS_BAR
                     && mExtractedColors.getColor(ExtractedColors.STATUS_BAR_INDEX,
                     ExtractedColors.DEFAULT_DARK) == ExtractedColors.DEFAULT_LIGHT);
