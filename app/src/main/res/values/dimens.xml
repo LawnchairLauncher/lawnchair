@@ -214,4 +214,7 @@
     <dimen name="all_apps_vertical_row_height">80dp</dimen>
     <dimen name="all_apps_vertical_row_padding">16.0dip</dimen>
     <dimen name="all_apps_vertical_icon_size">48.0dip</dimen>
+    <dimen name="qsb_shadow_blur_radius">1.0dip</dimen>
+    <dimen name="qsb_key_shadow_offset">1.0dip</dimen>
+    <dimen name="qsb_connector_gradient_end_padding">20.0dip</dimen>
 </resources>
