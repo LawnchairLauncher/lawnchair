@@ -33,6 +33,10 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
     }
 
     public ValueAnimator createRevealAnimator(final View revealView, boolean isReversed) {
+        return createRevealAnimator(revealView, isReversed, false);
+    }
+
+    public ValueAnimator createRevealAnimator(final View revealView, boolean isReversed, final boolean restoreOutline) {
         ValueAnimator va =
                 isReversed ? ValueAnimator.ofFloat(1f, 0f) : ValueAnimator.ofFloat(0f, 1f);
         final float elevation = revealView.getElevation();
@@ -55,8 +59,10 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
 
             public void onAnimationEnd(Animator animation) {
                 if (!mWasCanceled) {
-                    revealView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
-                    revealView.setClipToOutline(false);
+                    if (restoreOutline) {
+                        revealView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
+                        revealView.setClipToOutline(false);
+                    }
                     if (shouldRemoveElevationDuringAnimation()) {
                         revealView.setTranslationZ(0);
                     }

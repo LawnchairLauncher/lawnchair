@@ -566,7 +566,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         float radius = (float) Math.hypot(rx, ry);
 
         Animator reveal = new CircleRevealOutlineProvider((int) getPivotX(),
-                (int) getPivotY(), 0, radius).createRevealAnimator(this);
+                (int) getPivotY(), 0, radius).createRevealAnimator(this, false, true);
         reveal.setDuration(mMaterialExpandDuration);
         reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
 
