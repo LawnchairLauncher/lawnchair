@@ -478,6 +478,12 @@ public class IconCache {
     }
 
     private void applyCacheEntry(CacheEntry entry, ItemInfoWithIcon info) {
+        if (info instanceof ShortcutInfo
+                && ((ShortcutInfo) info).hasStatusFlag(ShortcutInfo.FLAG_SUPPORTS_WEB_UI)
+                && (entry.icon == null || isDefaultIcon(entry.icon, info.user))) {
+            // skip updating shortcut info if no icon and supports web ui
+            return;
+        }
         info.title = Utilities.trim(entry.title);
         info.contentDescription = entry.contentDescription;
         info.iconBitmap = entry.icon == null ? getDefaultIcon(info.user) : entry.icon;
