@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,6 +72,9 @@ public class EditIconActivity extends AppCompatActivity implements CustomIconAda
             iconAdapter.setListener(this);
             iconRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
             iconRecyclerView.setAdapter(iconAdapter);
+        } else {
+            findViewById(R.id.iconRecyclerView).setVisibility(View.GONE);
+            findViewById(R.id.divider).setVisibility(View.GONE);
         }
 
         RecyclerView iconPackRecyclerView = findViewById(R.id.iconPackRecyclerView);

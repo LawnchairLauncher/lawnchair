@@ -213,7 +213,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                         numNotifications, originalIcon.getContentDescription().toString()));
             }
         }
-        
+
         // Add the arrow.
         final int arrowHorizontalOffset = resources.getDimensionPixelSize(isAlignedWithStart() ?
                 R.dimen.popup_arrow_horizontal_offset_start :

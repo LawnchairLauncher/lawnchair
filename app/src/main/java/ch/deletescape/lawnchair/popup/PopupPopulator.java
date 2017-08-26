@@ -173,20 +173,22 @@ public class PopupPopulator {
                     }
                     uiHandler.post(new UpdateNotificationChild(notificationView, infos));
                 }
-                List<ShortcutInfoCompat> shortcuts = DeepShortcutManager.getInstance(launcher)
-                        .queryForShortcutsContainer(activity, shortcutIds, user);
-                String shortcutIdToDeDupe = notificationKeys.isEmpty() ? null
-                        : notificationKeys.get(0).shortcutId;
-                shortcuts = PopupPopulator.sortAndFilterShortcuts(shortcuts, shortcutIdToDeDupe);
-                for (int i = 0; i < shortcuts.size() && i < shortcutViews.size(); i++) {
-                    final ShortcutInfoCompat shortcut = shortcuts.get(i);
-                    ShortcutInfo si = new ShortcutInfo(shortcut, launcher);
-                    // Use unbadged icon for the menu.
-                    si.iconBitmap = LauncherIcons.createShortcutIcon(
-                            shortcut, launcher, false /* badged */);
-                    si.rank = i;
-                    uiHandler.post(new UpdateShortcutChild(container, shortcutViews.get(i),
-                            si, shortcut));
+                if (activity != null) {
+                    List<ShortcutInfoCompat> shortcuts = DeepShortcutManager.getInstance(launcher)
+                            .queryForShortcutsContainer(activity, shortcutIds, user);
+                    String shortcutIdToDeDupe = notificationKeys.isEmpty() ? null
+                            : notificationKeys.get(0).shortcutId;
+                    shortcuts = PopupPopulator.sortAndFilterShortcuts(shortcuts, shortcutIdToDeDupe);
+                    for (int i = 0; i < shortcuts.size() && i < shortcutViews.size(); i++) {
+                        final ShortcutInfoCompat shortcut = shortcuts.get(i);
+                        ShortcutInfo si = new ShortcutInfo(shortcut, launcher);
+                        // Use unbadged icon for the menu.
+                        si.iconBitmap = LauncherIcons.createShortcutIcon(
+                                shortcut, launcher, false /* badged */);
+                        si.rank = i;
+                        uiHandler.post(new UpdateShortcutChild(container, shortcutViews.get(i),
+                                si, shortcut));
+                    }
                 }
                 // This ensures that mLauncher.getWidgetsForPackageUser()
                 // doesn't return null (it puts all the widgets in memory).
@@ -195,13 +197,15 @@ public class PopupPopulator {
                     uiHandler.post(new UpdateSystemShortcutChild(container,
                             systemShortcutViews.get(i), systemShortcut, launcher, originalInfo));
                 }
-                uiHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        launcher.refreshAndBindWidgetsForPackageUser(
-                                PackageUserKey.fromItemInfo(originalInfo));
-                    }
-                });
+                if (activity != null) {
+                    uiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            launcher.refreshAndBindWidgetsForPackageUser(
+                                    PackageUserKey.fromItemInfo(originalInfo));
+                        }
+                    });
+                }
             }
         };
     }
