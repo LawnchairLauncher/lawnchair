@@ -203,15 +203,17 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
         int numShortcuts = shortcutViews.size() + systemShortcutViews.size();
         int numNotifications = notificationKeys.size();
-        if (numNotifications == 0) {
-            setContentDescription(getContext().getString(R.string.shortcuts_menu_description,
-                    numShortcuts, originalIcon.getContentDescription().toString()));
-        } else {
-            setContentDescription(getContext().getString(
-                    R.string.shortcuts_menu_with_notifications_description, numShortcuts,
-                    numNotifications, originalIcon.getContentDescription().toString()));
+        if (originalIcon.getContentDescription() != null) {
+            if (numNotifications == 0) {
+                setContentDescription(getContext().getString(R.string.shortcuts_menu_description,
+                        numShortcuts, originalIcon.getContentDescription().toString()));
+            } else {
+                setContentDescription(getContext().getString(
+                        R.string.shortcuts_menu_with_notifications_description, numShortcuts,
+                        numNotifications, originalIcon.getContentDescription().toString()));
+            }
         }
-
+        
         // Add the arrow.
         final int arrowHorizontalOffset = resources.getDimensionPixelSize(isAlignedWithStart() ?
                 R.dimen.popup_arrow_horizontal_offset_start :
