@@ -29,11 +29,13 @@ import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 
 import ch.deletescape.lawnchair.LauncherSettings.Favorites;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.folder.FolderIcon;
+import ch.deletescape.lawnchair.pixelify.PixelIconProvider;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 
@@ -442,8 +444,11 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
     public void setIcon(@NonNull Context context, @Nullable String icon) {
         Intent i = new Intent(Intent.ACTION_MAIN).setComponent(getComponentName());
         LauncherActivityInfoCompat laic = LauncherActivityInfoCompat.create(context, user, i);
-        Drawable drawable = Launcher.getLauncher(context).getIconCache().pip.getAlternateIcon(icon, laic);
+        PixelIconProvider pip = Launcher.getLauncher(context).getIconCache().pip;
+        Drawable drawable = pip.getAlternateIcon(icon, laic);
         Bitmap bitmap = null;
+        if (drawable == null && icon != null)
+            drawable = pip.getDefaultIcon(laic, DisplayMetrics.DENSITY_XXXHIGH, null);
         if (drawable != null) {
             bitmap = Utilities.createBadgedIconBitmap(drawable, user, context);
             mCustomIcon = bitmap;

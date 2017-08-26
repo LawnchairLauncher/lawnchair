@@ -140,7 +140,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             return null;
         }
         ItemInfo itemInfo = (ItemInfo) icon.getTag();
-        if (!DeepShortcutManager.supportsShortcuts(itemInfo)) {
+        if (!DeepShortcutManager.supportsEdit(itemInfo)) {
             return null;
         }
 

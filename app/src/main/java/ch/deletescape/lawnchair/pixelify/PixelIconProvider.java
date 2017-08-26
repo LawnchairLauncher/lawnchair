@@ -174,6 +174,10 @@ public class PixelIconProvider {
             IconPack iconPack = getIconPackForComponent(info.getComponentName());
             drawable = iconPack == null ? null : iconPack.getIcon(info);
         }
+        return getDefaultIcon(info, iconDpi, drawable);
+    }
+
+    public Drawable getDefaultIcon(LauncherActivityInfoCompat info, int iconDpi, Drawable drawable) {
         boolean isRoundPack = isRoundIconPack(sIconPack);
         if ((drawable == null && Utilities.getPrefs(mContext).getUsePixelIcons()) ||
                 (isRoundPack && drawable instanceof CustomIconDrawable)) {
