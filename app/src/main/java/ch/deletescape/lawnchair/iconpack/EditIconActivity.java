@@ -1,12 +1,12 @@
 package ch.deletescape.lawnchair.iconpack;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -28,7 +28,7 @@ import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 
-public class EditIconActivity extends Activity implements CustomIconAdapter.Listener, IconPackAdapter.Listener {
+public class EditIconActivity extends AppCompatActivity implements CustomIconAdapter.Listener, IconPackAdapter.Listener {
 
     private static final int REQUEST_PICK_ICON = 0;
     private EditableItemInfo mInfo;
