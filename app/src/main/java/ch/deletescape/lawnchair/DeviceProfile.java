@@ -259,6 +259,8 @@ public class DeviceProfile {
         }
         float usedAllAppsWidth = (allAppsCellWidthPx * inv.numColumnsDrawer);
         float usedAllAppsHeight = (allAppsCellHeightPx * inv.numRowsDrawer);
+        if (!isVerticalBarLayout())
+            usedAllAppsHeight += allAppsCellHeightPx;
         int maxAllAppsHeight = getAllAppsPageHeight(res);
         if (usedAllAppsWidth > maxWorkspaceWidth || usedAllAppsHeight > maxAllAppsHeight) {
             float heightScale = maxAllAppsHeight / usedAllAppsHeight;
@@ -382,7 +384,7 @@ public class DeviceProfile {
 
     public int getAllAppsCellHeight(Context context) {
         Resources res = context.getResources();
-        return calculateCellHeight(getAllAppsPageHeight(res), inv.numRowsDrawer);
+        return calculateCellHeight(getAllAppsPageHeight(res), inv.numRowsDrawer + (isVerticalBarLayout() ? 0 : 1));
     }
 
     public Point getCellSize() {
