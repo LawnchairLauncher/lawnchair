@@ -28,7 +28,7 @@ import android.view.ViewGroup;
  */
 public class ButtonPreference extends Preference {
 
-    private View.OnClickListener mClickListener;
+    private boolean mWidgetFrameVisible = false;
 
     public ButtonPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
@@ -46,9 +46,9 @@ public class ButtonPreference extends Preference {
         super(context);
     }
 
-    public void setButtonOnClickListener(View.OnClickListener clickListener) {
-        if (mClickListener != clickListener) {
-            mClickListener = clickListener;
+    public void setWidgetFrameVisible(boolean isVisible) {
+        if (mWidgetFrameVisible != isVisible) {
+            mWidgetFrameVisible = isVisible;
             notifyChanged();
         }
     }
@@ -59,12 +59,7 @@ public class ButtonPreference extends Preference {
 
         ViewGroup widgetFrame = view.findViewById(android.R.id.widget_frame);
         if (widgetFrame != null) {
-            View button = widgetFrame.getChildAt(0);
-            if (button != null) {
-                button.setOnClickListener(mClickListener);
-            }
-            widgetFrame.setVisibility(
-                    (mClickListener == null || button == null) ? View.GONE : View.VISIBLE);
+            widgetFrame.setVisibility(mWidgetFrameVisible ? View.VISIBLE : View.GONE);
         }
     }
 }

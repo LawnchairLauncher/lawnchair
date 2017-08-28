@@ -31,9 +31,11 @@
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Дакраніцеся двойчы і ўтрымлівайце, каб выбраць віджэт або выкарыстоўваць карыстальніцкія дзеянні."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Шырына: %1$d, вышыня: %2$d"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Пошук у Праграмах"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"Ідзе загрузка праграм…"</string>
-    <string name="all_apps_no_search_results" msgid="6332185285860416787">"Праграм, якія адпавядаюць запыту \"<xliff:g id="QUERY">%1$s</xliff:g>\", не знойдзена"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Каб размясціць уручную, дакраніцеся і ўтрымлівайце"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"Дадаць аўтаматычна"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Пошук праграм"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"Праграмы загружаюцца…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"Праграм, якія адпавядаюць запыту \"<xliff:g id="QUERY">%1$s</xliff:g>\", не знойдзена"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Шукаць іншыя праграмы"</string>
     <string name="out_of_space" msgid="4691004494942118364">"На гэтым Галоўным экране больш няма месца."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"У латку \"Абранае\" больш няма месца"</string>
@@ -74,17 +76,18 @@
     <string name="icon_badging_title" msgid="874121399231955394">"Значкі апавяшчэнняў"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Уключана"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Выключана"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"Патрабуецца доступ да апавяшчэнняў"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Каб паказваліся значкі апавяшчэнняў, уключыце апавяшчэнні праграм для <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"Змяніць налады"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Дадаць значок на Галоўны экран"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Для новых праграм"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"Змяніць форму значка"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Выкарыстоўваць стандартныя формы"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Квадрат"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"Прамавугольнік са скругленымі вугламі"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"Круг"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"Сляза"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Змены формы значка прымяняюцца"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Невядома"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Выдаліць"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Шукаць"</string>

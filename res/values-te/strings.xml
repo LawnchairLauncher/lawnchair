@@ -22,9 +22,9 @@
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"కార్యాలయం"</string>
-    <string name="activity_not_found" msgid="8071924732094499514">"అనువర్తనం ఇన్‌స్టాల్ చేయబడలేదు."</string>
-    <string name="activity_not_available" msgid="7456344436509528827">"అనువర్తనం అందుబాటులో లేదు"</string>
-    <string name="safemode_shortcut_error" msgid="9160126848219158407">"డౌన్‌లోడ్ చేసిన అనువర్తనం సురక్షిత మోడ్‌లో నిలిపివేయబడింది"</string>
+    <string name="activity_not_found" msgid="8071924732094499514">"యాప్ ఇన్‌స్టాల్ చేయబడలేదు."</string>
+    <string name="activity_not_available" msgid="7456344436509528827">"యాప్ అందుబాటులో లేదు"</string>
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"డౌన్‌లోడ్ చేసిన యాప్ సురక్షిత మోడ్‌లో నిలిపివేయబడింది"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"సురక్షిత మోడ్‌లో విడ్జెట్‌లు నిలిపివేయబడ్డాయి"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"సత్వరమార్గం అందుబాటులో లేదు"</string>
     <string name="home_screen" msgid="806512411299847073">"హోమ్ స్క్రీన్"</string>
@@ -35,9 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d వెడల్పు X %2$d ఎత్తు"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"మాన్యువల్‌గా ఉంచడానికి నొక్కి &amp;amp పట్టుకోండి"</string>
     <string name="place_automatically" msgid="8064208734425456485">"స్వయంచాలకంగా జోడించు"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"అనువర్తనాలను శోధించండి"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"అనువర్తనాలను లోడ్ చేస్తోంది…"</string>
-    <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"కి సరిపోలే అనువర్తనాలేవీ కనుగొనబడలేదు"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"అప్లికేషన్‌లను శోధించండి"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"అప్లికేషన్‌లను లోడ్ చేస్తోంది…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"కి సరిపోలే అప్లికేషన్‌లేవీ కనుగొనబడలేదు"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"మరిన్ని అనువర్తనాల కోసం శోధించు"</string>
     <string name="notifications_header" msgid="1404149926117359025">"నోటిఫికేషన్‌లు"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ఈ హోమ్ స్క్రీన్‌లో ఖాళీ లేదు."</string>
@@ -56,7 +56,7 @@
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"ఫోన్ కాల్‌లను చేసేందుకు <xliff:g id="APP_NAME">%1$s</xliff:g>కి అనుమతి లేదు"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"విడ్జెట్‌ను లోడ్ చేయడంలో సమస్య"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"సెటప్ చేయి"</string>
-    <string name="uninstall_system_app_text" msgid="4172046090762920660">"ఇది సిస్టమ్ అనువర్తనం మరియు దీన్ని అన్‌ఇన్‌స్టాల్ చేయడం సాధ్యపడదు."</string>
+    <string name="uninstall_system_app_text" msgid="4172046090762920660">"ఇది సిస్టమ్ యాప్ మరియు దీన్ని అన్‌ఇన్‌స్టాల్ చేయడం సాధ్యపడదు."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"పేరు లేని ఫోల్డర్"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> నిలిపివేయబడింది"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"%2$dలో %1$dవ పేజీ"</string>
@@ -79,6 +79,9 @@
     <string name="icon_badging_title" msgid="874121399231955394">"నోటిఫికేషన్ డాట్‌లు"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"ఆన్"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"ఆఫ్"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"నోటిఫికేషన్ యాక్సెస్ అవసరం"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"నోటిఫికేషన్ డాట్‌లను చూపించడానికి <xliff:g id="NAME">%1$s</xliff:g>కు యాప్ నోటిఫికేషన్‌లను ఆన్ చేయండి"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"సెట్టింగ్‌లను మార్చు"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"హోమ్ స్క్రీన్‌కి చిహ్నాన్ని జోడించు"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"కొత్త అనువర్తనాల కోసం"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"చిహ్న ఆకారాన్ని మార్చు"</string>
@@ -91,8 +94,8 @@
     <string name="package_state_unknown" msgid="7592128424511031410">"తెలియదు"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"తీసివేయి"</string>
     <string name="abandoned_search" msgid="891119232568284442">"శోధించు"</string>
-    <string name="abandoned_promises_title" msgid="7096178467971716750">"ఈ అనువర్తనం ఇన్‌స్టాల్ చేయబడలేదు"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ఈ చిహ్నం యొక్క అనువర్తనం ఇన్‌స్టాల్ చేయబడలేదు. మీరు దీన్ని తీసివేయవచ్చు లేదా ఆ అనువర్తనం కోసం శోధించి దాన్ని మాన్యువల్‌గా ఇన్‌స్టాల్ చేయవచ్చు."</string>
+    <string name="abandoned_promises_title" msgid="7096178467971716750">"ఈ యాప్ ఇన్‌స్టాల్ చేయబడలేదు"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ఈ చిహ్నం యొక్క యాప్ ఇన్‌స్టాల్ చేయబడలేదు. మీరు దీన్ని తీసివేయవచ్చు లేదా ఆ యాప్ కోసం శోధించి దాన్ని మాన్యువల్‌గా ఇన్‌స్టాల్ చేయవచ్చు."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> డౌన్‌లోడ్ అవుతోంది, <xliff:g id="PROGRESS">%2$s</xliff:g> పూర్తయింది"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ఇన్‌స్టాల్ కావడానికి వేచి ఉంది"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> విడ్జెట్‌లు"</string>

@@ -119,6 +119,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.util.ActivityResultInfo;
+import com.android.launcher3.util.RunnableWithId;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
@@ -144,6 +145,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executor;
+
+import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_APPS;
+import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_WIDGETS;
 
 /**
  * Default launcher application.
@@ -245,7 +250,6 @@ public class Launcher extends BaseActivity
 
     // Main container view and the model for the widget tray screen.
     @Thunk WidgetsContainerView mWidgetsView;
-    @Thunk MultiHashMap<PackageItemInfo, WidgetItem> mAllWidgets;
 
     // We set the state in both onCreate and then onNewIntent in some cases, which causes both
     // scroll issues (because the workspace may not have been measured yet) and extra work.
@@ -465,9 +469,6 @@ public class Launcher extends BaseActivity
         setOrientation();
 
         setContentView(mLauncherView);
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onCreate(savedInstanceState);
-        }
 
         // Listen for broadcasts
         IntentFilter filter = new IntentFilter();
@@ -478,6 +479,10 @@ public class Launcher extends BaseActivity
 
         getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
                 Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onCreate(savedInstanceState);
+        }
     }
 
     @Override
@@ -959,6 +964,9 @@ public class Launcher extends BaseActivity
         } else if (mOnResumeState == State.WIDGETS) {
             showWidgetsView(false, false);
         }
+        if (mOnResumeState != State.APPS) {
+            tryAndUpdatePredictedApps();
+        }
         mOnResumeState = State.NONE;
 
         mPaused = false;
@@ -1302,9 +1310,7 @@ public class Launcher extends BaseActivity
         mDragController.addDropTarget(mWorkspace);
         mDropTargetBar.setup(mDragController);
 
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
-            mAllAppsController.setupViews(mAppsView, mHotseat, mWorkspace);
-        }
+        mAllAppsController.setupViews(mAppsView, mHotseat, mWorkspace);
 
         if (TestingUtils.MEMORY_DUMP_ENABLED) {
             TestingUtils.addWeightWatcher(this);
@@ -1851,6 +1857,8 @@ public class Launcher extends BaseActivity
 
         LauncherAnimUtils.onDestroyActivity();
 
+        clearPendingBinds();
+
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onDestroy();
         }
@@ -2270,7 +2278,7 @@ public class Launcher extends BaseActivity
             if (v instanceof FolderIcon) {
                 onClickFolderIcon(v);
             }
-        } else if ((FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && v instanceof PageIndicator) ||
+        } else if ((v instanceof PageIndicator) ||
             (v == mAllAppsButton && mAllAppsButton != null)) {
             onClickAllAppsButton(v);
         } else if (tag instanceof AppInfo) {
@@ -3106,22 +3114,18 @@ public class Launcher extends BaseActivity
      *
      * @return {@code true} if we are currently paused. The caller might be able to skip some work
      */
-    @Thunk boolean waitUntilResume(Runnable run, boolean deletePreviousRunnables) {
+    @Thunk boolean waitUntilResume(Runnable run) {
         if (mPaused) {
             if (LOGD) Log.d(TAG, "Deferring update until onResume");
-            if (deletePreviousRunnables) {
-                while (mBindOnResumeCallbacks.remove(run)) {
-                }
+            if (run instanceof RunnableWithId) {
+                // Remove any runnables which have the same id
+                while (mBindOnResumeCallbacks.remove(run)) { }
             }
             mBindOnResumeCallbacks.add(run);
             return true;
         } else {
             return false;
         }
-    }
-
-    private boolean waitUntilResume(Runnable run) {
-        return waitUntilResume(run, false);
     }
 
     public void addOnResumeCallback(Runnable run) {
@@ -3242,13 +3246,13 @@ public class Launcher extends BaseActivity
         }
     }
 
+    @Override
     public void bindAppsAdded(final ArrayList<Long> newScreens,
                               final ArrayList<ItemInfo> addNotAnimated,
-                              final ArrayList<ItemInfo> addAnimated,
-                              final ArrayList<AppInfo> addedApps) {
+                              final ArrayList<ItemInfo> addAnimated) {
         Runnable r = new Runnable() {
             public void run() {
-                bindAppsAdded(newScreens, addNotAnimated, addAnimated, addedApps);
+                bindAppsAdded(newScreens, addNotAnimated, addAnimated);
             }
         };
         if (waitUntilResume(r)) {
@@ -3263,20 +3267,14 @@ public class Launcher extends BaseActivity
         // We add the items without animation on non-visible pages, and with
         // animations on the new page (which we will try and snap to).
         if (addNotAnimated != null && !addNotAnimated.isEmpty()) {
-            bindItems(addNotAnimated, 0,
-                    addNotAnimated.size(), false);
+            bindItems(addNotAnimated, false);
         }
         if (addAnimated != null && !addAnimated.isEmpty()) {
-            bindItems(addAnimated, 0,
-                    addAnimated.size(), true);
+            bindItems(addAnimated, true);
         }
 
         // Remove the extra empty screen
         mWorkspace.removeExtraEmptyScreen(false, false);
-
-        if (addedApps != null && mAppsView != null) {
-            mAppsView.addApps(addedApps);
-        }
     }
 
     /**
@@ -3285,11 +3283,10 @@ public class Launcher extends BaseActivity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     @Override
-    public void bindItems(final ArrayList<ItemInfo> items, final int start, final int end,
-                          final boolean forceAnimateIcons) {
+    public void bindItems(final List<ItemInfo> items, final boolean forceAnimateIcons) {
         Runnable r = new Runnable() {
             public void run() {
-                bindItems(items, start, end, forceAnimateIcons);
+                bindItems(items, forceAnimateIcons);
             }
         };
         if (waitUntilResume(r)) {
@@ -3302,7 +3299,8 @@ public class Launcher extends BaseActivity
         final boolean animateIcons = forceAnimateIcons && canRunNewAppsAnimation();
         Workspace workspace = mWorkspace;
         long newItemsScreenId = -1;
-        for (int i = start; i < end; i++) {
+        int end = items.size();
+        for (int i = 0; i < end; i++) {
             final ItemInfo item = items.get(i);
 
             // Short circuit if we are loading dock items for a configuration which has no dock
@@ -3327,19 +3325,10 @@ public class Launcher extends BaseActivity
                     break;
                 }
                 case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET: {
-                    LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) item;
-                    if (mIsSafeModeEnabled) {
-                        view = new PendingAppWidgetHostView(this, info, mIconCache, true);
-                    } else {
-                        LauncherAppWidgetProviderInfo providerInfo =
-                                mAppWidgetManager.getLauncherAppWidgetInfo(info.appWidgetId);
-                        if (providerInfo == null) {
-                            deleteWidgetInfo(info);
-                            continue;
-                        }
-                        view = mAppWidgetHost.createView(this, info.appWidgetId, providerInfo);
+                    view = inflateAppWidget((LauncherAppWidgetInfo) item);
+                    if (view == null) {
+                        continue;
                     }
-                    prepareAppWidget((AppWidgetHostView) view, info);
                     break;
                 }
                 default:
@@ -3409,26 +3398,21 @@ public class Launcher extends BaseActivity
 
     /**
      * Add the views for a widget to the workspace.
-     *
-     * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindAppWidget(final LauncherAppWidgetInfo item) {
-        Runnable r = new Runnable() {
-            public void run() {
-                bindAppWidget(item);
-            }
-        };
-        if (waitUntilResume(r)) {
-            return;
+    public void bindAppWidget(LauncherAppWidgetInfo item) {
+        View view = inflateAppWidget(item);
+        if (view != null) {
+            mWorkspace.addInScreen(view, item);
+            mWorkspace.requestLayout();
         }
+    }
 
+    private View inflateAppWidget(LauncherAppWidgetInfo item) {
         if (mIsSafeModeEnabled) {
             PendingAppWidgetHostView view =
                     new PendingAppWidgetHostView(this, item, mIconCache, true);
             prepareAppWidget(view, item);
-            mWorkspace.addInScreen(view, item);
-            mWorkspace.requestLayout();
-            return;
+            return view;
         }
 
         final long start = DEBUG_WIDGETS ? SystemClock.uptimeMillis() : 0;
@@ -3458,7 +3442,7 @@ public class Launcher extends BaseActivity
                             + ", as the provider is null");
                 }
                 getModelWriter().deleteItemFromDatabase(item);
-                return;
+                return null;
             }
 
             // If we do not have a valid id, try to bind an id.
@@ -3526,7 +3510,7 @@ public class Launcher extends BaseActivity
             if (appWidgetInfo == null) {
                 FileLog.e(TAG, "Removing invalid widget: id=" + item.appWidgetId);
                 deleteWidgetInfo(item);
-                return;
+                return null;
             }
 
             item.minSpanX = appWidgetInfo.minSpanX;
@@ -3536,13 +3520,12 @@ public class Launcher extends BaseActivity
             view = new PendingAppWidgetHostView(this, item, mIconCache, false);
         }
         prepareAppWidget(view, item);
-        mWorkspace.addInScreen(view, item);
-        mWorkspace.requestLayout();
 
         if (DEBUG_WIDGETS) {
             Log.d(TAG, "bound widget id="+item.appWidgetId+" in "
                     + (SystemClock.uptimeMillis()-start) + "ms");
         }
+        return view;
     }
 
     /**
@@ -3678,34 +3661,41 @@ public class Launcher extends BaseActivity
     }
 
     /**
-     * A runnable that we can dequeue and re-enqueue when all applications are bound (to prevent
-     * multiple calls to bind the same list.)
-     */
-    @Thunk ArrayList<AppInfo> mTmpAppsList;
-    private final Runnable mBindAllApplicationsRunnable = new Runnable() {
-        public void run() {
-            bindAllApplications(mTmpAppsList);
-            mTmpAppsList = null;
-        }
-    };
-
-    /**
      * Add the icons for all apps.
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void bindAllApplications(final ArrayList<AppInfo> apps) {
-        if (waitUntilResume(mBindAllApplicationsRunnable, true)) {
-            mTmpAppsList = apps;
+        Runnable r = new RunnableWithId(RUNNABLE_ID_BIND_APPS) {
+            public void run() {
+                bindAllApplications(apps);
+            }
+        };
+        if (waitUntilResume(r)) {
             return;
         }
 
         if (mAppsView != null) {
+            Executor pendingExecutor = getPendingExecutor();
+            if (pendingExecutor != null && mState != State.APPS) {
+                // Wait until the fade in animation has finished before setting all apps list.
+                pendingExecutor.execute(r);
+                return;
+            }
+
             mAppsView.setApps(apps);
         }
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.bindAllApplications(apps);
         }
+    }
+
+    /**
+     * Returns an Executor that will run after the launcher is first drawn (including after the
+     * initial fade in animation). Returns null if the first draw has already occurred.
+     */
+    public @Nullable Executor getPendingExecutor() {
+        return mPendingExecutor != null && mPendingExecutor.canQueue() ? mPendingExecutor : null;
     }
 
     /**
@@ -3722,10 +3712,10 @@ public class Launcher extends BaseActivity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindAppsUpdated(final ArrayList<AppInfo> apps) {
+    public void bindAppsAddedOrUpdated(final ArrayList<AppInfo> apps) {
         Runnable r = new Runnable() {
             public void run() {
-                bindAppsUpdated(apps);
+                bindAppsAddedOrUpdated(apps);
             }
         };
         if (waitUntilResume(r)) {
@@ -3733,7 +3723,7 @@ public class Launcher extends BaseActivity
         }
 
         if (mAppsView != null) {
-            mAppsView.updateApps(apps);
+            mAppsView.addOrUpdateApps(apps);
         }
     }
 
@@ -3771,16 +3761,12 @@ public class Launcher extends BaseActivity
      * Implementation of the method from LauncherModel.Callbacks.
      *
      * @param updated list of shortcuts which have changed.
-     * @param removed list of shortcuts which were deleted in the background. This can happen when
-     *                an app gets removed from the system or some of its components are no longer
-     *                available.
      */
     @Override
-    public void bindShortcutsChanged(final ArrayList<ShortcutInfo> updated,
-            final ArrayList<ShortcutInfo> removed, final UserHandle user) {
+    public void bindShortcutsChanged(final ArrayList<ShortcutInfo> updated, final UserHandle user) {
         Runnable r = new Runnable() {
             public void run() {
-                bindShortcutsChanged(updated, removed, user);
+                bindShortcutsChanged(updated, user);
             }
         };
         if (waitUntilResume(r)) {
@@ -3789,31 +3775,6 @@ public class Launcher extends BaseActivity
 
         if (!updated.isEmpty()) {
             mWorkspace.updateShortcuts(updated);
-        }
-
-        if (!removed.isEmpty()) {
-            HashSet<ComponentName> removedComponents = new HashSet<>();
-            HashSet<ShortcutKey> removedDeepShortcuts = new HashSet<>();
-
-            for (ShortcutInfo si : removed) {
-                if (si.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-                    removedDeepShortcuts.add(ShortcutKey.fromItemInfo(si));
-                } else {
-                    removedComponents.add(si.getTargetComponent());
-                }
-            }
-
-            if (!removedComponents.isEmpty()) {
-                ItemInfoMatcher matcher = ItemInfoMatcher.ofComponents(removedComponents, user);
-                mWorkspace.removeItemsByMatcher(matcher);
-                mDragController.onAppsRemoved(matcher);
-            }
-
-            if (!removedDeepShortcuts.isEmpty()) {
-                ItemInfoMatcher matcher = ItemInfoMatcher.ofShortcutKeys(removedDeepShortcuts);
-                mWorkspace.removeItemsByMatcher(matcher);
-                mDragController.onAppsRemoved(matcher);
-            }
         }
     }
 
@@ -3844,28 +3805,17 @@ public class Launcher extends BaseActivity
      * package-removal should clear all items by package name.
      */
     @Override
-    public void bindWorkspaceComponentsRemoved(
-            final HashSet<String> packageNames, final HashSet<ComponentName> components,
-            final UserHandle user) {
+    public void bindWorkspaceComponentsRemoved(final ItemInfoMatcher matcher) {
         Runnable r = new Runnable() {
             public void run() {
-                bindWorkspaceComponentsRemoved(packageNames, components, user);
+                bindWorkspaceComponentsRemoved(matcher);
             }
         };
         if (waitUntilResume(r)) {
             return;
         }
-        if (!packageNames.isEmpty()) {
-            ItemInfoMatcher matcher = ItemInfoMatcher.ofPackages(packageNames, user);
-            mWorkspace.removeItemsByMatcher(matcher);
-            mDragController.onAppsRemoved(matcher);
-
-        }
-        if (!components.isEmpty()) {
-            ItemInfoMatcher matcher = ItemInfoMatcher.ofComponents(components, user);
-            mWorkspace.removeItemsByMatcher(matcher);
-            mDragController.onAppsRemoved(matcher);
-        }
+        mWorkspace.removeItemsByMatcher(matcher);
+        mDragController.onAppsRemoved(matcher);
     }
 
     @Override
@@ -3886,22 +3836,25 @@ public class Launcher extends BaseActivity
         }
     }
 
-    private final Runnable mBindAllWidgetsRunnable = new Runnable() {
+    @Override
+    public void bindAllWidgets(final MultiHashMap<PackageItemInfo, WidgetItem> allWidgets) {
+        Runnable r = new RunnableWithId(RUNNABLE_ID_BIND_WIDGETS) {
+            @Override
             public void run() {
-                bindAllWidgets(mAllWidgets);
+                bindAllWidgets(allWidgets);
             }
         };
-
-    @Override
-    public void bindAllWidgets(MultiHashMap<PackageItemInfo, WidgetItem> allWidgets) {
-        if (waitUntilResume(mBindAllWidgetsRunnable, true)) {
-            mAllWidgets = allWidgets;
+        if (waitUntilResume(r)) {
             return;
         }
 
         if (mWidgetsView != null && allWidgets != null) {
+            Executor pendingExecutor = getPendingExecutor();
+            if (pendingExecutor != null && mState != State.WIDGETS) {
+                pendingExecutor.execute(r);
+                return;
+            }
             mWidgetsView.setWidgets(allWidgets);
-            mAllWidgets = null;
         }
 
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);

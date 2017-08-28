@@ -43,6 +43,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import java.util.ArrayList;
@@ -147,55 +148,32 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 break;
         }
 
-        ArrayList<AppInfo> added = null;
-        ArrayList<AppInfo> modified = null;
-        final ArrayList<AppInfo> removedApps = new ArrayList<>();
+        final ArrayList<AppInfo> addedOrModified = new ArrayList<>();
+        addedOrModified.addAll(appsList.added);
+        appsList.added.clear();
+        addedOrModified.addAll(appsList.modified);
+        appsList.modified.clear();
 
-        if (appsList.added.size() > 0) {
-            added = new ArrayList<>(appsList.added);
-            appsList.added.clear();
-        }
-        if (appsList.modified.size() > 0) {
-            modified = new ArrayList<>(appsList.modified);
-            appsList.modified.clear();
-        }
-        if (appsList.removed.size() > 0) {
-            removedApps.addAll(appsList.removed);
-            appsList.removed.clear();
-        }
+        final ArrayList<AppInfo> removedApps = new ArrayList<>(appsList.removed);
+        appsList.removed.clear();
 
         final ArrayMap<ComponentName, AppInfo> addedOrUpdatedApps = new ArrayMap<>();
-
-        if (added != null) {
-            final ArrayList<AppInfo> addedApps = added;
+        if (!addedOrModified.isEmpty()) {
             scheduleCallbackTask(new CallbackTask() {
                 @Override
                 public void execute(Callbacks callbacks) {
-                    callbacks.bindAppsAdded(null, null, null, addedApps);
+                    callbacks.bindAppsAddedOrUpdated(addedOrModified);
                 }
             });
-            for (AppInfo ai : added) {
+            for (AppInfo ai : addedOrModified) {
                 addedOrUpdatedApps.put(ai.componentName, ai);
             }
-        }
-
-        if (modified != null) {
-            final ArrayList<AppInfo> modifiedFinal = modified;
-            for (AppInfo ai : modified) {
-                addedOrUpdatedApps.put(ai.componentName, ai);
-            }
-            scheduleCallbackTask(new CallbackTask() {
-                @Override
-                public void execute(Callbacks callbacks) {
-                    callbacks.bindAppsUpdated(modifiedFinal);
-                }
-            });
         }
 
         // Update shortcut infos
         if (mOp == OP_ADD || flagOp != FlagOp.NO_OP) {
             final ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<>();
-            final ArrayList<ShortcutInfo> removedShortcuts = new ArrayList<>();
+            final LongArrayMap<Boolean> removedShortcuts = new LongArrayMap<>();
             final ArrayList<LauncherAppWidgetInfo> widgets = new ArrayList<>();
 
             synchronized (dataModel) {
@@ -236,7 +214,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                         }
 
                                         if ((intent == null) || (appInfo == null)) {
-                                            removedShortcuts.add(si);
+                                            removedShortcuts.put(si.id, true);
                                             continue;
                                         }
                                         si.intent = intent;
@@ -290,9 +268,9 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 }
             }
 
-            bindUpdatedShortcuts(updatedShortcuts, removedShortcuts, mUser);
+            bindUpdatedShortcuts(updatedShortcuts, mUser);
             if (!removedShortcuts.isEmpty()) {
-                getModelWriter().deleteItemsFromDatabase(removedShortcuts);
+                deleteAndBindComponentsRemoved(ItemInfoMatcher.ofItemIds(removedShortcuts, false));
             }
 
             if (!widgets.isEmpty()) {
@@ -329,22 +307,12 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
         }
 
         if (!removedPackages.isEmpty() || !removedComponents.isEmpty()) {
-            getModelWriter().deleteItemsFromDatabase(
-                    ItemInfoMatcher.ofPackages(removedPackages, mUser));
-            getModelWriter().deleteItemsFromDatabase(
-                    ItemInfoMatcher.ofComponents(removedComponents, mUser));
+            ItemInfoMatcher removeMatch = ItemInfoMatcher.ofPackages(removedPackages, mUser)
+                    .or(ItemInfoMatcher.ofComponents(removedComponents, mUser));
+            deleteAndBindComponentsRemoved(removeMatch);
 
             // Remove any queued items from the install queue
             InstallShortcutReceiver.removeFromInstallQueue(context, removedPackages, mUser);
-
-            // Call the components-removed callback
-            scheduleCallbackTask(new CallbackTask() {
-                @Override
-                public void execute(Callbacks callbacks) {
-                    callbacks.bindWorkspaceComponentsRemoved(
-                            removedPackages, removedComponents, mUser);
-                }
-            });
         }
 
         if (!removedApps.isEmpty()) {

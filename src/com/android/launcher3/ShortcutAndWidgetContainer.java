@@ -101,7 +101,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         mInvertIfRtl = invert;
     }
 
-    int getCellContentHeight() {
+    public int getCellContentHeight() {
         return Math.min(getMeasuredHeight(),
                 mLauncher.getDeviceProfile().getCellHeight(mContainerType));
     }
