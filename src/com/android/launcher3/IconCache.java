@@ -47,6 +47,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.SQLiteCacheHelper;
@@ -94,6 +95,7 @@ public class IconCache {
     private final LauncherAppsCompat mLauncherApps;
     private final HashMap<ComponentKey, CacheEntry> mCache =
             new HashMap<>(INITIAL_ICON_CACHE_CAPACITY);
+    private final InstantAppResolver mInstantAppResolver;
     private final int mIconDpi;
     @Thunk final IconDB mIconDb;
 
@@ -106,6 +108,7 @@ public class IconCache {
         mPackageManager = context.getPackageManager();
         mUserManager = UserManagerCompat.getInstance(mContext);
         mLauncherApps = LauncherAppsCompat.getInstance(mContext);
+        mInstantAppResolver = InstantAppResolver.newInstance(mContext);
         mIconDpi = inv.fillResIconDpi;
         mIconDb = new IconDB(context, inv.iconBitmapSize);
 
@@ -478,12 +481,6 @@ public class IconCache {
     }
 
     private void applyCacheEntry(CacheEntry entry, ItemInfoWithIcon info) {
-        if (info instanceof ShortcutInfo
-                && ((ShortcutInfo) info).hasStatusFlag(ShortcutInfo.FLAG_SUPPORTS_WEB_UI)
-                && (entry.icon == null || isDefaultIcon(entry.icon, info.user))) {
-            // skip updating shortcut info if no icon and supports web ui
-            return;
-        }
         info.title = Utilities.trim(entry.title);
         info.contentDescription = entry.contentDescription;
         info.iconBitmap = entry.icon == null ? getDefaultIcon(info.user) : entry.icon;
@@ -581,13 +578,15 @@ public class IconCache {
         // For icon caching, do not go through DB. Just update the in-memory entry.
         if (entry == null) {
             entry = new CacheEntry();
-            mCache.put(cacheKey, entry);
         }
         if (!TextUtils.isEmpty(title)) {
             entry.title = title;
         }
         if (icon != null) {
             entry.icon = LauncherIcons.createIconBitmap(icon, mContext);
+        }
+        if (!TextUtils.isEmpty(title) && entry.icon != null) {
+            mCache.put(cacheKey, entry);
         }
     }
 
@@ -625,6 +624,10 @@ public class IconCache {
                     // only keep the low resolution icon instead of the larger full-sized icon
                     Bitmap icon = LauncherIcons.createBadgedIconBitmap(
                             appInfo.loadIcon(mPackageManager), user, mContext, appInfo.targetSdkVersion);
+                    if (mInstantAppResolver.isInstantApp(appInfo)) {
+                        icon = LauncherIcons.badgeWithDrawable(icon,
+                                mContext.getDrawable(R.drawable.ic_instant_app_badge), mContext);
+                    }
                     Bitmap lowResIcon =  generateLowResIcon(icon);
                     entry.title = appInfo.loadLabel(mPackageManager);
                     entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);

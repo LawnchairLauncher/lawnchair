@@ -23,6 +23,7 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.util.ArrayMap;
 import android.util.Log;
+
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.IconCache;
@@ -32,7 +33,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
-import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.ShortcutInfo;
@@ -46,6 +46,7 @@ import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -198,10 +199,11 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                         if (cn != null && matcher.matches(si, cn)) {
                             AppInfo appInfo = addedOrUpdatedApps.get(cn);
 
-                            if (mOp == OP_REMOVE
-                                    && si.hasStatusFlag(ShortcutInfo.FLAG_SUPPORTS_WEB_UI)) {
+                            if (si.hasStatusFlag(ShortcutInfo.FLAG_SUPPORTS_WEB_UI)) {
                                 removedShortcuts.put(si.id, false);
-                                continue;
+                                if (mOp == OP_REMOVE) {
+                                    continue;
+                                }
                             }
 
                             // For system apps, package manager send OP_UPDATE when an
@@ -220,22 +222,20 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                             appInfo = addedOrUpdatedApps.get(cn);
                                         }
 
-                                        if ((intent == null) || (appInfo == null)) {
+                                        if (intent != null && appInfo != null) {
+                                            si.intent = intent;
+                                            si.status = ShortcutInfo.DEFAULT;
+                                            infoUpdated = true;
+                                        } else if (si.hasPromiseIconUi()) {
                                             removedShortcuts.put(si.id, true);
                                             continue;
                                         }
-                                        si.intent = intent;
                                     }
-                                }
-                                si.status = ShortcutInfo.DEFAULT;
-                                infoUpdated = true;
-                                if (si.itemType == Favorites.ITEM_TYPE_APPLICATION) {
-                                    iconCache.getTitleAndIcon(si, si.usingLowResIcon);
                                 }
                             }
 
-                            if (appInfo != null && Intent.ACTION_MAIN.equals(si.intent.getAction())
-                                    && si.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                            if ((mOp == OP_ADD || mOp == OP_UPDATE) &&
+                                    si.itemType == Favorites.ITEM_TYPE_APPLICATION) {
                                 iconCache.getTitleAndIcon(si, si.usingLowResIcon);
                                 infoUpdated = true;
                             }
