@@ -116,6 +116,9 @@
     <!-- Name of a color extraction implementation class. -->
     <string name="color_extraction_impl_class" translatable="false"></string>
 
+    <!-- Name of a subclass of com.android.launcher3.util.InstantAppResolver. Can be empty. -->
+    <string name="instant_app_resolver_class" translatable="false"></string>
+
     <!-- Package name of the default wallpaper picker. -->
     <string name="wallpaper_picker_package" translatable="false"></string>
 
