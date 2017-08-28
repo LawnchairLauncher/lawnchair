@@ -7,6 +7,7 @@ import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.graphics.Color;
+import android.support.animation.SpringAnimation;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.MotionEvent;
@@ -101,6 +102,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
     private AnimatorSet mDiscoBounceAnimation;
     private GradientView mGradientView;
 
+    private SpringAnimation mSearchSpring;
     private SpringAnimationHandler mSpringAnimationHandler;
 
     public AllAppsTransitionController(Launcher l) {
@@ -226,6 +228,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
                 }
                 mLauncher.showAppsView(true /* animated */, false /* updatePredictedApps */);
                 if (hasSpringAnimationHandler()) {
+                    mSpringAnimationHandler.add(mSearchSpring, true /* setDefaultValues */);
                     // The icons are moving upwards, so we go to 0 from 1. (y-axis 1 is below 0.)
                     mSpringAnimationHandler.animateToFinalPosition(0 /* pos */, 1 /* startValue */);
                 }
@@ -499,6 +502,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
     public void finishPullUp() {
         mHotseat.setVisibility(View.INVISIBLE);
         if (hasSpringAnimationHandler()) {
+            mSpringAnimationHandler.remove(mSearchSpring);
             mSpringAnimationHandler.reset();
         }
         setProgress(0f);
@@ -544,6 +548,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
                 mWorkspace.getPageIndicator().getCaretDrawable(), mLauncher);
         mAppsView.getSearchUiManager().addOnScrollRangeChangeListener(this);
         mSpringAnimationHandler = mAppsView.getSpringAnimationHandler();
+        mSearchSpring = mAppsView.getSearchUiManager().getSpringForFling();
     }
 
     private boolean hasSpringAnimationHandler() {

@@ -448,9 +448,20 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 row = Math.abs(numTotalRows - row);
             }
 
-            // We manipulate the stiffness, min, and max values based on the items distance to the
-            // first row and the items distance to the center column to create the ^-shaped motion
-            // effect.
+            calculateSpringValues(spring, row, col);
+        }
+
+        @Override
+        public void setDefaultValues(SpringAnimation spring) {
+            calculateSpringValues(spring, 0, mAppsPerRow / 2);
+        }
+
+        /**
+         * We manipulate the stiffness, min, and max values based on the items distance to the
+         * first row and the items distance to the center column to create the ^-shaped motion
+         * effect.
+         */
+        private void calculateSpringValues(SpringAnimation spring, int row, int col) {
             float rowFactor = (1 + row) * 0.5f;
             float colFactor = getColumnFactor(col, mAppsPerRow);
 
