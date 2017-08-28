@@ -20,9 +20,9 @@ import com.android.launcher3.util.Provider;
 import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -131,7 +131,7 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
         // only info2 should be added because info was already added to the workspace
         // in setupWorkspaceWithHoles()
         verify(callbacks).bindAppsAdded(any(ArrayList.class), notAnimated.capture(),
-                animated.capture(), any(ArrayList.class));
+                animated.capture());
         assertTrue(notAnimated.getValue().isEmpty());
 
         assertEquals(1, animated.getValue().size());
