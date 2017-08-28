@@ -555,9 +555,9 @@ public class DeviceProfile {
 
     int getOverviewModeButtonBarHeight() {
         int zoneHeight = (int) (overviewModeIconZoneRatio * availableHeightPx);
-        zoneHeight = Math.min(overviewModeMaxIconZoneHeightPx,
-                Math.max(overviewModeMinIconZoneHeightPx, zoneHeight));
-        return zoneHeight;
+        return Utilities.boundToRange(zoneHeight,
+                overviewModeMinIconZoneHeightPx,
+                overviewModeMaxIconZoneHeightPx);
     }
 
     public static int calculateCellWidth(int width, int countX) {
@@ -693,7 +693,8 @@ public class DeviceProfile {
 
             lp = (FrameLayout.LayoutParams) overviewMode.getLayoutParams();
             lp.width = Math.min(availableWidthPx, maxWidth);
-            lp.height = getOverviewModeButtonBarHeight() + mInsets.bottom;
+            lp.height = getOverviewModeButtonBarHeight();
+            lp.bottomMargin = mInsets.bottom;
             overviewMode.setLayoutParams(lp);
         }
 
