@@ -121,7 +121,7 @@
   <!-- Text for settings button -->
   <string name="settings_button_text">Einstellungen</string>
   <!-- Message shown when a feature is disabled by the administrator -->
-  <string name="msg_disabled_by_admin">Von deinem Administrator deaktiviert</string>
+  <string name="msg_disabled_by_admin">Durch Ihren Administrator deaktiviert</string>
   <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
   <string name="accessibility_action_overview">Übersicht</string>
   <!-- Strings for settings -->
@@ -155,11 +155,11 @@
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
   <string name="action_move">Element verschieben</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell">In Zeile <xliff:g id="NUMBER_0">%1$s</xliff:g>, Spalte <xliff:g id="NUMBER_1">%2$s</xliff:g> verschieben</string>
+  <string name="move_to_empty_cell">In Zeile <xliff:g id="NUMBER_0">%1$d</xliff:g>, Spalte <xliff:g id="NUMBER_1">%2$d</xliff:g> verschieben</string>
   <!-- Accessibility description to move item inside a folder. -->
-  <string name="move_to_position">Auf Position <xliff:g id="NUMBER">%1$s</xliff:g> verschieben</string>
+  <string name="move_to_position">Auf Position <xliff:g id="NUMBER">%1$d</xliff:g> verschieben</string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Auf Position <xliff:g id="NUMBER">%1$s</xliff:g> im Dock verschieben</string>
+  <string name="move_to_hotseat_position">Auf Position <xliff:g id="NUMBER">%1$d</xliff:g> im Dock verschieben</string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">Element verschoben</string>
   <!-- Accessibility description to move item into an existing folder. -->
@@ -292,7 +292,7 @@
   <string name="pinch_to_overview_pref_summary">Zoomgeste auf dem Startbildschirm öffnet die Übersicht</string>
   <string name="light_statusbar_pref_title">Helle Statusleiste</string>
   <string name="light_statusbar_pref_force">Die Statusleiste zeigt dunkle Symbole</string>
-  <string name="light_statusbar_pref_off">Die Statusleiste zeigt immer helle Symbole.</string>
+  <string name="light_statusbar_pref_off">Die Statusleiste zeigt dunkle Symbole</string>
   <string name="haptic_feedback_pref_title">Vibration aktivieren</string>
   <string name="keep_scroll_state_pref_title">Scrollposition speichern</string>
   <string name="keep_scroll_state_pref_summary">Speichert die Scrollposition in der App-Liste</string>
@@ -305,52 +305,10 @@
   <string name="import_db_title">Datenbank importieren</string>
   <string name="export_prefs_title">Einstellungen Exportieren</string>
   <string name="import_prefs_title">Einstellungen Importieren</string>
-  <string name="notification_listener_label">Lawnchair - Benachrichtigungsanzeige</string>
+  <string name="notification_listener_label">Lawnchair - Benachrichtigungsplaketten</string>
   <string name="color_extraction_label">Lawnchair - Farbextraktion</string>
   <string name="test_title">Test</string>
   <string name="visibility">Sichtbarkeit</string>
-  <!-- Customization Color -->
-  <string name="white">Weiß</string>
-  <!-- Customization Color -->
-  <string name="black">Schwarz</string>
-  <!-- Customization Color -->
-  <string name="red">Rot</string>
-  <!-- Customization Color -->
-  <string name="pink">Pink</string>
-  <!-- Customization Color -->
-  <string name="purple">Lila</string>
-  <!-- Customization Color -->
-  <string name="deep_purple">Dunkellila</string>
-  <!-- Customization Color -->
-  <string name="indigo">Indigoblau</string>
-  <!-- Customization Color -->
-  <string name="blue">Blau</string>
-  <!-- Customization Color -->
-  <string name="light_blue">Hellblau</string>
-  <!-- Customization Color -->
-  <string name="cyan">Türkis</string>
-  <!-- Customization Color -->
-  <string name="teal">Blaugrün</string>
-  <!-- Customization Color -->
-  <string name="green">Grün</string>
-  <!-- Customization Color -->
-  <string name="light_green">Hellgrün</string>
-  <!-- Customization Color -->
-  <string name="lime">Limettengrün</string>
-  <!-- Customization Color -->
-  <string name="yellow">Gelb</string>
-  <!-- Customization Color -->
-  <string name="amber">Bernstein</string>
-  <!-- Customization Color -->
-  <string name="orange">Orange</string>
-  <!-- Customization Color -->
-  <string name="deep_orange">Dunkelorange</string>
-  <!-- Customization Color -->
-  <string name="brown">Braun</string>
-  <!-- Customization Color -->
-  <string name="grey">Grau</string>
-  <!-- Customization Color -->
-  <string name="blue_grey">Blaugrau</string>
   <string name="default_text">Standard</string>
   <string name="edit_icon_reset">Zurücksetzen</string>
   <string name="show_top_shadow_title">Schatten oben anzeigen</string>
@@ -424,4 +382,5 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, d. MMMM</string>
+  <string name="about_translators">Übersetzer</string>
 </resources>
