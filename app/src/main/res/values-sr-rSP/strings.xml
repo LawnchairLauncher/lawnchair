@@ -155,8 +155,11 @@
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
   <string name="action_move">Премести ставку</string>
   <!-- Accessibility description to move item to empty cell. -->
+  <string name="move_to_empty_cell">Премести у ред <xliff:g example="1" id="number">%1$d </xliff:g> kolone <xliff:g example="1" id="number">%2$d </xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
+  <string name="move_to_position">Премести на <xliff:g example="1" id="number">%1$d </xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
+  <string name="move_to_hotseat_position">Премести на омиљену позицију <xliff:g example="1" id="number">%1$d </xliff:g></string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">Ставка је премештена</string>
   <!-- Accessibility description to move item into an existing folder. -->
@@ -188,6 +191,7 @@
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
   <string name="action_decrease_height">Смањи висину</string>
   <!-- Accessibility confirmation for widget resize. -->
+  <string name="widget_resized">Величина виџета је промењена на ширину <xliff:g example="2" id="number">%1$d</xliff:g> height <xliff:g example="1" id="number">%2$d</xliff:g></string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
   <string name="action_deep_shortcut">Пречице</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
@@ -306,48 +310,6 @@
   <string name="color_extraction_label">Lawnchair - Екстракције боје</string>
   <string name="test_title">Тест</string>
   <string name="visibility">Видљивост</string>
-  <!-- Customization Color -->
-  <string name="white">Бела</string>
-  <!-- Customization Color -->
-  <string name="black">Црна</string>
-  <!-- Customization Color -->
-  <string name="red">Црвена</string>
-  <!-- Customization Color -->
-  <string name="pink">Ружичаста</string>
-  <!-- Customization Color -->
-  <string name="purple">Љубичаста</string>
-  <!-- Customization Color -->
-  <string name="deep_purple">Тамноружичаста</string>
-  <!-- Customization Color -->
-  <string name="indigo">Индиго</string>
-  <!-- Customization Color -->
-  <string name="blue">Плава</string>
-  <!-- Customization Color -->
-  <string name="light_blue">Светло плава</string>
-  <!-- Customization Color -->
-  <string name="cyan">Цијан</string>
-  <!-- Customization Color -->
-  <string name="teal">Плавозелена</string>
-  <!-- Customization Color -->
-  <string name="green">Зелена</string>
-  <!-- Customization Color -->
-  <string name="light_green">Светло зелена</string>
-  <!-- Customization Color -->
-  <string name="lime">Лимета</string>
-  <!-- Customization Color -->
-  <string name="yellow">Жута</string>
-  <!-- Customization Color -->
-  <string name="amber">Тамножута</string>
-  <!-- Customization Color -->
-  <string name="orange">Наранџаста</string>
-  <!-- Customization Color -->
-  <string name="deep_orange">Тамнонаранџаста</string>
-  <!-- Customization Color -->
-  <string name="brown">Смеђа</string>
-  <!-- Customization Color -->
-  <string name="grey">Сива</string>
-  <!-- Customization Color -->
-  <string name="blue_grey">Плавосива</string>
   <string name="default_text">Подразумевано</string>
   <string name="edit_icon_reset">Поништи</string>
   <string name="show_top_shadow_title">Прикажи сенку на врху</string>
@@ -391,6 +353,7 @@
   <string name="blur_effect">Ефекат замућења</string>
   <string name="enable_editing_pref_title">Омогући уређивање почетног екрана</string>
   <string name="pref_weather_provider">Пружалац услуга временских прилика</string>
+  <string name="loading">Учитавање…</string>
   <string name="icon_shape_override_label">Промени облик иконе</string>
   <string name="icon_shape_system_default">Не мењај</string>
   <string name="icon_shape_square">Квадрат</string>
@@ -420,4 +383,5 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">ГГГГ, ММММ д</string>
+  <string name="about_translators">Преводиоци</string>
 </resources>
