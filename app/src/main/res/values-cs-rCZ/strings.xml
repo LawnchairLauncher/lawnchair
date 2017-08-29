@@ -312,48 +312,6 @@
   <string name="color_extraction_label">Lawnchair - Extrakce barev</string>
   <string name="test_title">Zkouška</string>
   <string name="visibility">Viditelnost</string>
-  <!-- Customization Color -->
-  <string name="white">Bílá</string>
-  <!-- Customization Color -->
-  <string name="black">Černá</string>
-  <!-- Customization Color -->
-  <string name="red">Červená</string>
-  <!-- Customization Color -->
-  <string name="pink">Růžová</string>
-  <!-- Customization Color -->
-  <string name="purple">Fialová</string>
-  <!-- Customization Color -->
-  <string name="deep_purple">Tmavě fialová</string>
-  <!-- Customization Color -->
-  <string name="indigo">Indigo</string>
-  <!-- Customization Color -->
-  <string name="blue">Modrá</string>
-  <!-- Customization Color -->
-  <string name="light_blue">Světle modrá</string>
-  <!-- Customization Color -->
-  <string name="cyan">Tyrkysová</string>
-  <!-- Customization Color -->
-  <string name="teal">Šedozelená</string>
-  <!-- Customization Color -->
-  <string name="green">Zelená</string>
-  <!-- Customization Color -->
-  <string name="light_green">Světle zelená</string>
-  <!-- Customization Color -->
-  <string name="lime">Lime</string>
-  <!-- Customization Color -->
-  <string name="yellow">Žlutá</string>
-  <!-- Customization Color -->
-  <string name="amber">Amber</string>
-  <!-- Customization Color -->
-  <string name="orange">Oranžová</string>
-  <!-- Customization Color -->
-  <string name="deep_orange">Tmavě oranžová</string>
-  <!-- Customization Color -->
-  <string name="brown">Hnědá</string>
-  <!-- Customization Color -->
-  <string name="grey">Šedá</string>
-  <!-- Customization Color -->
-  <string name="blue_grey">Modro šedá</string>
   <string name="default_text">Výchozí</string>
   <string name="edit_icon_reset">Resetovat</string>
   <string name="show_top_shadow_title">Zobrazit horní stíny</string>
@@ -427,4 +385,5 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
+  <string name="about_translators">Překladatelé</string>
 </resources>
