@@ -29,7 +29,7 @@ import java.util.Iterator;
  * Do diff on widget's tray list items and call the {@link NotifyListener} methods accordingly.
  */
 public class WidgetsDiffReporter {
-    private final boolean DEBUG = true;
+    private final boolean DEBUG = false;
     private final String TAG = "WidgetsDiffReporter";
     private final IconCache mIconCache;
     private NotifyListener mListener;
@@ -89,12 +89,13 @@ public class WidgetsDiffReporter {
                 index = orgRowEntry != null? currentEntries.indexOf(orgRowEntry):
                         currentEntries.size();
                 currentEntries.add(index, newRowEntry);
-                newRowEntry = newIter.hasNext() ? newIter.next() : null;
-                mListener.notifyItemInserted(index);
                 if (DEBUG) {
                     Log.d(TAG, String.format("notifyItemInserted called (%d)%s", index,
                             newRowEntry.titleSectionName));
                 }
+                newRowEntry = newIter.hasNext() ? newIter.next() : null;
+                mListener.notifyItemInserted(index);
+
             } else {
                 // same package name but,
                 // did the icon, title, etc, change?
