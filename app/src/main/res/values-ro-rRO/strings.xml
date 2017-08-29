@@ -155,8 +155,11 @@
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
   <string name="action_move">Mutați elementul</string>
   <!-- Accessibility description to move item to empty cell. -->
+  <string name="move_to_empty_cell">Mutaţi pe rândul <xliff:g example="1" id="number">%1$d</xliff:g> coloana <xliff:g example="1" id="number">%2$d</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
+  <string name="move_to_position">Mutaţi pe poziţia <xliff:g example="1" id="number">%1$d</xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
+  <string name="move_to_hotseat_position">Mutați pe poziția favoritelor <xliff:g example="1" id="number">%1$d</xliff:g></string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">Element mutat</string>
   <!-- Accessibility description to move item into an existing folder. -->
@@ -188,6 +191,7 @@
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
   <string name="action_decrease_height">Reduceți înălțimea</string>
   <!-- Accessibility confirmation for widget resize. -->
+  <string name="widget_resized">Widgetul a fost redimensionat la lăţimea <xliff:g example="2" id="number">%1$d</xliff:g> înălţimea <xliff:g example="1" id="number">%2$d</xliff:g></string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
   <string name="action_deep_shortcut">Comenzi rapide</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
@@ -209,6 +213,11 @@
   <!-- Shown when wallpapers are selected in Wallpaper picker -->
   <!-- String indicating how many media item(s) is(are) selected
             eg. 1 selected [CHAR LIMIT=30] -->
+  <plurals name="number_of_items_selected">
+    <item quantity="one">%1$d selectat</item>
+    <item quantity="few">%1$d selectate</item>
+    <item quantity="other">%1$d selectate</item>
+  </plurals>
   <!-- Accessibility string used as a label for a particular wallpaper in the Wallpaper Picker list.
          e.g. "Wallpaper 3 of 10" -->
   <string name="wallpaper_accessibility_name">Imaginea de fundal %1$d din %2$d</string>
@@ -259,31 +268,62 @@
   <string name="num_cols_pref_title">Numărul de coloane</string>
   <string name="num_rows_pref_title">Numărul de rânduri</string>
   <string name="num_hotseat_icons_pref_title">Numărul de pictograme în dock</string>
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <string name="light_blue">Albastru deschis</string>
-  <!-- Customization Color -->
-  <string name="cyan">Turcoaz</string>
-  <!-- Customization Color -->
-  <string name="teal">Verde pin</string>
-  <!-- Customization Color -->
-  <string name="green">Verde</string>
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
+  <string name="icon_scale_pref_title">Scală iconițe</string>
+  <string name="icon_text_scale_pref_title">Culoare textului de la pictogramă</string>
+  <string name="full_width_width_widgets_pref_title">Widget-uri de lăţime completă</string>
+  <string name="full_width_widgets_pref_summary">Permite widget-urilor să se întindă pe toată lățimea fără să umple</string>
+  <string name="notification_access_pref_title">Insigne de notificări și previzualizare</string>
+  <string name="notification_access_pref_summary">Permite Lawnchair accesul la notificări ca să activezi această funcție</string>
+  <string name="ui_pref_title">UI (Interfață grafică)</string>
+  <string name="pixel_style_pref_title">Stilul Pixel</string>
+  <string name="behavior_pref_title">Comportament</string>
+  <string name="debug_pref_title">Depanare</string>
+  <string name="import_export_pref_title">Importați/Exportați</string>
+  <string name="show_pixel_bar_pref_title">Arată bara de sus în stilul Pixel</string>
+  <string name="use_wide_searchbar_pref_title">Utilizează bara de căutare largă</string>
+  <string name="show_mic_pref_title">Arată butonul pentru Asistentul Google</string>
+  <string name="use_round_searhbar">Utilizează bara de căutare aplicații rotundă</string>
+  <string name="pixel_style_icons_pref_title">Utilizează pictograme în stil Pixel</string>
+  <string name="pixel_style_icons_pref_summary">Când este activă această opțiune, se vor folosi pictograme rotunde acolo unde este posibil</string>
+  <string name="show_google_now_tab_pref_title">Arată pagina Google Now</string>
+  <string name="restart_lawnchair_pref_title">Reporniţi Lawnchair</string>
+  <string name="restart_lawnchair_pref_summary">Poate fi de ajutor în cazul în care unele setări nu sunt aplicate corect</string>
+  <string name="rebuild_icondb_pref_title">Reconstruiți bază de date pictograme</string>
+  <string name="pinch_to_overview_pref_title">Ciupiți pentru prezentare generalâ</string>
+  <string name="pinch_to_overview_pref_summary">Ciupiţi pe ecranul de start pentru a deschide prezentarea generală</string>
+  <string name="light_statusbar_pref_title">Bară de stare deschisă la culoare</string>
+  <string name="light_statusbar_pref_force">Bara de stare va avea iconițe închise la culoare</string>
+  <string name="light_statusbar_pref_off">Bara de stare va avea iconițe deschise la culoare</string>
+  <string name="haptic_feedback_pref_title">Activează vibrații</string>
+  <string name="keep_scroll_state_pref_title">Memorează poziţia de parcurgere</string>
+  <string name="keep_scroll_state_pref_summary">Salvează poziţia de parcurgere în sertarul de aplicații</string>
+  <string name="home_opens_drawer_pref_title">Butonul Acasă deschide sertarul de aplicații</string>
+  <string name="home_opens_drawer_pref_summary">Apăsând butonul acasă pe ecranul de start veți deschide sertarul de aplicații</string>
+  <string name="show_hidden_pref_title">Arătați aplicațiile ascunse</string>
+  <string name="show_hidden_pref_on">Aplicațiile ascunse vor fi vizibile pentru a schimba setările de vizibilitate</string>
+  <string name="show_hidden_pref_off">Aplicațiile ascunse nu vor fi vizibile</string>
+  <string name="export_db_title">Exportă baza de date</string>
+  <string name="import_db_title">Importă baza de date</string>
+  <string name="export_prefs_title">Exportă Setări</string>
+  <string name="import_prefs_title">Importă Setări</string>
+  <string name="notification_listener_label">Lawnchair - insigne notificări</string>
+  <string name="color_extraction_label">Lawnchair - extragere de culoare</string>
+  <string name="test_title">Test</string>
+  <string name="visibility">Vizibilitate</string>
+  <string name="default_text">Implicit</string>
+  <string name="edit_icon_reset">Resetare</string>
+  <string name="show_top_shadow_title">Afişare umbră de sus</string>
+  <string name="pref_cat_homescreen">Ecranul de pornire</string>
+  <string name="pref_cat_miscellaneous">Diverse</string>
+  <string name="pref_cat_hotseat">Doc</string>
+  <string name="pref_cat_theme">Temă</string>
+  <string name="theme_pref_title">Temă</string>
+  <string name="theme_light">Luminoasă</string>
+  <string name="theme_dark">Întunecată</string>
+  <string name="theme_black">Neagră</string>
+  <string name="hide_hotseat_pref_title">Ascundere doc</string>
+  <string name="all_icons">Toate pictogramele</string>
+  <string name="pull_down_action_pref_title">Acţiune la tragere în jos</string>
   <string name="pull_down_do_nothing">Nu face nimic</string>
   <string name="pull_down_notis">Arată notificările</string>
   <string name="pull_down_search">Deschide căutare</string>
@@ -313,10 +353,35 @@
   <string name="blur_effect">Efect de blur</string>
   <string name="enable_editing_pref_title">Permite editarea ecranului principal</string>
   <string name="pref_weather_provider">Furnizor vreme</string>
+  <string name="loading">Se încarcă…</string>
   <string name="icon_shape_override_label">Schimbă forma oictogramei</string>
   <string name="icon_shape_system_default">Nu schimba</string>
   <string name="icon_shape_square">Pătrat</string>
   <string name="icon_shape_rounded_square">Pătrat rotunjit</string>
+  <string name="icon_shape_squircle">Pătrat rotunjit</string>
+  <string name="icon_shape_circle">Cerc</string>
+  <string name="icon_shape_teardrop">Lacrimă</string>
+  <string name="animated_clock_icon_title">Pictogramă ceas animată</string>
+  <string name="about_summary_title">Rezumat</string>
+  <string name="about_version">Versiune</string>
+  <string name="about_icon_designer">Designer pictogramă aplicaţie</string>
+  <string name="about_contributors_title">Contribuitori</string>
+  <string name="location_permission_warn">Este necesară permisiunea de locație pentru a comuta la alt furnizor!</string>
+  <string name="num_cols_drawer_pref_title">Numărul de coloane în lista aplicațiilor</string>
+  <string name="pref_cat_drawer">Listă aplicaţii</string>
+  <string name="shortcut_backport_warning">Acest lucru ar putea fi lent, utilizați pe propriul risc</string>
+  <string name="pref_backport_shortcuts">Adaptare comenzi rapide</string>
+  <string name="weather_api_key_not_set">Cheia API nu este setată</string>
+  <string name="pref_weather_api_key_title">Cheie API</string>
+  <string name="about_changelog">Istoric modificări</string>
+  <string name="pref_all_apps_custom_label_color">Utilizați culoarea etichetei personalizate</string>
+  <string name="pref_all_apps_label_color_variation">Variaţie de culori a etichetelor pictogramelor din lista aplicațiilor</string>
+  <string name="pref_all_apps_label_color">Culoarea etichetelor pictogramelor în sertarul de aplicații</string>
+  <string name="pref_num_rows_drawer">Număruo de rânduri în sertarul de aplicații</string>
+  <string name="center_wallpaper_pref_title">Centrează fundalul când este o singură pagină</string>
+  <string name="vertical_drawer_layout_pref_title">Afişare ca listă verticală</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">ZZZZ, LLLL, z</string>
+  <string name="about_translators">Traducători</string>
 </resources>
