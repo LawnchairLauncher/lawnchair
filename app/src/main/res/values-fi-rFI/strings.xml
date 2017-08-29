@@ -268,44 +268,6 @@
   <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
   <string name="test_title">Testi</string>
   <string name="visibility">Näkyvyys</string>
-  <!-- Customization Color -->
-  <string name="white">Valkoinen</string>
-  <!-- Customization Color -->
-  <string name="black">Musta</string>
-  <!-- Customization Color -->
-  <string name="red">Punainen</string>
-  <!-- Customization Color -->
-  <string name="pink">Vaaleanpunainen</string>
-  <!-- Customization Color -->
-  <string name="purple">Violetti</string>
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <string name="blue">Sininen</string>
-  <!-- Customization Color -->
-  <string name="light_blue">Vaaleansininen</string>
-  <!-- Customization Color -->
-  <string name="cyan">Turkoosi</string>
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <string name="green">Vihreä</string>
-  <!-- Customization Color -->
-  <string name="light_green">Vaaleanvihreä</string>
-  <!-- Customization Color -->
-  <string name="lime">Limetti</string>
-  <!-- Customization Color -->
-  <string name="yellow">Keltainen</string>
-  <!-- Customization Color -->
-  <string name="amber">Meripihka</string>
-  <!-- Customization Color -->
-  <string name="orange">Oranssi</string>
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <string name="brown">Ruskea</string>
-  <!-- Customization Color -->
-  <string name="grey">Harmaa</string>
-  <!-- Customization Color -->
-  <string name="blue_grey">Siniharmaa</string>
   <string name="default_text">Oletus</string>
   <!-- Import/Export Strings -->
   <!-- Default units to use, either 'metric' or 'imperial' -->
