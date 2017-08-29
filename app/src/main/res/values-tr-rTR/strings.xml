@@ -309,48 +309,6 @@
   <string name="color_extraction_label">Lawnchair - Renk çıkarma</string>
   <string name="test_title">Test</string>
   <string name="visibility">Görünürlük</string>
-  <!-- Customization Color -->
-  <string name="white">Beyaz</string>
-  <!-- Customization Color -->
-  <string name="black">Siyah</string>
-  <!-- Customization Color -->
-  <string name="red">Kırmızı</string>
-  <!-- Customization Color -->
-  <string name="pink">Pembe</string>
-  <!-- Customization Color -->
-  <string name="purple">Mor</string>
-  <!-- Customization Color -->
-  <string name="deep_purple">Koyu Mor</string>
-  <!-- Customization Color -->
-  <string name="indigo">İndigo</string>
-  <!-- Customization Color -->
-  <string name="blue">Mavi</string>
-  <!-- Customization Color -->
-  <string name="light_blue">Açık Mavi</string>
-  <!-- Customization Color -->
-  <string name="cyan">Camgöbeği</string>
-  <!-- Customization Color -->
-  <string name="teal">Turkuaz</string>
-  <!-- Customization Color -->
-  <string name="green">Yeşil</string>
-  <!-- Customization Color -->
-  <string name="light_green">Açık Yeşil</string>
-  <!-- Customization Color -->
-  <string name="lime">Limon Yeşili</string>
-  <!-- Customization Color -->
-  <string name="yellow">Sarı</string>
-  <!-- Customization Color -->
-  <string name="amber">Koyu Sarı</string>
-  <!-- Customization Color -->
-  <string name="orange">Turuncu</string>
-  <!-- Customization Color -->
-  <string name="deep_orange">Koyu Turuncu</string>
-  <!-- Customization Color -->
-  <string name="brown">Kahverengi</string>
-  <!-- Customization Color -->
-  <string name="grey">Gri</string>
-  <!-- Customization Color -->
-  <string name="blue_grey">Mavi Gri</string>
   <string name="default_text">Varsayılan</string>
   <string name="edit_icon_reset">Sıfırla</string>
   <string name="show_top_shadow_title">Üst gölgeyi göster</string>
@@ -376,7 +334,7 @@
   <string name="imexport_no_backup_found">Yedek bulunamadı</string>
   <string name="imexport_external_storage_unreadable">Harici depolama alanı okunamıyor (ayarlardan izin verin)</string>
   <string name="imexport_external_storage_unwritable">Harici depolama alanına yazılamıyor (ayarlardan izin verin)</string>
-  <string name="units_metric">Metrik Ölçüm</string>
+  <string name="units_metric">Metrik</string>
   <string name="units_imperial">Emperyal Ölçüm</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <string name="pref_cat_weather">Hava Durumu</string>
@@ -389,17 +347,17 @@
   <string name="pref_applyBlur">Bulanıklığı uygula</string>
   <string name="search_bar">Arama çubuğu</string>
   <string name="folder">Klasör</string>
-  <string name="dock_allapps"><![CDATA[Alt panel ve tüm uygulamalar]]></string>
+  <string name="dock_allapps"><![CDATA[Alt panel ve uygulama çekmecesi]]></string>
   <string name="app_shortcuts">Uygulama kısayolları</string>
   <string name="blur_effect">Bulanıklık efekti</string>
-  <string name="enable_editing_pref_title">Düzenleme çalışma alanını etkinleştir</string>
+  <string name="enable_editing_pref_title">Ana ekran düzenlemeyi etkinleştir</string>
   <string name="pref_weather_provider">Hava durumu sağlayıcı</string>
   <string name="loading">Yükleniyor…</string>
   <string name="icon_shape_override_label">Simge şeklini değiştir</string>
   <string name="icon_shape_system_default">Değiştirme</string>
   <string name="icon_shape_square">Kare</string>
   <string name="icon_shape_rounded_square">Yuvarlatılmış kare</string>
-  <string name="icon_shape_squircle">Yuvarlatılmış köşeler</string>
+  <string name="icon_shape_squircle">Köşeli daire</string>
   <string name="icon_shape_circle">Daire</string>
   <string name="icon_shape_teardrop">Gözyaşı</string>
   <string name="animated_clock_icon_title">Hareketli saat simgesi</string>
@@ -414,9 +372,9 @@
   <string name="pref_backport_shortcuts">Kısayolları geri yükle</string>
   <string name="weather_api_key_not_set">API anahtarı ayarlanmadı</string>
   <string name="pref_weather_api_key_title">API anahtarı</string>
-  <string name="about_changelog">Değişiklik</string>
+  <string name="about_changelog">Değişiklik günlüğü</string>
   <string name="pref_all_apps_custom_label_color">Özel etiket rengi kullan</string>
-  <string name="pref_all_apps_label_color_variation">Uygulama çekmecesinde ki simge etiketlerinin renk çeşitliliği</string>
+  <string name="pref_all_apps_label_color_variation">Uygulama çekmecesindeki simge etiketlerinin renk çeşitliliği</string>
   <string name="pref_all_apps_label_color">Uygulama çekmecesi içindeki simge etiketlerinin rengi</string>
   <string name="pref_num_rows_drawer">Çekmecedeki satır sayısı</string>
   <string name="center_wallpaper_pref_title">Yalnızca bir sayfa olduğunda duvar kağıdını ortala</string>
@@ -424,4 +382,5 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">GGGG, AAAA g</string>
+  <string name="about_translators">Çevirmenler</string>
 </resources>
