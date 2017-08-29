@@ -130,7 +130,7 @@ public class IconShapeOverride {
         private final int mOverrideId;
         private final String mOverrideValue;
 
-        @SuppressWarnings("deprecated")
+        @SuppressWarnings("deprecation")
         public ResourcesOverride(Resources parent, int overrideId, String overrideValue) {
             super(parent.getAssets(), parent.getDisplayMetrics(), parent.getConfiguration());
             mOverrideId = overrideId;
