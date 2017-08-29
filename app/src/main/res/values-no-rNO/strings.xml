@@ -309,48 +309,6 @@
   <string name="color_extraction_label">Lawnchair - fargeuthenting</string>
   <string name="test_title">Test</string>
   <string name="visibility">Synlighet</string>
-  <!-- Customization Color -->
-  <string name="white">Hvit</string>
-  <!-- Customization Color -->
-  <string name="black">Svart</string>
-  <!-- Customization Color -->
-  <string name="red">Rød</string>
-  <!-- Customization Color -->
-  <string name="pink">Rosa</string>
-  <!-- Customization Color -->
-  <string name="purple">Lilla</string>
-  <!-- Customization Color -->
-  <string name="deep_purple">Mørkelilla</string>
-  <!-- Customization Color -->
-  <string name="indigo">Indigo</string>
-  <!-- Customization Color -->
-  <string name="blue">Blå</string>
-  <!-- Customization Color -->
-  <string name="light_blue">Lyseblå</string>
-  <!-- Customization Color -->
-  <string name="cyan">Turkis</string>
-  <!-- Customization Color -->
-  <string name="teal">Blågrønn</string>
-  <!-- Customization Color -->
-  <string name="green">Grønn</string>
-  <!-- Customization Color -->
-  <string name="light_green">Lysegrønn</string>
-  <!-- Customization Color -->
-  <string name="lime">Lime</string>
-  <!-- Customization Color -->
-  <string name="yellow">Gul</string>
-  <!-- Customization Color -->
-  <string name="amber">Ravfarge</string>
-  <!-- Customization Color -->
-  <string name="orange">Oransje</string>
-  <!-- Customization Color -->
-  <string name="deep_orange">Mørkeoransje</string>
-  <!-- Customization Color -->
-  <string name="brown">Brun</string>
-  <!-- Customization Color -->
-  <string name="grey">Grå</string>
-  <!-- Customization Color -->
-  <string name="blue_grey">Blågrå</string>
   <string name="default_text">Standard</string>
   <string name="edit_icon_reset">Tilbakestill</string>
   <string name="show_top_shadow_title">Vis topp-skygge</string>
