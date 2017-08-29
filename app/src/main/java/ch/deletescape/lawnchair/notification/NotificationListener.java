@@ -227,6 +227,8 @@ public class NotificationListener extends NotificationListenerService {
             if ((notification.flags & Notification.FLAG_ONGOING_EVENT) != 0) {
                 return true;
             }
+        } else if (!Utilities.ATLEAST_OREO && (notification.flags & Notification.FLAG_ONGOING_EVENT) != 0) {
+            return true;
         }
         boolean isGroupHeader = (notification.flags & Notification.FLAG_GROUP_SUMMARY) != 0;
         CharSequence title = notification.extras.getCharSequence(Notification.EXTRA_TITLE);
