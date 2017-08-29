@@ -37,6 +37,9 @@ public class FileLogTest extends AndroidTestCase {
     }
 
     public void testPrintLog() throws Exception {
+        if (!FileLog.ENABLED) {
+            return;
+        }
         FileLog.print("Testing", "hoolalala");
         StringWriter writer = new StringWriter();
         FileLog.flushAll(new PrintWriter(writer));
@@ -54,6 +57,9 @@ public class FileLogTest extends AndroidTestCase {
     }
 
     public void testOldFileTruncated() throws Exception {
+        if (!FileLog.ENABLED) {
+            return;
+        }
         FileLog.print("Testing", "hoolalala");
         StringWriter writer = new StringWriter();
         FileLog.flushAll(new PrintWriter(writer));

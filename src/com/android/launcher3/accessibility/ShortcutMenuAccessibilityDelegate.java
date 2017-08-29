@@ -73,7 +73,7 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
                             screenId, coordinates[0], coordinates[1]);
                     ArrayList<ItemInfo> itemList = new ArrayList<>();
                     itemList.add(info);
-                    mLauncher.bindItems(itemList, 0, itemList.size(), true);
+                    mLauncher.bindItems(itemList, true);
                     AbstractFloatingView.closeAllOpenViews(mLauncher);
                     announceConfirmation(R.string.item_added_to_workspace);
                 }

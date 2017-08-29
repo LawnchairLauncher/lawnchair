@@ -25,4 +25,5 @@ public final class FeatureFlags extends BaseFlags {
 
     // Features to control Launcher3Go behavior
     public static final boolean GO_DISABLE_WIDGETS = true;
+    public static final boolean LAUNCHER3_SPRING_ICONS = false;
 }

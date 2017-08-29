@@ -19,7 +19,8 @@
     <dimen name="dynamic_grid_edge_margin">8dp</dimen>
     <dimen name="dynamic_grid_min_page_indicator_size">32dp</dimen>
     <dimen name="dynamic_grid_page_indicator_line_height">1dp</dimen>
-    <dimen name="dynamic_grid_page_indicator_gutter_width">50dp</dimen>
+    <dimen name="dynamic_grid_page_indicator_land_left_nav_bar_gutter_width">0dp</dimen>
+    <dimen name="dynamic_grid_page_indicator_land_right_nav_bar_gutter_width">0dp</dimen>
     <dimen name="dynamic_grid_icon_drawable_padding">8dp</dimen>
     <dimen name="dynamic_grid_overview_min_icon_zone_height">80dp</dimen>
     <dimen name="dynamic_grid_overview_max_icon_zone_height">120dp</dimen>
@@ -31,16 +32,21 @@
     <dimen name="dynamic_grid_min_spring_loaded_space">8dp</dimen>
 
     <dimen name="dynamic_grid_cell_layout_padding">5.5dp</dimen>
+    <dimen name="dynamic_grid_cell_layout_bottom_padding">0dp</dimen>
     <dimen name="dynamic_grid_cell_padding_x">8dp</dimen>
 
     <!-- Hotseat -->
     <dimen name="dynamic_grid_hotseat_top_padding">8dp</dimen>
     <dimen name="dynamic_grid_hotseat_bottom_padding">2dp</dimen>
-    <dimen name="dynamic_grid_hotseat_height">80dp</dimen>
+    <dimen name="dynamic_grid_hotseat_size">80dp</dimen>
+
     <dimen name="dynamic_grid_hotseat_land_left_nav_bar_right_padding">0dp</dimen>
     <dimen name="dynamic_grid_hotseat_land_right_nav_bar_right_padding">0dp</dimen>
     <dimen name="dynamic_grid_hotseat_land_left_nav_bar_gutter_width">0dp</dimen>
     <dimen name="dynamic_grid_hotseat_land_right_nav_bar_gutter_width">0dp</dimen>
+    <dimen name="dynamic_grid_hotseat_land_left_nav_bar_left_padding">0dp</dimen>
+    <dimen name="dynamic_grid_hotseat_land_right_nav_bar_left_padding">0dp</dimen>
+
 
 <!-- Drop target bar -->
     <dimen name="dynamic_grid_drop_target_size">48dp</dimen>

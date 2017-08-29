@@ -30,14 +30,19 @@ import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.Log;
 import android.util.Pair;
+
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.SettingsObserver;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
+import static com.android.launcher3.SettingsActivity.NOTIFICATION_BADGING;
 
 /**
  * A {@link NotificationListenerService} that sends updates to its
@@ -57,11 +62,13 @@ public class NotificationListener extends NotificationListenerService {
     private static NotificationListener sNotificationListenerInstance = null;
     private static NotificationsChangedListener sNotificationsChangedListener;
     private static boolean sIsConnected;
+    private static boolean sIsCreated;
 
     private final Handler mWorkerHandler;
     private final Handler mUiHandler;
-
     private final Ranking mTempRanking = new Ranking();
+
+    private SettingsObserver mNotificationBadgingObserver;
 
     private final Handler.Callback mWorkerCallback = new Handler.Callback() {
         @Override
@@ -77,7 +84,7 @@ public class NotificationListener extends NotificationListenerService {
                     List<StatusBarNotification> activeNotifications;
                     if (sIsConnected) {
                         try {
-                            activeNotifications =  filterNotifications(getActiveNotifications());
+                            activeNotifications = filterNotifications(getActiveNotifications());
                         } catch (SecurityException ex) {
                             Log.e(TAG, "SecurityException: failed to fetch notifications");
                             activeNotifications = new ArrayList<StatusBarNotification>();
@@ -130,6 +137,28 @@ public class NotificationListener extends NotificationListenerService {
         sNotificationListenerInstance = this;
     }
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        sIsCreated = true;
+        mNotificationBadgingObserver = new SettingsObserver.Secure(getContentResolver()) {
+            @Override
+            public void onSettingChanged(boolean isNotificationBadgingEnabled) {
+                if (!isNotificationBadgingEnabled) {
+                    requestUnbind();
+                }
+            }
+        };
+        mNotificationBadgingObserver.register(NOTIFICATION_BADGING);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        sIsCreated = false;
+        mNotificationBadgingObserver.unregister();
+    }
+
     public static @Nullable NotificationListener getInstanceIfConnected() {
         return sIsConnected ? sNotificationListenerInstance : null;
     }
@@ -143,6 +172,11 @@ public class NotificationListener extends NotificationListenerService {
         NotificationListener notificationListener = getInstanceIfConnected();
         if (notificationListener != null) {
             notificationListener.onNotificationFullRefresh();
+        } else if (!sIsCreated && sNotificationsChangedListener != null) {
+            // User turned off badging globally, so we unbound this service;
+            // tell the listener that there are no notifications to remove dots.
+            sNotificationsChangedListener.onNotificationFullRefresh(
+                    Collections.<StatusBarNotification>emptyList());
         }
     }
 
@@ -205,7 +239,7 @@ public class NotificationListener extends NotificationListenerService {
                 .getActiveNotifications(NotificationKeyData.extractKeysOnly(keys)
                         .toArray(new String[keys.size()]));
         return notifications == null
-            ? Collections.<StatusBarNotification>emptyList() : Arrays.asList(notifications);
+                ? Collections.<StatusBarNotification>emptyList() : Arrays.asList(notifications);
     }
 
     /**
