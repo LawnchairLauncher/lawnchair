@@ -159,7 +159,7 @@
   <!-- Accessibility description to move item inside a folder. -->
   <string name="move_to_position">Mover a la posición número <xliff:g id="NUMBER">%1$s</xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Mover a posición de favoritos número <xliff:g example="1" id="number">%1$s </xliff:g></string>
+  <string name="move_to_hotseat_position">Mover a Favoritos en la posición <xliff:g example="1" id="number">%1$d</xliff:g></string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">El elemento se ha movido</string>
   <!-- Accessibility description to move item into an existing folder. -->
@@ -309,48 +309,6 @@
   <string name="color_extraction_label">Lawnchair - Extracción de colores</string>
   <string name="test_title">Prueba</string>
   <string name="visibility">Visibilidad</string>
-  <!-- Customization Color -->
-  <string name="white">Blanco</string>
-  <!-- Customization Color -->
-  <string name="black">Negro</string>
-  <!-- Customization Color -->
-  <string name="red">Rojo</string>
-  <!-- Customization Color -->
-  <string name="pink">Rosa</string>
-  <!-- Customization Color -->
-  <string name="purple">Morado</string>
-  <!-- Customization Color -->
-  <string name="deep_purple">Morado oscuro</string>
-  <!-- Customization Color -->
-  <string name="indigo">Añil</string>
-  <!-- Customization Color -->
-  <string name="blue">Azul</string>
-  <!-- Customization Color -->
-  <string name="light_blue">Celeste</string>
-  <!-- Customization Color -->
-  <string name="cyan">Cyan</string>
-  <!-- Customization Color -->
-  <string name="teal">Azul marino</string>
-  <!-- Customization Color -->
-  <string name="green">Verde</string>
-  <!-- Customization Color -->
-  <string name="light_green">Verde claro</string>
-  <!-- Customization Color -->
-  <string name="lime">Lima</string>
-  <!-- Customization Color -->
-  <string name="yellow">Amarillo</string>
-  <!-- Customization Color -->
-  <string name="amber">Ámbar</string>
-  <!-- Customization Color -->
-  <string name="orange">Anaranjado</string>
-  <!-- Customization Color -->
-  <string name="deep_orange">Naranja Oscuro</string>
-  <!-- Customization Color -->
-  <string name="brown">Marrón</string>
-  <!-- Customization Color -->
-  <string name="grey">Gris</string>
-  <!-- Customization Color -->
-  <string name="blue_grey">Gris azulado</string>
   <string name="default_text">Por defecto</string>
   <string name="edit_icon_reset">Reiniciar</string>
   <string name="show_top_shadow_title">Mostrar una sombra en la barra superior</string>
@@ -424,4 +382,5 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
+  <string name="about_translators">Traductores</string>
 </resources>
