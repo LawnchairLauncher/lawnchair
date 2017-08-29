@@ -28,7 +28,7 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">التطبيق ليس متاحاً</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">تم تعطيل التطبيق الذي تم تنزيله في الوضع الآمن</string>
+  <string name="safemode_shortcut_error">تم تعطيل التطبيقات التي تم تنزيلها في الوضع الآمن</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">الأدوات معطلة في الوضع الآمن</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
@@ -265,6 +265,7 @@
   <string name="blur_radius_pref_title">نسبة التمويه</string>
   <string name="white_google_icon_pref_title">استخدم رمز جوجل باللون الأبيض</string>
   <string name="hide_icon_labels_pref_title">إخفاء تسميات الأيقونات في الشاشة الرئيسية</string>
+  <string name="hide_all_apps_icon_labels_pref_title">إخفاء تسميات الأيقونات في قائمة التطبيقات</string>
   <string name="workspace_label_color_hue_pref_title">لون تسميات الرموز على الشاشة الرئيسية</string>
   <string name="workspace_label_color_variation_pref_title">تباين الألوان لتسميات الرموز على الشاشة الرئيسية</string>
   <string name="all_apps_opacity_pref_title">شفافية قائمة التطبيقات</string>
@@ -313,74 +314,77 @@
   <string name="color_extraction_label">لاونتشير - استخراج اللون</string>
   <string name="test_title">اختبار</string>
   <string name="visibility">وضوح الرؤية</string>
-  <!-- Customization Color -->
-  <string name="white">أبيض</string>
-  <!-- Customization Color -->
-  <string name="black">أسود</string>
-  <!-- Customization Color -->
-  <string name="red">أحمر</string>
-  <!-- Customization Color -->
-  <string name="pink">وردي</string>
-  <!-- Customization Color -->
-  <string name="purple">بنفسجي</string>
-  <!-- Customization Color -->
-  <string name="deep_purple">بنفسجي داكن</string>
-  <!-- Customization Color -->
-  <string name="indigo">نيلي</string>
-  <!-- Customization Color -->
-  <string name="blue">أزرق</string>
-  <!-- Customization Color -->
-  <string name="light_blue">أزرق فاتح</string>
-  <!-- Customization Color -->
-  <string name="cyan">أزرق سماوي</string>
-  <!-- Customization Color -->
-  <string name="teal">أزرق مخضر</string>
-  <!-- Customization Color -->
-  <string name="green">أخضر</string>
-  <!-- Customization Color -->
-  <string name="light_green">أخضر فاتح</string>
-  <!-- Customization Color -->
-  <string name="lime">ليموني</string>
-  <!-- Customization Color -->
-  <string name="yellow">أصفر</string>
-  <!-- Customization Color -->
-  <string name="amber">كهرمان</string>
-  <!-- Customization Color -->
-  <string name="orange">برتقالي</string>
-  <!-- Customization Color -->
-  <string name="deep_orange">برتقالي داكن</string>
-  <!-- Customization Color -->
-  <string name="brown">بني</string>
-  <!-- Customization Color -->
-  <string name="grey">رمادي</string>
-  <!-- Customization Color -->
-  <string name="blue_grey">أزرق رمادي</string>
   <string name="default_text">الافتراضي</string>
   <string name="edit_icon_reset">إعادة ضبط</string>
   <string name="show_top_shadow_title">إظهار الظل العلوي</string>
   <string name="pref_cat_homescreen">الشاشة الرئيسية</string>
   <string name="pref_cat_miscellaneous">متفرقات</string>
+  <string name="pref_cat_hotseat">القاعدة</string>
   <string name="pref_cat_theme">السمة</string>
   <string name="theme_pref_title">السمة</string>
   <string name="theme_light">فاتح</string>
   <string name="theme_dark">داكن</string>
   <string name="theme_black">أسود</string>
+  <string name="hide_hotseat_pref_title">إخفاء منصة التطبيقات</string>
   <string name="all_icons">كل الأيقونات</string>
+  <string name="pull_down_action_pref_title">إجراء السحب للأسفل</string>
   <string name="pull_down_do_nothing">لا تفعل شيئًا</string>
   <string name="pull_down_notis">إظهار الإشعارات</string>
   <string name="pull_down_search">فتح البحث</string>
   <string name="pull_down_apps_search">البحث عن تطبيقات</string>
   <string name="enable_screen_rotation">تمكين تدوير الشاشة</string>
   <!-- Import/Export Strings -->
+  <string name="imexport_success">تم بنجاح!</string>
+  <string name="imexport_error">خطأ: فشل في نسخ الملف</string>
+  <string name="imexport_no_backup_found">لم يتم العثور على نسخة احتياطية</string>
+  <string name="imexport_external_storage_unreadable">التخزين الخارجي غير قابل للقراءة (امنح الإذن في الإعدادات)</string>
+  <string name="imexport_external_storage_unwritable">التخزين الخارجي غير قابل للكتابة (امنح الإذن في الإعدادات)</string>
+  <string name="units_metric">متري</string>
+  <string name="units_imperial">إمبراطوري</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <string name="pref_cat_weather">الطقس</string>
   <string name="pref_weather_title">تمكين الطقس</string>
+  <string name="pref_weather_units">وحدات قياس الطقس</string>
+  <string name="pref_weather_city_summary">ضع رمز البلد للحصول على أفضل النتائج</string>
   <string name="pref_weather_city_title">المدينة</string>
+  <string name="none">لا شيء</string>
+  <string name="pref_applyTheme">تطبيق السمة على</string>
+  <string name="pref_applyBlur">تطبيق التمويه على</string>
+  <string name="search_bar">شريط البحث</string>
+  <string name="folder">مجلد</string>
+  <string name="dock_allapps"><![CDATA[منصة وقائمة التطبيقات]]></string>
+  <string name="app_shortcuts">اختصارات التطبيق</string>
+  <string name="blur_effect">التمويه</string>
   <string name="enable_editing_pref_title">تمكين تعديل الشاشة الرئيسية</string>
+  <string name="pref_weather_provider">مزود الطقس</string>
+  <string name="loading">تحميل…</string>
+  <string name="icon_shape_override_label">تغيير شكل الأيقونة</string>
+  <string name="icon_shape_system_default">لا تقم بالتغيير</string>
+  <string name="icon_shape_square">مربع</string>
+  <string name="icon_shape_rounded_square">مربع مدور</string>
   <string name="icon_shape_circle">دائرة</string>
+  <string name="icon_shape_teardrop">دمعي</string>
+  <string name="animated_clock_icon_title">أيقونة الساعة المتحركة</string>
   <string name="about_summary_title">الملخص</string>
   <string name="about_version">الإصدار</string>
+  <string name="about_icon_designer">مصمم أيقونة التطبيق</string>
+  <string name="about_contributors_title">المساهمون</string>
+  <string name="location_permission_warn">إذن الموقع مطلوب للتبديل إلى مزود آخر!</string>
+  <string name="num_cols_drawer_pref_title">عدد أعمدة قائمة التطبيقات</string>
+  <string name="pref_cat_drawer">قائمة التطبيقات</string>
+  <string name="shortcut_backport_warning">يمكن أن تكون العملية بطيئة. استخدمها على مسؤوليتك الخاصة</string>
+  <string name="pref_backport_shortcuts">اختصارات المنقولات العكسية</string>
+  <string name="weather_api_key_not_set">لم يتم تعيين مفتاح API</string>
+  <string name="pref_weather_api_key_title">مفتاح API</string>
   <string name="about_changelog">سِجل التغييرات</string>
+  <string name="pref_all_apps_custom_label_color">استخدام لون مخصص للتسمية</string>
+  <string name="pref_all_apps_label_color_variation">تباين ألوان التسميات في قائمة التطبيقات</string>
+  <string name="pref_all_apps_label_color">لون التسميات في قائمة التطبيقات</string>
+  <string name="pref_num_rows_drawer">عدد صفوف قائمة التطبيقات</string>
+  <string name="center_wallpaper_pref_title">محاذاة الخلفيات في المركز عندما تكون هناك صفحة واحدة فقط</string>
+  <string name="vertical_drawer_layout_pref_title">عرض كقائمة عمودية</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
+  <string name="about_translators">المترجمون</string>
 </resources>
