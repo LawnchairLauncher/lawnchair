@@ -308,48 +308,6 @@
   <string name="color_extraction_label">Lawnchair - Färgutvinning</string>
   <string name="test_title">Test</string>
   <string name="visibility">Synlighet</string>
-  <!-- Customization Color -->
-  <string name="white">Vit</string>
-  <!-- Customization Color -->
-  <string name="black">Svart</string>
-  <!-- Customization Color -->
-  <string name="red">Röd</string>
-  <!-- Customization Color -->
-  <string name="pink">Rosa</string>
-  <!-- Customization Color -->
-  <string name="purple">Lila</string>
-  <!-- Customization Color -->
-  <string name="deep_purple">Mörklila</string>
-  <!-- Customization Color -->
-  <string name="indigo">Indigo</string>
-  <!-- Customization Color -->
-  <string name="blue">Blå</string>
-  <!-- Customization Color -->
-  <string name="light_blue">Ljusblå</string>
-  <!-- Customization Color -->
-  <string name="cyan">Cyan</string>
-  <!-- Customization Color -->
-  <string name="teal">Blågrön</string>
-  <!-- Customization Color -->
-  <string name="green">Grön</string>
-  <!-- Customization Color -->
-  <string name="light_green">Ljusgrön</string>
-  <!-- Customization Color -->
-  <string name="lime">Lime</string>
-  <!-- Customization Color -->
-  <string name="yellow">Gul</string>
-  <!-- Customization Color -->
-  <string name="amber">Bärnsten</string>
-  <!-- Customization Color -->
-  <string name="orange">Orange</string>
-  <!-- Customization Color -->
-  <string name="deep_orange">Mörkorange</string>
-  <!-- Customization Color -->
-  <string name="brown">Brun</string>
-  <!-- Customization Color -->
-  <string name="grey">Grå</string>
-  <!-- Customization Color -->
-  <string name="blue_grey">Blågrå</string>
   <string name="default_text">Standard</string>
   <string name="edit_icon_reset">Återställ</string>
   <string name="show_top_shadow_title">Visa övre skugga</string>
