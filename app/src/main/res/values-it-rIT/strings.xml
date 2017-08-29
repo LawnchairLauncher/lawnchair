@@ -28,11 +28,11 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">App non disponibile</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">L\'app scaricata è stata disattivata in modalità provvisoria</string>
+  <string name="safemode_shortcut_error">Le app scaricate sono disattivate in modalità provvisoria</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">Widget disabilitati in modalità provvisoria</string>
+  <string name="safemode_widget_error">I Widget disabilitati in modalità provvisoria</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
-  <string name="shortcut_not_available">La scorciatoia non è disponibile</string>
+  <string name="shortcut_not_available">Scorciatoia non disponibile</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
   <string name="long_press_widget_to_add">Tocca e tieni premuto per scegliere un widget.</string>
@@ -46,9 +46,9 @@
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_bar_hint">Cerca app</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_loading_message">Caricamento delle app&#8230;</string>
+  <string name="all_apps_loading_message">Caricamento app&#8230;</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_no_search_results">Non è stata trovata nessuna app corrispondente a \"<xliff:g id="Query">%1$s</xliff:g>\"</string>
+  <string name="all_apps_no_search_results">Ness app trovata corrispondente a \"<xliff:g id="Query">%1$s</xliff:g>\"</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">Cerca altre app</string>
   <!-- Drag and drop -->
@@ -60,6 +60,7 @@
   <string name="all_apps_button_label">Elenco delle app</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
+  <string name="all_apps_home_button_label">Home</string>
   <!-- Label for remove drop target. [CHAR_LIMIT=20] -->
   <string name="remove_drop_target_label">Rimuovi</string>
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
@@ -83,7 +84,7 @@
   <string name="msg_no_phone_permission">L\'app <xliff:g id="APP_NAME">%1$s</xliff:g> non è autorizzata a effettuare telefonate</string>
   <!-- Widgets: -->
   <!-- Text to show user in place of a gadget when we can't display it properly -->
-  <string name="gadget_error_text">Errore caricamento del widget</string>
+  <string name="gadget_error_text">Errore di caricamento del widget</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
   <string name="gadget_setup_text">Configurazione</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
@@ -241,10 +242,12 @@
   <string name="label_voice_search">Ricerca vocale</string>
   <string name="shortcuts_menu_with_notifications_description">%1$d scorciatoie e%2$d notifiche per %3$s</string>
   <string name="notifications_header">Notifiche</string>
+  <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair è un Launcher creato da Till Kottmann (aka deletescape). E\' basato su Launcher3 da AOSP.</string>
   <string name="about_title">Info</string>
   <string name="changelog_title">Cambiamenti nella versione #%d</string>
+  <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Pacchetto icone</string>
   <string name="icon_pack_preference_summary">Seleziona un pacchetto icone</string>
   <string name="hotseat_uses_extracted_colors_pref_title">La dock utilizza il colore del wallpaper</string>
@@ -253,8 +256,11 @@
   <string name="transparent_hotseat_pref_title">Dock trasparente</string>
   <string name="dynamic_ui_pref_title">Estrai colore secondario dallo sfondo</string>
   <string name="blur_pref_title">Attiva effetto sfocato</string>
+  <string name="blur_pref_summary">Applica un effetto di sfocatura a parti dell\'interfaccia\nNon compatibile con sfondi animati</string>
   <string name="blur_radius_pref_title">Raggio sfocatura</string>
   <string name="white_google_icon_pref_title">Utilizza l\'icona bianca per Google</string>
+  <string name="hide_icon_labels_pref_title">Nascondi nome icone sull\' home screen</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Nascondi nome icone nel drawer</string>
   <string name="workspace_label_color_hue_pref_title">Colore delle etichette delle icone nella schermata home</string>
   <string name="workspace_label_color_variation_pref_title">Variazione di colore per le etichette nella schermata home</string>
   <string name="all_apps_opacity_pref_title">Opacità menù delle applicazioni</string>
@@ -270,6 +276,7 @@
   <string name="ui_pref_title">Interfaccia</string>
   <string name="pixel_style_pref_title">Stile Pixel</string>
   <string name="behavior_pref_title">Gesti e funzionalità</string>
+  <string name="debug_pref_title">Debug</string>
   <string name="import_export_pref_title">Importa/Esporta</string>
   <string name="show_pixel_bar_pref_title">Mostra la barra Pixel in alto</string>
   <string name="use_wide_searchbar_pref_title">Usa la barra di ricerca estesa</string>
@@ -282,12 +289,15 @@
   <string name="restart_lawnchair_pref_summary">Può essere utile se alcune impostazioni non sono state applicate correttamente</string>
   <string name="rebuild_icondb_pref_title">Ricostruisci il database delle icone</string>
   <string name="pinch_to_overview_pref_title">Pinch per la panoramica</string>
+  <string name="pinch_to_overview_pref_summary">Premere nell\' home screen per aprire la panoramica</string>
   <string name="light_statusbar_pref_title">Statusbar chiara</string>
+  <string name="light_statusbar_pref_force">La barra di stato mostrerà icone scure</string>
   <string name="light_statusbar_pref_off">La status bar mostrerà sempre icone chiare.</string>
   <string name="haptic_feedback_pref_title">Abilita vibrazione</string>
   <string name="keep_scroll_state_pref_title">Mantieni la posizione di scorrimento</string>
   <string name="keep_scroll_state_pref_summary">Mantieni la posizione di scorrimento nel menù delle applicazioni</string>
   <string name="home_opens_drawer_pref_title">Il tasto home apre il menù delle applicazioni</string>
+  <string name="home_opens_drawer_pref_summary">Premendo il tasto home, mentre si è nella schermata principale, si aprirà il menu delle applicazioni</string>
   <string name="show_hidden_pref_title">Mostra le app nascoste</string>
   <string name="show_hidden_pref_on">Le app nascoste verranno mostrate per cambiare le impostazioni di visibilità</string>
   <string name="show_hidden_pref_off">Le app nascoste non saranno visibili</string>
@@ -297,51 +307,80 @@
   <string name="import_prefs_title">Importa impostazioni</string>
   <string name="notification_listener_label">Lawnchair - Badge di notifica</string>
   <string name="color_extraction_label">Lawnchair - Estrazione del colore</string>
+  <string name="test_title">Test</string>
   <string name="visibility">Visibilità</string>
-  <!-- Customization Color -->
-  <string name="white">Bianco</string>
-  <!-- Customization Color -->
-  <string name="black">Nero</string>
-  <!-- Customization Color -->
-  <string name="red">Rosso</string>
-  <!-- Customization Color -->
-  <string name="pink">Rosa</string>
-  <!-- Customization Color -->
-  <string name="purple">Viola</string>
-  <!-- Customization Color -->
-  <string name="deep_purple">Viola scuro</string>
-  <!-- Customization Color -->
-  <string name="indigo">Indaco</string>
-  <!-- Customization Color -->
-  <string name="blue">Blu</string>
-  <!-- Customization Color -->
-  <string name="light_blue">Azzurro</string>
-  <!-- Customization Color -->
-  <string name="cyan">Ciano</string>
-  <!-- Customization Color -->
-  <string name="teal">Verde acqua</string>
-  <!-- Customization Color -->
-  <string name="green">Verde</string>
-  <!-- Customization Color -->
-  <string name="light_green">Verde chiaro</string>
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <string name="yellow">Giallo</string>
-  <!-- Customization Color -->
-  <string name="amber">Ambra</string>
-  <!-- Customization Color -->
-  <string name="orange">Arancione</string>
-  <!-- Customization Color -->
-  <string name="deep_orange">Arancione scuro</string>
-  <!-- Customization Color -->
-  <string name="brown">Marrone</string>
-  <!-- Customization Color -->
-  <string name="grey">Grigio</string>
-  <!-- Customization Color -->
-  <string name="blue_grey">Blu grigio</string>
   <string name="default_text">Predefinito</string>
+  <string name="edit_icon_reset">Reset</string>
+  <string name="show_top_shadow_title">Mostra l\' ombra superiore</string>
+  <string name="pref_cat_homescreen">Schermata home</string>
+  <string name="pref_cat_miscellaneous">Miscellaneous</string>
+  <string name="pref_cat_hotseat">Dock</string>
+  <string name="pref_cat_theme">Tema</string>
+  <string name="theme_pref_title">Tema</string>
+  <string name="theme_light">Chiaro</string>
+  <string name="theme_dark">Scuro</string>
+  <string name="theme_black">Nero</string>
+  <string name="hide_hotseat_pref_title">Mostra Dock</string>
+  <string name="all_icons">Tutte le icone</string>
+  <string name="pull_down_action_pref_title">Azione di tirare giù</string>
+  <string name="pull_down_do_nothing">Non fare nulla</string>
+  <string name="pull_down_notis">Mostra notifiche</string>
+  <string name="pull_down_search">Apri ricerca</string>
+  <string name="pull_down_apps_search">Ricerca apps</string>
+  <string name="enable_screen_rotation">Attiva rotazione schermo</string>
   <!-- Import/Export Strings -->
+  <string name="imexport_success">Riuscito!</string>
+  <string name="imexport_error">Errore: Fallita copia dei file</string>
+  <string name="imexport_no_backup_found">Nessun backup trovato</string>
+  <string name="imexport_external_storage_unreadable">La memoria esterna non è leggibile (concedi l\'autorizzazione nelle impostazioni)</string>
+  <string name="imexport_external_storage_unwritable">La memoria esterna non è scrivibile (concedi l\'autorizzazione nelle impostazioni)</string>
+  <string name="units_metric">Metrico</string>
+  <string name="units_imperial">Imperial</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_cat_weather">Meteo</string>
+  <string name="pref_weather_title">Attiva meteo</string>
+  <string name="pref_weather_units">Unità Meteo</string>
+  <string name="pref_weather_city_summary">Per ottenere migliori risultati includi il codice paese</string>
+  <string name="pref_weather_city_title">Città</string>
+  <string name="none">Nessuno</string>
+  <string name="pref_applyTheme">Tema applicato attivo</string>
+  <string name="pref_applyBlur">Blur attivo</string>
+  <string name="search_bar">Barra di ricerca</string>
+  <string name="folder">Cartella</string>
+  <string name="dock_allapps"><![CDATA[Dock & drawer]]></string>
+  <string name="app_shortcuts">Scorciatoie app</string>
+  <string name="blur_effect">Effetto sfocatura</string>
+  <string name="enable_editing_pref_title">Attivare modifica homescreen</string>
+  <string name="pref_weather_provider">Provider meteo</string>
+  <string name="loading">Caricamento…</string>
+  <string name="icon_shape_override_label">Cambia tema dell\' icona</string>
+  <string name="icon_shape_system_default">Non cambiare</string>
+  <string name="icon_shape_square">Quadrato</string>
+  <string name="icon_shape_rounded_square">Quadrato con angoli arrotondati</string>
+  <string name="icon_shape_squircle">Squircle</string>
+  <string name="icon_shape_circle">Cerchio</string>
+  <string name="icon_shape_teardrop">Goccia</string>
+  <string name="animated_clock_icon_title">Icona dell\'orologio animata</string>
+  <string name="about_summary_title">Sommario</string>
+  <string name="about_version">Versione</string>
+  <string name="about_icon_designer">Design delle icone</string>
+  <string name="about_contributors_title">Collaboratori</string>
+  <string name="location_permission_warn">È richiesta la posizione per passare ad un altro provider!</string>
+  <string name="num_cols_drawer_pref_title">Numero di colonne nel menu</string>
+  <string name="pref_cat_drawer">Menu</string>
+  <string name="shortcut_backport_warning">Potrebbe essere lento, utilizzarlo a proprio rischio</string>
+  <string name="pref_backport_shortcuts">Backport shortcuts</string>
+  <string name="weather_api_key_not_set">Poi key non settata</string>
+  <string name="pref_weather_api_key_title">API key</string>
+  <string name="about_changelog">Changelog</string>
+  <string name="pref_all_apps_custom_label_color">Utilizzare un colore personalizzato</string>
+  <string name="pref_all_apps_label_color_variation">Variazione di colore per le etichette delle icone del menu delle applicazioni</string>
+  <string name="pref_all_apps_label_color">Colore delle icone nel drawer</string>
+  <string name="pref_num_rows_drawer">Numero di righe nel menu</string>
+  <string name="center_wallpaper_pref_title">Centra lo sfondo quando c\'è solo una pagina</string>
+  <string name="vertical_drawer_layout_pref_title">Visualizza come lista verticale</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
+  <string name="about_translators">Traduttori</string>
 </resources>
