@@ -155,11 +155,11 @@
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
   <string name="action_move">Переместить элемент</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell">Переместить в ячейку <xliff:g id="NUMBER_0">%1$s</xliff:g> <xliff:g id="NUMBER_1">%2$s</xliff:g></string>
+  <string name="move_to_empty_cell">Переместить в строку <xliff:g example="1" id="number">%1$d</xliff:g> и столбец<xliff:g example="1" id="number">%2$d</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
-  <string name="move_to_position">Переместить в позицию <xliff:g id="NUMBER">%1$s</xliff:g></string>
+  <string name="move_to_position">Переместить в позицию <xliff:g example="1" id="number">%1$d</xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Переместить в Избранное (<xliff:g id="NUMBER">%1$s</xliff:g>)</string>
+  <string name="move_to_hotseat_position">Переместить в Избранное <xliff:g id="number">%1$d</xliff:g></string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">Элемент перемещен</string>
   <!-- Accessibility description to move item into an existing folder. -->
@@ -191,7 +191,7 @@
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
   <string name="action_decrease_height">Уменьшить высоту</string>
   <!-- Accessibility confirmation for widget resize. -->
-  <string name="widget_resized">Изменен размер виджета: до <xliff:g id="NUMBER_0">%1$s</xliff:g> в ширину и <xliff:g id="NUMBER_1">%2$s</xliff:g> в высоту</string>
+  <string name="widget_resized">Размер виджета изменён: до <xliff:g id="number">%1$d</xliff:g> в ширину и <xliff:g id="number">%2$d</xliff:g> в высоту</string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
   <string name="action_deep_shortcut">Ярлыки</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
@@ -310,48 +310,6 @@
   <string name="color_extraction_label">Lawnchair - извлечение цвета</string>
   <string name="test_title">Тест</string>
   <string name="visibility">Видимость</string>
-  <!-- Customization Color -->
-  <string name="white">Белый</string>
-  <!-- Customization Color -->
-  <string name="black">Черный</string>
-  <!-- Customization Color -->
-  <string name="red">Красный</string>
-  <!-- Customization Color -->
-  <string name="pink">Розовый</string>
-  <!-- Customization Color -->
-  <string name="purple">Фиолетовый</string>
-  <!-- Customization Color -->
-  <string name="deep_purple">Багровый</string>
-  <!-- Customization Color -->
-  <string name="indigo">Индиго</string>
-  <!-- Customization Color -->
-  <string name="blue">Синий</string>
-  <!-- Customization Color -->
-  <string name="light_blue">Голубой</string>
-  <!-- Customization Color -->
-  <string name="cyan">Бирюзовый</string>
-  <!-- Customization Color -->
-  <string name="teal">Зеленовато-голубой</string>
-  <!-- Customization Color -->
-  <string name="green">Зеленый</string>
-  <!-- Customization Color -->
-  <string name="light_green">Светло-зеленый</string>
-  <!-- Customization Color -->
-  <string name="lime">Лаймовый</string>
-  <!-- Customization Color -->
-  <string name="yellow">Желтый</string>
-  <!-- Customization Color -->
-  <string name="amber">Янтарный</string>
-  <!-- Customization Color -->
-  <string name="orange">Оранжевый</string>
-  <!-- Customization Color -->
-  <string name="deep_orange">Темно-оранжевый</string>
-  <!-- Customization Color -->
-  <string name="brown">Коричневый</string>
-  <!-- Customization Color -->
-  <string name="grey">Серый</string>
-  <!-- Customization Color -->
-  <string name="blue_grey">Серо-голубой</string>
   <string name="default_text">По умолчанию</string>
   <string name="edit_icon_reset">Сбросить</string>
   <string name="show_top_shadow_title">Показать тень сверху</string>
@@ -425,4 +383,5 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
+  <string name="about_translators">Переводчики</string>
 </resources>
