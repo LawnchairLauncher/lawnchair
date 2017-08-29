@@ -237,8 +237,8 @@
   <string name="which_wallpaper_option_home_screen_and_lock_screen">Ecrã inicial e ecrã de bloqueio</string>
   <string name="title_show_google_app">Mostrar %1$s</string>
   <string name="title_show_google_app_default">Mostrar Google app</string>
-  <string name="label_search">Pesquisa</string>
-  <string name="label_voice_search">Pesquisa por voz</string>
+  <string name="label_search">Pesquisar</string>
+  <string name="label_voice_search">Pesquisar por voz</string>
   <string name="shortcuts_menu_with_notifications_description">%1$d atalhos e %2$d notificações para %3$s</string>
   <string name="notifications_header">Notificações</string>
   <!-- About Lawnchair -->
@@ -266,30 +266,65 @@
   <string name="full_width_width_widgets_pref_title">Widget grandes</string>
   <string name="full_width_widgets_pref_summary">Permitir que widgets abranjam o launcher todo</string>
   <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
+  <string name="ui_pref_title">Interface do Utilizador</string>
+  <string name="behavior_pref_title">Comportamento</string>
+  <string name="import_export_pref_title">Importar/Exportar</string>
+  <string name="show_mic_pref_title">Mostrar botão do Assistente do Google</string>
+  <string name="show_google_now_tab_pref_title">Mostrar página do Google Now</string>
+  <string name="restart_lawnchair_pref_title">Reiniciar o Lawnchair</string>
+  <string name="rebuild_icondb_pref_title">Reconstruir a Base de Dados de Ícones</string>
   <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
+  <string name="haptic_feedback_pref_title">Activar vibração</string>
+  <string name="keep_scroll_state_pref_title">Gravar a posição de deslocamento</string>
+  <string name="show_hidden_pref_title">Mostrar aplicações ocultas</string>
+  <string name="show_hidden_pref_on">Aplicações ocultas serão visíveis para alterar as definições de visibilidade</string>
+  <string name="show_hidden_pref_off">Aplicações ocultas não serão visíveis</string>
+  <string name="export_db_title">Exportar base de dados</string>
+  <string name="import_db_title">Importar base de dados</string>
+  <string name="export_prefs_title">Exportar definições</string>
+  <string name="import_prefs_title">Importar definições</string>
+  <string name="test_title">Testar</string>
+  <string name="visibility">Visibilidade</string>
+  <string name="default_text">Predefinição</string>
+  <string name="edit_icon_reset">Restaurar</string>
+  <string name="pref_cat_miscellaneous">Diversos</string>
+  <string name="pref_cat_theme">Tema</string>
+  <string name="theme_pref_title">Tema</string>
+  <string name="theme_light">Claro</string>
+  <string name="theme_dark">Escuro</string>
+  <string name="theme_black">Preto</string>
+  <string name="all_icons">Todos os Ícones</string>
+  <string name="pull_down_notis">Mostrar notificações</string>
+  <string name="pull_down_search">Abrir pesquisa</string>
+  <string name="pull_down_apps_search">Procurar aplicações</string>
   <!-- Import/Export Strings -->
+  <string name="imexport_success">Concluído!</string>
+  <string name="imexport_error">Erro: Falha ao copiar ficheiro</string>
+  <string name="imexport_no_backup_found">Nenhum backup encontrado</string>
+  <string name="units_metric">Métrico</string>
+  <string name="units_imperial">Imperial</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_cat_weather">Tempo</string>
+  <string name="pref_weather_units">Unidades Meteorologicas</string>
+  <string name="pref_weather_city_summary">Para melhores resultados inclua o código do país</string>
+  <string name="pref_weather_city_title">Cidade</string>
+  <string name="none">Nenhum(a)</string>
+  <string name="pref_applyTheme">Aplicar tema</string>
+  <string name="search_bar">Barra de pesquisa</string>
+  <string name="folder">Pasta</string>
+  <string name="app_shortcuts">Atalhos das Aplicações</string>
+  <string name="pref_weather_provider">Fornecedor de Tempo</string>
+  <string name="loading">Carregando…</string>
+  <string name="icon_shape_square">Quadrado</string>
+  <string name="icon_shape_rounded_square">Quadrado arredondado</string>
+  <string name="icon_shape_squircle">Quacirculo</string>
+  <string name="icon_shape_circle">Círculo</string>
+  <string name="about_summary_title">Sumário</string>
+  <string name="about_version">Versão</string>
+  <string name="about_contributors_title">Contribuidores</string>
+  <string name="center_wallpaper_pref_title">Centrar papel de parede quando há apenas uma página</string>
+  <string name="vertical_drawer_layout_pref_title">Exibir como lista vertical</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="about_translators">Tradutores</string>
 </resources>
