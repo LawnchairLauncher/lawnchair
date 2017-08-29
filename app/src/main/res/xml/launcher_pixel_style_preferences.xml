@@ -45,7 +45,7 @@
             android:entryValues="@array/icon_shape_override_paths_values"
             android:persistent="false" />
 
-        <SwitchPreference
+        <ch.deletescape.lawnchair.preferences.GoogleNowPreference
             android:key="pref_showGoogleNowTab"
             android:persistent="true"
             android:title="@string/show_google_now_tab_pref_title"
