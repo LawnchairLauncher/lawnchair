@@ -309,48 +309,6 @@
   <string name="color_extraction_label">Lawnchair - Extraction de la couleur</string>
   <string name="test_title">Test</string>
   <string name="visibility">Visibilité</string>
-  <!-- Customization Color -->
-  <string name="white">Blanc</string>
-  <!-- Customization Color -->
-  <string name="black">Noir</string>
-  <!-- Customization Color -->
-  <string name="red">Rouge</string>
-  <!-- Customization Color -->
-  <string name="pink">Rose</string>
-  <!-- Customization Color -->
-  <string name="purple">Violet</string>
-  <!-- Customization Color -->
-  <string name="deep_purple">Violet foncé</string>
-  <!-- Customization Color -->
-  <string name="indigo">Indigo</string>
-  <!-- Customization Color -->
-  <string name="blue">Bleu</string>
-  <!-- Customization Color -->
-  <string name="light_blue">Bleu clair</string>
-  <!-- Customization Color -->
-  <string name="cyan">Cyan</string>
-  <!-- Customization Color -->
-  <string name="teal">Turquoise</string>
-  <!-- Customization Color -->
-  <string name="green">Vert</string>
-  <!-- Customization Color -->
-  <string name="light_green">Vert clair</string>
-  <!-- Customization Color -->
-  <string name="lime">Vert citron</string>
-  <!-- Customization Color -->
-  <string name="yellow">Jaune</string>
-  <!-- Customization Color -->
-  <string name="amber">Ambre</string>
-  <!-- Customization Color -->
-  <string name="orange">Orange</string>
-  <!-- Customization Color -->
-  <string name="deep_orange">Orange foncé</string>
-  <!-- Customization Color -->
-  <string name="brown">Marron</string>
-  <!-- Customization Color -->
-  <string name="grey">Gris</string>
-  <!-- Customization Color -->
-  <string name="blue_grey">Bleu Gris</string>
   <string name="default_text">Par défaut</string>
   <string name="edit_icon_reset">Réinitialiser</string>
   <string name="show_top_shadow_title">Afficher l\'ombre du haut</string>
@@ -424,4 +382,5 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE d MMMM</string>
+  <string name="about_translators">Traducteurs</string>
 </resources>
