@@ -35,9 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"ກວ້າງ %1$d ຄູນສູງ %2$d"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"ແຕະຄ້າງໄວ້ເພື່ອວາງດ້ວຍຕົນເອງ"</string>
     <string name="place_automatically" msgid="8064208734425456485">"ເພີ່ມໂດຍອັດຕະໂນມັດ"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"ຊອກຫາແອັບ"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"​ກຳ​ລັງ​ໂຫລດ​ແອັບ..."</string>
-    <string name="all_apps_no_search_results" msgid="6332185285860416787">"ບໍ່​ພົບ​ແອັບ​ໃດ​ທີ່​ກົງ​ກັນ \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ຊອກຫາແອັບ"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"ກໍາລັງໂຫຼດແອັບ…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"ບໍ່ພົບແອັບທີ່ກົງກັບ \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"ຊອກຫາແອັບເພີ່ມເຕີມ"</string>
     <string name="notifications_header" msgid="1404149926117359025">"ການແຈ້ງເຕືອນ"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ບໍ່ມີຫ້ອງເຫຼືອໃນໜ້າຈໍຫຼັກນີ້."</string>
@@ -79,17 +79,18 @@
     <string name="icon_badging_title" msgid="874121399231955394">"ຈຸດການແຈ້ງເຕືອນ"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"ເປີດ"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"ປິດ"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"ຕ້ອງໃຊ້ການເຂົ້າເຖິງການແຈ້ງເຕືອນ"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"ເພື່ອສະແດງຈຸດການແຈ້ງເຕືອນ, ໃຫ້ເປີດການແຈ້ງເຕືອນສຳລັບ <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"ບັນທຶກການຕັ້ງຄ່າ"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ເພີ່ມໄອຄອນໃສ່ໜ້າຈໍຫຼັກ"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ສຳລັບແອັບໃໝ່"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"ປ່ຽນຮູບຮ່າງໄອຄອນ"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"ໃຊ້ຄ່າເລີ່ມຕົ້ນລະບົບ"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"ສີ່ຫຼ່ຽມຈັດຕຸລັດ"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"ສີ່ຫຼ່ຽມຂອບມົນ"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"ວົງມົນ"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"ນ້ຳຢອດ"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"ນຳໃຊ້ການປ່ຽນແປງຮູບຮ່າງໄອຄອນ"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"​ບໍ່​ຮູ້​ຈັກ"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ລຶບ​"</string>
     <string name="abandoned_search" msgid="891119232568284442">"ຊອກຫາ"</string>

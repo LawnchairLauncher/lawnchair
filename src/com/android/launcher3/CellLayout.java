@@ -780,7 +780,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         return mCellWidth;
     }
 
-    int getCellHeight() {
+    public int getCellHeight() {
         return mCellHeight;
     }
 

@@ -173,7 +173,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
                         ArrayList<ItemInfo> itemList = new ArrayList<>();
                         itemList.add(info);
-                        mLauncher.bindItems(itemList, 0, itemList.size(), true);
+                        mLauncher.bindItems(itemList, true);
                     } else if (item instanceof PendingAddItemInfo) {
                         PendingAddItemInfo info = (PendingAddItemInfo) item;
                         Workspace workspace = mLauncher.getWorkspace();
@@ -205,7 +205,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                 public void run() {
                     ArrayList<ItemInfo> itemList = new ArrayList<>();
                     itemList.add(item);
-                    mLauncher.bindItems(itemList, 0, itemList.size(), true);
+                    mLauncher.bindItems(itemList, true);
                     announceConfirmation(R.string.item_moved);
                 }
             });

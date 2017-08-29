@@ -17,8 +17,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="48dp"
     android:layout_height="match_parent"
-    android:background="?android:attr/selectableItemBackgroundBorderless"
-    android:contentDescription="@string/title_missing_notification_access"
+    android:importantForAccessibility="no"
     android:scaleType="center"
     android:src="@drawable/ic_warning"
     android:tint="?android:attr/textColorSecondary" />

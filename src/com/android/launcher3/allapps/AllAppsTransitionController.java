@@ -283,7 +283,9 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         }
 
         // Use a light system UI (dark icons) if all apps is behind at least half of the status bar.
-        boolean forceChange = shift <= mStatusBarHeight / 2;
+        boolean forceChange = FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS ?
+                shift <= mShiftRange / 4 :
+                shift <= mStatusBarHeight / 2;
         if (forceChange) {
             mLauncher.getSystemUiController().updateUiState(
                     SystemUiController.UI_STATE_ALL_APPS, !mIsDarkTheme);

@@ -20,6 +20,7 @@ import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -48,8 +49,7 @@ public class WallpaperManagerCompatVOMR1 extends WallpaperManagerCompat {
 
         mOCLClass = Class.forName("android.app.WallpaperManager$OnColorsChangedListener");
         mAddOCLMethod = WallpaperManager.class.getDeclaredMethod(
-                "addOnColorsChangedListener", mOCLClass);
-
+                "addOnColorsChangedListener", mOCLClass, Handler.class);
         mWCGetMethod = WallpaperManager.class.getDeclaredMethod("getWallpaperColors", int.class);
         Class wallpaperColorsClass = mWCGetMethod.getReturnType();
         mWCGetPrimaryColorMethod = wallpaperColorsClass.getDeclaredMethod("getPrimaryColor");
@@ -89,7 +89,7 @@ public class WallpaperManagerCompatVOMR1 extends WallpaperManagerCompat {
                     }
                 });
         try {
-            mAddOCLMethod.invoke(mWm, onChangeListener);
+            mAddOCLMethod.invoke(mWm, onChangeListener, null);
         } catch (Exception e) {
             Log.e(TAG, "Error calling wallpaper API", e);
         }

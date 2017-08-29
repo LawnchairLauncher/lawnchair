@@ -122,7 +122,7 @@ public class LoaderResults {
 
         filterCurrentWorkspaceItems(currentScreenId, workspaceItems, currentWorkspaceItems,
                 otherWorkspaceItems);
-        filterCurrentAppWidgets(currentScreenId, appWidgets, currentAppWidgets,
+        filterCurrentWorkspaceItems(currentScreenId, appWidgets, currentAppWidgets,
                 otherAppWidgets);
         sortWorkspaceItemsSpatially(currentWorkspaceItems);
         sortWorkspaceItemsSpatially(otherWorkspaceItems);
@@ -208,12 +208,12 @@ public class LoaderResults {
 
     /** Filters the set of items who are directly or indirectly (via another container) on the
      * specified screen. */
-    private void filterCurrentWorkspaceItems(long currentScreenId,
-            ArrayList<ItemInfo> allWorkspaceItems,
-            ArrayList<ItemInfo> currentScreenItems,
-            ArrayList<ItemInfo> otherScreenItems) {
+    private <T extends ItemInfo> void filterCurrentWorkspaceItems(long currentScreenId,
+            ArrayList<T> allWorkspaceItems,
+            ArrayList<T> currentScreenItems,
+            ArrayList<T> otherScreenItems) {
         // Purge any null ItemInfos
-        Iterator<ItemInfo> iter = allWorkspaceItems.iterator();
+        Iterator<T> iter = allWorkspaceItems.iterator();
         while (iter.hasNext()) {
             ItemInfo i = iter.next();
             if (i == null) {
@@ -224,14 +224,14 @@ public class LoaderResults {
         // Order the set of items by their containers first, this allows use to walk through the
         // list sequentially, build up a list of containers that are in the specified screen,
         // as well as all items in those containers.
-        Set<Long> itemsOnScreen = new HashSet<Long>();
+        Set<Long> itemsOnScreen = new HashSet<>();
         Collections.sort(allWorkspaceItems, new Comparator<ItemInfo>() {
             @Override
             public int compare(ItemInfo lhs, ItemInfo rhs) {
                 return Utilities.longCompare(lhs.container, rhs.container);
             }
         });
-        for (ItemInfo info : allWorkspaceItems) {
+        for (T info : allWorkspaceItems) {
             if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
                 if (info.screenId == currentScreenId) {
                     currentScreenItems.add(info);
@@ -249,23 +249,6 @@ public class LoaderResults {
                 } else {
                     otherScreenItems.add(info);
                 }
-            }
-        }
-    }
-
-    /** Filters the set of widgets which are on the specified screen. */
-    private void filterCurrentAppWidgets(long currentScreenId,
-            ArrayList<LauncherAppWidgetInfo> appWidgets,
-            ArrayList<LauncherAppWidgetInfo> currentScreenWidgets,
-            ArrayList<LauncherAppWidgetInfo> otherScreenWidgets) {
-
-        for (LauncherAppWidgetInfo widget : appWidgets) {
-            if (widget == null) continue;
-            if (widget.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
-                    widget.screenId == currentScreenId) {
-                currentScreenWidgets.add(widget);
-            } else {
-                otherScreenWidgets.add(widget);
             }
         }
     }
@@ -322,7 +305,7 @@ public class LoaderResults {
                 public void run() {
                     Callbacks callbacks = mCallbacks.get();
                     if (callbacks != null) {
-                        callbacks.bindItems(workspaceItems, start, start+chunkSize, false);
+                        callbacks.bindItems(workspaceItems.subList(start, start+chunkSize), false);
                     }
                 }
             };
@@ -332,12 +315,12 @@ public class LoaderResults {
         // Bind the widgets, one at a time
         N = appWidgets.size();
         for (int i = 0; i < N; i++) {
-            final LauncherAppWidgetInfo widget = appWidgets.get(i);
+            final ItemInfo widget = appWidgets.get(i);
             final Runnable r = new Runnable() {
                 public void run() {
                     Callbacks callbacks = mCallbacks.get();
                     if (callbacks != null) {
-                        callbacks.bindAppWidget(widget);
+                        callbacks.bindItems(Collections.singletonList(widget), false);
                     }
                 }
             };

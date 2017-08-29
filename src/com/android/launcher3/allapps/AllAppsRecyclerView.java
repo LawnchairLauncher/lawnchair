@@ -111,12 +111,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     }
 
     @Override
-    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent ev) {
-        mPullDetector.onTouchEvent(ev);
-        return super.onInterceptTouchEvent(rv, ev) || mOverScrollHelper.isInOverScroll();
-    }
-
-    @Override
     public boolean onTouchEvent(MotionEvent e) {
         mPullDetector.onTouchEvent(e);
         if (FeatureFlags.LAUNCHER3_PHYSICS && mSpringAnimationHandler != null) {
@@ -205,14 +199,19 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
 
     @Override
     public void onDraw(Canvas c) {
-        c.translate(0, mContentTranslationY);
-
         // Draw the background
         if (mEmptySearchBackground != null && mEmptySearchBackground.getAlpha() > 0) {
             mEmptySearchBackground.draw(c);
         }
 
         super.onDraw(c);
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        canvas.translate(0, mContentTranslationY);
+        super.dispatchDraw(canvas);
+        canvas.translate(0, -mContentTranslationY);
     }
 
     public float getContentTranslationY() {
@@ -282,7 +281,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent e) {
-        boolean result = super.onInterceptTouchEvent(e);
+        mPullDetector.onTouchEvent(e);
+        boolean result = super.onInterceptTouchEvent(e) || mOverScrollHelper.isInOverScroll();
         if (!result && e.getAction() == MotionEvent.ACTION_DOWN
                 && mEmptySearchBackground != null && mEmptySearchBackground.getAlpha() > 0) {
             mEmptySearchBackground.setHotspot(e.getX(), e.getY());
@@ -337,6 +337,22 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
             }
         });
         mFastScrollHelper.onSetAdapter((AllAppsGridAdapter) adapter);
+    }
+
+    @Override
+    protected float getBottomFadingEdgeStrength() {
+        // No bottom fading edge.
+        return 0;
+    }
+
+    @Override
+    protected boolean isPaddingOffsetRequired() {
+        return true;
+    }
+
+    @Override
+    protected int getTopPaddingOffset() {
+        return -getPaddingTop();
     }
 
     /**
@@ -541,11 +557,16 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
             // and if one of the following criteria are met:
             // - User scrolls down when they're already at the bottom.
             // - User starts scrolling up, hits the top, and continues scrolling up.
+            boolean wasInOverScroll = mIsInOverScroll;
             mIsInOverScroll = !mScrollbar.isDraggingThumb() &&
                     ((!canScrollVertically(1) && displacement < 0) ||
                     (!canScrollVertically(-1) && isScrollingUp && mFirstScrollYOnScrollUp != 0));
 
-            if (mIsInOverScroll) {
+            if (wasInOverScroll && !mIsInOverScroll) {
+                // Exit overscroll. This can happen when the user is in overscroll and then
+                // scrolls the opposite way.
+                reset(false /* shouldSpring */);
+            } else if (mIsInOverScroll) {
                 if (Float.compare(mFirstDisplacement, 0) == 0) {
                     // Because users can scroll before entering overscroll, we need to
                     // subtract the amount where the user was not in overscroll.
@@ -560,11 +581,15 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
 
         @Override
         public void onDragEnd(float velocity, boolean fling) {
+           reset(mIsInOverScroll  /* shouldSpring */);
+        }
+
+        private void reset(boolean shouldSpring) {
             float y = getContentTranslationY();
             if (Float.compare(y, 0) != 0) {
-                if (FeatureFlags.LAUNCHER3_PHYSICS) {
+                if (FeatureFlags.LAUNCHER3_PHYSICS && shouldSpring) {
                     // We calculate our own velocity to give the springs the desired effect.
-                    velocity = y / getDampedOverScroll(getHeight()) * MAX_RELEASE_VELOCITY;
+                    float velocity = y / getDampedOverScroll(getHeight()) * MAX_RELEASE_VELOCITY;
                     // We want to negate the velocity because we are moving to 0 from -1 due to the
                     // downward motion. (y-axis -1 is above 0).
                     mSpringAnimationHandler.animateToPositionWithVelocity(0, -1, -velocity);

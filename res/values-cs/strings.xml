@@ -76,11 +76,11 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Povolit otáčení plochy"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Při otočení telefonu"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Aktuální nastavení displeje neumožňuje otáčení"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"Puntíky s oznámeními"</string>
+    <string name="icon_badging_title" msgid="874121399231955394">"Puntíky s oznámením"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Zapnuto"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Vypnuto"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Je třeba udělit přístup k oznámením"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"Chcete-li zobrazovat puntíky s oznámeními, zapněte oznámení z aplikace <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Chcete-li zobrazovat puntíky s oznámením, zapněte oznámení z aplikace <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Změnit nastavení"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Přidat ikonu na plochu"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Pro nové aplikace"</string>
