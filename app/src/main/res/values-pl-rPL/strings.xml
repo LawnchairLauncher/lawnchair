@@ -35,7 +35,7 @@
   <string name="shortcut_not_available">Skrót nie jest dostępny</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">Aby dodać widżet, kliknij go i przytrzymaj.</string>
+  <string name="long_press_widget_to_add">Dotknij i przytrzymaj, aby wybrać widżet.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
   <string name="long_accessible_way_to_add">Kliknij dwukrotnie i przytrzymaj, by wybrać widżet lub użyć działań niestandardowych.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
@@ -251,13 +251,13 @@
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Paczka ikon</string>
   <string name="icon_pack_preference_summary">Wybierz paczkę ikon</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Dock używa koloru z tapety</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">Dock będzie w kolorze wydobytym z tapety</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">Dock będzie w kolorze szarym, ale dostosowanym przez jasność tapety</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Dock pobiera kolor z tapety</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">Dock będzie w kolorze pobranym z tapety</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">Dock będzie w kolorze szarym, ale dostosowanym do jasności tapety</string>
   <string name="transparent_hotseat_pref_title">Przezroczysty dock</string>
   <string name="dynamic_ui_pref_title">Pobierz kolor dominujący z tapety</string>
   <string name="blur_pref_title">Włącz rozmycie</string>
-  <string name="blur_pref_summary">Zastosuj efekt rozmycia do części interfejsu\nNie jest zgodny z żywymi tapetami</string>
+  <string name="blur_pref_summary">Zastosuj efekt rozmycia dla części interfejsu\nNie jest zgodny z tapetami na żywo</string>
   <string name="blur_radius_pref_title">Promień rozmycia</string>
   <string name="white_google_icon_pref_title">Użyj białej ikony Google</string>
   <string name="hide_icon_labels_pref_title">Ukryj etykiety ikon na ekranie głównym</string>
@@ -270,8 +270,8 @@
   <string name="num_hotseat_icons_pref_title">Liczba ikon w docku</string>
   <string name="icon_scale_pref_title">Rozmiar ikon</string>
   <string name="icon_text_scale_pref_title">Rozmiar tekstu pod ikonami</string>
-  <string name="full_width_width_widgets_pref_title">Widgety na całej szerokości</string>
-  <string name="full_width_widgets_pref_summary">Zezwól widgetom na rozciągnięcie się na całej szerokości ekranu bez odstępów</string>
+  <string name="full_width_width_widgets_pref_title">Widżety na całej szerokości</string>
+  <string name="full_width_widgets_pref_summary">Zezwól widżetom na rozciągnięcie się na całej szerokości ekranu bez odstępów</string>
   <string name="notification_access_pref_title">Odznaki powiadomień i podgląd</string>
   <string name="notification_access_pref_summary">Zezwól Lawnchair na dostęp do twoich powiadomień żeby włączyć te funkcje</string>
   <string name="ui_pref_title">Interfejs</string>
@@ -283,11 +283,11 @@
   <string name="use_wide_searchbar_pref_title">Użyj szerokiego paska wyszukiwania</string>
   <string name="show_mic_pref_title">Pokaż przycisk Asystenta Google</string>
   <string name="use_round_searhbar">Użyj zaokrąglonego paska wyszukiwania aplikacji</string>
-  <string name="pixel_style_icons_pref_title">Uzyj stylu ikon Google Pixel</string>
-  <string name="pixel_style_icons_pref_summary">Kiedy włączone, okrągłe ikony będą używane tam, gdzie to możliwe</string>
+  <string name="pixel_style_icons_pref_title">Uzyj stylu ikon Pixel</string>
+  <string name="pixel_style_icons_pref_summary">Kiedy opcja jest włączona, okrągłe ikony będą używane, gdzie jest to możliwe</string>
   <string name="show_google_now_tab_pref_title">Pokaż stronę Google Now</string>
   <string name="restart_lawnchair_pref_title">Zrestartuj Lawnchair</string>
-  <string name="restart_lawnchair_pref_summary">Może być pomocne gdy niektóre ustawienia nie zostaną zastosowane poprawnie</string>
+  <string name="restart_lawnchair_pref_summary">Może być pomocne kiedy niektóre ustawienia nie zostaną zastosowane poprawnie</string>
   <string name="rebuild_icondb_pref_title">Przebuduj bazę danych ikon</string>
   <string name="pinch_to_overview_pref_title">Uszczypnij dla podglądu ekranów</string>
   <string name="pinch_to_overview_pref_summary">Wykonaj gest uszczypnięcia na ekranie głównym aby zobaczyć podgląd ekranów</string>
@@ -310,48 +310,6 @@
   <string name="color_extraction_label">Lawnchair - Pobieranie koloru</string>
   <string name="test_title">Test</string>
   <string name="visibility">Widoczność</string>
-  <!-- Customization Color -->
-  <string name="white">Biały</string>
-  <!-- Customization Color -->
-  <string name="black">Czarny</string>
-  <!-- Customization Color -->
-  <string name="red">Czerwony</string>
-  <!-- Customization Color -->
-  <string name="pink">Różowy</string>
-  <!-- Customization Color -->
-  <string name="purple">Fioletowy</string>
-  <!-- Customization Color -->
-  <string name="deep_purple">Ciemnofioletowy</string>
-  <!-- Customization Color -->
-  <string name="indigo">Indygo</string>
-  <!-- Customization Color -->
-  <string name="blue">Niebieski</string>
-  <!-- Customization Color -->
-  <string name="light_blue">Jasnoniebieski</string>
-  <!-- Customization Color -->
-  <string name="cyan">Cyjan</string>
-  <!-- Customization Color -->
-  <string name="teal">Morski</string>
-  <!-- Customization Color -->
-  <string name="green">Zielony</string>
-  <!-- Customization Color -->
-  <string name="light_green">Jasnozielony</string>
-  <!-- Customization Color -->
-  <string name="lime">Limonkowy</string>
-  <!-- Customization Color -->
-  <string name="yellow">Żółty</string>
-  <!-- Customization Color -->
-  <string name="amber">Bursztynowy</string>
-  <!-- Customization Color -->
-  <string name="orange">Pomarańczowy</string>
-  <!-- Customization Color -->
-  <string name="deep_orange">Ciemnopomarańczowy</string>
-  <!-- Customization Color -->
-  <string name="brown">Brązowy</string>
-  <!-- Customization Color -->
-  <string name="grey">Szary</string>
-  <!-- Customization Color -->
-  <string name="blue_grey">Niebieskoszary</string>
   <string name="default_text">Domyślny</string>
   <string name="edit_icon_reset">Resetuj</string>
   <string name="show_top_shadow_title">Pokaż górny cień</string>
@@ -410,7 +368,7 @@
   <string name="about_contributors_title">Współtwórcy</string>
   <string name="location_permission_warn">Aby zmienić dostawcę pogodowego wymagane jest uprawienie do lokalizacji!</string>
   <string name="num_cols_drawer_pref_title">Liczba kolumn w szufladzie</string>
-  <string name="pref_cat_drawer">Szuflada</string>
+  <string name="pref_cat_drawer">Szuflada aplikacji</string>
   <string name="shortcut_backport_warning">To może spowolnić urządzenie, używaj na własne ryzyko</string>
   <string name="pref_backport_shortcuts">Skróty</string>
   <string name="weather_api_key_not_set">Nie ustawiony klucz API</string>
@@ -420,9 +378,10 @@
   <string name="pref_all_apps_label_color_variation">Odmiany koloru etykiet ikon w szufladzie aplikacji</string>
   <string name="pref_all_apps_label_color">Kolor etykiet ikon w szufladzie</string>
   <string name="pref_num_rows_drawer">Liczba wierszy w szufladzie</string>
-  <string name="center_wallpaper_pref_title">Wyśrodkowana tapeta gdy jest tylko jedna strona</string>
+  <string name="center_wallpaper_pref_title">Wyśrodkuj tapeta, gdy ekran główny ma tylko jedną stronę</string>
   <string name="vertical_drawer_layout_pref_title">Wyświetl jako pionową listę</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
+  <string name="about_translators">Tłumacze</string>
 </resources>
