@@ -215,10 +215,5 @@ public class LauncherExtension extends Launcher {
         @Override
         public void onDetachedFromWindow() {
         }
-
-        @Override
-        public boolean shouldShowDiscoveryBounce() {
-            return false;
-        }
     }
 }
