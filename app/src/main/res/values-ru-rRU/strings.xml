@@ -384,4 +384,5 @@
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
   <string name="about_translators">Переводчики</string>
+  <string name="lock_desktop">Заблокировать рабочий стол</string>
 </resources>
