@@ -382,4 +382,5 @@
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">MMMM d EEEE</string>
   <string name="about_translators">번역자</string>
+  <string name="lock_desktop">바탕 화면 잠금</string>
 </resources>
