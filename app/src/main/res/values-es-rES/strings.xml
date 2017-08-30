@@ -30,7 +30,7 @@
   <!-- SafeMode shortcut error string -->
   <string name="safemode_shortcut_error">Las aplicaciones descargadas se encuentran deshabilitadas en modo seguro</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">Los widgets son deshabilitados en el Modo Seguro</string>
+  <string name="safemode_widget_error">Widgets deshabilitados en modo seguro</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">Acceso directo no disponible</string>
   <!-- Widgets -->
@@ -225,7 +225,7 @@
   <!-- Label on button to delete wallpaper(s) -->
   <string name="wallpaper_delete">Eliminar</string>
   <!-- Label on button in Wallpaper Picker to pick an image -->
-  <string name="pick_image">Mis fotografías</string>
+  <string name="pick_image">Mis fotos</string>
   <!-- Option in "Select wallpaper from" dialog box -->
   <string name="pick_wallpaper">Fondos de pantalla</string>
   <!-- Title of activity for cropping wallpapers -->
@@ -244,17 +244,17 @@
   <string name="notifications_header">Notificaciones</string>
   <string name="widgets_bottom_sheet_title">Widgets de %1$s</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair es un Launcher creado por Till Kottmann (alias \"deletescape\"), y está basado en Launcher3 de AOSP.</string>
+  <string name="about_text">Lawnchair es un Launcher creado por Till Kottmann (alias deletescape). Basado en Launcher3 de AOSP.</string>
   <string name="about_title">Acerca de</string>
   <string name="changelog_title">Registro de cambios de la build #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Paquete de iconos</string>
   <string name="icon_pack_preference_summary">Selecciona un paquete de iconos</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Utilizar el color del fondo de pantalla para el Dock</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Utilizar el color del fondo de pantalla para el dock</string>
   <string name="hotseat_uses_extracted_colors_pref_on">El dock se colorea con un color extraído del fondo de pantalla</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">El dock será gris, pero será ajustado dependiendo del fondo de pantalla</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">El dock será gris, pero ajustado dependiendo del fondo de pantalla</string>
   <string name="transparent_hotseat_pref_title">Dock transparente</string>
-  <string name="dynamic_ui_pref_title">Extrae el color de acento del fondo de pantalla</string>
+  <string name="dynamic_ui_pref_title">Extraer el color de acento del fondo de pantalla</string>
   <string name="blur_pref_title">Habilitar desenfoque</string>
   <string name="blur_pref_summary">Aplicar efecto de desenfoque en ciertas partes de la interfaz.\nEsto no es compatible cuando se utilizan fondos de pantalla animados</string>
   <string name="blur_radius_pref_title">Radio de desenfoque</string>
@@ -279,7 +279,7 @@
   <string name="debug_pref_title">Opciones de depuración</string>
   <string name="import_export_pref_title">Importar/Exportar</string>
   <string name="show_pixel_bar_pref_title">Mostrar la barra superior al estilo Pixel</string>
-  <string name="use_wide_searchbar_pref_title">Usar barra de busqueda ancha</string>
+  <string name="use_wide_searchbar_pref_title">Usar barra de búsqueda ancha</string>
   <string name="show_mic_pref_title">Mostrar botón de Google Assistant</string>
   <string name="use_round_searhbar">Usar barra de búsqueda redondeada en el cajón de aplicaciones</string>
   <string name="pixel_style_icons_pref_title">Usar iconos al estilo Pixel</string>
@@ -347,7 +347,7 @@
   <string name="pref_applyBlur">Aplicar desenfoque en</string>
   <string name="search_bar">Barra de búsqueda</string>
   <string name="folder">Carpeta</string>
-  <string name="dock_allapps"><![CDATA[Dock y Cajón de aplicaciones]]></string>
+  <string name="dock_allapps"><![CDATA[Dock y cajón de aplicaciones]]></string>
   <string name="app_shortcuts">Accesos directos</string>
   <string name="blur_effect">Efecto de desenfoque</string>
   <string name="enable_editing_pref_title">Habilitar la edición de la pantalla de inicio</string>
@@ -383,4 +383,5 @@
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
   <string name="about_translators">Traductores</string>
+  <string name="lock_desktop">Bloquear escritorio</string>
 </resources>
