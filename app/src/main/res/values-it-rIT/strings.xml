@@ -24,9 +24,9 @@
   <!-- Work folder name -->
   <string name="work_folder_name">Lavoro</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
-  <string name="activity_not_found">App non installata.</string>
+  <string name="activity_not_found">L\'app non è installata.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
-  <string name="activity_not_available">App non disponibile</string>
+  <string name="activity_not_available">L\'app non è disponibile</string>
   <!-- SafeMode shortcut error string -->
   <string name="safemode_shortcut_error">Le app scaricate sono disattivate in modalità provvisoria</string>
   <!-- SafeMode widget error string -->
@@ -55,7 +55,7 @@
   <!-- Error message when user has filled a page -->
   <string name="out_of_space">Spazio nella schermata Home esaurito.</string>
   <!-- Error message when user has filled the hotseat -->
-  <string name="hotseat_out_of_space">Spazio esaurito nella barra dei Preferiti</string>
+  <string name="hotseat_out_of_space">Spazio esaurito nella barra dei Preferiti.</string>
   <!-- All applications label -->
   <string name="all_apps_button_label">Elenco delle app</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
@@ -71,7 +71,7 @@
   <!-- Permission short label -->
   <string name="permlab_install_shortcut">aggiungi scorciatoie</string>
   <!-- Permission description -->
-  <string name="permdesc_install_shortcut">Consente a un\'app di aggiungere scorciatoie automaticamente.</string>
+  <string name="permdesc_install_shortcut">Consente ad un\'app di aggiungere scorciatoie automaticamente.</string>
   <!-- Permission short label -->
   <string name="permlab_read_settings">lettura di impostazioni e scorciatoie della Home</string>
   <!-- Permission description -->
@@ -383,4 +383,5 @@
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
   <string name="about_translators">Traduttori</string>
+  <string name="lock_desktop">Blocca il desktop</string>
 </resources>
