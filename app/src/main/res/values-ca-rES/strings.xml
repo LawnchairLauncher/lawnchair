@@ -35,6 +35,7 @@
   <string name="shortcut_not_available">La drecera no està disponible</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
+  <string name="long_press_widget_to_add">Manteniu premut per triar un widget.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
