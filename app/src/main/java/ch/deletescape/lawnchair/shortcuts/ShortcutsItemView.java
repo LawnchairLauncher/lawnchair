@@ -99,7 +99,7 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
         // Return early if this is not initiated from a touch or not the correct view
         if (!v.isInTouchMode() || !(v.getParent() instanceof DeepShortcutView)) return false;
         // Return early if global dragging is not enabled
-        if (!mLauncher.isDraggingEnabled()) return false;
+        if (!mLauncher.isDraggingEnabled() || mLauncher.isEditingDisabled()) return false;
         // Return early if an item is already being dragged (e.g. when long-pressing two shortcuts)
         if (mLauncher.getDragController().isDragging()) return false;
 
