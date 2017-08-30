@@ -1869,7 +1869,9 @@ public class Launcher extends Activity
                 openNotifications();
                 break;
             case FeatureFlags.PULLDOWN_SEARCH:
-                startSearch("", false, null, false);
+                startActivity(new Intent("com.google.android.googlequicksearchbox.TEXT_ASSIST")
+                        .addFlags(268468224)
+                        .setPackage("com.google.android.googlequicksearchbox"));
                 break;
             case FeatureFlags.PULLDOWN_APPS_SEARCH:
                 onLongClickAllAppsHandle();
