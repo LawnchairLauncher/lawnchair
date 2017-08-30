@@ -99,7 +99,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
 
     // Used in discovery bounce animation to provide the transition without workspace changing.
     private boolean mIsTranslateWithoutWorkspace = false;
-    private AnimatorSet mDiscoBounceAnimation;
+    private Animator mDiscoBounceAnimation;
     private GradientView mGradientView;
 
     private SpringAnimation mSearchSpring;
@@ -421,8 +421,8 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         cancelDiscoveryAnimation();
 
         // assumption is that this variable is always null
-        mDiscoBounceAnimation = (AnimatorSet) AnimatorInflater.loadAnimator(mLauncher,
-                R.anim.discovery_bounce);
+        mDiscoBounceAnimation = AnimatorInflater.loadAnimator(mLauncher,
+                R.animator.discovery_bounce);
         mDiscoBounceAnimation.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animator) {
