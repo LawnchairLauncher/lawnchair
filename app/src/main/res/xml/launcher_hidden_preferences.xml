@@ -4,6 +4,11 @@
         android:key="pref_plane"
         android:title="Amazing Plane" />
 
+    <SwitchPreference
+        android:key="pref_backportAdaptiveIcons"
+        android:title="Turn on the very slowwww adaptive icons backport"
+        android:summary="Requires API24" />
+
     <Preference
         android:key="random_eminem_quote"
         android:title="Random Eminem Quote" />

@@ -147,6 +147,7 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     }
 
     override var overrideIconShape by MutableStringPref(PreferenceFlags.KEY_OVERRIDE_ICON_SHAPE, "")
+    override val backportAdaptiveIcons by BooleanPref(PreferenceFlags.KEY_BACKPORT_ADAPTIVE_ICONS, false)
     override val weatherProvider by StringPref(PreferenceFlags.KEY_WEATHER_PROVIDER, PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS)
     override var previousBuildNumber by MutableIntPref(PreferenceFlags.KEY_PREVIOUS_BUILD_NUMBER, 0)
 

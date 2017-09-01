@@ -85,6 +85,7 @@ import ch.deletescape.lawnchair.config.IThemer;
 import ch.deletescape.lawnchair.config.ThemeProvider;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.graphics.ShadowGenerator;
+import ch.deletescape.lawnchair.pixelify.AdaptiveIconDrawableCompat;
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.preferences.PreferenceFlags;
 import ch.deletescape.lawnchair.preferences.PreferenceProvider;
@@ -202,7 +203,7 @@ public final class Utilities {
             Drawable icon, UserHandle user, Context context) {
         float scale = IconNormalizer.getInstance().getScale(icon, null);
         Bitmap bitmap = createIconBitmap(icon, context, scale);
-        if (ATLEAST_OREO && icon instanceof AdaptiveIconDrawable)
+        if (isAdaptive(icon))
             bitmap = addShadowToIcon(bitmap, bitmap.getWidth());
         return badgeIconForUser(bitmap, user, context);
     }
@@ -275,13 +276,9 @@ public final class Utilities {
         return createIconBitmap(icon, context, 1.0f /* scale */);
     }
 
-    /**
-     * @param scale the scale to apply before drawing {@param icon} on the canvas
-     */
     public static Bitmap createIconBitmap(Drawable icon, Context context, float scale) {
         synchronized (sCanvas) {
             final int iconBitmapSize = getIconBitmapSize();
-
             int width = iconBitmapSize;
             int height = iconBitmapSize;
 
@@ -297,6 +294,7 @@ public final class Utilities {
                     bitmapDrawable.setTargetDensity(context.getResources().getDisplayMetrics());
                 }
             }
+
             int sourceWidth = icon.getIntrinsicWidth();
             int sourceHeight = icon.getIntrinsicHeight();
             if (sourceWidth > 0 && sourceHeight > 0) {
@@ -308,27 +306,34 @@ public final class Utilities {
                     width = (int) (height * ratio);
                 }
             }
-
             // no intrinsic size --> use default size
             int textureWidth = iconBitmapSize;
             int textureHeight = iconBitmapSize;
 
-            final Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
+            Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
                     Bitmap.Config.ARGB_8888);
             final Canvas canvas = sCanvas;
             canvas.setBitmap(bitmap);
 
-            final int left = (textureWidth - width) / 2;
-            final int top = (textureHeight - height) / 2;
+            final int left = (textureWidth-width) / 2;
+            final int top = (textureHeight-height) / 2;
 
             sOldBounds.set(icon.getBounds());
-            icon.setBounds(left, top, left + width, top + height);
+            if (Utilities.isAdaptive(icon)) {
+                int offset = Math.max((int)(ShadowGenerator.BLUR_FACTOR * iconBitmapSize),
+                        Math.min(left, top));
+                int size = Math.max(width, height);
+                icon.setBounds(offset, offset, size, size);
+            } else {
+                icon.setBounds(left, top, left+width, top+height);
+            }
             canvas.save(Canvas.MATRIX_SAVE_FLAG);
             canvas.scale(scale, scale, textureWidth / 2, textureHeight / 2);
             icon.draw(canvas);
             canvas.restore();
             icon.setBounds(sOldBounds);
             canvas.setBitmap(null);
+
             return bitmap;
         }
     }
@@ -959,5 +964,9 @@ public final class Utilities {
         clockApps.add("com.sec.android.app.clockpackage/com.sec.android.app.clockpackage.ClockPackage"); // Samsung
 
         return clockApps.contains(componentName.flattenToString());
+    }
+
+    public static boolean isAdaptive(Drawable drawable) {
+        return ATLEAST_OREO && drawable instanceof AdaptiveIconDrawable || drawable instanceof AdaptiveIconDrawableCompat;
     }
 }

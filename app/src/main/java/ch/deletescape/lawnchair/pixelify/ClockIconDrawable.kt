@@ -115,6 +115,10 @@ class ClockIconDrawable(val context: Context, val adaptive: Boolean) : Drawable(
                 return Wrapper(AdaptiveIconDrawable(
                         ColorDrawable(context.resources.getColor(R.color.blue_grey_100)),
                         ClockIconDrawable(context, true)), true)
+            } else if (Utilities.ATLEAST_NOUGAT) {
+                return Wrapper(AdaptiveIconDrawableCompat(
+                        ColorDrawable(context.resources.getColor(R.color.blue_grey_100)),
+                        ClockIconDrawable(context, true), false), true)
             } else {
                 return Wrapper(ClockIconDrawable(context, false), false)
             }
@@ -157,9 +161,15 @@ class ClockIconDrawable(val context: Context, val adaptive: Boolean) : Drawable(
                 val scale = IconNormalizer.getInstance().getScale(drawable, null)
                 val inset = ((width - (width * scale)) / 2).toInt()
                 drawable.setBounds(inset, inset, width - inset, height - inset)
-                AdaptiveIconDrawable(ColorDrawable(Color.WHITE), ColorDrawable(Color.WHITE)).apply {
-                    setBounds(inset, inset, width - inset, height - inset)
-                }.draw(canvas)
+                if (Utilities.ATLEAST_OREO) {
+                    AdaptiveIconDrawable(ColorDrawable(Color.WHITE), ColorDrawable(Color.WHITE)).apply {
+                        setBounds(inset, inset, width - inset, height - inset)
+                    }.draw(canvas)
+                } else {
+                    AdaptiveIconDrawableCompat(ColorDrawable(Color.WHITE), ColorDrawable(Color.WHITE), false).apply {
+                        setBounds(inset, inset, width - inset, height - inset)
+                    }.draw(canvas)
+                }
                 shadow = BitmapDrawable(Utilities.getShadowForIcon(bitmap, width))
                 shadow?.setBounds(0, 0, width, height)
             } else {

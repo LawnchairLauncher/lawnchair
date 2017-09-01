@@ -39,6 +39,7 @@ public class PixelIconProvider {
     private PackageManager mPackageManager;
     private IconPack sIconPack;
     private Context mContext;
+    private final boolean mBackportAdaptive;
     private final IPreferenceProvider mPrefs;
 
     private ArrayList<String> mCalendars;
@@ -52,6 +53,7 @@ public class PixelIconProvider {
         mPackageManager = context.getPackageManager();
         mContext = context;
         mPrefs = Utilities.getPrefs(mContext);
+        mBackportAdaptive = mPrefs.getBackportAdaptiveIcons();
         updateIconPack();
     }
 
@@ -90,7 +92,10 @@ public class PixelIconProvider {
                 if (eventType == XmlPullParser.START_TAG && parseXml.getName().equals("application"))
                     for (int i = 0; i < parseXml.getAttributeCount(); i++)
                         if (parseXml.getAttributeName(i).equals("roundIcon"))
-                            return resourcesForApplication.getDrawableForDensity(Integer.parseInt(parseXml.getAttributeValue(i).substring(1)), iconDpi);
+                            return mBackportAdaptive ?
+                                    AdaptiveIconProvider.Companion.
+                                        getDrawableForDensity(resourcesForApplication, Integer.parseInt(parseXml.getAttributeValue(i).substring(1)), iconDpi) :
+                                    resourcesForApplication.getDrawableForDensity(Integer.parseInt(parseXml.getAttributeValue(i).substring(1)), iconDpi);
             parseXml.close();
         } catch (Exception ex) {
             Log.w("getRoundIcon", ex);

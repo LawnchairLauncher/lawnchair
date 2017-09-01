@@ -47,6 +47,9 @@ class IconShapeOverride {
     companion object {
 
         fun isSupported(context: Context): Boolean {
+            if (Utilities.ATLEAST_NOUGAT && prefs(context).backportAdaptiveIcons) {
+                return true
+            }
             if (!Utilities.ATLEAST_OREO) {
                 return false
             }
