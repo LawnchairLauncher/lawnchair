@@ -190,6 +190,8 @@
     <dimen name="bg_popup_item_width">220.0dip</dimen>
     <dimen name="bg_popup_item_height">56.0dip</dimen>
     <dimen name="popup_items_spacing">4.0dip</dimen>
+    <dimen name="popup_items_spacing_card">0dp</dimen>
+    <dimen name="bg_card_rect_radius">2dp</dimen>
     <dimen name="horizontal_ellipsis_size">18.0dip</dimen>
     <dimen name="horizontal_ellipsis_offset">19.0dip</dimen>
     <dimen name="swipe_helper_falsing_threshold">70.0dip</dimen>

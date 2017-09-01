@@ -20,7 +20,6 @@
     android:layout_width="@dimen/bg_popup_item_width"
     android:layout_height="wrap_content"
     android:elevation="@dimen/deep_shortcuts_elevation"
-    android:background="@drawable/bg_white_round_rect"
     android:backgroundTint="?attr/notificationBeneathColor">
 
     <RelativeLayout
@@ -29,10 +28,18 @@
         android:orientation="vertical"
         android:clipChildren="false">
 
+        <View
+            android:id="@+id/top_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/popup_item_divider_height"
+            android:background="?android:listDivider"
+            android:visibility="gone"/>
+
         <FrameLayout
             android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="@dimen/notification_header_height"
+            android:layout_below="@id/top_divider"
             android:paddingStart="@dimen/notification_padding_start"
             android:paddingEnd="@dimen/notification_padding_end"
             android:background="?attr/appPopupHeaderBgColor"
@@ -67,7 +74,7 @@
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/popup_item_divider_height"
-            android:background="?android:attr/listDivider"
+            android:background="?android:listDivider"
             android:layout_below="@id/main_view"/>
 
         <include layout="@layout/notification_footer"
@@ -75,6 +82,14 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/notification_footer_height"
             android:layout_below="@id/divider" />
+
+        <View
+            android:id="@+id/bottom_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/popup_item_divider_height"
+            android:layout_below="@id/footer"
+            android:background="?android:listDivider"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 

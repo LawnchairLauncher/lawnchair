@@ -35,6 +35,7 @@ import android.widget.FrameLayout;
 import ch.deletescape.lawnchair.LogAccelerateInterpolator;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
+import ch.deletescape.lawnchair.popup.theme.IPopupThemer;
 import ch.deletescape.lawnchair.util.PillRevealOutlineProvider;
 
 /**
@@ -55,6 +56,8 @@ public abstract class PopupItemView extends FrameLayout
     private final Matrix mMatrix = new Matrix();
     private Bitmap mRoundedCornerBitmap;
 
+    private IPopupThemer mTheme;
+
     public PopupItemView(Context context) {
         this(context, null, 0);
     }
@@ -67,6 +70,7 @@ public abstract class PopupItemView extends FrameLayout
         super(context, attrs, defStyle);
 
         mPillRect = new Rect();
+        mTheme = Utilities.getThemer().popupTheme(context);
 
         // Initialize corner clipping Bitmap and Paint.
         int radius = (int) getBackgroundRadius();
@@ -180,7 +184,15 @@ public abstract class PopupItemView extends FrameLayout
     }
 
     protected float getBackgroundRadius() {
-        return getResources().getDimensionPixelSize(R.dimen.bg_round_rect_radius);
+        return getResources().getDimensionPixelSize(mTheme.getBackgroundRadius());
+    }
+
+    protected PopupContainerWithArrow getContainer() {
+        if (getParent() instanceof PopupContainerWithArrow) {
+            return (PopupContainerWithArrow) getParent();
+        } else {
+            return (PopupContainerWithArrow) getParent().getParent().getParent();
+        }
     }
 
     public abstract int getArrowColor(boolean isArrowAttachedToBottom);

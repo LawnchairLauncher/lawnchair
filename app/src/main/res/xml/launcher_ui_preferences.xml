@@ -249,6 +249,12 @@
             android:entryValues="@array/themeModeValues" />
 
         <SwitchPreference
+            android:key="pref_popupCardTheme"
+            android:title="@string/popup_card_theme_title"
+            android:defaultValue="false"
+            android:persistent="true" />
+
+        <SwitchPreference
             android:key="pref_enableBlur"
             android:title="@string/blur_pref_title"
             android:summary="@string/blur_pref_summary"

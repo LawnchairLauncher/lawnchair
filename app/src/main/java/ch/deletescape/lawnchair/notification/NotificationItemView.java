@@ -47,6 +47,7 @@ public class NotificationItemView extends PopupItemView {
 
     private TextView mHeaderCount;
     private View mDivider;
+    private FrameLayout mHeaderView;
     private NotificationMainView mMainView;
     private NotificationFooterLayout mFooter;
     private SwipeHelper mSwipeHelper;
@@ -69,6 +70,7 @@ public class NotificationItemView extends PopupItemView {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mHeaderCount = findViewById(R.id.notification_count);
+        mHeaderView = findViewById(R.id.header);
         mMainView = findViewById(R.id.main_view);
         mDivider = findViewById(R.id.divider);
         mFooter = findViewById(R.id.footer);
@@ -160,6 +162,11 @@ public class NotificationItemView extends PopupItemView {
         } else {
             mFooter.trimNotifications(notificationKeys);
         }
+    }
+
+    public void showSectionDivider(boolean isAboveIcon) {
+        mHeaderView.getLayoutParams().height = getResources().getDimensionPixelSize(R.dimen.system_shortcut_header_height);
+        findViewById(isAboveIcon ? R.id.top_divider : R.id.bottom_divider).setVisibility(VISIBLE);
     }
 
     @Override

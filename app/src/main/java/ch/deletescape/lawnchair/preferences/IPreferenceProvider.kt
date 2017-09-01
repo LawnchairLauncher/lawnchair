@@ -41,6 +41,7 @@ interface IPreferenceProvider {
     // defines if a pinch gesture opens the desktop edit page
     val pinchToOverview: Boolean
     val centerWallpaper: Boolean
+    val popupCardTheme: Boolean
 
     // -------------------
     // 4) Weather

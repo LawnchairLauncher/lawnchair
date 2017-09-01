@@ -2,16 +2,10 @@ package ch.deletescape.lawnchair.config
 
 import android.content.Context
 import ch.deletescape.lawnchair.allapps.theme.IAllAppsThemer
+import ch.deletescape.lawnchair.popup.theme.IPopupThemer
 
 interface IThemer {
 
-    // -------------------
-    // 1) App Theme
-    // -------------------
-
-    // -------------------
-    // 2) All Apps Drawer
-    // -------------------
-
     fun allAppsTheme(context: Context): IAllAppsThemer
+    fun popupTheme(context: Context): IPopupThemer
 }

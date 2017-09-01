@@ -42,6 +42,11 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
     }
 
     public ValueAnimator createRevealAnimator(final View revealView, boolean isReversed, final boolean restoreOutline) {
+        return createRevealAnimator(revealView, isReversed, restoreOutline, false);
+    }
+
+    public ValueAnimator createRevealAnimator(final View revealView, boolean isReversed,
+                                              final boolean restoreOutline, final boolean alternateRestoreOutline) {
         ValueAnimator va =
                 isReversed ? ValueAnimator.ofFloat(1f, 0f) : ValueAnimator.ofFloat(0f, 1f);
         final float elevation = revealView.getElevation();
@@ -67,6 +72,8 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
                     if (restoreOutline) {
                         revealView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
                         revealView.setClipToOutline(false);
+                    } else if (alternateRestoreOutline) {
+                        revealView.setOutlineProvider(new RoundedBoundsOutlineProvider(mOutlineRadius));
                     }
                     if (shouldRemoveElevationDuringAnimation()) {
                         revealView.setTranslationZ(0);
@@ -93,5 +100,19 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
     @Override
     public void getOutline(View v, Outline outline) {
         outline.setRoundRect(mOutline, mOutlineRadius);
+    }
+
+    private static class RoundedBoundsOutlineProvider extends ViewOutlineProvider {
+
+        private final float mRadius;
+
+        private RoundedBoundsOutlineProvider(float radius) {
+            mRadius = radius;
+        }
+
+        @Override
+        public void getOutline(View view, Outline outline) {
+            outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), mRadius);
+        }
     }
 }
