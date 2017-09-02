@@ -180,7 +180,8 @@
 
         <activity-alias
             android:name=".FakeLauncher"
-            android:targetActivity=".BlankActivity">
+            android:targetActivity=".BlankActivity"
+            android:enabled="false">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
