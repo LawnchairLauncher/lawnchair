@@ -64,6 +64,8 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
@@ -799,6 +801,24 @@ public final class Utilities {
 
     public static void stackTrace() {
         (new Throwable()).printStackTrace();
+    }
+
+    public static void setDefaultLauncher(@NotNull Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        ComponentName fakeLauncher =
+                new ComponentName(context.getPackageName(), context.getPackageName() + ".FakeLauncher");
+        ComponentName launcher = new ComponentName(context, Launcher.class);
+
+        packageManager.setComponentEnabledSetting(fakeLauncher, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+        packageManager.setComponentEnabledSetting(launcher, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+
+        Intent picker = new Intent(Intent.ACTION_MAIN);
+        picker.addCategory(Intent.CATEGORY_HOME);
+        picker.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(picker);
+
+        packageManager.setComponentEnabledSetting(fakeLauncher, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
+        packageManager.setComponentEnabledSetting(launcher, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
     }
 
     /**

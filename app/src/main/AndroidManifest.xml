@@ -43,10 +43,10 @@
         android:fullBackupOnly="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:restoreAnyVersion="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
         <activity
             android:name=".Launcher"
@@ -68,6 +68,9 @@
                 <category android:name="android.intent.category.MONKEY" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
         <activity
             android:name=".settings.ui.SettingsActivity"
@@ -111,12 +114,10 @@
             android:theme="@style/Theme.Transparent" />
 
         <provider
-            android:authorities="${applicationId}.kustomsupport.kustom5secsprovider"
             android:name=".kustomsupport.Kustom5SecsProvider"
+            android:authorities="${applicationId}.kustomsupport.kustom5secsprovider"
             android:exported="true"
             android:grantUriPermissions="true" />
-
-
         <provider
             android:name=".LauncherProvider"
             android:authorities="${applicationId}.settings"
@@ -167,14 +168,27 @@
         <meta-data
             android:name="com.google.android.awareness.API_KEY"
             android:value="${awarenessApiKey}" />
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${awarenessApiKey}" />
-        
-        <meta-data 
+        <meta-data
             android:name="android.max_aspect"
             android:value="2.1" />
+
+        <activity android:name=".BlankActivity"
+            android:theme="@style/Theme.Transparent" />
+
+        <activity-alias
+            android:name=".FakeLauncher"
+            android:targetActivity=".BlankActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
     </application>
 
 </manifest>
