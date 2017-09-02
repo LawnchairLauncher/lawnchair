@@ -24,7 +24,7 @@ class IconShapeOverride {
 
         override fun onPreferenceChange(preference: Preference, obj: Any): Boolean {
             val str = obj as String
-            if (getAppliedValue(context) != str) {
+            if (getAppliedValue(context).maskPath != str) {
                 prefs(context).blockingEdit { overrideIconShape = str }
                 LauncherAppState.getInstance().iconCache.clear()
                 Process.killProcess(Process.myPid())
@@ -46,6 +46,8 @@ class IconShapeOverride {
 
     companion object {
 
+        const val planeMask = "M21,16V14L13,9V3.5A1.5,1.5 0 0,0 11.5,2A1.5,1.5 0 0,0 10,3.5V9L2,14V16L10,13.5V19L8,20.5V22L11.5,21L15,22V20.5L13,19V13.5L21,16Z"
+
         fun isSupported(context: Context): Boolean {
             if (Utilities.ATLEAST_NOUGAT && prefs(context).backportAdaptiveIcons) {
                 return true
@@ -64,9 +66,9 @@ class IconShapeOverride {
         fun apply(context: Context) {
             if (Utilities.ATLEAST_OREO) {
                 val appliedValue = getAppliedValue(context)
-                if (!TextUtils.isEmpty(appliedValue) && isSupported(context)) {
+                if (!TextUtils.isEmpty(appliedValue.maskPath) && isSupported(context)) {
                     try {
-                        systemResField.set(null, ResourcesOverride(Resources.getSystem(), configResId, appliedValue))
+                        systemResField.set(null, ResourcesOverride(Resources.getSystem(), configResId, appliedValue.maskPath))
                     } catch (e: Throwable) {
                         Log.e("IconShapeOverride", "Unable to override icon shape", e)
                         prefs(context).removeOverrideIconShape()
@@ -86,8 +88,11 @@ class IconShapeOverride {
         private val configResId: Int
             get() = Resources.getSystem().getIdentifier("config_icon_mask", "string", "android")
 
-        private fun getAppliedValue(context: Context): String {
-            return prefs(context).overrideIconShape
+        fun getAppliedValue(context: Context): ShapeInfo {
+            val prefs = prefs(context)
+            val enablePlanes = prefs.enablePlanes
+            return ShapeInfo(if (enablePlanes) planeMask else prefs.overrideIconShape,
+                    if (enablePlanes) 24 else 100)
         }
 
         private fun prefs(context: Context): IPreferenceProvider {
@@ -96,8 +101,10 @@ class IconShapeOverride {
 
         fun handlePreferenceUi(listPreference: ListPreference) {
             val context = listPreference.context
-            listPreference.value = getAppliedValue(context)
+            listPreference.value = getAppliedValue(context).maskPath
             listPreference.onPreferenceChangeListener = PreferenceChangeHandler(context)
         }
     }
+
+    data class ShapeInfo(val maskPath: String, val size: Int)
 }

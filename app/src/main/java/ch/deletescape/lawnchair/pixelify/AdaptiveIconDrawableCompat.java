@@ -56,6 +56,7 @@ import java.lang.reflect.Method;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
+import ch.deletescape.lawnchair.graphics.IconShapeOverride;
 import ch.deletescape.lawnchair.util.DrawableUtils;
 
 /**
@@ -88,7 +89,7 @@ public class AdaptiveIconDrawableCompat extends Drawable implements Drawable.Cal
     /**
      * Mask path is defined inside device configuration in following dimension: [100 x 100]
      */
-    public static final float MASK_SIZE = 100f;
+    public static float MASK_SIZE = 100f;
 
     /**
      * Launcher icons design guideline
@@ -201,10 +202,12 @@ public class AdaptiveIconDrawableCompat extends Drawable implements Drawable.Cal
     private String getMaskPath() {
         //return "M50,0L100,0 100,100 0,100 0,0z";
         String mask = "M50 0C77.6 0 100 22.4 100 50C100 77.6 77.6 100 50 100C22.4 100 0 77.6 0 50C0 22.4 22.4 0 50 0Z";
+        MASK_SIZE = 100f;
         try {
-            String override = Utilities.getPrefs(LauncherAppState.getInstance().getContext()).getOverrideIconShape();
-            if (!TextUtils.isEmpty(override)) {
-                mask = override;
+            IconShapeOverride.ShapeInfo override = IconShapeOverride.Companion.getAppliedValue(LauncherAppState.getInstance().getContext());
+            if (!TextUtils.isEmpty(override.getMaskPath())) {
+                mask = override.getMaskPath();
+                MASK_SIZE = (float) override.getSize();
             }
         } catch (Exception ignored) {
 
@@ -429,14 +432,22 @@ public class AdaptiveIconDrawableCompat extends Drawable implements Drawable.Cal
             if (mUseMyUglyWorkaround) {
                 // TODO: remove this ugly and slow code
                 if (mMaskBitmap != null) {
-                    int color, alpha;
-                    for (int i = 0; i < mLayersBitmap.getWidth(); i++) {
-                        for (int j = 0; j < mLayersBitmap.getHeight(); j++) {
-                            color = mLayersBitmap.getPixel(i, j);
-                            alpha = mMaskBitmap.getPixel(i, j);
-                            mLayersBitmap.setPixel(i, j, color & 0x00FFFFFF | alpha & 0xFF000000);
+                    int width = mLayersBitmap.getWidth();
+                    int height = mLayersBitmap.getHeight();
+                    int[] colors = new int[width * height];
+                    int[] alphas = new int[width * height];
+                    mLayersBitmap.getPixels(colors, 0, width, 0, 0, width, height);
+                    mMaskBitmap.getPixels(alphas, 0, width, 0, 0, width, height);
+                    int color, alpha, index;
+                    for (int i = 0; i < width; i++) {
+                        for (int j = 0; j < height; j++) {
+                            index = i * height + j;
+                            color = colors[index];
+                            alpha = alphas[index];
+                            colors[index] = color & 0x00FFFFFF | alpha & 0xFF000000;
                         }
                     }
+                    mLayersBitmap.setPixels(colors, 0, width, 0, 0, width, height);
                 }
             } else {
                 mPaint.setShader(mLayersShader);
@@ -446,10 +457,6 @@ public class AdaptiveIconDrawableCompat extends Drawable implements Drawable.Cal
             Rect bounds = getBounds();
             canvas.drawBitmap(mUseMyUglyWorkaround ? mLayersBitmap : mMaskBitmap, bounds.left, bounds.top, mPaint);
         }
-    }
-
-    public void setUseMyUglyWorkaround(boolean useMyUglyWorkaround) {
-        mUseMyUglyWorkaround = useMyUglyWorkaround;
     }
 
     @Override
