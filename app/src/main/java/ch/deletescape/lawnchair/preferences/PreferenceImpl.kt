@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.view.View
 import ch.deletescape.lawnchair.Launcher
 import ch.deletescape.lawnchair.LauncherFiles
+import ch.deletescape.lawnchair.Utilities
 import ch.deletescape.lawnchair.config.FeatureFlags
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors
 import kotlin.reflect.KProperty
@@ -147,7 +148,7 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     }
 
     override var overrideIconShape by MutableStringPref(PreferenceFlags.KEY_OVERRIDE_ICON_SHAPE, "")
-    override val backportAdaptiveIcons by BooleanPref(PreferenceFlags.KEY_BACKPORT_ADAPTIVE_ICONS, false)
+    override val backportAdaptiveIcons = Utilities.ATLEAST_NOUGAT
     override val weatherProvider by StringPref(PreferenceFlags.KEY_WEATHER_PROVIDER, PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS)
     override var previousBuildNumber by MutableIntPref(PreferenceFlags.KEY_PREVIOUS_BUILD_NUMBER, 0)
 

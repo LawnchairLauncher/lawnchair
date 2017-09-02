@@ -201,6 +201,10 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                     ((PreferenceCategory) findPreference("prefCat_homeScreen"))
                             .removePreference(overrideShapePreference);
                 }
+                if (Utilities.ATLEAST_NOUGAT) {
+                    ((PreferenceCategory) findPreference("prefCat_homeScreen"))
+                        .removePreference(findPreference(PreferenceFlags.KEY_PREF_PIXEL_STYLE_ICONS));
+                }
             } else if (getContent() == R.xml.launcher_about_preferences) {
                 findPreference("about_version").setSummary(BuildConfig.VERSION_NAME);
                 if (BuildConfig.TRAVIS && !BuildConfig.TAGGED_BUILD) {
