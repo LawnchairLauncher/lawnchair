@@ -115,6 +115,7 @@
   <string name="folder_name_format">Mappe: <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Strings for the customization mode -->
   <!-- Text for widget add button -->
+  <string name="widget_button_text">Widgets</string>
   <!-- Text for wallpaper change button -->
   <string name="wallpaper_button_text">Baggrunde</string>
   <!-- Text for settings button -->
@@ -241,32 +242,128 @@
   <string name="label_voice_search">Voice søgning</string>
   <string name="shortcuts_menu_with_notifications_description">%1$d genveje og %2$d notifikationer til %3$s</string>
   <string name="notifications_header">Underretninger</string>
+  <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair er en Launcher app skabt af Till Kottmann (aka deletescape). Det er baseret på Launcher3 fra AOSP.</string>
   <string name="about_title">Om</string>
+  <string name="changelog_title">Ændringslog for version #%d</string>
+  <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Ikon pakke</string>
   <string name="icon_pack_preference_summary">Vælg et ikon Pack</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Dock anvender tapetfarver</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Havnen vil blive farvet med en farve uddraget fra tapetet</string>
-  <string name="blur_pref_title">Aktiver slør</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">Docken vil blive farvet grå, men justeret af tapetets lysstyrke</string>
+  <string name="transparent_hotseat_pref_title">Gennemsigtig Dock</string>
+  <string name="blur_pref_title">Aktiver sløringseffekt</string>
+  <string name="blur_pref_summary">Anvend sløringseffekt på dele af interface\nIkke kompatibel med live wallpapers</string>
   <string name="blur_radius_pref_title">Slør radius</string>
   <string name="white_google_icon_pref_title">Brug hvidt Google ikon</string>
+  <string name="hide_icon_labels_pref_title">Skjul ikontekster på hjemmeskærmen</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Skjul ikontekst i draweren</string>
   <string name="workspace_label_color_hue_pref_title">Color of icon labels on homescreen</string>
   <string name="workspace_label_color_variation_pref_title">Farvevariation af ikonetiketter på startskærmen</string>
   <string name="all_apps_opacity_pref_title">Skuffe gennemsigtighed</string>
+  <string name="num_cols_pref_title">Antal kolonner</string>
+  <string name="num_rows_pref_title">Antal rækker</string>
+  <string name="num_hotseat_icons_pref_title">Antal ikoner i docken</string>
   <string name="icon_scale_pref_title">Ikon størrelse</string>
   <string name="icon_text_scale_pref_title">Ikon tekst størrelse</string>
   <string name="full_width_widgets_pref_summary">Tillad widgets at spænde over hele bredden uden polstring</string>
   <string name="notification_access_pref_title">Notifikations tegn og forhåndsvisning</string>
   <string name="notification_access_pref_summary">Tillad Lawnchair adgang til dine notifikationer for at aktivere denne egenskab</string>
+  <string name="ui_pref_title">Brugerflade</string>
+  <string name="pixel_style_pref_title">Brug Pixel stil</string>
   <string name="behavior_pref_title">Adfærd</string>
   <string name="debug_pref_title">Fejlfindnig</string>
   <string name="import_export_pref_title">Importér/eksportér</string>
+  <string name="show_pixel_bar_pref_title">Vis Pixel topbar</string>
+  <string name="use_wide_searchbar_pref_title">Brug bred søgebar</string>
+  <string name="show_mic_pref_title">Vis knappen \'Google Assistant\'</string>
+  <string name="use_round_searhbar">Brug rund søgebar i programmer</string>
+  <string name="pixel_style_icons_pref_title">Brug Pixel ikoner</string>
   <string name="pixel_style_icons_pref_summary">Når aktiverede cirkulære ikoner anvendes, hvor det er muligt</string>
+  <string name="show_google_now_tab_pref_title">Vis Google Nu side</string>
+  <string name="restart_lawnchair_pref_title">Genstart Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">Kan være nyttigt, hvis nogle indstillinger ikke anvendes korrekt</string>
+  <string name="rebuild_icondb_pref_title">Genopret ikon database</string>
+  <string name="pinch_to_overview_pref_title">Træk sammen for oversigt</string>
+  <string name="pinch_to_overview_pref_summary">Træk sammen på hjemmeskærmen for at vise oversigt</string>
+  <string name="light_statusbar_pref_title">Lysbar status</string>
+  <string name="light_statusbar_pref_force">Statusbaren vil vise mørke ikoner</string>
   <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
+  <string name="haptic_feedback_pref_title">Aktivér vibrering</string>
+  <string name="keep_scroll_state_pref_title">Gem sidste rulleposition</string>
+  <string name="keep_scroll_state_pref_summary">Gem sidste rulleposition i applikationsoversigten</string>
+  <string name="home_opens_drawer_pref_title">Hjem-knappen åbner dine appoversigten</string>
+  <string name="home_opens_drawer_pref_summary">Tryk hjem-knappen på hjemmeskærmen vil åbne appoversigten</string>
+  <string name="show_hidden_pref_title">Vis skjulte apps</string>
+  <string name="show_hidden_pref_on">Skjulte apps bliver vist til at ændre indstillinger for synlighed</string>
+  <string name="show_hidden_pref_off">Skjulte apps vil ikke være synlige</string>
+  <string name="export_db_title">Eksporter database</string>
+  <string name="import_db_title">Importer database</string>
+  <string name="export_prefs_title">Eksporter indstillinger</string>
+  <string name="import_prefs_title">Importer indstillinger</string>
+  <string name="notification_listener_label">Lawnchair - Notifikationsskilte</string>
+  <string name="color_extraction_label">Lawnchar - Farveudtræk</string>
+  <string name="test_title">Test</string>
+  <string name="visibility">Synlighed</string>
+  <string name="default_text">Standard</string>
+  <string name="edit_icon_reset">Nulstil</string>
+  <string name="show_top_shadow_title">Vis skygge i toppen</string>
+  <string name="pref_cat_homescreen">Hjemmeskærm</string>
+  <string name="pref_cat_miscellaneous">Diverse</string>
+  <string name="pref_cat_hotseat">Dock</string>
+  <string name="pref_cat_theme">Tema</string>
+  <string name="theme_pref_title">Tema</string>
+  <string name="theme_light">Lyst</string>
+  <string name="theme_dark">Mørkt</string>
+  <string name="theme_black">Sort</string>
+  <string name="hide_hotseat_pref_title">Gem applikationsbar</string>
+  <string name="all_icons">Alle ikoner</string>
+  <string name="pull_down_action_pref_title">Træk-ned handling</string>
+  <string name="pull_down_do_nothing">Gør ingenting</string>
+  <string name="pull_down_notis">Vis notifikationer</string>
+  <string name="pull_down_search">Åbn søgefunktionen</string>
+  <string name="enable_screen_rotation">Aktiver skærmrotation</string>
   <!-- Import/Export Strings -->
+  <string name="imexport_success">Fuldført!</string>
+  <string name="imexport_error">Fejl: Kunne ikke kopiere fil</string>
+  <string name="imexport_no_backup_found">Ingen sikkerhedskopi fundet</string>
+  <string name="imexport_external_storage_unreadable">Ekstern lagring er ikke læsbar (giv tilladelse i indstillinger)</string>
+  <string name="imexport_external_storage_unwritable">Ekstern lagring er ikke skrivbar (giv tilladelse i indstillinger)</string>
+  <string name="units_metric">Metrisk standard</string>
+  <string name="units_imperial">Imperial standard</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_cat_weather">Vejr</string>
+  <string name="pref_weather_title">Slå vejr til</string>
+  <string name="pref_weather_units">Vejr enheder</string>
+  <string name="pref_weather_city_summary">Brug postnummer for bedste resultat</string>
+  <string name="pref_weather_city_title">By</string>
+  <string name="none">Ingen</string>
+  <string name="pref_applyTheme">Anvend tema</string>
+  <string name="pref_applyBlur">Anvend sløringseffekt på</string>
+  <string name="search_bar">Søgefelt</string>
+  <string name="folder">Mappe</string>
+  <string name="dock_allapps"><![CDATA[Dock & drawer]]></string>
+  <string name="app_shortcuts">App genveje</string>
+  <string name="blur_effect">Sløringseffekt</string>
+  <string name="pref_weather_provider">Udbyder af vejrdata</string>
+  <string name="loading">Indlæser...</string>
+  <string name="icon_shape_square">Firkant</string>
+  <string name="icon_shape_circle">Cirkel</string>
+  <string name="about_summary_title">Oversigt</string>
+  <string name="about_version">Udgave</string>
+  <string name="about_contributors_title">Bidragsydere</string>
+  <string name="pref_cat_drawer">Drawer</string>
+  <string name="weather_api_key_not_set">API-nøgle ikke defineret</string>
+  <string name="pref_weather_api_key_title">API-nøgle</string>
+  <string name="about_changelog">Ændringslog</string>
+  <string name="pref_num_rows_drawer">Antal rækker i applikationsmenuen</string>
+  <string name="vertical_drawer_layout_pref_title">Vertikal liste</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="about_translators">Oversættere</string>
+  <string name="lock_desktop">Lås hjemmeskærm</string>
+  <string name="lawnfeed_not_found">Lawnfeed er ikke installeret</string>
+  <string name="google_app_not_found">Google applikation er ikke installeret</string>
 </resources>
