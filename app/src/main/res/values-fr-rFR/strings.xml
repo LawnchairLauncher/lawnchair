@@ -28,9 +28,9 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">L\'application n\'est pas disponible</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Les applications téléchargées sont désactivées en mode sécurisé</string>
+  <string name="safemode_shortcut_error">L\'application téléchargée est désactivée en mode sans échec</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">Les widgets sont désactivés en mode sécurisé</string>
+  <string name="safemode_widget_error">Les widgets sont désactivés en mode sans échec</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">Le raccourci n\'est pas disponible</string>
   <!-- Widgets -->
@@ -254,7 +254,7 @@
   <string name="hotseat_uses_extracted_colors_pref_on">Le dock sera coloré avec une couleur extraite du fond d\'écran</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Le dock sera de couleur grise, mais ajusté par la luminosité du fond d\'écran</string>
   <string name="transparent_hotseat_pref_title">Dock transparent</string>
-  <string name="dynamic_ui_pref_title">Extraire couleur accentuation du fond d\'écran</string>
+  <string name="dynamic_ui_pref_title">Extraire la couleur d\'accentuation du fond d\'écran</string>
   <string name="blur_pref_title">Activer le flou</string>
   <string name="blur_pref_summary">Appliquer un effet de flou sur des parties de l\'interface\nNon compatible avec les fonds d\'écrans animés</string>
   <string name="blur_radius_pref_title">Rayon du flou</string>
@@ -262,7 +262,7 @@
   <string name="hide_icon_labels_pref_title">Masquer le nom des icônes sur l\'écran d\'accueil</string>
   <string name="hide_all_apps_icon_labels_pref_title">Masquer le nom des icônes dans le tiroir des applications</string>
   <string name="workspace_label_color_hue_pref_title">Couleur des libellés des icônes sur l\'écran d\'accueil</string>
-  <string name="workspace_label_color_variation_pref_title">Variation de couleur libellés des icônes de l\'écran d\'accueil</string>
+  <string name="workspace_label_color_variation_pref_title">Variation de la couleur des libellés des icônes de l\'écran d\'accueil</string>
   <string name="all_apps_opacity_pref_title">Opacité du tiroir des applications</string>
   <string name="num_cols_pref_title">Nombre de colonnes</string>
   <string name="num_rows_pref_title">Nombre de lignes</string>
@@ -300,7 +300,7 @@
   <string name="home_opens_drawer_pref_summary">Appuyer sur le bouton d\'accueil en étant sur l\'écran d\'accueil ouvrira la tiroir des applications</string>
   <string name="show_hidden_pref_title">Afficher les applications cachées</string>
   <string name="show_hidden_pref_on">Les applications cachées seront affichées pour modifier les paramètres de visibilité</string>
-  <string name="show_hidden_pref_off">Les applications cachées ne seront pas visilbles</string>
+  <string name="show_hidden_pref_off">Les applications cachées ne seront pas visibles</string>
   <string name="export_db_title">Exporter la base de données</string>
   <string name="import_db_title">Importer la base de données</string>
   <string name="export_prefs_title">Exporter les paramètres</string>
@@ -347,7 +347,7 @@
   <string name="pref_applyBlur">Appliquez le flou sur</string>
   <string name="search_bar">Barre de recherche</string>
   <string name="folder">Dossier</string>
-  <string name="dock_allapps"><![CDATA[Dock & toutes les applications]]></string>
+  <string name="dock_allapps"><![CDATA[Dock & tiroir d'applications]]></string>
   <string name="app_shortcuts">Raccourcis d\'application</string>
   <string name="blur_effect">Effet de flou</string>
   <string name="enable_editing_pref_title">Activer l\'édition de l\'espace de travail</string>
@@ -384,4 +384,6 @@
   <string name="full_wday_month_day_no_year">EEEE d MMMM</string>
   <string name="about_translators">Traducteurs</string>
   <string name="lock_desktop">Verrouiller l\'écran d\'accueil</string>
+  <string name="lawnfeed_not_found">Paquets non installés</string>
+  <string name="google_app_not_found">Appli. Google non installé</string>
 </resources>
