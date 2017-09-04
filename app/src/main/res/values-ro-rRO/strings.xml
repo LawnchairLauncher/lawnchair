@@ -384,4 +384,7 @@
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">ZZZZ, LLLL, z</string>
   <string name="about_translators">Traducători</string>
+  <string name="lock_desktop">Blocare desktop</string>
+  <string name="lawnfeed_not_found">Lawnfeed neinstalat</string>
+  <string name="google_app_not_found">Aplicația Google nu este instalată</string>
 </resources>
