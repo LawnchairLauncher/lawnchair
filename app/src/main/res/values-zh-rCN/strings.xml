@@ -30,14 +30,14 @@
   <!-- SafeMode shortcut error string -->
   <string name="safemode_shortcut_error">第三方应用在安全模式下被停用</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">安全模式下不允许使用微件</string>
+  <string name="safemode_widget_error">安全模式下不允许使用小部件</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">无法使用快捷方式</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">触摸并按住微件即可选择。</string>
+  <string name="long_press_widget_to_add">触摸并按住小部件即可选择。</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-  <string name="long_accessible_way_to_add">双击并长按即可选择微件或使用自定义操作。</string>
+  <string name="long_accessible_way_to_add">双击并长按即可选择小部件或使用自定义操作。</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
@@ -84,7 +84,7 @@
   <string name="msg_no_phone_permission">不允许使用“<xliff:g id="APP_NAME">%1$s</xliff:g>”拨打电话</string>
   <!-- Widgets: -->
   <!-- Text to show user in place of a gadget when we can't display it properly -->
-  <string name="gadget_error_text">加载微件时出现问题</string>
+  <string name="gadget_error_text">加载小部件时出现问题</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
   <string name="gadget_setup_text">设置</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
@@ -138,7 +138,7 @@
   <string name="abandoned_promises_title">未安装此应用</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
-  <string name="abandoned_promise_explanation">此图标对应的应用未安装。您可以移除此图标，也可以尝试搜索相应的应用并手动安装。</string>
+  <string name="abandoned_promise_explanation">此应用未安装。您可以移除此图标，也可以尝试搜索该应用并手动安装。    </string>
   <!-- Title for an app which is being downloaded. -->
   <string name="app_downloading_title">正在下载<xliff:g id="NAME">%1$s</xliff:g>，已完成 <xliff:g id="PROGRESS">%2$s</xliff:g></string>
   <!-- Title for an app whose download has been started. -->
@@ -241,7 +241,7 @@
   <string name="label_voice_search">语音搜索</string>
   <string name="shortcuts_menu_with_notifications_description">%3$s 有 %1$d 个快捷方式和 %2$d 个通知</string>
   <string name="notifications_header">通知</string>
-  <string name="widgets_bottom_sheet_title">%1$s 微件</string>
+  <string name="widgets_bottom_sheet_title">%1$s 小部件</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair 是 Till Kottmann（又名deletescape）基于 AOSP 的 Launcher3 所开发的启动器应用程序。</string>
   <string name="about_title">关于</string>
@@ -262,14 +262,14 @@
   <string name="hide_all_apps_icon_labels_pref_title">在抽屉里隐藏图标标签</string>
   <string name="workspace_label_color_hue_pref_title">主屏幕应用标签颜色</string>
   <string name="workspace_label_color_variation_pref_title">主屏幕应用标签颜色变化</string>
-  <string name="all_apps_opacity_pref_title">抽屉背景透明度</string>
+  <string name="all_apps_opacity_pref_title">抽屉背景不透明度</string>
   <string name="num_cols_pref_title">列数</string>
   <string name="num_rows_pref_title">行数</string>
   <string name="num_hotseat_icons_pref_title">Dock 栏图标数</string>
   <string name="icon_scale_pref_title">图标大小</string>
   <string name="icon_text_scale_pref_title">图标标签大小</string>
-  <string name="full_width_width_widgets_pref_title">全宽微件</string>
-  <string name="full_width_widgets_pref_summary">允许微件填充整个桌面宽度</string>
+  <string name="full_width_width_widgets_pref_title">全宽小部件</string>
+  <string name="full_width_widgets_pref_summary">允许小部件填充整个桌面宽度</string>
   <string name="notification_access_pref_title">通知角标与预览</string>
   <string name="notification_access_pref_summary">允许 Lawnchair 访问您的通知以启用此功能</string>
   <string name="ui_pref_title">界面</string>
@@ -353,7 +353,7 @@
   <string name="pref_weather_provider">天气提供商</string>
   <string name="loading">正在加载…</string>
   <string name="icon_shape_override_label">更改图标形状</string>
-  <string name="icon_shape_system_default">请勿修改</string>
+  <string name="icon_shape_system_default">不更改</string>
   <string name="icon_shape_square">方形</string>
   <string name="icon_shape_rounded_square">圆角方形</string>
   <string name="icon_shape_squircle">方圆形</string>
@@ -383,4 +383,6 @@
   <string name="full_wday_month_day_no_year">M月dd日EEEE</string>
   <string name="about_translators">译者</string>
   <string name="lock_desktop">锁定桌面</string>
+  <string name="lawnfeed_not_found">未安装 Lawnfeed</string>
+  <string name="google_app_not_found">未安装 Google 应用</string>
 </resources>
