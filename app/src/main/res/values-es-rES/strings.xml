@@ -254,7 +254,7 @@
   <string name="hotseat_uses_extracted_colors_pref_on">El dock se colorea con un color extraído del fondo de pantalla</string>
   <string name="hotseat_uses_extracted_colors_pref_off">El dock será gris, pero ajustado dependiendo del fondo de pantalla</string>
   <string name="transparent_hotseat_pref_title">Dock transparente</string>
-  <string name="dynamic_ui_pref_title">Extraer el color de acento del fondo de pantalla</string>
+  <string name="dynamic_ui_pref_title">Extrae el color de acento del fondo de pantalla</string>
   <string name="blur_pref_title">Habilitar desenfoque</string>
   <string name="blur_pref_summary">Aplicar efecto de desenfoque en ciertas partes de la interfaz.\nEsto no es compatible cuando se utilizan fondos de pantalla animados</string>
   <string name="blur_radius_pref_title">Radio de desenfoque</string>
@@ -384,4 +384,6 @@
   <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
   <string name="about_translators">Traductores</string>
   <string name="lock_desktop">Bloquear escritorio</string>
+  <string name="lawnfeed_not_found">Lawnfeed no instalado</string>
+  <string name="google_app_not_found">Aplicación de Google no instalada</string>
 </resources>
