@@ -384,4 +384,6 @@
   <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
   <string name="about_translators">Tradutores</string>
   <string name="lock_desktop">Bloquear área de trabalho</string>
+  <string name="lawnfeed_not_found">Lawnfeed não instalado</string>
+  <string name="google_app_not_found">Aplicativo Google não instalado</string>
 </resources>
