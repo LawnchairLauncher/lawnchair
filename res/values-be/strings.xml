@@ -27,6 +27,8 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Спампаваная праграма адключана ў Бяспечным рэжыме"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Віджэты адключаны ў Бяспечным рэжыме"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Ярлык недаступны"</string>
+    <string name="home_screen" msgid="806512411299847073">"Галоўны экран"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"Спецыяльныя дзеянні"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Дакраніцеся і ўтрымлiвайце віджэт, каб выбр. яго."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Дакраніцеся двойчы і ўтрымлівайце, каб выбраць віджэт або выкарыстоўваць карыстальніцкія дзеянні."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -37,6 +39,7 @@
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Праграмы загружаюцца…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Праграм, якія адпавядаюць запыту \"<xliff:g id="QUERY">%1$s</xliff:g>\", не знойдзена"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Шукаць іншыя праграмы"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"Апавяшчэнні"</string>
     <string name="out_of_space" msgid="4691004494942118364">"На гэтым Галоўным экране больш няма месца."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"У латку \"Абранае\" больш няма месца"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Спіс праграм"</string>
@@ -95,6 +98,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Праграма для гэтага значка не ўсталявана. Вы можаце выдаліць яе або выканаць пошук і ўсталяваць яе ўручную."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Ідзе спампоўка <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> завершана"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> чакае ўсталёўкі"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Віджэты <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Дадаць на Галоўны экран"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Перамясціць элемент сюды"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Элемент дададзены на галоўны экран"</string>
