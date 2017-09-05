@@ -394,11 +394,31 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         animationOut.play(driftAndAlpha);
 
         animationOut.addListener(new AnimatorListenerAdapter() {
+            // Spring values used when the user has not flung all apps.
+            private final float MAX_RELEASE_VELOCITY = 10000;
+            // The delay (as a % of the animation duration) to start the springs.
+            private final float DELAY = 0.3f;
+
             boolean canceled = false;
 
             @Override
             public void onAnimationCancel(Animator animation) {
                 canceled = true;
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                // Add springs for cases where the user has not flung.
+                // ie. clicking on the caret, releasing all apps so it snaps up.
+                mAppsView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!canceled && !mSpringAnimationHandler.isRunning()) {
+                            float velocity = mProgress * MAX_RELEASE_VELOCITY;
+                            mSpringAnimationHandler.animateToPositionWithVelocity(0, 1, velocity);
+                        }
+                    }
+                }, (long) (mAnimationDuration * DELAY));
             }
 
             @Override
