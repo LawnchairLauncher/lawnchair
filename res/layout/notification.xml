@@ -49,7 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
-                android:gravity="bottom"
+                android:gravity="center_vertical"
                 android:text="@string/notifications_header"
                 android:textSize="@dimen/notification_header_text_size"
                 android:textColor="?android:attr/textColorPrimary" />
@@ -58,7 +58,7 @@
                 android:layout_width="@dimen/notification_icon_size"
                 android:layout_height="match_parent"
                 android:layout_gravity="end"
-                android:gravity="bottom|center_horizontal"
+                android:gravity="center"
                 android:textSize="@dimen/notification_header_count_text_size"
                 android:fontFamily="sans-serif-medium"
                 android:textColor="?android:attr/textColorPrimary" />
