@@ -141,8 +141,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
                 // Always a break point for a symbol
                 return true;
             default:
-                // Always a break point at first character
-                return  prevType == Character.UNASSIGNED;
+                return  false;
         }
     }
 
