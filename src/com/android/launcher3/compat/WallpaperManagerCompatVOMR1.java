@@ -33,11 +33,15 @@ public class WallpaperManagerCompatVOMR1 extends WallpaperManagerCompat {
     private static final String TAG = "WMCompatVOMR1";
 
     private final WallpaperManager mWm;
-    private final Method mWCColorHintsMethod;
+    private Method mWCColorHintsMethod;
 
     WallpaperManagerCompatVOMR1(Context context) throws Exception {
         mWm = context.getSystemService(WallpaperManager.class);
-        mWCColorHintsMethod = WallpaperColors.class.getDeclaredMethod("getColorHints");
+        try {
+            mWCColorHintsMethod = WallpaperColors.class.getDeclaredMethod("getColorHints");
+        } catch (Exception exc) {
+            Log.e(TAG, "getColorHints not available", exc);
+        }
     }
 
     @Nullable
@@ -49,11 +53,9 @@ public class WallpaperManagerCompatVOMR1 extends WallpaperManagerCompat {
     @Override
     public void addOnColorsChangedListener(final OnColorsChangedListenerCompat listener) {
         OnColorsChangedListener onChangeListener = new OnColorsChangedListener() {
+            @Override
             public void onColorsChanged(WallpaperColors colors, int which) {
                 listener.onColorsChanged(convertColorsObject(colors), which);
-            }
-            public void onColorsChanged(WallpaperColors colors, int which, int userId) {
-                onColorsChanged(colors, which);
             }
         };
         mWm.addOnColorsChangedListener(onChangeListener, null);
@@ -71,7 +73,9 @@ public class WallpaperManagerCompatVOMR1 extends WallpaperManagerCompat {
         int tertiaryVal = tertiary != null ? tertiary.toArgb() : 0;
         int colorHints = 0;
         try {
-            colorHints = (Integer) mWCColorHintsMethod.invoke(colors);
+            if (mWCColorHintsMethod != null) {
+                colorHints = (Integer) mWCColorHintsMethod.invoke(colors);
+            }
         } catch (Exception exc) {
             Log.e(TAG, "error calling color hints", exc);
         }
