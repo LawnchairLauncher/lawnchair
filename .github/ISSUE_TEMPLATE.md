@@ -1,5 +1,5 @@
 <!--- Provide a general summary of the issue in the Title above -->
-<!--- Make sure that you have read and understood the FAQ: https://github.com/amirzaidi/Launcher3#faq -->
+<!--- Make sure that you have read and understood the FAQ: https://github.com/Deletescape-Media/Lawnchair/wiki/FAQ -->
 <!--- And check if your issue or something similar has been reported before (if yes upvote/comment there) -->
 
 ## Description
