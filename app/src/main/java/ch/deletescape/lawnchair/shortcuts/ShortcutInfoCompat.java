@@ -217,7 +217,7 @@ public class ShortcutInfoCompat {
     }
 
     public boolean useNative() {
-        return Utilities.isNycMR1OrAbove() && mShortcutInfo != null;
+        return Utilities.ATLEAST_NOUGAT_MR1 && mShortcutInfo != null;
     }
 
     public LauncherActivityInfoCompat getActivityInfo(Context context) {

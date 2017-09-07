@@ -75,4 +75,5 @@
     <color name="folder_name_highlight_color">#ffCCCCCC</color>
     <color name="folder_name_hint_color">#ff808080</color>
     <color name="wallpaper_picker_item_label_text_color">#fff</color>
+    <color name="qsb_connector_gradient_end_color">#66ffffff</color>
 </resources>

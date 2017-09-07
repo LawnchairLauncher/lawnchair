@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <shortcut
+        android:shortcutId="setDefault"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_home"
+        android:shortcutShortLabel="@string/set_default_launcher"
+        android:shortcutLongLabel="@string/set_default_launcher"
+        tools:ignore="UnusedAttribute">
+
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetPackage="ch.deletescape.lawnchair"
+            android:targetClass="ch.deletescape.lawnchair.BlankActivity" >
+
+            <extra android:name="action" android:value="setDefaultLauncher" />
+        </intent>
+    </shortcut>
+</shortcuts>

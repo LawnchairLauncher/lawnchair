@@ -98,7 +98,7 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
         this.mVerticalPullDetector = new VerticalPullDetector(context);
         this.mVerticalPullDetector.setListener(this);
 
-        if (!Utilities.isAtLeastO() && !FeatureFlags.INSTANCE.getUseDarkTheme()) {
+        if (!Utilities.ATLEAST_OREO && !FeatureFlags.INSTANCE.getUseDarkTheme()) {
             setWillNotDraw(false);
             mNavHeight = getResources().getDimensionPixelSize(R.dimen.navigation_bar_height);
             mNavPaint = new Paint();

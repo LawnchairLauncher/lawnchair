@@ -14,6 +14,7 @@ object PreferenceFlags {
     // Strings
     const val KEY_WEATHER_PROVIDER = "pref_weatherProvider"
     const val KEY_OVERRIDE_ICON_SHAPE = "pref_override_icon_shape"
+    const val KEY_BACKPORT_ADAPTIVE_ICONS = "pref_backportAdaptiveIcons"
     const val KEY_ICON_PACK_PACKAGE = "pref_iconPackPackage"
     const val KEY_WEATHER_UNITS = "pref_weather_units"
     const val KEY_WEATHER_CITY = "pref_weather_city"
@@ -36,10 +37,11 @@ object PreferenceFlags {
     const val KEY_HOTSEAT_SHOULD_USE_EXTRACTED_COLORS_CACHE = KEY_HOTSEAT_SHOULD_USE_EXTRACTED_COLORS + "_cache"
     const val KEY_LIGHT_STATUS_BAR = "pref_lightStatusBar"
     const val KEY_CENTER_WALLPAPER = "pref_centerWallpaper"
+    const val KEY_POPUP_CARD_THEME = "pref_popupCardTheme"
 
     // Various
-    const val KEY_WS_LABEL_COLOR_HUE = "pref_workspaceLabelColorHue"
-    const val KEY_WS_LABEL_COLOR_VARIATION = "pref_workspaceLabelColorVariation"
+    const val KEY_PREF_WS_LABEL_COLOR = "pref_workspaceLabelColor"
+    const val KEY_PREF_ALL_APPS_LABEL_COLOR = "pref_workspaceLabelColor"
     const val KEY_EXTRACTED_COLORS_PREFERENCE = "pref_extractedColors"
     const val KEY_WALLPAPER_ID_PREFERENCE = "pref_wallpaperId"
 

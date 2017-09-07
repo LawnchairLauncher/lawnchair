@@ -67,12 +67,13 @@
     <!-- View ID used by cell layout to jail its content -->
     <item type="id" name="cell_layout_jail_id" />
 
-    <!-- Deep shortcuts -->
-    <integer name="config_deepShortcutOpenDuration">200</integer>
-    <integer name="config_deepShortcutArrowOpenDuration">70</integer>
+    <!-- Popup items -->
+    <integer name="config_deepShortcutOpenDuration">220</integer>
+    <integer name="config_deepShortcutArrowOpenDuration">80</integer>
     <integer name="config_deepShortcutOpenStagger">40</integer>
-    <integer name="config_deepShortcutCloseDuration">140</integer>
+    <integer name="config_deepShortcutCloseDuration">150</integer>
     <integer name="config_deepShortcutCloseStagger">20</integer>
+    <integer name="config_removeNotificationViewDuration">300</integer>
 
     <!-- Accessibility actions -->
     <item type="id" name="action_remove" />
@@ -86,5 +87,4 @@
     <item type="id" name="action_resize" />
     <item type="id" name="action_deep_shortcuts" />
 
-    <integer name="config_removeNotificationViewDuration">150</integer>
 </resources>

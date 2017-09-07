@@ -146,7 +146,7 @@ public class BubbleTextView extends TextView
         if (display == DISPLAY_WORKSPACE) {
             mHideText = Utilities.getPrefs(context).getHideAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.iconTextSizePx);
-            setTextColor(Utilities.getLabelColor(getContext()));
+            setTextColor(Utilities.getPrefs(context).getWorkSpaceLabelColor());
         } else if (display == DISPLAY_ALL_APPS) {
             mHideText = Utilities.getPrefs(context).getHideAllAppsAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.allAppsIconTextSizePx);

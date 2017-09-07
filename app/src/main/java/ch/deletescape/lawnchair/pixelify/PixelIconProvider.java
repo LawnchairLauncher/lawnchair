@@ -29,6 +29,7 @@ import ch.deletescape.lawnchair.LauncherModel;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
+import ch.deletescape.lawnchair.graphics.IconShapeOverride;
 import ch.deletescape.lawnchair.iconpack.CustomIconDrawable;
 import ch.deletescape.lawnchair.iconpack.IconPack;
 import ch.deletescape.lawnchair.iconpack.IconPackProvider;
@@ -39,6 +40,8 @@ public class PixelIconProvider {
     private PackageManager mPackageManager;
     private IconPack sIconPack;
     private Context mContext;
+    private final boolean mBackportAdaptive;
+    private final IconShapeOverride.ShapeInfo mShapeInfo;
     private final IPreferenceProvider mPrefs;
 
     private ArrayList<String> mCalendars;
@@ -52,6 +55,8 @@ public class PixelIconProvider {
         mPackageManager = context.getPackageManager();
         mContext = context;
         mPrefs = Utilities.getPrefs(mContext);
+        mBackportAdaptive = mPrefs.getBackportAdaptiveIcons();
+        mShapeInfo = IconShapeOverride.Companion.getAppliedValue(context);
         updateIconPack();
     }
 
@@ -61,7 +66,9 @@ public class PixelIconProvider {
 
     private int getCorrectShape(Bundle bundle, Resources resources) {
         if (bundle != null) {
-            int roundIcons = bundle.getInt("com.google.android.calendar.dynamic_icons_nexus_round", 0);
+            int roundIcons = bundle.getInt(mShapeInfo.getUseRoundIcon() ?
+                    "com.google.android.calendar.dynamic_icons_nexus_round" :
+                    "com.google.android.calendar.dynamic_icons", 0);
             if (roundIcons != 0) {
                 try {
                     TypedArray obtainTypedArray = resources.obtainTypedArray(roundIcons);
@@ -89,8 +96,11 @@ public class PixelIconProvider {
             while ((eventType = parseXml.nextToken()) != XmlPullParser.END_DOCUMENT)
                 if (eventType == XmlPullParser.START_TAG && parseXml.getName().equals("application"))
                     for (int i = 0; i < parseXml.getAttributeCount(); i++)
-                        if (parseXml.getAttributeName(i).equals("roundIcon"))
-                            return resourcesForApplication.getDrawableForDensity(Integer.parseInt(parseXml.getAttributeValue(i).substring(1)), iconDpi);
+                        if (parseXml.getAttributeName(i).equals(mShapeInfo.getXmlAttrName()))
+                            return mBackportAdaptive ?
+                                    AdaptiveIconProvider.Companion.
+                                        getDrawableForDensity(resourcesForApplication, Integer.parseInt(parseXml.getAttributeValue(i).substring(1)), iconDpi, mShapeInfo) :
+                                    resourcesForApplication.getDrawableForDensity(Integer.parseInt(parseXml.getAttributeValue(i).substring(1)), iconDpi);
             parseXml.close();
         } catch (Exception ex) {
             Log.w("getRoundIcon", ex);
@@ -174,8 +184,12 @@ public class PixelIconProvider {
             IconPack iconPack = getIconPackForComponent(info.getComponentName());
             drawable = iconPack == null ? null : iconPack.getIcon(info);
         }
+        return getDefaultIcon(info, iconDpi, drawable);
+    }
+
+    public Drawable getDefaultIcon(LauncherActivityInfoCompat info, int iconDpi, Drawable drawable) {
         boolean isRoundPack = isRoundIconPack(sIconPack);
-        if ((drawable == null && Utilities.getPrefs(mContext).getUsePixelIcons()) ||
+        if ((drawable == null && (mBackportAdaptive || mShapeInfo.getUseRoundIcon())) ||
                 (isRoundPack && drawable instanceof CustomIconDrawable)) {
             Drawable roundIcon = getRoundIcon(info.getComponentName().getPackageName(), iconDpi);
             if (roundIcon != null)

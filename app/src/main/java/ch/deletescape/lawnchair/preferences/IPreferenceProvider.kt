@@ -41,6 +41,7 @@ interface IPreferenceProvider {
     // defines if a pinch gesture opens the desktop edit page
     val pinchToOverview: Boolean
     val centerWallpaper: Boolean
+    val popupCardTheme: Boolean
 
     // -------------------
     // 4) Weather
@@ -88,7 +89,7 @@ interface IPreferenceProvider {
     val hideHotseat: Boolean
     val enablePlanes: Boolean
     val showWeather: Boolean
-    val enableEditing: Boolean
+    val lockDesktop: Boolean
     val animatedClockIcon: Boolean
     val animateClockIconAlternativeClockApps: Boolean
 
@@ -100,8 +101,8 @@ interface IPreferenceProvider {
 
     val blurRadius: Float
     val blurMode : Int
-    val labelColorHue: String
-    val labelColorVariation: String
+    val workSpaceLabelColor: Int
+    val allAppsLabelColor: Int
     fun alternateIcon(key: String): String?
     fun alternateIcon(key: String, alternateIcon: String, commit: Boolean = false)
     fun removeAlternateIcon(key: String)
@@ -109,6 +110,7 @@ interface IPreferenceProvider {
     fun appVisibility(context: Context, key: String): Boolean
     var previousBuildNumber : Int
     var overrideIconShape: String
+    val backportAdaptiveIcons: Boolean
     fun removeOverrideIconShape()
     fun itemAlias(key: String, default: String): String
     fun itemAlias(key: String, value: String, commit: Boolean = false)

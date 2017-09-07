@@ -31,12 +31,6 @@
             android:defaultValue="true"
             android:persistent="true" />
 
-        <SwitchPreference
-            android:key="pref_animatedClockIcon"
-            android:title="@string/animated_clock_icon_title"
-            android:defaultValue="false"
-            android:persistent="true" />
-
         <ListPreference
             android:key="pref_override_icon_shape"
             android:title="@string/icon_shape_override_label"
@@ -46,6 +40,12 @@
             android:persistent="false" />
 
         <SwitchPreference
+            android:key="pref_animatedClockIcon"
+            android:title="@string/animated_clock_icon_title"
+            android:defaultValue="false"
+            android:persistent="true" />
+
+        <ch.deletescape.lawnchair.preferences.GoogleNowPreference
             android:key="pref_showGoogleNowTab"
             android:persistent="true"
             android:title="@string/show_google_now_tab_pref_title"

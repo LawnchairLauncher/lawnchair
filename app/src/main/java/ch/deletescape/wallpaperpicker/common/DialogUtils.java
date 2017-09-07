@@ -21,7 +21,7 @@ public class DialogUtils {
     public static void executeCropTaskAfterPrompt(
             Context context, final AsyncTask<Integer, ?, ?> cropTask,
             DialogInterface.OnCancelListener onCancelListener) {
-        if (Utilities.isNycOrAbove()) {
+        if (Utilities.ATLEAST_NOUGAT) {
             new AlertDialog.Builder(context)
                     .setTitle(R.string.wallpaper_instructions)
                     .setItems(R.array.which_wallpaper_options, new DialogInterface.OnClickListener() {

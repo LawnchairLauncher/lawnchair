@@ -41,7 +41,7 @@ import ch.deletescape.lawnchair.util.LongArrayMap;
  */
 public class GridSizeMigrationTask {
 
-    public static boolean ENABLED = Utilities.isNycOrAbove();
+    public static boolean ENABLED = Utilities.ATLEAST_NOUGAT;
 
     private static final String TAG = "GridSizeMigrationTask";
 

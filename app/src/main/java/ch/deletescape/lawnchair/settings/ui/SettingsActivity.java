@@ -34,6 +34,7 @@ import android.preference.PreferenceScreen;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,7 +61,7 @@ import ch.deletescape.lawnchair.preferences.PreferenceFlags;
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
  */
-public class SettingsActivity extends Activity implements PreferenceFragment.OnPreferenceStartFragmentCallback, SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsActivity extends AppCompatActivity implements PreferenceFragment.OnPreferenceStartFragmentCallback, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static IPreferenceProvider sharedPrefs;
 
@@ -94,7 +95,7 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
             transaction.replace(android.R.id.content, fragment);
             transaction.addToBackStack("PreferenceFragment");
             transaction.commit();
-            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             return true;
         }
         return false;
@@ -107,7 +108,7 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
     }
 
     private void updateUpButton() {
-        getActionBar().setDisplayHomeAsUpEnabled(getFragmentManager().getBackStackEntryCount() != 0);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(getFragmentManager().getBackStackEntryCount() != 0);
     }
 
     @Override
@@ -200,13 +201,17 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                     ((PreferenceCategory) findPreference("prefCat_homeScreen"))
                             .removePreference(overrideShapePreference);
                 }
+                if (Utilities.ATLEAST_NOUGAT) {
+                    ((PreferenceCategory) findPreference("prefCat_homeScreen"))
+                        .removePreference(findPreference(PreferenceFlags.KEY_PREF_PIXEL_STYLE_ICONS));
+                }
             } else if (getContent() == R.xml.launcher_about_preferences) {
                 findPreference("about_version").setSummary(BuildConfig.VERSION_NAME);
                 if (BuildConfig.TRAVIS && !BuildConfig.TAGGED_BUILD) {
                     findPreference("about_changelog").setSummary(Utilities.getChangelog());
                 }
             } else if (getContent() == R.xml.launcher_behavior_preferences) {
-                if (Utilities.isNycMR1OrAbove()) {
+                if (Utilities.ATLEAST_NOUGAT_MR1 && BuildConfig.TRAVIS) {
                     getPreferenceScreen().removePreference(findPreference(FeatureFlags.KEY_PREF_ENABLE_BACKPORT_SHORTCUTS));
                 }
             } else if (getContent() == R.xml.launcher_hidden_preferences) {

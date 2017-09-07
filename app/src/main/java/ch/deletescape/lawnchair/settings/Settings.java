@@ -47,7 +47,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                     dragLayer.onAccessibilityStateChanged(dragLayer.mIsAccesibilityEnabled);
                     break;
                 case PreferenceFlags.KEY_PREF_PULLDOWN_ACTION:
-                    mLauncher.getWorkspace().initPullDown();
+                    mLauncher.getAllAppsController().initPullDown(mLauncher);
                     break;
                 case PreferenceFlags.KEY_PREF_HOTSEAT_EXTRACTED_COLORS:
                     ExtractedColors ec = mLauncher.getExtractedColors();
@@ -117,6 +117,8 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case PreferenceFlags.KEY_PREF_WEATHER:
                 case PreferenceFlags.KEY_PREF_NUM_ROWS_DRAWER:
                     mLauncher.scheduleKill();
+                case PreferenceFlags.KEY_BACKPORT_ADAPTIVE_ICONS:
+                    mLauncher.scheduleReloadIcons();
                     break;
                 case PreferenceFlags.KEY_PREF_ICON_PACK_PACKAGE:
                 case PreferenceFlags.KEY_PREF_PIXEL_STYLE_ICONS:

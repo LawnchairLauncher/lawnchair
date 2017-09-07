@@ -1,7 +1,9 @@
 package ch.deletescape.lawnchair.overlay
 
+import android.content.Context
 import ch.deletescape.lawnchair.BuildConfig
 import ch.deletescape.lawnchair.Launcher
+import ch.deletescape.lawnchair.util.PackageManagerHelper
 
 interface ILauncherClient {
 
@@ -23,9 +25,25 @@ interface ILauncherClient {
 
     companion object {
 
-        fun create(launcher: Launcher): ILauncherClient = if (BuildConfig.DEBUG)
-            LauncherClientImpl(launcher, true)
+        fun create(launcher: Launcher): ILauncherClient = if (BuildConfig.ENABLE_LAWNFEED)
+            LawnfeedClient(launcher)
         else
-            ProxiedLauncherClient(launcher)
+            LauncherClientImpl(launcher, true)
+
+        const val GOOGLE_APP_PACKAGE = "com.google.android.googlequicksearchbox"
+
+        const val ENABLED = 0
+        const val DISABLED_NO_GOOGLE_APP = 1
+        const val DISABLED_NO_PROXY_APP = 2
+
+        fun getEnabledState(context: Context): Int {
+            var state = ENABLED
+            if (!PackageManagerHelper.isAppEnabled(context.packageManager, GOOGLE_APP_PACKAGE, 0))
+                state = state or DISABLED_NO_GOOGLE_APP
+            if (BuildConfig.ENABLE_LAWNFEED &&
+                    !PackageManagerHelper.isAppEnabled(context.packageManager, LawnfeedClient.PROXY_PACKAGE, 0))
+                state = state or DISABLED_NO_PROXY_APP
+            return state
+        }
     }
 }

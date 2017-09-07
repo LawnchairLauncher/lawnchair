@@ -18,6 +18,7 @@ package ch.deletescape.lawnchair.config
 
 import android.app.Activity
 import android.content.Context
+import android.support.annotation.IntDef
 import android.view.ContextThemeWrapper
 import ch.deletescape.lawnchair.R
 import ch.deletescape.lawnchair.Utilities
@@ -57,7 +58,7 @@ object FeatureFlags {
     const val KEY_PREF_PLANE = "pref_plane"
     const val KEY_PREF_WEATHER = "pref_weather"
     const val KEY_PREF_PULLDOWN_ACTION = "pref_pulldownAction"
-    const val KEY_PREF_ENABLE_EDITING = "pref_enableEditing"
+    const val KEY_PREF_LOCK_DESKTOP = "pref_lockDesktop"
     const val KEY_PREF_ANIMATED_CLOCK_ICON = "pref_animatedClockIcon"
     private var darkThemeFlag: Int = 0
 
@@ -69,6 +70,10 @@ object FeatureFlags {
 
     var currentTheme: Int = 0
     var useDarkTheme = true
+
+    const val PULLDOWN_NOTIFICATIONS = 1
+    const val PULLDOWN_SEARCH = 2
+    const val PULLDOWN_APPS_SEARCH = 3
 
     fun pullDownAction(context: Context): Int {
         Utilities.getPrefs(context).migratePullDownPref(context)

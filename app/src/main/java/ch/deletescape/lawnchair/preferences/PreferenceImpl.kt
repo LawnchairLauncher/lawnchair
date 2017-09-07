@@ -4,14 +4,18 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.view.View
 import ch.deletescape.lawnchair.Launcher
 import ch.deletescape.lawnchair.LauncherFiles
+import ch.deletescape.lawnchair.Utilities
 import ch.deletescape.lawnchair.config.FeatureFlags
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors
 import kotlin.reflect.KProperty
 
 open class PreferenceImpl(context: Context) : IPreferenceProvider {
+    override val workSpaceLabelColor by IntPref(PreferenceFlags.KEY_PREF_WS_LABEL_COLOR, Color.WHITE)
+    override val allAppsLabelColor by IntPref(PreferenceFlags.KEY_PREF_ALL_APPS_LABEL_COLOR, Color.BLACK)
 
     override fun showSettings(launcher: Launcher, view: View) {
         val intent = Intent(Intent.ACTION_APPLICATION_PREFERENCES)
@@ -144,6 +148,7 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     }
 
     override var overrideIconShape by MutableStringPref(PreferenceFlags.KEY_OVERRIDE_ICON_SHAPE, "")
+    override val backportAdaptiveIcons = Utilities.ATLEAST_NOUGAT
     override val weatherProvider by StringPref(PreferenceFlags.KEY_WEATHER_PROVIDER, PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS)
     override var previousBuildNumber by MutableIntPref(PreferenceFlags.KEY_PREVIOUS_BUILD_NUMBER, 0)
 
@@ -162,9 +167,6 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override fun removeAlternateIcon(key: String) {
         sharedPrefs.edit().remove(PreferenceFlags.KEY_ALTERNATE_ICON_PREFIX + key).apply()
     }
-
-    override val labelColorHue by StringPref(PreferenceFlags.KEY_WS_LABEL_COLOR_HUE, "-3")
-    override val labelColorVariation by StringPref(PreferenceFlags.KEY_WS_LABEL_COLOR_VARIATION, "5")
 
     override val blurMode by IntPref(PreferenceFlags.KEY_BLUR_MODE, (1 shl 30) - 1)
     override val blurRadius by FloatPref(PreferenceFlags.KEY_BLUR_RADIUS, 75f)
@@ -187,11 +189,12 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val hideHotseat by BooleanPref(FeatureFlags.KEY_PREF_HIDE_HOTSEAT, false)
     override val enablePlanes by BooleanPref(FeatureFlags.KEY_PREF_PLANE, false)
     override val showWeather by BooleanPref(FeatureFlags.KEY_PREF_WEATHER, false)
-    override val enableEditing by BooleanPref(FeatureFlags.KEY_PREF_ENABLE_EDITING, true)
+    override val lockDesktop by BooleanPref(FeatureFlags.KEY_PREF_LOCK_DESKTOP, false)
     override val animatedClockIcon by BooleanPref(FeatureFlags.KEY_PREF_ANIMATED_CLOCK_ICON, false)
 
     override val pinchToOverview by BooleanPref(FeatureFlags.KEY_PREF_PINCH_TO_OVERVIEW, true)
     override val centerWallpaper by BooleanPref(PreferenceFlags.KEY_CENTER_WALLPAPER, true)
+    override val popupCardTheme by BooleanPref(PreferenceFlags.KEY_POPUP_CARD_THEME, false)
     override val lightStatusBar by BooleanPref(FeatureFlags.KEY_PREF_LIGHT_STATUS_BAR, false)
     override val hotseatShouldUseExtractedColors by BooleanPref(FeatureFlags.KEY_PREF_HOTSEAT_EXTRACTED_COLORS, true)
 

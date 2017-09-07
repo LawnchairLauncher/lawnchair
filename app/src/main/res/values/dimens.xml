@@ -184,12 +184,14 @@
     <dimen name="popup_arrow_vertical_offset">-2.0dip</dimen>
     <dimen name="popup_arrow_horizontal_center_start">28.0dip</dimen>
     <dimen name="popup_arrow_horizontal_center_end">24.0dip</dimen>
-    <dimen name="popup_arrow_horizontal_offset_start">19.0dip</dimen>
-    <dimen name="popup_arrow_horizontal_offset_end">23.0dip</dimen>
+    <dimen name="popup_arrow_horizontal_offset_start">23.0dip</dimen>
+    <dimen name="popup_arrow_horizontal_offset_end">19.0dip</dimen>
     <dimen name="popup_arrow_corner_radius">2.0dip</dimen>
     <dimen name="bg_popup_item_width">220.0dip</dimen>
     <dimen name="bg_popup_item_height">56.0dip</dimen>
     <dimen name="popup_items_spacing">4.0dip</dimen>
+    <dimen name="popup_items_spacing_card">0dp</dimen>
+    <dimen name="bg_card_rect_radius">2dp</dimen>
     <dimen name="horizontal_ellipsis_size">18.0dip</dimen>
     <dimen name="horizontal_ellipsis_offset">19.0dip</dimen>
     <dimen name="swipe_helper_falsing_threshold">70.0dip</dimen>
@@ -214,4 +216,7 @@
     <dimen name="all_apps_vertical_row_height">80dp</dimen>
     <dimen name="all_apps_vertical_row_padding">16.0dip</dimen>
     <dimen name="all_apps_vertical_icon_size">48.0dip</dimen>
+    <dimen name="qsb_shadow_blur_radius">1.0dip</dimen>
+    <dimen name="qsb_key_shadow_offset">1.0dip</dimen>
+    <dimen name="qsb_connector_gradient_end_padding">20.0dip</dimen>
 </resources>

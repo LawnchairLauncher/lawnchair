@@ -15,6 +15,12 @@ def getChangelog = { ->
     }
 }
 
+Properties localProps = new Properties()
+File localPropsFile = project.rootProject.file('local.properties')
+if (localPropsFile.exists()) {
+    localProps.load(localPropsFile.newDataInputStream())
+}
+
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.1"
@@ -38,9 +44,11 @@ android {
         buildConfigField "String", "CHANGELOG", "\"${getChangelog()}\""
         buildConfigField "String", "MOBILE_CENTER_KEY", "\"" + System.getenv("MOBILE_CENTER_KEY") + "\""
 
-        ext.awarenessApiKey = System.getenv("AWARENESS_API_KEY")
+        ext.awarenessApiKey = localProps.getProperty('awarenessApiKey') ?: System.getenv("AWARENESS_API_KEY")
         buildConfigField "boolean", "AWARENESS_API_ENABLED", ext.awarenessApiKey ? "true" : "false"
         manifestPlaceholders = [awarenessApiKey: ext.awarenessApiKey ?: "null"]
+
+        buildConfigField "boolean", "ENABLE_LAWNFEED", localProps.getProperty('useLawnfeed') ?: System.getenv("USE_LAWNFEED") ?: "false"
 
         if (System.getenv("TRAVIS") == "true") {
             versionCode = Integer.valueOf(System.getenv("TRAVIS_BUILD_NUMBER"))
@@ -71,7 +79,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     def mobileCenterSdkVersion = '0.10.0'
-    def supportLibVersion = '26.0.1'
+    def supportLibVersion = '26.0.2'
     implementation "com.microsoft.azure.mobile:mobile-center-analytics:${mobileCenterSdkVersion}"
     implementation "com.microsoft.azure.mobile:mobile-center-crashes:${mobileCenterSdkVersion}"
     implementation "com.microsoft.azure.mobile:mobile-center-distribute:${mobileCenterSdkVersion}"
@@ -80,8 +88,9 @@ dependencies {
     implementation "com.android.support:palette-v7:${supportLibVersion}"
     implementation "com.android.support:cardview-v7:${supportLibVersion}"
     implementation 'com.github.KwabenBerko:OpenWeatherMap-Android-Library:v1.0.0'
-    implementation 'com.google.android.gms:play-services-awareness:11.0.4'
+    implementation 'com.google.android.gms:play-services-awareness:11.2.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation 'com.pavelsikun:vintage-chroma:1.5'
     implementation project(':launcherclient')
 }
 repositories {

@@ -80,6 +80,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private float mShiftStart;      // [0, mShiftRange]
     private float mShiftRange;      // changes depending on the orientation
     private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
+    private int mPullDownState;
 
     // Velocity of the container. Unit is in px/ms.
     private float mContainerVelocity;
@@ -99,6 +100,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private int allAppsAlpha;
 
+    private int mPullDownAction;
+
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
         mDetector = new VerticalPullDetector(l);
@@ -111,6 +114,11 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mAllAppsBackgroundColorBlur = mTheme.getBackgroundColorBlur();
         mTransparentHotseat = Utilities.getPrefs(l).getTransparentHotseat();
         mLightStatusBar = Utilities.getPrefs(l).getLightStatusBar();
+        initPullDown(l);
+    }
+
+    public void initPullDown(Context context) {
+        mPullDownAction = FeatureFlags.INSTANCE.pullDownAction(context);
     }
 
     public void updateLightStatusBar(Context context) {
@@ -147,6 +155,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                         directionsToDetectScroll |= VerticalPullDetector.DIRECTION_DOWN;
                     } else {
                         directionsToDetectScroll |= VerticalPullDetector.DIRECTION_UP;
+                        if (mPullDownAction != 0)
+                            directionsToDetectScroll |= VerticalPullDetector.DIRECTION_DOWN;
                     }
                 } else {
                     if (isInDisallowRecatchBottomZone()) {
@@ -197,7 +207,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     public boolean onTouchEvent(MotionEvent ev) {
         return mDetector.onTouchEvent(ev);
     }
-
+    
     private boolean isInDisallowRecatchTopZone() {
         return mProgress < RECATCH_REJECTION_FRACTION;
     }
@@ -212,6 +222,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         cancelAnimation();
         mCurrentAnimation = LauncherAnimUtils.createAnimatorSet();
         mShiftStart = mAppsView.getTranslationY();
+        if (mPullDownState != 4)
+            mPullDownState = (mPullDownAction != 0 && mProgress == 1) ? 1 : 0;
         preparePull(start);
     }
 
@@ -221,10 +233,29 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             return false;   // early termination.
         }
 
-        mContainerVelocity = velocity;
+        if (mProgress == 1) {
+            boolean notOpenedYet = mPullDownState == 1;
+            if (notOpenedYet || mPullDownState == 2) {
+                if (velocity > 2.4) {
+                    mPullDownState = 3;
+                    mLauncher.onPullDownAction(mPullDownAction);
+                    if (mPullDownAction != FeatureFlags.PULLDOWN_NOTIFICATIONS)
+                        mPullDownState = 4;
+                } else if (notOpenedYet && velocity < 0) {
+                    mPullDownState = 0;
+                }
+            } else if (mPullDownState == 3 && velocity < -0.5) {
+                mPullDownState = 2;
+                mLauncher.closeNotifications();
+            }
+        }
 
-        float shift = Math.min(Math.max(0, mShiftStart + displacement), mShiftRange);
-        setProgress(shift / mShiftRange);
+        if (mPullDownState < 2) {
+            mContainerVelocity = velocity;
+
+            float shift = Math.min(Math.max(0, mShiftStart + displacement), mShiftRange);
+            setProgress(shift / mShiftRange);
+        }
 
         return true;
     }
@@ -236,10 +267,10 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         }
 
         if (fling) {
-            if (velocity < 0) {
+            if (velocity < 0 && mPullDownState < 2) {
                 calculateDuration(velocity, mAppsView.getTranslationY());
                 mLauncher.showAppsView(true /* animated */, false /* focusSearchBar */);
-            } else {
+            } else if (mPullDownAction != FeatureFlags.PULLDOWN_APPS_SEARCH || mPullDownState < 2) {
                 calculateDuration(velocity, Math.abs(mShiftRange - mAppsView.getTranslationY()));
                 mLauncher.showWorkspace(true);
             }
@@ -253,6 +284,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 mLauncher.showAppsView(true /* animated */, false /* focusSearchBar */);
             }
         }
+        mPullDownState = mPullDownAction != 0 ? 1 : 0;
     }
 
     public boolean isTransitioning() {

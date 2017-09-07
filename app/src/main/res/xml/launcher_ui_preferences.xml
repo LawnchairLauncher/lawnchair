@@ -32,25 +32,12 @@
             android:disableDependentsState="true"
             android:persistent="true" />
 
-        <ListPreference
-            android:key="pref_workspaceLabelColorHue"
+        <com.pavelsikun.vintagechroma.ChromaPreference
+            android:key="pref_workspaceLabelColor"
             android:title="@string/workspace_label_color_hue_pref_title"
-            android:entries="@array/color_index_entries"
-            android:entryValues="@array/color_index_values"
-            android:defaultValue="-3"
-            android:dependency="pref_hideAppLabels"
-            android:summary="%s"
-            android:persistent="true" />
-
-        <ListPreference
-            android:key="pref_workspaceLabelColorVariation"
-            android:title="@string/workspace_label_color_variation_pref_title"
-            android:entries="@array/color_variation_entries"
-            android:entryValues="@array/color_variation_values"
-            android:defaultValue="5"
-            android:summary="%s"
-            android:dependency="pref_hideAppLabels"
-            android:persistent="true" />
+            app:chromaColorMode="ARGB"
+            app:chromaIndicatorMode="HEX"
+            app:chromaInitialColor="@android:color/white"/>
 
         <ListPreference
             android:key="pref_numCols"
@@ -77,7 +64,7 @@
             app:maxValue="1.5"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"
-            app:defaultValue="1.0"
+            app:defaultSeekbarValue="1.0"
             android:persistent="true" />
 
         <ch.deletescape.lawnchair.preferences.SeekbarPreference
@@ -87,7 +74,7 @@
             app:maxValue="1.5"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"
-            app:defaultValue="1.0"
+            app:defaultSeekbarValue="1.0"
             android:persistent="true" />
 
         <SwitchPreference
@@ -152,7 +139,7 @@
             app:maxValue="1.5"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"
-            app:defaultValue="1.0"
+            app:defaultSeekbarValue="1.0"
             android:persistent="true" />
     </PreferenceCategory>
 
@@ -191,7 +178,7 @@
             android:title="@string/all_apps_opacity_pref_title"
             app:minValue="0"
             app:maxValue="1"
-            app:defaultValue="1"
+            app:defaultSeekbarValue="1"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"
             android:persistent="true" />
@@ -208,25 +195,13 @@
             android:key="pref_allAppsCustomLabelColor"
             android:title="@string/pref_all_apps_custom_label_color" />
 
-        <ListPreference
-            android:key="pref_allAppsLabelColorHue"
+        <com.pavelsikun.vintagechroma.ChromaPreference
+            android:dependency="pref_allAppsCustomLabelColor"
+            android:key="pref_workspaceLabelColor"
             android:title="@string/pref_all_apps_label_color"
-            android:entries="@array/color_index_entries"
-            android:entryValues="@array/color_index_values"
-            android:defaultValue="-3"
-            android:dependency="pref_allAppsCustomLabelColor"
-            android:summary="%s"
-            android:persistent="true" />
-
-        <ListPreference
-            android:key="pref_allAppsLabelColorVariation"
-            android:title="@string/pref_all_apps_label_color_variation"
-            android:entries="@array/color_variation_entries"
-            android:entryValues="@array/color_variation_values"
-            android:defaultValue="5"
-            android:summary="%s"
-            android:dependency="pref_allAppsCustomLabelColor"
-            android:persistent="true" />
+            app:chromaColorMode="ARGB"
+            app:chromaIndicatorMode="HEX"
+            app:chromaInitialColor="@color/quantum_panel_text_color"/>
 
         <ch.deletescape.lawnchair.preferences.SeekbarPreference
             android:key="pref_allAppsIconScale"
@@ -235,7 +210,7 @@
             app:maxValue="1.5"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"
-            app:defaultValue="1.0"
+            app:defaultSeekbarValue="1.0"
             android:persistent="true" />
 
         <ch.deletescape.lawnchair.preferences.SeekbarPreference
@@ -245,7 +220,7 @@
             app:maxValue="1.5"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"
-            app:defaultValue="1.0"
+            app:defaultSeekbarValue="1.0"
             android:persistent="true" />
     </PreferenceCategory>
 
@@ -274,6 +249,12 @@
             android:entryValues="@array/themeModeValues" />
 
         <SwitchPreference
+            android:key="pref_popupCardTheme"
+            android:title="@string/popup_card_theme_title"
+            android:defaultValue="false"
+            android:persistent="true" />
+
+        <SwitchPreference
             android:key="pref_enableBlur"
             android:title="@string/blur_pref_title"
             android:summary="@string/blur_pref_summary"
@@ -293,7 +274,7 @@
             android:dependency="pref_enableBlur"
             app:minValue="10"
             app:maxValue="150"
-            app:defaultValue="75"
+            app:defaultSeekbarValue="75"
             app:summaryFormat="%.0f"
             android:persistent="true" />
     </PreferenceCategory>

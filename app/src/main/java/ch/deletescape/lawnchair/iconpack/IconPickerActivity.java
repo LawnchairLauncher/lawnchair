@@ -1,10 +1,10 @@
 package ch.deletescape.lawnchair.iconpack;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +17,7 @@ import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 
-public class IconPickerActivity extends Activity implements IconGridAdapter.Listener {
+public class IconPickerActivity extends AppCompatActivity implements IconGridAdapter.Listener {
 
     private EditIconActivity.IconPackInfo mIconPackInfo;
     private IconCategoryAdapter mAdapter;
