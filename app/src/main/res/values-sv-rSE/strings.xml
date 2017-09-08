@@ -272,8 +272,6 @@
   <string name="full_width_widgets_pref_summary">Tillåt widgetar att sträcka sig över hela bredden utan spaltfyllnad</string>
   <string name="notification_access_pref_title">Notifikationsmärken och förhandsgranskning</string>
   <string name="notification_access_pref_summary">Tillåt Lawnchair att komma åt dina notifikationer för att aktivera denna funktion</string>
-  <string name="ui_pref_title">Användargränssnitt</string>
-  <string name="pixel_style_pref_title">Pixel stil</string>
   <string name="behavior_pref_title">Beteende</string>
   <string name="debug_pref_title">Felsök</string>
   <string name="import_export_pref_title">Importera/Exportera</string>
