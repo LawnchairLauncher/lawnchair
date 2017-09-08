@@ -273,8 +273,6 @@
   <string name="full_width_widgets_pref_summary">Widget\'ların dolgu olmadan tüm genişliğe yayılmasına izin ver</string>
   <string name="notification_access_pref_title">Bildirim rozetleri ve önizleme</string>
   <string name="notification_access_pref_summary">Bu özellikleri etkinleştirmek için Lawnchair\'ın bildiriminize erişmesine izin verin</string>
-  <string name="ui_pref_title">Arayüz</string>
-  <string name="pixel_style_pref_title">Pixel tarzı</string>
   <string name="behavior_pref_title">Davranış</string>
   <string name="debug_pref_title">Hata ayıklama</string>
   <string name="import_export_pref_title">İçe/Dışa aktar</string>
@@ -355,6 +353,7 @@
   <string name="loading">Yükleniyor…</string>
   <string name="icon_shape_override_label">Simge şeklini değiştir</string>
   <string name="icon_shape_system_default">Değiştirme</string>
+  <string name="icon_shape_none">Hiç biri</string>
   <string name="icon_shape_square">Kare</string>
   <string name="icon_shape_rounded_square">Yuvarlatılmış kare</string>
   <string name="icon_shape_squircle">Köşeli daire</string>
@@ -386,4 +385,6 @@
   <string name="lock_desktop">Ana ekranı kilitle</string>
   <string name="lawnfeed_not_found">Lawnfeed yüklü değil</string>
   <string name="google_app_not_found">Google uygulaması yüklü değil</string>
+  <string name="popup_card_theme_title">Düz biçimli açılır ileti</string>
+  <string name="set_default_launcher">Varsayılan başlatıcı olarak ayarla</string>
 </resources>
