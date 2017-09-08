@@ -274,8 +274,6 @@
   <string name="full_width_widgets_pref_summary">Povoliť, aby sa miniaplikácie rozprestierali po celej šírke bez výplne</string>
   <string name="notification_access_pref_title">Prehľad ikon upozornení</string>
   <string name="notification_access_pref_summary">Pre zapnutie tejto funkcie povoľte spúšťaču Lawnchair prístup k vašim upozorneniam</string>
-  <string name="ui_pref_title">Používateľské rozhranie</string>
-  <string name="pixel_style_pref_title">Zaokrúhlený štýl (Pixel)</string>
   <string name="behavior_pref_title">Správanie</string>
   <string name="debug_pref_title">Ladenie</string>
   <string name="import_export_pref_title">Import/Export</string>
@@ -302,10 +300,6 @@
   <string name="show_hidden_pref_title">Zobraziť skryté aplikácie</string>
   <string name="show_hidden_pref_on">Ukázať skryté aplikácie, pre zmenu nastavenia viditeľnosti</string>
   <string name="show_hidden_pref_off">Nebude zobrazené skryté aplikácie</string>
-  <string name="export_db_title">Export databázy</string>
-  <string name="import_db_title">Import databázy</string>
-  <string name="export_prefs_title">Export nastavení</string>
-  <string name="import_prefs_title">Import nastavení</string>
   <string name="notification_listener_label">Lawnchair - indikátor upozornení</string>
   <string name="color_extraction_label">Lawnchair - extrakcia farby</string>
   <string name="test_title">Skúška</string>
@@ -356,6 +350,7 @@
   <string name="loading">Načítavanie…</string>
   <string name="icon_shape_override_label">Zmena tvaru ikony</string>
   <string name="icon_shape_system_default">Nemeniť</string>
+  <string name="icon_shape_none">Žiadne</string>
   <string name="icon_shape_square">Štvorec</string>
   <string name="icon_shape_rounded_square">Zaoblený štvorec</string>
   <string name="icon_shape_squircle">Štvorec a kruh</string>
@@ -387,4 +382,6 @@
   <string name="lock_desktop">Uzamknutie pracovnej plochy</string>
   <string name="lawnfeed_not_found">Lawnfeed nie je nainštalovaný</string>
   <string name="google_app_not_found">Google aplikácie nie sú nainštalované</string>
+  <string name="popup_card_theme_title">Plochý štýl vyskakujúceho okna</string>
+  <string name="set_default_launcher">Nastavenie predvoleného spúšťača</string>
 </resources>
