@@ -276,8 +276,6 @@
   <string name="full_width_widgets_pref_summary">Povolte widgetům pokrývat celou šířku bez odsazení</string>
   <string name="notification_access_pref_title">Zobrazení oznámení a náhledů</string>
   <string name="notification_access_pref_summary">Pro zapnutí této funkce povolte spouštěči Lawnchair přístup k vašim upozorněním</string>
-  <string name="ui_pref_title">Uživatelské rozhraní</string>
-  <string name="pixel_style_pref_title">Styl Pixel</string>
   <string name="behavior_pref_title">Chování</string>
   <string name="debug_pref_title">Ladění</string>
   <string name="import_export_pref_title">Import/Export</string>
@@ -358,6 +356,7 @@
   <string name="loading">Načítání…</string>
   <string name="icon_shape_override_label">Změna tvaru ikony</string>
   <string name="icon_shape_system_default">Neměnit</string>
+  <string name="icon_shape_none">Nic</string>
   <string name="icon_shape_square">Čtverec</string>
   <string name="icon_shape_rounded_square">Zaoblený čtverec</string>
   <string name="icon_shape_squircle">Čtverec a kruh</string>
@@ -389,4 +388,6 @@
   <string name="lock_desktop">Uzamčení pracovní plochy</string>
   <string name="lawnfeed_not_found">Lawnfeed není nainstalován</string>
   <string name="google_app_not_found">Aplikace Google není nainstalována</string>
+  <string name="popup_card_theme_title">Plochý styl vyskakujících oken</string>
+  <string name="set_default_launcher">Nastavit výchozí spouštěč</string>
 </resources>
