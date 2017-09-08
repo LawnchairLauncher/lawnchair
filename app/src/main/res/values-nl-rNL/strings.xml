@@ -273,8 +273,6 @@
   <string name="full_width_widgets_pref_summary">Widgets toestaan de volledige breedte te omvatten</string>
   <string name="notification_access_pref_title">Notificatie pictogram en voorvertoning</string>
   <string name="notification_access_pref_summary">Geef Lawnchair toestemming tot uw notificaties om deze functie in te schakelen</string>
-  <string name="ui_pref_title">Gebruikersinterface</string>
-  <string name="pixel_style_pref_title">Pixel stijl</string>
   <string name="behavior_pref_title">Gedrag</string>
   <string name="debug_pref_title">Debuggen</string>
   <string name="import_export_pref_title">Importeren/exporteren</string>
@@ -301,8 +299,8 @@
   <string name="show_hidden_pref_title">Toon verborgen apps</string>
   <string name="show_hidden_pref_on">Verborgen apps worden getoond om zichtbaarheidsinstellingen te wijzigen</string>
   <string name="show_hidden_pref_off">Verborgen apps worden niet getoond</string>
-  <string name="export_db_title">Database exporteren</string>
-  <string name="import_db_title">Database importeren</string>
+  <string name="export_db_title">Exporteer database</string>
+  <string name="import_db_title">Importeer database</string>
   <string name="export_prefs_title">Instellingen exporteren</string>
   <string name="import_prefs_title">Instellingen importeren</string>
   <string name="notification_listener_label">Lawnchair - Notificatiepictogrammen</string>
@@ -355,6 +353,7 @@
   <string name="loading">Laden…</string>
   <string name="icon_shape_override_label">Wijzig pictogram vorm</string>
   <string name="icon_shape_system_default">Niet wijzigen</string>
+  <string name="icon_shape_none">Geen</string>
   <string name="icon_shape_square">Vierkant</string>
   <string name="icon_shape_rounded_square">Afgerond vierkant</string>
   <string name="icon_shape_squircle">Vierkantcirkel</string>
@@ -386,4 +385,6 @@
   <string name="lock_desktop">Bureaublad vergrendelen</string>
   <string name="lawnfeed_not_found">Lawnfeed niet geïnstalleerd</string>
   <string name="google_app_not_found">Google app niet geïnstalleerd</string>
+  <string name="popup_card_theme_title">Vlakke stijl pop-up</string>
+  <string name="set_default_launcher">Standaard launcher instellen</string>
 </resources>
