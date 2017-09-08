@@ -258,23 +258,21 @@
   <string name="blur_pref_title">Unschärfeeffekt verwenden</string>
   <string name="blur_pref_summary">Unschärfeeffekt auf Teile der Darstellung anwenden\nNicht mit Live-Hintergründen kompatibel</string>
   <string name="blur_radius_pref_title">Stärke des Unschärfeeffekts</string>
-  <string name="white_google_icon_pref_title">Weiße Google Icons verwenden</string>
-  <string name="hide_icon_labels_pref_title">Icon Beschriftungen auf dem Startbildschirm verstecken</string>
-  <string name="hide_all_apps_icon_labels_pref_title">Symbolbeschriftungen in der App-Übersicht ausblenden</string>
-  <string name="workspace_label_color_hue_pref_title">Farbe der Symbolbeschriftung auf dem Startbildschirm</string>
-  <string name="workspace_label_color_variation_pref_title">Farbvariation der Symbolbeschriftung auf dem Startbildschirm</string>
+  <string name="white_google_icon_pref_title">Weiße Google-Icons verwenden</string>
+  <string name="hide_icon_labels_pref_title">Icon-Beschriftungen auf dem Startbildschirm verstecken</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Icon-Beschriftungen in der App-Übersicht ausblenden</string>
+  <string name="workspace_label_color_hue_pref_title">Farbe der Icon-Beschriftung auf dem Startbildschirm</string>
+  <string name="workspace_label_color_variation_pref_title">Farbvariation der Icon-Beschriftung auf dem Startbildschirm</string>
   <string name="all_apps_opacity_pref_title">Transparenz der App-Liste</string>
   <string name="num_cols_pref_title">Anzahl der Spalten</string>
   <string name="num_rows_pref_title">Anzahl der Zeilen</string>
   <string name="num_hotseat_icons_pref_title">Anzahl der Icons im Dock</string>
-  <string name="icon_scale_pref_title">Icon Größe</string>
-  <string name="icon_text_scale_pref_title">Icon Textgröße</string>
+  <string name="icon_scale_pref_title">Icon-Größe</string>
+  <string name="icon_text_scale_pref_title">Größe Icon-Text</string>
   <string name="full_width_width_widgets_pref_title">Widgets mit voller Breite</string>
   <string name="full_width_widgets_pref_summary">Widgets erlauben, auf die volle Breite vergrößert zu werden</string>
   <string name="notification_access_pref_title">Benachrichtigungsanzeige und -vorschau</string>
   <string name="notification_access_pref_summary">Für diese Funktion benötigt Lawnchair Zugriff auf Benachrichtigungen</string>
-  <string name="ui_pref_title">Benutzeroberfläche</string>
-  <string name="pixel_style_pref_title">Pixel Stil</string>
   <string name="behavior_pref_title">Verhalten</string>
   <string name="debug_pref_title">Entwickleroptionen</string>
   <string name="import_export_pref_title">Import/Export</string>
@@ -282,7 +280,7 @@
   <string name="use_wide_searchbar_pref_title">Breite Suchleiste verwenden</string>
   <string name="show_mic_pref_title">Google Assistant anzeigen</string>
   <string name="use_round_searhbar">Runde App-Suchleiste verwenden</string>
-  <string name="pixel_style_icons_pref_title">Pixel Icons verwenden</string>
+  <string name="pixel_style_icons_pref_title">Pixel-Icons verwenden</string>
   <string name="pixel_style_icons_pref_summary">Runde Symbole für unterstützte Apps verwenden</string>
   <string name="show_google_now_tab_pref_title">Google Now-Seite anzeigen</string>
   <string name="restart_lawnchair_pref_title">Lawnchair neu starten</string>
@@ -322,11 +320,11 @@
   <string name="theme_black">Schwarz</string>
   <string name="hide_hotseat_pref_title">Dock ausblenden</string>
   <string name="all_icons">Alle Icons</string>
-  <string name="pull_down_action_pref_title">\'Ziehen\' - Aktion</string>
+  <string name="pull_down_action_pref_title">Ziehen-Aktion</string>
   <string name="pull_down_do_nothing">Nichts</string>
-  <string name="pull_down_notis">Benachrichtigungsbereich anzeigen</string>
+  <string name="pull_down_notis">Benachrichtigungsleiste anzeigen</string>
   <string name="pull_down_search">Suche öffnen</string>
-  <string name="pull_down_apps_search">App Suche</string>
+  <string name="pull_down_apps_search">App-Suche</string>
   <string name="enable_screen_rotation">Bildschirmrotation aktivieren</string>
   <!-- Import/Export Strings -->
   <string name="imexport_success">Erfolg!</string>
@@ -339,7 +337,7 @@
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <string name="pref_cat_weather">Wetter</string>
   <string name="pref_weather_title">Wetter aktivieren</string>
-  <string name="pref_weather_units">Temperatureinheiten</string>
+  <string name="pref_weather_units">Maßeinheiten</string>
   <string name="pref_weather_city_summary">Für bessere Ergebnisse das Länderkürzel einfügen</string>
   <string name="pref_weather_city_title">Stadt</string>
   <string name="none">Keine</string>
@@ -355,28 +353,29 @@
   <string name="loading">Wird geladen…</string>
   <string name="icon_shape_override_label">Icon-Form ändern</string>
   <string name="icon_shape_system_default">Nicht ändern</string>
+  <string name="icon_shape_none">Keine</string>
   <string name="icon_shape_square">Quadrat</string>
   <string name="icon_shape_rounded_square">Abgerundetes Quadrat</string>
   <string name="icon_shape_squircle">Squircle</string>
   <string name="icon_shape_circle">Rund</string>
   <string name="icon_shape_teardrop">Tränenform</string>
-  <string name="animated_clock_icon_title">Animiertes Uhren Icon</string>
+  <string name="animated_clock_icon_title">Animiertes Uhren-Icon</string>
   <string name="about_summary_title">Übersicht</string>
   <string name="about_version">Version</string>
-  <string name="about_icon_designer">App-Icon Designer</string>
+  <string name="about_icon_designer">Designer App-Icon</string>
   <string name="about_contributors_title">Mitwirkende</string>
   <string name="location_permission_warn">Standort-Berechtigung wird benötigt, um zu einem anderen Anbieter zu wechseln!</string>
-  <string name="num_cols_drawer_pref_title">Spalten-Anzahl in der Übersicht</string>
-  <string name="pref_cat_drawer">Übersicht</string>
+  <string name="num_cols_drawer_pref_title">Spalten-Anzahl in der App-Übersicht</string>
+  <string name="pref_cat_drawer">App-Übersicht</string>
   <string name="shortcut_backport_warning">Dies könnte langsam sein, nutzen auf eigene Gefahr</string>
-  <string name="pref_backport_shortcuts">Verknüpfungen zurücksetzen</string>
+  <string name="pref_backport_shortcuts">Backport App-Verknüpfungen</string>
   <string name="weather_api_key_not_set">API-Schlüssel nicht festgelegt</string>
   <string name="pref_weather_api_key_title">API-Schlüssel</string>
   <string name="about_changelog">Änderungsprotokoll</string>
   <string name="pref_all_apps_custom_label_color">Verwende benutzerdefinierte Label-Farbe</string>
   <string name="pref_all_apps_label_color_variation">Farbvariationen der Icon-Labels in der App-Übersicht</string>
   <string name="pref_all_apps_label_color">Farbe der Icon-Labels in der Übersicht</string>
-  <string name="pref_num_rows_drawer">Anzahl der Reihen in der Übersicht</string>
+  <string name="pref_num_rows_drawer">Anzahl der Reihen in der App-Übersicht</string>
   <string name="center_wallpaper_pref_title">Hintergrund zentrieren, wenn nur eine Seite vorhanden ist</string>
   <string name="vertical_drawer_layout_pref_title">Als vertikale Liste darstellen</string>
   <!-- Time format for Weather Widget -->
@@ -386,4 +385,6 @@
   <string name="lock_desktop">Desktop sperren</string>
   <string name="lawnfeed_not_found">LawnFeed nicht installiert</string>
   <string name="google_app_not_found">Google-App nicht installiert</string>
+  <string name="popup_card_theme_title">Flaches Popup-Design</string>
+  <string name="set_default_launcher">Standard-Launcher einstellen</string>
 </resources>
