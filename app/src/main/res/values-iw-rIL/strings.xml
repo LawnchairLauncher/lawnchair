@@ -251,7 +251,7 @@
   <string name="hotseat_uses_extracted_colors_pref_on">שורת העגינה תיצבע באחד הצבעים מתוך הטפט</string>
   <string name="hotseat_uses_extracted_colors_pref_off">שורת העגינה תיצבע באפור, ותותאם לבהירות הטפט</string>
   <string name="transparent_hotseat_pref_title">שורת עגינה שקופה</string>
-  <string name="dynamic_ui_pref_title">חלץ צבע הדגשה של טפט</string>
+  <string name="dynamic_ui_pref_title">השתמש בצבע השולט של הטפט</string>
   <string name="blur_pref_title">אפשר טשטוש</string>
   <string name="blur_pref_summary">הפעל אפקט טשטוש לחלקים מהממשק n\ לא תואם לטפט חי</string>
   <string name="blur_radius_pref_title">רדיוס טשטוש</string>
@@ -270,8 +270,6 @@
   <string name="full_width_widgets_pref_summary">הרשה לווידג\'טים להתפרש לכל רוחב המסך</string>
   <string name="notification_access_pref_title">תגיות להתראות ותצוגה מקדימה</string>
   <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
-  <string name="ui_pref_title">ממשק משתמש</string>
-  <string name="pixel_style_pref_title">סגנון Pixel</string>
   <string name="behavior_pref_title">התנהגות</string>
   <string name="debug_pref_title">תיקון שגיאות</string>
   <string name="import_export_pref_title">ייבוא/ייצוא</string>
@@ -298,10 +296,6 @@
   <string name="show_hidden_pref_title">הצגת יישומים מוסתרים</string>
   <string name="show_hidden_pref_on">יישומים מוסתרים יוצגו בכדי לשנות את הגדרות התצוגה</string>
   <string name="show_hidden_pref_off">יישומים מוסתרים יהיו בלתי נראים</string>
-  <string name="export_db_title">יצוא מסד נתונים</string>
-  <string name="import_db_title">יבוא מסד נתונים</string>
-  <string name="export_prefs_title">יצוא הגדרות</string>
-  <string name="import_prefs_title">יבוא הגדרות</string>
   <string name="notification_listener_label">Lawnchair - תגיות התראות</string>
   <string name="color_extraction_label">Lawnchair - שליפת צבעים</string>
   <string name="test_title">בדיקה</string>
@@ -347,13 +341,31 @@
   <string name="loading">טוען…</string>
   <string name="icon_shape_override_label">שנה צורת אייקון</string>
   <string name="icon_shape_system_default">ללא שינוי</string>
+  <string name="icon_shape_none">ללא</string>
   <string name="icon_shape_square">ריבוע</string>
   <string name="icon_shape_rounded_square">ריבוע מעוגל</string>
   <string name="icon_shape_squircle">עיגובוע</string>
   <string name="icon_shape_circle">עיגול</string>
   <string name="icon_shape_teardrop">דמעה</string>
   <string name="animated_clock_icon_title">אייקון שעון מונפש</string>
+  <string name="about_summary_title">סיכום</string>
   <string name="about_version">גרסה</string>
+  <string name="about_icon_designer">מעצב סמל האפליקציה</string>
+  <string name="about_contributors_title">תורמים</string>
+  <string name="location_permission_warn">הרשאת המיקום נדרשת על מנת להחליף מקור נתונים!</string>
+  <string name="num_cols_drawer_pref_title">מספר העמודות במגירת היישומים</string>
+  <string name="pref_cat_drawer">מגירת היישומים</string>
+  <string name="shortcut_backport_warning">זו יכולה להיות פעולה איטית, השימוש על אחריותכם בלבד</string>
+  <string name="about_changelog">יומן שינויים</string>
+  <string name="pref_all_apps_custom_label_color">השתמש בצבע תווית מותאים אישית</string>
+  <string name="pref_all_apps_label_color_variation">גוון צבע תוויות הסמלים במגירת היישומים</string>
+  <string name="pref_all_apps_label_color">צבע תוויות הסמלים במגירת היישומים</string>
+  <string name="pref_num_rows_drawer">מספר השורות במגירת היישומים</string>
+  <string name="center_wallpaper_pref_title">מרכז את הטפט כאשר ישנו רק מסך אחד</string>
+  <string name="vertical_drawer_layout_pref_title">הצג כרשימה אנכית</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="about_translators">מתרגמים</string>
+  <string name="lock_desktop">נעל את מסך הבית</string>
+  <string name="set_default_launcher">הגדר כברירת מחדל</string>
 </resources>
