@@ -273,8 +273,7 @@
   <string name="full_width_widgets_pref_summary">पैडिंग बिना पूरी चौड़ाई से अधिक अवधि के लिए विजेट की अनुमति दें</string>
   <string name="notification_access_pref_title">अधिसूचना बैज और पूर्वावलोकन</string>
   <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
-  <string name="ui_pref_title">यूजर इंटरफ़ेस</string>
-  <string name="pixel_style_pref_title">पिक्सेल शैली</string>
+  <string name="general_pref_title">सामान्य</string>
   <string name="behavior_pref_title">व्यवहार</string>
   <string name="debug_pref_title">त्रुटि रहित करे</string>
   <string name="import_export_pref_title">आयात/निर्यात</string>
@@ -301,10 +300,6 @@
   <string name="show_hidden_pref_title">छुपे हुए ऐप्स दिखाएँ</string>
   <string name="show_hidden_pref_on">दृश्यता सेटिंग्स परिवर्तित करने के लिए छुपे हुए ऐप्स दिखाएँ</string>
   <string name="show_hidden_pref_off">छुपे हुए ऐप्स न दिखाएँ</string>
-  <string name="export_db_title">डेटाबेस को निर्यात करें</string>
-  <string name="import_db_title">डेटाबेस को आयात करें</string>
-  <string name="export_prefs_title">सेटिंग्सको निर्यात करें</string>
-  <string name="import_prefs_title">सेटिंग्सको आयात करें</string>
   <string name="notification_listener_label">लोवन्चैर - अधिसूचना बैज</string>
   <string name="color_extraction_label">लोवन्चैर - रंग निष्कर्षण</string>
   <string name="test_title">परीक्षण</string>
@@ -355,6 +350,7 @@
   <string name="loading">लोड हो रहा है…</string>
   <string name="icon_shape_override_label">आइकोन आकार परिवर्तित करें</string>
   <string name="icon_shape_system_default">न बदलें</string>
+  <string name="icon_shape_none">कोई नहीं</string>
   <string name="icon_shape_square">चोकोण</string>
   <string name="icon_shape_rounded_square">गोल कोण चोकोण</string>
   <string name="icon_shape_squircle">स्क्वेरकल</string>
@@ -386,4 +382,6 @@
   <string name="lock_desktop">डेस्कटॉप बंद करे</string>
   <string name="lawnfeed_not_found">Lawnfeed स्थापित नहीं</string>
   <string name="google_app_not_found">Google app स्थापित नहीं</string>
+  <string name="popup_card_theme_title">फ्लैट शैली पॉपअप</string>
+  <string name="set_default_launcher">डिफ़ॉल्ट लांचर सेट करें</string>
 </resources>
