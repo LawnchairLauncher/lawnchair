@@ -273,8 +273,6 @@
   <string name="full_width_widgets_pref_summary">Tillat moduler å spenne hele bredden uten padding</string>
   <string name="notification_access_pref_title">Varsling-merker og forhåndsvisning</string>
   <string name="notification_access_pref_summary">Gi Lawnchair tilgang til varslingene dine for å aktivere denne funksjonen</string>
-  <string name="ui_pref_title">Brukergrensesnitt</string>
-  <string name="pixel_style_pref_title">Pixel-stil</string>
   <string name="behavior_pref_title">Oppførsel</string>
   <string name="debug_pref_title">Feilsøk</string>
   <string name="import_export_pref_title">Importér/eksportér</string>
