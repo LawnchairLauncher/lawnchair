@@ -29,11 +29,13 @@ import android.widget.TextView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ENTER_INDEX;
+import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.EXIT_INDEX;
+import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.FolderIcon.DROP_IN_ANIMATION_DURATION;
 
 /**
@@ -202,7 +204,7 @@ public class PreviewItemManager {
             params.add(new PreviewItemDrawingParams(0, 0, 0, 0));
         }
 
-        int numItemsInFirstPagePreview = page == 0 ? items.size() : FolderIcon.NUM_ITEMS_IN_PREVIEW;
+        int numItemsInFirstPagePreview = page == 0 ? items.size() : MAX_NUM_ITEMS_IN_PREVIEW;
         for (int i = 0; i < params.size(); i++) {
             PreviewItemDrawingParams p = params.get(i);
             p.drawable = items.get(i).getCompoundDrawables()[1];
@@ -213,7 +215,7 @@ public class PreviewItemManager {
                 p.drawable.setCallback(mIcon);
             }
 
-            if (!animate || FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON) {
+            if (!animate) {
                 computePreviewItemDrawingParams(i, numItemsInFirstPagePreview, p);
                 if (mReferenceDrawable == null) {
                     mReferenceDrawable = p.drawable;
@@ -308,7 +310,7 @@ public class PreviewItemManager {
             int prevIndex = newParams.indexOf(moveIn.get(i));
             PreviewItemDrawingParams p = params.get(prevIndex);
             computePreviewItemDrawingParams(prevIndex, numItems, p);
-            updateTransitionParam(p, moveIn.get(i), mIcon.mPreviewLayoutRule.getEnterIndex(),
+            updateTransitionParam(p, moveIn.get(i), ENTER_INDEX,
                     newParams.indexOf(moveIn.get(i)));
         }
 
@@ -328,7 +330,7 @@ public class PreviewItemManager {
             BubbleTextView item = moveOut.get(i);
             int oldIndex = oldParams.indexOf(item);
             PreviewItemDrawingParams p = computePreviewItemDrawingParams(oldIndex, numItems, null);
-            updateTransitionParam(p, item, oldIndex, mIcon.mPreviewLayoutRule.getExitIndex());
+            updateTransitionParam(p, item, oldIndex, EXIT_INDEX);
             params.add(0, p); // We want these items first so that they are on drawn last.
         }
 
@@ -349,7 +351,7 @@ public class PreviewItemManager {
         }
 
         FolderPreviewItemAnim anim = new FolderPreviewItemAnim(this, p, prevIndex,
-                FolderIcon.NUM_ITEMS_IN_PREVIEW, newIndex, FolderIcon.NUM_ITEMS_IN_PREVIEW,
+                MAX_NUM_ITEMS_IN_PREVIEW, newIndex, MAX_NUM_ITEMS_IN_PREVIEW,
                 DROP_IN_ANIMATION_DURATION, null);
         if (p.anim != null && !p.anim.hasEqualFinalState(anim)) {
             p.anim.cancel();

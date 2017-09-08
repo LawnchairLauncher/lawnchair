@@ -1,9 +1,8 @@
 package com.android.launcher3.folder;
 
+public class ClippedFolderIconLayoutRule {
 
-public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
-
-    static final int MAX_NUM_ITEMS_IN_PREVIEW = 4;
+    public static final int MAX_NUM_ITEMS_IN_PREVIEW = 4;
     private static final int MIN_NUM_ITEMS_IN_PREVIEW = 2;
 
     private static final float MIN_SCALE = 0.48f;
@@ -11,8 +10,8 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
     private static final float MAX_RADIUS_DILATION = 0.15f;
     private static final float ITEM_RADIUS_SCALE_FACTOR = 1.33f;
 
-    private static final int EXIT_INDEX = -2;
-    private static final int ENTER_INDEX = -3;
+    public static final int EXIT_INDEX = -2;
+    public static final int ENTER_INDEX = -3;
 
     private float[] mTmpPoint = new float[2];
 
@@ -22,7 +21,6 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
     private boolean mIsRtl;
     private float mBaselineIconScale;
 
-    @Override
     public void init(int availableSpace, float intrinsicIconSize, boolean rtl) {
         mAvailableSpace = availableSpace;
         mRadius = ITEM_RADIUS_SCALE_FACTOR * availableSpace / 2f;
@@ -31,19 +29,18 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
         mBaselineIconScale = availableSpace / (intrinsicIconSize * 1f);
     }
 
-    @Override
     public PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
             PreviewItemDrawingParams params) {
-        float totalScale = scaleForItem(index, curNumItems);
+        float totalScale = scaleForItem(curNumItems);
         float transX;
         float transY;
         float overlayAlpha = 0;
 
-        if (index == getExitIndex()) {
+        if (index == EXIT_INDEX) {
             // 0 1 * <-- Exit position (row 0, col 2)
             // 2 3
             getGridPosition(0, 2, mTmpPoint);
-        } else if (index == getEnterIndex()) {
+        } else if (index == ENTER_INDEX) {
             // 0 1
             // 2 3 * <-- Enter position (row 1, col 2)
             getGridPosition(1, 2, mTmpPoint);
@@ -120,7 +117,7 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
                 MIN_NUM_ITEMS_IN_PREVIEW) / (MAX_NUM_ITEMS_IN_PREVIEW - MIN_NUM_ITEMS_IN_PREVIEW));
         double theta = theta0 + index * (2 * Math.PI / curNumItems) * direction;
 
-        float halfIconSize = (mIconSize * scaleForItem(index, curNumItems)) / 2;
+        float halfIconSize = (mIconSize * scaleForItem(curNumItems)) / 2;
 
         // Map the location along the circle, and offset the coordinates to represent the center
         // of the icon, and to be based from the top / left of the preview area. The y component
@@ -130,10 +127,9 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
 
     }
 
-    @Override
-    public float scaleForItem(int index, int numItems) {
+    public float scaleForItem(int numItems) {
         // Scale is determined by the number of items in the preview.
-        float scale = 1f;
+        final float scale;
         if (numItems <= 2) {
             scale = MAX_SCALE;
         } else if (numItems == 3) {
@@ -141,37 +137,10 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
         } else {
             scale = MIN_SCALE;
         }
-
         return scale * mBaselineIconScale;
     }
 
-    @Override
     public float getIconSize() {
         return mIconSize;
-    }
-
-    @Override
-    public int maxNumItems() {
-        return MAX_NUM_ITEMS_IN_PREVIEW;
-    }
-
-    @Override
-    public boolean clipToBackground() {
-        return true;
-    }
-
-    @Override
-    public boolean hasEnterExitIndices() {
-        return true;
-    }
-
-    @Override
-    public int getExitIndex() {
-        return EXIT_INDEX;
-    }
-
-    @Override
-    public int getEnterIndex() {
-        return ENTER_INDEX;
     }
 }

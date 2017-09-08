@@ -17,7 +17,6 @@
 package com.android.launcher3.folder;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -49,7 +48,6 @@ import com.android.launcher3.FolderInfo;
 import com.android.launcher3.FolderInfo.FolderListener;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.OnAlarmListener;
 import com.android.launcher3.R;
@@ -60,7 +58,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.badge.BadgeRenderer;
 import com.android.launcher3.badge.FolderBadgeInfo;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.BaseItemDragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
@@ -71,6 +68,7 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMATION_DURATION;
 
 /**
@@ -81,10 +79,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     @Thunk Folder mFolder;
     private FolderInfo mInfo;
     @Thunk static boolean sStaticValuesDirty = true;
-
-    public static final int NUM_ITEMS_IN_PREVIEW = FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON ?
-            StackFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW :
-            ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 
     private CheckLongPressHelper mLongPressHelper;
     private StylusEventHelper mStylusEventHelper;
@@ -103,7 +97,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private boolean mBackgroundIsVisible = true;
 
     FolderIconPreviewVerifier mPreviewVerifier;
-    PreviewLayoutRule mPreviewLayoutRule;
+    ClippedFolderIconLayoutRule mPreviewLayoutRule;
     private PreviewItemManager mPreviewItemManager;
     private PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0, 0);
 
@@ -146,9 +140,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private void init() {
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
-        mPreviewLayoutRule = FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON ?
-                new StackFolderIconLayoutRule() :
-                new ClippedFolderIconLayoutRule();
+        mPreviewLayoutRule = new ClippedFolderIconLayoutRule();
         mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         mPreviewItemManager = new PreviewItemManager(this);
     }
@@ -314,8 +306,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             }
 
             boolean itemAdded = false;
-            if (index >= mPreviewLayoutRule.maxNumItems()
-                    && mPreviewLayoutRule.hasEnterExitIndices()) {
+            if (index >= MAX_NUM_ITEMS_IN_PREVIEW) {
                 List<BubbleTextView> oldPreviewItems = getPreviewItemsOnPage(0);
                 addItem(item, false);
                 List<BubbleTextView> newPreviewItems = getPreviewItemsOnPage(0);
@@ -347,7 +338,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             to.offset(center[0] - animateView.getMeasuredWidth() / 2,
                     center[1] - animateView.getMeasuredHeight() / 2);
 
-            float finalAlpha = index < mPreviewLayoutRule.maxNumItems() ? 0.5f : 0f;
+            float finalAlpha = index < MAX_NUM_ITEMS_IN_PREVIEW ? 0.5f : 0f;
 
             float finalScale = scale * scaleRelativeToDragLayer;
             dragLayer.animateView(animateView, from, to, finalAlpha,
@@ -391,7 +382,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mBadgeInfo = badgeInfo;
     }
 
-    public PreviewLayoutRule getLayoutRule() {
+    public ClippedFolderIconLayoutRule getLayoutRule() {
         return mPreviewLayoutRule;
     }
 
@@ -420,7 +411,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     private float getLocalCenterForIndex(int index, int curNumItems, int[] center) {
         mTmpParams = mPreviewItemManager.computePreviewItemDrawingParams(
-                Math.min(mPreviewLayoutRule.maxNumItems(), index), curNumItems, mTmpParams);
+                Math.min(MAX_NUM_ITEMS_IN_PREVIEW, index), curNumItems, mTmpParams);
 
         mTmpParams.transX += mBackground.basePreviewOffsetX;
         mTmpParams.transY += mBackground.basePreviewOffsetY;
@@ -474,19 +465,17 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                     Canvas.HAS_ALPHA_LAYER_SAVE_FLAG | Canvas.CLIP_TO_LAYER_SAVE_FLAG);
         } else {
             saveCount = canvas.save(Canvas.CLIP_SAVE_FLAG);
-            if (mPreviewLayoutRule.clipToBackground()) {
-                canvas.clipPath(mBackground.getClipPath(), Region.Op.INTERSECT);
-            }
+            canvas.clipPath(mBackground.getClipPath(), Region.Op.INTERSECT);
         }
 
         mPreviewItemManager.draw(canvas);
 
-        if (mPreviewLayoutRule.clipToBackground() && canvas.isHardwareAccelerated()) {
+        if (canvas.isHardwareAccelerated()) {
             mBackground.clipCanvasHardware(canvas);
         }
         canvas.restoreToCount(saveCount);
 
-        if (mPreviewLayoutRule.clipToBackground() && !mBackground.drawingDelegated()) {
+        if (!mBackground.drawingDelegated()) {
             mBackground.drawBackgroundStroke(canvas);
         }
 
@@ -542,7 +531,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 itemsToDisplay.add(itemsOnPage.get(rank));
             }
 
-            if (itemsToDisplay.size() == FolderIcon.NUM_ITEMS_IN_PREVIEW) {
+            if (itemsToDisplay.size() == MAX_NUM_ITEMS_IN_PREVIEW) {
                 break;
             }
         }
@@ -631,30 +620,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mInfo.removeListener(mFolder);
     }
 
-    public void shrinkAndFadeIn(boolean animate) {
-        // We remove and re-draw the FolderIcon in-case it has changed
-        final PreviewImageView previewImage = PreviewImageView.get(getContext());
-        previewImage.removeFromParent();
-        copyToPreview(previewImage);
-
-        clearLeaveBehindIfExists();
-
-        ObjectAnimator oa = LauncherAnimUtils.ofViewAlphaAndScale(previewImage, 1, 1, 1);
-        oa.setDuration(getResources().getInteger(R.integer.config_folderExpandDuration));
-        oa.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                // Remove the ImageView copy of the FolderIcon and make the original visible.
-                previewImage.removeFromParent();
-                setVisibility(View.VISIBLE);
-            }
-        });
-        oa.start();
-        if (!animate) {
-            oa.end();
-        }
-    }
-
     public void clearLeaveBehindIfExists() {
         ((CellLayout.LayoutParams) getLayoutParams()).canReorder = true;
         if (mInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
@@ -673,48 +638,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         }
     }
 
-    public void growAndFadeOut() {
-        drawLeaveBehindIfExists();
-
-        // Push an ImageView copy of the FolderIcon into the DragLayer and hide the original
-        PreviewImageView previewImage = PreviewImageView.get(getContext());
-        copyToPreview(previewImage);
-        setVisibility(View.INVISIBLE);
-
-        ObjectAnimator oa = LauncherAnimUtils.ofViewAlphaAndScale(previewImage, 0, 1.5f, 1.5f);
-        oa.setDuration(getResources().getInteger(R.integer.config_folderExpandDuration));
-        oa.start();
-    }
-
-    /**
-     * This method draws the FolderIcon to an ImageView and then adds and positions that ImageView
-     * in the DragLayer in the exact absolute location of the original FolderIcon.
-     */
-    private void copyToPreview(PreviewImageView previewImageView) {
-        previewImageView.copy(this);
-        if (mFolder != null) {
-            previewImageView.setPivotX(mFolder.getPivotXForIconAnimation());
-            previewImageView.setPivotY(mFolder.getPivotYForIconAnimation());
-            mFolder.bringToFront();
-        }
-    }
-
     public void onFolderClose(int currentPage) {
         mPreviewItemManager.onFolderClose(currentPage);
-    }
-
-    interface PreviewLayoutRule {
-        PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
-                PreviewItemDrawingParams params);
-        void init(int availableSpace, float intrinsicIconSize, boolean rtl);
-        float scaleForItem(int index, int totalNumItems);
-        float getIconSize();
-        int maxNumItems();
-        boolean clipToBackground();
-
-        boolean hasEnterExitIndices();
-        int getExitIndex();
-        int getEnterIndex();
-
     }
 }

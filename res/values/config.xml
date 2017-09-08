@@ -86,9 +86,7 @@
     <integer name="config_dropAnimMaxDuration">500</integer>
 
     <!-- The duration of the UserFolder opening and closing animation -->
-    <integer name="config_folderExpandDuration">120</integer>
     <integer name="config_materialFolderExpandDuration">200</integer>
-    <integer name="config_materialFolderExpandStagger">60</integer>
     <integer name="config_folderDelay">30</integer>
 
     <!-- The distance at which the animation should take the max duration -->
@@ -127,9 +125,6 @@
 
     <!-- View ID used by cell layout to jail its content -->
     <item type="id" name="cell_layout_jail_id" />
-
-    <!-- View ID used by PreviewImageView to cache its instance -->
-    <item type="id" name="preview_image_id" />
 
 <!-- Popup items -->
     <integer name="config_popupOpenCloseDuration">150</integer>
