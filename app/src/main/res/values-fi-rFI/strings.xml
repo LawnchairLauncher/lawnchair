@@ -260,7 +260,6 @@
   <string name="icon_text_scale_pref_title">Kuvakkeen tekstin skaalaus</string>
   <string name="notification_access_pref_title">Ilmoitusten merkit ja esikatselu</string>
   <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
-  <string name="ui_pref_title">Käyttöliittymä</string>
   <string name="import_export_pref_title">Tuo/Vie</string>
   <string name="show_mic_pref_title">Näytä Google Assistant-painike</string>
   <string name="pixel_style_icons_pref_title">Käytä Pixel-kuvakkeita</string>
