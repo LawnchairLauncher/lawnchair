@@ -273,8 +273,6 @@
   <string name="full_width_widgets_pref_summary">Permitir a los widgets mostrarse sobre el ancho completo</string>
   <string name="notification_access_pref_title">Insignia en notificaciones y vista previa</string>
   <string name="notification_access_pref_summary">Deberá permitir a Lawnchair el acceso a notificaciones para poder habilitar esta función</string>
-  <string name="ui_pref_title">Interfaz de usuario</string>
-  <string name="pixel_style_pref_title">Estilo Pixel</string>
   <string name="behavior_pref_title">Comportamiento</string>
   <string name="debug_pref_title">Opciones de depuración</string>
   <string name="import_export_pref_title">Importar/Exportar</string>
@@ -301,10 +299,10 @@
   <string name="show_hidden_pref_title">Mostrar aplicaciones ocultas</string>
   <string name="show_hidden_pref_on">Se mostrarán las aplicaciones ocultas para ajustar la visibilidad de las mismas</string>
   <string name="show_hidden_pref_off">Las aplicaciones ocultas no serán visibles</string>
-  <string name="export_db_title">Exportar la Base de datos</string>
-  <string name="import_db_title">Importar la Base de datos</string>
-  <string name="export_prefs_title">Exportar la configuración</string>
-  <string name="import_prefs_title">Importar la configuración</string>
+  <string name="export_db_title">Exportar base de datos</string>
+  <string name="import_db_title">Importar base de datos</string>
+  <string name="export_prefs_title">Exportar configuración</string>
+  <string name="import_prefs_title">Importar configuración</string>
   <string name="notification_listener_label">Lawnchair - Insignia en notificaciones</string>
   <string name="color_extraction_label">Lawnchair - Extracción de colores</string>
   <string name="test_title">Prueba</string>
@@ -355,6 +353,7 @@
   <string name="loading">Cargando…</string>
   <string name="icon_shape_override_label">Cambiar el aspecto de los iconos</string>
   <string name="icon_shape_system_default">No aplicar cambios</string>
+  <string name="icon_shape_none">Ninguno</string>
   <string name="icon_shape_square">Cuadrado</string>
   <string name="icon_shape_rounded_square">Cuadrado redondeado</string>
   <string name="icon_shape_squircle">Esquinas redondeadas</string>
@@ -386,4 +385,6 @@
   <string name="lock_desktop">Bloquear escritorio</string>
   <string name="lawnfeed_not_found">Lawnfeed no instalado</string>
   <string name="google_app_not_found">Aplicación de Google no instalada</string>
+  <string name="popup_card_theme_title">Emergente de estilo plano</string>
+  <string name="set_default_launcher">Establecer launcher por defecto</string>
 </resources>
