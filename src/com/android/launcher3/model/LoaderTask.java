@@ -53,7 +53,6 @@ import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
-import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.FolderIconPreviewVerifier;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
@@ -75,6 +74,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
+
+import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 
 /**
  * Runnable for the thread that loads the contents of the launcher:
@@ -734,7 +735,7 @@ public class LoaderTask implements Runnable {
                         numItemsInPreview++;
                     }
 
-                    if (numItemsInPreview >= FolderIcon.NUM_ITEMS_IN_PREVIEW) {
+                    if (numItemsInPreview >= MAX_NUM_ITEMS_IN_PREVIEW) {
                         break;
                     }
                 }
