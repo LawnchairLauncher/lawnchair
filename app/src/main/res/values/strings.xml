@@ -338,11 +338,17 @@
     <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
     <string name="notification_access_pref_title">Notification badges and preview</string>
     <string name="notification_access_pref_summary">Allow Lawnchair to access your notifications to enable this feature</string>
-    <string name="ui_pref_title">UI</string>
-    <string name="pixel_style_pref_title">Pixel style</string>
+    <string name="general_pref_title">General</string>
+    <string name="pixel_ui_pref_title">Pixel UI</string>
     <string name="behavior_pref_title">Behavior</string>
     <string name="debug_pref_title">Debug</string>
     <string name="import_export_pref_title">Import/Export</string>
+     <string name="general_pref_summary">Homescreen, dock, and app drawer</string>
+    <string name="pixel_ui_pref_summary">Enable Pixel Launcher exclusive features</string>
+    <string name="backup_pref_title">Backup</string>
+    <string name="behavior_pref_summary">Change the behavior of Lawnchair</string>
+    <string name="backup_pref_summary">Backup your database and settings</string>
+    <string name="debug_pref_summary">Restart or rebuild icon database</string>
     <string name="show_pixel_bar_pref_title">Show Pixel top bar</string>
     <string name="use_wide_searchbar_pref_title">Use wide searchbar</string>
     <string name="show_mic_pref_title">Show Google Assistant button</string>
@@ -366,10 +372,10 @@
     <string name="show_hidden_pref_title">Show hidden apps</string>
     <string name="show_hidden_pref_on">Hidden apps will be shown to change visibility settings</string>
     <string name="show_hidden_pref_off">Hidden apps won\'t be visible</string>
-    <string name="export_db_title">Export database</string>
-    <string name="import_db_title">Import database</string>
-    <string name="export_prefs_title">Export settings</string>
-    <string name="import_prefs_title">Import settings</string>
+    <string name="export_db_title">Database</string>
+    <string name="import_db_title">Database</string>
+    <string name="export_prefs_title">Settings</string>
+    <string name="import_prefs_title">Settings</string>
     <string name="notification_listener_label">Lawnchair - Notification badges</string>
     <string name="color_extraction_label">Lawnchair - Color extraction</string>
     <string name="test_title">Test</string>
@@ -396,6 +402,8 @@
     <string name="enable_screen_rotation">Enable screen rotation</string>
 
     <!-- Import/Export Strings -->
+     <string name="backup_import_title">Import</string>
+    <string name="backup_export_title">Export</string>
     <string name="imexport_success">Success!</string>
     <string name="imexport_error">Error: Failed to copy file</string>
     <string name="imexport_no_backup_found">No backup found</string>

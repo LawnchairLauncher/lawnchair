@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Preference
-        android:key="export_db"
-        android:title="@string/export_db_title" />
-    <Preference
-        android:key="import_db"
-        android:title="@string/import_db_title" />
-    <Preference
-        android:key="export_prefs"
-        android:title="@string/export_prefs_title" />
-    <Preference
-        android:key="import_prefs"
-        android:title="@string/import_prefs_title" />
+    <PreferenceCategory android:title="@string/backup_export_title">
+
+        <Preference
+            android:key="export_prefs"
+            android:title="@string/export_prefs_title" />
+        <Preference
+            android:key="export_db"
+            android:title="@string/export_db_title" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/backup_import_title">
+
+        <Preference
+            android:key="import_prefs"
+            android:title="@string/import_prefs_title" />
+        <Preference
+            android:key="import_db"
+            android:title="@string/import_db_title" />
+    </PreferenceCategory>
 </PreferenceScreen>
