@@ -272,8 +272,6 @@
   <string name="full_width_widgets_pref_summary">允許小工具填滿桌面寬度</string>
   <string name="notification_access_pref_title">未讀計數和預覽</string>
   <string name="notification_access_pref_summary">允許 Lawnchair 訪問您的通知許可權以啟用此功能</string>
-  <string name="ui_pref_title">使用者介面</string>
-  <string name="pixel_style_pref_title">Pixel風格</string>
   <string name="behavior_pref_title">功能</string>
   <string name="debug_pref_title">除錯模式</string>
   <string name="import_export_pref_title">匯入／匯出</string>
@@ -354,6 +352,7 @@
   <string name="loading">載入中…</string>
   <string name="icon_shape_override_label">更換圖示造型</string>
   <string name="icon_shape_system_default">不要變更</string>
+  <string name="icon_shape_none">無</string>
   <string name="icon_shape_square">正方形</string>
   <string name="icon_shape_rounded_square">圓角方形</string>
   <string name="icon_shape_squircle">圓角正方形</string>
@@ -385,4 +384,6 @@
   <string name="lock_desktop">鎖定桌面</string>
   <string name="lawnfeed_not_found">未安裝 Lawnfeed</string>
   <string name="google_app_not_found">未安裝 Google 應用</string>
+  <string name="popup_card_theme_title">平面樣式的彈出選單</string>
+  <string name="set_default_launcher">設定預設啟動器</string>
 </resources>
