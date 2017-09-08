@@ -271,8 +271,6 @@
   <string name="full_width_widgets_pref_summary">Tillad widgets at spænde over hele bredden uden polstring</string>
   <string name="notification_access_pref_title">Notifikations tegn og forhåndsvisning</string>
   <string name="notification_access_pref_summary">Tillad Lawnchair adgang til dine notifikationer for at aktivere denne egenskab</string>
-  <string name="ui_pref_title">Brugerflade</string>
-  <string name="pixel_style_pref_title">Brug Pixel stil</string>
   <string name="behavior_pref_title">Adfærd</string>
   <string name="debug_pref_title">Fejlfindnig</string>
   <string name="import_export_pref_title">Importér/eksportér</string>
@@ -299,10 +297,6 @@
   <string name="show_hidden_pref_title">Vis skjulte apps</string>
   <string name="show_hidden_pref_on">Skjulte apps bliver vist til at ændre indstillinger for synlighed</string>
   <string name="show_hidden_pref_off">Skjulte apps vil ikke være synlige</string>
-  <string name="export_db_title">Eksporter database</string>
-  <string name="import_db_title">Importer database</string>
-  <string name="export_prefs_title">Eksporter indstillinger</string>
-  <string name="import_prefs_title">Importer indstillinger</string>
   <string name="notification_listener_label">Lawnchair - Notifikationsskilte</string>
   <string name="color_extraction_label">Lawnchar - Farveudtræk</string>
   <string name="test_title">Test</string>
