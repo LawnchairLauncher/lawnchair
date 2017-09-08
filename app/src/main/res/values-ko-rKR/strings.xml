@@ -22,7 +22,7 @@
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
-  <string name="work_folder_name">작업</string>
+  <string name="work_folder_name">업무</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
   <string name="activity_not_found">앱이 설치되지 않았습니다.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
@@ -35,7 +35,7 @@
   <string name="shortcut_not_available">바로가기를 사용할 수 없음</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">위젯을 선택하려면 길게 터치하세요.</string>
+  <string name="long_press_widget_to_add">위젯을 선택하려면 길게 누르세요.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
   <string name="long_accessible_way_to_add">위젯을 선택하거나 맞춤 액션을 사용하려면 두 번 두드리거나 길게 누르세요.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
@@ -272,8 +272,6 @@
   <string name="full_width_widgets_pref_summary">위젯이 패딩없이 전체 너비로 확장되도록 허용</string>
   <string name="notification_access_pref_title">알림 뱃지와 미리보기</string>
   <string name="notification_access_pref_summary">이 기능을 활성화 하려면 Lawnchair가 기기의 알림을 확인 할 수 있는 권한이 필요합니다.</string>
-  <string name="ui_pref_title">UI</string>
-  <string name="pixel_style_pref_title">Pixel 스타일</string>
   <string name="behavior_pref_title">행동</string>
   <string name="debug_pref_title">디버그</string>
   <string name="import_export_pref_title">가져오기/내보내기</string>
@@ -300,10 +298,6 @@
   <string name="show_hidden_pref_title">숨긴 앱 보이기</string>
   <string name="show_hidden_pref_on">화면 설정이 바뀐 후, 숨겨졌던 앱이 나타납니다.</string>
   <string name="show_hidden_pref_off">숨긴 앱은 보이지 않습니다.</string>
-  <string name="export_db_title">데이터베이스 내보내기</string>
-  <string name="import_db_title">데이터베이스 가져오기</string>
-  <string name="export_prefs_title">설정 내보내기</string>
-  <string name="import_prefs_title">설정 불러오기</string>
   <string name="notification_listener_label">Lawnchair - 알림 뱃지</string>
   <string name="color_extraction_label">Lawnchair - 색 추출</string>
   <string name="test_title">테스트</string>
@@ -354,6 +348,7 @@
   <string name="loading">로딩 중…</string>
   <string name="icon_shape_override_label">아이콘 변경</string>
   <string name="icon_shape_system_default">변경 금지</string>
+  <string name="icon_shape_none">없음</string>
   <string name="icon_shape_square">사각형</string>
   <string name="icon_shape_rounded_square">모서리 둥근 사각형</string>
   <string name="icon_shape_squircle">둥근 사각형</string>
@@ -385,4 +380,6 @@
   <string name="lock_desktop">바탕 화면 잠금</string>
   <string name="lawnfeed_not_found">Lawnfeed가 설치 되지 않았습니다.</string>
   <string name="google_app_not_found">Google 앱이 설치 되지 않았습니다.</string>
+  <string name="popup_card_theme_title">플랫 스타일 팝업</string>
+  <string name="set_default_launcher">기본 런처 설정</string>
 </resources>
