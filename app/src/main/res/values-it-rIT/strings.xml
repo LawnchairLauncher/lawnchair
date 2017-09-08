@@ -30,7 +30,7 @@
   <!-- SafeMode shortcut error string -->
   <string name="safemode_shortcut_error">Le app scaricate sono disattivate in modalità provvisoria</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">I Widget disabilitati in modalità provvisoria</string>
+  <string name="safemode_widget_error">I Widget sono disabilitati in modalità provvisoria</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">Scorciatoia non disponibile</string>
   <!-- Widgets -->
@@ -81,7 +81,7 @@
   <!-- Permission description -->
   <string name="permdesc_write_settings">Consente all\'app di modificare le impostazioni e le scorciatoie nella Home.</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
-  <string name="msg_no_phone_permission">L\'app <xliff:g id="APP_NAME">%1$s</xliff:g> non è autorizzata a effettuare telefonate</string>
+  <string name="msg_no_phone_permission">L\'app <xliff:g id="APP_NAME">%1$s</xliff:g> non è autorizzata ad effettuare telefonate</string>
   <!-- Widgets: -->
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">Errore di caricamento del widget</string>
@@ -273,8 +273,6 @@
   <string name="full_width_widgets_pref_summary">Consente ai widget di estendersi lunga tutta la larghezza dello schermo</string>
   <string name="notification_access_pref_title">Badge di notifica e anteprima</string>
   <string name="notification_access_pref_summary">Permetti l\'accesso alle notifiche a Lawnchair per abilitare queste funzioni</string>
-  <string name="ui_pref_title">Interfaccia</string>
-  <string name="pixel_style_pref_title">Stile Pixel</string>
   <string name="behavior_pref_title">Gesti e funzionalità</string>
   <string name="debug_pref_title">Debug</string>
   <string name="import_export_pref_title">Importa/Esporta</string>
@@ -355,6 +353,7 @@
   <string name="loading">Caricamento…</string>
   <string name="icon_shape_override_label">Cambia tema dell\' icona</string>
   <string name="icon_shape_system_default">Non cambiare</string>
+  <string name="icon_shape_none">Nessuno</string>
   <string name="icon_shape_square">Quadrato</string>
   <string name="icon_shape_rounded_square">Quadrato con angoli arrotondati</string>
   <string name="icon_shape_squircle">Squircle</string>
@@ -384,4 +383,8 @@
   <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
   <string name="about_translators">Traduttori</string>
   <string name="lock_desktop">Blocca il desktop</string>
+  <string name="lawnfeed_not_found">Lawnfeed non installato</string>
+  <string name="google_app_not_found">App Google non installata</string>
+  <string name="popup_card_theme_title">Stile popup flat</string>
+  <string name="set_default_launcher">Imposta come laumcher predefinito</string>
 </resources>
