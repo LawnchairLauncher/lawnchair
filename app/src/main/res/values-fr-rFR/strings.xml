@@ -273,8 +273,6 @@
   <string name="full_width_widgets_pref_summary">Permettre aux widgets de s’étendre sur toute la largeur sans marge</string>
   <string name="notification_access_pref_title">Badges de notification</string>
   <string name="notification_access_pref_summary">Permettre à Lawnchair d\'accéder à vos notifications pour activer cette fonctionnalité</string>
-  <string name="ui_pref_title">Interface utilisateur</string>
-  <string name="pixel_style_pref_title">Style Pixel</string>
   <string name="behavior_pref_title">Comportement</string>
   <string name="debug_pref_title">Debug</string>
   <string name="import_export_pref_title">Importer/Exporter</string>
@@ -355,6 +353,7 @@
   <string name="loading">Chargement…</string>
   <string name="icon_shape_override_label">Changer la forme des icônes</string>
   <string name="icon_shape_system_default">Ne pas changer</string>
+  <string name="icon_shape_none">Aucun</string>
   <string name="icon_shape_square">Carré</string>
   <string name="icon_shape_rounded_square">Carré arrondi</string>
   <string name="icon_shape_squircle">Carrecle</string>
@@ -386,4 +385,6 @@
   <string name="lock_desktop">Verrouiller l\'écran d\'accueil</string>
   <string name="lawnfeed_not_found">Paquets non installés</string>
   <string name="google_app_not_found">Appli. Google non installé</string>
+  <string name="popup_card_theme_title">Pop-up en flat design </string>
+  <string name="set_default_launcher">Définir comme launcher par défaut</string>
 </resources>
