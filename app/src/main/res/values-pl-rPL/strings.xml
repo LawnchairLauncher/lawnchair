@@ -274,8 +274,6 @@
   <string name="full_width_widgets_pref_summary">Zezwól widżetom na rozciągnięcie się na całej szerokości ekranu bez odstępów</string>
   <string name="notification_access_pref_title">Odznaki powiadomień i podgląd</string>
   <string name="notification_access_pref_summary">Zezwól Lawnchair na dostęp do twoich powiadomień żeby włączyć te funkcje</string>
-  <string name="ui_pref_title">Interfejs</string>
-  <string name="pixel_style_pref_title">Styl Pixel</string>
   <string name="behavior_pref_title">Zachowanie</string>
   <string name="debug_pref_title">Opcje debugujące</string>
   <string name="import_export_pref_title">Importuj/Eksportuj</string>
@@ -356,6 +354,7 @@
   <string name="loading">Ładowanie…</string>
   <string name="icon_shape_override_label">Zmień kształt ikony</string>
   <string name="icon_shape_system_default">Nie zmieniaj</string>
+  <string name="icon_shape_none">Brak</string>
   <string name="icon_shape_square">Kwadrat</string>
   <string name="icon_shape_rounded_square">Zaokrąglony kwadrat</string>
   <string name="icon_shape_squircle">Zaokrąglony kwadrat</string>
@@ -387,4 +386,6 @@
   <string name="lock_desktop">Blokada pulpitu</string>
   <string name="lawnfeed_not_found">Lawnfeed nie jest zainstalowany</string>
   <string name="google_app_not_found">Aplikacja Google nie jest zainstalowana</string>
+  <string name="popup_card_theme_title">Płaski styl wyskakujących</string>
+  <string name="set_default_launcher">Ustaw domyślny program uruchamiający</string>
 </resources>
