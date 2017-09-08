@@ -273,8 +273,6 @@
   <string name="full_width_widgets_pref_summary">Να επιτραπεί στα γραφικά στοιχεία να εκτείνονται σε ολόκληρο το πλάτος χωρίς κενά περιθώρια</string>
   <string name="notification_access_pref_title">Εικονίδια ειδοποιήσεων και προεπισκόπηση</string>
   <string name="notification_access_pref_summary">Επιτρέψτε στο Lawnchair να αποκτήσει πρόσβαση στης ειδοποιήσεις σας για να ενεργοποιηθεί αυτό το χαρακτηριστικό</string>
-  <string name="ui_pref_title">Περιβάλλον Χρήσης</string>
-  <string name="pixel_style_pref_title">Χαρακτηριστικά Pixel</string>
   <string name="behavior_pref_title">Συμπεριφορά</string>
   <string name="debug_pref_title">Αντιμετώπιση σφαλμάτων</string>
   <string name="import_export_pref_title">Αντίγραφα ασφαλείας ρυθμίσεων</string>
@@ -355,6 +353,7 @@
   <string name="loading">Φόρτωση…</string>
   <string name="icon_shape_override_label">Αλλαγή σχήματος εικονιδίου</string>
   <string name="icon_shape_system_default">Χωρίς αλλαγή</string>
+  <string name="icon_shape_none">Κανένα</string>
   <string name="icon_shape_square">Τετράγωνο</string>
   <string name="icon_shape_rounded_square">Στρογγυλεμένο τετράγωνο</string>
   <string name="icon_shape_squircle">Οβάλ τετράγωνο</string>
@@ -386,4 +385,6 @@
   <string name="lock_desktop">Κλειδώματος αρχικής οθόνης</string>
   <string name="lawnfeed_not_found">Το lawnfeed δεν είναι εγκατεστημένο</string>
   <string name="google_app_not_found">Η εφαρμογή Goggle δεν είναι εγκατεστημένη</string>
+  <string name="popup_card_theme_title">Επίπεδο στυλ γρήγορων συντομεύσεων</string>
+  <string name="set_default_launcher">Ορισμός προεπιλεγμένου εκτοξευτή</string>
 </resources>
