@@ -28,7 +28,7 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">O app não está disponível</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">App transferido por download desativado no modo de segurança</string>
+  <string name="safemode_shortcut_error">Download de aplicativo esta desativado no modo de segurança</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">Widgets desativados no modo de segurança</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
@@ -88,7 +88,7 @@
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
   <string name="gadget_setup_text">Configuração</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
-  <string name="uninstall_system_app_text">Este é um app do sistema e não pode ser desinstalado.</string>
+  <string name="uninstall_system_app_text">Este é um aplicativo do sistema e não pode ser desinstalado.</string>
   <!-- Default folder title -->
   <string name="folder_hint_text">Pasta sem nome</string>
   <!-- Accessibility -->
@@ -135,25 +135,25 @@
   <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->
   <string name="abandoned_search">Pesquisar</string>
   <!-- Title for abandoned promise dialog. -->
-  <string name="abandoned_promises_title">Este app não está instalado</string>
+  <string name="abandoned_promises_title">Este aplicativo não está instalado</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
-  <string name="abandoned_promise_explanation">O app deste ícone não está instalado. Você pode remover o ícone, ou procurar o app e instalá-lo manualmente.</string>
+  <string name="abandoned_promise_explanation">O aplicativo deste ícone não está instalado. Você pode remover o ícone, ou procurar o aplicativo e instalá-lo manualmente.    </string>
   <!-- Title for an app which is being downloaded. -->
-  <string name="app_downloading_title">Fazendo download de <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> concluído</string>
+  <string name="app_downloading_title"><xliff:g example="Menssagen" id="name">%1$s</xliff:g>baixando, <xliff:g example="30%" id="progresso">%2$s</xliff:g>concluido</string>
   <!-- Title for an app whose download has been started. -->
-  <string name="app_waiting_download_title">Aguardando instalação de <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="app_waiting_download_title"><xliff:g example="Menssagen" id="nome">%1$s</xliff:g> aguardando a instalação</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
   <string name="action_add_to_workspace">Adicionar à tela inicial</string>
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
   <string name="action_move_here">Mover item para cá</string>
   <!-- Accessibility confirmation for item added to workspace. -->
-  <string name="item_added_to_workspace">Item adicionado à tela inicial</string>
+  <string name="item_added_to_workspace">Aplicativo adicionado à tela inicial</string>
   <!-- Accessibility confirmation for item removed. -->
-  <string name="item_removed">Item removido</string>
+  <string name="item_removed">Aplicativo removido</string>
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
-  <string name="action_move">Mover item</string>
+  <string name="action_move">Mover aplicativo</string>
   <!-- Accessibility description to move item to empty cell. -->
   <string name="move_to_empty_cell">Mover para a linha <xliff:g id="NUMBER_0">%1$s</xliff:g>, coluna <xliff:g id="NUMBER_1">%2$s</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
@@ -161,15 +161,15 @@
   <!-- Accessibility description to move item to the hotseat. -->
   <string name="move_to_hotseat_position">Mover para a posição <xliff:g id="NUMBER">%1$s</xliff:g> dos favoritos</string>
   <!-- Accessibility confirmation for item move. -->
-  <string name="item_moved">Item movido</string>
+  <string name="item_moved">Aplicativo movido</string>
   <!-- Accessibility description to move item into an existing folder. -->
-  <string name="add_to_folder">Adicionar à pasta: <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="add_to_folder">Adicionar à pasta: <xliff:g example="Jogos" id="nome">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
   <string name="add_to_folder_with_app">Adicionar à pasta com <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for item added to folder. -->
-  <string name="added_to_folder">Item adicionado à pasta</string>
+  <string name="added_to_folder">Aplicativo adicionado à pasta</string>
   <!-- Accessibility description to create folder with another item. -->
-  <string name="create_folder_with">Criar pasta com: <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="create_folder_with">Criar pasta com: <xliff:g example="Jogos" id="nome">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
   <string name="folder_created">Pasta criada</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
@@ -206,7 +206,7 @@
          but the wallpaper cropper cannot load it. The user will
          usually see this when using another app and trying to set
          an image as the wallpaper -->
-  <string name="wallpaper_load_fail">Não foi possível carregar a imagem como plano de fundo</string>
+  <string name="wallpaper_load_fail">Não foi possível definir a imagem como plano de fundo</string>
   <!-- Error message when an image is selected as a wallpaper,
          but something goes wrong when the user clicks "Set wallpaper" -->
   <string name="wallpaper_set_fail">Não foi possível definir a imagem como plano de fundo</string>
@@ -263,7 +263,7 @@
   <string name="hide_all_apps_icon_labels_pref_title">Esconder texto dos ícones na gaveta de apps</string>
   <string name="workspace_label_color_hue_pref_title">Cor dos rótulos dos ícones na tela inicial</string>
   <string name="workspace_label_color_variation_pref_title">Variação de cor dos rótulos dos ícones na tela inicial</string>
-  <string name="all_apps_opacity_pref_title">Opacidade de gaveta</string>
+  <string name="all_apps_opacity_pref_title">Opacidade da gaveta</string>
   <string name="num_cols_pref_title">Número de colunas</string>
   <string name="num_rows_pref_title">Número de linhas</string>
   <string name="num_hotseat_icons_pref_title">Número de ícones no dock</string>
@@ -273,8 +273,6 @@
   <string name="full_width_widgets_pref_summary">Permitir que os widgets abranger a largura inteira sem preenchimento</string>
   <string name="notification_access_pref_title">Visualização e emblemas de notificação</string>
   <string name="notification_access_pref_summary">Permitir o Lawnchair acessar as suas notificações para mostra uma previa delas</string>
-  <string name="ui_pref_title">Personalizações</string>
-  <string name="pixel_style_pref_title">Estilo Pixel</string>
   <string name="behavior_pref_title">Comportamento</string>
   <string name="debug_pref_title">Depuração</string>
   <string name="import_export_pref_title">Importar/exportar</string>
@@ -355,6 +353,7 @@
   <string name="loading">Carregando…</string>
   <string name="icon_shape_override_label">Alterar o formato dos Icones</string>
   <string name="icon_shape_system_default">Não mudar</string>
+  <string name="icon_shape_none">Nenhum</string>
   <string name="icon_shape_square">Quadrado</string>
   <string name="icon_shape_rounded_square">Cantos arredondados</string>
   <string name="icon_shape_squircle">Quadrado redondo</string>
@@ -386,4 +385,6 @@
   <string name="lock_desktop">Bloquear área de trabalho</string>
   <string name="lawnfeed_not_found">Lawnfeed não instalado</string>
   <string name="google_app_not_found">Aplicativo Google não instalado</string>
+  <string name="popup_card_theme_title">Pop-up estilo fino</string>
+  <string name="set_default_launcher">Definir como Launcher padrão</string>
 </resources>
