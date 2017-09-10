@@ -23,7 +23,7 @@
             android:scrollHorizontally="true"
             android:textColor="?attr/roundSearchBarTextColor"
             android:hint="@string/all_apps_search_bar_hint"
-            android:textColorHint="@color/accent_material_light"
+            android:textColorHint="@drawable/all_apps_search_hint"
             android:textSize="16sp" />
     </FrameLayout>
 
