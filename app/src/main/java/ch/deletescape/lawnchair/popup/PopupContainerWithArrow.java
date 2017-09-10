@@ -657,9 +657,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 });
                 removeNotification.play(removeMargin);
             }
-            Animator fade = ObjectAnimator.ofFloat(mNotificationItemView, ALPHA, 0)
-                    .setDuration(duration);
-            fade.addListener(new AnimatorListenerAdapter() {
+            AnimatorListenerAdapter removeNotificationView = new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     if (mMainItemView != null) {
@@ -672,9 +670,12 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                         close(false);
                     }
                 }
-            });
-            removeNotification.play(fade);
+            };
             if (mMainItemView == null) {
+                Animator fade = ObjectAnimator.ofFloat(mNotificationItemView, ALPHA, 0)
+                        .setDuration(duration);
+                fade.addListener(removeNotificationView);
+                removeNotification.play(fade);
                 final long arrowScaleDuration = getResources().getInteger(
                         R.integer.config_deepShortcutArrowOpenDuration);
                 Animator hideArrow = createArrowScaleAnim(0).setDuration(arrowScaleDuration);
@@ -682,6 +683,8 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 Animator showArrow = createArrowScaleAnim(1).setDuration(arrowScaleDuration);
                 showArrow.setStartDelay((long) (duration - arrowScaleDuration * 1.5));
                 removeNotification.playSequentially(hideArrow, showArrow);
+            } else {
+                removeNotification.addListener(removeNotificationView);
             }
             removeNotification.start();
             return;
