@@ -101,7 +101,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                     appsList.addPackage(context, packages[i], mUser);
 
                     // Automatically add homescreen icon for work profile apps for below O device.
-                    if (!Utilities.isAtLeastO() && !Process.myUserHandle().equals(mUser)) {
+                    if (!Utilities.ATLEAST_OREO && !Process.myUserHandle().equals(mUser)) {
                         SessionCommitReceiver.queueAppIconAddition(context, packages[i], mUser);
                     }
                 }
@@ -342,7 +342,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                     callbacks.notifyWidgetProvidersChanged();
                 }
             });
-        } else if (Utilities.isAtLeastO() && mOp == OP_ADD) {
+        } else if (Utilities.ATLEAST_OREO && mOp == OP_ADD) {
             // Load widgets for the new package.
             for (int i = 0; i < N; i++) {
                 dataModel.widgetsModel.update(app, new PackageUserKey(packages[i], mUser));

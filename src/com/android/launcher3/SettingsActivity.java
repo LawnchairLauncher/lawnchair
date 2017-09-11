@@ -94,7 +94,7 @@ public class SettingsActivity extends Activity {
 
             ButtonPreference iconBadgingPref =
                     (ButtonPreference) findPreference(ICON_BADGING_PREFERENCE_KEY);
-            if (!Utilities.isAtLeastO()) {
+            if (!Utilities.ATLEAST_OREO) {
                 getPreferenceScreen().removePreference(
                         findPreference(SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY));
                 getPreferenceScreen().removePreference(iconBadgingPref);
