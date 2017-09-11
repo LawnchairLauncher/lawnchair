@@ -59,7 +59,7 @@ public class SystemUiController {
         // Apply the state flags in priority order
         int newFlags = oldFlags;
         for (int stateFlag : mStates) {
-            if (Utilities.isAtLeastO()) {
+            if (Utilities.ATLEAST_OREO) {
                 if ((stateFlag & FLAG_LIGHT_NAV) != 0) {
                     newFlags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
                 } else if ((stateFlag & FLAG_DARK_NAV) != 0) {

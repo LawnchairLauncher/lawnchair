@@ -1050,7 +1050,7 @@ public class Launcher extends BaseActivity
             // On O and above we there is always some setting present settings (add icon to
             // home screen or icon badging). On earlier APIs we will have the allow rotation
             // setting, on devices with a locked orientation,
-            return Utilities.isAtLeastO() || !getResources().getBoolean(R.bool.allow_rotation);
+            return Utilities.ATLEAST_OREO || !getResources().getBoolean(R.bool.allow_rotation);
         }
     }
 
@@ -1322,7 +1322,7 @@ public class Launcher extends BaseActivity
         CellLayout layout = getCellLayout(container, screenId);
 
         ShortcutInfo info = null;
-        if (Utilities.isAtLeastO()) {
+        if (Utilities.ATLEAST_OREO) {
             info = LauncherAppsCompatVO.createShortcutInfoFromPinItemRequest(
                     this, LauncherAppsCompatVO.getPinItemRequest(data), 0);
         }

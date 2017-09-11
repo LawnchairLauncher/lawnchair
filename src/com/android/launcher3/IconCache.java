@@ -123,7 +123,7 @@ public class IconCache {
     }
 
     private Drawable getFullResDefaultActivityIcon() {
-        return getFullResIcon(Resources.getSystem(), Utilities.isAtLeastO() ?
+        return getFullResIcon(Resources.getSystem(), Utilities.ATLEAST_OREO ?
                 android.R.drawable.sym_def_app_icon : android.R.mipmap.sym_def_app_icon);
     }
 

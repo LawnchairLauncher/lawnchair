@@ -67,7 +67,7 @@ public class ManagedProfileHeuristic {
             return;
         }
 
-        if (Utilities.isAtLeastO() && !SessionCommitReceiver.isEnabled(context)) {
+        if (Utilities.ATLEAST_OREO && !SessionCommitReceiver.isEnabled(context)) {
             // Just mark the folder id preference to avoid new folder creation later.
             ufi.prefs.edit().putLong(ufi.folderIdKey, ItemInfo.NO_ID).apply();
             return;
