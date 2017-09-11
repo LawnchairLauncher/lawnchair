@@ -231,6 +231,9 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                             continue;
                                         }
                                     }
+                                } else {
+                                    si.status = ShortcutInfo.DEFAULT;
+                                    infoUpdated = true;
                                 }
                             }
 
