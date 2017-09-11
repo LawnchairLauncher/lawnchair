@@ -231,7 +231,7 @@ public class IconNormalizer {
      */
     public synchronized float getScale(@NonNull Drawable d, @Nullable RectF outBounds,
             @Nullable Path path, @Nullable boolean[] outMaskShape) {
-        if (Utilities.isAtLeastO() && d instanceof AdaptiveIconDrawable &&
+        if (Utilities.ATLEAST_OREO && d instanceof AdaptiveIconDrawable &&
                 mAdaptiveIconScale != SCALE_NOT_INITIALIZED) {
             if (outBounds != null) {
                 outBounds.set(mAdaptiveIconBounds);
@@ -347,7 +347,7 @@ public class IconNormalizer {
         float areaScale = area / (width * height);
         // Use sqrt of the final ratio as the images is scaled across both width and height.
         float scale = areaScale > scaleRequired ? (float) Math.sqrt(scaleRequired / areaScale) : 1;
-        if (Utilities.isAtLeastO() && d instanceof AdaptiveIconDrawable &&
+        if (Utilities.ATLEAST_OREO && d instanceof AdaptiveIconDrawable &&
                 mAdaptiveIconScale == SCALE_NOT_INITIALIZED) {
             mAdaptiveIconScale = scale;
             mAdaptiveIconBounds.set(mBounds);

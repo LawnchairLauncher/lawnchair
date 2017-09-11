@@ -83,15 +83,17 @@ public final class Utilities {
     private static final Matrix sMatrix = new Matrix();
     private static final Matrix sInverseMatrix = new Matrix();
 
-    public static boolean isAtLeastO() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
-    }
+    public static final boolean ATLEAST_OREO_MR1 =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1;
+
+    public static final boolean ATLEAST_OREO =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
 
     public static final boolean ATLEAST_NOUGAT_MR1 =
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1;
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1;
 
     public static final boolean ATLEAST_NOUGAT =
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
 
     public static final boolean ATLEAST_MARSHMALLOW =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
