@@ -128,7 +128,7 @@ public class PinItemDragListener extends BaseItemDragListener implements Parcela
     }
 
     public static boolean handleDragRequest(Launcher launcher, Intent intent) {
-        if (!Utilities.isAtLeastO()) {
+        if (!Utilities.ATLEAST_OREO) {
             return false;
         }
         if (intent == null || !Intent.ACTION_MAIN.equals(intent.getAction())) {
