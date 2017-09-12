@@ -16,10 +16,12 @@
 
 package com.android.launcher3.graphics;
 
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -70,11 +72,15 @@ public class LauncherIcons {
         PackageManager packageManager = context.getPackageManager();
         // the resource
         try {
-            Resources resources = packageManager.getResourcesForApplication(iconRes.packageName);
+            Resources resources = packageManager.getResourcesForApplication(iconRes.resourceName);
             if (resources != null) {
                 final int id = resources.getIdentifier(iconRes.resourceName, null, null);
-                return createIconBitmap(resources.getDrawableForDensity(
-                        id, LauncherAppState.getIDP(context).fillResIconDpi), context);
+                // do not stamp old legacy shortcuts as the app may have already forgotten about it
+                return createBadgedIconBitmap(resources.getDrawableForDensity(
+                        id, LauncherAppState.getIDP(context).fillResIconDpi),
+                        Process.myUserHandle() /* only available on primary user */,
+                        context,
+                        0 /* do not apply legacy treatment */);
             }
         } catch (Exception e) {
             // Icon not found.
@@ -90,11 +96,12 @@ public class LauncherIcons {
         if (iconBitmapSize == icon.getWidth() && iconBitmapSize == icon.getHeight()) {
             return icon;
         }
-        return createIconBitmap(new BitmapDrawable(context.getResources(), icon), context);
+        return createIconBitmap(new BitmapDrawable(context.getResources(), icon), context, 1f);
     }
 
     /**
-     * Returns a bitmap suitable for the all apps view. The icon is badged for {@param user}.
+     * Returns a bitmap suitable for displaying as an icon at various launcher UIs like all apps
+     * view or workspace. The icon is badged for {@param user}.
      * The bitmap is also visually normalized with other icons.
      */
     public static Bitmap createBadgedIconBitmap(
@@ -127,24 +134,18 @@ public class LauncherIcons {
                 icon instanceof AdaptiveIconDrawable) {
             bitmap = ShadowGenerator.getInstance(context).recreateIcon(bitmap);
         }
-        return badgeIconForUser(bitmap, user, context);
-    }
 
-    /**
-     * Badges the provided icon with the user badge if required.
-     */
-    public static Bitmap badgeIconForUser(Bitmap icon, UserHandle user, Context context) {
         if (user != null && !Process.myUserHandle().equals(user)) {
-            BitmapDrawable drawable = new FixedSizeBitmapDrawable(icon);
+            BitmapDrawable drawable = new FixedSizeBitmapDrawable(bitmap);
             Drawable badged = context.getPackageManager().getUserBadgedIcon(
                     drawable, user);
             if (badged instanceof BitmapDrawable) {
                 return ((BitmapDrawable) badged).getBitmap();
             } else {
-                return createIconBitmap(badged, context);
+                return createIconBitmap(badged, context, 1f);
             }
         } else {
-            return icon;
+            return bitmap;
         }
     }
 
@@ -152,7 +153,8 @@ public class LauncherIcons {
      * Creates a normalized bitmap suitable for the all apps view. The bitmap is also visually
      * normalized with other icons and has enough spacing to add shadow.
      */
-    public static Bitmap createScaledBitmapWithoutShadow(Drawable icon, Context context, int iconAppTargetSdk) {
+    public static Bitmap createScaledBitmapWithoutShadow(
+            Drawable icon, Context context, int iconAppTargetSdk) {
         RectF iconBounds = new RectF();
         IconNormalizer normalizer;
         float scale = 1f;
@@ -181,21 +183,6 @@ public class LauncherIcons {
         return createIconBitmap(icon, context, scale);
     }
 
-    /**
-     * Adds a shadow to the provided icon. It assumes that the icon has already been scaled using
-     * {@link #createScaledBitmapWithoutShadow(Drawable, Context, int)}
-     */
-    public static Bitmap addShadowToIcon(Bitmap icon, Context context) {
-        return ShadowGenerator.getInstance(context).recreateIcon(icon);
-    }
-
-    /**
-     * Adds the {@param badge} on top of {@param srcTgt} using the badge dimensions.
-     */
-    public static Bitmap badgeWithBitmap(Bitmap srcTgt, Bitmap badge, Context context) {
-        return badgeWithDrawable(srcTgt, new FastBitmapDrawable(badge), context);
-    }
-
     public static Bitmap badgeWithDrawable(Bitmap srcTgt, Drawable badge, Context context) {
         int badgeSize = context.getResources().getDimensionPixelSize(R.dimen.profile_badge_size);
         synchronized (sCanvas) {
@@ -209,26 +196,9 @@ public class LauncherIcons {
     }
 
     /**
-     * Returns a bitmap suitable for the all apps view.
-     */
-    public static Bitmap createIconBitmap(Drawable icon, Context context) {
-        float scale = 1f;
-        if (FeatureFlags.ADAPTIVE_ICON_SHADOW && Utilities.ATLEAST_OREO &&
-                icon instanceof AdaptiveIconDrawable) {
-            scale = ShadowGenerator.getScaleForBounds(new RectF(0, 0, 0, 0));
-        }
-        Bitmap bitmap =  createIconBitmap(icon, context, scale);
-        if (FeatureFlags.ADAPTIVE_ICON_SHADOW && Utilities.ATLEAST_OREO &&
-                icon instanceof AdaptiveIconDrawable) {
-            bitmap = ShadowGenerator.getInstance(context).recreateIcon(bitmap);
-        }
-        return bitmap;
-    }
-
-    /**
      * @param scale the scale to apply before drawing {@param icon} on the canvas
      */
-    public static Bitmap createIconBitmap(Drawable icon, Context context, float scale) {
+    private static Bitmap createIconBitmap(Drawable icon, Context context, float scale) {
         synchronized (sCanvas) {
             final int iconBitmapSize = LauncherAppState.getIDP(context).iconBitmapSize;
             int width = iconBitmapSize;
@@ -295,7 +265,9 @@ public class LauncherIcons {
      * shrink the legacy icon and set it as foreground. Use color drawable as background to
      * create AdaptiveIconDrawable.
      */
-    static Drawable wrapToAdaptiveIconDrawable(Context context, Drawable drawable, float scale) {
+    @TargetApi(Build.VERSION_CODES.O)
+    private static Drawable wrapToAdaptiveIconDrawable(
+            Context context, Drawable drawable, float scale) {
         if (!(FeatureFlags.LEGACY_ICON_TREATMENT && Utilities.ATLEAST_OREO)) {
             return drawable;
         }
@@ -307,7 +279,7 @@ public class LauncherIcons {
                 FixedScaleDrawable fsd = ((FixedScaleDrawable) iconWrapper.getForeground());
                 fsd.setDrawable(drawable);
                 fsd.setScale(scale);
-                return (Drawable) iconWrapper;
+                return iconWrapper;
             }
         } catch (Exception e) {
             return drawable;
@@ -326,15 +298,9 @@ public class LauncherIcons {
 
     public static Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfo, Context context,
             final Bitmap fallbackIcon) {
-        Provider<Bitmap> fallbackIconProvider = new Provider<Bitmap>() {
-            @Override
-            public Bitmap get() {
-                // If the shortcut is pinned but no longer has an icon in the system,
-                // keep the current icon instead of reverting to the default icon.
-                return fallbackIcon;
-            }
-        };
-        return createShortcutIcon(shortcutInfo, context, true, fallbackIconProvider);
+        // If the shortcut is pinned but no longer has an icon in the system,
+        // keep the current icon instead of reverting to the default icon.
+        return createShortcutIcon(shortcutInfo, context, true, Provider.of(fallbackIcon));
     }
 
     public static Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfo, Context context,
@@ -360,8 +326,9 @@ public class LauncherIcons {
         if (!badged) {
             return unbadgedBitmap;
         }
-        unbadgedBitmap = LauncherIcons.addShadowToIcon(unbadgedBitmap, context);
-        return badgeWithBitmap(unbadgedBitmap, getShortcutInfoBadge(shortcutInfo, cache), context);
+        unbadgedBitmap = ShadowGenerator.getInstance(context).recreateIcon(unbadgedBitmap);
+        return badgeWithDrawable(unbadgedBitmap,
+                new FastBitmapDrawable(getShortcutInfoBadge(shortcutInfo, cache)), context);
     }
 
     public static Bitmap getShortcutInfoBadge(ShortcutInfoCompat shortcutInfo, IconCache cache) {
