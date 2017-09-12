@@ -982,6 +982,7 @@ public final class Utilities {
         ArrayList<String> clockApps = new ArrayList<>();
         clockApps.add("com.google.android.deskclock/com.android.deskclock.DeskClock"); // Stock
         clockApps.add("com.sec.android.app.clockpackage/com.sec.android.app.clockpackage.ClockPackage"); // Samsung
+        clockApps.add("com.android.deskclock/com.android.deskclock.DeskClockTabActivity"); // MIUI
 
         return clockApps.contains(componentName.flattenToString());
     }
