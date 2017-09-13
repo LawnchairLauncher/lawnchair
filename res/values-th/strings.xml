@@ -47,8 +47,7 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"นำออก"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"ถอนการติดตั้ง"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ข้อมูลแอป"</string>
-    <!-- no translation found for install_drop_target_label (2539096853673231757) -->
-    <skip />
+    <string name="install_drop_target_label" msgid="2539096853673231757">"ติดตั้ง"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"ติดตั้งทางลัด"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"อนุญาตให้แอปเพิ่มทางลัดโดยไม่ต้องให้ผู้ใช้จัดการ"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"อ่านการตั้งค่าและทางลัดหน้าแรกแล้ว"</string>
