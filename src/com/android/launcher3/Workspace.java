@@ -3641,7 +3641,7 @@ public class Workspace extends PagedView
                         .getInstance(mLauncher).findProvider(item.providerName, item.user);
             } else {
                 widgetInfo = AppWidgetManagerCompat.getInstance(mLauncher)
-                        .getAppWidgetInfo(item.appWidgetId);
+                        .getLauncherAppWidgetInfo(item.appWidgetId);
             }
 
             if (widgetInfo != null) {

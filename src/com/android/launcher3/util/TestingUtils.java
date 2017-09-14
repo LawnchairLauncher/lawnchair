@@ -3,17 +3,13 @@ package com.android.launcher3.util;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.android.launcher3.CustomAppWidget;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-
-import java.util.HashMap;
 
 public class TestingUtils {
 
@@ -22,9 +18,6 @@ public class TestingUtils {
 
     public static final boolean MEMORY_DUMP_ENABLED = false;
     public static final String SHOW_WEIGHT_WATCHER = "debug.show_mem";
-
-    public static final boolean ENABLE_CUSTOM_WIDGET_TEST = false;
-    public static final String DUMMY_WIDGET = "com.android.launcher3.testing.DummyWidget";
 
     public static void startTrackingMemory(Context context) {
         if (MEMORY_DUMP_ENABLED) {
@@ -53,18 +46,6 @@ public class TestingUtils {
 
             watcher.setVisibility(show ? View.VISIBLE : View.GONE);
             launcher.mWeightWatcher = watcher;
-        }
-    }
-
-    public static void addDummyWidget(HashMap<String, CustomAppWidget> set) {
-        if (ENABLE_CUSTOM_WIDGET_TEST) {
-            try {
-                Class<?> clazz = Class.forName(DUMMY_WIDGET);
-                CustomAppWidget widget = (CustomAppWidget) clazz.newInstance();
-                set.put(widget.getClass().getName(), widget);
-            } catch (Exception e) {
-                Log.e("TestingUtils", "Error adding dummy widget", e);
-            }
         }
     }
 }

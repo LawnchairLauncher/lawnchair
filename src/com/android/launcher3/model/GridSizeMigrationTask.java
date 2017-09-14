@@ -726,7 +726,7 @@ public class GridSizeMigrationTask {
                                 mContext).getLauncherAppWidgetInfo(widgetId);
                         Point spans = null;
                         if (pInfo != null) {
-                            spans = pInfo.getMinSpans(mIdp, mContext);
+                            spans = pInfo.getMinSpans();
                         }
                         if (spans != null) {
                             entry.minSpanX = spans.x > 0 ? spans.x : entry.spanX;

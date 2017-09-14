@@ -8,7 +8,6 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -126,14 +125,8 @@ public class AppWidgetResizeFrame extends FrameLayout
         mMinHSpan = info.minSpanX;
         mMinVSpan = info.minSpanY;
 
-        if (!info.isCustomWidget) {
-            mWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(getContext(),
-                    widgetView.getAppWidgetInfo().provider, null);
-        } else {
-            Resources r = getContext().getResources();
-            int padding = r.getDimensionPixelSize(R.dimen.default_widget_padding);
-            mWidgetPadding = new Rect(padding, padding, padding, padding);
-        }
+        mWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(getContext(),
+                widgetView.getAppWidgetInfo().provider, null);
 
         if (mResizeMode == AppWidgetProviderInfo.RESIZE_HORIZONTAL) {
             mDragHandles[INDEX_TOP].setVisibility(GONE);
