@@ -17,7 +17,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import ch.deletescape.lawnchair.R;
 
 public class QsbConnector extends View {
-private static final Property alphaProperty = new AlphaPropertyOverride(Integer.class, "overlayAlpha");
+    private static final Property alphaProperty = new AlphaPropertyOverride(Integer.class, "overlayAlpha");
     private int alpha;
     private final BroadcastReceiver packageChangeReceiver;
     private final int qsbBackgroundColor;
