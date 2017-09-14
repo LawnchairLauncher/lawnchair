@@ -149,7 +149,6 @@ public class Hotseat extends FrameLayout
             allAppsButton.setOnKeyListener(new HotseatIconKeyEventListener());
             if (mLauncher != null) {
                 mLauncher.setAllAppsButton(allAppsButton);
-                allAppsButton.setOnTouchListener(mLauncher.getHapticFeedbackTouchListener());
                 allAppsButton.setOnClickListener(mLauncher);
                 allAppsButton.setOnFocusChangeListener(mLauncher.mFocusHandler);
             }
