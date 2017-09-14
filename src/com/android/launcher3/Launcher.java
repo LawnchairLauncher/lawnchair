@@ -280,8 +280,6 @@ public class Launcher extends BaseActivity
 
     private PopupDataProvider mPopupDataProvider;
 
-    private View.OnTouchListener mHapticFeedbackTouchListener;
-
     // Determines how long to wait after a rotation before restoring the screen orientation to
     // match the sensor state.
     private static final int RESTORE_SCREEN_ORIENTATION_DELAY = 500;
@@ -1226,7 +1224,6 @@ public class Launcher extends BaseActivity
                 onClickWallpaperPicker(view);
             }
         }.attachTo(wallpaperButton);
-        wallpaperButton.setOnTouchListener(getHapticFeedbackTouchListener());
 
         // Bind widget button actions
         mWidgetsButton = findViewById(R.id.widget_button);
@@ -1236,7 +1233,6 @@ public class Launcher extends BaseActivity
                 onClickAddWidgetButton(view);
             }
         }.attachTo(mWidgetsButton);
-        mWidgetsButton.setOnTouchListener(getHapticFeedbackTouchListener());
 
         // Bind settings actions
         View settingsButton = findViewById(R.id.settings_button);
@@ -1248,7 +1244,6 @@ public class Launcher extends BaseActivity
                     onClickSettingsButton(view);
                 }
             }.attachTo(settingsButton);
-            settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());
         } else {
             settingsButton.setVisibility(View.GONE);
         }
@@ -2419,22 +2414,6 @@ public class Launcher extends BaseActivity
         intent.setSourceBounds(getViewBounds(v));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent, getActivityLaunchOptions(v));
-    }
-
-    public View.OnTouchListener getHapticFeedbackTouchListener() {
-        if (mHapticFeedbackTouchListener == null) {
-            mHapticFeedbackTouchListener = new View.OnTouchListener() {
-                @SuppressLint("ClickableViewAccessibility")
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN) {
-                        v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
-                    }
-                    return false;
-                }
-            };
-        }
-        return mHapticFeedbackTouchListener;
     }
 
     @Override
