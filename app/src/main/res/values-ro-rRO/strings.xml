@@ -274,9 +274,17 @@
   <string name="full_width_widgets_pref_summary">Permite widget-urilor să se întindă pe toată lățimea fără să umple</string>
   <string name="notification_access_pref_title">Insigne de notificări și previzualizare</string>
   <string name="notification_access_pref_summary">Permite Lawnchair accesul la notificări ca să activezi această funcție</string>
+  <string name="general_pref_title">General</string>
+  <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Comportament</string>
   <string name="debug_pref_title">Depanare</string>
   <string name="import_export_pref_title">Importați/Exportați</string>
+  <string name="general_pref_summary">Ecran de pornire, doc și listă de aplicații</string>
+  <string name="pixel_ui_pref_summary">Activați caracteristicile exclusive ale lansatorului Pixel</string>
+  <string name="backup_pref_title">Copie de rezervă</string>
+  <string name="behavior_pref_summary">Modificați comportamentul Lawnchair</string>
+  <string name="backup_pref_summary">Faceţi o copie de rezervă pentru baza de date și setări</string>
+  <string name="debug_pref_summary">Reporniți sau reconstruiți baza de date a pictogramelor</string>
   <string name="show_pixel_bar_pref_title">Arată bara de sus în stilul Pixel</string>
   <string name="use_wide_searchbar_pref_title">Utilizează bara de căutare largă</string>
   <string name="show_mic_pref_title">Arată butonul pentru Asistentul Google</string>
@@ -300,6 +308,10 @@
   <string name="show_hidden_pref_title">Arătați aplicațiile ascunse</string>
   <string name="show_hidden_pref_on">Aplicațiile ascunse vor fi vizibile pentru a schimba setările de vizibilitate</string>
   <string name="show_hidden_pref_off">Aplicațiile ascunse nu vor fi vizibile</string>
+  <string name="export_db_title">Bază de date</string>
+  <string name="import_db_title">Bază de date</string>
+  <string name="export_prefs_title">Setări</string>
+  <string name="import_prefs_title">Setări</string>
   <string name="notification_listener_label">Lawnchair - insigne notificări</string>
   <string name="color_extraction_label">Lawnchair - extragere de culoare</string>
   <string name="test_title">Test</string>
@@ -324,6 +336,8 @@
   <string name="pull_down_apps_search">Căutați aplicații</string>
   <string name="enable_screen_rotation">Permite rotirea ecranului</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">Import</string>
+  <string name="backup_export_title">Export</string>
   <string name="imexport_success">Succes!</string>
   <string name="imexport_error">Eroare: Nu a reușit copierea fişierului</string>
   <string name="imexport_no_backup_found">Nicio copie de rezervă găsită</string>
