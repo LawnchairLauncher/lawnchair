@@ -140,68 +140,196 @@
   <string name="abandoned_promises_title">இந்தச் செயலி நிறுவப்படவில்லை</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
+  <string name="abandoned_promise_explanation">இந்த சின்னத்திற்கு செயலி நிறுவப்படவில்லை.
+நீங்கள் இதை நீக்கலாம், அல்லது அந்த செயலியை தேடி மற்றும் தாங்களாகவே அதை நிறுவவும்.    </string>
   <!-- Title for an app which is being downloaded. -->
+  <string name="app_downloading_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> தரவிறக்கமாகிறது, <xliff:g example="30%" id="progress">%2$s</xliff:g> முடிந்தது</string>
   <!-- Title for an app whose download has been started. -->
+  <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> நிறுவுவதற்கு காத்திருக்கிறது</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
   <string name="action_add_to_workspace">Add to Home screen</string>
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
+  <string name="action_move_here">பொருளை இங்கு நகர்த்து</string>
   <!-- Accessibility confirmation for item added to workspace. -->
+  <string name="item_added_to_workspace">பொருள் முகப்பு திரையில் சேர்க்கப்பட்டது</string>
   <!-- Accessibility confirmation for item removed. -->
+  <string name="item_removed">பொருள் நீக்கப்பட்டது</string>
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
+  <string name="action_move">பொருளை நகர்த்து</string>
   <!-- Accessibility description to move item to empty cell. -->
+  <string name="move_to_empty_cell">வரிசைக்கு நகர்த்து <xliff:g example="1" id="number">%1$d</xliff:g> பத்திக்கு <xliff:g example="1" id="number">%2$d</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
+  <string name="move_to_position">இவ்விடத்திற்கு நகர்த்து <xliff:g example="1" id="number">%1$d</xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
+  <string name="move_to_hotseat_position">அபிமான இடத்திற்கு நகர்த்து <xliff:g example="1" id="number">%1$d</xliff:g></string>
   <!-- Accessibility confirmation for item move. -->
+  <string name="item_moved">வேறு இடத்திற்கு நகர்த்தப்பட்டுள்ளது</string>
   <!-- Accessibility description to move item into an existing folder. -->
+  <string name="add_to_folder">இவ்வுரையில் சேர்க்க: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
+  <string name="add_to_folder_with_app">இவற்றுடன் கோப்புக்குள் சேர்க்க <xliff:g example="Messenger" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for item added to folder. -->
+  <string name="added_to_folder">கோப்புக்குள் சேர்க்கப்பட்டது</string>
   <!-- Accessibility description to create folder with another item. -->
+  <string name="create_folder_with">கோப்பை இவற்றுடன் உருவாக்கு: <xliff:g example="Game" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
+  <string name="folder_created">கோப்பு_உருவாக்கப்பட்டது</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
   <string name="action_move_to_workspace">Move to Home screen</string>
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
+  <string name="action_move_screen_left">திரையின் இடது பக்கம் நகர்த்து</string>
   <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
+  <string name="action_move_screen_right">திரையின்_வலதுபுறம்_நகர்ந்து</string>
   <!-- Accessibility confirmation when a screen was moved. -->
+  <string name="screen_moved">இத்திரை நகர்த்தப்பட்டுள்ளது</string>
   <!-- Accessibility action to resize a widget. [CHAR_LIMIT=30] -->
+  <string name="action_resize">அளவை மாற்று</string>
   <!-- Accessibility action to increase width of a widget. [CHAR_LIMIT=30] -->
+  <string name="action_increase_width">அகலத்தை அதிகரி</string>
   <!-- Accessibility action to increase height of a widget. [CHAR_LIMIT=30] -->
+  <string name="action_increase_height">உயரத்தை அதிகரி</string>
   <!-- Accessibility action to decrease width of a widget. [CHAR_LIMIT=30] -->
+  <string name="action_decrease_width">அகலத்தை குறை</string>
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
+  <string name="action_decrease_height">உயரத்தை குறை</string>
   <!-- Accessibility confirmation for widget resize. -->
+  <string name="widget_resized">நிரல் பலகையின் அகலம் மாற்றப்பட்டது<xliff:g example="2" id="number">%1$d</xliff:g> உயரம் <xliff:g example="1" id="number">%2$d</xliff:g></string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
+  <string name="action_deep_shortcut">எளிய வழிகள்</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
+  <string name="shortcuts_menu_description"><xliff:g example="3" id="number_of_shortcuts">%1$d</xliff:g> இவற்றிற்கு எளிய வழி<xliff:g example="Messenger" id="app_name">%2$s</xliff:g></string>
+  <string name="edit_drop_target_label">திருத்து</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
+  <string name="wallpaper_instructions">திரைப்பின்னணியை அமை</string>
   <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper picker cannot load it -->
+  <string name="image_load_fail">படத்தை பதிவிறக்க முடியவில்லை</string>
   <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper cropper cannot load it. The user will
          usually see this when using another app and trying to set
          an image as the wallpaper -->
+  <string name="wallpaper_load_fail">வால்பேப்பராக பிம்பத்தை ஏற்ற முடியவில்லை</string>
   <!-- Error message when an image is selected as a wallpaper,
          but something goes wrong when the user clicks "Set wallpaper" -->
+  <string name="wallpaper_set_fail">படத்தை திரை பின்னணியாக அமைக்க இயலவில்லை</string>
   <!-- Shown when wallpapers are selected in Wallpaper picker -->
   <!-- String indicating how many media item(s) is(are) selected
             eg. 1 selected [CHAR LIMIT=30] -->
+  <plurals name="number_of_items_selected">
+    <item quantity="one">%1$d ஒன்று</item>
+    <item quantity="other">%1$d வேறு</item>
+  </plurals>
   <!-- Accessibility string used as a label for a particular wallpaper in the Wallpaper Picker list.
          e.g. "Wallpaper 3 of 10" -->
+  <string name="wallpaper_accessibility_name">திரை பின்னணி %1$d ஆக %2$d</string>
   <!-- Accessibility string used to announce that a wallpaper has been selected. -->
+  <string name="announce_selection">தேர்ந்தெடுக்கப்பட்டது <xliff:g example="Wallpaper 3 of 10" id="label">%1$s</xliff:g></string>
   <!-- Label on button to delete wallpaper(s) -->
+  <string name="wallpaper_delete">நீக்கு</string>
   <!-- Label on button in Wallpaper Picker to pick an image -->
+  <string name="pick_image">என் புகைப்படங்கள்</string>
   <!-- Option in "Select wallpaper from" dialog box -->
+  <string name="pick_wallpaper">திரை பின்னணி படங்கள்</string>
   <!-- Title of activity for cropping wallpapers -->
+  <string name="crop_wallpaper">திரை பின்னணியின் அளவை மாற்று</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
+  <string name="which_wallpaper_option_home_screen">முகப்புத்திரை</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
+  <string name="which_wallpaper_option_lock_screen">பூட்டு திரை</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">முகப்பு திரை மற்றும் பூட்டு திரை</string>
+  <string name="title_show_google_app">காட்டு %1$s</string>
+  <string name="title_show_google_app_default">கூகுள் செயலியை காட்டு</string>
+  <string name="label_search">தேடு</string>
+  <string name="label_voice_search">குரல் மூலம் தேடூ</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d எளிய வழிகள் மற்றும் %2$d தகவல்களுக்கும் %3$s</string>
+  <string name="notifications_header">தகவல்கள்</string>
+  <string name="widgets_bottom_sheet_title">%1$s நிரல் பலகை</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
+  <string name="about_title">இதைப்பற்றி</string>
+  <string name="changelog_title">இந்த கட்டமைப்பில் உள்ள மாற்றங்கள் #%d</string>
+  <string name="week_day_format">%1$s, %2$s</string>
+  <string name="icon_pack_preference_title">செயலியின் சின்னங்கள்</string>
   <string name="icon_pack_preference_summary">Select an icon Pack</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">அடிப்பாகம் திரை பின்னணியுடைய வண்ணத்திற்கு ஏற்ப மாறுபடும்</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">அடிப்பாகம் திரை பின்னணியுடைய வண்ணத்திற்கு ஏற்றார் போல் மாறும்</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">அடிப்பாகம் சாம்பல் நிறமாக்கப்படும், ஆனால் ஒளியின் அளவு திரை பின்னணிக்கு ஏற்ப மாறுபடும்</string>
+  <string name="transparent_hotseat_pref_title">வெளிப்படையான அடிப்பாகம்</string>
+  <string name="dynamic_ui_pref_title">திரை பின்னணியுடைய வண்ணத்தை எடுத்துக்கொள்</string>
+  <string name="blur_pref_title">மங்கச்செய்</string>
+  <string name="blur_radius_pref_title">மங்கச்செய்வதின் ஆரம்</string>
+  <string name="white_google_icon_pref_title">வெள்ளை படவுருவை கூகுளுக்கு உபயோகி</string>
+  <string name="hide_icon_labels_pref_title">முகப்பு திரையில் சின்னங்களின் பெயர்களை மறை</string>
   <string name="workspace_label_color_hue_pref_title">Color of icon labels on homescreen</string>
   <string name="workspace_label_color_variation_pref_title">Color variation of icon labels on homescreen</string>
+  <string name="num_cols_pref_title">பத்திகள் எண்ணிக்கை</string>
+  <string name="num_rows_pref_title">வரிசைகளின் எண்ணிக்கை</string>
+  <string name="num_hotseat_icons_pref_title">அடிப்பாகத்தில் உள்ள சின்னங்களின் எண்ணிக்கை</string>
+  <string name="icon_scale_pref_title">படவுருவின் அளவு</string>
+  <string name="notification_access_pref_title">அறிவிக்கை பேட்ஜ்கள் மற்றும் முன்னோட்டம்</string>
   <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
+  <string name="general_pref_title">பொது</string>
+  <string name="pixel_ui_pref_title">பிக்சல் UI</string>
+  <string name="behavior_pref_title">நடத்தை</string>
+  <string name="debug_pref_title">பிழைநீக்கு</string>
+  <string name="import_export_pref_title">இறக்குமதி/ஏற்றுமதி</string>
+  <string name="pixel_ui_pref_summary">பிக்சல் ஏவி பிரத்யேக அம்சங்களை செயல்படுத்து</string>
+  <string name="backup_pref_title">பத்திரப்படுத்து</string>
+  <string name="behavior_pref_summary">Lawnchair நடத்தை மாற்ற</string>
+  <string name="backup_pref_summary">டேட்டாபேஸ் மற்றும் அமைப்புகளை மறுபிரதி</string>
+  <string name="debug_pref_summary">படவுரு டேட்டாபேஸ் மறுகட்டமைக்க அல்லது மறுதொடக்கம் செய்ய</string>
+  <string name="show_mic_pref_title">கூகுள் உதவி பட்டனைக் காட்டு</string>
+  <string name="pixel_style_icons_pref_title">பிக்சல் படவுருக்கள் பயன்படுத்து</string>
+  <string name="pixel_style_icons_pref_summary">வட்ட போது சின்னங்கள் சாத்தியமான இடங்களில் பயன்படுத்தப்படும்</string>
+  <string name="show_google_now_tab_pref_title">கூகிள் பக்கத்தை காண்பி</string>
+  <string name="restart_lawnchair_pref_title">Lawnchair மீண்டும் தொடங்கு</string>
+  <string name="rebuild_icondb_pref_title">படவுரு டேட்டாபேஸ் மீண்டும் கட்டமைப்பு</string>
+  <string name="light_statusbar_pref_force">நிலைப்பட்டியை இருண்ட படவுருக்களைக் காண்பி</string>
   <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
+  <string name="haptic_feedback_pref_title">அதிர்வு செயல்படுத்து</string>
+  <string name="keep_scroll_state_pref_title">நகர் நிலை சேமி</string>
+  <string name="show_hidden_pref_title">மறைக்கப்பட்ட செயலிகளை காண்பி</string>
+  <string name="show_hidden_pref_off">மறைக்கப்பட்ட செயலிகளை காண முடியாது</string>
+  <string name="export_db_title">தரவுத்தளம்</string>
+  <string name="import_db_title">தரவுத்தளம்</string>
+  <string name="export_prefs_title">அமைப்புகள்</string>
+  <string name="import_prefs_title">அமைப்புகள்</string>
+  <string name="notification_listener_label">Lawnchair - அறிவிக்கை பேட்ஜ்கள்</string>
+  <string name="test_title">சோதனை</string>
+  <string name="visibility">தெரிவுநிலை</string>
+  <string name="default_text">இயல்புநிலை</string>
+  <string name="edit_icon_reset">மீட்டமை</string>
+  <string name="pref_cat_homescreen">முகப்புத்திரை</string>
+  <string name="pref_cat_miscellaneous">இதர</string>
+  <string name="pref_cat_hotseat">அடிப்பாகம்</string>
+  <string name="theme_dark">இருண்ட</string>
+  <string name="theme_black">கறுப்பு</string>
+  <string name="hide_hotseat_pref_title">அடிப்பாகத்தை மறை</string>
+  <string name="all_icons">அனைத்து சின்னங்களும்</string>
+  <string name="pull_down_do_nothing">ஒன்றும் செய்ய வேண்டாம்</string>
+  <string name="pull_down_notis">தகவல்களை காண்பிக்கவும்</string>
+  <string name="pull_down_apps_search">செயலிகளை தேடல்</string>
+  <string name="enable_screen_rotation">திரை சுழற்சி செயல்படுத்து</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">இறக்குமதி</string>
+  <string name="backup_export_title">ஏற்றுமதி</string>
+  <string name="imexport_success">வெற்றி!</string>
+  <string name="imexport_error">பிழை: கோப்பை நகலெடுக்க முடியவில்லை</string>
+  <string name="imexport_no_backup_found">மறுபிரதி காணவில்லை</string>
+  <string name="imexport_external_storage_unreadable">வெளிப்புற சேமிப்பகம் படிக்க அல்ல (அமைப்புகள் அனுமதி அளித்தல்)</string>
+  <string name="units_metric">மெட்ரிக்</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_cat_weather">வானிலை</string>
+  <string name="pref_weather_title">வானிலை செயல்படுத்து</string>
+  <string name="pref_weather_units">வானிலை அலகுகள்</string>
+  <string name="pref_weather_city_summary">சிறந்த முடிவுகளுக்கு, நாட்டின் குறியீடு சேர்</string>
+  <string name="pref_weather_city_title">நகரம்</string>
+  <string name="none">எதுவுமில்லை</string>
+  <string name="shortcut_backport_warning">இது மெதுவாக இருக்கும், உங்கள் சொந்த பொறுப்பில் பயன்படுத்த முடியும்</string>
+  <string name="pref_weather_api_key_title">API திறவுச்சொல்</string>
+  <string name="about_changelog">மாற்றங்கள்</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
 </resources>
