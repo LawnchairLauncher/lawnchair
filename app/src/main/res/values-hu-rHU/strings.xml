@@ -273,9 +273,17 @@
   <string name="full_width_widgets_pref_summary">Engedélyezi, hogy a modulok átíveljenek a teljes szélességben keret nélkül</string>
   <string name="notification_access_pref_title">Értesítés bogyók és előnézetek</string>
   <string name="notification_access_pref_summary">Engedélyezze a Lawnchairnek, hogy hozzáférjen az értesítésekhez a funkció használatához</string>
+  <string name="general_pref_title">Általános</string>
+  <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Viselkedés</string>
   <string name="debug_pref_title">Hibakeresés</string>
   <string name="import_export_pref_title">Mentés/visszaállítás</string>
+  <string name="general_pref_summary">Kezdőképernyő, dokk és alkalmazásfiók</string>
+  <string name="pixel_ui_pref_summary">Pixel launcher-exklúzív funkciók engedélyezése</string>
+  <string name="backup_pref_title">Biztonsági mentés</string>
+  <string name="behavior_pref_summary">A Lawnchair viselkedésének módosítása</string>
+  <string name="backup_pref_summary">Adatok és beállítások mentése</string>
+  <string name="debug_pref_summary">Újraindítás vagy ikon adatbázis újraépítése</string>
   <string name="show_pixel_bar_pref_title">Pixel felső sáv</string>
   <string name="use_wide_searchbar_pref_title">Széles keresősáv</string>
   <string name="show_mic_pref_title">Google Segéd gomb</string>
@@ -327,6 +335,8 @@
   <string name="pull_down_apps_search">Alkalmazások keresése</string>
   <string name="enable_screen_rotation">Képernyőforgatás engedélyezése</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">Visszaállítás</string>
+  <string name="backup_export_title">Biztonsági mentés</string>
   <string name="imexport_success">Kész!</string>
   <string name="imexport_error">Hiba: Nem sikerült a fájl másolása</string>
   <string name="imexport_no_backup_found">Nem található biztonsági mentés</string>
@@ -353,6 +363,7 @@
   <string name="loading">Betöltés…</string>
   <string name="icon_shape_override_label">Ikon alakjának cseréje</string>
   <string name="icon_shape_system_default">Ne cserélje</string>
+  <string name="icon_shape_none">Egyik sem</string>
   <string name="icon_shape_square">Négyzet</string>
   <string name="icon_shape_rounded_square">Lekerekített négyzet</string>
   <string name="icon_shape_squircle">Négyzetes kör</string>
@@ -384,4 +395,6 @@
   <string name="lock_desktop">Asztal zárolása</string>
   <string name="lawnfeed_not_found">Lawnfeed nincs telepítve</string>
   <string name="google_app_not_found">Google alkalmazás nincs telepítve</string>
+  <string name="popup_card_theme_title">Flat stílusú felugró ablakok</string>
+  <string name="set_default_launcher">Alapértelmezett kezdőképernyő beállítása</string>
 </resources>
