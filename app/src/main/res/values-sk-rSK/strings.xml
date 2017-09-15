@@ -274,9 +274,17 @@
   <string name="full_width_widgets_pref_summary">Povoliť, aby sa miniaplikácie rozprestierali po celej šírke bez výplne</string>
   <string name="notification_access_pref_title">Prehľad ikon upozornení</string>
   <string name="notification_access_pref_summary">Pre zapnutie tejto funkcie povoľte spúšťaču Lawnchair prístup k vašim upozorneniam</string>
+  <string name="general_pref_title">Všeobecné</string>
+  <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Správanie</string>
   <string name="debug_pref_title">Ladenie</string>
   <string name="import_export_pref_title">Import/Export</string>
+  <string name="general_pref_summary">Domovská obrazovka, dok a ponuka aplikácií</string>
+  <string name="pixel_ui_pref_summary">Povoliť exkluzívne funkcie spúšťača Pixel</string>
+  <string name="backup_pref_title">Zálohovanie</string>
+  <string name="behavior_pref_summary">Zmeniť správanie Lawnchair</string>
+  <string name="backup_pref_summary">Zálohovať databázu a nastavenia</string>
+  <string name="debug_pref_summary">Reštartovať nebo znovu vytvoriť ikonu databázy</string>
   <string name="show_pixel_bar_pref_title">Zobraziť zaokrúhlený horný panel (Pixel)</string>
   <string name="use_wide_searchbar_pref_title">Použiť široký vyhľadávací panel</string>
   <string name="show_mic_pref_title">Zobraziť tlačidlo Google asistenta</string>
@@ -300,6 +308,10 @@
   <string name="show_hidden_pref_title">Zobraziť skryté aplikácie</string>
   <string name="show_hidden_pref_on">Ukázať skryté aplikácie, pre zmenu nastavenia viditeľnosti</string>
   <string name="show_hidden_pref_off">Nebude zobrazené skryté aplikácie</string>
+  <string name="export_db_title">Databáza</string>
+  <string name="import_db_title">Databáza</string>
+  <string name="export_prefs_title">Nastavenia</string>
+  <string name="import_prefs_title">Nastavenia</string>
   <string name="notification_listener_label">Lawnchair - indikátor upozornení</string>
   <string name="color_extraction_label">Lawnchair - extrakcia farby</string>
   <string name="test_title">Skúška</string>
@@ -324,6 +336,8 @@
   <string name="pull_down_apps_search">Vyhľadávanie v aplikáciách</string>
   <string name="enable_screen_rotation">Povoliť otáčanie obrazovky</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">Importovať</string>
+  <string name="backup_export_title">Exportovať</string>
   <string name="imexport_success">Hotovo!</string>
   <string name="imexport_error">Chyba: Nepodarilo sa skopírovať súbor</string>
   <string name="imexport_no_backup_found">Nenašla sa záloha</string>
