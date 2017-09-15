@@ -274,9 +274,16 @@
   <string name="notification_access_pref_title">अधिसूचना बैज और पूर्वावलोकन</string>
   <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
   <string name="general_pref_title">सामान्य</string>
+  <string name="pixel_ui_pref_title">पिक्सेल UI</string>
   <string name="behavior_pref_title">व्यवहार</string>
   <string name="debug_pref_title">त्रुटि रहित करे</string>
   <string name="import_export_pref_title">आयात/निर्यात</string>
+  <string name="general_pref_summary">होम स्क्रीन, ट्रे, और ऐप दराज</string>
+  <string name="pixel_ui_pref_summary">पिक्सेल लांचर विशेष सुविधाओं को प्रारंभ करें</string>
+  <string name="backup_pref_title">बैकअप</string>
+  <string name="behavior_pref_summary">Lawnchair के व्यवहार में परिवर्तन</string>
+  <string name="backup_pref_summary">बैकअप आपके डेटाबेस और सेटिंग्स</string>
+  <string name="debug_pref_summary">पुनरारंभ करें या चिह्न डेटाबेस का पुन: निर्माण</string>
   <string name="show_pixel_bar_pref_title">पिक्सेल बार दिखाएँ</string>
   <string name="use_wide_searchbar_pref_title">विस्तृत सर्च बार का उपयोग करें</string>
   <string name="show_mic_pref_title">गूगल असिस्टंट बटन दिखाएँ</string>
@@ -300,6 +307,10 @@
   <string name="show_hidden_pref_title">छुपे हुए ऐप्स दिखाएँ</string>
   <string name="show_hidden_pref_on">दृश्यता सेटिंग्स परिवर्तित करने के लिए छुपे हुए ऐप्स दिखाएँ</string>
   <string name="show_hidden_pref_off">छुपे हुए ऐप्स न दिखाएँ</string>
+  <string name="export_db_title">डेटाबेस</string>
+  <string name="import_db_title">डेटाबेस</string>
+  <string name="export_prefs_title">सेटिंग्स</string>
+  <string name="import_prefs_title">सेटिंग्स</string>
   <string name="notification_listener_label">लोवन्चैर - अधिसूचना बैज</string>
   <string name="color_extraction_label">लोवन्चैर - रंग निष्कर्षण</string>
   <string name="test_title">परीक्षण</string>
@@ -324,6 +335,8 @@
   <string name="pull_down_apps_search">ऐप्स खोजें</string>
   <string name="enable_screen_rotation">स्क्रीन रोटेशन सक्षम करें</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">आयात</string>
+  <string name="backup_export_title">निर्यात</string>
   <string name="imexport_success">सफल!</string>
   <string name="imexport_error">त्रुटि: फ़ाइल की प्रतिलिपि करने में विफल</string>
   <string name="imexport_no_backup_found">कोई भी बैकअप नहीं पाया</string>
