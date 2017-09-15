@@ -121,7 +121,7 @@
   <!-- Text for settings button -->
   <string name="settings_button_text">الإعدادات</string>
   <!-- Message shown when a feature is disabled by the administrator -->
-  <string name="msg_disabled_by_admin">عطَّل المشرف هذه الميزة</string>
+  <string name="msg_disabled_by_admin">معطل من قبل المسؤول الخاص بك</string>
   <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
   <string name="accessibility_action_overview">نظرة عامة</string>
   <!-- Strings for settings -->
@@ -278,9 +278,17 @@
   <string name="full_width_widgets_pref_summary">السماح للأدوات بالتمدد على كامل عرض الشاشة من غير حشو</string>
   <string name="notification_access_pref_title">علامات الإشعارات و معاينتها</string>
   <string name="notification_access_pref_summary">السماح ل Lawnchair بالوصول إلى الإشعارات الخاصة بك لتفعيل هذه الميزات</string>
+  <string name="general_pref_title">عام</string>
+  <string name="pixel_ui_pref_title">واجهة مستخدم بكسل</string>
   <string name="behavior_pref_title">الشكل العام</string>
   <string name="debug_pref_title">التصحيح</string>
   <string name="import_export_pref_title">إستيراد/تصدير</string>
+  <string name="general_pref_summary">الشاشة الرئيسية، الشاشة السفلية، ودرج التطبيقات</string>
+  <string name="pixel_ui_pref_summary">تفعيل ميزات واجهة بكسل الخاصة</string>
+  <string name="backup_pref_title">نسخ احتياطي</string>
+  <string name="behavior_pref_summary">تغيير سلوك Lawnchair</string>
+  <string name="backup_pref_summary">النسخ الاحتياطي قاعدة البيانات والإعدادات الخاصة بك</string>
+  <string name="debug_pref_summary">إعادة تشغيل أو إعادة إنشاء رمز قاعدة البيانات</string>
   <string name="show_pixel_bar_pref_title">اظهار الشريط العلوي لبكسل</string>
   <string name="use_wide_searchbar_pref_title">استخدام شريط بحث عريض</string>
   <string name="show_mic_pref_title">أظهار زر مساعد غوغل</string>
@@ -332,6 +340,8 @@
   <string name="pull_down_apps_search">البحث عن تطبيقات</string>
   <string name="enable_screen_rotation">تمكين تدوير الشاشة</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">استيراد</string>
+  <string name="backup_export_title">استخراج</string>
   <string name="imexport_success">تم بنجاح!</string>
   <string name="imexport_error">خطأ: فشل في نسخ الملف</string>
   <string name="imexport_no_backup_found">لم يتم العثور على نسخة احتياطية</string>
@@ -390,5 +400,6 @@
   <string name="lock_desktop">قفل سطح المكتب</string>
   <string name="lawnfeed_not_found">لاونفيد غير مثبت</string>
   <string name="google_app_not_found">تطبيق غوغل غير مثبت</string>
+  <string name="popup_card_theme_title">المنبثقة النمط المسطح</string>
   <string name="set_default_launcher">تعيين كمتصفح البرامج الإفتراضي</string>
 </resources>
