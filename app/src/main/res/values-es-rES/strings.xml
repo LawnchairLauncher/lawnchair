@@ -273,9 +273,17 @@
   <string name="full_width_widgets_pref_summary">Permitir a los widgets mostrarse sobre el ancho completo</string>
   <string name="notification_access_pref_title">Insignia en notificaciones y vista previa</string>
   <string name="notification_access_pref_summary">Deberá permitir a Lawnchair el acceso a notificaciones para poder habilitar esta función</string>
+  <string name="general_pref_title">General</string>
+  <string name="pixel_ui_pref_title">Píxeles interfaz de usuario</string>
   <string name="behavior_pref_title">Comportamiento</string>
   <string name="debug_pref_title">Opciones de depuración</string>
   <string name="import_export_pref_title">Importar/Exportar</string>
+  <string name="general_pref_summary">Pantalla de inicio, el muelle y la aplicación de cajón</string>
+  <string name="pixel_ui_pref_summary">Habilitar características exclusivas de lanzador de Pixel</string>
+  <string name="backup_pref_title">Copia de seguridad</string>
+  <string name="behavior_pref_summary">Cambiar el comportamiento de Lawnchair</string>
+  <string name="backup_pref_summary">Copia de seguridad de configuración de su base de datos y</string>
+  <string name="debug_pref_summary">Reiniciar o reconstruir base de datos de icono</string>
   <string name="show_pixel_bar_pref_title">Mostrar la barra superior al estilo Pixel</string>
   <string name="use_wide_searchbar_pref_title">Usar barra de búsqueda ancha</string>
   <string name="show_mic_pref_title">Mostrar botón de Google Assistant</string>
@@ -327,6 +335,8 @@
   <string name="pull_down_apps_search">Buscar aplicaciones</string>
   <string name="enable_screen_rotation">Habilitar la rotación de la pantalla</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">Importar</string>
+  <string name="backup_export_title">Exportar</string>
   <string name="imexport_success">¡Listo!</string>
   <string name="imexport_error">Error: La copia del archivo ha fallado</string>
   <string name="imexport_no_backup_found">No se ha encontrado una copia de seguridad</string>
