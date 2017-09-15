@@ -272,9 +272,17 @@
   <string name="full_width_widgets_pref_summary">ウィジェットがパディングなしで幅全体にまたがることを許可する</string>
   <string name="notification_access_pref_title">通知バッジとプレビュー</string>
   <string name="notification_access_pref_summary">Lawnchairにこの機能を有効にするための通知にアクセスさせる</string>
+  <string name="general_pref_title">全般</string>
+  <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">動作</string>
   <string name="debug_pref_title">デバッグ</string>
   <string name="import_export_pref_title">インポート/エクスポート</string>
+  <string name="general_pref_summary">ホーム画面、ドック、ドロワーの設定</string>
+  <string name="pixel_ui_pref_summary">Pixel Launcherの特徴的な機能を有効にします</string>
+  <string name="backup_pref_title">バックアップ</string>
+  <string name="behavior_pref_summary">Lawnchair の動作を変更</string>
+  <string name="backup_pref_summary">データベースと設定をバックアップ</string>
+  <string name="debug_pref_summary">ランチャーの再起動またはアイコンデータベースの再構築</string>
   <string name="show_pixel_bar_pref_title">Pixelのトップバーを表示する</string>
   <string name="use_wide_searchbar_pref_title">ワイド検索バーを使用する</string>
   <string name="show_mic_pref_title">Google アシスタントボタンを表示する</string>
@@ -326,6 +334,8 @@
   <string name="pull_down_apps_search">アプリを検索</string>
   <string name="enable_screen_rotation">画面の回転を有効にする</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">インポート</string>
+  <string name="backup_export_title">エクスポート</string>
   <string name="imexport_success">成功しました！</string>
   <string name="imexport_error">エラー : ファイルをコピーできませんでした</string>
   <string name="imexport_no_backup_found">バックアップが見つかりません</string>
@@ -384,5 +394,6 @@
   <string name="lock_desktop">デスクトップをロック</string>
   <string name="lawnfeed_not_found">Lawnfeed はインストールされていません</string>
   <string name="google_app_not_found">Google アプリはインストールされていません</string>
+  <string name="popup_card_theme_title">フラットなポップアップ</string>
   <string name="set_default_launcher">既定のランチャーにセット</string>
 </resources>
