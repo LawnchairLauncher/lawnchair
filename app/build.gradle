@@ -79,7 +79,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     def mobileCenterSdkVersion = '0.10.0'
-    def supportLibVersion = '26.0.2'
+    def supportLibVersion = '26.1.0'
     implementation "com.microsoft.azure.mobile:mobile-center-analytics:${mobileCenterSdkVersion}"
     implementation "com.microsoft.azure.mobile:mobile-center-crashes:${mobileCenterSdkVersion}"
     implementation "com.microsoft.azure.mobile:mobile-center-distribute:${mobileCenterSdkVersion}"
