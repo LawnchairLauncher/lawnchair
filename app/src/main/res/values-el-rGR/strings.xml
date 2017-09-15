@@ -260,11 +260,12 @@
   <string name="blur_radius_pref_title">Ακτίνα θολότητας</string>
   <string name="white_google_icon_pref_title">Χρήση λευκού εικονιδίου Google</string>
   <string name="hide_icon_labels_pref_title">Απόκρυψη ετικετών εικονιδίων στην αρχική οθόνη</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Απόκρυψη ετικετών εικονιδίων στο συρτάρι εφαρμογών</string>
   <string name="workspace_label_color_hue_pref_title">Χρώμα ετικετών εικονιδίων στην αρχική οθόνη</string>
   <string name="workspace_label_color_variation_pref_title">Παραλλαγή χρώματος των ετικετών εικονιδίων στην αρχική οθόνη</string>
   <string name="all_apps_opacity_pref_title">Αδιαφάνεια συρταριού εφαρμογών</string>
-  <string name="num_cols_pref_title">Αριθμός στηλών</string>
-  <string name="num_rows_pref_title">Αριθμός γραμμών</string>
+  <string name="num_cols_pref_title">Αριθμός στηλών αρχικής οθόνης</string>
+  <string name="num_rows_pref_title">Αριθμός γραμμών αρχικής οθόνης</string>
   <string name="num_hotseat_icons_pref_title">Αριθμός εικονιδίων στην μπάρα εφαρμογών</string>
   <string name="icon_scale_pref_title">Κλίμακα εικονιδίου</string>
   <string name="icon_text_scale_pref_title">Κλίμακα κειμένου εικονιδίου</string>
@@ -272,11 +273,17 @@
   <string name="full_width_widgets_pref_summary">Να επιτραπεί στα γραφικά στοιχεία να εκτείνονται σε ολόκληρο το πλάτος χωρίς κενά περιθώρια</string>
   <string name="notification_access_pref_title">Εικονίδια ειδοποιήσεων και προεπισκόπηση</string>
   <string name="notification_access_pref_summary">Επιτρέψτε στο Lawnchair να αποκτήσει πρόσβαση στης ειδοποιήσεις σας για να ενεργοποιηθεί αυτό το χαρακτηριστικό</string>
-  <string name="ui_pref_title">Περιβάλλον Χρήσης</string>
-  <string name="pixel_style_pref_title">Χαρακτηριστικά Pixel</string>
+  <string name="general_pref_title">Γενικές ρυθμίσεις</string>
+  <string name="pixel_ui_pref_title">Χαρακτηριστικά Pixel</string>
   <string name="behavior_pref_title">Συμπεριφορά</string>
   <string name="debug_pref_title">Αντιμετώπιση σφαλμάτων</string>
   <string name="import_export_pref_title">Αντίγραφα ασφαλείας ρυθμίσεων</string>
+  <string name="general_pref_summary">Αρχική οθόνη, μπάρα εφαρμογών, μενού εφαρμογών</string>
+  <string name="pixel_ui_pref_summary">Ενεργοποίηση αποκλειστικών χαρακτηριστικών τύπου εκκινητή Pixel</string>
+  <string name="backup_pref_title">Αντίγραφα Ασφαλείας</string>
+  <string name="behavior_pref_summary">Αλλάξτε την συμπεριφορά του Lawnchair</string>
+  <string name="backup_pref_summary">Δημιουργία αντιγράφων ασφαλείας της βάσης δεδομένων και των ρυθμίσεών σας</string>
+  <string name="debug_pref_summary">Επανεκκίνηση ή αναδόμηση της βάσης δεδομένων των εικονιδίων</string>
   <string name="show_pixel_bar_pref_title">Εμφάνιση επάνω μπάρας γραφικών Pixel</string>
   <string name="use_wide_searchbar_pref_title">Χρήση πλατιάς μπάρας αναζήτησης</string>
   <string name="show_mic_pref_title">Εμφάνιση του κουμπιού Βοηθός Google</string>
@@ -289,7 +296,7 @@
   <string name="rebuild_icondb_pref_title">Αναδόμηση βάσης δεδομένων των εικονιδίων</string>
   <string name="pinch_to_overview_pref_title">Τσιμπήστε για επισκόπηση</string>
   <string name="pinch_to_overview_pref_summary">Τσιμπήστε στην αρχική οθόνη για να ανοίξετε την επισκόπηση αρχικών οθονών</string>
-  <string name="light_statusbar_pref_title">Φωτισμός μπάρας ειδοποιήσεων</string>
+  <string name="light_statusbar_pref_title">Χρωματισμός εικονιδίων μπάρας ειδοποιήσεων</string>
   <string name="light_statusbar_pref_force">Η μπάρα ειδοποιήσεων θα εμφανίζει σκοτεινά εικονίδια</string>
   <string name="light_statusbar_pref_off">Η μπάρα ειδοποιήσεων θα εμφανίζει φωτεινά εικονίδια</string>
   <string name="haptic_feedback_pref_title">Ενεργοποίηση δόνησης</string>
@@ -308,54 +315,12 @@
   <string name="color_extraction_label">Εκκινητής Lawnchair - Εξαγωγή χρώματος</string>
   <string name="test_title">Δοκιμή</string>
   <string name="visibility">Ορατότητα</string>
-  <!-- Customization Color -->
-  <string name="white">Λευκό</string>
-  <!-- Customization Color -->
-  <string name="black">Μαύρο</string>
-  <!-- Customization Color -->
-  <string name="red">Κόκκινο</string>
-  <!-- Customization Color -->
-  <string name="pink">Ροζ</string>
-  <!-- Customization Color -->
-  <string name="purple">Μωβ</string>
-  <!-- Customization Color -->
-  <string name="deep_purple">Βαθύ μωβ</string>
-  <!-- Customization Color -->
-  <string name="indigo">Λουλακί</string>
-  <!-- Customization Color -->
-  <string name="blue">Μπλέ</string>
-  <!-- Customization Color -->
-  <string name="light_blue">Ανοιχτό Μπλέ</string>
-  <!-- Customization Color -->
-  <string name="cyan">Κυανό</string>
-  <!-- Customization Color -->
-  <string name="teal">Πρασινομπλέ</string>
-  <!-- Customization Color -->
-  <string name="green">Πράσινο</string>
-  <!-- Customization Color -->
-  <string name="light_green">Ανοιχτό Πράσινο</string>
-  <!-- Customization Color -->
-  <string name="lime">Κιτρινοπράσινο</string>
-  <!-- Customization Color -->
-  <string name="yellow">Κίτρινο</string>
-  <!-- Customization Color -->
-  <string name="amber">Κεχριμπάρι</string>
-  <!-- Customization Color -->
-  <string name="orange">Πορτοκαλί</string>
-  <!-- Customization Color -->
-  <string name="deep_orange">Σκούρο πορτοκαλί</string>
-  <!-- Customization Color -->
-  <string name="brown">Καφέ</string>
-  <!-- Customization Color -->
-  <string name="grey">Γκρι</string>
-  <!-- Customization Color -->
-  <string name="blue_grey">Μπλε Γκρι</string>
   <string name="default_text">Προεπιλογή</string>
   <string name="edit_icon_reset">Επαναφορά</string>
   <string name="show_top_shadow_title">Εμφάνιση σκιάς στην κορυφή της αρχικής οθόνης</string>
   <string name="pref_cat_homescreen">Αρχική οθόνη</string>
   <string name="pref_cat_miscellaneous">Διάφορα</string>
-  <string name="pref_cat_hotseat">Βάση σύνδεσης</string>
+  <string name="pref_cat_hotseat">Μπάρα εφαρμογών</string>
   <string name="pref_cat_theme">Θέμα</string>
   <string name="theme_pref_title">Θέμα</string>
   <string name="theme_light">Φωτεινό</string>
@@ -370,6 +335,8 @@
   <string name="pull_down_apps_search">Αναζήτηση εφαρμογών</string>
   <string name="enable_screen_rotation">Ενεργοποίηση περιστροφής οθόνης</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">Εισαγωγή</string>
+  <string name="backup_export_title">Εξαγωγή</string>
   <string name="imexport_success">Επιτυχής!</string>
   <string name="imexport_error">Σφάλμα: Απέτυχε η αντιγραφή αρχείου</string>
   <string name="imexport_no_backup_found">Δεν βρέθηκε κανένα αντίγραφο ασφαλείας</string>
@@ -394,4 +361,40 @@
   <string name="enable_editing_pref_title">Ενεργοποίηση επεξεργασίας εικονιδίων</string>
   <string name="pref_weather_provider">Πάροχος καιρού</string>
   <string name="loading">Φόρτωση…</string>
+  <string name="icon_shape_override_label">Αλλαγή σχήματος εικονιδίου</string>
+  <string name="icon_shape_system_default">Χωρίς αλλαγή</string>
+  <string name="icon_shape_none">Κανένα</string>
+  <string name="icon_shape_square">Τετράγωνο</string>
+  <string name="icon_shape_rounded_square">Στρογγυλεμένο τετράγωνο</string>
+  <string name="icon_shape_squircle">Οβάλ τετράγωνο</string>
+  <string name="icon_shape_circle">Κυκλικό</string>
+  <string name="icon_shape_teardrop">Δάκρυ</string>
+  <string name="animated_clock_icon_title">Ζωντανό εικονίδιο ρολογιού</string>
+  <string name="about_summary_title">Σύνοψη</string>
+  <string name="about_version">Έκδοση</string>
+  <string name="about_icon_designer">Σχεδιαστής Εικονιδίου Lawnchair</string>
+  <string name="about_contributors_title">Συντελεστές</string>
+  <string name="location_permission_warn">Απαιτείται η παραχώρηση άδειας ανάγνωσης τοποθεσίας για αλλαγή παρόχου καιρού!</string>
+  <string name="num_cols_drawer_pref_title">Αριθμός στηλών στο συρτάρι εφαρμογών</string>
+  <string name="pref_cat_drawer">Συρτάρι εφαρμογών</string>
+  <string name="shortcut_backport_warning">Αυτό μπορεί να είναι αργό, να χρησιμοποιηθεί με δική σας ευθύνη</string>
+  <string name="pref_backport_shortcuts">Ενεργοποίηση συντομεύσεων εφαρμογών</string>
+  <string name="weather_api_key_not_set">Δεν έχει οριστεί κλειδί API</string>
+  <string name="pref_weather_api_key_title">Κλειδί API</string>
+  <string name="about_changelog">Αρχείο καταγραφής αλλαγών</string>
+  <string name="pref_all_apps_custom_label_color">Χρήση προσαρμοσμένου χρώματος ετικέτας εικονιδίων</string>
+  <string name="pref_all_apps_label_color_variation">Παραλλαγή χρώματος των ετικετών εικονιδίων στο συρτάρι εφαρμογών</string>
+  <string name="pref_all_apps_label_color">Χρώμα των ετικετών εικονιδίων στο συρτάρι εφαρμογών</string>
+  <string name="pref_num_rows_drawer">Αριθμός γραμμών στο συρτάρι εφαρμογών</string>
+  <string name="center_wallpaper_pref_title">Κεντράρισμα ταπετσαρίας όταν υπάρχει μόνο μία αρχική οθόνη</string>
+  <string name="vertical_drawer_layout_pref_title">Εμφάνιση ως κάθετη λίστα εφαρμογών</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
+  <string name="about_translators">Μεταφραστές</string>
+  <string name="lock_desktop">Κλειδώματος αρχικής οθόνης</string>
+  <string name="lawnfeed_not_found">Το lawnfeed δεν είναι εγκατεστημένο</string>
+  <string name="google_app_not_found">Η εφαρμογή Goggle δεν είναι εγκατεστημένη</string>
+  <string name="popup_card_theme_title">Επίπεδο στυλ γρήγορων συντομεύσεων</string>
+  <string name="set_default_launcher">Ορισμός προεπιλεγμένου εκτοξευτή</string>
 </resources>

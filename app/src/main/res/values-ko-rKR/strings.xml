@@ -22,145 +22,364 @@
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
+  <string name="work_folder_name">업무</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
+  <string name="activity_not_found">앱이 설치되지 않았습니다.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
+  <string name="activity_not_available">앱을 사용할 수 없음</string>
   <!-- SafeMode shortcut error string -->
+  <string name="safemode_shortcut_error">다운로드한 앱은 안전 모드에서 사용할 수 없습니다.</string>
   <!-- SafeMode widget error string -->
+  <string name="safemode_widget_error">위젯은 안전 모드에서 사용할 수 없습니다.</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
+  <string name="shortcut_not_available">바로가기를 사용할 수 없음</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
+  <string name="long_press_widget_to_add">위젯을 선택하려면 길게 누르세요.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
+  <string name="long_accessible_way_to_add">위젯을 선택하거나 맞춤 액션을 사용하려면 두 번 두드리거나 길게 누르세요.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
+  <string name="widget_accessible_dims_format">너비 %1$d, 높이 %2$d</string>
   <!-- All Apps -->
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
+  <string name="all_apps_search_bar_hint">앱 검색</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
+  <string name="all_apps_loading_message">로딩 중&#8230;</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
+  <string name="all_apps_no_search_results">\'<xliff:g id="Query">%1$s</xliff:g>\'와(과) 일치하는 앱이 없습니다.</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
+  <string name="all_apps_search_market_message">더 많은 앱 검색</string>
   <!-- Drag and drop -->
   <!-- Error message when user has filled a page -->
+  <string name="out_of_space">홈 화면에 더 이상 공간이 없습니다.</string>
   <!-- Error message when user has filled the hotseat -->
+  <string name="hotseat_out_of_space">즐겨찾기 트레이에 더 이상 공간이 없습니다.</string>
   <!-- All applications label -->
+  <string name="all_apps_button_label">앱 목록</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
+  <string name="all_apps_home_button_label">홈</string>
   <!-- Label for remove drop target. [CHAR_LIMIT=20] -->
+  <string name="remove_drop_target_label">홈에서 삭제</string>
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
+  <string name="uninstall_drop_target_label">제거</string>
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
+  <string name="app_info_drop_target_label">앱 정보</string>
   <!-- Permissions: -->
   <!-- Permission short label -->
+  <string name="permlab_install_shortcut">바로가기 추가</string>
   <!-- Permission description -->
+  <string name="permdesc_install_shortcut">앱이 자율적으로 바로가기를 추가할 수 있도록 허용합니다.</string>
   <!-- Permission short label -->
+  <string name="permlab_read_settings">홈 설정 및 바로가기 읽기</string>
   <!-- Permission description -->
+  <string name="permdesc_read_settings">앱이 홈에 있는 설정 및 바로가기를 읽을 수 있도록 허용합니다.</string>
   <!-- Permission short label -->
+  <string name="permlab_write_settings">홈 설정 및 단축키</string>
   <!-- Permission description -->
+  <string name="permdesc_write_settings">앱이 홈에 있는 설정 및 바로가기를 변경할 수 있도록 허용합니다.</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
+  <string name="msg_no_phone_permission"><xliff:g id="APP_NAME">%1$s</xliff:g>에서 전화를 걸 수 없습니다.</string>
   <!-- Widgets: -->
   <!-- Text to show user in place of a gadget when we can't display it properly -->
+  <string name="gadget_error_text">위젯을 불러오는 중 문제가 발생했습니다.</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
+  <string name="gadget_setup_text">셋업</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
+  <string name="uninstall_system_app_text">시스템 앱은 제거할 수 없습니다.</string>
   <!-- Default folder title -->
+  <string name="folder_hint_text">이름 없는 폴더</string>
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
+  <string name="disabled_app_label"><xliff:g id="App_NAME">%1$s</xliff:g> 사용 안함</string>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
+  <string name="default_scroll_format">%2$d 페이지 중 %1$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
+  <string name="workspace_scroll_format">홈 화면 %1$d/%2$d</string>
   <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
+  <string name="workspace_new_page">새로운 메인 스크린 페이지</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
+  <string name="folder_opened">폴더 열림(<xliff:g id="Width">%1$d</xliff:g>X<xliff:g id="Height">%2$d</xliff:g>)</string>
   <!-- Instruction that clicking outside will close folder -->
+  <string name="folder_tap_to_close">탭하여 폴더 닫기</string>
   <!-- Instruction that clicking outside will commit folder rename -->
+  <string name="folder_tap_to_rename">탭하여 변경된 이름 저장</string>
   <!-- Indication that folder closed -->
+  <string name="folder_closed">폴더 닫음</string>
   <!-- Folder renamed format -->
+  <string name="folder_renamed">폴더 이름 변경: <xliff:g id="Name">%1$s</xliff:g></string>
   <!-- Folder name format -->
+  <string name="folder_name_format">폴더: <xliff:g id="Name">%1$s</xliff:g></string>
   <!-- Strings for the customization mode -->
   <!-- Text for widget add button -->
+  <string name="widget_button_text">위젯</string>
   <!-- Text for wallpaper change button -->
+  <string name="wallpaper_button_text">배경화면</string>
   <!-- Text for settings button -->
+  <string name="settings_button_text">설정</string>
   <!-- Message shown when a feature is disabled by the administrator -->
+  <string name="msg_disabled_by_admin">관리자가 사용 중지함</string>
   <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
+  <string name="accessibility_action_overview">미리보기</string>
   <!-- Strings for settings -->
   <!-- Title for Allow Rotation setting. [CHAR LIMIT=50] -->
   <!-- Text explaining when the home screen will get rotated. [CHAR LIMIT=100] -->
   <!-- Text explaining that rotation is disabled in Display settings. 'Display' refers to the Display section in system settings [CHAR LIMIT=100] -->
   <!-- Label on an icon that references an uninstalled package, for which we have no information about when it might be installed. [CHAR_LIMIT=15] -->
+  <string name="package_state_unknown">알 수 없음</string>
   <!-- Button for abandoned promises dialog, to removes this abandoned promise icon. -->
+  <string name="abandoned_clean_this">제거</string>
   <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->
+  <string name="abandoned_search">검색</string>
   <!-- Title for abandoned promise dialog. -->
+  <string name="abandoned_promises_title">이 앱이 설치되어 있지 않음</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
+  <string name="abandoned_promise_explanation">이 아이콘의 앱이 설치되어 있지 않습니다. 아이콘을 삭제하거나 앱을 검색하여 수동으로 설치하세요.    </string>
   <!-- Title for an app which is being downloaded. -->
+  <string name="app_downloading_title"><xliff:g id="Name">%1$s</xliff:g> 다운로드 중, <xliff:g id="Progress">%2$s</xliff:g> 완료</string>
   <!-- Title for an app whose download has been started. -->
+  <string name="app_waiting_download_title"><xliff:g id="Name">%1$s</xliff:g> 설치 대기 중</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
+  <string name="action_add_to_workspace">홈 화면에 추가</string>
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
+  <string name="action_move_here">여기에 항목을 이동</string>
   <!-- Accessibility confirmation for item added to workspace. -->
+  <string name="item_added_to_workspace">홈 화면에 항목 추가됨</string>
   <!-- Accessibility confirmation for item removed. -->
+  <string name="item_removed">항목 삭제됨</string>
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
+  <string name="action_move">항목 이동</string>
   <!-- Accessibility description to move item to empty cell. -->
+  <string name="move_to_empty_cell"><xliff:g example="1" id="number">%1$d</xliff:g>행 <xliff:g example="1" id="number">%2$d</xliff:g>열로 이동</string>
   <!-- Accessibility description to move item inside a folder. -->
+  <string name="move_to_position"><xliff:g example="1" id="number">%1$d</xliff:g>번 위치로 이동</string>
   <!-- Accessibility description to move item to the hotseat. -->
+  <string name="move_to_hotseat_position">즐겨찾는 <xliff:g example="1" id="number">%1$d</xliff:g>번 위치로 이동</string>
   <!-- Accessibility confirmation for item move. -->
+  <string name="item_moved">항목을 이동했습니다.</string>
   <!-- Accessibility description to move item into an existing folder. -->
+  <string name="add_to_folder">폴더에 추가: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
+  <string name="add_to_folder_with_app"><xliff:g id="Name">%1$s</xliff:g>이(가) 포함된 폴더에 추가</string>
   <!-- Accessibility confirmation for item added to folder. -->
+  <string name="added_to_folder">항목이 폴더에 추가되었습니다.</string>
   <!-- Accessibility description to create folder with another item. -->
+  <string name="create_folder_with">다음이 포함된 폴더 만들기: <xliff:g example="Game" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
+  <string name="folder_created">폴더가 생성되었습니다.</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
+  <string name="action_move_to_workspace">홈 화면으로 이동</string>
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
+  <string name="action_move_screen_left">화면을 왼쪽으로 이동</string>
   <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
+  <string name="action_move_screen_right">화면을 오른쪽으로 이동</string>
   <!-- Accessibility confirmation when a screen was moved. -->
+  <string name="screen_moved">화면 이동됨</string>
   <!-- Accessibility action to resize a widget. [CHAR_LIMIT=30] -->
+  <string name="action_resize">크기 조정</string>
   <!-- Accessibility action to increase width of a widget. [CHAR_LIMIT=30] -->
+  <string name="action_increase_width">폭 늘리기</string>
   <!-- Accessibility action to increase height of a widget. [CHAR_LIMIT=30] -->
+  <string name="action_increase_height">높이 늘리기</string>
   <!-- Accessibility action to decrease width of a widget. [CHAR_LIMIT=30] -->
+  <string name="action_decrease_width">폭 줄이기</string>
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
+  <string name="action_decrease_height">높이 줄이기</string>
   <!-- Accessibility confirmation for widget resize. -->
+  <string name="widget_resized">위젯의 크기가 <xliff:g example="2" id="number">%1$d</xliff:g>행 <xliff:g example="1" id="number">%2$d</xliff:g>열로 조정됨</string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
+  <string name="action_deep_shortcut">바로가기</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
+  <string name="shortcuts_menu_description"><xliff:g example="Messenger" id="app_name">%2$s</xliff:g>에 사용 가능한 바로가기 <xliff:g example="3" id="number_of_shortcuts">%1$d</xliff:g>개</string>
+  <string name="edit_drop_target_label">편집</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
+  <string name="wallpaper_instructions">배경화면 설정</string>
   <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper picker cannot load it -->
+  <string name="image_load_fail">이미지를 로드할 수 없습니다.</string>
   <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper cropper cannot load it. The user will
          usually see this when using another app and trying to set
          an image as the wallpaper -->
+  <string name="wallpaper_load_fail">이미지를 배경화면으로 로드할 수 없습니다.</string>
   <!-- Error message when an image is selected as a wallpaper,
          but something goes wrong when the user clicks "Set wallpaper" -->
+  <string name="wallpaper_set_fail">이미지를 배경화면으로 설정할 수 없습니다.</string>
   <!-- Shown when wallpapers are selected in Wallpaper picker -->
   <!-- String indicating how many media item(s) is(are) selected
             eg. 1 selected [CHAR LIMIT=30] -->
+  <plurals name="number_of_items_selected">
+    <item quantity="other">%1$d개 선택됨</item>
+  </plurals>
   <!-- Accessibility string used as a label for a particular wallpaper in the Wallpaper Picker list.
          e.g. "Wallpaper 3 of 10" -->
+  <string name="wallpaper_accessibility_name">%2$d개 중의 %1$d번째 배경화면</string>
   <!-- Accessibility string used to announce that a wallpaper has been selected. -->
+  <string name="announce_selection"><xliff:g example="Wallpaper 3 of 10" id="label">%1$s</xliff:g> 선택함</string>
   <!-- Label on button to delete wallpaper(s) -->
+  <string name="wallpaper_delete">삭제하기</string>
   <!-- Label on button in Wallpaper Picker to pick an image -->
+  <string name="pick_image">내 사진</string>
   <!-- Option in "Select wallpaper from" dialog box -->
+  <string name="pick_wallpaper">배경화면</string>
   <!-- Title of activity for cropping wallpapers -->
+  <string name="crop_wallpaper">배경화면 잘라내기</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
+  <string name="which_wallpaper_option_home_screen">홈 화면</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
+  <string name="which_wallpaper_option_lock_screen">잠금 화면</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">홈과 잠금 화면</string>
+  <string name="title_show_google_app">%1$s 보기</string>
+  <string name="title_show_google_app_default">구글 앱</string>
+  <string name="label_search">검색</string>
+  <string name="label_voice_search">음성 검색</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d 바로가기와 %3$s에 대한 %2$d 알림</string>
+  <string name="notifications_header">알림창</string>
+  <string name="widgets_bottom_sheet_title">%1$s개</string>
   <!-- About Lawnchair -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
-  <!-- Customization Color -->
+  <string name="about_text">Lawnchair는 AOSP의 Launcher3에 기반한 런처로, Till Kottmann에 (aka deletescape) 의해 만들어졌습니다.</string>
+  <string name="about_title">상세 정보</string>
+  <string name="changelog_title">%d 빌드의 변경사항</string>
+  <string name="week_day_format">%1$s, %2$s</string>
+  <string name="icon_pack_preference_title">아이콘 팩</string>
+  <string name="icon_pack_preference_summary">아이콘 팩 선택</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Dock에 배경화면 색을 적용합니다.</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">배경화면에서 추출된 색상으로 Dock의 색상이 바뀝니다.</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">Dock 색상이 배경화면 밝기에 맞춘 회색으로 바뀝니다.</string>
+  <string name="transparent_hotseat_pref_title">투명 Dock</string>
+  <string name="dynamic_ui_pref_title">배경화면에서 강조 색상 추출하기</string>
+  <string name="blur_pref_title">블러 효과 적용</string>
+  <string name="blur_pref_summary">블러 효과를 인터페이스 일부에 적용하기 \n 라이브배경화면과는 호환되지 않습니다.</string>
+  <string name="blur_radius_pref_title">블러 값</string>
+  <string name="white_google_icon_pref_title">흰색 구글 아이콘 사용</string>
+  <string name="hide_icon_labels_pref_title">홈 화면의 아이콘 이름 숨기기</string>
+  <string name="hide_all_apps_icon_labels_pref_title">앱 서랍의 아이콘 이름 숨기기</string>
+  <string name="workspace_label_color_hue_pref_title">홈 화면 아이콘 이름 색상</string>
+  <string name="workspace_label_color_variation_pref_title">홈 화면 아이콘 이름 색상 값</string>
+  <string name="all_apps_opacity_pref_title">앱 서랍 투명도</string>
+  <string name="num_cols_pref_title">열 수</string>
+  <string name="num_rows_pref_title">행 수</string>
+  <string name="num_hotseat_icons_pref_title">Dock 아이콘 갯수</string>
+  <string name="icon_scale_pref_title">아이콘 크기</string>
+  <string name="icon_text_scale_pref_title">아이콘 글자 크기</string>
+  <string name="full_width_width_widgets_pref_title">위젯 넓이 화면 폭에 꽉차게 하기</string>
+  <string name="full_width_widgets_pref_summary">위젯이 패딩없이 전체 너비로 확장되도록 허용</string>
+  <string name="notification_access_pref_title">알림 뱃지와 미리보기</string>
+  <string name="notification_access_pref_summary">이 기능을 활성화 하려면 Lawnchair가 기기의 알림을 확인 할 수 있는 권한이 필요합니다.</string>
+  <string name="behavior_pref_title">행동</string>
+  <string name="debug_pref_title">디버그</string>
+  <string name="import_export_pref_title">가져오기/내보내기</string>
+  <string name="show_pixel_bar_pref_title">Pixel 검색 바 보이기</string>
+  <string name="use_wide_searchbar_pref_title">넓은 검색 바</string>
+  <string name="show_mic_pref_title">구글 어시스턴트 버튼 보이기</string>
+  <string name="use_round_searhbar">둥근 모서리 검색 바</string>
+  <string name="pixel_style_icons_pref_title">Pixel 아이콘</string>
+  <string name="pixel_style_icons_pref_summary">활성화 되어 있으면, 가능한 원형의 아이콘이 사용됩니다.</string>
+  <string name="show_google_now_tab_pref_title">구글 나우 페이지 보이기</string>
+  <string name="restart_lawnchair_pref_title">Lawnchair 재시작</string>
+  <string name="restart_lawnchair_pref_summary">일부 설정이 제대로 적용되지 않는 경우 도움을 얻을 수 있습니다.</string>
+  <string name="rebuild_icondb_pref_title">아이콘 데이터베이스를 재정립 합니다.</string>
+  <string name="pinch_to_overview_pref_title">핀치 줌하여 개요 보기</string>
+  <string name="pinch_to_overview_pref_summary">홈 화면에서 핀치 줌하여 개요 보기</string>
+  <string name="light_statusbar_pref_title">밝은 상단바</string>
+  <string name="light_statusbar_pref_force">상단바의 아이콘이 어두운 색으로 바뀝니다.</string>
+  <string name="light_statusbar_pref_off">상단바의 아이콘이 밝은 색으로 바뀝니다.</string>
+  <string name="haptic_feedback_pref_title">진동 활성화</string>
+  <string name="keep_scroll_state_pref_title">스크롤 위치 기억하기</string>
+  <string name="keep_scroll_state_pref_summary">앱 서랍에서 스크롤 위치 기억하기</string>
+  <string name="home_opens_drawer_pref_title">홈버튼으로 앱서랍 열기</string>
+  <string name="home_opens_drawer_pref_summary">메인 홈 화면에서 홈버튼을 누르면 앱 서랍을 엽니다.</string>
+  <string name="show_hidden_pref_title">숨긴 앱 보이기</string>
+  <string name="show_hidden_pref_on">화면 설정이 바뀐 후, 숨겨졌던 앱이 나타납니다.</string>
+  <string name="show_hidden_pref_off">숨긴 앱은 보이지 않습니다.</string>
+  <string name="notification_listener_label">Lawnchair - 알림 뱃지</string>
+  <string name="color_extraction_label">Lawnchair - 색 추출</string>
+  <string name="test_title">테스트</string>
+  <string name="visibility">가시성</string>
+  <string name="default_text">기본값</string>
+  <string name="edit_icon_reset">다시 설정</string>
+  <string name="show_top_shadow_title">그림자 표시</string>
+  <string name="pref_cat_homescreen">홈 화면</string>
+  <string name="pref_cat_miscellaneous">기타</string>
+  <string name="pref_cat_hotseat">Dock</string>
+  <string name="pref_cat_theme">테마</string>
+  <string name="theme_pref_title">테마</string>
+  <string name="theme_light">밝은 테마</string>
+  <string name="theme_dark">어두운 테마</string>
+  <string name="theme_black">검은색</string>
+  <string name="hide_hotseat_pref_title">Dock 숨기기</string>
+  <string name="all_icons">모든 아이콘</string>
+  <string name="pull_down_action_pref_title">아래로 당겼을 때 동작</string>
+  <string name="pull_down_do_nothing">아무것도 하지않음</string>
+  <string name="pull_down_notis">알람창 보이기</string>
+  <string name="pull_down_search">검색하기</string>
+  <string name="pull_down_apps_search">앱 검색</string>
+  <string name="enable_screen_rotation">화면 회전 허용</string>
   <!-- Import/Export Strings -->
+  <string name="imexport_success">성공!</string>
+  <string name="imexport_error">에러: 파일을 복사할 수 없습니다.</string>
+  <string name="imexport_no_backup_found">백업 없음</string>
+  <string name="imexport_external_storage_unreadable">외부 저장소를 읽을 수 없습니다. (세팅에서 권한을 허용해주세요)</string>
+  <string name="imexport_external_storage_unwritable">외부 저장소 쓰기가 금지되어 있습니다. (세팅에서 권한을 허용해주세요)</string>
+  <string name="units_metric">미터법</string>
+  <string name="units_imperial">야드/파운드법</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_cat_weather">날씨</string>
+  <string name="pref_weather_title">날씨 활성화</string>
+  <string name="pref_weather_units">날씨 단위</string>
+  <string name="pref_weather_city_summary">국가 코드를 포함하면 최상의 결과를 도출합니다 (예: Seoul, Ko)</string>
+  <string name="pref_weather_city_title">시/도</string>
+  <string name="none">없음</string>
+  <string name="pref_applyTheme">테마 적용하기</string>
+  <string name="pref_applyBlur">블러 효과 적용</string>
+  <string name="search_bar">검색 바</string>
+  <string name="folder">폴더</string>
+  <string name="dock_allapps"><![CDATA[Dock & 앱 서랍]]></string>
+  <string name="app_shortcuts">앱 바로가기</string>
+  <string name="blur_effect">블러 효과</string>
+  <string name="enable_editing_pref_title">홈 화면 변경 허락하기</string>
+  <string name="pref_weather_provider">날씨 공급자</string>
+  <string name="loading">로딩 중…</string>
+  <string name="icon_shape_override_label">아이콘 변경</string>
+  <string name="icon_shape_system_default">변경 금지</string>
+  <string name="icon_shape_none">없음</string>
+  <string name="icon_shape_square">사각형</string>
+  <string name="icon_shape_rounded_square">모서리 둥근 사각형</string>
+  <string name="icon_shape_squircle">둥근 사각형</string>
+  <string name="icon_shape_circle">원</string>
+  <string name="icon_shape_teardrop">물방울</string>
+  <string name="animated_clock_icon_title">동적 시계 아이콘</string>
+  <string name="about_summary_title">요약</string>
+  <string name="about_version">버전</string>
+  <string name="about_icon_designer">앱 아이콘 디자이너</string>
+  <string name="about_contributors_title">기여자</string>
+  <string name="location_permission_warn">다른 프로바이더로 전환하기 위해 위치 정보 접근 허가가 필요합니다!</string>
+  <string name="num_cols_drawer_pref_title">앱 서랍 열 갯수</string>
+  <string name="pref_cat_drawer">앱 서랍</string>
+  <string name="shortcut_backport_warning">기기가 느려질 수 있습니다, 주의하세요.</string>
+  <string name="pref_backport_shortcuts">바로가기 불러오기</string>
+  <string name="weather_api_key_not_set">API key가 설정되지 않았습니다.</string>
+  <string name="pref_weather_api_key_title">API 키</string>
+  <string name="about_changelog">변경 내역</string>
+  <string name="pref_all_apps_custom_label_color">사용자 지정 이름 색상 사용</string>
+  <string name="pref_all_apps_label_color_variation">앱 서랍 아이콘 이름 색상 값</string>
+  <string name="pref_all_apps_label_color">서랍 아이콘 이름 색상</string>
+  <string name="pref_num_rows_drawer">앱 서랍 행 갯수</string>
+  <string name="center_wallpaper_pref_title">홈 화면이 하나일때 배경화면 가운데 표시</string>
+  <string name="vertical_drawer_layout_pref_title">세로 목록으로 표시</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">MMMM d EEEE</string>
+  <string name="about_translators">번역자</string>
+  <string name="lock_desktop">바탕 화면 잠금</string>
+  <string name="lawnfeed_not_found">Lawnfeed가 설치 되지 않았습니다.</string>
+  <string name="google_app_not_found">Google 앱이 설치 되지 않았습니다.</string>
+  <string name="popup_card_theme_title">플랫 스타일 팝업</string>
+  <string name="set_default_launcher">기본 런처 설정</string>
 </resources>

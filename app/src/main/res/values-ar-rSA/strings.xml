@@ -28,7 +28,7 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">التطبيق ليس متاحاً</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">تم تعطيل التطبيق الذي تم تنزيله في الوضع الآمن</string>
+  <string name="safemode_shortcut_error">تم تعطيل التطبيقات التي تم تحميلها في الوضع الآمن</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">الأدوات معطلة في الوضع الآمن</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
@@ -53,7 +53,7 @@
   <string name="all_apps_search_market_message">البحث عن مزيد من التطبيقات</string>
   <!-- Drag and drop -->
   <!-- Error message when user has filled a page -->
-  <string name="out_of_space">لا مجال في هذه الشاشة الرئيسية.</string>
+  <string name="out_of_space">ليس هناك مساحة أخرى في هذه الشاشة الرئيسية.</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">لا يوجد المزيد من الحقول في قائمة المفضلات</string>
   <!-- All applications label -->
@@ -71,20 +71,20 @@
   <!-- Permission short label -->
   <string name="permlab_install_shortcut">تثبيت اختصارات</string>
   <!-- Permission description -->
-  <string name="permdesc_install_shortcut">للسماح لتطبيق ما بإضافة اختصارات بدون تدخل المستخدم.</string>
+  <string name="permdesc_install_shortcut">السماح للتطبيق بإضافة اختصارات بدون تدخل المستخدم.</string>
   <!-- Permission short label -->
   <string name="permlab_read_settings">قراءة إعدادات واختصارات الشاشة الرئيسية</string>
   <!-- Permission description -->
-  <string name="permdesc_read_settings">للسماح للتطبيق بقراءة الإعدادات والاختصارات في الشاشة الرئيسية.</string>
+  <string name="permdesc_read_settings">السماح للتطبيق بقراءة الإعدادات والاختصارات في الشاشة الرئيسية.</string>
   <!-- Permission short label -->
   <string name="permlab_write_settings">كتابة إعدادات واختصارات الشاشة الرئيسية</string>
   <!-- Permission description -->
-  <string name="permdesc_write_settings">للسماح للتطبيق بتغيير الإعدادات والاختصارات في الشاشة الرئيسية.</string>
+  <string name="permdesc_write_settings">السماح للتطبيق بتغيير الإعدادات والاختصارات في الشاشة الرئيسية.</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission"><xliff:g id="Launcher3">%1$s</xliff:g> غير مسموح له بإجراء مكالمات هاتفية</string>
   <!-- Widgets: -->
   <!-- Text to show user in place of a gadget when we can't display it properly -->
-  <string name="gadget_error_text">حدثت مشكلة أثناء تحميل المربع الجانبي</string>
+  <string name="gadget_error_text">حدثت مشكلة أثناء تحميل الأداة</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
   <string name="gadget_setup_text">إعداد</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
@@ -99,7 +99,7 @@
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">‏الشاشة الرئيسية %1$d من %2$d</string>
   <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
-  <string name="workspace_new_page">صفحة شاشة رئيسية جديدة</string>
+  <string name="workspace_new_page">صفحة رئيسية جديده</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
   <string name="folder_opened">تم فتح المجلد، بمقاس <xliff:g id="WIDTH">%1$d</xliff:g> في <xliff:g id="HEIGHT">%2$d</xliff:g></string>
@@ -115,13 +115,13 @@
   <string name="folder_name_format">المجلد: <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Strings for the customization mode -->
   <!-- Text for widget add button -->
-  <string name="widget_button_text">المربعات الجانبية</string>
+  <string name="widget_button_text">الأدوات</string>
   <!-- Text for wallpaper change button -->
   <string name="wallpaper_button_text">الخلفيات</string>
   <!-- Text for settings button -->
   <string name="settings_button_text">الإعدادات</string>
   <!-- Message shown when a feature is disabled by the administrator -->
-  <string name="msg_disabled_by_admin">عطَّل المشرف هذه الميزة</string>
+  <string name="msg_disabled_by_admin">معطل من قبل المسؤول الخاص بك</string>
   <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
   <string name="accessibility_action_overview">نظرة عامة</string>
   <!-- Strings for settings -->
@@ -238,9 +238,9 @@
   <!-- Option for setting the wallpaper only on the home screen. -->
   <string name="which_wallpaper_option_home_screen">الشاشة الرئيسية</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
-  <string name="which_wallpaper_option_lock_screen">شاشة القفل</string>
+  <string name="which_wallpaper_option_lock_screen">قفل الشاشة</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
-  <string name="which_wallpaper_option_home_screen_and_lock_screen">الشاشة الرئيسية وشاشة القفل</string>
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">الشاشة الرئيسية وقفل الشاشة</string>
   <string name="title_show_google_app">إظهار %1$s</string>
   <string name="title_show_google_app_default">إظهار تطبيق جوجل</string>
   <string name="label_search">بحث</string>
@@ -261,25 +261,34 @@
   <string name="transparent_hotseat_pref_title">منصة شفافة</string>
   <string name="dynamic_ui_pref_title">استخراج لون مميز من صورة الخلفية</string>
   <string name="blur_pref_title">تفعيل التمويه</string>
+  <string name="blur_pref_summary">تطبيق التمويه على قسم من واجهة النظام\n غير متوافق مع الخلفيات الحية</string>
   <string name="blur_radius_pref_title">نسبة التمويه</string>
-  <string name="white_google_icon_pref_title">استخدم رمز جوجل باللون الأبيض</string>
-  <string name="workspace_label_color_hue_pref_title">لون تسميات الرموز على الشاشة الرئيسية</string>
-  <string name="workspace_label_color_variation_pref_title">تباين الألوان لتسميات الرموز على الشاشة الرئيسية</string>
+  <string name="white_google_icon_pref_title">استخدم ايقونة جوجل باللون الأبيض</string>
+  <string name="hide_icon_labels_pref_title">إخفاء تسميات الأيقونات في الشاشة الرئيسية</string>
+  <string name="hide_all_apps_icon_labels_pref_title">إخفاء تسميات الأيقونات في قائمة التطبيقات</string>
+  <string name="workspace_label_color_hue_pref_title">لون تسميات الايقونات على الشاشة الرئيسية</string>
+  <string name="workspace_label_color_variation_pref_title">تباين الألوان لتسميات الايقونات على الشاشة الرئيسية</string>
   <string name="all_apps_opacity_pref_title">شفافية قائمة التطبيقات</string>
   <string name="num_cols_pref_title">عدد الأعمدة</string>
   <string name="num_rows_pref_title">عدد الصفوف</string>
-  <string name="num_hotseat_icons_pref_title">عدد الرموز في منصة التطبيقات</string>
+  <string name="num_hotseat_icons_pref_title">عدد الايقونات في منصة التطبيقات</string>
   <string name="icon_scale_pref_title">حجم الأيقونة</string>
   <string name="icon_text_scale_pref_title">حجم نص الأيقونة</string>
   <string name="full_width_width_widgets_pref_title">أدوات بالعرض الكامل</string>
   <string name="full_width_widgets_pref_summary">السماح للأدوات بالتمدد على كامل عرض الشاشة من غير حشو</string>
   <string name="notification_access_pref_title">علامات الإشعارات و معاينتها</string>
   <string name="notification_access_pref_summary">السماح ل Lawnchair بالوصول إلى الإشعارات الخاصة بك لتفعيل هذه الميزات</string>
-  <string name="ui_pref_title">واجهة المستخدم</string>
-  <string name="pixel_style_pref_title">نمط بكسل</string>
+  <string name="general_pref_title">عام</string>
+  <string name="pixel_ui_pref_title">واجهة مستخدم بكسل</string>
   <string name="behavior_pref_title">الشكل العام</string>
-  <string name="debug_pref_title">تنقيح</string>
+  <string name="debug_pref_title">التصحيح</string>
   <string name="import_export_pref_title">إستيراد/تصدير</string>
+  <string name="general_pref_summary">الشاشة الرئيسية، الشاشة السفلية، ودرج التطبيقات</string>
+  <string name="pixel_ui_pref_summary">تفعيل ميزات واجهة بكسل الخاصة</string>
+  <string name="backup_pref_title">نسخ احتياطي</string>
+  <string name="behavior_pref_summary">تغيير سلوك Lawnchair</string>
+  <string name="backup_pref_summary">النسخ الاحتياطي قاعدة البيانات والإعدادات الخاصة بك</string>
+  <string name="debug_pref_summary">إعادة تشغيل أو إعادة إنشاء رمز قاعدة البيانات</string>
   <string name="show_pixel_bar_pref_title">اظهار الشريط العلوي لبكسل</string>
   <string name="use_wide_searchbar_pref_title">استخدام شريط بحث عريض</string>
   <string name="show_mic_pref_title">أظهار زر مساعد غوغل</string>
@@ -288,15 +297,18 @@
   <string name="pixel_style_icons_pref_summary">عند التفعيل سيتم استخدام الأيقونات الدائرية حيثما كان ذلك ممكناً</string>
   <string name="show_google_now_tab_pref_title">إظهار صفحة جوجل الآن</string>
   <string name="restart_lawnchair_pref_title">أعادة تشغيل Lawnchair</string>
-  <string name="restart_lawnchair_pref_summary">يمكن أن يكون مفيداً إذا لم يتم تطبيق بعض الإعدادات بشكل صحيح</string>
+  <string name="restart_lawnchair_pref_summary">يمكن أن يكون مفيداً إذا لم يتم تطبيق بعض الإعدادات</string>
   <string name="rebuild_icondb_pref_title">إعادة إنشاء قاعدة بيانات الأيقونة</string>
   <string name="pinch_to_overview_pref_title">اقبض بإصبعين لنظرة عامة</string>
-  <string name="light_statusbar_pref_title">شريط حالة فاتح</string>
+  <string name="pinch_to_overview_pref_summary">اقبض باصعين على الشاشة الرئيسية لفتح النظرة العامة</string>
+  <string name="light_statusbar_pref_title">شريط المعلومات فاتح</string>
+  <string name="light_statusbar_pref_force">شريط المعلومات سيظهر أيقونات داكنة</string>
   <string name="light_statusbar_pref_off">شريط المعلومات سيظهر دائماً الأيقونات بلون فاتح.</string>
   <string name="haptic_feedback_pref_title">تفعيل الإهتزاز</string>
   <string name="keep_scroll_state_pref_title">حفظ موضع التمرير</string>
   <string name="keep_scroll_state_pref_summary">حفظ موضع التمرير في قائمة التطبيقات</string>
   <string name="home_opens_drawer_pref_title">زر الصفحة الرئيسية يفتح قائمة التطبيقات</string>
+  <string name="home_opens_drawer_pref_summary">الضغط على زر الصفحة الرئيسية عند التواجد على الشاشة الرئيسية يقوم بفتح قائمة التطبيقات</string>
   <string name="show_hidden_pref_title">أظهار التطبيقات المخفية</string>
   <string name="show_hidden_pref_on">التطبيقات المخفية سوف تظهر لتغيير إعدادات الوضوح</string>
   <string name="show_hidden_pref_off">التطبيقات المخفية لن تكون مرئية</string>
@@ -308,49 +320,86 @@
   <string name="color_extraction_label">لاونتشير - استخراج اللون</string>
   <string name="test_title">اختبار</string>
   <string name="visibility">وضوح الرؤية</string>
-  <!-- Customization Color -->
-  <string name="white">أبيض</string>
-  <!-- Customization Color -->
-  <string name="black">أسود</string>
-  <!-- Customization Color -->
-  <string name="red">أحمر</string>
-  <!-- Customization Color -->
-  <string name="pink">وردي</string>
-  <!-- Customization Color -->
-  <string name="purple">بنفسجي</string>
-  <!-- Customization Color -->
-  <string name="deep_purple">بنفسجي داكن</string>
-  <!-- Customization Color -->
-  <string name="indigo">نيلي</string>
-  <!-- Customization Color -->
-  <string name="blue">أزرق</string>
-  <!-- Customization Color -->
-  <string name="light_blue">أزرق فاتح</string>
-  <!-- Customization Color -->
-  <string name="cyan">أزرق سماوي</string>
-  <!-- Customization Color -->
-  <string name="teal">أزرق مخضر</string>
-  <!-- Customization Color -->
-  <string name="green">أخضر</string>
-  <!-- Customization Color -->
-  <string name="light_green">أخضر فاتح</string>
-  <!-- Customization Color -->
-  <string name="lime">ليموني</string>
-  <!-- Customization Color -->
-  <string name="yellow">أصفر</string>
-  <!-- Customization Color -->
-  <string name="amber">كهرمان</string>
-  <!-- Customization Color -->
-  <string name="orange">برتقالي</string>
-  <!-- Customization Color -->
-  <string name="deep_orange">برتقالي داكن</string>
-  <!-- Customization Color -->
-  <string name="brown">بني</string>
-  <!-- Customization Color -->
-  <string name="grey">رمادي</string>
-  <!-- Customization Color -->
-  <string name="blue_grey">أزرق رمادي</string>
   <string name="default_text">الافتراضي</string>
+  <string name="edit_icon_reset">إعادة ضبط</string>
+  <string name="show_top_shadow_title">إظهار الظل العلوي</string>
+  <string name="pref_cat_homescreen">الشاشة الرئيسية</string>
+  <string name="pref_cat_miscellaneous">متفرقات</string>
+  <string name="pref_cat_hotseat">القاعدة</string>
+  <string name="pref_cat_theme">السمة</string>
+  <string name="theme_pref_title">السمة</string>
+  <string name="theme_light">فاتح</string>
+  <string name="theme_dark">داكن</string>
+  <string name="theme_black">أسود</string>
+  <string name="hide_hotseat_pref_title">إخفاء منصة التطبيقات</string>
+  <string name="all_icons">كل الأيقونات</string>
+  <string name="pull_down_action_pref_title">إجراء السحب للأسفل</string>
+  <string name="pull_down_do_nothing">لا تفعل شيئًا</string>
+  <string name="pull_down_notis">إظهار الإشعارات</string>
+  <string name="pull_down_search">فتح البحث</string>
+  <string name="pull_down_apps_search">البحث عن تطبيقات</string>
+  <string name="enable_screen_rotation">تمكين تدوير الشاشة</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">استيراد</string>
+  <string name="backup_export_title">استخراج</string>
+  <string name="imexport_success">تم بنجاح!</string>
+  <string name="imexport_error">خطأ: فشل في نسخ الملف</string>
+  <string name="imexport_no_backup_found">لم يتم العثور على نسخة احتياطية</string>
+  <string name="imexport_external_storage_unreadable">التخزين الخارجي غير قابل للقراءة (امنح الإذن في الإعدادات)</string>
+  <string name="imexport_external_storage_unwritable">التخزين الخارجي غير قابل للكتابة (امنح الإذن في الإعدادات)</string>
+  <string name="units_metric">متري</string>
+  <string name="units_imperial">إمبراطوري</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_cat_weather">الطقس</string>
+  <string name="pref_weather_title">تمكين الطقس</string>
+  <string name="pref_weather_units">وحدات قياس الطقس</string>
+  <string name="pref_weather_city_summary">ضع رمز البلد للحصول على أفضل النتائج</string>
+  <string name="pref_weather_city_title">المدينة</string>
+  <string name="none">لا شيء</string>
+  <string name="pref_applyTheme">تطبيق السمة على</string>
+  <string name="pref_applyBlur">تطبيق التمويه على</string>
+  <string name="search_bar">شريط البحث</string>
+  <string name="folder">مجلد</string>
+  <string name="dock_allapps"><![CDATA[منصة وقائمة التطبيقات]]></string>
+  <string name="app_shortcuts">اختصارات التطبيق</string>
+  <string name="blur_effect">التمويه</string>
+  <string name="enable_editing_pref_title">تمكين تعديل الشاشة الرئيسية</string>
+  <string name="pref_weather_provider">مزود الطقس</string>
+  <string name="loading">تحميل…</string>
+  <string name="icon_shape_override_label">تغيير شكل الأيقونة</string>
+  <string name="icon_shape_system_default">لا تقم بالتغيير</string>
+  <string name="icon_shape_none">لا شئ</string>
+  <string name="icon_shape_square">مربع</string>
+  <string name="icon_shape_rounded_square">مربع مدور</string>
+  <string name="icon_shape_squircle">ايقونة مربعة الشكل</string>
+  <string name="icon_shape_circle">دائرة</string>
+  <string name="icon_shape_teardrop">دمعي</string>
+  <string name="animated_clock_icon_title">أيقونة الساعة المتحركة</string>
+  <string name="about_summary_title">الملخص</string>
+  <string name="about_version">الإصدار</string>
+  <string name="about_icon_designer">مصمم أيقونة التطبيق</string>
+  <string name="about_contributors_title">المساهمون</string>
+  <string name="location_permission_warn">إذن الموقع مطلوب للتبديل إلى مزود آخر!</string>
+  <string name="num_cols_drawer_pref_title">عدد أعمدة قائمة التطبيقات</string>
+  <string name="pref_cat_drawer">قائمة التطبيقات</string>
+  <string name="shortcut_backport_warning">يمكن أن تكون العملية بطيئة. استخدمها على مسؤوليتك الخاصة</string>
+  <string name="pref_backport_shortcuts">اختصارات المنقولات العكسية</string>
+  <string name="weather_api_key_not_set">لم يتم تعيين مفتاح API</string>
+  <string name="pref_weather_api_key_title">مفتاح API</string>
+  <string name="about_changelog">سِجل التغييرات</string>
+  <string name="pref_all_apps_custom_label_color">استخدام لون مخصص للتسمية</string>
+  <string name="pref_all_apps_label_color_variation">تباين ألوان التسميات في قائمة التطبيقات</string>
+  <string name="pref_all_apps_label_color">لون التسميات في قائمة التطبيقات</string>
+  <string name="pref_num_rows_drawer">عدد صفوف قائمة التطبيقات</string>
+  <string name="center_wallpaper_pref_title">محاذاة الخلفيات في المركز عندما تكون هناك صفحة واحدة فقط</string>
+  <string name="vertical_drawer_layout_pref_title">عرض كقائمة عمودية</string>
+  <!-- Time format for Weather Widget -->
+  <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">الأسبوع, الشهر, اليوم</string>
+  <string name="about_translators">المترجمون</string>
+  <string name="lock_desktop">قفل سطح المكتب</string>
+  <string name="lawnfeed_not_found">لاونفيد غير مثبت</string>
+  <string name="google_app_not_found">تطبيق غوغل غير مثبت</string>
+  <string name="popup_card_theme_title">المنبثقة النمط المسطح</string>
+  <string name="set_default_launcher">تعيين كمتصفح البرامج الإفتراضي</string>
 </resources>
