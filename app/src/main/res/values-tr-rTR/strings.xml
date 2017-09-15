@@ -273,9 +273,17 @@
   <string name="full_width_widgets_pref_summary">Widget\'ların dolgu olmadan tüm genişliğe yayılmasına izin ver</string>
   <string name="notification_access_pref_title">Bildirim rozetleri ve önizleme</string>
   <string name="notification_access_pref_summary">Bu özellikleri etkinleştirmek için Lawnchair\'ın bildiriminize erişmesine izin verin</string>
+  <string name="general_pref_title">Genel</string>
+  <string name="pixel_ui_pref_title">Pixel Kullanıcı Arayüzü</string>
   <string name="behavior_pref_title">Davranış</string>
   <string name="debug_pref_title">Hata ayıklama</string>
   <string name="import_export_pref_title">İçe/Dışa aktar</string>
+  <string name="general_pref_summary">Ana ekran, alt panel ve uygulama çekmecesi</string>
+  <string name="pixel_ui_pref_summary">Piksel Launcher\'a özel özellikleri etkinleştir</string>
+  <string name="backup_pref_title">Yedekle</string>
+  <string name="behavior_pref_summary">Lawnchair davranışını değiştirme</string>
+  <string name="backup_pref_summary">Veritabanınızı ve ayarlarınızı yedekleyin</string>
+  <string name="debug_pref_summary">Simge veritabanını yeniden başlat veya yeniden oluştur</string>
   <string name="show_pixel_bar_pref_title">Pixel üst barını göster</string>
   <string name="use_wide_searchbar_pref_title">Geniş arama çubuğunu kullan</string>
   <string name="show_mic_pref_title">Google Asistan Simgesini Göster</string>
@@ -327,6 +335,8 @@
   <string name="pull_down_apps_search">Uygulama arama</string>
   <string name="enable_screen_rotation">Ekran döndürmeyi etkinleştir</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">İçe aktar</string>
+  <string name="backup_export_title">Dışa aktar</string>
   <string name="imexport_success">Başarılı!</string>
   <string name="imexport_error">Hata: Dosya kopyalanamadı</string>
   <string name="imexport_no_backup_found">Yedek bulunamadı</string>
