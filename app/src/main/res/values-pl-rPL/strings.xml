@@ -274,9 +274,17 @@
   <string name="full_width_widgets_pref_summary">Zezwól widżetom na rozciągnięcie się na całej szerokości ekranu bez odstępów</string>
   <string name="notification_access_pref_title">Odznaki powiadomień i podgląd</string>
   <string name="notification_access_pref_summary">Zezwól Lawnchair na dostęp do twoich powiadomień żeby włączyć te funkcje</string>
+  <string name="general_pref_title">Głownie</string>
+  <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Zachowanie</string>
   <string name="debug_pref_title">Opcje debugujące</string>
   <string name="import_export_pref_title">Importuj/Eksportuj</string>
+  <string name="general_pref_summary">Ekran główny, panel dolny, lista aplikacji</string>
+  <string name="pixel_ui_pref_summary">Włącz funkcje specjalne Pixel Launcher</string>
+  <string name="backup_pref_title">Kopia zapasowa</string>
+  <string name="behavior_pref_summary">Zmień zachowanie Lawnchair</string>
+  <string name="backup_pref_summary">Utwórz kopię zapasową ustawień i plików</string>
+  <string name="debug_pref_summary">Zrestartuj lub przebuduj bazę ikon</string>
   <string name="show_pixel_bar_pref_title">Pokaż górny pasek Pixel</string>
   <string name="use_wide_searchbar_pref_title">Użyj szerokiego paska wyszukiwania</string>
   <string name="show_mic_pref_title">Pokaż przycisk Asystenta Google</string>
@@ -328,6 +336,8 @@
   <string name="pull_down_apps_search">Wyszukiwanie aplikacji</string>
   <string name="enable_screen_rotation">Włącz obracanie ekranu</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">Import</string>
+  <string name="backup_export_title">Export</string>
   <string name="imexport_success">Sukces!</string>
   <string name="imexport_error">Błąd: Nie można skopiować plików</string>
   <string name="imexport_no_backup_found">Nie znaleziono kopii zapasowej</string>
