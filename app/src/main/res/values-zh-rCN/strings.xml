@@ -30,7 +30,7 @@
   <!-- SafeMode shortcut error string -->
   <string name="safemode_shortcut_error">第三方应用在安全模式下被停用</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">安全模式下不允许使用小部件</string>
+  <string name="safemode_widget_error">安全模式下不允许使用微件</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">无法使用快捷方式</string>
   <!-- Widgets -->
@@ -84,7 +84,7 @@
   <string name="msg_no_phone_permission">不允许使用“<xliff:g id="APP_NAME">%1$s</xliff:g>”拨打电话</string>
   <!-- Widgets: -->
   <!-- Text to show user in place of a gadget when we can't display it properly -->
-  <string name="gadget_error_text">加载小部件时出现问题</string>
+  <string name="gadget_error_text">加载微件时出现问题</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
   <string name="gadget_setup_text">设置</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
@@ -241,7 +241,7 @@
   <string name="label_voice_search">语音搜索</string>
   <string name="shortcuts_menu_with_notifications_description">%3$s 有 %1$d 个快捷方式和 %2$d 个通知</string>
   <string name="notifications_header">通知</string>
-  <string name="widgets_bottom_sheet_title">%1$s 小部件</string>
+  <string name="widgets_bottom_sheet_title">%1$s 微件</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair 是 Till Kottmann（又名deletescape）基于 AOSP 的 Launcher3 所开发的启动器应用程序。</string>
   <string name="about_title">关于</string>
@@ -268,13 +268,21 @@
   <string name="num_hotseat_icons_pref_title">Dock 栏图标数</string>
   <string name="icon_scale_pref_title">图标大小</string>
   <string name="icon_text_scale_pref_title">图标标签大小</string>
-  <string name="full_width_width_widgets_pref_title">全宽小部件</string>
-  <string name="full_width_widgets_pref_summary">允许小部件填充整个桌面宽度</string>
+  <string name="full_width_width_widgets_pref_title">全宽微件</string>
+  <string name="full_width_widgets_pref_summary">允许微件填充整个桌面宽度</string>
   <string name="notification_access_pref_title">通知角标与预览</string>
   <string name="notification_access_pref_summary">允许 Lawnchair 访问您的通知以启用此功能</string>
+  <string name="general_pref_title">常规</string>
+  <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">行为</string>
   <string name="debug_pref_title">调试</string>
   <string name="import_export_pref_title">导入/导出</string>
+  <string name="general_pref_summary">主屏幕，dock 和应用抽屉</string>
+  <string name="pixel_ui_pref_summary">启用 Pixel Launcher 独家功能</string>
+  <string name="backup_pref_title">备份</string>
+  <string name="behavior_pref_summary">更改 Lawnchair 行为</string>
+  <string name="backup_pref_summary">备份您的数据库和配置</string>
+  <string name="debug_pref_summary">重启或重建图标缓存</string>
   <string name="show_pixel_bar_pref_title">显示 Pixel 顶栏</string>
   <string name="use_wide_searchbar_pref_title">使用宽搜索栏</string>
   <string name="show_mic_pref_title">显示 Google Assistant 按钮</string>
@@ -326,6 +334,8 @@
   <string name="pull_down_apps_search">查找应用</string>
   <string name="enable_screen_rotation">启用屏幕旋转</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">导入</string>
+  <string name="backup_export_title">导出</string>
   <string name="imexport_success">成功 ！</string>
   <string name="imexport_error">错误：无法复制文件</string>
   <string name="imexport_no_backup_found">未找到备份</string>
