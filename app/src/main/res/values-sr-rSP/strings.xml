@@ -274,9 +274,17 @@
   <string name="full_width_widgets_pref_summary">Дозволи допуњавању виџета преко целе ширине без подлоге</string>
   <string name="notification_access_pref_title">Значке обавештења и приказ</string>
   <string name="notification_access_pref_summary">Дозволи да Lawnchair приступи вашим обавештењима да бисте омогућили ову функцију</string>
+  <string name="general_pref_title">Главно</string>
+  <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Понашање</string>
   <string name="debug_pref_title">Отклањање грешака</string>
   <string name="import_export_pref_title">Увоз / Извоз</string>
+  <string name="general_pref_summary">Почетни екран, док и фиока апликација</string>
+  <string name="pixel_ui_pref_summary">Омогућите ексклузивне функције Pixel Launcher-а</string>
+  <string name="backup_pref_title">Резервна копија</string>
+  <string name="behavior_pref_summary">Промените понашање Lawnchair</string>
+  <string name="backup_pref_summary">Израдите резервне копије базе података и поставки</string>
+  <string name="debug_pref_summary">Рестартујте или обновите базу икона</string>
   <string name="show_pixel_bar_pref_title">Прикажи горње траке за Pixel</string>
   <string name="use_wide_searchbar_pref_title">Користи широку траку за претраживање</string>
   <string name="show_mic_pref_title">Прикажи Google Assistant дугме</string>
@@ -300,6 +308,10 @@
   <string name="show_hidden_pref_title">Прикажи скривене апликације</string>
   <string name="show_hidden_pref_on">Скривене апликације ће бити приказане да би променили поставке видљивости</string>
   <string name="show_hidden_pref_off">Скривене апликације неће бити видљиве</string>
+  <string name="export_db_title">База података</string>
+  <string name="import_db_title">База података</string>
+  <string name="export_prefs_title">Подешавања</string>
+  <string name="import_prefs_title">Подешавања</string>
   <string name="notification_listener_label">Lawnchair - Значке нотификације</string>
   <string name="color_extraction_label">Lawnchair - Екстракције боје</string>
   <string name="test_title">Тест</string>
@@ -324,6 +336,8 @@
   <string name="pull_down_apps_search">Претрага апликација</string>
   <string name="enable_screen_rotation">Омогући ротацију екрана</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">Увези</string>
+  <string name="backup_export_title">Извези</string>
   <string name="imexport_success">Успешно!</string>
   <string name="imexport_error">Грешка: Неуспело копирање датотеке</string>
   <string name="imexport_no_backup_found">Нема резервне копије</string>
