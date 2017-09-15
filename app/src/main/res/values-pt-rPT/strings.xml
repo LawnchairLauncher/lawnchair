@@ -273,9 +273,17 @@
   <string name="full_width_widgets_pref_summary">Permitir que widgets abranjam o launcher todo</string>
   <string name="notification_access_pref_title">Crachás de notificação e pré-visualização</string>
   <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
+  <string name="general_pref_title">Geral</string>
+  <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Comportamento</string>
   <string name="debug_pref_title">Depuração</string>
   <string name="import_export_pref_title">Importar/Exportar</string>
+  <string name="general_pref_summary">Ambiente de Trabalho, Doca &amp; Aplicações</string>
+  <string name="pixel_ui_pref_summary">Ativar recursos exclusivos do Pixel Launcher</string>
+  <string name="backup_pref_title">Cópia de Segurança</string>
+  <string name="behavior_pref_summary">Alterar comportamento do Lawnchair</string>
+  <string name="backup_pref_summary">Cópia de segurança das suas configurações</string>
+  <string name="debug_pref_summary">Reiniciar ou reconstruir a base de dados dos ícones</string>
   <string name="show_pixel_bar_pref_title">Apresentar barra superior estilo Pixel</string>
   <string name="use_wide_searchbar_pref_title">Usar barra de pesquisa larga</string>
   <string name="show_mic_pref_title">Mostrar botão do Assistente do Google</string>
@@ -299,6 +307,10 @@
   <string name="show_hidden_pref_title">Mostrar aplicações ocultas</string>
   <string name="show_hidden_pref_on">Aplicações ocultas serão visíveis para alterar as definições de visibilidade</string>
   <string name="show_hidden_pref_off">Aplicações ocultas não serão visíveis</string>
+  <string name="export_db_title">Base de Dados</string>
+  <string name="import_db_title">Importar Base de Dados</string>
+  <string name="export_prefs_title">Exportar Definições</string>
+  <string name="import_prefs_title">Importar Definições</string>
   <string name="notification_listener_label">Lawnchair - crachás de notificação</string>
   <string name="color_extraction_label">Lawnchair - extração de cor</string>
   <string name="test_title">Testar</string>
@@ -323,6 +335,8 @@
   <string name="pull_down_apps_search">Procurar aplicações</string>
   <string name="enable_screen_rotation">Ativar rotação automática</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">Importar</string>
+  <string name="backup_export_title">Exportar</string>
   <string name="imexport_success">Concluído!</string>
   <string name="imexport_error">Erro: Falha ao copiar ficheiro</string>
   <string name="imexport_no_backup_found">Nenhum backup encontrado</string>
