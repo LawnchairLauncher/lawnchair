@@ -274,9 +274,17 @@
   <string name="full_width_widgets_pref_summary">Разрешить виджетам занимать место без отступов</string>
   <string name="notification_access_pref_title">Значки уведомлений и предварительный просмотр</string>
   <string name="notification_access_pref_summary">Разрешить Lawnchair доступ к вашим уведомлениям для включения этой функции</string>
+  <string name="general_pref_title">Основные</string>
+  <string name="pixel_ui_pref_title">Интерфейс Pixel</string>
   <string name="behavior_pref_title">Поведение</string>
   <string name="debug_pref_title">Отладка</string>
   <string name="import_export_pref_title">Импорт/Экспорт</string>
+  <string name="general_pref_summary">Главный экран, док-бар и меню приложений</string>
+  <string name="pixel_ui_pref_summary">Включить функции, эксклюзивные для Pixel Launcher</string>
+  <string name="backup_pref_title">Резервное копирование</string>
+  <string name="behavior_pref_summary">Изменить поведение Lawnchair</string>
+  <string name="backup_pref_summary">Резервное копирование базы данных и настроек</string>
+  <string name="debug_pref_summary">Перезапустить или создать заново базу данных иконок</string>
   <string name="show_pixel_bar_pref_title">Показать строку поиска Pixel</string>
   <string name="use_wide_searchbar_pref_title">Строка поиска как в Android O</string>
   <string name="show_mic_pref_title">Показать кнопку Google Ассистента</string>
@@ -300,10 +308,10 @@
   <string name="show_hidden_pref_title">Показывать скрытые приложения</string>
   <string name="show_hidden_pref_on">Отображаются скрытые приложения для изменения настроек видимости</string>
   <string name="show_hidden_pref_off">Скрытые приложения не будут отображаться</string>
-  <string name="export_db_title">Экспорт базы данных</string>
-  <string name="import_db_title">Импорт базы данных</string>
-  <string name="export_prefs_title">Экспорт настроек</string>
-  <string name="import_prefs_title">Импорт настроек</string>
+  <string name="export_db_title">База данных</string>
+  <string name="import_db_title">База данных</string>
+  <string name="export_prefs_title">Настройки</string>
+  <string name="import_prefs_title">Настройки</string>
   <string name="notification_listener_label">Lawnchair - значки уведомлений</string>
   <string name="color_extraction_label">Lawnchair - извлечение цвета</string>
   <string name="test_title">Тест</string>
@@ -328,6 +336,8 @@
   <string name="pull_down_apps_search">Поиск приложений</string>
   <string name="enable_screen_rotation">Включить авто-поворот экрана</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">Импорт</string>
+  <string name="backup_export_title">Экспорт</string>
   <string name="imexport_success">Готово!</string>
   <string name="imexport_error">Ошибка: Не удалось скопировать файл</string>
   <string name="imexport_no_backup_found">Файлы резервных копий не найдены</string>
