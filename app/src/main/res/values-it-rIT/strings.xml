@@ -273,6 +273,8 @@
   <string name="full_width_widgets_pref_summary">Consente ai widget di estendersi lunga tutta la larghezza dello schermo</string>
   <string name="notification_access_pref_title">Badge di notifica e anteprima</string>
   <string name="notification_access_pref_summary">Permetti l\'accesso alle notifiche a Lawnchair per abilitare queste funzioni</string>
+  <string name="general_pref_title">Generale</string>
+  <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Gesti e funzionalità</string>
   <string name="debug_pref_title">Debug</string>
   <string name="import_export_pref_title">Importa/Esporta</string>
