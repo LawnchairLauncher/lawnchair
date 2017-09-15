@@ -272,9 +272,17 @@
   <string name="full_width_widgets_pref_summary">允許小工具填滿桌面寬度</string>
   <string name="notification_access_pref_title">未讀計數和預覽</string>
   <string name="notification_access_pref_summary">允許 Lawnchair 訪問您的通知許可權以啟用此功能</string>
+  <string name="general_pref_title">一般</string>
+  <string name="pixel_ui_pref_title">Pixel 使用者介面</string>
   <string name="behavior_pref_title">功能</string>
   <string name="debug_pref_title">除錯模式</string>
   <string name="import_export_pref_title">匯入／匯出</string>
+  <string name="general_pref_summary">主畫面、Dock 欄及應用程式抽屜</string>
+  <string name="pixel_ui_pref_summary">開啟Pixel 啟動器特殊功能</string>
+  <string name="backup_pref_title">備份</string>
+  <string name="behavior_pref_summary">改變 Lawnchair 的特性</string>
+  <string name="backup_pref_summary">備份您的資料庫和設定</string>
+  <string name="debug_pref_summary">重新啟動或重建圖示資料庫</string>
   <string name="show_pixel_bar_pref_title">顯示Pixel頂欄</string>
   <string name="use_wide_searchbar_pref_title">使用寬的搜尋欄</string>
   <string name="show_mic_pref_title">顯示 Google Assistant 按鈕</string>
@@ -326,6 +334,8 @@
   <string name="pull_down_apps_search">應用程式搜尋</string>
   <string name="enable_screen_rotation">啟用螢幕旋轉</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">匯入</string>
+  <string name="backup_export_title">匯出</string>
   <string name="imexport_success">成功!</string>
   <string name="imexport_error">錯誤：無法複製檔案</string>
   <string name="imexport_no_backup_found">找不到備份</string>
