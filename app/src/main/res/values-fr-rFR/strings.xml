@@ -273,9 +273,17 @@
   <string name="full_width_widgets_pref_summary">Permettre aux widgets de s’étendre sur toute la largeur sans marge</string>
   <string name="notification_access_pref_title">Badges de notification</string>
   <string name="notification_access_pref_summary">Permettre à Lawnchair d\'accéder à vos notifications pour activer cette fonctionnalité</string>
+  <string name="general_pref_title">Général</string>
+  <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Comportement</string>
   <string name="debug_pref_title">Debug</string>
   <string name="import_export_pref_title">Importer/Exporter</string>
+  <string name="general_pref_summary">Écran d\'accueil, dock et tiroir d\'application</string>
+  <string name="pixel_ui_pref_summary">Activer les fonctionnalités du launcher Pixel</string>
+  <string name="backup_pref_title">Sauvegarde</string>
+  <string name="behavior_pref_summary">Modifier le comportement de Lawnchair</string>
+  <string name="backup_pref_summary">Sauvegarder votre base de données et vos paramètres</string>
+  <string name="debug_pref_summary">Redémarrer ou reconstruire la base de données des icônes</string>
   <string name="show_pixel_bar_pref_title">Afficher la barre supérieure Pixel</string>
   <string name="use_wide_searchbar_pref_title">Utiliser une barre de recherche large</string>
   <string name="show_mic_pref_title">Afficher le bouton de l\'Assistant Google</string>
@@ -299,10 +307,10 @@
   <string name="show_hidden_pref_title">Afficher les applications cachées</string>
   <string name="show_hidden_pref_on">Les applications cachées seront affichées pour modifier les paramètres de visibilité</string>
   <string name="show_hidden_pref_off">Les applications cachées ne seront pas visibles</string>
-  <string name="export_db_title">Exporter la base de données</string>
-  <string name="import_db_title">Importer la base de données</string>
-  <string name="export_prefs_title">Exporter les paramètres</string>
-  <string name="import_prefs_title">Importer les paramètres</string>
+  <string name="export_db_title">Base de données</string>
+  <string name="import_db_title">Base de données</string>
+  <string name="export_prefs_title">Paramètres</string>
+  <string name="import_prefs_title">Paramètres</string>
   <string name="notification_listener_label">Lawnchair - Badges de notification</string>
   <string name="color_extraction_label">Lawnchair - Extraction de la couleur</string>
   <string name="test_title">Test</string>
@@ -327,6 +335,8 @@
   <string name="pull_down_apps_search">Recherche d\'applications</string>
   <string name="enable_screen_rotation">Activer la rotation de l\'écran</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">Importer</string>
+  <string name="backup_export_title">Exporter</string>
   <string name="imexport_success">Réussi !</string>
   <string name="imexport_error">Erreur : Impossible de copier le fichier</string>
   <string name="imexport_no_backup_found">Aucune sauvegarde trouvée</string>
