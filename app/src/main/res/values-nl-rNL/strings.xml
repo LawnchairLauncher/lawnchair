@@ -273,9 +273,17 @@
   <string name="full_width_widgets_pref_summary">Widgets toestaan de volledige breedte te omvatten</string>
   <string name="notification_access_pref_title">Notificatie pictogram en voorvertoning</string>
   <string name="notification_access_pref_summary">Geef Lawnchair toestemming tot uw notificaties om deze functie in te schakelen</string>
+  <string name="general_pref_title">Algemeen</string>
+  <string name="pixel_ui_pref_title">Pixel-UI</string>
   <string name="behavior_pref_title">Gedrag</string>
   <string name="debug_pref_title">Debuggen</string>
   <string name="import_export_pref_title">Importeren/exporteren</string>
+  <string name="general_pref_summary">Thuisscherm, dock en applicatielade</string>
+  <string name="pixel_ui_pref_summary">Pixel Launcher exclusieve functies inschakelen</string>
+  <string name="backup_pref_title">Back-up</string>
+  <string name="behavior_pref_summary">Wijzig het gedrag van Lawnchair</string>
+  <string name="backup_pref_summary">Uw data en instellingen back-uppen</string>
+  <string name="debug_pref_summary">Herstarten of pictogrammendata herbouwen</string>
   <string name="show_pixel_bar_pref_title">Bovenste Pixel balk tonen</string>
   <string name="use_wide_searchbar_pref_title">Gebruik brede zoekbalk</string>
   <string name="show_mic_pref_title">Google Assistant-knop weergeven</string>
@@ -327,6 +335,8 @@
   <string name="pull_down_apps_search">Apps zoeken</string>
   <string name="enable_screen_rotation">Schermrotatie activeren</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">Importeren</string>
+  <string name="backup_export_title">Exporteren</string>
   <string name="imexport_success">Succesvol!</string>
   <string name="imexport_error">Fout: Bestand kopiëren mislukt</string>
   <string name="imexport_no_backup_found">Geen back-up gevonden</string>
