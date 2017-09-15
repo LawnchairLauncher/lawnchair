@@ -276,9 +276,17 @@
   <string name="full_width_widgets_pref_summary">Povolte widgetům pokrývat celou šířku bez odsazení</string>
   <string name="notification_access_pref_title">Zobrazení oznámení a náhledů</string>
   <string name="notification_access_pref_summary">Pro zapnutí této funkce povolte spouštěči Lawnchair přístup k vašim upozorněním</string>
+  <string name="general_pref_title">Obecné</string>
+  <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Chování</string>
   <string name="debug_pref_title">Ladění</string>
   <string name="import_export_pref_title">Import/Export</string>
+  <string name="general_pref_summary">Domovská obrazovka, dok a nabídka aplikací</string>
+  <string name="pixel_ui_pref_summary">Povolit exkluzivní funkce spouštěče Pixel</string>
+  <string name="backup_pref_title">Zálohování</string>
+  <string name="behavior_pref_summary">Změnit chování Lawnchair</string>
+  <string name="backup_pref_summary">Zálohovat databázi a nastavení</string>
+  <string name="debug_pref_summary">Restartovat nebo znovu vytvořit ikonu databáze</string>
   <string name="show_pixel_bar_pref_title">Zobrazit Pixel horní panel</string>
   <string name="use_wide_searchbar_pref_title">Použít široký vyhledávací panel</string>
   <string name="show_mic_pref_title">Zobrazit tlačítko Google Assistent</string>
@@ -330,6 +338,8 @@
   <string name="pull_down_apps_search">Vyhledávání v aplikacích</string>
   <string name="enable_screen_rotation">Povolit otáčení obrazovky</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">Importovat</string>
+  <string name="backup_export_title">Exportovat</string>
   <string name="imexport_success">Hotovo!</string>
   <string name="imexport_error">Chyba: Nepodařilo se zkopírovat soubor</string>
   <string name="imexport_no_backup_found">Nebyla nalezena žádná záloha</string>
