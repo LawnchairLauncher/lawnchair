@@ -273,9 +273,17 @@
   <string name="full_width_widgets_pref_summary">Να επιτραπεί στα γραφικά στοιχεία να εκτείνονται σε ολόκληρο το πλάτος χωρίς κενά περιθώρια</string>
   <string name="notification_access_pref_title">Εικονίδια ειδοποιήσεων και προεπισκόπηση</string>
   <string name="notification_access_pref_summary">Επιτρέψτε στο Lawnchair να αποκτήσει πρόσβαση στης ειδοποιήσεις σας για να ενεργοποιηθεί αυτό το χαρακτηριστικό</string>
+  <string name="general_pref_title">Γενικές ρυθμίσεις</string>
+  <string name="pixel_ui_pref_title">Χαρακτηριστικά Pixel</string>
   <string name="behavior_pref_title">Συμπεριφορά</string>
   <string name="debug_pref_title">Αντιμετώπιση σφαλμάτων</string>
   <string name="import_export_pref_title">Αντίγραφα ασφαλείας ρυθμίσεων</string>
+  <string name="general_pref_summary">Αρχική οθόνη, μπάρα εφαρμογών, μενού εφαρμογών</string>
+  <string name="pixel_ui_pref_summary">Ενεργοποίηση αποκλειστικών χαρακτηριστικών τύπου εκκινητή Pixel</string>
+  <string name="backup_pref_title">Αντίγραφα Ασφαλείας</string>
+  <string name="behavior_pref_summary">Αλλάξτε την συμπεριφορά του Lawnchair</string>
+  <string name="backup_pref_summary">Δημιουργία αντιγράφων ασφαλείας της βάσης δεδομένων και των ρυθμίσεών σας</string>
+  <string name="debug_pref_summary">Επανεκκίνηση ή αναδόμηση της βάσης δεδομένων των εικονιδίων</string>
   <string name="show_pixel_bar_pref_title">Εμφάνιση επάνω μπάρας γραφικών Pixel</string>
   <string name="use_wide_searchbar_pref_title">Χρήση πλατιάς μπάρας αναζήτησης</string>
   <string name="show_mic_pref_title">Εμφάνιση του κουμπιού Βοηθός Google</string>
@@ -327,6 +335,8 @@
   <string name="pull_down_apps_search">Αναζήτηση εφαρμογών</string>
   <string name="enable_screen_rotation">Ενεργοποίηση περιστροφής οθόνης</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">Εισαγωγή</string>
+  <string name="backup_export_title">Εξαγωγή</string>
   <string name="imexport_success">Επιτυχής!</string>
   <string name="imexport_error">Σφάλμα: Απέτυχε η αντιγραφή αρχείου</string>
   <string name="imexport_no_backup_found">Δεν βρέθηκε κανένα αντίγραφο ασφαλείας</string>
