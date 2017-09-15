@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ch.deletescape.lawnchair">
+    package="ch.deletescape.lawnchair"
+    android:installLocation="internalOnly">
 
     <permission
         android:name="com.android.launcher.permission.INSTALL_SHORTCUT"
@@ -8,16 +9,16 @@
         android:label="@string/permlab_install_shortcut"
         android:protectionLevel="dangerous" />
     <permission
-        android:name="ch.deletescape.lawnchair.permission.QSB"
+        android:name="${applicationId}.permission.QSB"
         android:label="QSB"
         android:protectionLevel="normal" />
     <permission
-        android:name="ch.deletescape.lawnchair.permission.READ_SETTINGS"
+        android:name="${applicationId}.permission.READ_SETTINGS"
         android:description="@string/permdesc_read_settings"
         android:label="@string/permlab_read_settings"
         android:protectionLevel="normal" />
     <permission
-        android:name="ch.deletescape.lawnchair.permission.WRITE_SETTINGS"
+        android:name="${applicationId}.permission.WRITE_SETTINGS"
         android:description="@string/permdesc_write_settings"
         android:label="@string/permlab_write_settings"
         android:protectionLevel="signatureOrSystem" />
@@ -31,9 +32,9 @@
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="ch.deletescape.lawnchair.permission.READ_SETTINGS" />
-    <uses-permission android:name="ch.deletescape.lawnchair.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="ch.deletescape.lawnchair.permission.QSB" />
+    <uses-permission android:name="${applicationId}.permission.READ_SETTINGS" />
+    <uses-permission android:name="${applicationId}.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="${applicationId}.permission.QSB" />
 
     <application
         android:name=".App"
@@ -42,15 +43,15 @@
         android:fullBackupOnly="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:restoreAnyVersion="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
         <activity
             android:name=".Launcher"
             android:clearTaskOnLaunch="true"
-            android:configChanges="orientation|keyboard|keyboardHidden|navigation"
+            android:configChanges="keyboard|keyboardHidden|navigation"
             android:enabled="true"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
@@ -67,6 +68,9 @@
                 <category android:name="android.intent.category.MONKEY" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
         <activity
             android:name=".settings.ui.SettingsActivity"
@@ -105,10 +109,18 @@
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".kustomsupport.AutoFinishTransparentActivity"
+            android:theme="@style/Theme.Transparent" />
 
         <provider
+            android:name=".kustomsupport.Kustom5SecsProvider"
+            android:authorities="${applicationId}.kustomsupport.kustom5secsprovider"
+            android:exported="true"
+            android:grantUriPermissions="true" />
+        <provider
             android:name=".LauncherProvider"
-            android:authorities="ch.deletescape.lawnchair.settings"
+            android:authorities="${applicationId}.settings"
             android:exported="true"
             android:readPermission="ch.deletescape.lawnchair.permission.READ_SETTINGS"
             android:writePermission="ch.deletescape.lawnchair.permission.WRITE_SETTINGS" />
@@ -156,10 +168,28 @@
         <meta-data
             android:name="com.google.android.awareness.API_KEY"
             android:value="${awarenessApiKey}" />
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${awarenessApiKey}" />
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.1" />
+
+        <activity android:name=".BlankActivity"
+            android:theme="@style/Theme.Transparent" />
+
+        <activity-alias
+            android:name=".FakeLauncher"
+            android:targetActivity=".BlankActivity"
+            android:enabled="false">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
     </application>
 
 </manifest>

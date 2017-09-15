@@ -25,7 +25,6 @@ import android.view.View;
 import java.util.List;
 
 import ch.deletescape.lawnchair.BaseRecyclerView;
-import ch.deletescape.lawnchair.BubbleTextView;
 import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.Launcher;
 
@@ -97,7 +96,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                 getResources().getDisplayMetrics().heightPixels, View.MeasureSpec.AT_MOST);
 
         // Icons
-        BubbleTextView icon = (BubbleTextView) adapter.onCreateViewHolder(this,
+        View icon = adapter.onCreateViewHolder(this,
                 AllAppsGridAdapter.VIEW_TYPE_ICON).mContent;
         int iconHeight = icon.getLayoutParams().height;
         mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_ICON, iconHeight);
@@ -206,6 +205,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     public void setAdapter(Adapter adapter) {
         super.setAdapter(adapter);
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
             public void onChanged() {
                 mCachedScrollPositions.clear();
             }

@@ -63,7 +63,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
     private LoadRequest mCurrentLoadRequest;
     private byte[] mTempStorageForDecoding = new byte[16 * 1024];
     // A weak-set of reusable bitmaps
-    private Set<Bitmap> mReusableBitmaps =
+    private final Set<Bitmap> mReusableBitmaps =
             Collections.newSetFromMap(new WeakHashMap<Bitmap, Boolean>());
 
     private final DialogInterface.OnCancelListener mOnDialogCancelListener =
@@ -121,6 +121,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
                 new BitmapRegionTileSource.InputStreamSource(this, imageUri);
         mSetWallpaperButton.setEnabled(false);
         Runnable onLoad = new Runnable() {
+            @Override
             public void run() {
                 if (bitmapSource.getLoadingState() != BitmapSource.State.LOADED) {
                     Toast.makeText(WallpaperCropActivity.this, R.string.wallpaper_load_fail,
@@ -306,6 +307,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
         // annoying; instead, only start showing the spinner if loading the image has taken
         // longer than 1 sec (ie 1000 ms)
         mProgressView.postDelayed(new Runnable() {
+            @Override
             public void run() {
                 if (mCurrentLoadRequest == req) {
                     mProgressView.setVisibility(View.VISIBLE);

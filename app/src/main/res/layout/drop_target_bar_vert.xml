@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2016 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,14 +13,13 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<ch.deletescape.lawnchair.DropTargetBar
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ch.deletescape.lawnchair.DropTargetBar xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/dynamic_grid_drop_target_size"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    android:layout_gravity="left"
+    android:layout_gravity="start"
     android:focusable="false"
-    android:paddingTop="@dimen/vert_drop_target_vertical_gap" >
+    android:paddingTop="@dimen/vert_drop_target_vertical_gap">
 
     <!-- Delete target -->
     <ch.deletescape.lawnchair.DeleteDropTarget
@@ -31,7 +29,7 @@
         android:paddingLeft="@dimen/vert_drop_target_horizontal_gap"
         android:paddingRight="@dimen/vert_drop_target_horizontal_gap"
         android:id="@+id/delete_target_text"
-        android:textColor="@android:color/white" />
+        android:textColor="@color/drop_target_text_color" />
 
     <!-- Uninstall target -->
     <ch.deletescape.lawnchair.UninstallDropTarget
@@ -41,8 +39,8 @@
         android:paddingLeft="@dimen/vert_drop_target_horizontal_gap"
         android:paddingRight="@dimen/vert_drop_target_horizontal_gap"
         android:id="@+id/uninstall_target_text"
-        android:textColor="@android:color/white"
-        android:layout_marginTop="@dimen/vert_drop_target_vertical_gap"/>
+        android:textColor="@color/drop_target_text_color"
+        android:layout_marginTop="@dimen/vert_drop_target_vertical_gap" />
 
     <Space
         android:layout_width="match_parent"
@@ -57,7 +55,7 @@
         android:paddingLeft="@dimen/vert_drop_target_horizontal_gap"
         android:paddingRight="@dimen/vert_drop_target_horizontal_gap"
         android:id="@+id/info_target_text"
-        android:textColor="@android:color/white"
-        android:layout_marginBottom="64dp"/>
+        android:textColor="@color/drop_target_text_color"
+        android:layout_marginBottom="64dp" />
 
 </ch.deletescape.lawnchair.DropTargetBar>

@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
+import ch.deletescape.lawnchair.util.ResourceUtilsKt;
 
 public class ShortcutParser {
 
@@ -46,7 +48,7 @@ public class ShortcutParser {
     private final int mResId;
 
     public ShortcutParser(Context context, Resources resources, String packageName, ComponentName componentName, int resId) throws PackageManager.NameNotFoundException {
-        mResources = resources;
+        mResources = Utilities.ATLEAST_NOUGAT ? resources : ResourceUtilsKt.setResSdk(resources, Build.VERSION_CODES.N);
         mPackageName = packageName;
         mComponentName = componentName;
         mPackageInfo = context.getPackageManager().getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);

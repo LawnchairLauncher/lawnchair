@@ -252,7 +252,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     public Drawable prepareCreate(final View destView) {
         Drawable animateDrawable = getTopDrawable((TextView) destView);
         computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(),
-                destView.getMeasuredWidth());
+                Math.min(destView.getMeasuredWidth(), destView.getMeasuredHeight()));
         return animateDrawable;
     }
 
@@ -261,9 +261,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                                        float scaleRelativeToDragLayer, Runnable postAnimationRunnable) {
 
         // These correspond two the drawable and view that the icon was dropped _onto_
-        Drawable animateDrawable = prepareCreate(destView);
-
-        mReferenceDrawable = animateDrawable;
+        mReferenceDrawable = prepareCreate(destView);
 
         addItem(destInfo);
         // This will animate the first item from it's position as an icon into its
@@ -277,7 +275,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     public void performDestroyAnimation(final View finalView, Runnable onCompleteRunnable) {
         Drawable animateDrawable = getTopDrawable((TextView) finalView);
         computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(),
-                finalView.getMeasuredWidth());
+                Math.min(finalView.getMeasuredWidth(), finalView.getMeasuredHeight()));
 
         // This will animate the first item from it's position as an icon into its
         // position as the first item in the preview
@@ -384,7 +382,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     private void computePreviewDrawingParams(Drawable d) {
-        computePreviewDrawingParams(d.getIntrinsicWidth(), getMeasuredWidth());
+        computePreviewDrawingParams(d.getIntrinsicWidth(), Math.min(getMeasuredWidth(), getMeasuredHeight()));
     }
 
 
@@ -542,7 +540,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             final int previewSize = grid.folderIconSizePx;
             final int previewPadding = grid.folderIconPreviewPadding;
 
-            this.previewSize = (previewSize - 2 * previewPadding);
+            this.previewSize = Math.min(previewSize - 2 * previewPadding, availableSpace);
 
             basePreviewOffsetX = (availableSpace - this.previewSize) / 2;
             basePreviewOffsetY = previewPadding + grid.folderBackgroundOffset + topPadding;
@@ -769,6 +767,13 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
 
+        canvas.save();
+
+        if (getMeasuredWidth() > getMeasuredHeight()) {
+            int translationX = (getMeasuredWidth() - getMeasuredHeight()) / 2;
+            canvas.translate(translationX, 0);
+        }
+
         if (mReferenceDrawable != null) {
             computePreviewDrawingParams(mReferenceDrawable);
         }
@@ -781,7 +786,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         if (mFolder.getItemCount() == 0 && !mAnimating) return;
 
         canvas.save();
-
 
         if (mPreviewLayoutRule.clipToBackground()) {
             mBackground.clipCanvas(canvas);
@@ -812,6 +816,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             this.mTempSpaceForBadgeOffset.set(getWidth() - this.mTempBounds.right, this.mTempBounds.top);
             this.mBadgeRenderer.draw(canvas, this.mBadgeInfo, this.mTempBounds, max, this.mTempSpaceForBadgeOffset);
         }
+
+        canvas.restore();
     }
 
     private Drawable getTopDrawable(TextView v) {

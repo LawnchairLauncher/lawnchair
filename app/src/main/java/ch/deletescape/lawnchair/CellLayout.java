@@ -571,8 +571,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         return mIsHotseat;
     }
 
-    public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params, boolean markCells) {
-        final LayoutParams lp = params;
+    public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams lp, boolean markCells) {
 
         if (child instanceof BubbleTextView) {
             BubbleTextView view = (BubbleTextView) child;
@@ -788,10 +787,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         int numHeightGaps = mCountY - 1;
 
         if (mOriginalWidthGap < 0 || mOriginalHeightGap < 0) {
-            int hSpace = childWidthSize;
-            int vSpace = childHeightSize;
-            int hFreeSpace = hSpace - (mCountX * mCellWidth);
-            int vFreeSpace = vSpace - (mCountY * mCellHeight);
+            int hFreeSpace = childWidthSize - (mCountX * mCellWidth);
+            int vFreeSpace = childHeightSize - (mCountY * mCellHeight);
             mWidthGap = Math.min(mMaxGap, numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0);
             mHeightGap = Math.min(mMaxGap, numHeightGaps > 0 ? (vFreeSpace / numHeightGaps) : 0);
             mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap,

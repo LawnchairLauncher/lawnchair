@@ -56,7 +56,7 @@ class ClockIconDrawable(val context: Context, val adaptive: Boolean) : Drawable(
             val width = bounds.right - bounds.left
             val height = bounds.bottom - bounds.top
 
-            val inset = convertDpToPixel(-11f)
+            val inset = (-0.2f * width).toInt()
 
             background = getBackground(width, height)
             originalIcon.setBounds(inset, inset, width - inset, height - inset)
@@ -111,10 +111,14 @@ class ClockIconDrawable(val context: Context, val adaptive: Boolean) : Drawable(
 
     companion object {
         fun create(context: Context): Drawable {
-            if (Utilities.isAtLeastO()) {
+            if (Utilities.ATLEAST_OREO) {
                 return Wrapper(AdaptiveIconDrawable(
                         ColorDrawable(context.resources.getColor(R.color.blue_grey_100)),
                         ClockIconDrawable(context, true)), true)
+            } else if (Utilities.ATLEAST_NOUGAT) {
+                return Wrapper(AdaptiveIconDrawableCompat(
+                        ColorDrawable(context.resources.getColor(R.color.blue_grey_100)),
+                        ClockIconDrawable(context, true), false), true)
             } else {
                 return Wrapper(ClockIconDrawable(context, false), false)
             }
@@ -157,9 +161,15 @@ class ClockIconDrawable(val context: Context, val adaptive: Boolean) : Drawable(
                 val scale = IconNormalizer.getInstance().getScale(drawable, null)
                 val inset = ((width - (width * scale)) / 2).toInt()
                 drawable.setBounds(inset, inset, width - inset, height - inset)
-                AdaptiveIconDrawable(ColorDrawable(Color.WHITE), ColorDrawable(Color.WHITE)).apply {
-                    setBounds(inset, inset, width - inset, height - inset)
-                }.draw(canvas)
+                if (Utilities.ATLEAST_OREO) {
+                    AdaptiveIconDrawable(ColorDrawable(Color.WHITE), ColorDrawable(Color.WHITE)).apply {
+                        setBounds(inset, inset, width - inset, height - inset)
+                    }.draw(canvas)
+                } else {
+                    AdaptiveIconDrawableCompat(ColorDrawable(Color.WHITE), ColorDrawable(Color.WHITE), false).apply {
+                        setBounds(inset, inset, width - inset, height - inset)
+                    }.draw(canvas)
+                }
                 shadow = BitmapDrawable(Utilities.getShadowForIcon(bitmap, width))
                 shadow?.setBounds(0, 0, width, height)
             } else {

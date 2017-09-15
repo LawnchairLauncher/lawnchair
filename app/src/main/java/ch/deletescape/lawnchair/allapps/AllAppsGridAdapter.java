@@ -18,18 +18,14 @@ package ch.deletescape.lawnchair.allapps;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v4.view.accessibility.AccessibilityEventCompat;
-import android.support.v4.view.accessibility.AccessibilityRecordCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
@@ -41,7 +37,7 @@ import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
-import ch.deletescape.lawnchair.config.FeatureFlags;
+import ch.deletescape.lawnchair.allapps.theme.IAllAppsThemer;
 
 /**
  * The grid view adapter of all the apps.
@@ -103,9 +99,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
             // Ensure that we only report the number apps for accessibility not including other
             // adapter views
-            final AccessibilityRecordCompat record = AccessibilityEventCompat
-                    .asRecord(event);
-            record.setItemCount(mApps.getNumFilteredApps());
+            event.setItemCount(mApps.getNumFilteredApps());
         }
 
         @Override
@@ -168,6 +162,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private Intent mMarketSearchIntent;
 
     private int mAppIconTextColor;
+    private int mAppIconTextMaxLines;
+    private final IAllAppsThemer mTheme;
 
     public AllAppsGridAdapter(Launcher launcher, AlphabeticalAppsList apps, View.OnClickListener
             iconClickListener, View.OnLongClickListener iconLongClickListener) {
@@ -180,6 +176,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mLayoutInflater = LayoutInflater.from(launcher);
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
+        mTheme = Utilities.getThemer().allAppsTheme(launcher);
     }
 
     public static boolean isDividerViewType(int viewType) {
@@ -248,19 +245,16 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_SECTION_BREAK:
                 return new ViewHolder(new View(parent.getContext()));
             case VIEW_TYPE_ICON: {
-                BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
-                        R.layout.all_apps_icon, parent, false);
+                View icon = mLayoutInflater.inflate(mTheme.getIconLayout(), parent, false);
                 icon.setOnClickListener(mIconClickListener);
                 icon.setOnLongClickListener(mIconLongClickListener);
-                icon.setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
                 icon.setOnFocusChangeListener(mIconFocusListener);
 
                 // Ensure the all apps icon height matches the workspace icons
                 DeviceProfile profile = mLauncher.getDeviceProfile();
-                Point cellSize = profile.getCellSize();
                 GridLayoutManager.LayoutParams lp =
                         (GridLayoutManager.LayoutParams) icon.getLayoutParams();
-                lp.height = cellSize.y;
+                lp.height = mTheme.iconHeight(profile.getAllAppsCellHeight(mLauncher));
                 icon.setLayoutParams(lp);
                 return new ViewHolder(icon);
             }
@@ -270,7 +264,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_SEARCH_MARKET:
                 TextView searchMarketView = (TextView) mLayoutInflater.inflate(R.layout.all_apps_search_market,
                         parent, false);
-                searchMarketView.setTextColor(Utilities.getDynamicAccent(mLauncher));
+                searchMarketView.setTextColor(mTheme.getSearchBarHintTextColor());
                 searchMarketView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -281,12 +275,14 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_SEARCH_DIVIDER:
                 ImageView divider = (ImageView) mLayoutInflater.inflate(
                         R.layout.all_apps_search_divider, parent, false);
-                if (!FeatureFlags.INSTANCE.useRoundSearchBar(mLauncher))
-                    divider.setImageDrawable(new ColorDrawable(Utilities.getDynamicAccent(parent.getContext())));
+                if (!Utilities.getPrefs(mLauncher).getUseRoundSearchBar())
+                    divider.setImageDrawable(new ColorDrawable(mTheme.getSearchBarHintTextColor()));
                 return new ViewHolder(divider);
             case VIEW_TYPE_SEARCH_MARKET_DIVIDER:
-                return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.all_apps_divider, parent, false));
+                ImageView marketDivider = (ImageView) mLayoutInflater.inflate(
+                        R.layout.all_apps_divider, parent, false);
+                marketDivider.setImageDrawable(new ColorDrawable(mTheme.getSearchBarHintTextColor()));
+                return new ViewHolder(marketDivider);
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -297,10 +293,21 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         switch (holder.getItemViewType()) {
             case VIEW_TYPE_ICON: {
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
-                BubbleTextView icon = (BubbleTextView) holder.mContent;
-                icon.applyFromApplicationInfo(info);
-                icon.setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
-                icon.setTextColor(mAppIconTextColor);
+                if (holder.mContent instanceof BubbleTextView) {
+                    BubbleTextView icon = (BubbleTextView) holder.mContent;
+                    icon.applyFromApplicationInfo(info);
+                    icon.setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
+                    icon.setTextColor(mAppIconTextColor);
+                    // TODO: currently this cuts off the text
+                    // icon.setLines(mAppIconTextMaxLines);
+                    // icon.setMaxLines(mAppIconTextMaxLines);
+                    // icon.setSingleLine(mAppIconTextMaxLines == 1);
+                } else if (holder.mContent instanceof AllAppsIconRowView) {
+                    AllAppsIconRowView row = (AllAppsIconRowView) holder.mContent;
+                    row.applyFromApplicationInfo(info);
+                    row.setText(info.title);
+                    row.setTextColor(mAppIconTextColor);
+                }
                 break;
             }
             case VIEW_TYPE_EMPTY_SEARCH:
@@ -340,7 +347,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         return item.viewType;
     }
 
-    public void setAppIconTextColor(int color) {
+    public void setAppIconTextStyle(int color, int maxLines) {
         mAppIconTextColor = color;
+        mAppIconTextMaxLines = maxLines;
     }
 }

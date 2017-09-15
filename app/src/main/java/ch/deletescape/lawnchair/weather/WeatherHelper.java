@@ -7,21 +7,20 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.jetbrains.annotations.NotNull;
-
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
+import ch.deletescape.lawnchair.preferences.PreferenceFlags;
 
 public class WeatherHelper implements SharedPreferences.OnSharedPreferenceChangeListener, Runnable, WeatherAPI.WeatherCallback {
-    private static final String KEY_UNITS = "pref_weather_units";
-    private static final String KEY_CITY = "pref_weather_city";
     private static final int DELAY = 500 * 3600;
     private final WeatherAPI mApi;
     private WeatherAPI.WeatherData mWeatherData;
@@ -38,13 +37,13 @@ public class WeatherHelper implements SharedPreferences.OnSharedPreferenceChange
         iconProvider = new WeatherIconProvider(context);
         setupOnClickListener(context);
         mHandler = new Handler();
-        SharedPreferences prefs = Utilities.getPrefs(context);
+        IPreferenceProvider prefs = Utilities.getPrefs(context);
         prefs.registerOnSharedPreferenceChangeListener(this);
         mApi = WeatherAPI.Companion.create(context,
-                Integer.parseInt(prefs.getString("pref_weatherProvider", "0")));
+                Integer.parseInt(prefs.getWeatherProvider()));
         mApi.setWeatherCallback(this);
-        setCity(prefs.getString(KEY_CITY, "Lucerne, CH"));
-        setUnits(prefs.getString(KEY_UNITS, "metric"));
+        setCity(prefs.getWeatherCity());
+        setUnits(prefs.getWeatherUnit());
         refresh();
     }
 
@@ -56,7 +55,7 @@ public class WeatherHelper implements SharedPreferences.OnSharedPreferenceChange
     }
 
     @Override
-    public void onWeatherData(@NotNull WeatherAPI.WeatherData data) {
+    public void onWeatherData(@NonNull WeatherAPI.WeatherData data) {
         mWeatherData = data;
         updateTextView();
         updateIconView();
@@ -101,14 +100,14 @@ public class WeatherHelper implements SharedPreferences.OnSharedPreferenceChange
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPrefs, String key) {
+    public void onSharedPreferenceChanged(@NonNull SharedPreferences sharedPrefs, @NonNull String key) {
         switch (key) {
-            case KEY_UNITS:
-                setUnits(sharedPrefs.getString(KEY_UNITS, "metric"));
+            case PreferenceFlags.KEY_WEATHER_UNITS:
+                setUnits(sharedPrefs.getString(PreferenceFlags.KEY_WEATHER_UNITS, PreferenceFlags.PREF_WEATHER_UNIT_METRIC));
                 updateTextView();
                 break;
-            case KEY_CITY:
-                setCity(sharedPrefs.getString(KEY_CITY, mApi.getCity()));
+            case PreferenceFlags.KEY_WEATHER_CITY:
+                setCity(sharedPrefs.getString(PreferenceFlags.KEY_WEATHER_CITY, mApi.getCity()));
                 break;
         }
     }

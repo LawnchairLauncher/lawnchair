@@ -22,10 +22,6 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         super(context, attributeSet, i);
     }
 
-    public WidgetsRecyclerView(Context context, AttributeSet attributeSet, int i, int i2) {
-        this(context, attributeSet, i);
-    }
-
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -79,7 +75,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
             return -1;
         }
         View childAt = getChildAt(0);
-        int childPosition = getChildPosition(childAt) * childAt.getMeasuredHeight();
+        int childPosition = getChildAdapterPosition(childAt) * childAt.getMeasuredHeight();
         return (childPosition + getPaddingTop()) - getLayoutManager().getDecoratedTop(childAt);
     }
 

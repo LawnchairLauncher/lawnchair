@@ -5,7 +5,7 @@ branches:
    except:
    - l10n_alpha2
 env:
-  - MAJOR_MINOR=1.0
+  - MAJOR_MINOR=1.1.0
 android:
   components:
     - tools
@@ -51,7 +51,7 @@ deploy:
   - provider: releases
     skip_cleanup: true
     api_key: $GITHUB_OAUTH_TOKEN
-    file: "Lawnchair-$TRAVIS_BUILD_NUMBER.apk"
+    file: "Lawnchair-$MAJOR_MINOR.$TRAVIS_BUILD_NUMBER.apk"
     on:
       tags: true
   - provider: script

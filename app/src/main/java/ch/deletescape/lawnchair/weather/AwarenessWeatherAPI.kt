@@ -57,7 +57,7 @@ class AwarenessWeatherAPI(context: Context) : WeatherAPI(), ResultCallback<Weath
     }
 
     private fun getWeatherIcon(condition: IntArray): String {
-        val conditions = condition.fold(0) { acc, i -> acc or CONDITIONS[i]}
+        val conditions = condition.fold(0) { acc, i -> acc or CONDITIONS[i] }
         if (conditions and CONDITION_STORMY != 0)
             return WeatherIconProvider.CONDITION_STORM
         if (conditions and CONDITION_SNOWY != 0 || conditions and CONDITION_ICY != 0)

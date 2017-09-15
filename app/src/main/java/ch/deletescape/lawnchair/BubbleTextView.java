@@ -48,7 +48,6 @@ import java.text.NumberFormat;
 import ch.deletescape.lawnchair.IconCache.IconLoadRequest;
 import ch.deletescape.lawnchair.badge.BadgeInfo;
 import ch.deletescape.lawnchair.badge.BadgeRenderer;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.graphics.IconPalette;
 import ch.deletescape.lawnchair.model.PackageItemInfo;
@@ -145,15 +144,16 @@ public class BubbleTextView extends TextView
         int display = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
         int defaultIconSize = grid.iconSizePx;
         if (display == DISPLAY_WORKSPACE) {
-            mHideText = FeatureFlags.INSTANCE.hideAppLabels(context);
+            mHideText = Utilities.getPrefs(context).getHideAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.iconTextSizePx);
-            setTextColor(Utilities.getColor(getContext(), "pref_workspaceLabelColorHue", "-3", "pref_workspaceLabelColorVariation", "5"));
+            setTextColor(Utilities.getPrefs(context).getWorkSpaceLabelColor());
         } else if (display == DISPLAY_ALL_APPS) {
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
+            mHideText = Utilities.getPrefs(context).getHideAllAppsAppLabels();
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
         } else if (display == DISPLAY_FOLDER) {
-            mHideText = FeatureFlags.INSTANCE.hideAppLabels(context);
+            mHideText = Utilities.getPrefs(context).getHideAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
         }
@@ -236,16 +236,18 @@ public class BubbleTextView extends TextView
     }
 
     private void applyClockIcon(ComponentName componentName) {
-        if (FeatureFlags.INSTANCE.animatedClockIcon(getContext()) &&
-                componentName != null &&
-                "com.google.android.deskclock/com.android.deskclock.DeskClock"
-                .equals(componentName.flattenToString())) {
+        if (Utilities.getPrefs(getContext()).getAnimatedClockIcon() &&
+                Utilities.isComponentClock(componentName, !Utilities.getPrefs(getContext()).getAnimateClockIconAlternativeClockApps())) {
             setIcon(ClockIconDrawable.Companion.create(getContext()));
         }
     }
 
     public void applyFromApplicationInfo(AppInfo info) {
-        applyIconAndLabel(info.iconBitmap, info);
+        applyFromApplicationInfo(info, true);
+    }
+
+    public void applyFromApplicationInfo(AppInfo info, boolean enableStates) {
+        applyIconAndLabel(info.iconBitmap, info, enableStates);
         applyClockIcon(info.getTargetComponent());
 
         // We don't need to check the info since it's not a ShortcutInfo
@@ -266,7 +268,12 @@ public class BubbleTextView extends TextView
     }
 
     private void applyIconAndLabel(Bitmap icon, ItemInfo info) {
+        applyIconAndLabel(icon, info, true);
+    }
+
+    private void applyIconAndLabel(Bitmap icon, ItemInfo info, boolean enableStates) {
         FastBitmapDrawable iconDrawable = mLauncher.createIconDrawable(icon);
+        iconDrawable.setEnableStates(enableStates);
         if (info.isDisabled()) {
             iconDrawable.setState(FastBitmapDrawable.State.DISABLED);
         }
@@ -693,14 +700,16 @@ public class BubbleTextView extends TextView
     public void reapplyItemInfo(final ItemInfo info) {
         if (getTag() == info) {
             FastBitmapDrawable.State prevState = FastBitmapDrawable.State.NORMAL;
+            boolean enableStates = true;
             if (mIcon instanceof FastBitmapDrawable) {
                 prevState = ((FastBitmapDrawable) mIcon).getCurrentState();
+                enableStates = ((FastBitmapDrawable) mIcon).getEnableStates();
             }
             mIconLoadRequest = null;
             mDisableRelayout = true;
 
             if (info instanceof AppInfo) {
-                applyFromApplicationInfo((AppInfo) info);
+                applyFromApplicationInfo((AppInfo) info, enableStates);
             } else if (info instanceof ShortcutInfo) {
                 applyFromShortcutInfo((ShortcutInfo) info);
                 if ((info.rank < FolderIcon.NUM_ITEMS_IN_PREVIEW) && (info.container >= 0)) {

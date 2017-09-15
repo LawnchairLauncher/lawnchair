@@ -193,13 +193,13 @@
     <string name="action_move">Move item</string>
 
     <!-- Accessibility description to move item to empty cell. -->
-    <string name="move_to_empty_cell">Move to row <xliff:g example="1" id="number">%1$s</xliff:g> column <xliff:g example="1" id="number">%2$s</xliff:g></string>
+    <string name="move_to_empty_cell">Move to row <xliff:g example="1" id="number">%1$d</xliff:g> column <xliff:g example="1" id="number">%2$d</xliff:g></string>
 
     <!-- Accessibility description to move item inside a folder. -->
-    <string name="move_to_position">Move to position <xliff:g example="1" id="number">%1$s</xliff:g></string>
+    <string name="move_to_position">Move to position <xliff:g example="1" id="number">%1$d</xliff:g></string>
 
     <!-- Accessibility description to move item to the hotseat. -->
-    <string name="move_to_hotseat_position">Move to favorites position <xliff:g example="1" id="number">%1$s</xliff:g></string>
+    <string name="move_to_hotseat_position">Move to favorites position <xliff:g example="1" id="number">%1$d</xliff:g></string>
 
     <!-- Accessibility confirmation for item move. -->
     <string name="item_moved">Item moved</string>
@@ -247,7 +247,7 @@
     <string name="action_decrease_height">Decrease height</string>
 
     <!-- Accessibility confirmation for widget resize. -->
-    <string name="widget_resized">Widget resized to width <xliff:g example="2" id="number">%1$s</xliff:g> height <xliff:g example="1" id="number">%2$s</xliff:g></string>
+    <string name="widget_resized">Widget resized to width <xliff:g example="2" id="number">%1$d</xliff:g> height <xliff:g example="1" id="number">%2$d</xliff:g></string>
 
     <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
     <string name="action_deep_shortcut">Shortcuts</string>
@@ -325,6 +325,7 @@
     <string name="blur_radius_pref_title">Blur radius</string>
     <string name="white_google_icon_pref_title">Use white Google icon</string>
     <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
+    <string name="hide_all_apps_icon_labels_pref_title">Hide icon labels in drawer</string>
     <string name="workspace_label_color_hue_pref_title">Color of icon labels on home screen</string>
     <string name="workspace_label_color_variation_pref_title">Color variation of icon labels on home screen</string>
     <string name="all_apps_opacity_pref_title">Drawer opacity</string>
@@ -337,11 +338,17 @@
     <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
     <string name="notification_access_pref_title">Notification badges and preview</string>
     <string name="notification_access_pref_summary">Allow Lawnchair to access your notifications to enable this feature</string>
-    <string name="ui_pref_title">UI</string>
-    <string name="pixel_style_pref_title">Pixel style</string>
+    <string name="general_pref_title">General</string>
+    <string name="pixel_ui_pref_title">Pixel UI</string>
     <string name="behavior_pref_title">Behavior</string>
     <string name="debug_pref_title">Debug</string>
     <string name="import_export_pref_title">Import/Export</string>
+     <string name="general_pref_summary">Homescreen, dock, and app drawer</string>
+    <string name="pixel_ui_pref_summary">Enable Pixel Launcher exclusive features</string>
+    <string name="backup_pref_title">Backup</string>
+    <string name="behavior_pref_summary">Change the behavior of Lawnchair</string>
+    <string name="backup_pref_summary">Backup your database and settings</string>
+    <string name="debug_pref_summary">Restart or rebuild icon database</string>
     <string name="show_pixel_bar_pref_title">Show Pixel top bar</string>
     <string name="use_wide_searchbar_pref_title">Use wide searchbar</string>
     <string name="show_mic_pref_title">Show Google Assistant button</string>
@@ -365,57 +372,15 @@
     <string name="show_hidden_pref_title">Show hidden apps</string>
     <string name="show_hidden_pref_on">Hidden apps will be shown to change visibility settings</string>
     <string name="show_hidden_pref_off">Hidden apps won\'t be visible</string>
-    <string name="export_db_title">Export database</string>
-    <string name="import_db_title">Import database</string>
-    <string name="export_prefs_title">Export settings</string>
-    <string name="import_prefs_title">Import settings</string>
+    <string name="export_db_title">Database</string>
+    <string name="import_db_title">Database</string>
+    <string name="export_prefs_title">Settings</string>
+    <string name="import_prefs_title">Settings</string>
     <string name="notification_listener_label">Lawnchair - Notification badges</string>
     <string name="color_extraction_label">Lawnchair - Color extraction</string>
     <string name="test_title">Test</string>
     <string name="test_package" translatable="false">com.example.test</string>
     <string name="visibility">Visibility</string>
-    <!-- Customization Color -->
-    <string name="white">White</string>
-    <!-- Customization Color -->
-    <string name="black">Black</string>
-    <!-- Customization Color -->
-    <string name="red">Red</string>
-    <!-- Customization Color -->
-    <string name="pink">Pink</string>
-    <!-- Customization Color -->
-    <string name="purple">Purple</string>
-    <!-- Customization Color -->
-    <string name="deep_purple">Deep Purple</string>
-    <!-- Customization Color -->
-    <string name="indigo">Indigo</string>
-    <!-- Customization Color -->
-    <string name="blue">Blue</string>
-    <!-- Customization Color -->
-    <string name="light_blue">Light Blue</string>
-    <!-- Customization Color -->
-    <string name="cyan">Cyan</string>
-    <!-- Customization Color -->
-    <string name="teal">Teal</string>
-    <!-- Customization Color -->
-    <string name="green">Green</string>
-    <!-- Customization Color -->
-    <string name="light_green">Light Green</string>
-    <!-- Customization Color -->
-    <string name="lime">Lime</string>
-    <!-- Customization Color -->
-    <string name="yellow">Yellow</string>
-    <!-- Customization Color -->
-    <string name="amber">Amber</string>
-    <!-- Customization Color -->
-    <string name="orange">Orange</string>
-    <!-- Customization Color -->
-    <string name="deep_orange">Deep Orange</string>
-    <!-- Customization Color -->
-    <string name="brown">Brown</string>
-    <!-- Customization Color -->
-    <string name="grey">Grey</string>
-    <!-- Customization Color -->
-    <string name="blue_grey">Blue Grey</string>
     <string name="default_text">Default</string>
     <string name="edit_icon_reset">Reset</string>
     <string name="show_top_shadow_title">Show top shadow</string>
@@ -437,6 +402,8 @@
     <string name="enable_screen_rotation">Enable screen rotation</string>
 
     <!-- Import/Export Strings -->
+     <string name="backup_import_title">Import</string>
+    <string name="backup_export_title">Export</string>
     <string name="imexport_success">Success!</string>
     <string name="imexport_error">Error: Failed to copy file</string>
     <string name="imexport_no_backup_found">No backup found</string>
@@ -457,14 +424,15 @@
     <string name="pref_applyBlur">Apply blur on</string>
     <string name="search_bar">Search bar</string>
     <string name="folder">Folder</string>
-    <string name="dock_allapps"><![CDATA[Dock & all apps]]></string>
+    <string name="dock_allapps"><![CDATA[Dock & drawer]]></string>
     <string name="app_shortcuts">App shortcuts</string>
     <string name="blur_effect">Blur effect</string>
-    <string name="enable_editing_pref_title">Enable editing workspace</string>
+    <string name="enable_editing_pref_title">Enable editing homescreen</string>
     <string name="pref_weather_provider">Weather provider</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
     <string name="icon_shape_override_label">Change icon shape</string>
     <string name="icon_shape_system_default">Do not change</string>
+    <string name="icon_shape_none">None</string>
     <string name="icon_shape_square">Square</string>
     <string name="icon_shape_rounded_square">Rounded square</string>
     <string name="icon_shape_squircle">Squircle</string>
@@ -480,4 +448,23 @@
     <string name="pref_cat_drawer">Drawer</string>
     <string name="shortcut_backport_warning">This could be slow, use at your own risk</string>
     <string name="pref_backport_shortcuts">Backport shortcuts</string>
+    <string name="weather_api_key_not_set">API key not set</string>
+    <string name="pref_weather_api_key_title">API key</string>
+    <string name="about_changelog">Changelog</string>
+    <string name="pref_all_apps_custom_label_color">Use custom label color</string>
+    <string name="pref_all_apps_label_color_variation">Color variation of icon labels in app drawer</string>
+    <string name="pref_all_apps_label_color">Color of icon labels in drawer</string>
+    <string name="pref_num_rows_drawer">Number of rows in drawer</string>
+    <string name="center_wallpaper_pref_title">Center wallpaper when there is only one page</string>
+    <string name="vertical_drawer_layout_pref_title">Display as vertical list</string>
+
+    <!-- Time format for Weather Widget -->
+    <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+    <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
+    <string name="about_translators">Translators</string>
+    <string name="lock_desktop">Lock desktop</string>
+    <string name="lawnfeed_not_found">Lawnfeed not installed</string>
+    <string name="google_app_not_found">Google app not installed</string>
+    <string name="popup_card_theme_title">Flat style popup</string>
+    <string name="set_default_launcher">Set default launcher</string>
 </resources>

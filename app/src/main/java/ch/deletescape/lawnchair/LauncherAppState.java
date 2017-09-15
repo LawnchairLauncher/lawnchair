@@ -108,7 +108,7 @@ public class LauncherAppState {
         UserManagerCompat.getInstance(sContext).enableAndResetCache();
         new ConfigMonitor(sContext).register();
 
-        if (Utilities.isNycOrAbove()) {
+        if (Utilities.ATLEAST_NOUGAT) {
             ExtractionUtils.startColorExtractionServiceIfNecessary(sContext);
         } else {
             ExtractionUtils.startColorExtractionService(sContext);

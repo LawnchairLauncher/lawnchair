@@ -114,4 +114,6 @@
     <string name="pick_image" msgid="3189640419551368385">"我的相片"</string>
     <string name="pick_wallpaper" msgid="4628969645948454559">"桌布"</string>
     <string name="crop_wallpaper" msgid="4882870800623585836">"裁剪桌布"</string>
+
+    <string name="full_wday_month_day_no_year">M月dd日EEEE</string>
 </resources>

@@ -2,7 +2,6 @@ package ch.deletescape.lawnchair.pixelify;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -58,7 +57,7 @@ public class SuperGContainerView extends BaseQsbView {
 
     public SuperGContainerView(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
-        if (FeatureFlags.INSTANCE.useFullWidthSearchbar(getContext())) {
+        if (Utilities.getPrefs(getContext()).getUseFullWidthSearchBar()) {
             bz = null;
         } else {
             bz = new TransformingTouchDelegate(this);
@@ -76,19 +75,19 @@ public class SuperGContainerView extends BaseQsbView {
             mQsbView.setBackground(mBlurDrawable);
             mQsbView.setLayerType(LAYER_TYPE_SOFTWARE, null);
         }
-        if (FeatureFlags.INSTANCE.useWhiteGoogleIcon(getContext()) &&
+        if (Utilities.getPrefs(getContext()).getUseWhiteGoogleIcon() &&
                 (mBlurEnabled || FeatureFlags.INSTANCE.useDarkTheme(FeatureFlags.DARK_QSB))) {
             ((ImageView) findViewById(R.id.g_icon)).setColorFilter(Color.WHITE);
-            if (FeatureFlags.INSTANCE.showVoiceSearchButton(getContext())) {
+            if (Utilities.getPrefs(getContext()).getShowVoiceSearchButton()) {
                 ((ImageView) findViewById(R.id.mic_icon)).setColorFilter(Color.WHITE);
             }
         }
     }
 
     @Override
-    public void applyVoiceSearchPreference(SharedPreferences prefs) {
-        if (!FeatureFlags.INSTANCE.useFullWidthSearchbar(getContext())) {
-            super.applyVoiceSearchPreference(prefs);
+    public void applyVoiceSearchPreference() {
+        if (!Utilities.getPrefs(getContext()).getUseFullWidthSearchBar()) {
+            super.applyVoiceSearchPreference();
             if (bz != null) {
                 bz.setDelegateView(mQsbView);
             }
@@ -118,7 +117,7 @@ public class SuperGContainerView extends BaseQsbView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (!FeatureFlags.INSTANCE.showPixelBar(getContext())) {
+        if (!Utilities.getPrefs(getContext()).getShowPixelBar()) {
             return;
         }
         if (bz != null) {
@@ -130,20 +129,19 @@ public class SuperGContainerView extends BaseQsbView {
 
     @Override
     protected void onMeasure(int i, int i2) {
-        int i3;
         LayoutParams layoutParams;
         int i4 = -getResources().getDimensionPixelSize(R.dimen.qsb_overlap_margin);
         DeviceProfile deviceProfile = mLauncher.getDeviceProfile();
         Rect workspacePadding = deviceProfile.getWorkspacePadding(sTempRect);
         int size = MeasureSpec.getSize(i) - i4;
         int i5 = (size - workspacePadding.left) - workspacePadding.right;
-        size = DeviceProfile.calculateCellWidth(i5, deviceProfile.inv.numColumns) * deviceProfile.inv.numColumns;
+        size = DeviceProfile.calculateCellWidth(i5, deviceProfile.inv.numColumnsOriginal) * deviceProfile.inv.numColumnsOriginal;
         i4 += workspacePadding.left + ((i5 - size) / 2);
-        i3 = size;
+        int oldSize = size;
         size = i4;
         if (mQsbView != null) {
             layoutParams = (LayoutParams) mQsbView.getLayoutParams();
-            layoutParams.width = i3 / deviceProfile.inv.numColumns;
+            layoutParams.width = oldSize / deviceProfile.inv.numColumnsOriginal;
             if (showMic) {
                 layoutParams.width = Math.max(layoutParams.width, getResources().getDimensionPixelSize(R.dimen.qsb_min_width_with_mic));
             }
@@ -161,7 +159,7 @@ public class SuperGContainerView extends BaseQsbView {
     @Override
     protected void onLayout(boolean z, int i, int i2, int i3, int i4) {
         super.onLayout(z, i, i2, i3, i4);
-        if (bz != null && mQsbView != null && FeatureFlags.INSTANCE.showPixelBar(getContext())) {
+        if (bz != null && mQsbView != null && Utilities.getPrefs(getContext()).getShowPixelBar()) {
             int i5 = 0;
             if (Utilities.isRtl(getResources())) {
                 i5 = mQsbView.getLeft() - mLauncher.getDeviceProfile().getWorkspacePadding(sTempRect).left;

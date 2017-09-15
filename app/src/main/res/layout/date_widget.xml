@@ -16,12 +16,12 @@
         android:fontFamily="sans-serif-light"
         android:includeFontPadding="false"
         android:paddingBottom="4.0dip"
-        android:textColor="#ffffffff"
+        android:textColor="@color/date_widget_text_color"
         android:textSize="36.0dip"
         launcher:ambientShadowBlur="6.0dip"
-        launcher:ambientShadowColor="#44000000"
+        launcher:ambientShadowColor="@color/date_widget_date_ambient_shadow"
         launcher:keyShadowBlur="2.0dip"
-        launcher:keyShadowColor="#22000000"
+        launcher:keyShadowColor="@color/date_widget_date_key_shadow"
         launcher:keyShadowOffset="0.5dip" />
 
     <ch.deletescape.lawnchair.pixelify.DoubleShadowTextClock
@@ -31,11 +31,11 @@
         android:fontFamily="sans-serif"
         android:includeFontPadding="false"
         android:textAllCaps="true"
-        android:textColor="#ffffffff"
+        android:textColor="@color/date_widget_text_color"
         android:textSize="12.0sp"
         launcher:ambientShadowBlur="2.0dip"
-        launcher:ambientShadowColor="#66000000"
+        launcher:ambientShadowColor="@color/date_widget_day_ambient_shadow"
         launcher:keyShadowBlur="1.0dip"
-        launcher:keyShadowColor="#33000000"
+        launcher:keyShadowColor="@color/date_widget_day_key_shadow"
         launcher:keyShadowOffset="0.5dip" />
 </ch.deletescape.lawnchair.pixelify.DateWidgetView>

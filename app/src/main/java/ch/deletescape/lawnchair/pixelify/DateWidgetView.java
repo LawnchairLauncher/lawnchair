@@ -60,9 +60,9 @@ public class DateWidgetView extends LinearLayout implements TextWatcher, View.On
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         DeviceProfile deviceProfile = Launcher.getLauncher(getContext()).getDeviceProfile();
-        int size = MeasureSpec.getSize(widthMeasureSpec) / deviceProfile.inv.numColumns;
-        int marginEnd = (size - deviceProfile.iconSizePx) / 2;
-        width = (deviceProfile.inv.numColumns - Math.max(1, (int) Math.ceil((double) (getResources().getDimension(R.dimen.qsb_min_width_with_mic) / ((float) size))))) * size;
+        int size = MeasureSpec.getSize(widthMeasureSpec) / deviceProfile.inv.numColumnsOriginal;
+        int marginEnd = (size - deviceProfile.iconSizePxOriginal) / 2;
+        width = (deviceProfile.inv.numColumnsOriginal - Math.max(1, (int) Math.ceil((double) (getResources().getDimension(R.dimen.qsb_min_width_with_mic) / ((float) size))))) * size;
         text = "";
         update();
         setMarginEnd(dateText1, marginEnd);

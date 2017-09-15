@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.LauncherRootView;
 import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.blur.BlurDrawable;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
@@ -67,10 +68,10 @@ public class ExperimentalQsbWidget extends BaseQsbView {
             mQsbView.setBackground(mBlurDrawable);
             mQsbView.setLayerType(LAYER_TYPE_SOFTWARE, null);
         }
-        if (FeatureFlags.INSTANCE.useWhiteGoogleIcon(getContext()) &&
+        if (Utilities.getPrefs(getContext()).getUseWhiteGoogleIcon() &&
                 (mBlurEnabled || FeatureFlags.INSTANCE.useDarkTheme(FeatureFlags.DARK_QSB))) {
             ((ImageView) findViewById(R.id.g_icon)).setColorFilter(Color.WHITE);
-            if (FeatureFlags.INSTANCE.showVoiceSearchButton(getContext())) {
+            if (Utilities.getPrefs(getContext()).getShowVoiceSearchButton()) {
                 ((ImageView) findViewById(R.id.mic_icon)).setColorFilter(Color.WHITE);
             }
         }
@@ -81,7 +82,7 @@ public class ExperimentalQsbWidget extends BaseQsbView {
         if (this.mQsbView != null) {
             DeviceProfile deviceProfile = this.mLauncher.getDeviceProfile();
             int size = MeasureSpec.getSize(i);
-            ((LayoutParams) this.mQsbView.getLayoutParams()).width = size - (DeviceProfile.calculateCellWidth(size, deviceProfile.inv.numColumns) - deviceProfile.iconSizePx);
+            ((LayoutParams) this.mQsbView.getLayoutParams()).width = size - (DeviceProfile.calculateCellWidth(size, deviceProfile.inv.numColumnsOriginal) - deviceProfile.iconSizePxOriginal);
         }
         super.onMeasure(i, i2);
     }

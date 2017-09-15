@@ -10,7 +10,6 @@ import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.util.Themes;
 
 public class IconPalette {
-    public static final IconPalette FOLDER_ICON_PALETTE = new IconPalette(Color.parseColor("#BDC1C6"));
     public final int backgroundColor;
     public final ColorMatrixColorFilter backgroundColorMatrixFilter;
     public final int dominantColor;

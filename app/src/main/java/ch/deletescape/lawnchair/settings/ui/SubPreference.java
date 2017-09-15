@@ -20,13 +20,10 @@ public class SubPreference extends Preference implements View.OnLongClickListene
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SubPreference);
         for (int i = a.getIndexCount() - 1; i >= 0; i--) {
             int attr = a.getIndex(i);
-            switch (attr) {
-                case R.styleable.SubPreference_content:
-                    mContent = a.getResourceId(attr, 0);
-                    break;
-                case R.styleable.SubPreference_longClickContent:
-                    mLongClickContent = a.getResourceId(attr, 0);
-                    break;
+            if (attr == R.styleable.SubPreference_content) {
+                mContent = a.getResourceId(attr, 0);
+            } else if (attr == R.styleable.SubPreference_longClickContent) {
+                mLongClickContent = a.getResourceId(attr, 0);
             }
         }
         a.recycle();

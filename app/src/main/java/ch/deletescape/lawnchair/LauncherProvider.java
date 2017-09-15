@@ -27,7 +27,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.OperationApplicationException;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -47,6 +46,7 @@ import android.os.UserManager;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
@@ -56,9 +56,8 @@ import ch.deletescape.lawnchair.AutoInstallsLayout.LayoutParserCallback;
 import ch.deletescape.lawnchair.LauncherSettings.Favorites;
 import ch.deletescape.lawnchair.LauncherSettings.WorkspaceScreens;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
-import ch.deletescape.lawnchair.config.ProviderConfig;
-import ch.deletescape.lawnchair.dynamicui.ExtractionUtils;
 import ch.deletescape.lawnchair.graphics.IconShapeOverride;
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.provider.RestoreDbTask;
 import ch.deletescape.lawnchair.util.ManagedProfileHeuristic;
 import ch.deletescape.lawnchair.util.NoLocaleSqliteContext;
@@ -67,11 +66,7 @@ import ch.deletescape.lawnchair.util.Thunk;
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "LauncherProvider";
 
-    private static final int DATABASE_VERSION = 27;
-
-    public static final String AUTHORITY = ProviderConfig.AUTHORITY;
-
-    static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
+    private static final int DATABASE_VERSION = 29;
 
     private static final String RESTRICTION_PACKAGE_NAME = "workspace.configuration.package.name";
 
@@ -353,10 +348,8 @@ public class LauncherProvider extends ContentProvider {
                 String extractedColors = extras.getString(
                         LauncherSettings.Settings.EXTRA_EXTRACTED_COLORS);
                 int wallpaperId = extras.getInt(LauncherSettings.Settings.EXTRA_WALLPAPER_ID);
-                Utilities.getPrefs(getContext()).edit()
-                        .putString(ExtractionUtils.EXTRACTED_COLORS_PREFERENCE_KEY, extractedColors)
-                        .putInt(ExtractionUtils.WALLPAPER_ID_PREFERENCE_KEY, wallpaperId)
-                        .apply();
+                Utilities.getPrefs(getContext()).setExtractedColorsPreference(extractedColors);
+                Utilities.getPrefs(getContext()).setWallpaperId(wallpaperId);
                 mListenerHandler.sendEmptyMessage(ChangeListenerWrapper.MSG_EXTRACTED_COLORS_CHANGED);
                 Bundle result = new Bundle();
                 result.putString(LauncherSettings.Settings.EXTRA_VALUE, extractedColors);
@@ -369,7 +362,7 @@ public class LauncherProvider extends ContentProvider {
             case LauncherSettings.Settings.METHOD_WAS_EMPTY_DB_CREATED: {
                 Bundle result = new Bundle();
                 result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
-                        Utilities.getPrefs(getContext()).getBoolean(EMPTY_DATABASE_CREATED, false));
+                        Utilities.getPrefs(getContext()).getEmptyDatabaseCreated());
                 return result;
             }
             case LauncherSettings.Settings.METHOD_DELETE_EMPTY_FOLDERS: {
@@ -461,7 +454,7 @@ public class LauncherProvider extends ContentProvider {
     }
 
     private void clearFlagEmptyDbCreated() {
-        Utilities.getPrefs(getContext()).edit().remove(EMPTY_DATABASE_CREATED).apply();
+        Utilities.getPrefs(getContext()).removeEmptyDatabaseCreated();
     }
 
     /**
@@ -472,9 +465,9 @@ public class LauncherProvider extends ContentProvider {
      * 4) The default configuration for the particular device
      */
     synchronized private void loadDefaultFavoritesIfNecessary() {
-        SharedPreferences sp = Utilities.getPrefs(getContext());
+        IPreferenceProvider sp = Utilities.getPrefs(getContext());
 
-        if (sp.getBoolean(EMPTY_DATABASE_CREATED, false)) {
+        if (sp.getEmptyDatabaseCreated()) {
             Log.d(TAG, "loading default workspace");
 
             AppWidgetHost widgetHost = new AppWidgetHost(getContext(), Launcher.APPWIDGET_HOST_ID);
@@ -621,7 +614,7 @@ public class LauncherProvider extends ContentProvider {
             }
 
             // Set the flag for empty DB
-            Utilities.getPrefs(mContext).edit().putBoolean(EMPTY_DATABASE_CREATED, true).apply();
+            Utilities.getPrefs(mContext).setEmptyDatabaseCreated(true);
 
             // When a new DB is created, remove all previously stored managed profile information.
             ManagedProfileHeuristic.processAllUsers(Collections.<UserHandle>emptyList(),
@@ -649,10 +642,11 @@ public class LauncherProvider extends ContentProvider {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             switch (oldVersion) {
-                case 27: {
-                    // DB Upgraded successfully
-                    return;
-                }
+                case 27:
+                    db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.TITLE_ALIAS + " TEXT;");
+                case 28:
+                    db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.CUSTOM_ICON + " BLOB;");
+                case 29: return;
             }
 
             // DB was not upgraded

@@ -57,7 +57,7 @@ public class ExtractedColors {
     public static final int NAVIGATION_BAR_INDEX = 17;
 
     public static final int NUM_COLOR_PROFILES = 16;
-    private static final int VERSION = 7;
+    public static final int VERSION = 7;
 
     private static final String COLOR_SEPARATOR = ",";
 
@@ -104,8 +104,7 @@ public class ExtractedColors {
      * These were saved there in {@link ColorExtractionService}.
      */
     public void load(Context context) {
-        String encodedString = Utilities.getPrefs(context).getString(
-                ExtractionUtils.EXTRACTED_COLORS_PREFERENCE_KEY, VERSION + "");
+        String encodedString = Utilities.getPrefs(context).getExtractedColorsPreference();
 
         decodeFromString(encodedString);
 
@@ -180,11 +179,11 @@ public class ExtractedColors {
      * - 40% lightVibrant or 25% white otherwise
      */
     public int getHotseatColor(Context context) {
-        if (FeatureFlags.INSTANCE.isTransparentHotseat(context)) {
+        if (Utilities.getPrefs(context).getTransparentHotseat()) {
             return Color.TRANSPARENT;
         }
         int hotseatColor;
-        boolean shouldUseExtractedColors = FeatureFlags.INSTANCE.hotseatShouldUseExtractedColors(context);
+        boolean shouldUseExtractedColors = Utilities.getPrefs(context).getHotseatShouldUseExtractedColors();
         if (getColor(IS_SUPER_LIGHT, 0) == 1) {
             if (shouldUseExtractedColors) {
                 int baseColor = getColor(HOTSEAT_DARK_MUTED_INDEX, getColor(HOTSEAT_DARK_VIBRANT_INDEX, Color.BLACK));

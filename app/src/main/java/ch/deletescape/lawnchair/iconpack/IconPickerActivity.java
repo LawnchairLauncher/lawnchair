@@ -1,24 +1,23 @@
 package ch.deletescape.lawnchair.iconpack;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 
+import java.util.Collections;
 import java.util.List;
 
 import ch.deletescape.lawnchair.R;
-import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 
-public class IconPickerActivity extends Activity implements IconGridAdapter.Listener {
+public class IconPickerActivity extends AppCompatActivity implements IconGridAdapter.Listener {
 
     private EditIconActivity.IconPackInfo mIconPackInfo;
     private IconCategoryAdapter mAdapter;
@@ -39,7 +38,7 @@ public class IconPickerActivity extends Activity implements IconGridAdapter.List
 
         RecyclerView recyclerView = findViewById(R.id.categoryRecyclerView);
         mAdapter = new IconCategoryAdapter();
-        mAdapter.setCategoryList(Utilities.<IconPack.IconCategory>emptyList());
+        mAdapter.setCategoryList(Collections.<IconPack.IconCategory>emptyList());
         mAdapter.setListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));

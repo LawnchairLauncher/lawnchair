@@ -1,5 +1,6 @@
 package ch.deletescape.lawnchair.notification;
 
+import android.app.ActivityOptions;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.PendingIntent.CanceledException;
@@ -9,6 +10,8 @@ import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
+import android.os.Build;
+import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,28 +24,29 @@ import ch.deletescape.lawnchair.popup.PopupContainerWithArrow;
 import ch.deletescape.lawnchair.util.PackageUserKey;
 
 public class NotificationInfo implements OnClickListener {
+
+    public final PackageUserKey packageUserKey;
+    public final String notificationKey;
+    public final CharSequence title;
+    public final CharSequence text;
+    public final PendingIntent intent;
     public final boolean autoCancel;
     public final boolean dismissable;
-    public final PendingIntent intent;
+
     private int mBadgeIcon;
-    private int mIconColor;
     private Drawable mIconDrawable;
+    private int mIconColor;
     private boolean mIsIconLarge;
-    public final String notificationKey;
-    public final PackageUserKey packageUserKey;
-    public final CharSequence text;
-    public final CharSequence title;
 
     public NotificationInfo(Context context, StatusBarNotification statusBarNotification) {
-        boolean z;
         Icon icon = null;
-        boolean z2 = true;
         packageUserKey = PackageUserKey.fromNotification(statusBarNotification);
         notificationKey = statusBarNotification.getKey();
         Notification notification = statusBarNotification.getNotification();
-        title = notification.extras.getCharSequence("android.title");
-        text = notification.extras.getCharSequence("android.text");
-        mBadgeIcon = Utilities.isAtLeastO() ? notification.getBadgeIconType() : 1; // We need some kind of compat for this
+        title = notification.extras.getCharSequence(Notification.EXTRA_TITLE);
+        text = notification.extras.getCharSequence(Notification.EXTRA_TEXT);
+        mBadgeIcon = Utilities.ATLEAST_OREO ? notification.getBadgeIconType() :
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? 2 : 1; // We need some kind of compat for this
         if (mBadgeIcon != 1 && Utilities.ATLEAST_MARSHMALLOW) {
             icon = notification.getLargeIcon();
         }
@@ -64,24 +68,27 @@ public class NotificationInfo implements OnClickListener {
             mIsIconLarge = true;
         }
         if (mIconDrawable == null) {
-            mIconDrawable = new BitmapDrawable(context.getResources(), LauncherAppState.getInstance().getIconCache().getDefaultIcon(statusBarNotification.getUser()));
+            mIconDrawable = new BitmapDrawable(context.getResources(), LauncherAppState
+                    .getInstance().getIconCache()
+                    .getDefaultIcon(statusBarNotification.getUser()));
             mBadgeIcon = 0;
         }
         intent = notification.contentIntent;
-        z = (notification.flags & 16) != 0;
-        autoCancel = z;
-        if ((notification.flags & 2) != 0) {
-            z2 = false;
-        }
-        dismissable = z2;
+        autoCancel = (notification.flags & Notification.FLAG_AUTO_CANCEL) != 0;
+        dismissable = (notification.flags & Notification.FLAG_ONGOING_EVENT) == 0;
     }
 
     @Override
     public void onClick(View view) {
-        Launcher launcher = Launcher.getLauncher(view.getContext());
+        final Launcher launcher = Launcher.getLauncher(view.getContext());
+        Bundle activityOptions = launcher.getActivityLaunchOptions(view);
         try {
-            intent.send(null, 0, null, null, null, null);//, ActivityOptions.makeClipRevealAnimation(view, 0, 0, view.getWidth(), view.getHeight()).toBundle());
-        } catch (CanceledException e) {
+            if (Utilities.ATLEAST_MARSHMALLOW)
+                intent.send(null, 0, null, null, null, null, activityOptions);
+            else
+                intent.send(null, 0, null, null, null, null);
+
+        } catch (PendingIntent.CanceledException e) {
             e.printStackTrace();
         }
         if (autoCancel) {
@@ -90,15 +97,18 @@ public class NotificationInfo implements OnClickListener {
         PopupContainerWithArrow.getOpen(launcher).close(true);
     }
 
-    public Drawable getIconForBackground(Context context, int i) {
+    public Drawable getIconForBackground(Context context, int background) {
         if (mIsIconLarge) {
+            // Only small icons should be tinted.
             return mIconDrawable;
         }
-        mIconColor = IconPalette.resolveContrastColor(context, mIconColor, i);
-        Drawable mutate = mIconDrawable.mutate();
-        mutate.setTintList(null);
-        mutate.setTint(mIconColor);
-        return mutate;
+        mIconColor = IconPalette.resolveContrastColor(context, mIconColor, background);
+        Drawable icon = mIconDrawable.mutate();
+        // DrawableContainer ignores the color filter if it's already set, so clear it first to
+        // get it set and invalidated properly.
+        icon.setTintList(null);
+        icon.setTint(mIconColor);
+        return icon;
     }
 
     public boolean isIconLarge() {
@@ -106,9 +116,9 @@ public class NotificationInfo implements OnClickListener {
     }
 
     public boolean shouldShowIconInBadge() {
-        if (mIsIconLarge && mBadgeIcon == 2) {
-            return true;
-        }
-        return !(mIsIconLarge || mBadgeIcon != 1);
+        // If the icon we're using for this notification matches what the Notification
+        // specified should show in the badge, then return true.
+        return mIsIconLarge && mBadgeIcon == 2
+                || !mIsIconLarge && mBadgeIcon == 1;
     }
 }

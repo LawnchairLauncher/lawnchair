@@ -13,35 +13,41 @@
      limitations under the License.
 -->
 
-<PreferenceScreen android:title="Settings"
+<PreferenceScreen xmlns:tools="http://schemas.android.com/tools"
+    android:title="Settings"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
-        android:title="@string/ui_pref_title"
         android:icon="@drawable/ic_ui"
+        android:summary="@string/general_pref_summary"
+        android:title="@string/general_pref_title"
         app:content="@xml/launcher_ui_preferences" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
-        android:title="@string/pixel_style_pref_title"
+        android:title="@string/pixel_ui_pref_title"
+        android:summary="@string/pixel_ui_pref_summary"
         android:icon="@drawable/ic_google"
         app:content="@xml/launcher_pixel_style_preferences" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:title="@string/behavior_pref_title"
+        android:summary="@string/behavior_pref_summary"
         android:icon="@drawable/ic_behavior"
         app:content="@xml/launcher_behavior_preferences" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
+        android:title="@string/backup_pref_title"
+        android:summary="@string/backup_pref_summary"
+        android:icon="@drawable/ic_import_export"
+        app:content="@xml/launcher_backup_preferences" />
+
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:title="@string/debug_pref_title"
+        android:summary="@string/debug_pref_summary"
         android:icon="@drawable/ic_debug"
         app:content="@xml/launcher_debug_preferences"
         app:longClickContent="@xml/launcher_hidden_preferences" />
-
-    <ch.deletescape.lawnchair.settings.ui.SubPreference
-        android:title="@string/import_export_pref_title"
-        android:icon="@drawable/ic_import_export"
-        app:content="@xml/launcher_backup_preferences" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:title="@string/about_title"

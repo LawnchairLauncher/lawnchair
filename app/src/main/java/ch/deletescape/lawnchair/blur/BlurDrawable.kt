@@ -194,7 +194,7 @@ class BlurDrawable internal constructor(private val mProvider: BlurWallpaperProv
         return true
     }
 
-    protected fun blur() {
+    private fun blur() {
         mBlurInput!!.copyFrom(mBitmapToBlur)
         mBlurScript!!.setInput(mBlurInput)
         mBlurScript!!.forEach(mBlurOutput)

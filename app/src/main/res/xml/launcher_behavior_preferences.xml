@@ -65,8 +65,8 @@
         android:persistent="true" />
 
     <SwitchPreference
-        android:key="pref_enableEditing"
-        android:title="@string/enable_editing_pref_title"
-        android:defaultValue="true"
+        android:key="pref_lockDesktop"
+        android:title="@string/lock_desktop"
+        android:defaultValue="false"
         android:persistent="true" />
 </PreferenceScreen>

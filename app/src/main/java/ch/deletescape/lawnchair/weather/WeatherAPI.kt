@@ -51,7 +51,7 @@ abstract class WeatherAPI {
         const val PROVIDER_GOOGLE_AWARENESS = 1
 
         fun create(context: Context, provider: Int) = when (provider) {
-            PROVIDER_OPENWEATHERMAP -> OWMWeatherAPI()
+            PROVIDER_OPENWEATHERMAP -> OWMWeatherAPI(context)
             PROVIDER_GOOGLE_AWARENESS -> AwarenessWeatherAPI(context)
             else -> throw IllegalArgumentException("Provider must be either PROVIDER_OPENWEATHERMAP or PROVIDER_GOOGLE_AWARENESS")
         }

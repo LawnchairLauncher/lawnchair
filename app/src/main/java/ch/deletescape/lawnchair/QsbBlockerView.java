@@ -13,7 +13,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.weather.WeatherHelper;
 
 public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener, View.OnLongClickListener, WeatherHelper.OnWeatherLoadListener {
@@ -29,7 +28,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
         super(context, attributeSet);
         mBgPaint.setColor(-1);
         mBgPaint.setAlpha(0);
-        if (FeatureFlags.INSTANCE.useFullWidthSearchbar(getContext())) {
+        if (Utilities.getPrefs(getContext()).getUseFullWidthSearchBar()) {
             View.inflate(context, R.layout.qsb_wide_experiment, this);
         }
     }
@@ -43,7 +42,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (!FeatureFlags.INSTANCE.useFullWidthSearchbar(getContext())) {
+        if (!Utilities.getPrefs(getContext()).getUseFullWidthSearchBar()) {
             Workspace workspace = Launcher.getLauncher(getContext()).getWorkspace();
             workspace.setOnStateChangeListener(this);
             prepareStateChange(workspace.getState(), null);
@@ -56,7 +55,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
         if (mView != null && weatherShowing) {
             DeviceProfile deviceProfile = Launcher.getLauncher(getContext()).getDeviceProfile();
             LayoutParams layoutParams = (LayoutParams) mView.getLayoutParams();
-            int size = ((MeasureSpec.getSize(i) / deviceProfile.inv.numColumns) - deviceProfile.iconSizePx) / 2;
+            int size = ((MeasureSpec.getSize(i) / deviceProfile.inv.numColumnsOriginal) - deviceProfile.iconSizePxOriginal) / 2;
             layoutParams.rightMargin = size;
             layoutParams.leftMargin = size;
         }
@@ -89,16 +88,16 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
     }
 
     public void setupView(boolean startListener) {
-        if (!FeatureFlags.INSTANCE.showPixelBar(getContext())) {
+        if (!Utilities.getPrefs(getContext()).getShowPixelBar()) {
             removeAllViews();
             return;
         }
         View view = mView;
         mView = null;
         if (view == null || switching) {
-            if (FeatureFlags.INSTANCE.planes(getContext())) {
+            if (Utilities.getPrefs(getContext()).getEnablePlanes()) {
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.plane_widget, this, false);
-            } else if ((FeatureFlags.INSTANCE.showWeather(getContext()) && !switchToDate) || (switching && !switchToDate)) {
+            } else if ((Utilities.getPrefs(getContext()).getShowWeather() && !switchToDate) || (switching && !switchToDate)) {
                 weatherShowing = true;
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.weather_widget, this, false);
                 TextView temperature = mView.findViewById(R.id.weather_widget_temperature);
@@ -114,7 +113,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
                 mView.findViewById(R.id.date_text1).setOnLongClickListener(this);
                 mView.findViewById(R.id.date_text2).setOnLongClickListener(this);
             }
-            if (FeatureFlags.INSTANCE.useFullWidthSearchbar(getContext())) {
+            if (Utilities.getPrefs(getContext()).getUseFullWidthSearchBar()) {
                 mView.setVisibility(GONE);
             }
         } else {

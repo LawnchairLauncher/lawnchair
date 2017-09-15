@@ -18,6 +18,7 @@ package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
 import android.preference.EditTextPreference
+import android.preference.PreferenceManager
 import android.text.TextUtils
 import android.util.AttributeSet
 
@@ -25,16 +26,25 @@ import ch.deletescape.lawnchair.R
 
 class CustomLocationPreference : EditTextPreference {
 
-    constructor(context: Context) : super(context) {}
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {}
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
+
+    override fun onAttachedToHierarchy(preferenceManager: PreferenceManager?) {
+        super.onAttachedToHierarchy(preferenceManager)
+        updateSummary()
+    }
 
     override fun onDialogClosed(positiveResult: Boolean) {
         super.onDialogClosed(positiveResult)
         if (positiveResult) {
-            val city = sharedPreferences.getString("pref_weather_city", "Lucerne, CH")
-            summary = if (!TextUtils.isEmpty(city)) city else context.getString(R.string.pref_weather_city_summary)
+            updateSummary()
         }
+    }
+
+    private fun updateSummary() {
+        val city = sharedPreferences.getString(PreferenceFlags.KEY_WEATHER_CITY, PreferenceFlags.PREF_WEATHER_DEFAULT_CITY)
+        summary = if (!TextUtils.isEmpty(city)) city else context.getString(R.string.pref_weather_city_summary)
     }
 
 }

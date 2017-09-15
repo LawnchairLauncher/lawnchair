@@ -24,7 +24,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -65,13 +64,14 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -83,9 +83,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ch.deletescape.lawnchair.config.FeatureFlags;
+import ch.deletescape.lawnchair.config.IThemer;
+import ch.deletescape.lawnchair.config.ThemeProvider;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.graphics.ShadowGenerator;
+import ch.deletescape.lawnchair.pixelify.AdaptiveIconDrawableCompat;
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
+import ch.deletescape.lawnchair.preferences.PreferenceFlags;
+import ch.deletescape.lawnchair.preferences.PreferenceProvider;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 import ch.deletescape.lawnchair.util.IconNormalizer;
@@ -103,7 +108,6 @@ public final class Utilities {
 
     private static final Pattern sTrimPattern =
             Pattern.compile("^[\\s|\\p{javaSpaceChar}]*(.*)[\\s|\\p{javaSpaceChar}]*$");
-    private static final String KEY_PREVIOUS_BUILD_NUMBER = "previousBuildNumber";
 
     static {
         sCanvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.DITHER_FLAG,
@@ -113,19 +117,20 @@ public final class Utilities {
     private static final int[] sLoc0 = new int[2];
     private static final int[] sLoc1 = new int[2];
 
-    public static boolean isNycMR1OrAbove() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1;
-    }
-
-    public static boolean isNycOrAbove() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
-    }
-
     public static final boolean ATLEAST_MARSHMALLOW =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
 
     public static final boolean ATLEAST_LOLLIPOP_MR1 =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1;
+
+    public static final boolean ATLEAST_NOUGAT =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
+
+    public static final boolean ATLEAST_NOUGAT_MR1 =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1;
+
+    public static final boolean ATLEAST_OREO =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
 
     // An intent extra to indicate the horizontal scroll of the wallpaper.
     public static final String EXTRA_WALLPAPER_OFFSET = "ch.deletescape.lawnchair.WALLPAPER_OFFSET";
@@ -200,7 +205,7 @@ public final class Utilities {
             Drawable icon, UserHandle user, Context context) {
         float scale = IconNormalizer.getInstance().getScale(icon, null);
         Bitmap bitmap = createIconBitmap(icon, context, scale);
-        if (Utilities.isAtLeastO() && icon instanceof AdaptiveIconDrawable)
+        if (isAdaptive(icon))
             bitmap = addShadowToIcon(bitmap, bitmap.getWidth());
         return badgeIconForUser(bitmap, user, context);
     }
@@ -273,13 +278,9 @@ public final class Utilities {
         return createIconBitmap(icon, context, 1.0f /* scale */);
     }
 
-    /**
-     * @param scale the scale to apply before drawing {@param icon} on the canvas
-     */
     public static Bitmap createIconBitmap(Drawable icon, Context context, float scale) {
         synchronized (sCanvas) {
             final int iconBitmapSize = getIconBitmapSize();
-
             int width = iconBitmapSize;
             int height = iconBitmapSize;
 
@@ -295,6 +296,7 @@ public final class Utilities {
                     bitmapDrawable.setTargetDensity(context.getResources().getDisplayMetrics());
                 }
             }
+
             int sourceWidth = icon.getIntrinsicWidth();
             int sourceHeight = icon.getIntrinsicHeight();
             if (sourceWidth > 0 && sourceHeight > 0) {
@@ -306,27 +308,34 @@ public final class Utilities {
                     width = (int) (height * ratio);
                 }
             }
-
             // no intrinsic size --> use default size
             int textureWidth = iconBitmapSize;
             int textureHeight = iconBitmapSize;
 
-            final Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
+            Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
                     Bitmap.Config.ARGB_8888);
             final Canvas canvas = sCanvas;
             canvas.setBitmap(bitmap);
 
-            final int left = (textureWidth - width) / 2;
-            final int top = (textureHeight - height) / 2;
+            final int left = (textureWidth-width) / 2;
+            final int top = (textureHeight-height) / 2;
 
             sOldBounds.set(icon.getBounds());
-            icon.setBounds(left, top, left + width, top + height);
+            if (Utilities.isAdaptive(icon)) {
+                int offset = Math.max((int)(ShadowGenerator.BLUR_FACTOR * iconBitmapSize),
+                        Math.min(left, top));
+                int size = Math.max(width, height);
+                icon.setBounds(offset, offset, size, size);
+            } else {
+                icon.setBounds(left, top, left+width, top+height);
+            }
             canvas.save(Canvas.MATRIX_SAVE_FLAG);
             canvas.scale(scale, scale, textureWidth / 2, textureHeight / 2);
             icon.draw(canvas);
             canvas.restore();
             icon.setBounds(sOldBounds);
             canvas.setBitmap(null);
+
             return bitmap;
         }
     }
@@ -748,9 +757,13 @@ public final class Utilities {
     }
 
     @NonNull
-    public static SharedPreferences getPrefs(Context context) {
-        return context.getSharedPreferences(
-                LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
+    public static IPreferenceProvider getPrefs(Context context) {
+        return PreferenceProvider.INSTANCE.getPreferences(context);
+    }
+
+    @NonNull
+    public static IThemer getThemer() {
+        return ThemeProvider.INSTANCE.getThemer();
     }
 
     public static boolean isPowerSaverOn(Context context) {
@@ -759,7 +772,7 @@ public final class Utilities {
     }
 
     public static boolean isWallapaperAllowed(Context context) {
-        if (isNycOrAbove()) {
+        if (ATLEAST_NOUGAT) {
             try {
                 WallpaperManager wm = context.getSystemService(WallpaperManager.class);
                 return (Boolean) wm.getClass().getDeclaredMethod("isSetWallpaperAllowed")
@@ -786,8 +799,26 @@ public final class Utilities {
         return c == null || c.isEmpty();
     }
 
-    public static boolean isAtLeastO() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+    public static void stackTrace() {
+        (new Throwable()).printStackTrace();
+    }
+
+    public static void setDefaultLauncher(@NotNull Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        ComponentName fakeLauncher =
+                new ComponentName(context.getPackageName(), context.getPackageName() + ".FakeLauncher");
+        ComponentName launcher = new ComponentName(context, Launcher.class);
+
+        packageManager.setComponentEnabledSetting(fakeLauncher, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+        packageManager.setComponentEnabledSetting(launcher, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+
+        Intent picker = new Intent(Intent.ACTION_MAIN);
+        picker.addCategory(Intent.CATEGORY_HOME);
+        picker.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(picker);
+
+        packageManager.setComponentEnabledSetting(fakeLauncher, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
+        packageManager.setComponentEnabledSetting(launcher, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
     }
 
     /**
@@ -836,69 +867,6 @@ public final class Utilities {
         }
     }
 
-    public static int getColor(Context context, String huePrefName, String defaultHue, String variationPrefName, String defaultVariation) {
-        int hueId = Integer.valueOf(Utilities.getPrefs(context).getString(huePrefName, defaultHue));
-        if (hueId < 0) {
-            switch (hueId) {
-                case -2:
-                    return Color.BLACK;
-                case -1:
-                    return Color.TRANSPARENT;
-                default:
-                    return Color.WHITE;
-            }
-        }
-        String[] hueArray = getHueArray(hueId, context);
-        int variation = Integer.valueOf(Utilities.getPrefs(context).getString(variationPrefName, defaultVariation));
-        return Color.parseColor(hueArray[variation]);
-    }
-
-    private static String[] getHueArray(int hueId, Context context) {
-        Resources res = context.getResources();
-        switch (hueId) {
-            case 0:
-                return res.getStringArray(R.array.arr_red);
-            case 1:
-                return res.getStringArray(R.array.arr_pink);
-            case 2:
-                return res.getStringArray(R.array.arr_purple);
-            case 3:
-                return res.getStringArray(R.array.arr_deep_purple);
-            case 4:
-                return res.getStringArray(R.array.arr_indigo);
-            case 5:
-                return res.getStringArray(R.array.arr_blue);
-            case 6:
-                return res.getStringArray(R.array.arr_light_blue);
-            case 7:
-                return res.getStringArray(R.array.arr_cyan);
-            case 8:
-                return res.getStringArray(R.array.arr_teal);
-            case 9:
-                return res.getStringArray(R.array.arr_green);
-            case 10:
-                return res.getStringArray(R.array.arr_light_green);
-            case 11:
-                return res.getStringArray(R.array.arr_lime);
-            case 12:
-                return res.getStringArray(R.array.arr_yellow);
-            case 13:
-                return res.getStringArray(R.array.arr_amber);
-            case 14:
-                return res.getStringArray(R.array.arr_orange);
-            case 15:
-                return res.getStringArray(R.array.arr_deep_orange);
-            case 16:
-                return res.getStringArray(R.array.arr_brown);
-            case 17:
-                return res.getStringArray(R.array.arr_grey);
-            case 18:
-                return res.getStringArray(R.array.arr_blue_grey);
-            default:
-                return null;
-        }
-    }
-
     public static UserHandle myUserHandle() {
         return android.os.Process.myUserHandle();
     }
@@ -910,21 +878,21 @@ public final class Utilities {
     }
 
     public static void setAppVisibility(Context context, String key, boolean visible) {
-        getPrefs(context).edit().putBoolean("visibility_" + key, visible).apply();
+        getPrefs(context).appVisibility(context, key, visible, false);
     }
 
     public static boolean isAppHidden(Context context, String key) {
-        return !getPrefs(context).getBoolean("visibility_" + key, true);
+        return !getPrefs(context).appVisibility(context, key);
     }
 
     public static int getDynamicAccent(Context context) {
-        if (!FeatureFlags.INSTANCE.isDynamicUiEnabled(context)) return getColorAccent(context);
+        if (!Utilities.getPrefs(context).getEnableDynamicUi()) return getColorAccent(context);
         return getColor(context, ExtractedColors.VIBRANT_INDEX, getColorAccent(context));
     }
 
     public static int getDynamicBadgeColor(Context context) {
         int defaultColor = context.getResources().getColor(R.color.badge_color);
-        if (!FeatureFlags.INSTANCE.isDynamicUiEnabled(context)) return defaultColor;
+        if (!Utilities.getPrefs(context).getEnableDynamicUi()) return defaultColor;
         return getColor(context, ExtractedColors.VIBRANT_INDEX, defaultColor);
     }
 
@@ -934,12 +902,12 @@ public final class Utilities {
         return typedValue.data;
     }
 
-    private static int getPreviousBuildNumber(SharedPreferences prefs) {
-        return prefs.getInt(KEY_PREVIOUS_BUILD_NUMBER, 0);
+    private static int getPreviousBuildNumber(IPreferenceProvider prefs) {
+        return prefs.getPreviousBuildNumber();
     }
 
-    private static void setBuildNumber(SharedPreferences prefs, int buildNumber) {
-        prefs.edit().putInt(KEY_PREVIOUS_BUILD_NUMBER, buildNumber).apply();
+    private static void setBuildNumber(IPreferenceProvider prefs, int buildNumber) {
+        prefs.setPreviousBuildNumber(buildNumber);
     }
 
     public static void showChangelog(Context context) {
@@ -948,7 +916,7 @@ public final class Utilities {
 
     public static void showChangelog(Context context, boolean force) {
         if (!BuildConfig.TRAVIS || BuildConfig.TAGGED_BUILD) return;
-        final SharedPreferences prefs = getPrefs(context);
+        final IPreferenceProvider prefs = getPrefs(context);
         if (force || BuildConfig.TRAVIS_BUILD_NUMBER != getPreviousBuildNumber(prefs)) {
             new AlertDialog.Builder(context)
                     .setTitle(String.format(context.getString(R.string.changelog_title), BuildConfig.TRAVIS_BUILD_NUMBER))
@@ -964,7 +932,7 @@ public final class Utilities {
     }
 
     @NonNull
-    private static String getChangelog() {
+    public static String getChangelog() {
         StringBuilder builder = new StringBuilder();
         String[] lines = BuildConfig.CHANGELOG.split("\n");
         for (String line : lines) {
@@ -975,8 +943,9 @@ public final class Utilities {
             builder
                     .append("- ")
                     .append(line.trim())
-                    .append("\n");
+                    .append('\n');
         }
+        builder.deleteCharAt(builder.lastIndexOf("\n"));
         return builder.toString();
     }
 
@@ -995,11 +964,30 @@ public final class Utilities {
     }
 
     public static boolean isAwarenessApiEnabled(Context context) {
-        SharedPreferences prefs = getPrefs(context);
-        return "1".equals(prefs.getString("pref_weatherProvider", "0"));
+        IPreferenceProvider prefs = getPrefs(context);
+        return PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS.equals(prefs.getWeatherProvider());
     }
 
-    public static <T> List<T> emptyList() {
-        return Collections.EMPTY_LIST;
+    public static boolean isComponentClock(ComponentName componentName, boolean stockAppOnly) {
+        if (componentName == null) {
+            return false;
+        }
+
+        if (stockAppOnly) {
+            return "com.google.android.deskclock/com.android.deskclock.DeskClock".equals(componentName.flattenToString());
+        }
+
+        // TODO: Maybe we can add all apps that end with .clockpackage/.DeskClock/.clock/???
+        // Or that contain .clock./.deskclock or end with those?
+        ArrayList<String> clockApps = new ArrayList<>();
+        clockApps.add("com.google.android.deskclock/com.android.deskclock.DeskClock"); // Stock
+        clockApps.add("com.sec.android.app.clockpackage/com.sec.android.app.clockpackage.ClockPackage"); // Samsung
+        clockApps.add("com.android.deskclock/com.android.deskclock.DeskClockTabActivity"); // MIUI
+
+        return clockApps.contains(componentName.flattenToString());
+    }
+
+    public static boolean isAdaptive(Drawable drawable) {
+        return ATLEAST_OREO && drawable instanceof AdaptiveIconDrawable || drawable instanceof AdaptiveIconDrawableCompat;
     }
 }

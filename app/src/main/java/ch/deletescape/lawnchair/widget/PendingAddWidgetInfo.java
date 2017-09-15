@@ -36,18 +36,18 @@ public class PendingAddWidgetInfo extends PendingAddItemInfo {
     public AppWidgetHostView boundWidget;
     public Bundle bindOptions = null;
 
-    public PendingAddWidgetInfo(Context context, LauncherAppWidgetProviderInfo i) {
+    public PendingAddWidgetInfo(Context context, LauncherAppWidgetProviderInfo info) {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
-        this.info = i;
-        user = AppWidgetManagerCompat.getInstance(context).getUser(i);
-        componentName = i.provider;
-        previewImage = i.previewImage;
-        icon = i.icon;
+        this.info = info;
+        user = AppWidgetManagerCompat.getInstance(context).getUser(info);
+        componentName = info.provider;
+        previewImage = info.previewImage;
+        icon = info.icon;
 
-        spanX = i.spanX;
-        spanY = i.spanY;
-        minSpanX = i.minSpanX;
-        minSpanY = i.minSpanY;
+        spanX = info.spanX;
+        spanY = info.spanY;
+        minSpanX = info.minSpanX;
+        minSpanY = info.minSpanY;
     }
 
 }

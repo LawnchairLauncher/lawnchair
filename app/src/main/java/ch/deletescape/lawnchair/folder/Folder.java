@@ -24,7 +24,6 @@ import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.text.InputType;
@@ -306,10 +305,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     @Override
     public boolean onLongClick(View v) {
-        if (this.mLauncher.isDraggingEnabled()) {
-            return startDrag(v, new DragOptions());
-        }
-        return true;
+        return !mLauncher.isDraggingEnabled() || startDrag(v, new DragOptions());
     }
 
     public boolean startDrag(View v, DragOptions options) {
@@ -566,7 +562,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         float radius = (float) Math.hypot(rx, ry);
 
         Animator reveal = new CircleRevealOutlineProvider((int) getPivotX(),
-                (int) getPivotY(), 0, radius).createRevealAnimator(this);
+                (int) getPivotY(), 0, radius).createRevealAnimator(this, false, true);
         reveal.setDuration(mMaterialExpandDuration);
         reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
 

@@ -15,8 +15,8 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/icon"
-        android:layout_toLeftOf="@+id/radio"
+        android:layout_toEndOf="@id/icon"
+        android:layout_toStartOf="@+id/radio"
         android:layout_centerVertical="true"
         android:ellipsize="end"
         android:maxLines="1"
@@ -33,5 +33,5 @@
         android:duplicateParentState="true"
         android:focusable="false"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"/>
+        android:layout_marginEnd="8dp" />
 </RelativeLayout>

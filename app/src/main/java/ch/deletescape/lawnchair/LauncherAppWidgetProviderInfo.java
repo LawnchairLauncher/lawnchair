@@ -83,11 +83,6 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
                 LauncherAppState.getInstance().getInvariantDeviceProfile().fillResIconDpi);
     }
 
-    public String toString(PackageManager pm) {
-        return String.format("WidgetProviderInfo provider:%s package:%s short:%s label:%s",
-                provider.toString(), provider.getPackageName(), provider.getShortClassName(), getLabel(pm));
-    }
-
     public Point getMinSpans() {
         return new Point(
                 (resizeMode & RESIZE_HORIZONTAL) != 0 ? minSpanX : -1,

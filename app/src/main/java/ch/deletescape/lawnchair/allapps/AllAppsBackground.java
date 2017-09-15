@@ -6,14 +6,11 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.InsetDrawable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
-import ch.deletescape.lawnchair.DeviceProfile;
-import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.blur.BlurDrawable;

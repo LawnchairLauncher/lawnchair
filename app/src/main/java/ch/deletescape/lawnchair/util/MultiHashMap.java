@@ -19,8 +19,6 @@ package ch.deletescape.lawnchair.util;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
-
 /**
  * A utility map from keys to an ArrayList of values.
  */

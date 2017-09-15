@@ -181,8 +181,7 @@ public class IconNormalizer {
 
         float areaScale = area / (width * height);
         // Use sqrt of the final ratio as the images is scaled across both width and height.
-        float scale = areaScale > scaleRequired ? (float) Math.sqrt(scaleRequired / areaScale) : 1;
-        return scale;
+        return areaScale > scaleRequired ? (float) Math.sqrt(scaleRequired / areaScale) : 1;
     }
 
     /**

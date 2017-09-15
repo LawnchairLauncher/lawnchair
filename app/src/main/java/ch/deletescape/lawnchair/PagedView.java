@@ -974,10 +974,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     protected int getChildOffset(int index) {
         if (index < 0 || index > getChildCount() - 1) return 0;
-
-        int offset = getPageAt(index).getLeft() - getViewportOffsetX();
-
-        return offset;
+        return getPageAt(index).getLeft() - getViewportOffsetX();
     }
 
     protected void getFreeScrollPageRange(int[] range) {
@@ -2151,10 +2148,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         super.onInitializeAccessibilityNodeInfo(info);
         info.setScrollable(getPageCount() > 1);
         if (getCurrentPage() < getPageCount() - 1) {
-            info.addAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+            info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD);
         }
         if (getCurrentPage() > 0) {
-            info.addAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+            info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_BACKWARD);
         }
         info.setClassName(getClass().getName());
 

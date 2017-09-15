@@ -224,16 +224,6 @@ public class IconCache {
     }
 
     /**
-     * Updates the entries related to all packages in memory and persistent DB.
-     */
-    public void updateIconsForAll(final UserHandle user) {
-        long userSerial = mUserManager.getSerialNumberForUser(user);
-        for (LauncherActivityInfoCompat app : mLauncherApps.getActivityList(null, user)) {
-            updateIconInDBAndMemCache(app, userSerial);
-        }
-    }
-
-    /**
      * Removes the entries related to the given package in memory and persistent DB.
      */
     public synchronized void removeIconsForPkg(String packageName, UserHandle user) {
@@ -366,30 +356,6 @@ public class IconCache {
         addIconToDB(values, app.getComponentName(), info, userSerial);
     }
 
-    @Thunk
-    void updateIconInDBAndMemCache(LauncherActivityInfoCompat app, long userSerial) {
-        // Reuse the existing entry if it already exists in the DB. This ensures that we do not
-        // create bitmap if it was already created during loader.
-        final ComponentKey key = new ComponentKey(app.getComponentName(), app.getUser());
-        CacheEntry entry;
-        entry = mCache.get(key);
-        if (entry == null) {
-            return;
-        }
-        Bitmap tmp = entry.icon;
-        entry.icon = Utilities.createBadgedIconBitmap(
-                pip.getIcon(app, mIconDpi), app.getUser(),
-                mContext);
-        if (entry.icon.equals(tmp)) {
-            return;
-        }
-        mCache.put(key, entry);
-
-        Bitmap lowResIcon = generateLowResIcon(entry.icon, mActivityBgColor);
-        ContentValues values = newContentValues(entry.icon, lowResIcon, entry.title.toString());
-        mIconDb.update(values, "componentName = ? AND profileID = ?", new String[]{app.getComponentName().flattenToString(), "" + userSerial});
-    }
-
     /**
      * Updates {@param values} to contain versoning information and adds it to the DB.
      *
@@ -466,8 +432,7 @@ public class IconCache {
     }
 
     private Bitmap getNonNullIcon(CacheEntry entry, UserHandle user) {
-        Bitmap b = entry.icon == null ? getDefaultIcon(user) : entry.icon;
-        return b;
+        return entry.icon == null ? getDefaultIcon(user) : entry.icon;
     }
 
     /**
@@ -479,8 +444,8 @@ public class IconCache {
         CacheEntry entry = cacheLocked(application.componentName, info, user,
                 false, useLowResIcon);
         application.originalTitle = Utilities.trim(entry.title);
-        String key = "alias_" + application.componentName.flattenToString();
-        application.title = Utilities.getPrefs(mContext).getString(key, application.originalTitle.toString());
+        String key = application.componentName.flattenToString();
+        application.title = Utilities.getPrefs(mContext).itemAlias(key, application.originalTitle.toString());
         application.contentDescription = entry.contentDescription;
         application.iconBitmap = getNonNullIcon(entry, user);
         application.usingLowResIcon = entry.isLowResIcon;
@@ -494,8 +459,8 @@ public class IconCache {
                 false, application.usingLowResIcon);
         if (entry.icon != null && !isDefaultIcon(entry.icon, application.user)) {
             application.originalTitle = Utilities.trim(entry.title);
-            String key = "alias_" + application.componentName.flattenToString();
-            application.title = Utilities.getPrefs(mContext).getString(key, application.originalTitle.toString());
+            String key = application.componentName.flattenToString();
+            application.title = Utilities.getPrefs(mContext).itemAlias(key, application.originalTitle.toString());
             application.contentDescription = entry.contentDescription;
             application.iconBitmap = entry.icon;
             application.usingLowResIcon = entry.isLowResIcon;
@@ -549,8 +514,8 @@ public class IconCache {
         Bitmap iBitmap = getNonNullIcon(entry, user);
         shortcutInfo.setIcon(iBitmap);
         String title = Utilities.trim(entry.title);
-        String key = "alias_" + component.flattenToString();
-        shortcutInfo.title = Utilities.getPrefs(mContext).getString(key, title);
+        String key = component.flattenToString();
+        shortcutInfo.title = Utilities.getPrefs(mContext).itemAlias(key, title);
         shortcutInfo.contentDescription = entry.contentDescription;
         shortcutInfo.usingFallbackIcon = isDefaultIcon(entry.icon, user);
         shortcutInfo.usingLowResIcon = entry.isLowResIcon;

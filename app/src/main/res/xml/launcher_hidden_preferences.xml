@@ -3,4 +3,8 @@
     <SwitchPreference
         android:key="pref_plane"
         android:title="Amazing Plane" />
+
+    <Preference
+        android:key="random_eminem_quote"
+        android:title="Random Eminem Quote" />
 </PreferenceScreen>

@@ -19,7 +19,6 @@ package ch.deletescape.lawnchair.dynamicui;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.graphics.Palette;
@@ -27,13 +26,12 @@ import android.support.v7.graphics.Palette;
 import java.util.List;
 
 import ch.deletescape.lawnchair.Utilities;
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 
 /**
  * Contains helper fields and methods related to extracting colors from the wallpaper.
  */
 public class ExtractionUtils {
-    public static final String EXTRACTED_COLORS_PREFERENCE_KEY = "pref_extractedColors";
-    public static final String WALLPAPER_ID_PREFERENCE_KEY = "pref_wallpaperId";
 
     private static final float MIN_CONTRAST_RATIO = 2f;
 
@@ -63,18 +61,18 @@ public class ExtractionUtils {
     }
 
     private static boolean hasWallpaperIdChanged(Context context) {
-        if (!Utilities.isNycOrAbove()) {
+        if (!Utilities.ATLEAST_NOUGAT) {
             // TODO: update an id in sharedprefs in onWallpaperChanged broadcast, and read it here.
             return false;
         }
-        final SharedPreferences sharedPrefs = Utilities.getPrefs(context);
+        final IPreferenceProvider sharedPrefs = Utilities.getPrefs(context);
         int wallpaperId = getWallpaperId(WallpaperManager.getInstance(context));
-        int savedWallpaperId = sharedPrefs.getInt(ExtractionUtils.WALLPAPER_ID_PREFERENCE_KEY, -1);
+        int savedWallpaperId = sharedPrefs.getWallpaperId();
         return wallpaperId != savedWallpaperId;
     }
 
     public static int getWallpaperId(WallpaperManager wallpaperManager) {
-        if (Utilities.isNycOrAbove()) {
+        if (Utilities.ATLEAST_NOUGAT) {
             return wallpaperManager.getWallpaperId(WallpaperManager.FLAG_SYSTEM);
         } else {
             return -1;
@@ -115,19 +113,17 @@ public class ExtractionUtils {
     }
 
     private static boolean hasExtractionPreferencesChanged(Context context) {
-        SharedPreferences prefs = Utilities.getPrefs(context);
+        IPreferenceProvider prefs = Utilities.getPrefs(context);
         boolean result = false;
-        String hotseatColoringKey = "pref_hotseatShouldUseExtractedColors";
-        boolean hotseatColoringValue = prefs.getBoolean(hotseatColoringKey, true);
-        String lightStatusBarKey = "pref_lightStatusBar";
-        boolean lightStatusBarValue = prefs.getBoolean(lightStatusBarKey, true);
-        if (prefs.getBoolean(hotseatColoringKey + "_cache", !hotseatColoringValue) != hotseatColoringValue) {
+        boolean hotseatColoringValue = prefs.getHotseatShouldUseExtractedColors();
+        boolean lightStatusBarValue = prefs.getLightStatusBar();
+        if (prefs.hotseatShouldUseExtractedColorsCache(!hotseatColoringValue) != hotseatColoringValue) {
             result = true;
-            prefs.edit().putBoolean(hotseatColoringKey + "_cache", hotseatColoringValue).apply();
+            prefs.hotseatShouldUseExtractedColorsCache(hotseatColoringValue, false);
         }
-        if (prefs.getBoolean(lightStatusBarKey + "_cache", !lightStatusBarValue) != lightStatusBarValue) {
+        if (prefs.lightStatusBarKeyCache(!lightStatusBarValue) != lightStatusBarValue) {
             result = true;
-            prefs.edit().putBoolean(lightStatusBarKey + "_cache", lightStatusBarValue).apply();
+            prefs.lightStatusBarKeyCache(lightStatusBarValue, false);
         }
         return result;
     }

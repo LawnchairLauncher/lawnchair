@@ -16,7 +16,14 @@
 
 package ch.deletescape.lawnchair.config
 
+import ch.deletescape.lawnchair.BuildConfig
+
 object ProviderConfig {
 
-    const val AUTHORITY = "ch.deletescape.lawnchair.settings"
+    @JvmField
+    var AUTHORITY = BuildConfig.APPLICATION_ID + ".settings"
+
+    fun init(packageName: String) {
+        AUTHORITY = packageName + ".settings"
+    }
 }

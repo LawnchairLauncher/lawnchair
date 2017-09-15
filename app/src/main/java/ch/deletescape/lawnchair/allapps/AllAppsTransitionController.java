@@ -7,9 +7,7 @@ import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Rect;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.MotionEvent;
@@ -27,6 +25,7 @@ import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.ShortcutAndWidgetContainer;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
+import ch.deletescape.lawnchair.allapps.theme.IAllAppsThemer;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.util.TouchController;
@@ -57,6 +56,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private boolean mLightStatusBar;
 
     private AllAppsContainerView mAppsView;
+    private final IAllAppsThemer mTheme;
     private int mAllAppsBackgroundColor;
     private int mAllAppsBackgroundColorBlur;
     private Workspace mWorkspace;
@@ -80,6 +80,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private float mShiftStart;      // [0, mShiftRange]
     private float mShiftRange;      // changes depending on the orientation
     private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
+    private int mPullDownState;
 
     // Velocity of the container. Unit is in px/ms.
     private float mContainerVelocity;
@@ -99,6 +100,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private int allAppsAlpha;
 
+    private int mPullDownAction;
+
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
         mDetector = new VerticalPullDetector(l);
@@ -106,32 +109,28 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mShiftRange = DEFAULT_SHIFT_RANGE;
         mProgress = 1f;
         mEvaluator = new ArgbEvaluator();
-        mAllAppsBackgroundColor = Utilities
-                .resolveAttributeData(FeatureFlags.INSTANCE.applyDarkTheme(l, FeatureFlags.DARK_ALLAPPS), R.attr.allAppsContainerColor);
-        mAllAppsBackgroundColorBlur = Utilities
-                .resolveAttributeData(FeatureFlags.INSTANCE.applyDarkTheme(l, FeatureFlags.DARK_BLUR), R.attr.allAppsContainerColorBlur);
-        mTransparentHotseat = FeatureFlags.INSTANCE.isTransparentHotseat(l);
-        mLightStatusBar = FeatureFlags.INSTANCE.lightStatusBar(l);
+        mTheme = Utilities.getThemer().allAppsTheme(l);
+        mAllAppsBackgroundColor = mTheme.getBackgroundColor();
+        mAllAppsBackgroundColorBlur = mTheme.getBackgroundColorBlur();
+        mTransparentHotseat = Utilities.getPrefs(l).getTransparentHotseat();
+        mLightStatusBar = Utilities.getPrefs(l).getLightStatusBar();
+        initPullDown(l);
+    }
+
+    public void initPullDown(Context context) {
+        mPullDownAction = FeatureFlags.INSTANCE.pullDownAction(context);
     }
 
     public void updateLightStatusBar(Context context) {
-        mLightStatusBar = FeatureFlags.INSTANCE.lightStatusBar(context);
+        mLightStatusBar = Utilities.getPrefs(context).getLightStatusBar();
         updateLightStatusBar(mProgress * mShiftRange);
     }
 
-    public void setAllAppsAlpha(Context context, int allAppsAlpha) {
+    public void setAllAppsAlpha(int allAppsAlpha) {
         this.allAppsAlpha = allAppsAlpha;
-        mAppsView.setAppIconTextColor(getAppIconTextColor(context, allAppsAlpha));
-    }
-
-    private int getAppIconTextColor(Context context, int allAppsAlpha) {
-        if (FeatureFlags.INSTANCE.useDarkTheme(FeatureFlags.DARK_ALLAPPS)) {
-            return Color.WHITE;
-        } else if ((allAppsAlpha < 128 && !BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS)) || allAppsAlpha < 50) {
-            return Color.WHITE;
-        } else {
-            return context.getResources().getColor(R.color.quantum_panel_text_color);
-        }
+        mAppsView.setAppIconTextStyle(
+                mTheme.iconTextColor(allAppsAlpha),
+                mTheme.getIconTextLines());
     }
 
     @Override
@@ -156,6 +155,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                         directionsToDetectScroll |= VerticalPullDetector.DIRECTION_DOWN;
                     } else {
                         directionsToDetectScroll |= VerticalPullDetector.DIRECTION_UP;
+                        if (mPullDownAction != 0)
+                            directionsToDetectScroll |= VerticalPullDetector.DIRECTION_DOWN;
                     }
                 } else {
                     if (isInDisallowRecatchBottomZone()) {
@@ -206,7 +207,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     public boolean onTouchEvent(MotionEvent ev) {
         return mDetector.onTouchEvent(ev);
     }
-
+    
     private boolean isInDisallowRecatchTopZone() {
         return mProgress < RECATCH_REJECTION_FRACTION;
     }
@@ -221,6 +222,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         cancelAnimation();
         mCurrentAnimation = LauncherAnimUtils.createAnimatorSet();
         mShiftStart = mAppsView.getTranslationY();
+        if (mPullDownState != 4)
+            mPullDownState = (mPullDownAction != 0 && mProgress == 1) ? 1 : 0;
         preparePull(start);
     }
 
@@ -230,10 +233,29 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             return false;   // early termination.
         }
 
-        mContainerVelocity = velocity;
+        if (mProgress == 1) {
+            boolean notOpenedYet = mPullDownState == 1;
+            if (notOpenedYet || mPullDownState == 2) {
+                if (velocity > 2.4) {
+                    mPullDownState = 3;
+                    mLauncher.onPullDownAction(mPullDownAction);
+                    if (mPullDownAction != FeatureFlags.PULLDOWN_NOTIFICATIONS)
+                        mPullDownState = 4;
+                } else if (notOpenedYet && velocity < 0) {
+                    mPullDownState = 0;
+                }
+            } else if (mPullDownState == 3 && velocity < -0.5) {
+                mPullDownState = 2;
+                mLauncher.closeNotifications();
+            }
+        }
 
-        float shift = Math.min(Math.max(0, mShiftStart + displacement), mShiftRange);
-        setProgress(shift / mShiftRange);
+        if (mPullDownState < 2) {
+            mContainerVelocity = velocity;
+
+            float shift = Math.min(Math.max(0, mShiftStart + displacement), mShiftRange);
+            setProgress(shift / mShiftRange);
+        }
 
         return true;
     }
@@ -245,10 +267,10 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         }
 
         if (fling) {
-            if (velocity < 0) {
+            if (velocity < 0 && mPullDownState < 2) {
                 calculateDuration(velocity, mAppsView.getTranslationY());
                 mLauncher.showAppsView(true /* animated */, false /* focusSearchBar */);
-            } else {
+            } else if (mPullDownAction != FeatureFlags.PULLDOWN_APPS_SEARCH || mPullDownState < 2) {
                 calculateDuration(velocity, Math.abs(mShiftRange - mAppsView.getTranslationY()));
                 mLauncher.showWorkspace(true);
             }
@@ -262,6 +284,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 mLauncher.showAppsView(true /* animated */, false /* focusSearchBar */);
             }
         }
+        mPullDownState = mPullDownAction != 0 ? 1 : 0;
     }
 
     public boolean isTransitioning() {
@@ -289,13 +312,13 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         boolean useDarkTheme = FeatureFlags.INSTANCE.useDarkTheme(FeatureFlags.DARK_ALLAPPS);
         boolean darkStatusBar = useDarkTheme ||
                 (BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS) &&
-                !mLauncher.getExtractedColors().isLightStatusBar() &&
-                allAppsAlpha < 52);
+                        !mLauncher.getExtractedColors().isLightStatusBar() &&
+                        allAppsAlpha < 52);
 
         boolean darkNavigationBar = useDarkTheme ||
                 (BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS) &&
-                !mLauncher.getExtractedColors().isLightNavigationBar() &&
-                allAppsAlpha < 52);
+                        !mLauncher.getExtractedColors().isLightNavigationBar() &&
+                        allAppsAlpha < 52);
 
         if (Utilities.ATLEAST_MARSHMALLOW) {
             // Use a light status bar (dark icons) if all apps is behind at least half of the status

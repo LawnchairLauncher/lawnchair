@@ -1,15 +1,12 @@
 package ch.deletescape.lawnchair.weather
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-
-import java.util.HashMap
-
 import ch.deletescape.lawnchair.R
 import ch.deletescape.lawnchair.Utilities
+import java.util.*
 
 class WeatherIconProvider(private val context: Context) {
 
@@ -43,15 +40,15 @@ class WeatherIconProvider(private val context: Context) {
             ID_MAP.put("${CONDITION_MOST_CLOUDS}d", R.drawable.weather_04)
             ID_MAP.put("${CONDITION_MOST_CLOUDS}n", R.drawable.weather_04n)
             ID_MAP.put("${CONDITION_SHOWERS}d", R.drawable.weather_09)
-            ID_MAP.put("${CONDITION_SHOWERS}n", R.drawable.weather_09n)
+            ID_MAP.put("${CONDITION_SHOWERS}n", R.drawable.weather_09)
             ID_MAP.put("${CONDITION_RAIN}d", R.drawable.weather_10)
             ID_MAP.put("${CONDITION_RAIN}n", R.drawable.weather_10n)
             ID_MAP.put("${CONDITION_STORM}d", R.drawable.weather_11)
-            ID_MAP.put("${CONDITION_STORM}n", R.drawable.weather_11n)
+            ID_MAP.put("${CONDITION_STORM}n", R.drawable.weather_11)
             ID_MAP.put("${CONDITION_SNOW}d", R.drawable.weather_13)
-            ID_MAP.put("${CONDITION_SNOW}n", R.drawable.weather_13n)
+            ID_MAP.put("${CONDITION_SNOW}n", R.drawable.weather_13)
             ID_MAP.put("${CONDITION_MIST}d", R.drawable.weather_50)
-            ID_MAP.put("${CONDITION_MIST}n", R.drawable.weather_50n)
+            ID_MAP.put("${CONDITION_MIST}n", R.drawable.weather_50)
             ID_MAP.put(CONDITION_UNKNOWN, R.drawable.weather_none_available)
         }
     }

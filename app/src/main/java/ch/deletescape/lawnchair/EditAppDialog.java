@@ -3,8 +3,6 @@ package ch.deletescape.lawnchair;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -17,18 +15,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
-import ch.deletescape.lawnchair.iconpack.EditIconActivity;
-import ch.deletescape.lawnchair.model.PackageItemInfo;
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 
 public class EditAppDialog extends Launcher.LauncherDialog {
-    private static SharedPreferences sharedPrefs;
-    private AppInfo info;
+    private static IPreferenceProvider sharedPrefs;
+    private EditableItemInfo info;
     private EditText title;
     private Switch visibility;
     private boolean visibleState;
     private Launcher launcher;
 
-    public EditAppDialog(@NonNull Context context, AppInfo info, Launcher launcher) {
+    public EditAppDialog(@NonNull Context context, EditableItemInfo info, Launcher launcher) {
         super(context);
         this.info = info;
         this.launcher = launcher;
@@ -41,8 +38,8 @@ public class EditAppDialog extends Launcher.LauncherDialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_edit_dialog);
 
-        final ComponentName component = info.componentName;
-        setTitle(info.originalTitle);
+        final ComponentName component = info.getComponentName();
+        setTitle(info.getTitle());
 
         title = findViewById(R.id.title);
         TextView packageName = findViewById(R.id.package_name);
@@ -50,41 +47,47 @@ public class EditAppDialog extends Launcher.LauncherDialog {
         visibility = findViewById(R.id.visibility);
         ImageButton reset = findViewById(R.id.reset_title);
 
-        title.setText(info.title);
-        packageName.setText(component.getPackageName());
-        visibleState = !Utilities.isAppHidden(getContext(), component.flattenToString());
-        visibility.setChecked(visibleState);
+        title.setText(info.getTitle());
+        if (component != null) {
+            packageName.setText(component.getPackageName());
+            if (info instanceof AppInfo)
+                visibleState = !Utilities.isAppHidden(getContext(), component.flattenToString());
+        } else {
+            packageName.setVisibility(View.GONE);
+        }
+        if (info instanceof AppInfo)
+            visibility.setChecked(visibleState);
+        else
+            findViewById(R.id.visibility_container).setVisibility(View.GONE);
 
-        View.OnClickListener editIcon = new View.OnClickListener() {
+        icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), EditIconActivity.class);
-                intent.putExtra("componentName", info.componentName);
-                intent.putExtra("userHandle", info.user);
-                getContext().startActivity(intent);
+                launcher.startEditIcon(info);
             }
-        };
-        icon.setOnClickListener(editIcon);
+        });
 
-        View.OnLongClickListener olcl = new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                try {
-                    LauncherAppsCompat.getInstance(launcher).showAppDetailsForProfile(component, info.user);
-                    return true;
-                } catch (SecurityException | ActivityNotFoundException e) {
-                    Toast.makeText(launcher, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-                    Log.e("EditAppDialog", "Unable to launch settings", e);
+        if (component != null) {
+            icon.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    try {
+                        LauncherAppsCompat.getInstance(launcher).showAppDetailsForProfile(component, Utilities.myUserHandle());
+                        return true;
+                    } catch (SecurityException | ActivityNotFoundException e) {
+                        Toast.makeText(launcher, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
+                        Log.e("EditAppDialog", "Unable to launch settings", e);
+                    }
+                    return false;
                 }
-                return false;
-            }
-        };
-        icon.setOnLongClickListener(olcl);
+            });
+        }
 
         View.OnClickListener resetTitle = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                title.setText(info.originalTitle);
+                info.setTitle(getContext(), null);
+                EditAppDialog.this.title.setText(info.getTitle(getContext()));
             }
         };
         reset.setOnClickListener(resetTitle);
@@ -95,20 +98,19 @@ public class EditAppDialog extends Launcher.LauncherDialog {
     @Override
     public void onResume() {
         ImageView icon = findViewById(R.id.icon);
-        launcher.getIconCache().getTitleAndIcon(info, null, false);
-        icon.setImageBitmap(info.iconBitmap);
+        info.reloadIcon(launcher);
+        icon.setImageBitmap(info.getIconBitmap(launcher.getIconCache()));
     }
 
     @Override
     public void dismiss() {
-        String key = info.componentName.flattenToString();
-        if (visibility.isChecked() != visibleState) {
+        if (info instanceof AppInfo && visibility.isChecked() != visibleState) {
+            String key = ((AppInfo) info).componentName.flattenToString();
             Utilities.setAppVisibility(getContext(), key, visibility.isChecked());
         }
         String titleS = title.getText().toString();
-        if (!titleS.trim().equals(info.title.toString().trim())) {
-            info.title = titleS.trim();
-            sharedPrefs.edit().putString("alias_" + key, titleS).apply();
+        if (!titleS.trim().equals(info.getTitle().trim())) {
+            info.setTitle(getContext(), titleS);
         }
         LauncherAppState app = LauncherAppState.getInstanceNoCreate();
         if (app != null) {

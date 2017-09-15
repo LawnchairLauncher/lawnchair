@@ -33,7 +33,6 @@ import android.widget.FrameLayout;
 
 import ch.deletescape.lawnchair.blur.BlurDrawable;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 
 public class Hotseat extends FrameLayout {
@@ -64,13 +63,13 @@ public class Hotseat extends FrameLayout {
         super(context, attrs, defStyle);
         mLauncher = Launcher.getLauncher(context);
         mHasVerticalHotseat = mLauncher.getDeviceProfile().isVerticalBarLayout();
-        if (FeatureFlags.INSTANCE.isTransparentHotseat(context) || mHasVerticalHotseat) {
+        if (Utilities.getPrefs(context).getTransparentHotseat() || mHasVerticalHotseat) {
             setBackgroundColor(Color.TRANSPARENT);
         } else {
             mBackgroundColor = ColorUtils.setAlphaComponent(
                     Utilities.resolveAttributeData(context, R.attr.allAppsContainerColor), 0);
             mBackground = BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS) ?
-                    mLauncher.getBlurWallpaperProvider().createDrawable(): new ColorDrawable(mBackgroundColor);
+                    mLauncher.getBlurWallpaperProvider().createDrawable() : new ColorDrawable(mBackgroundColor);
             setBackground(mBackground);
         }
     }
@@ -118,6 +117,7 @@ public class Hotseat extends FrameLayout {
         } else {
             mContent.setGridSize(grid.inv.numHotseatIcons, 1);
         }
+        mContent.requestLayout();
     }
 
     void resetLayout() {

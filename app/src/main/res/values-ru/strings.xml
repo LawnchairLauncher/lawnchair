@@ -309,4 +309,6 @@
     <string name="color_extraction_label">Lawnchair - извлечение цвета</string>
     <string name="test_title">Тест</string>
     <string name="visibility">Видимость</string>
+
+    <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
 </resources>
