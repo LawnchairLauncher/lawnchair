@@ -273,9 +273,17 @@
   <string name="full_width_widgets_pref_summary">Widgets erlauben, auf die volle Breite vergrößert zu werden</string>
   <string name="notification_access_pref_title">Benachrichtigungsanzeige und -vorschau</string>
   <string name="notification_access_pref_summary">Für diese Funktion benötigt Lawnchair Zugriff auf Benachrichtigungen</string>
+  <string name="general_pref_title">Allgemein</string>
+  <string name="pixel_ui_pref_title">Pixel-Benutzeroberfläche</string>
   <string name="behavior_pref_title">Verhalten</string>
   <string name="debug_pref_title">Entwickleroptionen</string>
   <string name="import_export_pref_title">Import/Export</string>
+  <string name="general_pref_summary">Startbildschirm, Dock, und App-Übersicht</string>
+  <string name="pixel_ui_pref_summary">Aktiviere die exklusiven Funktionen des Pixel Launchers</string>
+  <string name="backup_pref_title">Sicherung</string>
+  <string name="behavior_pref_summary">Ändere das Verhalten von Lawnchair</string>
+  <string name="backup_pref_summary">Sichere deine Datenbank und die Einstellungen</string>
+  <string name="debug_pref_summary">Starte oder bilde die Icon-Datenbank neu</string>
   <string name="show_pixel_bar_pref_title">Pixel Top Bar anzeigen</string>
   <string name="use_wide_searchbar_pref_title">Breite Suchleiste verwenden</string>
   <string name="show_mic_pref_title">Google Assistant anzeigen</string>
@@ -327,6 +335,8 @@
   <string name="pull_down_apps_search">App-Suche</string>
   <string name="enable_screen_rotation">Bildschirmrotation aktivieren</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">Import</string>
+  <string name="backup_export_title">Export</string>
   <string name="imexport_success">Erfolg!</string>
   <string name="imexport_error">Fehler: Datei konnte nicht kopiert werden</string>
   <string name="imexport_no_backup_found">Kein Backup gefunden</string>
