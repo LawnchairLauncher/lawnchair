@@ -95,10 +95,14 @@ public class AppInfo extends ItemInfoWithIcon {
     }
 
     public static Intent makeLaunchIntent(LauncherActivityInfo info) {
+        return makeLaunchIntent(info.getComponentName());
+    }
+
+    public static Intent makeLaunchIntent(ComponentName cn) {
         return new Intent(Intent.ACTION_MAIN)
-            .addCategory(Intent.CATEGORY_LAUNCHER)
-            .setComponent(info.getComponentName())
-            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                .addCategory(Intent.CATEGORY_LAUNCHER)
+                .setComponent(cn)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
     }
 
     @Override

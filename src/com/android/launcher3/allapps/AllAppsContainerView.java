@@ -50,6 +50,7 @@ import com.android.launcher3.folder.Folder;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.List;
@@ -116,7 +117,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     /**
      * Sets the current set of predicted apps.
      */
-    public void setPredictedApps(List<ComponentKey> apps) {
+    public void setPredictedApps(List<ComponentKeyMapper<AppInfo>> apps) {
         mApps.setPredictedApps(apps);
     }
 
@@ -349,8 +350,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             ViewGroup.LayoutParams navBarBgLp = navBarBg.getLayoutParams();
             navBarBgLp.height = insets.bottom;
             navBarBg.setLayoutParams(navBarBgLp);
-            navBarBg.setVisibility(FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS
-                    ? View.INVISIBLE : View.VISIBLE);
         }
     }
 

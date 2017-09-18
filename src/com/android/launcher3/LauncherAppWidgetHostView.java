@@ -92,7 +92,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         setAccessibilityDelegate(Launcher.getLauncher(context).getAccessibilityDelegate());
         setBackgroundResource(R.drawable.widget_internal_focus_bg);
 
-        if (Utilities.isAtLeastO()) {
+        if (Utilities.ATLEAST_OREO) {
             setExecutor(Utilities.THREAD_POOL_EXECUTOR);
         }
     }

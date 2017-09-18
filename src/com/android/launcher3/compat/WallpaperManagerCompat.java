@@ -31,10 +31,10 @@ public abstract class WallpaperManagerCompat {
             if (sInstance == null) {
                 context = context.getApplicationContext();
 
-                if (Utilities.isAtLeastO()) {
+                if (Utilities.ATLEAST_OREO) {
                     try {
                         sInstance = new WallpaperManagerCompatVOMR1(context);
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         // The wallpaper APIs do not yet exist
                     }
                 }

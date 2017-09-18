@@ -141,7 +141,6 @@ public class PageIndicatorLineCaret extends PageIndicator {
         super.onFinishInflate();
         mAllAppsHandle = (ImageView) findViewById(R.id.all_apps_handle);
         mAllAppsHandle.setImageDrawable(getCaretDrawable());
-        mAllAppsHandle.setOnTouchListener(mLauncher.getHapticFeedbackTouchListener());
         mAllAppsHandle.setOnClickListener(mLauncher);
         mAllAppsHandle.setOnFocusChangeListener(mLauncher.mFocusHandler);
         mLauncher.setAllAppsButton(mAllAppsHandle);

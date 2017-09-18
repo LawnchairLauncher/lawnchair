@@ -146,7 +146,7 @@ public class ShadowDrawable extends Drawable {
             d.draw(canvas);
         }
 
-        if (Utilities.isAtLeastO()) {
+        if (Utilities.ATLEAST_OREO) {
             bitmap = bitmap.copy(Bitmap.Config.HARDWARE, false);
         }
         mState.mLastDrawnBitmap = bitmap;

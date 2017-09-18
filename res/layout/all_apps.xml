@@ -68,11 +68,10 @@
 
     </com.android.launcher3.allapps.AllAppsRecyclerViewContainerView>
     <View
-        style="@style/AllAppsNavBarProtection"
         android:id="@+id/nav_bar_bg"
+        android:background="?attr/allAppsNavBarScrimColor"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="bottom"
-        android:focusable="false"
-        android:visibility="invisible" />
+        android:focusable="false"  />
 </com.android.launcher3.allapps.AllAppsContainerView>

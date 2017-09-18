@@ -544,7 +544,6 @@ public class DragLayer extends InsettableFrameLayout {
 
     public void clearResizeFrame() {
         if (mCurrentResizeFrame != null) {
-            mCurrentResizeFrame.commitResize();
             removeView(mCurrentResizeFrame);
             mCurrentResizeFrame = null;
         }
