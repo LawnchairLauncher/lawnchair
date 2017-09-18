@@ -178,6 +178,9 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
         if (mOp == OP_ADD || flagOp != FlagOp.NO_OP) {
             final ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<>();
             final ArrayList<LauncherAppWidgetInfo> widgets = new ArrayList<>();
+
+            // For system apps, package manager send OP_UPDATE when an app is enabled.
+            final boolean isNewApkAvailable = mOp == OP_ADD || mOp == OP_UPDATE;
             synchronized (dataModel) {
                 for (ItemInfo info : dataModel.itemsIdMap) {
                     if (info instanceof ShortcutInfo && mUser.equals(info.user)) {
@@ -206,9 +209,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                 }
                             }
 
-                            // For system apps, package manager send OP_UPDATE when an
-                            // app is enabled.
-                            if (si.isPromise() && (mOp == OP_ADD || mOp == OP_UPDATE)) {
+                            if (si.isPromise() && isNewApkAvailable) {
                                 if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINSTALL_ICON)) {
                                     // Auto install icon
                                     LauncherAppsCompat launcherApps
@@ -237,7 +238,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                 }
                             }
 
-                            if ((mOp == OP_ADD || mOp == OP_UPDATE) &&
+                            if (isNewApkAvailable &&
                                     si.itemType == Favorites.ITEM_TYPE_APPLICATION) {
                                 iconCache.getTitleAndIcon(si, si.usingLowResIcon);
                                 infoUpdated = true;
@@ -256,7 +257,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                         if (infoUpdated) {
                             getModelWriter().updateItemInDatabase(si);
                         }
-                    } else if (info instanceof LauncherAppWidgetInfo && mOp == OP_ADD) {
+                    } else if (info instanceof LauncherAppWidgetInfo && isNewApkAvailable) {
                         LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) info;
                         if (mUser.equals(widgetInfo.user)
                                 && widgetInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)
@@ -346,7 +347,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 }
             });
         } else if (Utilities.ATLEAST_OREO && mOp == OP_ADD) {
-            // Load widgets for the new package.
+            // Load widgets for the new package. Changes due to app updates are handled through
+            // AppWidgetHost events, this is just to initialize the long-press options.
             for (int i = 0; i < N; i++) {
                 dataModel.widgetsModel.update(app, new PackageUserKey(packages[i], mUser));
             }
