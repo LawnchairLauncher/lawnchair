@@ -16,7 +16,7 @@
   -->
 
 <pathInterpolator xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:controlX1="0.1"
-                  android:controlY1="0"
-                  android:controlX2="0.7"
-                  android:controlY2="1"/>
+    android:controlX1="0.35"
+    android:controlY1="0"
+    android:controlX2="0.5"
+    android:controlY2="1" />

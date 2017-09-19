@@ -80,7 +80,7 @@ public class DrawableFactory {
 
 
     protected Path getPreloadProgressPath(Context context) {
-        if (Utilities.isAtLeastO()) {
+        if (Utilities.ATLEAST_OREO) {
             try {
                 // Try to load the path from Mask Icon
                 Drawable icon = context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper);

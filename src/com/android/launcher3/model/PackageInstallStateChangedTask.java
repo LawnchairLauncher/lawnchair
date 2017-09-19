@@ -16,6 +16,9 @@
 package com.android.launcher3.model;
 
 import android.content.ComponentName;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.os.Process;
 
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
@@ -28,6 +31,7 @@ import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
+import com.android.launcher3.util.InstantAppResolver;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -46,6 +50,17 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
     @Override
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
         if (mInstallInfo.state == PackageInstallerCompat.STATUS_INSTALLED) {
+            try {
+                // For instant apps we do not get package-add. Use setting events to update
+                // any pinned icons.
+                ApplicationInfo ai = app.getContext()
+                        .getPackageManager().getApplicationInfo(mInstallInfo.packageName, 0);
+                if (InstantAppResolver.newInstance(app.getContext()).isInstantApp(ai)) {
+                    app.getModel().onPackageAdded(ai.packageName, Process.myUserHandle());
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                // Ignore
+            }
             // Ignore install success events as they are handled by Package add events.
             return;
         }
@@ -94,7 +109,7 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
                 if (info instanceof ShortcutInfo) {
                     ShortcutInfo si = (ShortcutInfo) info;
                     ComponentName cn = si.getTargetComponent();
-                    if (si.isPromise() && (cn != null)
+                    if (si.hasPromiseIconUi() && (cn != null)
                             && mInstallInfo.packageName.equals(cn.getPackageName())) {
                         si.setInstallProgress(mInstallInfo.progress);
                         if (mInstallInfo.state == PackageInstallerCompat.STATUS_FAILED) {
