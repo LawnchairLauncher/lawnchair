@@ -59,7 +59,7 @@ public class IconShapeOverride {
     private static final int RESTART_REQUEST_CODE = 42; // the answer to everything
 
     public static boolean isSupported(Context context) {
-        if (!Utilities.isAtLeastO()) {
+        if (!Utilities.ATLEAST_OREO) {
             return false;
         }
         // Only supported when developer settings is enabled
@@ -82,7 +82,7 @@ public class IconShapeOverride {
     }
 
     public static void apply(Context context) {
-        if (!Utilities.isAtLeastO()) {
+        if (!Utilities.ATLEAST_OREO) {
             return;
         }
         String path = getAppliedValue(context);

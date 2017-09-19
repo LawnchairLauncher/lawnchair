@@ -2,6 +2,7 @@ package com.android.launcher3;
 
 import android.content.pm.LauncherActivityInfo;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 
 import java.util.Locale;
 
@@ -17,7 +18,7 @@ public class IconProvider {
     }
 
     public void updateSystemStateString() {
-        mSystemState = Locale.getDefault().toString();
+        mSystemState = Locale.getDefault().toString() + "," + Build.VERSION.SDK_INT;
     }
 
     public String getIconSystemState(String packageName) {

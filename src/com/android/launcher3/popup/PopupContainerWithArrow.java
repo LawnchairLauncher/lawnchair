@@ -275,8 +275,9 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             if (itemTypeToPopulate == PopupPopulator.Item.NOTIFICATION) {
                 mNotificationItemView = (NotificationItemView) item;
                 boolean notificationFooterHasIcons = numNotifications > 1;
-                int footerHeight = notificationFooterHasIcons ?
-                        res.getDimensionPixelSize(R.dimen.notification_footer_height) : 0;
+                int footerHeight = res.getDimensionPixelSize(
+                        notificationFooterHasIcons ? R.dimen.notification_footer_height
+                                : R.dimen.notification_empty_footer_height);
                 item.findViewById(R.id.footer).getLayoutParams().height = footerHeight;
                 if (notificationFooterHasIcons) {
                     mNotificationItemView.findViewById(R.id.divider).setVisibility(VISIBLE);
