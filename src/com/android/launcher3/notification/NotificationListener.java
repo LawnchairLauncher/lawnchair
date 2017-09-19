@@ -32,7 +32,6 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.SettingsObserver;
 
@@ -164,9 +163,6 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     public static void setNotificationsChangedListener(NotificationsChangedListener listener) {
-        if (!FeatureFlags.BADGE_ICONS) {
-            return;
-        }
         sNotificationsChangedListener = listener;
 
         NotificationListener notificationListener = getInstanceIfConnected();

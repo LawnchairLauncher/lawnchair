@@ -59,7 +59,7 @@ public class SessionCommitReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (!isEnabled(context) || !Utilities.isAtLeastO()) {
+        if (!isEnabled(context) || !Utilities.ATLEAST_OREO) {
             // User has decided to not add icons on homescreen.
             return;
         }
@@ -92,7 +92,7 @@ public class SessionCommitReceiver extends BroadcastReceiver {
     }
 
     public static void applyDefaultUserPrefs(final Context context) {
-        if (!Utilities.isAtLeastO()) {
+        if (!Utilities.ATLEAST_OREO) {
             return;
         }
         SharedPreferences prefs = Utilities.getPrefs(context);
