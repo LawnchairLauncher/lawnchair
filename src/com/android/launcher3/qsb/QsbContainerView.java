@@ -36,6 +36,7 @@ import android.widget.FrameLayout;
 
 import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -193,7 +194,8 @@ public class QsbContainerView extends FrameLayout {
         @Override
         public void onResume() {
             super.onResume();
-            if (mQsb != null && mQsb.isReinflateRequired()) {
+            int orientation = Launcher.getLauncher(getContext()).getOrientation();
+            if (mQsb != null && mQsb.isReinflateRequired(orientation)) {
                 rebindFragment();
             }
         }
