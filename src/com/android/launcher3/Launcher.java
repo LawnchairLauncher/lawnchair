@@ -252,6 +252,10 @@ public class Launcher extends BaseActivity
     // Main container view and the model for the widget tray screen.
     @Thunk WidgetsContainerView mWidgetsView;
 
+    // We need to store the orientation Launcher was created with, due to a bug (b/64916689)
+    // that results in widgets being inflated in the wrong orientation.
+    private int mOrientation;
+
     // We set the state in both onCreate and then onNewIntent in some cases, which causes both
     // scroll issues (because the workspace may not have been measured yet) and extra work.
     // Instead, just save the state that we need to restore Launcher to, and commit it in onResume.
@@ -373,6 +377,7 @@ public class Launcher extends BaseActivity
             mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
         }
 
+        mOrientation = getResources().getConfiguration().orientation;
         mSharedPrefs = Utilities.getPrefs(this);
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
         mModel = app.setLauncher(this);
@@ -1564,6 +1569,8 @@ public class Launcher extends BaseActivity
     public SharedPreferences getSharedPrefs() {
         return mSharedPrefs;
     }
+
+    public int getOrientation() { return mOrientation; }
 
     @Override
     protected void onNewIntent(Intent intent) {
