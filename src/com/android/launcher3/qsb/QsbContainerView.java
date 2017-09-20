@@ -80,10 +80,15 @@ public class QsbContainerView extends FrameLayout {
         private AppWidgetProviderInfo mWidgetInfo;
         private QsbWidgetHostView mQsb;
 
+        // We need to store the orientation here, due to a bug (b/64916689) that results in widgets
+        // being inflated in the wrong orientation.
+        private int mOrientation;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             mQsbWidgetHost = new QsbWidgetHost(getActivity());
+            mOrientation = getContext().getResources().getConfiguration().orientation;
         }
 
         private FrameLayout mWrapper;
@@ -194,8 +199,7 @@ public class QsbContainerView extends FrameLayout {
         @Override
         public void onResume() {
             super.onResume();
-            int orientation = Launcher.getLauncher(getContext()).getOrientation();
-            if (mQsb != null && mQsb.isReinflateRequired(orientation)) {
+            if (mQsb != null && mQsb.isReinflateRequired(mOrientation)) {
                 rebindFragment();
             }
         }
