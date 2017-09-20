@@ -267,6 +267,10 @@ public class DeviceProfile {
     }
 
     DeviceProfile getMultiWindowProfile(Context context, Point mwSize) {
+        // We take the minimum sizes of this profile and it's multi-window variant to ensure that
+        // the system decor is always excluded.
+        mwSize.set(Math.min(availableWidthPx, mwSize.x), Math.min(availableHeightPx, mwSize.y));
+
         // In multi-window mode, we can have widthPx = availableWidthPx
         // and heightPx = availableHeightPx because Launcher uses the InvariantDeviceProfiles'
         // widthPx and heightPx values where it's needed.
@@ -555,9 +559,9 @@ public class DeviceProfile {
 
     int getOverviewModeButtonBarHeight() {
         int zoneHeight = (int) (overviewModeIconZoneRatio * availableHeightPx);
-        zoneHeight = Math.min(overviewModeMaxIconZoneHeightPx,
-                Math.max(overviewModeMinIconZoneHeightPx, zoneHeight));
-        return zoneHeight;
+        return Utilities.boundToRange(zoneHeight,
+                overviewModeMinIconZoneHeightPx,
+                overviewModeMaxIconZoneHeightPx);
     }
 
     public static int calculateCellWidth(int width, int countX) {
@@ -693,7 +697,8 @@ public class DeviceProfile {
 
             lp = (FrameLayout.LayoutParams) overviewMode.getLayoutParams();
             lp.width = Math.min(availableWidthPx, maxWidth);
-            lp.height = getOverviewModeButtonBarHeight() + mInsets.bottom;
+            lp.height = getOverviewModeButtonBarHeight();
+            lp.bottomMargin = mInsets.bottom;
             overviewMode.setLayoutParams(lp);
         }
 

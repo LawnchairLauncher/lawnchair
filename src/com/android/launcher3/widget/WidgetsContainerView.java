@@ -17,10 +17,12 @@
 package com.android.launcher3.widget;
 
 import android.content.Context;
+import android.content.pm.LauncherApps;
 import android.graphics.Point;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -31,8 +33,10 @@ import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.model.PackageItemInfo;
@@ -74,7 +78,11 @@ public class WidgetsContainerView extends BaseContainerView
     public WidgetsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mLauncher = Launcher.getLauncher(context);
-        mAdapter = new WidgetsListAdapter(this, this, context);
+        LauncherAppState apps = LauncherAppState.getInstance(context);
+        mAdapter = new WidgetsListAdapter(context, LayoutInflater.from(context),
+                apps.getWidgetCache(), new AlphabeticIndexCompat(context), this, this,
+                new WidgetsDiffReporter(apps.getIconCache()));
+        mAdapter.setNotifyListener();
         if (LOGD) {
             Log.d(TAG, "WidgetsContainerView constructor");
         }
@@ -232,7 +240,6 @@ public class WidgetsContainerView extends BaseContainerView
      */
     public void setWidgets(MultiHashMap<PackageItemInfo, WidgetItem> model) {
         mAdapter.setWidgets(model);
-        mAdapter.notifyDataSetChanged();
 
         View loader = getContentView().findViewById(R.id.loader);
         if (loader != null) {
