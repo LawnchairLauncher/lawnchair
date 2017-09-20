@@ -277,8 +277,12 @@ public class DeviceProfile {
         DeviceProfile profile = new DeviceProfile(context, inv, mwSize, mwSize, mwSize.x, mwSize.y,
                 isLandscape);
 
-        // Hide labels on the workspace.
-        profile.adjustToHideWorkspaceLabels();
+        // If there isn't enough vertical cell padding with the labels displayed, hide the labels.
+        float workspaceCellPaddingY = profile.getCellSize().y - profile.iconSizePx
+                - iconDrawablePaddingPx - profile.iconTextSizePx;
+        if (workspaceCellPaddingY < profile.iconDrawablePaddingPx * 2) {
+            profile.adjustToHideWorkspaceLabels();
+        }
 
         // We use these scales to measure and layout the widgets using their full invariant profile
         // sizes and then draw them scaled and centered to fit in their multi-window mode cellspans.
