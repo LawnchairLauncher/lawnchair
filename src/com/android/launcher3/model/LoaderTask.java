@@ -431,6 +431,10 @@ public class LoaderTask implements Runnable {
                                 }
                             }
 
+                            if ((c.restoreFlag & ShortcutInfo.FLAG_SUPPORTS_WEB_UI) != 0) {
+                                validTarget = false;
+                            }
+
                             if (validTarget) {
                                 // The shortcut points to a valid target (either no target
                                 // or something which is ready to be used)

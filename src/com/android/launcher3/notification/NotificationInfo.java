@@ -94,6 +94,9 @@ public class NotificationInfo implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
+        if (intent == null) {
+            return;
+        }
         final Launcher launcher = Launcher.getLauncher(view.getContext());
         Bundle activityOptions = ActivityOptions.makeClipRevealAnimation(
                 view, 0, 0, view.getWidth(), view.getHeight()).toBundle();
