@@ -25,7 +25,9 @@ import android.content.pm.LauncherApps.PinItemRequest;
 import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Process;
 
+import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
@@ -69,8 +71,12 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
 
     @Override
     public Drawable getFullResIcon(IconCache cache) {
-        return mContext.getSystemService(LauncherApps.class)
+        Drawable d = mContext.getSystemService(LauncherApps.class)
                 .getShortcutIconDrawable(mInfo, LauncherAppState.getIDP(mContext).fillResIconDpi);
+        if (d == null) {
+            d = new FastBitmapDrawable(cache.getDefaultIcon(Process.myUserHandle()));
+        }
+        return d;
     }
 
     @Override

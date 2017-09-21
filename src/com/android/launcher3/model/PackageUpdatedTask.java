@@ -23,6 +23,7 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.util.ArrayMap;
 import android.util.Log;
+
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.IconCache;
@@ -32,7 +33,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
-import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.ShortcutInfo;
@@ -46,6 +46,7 @@ import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -100,10 +101,11 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                     appsList.addPackage(context, packages[i], mUser);
 
                     // Automatically add homescreen icon for work profile apps for below O device.
-                    if (!Utilities.isAtLeastO() && !Process.myUserHandle().equals(mUser)) {
+                    if (!Utilities.ATLEAST_OREO && !Process.myUserHandle().equals(mUser)) {
                         SessionCommitReceiver.queueAppIconAddition(context, packages[i], mUser);
                     }
                 }
+                flagOp = FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE);
                 break;
             }
             case OP_UPDATE:
@@ -170,12 +172,15 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
             }
         }
 
+        final LongArrayMap<Boolean> removedShortcuts = new LongArrayMap<>();
+
         // Update shortcut infos
         if (mOp == OP_ADD || flagOp != FlagOp.NO_OP) {
             final ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<>();
-            final LongArrayMap<Boolean> removedShortcuts = new LongArrayMap<>();
             final ArrayList<LauncherAppWidgetInfo> widgets = new ArrayList<>();
 
+            // For system apps, package manager send OP_UPDATE when an app is enabled.
+            final boolean isNewApkAvailable = mOp == OP_ADD || mOp == OP_UPDATE;
             synchronized (dataModel) {
                 for (ItemInfo info : dataModel.itemsIdMap) {
                     if (info instanceof ShortcutInfo && mUser.equals(info.user)) {
@@ -197,9 +202,14 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                         if (cn != null && matcher.matches(si, cn)) {
                             AppInfo appInfo = addedOrUpdatedApps.get(cn);
 
-                            // For system apps, package manager send OP_UPDATE when an
-                            // app is enabled.
-                            if (si.isPromise() && (mOp == OP_ADD || mOp == OP_UPDATE)) {
+                            if (si.hasStatusFlag(ShortcutInfo.FLAG_SUPPORTS_WEB_UI)) {
+                                removedShortcuts.put(si.id, false);
+                                if (mOp == OP_REMOVE) {
+                                    continue;
+                                }
+                            }
+
+                            if (si.isPromise() && isNewApkAvailable) {
                                 if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINSTALL_ICON)) {
                                     // Auto install icon
                                     LauncherAppsCompat launcherApps
@@ -213,23 +223,23 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                             appInfo = addedOrUpdatedApps.get(cn);
                                         }
 
-                                        if ((intent == null) || (appInfo == null)) {
+                                        if (intent != null && appInfo != null) {
+                                            si.intent = intent;
+                                            si.status = ShortcutInfo.DEFAULT;
+                                            infoUpdated = true;
+                                        } else if (si.hasPromiseIconUi()) {
                                             removedShortcuts.put(si.id, true);
                                             continue;
                                         }
-                                        si.intent = intent;
                                     }
-                                }
-
-                                si.status = ShortcutInfo.DEFAULT;
-                                infoUpdated = true;
-                                if (si.itemType == Favorites.ITEM_TYPE_APPLICATION) {
-                                    iconCache.getTitleAndIcon(si, si.usingLowResIcon);
+                                } else {
+                                    si.status = ShortcutInfo.DEFAULT;
+                                    infoUpdated = true;
                                 }
                             }
 
-                            if (appInfo != null && Intent.ACTION_MAIN.equals(si.intent.getAction())
-                                    && si.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                            if (isNewApkAvailable &&
+                                    si.itemType == Favorites.ITEM_TYPE_APPLICATION) {
                                 iconCache.getTitleAndIcon(si, si.usingLowResIcon);
                                 infoUpdated = true;
                             }
@@ -247,7 +257,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                         if (infoUpdated) {
                             getModelWriter().updateItemInDatabase(si);
                         }
-                    } else if (info instanceof LauncherAppWidgetInfo && mOp == OP_ADD) {
+                    } else if (info instanceof LauncherAppWidgetInfo && isNewApkAvailable) {
                         LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) info;
                         if (mUser.equals(widgetInfo.user)
                                 && widgetInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)
@@ -308,7 +318,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
 
         if (!removedPackages.isEmpty() || !removedComponents.isEmpty()) {
             ItemInfoMatcher removeMatch = ItemInfoMatcher.ofPackages(removedPackages, mUser)
-                    .or(ItemInfoMatcher.ofComponents(removedComponents, mUser));
+                    .or(ItemInfoMatcher.ofComponents(removedComponents, mUser))
+                    .and(ItemInfoMatcher.ofItemIds(removedShortcuts, true));
             deleteAndBindComponentsRemoved(removeMatch);
 
             // Remove any queued items from the install queue
@@ -335,8 +346,9 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                     callbacks.notifyWidgetProvidersChanged();
                 }
             });
-        } else if (Utilities.isAtLeastO() && mOp == OP_ADD) {
-            // Load widgets for the new package.
+        } else if (Utilities.ATLEAST_OREO && mOp == OP_ADD) {
+            // Load widgets for the new package. Changes due to app updates are handled through
+            // AppWidgetHost events, this is just to initialize the long-press options.
             for (int i = 0; i < N; i++) {
                 dataModel.widgetsModel.update(app, new PackageUserKey(packages[i], mUser));
             }

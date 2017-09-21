@@ -55,7 +55,6 @@ public class AppWidgetResizeFrame extends FrameLayout
 
     private final int[] mDirectionVector = new int[2];
     private final int[] mLastDirectionVector = new int[2];
-    private final int[] mTmpPt = new int[2];
 
     private final IntRange mTempRange1 = new IntRange();
     private final IntRange mTempRange2 = new IntRange();
@@ -344,13 +343,12 @@ public class AppWidgetResizeFrame extends FrameLayout
         return rect;
     }
 
-    /**
-     * This is the final step of the resize. Here we save the new widget size and position
-     * to LauncherModel and animate the resize frame.
-     */
-    public void commitResize() {
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        // We are done with resizing the widget. Save the widget size & position to LauncherModel
         resizeWidgetIfNeeded(true);
-        requestLayout();
     }
 
     private void onTouchUp() {

@@ -70,6 +70,20 @@ public class SpringAnimationHandler<T> {
     }
 
     /**
+     * Adds a spring to the list of springs handled by this class.
+     * @param spring The new spring to be added.
+     * @param setDefaultValues If True, sets the spring to the default
+     *                         {@link AnimationFactory} values.
+     */
+    public void add(SpringAnimation spring, boolean setDefaultValues) {
+        if (setDefaultValues) {
+            mAnimationFactory.setDefaultValues(spring);
+        }
+        spring.setStartVelocity(mCurrentVelocity);
+        mAnimations.add(spring);
+    }
+
+    /**
      * Adds a new or recycled animation to the list of springs handled by this class.
      *
      * @param view The view the spring is attached to.
@@ -82,15 +96,17 @@ public class SpringAnimationHandler<T> {
             view.setTag(R.id.spring_animation_tag, spring);
         }
         mAnimationFactory.update(spring, object);
-        spring.setStartVelocity(mCurrentVelocity);
-        mAnimations.add(spring);
+        add(spring, false /* setDefaultValues */);
     }
 
     /**
      * Stops and removes the spring attached to {@param view}.
      */
     public void remove(View view) {
-        SpringAnimation animation = (SpringAnimation) view.getTag(R.id.spring_animation_tag);
+        remove((SpringAnimation) view.getTag(R.id.spring_animation_tag));
+    }
+
+    public void remove(SpringAnimation animation) {
         if (animation.canSkipToEnd()) {
             animation.skipToEnd();
         }
@@ -226,6 +242,11 @@ public class SpringAnimationHandler<T> {
          * Updates the value of {@param spring} based on {@param object}.
          */
         void update(SpringAnimation spring, T object);
+
+        /**
+         * Sets the factory default values for the given {@param spring}.
+         */
+        void setDefaultValues(SpringAnimation spring);
     }
 
     /**

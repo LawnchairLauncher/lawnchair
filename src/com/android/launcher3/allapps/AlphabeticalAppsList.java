@@ -29,6 +29,7 @@ import com.android.launcher3.discovery.AppDiscoveryAppInfo;
 import com.android.launcher3.discovery.AppDiscoveryItem;
 import com.android.launcher3.discovery.AppDiscoveryUpdateState;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.LabelComparator;
 
 import java.util.ArrayList;
@@ -173,7 +174,7 @@ public class AlphabeticalAppsList {
     // The set of sections that we allow fast-scrolling to (includes non-merged sections)
     private final List<FastScrollSectionInfo> mFastScrollerSections = new ArrayList<>();
     // The set of predicted app component names
-    private final List<ComponentKey> mPredictedAppComponents = new ArrayList<>();
+    private final List<ComponentKeyMapper<AppInfo>> mPredictedAppComponents = new ArrayList<>();
     // The set of predicted apps resolved from the component names and the current set of apps
     private final List<AppInfo> mPredictedApps = new ArrayList<>();
     private final List<AppDiscoveryAppInfo> mDiscoveredApps = new ArrayList<>();
@@ -298,20 +299,20 @@ public class AlphabeticalAppsList {
         updateAdapterItems();
     }
 
-    private List<AppInfo> processPredictedAppComponents(List<ComponentKey> components) {
+    private List<AppInfo> processPredictedAppComponents(List<ComponentKeyMapper<AppInfo>> components) {
         if (mComponentToAppMap.isEmpty()) {
             // Apps have not been bound yet.
             return Collections.emptyList();
         }
 
         List<AppInfo> predictedApps = new ArrayList<>();
-        for (ComponentKey ck : components) {
-            AppInfo info = mComponentToAppMap.get(ck);
+        for (ComponentKeyMapper<AppInfo> mapper : components) {
+            AppInfo info = mapper.getItem(mComponentToAppMap);
             if (info != null) {
                 predictedApps.add(info);
             } else {
                 if (FeatureFlags.IS_DOGFOOD_BUILD) {
-                    Log.e(TAG, "Predicted app not found: " + ck);
+                    Log.e(TAG, "Predicted app not found: " + mapper);
                 }
             }
             // Stop at the number of predicted apps
@@ -331,7 +332,7 @@ public class AlphabeticalAppsList {
      * If the number of predicted apps is the same as the previous list of predicted apps,
      * we can optimize by swapping them in place.
      */
-    public void setPredictedApps(List<ComponentKey> apps) {
+    public void setPredictedApps(List<ComponentKeyMapper<AppInfo>> apps) {
         mPredictedAppComponents.clear();
         mPredictedAppComponents.addAll(apps);
 
@@ -472,14 +473,14 @@ public class AlphabeticalAppsList {
 
         if (DEBUG_PREDICTIONS) {
             if (mPredictedAppComponents.isEmpty() && !mApps.isEmpty()) {
-                mPredictedAppComponents.add(new ComponentKey(mApps.get(0).componentName,
-                        Process.myUserHandle()));
-                mPredictedAppComponents.add(new ComponentKey(mApps.get(0).componentName,
-                        Process.myUserHandle()));
-                mPredictedAppComponents.add(new ComponentKey(mApps.get(0).componentName,
-                        Process.myUserHandle()));
-                mPredictedAppComponents.add(new ComponentKey(mApps.get(0).componentName,
-                        Process.myUserHandle()));
+                mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
+                        Process.myUserHandle())));
+                mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
+                        Process.myUserHandle())));
+                mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
+                        Process.myUserHandle())));
+                mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
+                        Process.myUserHandle())));
             }
         }
 
@@ -644,8 +645,8 @@ public class AlphabeticalAppsList {
         return result;
     }
 
-    public AppInfo findApp(ComponentKey key) {
-        return mComponentToAppMap.get(key);
+    public AppInfo findApp(ComponentKeyMapper<AppInfo> mapper) {
+        return mapper.getItem(mComponentToAppMap);
     }
 
     /**

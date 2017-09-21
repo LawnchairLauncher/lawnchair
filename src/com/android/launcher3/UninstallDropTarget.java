@@ -11,11 +11,16 @@ import android.os.Bundle;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
 
+import java.net.URISyntaxException;
+
 public class UninstallDropTarget extends ButtonDropTarget {
+
+    private static final String TAG = "UninstallDropTarget";
 
     public UninstallDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -99,25 +104,28 @@ public class UninstallDropTarget extends ButtonDropTarget {
             final Launcher launcher, ItemInfo info, DropTargetResultCallback callback) {
         final ComponentName cn = getUninstallTarget(launcher, info);
 
-        final boolean isUninstallable;
+        boolean canUninstall;
         if (cn == null) {
             // System applications cannot be installed. For now, show a toast explaining that.
             // We may give them the option of disabling apps this way.
             Toast.makeText(launcher, R.string.uninstall_system_app_text, Toast.LENGTH_SHORT).show();
-            isUninstallable = false;
+            canUninstall = false;
         } else {
-            Intent intent = new Intent(Intent.ACTION_DELETE,
-                    Uri.fromParts("package", cn.getPackageName(), cn.getClassName()))
-                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                            | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-            intent.putExtra(Intent.EXTRA_USER, info.user);
-            launcher.startActivity(intent);
-            isUninstallable = true;
+            try {
+                Intent i = Intent.parseUri(launcher.getString(R.string.delete_package_intent), 0)
+                        .setData(Uri.fromParts("package", cn.getPackageName(), cn.getClassName()))
+                        .putExtra(Intent.EXTRA_USER, info.user);
+                launcher.startActivity(i);
+                canUninstall = true;
+            } catch (URISyntaxException e) {
+                Log.e(TAG, "Failed to parse intent to start uninstall activity for item=" + info);
+                canUninstall = false;
+            }
         }
         if (callback != null) {
-            sendUninstallResult(launcher, isUninstallable, cn, info.user, callback);
+            sendUninstallResult(launcher, canUninstall, cn, info.user, callback);
         }
-        return isUninstallable;
+        return canUninstall;
     }
 
     /**
