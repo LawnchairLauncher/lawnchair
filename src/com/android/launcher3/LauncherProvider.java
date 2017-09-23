@@ -552,7 +552,14 @@ public class LauncherProvider extends ContentProvider {
     }
 
     private DefaultLayoutParser getDefaultLayoutParser(AppWidgetHost widgetHost) {
-        int defaultLayout = LauncherAppState.getIDP(getContext()).defaultLayoutId;
+        InvariantDeviceProfile idp = LauncherAppState.getIDP(getContext());
+        int defaultLayout = idp.defaultLayoutId;
+
+        UserManagerCompat um = UserManagerCompat.getInstance(getContext());
+        if (um.isDemoUser() && idp.demoModeLayoutId != 0) {
+            defaultLayout = idp.demoModeLayoutId;
+        }
+
         return new DefaultLayoutParser(getContext(), widgetHost,
                 mOpenHelper, getContext().getResources(), defaultLayout);
     }
