@@ -323,6 +323,7 @@
     <string name="blur_pref_title">Enable blur</string>
     <string name="blur_pref_summary">Apply blur effect to parts of the interface\nNot compatible with live wallpapers</string>
     <string name="blur_radius_pref_title">Blur radius</string>
+    <string name="pref_iconLabelsInTwoLines">Icon labels in two lines</string>
     <string name="white_google_icon_pref_title">Use white Google icon</string>
     <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
     <string name="hide_all_apps_icon_labels_pref_title">Hide icon labels in drawer</string>

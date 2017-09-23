@@ -38,6 +38,7 @@ object PreferenceFlags {
     const val KEY_LIGHT_STATUS_BAR = "pref_lightStatusBar"
     const val KEY_CENTER_WALLPAPER = "pref_centerWallpaper"
     const val KEY_POPUP_CARD_THEME = "pref_popupCardTheme"
+    const val KEY_ICON_LABELS_IN_TWO_LINES = "pref_iconLabelsInTwoLines"
 
     // Various
     const val KEY_PREF_WS_LABEL_COLOR = "pref_workspaceLabelColor"

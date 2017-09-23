@@ -31,6 +31,7 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.util.SparseArray;
@@ -162,6 +163,12 @@ public class BubbleTextView extends TextView
         mIconSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_iconSizeOverride,
                 defaultIconSize);
         a.recycle();
+
+        if (Utilities.getPrefs(context).getIconLabelsInTwoLines()) {
+            setMaxLines(2);
+            setEllipsize(TextUtils.TruncateAt.END);
+            setHorizontallyScrolling(false);
+        }
 
         if (mCustomShadowsEnabled) {
             // Draw the background itself as the parent is drawn twice.

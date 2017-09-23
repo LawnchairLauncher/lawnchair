@@ -122,6 +122,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                     break;
                 case PreferenceFlags.KEY_PREF_ICON_PACK_PACKAGE:
                 case PreferenceFlags.KEY_PREF_PIXEL_STYLE_ICONS:
+                case PreferenceFlags.KEY_ICON_LABELS_IN_TWO_LINES:
                     mLauncher.scheduleReloadIcons();
                     break;
                 case PreferenceFlags.KEY_PREF_HIDE_APP_LABELS:
