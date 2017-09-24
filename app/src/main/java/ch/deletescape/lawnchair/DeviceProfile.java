@@ -289,24 +289,25 @@ public class DeviceProfile {
         allAppsIconDrawablePaddingPx = allAppsDrawablePadding;
         allAppsIconTextSizePx = (int) (Utilities.pxFromSp(inv.allAppsIconTextSize, dm) * allAppsScale);
 
+        boolean iconLabelsInTwoLines = Utilities.getPrefs(mContext).getIconLabelsInTwoLines();
         cellWidthPx = iconSizePx;
         cellHeightPx = iconSizePx + iconDrawablePaddingPx;
         if (!Utilities.getPrefs(mContext).getHideAppLabels()) {
-            cellHeightPx += Utilities.calculateTextHeight(iconTextSizePx);
+            cellHeightPx += Utilities.calculateTextHeight(iconTextSizePx, iconLabelsInTwoLines);
         }
         allAppsCellWidthPx = allAppsIconSizePx;
         allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx;
         if (!Utilities.getPrefs(mContext).getHideAllAppsAppLabels()) {
-            allAppsCellHeightPx += Utilities.calculateTextHeight(allAppsIconTextSizePx);
+            allAppsCellHeightPx += Utilities.calculateTextHeight(allAppsIconTextSizePx, iconLabelsInTwoLines);
         }
         cellHeightPx = iconSizePx;
         if (!Utilities.getPrefs(mContext).getHideAppLabels()) {
-            cellHeightPx += iconDrawablePaddingPx + Utilities.calculateTextHeight(iconTextSizePx);
+            cellHeightPx += iconDrawablePaddingPx + Utilities.calculateTextHeight(iconTextSizePx, iconLabelsInTwoLines);
         }
         allAppsCellWidthPx = allAppsIconSizePx;
         allAppsCellHeightPx = allAppsIconSizePx;
         if (!Utilities.getPrefs(mContext).getHideAllAppsAppLabels()) {
-            allAppsCellHeightPx += allAppsIconDrawablePaddingPx + Utilities.calculateTextHeight(allAppsIconTextSizePx);
+            allAppsCellHeightPx += allAppsIconDrawablePaddingPx + Utilities.calculateTextHeight(allAppsIconTextSizePx, iconLabelsInTwoLines);
         }
 
         // Hotseat
@@ -329,12 +330,12 @@ public class DeviceProfile {
         int cellPaddingX = res.getDimensionPixelSize(R.dimen.folder_cell_x_padding);
         int cellPaddingY = res.getDimensionPixelSize(R.dimen.folder_cell_y_padding);
         final int folderChildTextSize =
-                Utilities.calculateTextHeight(res.getDimension(R.dimen.folder_child_text_size));
+                Utilities.calculateTextHeight(res.getDimension(R.dimen.folder_child_text_size), iconLabelsInTwoLines);
 
         final int folderBottomPanelSize =
                 res.getDimensionPixelSize(R.dimen.folder_label_padding_top)
                         + res.getDimensionPixelSize(R.dimen.folder_label_padding_bottom)
-                        + Utilities.calculateTextHeight(res.getDimension(R.dimen.folder_label_text_size));
+                        + Utilities.calculateTextHeight(res.getDimension(R.dimen.folder_label_text_size), iconLabelsInTwoLines);
 
         // Don't let the folder get too close to the edges of the screen.
         folderCellWidthPx = Math.min(iconSizePx + 2 * cellPaddingX,

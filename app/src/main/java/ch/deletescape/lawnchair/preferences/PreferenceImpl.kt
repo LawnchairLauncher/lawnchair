@@ -37,6 +37,7 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val allAppsIconTextScale by FloatPref(PreferenceFlags.KEY_PREF_ALL_APPS_ICON_TEXT_SCALE, 1f)
     override val useCustomAllAppsTextColor by BooleanPref(PreferenceFlags.KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR, false)
     override val verticalDrawerLayout by BooleanPref(PreferenceFlags.KEY_PREF_DRAWER_VERTICAL_LAYOUT, false)
+    override val iconLabelsInTwoLines by BooleanPref(PreferenceFlags.KEY_ICON_LABELS_IN_TWO_LINES, false)
 
     override val animateClockIconAlternativeClockApps: Boolean
         get() = false

@@ -92,6 +92,7 @@ interface IPreferenceProvider {
     val lockDesktop: Boolean
     val animatedClockIcon: Boolean
     val animateClockIconAlternativeClockApps: Boolean
+    val iconLabelsInTwoLines: Boolean
 
     val pulldownAction: String
 

@@ -277,5 +277,11 @@
             app:defaultSeekbarValue="75"
             app:summaryFormat="%.0f"
             android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_iconLabelsInTwoLines"
+            android:title="@string/pref_iconLabelsInTwoLines"
+            android:defaultValue="false"
+            android:persistent="true" />
     </PreferenceCategory>
 </PreferenceScreen>
