@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -66,7 +67,7 @@ public class PixelIconProvider {
 
     private int getCorrectShape(Bundle bundle, Resources resources) {
         if (bundle != null) {
-            int roundIcons = bundle.getInt(mShapeInfo.getUseRoundIcon() ?
+            int roundIcons = bundle.getInt((mShapeInfo.getUseRoundIcon() && !TextUtils.isEmpty(mShapeInfo.getSavedPref())) ?
                     "com.google.android.calendar.dynamic_icons_nexus_round" :
                     "com.google.android.calendar.dynamic_icons", 0);
             if (roundIcons != 0) {
@@ -189,7 +190,7 @@ public class PixelIconProvider {
 
     public Drawable getDefaultIcon(LauncherActivityInfoCompat info, int iconDpi, Drawable drawable) {
         boolean isRoundPack = isRoundIconPack(sIconPack);
-        if ((drawable == null && (mBackportAdaptive || mShapeInfo.getUseRoundIcon())) ||
+        if ((drawable == null && (mBackportAdaptive || mShapeInfo.getUseRoundIcon()) && !TextUtils.isEmpty(mShapeInfo.getSavedPref())) ||
                 (isRoundPack && drawable instanceof CustomIconDrawable)) {
             Drawable roundIcon = getRoundIcon(info.getComponentName().getPackageName(), iconDpi);
             if (roundIcon != null)
