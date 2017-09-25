@@ -279,6 +279,7 @@ public class DeviceProfile {
 
     private void updateIconSize(float workspaceScale, float allAppsScale, float hotseatScale, int workspaceDrawablePadding, int allAppsDrawablePadding,
                                 Resources res, DisplayMetrics dm) {
+        boolean iconLabelsInTwoLines = Utilities.getPrefs(mContext).getIconLabelsInTwoLines();
         iconSizePx = (int) (Utilities.pxFromDp(inv.iconSize, dm) * workspaceScale);
         iconSizePxOriginal = (int) (Utilities.pxFromDp(inv.iconSizeOriginal, dm) * workspaceScale);
         iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * workspaceScale);
@@ -286,10 +287,9 @@ public class DeviceProfile {
         hotseatIconSizePx = (int) (Utilities.pxFromDp(inv.hotseatIconSize, dm) * hotseatScale);
         hotseatIconSizePxOriginal = (int) (Utilities.pxFromDp(inv.hotseatIconSizeOriginal, dm) * hotseatScale);
         allAppsIconSizePx = (int) (Utilities.pxFromDp(inv.allAppsIconSize, dm) * allAppsScale);
-        allAppsIconDrawablePaddingPx = allAppsDrawablePadding;
+        allAppsIconDrawablePaddingPx = iconLabelsInTwoLines ? allAppsDrawablePadding * 2 : allAppsDrawablePadding;
         allAppsIconTextSizePx = (int) (Utilities.pxFromSp(inv.allAppsIconTextSize, dm) * allAppsScale);
 
-        boolean iconLabelsInTwoLines = Utilities.getPrefs(mContext).getIconLabelsInTwoLines();
         cellWidthPx = iconSizePx;
         cellHeightPx = iconSizePx + iconDrawablePaddingPx;
         if (!Utilities.getPrefs(mContext).getHideAppLabels()) {

@@ -26,7 +26,7 @@ object PreferenceFlags {
     const val KEY_BLUR_RADIUS = "pref_blurRadius"
     const val KEY_PREF_HOTSEAT_ICON_SCALE = "pref_hotseatIconScale"
     const val KEY_PREF_ALL_APPS_ICON_SCALE = "pref_allAppsIconScale"
-    const val KEY_PREF_ALL_APPS_ICON_TEXT_SCALE = "pref_alllAppsIconTextScale"
+    const val KEY_PREF_ALL_APPS_ICON_TEXT_SCALE = "pref_allAppsIconTextScale"
 
     //Ints
     const val KEY_BLUR_MODE = "pref_blurMode"
