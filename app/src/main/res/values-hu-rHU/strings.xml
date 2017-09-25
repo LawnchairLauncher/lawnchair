@@ -259,7 +259,7 @@
   <string name="blur_pref_summary">Homályosítás effekt engedélyezése a felületen\n Nem kompatibilis élő háttérképekkel</string>
   <string name="blur_radius_pref_title">Homályosítás sugara</string>
   <string name="white_google_icon_pref_title">Fehér Google ikon használata</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on homescreen</string>
+  <string name="hide_icon_labels_pref_title">Ikonok címkéinek elrejtése</string>
   <string name="hide_all_apps_icon_labels_pref_title">Ikoncímkék elrejtése az alkalmazásfiókban</string>
   <string name="workspace_label_color_hue_pref_title">Ikoncímkék színe a kezdőképernyőn</string>
   <string name="workspace_label_color_variation_pref_title">Ikoncímkék színvariációja a kezdőképernyőn</string>
@@ -295,7 +295,7 @@
   <string name="restart_lawnchair_pref_summary">Segíthet, ha egyes beállítások nem kerülnek alkalmazásra</string>
   <string name="rebuild_icondb_pref_title">Ikon adatbázis újraépítése</string>
   <string name="pinch_to_overview_pref_title">Csípő mozdulat az áttekintéshez</string>
-  <string name="pinch_to_overview_pref_summary">Pinch on the homescreen to open the overview</string>
+  <string name="pinch_to_overview_pref_summary">Csípő mozdulat a kezdőképernyőn az áttekintő nézet megnyitásához</string>
   <string name="light_statusbar_pref_title">Világos állapotsáv</string>
   <string name="light_statusbar_pref_force">Az állapotsor mindig sötét ikonokat fog mutatni</string>
   <string name="light_statusbar_pref_off">Az állapotsor mindig világos ikonokat fog mutatni</string>
@@ -303,14 +303,14 @@
   <string name="keep_scroll_state_pref_title">Görgetési pozíció mentése</string>
   <string name="keep_scroll_state_pref_summary">Görgetési pozíció mentése az alkalmazásfiókban</string>
   <string name="home_opens_drawer_pref_title">Alkalmazásfiók megnyitása home gombbal</string>
-  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the homescreen will open the app drawer</string>
+  <string name="home_opens_drawer_pref_summary">A kezdőképernyőn nyomott home gomb megnyitja az alkalmazásfiókot</string>
   <string name="show_hidden_pref_title">Rejtett alkalmazások megjelenítése</string>
   <string name="show_hidden_pref_on">A rejtett alkalmazások meg fognak jelenni, hogy módosíthassa a láthatósági beállításokat</string>
   <string name="show_hidden_pref_off">A rejtett alkalmazások nem lesznek láthatóak</string>
-  <string name="export_db_title">Export database</string>
-  <string name="import_db_title">Import database</string>
-  <string name="export_prefs_title">Export settings</string>
-  <string name="import_prefs_title">Import settings</string>
+  <string name="export_db_title">Adatbázis mentése</string>
+  <string name="import_db_title">Adatbázis visszaállítása</string>
+  <string name="export_prefs_title">Beállítások mentése</string>
+  <string name="import_prefs_title">Beállítások visszaállítása</string>
   <string name="notification_listener_label">Lawnchair - Értesítési bogyók</string>
   <string name="color_extraction_label">Lawnchair - Szín kinyerés</string>
   <string name="test_title">Teszt</string>
