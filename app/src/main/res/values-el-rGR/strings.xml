@@ -246,10 +246,10 @@
   <!-- About Lawnchair -->
   <string name="about_text">Ο Lawnchair είναι μια εφαρμογή εκκίνησης που δημιουργήθηκε από τον Till Kottmann (γνωστός και ως deletescape). Βασίζεται στον εκκινητή Launcher3 του ανοιχτού κώδικα λειτουργικού συστήματος Android (AOSP).</string>
   <string name="about_title">Σχετικά με</string>
-  <string name="changelog_title">Αρχείο καταγραφής αλλαγών της κατασκευής #%d</string>
+  <string name="changelog_title">Αρχείο καταγραφής αλλαγών της έκδοσης #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Πακέτο εικονιδίων</string>
-  <string name="icon_pack_preference_summary">Επιλέξτε ένα πακέτο εικονιδίων</string>
+  <string name="icon_pack_preference_summary">Επιλογή πακέτου εικονιδίων</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Η μπάρα εφαρμογών χρησιμοποιεί χρώματα της ταπετσαρίας</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Η μπάρα εφαρμογών θα χρωματιστεί με χρώμα που εξάγεται από την ταπετσαρία</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Η μπάρα εφαρμογών θα χρωματιστεί γκρι, αλλά ρυθμιζόμενη από τη φωτεινότητα της ταπετσαρίας</string>
