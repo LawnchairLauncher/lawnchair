@@ -73,7 +73,7 @@
   <!-- Permission description -->
   <string name="permdesc_install_shortcut">उपयोगकर्ताके हस्तक्षेप के बिना शॉर्टकट जोड़ने के लिए ऐपको अनुमति दे</string>
   <!-- Permission short label -->
-  <string name="permlab_read_settings">होम स्क्रीन सेटिंग्स और शॉर्टकट्स पढ़ने की अनुमति</string>
+  <string name="permlab_read_settings">होम सेटिंग्स और शॉर्टकट्स पढ़े</string>
   <!-- Permission description -->
   <string name="permdesc_read_settings">ऐप को सेटिंग्स और शॉर्टकट पढ़ने देता है</string>
   <!-- Permission short label -->
@@ -145,7 +145,7 @@
   <string name="app_waiting_download_title"><xliff:g id="Name">%1$s</xliff:g> के इंस्टॉल होने की प्रतीक्षा की जा रही है</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_add_to_workspace">Add to Home screen</string>
+  <string name="action_add_to_workspace">मुखपृष्ठ पर लगायें।</string>
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
   <string name="action_move_here">आइटम यहां लाये</string>
   <!-- Accessibility confirmation for item added to workspace. -->
@@ -229,7 +229,7 @@
   <!-- Option in "Select wallpaper from" dialog box -->
   <string name="pick_wallpaper">वॉलपेपर्स</string>
   <!-- Title of activity for cropping wallpapers -->
-  <string name="crop_wallpaper">वॉलपेपर सेट करें</string>
+  <string name="crop_wallpaper">वॉलपेपर काटें</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
   <string name="which_wallpaper_option_home_screen">होम स्क्रीन</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
