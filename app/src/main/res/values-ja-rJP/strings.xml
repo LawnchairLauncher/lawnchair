@@ -243,12 +243,12 @@
   <string name="notifications_header">通知</string>
   <string name="widgets_bottom_sheet_title">%1$s ウィジェット</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
+  <string name="about_text">Lawnchair はTill Kottmann（ deletescape としても知られています）によって作成されたランチャーアプリです。AOSP の Launcher3 に基づいて出来ています。</string>
   <string name="about_title">Lawnchair について</string>
   <string name="changelog_title">ビルド #%d のための変更履歴</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">アイコンパック</string>
-  <string name="icon_pack_preference_summary">Select an icon Pack</string>
+  <string name="icon_pack_preference_summary">アイコンパックを選択</string>
   <string name="hotseat_uses_extracted_colors_pref_title">ドックは壁紙の色を使用します</string>
   <string name="hotseat_uses_extracted_colors_pref_on">ドックは、壁紙から抽出された色で着色されます。</string>
   <string name="hotseat_uses_extracted_colors_pref_off">ドックはグレーの色になりますが、壁紙の明るさによって調整されます。</string>
@@ -258,10 +258,10 @@
   <string name="blur_pref_summary">ぼかし効果を部分的にインターフェースに適用します\nまたライブ壁紙とは互換性はありません</string>
   <string name="blur_radius_pref_title">ぼかしの範囲</string>
   <string name="white_google_icon_pref_title">白いGoogleアイコンを使用する</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on homescreen</string>
+  <string name="hide_icon_labels_pref_title">ホーム画面のアイコンラベルを非表示にする</string>
   <string name="hide_all_apps_icon_labels_pref_title">ドロワーでアイコンラベルを表示しない</string>
-  <string name="workspace_label_color_hue_pref_title">Color of icon labels on homescreen</string>
-  <string name="workspace_label_color_variation_pref_title">Color variation of icon labels on homescreen</string>
+  <string name="workspace_label_color_hue_pref_title">ホーム画面のアイコンラベルの色</string>
+  <string name="workspace_label_color_variation_pref_title">ホーム画面上のアイコンラベルの色の変化</string>
   <string name="all_apps_opacity_pref_title">アプリドロワー不透明度</string>
   <string name="num_cols_pref_title">列数</string>
   <string name="num_rows_pref_title">行数</string>
@@ -271,7 +271,7 @@
   <string name="full_width_width_widgets_pref_title">全幅ウィジェット</string>
   <string name="full_width_widgets_pref_summary">ウィジェットがパディングなしで幅全体にまたがることを許可する</string>
   <string name="notification_access_pref_title">通知バッジとプレビュー</string>
-  <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
+  <string name="notification_access_pref_summary">Lawnchairにこの機能を有効にするための通知にアクセスさせる</string>
   <string name="general_pref_title">全般</string>
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">動作</string>
@@ -294,15 +294,15 @@
   <string name="restart_lawnchair_pref_summary">一部の設定が正しく適用されない場合に役立ちます</string>
   <string name="rebuild_icondb_pref_title">アイコンデータベースを再構築する</string>
   <string name="pinch_to_overview_pref_title">概要にピンチ</string>
-  <string name="pinch_to_overview_pref_summary">Pinch on the homescreen to open the overview</string>
+  <string name="pinch_to_overview_pref_summary">ホーム画面をピンチして概要を開きます</string>
   <string name="light_statusbar_pref_title">明るいステータスバー</string>
   <string name="light_statusbar_pref_force">ステータスバーは常に暗いアイコンで表示されます。</string>
-  <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
+  <string name="light_statusbar_pref_off">ステータスバーは常に明るいアイコンで表示されます。</string>
   <string name="haptic_feedback_pref_title">振動を有効にします</string>
   <string name="keep_scroll_state_pref_title">スクロール位置を保存</string>
   <string name="keep_scroll_state_pref_summary">アプリドロワーのスクロール位置を保存します。</string>
   <string name="home_opens_drawer_pref_title">ホームボタンでアプリドロワーを開きます</string>
-  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the homescreen will open the app drawer</string>
+  <string name="home_opens_drawer_pref_summary">ホーム画面でホームボタンを押すと、アプリドロワーが開きます</string>
   <string name="show_hidden_pref_title">隠しアプリを表示する</string>
   <string name="show_hidden_pref_on">非表示のアプリケーションが表示され、表示設定が変更されます</string>
   <string name="show_hidden_pref_off">隠しアプリは表示されません</string>
