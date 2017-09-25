@@ -45,6 +45,14 @@
             android:defaultValue="false"
             android:persistent="true" />
 
+        <SwitchPreference
+            android:key="pref_animatedClockIconAlternativeClockApps"
+            android:title="@string/animated_clock_icon_alternative_clock_apps_title"
+            android:summary="@string/animated_clock_icon_alternative_clock_apps_summary"
+            android:defaultValue="false"
+            android:dependency="pref_animatedClockIcon"
+            android:persistent="true" />
+
         <ch.deletescape.lawnchair.preferences.GoogleNowPreference
             android:key="pref_showGoogleNowTab"
             android:persistent="true"

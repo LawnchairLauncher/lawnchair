@@ -244,7 +244,7 @@ public class BubbleTextView extends TextView
 
     private void applyClockIcon(ComponentName componentName) {
         if (Utilities.getPrefs(getContext()).getAnimatedClockIcon() &&
-                Utilities.isComponentClock(componentName, !Utilities.getPrefs(getContext()).getAnimateClockIconAlternativeClockApps())) {
+                Utilities.isComponentClock(componentName, !Utilities.getPrefs(getContext()).getAnimatedClockIconAlternativeClockApps())) {
             setIcon(ClockIconDrawable.Companion.create(getContext()));
         }
     }

@@ -440,6 +440,8 @@
     <string name="icon_shape_circle">Circle</string>
     <string name="icon_shape_teardrop">Teardrop</string>
     <string name="animated_clock_icon_title">Animated clock icon</string>
+    <string name="animated_clock_icon_alternative_clock_apps_title">Animate alternative clock apps</string>
+    <string name="animated_clock_icon_alternative_clock_apps_summary">Enable this if you don\'t use Google Clock as your default clock app</string>
     <string name="about_summary_title">Summary</string>
     <string name="about_version">Version</string>
     <string name="about_icon_designer">App Icon Designer</string>
