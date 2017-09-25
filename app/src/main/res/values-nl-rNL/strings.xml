@@ -60,7 +60,7 @@
   <string name="all_apps_button_label">Lijst met apps</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
-  <string name="all_apps_home_button_label">Thuis</string>
+  <string name="all_apps_home_button_label">Startpagina</string>
   <!-- Label for remove drop target. [CHAR_LIMIT=20] -->
   <string name="remove_drop_target_label">Verwijderen</string>
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
