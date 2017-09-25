@@ -255,11 +255,11 @@
   <string name="transparent_hotseat_pref_title">透明的Dock欄</string>
   <string name="dynamic_ui_pref_title">從桌布提取強調色</string>
   <string name="blur_pref_title">開啟模糊</string>
-  <string name="blur_pref_summary">對介面的部分套用模糊效果\n不相容動態桌布</string>
+  <string name="blur_pref_summary">介面的模糊效果\n無法用於動態桌布</string>
   <string name="blur_radius_pref_title">模糊範圍</string>
   <string name="white_google_icon_pref_title">使用白色的 Google 圖示</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on homescreen</string>
-  <string name="hide_all_apps_icon_labels_pref_title">在應用程式清單裡隱藏圖示</string>
+  <string name="hide_icon_labels_pref_title">隱藏主畫面上的文字</string>
+  <string name="hide_all_apps_icon_labels_pref_title">隱藏應用程式清單中的文字</string>
   <string name="workspace_label_color_hue_pref_title">主螢幕上的圖示標籤顏色</string>
   <string name="workspace_label_color_variation_pref_title">主螢幕上的圖示標籤顏色變化</string>
   <string name="all_apps_opacity_pref_title">抽屜透明度</string>
@@ -281,8 +281,8 @@
   <string name="pixel_ui_pref_summary">開啟Pixel 啟動器特殊功能</string>
   <string name="backup_pref_title">備份</string>
   <string name="behavior_pref_summary">改變 Lawnchair 的特性</string>
-  <string name="backup_pref_summary">備份您的資料庫和設定</string>
-  <string name="debug_pref_summary">重新啟動或重建圖示資料庫</string>
+  <string name="backup_pref_summary">備份您的資料和設定</string>
+  <string name="debug_pref_summary">重新啟動或重建圖示資料</string>
   <string name="show_pixel_bar_pref_title">顯示Pixel頂欄</string>
   <string name="use_wide_searchbar_pref_title">使用寬的搜尋欄</string>
   <string name="show_mic_pref_title">顯示 Google Assistant 按鈕</string>
@@ -294,9 +294,9 @@
   <string name="restart_lawnchair_pref_summary">如果某些設置未正確應用，可能會有所幫助</string>
   <string name="rebuild_icondb_pref_title">重建圖示快取</string>
   <string name="pinch_to_overview_pref_title">捏合來概覽</string>
-  <string name="pinch_to_overview_pref_summary">Pinch on the homescreen to open the overview</string>
+  <string name="pinch_to_overview_pref_summary">捏合以概覽</string>
   <string name="light_statusbar_pref_title">亮色狀態欄</string>
-  <string name="light_statusbar_pref_force">狀態列將一直顯示深色圖示</string>
+  <string name="light_statusbar_pref_force">狀態列將顯示深色圖示</string>
   <string name="light_statusbar_pref_off">狀態欄將一直顯示亮色圖示。</string>
   <string name="haptic_feedback_pref_title">啟用震動</string>
   <string name="keep_scroll_state_pref_title">保持滾動軸位置</string>
@@ -315,7 +315,7 @@
   <string name="test_title">測試</string>
   <string name="visibility">可見性</string>
   <string name="default_text">預設</string>
-  <string name="edit_icon_reset">重新設定</string>
+  <string name="edit_icon_reset">重設</string>
   <string name="show_top_shadow_title">顯示頂部陰影</string>
   <string name="pref_cat_homescreen">主畫面</string>
   <string name="pref_cat_miscellaneous">其他設定</string>
@@ -327,20 +327,20 @@
   <string name="theme_black">黑色主題</string>
   <string name="hide_hotseat_pref_title">隱藏Dock欄</string>
   <string name="all_icons">所有的圖示</string>
-  <string name="pull_down_action_pref_title">下拉的行為</string>
-  <string name="pull_down_do_nothing">無動作</string>
+  <string name="pull_down_action_pref_title">下拉手勢</string>
+  <string name="pull_down_do_nothing">無</string>
   <string name="pull_down_notis">顯示通知</string>
   <string name="pull_down_search">開啟搜尋</string>
   <string name="pull_down_apps_search">應用程式搜尋</string>
-  <string name="enable_screen_rotation">啟用螢幕旋轉</string>
+  <string name="enable_screen_rotation">允許螢幕旋轉</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">匯入</string>
   <string name="backup_export_title">匯出</string>
   <string name="imexport_success">成功!</string>
   <string name="imexport_error">錯誤：無法複製檔案</string>
   <string name="imexport_no_backup_found">找不到備份</string>
-  <string name="imexport_external_storage_unreadable">外部儲存空間無法讀取 (授予權限設定)</string>
-  <string name="imexport_external_storage_unwritable">外部儲存空間無法寫入 (授予權限設定)</string>
+  <string name="imexport_external_storage_unreadable">無法讀取外部儲存空間 (設定中允許權限)</string>
+  <string name="imexport_external_storage_unwritable">無法寫入外部儲存空間 (設定中允許權限)</string>
   <string name="units_metric">公制</string>
   <string name="units_imperial">英制</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
@@ -348,7 +348,7 @@
   <string name="pref_weather_title">啟用天氣</string>
   <string name="pref_weather_units">天氣單位</string>
   <string name="pref_weather_city_summary">為了取得最佳結果，請設定國家/地區</string>
-  <string name="pref_weather_city_title">城市：</string>
+  <string name="pref_weather_city_title">城市</string>
   <string name="none">無</string>
   <string name="pref_applyTheme">套用主題至</string>
   <string name="pref_applyBlur">套用模糊效果</string>
@@ -360,7 +360,7 @@
   <string name="enable_editing_pref_title">啟用編輯工作區</string>
   <string name="pref_weather_provider">天氣供應商</string>
   <string name="loading">載入中…</string>
-  <string name="icon_shape_override_label">更換圖示造型</string>
+  <string name="icon_shape_override_label">變更圖示形狀</string>
   <string name="icon_shape_system_default">不要變更</string>
   <string name="icon_shape_none">無</string>
   <string name="icon_shape_square">正方形</string>
@@ -371,7 +371,7 @@
   <string name="animated_clock_icon_title">動態時鐘圖示</string>
   <string name="about_summary_title">概要</string>
   <string name="about_version">版本</string>
-  <string name="about_icon_designer">應用程式圖示的設計人員</string>
+  <string name="about_icon_designer">應用程式圖示的設計者</string>
   <string name="about_contributors_title">貢獻者</string>
   <string name="location_permission_warn">需要位置權限才能切換到其他氣象資料提供</string>
   <string name="num_cols_drawer_pref_title">應用程式抽屜的列數</string>
