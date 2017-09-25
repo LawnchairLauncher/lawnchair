@@ -19,11 +19,11 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/all_apps_search_bar_height"
     android:layout_gravity="center|top"
+    android:layout_marginBottom="-8dp"
     android:gravity="center|bottom"
-    android:saveEnabled="false"
     android:paddingLeft="@dimen/dynamic_grid_edge_margin"
     android:paddingRight="@dimen/dynamic_grid_edge_margin"
-    android:layout_marginBottom="-8dp" >
+    android:saveEnabled="false" >
 
     <!--
       Note: The following relation should always be true so that the shadows are aligned properly
@@ -45,6 +45,7 @@
         android:imeOptions="actionSearch|flagNoExtractUi"
         android:inputType="text|textNoSuggestions|textCapWords"
         android:maxLines="1"
+        android:saveEnabled="false"
         android:scrollHorizontally="true"
         android:singleLine="true"
         android:textColor="?android:attr/textColorSecondary"
