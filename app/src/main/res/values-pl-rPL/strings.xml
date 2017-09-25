@@ -308,9 +308,9 @@
   <string name="show_hidden_pref_title">Pokaż ukryte aplikacje</string>
   <string name="show_hidden_pref_on">Ukryte aplikacje będą pokazane by zmienić ustawienia widoczności</string>
   <string name="show_hidden_pref_off">Ukryte aplikacje nie będą widoczne</string>
-  <string name="export_db_title">Export database</string>
-  <string name="import_db_title">Import database</string>
-  <string name="export_prefs_title">Export settings</string>
+  <string name="export_db_title">Eksportuj bazę danych</string>
+  <string name="import_db_title">Importuj bazę danych</string>
+  <string name="export_prefs_title">Eksportuj ustawienia</string>
   <string name="import_prefs_title">Import settings</string>
   <string name="notification_listener_label">Lawnchair - Odznaki powiadomień</string>
   <string name="color_extraction_label">Lawnchair - Pobieranie koloru</string>
