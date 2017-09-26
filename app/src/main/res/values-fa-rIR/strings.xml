@@ -22,34 +22,56 @@
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
+  <string name="work_folder_name">کاری</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
+  <string name="activity_not_found">برنامه نصب نشده است.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
+  <string name="activity_not_available">برنامه در دسترس نیست</string>
   <!-- SafeMode shortcut error string -->
+  <string name="safemode_shortcut_error">برنامه های دانلود شده در SafeMode غیر فعال شده اند</string>
   <!-- SafeMode widget error string -->
+  <string name="safemode_widget_error">ویجت در SafeMode غیر فعال شده اند</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
+  <string name="shortcut_not_available">میان‌بر دردسترس نیست</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
+  <string name="long_press_widget_to_add">برای انتخاب ابزارک لمس کنید و نگه دارید.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
+  <string name="long_accessible_way_to_add">برای انتخاب یک ابزارک یا استفاده از اقدامات سفارشی، دو ضربه سریع بزنید و نگه‌دارید.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
+  <string name="widget_accessible_dims_format">‏%1$d عرض در %2$d طول</string>
   <!-- All Apps -->
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
+  <string name="all_apps_search_bar_hint">جستجوی برنامه‌ها</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
+  <string name="all_apps_loading_message">در حال بارگیری برنامه‌ها…</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
+  <string name="all_apps_no_search_results">هیچ برنامه‌ای مطابق با «<xliff:g id="query">%1$s</xliff:g>» پیدا نشد</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
+  <string name="all_apps_search_market_message">جستجوی برنامه‌های بیشتر</string>
   <!-- Drag and drop -->
   <!-- Error message when user has filled a page -->
+  <string name="out_of_space">فضای بیشتری در این صفحه موجود نیست.</string>
   <!-- Error message when user has filled the hotseat -->
+  <string name="hotseat_out_of_space">فضای بیشتری در قسمت موارد دلخواه وجود ندارد.</string>
   <!-- All applications label -->
+  <string name="all_apps_button_label">فهرست برنامه‌ها</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
+  <string name="all_apps_home_button_label">خانه</string>
   <!-- Label for remove drop target. [CHAR_LIMIT=20] -->
+  <string name="remove_drop_target_label">حذف</string>
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
+  <string name="uninstall_drop_target_label">پاک کردن برنامه</string>
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
+  <string name="app_info_drop_target_label">اطلاعات برنامه</string>
   <!-- Permissions: -->
   <!-- Permission short label -->
+  <string name="permlab_install_shortcut">اضافه کردن میان‌برها</string>
   <!-- Permission description -->
+  <string name="permdesc_install_shortcut">به برنامه اجازه می‌دهد تا میان‌برها را بدون دخالت کاربر اضافه کند.</string>
   <!-- Permission short label -->
   <!-- Permission description -->
   <!-- Permission short label -->
@@ -58,6 +80,7 @@
   <!-- Widgets: -->
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
+  <string name="gadget_setup_text">راه اندازی</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
   <!-- Default folder title -->
   <!-- Accessibility -->
@@ -74,6 +97,7 @@
   <!-- Folder name format -->
   <!-- Strings for the customization mode -->
   <!-- Text for widget add button -->
+  <string name="widget_button_text">ابزارک‌ها</string>
   <!-- Text for wallpaper change button -->
   <!-- Text for settings button -->
   <!-- Message shown when a feature is disabled by the administrator -->
@@ -109,6 +133,7 @@
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
   <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
   <!-- Accessibility confirmation when a screen was moved. -->
+  <string name="screen_moved">صفحه منتقل شد</string>
   <!-- Accessibility action to resize a widget. [CHAR_LIMIT=30] -->
   <!-- Accessibility action to increase width of a widget. [CHAR_LIMIT=30] -->
   <!-- Accessibility action to increase height of a widget. [CHAR_LIMIT=30] -->
@@ -140,6 +165,12 @@
   <!-- Option for setting the wallpaper only on the lock screen. -->
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
   <!-- About Lawnchair -->
+  <string name="about_text">Lawnchair یک لانچر است که توسط Till Kottmann(aka deletescape) و براساس Launcher3 از رام‌های AOSP نوشته شده است.</string>
+  <string name="blur_pref_title">فعالسازی بلور</string>
+  <string name="pref_iconLabelsInTwoLines">نمایش برچسب آیکن‌ها در دو خط</string>
+  <string name="white_google_icon_pref_title">استفاده از آیکن گوگل سفید</string>
+  <string name="workspace_label_color_variation_pref_title">رنگ لیبل آیکن‌ها در صفحه اصلی</string>
+  <string name="all_apps_opacity_pref_title">شفافیت منوی اپلیکیشن‌ها</string>
   <!-- Import/Export Strings -->
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <!-- Time format for Weather Widget -->
