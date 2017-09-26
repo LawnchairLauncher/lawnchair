@@ -258,6 +258,7 @@
   <string name="blur_pref_title">Unschärfeeffekt verwenden</string>
   <string name="blur_pref_summary">Unschärfeeffekt auf Teile der Darstellung anwenden\nNicht mit Live-Hintergründen kompatibel</string>
   <string name="blur_radius_pref_title">Stärke des Unschärfeeffekts</string>
+  <string name="pref_iconLabelsInTwoLines">2 Zeilen für Appnamen erlauben</string>
   <string name="white_google_icon_pref_title">Weiße Google-Icons verwenden</string>
   <string name="hide_icon_labels_pref_title">Icon-Beschriftungen auf dem Startbildschirm verstecken</string>
   <string name="hide_all_apps_icon_labels_pref_title">Icon-Beschriftungen in der App-Übersicht ausblenden</string>
