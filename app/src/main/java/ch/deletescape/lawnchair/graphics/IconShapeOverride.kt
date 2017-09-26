@@ -47,6 +47,7 @@ class IconShapeOverride {
     companion object {
 
         const val planeMask = "M21,16V14L13,9V3.5A1.5,1.5 0 0,0 11.5,2A1.5,1.5 0 0,0 10,3.5V9L2,14V16L10,13.5V19L8,20.5V22L11.5,21L15,22V20.5L13,19V13.5L21,16Z"
+        const val defaultMask = "M50 0C77.6 0 100 22.4 100 50C100 77.6 77.6 100 50 100C22.4 100 0 77.6 0 50C0 22.4 22.4 0 50 0Z"
 
         fun isSupported(context: Context): Boolean {
             if (Utilities.ATLEAST_NOUGAT && prefs(context).backportAdaptiveIcons) {
@@ -90,7 +91,10 @@ class IconShapeOverride {
 
         fun getAppliedValue(context: Context): ShapeInfo {
             val prefs = prefs(context)
-            if (!Utilities.ATLEAST_NOUGAT) return ShapeInfo("", "", 100, prefs.usePixelIcons)
+            if (!Utilities.ATLEAST_NOUGAT) {
+                val mask = if (prefs.usePixelIcons) defaultMask else ""
+                return ShapeInfo(mask, mask, 100, prefs.usePixelIcons)
+            }
             val enablePlanes = prefs.enablePlanes
             var iconShape = if (enablePlanes) planeMask else prefs.overrideIconShape
             val savedPref = iconShape
