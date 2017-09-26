@@ -109,6 +109,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                     break;
                 case PreferenceFlags.KEY_PREF_ICON_SCALE:
                 case PreferenceFlags.KEY_PREF_HOTSEAT_ICON_SCALE:
+                case PreferenceFlags.KEY_PREF_HOTSEAT_HEIGHT_SCALE:
                 case PreferenceFlags.KEY_PREF_ALL_APPS_ICON_SCALE:
                 case PreferenceFlags.KEY_PREF_ICON_TEXT_SCALE:
                 case PreferenceFlags.KEY_PREF_ALL_APPS_ICON_TEXT_SCALE:

@@ -334,6 +334,7 @@
     <string name="num_rows_pref_title">Number of rows</string>
     <string name="num_hotseat_icons_pref_title">Number of icons in dock</string>
     <string name="icon_scale_pref_title">Icon scale</string>
+    <string name="hotseat_height_scale">Height scale</string>
     <string name="icon_text_scale_pref_title">Icon text scale</string>
     <string name="full_width_width_widgets_pref_title">Full width widgets</string>
     <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
