@@ -258,6 +258,7 @@
   <string name="blur_pref_title">Ενεργοποίηση θολότητας</string>
   <string name="blur_pref_summary">Εφαρμόστε το εφέ θολότητας τμηματικά σε μέρη του γραφικού περιβάλλοντος\nΜη συμβατό με ζωντανές ταπετσαρίες</string>
   <string name="blur_radius_pref_title">Ακτίνα θολότητας</string>
+  <string name="pref_iconLabelsInTwoLines">Κείμενο εικονιδίων σε δύο γραμμές</string>
   <string name="white_google_icon_pref_title">Χρήση λευκού εικονιδίου Google</string>
   <string name="hide_icon_labels_pref_title">Απόκρυψη ετικετών εικονιδίων στην αρχική οθόνη</string>
   <string name="hide_all_apps_icon_labels_pref_title">Απόκρυψη ετικετών εικονιδίων στο συρτάρι εφαρμογών</string>
