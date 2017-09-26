@@ -258,6 +258,7 @@
   <string name="blur_pref_title">Bulanıklığı etkinleştir</string>
   <string name="blur_pref_summary">Arayüzün bazı kısımlarına bulanıklık efekti uygulayın\nCanlı duvar kağıtları ile uyumlu değil</string>
   <string name="blur_radius_pref_title">Bulanıklık yarıçapı</string>
+  <string name="pref_iconLabelsInTwoLines">Simge etiketleri tek satır</string>
   <string name="white_google_icon_pref_title">Beyaz Google simgesi kullanın</string>
   <string name="hide_icon_labels_pref_title">Ana ekrandaki simge etiketlerini gizle</string>
   <string name="hide_all_apps_icon_labels_pref_title">Çekmecedeki simge etiketlerini gizle</string>
