@@ -28,12 +28,15 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.AdaptiveIconDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
@@ -231,12 +234,17 @@ public class IconNormalizer {
      */
     public synchronized float getScale(@NonNull Drawable d, @Nullable RectF outBounds,
             @Nullable Path path, @Nullable boolean[] outMaskShape) {
-        if (Utilities.ATLEAST_OREO && d instanceof AdaptiveIconDrawable &&
-                mAdaptiveIconScale != SCALE_NOT_INITIALIZED) {
-            if (outBounds != null) {
-                outBounds.set(mAdaptiveIconBounds);
+        if (Utilities.ATLEAST_OREO && d instanceof AdaptiveIconDrawable) {
+            if (mAdaptiveIconScale != SCALE_NOT_INITIALIZED) {
+                if (outBounds != null) {
+                    outBounds.set(mAdaptiveIconBounds);
+                }
+                return mAdaptiveIconScale;
             }
-            return mAdaptiveIconScale;
+            if (d instanceof FolderAdaptiveIcon) {
+                // Since we just want the scale, avoid heavy drawing operations
+                d = new AdaptiveIconDrawable(new ColorDrawable(Color.BLACK), null);
+            }
         }
         int width = d.getIntrinsicWidth();
         int height = d.getIntrinsicHeight();

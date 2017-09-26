@@ -169,7 +169,7 @@ public class DragView extends View {
             }
         });
 
-        mBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight());
+        mBitmap = bitmap;
         setDragRegion(new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()));
 
         // The point in our scaled bitmap that the touch events are located
@@ -425,6 +425,10 @@ public class DragView extends View {
 
     public Rect getDragRegion() {
         return mDragRegion;
+    }
+
+    public Bitmap getPreviewBitmap() {
+        return mBitmap;
     }
 
     @Override

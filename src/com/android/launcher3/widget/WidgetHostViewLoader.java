@@ -129,7 +129,7 @@ public class WidgetHostViewLoader implements DragController.DragListener {
                 mWidgetLoadingId = -1;
 
                 hostView.setVisibility(View.INVISIBLE);
-                int[] unScaledSize = mLauncher.getWorkspace().estimateItemSize(mInfo, false, true);
+                int[] unScaledSize = mLauncher.getWorkspace().estimateItemSize(mInfo);
                 // We want the first widget layout to be the correct size. This will be important
                 // for width size reporting to the AppWidgetManager.
                 DragLayer.LayoutParams lp = new DragLayer.LayoutParams(unScaledSize[0],

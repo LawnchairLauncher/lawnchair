@@ -252,8 +252,6 @@ public class Workspace extends PagedView
     private boolean mAddToExistingFolderOnDrop = false;
     private float mMaxDistanceForFolderCreation;
 
-    private final Canvas mCanvas = new Canvas();
-
     // Variables relating to touch disambiguation (scrolling workspace vs. scrolling a widget)
     private float mXDown;
     private float mYDown;
@@ -351,12 +349,9 @@ public class Workspace extends PagedView
     /**
      * Estimates the size of an item using spans: hSpan, vSpan.
      *
-     * @param springLoaded True if we are in spring loaded mode.
-     * @param unscaledSize True if caller wants to return the unscaled size
      * @return MAX_VALUE for each dimension if unsuccessful.
      */
-    public int[] estimateItemSize(ItemInfo itemInfo, boolean springLoaded, boolean unscaledSize) {
-        float shrinkFactor = mLauncher.getDeviceProfile().workspaceSpringLoadShrinkFactor;
+    public int[] estimateItemSize(ItemInfo itemInfo) {
         int[] size = new int[2];
         if (getChildCount() > 0) {
             // Use the first page to estimate the child position
@@ -373,14 +368,9 @@ public class Workspace extends PagedView
             size[0] = r.width();
             size[1] = r.height();
 
-            if (isWidget && unscaledSize) {
+            if (isWidget) {
                 size[0] /= scale;
                 size[1] /= scale;
-            }
-
-            if (springLoaded) {
-                size[0] *= shrinkFactor;
-                size[1] *= shrinkFactor;
             }
             return size;
         } else {
@@ -408,8 +398,12 @@ public class Workspace extends PagedView
         }
 
         if (mOutlineProvider != null) {
-            // The outline is used to visualize where the item will land if dropped
-            mOutlineProvider.generateDragOutline(mCanvas);
+            if (dragObject.dragView != null) {
+                Bitmap preview = dragObject.dragView.getPreviewBitmap();
+
+                // The outline is used to visualize where the item will land if dropped
+                mOutlineProvider.generateDragOutline(preview);
+            }
         }
 
         updateChildrenLayersEnabled(false);
@@ -1833,7 +1827,7 @@ public class Workspace extends PagedView
         mOutlineProvider = previewProvider;
 
         // The drag bitmap follows the touch point around on the screen
-        final Bitmap b = previewProvider.createDragBitmap(mCanvas);
+        final Bitmap b = previewProvider.createDragBitmap();
         int halfPadding = previewProvider.previewPadding / 2;
 
         float scale = previewProvider.getScaleAndPosition(b, mTempXY);
@@ -1881,7 +1875,6 @@ public class Workspace extends PagedView
         DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source,
                 dragObject, dragVisualizeOffset, dragRect, scale, dragOptions);
         dv.setIntrinsicIconScaleFactor(source.getIntrinsicIconScaleFactor());
-        b.recycle();
         return dv;
     }
 
@@ -2992,7 +2985,7 @@ public class Workspace extends PagedView
     }
 
     public Bitmap createWidgetBitmap(ItemInfo widgetInfo, View layout) {
-        int[] unScaledSize = mLauncher.getWorkspace().estimateItemSize(widgetInfo, false, true);
+        int[] unScaledSize = estimateItemSize(widgetInfo);
         int visibility = layout.getVisibility();
         layout.setVisibility(VISIBLE);
 
@@ -3000,12 +2993,9 @@ public class Workspace extends PagedView
         int height = MeasureSpec.makeMeasureSpec(unScaledSize[1], MeasureSpec.EXACTLY);
         Bitmap b = Bitmap.createBitmap(unScaledSize[0], unScaledSize[1],
                 Bitmap.Config.ARGB_8888);
-        mCanvas.setBitmap(b);
-
         layout.measure(width, height);
         layout.layout(0, 0, unScaledSize[0], unScaledSize[1]);
-        layout.draw(mCanvas);
-        mCanvas.setBitmap(null);
+        layout.draw(new Canvas(b));
         layout.setVisibility(visibility);
         return b;
     }
