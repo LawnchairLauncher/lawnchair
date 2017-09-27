@@ -67,6 +67,8 @@ interface IPreferenceProvider {
     fun hotseatShouldUseExtractedColorsCache(value: Boolean, commit: Boolean = false)
     fun lightStatusBarKeyCache(default: Boolean): Boolean
     fun lightStatusBarKeyCache(value: Boolean, commit: Boolean = false)
+    val hotseatShowArrow: Boolean
+    val hotseatShowPageIndicator: Boolean
     val enableHapticFeedback: Boolean
     val keepScrollState: Boolean
     val useFullWidthSearchBar: Boolean

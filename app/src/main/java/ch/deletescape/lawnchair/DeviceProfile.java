@@ -32,6 +32,7 @@ import android.widget.FrameLayout;
 import java.util.ArrayList;
 
 import ch.deletescape.lawnchair.badge.BadgeRenderer;
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 
 public class DeviceProfile {
 
@@ -135,6 +136,7 @@ public class DeviceProfile {
                          Point minSize, Point maxSize,
                          int width, int height, boolean isLandscape) {
         mContext = context;
+        IPreferenceProvider prefs = Utilities.getPrefs(mContext);
 
         this.inv = inv;
         this.isLandscape = isLandscape;
@@ -156,8 +158,11 @@ public class DeviceProfile {
         defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
         desiredWorkspaceLeftRightMarginPx = edgeMarginPx;
-        pageIndicatorHeightPx =
+        if (prefs.getHotseatShowArrow())
+            pageIndicatorHeightPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_height);
+        else
+            pageIndicatorHeightPx = 0;
         pageIndicatorLandGutterLeftNavBarPx = res.getDimensionPixelSize(
                 R.dimen.dynamic_grid_page_indicator_gutter_width_left_nav_bar);
         pageIndicatorLandWorkspaceOffsetPx =
@@ -184,7 +189,7 @@ public class DeviceProfile {
         workspaceSpringLoadedBottomSpace =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_min_spring_loaded_space);
         float hotseatBaseHeight = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_height);
-        float hotseatScale = Utilities.getPrefs(mContext).getHotseatHeightScale();
+        float hotseatScale = prefs.getHotseatHeightScale();
         hotseatBarHeightPx = Math.round(hotseatBaseHeight * hotseatScale);
         hotseatBarTopPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);

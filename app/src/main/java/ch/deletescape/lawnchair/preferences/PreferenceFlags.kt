@@ -53,6 +53,8 @@ object PreferenceFlags {
     const val KEY_PREF_PINCH_TO_OVERVIEW = "pref_pinchToOverview"
     const val KEY_PREF_PULLDOWN_ACTION = "pref_pulldownAction"
     const val KEY_PREF_HOTSEAT_EXTRACTED_COLORS = "pref_hotseatShouldUseExtractedColors"
+    const val KEY_PREF_HOTSEAT_SHOW_ARROW = "pref_hotseatShowArrow"
+    const val KEY_PREF_HOTSEAT_SHOW_PAGE_INDICATOR = "pref_hotseatShowPageIndicator"
     const val KEY_PREF_HAPTIC_FEEDBACK = "pref_enableHapticFeedback"
     const val KEY_PREF_KEEP_SCROLL_STATE = "pref_keepScrollState"
     const val KEY_FULL_WIDTH_SEARCHBAR = "pref_fullWidthSearchbar"
