@@ -33,6 +33,7 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     }
 
     override val hotseatIconScale by FloatPref(PreferenceFlags.KEY_PREF_HOTSEAT_ICON_SCALE, 1f)
+    override val hotseatHeightScale by FloatPref(PreferenceFlags.KEY_PREF_HOTSEAT_HEIGHT_SCALE, 1f)
     override val allAppsIconScale by FloatPref(PreferenceFlags.KEY_PREF_ALL_APPS_ICON_SCALE, 1f)
     override val allAppsIconTextScale by FloatPref(PreferenceFlags.KEY_PREF_ALL_APPS_ICON_TEXT_SCALE, 1f)
     override val useCustomAllAppsTextColor by BooleanPref(PreferenceFlags.KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR, false)

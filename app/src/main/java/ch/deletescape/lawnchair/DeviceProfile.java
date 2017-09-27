@@ -183,7 +183,9 @@ public class DeviceProfile {
         dropTargetBarSizePx = res.getDimensionPixelSize(R.dimen.dynamic_grid_drop_target_size);
         workspaceSpringLoadedBottomSpace =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_min_spring_loaded_space);
-        hotseatBarHeightPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_height);
+        float hotseatBaseHeight = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_height);
+        float hotseatScale = Utilities.getPrefs(mContext).getHotseatHeightScale();
+        hotseatBarHeightPx = Math.round(hotseatBaseHeight * hotseatScale);
         hotseatBarTopPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
         hotseatLandGutterPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_gutter_width);

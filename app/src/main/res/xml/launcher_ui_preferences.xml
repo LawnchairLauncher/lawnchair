@@ -144,6 +144,16 @@
             app:defaultSeekbarValue="1.0"
             app:steps="120"
             android:persistent="true" />
+
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_hotseatHeightScale"
+            android:title="@string/hotseat_height_scale"
+            app:minValue="0.5"
+            app:maxValue="1.5"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100"
+            app:defaultSeekbarValue="1.0"
+            android:persistent="true" />
     </PreferenceCategory>
 
     <PreferenceCategory
