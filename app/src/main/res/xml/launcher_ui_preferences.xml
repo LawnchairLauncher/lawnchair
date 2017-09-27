@@ -237,6 +237,17 @@
             app:defaultSeekbarValue="1.0"
             app:steps="120"
             android:persistent="true" />
+
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_allAppsIconPaddingScale"
+            android:title="@string/icon_text_padding_scale_pref_title"
+            app:minValue="0.1"
+            app:maxValue="2.0"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100"
+            app:defaultSeekbarValue="1.0"
+            app:steps="190"
+            android:persistent="true" />
     </PreferenceCategory>
 
     <PreferenceCategory
