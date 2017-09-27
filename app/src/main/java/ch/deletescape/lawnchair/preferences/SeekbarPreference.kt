@@ -20,6 +20,7 @@ class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: Attri
     private var defaultValue: Float = 0.toFloat()
     private var multiplier: Int = 0
     private var format: String? = null
+    private var steps: Int = 100
 
     init {
         layoutResource = R.layout.preference_seekbar
@@ -33,6 +34,7 @@ class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: Attri
         multiplier = ta.getInt(R.styleable.SeekbarPreference_summaryMultiplier, 1)
         format = ta.getString(R.styleable.SeekbarPreference_summaryFormat)
         defaultValue = ta.getFloat(R.styleable.SeekbarPreference_defaultSeekbarValue, min)
+        steps = ta.getInt(R.styleable.SeekbarPreference_steps, 100)
         if (format == null) {
             format = "%.2f"
         }
@@ -43,11 +45,12 @@ class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: Attri
         super.onBindView(view)
         mSeekbar = view.findViewById<SeekBar>(R.id.seekbar)
         mValueText = view.findViewById<TextView>(R.id.txtValue)
+        mSeekbar!!.max = steps
         mSeekbar!!.setOnSeekBarChangeListener(this)
 
         current = getPersistedFloat(defaultValue)
-        val progress = ((current - min) / ((max - min) / 100)).toInt()
-        mSeekbar!!.progress = progress
+        val progress = ((current - min) / ((max - min) / steps))
+        mSeekbar!!.progress = Math.round(progress)
         updateSummary()
     }
 
@@ -56,7 +59,8 @@ class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-        current = min + (max - min) / 100 * progress
+        current = min + (max - min) / steps * progress
+        current = Math.round(current * 100f)/100f; //round to .00 places
         updateSummary()
 
         persistFloat(current)

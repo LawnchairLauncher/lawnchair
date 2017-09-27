@@ -124,6 +124,7 @@
         <attr name="summaryFormat" format="string" />
         <attr name="summaryMultiplier" format="integer" />
         <attr name="defaultSeekbarValue" format="float" />
+        <attr name="steps" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="SubPreference">
