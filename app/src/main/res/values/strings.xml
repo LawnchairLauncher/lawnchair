@@ -336,6 +336,7 @@
     <string name="icon_scale_pref_title">Icon scale</string>
     <string name="hotseat_height_scale">Height scale</string>
     <string name="icon_text_scale_pref_title">Icon text scale</string>
+    <string name="icon_text_padding_scale_pref_title">Icon padding scale</string>
     <string name="full_width_width_widgets_pref_title">Full width widgets</string>
     <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
     <string name="notification_access_pref_title">Notification badges and preview</string>

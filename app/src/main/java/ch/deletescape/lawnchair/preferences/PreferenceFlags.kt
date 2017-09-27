@@ -28,6 +28,7 @@ object PreferenceFlags {
     const val KEY_PREF_HOTSEAT_HEIGHT_SCALE = "pref_hotseatHeightScale"
     const val KEY_PREF_ALL_APPS_ICON_SCALE = "pref_allAppsIconScale"
     const val KEY_PREF_ALL_APPS_ICON_TEXT_SCALE = "pref_allAppsIconTextScale"
+    const val KEY_PREF_ALL_APPS_ICON_PADDING_SCALE = "pref_allAppsIconPaddingScale"
 
     //Ints
     const val KEY_BLUR_MODE = "pref_blurMode"
