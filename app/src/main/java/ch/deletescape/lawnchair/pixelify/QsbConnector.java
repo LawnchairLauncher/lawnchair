@@ -17,123 +17,97 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import ch.deletescape.lawnchair.R;
 
 public class QsbConnector extends View {
-    private static final Property bu = new C0284i(Integer.class, "overlayAlpha");
-    private int bv;
-    private ObjectAnimator bw;
-    private final int bx;
-    private final BroadcastReceiver by;
+    private static final Property alphaProperty = new AlphaPropertyOverride(Integer.class, "overlayAlpha");
+    private int alpha;
+    private final BroadcastReceiver packageChangeReceiver;
+    private final int qsbBackgroundColor;
+    private ObjectAnimator revealAnimator;
+
+    static class AlphaPropertyOverride extends Property<QsbConnector, Integer> {
+        AlphaPropertyOverride(Class clazz, String s) {
+            super(clazz, s);
+        }
+
+        public Integer get(QsbConnector qsbConnector) {
+            return Integer.valueOf(qsbConnector.alpha);
+        }
+
+        public void set(QsbConnector qsbConnector, Integer newAlpha) {
+            qsbConnector.updateAlpha(newAlpha.intValue());
+        }
+    }
 
     public QsbConnector(Context context) {
         this(context, null);
     }
 
-    public QsbConnector(Context context, AttributeSet attributeSet) {
-        this(context, attributeSet, 0);
+    public QsbConnector(Context context, AttributeSet set) {
+        this(context, set, 0);
     }
 
-    public QsbConnector(Context context, AttributeSet attributeSet, int i) {
-        super(context, attributeSet, i);
-        by = new C0285j(this);
-        bv = 0;
-        bx = getResources().getColor(R.color.qsb_background) & 16777215;
+    public QsbConnector(Context context, AttributeSet set, int n) {
+        super(context, set, n);
+        this.packageChangeReceiver = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                QsbConnector.this.retrieveGoogleQsbBackground();
+            }
+        };
+        this.alpha = 0;
+        this.qsbBackgroundColor = getResources().getColor(R.color.qsb_background) & ViewCompat.MEASURED_SIZE_MASK;
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        be();
-        getContext().registerReceiver(by, Util.createIntentFilter("android.intent.action.PACKAGE_ADDED", "android.intent.action.PACKAGE_CHANGED", "android.intent.action.PACKAGE_REMOVED"));
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        try {
-            getContext().unregisterReceiver(by);
-        } catch (IllegalArgumentException ignored) {
-            // Not supposed to happen but we'll ignore it
+    private void stopRevealAnimation() {
+        if (this.revealAnimator != null) {
+            this.revealAnimator.end();
+            this.revealAnimator = null;
         }
     }
 
-    private void be() {
+    private void retrieveGoogleQsbBackground() {
         setBackground(getResources().getDrawable(R.drawable.bg_pixel_qsb_connector, getContext().getTheme()));
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        if (bv > 0) {
-            canvas.drawColor(ColorUtils.setAlphaComponent(bx, bv));
-        }
-    }
-
-    @Override
-    protected boolean onSetAlpha(int i) {
-        if (i == 0) {
-            bd();
-        }
-        return super.onSetAlpha(i);
-    }
-
-    public void bc(boolean z) {
-        if (z) {
-            bd();
-            bf(255);
-            bw = ObjectAnimator.ofInt(this, bu, 0);
-            bw.setInterpolator(new AccelerateDecelerateInterpolator());
-            bw.start();
-            return;
-        }
-        bf(0);
-    }
-
-    private void bd() {
-        if (bw != null) {
-            bw.end();
-            bw = null;
-        }
-    }
-
-    private void bf(int i) {
-        if (bv != i) {
-            bv = i;
+    private void updateAlpha(int m) {
+        if (this.alpha != m) {
+            this.alpha = m;
             invalidate();
         }
     }
 
-    final class C0285j extends BroadcastReceiver {
-        final /* synthetic */ QsbConnector co;
-
-        C0285j(QsbConnector qsbConnector) {
-            co = qsbConnector;
+    public void changeVisibility(boolean makeVisible) {
+        if (makeVisible) {
+            stopRevealAnimation();
+            updateAlpha(255);
+            ObjectAnimator ofInt = ObjectAnimator.ofInt(this, alphaProperty, new int[]{0});
+            this.revealAnimator = ofInt;
+            ofInt.setInterpolator(new AccelerateDecelerateInterpolator());
+            this.revealAnimator.start();
+            return;
         }
+        updateAlpha(0);
+    }
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            co.be();
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        retrieveGoogleQsbBackground();
+        getContext().registerReceiver(this.packageChangeReceiver, Util.createIntentFilter("android.intent.action.PACKAGE_ADDED", "android.intent.action.PACKAGE_CHANGED", "android.intent.action.PACKAGE_REMOVED"));
+    }
+
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        getContext().unregisterReceiver(this.packageChangeReceiver);
+    }
+
+    protected void onDraw(Canvas canvas) {
+        if (this.alpha > 0) {
+            canvas.drawColor(ColorUtils.setAlphaComponent(this.qsbBackgroundColor, this.alpha));
         }
     }
 
-    final static class C0284i extends Property {
-        C0284i(Class cls, String str) {
-            super(cls, str);
+    protected boolean onSetAlpha(int n) {
+        if (n == 0) {
+            stopRevealAnimation();
         }
-
-        @Override
-        public /* bridge */ /* synthetic */ Object get(Object obj) {
-            return bR((QsbConnector) obj);
-        }
-
-        public Integer bR(QsbConnector qsbConnector) {
-            return qsbConnector.bv;
-        }
-
-        @Override
-        public /* bridge */ /* synthetic */ void set(Object obj, Object obj2) {
-            bS((QsbConnector) obj, (Integer) obj2);
-        }
-
-        public void bS(QsbConnector qsbConnector, Integer num) {
-            qsbConnector.bf(num);
-        }
+        return super.onSetAlpha(n);
     }
 }
