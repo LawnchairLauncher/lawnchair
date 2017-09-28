@@ -371,6 +371,8 @@
   <string name="icon_shape_circle">Daire</string>
   <string name="icon_shape_teardrop">Gözyaşı</string>
   <string name="animated_clock_icon_title">Hareketli saat simgesi</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Alternatif saat uygulamalarını canlandır</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Google Saat\'i varsayılan saat uygulaması olarak kullanmıyorsanız bunu etkinleştirin</string>
   <string name="about_summary_title">Özet</string>
   <string name="about_version">Sürüm</string>
   <string name="about_icon_designer">Uygulama Simgesi Tasarımcısı</string>
