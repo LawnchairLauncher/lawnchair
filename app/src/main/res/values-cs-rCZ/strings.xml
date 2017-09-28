@@ -259,6 +259,7 @@
   <string name="blur_pref_title">Povolit rozostření</string>
   <string name="blur_pref_summary">Použít efekt rozostření na části rozhraní\nNení kompatibilní s živými tapetami</string>
   <string name="blur_radius_pref_title">Rádius rozostření</string>
+  <string name="pref_iconLabelsInTwoLines">Popisky ikon ve dvou řadách</string>
   <string name="white_google_icon_pref_title">Použít bílou ikonu Google</string>
   <string name="hide_icon_labels_pref_title">Skrýt popisky ikon na domovské obrazovce</string>
   <string name="hide_all_apps_icon_labels_pref_title">Skrýt popisky ikon v seznamu aplikací</string>
@@ -371,6 +372,8 @@
   <string name="icon_shape_circle">Kruh</string>
   <string name="icon_shape_teardrop">Slza</string>
   <string name="animated_clock_icon_title">Ikona animovaných hodin</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Animace aplikace alternativních hodin</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Povolte, pokud nepoužíváte hodiny Google jako výchozí aplikaci pro hodiny</string>
   <string name="about_summary_title">Shrnutí</string>
   <string name="about_version">Verze</string>
   <string name="about_icon_designer">Návrhář ikon aplikací</string>
