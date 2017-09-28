@@ -372,6 +372,8 @@
   <string name="icon_shape_circle">Okrąg</string>
   <string name="icon_shape_teardrop">Łza</string>
   <string name="animated_clock_icon_title">Animowana ikona zegara</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Animuj alternatywne aplikacje zegara</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Włącz to, jeśli nie używasz Zegara Google jako domyślnej aplikacji zegara</string>
   <string name="about_summary_title">Podsumowanie</string>
   <string name="about_version">Wersja</string>
   <string name="about_icon_designer">Projekt ikony aplikacji</string>
@@ -397,6 +399,6 @@
   <string name="lock_desktop">Blokada pulpitu</string>
   <string name="lawnfeed_not_found">Lawnfeed nie jest zainstalowany</string>
   <string name="google_app_not_found">Aplikacja Google nie jest zainstalowana</string>
-  <string name="popup_card_theme_title">Płaski styl wyskakujących</string>
-  <string name="set_default_launcher">Ustaw domyślny program uruchamiający</string>
+  <string name="popup_card_theme_title">Płaski styl okien popup</string>
+  <string name="set_default_launcher">Ustaw domyślny launcher</string>
 </resources>
