@@ -198,6 +198,8 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val popupCardTheme by BooleanPref(PreferenceFlags.KEY_POPUP_CARD_THEME, false)
     override val lightStatusBar by BooleanPref(FeatureFlags.KEY_PREF_LIGHT_STATUS_BAR, false)
     override val hotseatShouldUseExtractedColors by BooleanPref(FeatureFlags.KEY_PREF_HOTSEAT_EXTRACTED_COLORS, true)
+    override val hotseatShowArrow by BooleanPref(PreferenceFlags.KEY_PREF_HOTSEAT_SHOW_ARROW, true)
+    override val hotseatShowPageIndicator by BooleanPref(PreferenceFlags.KEY_PREF_HOTSEAT_SHOW_PAGE_INDICATOR, true)
 
     override fun hotseatShouldUseExtractedColorsCache(default: Boolean): Boolean {
         return getBoolean(PreferenceFlags.KEY_HOTSEAT_SHOULD_USE_EXTRACTED_COLORS_CACHE, default)

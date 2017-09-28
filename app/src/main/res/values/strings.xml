@@ -316,6 +316,8 @@
     <string name="icon_pack_preference_title">Icon Pack</string>
     <string name="icon_pack_preference_summary">Select an icon pack</string>
     <string name="hotseat_uses_extracted_colors_pref_title">Dock uses wallpaper colors</string>
+    <string name="hotseat_show_arrow">Show arrow</string>
+    <string name="hotseat_show_page_indicator">Show page indicator</string>
     <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
     <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
     <string name="transparent_hotseat_pref_title">Transparent Dock</string>
