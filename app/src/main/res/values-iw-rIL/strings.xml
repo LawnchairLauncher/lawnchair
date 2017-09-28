@@ -270,9 +270,17 @@
   <string name="full_width_widgets_pref_summary">הרשה לווידג\'טים להתפרש לכל רוחב המסך</string>
   <string name="notification_access_pref_title">תגיות להתראות ותצוגה מקדימה</string>
   <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
+  <string name="general_pref_title">כללי</string>
+  <string name="pixel_ui_pref_title">ממשק Pixel</string>
   <string name="behavior_pref_title">התנהגות</string>
   <string name="debug_pref_title">תיקון שגיאות</string>
   <string name="import_export_pref_title">ייבוא/ייצוא</string>
+  <string name="general_pref_summary">מסך בית, Dock, ומגירת יישומים</string>
+  <string name="pixel_ui_pref_summary">אפשר תכונות ייחודיות של מפעיל Pixel</string>
+  <string name="backup_pref_title">גיבוי</string>
+  <string name="behavior_pref_summary">שנה את ההתנהגות של Lawnchair</string>
+  <string name="backup_pref_summary">גיבוי מסד הנתונים וההגדרות שלך</string>
+  <string name="debug_pref_summary">הפעל מחדש או בנה מחדש מסד נתונים של סמלים</string>
   <string name="show_pixel_bar_pref_title">הצג שורה עליונה בסגנון Pixel</string>
   <string name="use_wide_searchbar_pref_title">שורת חיפוש רחבה</string>
   <string name="show_mic_pref_title">הצגת לחצן Google Assistant</string>
@@ -296,6 +304,10 @@
   <string name="show_hidden_pref_title">הצגת יישומים מוסתרים</string>
   <string name="show_hidden_pref_on">יישומים מוסתרים יוצגו בכדי לשנות את הגדרות התצוגה</string>
   <string name="show_hidden_pref_off">יישומים מוסתרים יהיו בלתי נראים</string>
+  <string name="export_db_title">מסד נתונים</string>
+  <string name="import_db_title">מסד נתונים</string>
+  <string name="export_prefs_title">הגדרות</string>
+  <string name="import_prefs_title">הגדרות</string>
   <string name="notification_listener_label">Lawnchair - תגיות התראות</string>
   <string name="color_extraction_label">Lawnchair - שליפת צבעים</string>
   <string name="test_title">בדיקה</string>
@@ -305,11 +317,13 @@
   <string name="show_top_shadow_title">הצג צללית עליונה</string>
   <string name="pref_cat_homescreen">מסך הבית</string>
   <string name="pref_cat_miscellaneous">שונות</string>
+  <string name="pref_cat_hotseat">Dock</string>
   <string name="pref_cat_theme">ערכת נושא</string>
   <string name="theme_pref_title">ערכת נושא</string>
   <string name="theme_light">בהיר</string>
   <string name="theme_dark">כהה</string>
   <string name="theme_black">שחור</string>
+  <string name="hide_hotseat_pref_title">הסתר שורת Dock</string>
   <string name="all_icons">כל האייקונים</string>
   <string name="pull_down_action_pref_title">פעולת החלקה למטה</string>
   <string name="pull_down_do_nothing">אל תעשה דבר</string>
@@ -318,6 +332,8 @@
   <string name="pull_down_apps_search">חיפוש יישומים</string>
   <string name="enable_screen_rotation">אפשר סיבוב מסך</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">ייבוא</string>
+  <string name="backup_export_title">ייצוא</string>
   <string name="imexport_success">הצלחה!</string>
   <string name="imexport_error">שגיאה: לא ניתן להעתיק קובץ</string>
   <string name="imexport_no_backup_found">לא נמצא גיבוי</string>
@@ -329,12 +345,15 @@
   <string name="pref_cat_weather">מזג אוויר</string>
   <string name="pref_weather_title">אפשר מזג אוויר</string>
   <string name="pref_weather_units">יחידות מזג אוויר</string>
+  <string name="pref_weather_city_summary">לקבלת התוצאות הטובות ביותר אנא כלול קוד מדינה</string>
   <string name="pref_weather_city_title">עיר</string>
   <string name="none">כלום</string>
   <string name="pref_applyTheme">החלת ערכת נושא על</string>
   <string name="pref_applyBlur">החל טשטוש על</string>
   <string name="search_bar">תיבת חיפוש</string>
   <string name="folder">תיקייה</string>
+  <string name="dock_allapps"><![CDATA[Dock & מגירת אפליקציות]]></string>
+  <string name="app_shortcuts">קיצורי דרך באפליקציה</string>
   <string name="blur_effect">אפקט טשטוש</string>
   <string name="enable_editing_pref_title">אפשר עריכת מסך בית</string>
   <string name="pref_weather_provider">ספק מזג אוויר</string>
@@ -356,6 +375,9 @@
   <string name="num_cols_drawer_pref_title">מספר העמודות במגירת היישומים</string>
   <string name="pref_cat_drawer">מגירת היישומים</string>
   <string name="shortcut_backport_warning">זו יכולה להיות פעולה איטית, השימוש על אחריותכם בלבד</string>
+  <string name="pref_backport_shortcuts">קיצורי דרך Backport</string>
+  <string name="weather_api_key_not_set">מפתח API לא מוגדר</string>
+  <string name="pref_weather_api_key_title">מפתח API</string>
   <string name="about_changelog">יומן שינויים</string>
   <string name="pref_all_apps_custom_label_color">השתמש בצבע תווית מותאים אישית</string>
   <string name="pref_all_apps_label_color_variation">גוון צבע תוויות הסמלים במגירת היישומים</string>
@@ -367,5 +389,7 @@
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="about_translators">מתרגמים</string>
   <string name="lock_desktop">נעל את מסך הבית</string>
+  <string name="lawnfeed_not_found">Lawnfeed אינו מותקן</string>
+  <string name="google_app_not_found">היישום של Google אינו מותקן</string>
   <string name="set_default_launcher">הגדר כברירת מחדל</string>
 </resources>

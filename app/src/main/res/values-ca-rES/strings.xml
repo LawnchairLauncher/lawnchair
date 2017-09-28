@@ -272,6 +272,7 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <string name="icon_text_scale_pref_title">Color del text de la icona</string>
   <string name="full_width_width_widgets_pref_title">Widgets d\'amplada completa</string>
   <string name="full_width_widgets_pref_summary">Permet que els widgets apareguin ocupant tota l\'amplada</string>
+  <string name="notification_access_pref_title">Distintius de notificació i previsualització</string>
   <string name="notification_access_pref_summary">Permet a Lawnchair accedir a les teves notificacions per habilitar aquesta característica</string>
   <string name="general_pref_title">General</string>
   <string name="pixel_ui_pref_title">Pixel UI</string>
@@ -296,6 +297,7 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <string name="rebuild_icondb_pref_title">Reconstruïr base de dades d\'icones</string>
   <string name="pinch_to_overview_pref_title">Prem per previsualitzar</string>
   <string name="pinch_to_overview_pref_summary">Fes clic a la pàgina d\'inici per obrir la vista general</string>
+  <string name="light_statusbar_pref_title">Barra d\'estat clara</string>
   <string name="light_statusbar_pref_force">La barra d\'estat mostrarà icones fosques</string>
   <string name="light_statusbar_pref_off">La barra d\'estat mostrarà icones lluminoses</string>
   <string name="haptic_feedback_pref_title">Activar vibració</string>
@@ -327,6 +329,7 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <string name="theme_black">Negre</string>
   <string name="hide_hotseat_pref_title">Amaga la barra d\'aplicacions</string>
   <string name="all_icons">Totes les icones</string>
+  <string name="pull_down_action_pref_title">Arrosegar cap abaix</string>
   <string name="pull_down_do_nothing">No facis res</string>
   <string name="pull_down_notis">Mostra les notificacions</string>
   <string name="pull_down_search">Obre la cerca</string>
@@ -376,6 +379,7 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <string name="num_cols_drawer_pref_title">Nombre de columnes en el calaix</string>
   <string name="pref_cat_drawer">Calaix</string>
   <string name="shortcut_backport_warning">Això podria ser lent, utilitza-ho sota el teu propi risc</string>
+  <string name="pref_backport_shortcuts">Adaptació retroactiva d\'accesos rapids</string>
   <string name="weather_api_key_not_set">Clau d\'API no establerta</string>
   <string name="pref_weather_api_key_title">Clau d\'API</string>
   <string name="about_changelog">Registre de canvis</string>

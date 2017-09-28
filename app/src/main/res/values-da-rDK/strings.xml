@@ -254,6 +254,7 @@
   <string name="hotseat_uses_extracted_colors_pref_on">Havnen vil blive farvet med en farve uddraget fra tapetet</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Docken vil blive farvet grå, men justeret af tapetets lysstyrke</string>
   <string name="transparent_hotseat_pref_title">Gennemsigtig Dock</string>
+  <string name="dynamic_ui_pref_title">Udtag sekundær farve fra baggrunden</string>
   <string name="blur_pref_title">Aktiver sløringseffekt</string>
   <string name="blur_pref_summary">Anvend sløringseffekt på dele af interface\nIkke kompatibel med live wallpapers</string>
   <string name="blur_radius_pref_title">Slør radius</string>
@@ -268,9 +269,12 @@
   <string name="num_hotseat_icons_pref_title">Antal ikoner i docken</string>
   <string name="icon_scale_pref_title">Ikon størrelse</string>
   <string name="icon_text_scale_pref_title">Ikon tekst størrelse</string>
+  <string name="full_width_width_widgets_pref_title">Fuld bredde widgets</string>
   <string name="full_width_widgets_pref_summary">Tillad widgets at spænde over hele bredden uden polstring</string>
   <string name="notification_access_pref_title">Notifikations tegn og forhåndsvisning</string>
   <string name="notification_access_pref_summary">Tillad Lawnchair adgang til dine notifikationer for at aktivere denne egenskab</string>
+  <string name="general_pref_title">General</string>
+  <string name="pixel_ui_pref_title">Pixel brugerflade</string>
   <string name="behavior_pref_title">Adfærd</string>
   <string name="debug_pref_title">Fejlfindnig</string>
   <string name="import_export_pref_title">Importér/eksportér</string>

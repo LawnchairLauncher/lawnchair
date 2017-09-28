@@ -155,19 +155,19 @@
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
   <string name="action_move">Di chuyển mục</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell">Di chuyển đến hàng <xliff:g id="NUMBER_0">%1$s</xliff:g> cột <xliff:g id="NUMBER_1">%2$s</xliff:g></string>
+  <string name="move_to_empty_cell">Di chuyển đến hàng <xliff:g example="1" id="number">%1$d</xliff:g> cột <xliff:g example="1" id="number">%2$d</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
-  <string name="move_to_position">Di chuyển tới vị trí <xliff:g id="NUMBER">%1$s</xliff:g></string>
+  <string name="move_to_position">Di chuyển tới vị trí <xliff:g example="1" id="number">%1$d</xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Di chuyển tới vị trí yêu thích <xliff:g id="NUMBER">%1$s</xliff:g></string>
+  <string name="move_to_hotseat_position">Di chuyển tới vị trí yêu thích <xliff:g example="1" id="number">%1$d</xliff:g></string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">Đã di chuyển mục</string>
   <!-- Accessibility description to move item into an existing folder. -->
-  <string name="add_to_folder">Thêm vào thư mục: <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="add_to_folder">Thêm vào thư mục: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
-  <string name="add_to_folder_with_app">Thêm vào thư mục với <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="add_to_folder_with_app">Thêm vào thư mục với <xliff:g example="Messenger" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for item added to folder. -->
-  <string name="added_to_folder">Đã thêm mục vào thư mục</string>
+  <string name="added_to_folder">Đã thêm vào thư mục</string>
   <!-- Accessibility description to create folder with another item. -->
   <string name="create_folder_with">Tạo thư mục với: <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->

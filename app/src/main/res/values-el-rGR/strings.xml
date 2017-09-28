@@ -246,10 +246,10 @@
   <!-- About Lawnchair -->
   <string name="about_text">Ο Lawnchair είναι μια εφαρμογή εκκίνησης που δημιουργήθηκε από τον Till Kottmann (γνωστός και ως deletescape). Βασίζεται στον εκκινητή Launcher3 του ανοιχτού κώδικα λειτουργικού συστήματος Android (AOSP).</string>
   <string name="about_title">Σχετικά με</string>
-  <string name="changelog_title">Αρχείο καταγραφής αλλαγών της κατασκευής #%d</string>
+  <string name="changelog_title">Αρχείο καταγραφής αλλαγών της έκδοσης #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Πακέτο εικονιδίων</string>
-  <string name="icon_pack_preference_summary">Επιλέξτε ένα πακέτο εικονιδίων</string>
+  <string name="icon_pack_preference_summary">Επιλογή πακέτου εικονιδίων</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Η μπάρα εφαρμογών χρησιμοποιεί χρώματα της ταπετσαρίας</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Η μπάρα εφαρμογών θα χρωματιστεί με χρώμα που εξάγεται από την ταπετσαρία</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Η μπάρα εφαρμογών θα χρωματιστεί γκρι, αλλά ρυθμιζόμενη από τη φωτεινότητα της ταπετσαρίας</string>
@@ -258,6 +258,7 @@
   <string name="blur_pref_title">Ενεργοποίηση θολότητας</string>
   <string name="blur_pref_summary">Εφαρμόστε το εφέ θολότητας τμηματικά σε μέρη του γραφικού περιβάλλοντος\nΜη συμβατό με ζωντανές ταπετσαρίες</string>
   <string name="blur_radius_pref_title">Ακτίνα θολότητας</string>
+  <string name="pref_iconLabelsInTwoLines">Κείμενο εικονιδίων σε δύο γραμμές</string>
   <string name="white_google_icon_pref_title">Χρήση λευκού εικονιδίου Google</string>
   <string name="hide_icon_labels_pref_title">Απόκρυψη ετικετών εικονιδίων στην αρχική οθόνη</string>
   <string name="hide_all_apps_icon_labels_pref_title">Απόκρυψη ετικετών εικονιδίων στο συρτάρι εφαρμογών</string>
@@ -370,6 +371,8 @@
   <string name="icon_shape_circle">Κυκλικό</string>
   <string name="icon_shape_teardrop">Δάκρυ</string>
   <string name="animated_clock_icon_title">Ζωντανό εικονίδιο ρολογιού</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Κινούμενα γραφικά για εναλλακτικές εφαρμογές ρολογιού</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Ενεργοποιήστε αυτό εάν δεν χρησιμοποιείται το ρολόι Google ως προεπιλεγμένη εφαρμογή ρολογιού</string>
   <string name="about_summary_title">Σύνοψη</string>
   <string name="about_version">Έκδοση</string>
   <string name="about_icon_designer">Σχεδιαστής Εικονιδίου Lawnchair</string>
@@ -392,7 +395,7 @@
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
   <string name="about_translators">Μεταφραστές</string>
-  <string name="lock_desktop">Κλειδώματος αρχικής οθόνης</string>
+  <string name="lock_desktop">Κλείδωμα αρχικής οθόνης</string>
   <string name="lawnfeed_not_found">Το lawnfeed δεν είναι εγκατεστημένο</string>
   <string name="google_app_not_found">Η εφαρμογή Goggle δεν είναι εγκατεστημένη</string>
   <string name="popup_card_theme_title">Επίπεδο στυλ γρήγορων συντομεύσεων</string>

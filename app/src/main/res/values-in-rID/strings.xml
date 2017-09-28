@@ -28,7 +28,7 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">Aplikasi tidak tersedia</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Aplikasi yang diunduh dinonaktifkan dalam Mode Aman</string>
+  <string name="safemode_shortcut_error">Aplikasi yang diunduh dinonaktifkan dalam mode Aman</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">Widget dinonaktifkan dalam Mode Aman</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
@@ -53,9 +53,9 @@
   <string name="all_apps_search_market_message">Telusuri aplikasi lainnya</string>
   <!-- Drag and drop -->
   <!-- Error message when user has filled a page -->
-  <string name="out_of_space">Tidak ada ruang pada layar ini.</string>
+  <string name="out_of_space">Tidak ada ruang lagi pada layar ini.</string>
   <!-- Error message when user has filled the hotseat -->
-  <string name="hotseat_out_of_space">Tidak ada ruang di baki favorit.</string>
+  <string name="hotseat_out_of_space">Tidak ada ruang tersisa di baki favorit.</string>
   <!-- All applications label -->
   <string name="all_apps_button_label">Daftar aplikasi</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
@@ -73,11 +73,11 @@
   <!-- Permission description -->
   <string name="permdesc_install_shortcut">Izinkan aplikasi menambahkan pintasan tanpa campur tangan pengguna.</string>
   <!-- Permission short label -->
-  <string name="permlab_read_settings">membaca setelan dan pintasan layar utama</string>
+  <string name="permlab_read_settings">membaca setelan pintasan dan layar utama</string>
   <!-- Permission description -->
   <string name="permdesc_read_settings">Izinkan aplikasi membaca setelan dan pintasan di layar utama.</string>
   <!-- Permission short label -->
-  <string name="permlab_write_settings">menulis setelan dan pintasan layar utama</string>
+  <string name="permlab_write_settings">menulis setelan pintasan dan layar utama</string>
   <!-- Permission description -->
   <string name="permdesc_write_settings">Izinkan aplikasi mengubah setelan dan pintasan di layar utama.</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
@@ -90,7 +90,7 @@
   <!-- Text to inform the user that they can't uninstall a system application -->
   <string name="uninstall_system_app_text">Aplikasi ini adalah aplikasi sistem dan tidak dapat dicopot pemasangannya.</string>
   <!-- Default folder title -->
-  <string name="folder_hint_text">Folder Tanpa Nama</string>
+  <string name="folder_hint_text">Folder tanpa nama</string>
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
   <string name="disabled_app_label"><xliff:g example="Messenger" id="app_name">%1$s</xliff:g> dinonaktifkan</string>
@@ -99,7 +99,7 @@
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">Layar utama %1$d dari %2$d</string>
   <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
-  <string name="workspace_new_page">Laman layar utama baru</string>
+  <string name="workspace_new_page">Halaman baru layar utama</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
   <string name="folder_opened">Folder dibuka, <xliff:g example="5" id="width">%1$d</xliff:g> by <xliff:g example="3" id="height">%2$d</xliff:g></string>
@@ -145,7 +145,7 @@
   <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> menunggu dipasang</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_add_to_workspace">Tambahkan ke layar Utama</string>
+  <string name="action_add_to_workspace">Tambahkan ke layar utama</string>
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
   <string name="action_move_here">Pindahkan item ke sini</string>
   <!-- Accessibility confirmation for item added to workspace. -->
@@ -155,7 +155,7 @@
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
   <string name="action_move">Pindahkan item</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell">Pindahlan ke baris <xliff:g example="1" id="number">%1$d</xliff:g> kolom <xliff:g example="1" id="number">%2$d</xliff:g></string>
+  <string name="move_to_empty_cell">Pindahkan ke baris <xliff:g example="1" id="number">%1$d</xliff:g> kolom <xliff:g example="1" id="number">%2$d</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
   <string name="move_to_position">Pindah ke posisi <xliff:g example="1" id="number">%1$d</xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
@@ -196,7 +196,7 @@
   <string name="action_deep_shortcut">Pintasan</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
   <string name="shortcuts_menu_description"><xliff:g example="3" id="number_of_shortcuts">%1$d</xliff:g> pintasan untuk <xliff:g example="Messenger" id="app_name">%2$s</xliff:g></string>
-  <string name="edit_drop_target_label">Edit</string>
+  <string name="edit_drop_target_label">Sunting</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
   <string name="wallpaper_instructions">Atur wallpaper</string>
   <!-- Error message when an image is selected as a wallpaper,
@@ -257,6 +257,7 @@
   <string name="blur_pref_title">Hidupkan kabur</string>
   <string name="blur_pref_summary">Menerapkan efek blur ke bagian interface\nTidak kompatibel dengan Live Wallpaper</string>
   <string name="blur_radius_pref_title">Area buram</string>
+  <string name="pref_iconLabelsInTwoLines">Icon labels in two lines</string>
   <string name="white_google_icon_pref_title">Gunakan Google icon putih</string>
   <string name="hide_icon_labels_pref_title">Sembunyikan label ikon pada layar beranda</string>
   <string name="hide_all_apps_icon_labels_pref_title">Menyembunyikan ikon label di laci</string>
@@ -319,7 +320,7 @@
   <string name="show_top_shadow_title">Tunjukkan bayangan atas</string>
   <string name="pref_cat_homescreen">Layar Utama</string>
   <string name="pref_cat_miscellaneous">Lain-Lain</string>
-  <string name="pref_cat_hotseat">Dock</string>
+  <string name="pref_cat_hotseat">Dok</string>
   <string name="pref_cat_theme">Tema</string>
   <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Terang</string>

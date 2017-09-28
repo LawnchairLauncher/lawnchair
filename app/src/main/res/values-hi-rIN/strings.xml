@@ -73,7 +73,7 @@
   <!-- Permission description -->
   <string name="permdesc_install_shortcut">उपयोगकर्ताके हस्तक्षेप के बिना शॉर्टकट जोड़ने के लिए ऐपको अनुमति दे</string>
   <!-- Permission short label -->
-  <string name="permlab_read_settings">होम स्क्रीन सेटिंग्स और शॉर्टकट्स पढ़ने की अनुमति</string>
+  <string name="permlab_read_settings">होम सेटिंग्स और शॉर्टकट्स पढ़े</string>
   <!-- Permission description -->
   <string name="permdesc_read_settings">ऐप को सेटिंग्स और शॉर्टकट पढ़ने देता है</string>
   <!-- Permission short label -->
@@ -145,7 +145,7 @@
   <string name="app_waiting_download_title"><xliff:g id="Name">%1$s</xliff:g> के इंस्टॉल होने की प्रतीक्षा की जा रही है</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_add_to_workspace">Add to Home screen</string>
+  <string name="action_add_to_workspace">मुखपृष्ठ पर लगायें।</string>
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
   <string name="action_move_here">आइटम यहां लाये</string>
   <!-- Accessibility confirmation for item added to workspace. -->
@@ -229,7 +229,7 @@
   <!-- Option in "Select wallpaper from" dialog box -->
   <string name="pick_wallpaper">वॉलपेपर्स</string>
   <!-- Title of activity for cropping wallpapers -->
-  <string name="crop_wallpaper">वॉलपेपर सेट करें</string>
+  <string name="crop_wallpaper">वॉलपेपर काटें</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
   <string name="which_wallpaper_option_home_screen">होम स्क्रीन</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
@@ -258,6 +258,7 @@
   <string name="blur_pref_title">धुंधला सक्षम करें</string>
   <string name="blur_pref_summary">इन्टरफेस पर धुंधला प्रभाव लागू करें\लाइव वॉलपेपर के साथ काम नहीं करेंगा</string>
   <string name="blur_radius_pref_title">धुंधलेपन की त्रिज्या</string>
+  <string name="pref_iconLabelsInTwoLines">दो पंक्तियों में चिह्न लेबल</string>
   <string name="white_google_icon_pref_title">सफेद गूगल आइकन का उपयोग करें</string>
   <string name="hide_icon_labels_pref_title">होम स्क्रीन पर आइकोनके लेबल छुपाएँ</string>
   <string name="hide_all_apps_icon_labels_pref_title">चिह्न लेबल दराज में छुपाएँ</string>
@@ -370,6 +371,8 @@
   <string name="icon_shape_circle">गोल</string>
   <string name="icon_shape_teardrop">टियरड्रॉप</string>
   <string name="animated_clock_icon_title">एनिमेटेड घड़ी आइकोन</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">वैकल्पिक घड़ी ऐप्स को सजीव करना</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">इसे सक्षम करें यदि आप Google घड़ी का उपयोग अपने डिफ़ॉल्ट घड़ी एप्लिकेशन के रूप में नहीं करते हैं</string>
   <string name="about_summary_title">सारांश</string>
   <string name="about_version">संस्करण</string>
   <string name="about_icon_designer">एप्लिकेशन आइकन डिजाइनर</string>
