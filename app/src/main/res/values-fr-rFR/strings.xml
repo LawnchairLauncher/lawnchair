@@ -258,6 +258,7 @@
   <string name="blur_pref_title">Activer le flou</string>
   <string name="blur_pref_summary">Appliquer un effet de flou sur des parties de l\'interface\nNon compatible avec les fonds d\'écrans animés</string>
   <string name="blur_radius_pref_title">Rayon du flou</string>
+  <string name="pref_iconLabelsInTwoLines">Étiquettes d\'icônes sur 2 lignes</string>
   <string name="white_google_icon_pref_title">Utiliser l\'icône blanche de Google</string>
   <string name="hide_icon_labels_pref_title">Masquer le nom des icônes sur l\'écran d\'accueil</string>
   <string name="hide_all_apps_icon_labels_pref_title">Masquer le nom des icônes dans le tiroir des applications</string>
@@ -307,10 +308,10 @@
   <string name="show_hidden_pref_title">Afficher les applications cachées</string>
   <string name="show_hidden_pref_on">Les applications cachées seront affichées pour modifier les paramètres de visibilité</string>
   <string name="show_hidden_pref_off">Les applications cachées ne seront pas visibles</string>
-  <string name="export_db_title">Export database</string>
-  <string name="import_db_title">Import database</string>
+  <string name="export_db_title">les Bases de Données</string>
+  <string name="import_db_title">les Bases de Données</string>
   <string name="export_prefs_title">Export settings</string>
-  <string name="import_prefs_title">Import settings</string>
+  <string name="import_prefs_title">les Paramètres</string>
   <string name="notification_listener_label">Lawnchair - Badges de notification</string>
   <string name="color_extraction_label">Lawnchair - Extraction de la couleur</string>
   <string name="test_title">Test</string>
@@ -370,11 +371,13 @@
   <string name="icon_shape_circle">Cercle</string>
   <string name="icon_shape_teardrop">Larme</string>
   <string name="animated_clock_icon_title">Icône de l\'horloge animée</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Animer les applications d\'horloge alternatives</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Activer ceci si vous n\'utiliser pas l\'horloge Google comme application d\'horloge par défaut</string>
   <string name="about_summary_title">Résumé</string>
   <string name="about_version">Version</string>
   <string name="about_icon_designer">Designer des icônes de l\'application</string>
   <string name="about_contributors_title">Donateurs</string>
-  <string name="location_permission_warn">L\'autorisation de position est requise pour passer à un autre fournisseur !</string>
+  <string name="location_permission_warn">L\'autorisation d\'utiliser la localisation est requise pour passer à un autre fournisseur !</string>
   <string name="num_cols_drawer_pref_title">Nombre de colonnes dans le tiroir des applications</string>
   <string name="pref_cat_drawer">Tiroir des applications</string>
   <string name="shortcut_backport_warning">Cela pourrait être lent, utilisez à vos risques et périls</string>
