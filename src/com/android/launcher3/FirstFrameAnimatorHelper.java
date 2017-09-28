@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewPropertyAnimator;
 import android.view.ViewTreeObserver;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.util.TraceHelper;
 
 /*
  *  This is a helper class that listens to updates from the corresponding animation.
@@ -71,15 +72,12 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
         if (sGlobalDrawListener != null) {
             view.getViewTreeObserver().removeOnDrawListener(sGlobalDrawListener);
         }
+
+        TraceHelper.beginSection("TICK");
         sGlobalDrawListener = new ViewTreeObserver.OnDrawListener() {
-                private long mTime = System.currentTimeMillis();
                 public void onDraw() {
                     sGlobalFrameCounter++;
-                    if (DEBUG) {
-                        long newTime = System.currentTimeMillis();
-                        Log.d(TAG, "TICK " + (newTime - mTime));
-                        mTime = newTime;
-                    }
+                    TraceHelper.partitionSection("TICK", "Frame drawn");
                 }
             };
         view.getViewTreeObserver().addOnDrawListener(sGlobalDrawListener);

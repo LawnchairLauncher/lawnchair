@@ -66,6 +66,7 @@ import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Provider;
+import com.android.launcher3.util.TraceHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,7 +86,6 @@ import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_I
  *   - deep shortcuts within apps
  */
 public class LoaderTask implements Runnable {
-    private static final boolean DEBUG_LOADERS = false;
     private static final String TAG = "LoaderTask";
 
     private final LauncherAppState mApp;
@@ -142,73 +142,64 @@ public class LoaderTask implements Runnable {
             }
         }
 
+        TraceHelper.beginSection(TAG);
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
-            long now = 0;
-            if (DEBUG_LOADERS) Log.d(TAG, "step 1.1: loading workspace");
+            TraceHelper.partitionSection(TAG, "step 1.1: loading workspace");
             loadWorkspace();
 
             verifyNotStopped();
-            if (DEBUG_LOADERS) Log.d(TAG, "step 1.2: bind workspace workspace");
+            TraceHelper.partitionSection(TAG, "step 1.2: bind workspace workspace");
             mResults.bindWorkspace();
 
             // Take a break
-            if (DEBUG_LOADERS) {
-                Log.d(TAG, "step 1 completed, wait for idle");
-                now = SystemClock.uptimeMillis();
-            }
+            TraceHelper.partitionSection(TAG, "step 1 completed, wait for idle");
             waitForIdle();
-            if (DEBUG_LOADERS) Log.d(TAG, "Waited " + (SystemClock.uptimeMillis() - now) + "ms");
             verifyNotStopped();
 
             // second step
-            if (DEBUG_LOADERS) Log.d(TAG, "step 2.1: loading all apps");
+            TraceHelper.partitionSection(TAG, "step 2.1: loading all apps");
             loadAllApps();
 
-            if (DEBUG_LOADERS) Log.d(TAG, "step 2.2: Binding all apps");
+            TraceHelper.partitionSection(TAG, "step 2.2: Binding all apps");
             verifyNotStopped();
             mResults.bindAllApps();
 
             verifyNotStopped();
-            if (DEBUG_LOADERS) Log.d(TAG, "step 2.3: Update icon cache");
+            TraceHelper.partitionSection(TAG, "step 2.3: Update icon cache");
             updateIconCache();
 
             // Take a break
-            if (DEBUG_LOADERS) {
-                Log.d(TAG, "step 2 completed, wait for idle");
-                now = SystemClock.uptimeMillis();
-            }
+            TraceHelper.partitionSection(TAG, "step 2 completed, wait for idle");
             waitForIdle();
-            if (DEBUG_LOADERS) Log.d(TAG, "Waited " + (SystemClock.uptimeMillis() - now) + "ms");
             verifyNotStopped();
 
             // third step
-            if (DEBUG_LOADERS) Log.d(TAG, "step 3.1: loading deep shortcuts");
+            TraceHelper.partitionSection(TAG, "step 3.1: loading deep shortcuts");
             loadDeepShortcuts();
 
             verifyNotStopped();
-            if (DEBUG_LOADERS) Log.d(TAG, "step 3.2: bind deep shortcuts");
+            TraceHelper.partitionSection(TAG, "step 3.2: bind deep shortcuts");
             mResults.bindDeepShortcuts();
 
             // Take a break
-            if (DEBUG_LOADERS) Log.d(TAG, "step 3 completed, wait for idle");
+            TraceHelper.partitionSection(TAG, "step 3 completed, wait for idle");
             waitForIdle();
             verifyNotStopped();
 
             // fourth step
-            if (DEBUG_LOADERS) Log.d(TAG, "step 4.1: loading widgets");
+            TraceHelper.partitionSection(TAG, "step 4.1: loading widgets");
             mBgDataModel.widgetsModel.update(mApp, null);
 
             verifyNotStopped();
-            if (DEBUG_LOADERS) Log.d(TAG, "step 4.2: Binding widgets");
+            TraceHelper.partitionSection(TAG, "step 4.2: Binding widgets");
             mResults.bindWidgets();
 
             transaction.commit();
         } catch (CancellationException e) {
             // Loader stopped, ignore
-            if (DEBUG_LOADERS) {
-                Log.d(TAG, "Loader cancelled", e);
-            }
+            TraceHelper.partitionSection(TAG, "Cancelled");
         }
+        TraceHelper.endSection(TAG);
     }
 
     public synchronized void stopLocked() {
@@ -217,10 +208,6 @@ public class LoaderTask implements Runnable {
     }
 
     private void loadWorkspace() {
-        if (LauncherAppState.PROFILE_STARTUP) {
-            Trace.beginSection("Loading Workspace");
-        }
-
         final Context context = mApp.getContext();
         final ContentResolver contentResolver = context.getContentResolver();
         final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
@@ -766,9 +753,6 @@ public class LoaderTask implements Runnable {
                 LauncherModel.updateWorkspaceScreenOrder(context, mBgDataModel.workspaceScreens);
             }
         }
-        if (LauncherAppState.PROFILE_STARTUP) {
-            Trace.endSection();
-        }
     }
 
     private void updateIconCache() {
@@ -793,21 +777,13 @@ public class LoaderTask implements Runnable {
     }
 
     private void loadAllApps() {
-        final long loadTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
-
         final List<UserHandle> profiles = mUserManager.getUserProfiles();
 
         // Clear the list of apps
         mBgAllAppsList.clear();
         for (UserHandle user : profiles) {
             // Query for the set of apps
-            final long qiaTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
             final List<LauncherActivityInfo> apps = mLauncherApps.getActivityList(null, user);
-            if (DEBUG_LOADERS) {
-                Log.d(TAG, "getActivityList took "
-                        + (SystemClock.uptimeMillis()-qiaTime) + "ms for user " + user);
-                Log.d(TAG, "getActivityList got " + apps.size() + " apps for user " + user);
-            }
             // Fail if we don't have any apps
             // TODO: Fix this. Only fail for the current user.
             if (apps == null || apps.isEmpty()) {
@@ -834,10 +810,6 @@ public class LoaderTask implements Runnable {
         }
 
         mBgAllAppsList.added = new ArrayList<>();
-        if (DEBUG_LOADERS) {
-            Log.d(TAG, "All apps loaded in in "
-                    + (SystemClock.uptimeMillis() - loadTime) + "ms");
-        }
     }
 
     private void loadDeepShortcuts() {

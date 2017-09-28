@@ -149,9 +149,6 @@ public class LauncherProvider extends ContentProvider {
      */
     protected synchronized void createDbIfNotExists() {
         if (mOpenHelper == null) {
-            if (LauncherAppState.PROFILE_STARTUP) {
-                Trace.beginSection("Opening workspace DB");
-            }
             mOpenHelper = new DatabaseHelper(getContext(), mListenerHandler);
 
             if (RestoreDbTask.isPending(getContext())) {
@@ -161,10 +158,6 @@ public class LauncherProvider extends ContentProvider {
                 // Set is pending to false irrespective of the result, so that it doesn't get
                 // executed again.
                 RestoreDbTask.setPending(getContext(), false);
-            }
-
-            if (LauncherAppState.PROFILE_STARTUP) {
-                Trace.endSection();
             }
         }
     }

@@ -42,8 +42,6 @@ import static com.android.launcher3.SettingsActivity.NOTIFICATION_BADGING;
 
 public class LauncherAppState {
 
-    public static final boolean PROFILE_STARTUP = FeatureFlags.IS_DOGFOOD_BUILD;
-
     // We do not need any synchronization for this variable as its only written on UI thread.
     private static LauncherAppState INSTANCE;
 
