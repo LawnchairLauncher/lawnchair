@@ -6,14 +6,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
-import android.graphics.Color;
 import android.support.animation.SpringAnimation;
-import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -46,12 +43,8 @@ import com.android.launcher3.util.TouchController;
 public class AllAppsTransitionController implements TouchController, SwipeDetector.Listener,
          SearchUiManager.OnScrollRangeChangeListener {
 
-    private static final String TAG = "AllAppsTrans";
-    private static final boolean DBG = false;
-
     private final Interpolator mWorkspaceAccelnterpolator = new AccelerateInterpolator(2f);
     private final Interpolator mHotseatAccelInterpolator = new AccelerateInterpolator(1.5f);
-    private final Interpolator mDecelInterpolator = new DecelerateInterpolator(3f);
     private final Interpolator mFastOutSlowInInterpolator = new FastOutSlowInInterpolator();
     private final SwipeDetector.ScrollInterpolator mScrollInterpolator
             = new SwipeDetector.ScrollInterpolator();
@@ -60,10 +53,8 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
     private static final int SINGLE_FRAME_MS = 16;
 
     private AllAppsContainerView mAppsView;
-    private int mAllAppsBackgroundColor;
     private Workspace mWorkspace;
     private Hotseat mHotseat;
-    private int mHotseatBackgroundColor;
 
     private AllAppsCaretController mCaretController;
 
@@ -112,7 +103,6 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         mProgress = 1f;
 
         mEvaluator = new ArgbEvaluator();
-        mAllAppsBackgroundColor = Themes.getAttrColor(l, android.R.attr.colorPrimary);
         mIsDarkTheme = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
     }
 
@@ -266,29 +256,16 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
             // Initialize values that should not change until #onDragEnd
             mStatusBarHeight = mLauncher.getDragLayer().getInsets().top;
             mHotseat.setVisibility(View.VISIBLE);
-            mHotseatBackgroundColor = mHotseat.getBackgroundDrawableColor();
-            mHotseat.setBackgroundTransparent(true /* transparent */);
             if (!mLauncher.isAllAppsVisible()) {
                 mLauncher.tryAndUpdatePredictedApps();
                 mAppsView.setVisibility(View.VISIBLE);
-                if (!FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
-                    mAppsView.setRevealDrawableColor(mHotseatBackgroundColor);
-                }
             }
         }
     }
 
     private void updateLightStatusBar(float shift) {
-        // Do not modify status bar on landscape as all apps is not full bleed.
-        if (!FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS
-                && mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-            return;
-        }
-
         // Use a light system UI (dark icons) if all apps is behind at least half of the status bar.
-        boolean forceChange = FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS ?
-                shift <= mShiftRange / 4 :
-                shift <= mStatusBarHeight / 2;
+        boolean forceChange = shift <= mShiftRange / 4;
         if (forceChange) {
             mLauncher.getSystemUiController().updateUiState(
                     SystemUiController.UI_STATE_ALL_APPS, !mIsDarkTheme);
@@ -320,17 +297,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         float workspaceAlpha = mWorkspaceAccelnterpolator.getInterpolation(workspaceHotseatAlpha);
         float hotseatAlpha = mHotseatAccelInterpolator.getInterpolation(workspaceHotseatAlpha);
 
-        int color = (Integer) mEvaluator.evaluate(mDecelInterpolator.getInterpolation(alpha),
-                mHotseatBackgroundColor, mAllAppsBackgroundColor);
-        int bgAlpha = Color.alpha((int) mEvaluator.evaluate(alpha,
-                mHotseatBackgroundColor, mAllAppsBackgroundColor));
-
-        if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
-            updateAllAppsBg(alpha);
-        } else {
-            mAppsView.setRevealDrawableColor(ColorUtils.setAlphaComponent(color, bgAlpha));
-        }
-
+        updateAllAppsBg(alpha);
         mAppsView.getContentView().setAlpha(alpha);
         mAppsView.setTranslationY(shiftCurrent);
 
@@ -530,7 +497,6 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
 
     public void finishPullDown() {
         mAppsView.setVisibility(View.INVISIBLE);
-        mHotseat.setBackgroundTransparent(false /* transparent */);
         mHotseat.setVisibility(View.VISIBLE);
         mAppsView.reset();
         if (hasSpringAnimationHandler()) {

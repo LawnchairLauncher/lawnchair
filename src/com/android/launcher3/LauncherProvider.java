@@ -55,7 +55,6 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.WorkspaceScreens;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.DbDowngradeHelper;
@@ -372,19 +371,6 @@ public class LauncherProvider extends ContentProvider {
         createDbIfNotExists();
 
         switch (method) {
-            case LauncherSettings.Settings.METHOD_SET_EXTRACTED_COLORS_AND_WALLPAPER_ID: {
-                String extractedColors = extras.getString(
-                        LauncherSettings.Settings.EXTRA_EXTRACTED_COLORS);
-                int wallpaperId = extras.getInt(LauncherSettings.Settings.EXTRA_WALLPAPER_ID);
-                Utilities.getPrefs(getContext()).edit()
-                        .putString(ExtractionUtils.EXTRACTED_COLORS_PREFERENCE_KEY, extractedColors)
-                        .putInt(ExtractionUtils.WALLPAPER_ID_PREFERENCE_KEY, wallpaperId)
-                        .apply();
-                mListenerHandler.sendEmptyMessage(ChangeListenerWrapper.MSG_EXTRACTED_COLORS_CHANGED);
-                Bundle result = new Bundle();
-                result.putString(LauncherSettings.Settings.EXTRA_VALUE, extractedColors);
-                return result;
-            }
             case LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG: {
                 clearFlagEmptyDbCreated();
                 return null;
@@ -1153,8 +1139,7 @@ public class LauncherProvider extends ContentProvider {
     private static class ChangeListenerWrapper implements Handler.Callback {
 
         private static final int MSG_LAUNCHER_PROVIDER_CHANGED = 1;
-        private static final int MSG_EXTRACTED_COLORS_CHANGED = 2;
-        private static final int MSG_APP_WIDGET_HOST_RESET = 3;
+        private static final int MSG_APP_WIDGET_HOST_RESET = 2;
 
         private LauncherProviderChangeListener mListener;
 
@@ -1164,9 +1149,6 @@ public class LauncherProvider extends ContentProvider {
                 switch (msg.what) {
                     case MSG_LAUNCHER_PROVIDER_CHANGED:
                         mListener.onLauncherProviderChanged();
-                        break;
-                    case MSG_EXTRACTED_COLORS_CHANGED:
-                        mListener.onExtractedColorsChanged();
                         break;
                     case MSG_APP_WIDGET_HOST_RESET:
                         mListener.onAppWidgetHostReset();

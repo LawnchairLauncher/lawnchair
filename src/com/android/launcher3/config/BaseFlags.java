@@ -39,8 +39,6 @@ abstract class BaseFlags {
     public static final boolean LAUNCHER3_UPDATE_SOFT_INPUT_MODE = false;
     // When enabled the promise icon is visible in all apps while installation an app.
     public static final boolean LAUNCHER3_PROMISE_APPS_IN_ALL_APPS = false;
-    // When enabled uses the AllAppsRadialGradientAndScrimDrawable for all apps
-    public static final boolean LAUNCHER3_GRADIENT_ALL_APPS = true;
     // When enabled allows use of physics based motions in the Launcher.
     public static final boolean LAUNCHER3_PHYSICS = true;
     // When enabled allows use of spring motions on the icons.
@@ -50,16 +48,12 @@ abstract class BaseFlags {
     public static final boolean QSB_ON_FIRST_SCREEN = true;
     // When enabled the all-apps icon is not added to the hotseat.
     public static final boolean NO_ALL_APPS_ICON = true;
-    // When enabled the status bar may show dark icons based on the top of the wallpaper.
-    public static final boolean LIGHT_STATUS_BAR = false;
     // When enabled, icons not supporting {@link AdaptiveIconDrawable} will be wrapped in {@link FixedScaleDrawable}.
     public static final boolean LEGACY_ICON_TREATMENT = true;
     // When enabled, adaptive icons would have shadows baked when being stored to icon cache.
     public static final boolean ADAPTIVE_ICON_SHADOW = true;
     // When enabled, app discovery will be enabled if service is implemented
     public static final boolean DISCOVERY_ENABLED = false;
-    // When enabled, the qsb will be moved to the hotseat.
-    public static final boolean QSB_IN_HOTSEAT = true;
 
     // When true, custom widgets are loaded using CustomWidgetParser.
     public static final boolean ENABLE_CUSTOM_WIDGETS = false;
