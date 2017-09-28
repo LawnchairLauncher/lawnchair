@@ -279,7 +279,7 @@
   <string name="behavior_pref_title">Comportamiento</string>
   <string name="debug_pref_title">Opciones de depuración</string>
   <string name="import_export_pref_title">Importar/Exportar</string>
-  <string name="general_pref_summary">Pantalla de inicio, el muelle y la aplicación de cajón</string>
+  <string name="general_pref_summary">Pantalla de inicio, dock y cajón de aplicaciones</string>
   <string name="pixel_ui_pref_summary">Habilitar características exclusivas de lanzador de Pixel</string>
   <string name="backup_pref_title">Copia de seguridad</string>
   <string name="behavior_pref_summary">Cambiar el comportamiento de Lawnchair</string>
@@ -371,6 +371,8 @@
   <string name="icon_shape_circle">Círculo</string>
   <string name="icon_shape_teardrop">Lágrima</string>
   <string name="animated_clock_icon_title">Icono de reloj animado</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Animar aplicaciones de reloj alternativas</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Activar esta opción si no se usa el Reloj de Google como aplicación de reloj predeterminada</string>
   <string name="about_summary_title">Resumen</string>
   <string name="about_version">Versión</string>
   <string name="about_icon_designer">Diseñador del icono de la aplicación</string>
