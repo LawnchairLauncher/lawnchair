@@ -258,6 +258,7 @@
   <string name="blur_pref_title">धुंधला सक्षम करें</string>
   <string name="blur_pref_summary">इन्टरफेस पर धुंधला प्रभाव लागू करें\लाइव वॉलपेपर के साथ काम नहीं करेंगा</string>
   <string name="blur_radius_pref_title">धुंधलेपन की त्रिज्या</string>
+  <string name="pref_iconLabelsInTwoLines">दो पंक्तियों में चिह्न लेबल</string>
   <string name="white_google_icon_pref_title">सफेद गूगल आइकन का उपयोग करें</string>
   <string name="hide_icon_labels_pref_title">होम स्क्रीन पर आइकोनके लेबल छुपाएँ</string>
   <string name="hide_all_apps_icon_labels_pref_title">चिह्न लेबल दराज में छुपाएँ</string>
@@ -370,6 +371,8 @@
   <string name="icon_shape_circle">गोल</string>
   <string name="icon_shape_teardrop">टियरड्रॉप</string>
   <string name="animated_clock_icon_title">एनिमेटेड घड़ी आइकोन</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">वैकल्पिक घड़ी ऐप्स को सजीव करना</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">इसे सक्षम करें यदि आप Google घड़ी का उपयोग अपने डिफ़ॉल्ट घड़ी एप्लिकेशन के रूप में नहीं करते हैं</string>
   <string name="about_summary_title">सारांश</string>
   <string name="about_version">संस्करण</string>
   <string name="about_icon_designer">एप्लिकेशन आइकन डिजाइनर</string>
