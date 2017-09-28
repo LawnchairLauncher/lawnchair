@@ -257,6 +257,7 @@
   <string name="blur_pref_title">흐림 효과 적용</string>
   <string name="blur_pref_summary">흐림 효과를 인터페이스 일부에 적용합니다.\n라이브 배경화면과는 호환되지 않습니다.</string>
   <string name="blur_radius_pref_title">흐림 효과 반경</string>
+  <string name="pref_iconLabelsInTwoLines">아이콘 레이블 두줄로 표시</string>
   <string name="white_google_icon_pref_title">흰색 Google 아이콘 사용</string>
   <string name="hide_icon_labels_pref_title">홈 화면 아이콘 이름 숨기기</string>
   <string name="hide_all_apps_icon_labels_pref_title">앱 서랍의 아이콘 이름 숨기기</string>
@@ -272,7 +273,7 @@
   <string name="full_width_widgets_pref_summary">위젯이 간격 없이 전체 너비로 확장되도록 허용</string>
   <string name="notification_access_pref_title">알림 뱃지와 미리보기</string>
   <string name="notification_access_pref_summary">이 기능을 활성화하려면 Lawnchair가 기기의 알림을 확인 할 수 있는 권한이 필요합니다.</string>
-  <string name="general_pref_title">일반</string>
+  <string name="general_pref_title">일반 설정</string>
   <string name="pixel_ui_pref_title">픽셀 UI</string>
   <string name="behavior_pref_title">동작</string>
   <string name="debug_pref_title">디버그</string>
@@ -369,6 +370,8 @@
   <string name="icon_shape_circle">원</string>
   <string name="icon_shape_teardrop">물방울</string>
   <string name="animated_clock_icon_title">동적 시계 아이콘</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">다른 시계 앱에 애니메이션 적용</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">구글 시계 앱을 기본앱으로 사용하지 않는 경우 사용 설정하세요.</string>
   <string name="about_summary_title">요약</string>
   <string name="about_version">버전</string>
   <string name="about_icon_designer">앱 아이콘 디자이너</string>
