@@ -258,6 +258,7 @@
   <string name="blur_pref_title">Homályosítás engedélyezése</string>
   <string name="blur_pref_summary">Homályosítás effekt engedélyezése a felületen\n Nem kompatibilis élő háttérképekkel</string>
   <string name="blur_radius_pref_title">Homályosítás sugara</string>
+  <string name="pref_iconLabelsInTwoLines">Ikoncímkék tördelése két sorba</string>
   <string name="white_google_icon_pref_title">Fehér Google ikon használata</string>
   <string name="hide_icon_labels_pref_title">Ikonok címkéinek elrejtése</string>
   <string name="hide_all_apps_icon_labels_pref_title">Ikoncímkék elrejtése az alkalmazásfiókban</string>
@@ -370,6 +371,8 @@
   <string name="icon_shape_circle">Kör</string>
   <string name="icon_shape_teardrop">Könnycsepp</string>
   <string name="animated_clock_icon_title">Animált óra ikon</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Alter óra alkalmazások animálása</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Engedélyezze, ha nem a Google Órát használja alapértelmezett óra alkalmazásként</string>
   <string name="about_summary_title">Összegzés</string>
   <string name="about_version">Verzió</string>
   <string name="about_icon_designer">Alkalmazásikon tervező</string>
