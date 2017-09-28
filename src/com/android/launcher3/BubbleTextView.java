@@ -496,11 +496,17 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
     public PreloadIconDrawable applyProgressLevel(int progressLevel) {
         if (getTag() instanceof ItemInfoWithIcon) {
             ItemInfoWithIcon info = (ItemInfoWithIcon) getTag();
-            setContentDescription(progressLevel > 0
-                    ? getContext().getString(R.string.app_downloading_title, info.title,
-                    NumberFormat.getPercentInstance().format(progressLevel * 0.01))
-                    : getContext().getString(R.string.app_waiting_download_title, info.title));
-
+            if (progressLevel >= 100) {
+                setContentDescription(info.contentDescription != null
+                        ? info.contentDescription : "");
+            } else if (progressLevel > 0) {
+                setContentDescription(getContext()
+                        .getString(R.string.app_downloading_title, info.title,
+                                NumberFormat.getPercentInstance().format(progressLevel * 0.01)));
+            } else {
+                setContentDescription(getContext()
+                        .getString(R.string.app_waiting_download_title, info.title));
+            }
             if (mIcon != null) {
                 final PreloadIconDrawable preloadDrawable;
                 if (mIcon instanceof PreloadIconDrawable) {
