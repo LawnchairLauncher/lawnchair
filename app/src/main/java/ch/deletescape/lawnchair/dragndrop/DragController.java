@@ -390,7 +390,7 @@ public class DragController implements DragDriver.EventListener, TouchController
             this.mOptions.preDragCondition.onPreDragEnd(this.mDragObject, false);
         }
         this.mIsInPreDrag = false;
-        for (DragListener onDragEnd : this.mListeners) {
+        for (DragListener onDragEnd : new ArrayList<>(mListeners)) {
             onDragEnd.onDragEnd();
         }
     }
