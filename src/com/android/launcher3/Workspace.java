@@ -1593,11 +1593,6 @@ public class Workspace extends PagedView
         mOutlineProvider = outlineProvider;
     }
 
-    public void exitWidgetResizeMode() {
-        DragLayer dragLayer = mLauncher.getDragLayer();
-        dragLayer.clearResizeFrame();
-    }
-
     public void onStartReordering() {
         super.onStartReordering();
         // Reordering handles its own animations, disable the automatic ones.
@@ -2237,8 +2232,7 @@ public class Workspace extends PagedView
                             mDelayedResizeRunnable = new Runnable() {
                                 public void run() {
                                     if (!isPageInTransition()) {
-                                        DragLayer dragLayer = mLauncher.getDragLayer();
-                                        dragLayer.addResizeFrame(hostView, cellLayout);
+                                        AppWidgetResizeFrame.showForWidget(hostView, cellLayout);
                                     }
                                 }
                             };

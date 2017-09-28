@@ -25,6 +25,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
+import com.android.launcher3.util.TouchController;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -32,18 +34,20 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * Base class for a View which shows a floating UI on top of the launcher UI.
  */
-public abstract class AbstractFloatingView extends LinearLayout {
+public abstract class AbstractFloatingView extends LinearLayout implements TouchController {
 
     @IntDef(flag = true, value = {
             TYPE_FOLDER,
             TYPE_POPUP_CONTAINER_WITH_ARROW,
-            TYPE_WIDGETS_BOTTOM_SHEET
+            TYPE_WIDGETS_BOTTOM_SHEET,
+            TYPE_WIDGET_RESIZE_FRAME
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface FloatingViewType {}
     public static final int TYPE_FOLDER = 1 << 0;
     public static final int TYPE_POPUP_CONTAINER_WITH_ARROW = 1 << 1;
     public static final int TYPE_WIDGETS_BOTTOM_SHEET = 1 << 2;
+    public static final int TYPE_WIDGET_RESIZE_FRAME = 1 << 3;
 
     protected boolean mIsOpen;
 
@@ -72,21 +76,7 @@ public abstract class AbstractFloatingView extends LinearLayout {
 
     protected abstract void handleClose(boolean animate);
 
-    /**
-     * If the view is current handling keyboard, return the active target, null otherwise
-     */
-    public ExtendedEditText getActiveTextView() {
-        return null;
-    }
-
-
-    /**
-     * Any additional view (outside of this container) where touch should be allowed while this
-     * view is visible.
-     */
-    public View getExtendedTouchView() {
-        return null;
-    }
+    public abstract void logActionCommand(int command);
 
     public final boolean isOpen() {
         return mIsOpen;
@@ -96,6 +86,16 @@ public abstract class AbstractFloatingView extends LinearLayout {
     }
 
     protected abstract boolean isOfType(@FloatingViewType int type);
+
+    public void onBackPressed() {
+        logActionCommand(Action.Command.BACK);
+        close(true);
+    }
+
+    @Override
+    public boolean onControllerTouchEvent(MotionEvent ev) {
+        return false;
+    }
 
     protected static <T extends AbstractFloatingView> T getOpenView(
             Launcher launcher, @FloatingViewType int type) {
@@ -139,8 +139,6 @@ public abstract class AbstractFloatingView extends LinearLayout {
 
     public static AbstractFloatingView getTopOpenView(Launcher launcher) {
         return getOpenView(launcher, TYPE_FOLDER | TYPE_POPUP_CONTAINER_WITH_ARROW
-                | TYPE_WIDGETS_BOTTOM_SHEET);
+                | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGET_RESIZE_FRAME);
     }
-
-    public abstract int getLogContainerType();
 }

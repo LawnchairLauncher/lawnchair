@@ -32,6 +32,7 @@ import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.accessibility.AccessibilityEvent;
@@ -66,6 +67,7 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -366,11 +368,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             return true;
         }
         return false;
-    }
-
-    @Override
-    public ExtendedEditText getActiveTextView() {
-        return isEditingName() ? mFolderName : null;
     }
 
     public FolderIcon getFolderIcon() {
@@ -1532,7 +1529,45 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     }
 
     @Override
-    public int getLogContainerType() {
-        return ContainerType.FOLDER;
+    public void logActionCommand(int command) {
+        mLauncher.getUserEventDispatcher().logActionCommand(
+                command, getFolderIcon(), ContainerType.FOLDER);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isEditingName()) {
+            mFolderName.dispatchBackKey();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            DragLayer dl = mLauncher.getDragLayer();
+
+            if (isEditingName()) {
+                if (!dl.isEventOverView(mFolderName, ev)) {
+                    mFolderName.dispatchBackKey();
+                    return true;
+                }
+                return false;
+            } else if (!dl.isEventOverView(this, ev)) {
+                if (mLauncher.getAccessibilityDelegate().isInAccessibleDrag()) {
+                    // Do not close the container if in drag and drop.
+                    if (!dl.isEventOverView(mLauncher.getDropTargetBar(), ev)) {
+                        return true;
+                    }
+                } else {
+                    mLauncher.getUserEventDispatcher().logActionTapOutside(
+                            LoggerUtils.newContainerTarget(ContainerType.FOLDER));
+                    close(true);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

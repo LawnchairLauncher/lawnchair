@@ -24,13 +24,11 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,13 +40,10 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DropTargetBar;
-import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppWidgetHostView;
 import com.android.launcher3.PinchToOverviewListener;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
@@ -59,11 +54,9 @@ import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
-import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
-import com.android.launcher3.widget.WidgetsBottomSheet;
 
 import java.util.ArrayList;
 
@@ -80,10 +73,6 @@ public class DragLayer extends InsettableFrameLayout {
     @Thunk DragController mDragController;
 
     private Launcher mLauncher;
-
-    // Variables relating to resizing widgets
-    private final boolean mIsRtl;
-    private AppWidgetResizeFrame mCurrentResizeFrame;
 
     // Variables relating to animation of views after drop
     private ValueAnimator mDropAnim = null;
@@ -105,7 +94,6 @@ public class DragLayer extends InsettableFrameLayout {
     private float mBackgroundAlpha = 0;
 
     // Related to adjacent page hints
-    private final Rect mScrollChildPosition = new Rect();
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
     private final WallpaperColorInfo mWallpaperColorInfo;
 
@@ -129,7 +117,6 @@ public class DragLayer extends InsettableFrameLayout {
         setMotionEventSplittingEnabled(false);
         setChildrenDrawingOrderEnabled(true);
 
-        mIsRtl = Utilities.isRtl(getResources());
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
         mWallpaperColorInfo = WallpaperColorInfo.getInstance(getContext());
     }
@@ -159,10 +146,6 @@ public class DragLayer extends InsettableFrameLayout {
                 ? null : new PinchToOverviewListener(mLauncher);
     }
 
-    public boolean isEventOverPageIndicator(MotionEvent ev) {
-        return isEventOverView(mLauncher.getWorkspace().getPageIndicator(), ev);
-    }
-
     public boolean isEventOverHotseat(MotionEvent ev) {
         return isEventOverView(mLauncher.getHotseat(), ev);
     }
@@ -180,36 +163,6 @@ public class DragLayer extends InsettableFrameLayout {
         return mHitRect.contains((int) ev.getX(), (int) ev.getY());
     }
 
-    private boolean handleTouchDown(MotionEvent ev, boolean intercept) {
-        AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mLauncher);
-        if (topView != null && intercept) {
-            ExtendedEditText textView = topView.getActiveTextView();
-            if (textView != null) {
-                if (!isEventOverView(textView, ev)) {
-                    textView.dispatchBackKey();
-                    return true;
-                }
-            } else if (!isEventOverView(topView, ev)) {
-                if (isInAccessibleDrag()) {
-                    // Do not close the container if in drag and drop.
-                    if (!isEventOverDropTargetBar(ev)) {
-                        return true;
-                    }
-                } else {
-                    mLauncher.getUserEventDispatcher().logActionTapOutside(
-                            LoggerUtils.newContainerTarget(topView.getLogContainerType()));
-                    topView.close(true);
-
-                    // We let touches on the original icon go through so that users can launch
-                    // the app with one tap if they don't find a shortcut they want.
-                    View extendedTouch = topView.getExtendedTouchView();
-                    return extendedTouch == null || !isEventOverView(extendedTouch, ev);
-                }
-            }
-        }
-        return false;
-    }
-
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         int action = ev.getAction();
@@ -219,9 +172,6 @@ public class DragLayer extends InsettableFrameLayout {
             // dray layer even if mAllAppsController is NOT the active controller.
             // TODO: handle other input other than touch
             mAllAppsController.cancelDiscoveryAnimation();
-            if (handleTouchDown(ev, true)) {
-                return true;
-            }
         } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
             if (mTouchCompleteListener != null) {
                 mTouchCompleteListener.onTouchComplete();
@@ -230,12 +180,10 @@ public class DragLayer extends InsettableFrameLayout {
         }
         mActiveController = null;
 
-        if (mCurrentResizeFrame != null
-                && mCurrentResizeFrame.onControllerInterceptTouchEvent(ev)) {
-            mActiveController = mCurrentResizeFrame;
+        AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mLauncher);
+        if (topView != null && topView.onControllerInterceptTouchEvent(ev)) {
+            mActiveController = topView;
             return true;
-        } else {
-            clearResizeFrame();
         }
 
         if (mDragController.onControllerInterceptTouchEvent(ev)) {
@@ -245,12 +193,6 @@ public class DragLayer extends InsettableFrameLayout {
 
         if (mAllAppsController.onControllerInterceptTouchEvent(ev)) {
             mActiveController = mAllAppsController;
-            return true;
-        }
-
-        WidgetsBottomSheet widgetsBottomSheet = WidgetsBottomSheet.getOpen(mLauncher);
-        if (widgetsBottomSheet != null && widgetsBottomSheet.onControllerInterceptTouchEvent(ev)) {
-            mActiveController = widgetsBottomSheet;
             return true;
         }
 
@@ -357,12 +299,7 @@ public class DragLayer extends InsettableFrameLayout {
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         int action = ev.getAction();
-
-        if (action == MotionEvent.ACTION_DOWN) {
-            if (handleTouchDown(ev, false)) {
-                return true;
-            }
-        } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
             if (mTouchCompleteListener != null) {
                 mTouchCompleteListener.onTouchComplete();
             }
@@ -540,25 +477,6 @@ public class DragLayer extends InsettableFrameLayout {
                 }
             }
         }
-    }
-
-    public void clearResizeFrame() {
-        if (mCurrentResizeFrame != null) {
-            removeView(mCurrentResizeFrame);
-            mCurrentResizeFrame = null;
-        }
-    }
-
-    public void addResizeFrame(LauncherAppWidgetHostView widget, CellLayout cellLayout) {
-        clearResizeFrame();
-
-        mCurrentResizeFrame = (AppWidgetResizeFrame) LayoutInflater.from(mLauncher)
-                .inflate(R.layout.app_widget_resize_frame, this, false);
-        mCurrentResizeFrame.setupForWidget(widget, cellLayout, this);
-        ((LayoutParams) mCurrentResizeFrame.getLayoutParams()).customPosition = true;
-
-        addView(mCurrentResizeFrame);
-        mCurrentResizeFrame.snapToWidget(false);
     }
 
     public void animateViewIntoPosition(DragView dragView, final int[] pos, float alpha,

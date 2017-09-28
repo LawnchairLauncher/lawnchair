@@ -1091,9 +1091,6 @@ public class Launcher extends BaseActivity
                 // Close any open floating view
                 AbstractFloatingView.closeAllOpenViews(this);
 
-                // Stop resizing any widgets
-                mWorkspace.exitWidgetResizeMode();
-
                 // Show the overview mode if we are on the workspace
                 if (mState == State.WORKSPACE && !mWorkspace.isInOverviewMode() &&
                         !mWorkspace.isSwitchingState()) {
@@ -1411,8 +1408,6 @@ public class Launcher extends BaseActivity
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             if (Intent.ACTION_SCREEN_OFF.equals(action)) {
-                mDragLayer.clearResizeFrame();
-
                 // Reset AllApps to its initial state only if we are not in the middle of
                 // processing a multi-step drop
                 if (mAppsView != null && mWidgetsView != null && mPendingRequestArgs == null) {
@@ -1574,17 +1569,9 @@ public class Launcher extends BaseActivity
             // Note: There should be at most one log per method call. This is enforced implicitly
             // by using if-else statements.
             UserEventDispatcher ued = getUserEventDispatcher();
-
-            // TODO: Log this case.
-            mWorkspace.exitWidgetResizeMode();
-
             AbstractFloatingView topOpenView = AbstractFloatingView.getTopOpenView(this);
-            if (topOpenView instanceof PopupContainerWithArrow) {
-                ued.logActionCommand(Action.Command.HOME_INTENT,
-                        topOpenView.getExtendedTouchView(), ContainerType.DEEPSHORTCUTS);
-            } else if (topOpenView instanceof Folder) {
-                ued.logActionCommand(Action.Command.HOME_INTENT,
-                            ((Folder) topOpenView).getFolderIcon(), ContainerType.FOLDER);
+            if (topOpenView != null) {
+                topOpenView.logActionCommand(Action.Command.HOME_INTENT);
             } else if (alreadyOnHome) {
                 ued.logActionCommand(Action.Command.HOME_INTENT,
                         mWorkspace.getState().containerType, mWorkspace.getCurrentPage());
@@ -2062,18 +2049,7 @@ public class Launcher extends BaseActivity
         UserEventDispatcher ued = getUserEventDispatcher();
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
         if (topView != null) {
-            if (topView.getActiveTextView() != null) {
-                topView.getActiveTextView().dispatchBackKey();
-            } else {
-                if (topView instanceof PopupContainerWithArrow) {
-                    ued.logActionCommand(Action.Command.BACK,
-                            topView.getExtendedTouchView(), ContainerType.DEEPSHORTCUTS);
-                } else if (topView instanceof Folder) {
-                    ued.logActionCommand(Action.Command.BACK,
-                            ((Folder) topView).getFolderIcon(), ContainerType.FOLDER);
-                }
-                topView.close(true);
-            }
+            topView.onBackPressed();
         } else if (isAppsViewVisible()) {
             ued.logActionCommand(Action.Command.BACK, ContainerType.ALLAPPS);
             showWorkspace(true);
@@ -2084,9 +2060,6 @@ public class Launcher extends BaseActivity
             ued.logActionCommand(Action.Command.BACK, ContainerType.OVERVIEW);
             showWorkspace(true);
         } else {
-            // TODO: Log this case.
-            mWorkspace.exitWidgetResizeMode();
-
             // Back button is a no-op here, but give at least some feedback for the button press
             mWorkspace.showOutlinesTemporarily();
         }

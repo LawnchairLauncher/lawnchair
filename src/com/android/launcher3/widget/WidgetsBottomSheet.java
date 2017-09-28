@@ -40,24 +40,23 @@ import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.graphics.GradientView;
 import com.android.launcher3.model.WidgetItem;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.touch.SwipeDetector;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
-import com.android.launcher3.util.TouchController;
 
 import java.util.List;
 
 /**
  * Bottom sheet for the "Widgets" system shortcut in the long-press popup.
  */
-public class WidgetsBottomSheet extends AbstractFloatingView implements Insettable, TouchController,
+public class WidgetsBottomSheet extends AbstractFloatingView implements Insettable,
         SwipeDetector.Listener, View.OnClickListener, View.OnLongClickListener,
         DragController.DragListener {
 
@@ -242,18 +241,6 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
     }
 
     @Override
-    public int getLogContainerType() {
-        return LauncherLogProto.ContainerType.WIDGETS; // TODO: be more specific
-    }
-
-    /**
-     * Returns a {@link WidgetsBottomSheet} which is already open or null
-     */
-    public static WidgetsBottomSheet getOpen(Launcher launcher) {
-        return getOpenView(launcher, TYPE_WIDGETS_BOTTOM_SHEET);
-    }
-
-    @Override
     public void setInsets(Rect insets) {
         // Extend behind left, right, and bottom insets.
         int leftInset = insets.left - mInsets.left;
@@ -302,12 +289,27 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
     }
 
     @Override
+    public void logActionCommand(int command) {
+        // TODO: be more specific
+        mLauncher.getUserEventDispatcher().logActionCommand(command, ContainerType.WIDGETS);
+    }
+
+    @Override
     public boolean onControllerTouchEvent(MotionEvent ev) {
         return mSwipeDetector.onTouchEvent(ev);
     }
 
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_UP) {
+            // If we got ACTION_UP without ever returning true on intercept,
+            // the user never started dragging the bottom sheet.
+            if (!mLauncher.getDragLayer().isEventOverView(this, ev)) {
+                close(true);
+                return false;
+            }
+        }
+
         int directionsToDetectScroll = mSwipeDetector.isIdleState() ?
                 SwipeDetector.DIRECTION_NEGATIVE : 0;
         mSwipeDetector.setDetectableScrollConditions(

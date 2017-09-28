@@ -16,6 +16,11 @@
 
 package com.android.launcher3.popup;
 
+import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS_IF_NOTIFICATIONS;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -66,6 +71,7 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.TriangleShape;
+import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.notification.NotificationItemView;
 import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
@@ -80,11 +86,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS_IF_NOTIFICATIONS;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
 /**
  * A container for shortcuts to deep links within apps.
@@ -593,11 +594,6 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         return arrowView;
     }
 
-    @Override
-    public View getExtendedTouchView() {
-        return mOriginalIcon;
-    }
-
     /**
      * Determines when the deferred drag should be started.
      *
@@ -950,7 +946,25 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     }
 
     @Override
-    public int getLogContainerType() {
-        return ContainerType.DEEPSHORTCUTS;
+    public void logActionCommand(int command) {
+        mLauncher.getUserEventDispatcher().logActionCommand(
+                command, mOriginalIcon, ContainerType.DEEPSHORTCUTS);
+    }
+
+    @Override
+    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            DragLayer dl = mLauncher.getDragLayer();
+            if (!dl.isEventOverView(this, ev)) {
+                mLauncher.getUserEventDispatcher().logActionTapOutside(
+                        LoggerUtils.newContainerTarget(ContainerType.DEEPSHORTCUTS));
+                close(true);
+
+                // We let touches on the original icon go through so that users can launch
+                // the app with one tap if they don't find a shortcut they want.
+                return mOriginalIcon == null || !dl.isEventOverView(mOriginalIcon, ev);
+            }
+        }
+        return false;
     }
 }
