@@ -21,6 +21,7 @@ import java.net.URISyntaxException;
 public class UninstallDropTarget extends ButtonDropTarget {
 
     private static final String TAG = "UninstallDropTarget";
+    private static Boolean sUninstallDisabled;
 
     public UninstallDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -48,13 +49,22 @@ public class UninstallDropTarget extends ButtonDropTarget {
     }
 
     public static boolean supportsDrop(Context context, ItemInfo info) {
-        UserManager userManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
-        Bundle restrictions = userManager.getUserRestrictions();
-        if (restrictions.getBoolean(UserManager.DISALLOW_APPS_CONTROL, false)
-                || restrictions.getBoolean(UserManager.DISALLOW_UNINSTALL_APPS, false)) {
+        if (sUninstallDisabled == null) {
+            UserManager userManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
+            Bundle restrictions = userManager.getUserRestrictions();
+            sUninstallDisabled = restrictions.getBoolean(UserManager.DISALLOW_APPS_CONTROL, false)
+                    || restrictions.getBoolean(UserManager.DISALLOW_UNINSTALL_APPS, false);
+        }
+        if (sUninstallDisabled) {
             return false;
         }
 
+        if (info instanceof AppInfo) {
+            AppInfo appInfo = (AppInfo) info;
+            if (appInfo.isSystemApp != AppInfo.FLAG_SYSTEM_UNKNOWN) {
+                return (appInfo.isSystemApp & AppInfo.FLAG_SYSTEM_NO) != 0;
+            }
+        }
         return getUninstallTarget(context, info) != null;
     }
 
