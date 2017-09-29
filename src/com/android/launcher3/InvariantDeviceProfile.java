@@ -85,7 +85,9 @@ public class InvariantDeviceProfile {
      * Number of icons inside the hotseat area.
      */
     public int numHotseatIcons;
+
     int defaultLayoutId;
+    int demoModeLayoutId;
 
     public DeviceProfile landscapeProfile;
     public DeviceProfile portraitProfile;
@@ -99,11 +101,11 @@ public class InvariantDeviceProfile {
         this(p.name, p.minWidthDps, p.minHeightDps, p.numRows, p.numColumns,
                 p.numFolderRows, p.numFolderColumns, p.minAllAppsPredictionColumns,
                 p.iconSize, p.landscapeIconSize, p.iconTextSize, p.numHotseatIcons,
-                p.defaultLayoutId);
+                p.defaultLayoutId, p.demoModeLayoutId);
     }
 
     InvariantDeviceProfile(String n, float w, float h, int r, int c, int fr, int fc, int maapc,
-            float is, float lis, float its, int hs, int dlId) {
+            float is, float lis, float its, int hs, int dlId, int dmlId) {
         name = n;
         minWidthDps = w;
         minHeightDps = h;
@@ -117,6 +119,7 @@ public class InvariantDeviceProfile {
         iconTextSize = its;
         numHotseatIcons = hs;
         defaultLayoutId = dlId;
+        demoModeLayoutId = dmlId;
     }
 
     @TargetApi(23)
@@ -144,6 +147,7 @@ public class InvariantDeviceProfile {
         numColumns = closestProfile.numColumns;
         numHotseatIcons = closestProfile.numHotseatIcons;
         defaultLayoutId = closestProfile.defaultLayoutId;
+        demoModeLayoutId = closestProfile.demoModeLayoutId;
         numFolderRows = closestProfile.numFolderRows;
         numFolderColumns = closestProfile.numFolderColumns;
         minAllAppsPredictionColumns = closestProfile.minAllAppsPredictionColumns;
@@ -208,7 +212,8 @@ public class InvariantDeviceProfile {
                             a.getFloat(R.styleable.InvariantDeviceProfile_landscapeIconSize, iconSize),
                             a.getFloat(R.styleable.InvariantDeviceProfile_iconTextSize, 0),
                             a.getInt(R.styleable.InvariantDeviceProfile_numHotseatIcons, numColumns),
-                            a.getResourceId(R.styleable.InvariantDeviceProfile_defaultLayoutId, 0)));
+                            a.getResourceId(R.styleable.InvariantDeviceProfile_defaultLayoutId, 0),
+                            a.getResourceId(R.styleable.InvariantDeviceProfile_demoModeLayoutId, 0)));
                     a.recycle();
                 }
             }
