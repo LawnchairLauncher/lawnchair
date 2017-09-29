@@ -105,13 +105,13 @@ public class LoggerUtils {
     private static String getItemStr(Target t) {
         String typeStr = getFieldName(t.itemType, ItemType.class);
         if (t.packageNameHash != 0) {
-            typeStr += ", packageHash=" + t.packageNameHash;
+            typeStr += ", packageHash=" + t.packageNameHash + ", predictiveRank=" + t.predictedRank;
         }
         if (t.componentHash != 0) {
-            typeStr += ", componentHash=" + t.componentHash;
+            typeStr += ", componentHash=" + t.componentHash + ", predictiveRank=" + t.predictedRank;
         }
         if (t.intentHash != 0) {
-            typeStr += ", intentHash=" + t.intentHash;
+            typeStr += ", intentHash=" + t.intentHash + ", predictiveRank=" + t.predictedRank;
         }
         return typeStr + ", grid(" + t.gridX + "," + t.gridY + "), span(" + t.spanX + "," + t.spanY
                 + "), pageIdx=" + t.pageIndex;
@@ -125,9 +125,11 @@ public class LoggerUtils {
 
     public static Target newItemTarget(ItemInfo info) {
         Target t = newTarget(Target.Type.ITEM);
+
         switch (info.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 t.itemType = ItemType.APP_ICON;
+                t.predictedRank = -100; // Never assigned
                 break;
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                 t.itemType = ItemType.SHORTCUT;
