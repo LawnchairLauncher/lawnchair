@@ -195,24 +195,26 @@ public class PixelIconProvider {
             Drawable roundIcon = getRoundIcon(info.getComponentName().getPackageName(), iconDpi);
             if (roundIcon != null)
                 drawable = roundIcon;
-            String packageName = info.getApplicationInfo().packageName;
-            if (isCalendar(packageName)) {
-                try {
-                    ActivityInfo activityInfo = mPackageManager.getActivityInfo(info.getComponentName(), PackageManager.GET_META_DATA | PackageManager.MATCH_UNINSTALLED_PACKAGES);
-                    Bundle metaData = activityInfo.metaData;
-                    Resources resourcesForApplication = mPackageManager.getResourcesForApplication(packageName);
-                    int shape = getCorrectShape(metaData, resourcesForApplication);
-                    if (shape != 0) {
-                        drawable = resourcesForApplication.getDrawableForDensity(shape, iconDpi);
-                    }
-                } catch (PackageManager.NameNotFoundException ignored) {
-                }
-            }
         }
 
         if (drawable == null) {
             drawable = info.getIcon(iconDpi);
         }
+
+        String packageName = info.getApplicationInfo().packageName;
+        if (isCalendar(packageName)) {
+            try {
+                ActivityInfo activityInfo = mPackageManager.getActivityInfo(info.getComponentName(), PackageManager.GET_META_DATA | PackageManager.MATCH_UNINSTALLED_PACKAGES);
+                Bundle metaData = activityInfo.metaData;
+                Resources resourcesForApplication = mPackageManager.getResourcesForApplication(packageName);
+                int shape = getCorrectShape(metaData, resourcesForApplication);
+                if (shape != 0) {
+                    drawable = resourcesForApplication.getDrawableForDensity(shape, iconDpi);
+                }
+            } catch (PackageManager.NameNotFoundException ignored) {
+            }
+        }
+
         return drawable;
     }
 
