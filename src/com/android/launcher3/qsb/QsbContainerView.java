@@ -36,6 +36,7 @@ import android.widget.FrameLayout;
 
 import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -79,10 +80,15 @@ public class QsbContainerView extends FrameLayout {
         private AppWidgetProviderInfo mWidgetInfo;
         private QsbWidgetHostView mQsb;
 
+        // We need to store the orientation here, due to a bug (b/64916689) that results in widgets
+        // being inflated in the wrong orientation.
+        private int mOrientation;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             mQsbWidgetHost = new QsbWidgetHost(getActivity());
+            mOrientation = getContext().getResources().getConfiguration().orientation;
         }
 
         private FrameLayout mWrapper;
@@ -193,7 +199,7 @@ public class QsbContainerView extends FrameLayout {
         @Override
         public void onResume() {
             super.onResume();
-            if (mQsb != null && mQsb.isReinflateRequired()) {
+            if (mQsb != null && mQsb.isReinflateRequired(mOrientation)) {
                 rebindFragment();
             }
         }

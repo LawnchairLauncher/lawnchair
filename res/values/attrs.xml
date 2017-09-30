@@ -123,6 +123,7 @@
         <attr name="iconTextSize" format="float" />
 
         <attr name="defaultLayoutId" format="reference" />
+        <attr name="demoModeLayoutId" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="CellLayout">
