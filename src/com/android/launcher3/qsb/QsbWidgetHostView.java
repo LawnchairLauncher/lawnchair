@@ -47,9 +47,9 @@ public class QsbWidgetHostView extends AppWidgetHostView {
     }
 
 
-    public boolean isReinflateRequired() {
+    public boolean isReinflateRequired(int orientation) {
         // Re-inflate is required if the orientation has changed since last inflation.
-        return mPreviousOrientation != getResources().getConfiguration().orientation;
+        return mPreviousOrientation != orientation;
     }
 
 
