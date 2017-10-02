@@ -108,7 +108,6 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
         onWidgetsBound();
 
         mLauncher.getDragLayer().addView(mGradientBackground);
-        mGradientBackground.setVisibility(VISIBLE);
         mLauncher.getDragLayer().addView(this);
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         setTranslationY(mTranslationYClosed);

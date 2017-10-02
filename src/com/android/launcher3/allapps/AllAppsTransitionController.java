@@ -301,8 +301,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
     private void updateAllAppsBg(float progress) {
         // gradient
         if (mGradientView == null) {
-            mGradientView = (GradientView) mLauncher.findViewById(R.id.gradient_bg);
-            mGradientView.setVisibility(View.VISIBLE);
+            mGradientView = mLauncher.findViewById(R.id.gradient_bg);
         }
         mGradientView.setProgress(progress);
     }
