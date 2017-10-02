@@ -355,10 +355,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mShortcutsAndWidgets.setLayerType(hasLayer ? LAYER_TYPE_HARDWARE : LAYER_TYPE_NONE, sPaint);
     }
 
-    public void buildHardwareLayer() {
-        mShortcutsAndWidgets.buildLayer();
-    }
-
     public void setCellDimensions(int width, int height) {
         mFixedCellWidth = mCellWidth = width;
         mFixedCellHeight = mCellHeight = height;

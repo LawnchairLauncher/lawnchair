@@ -228,7 +228,6 @@ public class Workspace extends PagedView
     private State mState = State.NORMAL;
     private boolean mIsSwitchingState = false;
 
-    boolean mAnimatingViewIntoPlace = false;
     boolean mChildrenLayersEnabled = true;
 
     private boolean mStripScreensOnPageStopMoving = false;
@@ -406,7 +405,7 @@ public class Workspace extends PagedView
             }
         }
 
-        updateChildrenLayersEnabled(false);
+        updateChildrenLayersEnabled();
         mLauncher.lockScreenOrientation();
         mLauncher.onInteractionBegin();
         // Prevent any Un/InstallShortcutReceivers from updating the db while we are dragging
@@ -459,7 +458,7 @@ public class Workspace extends PagedView
             removeExtraEmptyScreen(true, mDragSourceInternal != null);
         }
 
-        updateChildrenLayersEnabled(false);
+        updateChildrenLayersEnabled();
         mLauncher.unlockScreenOrientation(false);
 
         // Re-enable any Un/InstallShortcutReceiver and now process any queued items
@@ -1016,10 +1015,6 @@ public class Workspace extends PagedView
                 || (mTransitionProgress > FINISHED_SWITCHING_STATE_TRANSITION_PROGRESS);
     }
 
-    protected void onWindowVisibilityChanged (int visibility) {
-        mLauncher.onWindowVisibilityChanged(visibility);
-    }
-
     @Override
     public boolean dispatchUnhandledMove(View focused, int direction) {
         if (workspaceInModalState() || !isFinishedSwitchingState()) {
@@ -1109,12 +1104,12 @@ public class Workspace extends PagedView
 
     protected void onPageBeginTransition() {
         super.onPageBeginTransition();
-        updateChildrenLayersEnabled(false);
+        updateChildrenLayersEnabled();
     }
 
     protected void onPageEndTransition() {
         super.onPageEndTransition();
-        updateChildrenLayersEnabled(false);
+        updateChildrenLayersEnabled();
 
         if (mDragController.isDragging()) {
             if (workspaceInModalState()) {
@@ -1494,9 +1489,9 @@ public class Workspace extends PagedView
         return mState == State.NORMAL || mState == State.SPRING_LOADED;
     }
 
-    @Thunk void updateChildrenLayersEnabled(boolean force) {
+    private void updateChildrenLayersEnabled() {
         boolean small = mState == State.OVERVIEW || mIsSwitchingState;
-        boolean enableChildrenLayers = force || small || mAnimatingViewIntoPlace || isPageInTransition();
+        boolean enableChildrenLayers = small || isPageInTransition();
 
         if (enableChildrenLayers != mChildrenLayersEnabled) {
             mChildrenLayersEnabled = enableChildrenLayers;
@@ -1560,19 +1555,6 @@ public class Workspace extends PagedView
                 layout.enableHardwareLayer(enableLayer);
             }
         }
-    }
-
-    public void buildPageHardwareLayers() {
-        // force layers to be enabled just for the call to buildLayer
-        updateChildrenLayersEnabled(true);
-        if (getWindowToken() != null) {
-            final int childCount = getChildCount();
-            for (int i = 0; i < childCount; i++) {
-                CellLayout cl = (CellLayout) getChildAt(i);
-                cl.buildHardwareLayer();
-            }
-        }
-        updateChildrenLayersEnabled(false);
     }
 
     protected void onWallpaperTap(MotionEvent ev) {
@@ -1773,12 +1755,12 @@ public class Workspace extends PagedView
         }
         invalidate(); // This will call dispatchDraw(), which calls getVisiblePages().
 
-        updateChildrenLayersEnabled(false);
+        updateChildrenLayersEnabled();
     }
 
     public void onEndStateTransition() {
         mIsSwitchingState = false;
-        updateChildrenLayersEnabled(false);
+        updateChildrenLayersEnabled();
         mForceDrawAdjacentPages = false;
         mTransitionProgress = 1;
     }
@@ -2262,16 +2244,6 @@ public class Workspace extends PagedView
             }
 
             final CellLayout parent = (CellLayout) cell.getParent().getParent();
-            // Prepare it to be animated into its new position
-            // This must be called after the view has been re-parented
-            final Runnable onCompleteRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    mAnimatingViewIntoPlace = false;
-                    updateChildrenLayersEnabled(false);
-                }
-            };
-            mAnimatingViewIntoPlace = true;
             if (d.dragView.hasDrawn()) {
                 if (droppedOnOriginalCellDuringTransition) {
                     // Animate the item to its original position, while simultaneously exiting
@@ -2290,12 +2262,11 @@ public class Workspace extends PagedView
                 if (isWidget) {
                     int animationType = resizeOnDrop ? ANIMATE_INTO_POSITION_AND_RESIZE :
                             ANIMATE_INTO_POSITION_AND_DISAPPEAR;
-                    animateWidgetDrop(info, parent, d.dragView,
-                            onCompleteRunnable, animationType, cell, false);
+                    animateWidgetDrop(info, parent, d.dragView, null, animationType, cell, false);
                 } else {
                     int duration = snapScreen < 0 ? -1 : ADJACENT_SCREEN_DROP_DURATION;
                     mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, cell, duration,
-                            onCompleteRunnable, this);
+                            null, this);
                 }
             } else {
                 d.deferDragViewCleanupPostAnimation = false;
@@ -3147,7 +3118,7 @@ public class Workspace extends PagedView
 
         // hardware layers on children are enabled on startup, but should be disabled until
         // needed
-        updateChildrenLayersEnabled(false);
+        updateChildrenLayersEnabled();
     }
 
     /**
