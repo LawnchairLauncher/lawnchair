@@ -32,10 +32,10 @@ import android.view.View;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetHostView;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.util.UiThreadHelper;
 
 import java.nio.ByteBuffer;
 
@@ -151,7 +151,7 @@ public class DragPreviewProvider {
         }
 
         mOutlineGeneratorCallback = new OutlineGeneratorCallback(preview);
-        new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(mOutlineGeneratorCallback);
+        new Handler(UiThreadHelper.getBackgroundLooper()).post(mOutlineGeneratorCallback);
     }
 
     protected static Rect getDrawableBounds(Drawable d) {

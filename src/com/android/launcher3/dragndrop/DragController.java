@@ -27,7 +27,6 @@ import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
@@ -39,6 +38,7 @@ import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
+import com.android.launcher3.util.UiThreadHelper;
 
 import java.util.ArrayList;
 
@@ -138,8 +138,7 @@ public class DragController implements DragDriver.EventListener, TouchController
         }
 
         // Hide soft keyboard, if visible
-        mLauncher.getSystemService(InputMethodManager.class)
-                .hideSoftInputFromWindow(mWindowToken, 0);
+        UiThreadHelper.hideKeyboardAsync(mLauncher, mWindowToken);
 
         mOptions = options;
         if (mOptions.systemDndStartPoint != null) {

@@ -16,6 +16,9 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_APPS;
+import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_WIDGETS;
+
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -53,8 +56,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Process;
 import android.os.StrictMode;
-import android.os.SystemClock;
-import android.os.Trace;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
 import android.text.Selection;
@@ -119,7 +120,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.util.ActivityResultInfo;
-import com.android.launcher3.util.RunnableWithId;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -127,11 +127,13 @@ import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.PendingRequestArgs;
+import com.android.launcher3.util.RunnableWithId;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.TestingUtils;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TraceHelper;
+import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
@@ -139,7 +141,6 @@ import com.android.launcher3.widget.WidgetAddFlowHandler;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetsContainerView;
 import com.android.launcher3.widget.custom.CustomWidgetParser;
-
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -149,9 +150,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
-
-import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_APPS;
-import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_WIDGETS;
 
 /**
  * Default launcher application.
@@ -1606,9 +1604,7 @@ public class Launcher extends BaseActivity
 
             final View v = getWindow().peekDecorView();
             if (v != null && v.getWindowToken() != null) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(
-                        INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                UiThreadHelper.hideKeyboardAsync(this, v.getWindowToken());
             }
 
             // Reset the apps view
