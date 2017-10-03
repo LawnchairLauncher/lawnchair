@@ -197,25 +197,6 @@ public class WidgetsContainerView extends BaseContainerView
     //
 
     @Override
-    public boolean supportsAppInfoDropTarget() {
-        return true;
-    }
-
-    /*
-     * Both this method and {@link #supportsFlingToDelete} has to return {@code false} for the
-     * {@link DeleteDropTarget} to be invisible.)
-     */
-    @Override
-    public boolean supportsDeleteDropTarget() {
-        return false;
-    }
-
-    @Override
-    public float getIntrinsicIconScaleFactor() {
-        return 0;
-    }
-
-    @Override
     public void onDropCompleted(View target, DragObject d, boolean isFlingToDelete,
             boolean success) {
         if (LOGD) {

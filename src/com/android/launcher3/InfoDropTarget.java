@@ -99,8 +99,8 @@ public class InfoDropTarget extends UninstallDropTarget {
     }
 
     @Override
-    protected boolean supportsDrop(DragSource source, ItemInfo info) {
-        return source.supportsAppInfoDropTarget() && supportsDrop(getContext(), info);
+    protected boolean supportsDrop(ItemInfo info) {
+        return supportsDrop(getContext(), info);
     }
 
     public static boolean supportsDrop(Context context, ItemInfo info) {

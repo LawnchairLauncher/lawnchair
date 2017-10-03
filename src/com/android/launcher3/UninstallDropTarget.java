@@ -44,7 +44,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
     }
 
     @Override
-    protected boolean supportsDrop(DragSource source, ItemInfo info) {
+    protected boolean supportsDrop(ItemInfo info) {
         return supportsDrop(getContext(), info);
     }
 
