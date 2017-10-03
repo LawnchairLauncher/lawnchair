@@ -15,6 +15,10 @@
  */
 package com.android.launcher3.compat;
 
+import static android.app.WallpaperManager.FLAG_SYSTEM;
+
+import static com.android.launcher3.Utilities.getDevicePrefs;
+
 import android.app.WallpaperInfo;
 import android.app.WallpaperManager;
 import android.app.job.JobInfo;
@@ -38,7 +42,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.Nullable;
-import android.support.v7.graphics.Palette;
 import android.util.Log;
 import android.util.Pair;
 
@@ -46,12 +49,6 @@ import com.android.launcher3.Utilities;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import static android.app.WallpaperManager.FLAG_SYSTEM;
-import static com.android.launcher3.Utilities.getDevicePrefs;
 
 public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
 
@@ -260,27 +257,8 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
             String value = VERSION_PREFIX + wallpaperId;
 
             if (bitmap != null) {
-                Palette palette = Palette.from(bitmap).generate();
-                bitmap.recycle();
-
-                StringBuilder builder = new StringBuilder(value);
-                List<Pair<Integer,Integer>> colorsToOccurrences = new ArrayList<>();
-                for (Palette.Swatch swatch : palette.getSwatches()) {
-                    colorsToOccurrences.add(new Pair(swatch.getRgb(), swatch.getPopulation()));
-                }
-
-                Collections.sort(colorsToOccurrences, new Comparator<Pair<Integer, Integer>>() {
-                    @Override
-                    public int compare(Pair<Integer, Integer> a, Pair<Integer, Integer> b) {
-                        return b.second - a.second;
-                    }
-                });
-
-                for (int i=0; i < Math.min(3, colorsToOccurrences.size()); i++) {
-                    builder.append(',').append(colorsToOccurrences.get(i).first);
-                }
-
-                value = builder.toString();
+                int color = Utilities.findDominantColorByHue(bitmap, MAX_WALLPAPER_EXTRACTION_AREA);
+                value += "," + color;
             }
 
             // Send the result

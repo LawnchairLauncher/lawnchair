@@ -26,7 +26,6 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_STATIC_JAVA_LIBRARIES := \
     android-support-v4 \
     android-support-v7-recyclerview \
-    android-support-v7-palette \
     android-support-dynamic-animation
 
 LOCAL_SRC_FILES := \
@@ -72,7 +71,6 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_STATIC_JAVA_LIBRARIES := \
     android-support-v4 \
     android-support-v7-recyclerview \
-    android-support-v7-palette \
     android-support-dynamic-animation
 
 LOCAL_SRC_FILES := \

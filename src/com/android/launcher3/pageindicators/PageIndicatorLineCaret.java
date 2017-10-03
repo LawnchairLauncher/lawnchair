@@ -11,9 +11,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Property;
 import android.view.ViewConfiguration;
 import android.widget.ImageView;
@@ -21,8 +19,6 @@ import android.widget.ImageView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
 
 /**
@@ -31,9 +27,6 @@ import com.android.launcher3.dynamicui.WallpaperColorInfo;
  * The fraction is 1 / number of pages and the position is based on the progress of the page scroll.
  */
 public class PageIndicatorLineCaret extends PageIndicator {
-    private static final String TAG = "PageIndicatorLine";
-
-    private static final int[] sTempCoords = new int[2];
 
     private static final int LINE_ANIMATE_DURATION = ViewConfiguration.getScrollBarFadeDuration();
     private static final int LINE_FADE_DELAY = ViewConfiguration.getScrollDefaultDelay();
@@ -215,32 +208,6 @@ public class PageIndicatorLineCaret extends PageIndicator {
             hideAfterDelay();
         } else if (!shouldAutoHide) {
             mDelayedLineFadeHandler.removeCallbacksAndMessages(null);
-        }
-    }
-
-    /**
-     * The line's color will be:
-     * - mostly opaque white if the hotseat is white (ignoring alpha)
-     * - mostly opaque black if the hotseat is black (ignoring alpha)
-     */
-    public void updateColor(ExtractedColors extractedColors) {
-        if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
-            return;
-        }
-        int originalLineAlpha = mLinePaint.getAlpha();
-        int color = extractedColors.getColor(ExtractedColors.HOTSEAT_INDEX);
-        if (color != Color.TRANSPARENT) {
-            color = ColorUtils.setAlphaComponent(color, 255);
-            if (color == Color.BLACK) {
-                mActiveAlpha = BLACK_ALPHA;
-            } else if (color == Color.WHITE) {
-                mActiveAlpha = WHITE_ALPHA;
-            } else {
-                Log.e(TAG, "Setting workspace page indicators to an unsupported color: #"
-                        + Integer.toHexString(color));
-            }
-            mLinePaint.setColor(color);
-            mLinePaint.setAlpha(originalLineAlpha);
         }
     }
 

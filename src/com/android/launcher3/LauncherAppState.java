@@ -28,7 +28,6 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.Preconditions;
@@ -109,17 +108,10 @@ public class LauncherAppState {
         filter.addAction(Intent.ACTION_MANAGED_PROFILE_AVAILABLE);
         filter.addAction(Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE);
         filter.addAction(Intent.ACTION_MANAGED_PROFILE_UNLOCKED);
-        // For extracting colors from the wallpaper
-        if (Utilities.ATLEAST_NOUGAT) {
-            // TODO: add a broadcast entry to the manifest for pre-N.
-            filter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
-        }
 
         mContext.registerReceiver(mModel, filter);
         UserManagerCompat.getInstance(mContext).enableAndResetCache();
         new ConfigMonitor(mContext).register();
-
-        ExtractionUtils.startColorExtractionServiceIfNecessary(mContext);
 
         if (!mContext.getResources().getBoolean(R.bool.notification_badging_enabled)) {
             mNotificationBadgingObserver = null;

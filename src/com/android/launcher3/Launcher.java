@@ -99,7 +99,6 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.PinItemDragListener;
-import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
@@ -220,8 +219,6 @@ public class Launcher extends BaseActivity
     private static final int NEW_APPS_PAGE_MOVE_DELAY = 500;
     private static final int NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS = 5;
     @Thunk static final int NEW_APPS_ANIMATION_DELAY = 500;
-
-    private final ExtractedColors mExtractedColors = new ExtractedColors();
 
     @Thunk Workspace mWorkspace;
     private View mLauncherView;
@@ -403,7 +400,6 @@ public class Launcher extends BaseActivity
 
         setupViews();
         mDeviceProfile.layout(this, false /* notifyListeners */);
-        loadExtractedColorsAndColorItems();
 
         mPopupDataProvider = new PopupDataProvider(this);
 
@@ -489,24 +485,9 @@ public class Launcher extends BaseActivity
     }
 
     @Override
-    public void onExtractedColorsChanged() {
-        loadExtractedColorsAndColorItems();
-        mExtractedColors.notifyChange();
-    }
-
-    @Override
     public void onAppWidgetHostReset() {
         if (mAppWidgetHost != null) {
             mAppWidgetHost.startListening();
-        }
-    }
-
-    private void loadExtractedColorsAndColorItems() {
-        // TODO: do this in pre-N as well, once the extraction part is complete.
-        if (Utilities.ATLEAST_NOUGAT) {
-            mExtractedColors.load(this);
-            mHotseat.updateColor(mExtractedColors, !mPaused);
-            mWorkspace.getPageIndicator().updateColor(mExtractedColors);
         }
     }
 
