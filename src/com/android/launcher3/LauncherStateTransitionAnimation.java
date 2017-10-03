@@ -361,8 +361,8 @@ public class LauncherStateTransitionAnimation {
             AnimationLayerSet layerViews) {
         // Create the workspace animation.
         // NOTE: this call apparently also sets the state for the workspace if !animated
-        Animator workspaceAnim = mLauncher.startWorkspaceStateChangeAnimation(toWorkspaceState,
-                animated, layerViews);
+        Animator workspaceAnim = mLauncher.getWorkspace().
+                setStateWithAnimation(toWorkspaceState, animated, layerViews);
 
         if (animated && initialized) {
             // Play the workspace animation

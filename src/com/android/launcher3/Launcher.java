@@ -474,13 +474,6 @@ public class Launcher extends BaseActivity
 
     private LauncherCallbacks mLauncherCallbacks;
 
-    public void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onPostCreate(savedInstanceState);
-        }
-    }
-
     public void onInsetsChanged(Rect insets) {
         mDeviceProfile.updateInsets(insets);
         mDeviceProfile.layout(this, true /* notifyListeners */);
@@ -845,9 +838,6 @@ public class Launcher extends BaseActivity
     @Override
     protected void onResume() {
         TraceHelper.beginSection("ON_RESUME");
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.preOnResume();
-        }
         super.onResume();
         TraceHelper.partitionSection("ON_RESUME", "superCall");
 
@@ -868,9 +858,6 @@ public class Launcher extends BaseActivity
         }
 
         setOnResumeCallback(null);
-
-        updateInteraction(Workspace.State.NORMAL, mWorkspace.getState());
-
         // Process any items that were added while Launcher was away.
         InstallShortcutReceiver.disableAndFlushInstallQueue(
                 InstallShortcutReceiver.FLAG_ACTIVITY_PAUSED, this);
@@ -1500,11 +1487,7 @@ public class Launcher extends BaseActivity
         // as slow logic in the callbacks eat into the time the scroller expects for the snapToPage
         // animation.
         if (isActionMain) {
-            boolean callbackAllowsMoveToDefaultScreen =
-                mLauncherCallbacks == null || mLauncherCallbacks
-                    .shouldMoveToDefaultScreenOnHomeIntent();
-            if (shouldMoveToDefaultScreen && !mWorkspace.isTouchActive()
-                    && callbackAllowsMoveToDefaultScreen) {
+            if (shouldMoveToDefaultScreen && !mWorkspace.isTouchActive()) {
 
                 mWorkspace.post(new Runnable() {
                     @Override
@@ -1711,25 +1694,11 @@ public class Launcher extends BaseActivity
     }
 
     private void setWorkspaceLoading(boolean value) {
-        boolean isLocked = isWorkspaceLocked();
         mWorkspaceLoading = value;
-        if (isLocked != isWorkspaceLocked()) {
-            onWorkspaceLockedChanged();
-        }
     }
 
     public void setWaitingForResult(PendingRequestArgs args) {
-        boolean isLocked = isWorkspaceLocked();
         mPendingRequestArgs = args;
-        if (isLocked != isWorkspaceLocked()) {
-            onWorkspaceLockedChanged();
-        }
-    }
-
-    protected void onWorkspaceLockedChanged() {
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onWorkspaceLockedChanged();
-        }
     }
 
     void addAppWidgetFromDropImpl(int appWidgetId, ItemInfo info, AppWidgetHostView boundWidget,
@@ -2245,44 +2214,6 @@ public class Launcher extends BaseActivity
         mDragLayer.onAccessibilityStateChanged(enabled);
     }
 
-    /**
-     * Called when the user stops interacting with the launcher.
-     * This implies that the user is now on the homescreen and is not doing housekeeping.
-     */
-    protected void onInteractionEnd() {
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onInteractionEnd();
-        }
-    }
-
-    /**
-     * Called when the user starts interacting with the launcher.
-     * The possible interactions are:
-     *  - open all apps
-     *  - reorder an app shortcut, or a widget
-     *  - open the overview mode.
-     * This is a good time to stop doing things that only make sense
-     * when the user is on the homescreen and not doing housekeeping.
-     */
-    protected void onInteractionBegin() {
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onInteractionBegin();
-        }
-    }
-
-    /** Updates the interaction state. */
-    public void updateInteraction(Workspace.State fromState, Workspace.State toState) {
-        // Only update the interacting state if we are transitioning to/from a view with an
-        // overlay
-        boolean fromStateWithOverlay = fromState != Workspace.State.NORMAL;
-        boolean toStateWithOverlay = toState != Workspace.State.NORMAL;
-        if (toStateWithOverlay) {
-            onInteractionBegin();
-        } else if (fromStateWithOverlay) {
-            onInteractionEnd();
-        }
-    }
-
     private void startShortcutIntentSafely(Intent intent, Bundle optsBundle, ItemInfo info) {
         try {
             StrictMode.VmPolicy oldPolicy = StrictMode.getVmPolicy();
@@ -2681,18 +2612,6 @@ public class Launcher extends BaseActivity
         getWindow().getDecorView()
                 .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
         return true;
-    }
-
-    /**
-     * Updates the workspace and interaction state on state change, and return the animation to this
-     * new state.
-     */
-    public Animator startWorkspaceStateChangeAnimation(Workspace.State toState,
-            boolean animated, AnimationLayerSet layerViews) {
-        Workspace.State fromState = mWorkspace.getState();
-        Animator anim = mWorkspace.setStateWithAnimation(toState, animated, layerViews);
-        updateInteraction(fromState, toState);
-        return anim;
     }
 
     public void enterSpringLoadedDragMode() {
@@ -3273,10 +3192,6 @@ public class Launcher extends BaseActivity
                 InstallShortcutReceiver.FLAG_LOADER_RUNNING, this);
 
         NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.finishBindingItems(false);
-        }
         TraceHelper.endSection("finishBindingItems");
     }
 

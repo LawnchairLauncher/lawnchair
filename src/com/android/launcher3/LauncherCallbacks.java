@@ -39,14 +39,12 @@ public interface LauncherCallbacks {
      */
     void preOnCreate();
     void onCreate(Bundle savedInstanceState);
-    void preOnResume();
     void onResume();
     void onStart();
     void onStop();
     void onPause();
     void onDestroy();
     void onSaveInstanceState(Bundle outState);
-    void onPostCreate(Bundle savedInstanceState);
     void onNewIntent(Intent intent);
     void onActivityResult(int requestCode, int resultCode, Intent data);
     void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -64,13 +62,7 @@ public interface LauncherCallbacks {
      * Extension points for providing custom behavior on certain user interactions.
      */
     void onLauncherProviderChange();
-    void finishBindingItems(final boolean upgradePath);
     void bindAllApplications(ArrayList<AppInfo> apps);
-    void onInteractionBegin();
-    void onInteractionEnd();
-
-    @Deprecated
-    void onWorkspaceLockedChanged();
 
     /**
      * Starts a search with {@param initialQuery}. Return false if search was not started.
@@ -81,6 +73,5 @@ public interface LauncherCallbacks {
     /*
      * Extensions points for adding / replacing some other aspects of the Launcher experience.
      */
-    boolean shouldMoveToDefaultScreenOnHomeIntent();
     boolean hasSettings();
 }

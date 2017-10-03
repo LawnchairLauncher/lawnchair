@@ -402,7 +402,6 @@ public class Workspace extends PagedView
 
         updateChildrenLayersEnabled();
         mLauncher.lockScreenOrientation();
-        mLauncher.onInteractionBegin();
         // Prevent any Un/InstallShortcutReceivers from updating the db while we are dragging
         InstallShortcutReceiver.enableInstallQueue(InstallShortcutReceiver.FLAG_DRAG_AND_DROP);
 
@@ -462,7 +461,6 @@ public class Workspace extends PagedView
 
         mOutlineProvider = null;
         mDragSourceInternal = null;
-        mLauncher.onInteractionEnd();
     }
 
     /**

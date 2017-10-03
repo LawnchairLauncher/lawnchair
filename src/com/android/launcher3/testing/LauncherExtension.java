@@ -36,10 +36,6 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
-        public void preOnResume() {
-        }
-
-        @Override
         public void onResume() {
         }
 
@@ -61,10 +57,6 @@ public class LauncherExtension extends Launcher {
 
         @Override
         public void onSaveInstanceState(Bundle outState) {
-        }
-
-        @Override
-        public void onPostCreate(Bundle savedInstanceState) {
         }
 
         @Override
@@ -111,34 +103,13 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
-        public void finishBindingItems(boolean upgradePath) {
-        }
-
-        @Override
         public void bindAllApplications(ArrayList<AppInfo> apps) {
-        }
-
-        @Override
-        public void onWorkspaceLockedChanged() {
-        }
-
-        @Override
-        public void onInteractionBegin() {
-        }
-
-        @Override
-        public void onInteractionEnd() {
         }
 
         @Override
         public boolean startSearch(String initialQuery, boolean selectInitialQuery,
                 Bundle appSearchData) {
             return false;
-        }
-
-        @Override
-        public boolean shouldMoveToDefaultScreenOnHomeIntent() {
-            return true;
         }
 
         @Override
