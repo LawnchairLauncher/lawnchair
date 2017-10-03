@@ -354,9 +354,18 @@ public class DeviceProfile {
         iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
         iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
 
-        cellWidthPx = iconSizePx + iconDrawablePaddingPx;
         cellHeightPx = iconSizePx + iconDrawablePaddingPx
                 + Utilities.calculateTextHeight(iconTextSizePx);
+        int cellYPadding = (getCellSize().y - cellHeightPx) / 2;
+        if (iconDrawablePaddingPx > cellYPadding && !isVerticalBarLayout()
+                && !inMultiWindowMode()) {
+            // Ensures that the label is closer to its corresponding icon. This is not an issue
+            // with vertical bar layout or multi-window mode since the issue is handled separately
+            // with their calls to {@link #adjustToHideWorkspaceLabels}.
+            cellHeightPx -= (iconDrawablePaddingPx - cellYPadding);
+            iconDrawablePaddingPx = cellYPadding;
+        }
+        cellWidthPx = iconSizePx + iconDrawablePaddingPx;
 
         // All apps
         allAppsIconTextSizePx = iconTextSizePx;
@@ -759,11 +768,14 @@ public class DeviceProfile {
         return new int[] { padding.left - mInsets.left, padding.right + mInsets.left};
     }
 
+    public boolean inMultiWindowMode() {
+        return this != inv.landscapeProfile && this != inv.portraitProfile;
+    }
+
     public boolean shouldIgnoreLongPressToOverview(float touchX) {
-        boolean inMultiWindowMode = this != inv.landscapeProfile && this != inv.portraitProfile;
         boolean touchedLhsEdge = mInsets.left == 0 && touchX < edgeMarginPx;
         boolean touchedRhsEdge = mInsets.right == 0 && touchX > (widthPx - edgeMarginPx);
-        return !inMultiWindowMode && (touchedLhsEdge || touchedRhsEdge);
+        return !inMultiWindowMode() && (touchedLhsEdge || touchedRhsEdge);
     }
 
     private static Context getContext(Context c, int orientation) {
