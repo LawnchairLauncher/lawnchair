@@ -74,7 +74,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
@@ -298,14 +297,6 @@ public class Launcher extends BaseActivity
     // state transition. If another state transition happened during this delay,
     // simply unregister this runnable.
     private Runnable mExitSpringLoadedModeRunnable;
-
-    @Thunk final Runnable mBuildLayersRunnable = new Runnable() {
-        public void run() {
-            if (mWorkspace != null) {
-                mWorkspace.buildPageHardwareLayers();
-            }
-        }
-    };
 
     // Activity result which needs to be processed after workspace has loaded.
     private ActivityResultInfo mPendingActivityResult;
@@ -942,6 +933,8 @@ public class Launcher extends BaseActivity
             mLauncherCallbacks.onResume();
         }
 
+        clearTypedText();
+
         TraceHelper.endSection("ON_RESUME");
     }
 
@@ -1443,44 +1436,6 @@ public class Launcher extends BaseActivity
         }
     }
 
-    public void onWindowVisibilityChanged(int visibility) {
-        // The following code used to be in onResume, but it turns out onResume is called when
-        // you're in All Apps and click home to go to the workspace. onWindowVisibilityChanged
-        // is a more appropriate event to handle
-        if (visibility == View.VISIBLE) {
-            if (!mWorkspaceLoading) {
-                final ViewTreeObserver observer = mWorkspace.getViewTreeObserver();
-                // We want to let Launcher draw itself at least once before we force it to build
-                // layers on all the workspace pages, so that transitioning to Launcher from other
-                // apps is nice and speedy.
-                observer.addOnDrawListener(new ViewTreeObserver.OnDrawListener() {
-                    private boolean mStarted = false;
-                    public void onDraw() {
-                        if (mStarted) return;
-                        mStarted = true;
-                        // We delay the layer building a bit in order to give
-                        // other message processing a time to run.  In particular
-                        // this avoids a delay in hiding the IME if it was
-                        // currently shown, because doing that may involve
-                        // some communication back with the app.
-                        mWorkspace.postDelayed(mBuildLayersRunnable, 500);
-                        final ViewTreeObserver.OnDrawListener listener = this;
-                        mWorkspace.post(new Runnable() {
-                            public void run() {
-                                if (mWorkspace != null &&
-                                        mWorkspace.getViewTreeObserver() != null) {
-                                    mWorkspace.getViewTreeObserver().
-                                            removeOnDrawListener(listener);
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-            clearTypedText();
-        }
-    }
-
     public DragLayer getDragLayer() {
         return mDragLayer;
     }
@@ -1657,7 +1612,6 @@ public class Launcher extends BaseActivity
         super.onDestroy();
 
         unregisterReceiver(mReceiver);
-        mWorkspace.removeCallbacks(mBuildLayersRunnable);
         mWorkspace.removeFolderListeners();
 
         // Stop callbacks from LauncherModel
