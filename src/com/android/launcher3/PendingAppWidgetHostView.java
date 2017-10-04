@@ -110,9 +110,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         mClickListener = l;
     }
 
-    @Override
-    public boolean isReinflateRequired(int orientation) {
-        // Re inflate is required any time the widget restore status changes
+    public boolean isReinflateIfNeeded() {
         return mStartState != mInfo.restoreStatus;
     }
 

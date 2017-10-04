@@ -1043,30 +1043,6 @@ public class Workspace extends PagedView
         return super.onInterceptTouchEvent(ev);
     }
 
-    protected void reinflateWidgetsIfNecessary() {
-        final int clCount = getChildCount();
-        for (int i = 0; i < clCount; i++) {
-            CellLayout cl = (CellLayout) getChildAt(i);
-            ShortcutAndWidgetContainer swc = cl.getShortcutsAndWidgets();
-            final int itemCount = swc.getChildCount();
-            for (int j = 0; j < itemCount; j++) {
-                View v = swc.getChildAt(j);
-
-                if (v instanceof LauncherAppWidgetHostView
-                        && v.getTag() instanceof LauncherAppWidgetInfo) {
-                    LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) v.getTag();
-                    LauncherAppWidgetHostView lahv = (LauncherAppWidgetHostView) v;
-                    if (lahv.isReinflateRequired(mLauncher.getOrientation())) {
-                        // Remove and rebind the current widget (which was inflated in the wrong
-                        // orientation), but don't delete it from the database
-                        mLauncher.removeItem(lahv, info, false  /* deleteFromDb */);
-                        mLauncher.bindAppWidget(info);
-                    }
-                }
-            }
-        }
-    }
-
     @Override
     protected void determineScrollingStart(MotionEvent ev) {
         if (!isFinishedSwitchingState()) return;
