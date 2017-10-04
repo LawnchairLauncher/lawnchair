@@ -867,16 +867,9 @@ public class Launcher extends BaseActivity
         if (mOnResumeState == State.WORKSPACE) {
             showWorkspace(false);
         } else if (mOnResumeState == State.APPS) {
-            boolean launchedFromApp = (mWaitingForResume != null);
-            // Don't update the predicted apps if the user is returning to launcher in the apps
-            // view after launching an app, as they may be depending on the UI to be static to
-            // switch to another app, otherwise, if it was
-            showAppsView(false /* animated */, !launchedFromApp /* updatePredictedApps */);
+            showAppsView(false /* animated */);
         } else if (mOnResumeState == State.WIDGETS) {
             showWidgetsView(false, false);
-        }
-        if (mOnResumeState != State.APPS) {
-            tryAndUpdatePredictedApps();
         }
         mOnResumeState = State.NONE;
 
@@ -2108,7 +2101,7 @@ public class Launcher extends BaseActivity
         if (!isAppsViewVisible()) {
             getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
                     ControlType.ALL_APPS_BUTTON);
-            showAppsView(true /* animated */, true /* updatePredictedApps */);
+            showAppsView(true /* animated */);
         } else {
             showWorkspace(true);
         }
@@ -2673,11 +2666,8 @@ public class Launcher extends BaseActivity
     /**
      * Shows the apps view.
      */
-    public void showAppsView(boolean animated, boolean updatePredictedApps) {
+    public void showAppsView(boolean animated) {
         markAppsViewShown();
-        if (updatePredictedApps) {
-            tryAndUpdatePredictedApps();
-        }
         showAppsOrWidgets(State.APPS, animated);
     }
 
@@ -2797,24 +2787,11 @@ public class Launcher extends BaseActivity
 
     public void exitSpringLoadedDragMode() {
         if (mState == State.APPS_SPRING_LOADED) {
-            showAppsView(true /* animated */, false /* updatePredictedApps */);
+            showAppsView(true /* animated */);
         } else if (mState == State.WIDGETS_SPRING_LOADED) {
             showWidgetsView(true, false);
         } else if (mState == State.WORKSPACE_SPRING_LOADED) {
             showWorkspace(true);
-        }
-    }
-
-    /**
-     * Updates the set of predicted apps if it hasn't been updated since the last time Launcher was
-     * resumed.
-     */
-    public void tryAndUpdatePredictedApps() {
-        if (mLauncherCallbacks != null) {
-            List<ComponentKeyMapper<AppInfo>> apps = mLauncherCallbacks.getPredictedApps();
-            if (apps != null) {
-                mAppsView.setPredictedApps(apps);
-            }
         }
     }
 
@@ -3532,7 +3509,6 @@ public class Launcher extends BaseActivity
         // Update AllApps
         if (mAppsView != null) {
             mAppsView.removeApps(appInfos);
-            tryAndUpdatePredictedApps();
         }
     }
 
@@ -3696,7 +3672,7 @@ public class Launcher extends BaseActivity
             switch (keyCode) {
                 case KeyEvent.KEYCODE_A:
                     if (mState == State.WORKSPACE) {
-                        showAppsView(true, true);
+                        showAppsView(true);
                         return true;
                     }
                     break;

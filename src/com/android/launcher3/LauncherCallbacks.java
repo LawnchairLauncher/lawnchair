@@ -19,14 +19,10 @@ package com.android.launcher3;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.View;
-
-import com.android.launcher3.util.ComponentKeyMapper;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * LauncherCallbacks is an interface used to extend the Launcher activity. It includes many hooks
@@ -87,5 +83,4 @@ public interface LauncherCallbacks {
      */
     boolean shouldMoveToDefaultScreenOnHomeIntent();
     boolean hasSettings();
-    List<ComponentKeyMapper<AppInfo>> getPredictedApps();
 }

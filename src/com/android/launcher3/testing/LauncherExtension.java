@@ -7,13 +7,10 @@ import android.view.Menu;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherCallbacks;
-import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.ComponentKeyMapper;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class represents a very trivial LauncherExtension. It primarily serves as a simple
@@ -147,12 +144,6 @@ public class LauncherExtension extends Launcher {
         @Override
         public boolean hasSettings() {
             return false;
-        }
-
-        @Override
-        public List<ComponentKeyMapper<AppInfo>> getPredictedApps() {
-            // To debug app predictions, enable AlphabeticalAppsList#DEBUG_PREDICTIONS
-            return new ArrayList<>();
         }
 
         @Override
