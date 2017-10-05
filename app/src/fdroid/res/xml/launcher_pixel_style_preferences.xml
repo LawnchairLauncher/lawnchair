@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:key="prefCat_homeScreen"
+        android:title="@string/pref_cat_homescreen">
+        <SwitchPreference
+            android:key="pref_showPixelBar"
+            android:title="@string/show_pixel_bar_pref_title"
+            android:defaultValue="true"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_fullWidthSearchbar"
+            android:defaultValue="false"
+            android:title="@string/use_wide_searchbar_pref_title"
+            android:dependency="pref_showPixelBar"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_showMic"
+            android:defaultValue="false"
+            android:title="@string/show_mic_pref_title"
+            android:dependency="pref_showPixelBar"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_pixelStyleIcons"
+            android:title="@string/pixel_style_icons_pref_title"
+            android:summary="@string/pixel_style_icons_pref_summary"
+            android:defaultValue="true"
+            android:persistent="true" />
+
+        <ListPreference
+            android:key="pref_override_icon_shape"
+            android:title="@string/icon_shape_override_label"
+            android:summary="%s"
+            android:entries="@array/icon_shape_override_paths_names"
+            android:entryValues="@array/icon_shape_override_paths_values"
+            android:persistent="false" />
+
+        <SwitchPreference
+            android:key="pref_animatedClockIcon"
+            android:title="@string/animated_clock_icon_title"
+            android:defaultValue="false"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_animatedClockIconAlternativeClockApps"
+            android:title="@string/animated_clock_icon_alternative_clock_apps_title"
+            android:summary="@string/animated_clock_icon_alternative_clock_apps_summary"
+            android:defaultValue="false"
+            android:dependency="pref_animatedClockIcon"
+            android:persistent="true" />
+
+        <ch.deletescape.lawnchair.preferences.GoogleNowPreference
+            android:key="pref_showGoogleNowTab"
+            android:persistent="true"
+            android:title="@string/show_google_now_tab_pref_title"
+            android:defaultValue="true" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory
+        android:key="prefCat_weather"
+        android:title="@string/pref_cat_weather">
+
+        <SwitchPreference
+            android:key="pref_weather"
+            android:title="@string/pref_weather_title" />
+
+        <ListPreference
+            android:key="pref_weather_units"
+            android:title="@string/pref_weather_units"
+            android:entryValues="@array/unitsValues"
+            android:defaultValue="metric"
+            android:summary="%s"
+            android:dependency="pref_weather"
+            android:entries="@array/unitsTexts" />
+
+
+        <ch.deletescape.lawnchair.preferences.CustomLocationPreference
+            android:dependency="pref_weather"
+            android:key="pref_weather_city"
+            android:defaultValue="Lucerne, CH"
+            android:title="@string/pref_weather_city_title"
+            android:summary="@string/pref_weather_city_summary" />
+
+        <ch.deletescape.lawnchair.preferences.ApiKeyPreference
+            android:dependency="pref_weather"
+            android:key="pref_weatherApiKey"
+            android:defaultValue="17a6438b1d63d5b05f7039e7cb52cde7"
+            android:title="@string/pref_weather_api_key_title" />
+
+        <ListPreference
+            android:key="pref_weatherProvider"
+            android:title="@string/pref_weather_provider"
+            android:entryValues="@array/weatherProviderValues"
+            android:defaultValue="0"
+            android:summary="%s"
+            android:dependency="pref_weather"
+            android:enabled="false"
+            android:entries="@array/weatherProviderTexts" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="prefCat_misc"
+        android:title="@string/pref_cat_miscellaneous">
+        <SwitchPreference
+            android:key="pref_useRoundSearchBar"
+            android:defaultValue="false"
+            android:title="@string/use_round_searhbar"
+            android:persistent="true" />
+    </PreferenceCategory>
+</PreferenceScreen>
