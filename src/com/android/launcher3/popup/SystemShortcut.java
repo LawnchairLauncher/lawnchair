@@ -92,7 +92,7 @@ public abstract class SystemShortcut extends ItemInfo {
                 public void onClick(View view) {
                     Rect sourceBounds = launcher.getViewBounds(view);
                     Bundle opts = launcher.getActivityLaunchOptions(view);
-                    InfoDropTarget.startDetailsActivityForInfo(itemInfo, launcher, null, sourceBounds, opts);
+                    InfoDropTarget.startDetailsActivityForInfo(itemInfo, launcher, sourceBounds, opts);
                     launcher.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
                             ControlType.APPINFO_TARGET, view);
                 }

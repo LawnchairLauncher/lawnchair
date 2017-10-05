@@ -215,7 +215,7 @@ public abstract class ButtonDropTarget extends TextView
      * On drop animate the dropView to the icon.
      */
     @Override
-    public void onDrop(final DragObject d) {
+    public void onDrop(final DragObject d, final DragOptions options) {
         final DragLayer dragLayer = mLauncher.getDragLayer();
         final Rect from = new Rect();
         dragLayer.getViewRectRelativeToSelf(d.dragView, from);

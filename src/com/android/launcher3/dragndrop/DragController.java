@@ -575,7 +575,7 @@ public class DragController implements DragDriver.EventListener, TouchController
                 if (flingAnimation != null) {
                     flingAnimation.run();
                 } else if (!mIsInPreDrag) {
-                    dropTarget.onDrop(mDragObject);
+                    dropTarget.onDrop(mDragObject, mOptions);
                 }
                 accepted = true;
             }

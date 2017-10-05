@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.graphics.Rect;
 
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
+import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 
 /**
@@ -106,7 +107,7 @@ public interface DropTarget {
     /**
      * Handle an object being dropped on the DropTarget
      */
-    void onDrop(DragObject dragObject);
+    void onDrop(DragObject dragObject, DragOptions options);
 
     void onDragEnter(DragObject dragObject);
 

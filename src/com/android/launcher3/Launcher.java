@@ -263,7 +263,8 @@ public class Launcher extends BaseActivity
     private boolean mOnResumeNeedsLoad;
 
     private final ArrayList<Runnable> mBindOnResumeCallbacks = new ArrayList<>();
-    private final ArrayList<Runnable> mOnResumeCallbacks = new ArrayList<>();
+    private OnResumeCallback mOnResumeCallback;
+
     private ViewOnDrawExecutor mPendingExecutor;
 
     private LauncherModel mModel;
@@ -287,11 +288,6 @@ public class Launcher extends BaseActivity
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
     private SharedPreferences mSharedPrefs;
-
-    // This is set to the view that launched the activity that navigated the user away from
-    // launcher. Since there is no callback for when the activity has finished launching, enable
-    // the press state and keep this reference to reset the press state when we return to launcher.
-    private BubbleTextView mWaitingForResume;
 
     // Exiting spring loaded mode happens with a delay. This runnable object triggers the
     // state transition. If another state transition happened during this delay,
@@ -887,19 +883,8 @@ public class Launcher extends BaseActivity
             }
             mBindOnResumeCallbacks.clear();
         }
-        if (mOnResumeCallbacks.size() > 0) {
-            for (int i = 0; i < mOnResumeCallbacks.size(); i++) {
-                mOnResumeCallbacks.get(i).run();
-            }
-            mOnResumeCallbacks.clear();
-        }
 
-        // Reset the pressed state of icons that were locked in the press state while activities
-        // were launching
-        if (mWaitingForResume != null) {
-            // Resets the previous workspace icon press state
-            mWaitingForResume.setStayPressed(false);
-        }
+        setOnResumeCallback(null);
 
         updateInteraction(Workspace.State.NORMAL, mWorkspace.getState());
 
@@ -2127,11 +2112,7 @@ public class Launcher extends BaseActivity
     private void startMarketIntentForPackage(View v, String packageName) {
         ItemInfo item = (ItemInfo) v.getTag();
         Intent intent = PackageManagerHelper.getMarketIntent(packageName);
-        boolean success = startActivitySafely(v, intent, item);
-        if (success && v instanceof BubbleTextView) {
-            mWaitingForResume = (BubbleTextView) v;
-            mWaitingForResume.setStayPressed(true);
-        }
+        startActivitySafely(v, intent, item);
     }
 
     /**
@@ -2201,13 +2182,8 @@ public class Launcher extends BaseActivity
         if (intent == null) {
             throw new IllegalArgumentException("Input must have a valid intent");
         }
-        boolean success = startActivitySafely(v, intent, item);
+        startActivitySafely(v, intent, item);
         getUserEventDispatcher().logAppLaunch(v, intent); // TODO for discovered apps b/35802115
-
-        if (success && v instanceof BubbleTextView) {
-            mWaitingForResume = (BubbleTextView) v;
-            mWaitingForResume.setStayPressed(true);
-        }
     }
 
     /**
@@ -2437,6 +2413,16 @@ public class Launcher extends BaseActivity
             } else {
                 LauncherAppsCompat.getInstance(this).startActivityForProfile(
                         intent.getComponent(), user, intent.getSourceBounds(), optsBundle);
+            }
+
+            if (v instanceof BubbleTextView) {
+                // This is set to the view that launched the activity that navigated the user away
+                // from launcher. Since there is no callback for when the activity has finished
+                // launching, enable the press state and keep this reference to reset the press
+                // state when we return to launcher.
+                BubbleTextView btv = (BubbleTextView) v;
+                btv.setStayPressed(true);
+                setOnResumeCallback(btv);
             }
             return true;
         } catch (ActivityNotFoundException|SecurityException e) {
@@ -2831,8 +2817,11 @@ public class Launcher extends BaseActivity
         }
     }
 
-    public void addOnResumeCallback(Runnable run) {
-        mOnResumeCallbacks.add(run);
+    public void setOnResumeCallback(OnResumeCallback callback) {
+        if (mOnResumeCallback != null) {
+            mOnResumeCallback.onLauncherResume();
+        }
+        mOnResumeCallback = callback;
     }
 
     /**
@@ -3709,5 +3698,13 @@ public class Launcher extends BaseActivity
                 recreate();
             }
         }
+    }
+
+    /**
+     * Callback for listening for onResume
+     */
+    public interface OnResumeCallback {
+
+        void onLauncherResume();
     }
 }
