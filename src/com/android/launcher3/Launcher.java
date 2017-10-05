@@ -917,7 +917,6 @@ public class Launcher extends BaseActivity
         }
 
         updateInteraction(Workspace.State.NORMAL, mWorkspace.getState());
-        mWorkspace.onResume();
 
         // Process any items that were added while Launcher was away.
         InstallShortcutReceiver.disableAndFlushInstallQueue(

@@ -1454,10 +1454,6 @@ public class Workspace extends PagedView
         mWallpaperOffset.setWindowToken(null);
     }
 
-    protected void onResume() {
-        mWallpaperOffset.onResume();
-    }
-
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         if (mUnlockWallpaperFromDefaultPageOnLayout) {
