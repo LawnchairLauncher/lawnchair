@@ -115,13 +115,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     }
 
     /**
-     * Sets the current set of predicted apps.
-     */
-    public void setPredictedApps(List<ComponentKeyMapper<AppInfo>> apps) {
-        mApps.setPredictedApps(apps);
-    }
-
-    /**
      * Sets the current set of apps.
      */
     public void setApps(List<AppInfo> apps) {

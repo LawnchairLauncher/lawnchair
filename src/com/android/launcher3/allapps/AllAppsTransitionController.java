@@ -216,7 +216,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
                             Action.Direction.UP,
                             containerType);
                 }
-                mLauncher.showAppsView(true /* animated */, false /* updatePredictedApps */);
+                mLauncher.showAppsView(true /* animated */);
                 if (hasSpringAnimationHandler()) {
                     mSpringAnimationHandler.add(mSearchSpring, true /* setDefaultValues */);
                     // The icons are moving upwards, so we go to 0 from 1. (y-axis 1 is below 0.)
@@ -239,7 +239,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
                             Action.Direction.UP,
                             containerType);
                 }
-                mLauncher.showAppsView(true, /* animated */ false /* updatePredictedApps */);
+                mLauncher.showAppsView(true /* animated */);
             }
         }
     }
@@ -256,10 +256,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
             // Initialize values that should not change until #onDragEnd
             mStatusBarHeight = mLauncher.getDragLayer().getInsets().top;
             mHotseat.setVisibility(View.VISIBLE);
-            if (!mLauncher.isAllAppsVisible()) {
-                mLauncher.tryAndUpdatePredictedApps();
-                mAppsView.setVisibility(View.VISIBLE);
-            }
+            mAppsView.setVisibility(View.VISIBLE);
         }
     }
 
