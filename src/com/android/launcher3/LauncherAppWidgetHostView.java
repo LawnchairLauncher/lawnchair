@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Handler;
@@ -58,10 +59,14 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
 
     private final CheckLongPressHelper mLongPressHelper;
     private final StylusEventHelper mStylusEventHelper;
-    private final Context mContext;
+    private final Launcher mLauncher;
+
+    private static final int DONT_REINFLATE = 0;
+    private static final int REINFLATE_ON_RESUME = 1;
+    private static final int REINFLATE_ON_CONFIG_CHANGE = 2;
 
     @ViewDebug.ExportedProperty(category = "launcher")
-    private int mPreviousOrientation;
+    private int mReinflateStatus;
 
     private float mSlop;
 
@@ -85,11 +90,11 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
-        mContext = context;
+        mLauncher = Launcher.getLauncher(context);
         mLongPressHelper = new CheckLongPressHelper(this, this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
         mInflater = LayoutInflater.from(context);
-        setAccessibilityDelegate(Launcher.getLauncher(context).getAccessibilityDelegate());
+        setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
         setBackgroundResource(R.drawable.widget_internal_focus_bg);
 
         if (Utilities.ATLEAST_OREO) {
@@ -112,18 +117,28 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         return mInflater.inflate(R.layout.appwidget_error, this, false);
     }
 
-    public void updateLastInflationOrientation() {
-        mPreviousOrientation = mContext.getResources().getConfiguration().orientation;
-    }
-
     @Override
     public void updateAppWidget(RemoteViews remoteViews) {
-        // Store the orientation in which the widget was inflated
-        updateLastInflationOrientation();
         super.updateAppWidget(remoteViews);
 
         // The provider info or the views might have changed.
         checkIfAutoAdvance();
+
+        // It is possible that widgets can receive updates while launcher is not in the foreground.
+        // Consequently, the widgets will be inflated for the orientation of the foreground activity
+        // (framework issue). On resuming, we ensure that any widgets are inflated for the current
+        // orientation.
+        if (mReinflateStatus == DONT_REINFLATE && !isSameOrientation()) {
+            mReinflateStatus = REINFLATE_ON_RESUME;
+            if (!mLauncher.waitUntilResume(new ReInflateRunnable())) {
+                mReinflateStatus = REINFLATE_ON_CONFIG_CHANGE;
+            }
+        }
+    }
+
+    private boolean isSameOrientation() {
+        return mLauncher.getResources().getConfiguration().orientation ==
+                mLauncher.getOrientation();
     }
 
     private boolean checkScrollableRecursively(ViewGroup viewGroup) {
@@ -140,14 +155,6 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
             }
         }
         return false;
-    }
-
-    public boolean isReinflateRequired(int orientation) {
-        // Re-inflate is required if the orientation has changed since last inflated.
-        if (mPreviousOrientation != orientation) {
-           return true;
-       }
-       return false;
     }
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -472,5 +479,46 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
 
     public PointF getTranslationForCentering() {
         return mTranslationForCentering;
+    }
+
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if (mReinflateStatus == REINFLATE_ON_CONFIG_CHANGE) {
+            // We are finally in the same orientation
+            reinflateIfNecessary();
+        }
+    }
+
+    private void reinflateIfNecessary() {
+        if (!isSameOrientation()) {
+            // We cannot reinflate yet, wait until next config change
+            mReinflateStatus = REINFLATE_ON_CONFIG_CHANGE;
+            return;
+        }
+
+        mReinflateStatus = DONT_REINFLATE;
+        if (isAttachedToWindow()) {
+            LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
+            reinflate();
+        }
+    }
+
+    public void reinflate() {
+        LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
+        // Remove and rebind the current widget (which was inflated in the wrong
+        // orientation), but don't delete it from the database
+        mLauncher.removeItem(this, info, false  /* deleteFromDb */);
+        mLauncher.bindAppWidget(info);
+    }
+
+    private class ReInflateRunnable implements Runnable {
+        @Override
+        public void run() {
+            if (mReinflateStatus == REINFLATE_ON_RESUME) {
+                reinflateIfNecessary();
+            }
+        }
     }
 }
