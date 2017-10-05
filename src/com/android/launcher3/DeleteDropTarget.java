@@ -46,7 +46,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
     @Override
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
         super.onDragStart(dragObject, options);
-        setTextBasedOnDragSource(dragObject.dragSource);
+        setTextBasedOnDragSource(dragObject.dragInfo);
     }
 
     /** @return true for items that should have a "Remove" action in accessibility. */
@@ -57,16 +57,16 @@ public class DeleteDropTarget extends ButtonDropTarget {
     }
 
     @Override
-    protected boolean supportsDrop(DragSource source, ItemInfo info) {
+    protected boolean supportsDrop(ItemInfo info) {
         return true;
     }
 
     /**
-     * Set the drop target's text to either "Remove" or "Cancel" depending on the drag source.
+     * Set the drop target's text to either "Remove" or "Cancel" depending on the drag item.
      */
-    public void setTextBasedOnDragSource(DragSource dragSource) {
+    private void setTextBasedOnDragSource(ItemInfo item) {
         if (!TextUtils.isEmpty(mText)) {
-            mText = getResources().getString(dragSource.supportsDeleteDropTarget()
+            mText = getResources().getString(item.id != ItemInfo.NO_ID
                     ? R.string.remove_drop_target_label
                     : android.R.string.cancel);
             requestLayout();

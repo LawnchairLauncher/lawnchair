@@ -1823,7 +1823,7 @@ public class Workspace extends PagedView
 
         DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source,
                 dragObject, dragVisualizeOffset, dragRect, scale, dragOptions);
-        dv.setIntrinsicIconScaleFactor(source.getIntrinsicIconScaleFactor());
+        dv.setIntrinsicIconScaleFactor(dragOptions.intrinsicIconScaleFactor);
         return dv;
     }
 
@@ -1835,6 +1835,7 @@ public class Workspace extends PagedView
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean acceptDrop(DragObject d) {
         // If it's an external drop (e.g. from All Apps), check if it should be accepted
         CellLayout dropTargetLayout = mDropToLayout;
@@ -3181,21 +3182,6 @@ public class Workspace extends PagedView
         if (mDeferredAction != null) {
             mDeferredAction.run();
         }
-    }
-
-    @Override
-    public float getIntrinsicIconScaleFactor() {
-        return 1f;
-    }
-
-    @Override
-    public boolean supportsAppInfoDropTarget() {
-        return true;
-    }
-
-    @Override
-    public boolean supportsDeleteDropTarget() {
-        return true;
     }
 
     public boolean isDropEnabled() {

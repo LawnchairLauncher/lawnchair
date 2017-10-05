@@ -283,24 +283,12 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 dragController.removeDragListener(this);
             }
         });
-        mLauncher.getWorkspace().beginDragShared(v, this, new DragOptions());
-        return false;
-    }
 
-    @Override
-    public boolean supportsAppInfoDropTarget() {
-        return true;
-    }
-
-    @Override
-    public boolean supportsDeleteDropTarget() {
-        return false;
-    }
-
-    @Override
-    public float getIntrinsicIconScaleFactor() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        return (float) grid.allAppsIconSizePx / grid.iconSizePx;
+        DragOptions options = new DragOptions();
+        options.intrinsicIconScaleFactor = (float) grid.allAppsIconSizePx / grid.iconSizePx;
+        mLauncher.getWorkspace().beginDragShared(v, this, options);
+        return false;
     }
 
     @Override

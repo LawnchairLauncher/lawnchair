@@ -159,21 +159,6 @@ public abstract class BaseItemDragListener implements
     }
 
     @Override
-    public boolean supportsAppInfoDropTarget() {
-        return false;
-    }
-
-    @Override
-    public boolean supportsDeleteDropTarget() {
-        return false;
-    }
-
-    @Override
-    public float getIntrinsicIconScaleFactor() {
-        return 1f;
-    }
-
-    @Override
     public void onDropCompleted(View target, DropTarget.DragObject d, boolean isFlingToDelete,
             boolean success) {
         if (isFlingToDelete || !success || (target != mLauncher.getWorkspace() &&

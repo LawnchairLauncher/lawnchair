@@ -706,6 +706,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         mContent.setCurrentPage(0);
     }
 
+    @Override
     public boolean acceptDrop(DragObject d) {
         final ItemInfo item = d.dragInfo;
         final int itemType = item.itemType;
@@ -936,21 +937,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         if (mDeferredAction != null) {
             mDeferredAction.run();
         }
-    }
-
-    @Override
-    public float getIntrinsicIconScaleFactor() {
-        return 1f;
-    }
-
-    @Override
-    public boolean supportsAppInfoDropTarget() {
-        return true;
-    }
-
-    @Override
-    public boolean supportsDeleteDropTarget() {
-        return true;
     }
 
     private void updateItemLocationsInDatabaseBatch() {

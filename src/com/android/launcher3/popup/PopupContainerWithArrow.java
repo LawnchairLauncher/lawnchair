@@ -793,21 +793,6 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     }
 
     @Override
-    public boolean supportsAppInfoDropTarget() {
-        return true;
-    }
-
-    @Override
-    public boolean supportsDeleteDropTarget() {
-        return false;
-    }
-
-    @Override
-    public float getIntrinsicIconScaleFactor() {
-        return 1f;
-    }
-
-    @Override
     public void onDropCompleted(View target, DropTarget.DragObject d, boolean isFlingToDelete,
             boolean success) {
         if (!success) {
