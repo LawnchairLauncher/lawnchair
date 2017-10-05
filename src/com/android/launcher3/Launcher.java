@@ -119,7 +119,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -203,7 +202,7 @@ public class Launcher extends BaseActivity
     static final String APPS_VIEW_SHOWN = "launcher.apps_view_shown";
 
     /** The different states that Launcher can be in. */
-    enum State { NONE, WORKSPACE, WORKSPACE_SPRING_LOADED, APPS, APPS_SPRING_LOADED,
+    enum State { WORKSPACE, WORKSPACE_SPRING_LOADED, APPS, APPS_SPRING_LOADED,
         WIDGETS, WIDGETS_SPRING_LOADED }
 
     @Thunk State mState = State.WORKSPACE;
@@ -249,11 +248,6 @@ public class Launcher extends BaseActivity
     // We need to store the orientation Launcher was created with, due to a bug (b/64916689)
     // that results in widgets being inflated in the wrong orientation.
     private int mOrientation;
-
-    // We set the state in both onCreate and then onNewIntent in some cases, which causes both
-    // scroll issues (because the workspace may not have been measured yet) and extra work.
-    // Instead, just save the state that we need to restore Launcher to, and commit it in onResume.
-    private State mOnResumeState = State.NONE;
 
     private SpannableStringBuilder mDefaultKeySsb = null;
 
@@ -862,17 +856,6 @@ public class Launcher extends BaseActivity
         TraceHelper.partitionSection("ON_RESUME", "superCall");
 
         getUserEventDispatcher().resetElapsedSessionMillis();
-
-        // Restore the previous launcher state
-        if (mOnResumeState == State.WORKSPACE) {
-            showWorkspace(false);
-        } else if (mOnResumeState == State.APPS) {
-            showAppsView(false /* animated */);
-        } else if (mOnResumeState == State.WIDGETS) {
-            showWidgetsView(false, false);
-        }
-        mOnResumeState = State.NONE;
-
         mPaused = false;
         if (mOnResumeNeedsLoad) {
             setWorkspaceLoading(true);
@@ -1086,8 +1069,10 @@ public class Launcher extends BaseActivity
         State[] stateValues = State.values();
         State state = (stateOrdinal >= 0 && stateOrdinal < stateValues.length)
                 ? stateValues[stateOrdinal] : State.WORKSPACE;
-        if (state == State.APPS || state == State.WIDGETS) {
-            mOnResumeState = state;
+        if (state == State.APPS) {
+            showAppsView(false /* animated */);
+        } else if (state == State.WIDGETS) {
+            showWidgetsView(false, false);
         }
 
         PendingRequestArgs requestArgs = savedState.getParcelable(RUNTIME_STATE_PENDING_REQUEST_ARGS);
@@ -1499,15 +1484,7 @@ public class Launcher extends BaseActivity
 
             // In all these cases, only animate if we're already on home
             AbstractFloatingView.closeAllOpenViews(this, alreadyOnHome);
-            exitSpringLoadedDragMode();
-
-            // If we are already on home, then just animate back to the workspace,
-            // otherwise, just wait until onResume to set the state back to Workspace
-            if (alreadyOnHome) {
-                showWorkspace(true);
-            } else {
-                mOnResumeState = State.WORKSPACE;
-            }
+            showWorkspace(alreadyOnHome /* animated */);
 
             final View v = getWindow().peekDecorView();
             if (v != null && v.getWindowToken() != null) {
@@ -2551,11 +2528,11 @@ public class Launcher extends BaseActivity
     }
 
     public boolean isAppsViewVisible() {
-        return (mState == State.APPS) || (mOnResumeState == State.APPS);
+        return mState == State.APPS;
     }
 
     public boolean isWidgetsViewVisible() {
-        return (mState == State.WIDGETS) || (mOnResumeState == State.WIDGETS);
+        return mState == State.WIDGETS;
     }
 
     @Override
