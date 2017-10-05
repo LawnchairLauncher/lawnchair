@@ -886,7 +886,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             mItemsInvalidated = true;
 
             try (SuppressInfoChanges s = new SuppressInfoChanges()) {
-                mFolderIcon.onDrop(d);
+                mFolderIcon.onDrop(d, true /* itemReturnedOnFailedDrop */);
             }
         }
 

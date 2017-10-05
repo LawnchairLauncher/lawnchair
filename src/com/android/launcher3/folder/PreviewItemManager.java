@@ -110,7 +110,7 @@ public class PreviewItemManager {
             mIcon.mPreviewLayoutRule.init(mIcon.mBackground.previewSize, mIntrinsicIconSize,
                     Utilities.isRtl(mIcon.getResources()));
 
-            updateItemDrawingParams(false);
+            updatePreviewItems(false);
         }
     }
 
@@ -185,6 +185,11 @@ public class PreviewItemManager {
     }
 
     public void hidePreviewItem(int index, boolean hidden) {
+        // If there are more params than visible in the preview, they are used for enter/exit
+        // animation purposes and they were added to the front of the list.
+        // To index the params properly, we need to skip these params.
+        index = index + Math.max(mFirstPageParams.size() - MAX_NUM_ITEMS_IN_PREVIEW, 0);
+
         PreviewItemDrawingParams params = index < mFirstPageParams.size() ?
                 mFirstPageParams.get(index) : null;
         if (params != null) {
@@ -266,7 +271,7 @@ public class PreviewItemManager {
         }
     }
 
-    void updateItemDrawingParams(boolean animate) {
+    void updatePreviewItems(boolean animate) {
         buildParamsForPage(0, mFirstPageParams, animate);
     }
 
@@ -310,8 +315,8 @@ public class PreviewItemManager {
             int prevIndex = newParams.indexOf(moveIn.get(i));
             PreviewItemDrawingParams p = params.get(prevIndex);
             computePreviewItemDrawingParams(prevIndex, numItems, p);
-            updateTransitionParam(p, moveIn.get(i), ENTER_INDEX,
-                    newParams.indexOf(moveIn.get(i)));
+            updateTransitionParam(p, moveIn.get(i), ENTER_INDEX, newParams.indexOf(moveIn.get(i)),
+                    numItems);
         }
 
         // Items that are moving into new positions within the preview.
@@ -319,7 +324,7 @@ public class PreviewItemManager {
             int oldIndex = oldParams.indexOf(newParams.get(newIndex));
             if (oldIndex >= 0 && newIndex != oldIndex) {
                 PreviewItemDrawingParams p = params.get(newIndex);
-                updateTransitionParam(p, newParams.get(newIndex), oldIndex, newIndex);
+                updateTransitionParam(p, newParams.get(newIndex), oldIndex, newIndex, numItems);
             }
         }
 
@@ -330,7 +335,7 @@ public class PreviewItemManager {
             BubbleTextView item = moveOut.get(i);
             int oldIndex = oldParams.indexOf(item);
             PreviewItemDrawingParams p = computePreviewItemDrawingParams(oldIndex, numItems, null);
-            updateTransitionParam(p, item, oldIndex, EXIT_INDEX);
+            updateTransitionParam(p, item, oldIndex, EXIT_INDEX, numItems);
             params.add(0, p); // We want these items first so that they are on drawn last.
         }
 
@@ -342,7 +347,7 @@ public class PreviewItemManager {
     }
 
     private void updateTransitionParam(final PreviewItemDrawingParams p, BubbleTextView btv,
-            int prevIndex, int newIndex) {
+            int prevIndex, int newIndex, int numItems) {
         p.drawable = btv.getCompoundDrawables()[1];
         if (!mIcon.mFolder.isOpen()) {
             // Set the callback to FolderIcon as it is responsible to drawing the icon. The
@@ -350,9 +355,8 @@ public class PreviewItemManager {
             p.drawable.setCallback(mIcon);
         }
 
-        FolderPreviewItemAnim anim = new FolderPreviewItemAnim(this, p, prevIndex,
-                MAX_NUM_ITEMS_IN_PREVIEW, newIndex, MAX_NUM_ITEMS_IN_PREVIEW,
-                DROP_IN_ANIMATION_DURATION, null);
+        FolderPreviewItemAnim anim = new FolderPreviewItemAnim(this, p, prevIndex, numItems,
+                newIndex, numItems, DROP_IN_ANIMATION_DURATION, null);
         if (p.anim != null && !p.anim.hasEqualFinalState(anim)) {
             p.anim.cancel();
         }
