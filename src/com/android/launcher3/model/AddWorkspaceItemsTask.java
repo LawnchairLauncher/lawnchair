@@ -38,7 +38,6 @@ import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.ManagedProfileHeuristic.UserFolderInfo;
-import com.android.launcher3.util.Provider;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,19 +46,18 @@ import java.util.List;
  */
 public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
 
-    private final Provider<List<Pair<ItemInfo, Object>>> mAppsProvider;
+    private final List<Pair<ItemInfo, Object>> mItemList;
 
     /**
-     * @param appsProvider items to add on the workspace
+     * @param itemList items to add on the workspace
      */
-    public AddWorkspaceItemsTask(Provider<List<Pair<ItemInfo, Object>>> appsProvider) {
-        mAppsProvider = appsProvider;
+    public AddWorkspaceItemsTask(List<Pair<ItemInfo, Object>> itemList) {
+        mItemList = itemList;
     }
 
     @Override
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
-        List<Pair<ItemInfo, Object>> workspaceApps = mAppsProvider.get();
-        if (workspaceApps.isEmpty()) {
+        if (mItemList.isEmpty()) {
             return;
         }
         Context context = app.getContext();
@@ -75,7 +73,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
         synchronized(dataModel) {
 
             List<ItemInfo> filteredItems = new ArrayList<>();
-            for (Pair<ItemInfo, Object> entry : workspaceApps) {
+            for (Pair<ItemInfo, Object> entry : mItemList) {
                 ItemInfo item = entry.first;
                 if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                         item.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {

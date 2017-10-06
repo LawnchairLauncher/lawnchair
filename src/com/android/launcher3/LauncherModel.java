@@ -192,9 +192,8 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Adds the provided items to the workspace.
      */
-    public void addAndBindAddedWorkspaceItems(
-            Provider<List<Pair<ItemInfo, Object>>> appsProvider) {
-        enqueueModelUpdateTask(new AddWorkspaceItemsTask(appsProvider));
+    public void addAndBindAddedWorkspaceItems(List<Pair<ItemInfo, Object>> itemList) {
+        enqueueModelUpdateTask(new AddWorkspaceItemsTask(itemList));
     }
 
     public ModelWriter getWriter(boolean hasVerticalHotseat) {

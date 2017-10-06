@@ -55,7 +55,7 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
         for (ItemInfo item : items) {
             list.add(Pair.create(item, null));
         }
-        return new AddWorkspaceItemsTask(Provider.of(list)) {
+        return new AddWorkspaceItemsTask(list) {
 
             @Override
             protected void updateScreens(Context context, ArrayList<Long> workspaceScreens) { }
