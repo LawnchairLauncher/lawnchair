@@ -12,9 +12,13 @@ import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
+import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
 import java.net.URISyntaxException;
 
@@ -91,98 +95,110 @@ public class UninstallDropTarget extends ButtonDropTarget {
     }
 
     @Override
-    public void onDrop(DragObject d) {
-        // Differ item deletion
-        if (d.dragSource instanceof DropTargetSource) {
-            ((DropTargetSource) d.dragSource).deferCompleteDropAfterUninstallActivity();
+    public void onDrop(DragObject d, DragOptions options) {
+        // Defer onComplete
+        if (options.deferCompleteForUninstall) {
+            d.dragSource = new DeferredOnComplete(d.dragSource, getContext());
         }
-        super.onDrop(d);
+        super.onDrop(d, options);
     }
 
     @Override
     public void completeDrop(final DragObject d) {
-        DropTargetResultCallback callback = d.dragSource instanceof DropTargetResultCallback
-                ? (DropTargetResultCallback) d.dragSource : null;
-        startUninstallActivity(mLauncher, d.dragInfo, callback);
+        ComponentName target = performDropAction(d);
+        if (d.dragSource instanceof DeferredOnComplete) {
+            DeferredOnComplete deferred = (DeferredOnComplete) d.dragSource;
+            if (target != null) {
+                deferred.mPackageName = target.getPackageName();
+                mLauncher.setOnResumeCallback(deferred);
+            } else {
+                deferred.sendFailure();
+            }
+        }
     }
 
-    public static boolean startUninstallActivity(Launcher launcher, ItemInfo info) {
-        return startUninstallActivity(launcher, info, null);
+    /**
+     * Performs the drop action and returns the target component for the dragObject or null if
+     * the action was not performed.
+     */
+    protected ComponentName performDropAction(DragObject d) {
+        return performDropAction(mLauncher, d.dragInfo);
     }
 
-    public static boolean startUninstallActivity(
-            final Launcher launcher, ItemInfo info, DropTargetResultCallback callback) {
-        final ComponentName cn = getUninstallTarget(launcher, info);
-
-        boolean canUninstall;
+    /**
+     * Performs the drop action and returns the target component for the dragObject or null if
+     * the action was not performed.
+     */
+    private static ComponentName performDropAction(Context context, ItemInfo info) {
+        ComponentName cn = getUninstallTarget(context, info);
         if (cn == null) {
             // System applications cannot be installed. For now, show a toast explaining that.
             // We may give them the option of disabling apps this way.
-            Toast.makeText(launcher, R.string.uninstall_system_app_text, Toast.LENGTH_SHORT).show();
-            canUninstall = false;
-        } else {
-            try {
-                Intent i = Intent.parseUri(launcher.getString(R.string.delete_package_intent), 0)
-                        .setData(Uri.fromParts("package", cn.getPackageName(), cn.getClassName()))
-                        .putExtra(Intent.EXTRA_USER, info.user);
-                launcher.startActivity(i);
-                canUninstall = true;
-            } catch (URISyntaxException e) {
-                Log.e(TAG, "Failed to parse intent to start uninstall activity for item=" + info);
-                canUninstall = false;
+            Toast.makeText(context, R.string.uninstall_system_app_text, Toast.LENGTH_SHORT).show();
+            return null;
+        }
+        try {
+            Intent i = Intent.parseUri(context.getString(R.string.delete_package_intent), 0)
+                    .setData(Uri.fromParts("package", cn.getPackageName(), cn.getClassName()))
+                    .putExtra(Intent.EXTRA_USER, info.user);
+            context.startActivity(i);
+            return cn;
+        } catch (URISyntaxException e) {
+            Log.e(TAG, "Failed to parse intent to start uninstall activity for item=" + info);
+            return null;
+        }
+    }
+
+    public static boolean startUninstallActivity(Launcher launcher, ItemInfo info) {
+        return performDropAction(launcher, info) != null;
+    }
+
+    /**
+     * A wrapper around {@link DragSource} which delays the {@link #onDropCompleted} action until
+     * {@link #onLauncherResume}
+     */
+    private class DeferredOnComplete implements DragSource, OnResumeCallback {
+
+        private final DragSource mOriginal;
+        private final Context mContext;
+
+        private String mPackageName;
+        private DragObject mDragObject;
+
+        public DeferredOnComplete(DragSource original, Context context) {
+            mOriginal = original;
+            mContext = context;
+        }
+
+        @Override
+        public void onDropCompleted(View target, DragObject d, boolean isFlingToDelete,
+                boolean success) {
+            mDragObject = d;
+        }
+
+        @Override
+        public void fillInLogContainerData(View v, ItemInfo info, Target target,
+                Target targetParent) {
+            mOriginal.fillInLogContainerData(v, info, target, targetParent);
+        }
+
+        @Override
+        public void onLauncherResume() {
+            // We use MATCH_UNINSTALLED_PACKAGES as the app can be on SD card as well.
+            if (LauncherAppsCompat.getInstance(mContext)
+                    .getApplicationInfo(mPackageName, PackageManager.MATCH_UNINSTALLED_PACKAGES,
+                            mDragObject.dragInfo.user) == null) {
+                mDragObject.dragSource = mOriginal;
+                mOriginal.onDropCompleted(UninstallDropTarget.this, mDragObject, false, true);
+            } else {
+                sendFailure();
             }
         }
-        if (callback != null) {
-            sendUninstallResult(launcher, canUninstall, cn, info.user, callback);
+
+        public void sendFailure() {
+            mDragObject.dragSource = mOriginal;
+            mDragObject.cancelled = true;
+            mOriginal.onDropCompleted(UninstallDropTarget.this, mDragObject, false, false);
         }
-        return canUninstall;
-    }
-
-    /**
-     * Notifies the {@param callback} whether the uninstall was successful or not.
-     *
-     * Since there is no direct callback for an uninstall request, we check the package existence
-     * when the launch resumes next time. This assumes that the uninstall activity will finish only
-     * after the task is completed
-     */
-    protected static void sendUninstallResult(
-            final Launcher launcher, boolean activityStarted,
-            final ComponentName cn, final UserHandle user,
-            final DropTargetResultCallback callback) {
-        if (activityStarted)  {
-            final Runnable checkIfUninstallWasSuccess = new Runnable() {
-                @Override
-                public void run() {
-                    // We use MATCH_UNINSTALLED_PACKAGES as the app can be on SD card as well.
-                    boolean uninstallSuccessful = LauncherAppsCompat.getInstance(launcher)
-                            .getApplicationInfo(cn.getPackageName(),
-                                    PackageManager.MATCH_UNINSTALLED_PACKAGES, user) == null;
-                    callback.onDragObjectRemoved(uninstallSuccessful);
-                }
-            };
-            launcher.addOnResumeCallback(checkIfUninstallWasSuccess);
-        } else {
-            callback.onDragObjectRemoved(false);
-        }
-    }
-
-    public interface DropTargetResultCallback {
-        /**
-         * A drag operation was complete.
-         * @param isRemoved true if the drag object should be removed, false otherwise.
-         */
-        void onDragObjectRemoved(boolean isRemoved);
-    }
-
-    /**
-     * Interface defining an object that can provide uninstallable drag objects.
-     */
-    public interface DropTargetSource extends DropTargetResultCallback {
-
-        /**
-         * Indicates that an uninstall request are made and the actual result may come
-         * after some time.
-         */
-        void deferCompleteDropAfterUninstallActivity();
     }
 }

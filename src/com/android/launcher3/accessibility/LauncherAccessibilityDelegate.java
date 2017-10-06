@@ -152,7 +152,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             DeleteDropTarget.removeWorkspaceOrFolderItem(mLauncher, item, host);
             return true;
         } else if (action == INFO) {
-            InfoDropTarget.startDetailsActivityForInfo(item, mLauncher, null);
+            InfoDropTarget.startDetailsActivityForInfo(item, mLauncher, null, null);
             return true;
         } else if (action == UNINSTALL) {
             return UninstallDropTarget.startUninstallActivity(mLauncher, item);

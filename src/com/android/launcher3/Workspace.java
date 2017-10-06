@@ -55,7 +55,6 @@ import android.widget.Toast;
 
 import com.android.launcher3.Launcher.LauncherOverlay;
 import com.android.launcher3.LauncherAppWidgetHost.ProviderChangedListener;
-import com.android.launcher3.UninstallDropTarget.DropTargetSource;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.OverviewAccessibilityDelegate;
 import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
@@ -99,7 +98,7 @@ import java.util.Set;
 public class Workspace extends PagedView
         implements DropTarget, DragSource, View.OnTouchListener,
         DragController.DragListener, ViewGroup.OnHierarchyChangeListener,
-        Insettable, DropTargetSource {
+        Insettable {
     private static final String TAG = "Launcher.Workspace";
 
     /** The value that {@link #mTransitionProgress} must be greater than for
@@ -279,10 +278,6 @@ public class Workspace extends PagedView
 
     private float mCurrentScale;
     private float mTransitionProgress;
-
-    @Thunk Runnable mDeferredAction;
-    private boolean mDeferDropAfterUninstall;
-    private boolean mUninstallSuccessful;
 
     // State related to Launcher Overlay
     LauncherOverlay mLauncherOverlay;
@@ -466,7 +461,6 @@ public class Workspace extends PagedView
                 InstallShortcutReceiver.FLAG_DRAG_AND_DROP, getContext());
 
         mOutlineProvider = null;
-        mDragInfo = null;
         mDragSourceInternal = null;
         mLauncher.onInteractionEnd();
     }
@@ -1752,6 +1746,7 @@ public class Workspace extends PagedView
                 }
             });
         }
+        options.deferCompleteForUninstall = true;
 
         beginDragShared(child, this, options);
     }
@@ -2050,7 +2045,7 @@ public class Workspace extends PagedView
     @Override
     public void prepareAccessibilityDrop() { }
 
-    public void onDrop(final DragObject d) {
+    public void onDrop(final DragObject d, DragOptions options) {
         mDragViewVisualCenter = d.getVisualCenter(mDragViewVisualCenter);
         CellLayout dropTargetLayout = mDropToLayout;
 
@@ -3093,21 +3088,8 @@ public class Workspace extends PagedView
      */
     public void onDropCompleted(final View target, final DragObject d,
             final boolean isFlingToDelete, final boolean success) {
-        if (mDeferDropAfterUninstall) {
-            final CellLayout.CellInfo dragInfo = mDragInfo;
-            mDeferredAction = new Runnable() {
-                public void run() {
-                    mDragInfo = dragInfo; // Restore the drag info that was cleared in onDragEnd()
-                    onDropCompleted(target, d, isFlingToDelete, success);
-                    mDeferredAction = null;
-                }
-            };
-            return;
-        }
 
-        boolean beingCalledAfterUninstall = mDeferredAction != null;
-
-        if (success && !(beingCalledAfterUninstall && !mUninstallSuccessful)) {
+        if (success) {
             if (target != this && mDragInfo != null) {
                 removeWorkspaceItem(mDragInfo.cell);
             }
@@ -3121,8 +3103,7 @@ public class Workspace extends PagedView
                         + "Workspace#onDropCompleted. Please file a bug. ");
             }
         }
-        if ((d.cancelled || (beingCalledAfterUninstall && !mUninstallSuccessful))
-                && mDragInfo != null && mDragInfo.cell != null) {
+        if (d.cancelled && mDragInfo != null && mDragInfo.cell != null) {
             mDragInfo.cell.setVisibility(VISIBLE);
         }
         mDragInfo = null;
@@ -3167,21 +3148,6 @@ public class Workspace extends PagedView
                 return false;
             }
         });
-    }
-
-    @Override
-    public void deferCompleteDropAfterUninstallActivity() {
-        mDeferDropAfterUninstall = true;
-    }
-
-    /// maybe move this into a smaller part
-    @Override
-    public void onDragObjectRemoved(boolean success) {
-        mDeferDropAfterUninstall = false;
-        mUninstallSuccessful = success;
-        if (mDeferredAction != null) {
-            mDeferredAction.run();
-        }
     }
 
     public boolean isDropEnabled() {

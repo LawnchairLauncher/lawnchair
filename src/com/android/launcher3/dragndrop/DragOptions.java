@@ -38,6 +38,12 @@ public class DragOptions {
     public float intrinsicIconScaleFactor = 1f;
 
     /**
+     * Whether or not to defer {@link com.android.launcher3.DragSource#onDropCompleted} until
+     * uninstall result is available when dropped on uninstall drop target.
+     */
+    public boolean deferCompleteForUninstall = false;
+
+    /**
      * Specifies a condition that must be met before DragListener#onDragStart() is called.
      * By default, there is no condition and onDragStart() is called immediately following
      * DragController#startDrag().

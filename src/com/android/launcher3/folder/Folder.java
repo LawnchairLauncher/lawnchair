@@ -58,7 +58,6 @@ import com.android.launcher3.OnAlarmListener;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.UninstallDropTarget.DropTargetSource;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
@@ -84,8 +83,7 @@ import java.util.List;
  */
 public class Folder extends AbstractFloatingView implements DragSource, View.OnClickListener,
         View.OnLongClickListener, DropTarget, FolderListener, TextView.OnEditorActionListener,
-        View.OnFocusChangeListener, DragListener, DropTargetSource,
-        ExtendedEditText.OnBackKeyListener {
+        View.OnFocusChangeListener, DragListener, ExtendedEditText.OnBackKeyListener {
     private static final String TAG = "Launcher.Folder";
 
     /**
@@ -171,10 +169,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mDestroyed;
-
-    @Thunk Runnable mDeferredAction;
-    private boolean mDeferDropAfterUninstall;
-    private boolean mUninstallSuccessful;
 
     // Folder scrolling
     private int mScrollAreaOffset;
@@ -289,6 +283,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
                     }
                 });
             }
+            options.deferCompleteForUninstall = true;
 
             mLauncher.getWorkspace().beginDragShared(v, this, options);
         }
@@ -856,22 +851,8 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
 
     public void onDropCompleted(final View target, final DragObject d,
             final boolean isFlingToDelete, final boolean success) {
-        if (mDeferDropAfterUninstall) {
-            Log.d(TAG, "Deferred handling drop because waiting for uninstall.");
-            mDeferredAction = new Runnable() {
-                    public void run() {
-                        onDropCompleted(target, d, isFlingToDelete, success);
-                        mDeferredAction = null;
-                    }
-                };
-            return;
-        }
 
-        boolean beingCalledAfterUninstall = mDeferredAction != null;
-        boolean successfulDrop =
-                success && (!beingCalledAfterUninstall || mUninstallSuccessful);
-
-        if (successfulDrop) {
+        if (success) {
             if (mDeleteFolderOnDropCompleted && !mItemAddedBackToSelfViaIcon && target != this) {
                 replaceFolderWithFinalItem();
             }
@@ -893,7 +874,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         if (target != this) {
             if (mOnExitAlarm.alarmPending()) {
                 mOnExitAlarm.cancelAlarm();
-                if (!successfulDrop) {
+                if (!success) {
                     mSuppressFolderDeletion = true;
                 }
                 mScrollPauseAlarm.cancelAlarm();
@@ -920,22 +901,8 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
 
         if (!isFlingToDelete) {
             // Fling to delete already exits spring loaded mode after the animation finishes.
-            mLauncher.exitSpringLoadedDragModeDelayed(successfulDrop,
+            mLauncher.exitSpringLoadedDragModeDelayed(success,
                     Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
-        }
-    }
-
-    @Override
-    public void deferCompleteDropAfterUninstallActivity() {
-        mDeferDropAfterUninstall = true;
-    }
-
-    @Override
-    public void onDragObjectRemoved(boolean success) {
-        mDeferDropAfterUninstall = false;
-        mUninstallSuccessful = success;
-        if (mDeferredAction != null) {
-            mDeferredAction.run();
         }
     }
 
@@ -1190,7 +1157,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         }
     }
 
-    public void onDrop(DragObject d) {
+    public void onDrop(DragObject d, DragOptions options) {
         Runnable cleanUpRunnable = null;
 
         // If we are coming from All Apps space, we defer removing the extra empty screen

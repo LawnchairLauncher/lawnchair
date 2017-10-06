@@ -49,28 +49,29 @@ public class InfoDropTarget extends UninstallDropTarget {
     }
 
     @Override
-    public void completeDrop(DragObject d) {
-        DropTargetResultCallback callback = d.dragSource instanceof DropTargetResultCallback
-                ? (DropTargetResultCallback) d.dragSource : null;
-        startDetailsActivityForInfo(d.dragInfo, mLauncher, callback);
+    protected ComponentName performDropAction(DragObject d) {
+        return performDropAction(mLauncher, d.dragInfo, null, null);
     }
 
     /**
      * @return Whether the activity was started.
      */
     public static boolean startDetailsActivityForInfo(
-            ItemInfo info, Launcher launcher, DropTargetResultCallback callback) {
-        return startDetailsActivityForInfo(info, launcher, callback, null, null);
+            ItemInfo info, Launcher launcher, Rect sourceBounds, Bundle opts) {
+        return performDropAction(launcher, info, sourceBounds, opts) != null;
     }
 
-    public static boolean startDetailsActivityForInfo(ItemInfo info, Launcher launcher,
-            DropTargetResultCallback callback, Rect sourceBounds, Bundle opts) {
+    /**
+     * Performs the drop action and returns the target component for the dragObject or null if
+     * the action was not performed.
+     */
+    private static ComponentName performDropAction(Context context, ItemInfo info,
+            Rect sourceBounds, Bundle opts) {
         if (info instanceof PromiseAppInfo) {
             PromiseAppInfo promiseAppInfo = (PromiseAppInfo) info;
-            launcher.startActivity(promiseAppInfo.getMarketIntent());
-            return true;
+            context.startActivity(promiseAppInfo.getMarketIntent());
+            return null;
         }
-        boolean result = false;
         ComponentName componentName = null;
         if (info instanceof AppInfo) {
             componentName = ((AppInfo) info).componentName;
@@ -83,19 +84,15 @@ public class InfoDropTarget extends UninstallDropTarget {
         }
         if (componentName != null) {
             try {
-                LauncherAppsCompat.getInstance(launcher)
+                LauncherAppsCompat.getInstance(context)
                         .showAppDetailsForProfile(componentName, info.user, sourceBounds, opts);
-                result = true;
+                return componentName;
             } catch (SecurityException | ActivityNotFoundException e) {
-                Toast.makeText(launcher, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Unable to launch settings", e);
             }
         }
-
-        if (callback != null) {
-            sendUninstallResult(launcher, result, componentName, info.user, callback);
-        }
-        return result;
+        return null;
     }
 
     @Override
