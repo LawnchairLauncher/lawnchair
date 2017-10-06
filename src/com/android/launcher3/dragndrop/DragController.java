@@ -120,6 +120,9 @@ public class DragController implements DragDriver.EventListener, TouchController
 
     /**
      * Starts a drag.
+     * When the drag is started, the UI automatically goes into spring loaded mode. On a successful
+     * drop, it is the responsibility of the {@link DropTarget} to exit out of the spring loaded
+     * mode. If the drop was cancelled for some reason, the UI will automatically exit out of this mode.
      *
      * @param b The bitmap to display as the drag image.  It will be re-scaled to the
      *          enlarged size.
@@ -248,10 +251,22 @@ public class DragController implements DragDriver.EventListener, TouchController
             mDragObject.cancelled = true;
             mDragObject.dragComplete = true;
             if (!mIsInPreDrag) {
-                mDragObject.dragSource.onDropCompleted(null, mDragObject, false, false);
+                dispatchDropComplete(null, false);
             }
         }
         endDrag();
+    }
+
+    private void dispatchDropComplete(View dropTarget, boolean accepted) {
+        if (!accepted) {
+            // If it was not accepted, cleanup the state. If it was accepted, it is the
+            // responsibility of the drop target to cleanup the state.
+            mLauncher.exitSpringLoadedDragMode(false,
+                    Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT);
+            mDragObject.deferDragViewCleanupPostAnimation = false;
+        }
+
+        mDragObject.dragSource.onDropCompleted(dropTarget, mDragObject, accepted);
     }
 
     public void onAppsRemoved(ItemInfoMatcher matcher) {
@@ -583,8 +598,7 @@ public class DragController implements DragDriver.EventListener, TouchController
         final View dropTargetAsView = dropTarget instanceof View ? (View) dropTarget : null;
         if (!mIsInPreDrag) {
             mLauncher.getUserEventDispatcher().logDragNDrop(mDragObject, dropTargetAsView);
-            mDragObject.dragSource.onDropCompleted(
-                    dropTargetAsView, mDragObject, flingAnimation != null, accepted);
+            dispatchDropComplete(dropTargetAsView, accepted);
         }
     }
 

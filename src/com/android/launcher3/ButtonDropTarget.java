@@ -229,7 +229,7 @@ public abstract class ButtonDropTarget extends TextView
             public void run() {
                 completeDrop(d);
                 mDropTargetBar.onDragEnd();
-                mLauncher.exitSpringLoadedDragModeDelayed(true, 0, null);
+                mLauncher.exitSpringLoadedDragMode(true, 0);
             }
         };
         dragLayer.animateView(d.dragView, from, to, scale, 1f, 1f, 0.1f, 0.1f,

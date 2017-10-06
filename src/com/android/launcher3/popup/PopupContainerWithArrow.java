@@ -39,6 +39,7 @@ import android.view.View;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
+import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
@@ -487,14 +488,7 @@ public class PopupContainerWithArrow extends BaseActionPopup<BubbleTextView> imp
     }
 
     @Override
-    public void onDropCompleted(View target, DropTarget.DragObject d, boolean isFlingToDelete,
-            boolean success) {
-        if (!success) {
-            d.dragView.remove();
-            mLauncher.showWorkspace(true);
-            mLauncher.getDropTargetBar().onDragEnd();
-        }
-    }
+    public void onDropCompleted(View target, DragObject d, boolean success) {  }
 
     @Override
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {

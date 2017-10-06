@@ -491,13 +491,12 @@ public class DragLayer extends InsettableFrameLayout {
                 onFinishRunnable, animationEndStyle, duration, null);
     }
 
-    public void animateViewIntoPosition(DragView dragView, final View child,
-            final Runnable onFinishAnimationRunnable, View anchorView) {
-        animateViewIntoPosition(dragView, child, -1, onFinishAnimationRunnable, anchorView);
+    public void animateViewIntoPosition(DragView dragView, final View child, View anchorView) {
+        animateViewIntoPosition(dragView, child, -1, anchorView);
     }
 
     public void animateViewIntoPosition(DragView dragView, final View child, int duration,
-            final Runnable onFinishAnimationRunnable, View anchorView) {
+            View anchorView) {
         ShortcutAndWidgetContainer parentChildren = (ShortcutAndWidgetContainer) child.getParent();
         CellLayout.LayoutParams lp =  (CellLayout.LayoutParams) child.getLayoutParams();
         parentChildren.measureChild(child);
@@ -554,9 +553,6 @@ public class DragLayer extends InsettableFrameLayout {
         Runnable onCompleteRunnable = new Runnable() {
             public void run() {
                 child.setVisibility(VISIBLE);
-                if (onFinishAnimationRunnable != null) {
-                    onFinishAnimationRunnable.run();
-                }
             }
         };
         animateViewIntoPosition(dragView, fromX, fromY, toX, toY, 1, 1, 1, toScale, toScale,

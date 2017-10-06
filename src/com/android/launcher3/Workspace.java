@@ -237,8 +237,6 @@ public class Workspace extends PagedView
     final WallpaperOffsetInterpolator mWallpaperOffset;
     private boolean mUnlockWallpaperFromDefaultPageOnLayout;
 
-    @Thunk Runnable mDelayedResizeRunnable;
-
     // Variables relating to the creation of user folders by hovering shortcuts over shortcuts
     private static final int FOLDER_CREATION_TIMEOUT = 0;
     public static final int REORDER_TIMEOUT = 350;
@@ -401,9 +399,6 @@ public class Workspace extends PagedView
         }
 
         updateChildrenLayersEnabled();
-        mLauncher.lockScreenOrientation();
-        // Prevent any Un/InstallShortcutReceivers from updating the db while we are dragging
-        InstallShortcutReceiver.enableInstallQueue(InstallShortcutReceiver.FLAG_DRAG_AND_DROP);
 
         // Do not add a new page if it is a accessible drag which was not started by the workspace.
         // We do not support accessibility drag from other sources and instead provide a direct
@@ -453,12 +448,6 @@ public class Workspace extends PagedView
         }
 
         updateChildrenLayersEnabled();
-        mLauncher.unlockScreenOrientation(false);
-
-        // Re-enable any Un/InstallShortcutReceiver and now process any queued items
-        InstallShortcutReceiver.disableAndFlushInstallQueue(
-                InstallShortcutReceiver.FLAG_DRAG_AND_DROP, getContext());
-
         mOutlineProvider = null;
         mDragSourceInternal = null;
     }
@@ -1085,11 +1074,6 @@ public class Workspace extends PagedView
                 // is under a new page (to scroll to)
                 mDragController.forceTouchMove();
             }
-        }
-
-        if (mDelayedResizeRunnable != null && !mIsSwitchingState) {
-            mDelayedResizeRunnable.run();
-            mDelayedResizeRunnable = null;
         }
 
         if (mStripScreensOnPageStopMoving) {
@@ -1744,7 +1728,6 @@ public class Workspace extends PagedView
                 }
             });
         }
-        options.deferCompleteForUninstall = true;
 
         beginDragShared(child, this, options);
     }
@@ -1960,8 +1943,7 @@ public class Workspace extends PagedView
     }
 
     boolean createUserFolderIfNecessary(View newView, long container, CellLayout target,
-            int[] targetCell, float distance, boolean external, DragView dragView,
-            Runnable postAnimationRunnable) {
+            int[] targetCell, float distance, boolean external, DragView dragView) {
         if (distance > mMaxDistanceForFolderCreation) return false;
         View v = target.getChildAt(targetCell[0], targetCell[1]);
 
@@ -2005,8 +1987,8 @@ public class Workspace extends PagedView
                 // folder background to the newly created icon. This preserves animation state.
                 fi.setFolderBackground(mFolderCreateBg);
                 mFolderCreateBg = new PreviewBackground();
-                fi.performCreateAnimation(destInfo, v, sourceInfo, dragView, folderLocation, scale,
-                        postAnimationRunnable);
+                fi.performCreateAnimation(destInfo, v, sourceInfo, dragView, folderLocation, scale
+                );
             } else {
                 fi.prepareCreateAnimation(v);
                 fi.addItem(destInfo);
@@ -2060,13 +2042,14 @@ public class Workspace extends PagedView
 
         int snapScreen = -1;
         boolean resizeOnDrop = false;
-        if (d.dragSource != this) {
+        if (d.dragSource != this || mDragInfo == null) {
             final int[] touchXY = new int[] { (int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1] };
             onDropExternal(touchXY, dropTargetLayout, d);
-        } else if (mDragInfo != null) {
+        } else {
             final View cell = mDragInfo.cell;
             boolean droppedOnOriginalCellDuringTransition = false;
+            Runnable onCompleteRunnable = null;
 
             if (dropTargetLayout != null && !d.cancelled) {
                 // Move internally
@@ -2090,12 +2073,11 @@ public class Workspace extends PagedView
                 // If the item being dropped is a shortcut and the nearest drop
                 // cell also contains a shortcut, then create a folder with the two shortcuts.
                 if (createUserFolderIfNecessary(cell, container,
-                        dropTargetLayout, mTargetCell, distance, false, d.dragView, null)) {
-                    return;
-                }
-
-                if (addToExistingFolderIfNecessary(cell, dropTargetLayout, mTargetCell,
-                        distance, d, false)) {
+                        dropTargetLayout, mTargetCell, distance, false, d.dragView) ||
+                        addToExistingFolderIfNecessary(cell, dropTargetLayout, mTargetCell,
+                                distance, d, false)) {
+                    mLauncher.exitSpringLoadedDragMode(true,
+                            Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT);
                     return;
                 }
 
@@ -2177,7 +2159,7 @@ public class Workspace extends PagedView
                         AppWidgetProviderInfo pInfo = hostView.getAppWidgetInfo();
                         if (pInfo != null && pInfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE
                                 && !d.accessibleDrag) {
-                            mDelayedResizeRunnable = new Runnable() {
+                            onCompleteRunnable = new Runnable() {
                                 public void run() {
                                     if (!isPageInTransition()) {
                                         AppWidgetResizeFrame.showForWidget(hostView, cellLayout);
@@ -2209,9 +2191,9 @@ public class Workspace extends PagedView
                     // Animate the item to its original position, while simultaneously exiting
                     // spring-loaded mode so the page meets the icon where it was picked up.
                     mLauncher.getDragController().animateDragViewToOriginalPosition(
-                            mDelayedResizeRunnable, cell,
+                            onCompleteRunnable, cell,
                             mStateTransitionAnimation.mSpringLoadedTransitionTime);
-                    mLauncher.exitSpringLoadedDragMode();
+                    mLauncher.exitSpringLoadedDragMode(false, 0);
                     mLauncher.getDropTargetBar().onDragEnd();
                     parent.onDropChild(cell);
                     return;
@@ -2226,14 +2208,18 @@ public class Workspace extends PagedView
                 } else {
                     int duration = snapScreen < 0 ? -1 : ADJACENT_SCREEN_DROP_DURATION;
                     mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, cell, duration,
-                            null, this);
+                            this);
                 }
             } else {
                 d.deferDragViewCleanupPostAnimation = false;
                 cell.setVisibility(VISIBLE);
             }
             parent.onDropChild(cell);
+
+            mLauncher.exitSpringLoadedDragMode(true,
+                    Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, onCompleteRunnable);
         }
+
         if (d.stateAnnouncer != null && !droppedOnOriginalCell) {
             d.stateAnnouncer.completeAction(R.string.item_moved);
         }
@@ -2741,14 +2727,6 @@ public class Workspace extends PagedView
      * to add an item to one of the workspace screens.
      */
     private void onDropExternal(final int[] touchXY, final CellLayout cellLayout, DragObject d) {
-        final Runnable exitSpringLoadedRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mLauncher.exitSpringLoadedDragModeDelayed(true,
-                        Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
-            }
-        };
-
         if (d.dragInfo instanceof PendingAddShortcutInfo) {
             ShortcutInfo si = ((PendingAddShortcutInfo) d.dragInfo)
                     .activityInfo.createShortcutInfo();
@@ -2846,6 +2824,9 @@ public class Workspace extends PagedView
                     animationStyle, finalView, true);
         } else {
             // This is for other drag/drop cases, like dragging from All Apps
+            mLauncher.exitSpringLoadedDragMode(true,
+                    Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT);
+
             View view;
 
             switch (info.itemType) {
@@ -2874,9 +2855,8 @@ public class Workspace extends PagedView
                         cellLayout, mTargetCell);
                 float distance = cellLayout.getDistanceFromCell(mDragViewVisualCenter[0],
                         mDragViewVisualCenter[1], mTargetCell);
-                d.postAnimationRunnable = exitSpringLoadedRunnable;
                 if (createUserFolderIfNecessary(view, container, cellLayout, mTargetCell, distance,
-                        true, d.dragView, d.postAnimationRunnable)) {
+                        true, d.dragView)) {
                     return;
                 }
                 if (addToExistingFolderIfNecessary(view, cellLayout, mTargetCell, distance, d,
@@ -2909,7 +2889,7 @@ public class Workspace extends PagedView
                 // the correct final location.
                 setFinalTransitionTransform(cellLayout);
                 mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, view,
-                        exitSpringLoadedRunnable, this);
+                        this);
                 resetTransitionTransform(cellLayout);
             }
         }
@@ -3085,7 +3065,7 @@ public class Workspace extends PagedView
      * Called at the end of a drag which originated on the workspace.
      */
     public void onDropCompleted(final View target, final DragObject d,
-            final boolean isFlingToDelete, final boolean success) {
+            final boolean success) {
 
         if (success) {
             if (target != this && mDragInfo != null) {
@@ -3105,13 +3085,6 @@ public class Workspace extends PagedView
             mDragInfo.cell.setVisibility(VISIBLE);
         }
         mDragInfo = null;
-
-        if (!isFlingToDelete) {
-            // Fling to delete already exits spring loaded mode after the animation finishes.
-            mLauncher.exitSpringLoadedDragModeDelayed(success,
-                    Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, mDelayedResizeRunnable);
-            mDelayedResizeRunnable = null;
-        }
     }
 
     /**

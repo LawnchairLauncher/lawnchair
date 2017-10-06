@@ -97,9 +97,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
     @Override
     public void onDrop(DragObject d, DragOptions options) {
         // Defer onComplete
-        if (options.deferCompleteForUninstall) {
-            d.dragSource = new DeferredOnComplete(d.dragSource, getContext());
-        }
+        d.dragSource = new DeferredOnComplete(d.dragSource, getContext());
         super.onDrop(d, options);
     }
 
@@ -171,7 +169,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
         }
 
         @Override
-        public void onDropCompleted(View target, DragObject d, boolean isFlingToDelete,
+        public void onDropCompleted(View target, DragObject d,
                 boolean success) {
             mDragObject = d;
         }
@@ -189,7 +187,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
                     .getApplicationInfo(mPackageName, PackageManager.MATCH_UNINSTALLED_PACKAGES,
                             mDragObject.dragInfo.user) == null) {
                 mDragObject.dragSource = mOriginal;
-                mOriginal.onDropCompleted(UninstallDropTarget.this, mDragObject, false, true);
+                mOriginal.onDropCompleted(UninstallDropTarget.this, mDragObject, true);
             } else {
                 sendFailure();
             }
@@ -198,7 +196,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
         public void sendFailure() {
             mDragObject.dragSource = mOriginal;
             mDragObject.cancelled = true;
-            mOriginal.onDropCompleted(UninstallDropTarget.this, mDragObject, false, false);
+            mOriginal.onDropCompleted(UninstallDropTarget.this, mDragObject, false);
         }
     }
 }

@@ -159,21 +159,7 @@ abstract class BaseWidgetSheet extends AbstractFloatingView
     //
 
     @Override
-    public void onDropCompleted(View target, DragObject d, boolean isFlingToDelete,
-            boolean success) {
-        if (isFlingToDelete || !success || (target != mLauncher.getWorkspace() &&
-                !(target instanceof DeleteDropTarget) && !(target instanceof Folder))) {
-            // Exit spring loaded mode if we have not successfully dropped or have not handled the
-            // drop in Workspace
-            mLauncher.exitSpringLoadedDragModeDelayed(true,
-                    Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
-        }
-        mLauncher.unlockScreenOrientation(false);
-
-        if (!success) {
-            d.deferDragViewCleanupPostAnimation = false;
-        }
-    }
+    public void onDropCompleted(View target, DragObject d, boolean success) { }
 
 
     @Override

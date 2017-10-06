@@ -254,7 +254,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     public void performCreateAnimation(final ShortcutInfo destInfo, final View destView,
             final ShortcutInfo srcInfo, final DragView srcView, Rect dstRect,
-            float scaleRelativeToDragLayer, Runnable postAnimationRunnable) {
+            float scaleRelativeToDragLayer) {
         prepareCreateAnimation(destView);
         addItem(destInfo);
         // This will animate the first item from it's position as an icon into its
@@ -263,7 +263,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 .start();
 
         // This will animate the dragView (srcView) into the new folder
-        onDrop(srcInfo, srcView, dstRect, scaleRelativeToDragLayer, 1, postAnimationRunnable,
+        onDrop(srcInfo, srcView, dstRect, scaleRelativeToDragLayer, 1,
                 false /* itemReturnedOnFailedDrop */);
     }
 
@@ -279,7 +279,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     private void onDrop(final ShortcutInfo item, DragView animateView, Rect finalRect,
-            float scaleRelativeToDragLayer, int index, Runnable postAnimationRunnable,
+            float scaleRelativeToDragLayer, int index,
             boolean itemReturnedOnFailedDrop) {
         item.cellX = -1;
         item.cellY = -1;
@@ -351,7 +351,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             dragLayer.animateView(animateView, from, to, finalAlpha,
                     1, 1, finalScale, finalScale, DROP_IN_ANIMATION_DURATION,
                     new DecelerateInterpolator(2), new AccelerateInterpolator(2),
-                    postAnimationRunnable, DragLayer.ANIMATION_END_DISAPPEAR, null);
+                    null, DragLayer.ANIMATION_END_DISAPPEAR, null);
 
             mFolder.hideItem(item);
 
@@ -381,7 +381,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             item = (ShortcutInfo) d.dragInfo;
         }
         mFolder.notifyDrop();
-        onDrop(item, d.dragView, null, 1.0f, mInfo.contents.size(), d.postAnimationRunnable,
+        onDrop(item, d.dragView, null, 1.0f, mInfo.contents.size(),
                 itemReturnedOnFailedDrop);
     }
 

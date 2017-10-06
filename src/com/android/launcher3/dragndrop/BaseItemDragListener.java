@@ -28,12 +28,10 @@ import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 
-import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DragSource;
-import com.android.launcher3.DropTarget;
+import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.folder.Folder;
 import com.android.launcher3.widget.PendingItemDragHelper;
 
 import java.util.UUID;
@@ -141,7 +139,7 @@ public abstract class BaseItemDragListener implements
     }
 
     @Override
-    public void onPreDragStart(DropTarget.DragObject dragObject) {
+    public void onPreDragStart(DragObject dragObject) {
         // The predrag starts when the workspace is not yet loaded. In some cases we set
         // the dragLayer alpha to 0 to have a nice fade-in animation. But that will prevent the
         // dragView from being visible. Instead just skip the fade-in animation here.
@@ -152,26 +150,14 @@ public abstract class BaseItemDragListener implements
     }
 
     @Override
-    public void onPreDragEnd(DropTarget.DragObject dragObject, boolean dragStarted) {
+    public void onPreDragEnd(DragObject dragObject, boolean dragStarted) {
         if (dragStarted) {
             dragObject.dragView.setColor(0);
         }
     }
 
     @Override
-    public void onDropCompleted(View target, DropTarget.DragObject d, boolean isFlingToDelete,
-            boolean success) {
-        if (isFlingToDelete || !success || (target != mLauncher.getWorkspace() &&
-                !(target instanceof DeleteDropTarget) && !(target instanceof Folder))) {
-            // Exit spring loaded mode if we have not successfully dropped or have not handled the
-            // drop in Workspace
-            mLauncher.exitSpringLoadedDragModeDelayed(true,
-                    Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
-        }
-
-        if (!success) {
-            d.deferDragViewCleanupPostAnimation = false;
-        }
+    public void onDropCompleted(View target, DragObject d, boolean success) {
         postCleanup();
     }
 

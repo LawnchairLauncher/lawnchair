@@ -31,10 +31,10 @@ import android.widget.RelativeLayout;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.ClickShadowView;
-import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
+import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -44,7 +44,6 @@ import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.folder.Folder;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.PackageUserKey;
@@ -322,21 +321,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     }
 
     @Override
-    public void onDropCompleted(View target, DropTarget.DragObject d, boolean isFlingToDelete,
-            boolean success) {
-        if (isFlingToDelete || !success || (target != mLauncher.getWorkspace() &&
-                !(target instanceof DeleteDropTarget) && !(target instanceof Folder))) {
-            // Exit spring loaded mode if we have not successfully dropped or have not handled the
-            // drop in Workspace
-            mLauncher.exitSpringLoadedDragModeDelayed(true,
-                    Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
-        }
-        mLauncher.unlockScreenOrientation(false);
-
-        if (!success) {
-            d.deferDragViewCleanupPostAnimation = false;
-        }
-    }
+    public void onDropCompleted(View target, DragObject d, boolean success) { }
 
     @Override
     public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {

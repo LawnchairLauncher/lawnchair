@@ -59,9 +59,6 @@ public interface DropTarget {
         /** The object is part of an accessible drag operation */
         public boolean accessibleDrag;
 
-        /** Post drag animation runnable */
-        public Runnable postAnimationRunnable = null;
-
         /** Indicates that the drag operation was cancelled */
         public boolean cancelled = false;
 
@@ -105,7 +102,14 @@ public interface DropTarget {
     boolean isDropEnabled();
 
     /**
-     * Handle an object being dropped on the DropTarget
+     * Handle an object being dropped on the DropTarget.
+     *
+     * This will be called only if this target previously returned true for {@link #acceptDrop}. It
+     * is the responsibility of this target to exit out of the spring loaded mode (either
+     * immediately or after any pending animations).
+     *
+     * If the drop was cancelled for some reason, onDrop will never get called, the UI will
+     * automatically exit out of this mode.
      */
     void onDrop(DragObject dragObject, DragOptions options);
 

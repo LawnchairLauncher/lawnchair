@@ -283,7 +283,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
                     }
                 });
             }
-            options.deferCompleteForUninstall = true;
 
             mLauncher.getWorkspace().beginDragShared(v, this, options);
         }
@@ -850,7 +849,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     }
 
     public void onDropCompleted(final View target, final DragObject d,
-            final boolean isFlingToDelete, final boolean success) {
+            final boolean success) {
 
         if (success) {
             if (mDeleteFolderOnDropCompleted && !mItemAddedBackToSelfViaIcon && target != this) {
@@ -897,12 +896,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             // Show the animation, next time something is added to the folder.
             mInfo.setOption(FolderInfo.FLAG_MULTI_PAGE_ANIMATION, false,
                     mLauncher.getModelWriter());
-        }
-
-        if (!isFlingToDelete) {
-            // Fling to delete already exits spring loaded mode after the animation finishes.
-            mLauncher.exitSpringLoadedDragModeDelayed(success,
-                    Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
         }
     }
 
@@ -1158,21 +1151,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     }
 
     public void onDrop(DragObject d, DragOptions options) {
-        Runnable cleanUpRunnable = null;
-
-        // If we are coming from All Apps space, we defer removing the extra empty screen
-        // until the folder closes
-        if (d.dragSource != mLauncher.getWorkspace() && !(d.dragSource instanceof Folder)) {
-            cleanUpRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    mLauncher.exitSpringLoadedDragModeDelayed(true,
-                            Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT,
-                            null);
-                }
-            };
-        }
-
         // If the icon was dropped while the page was being scrolled, we need to compute
         // the target location again such that the icon is placed of the final page.
         if (!mContent.rankOnCurrentPage(mEmptyCellRank)) {
@@ -1238,8 +1216,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
                 float scaleY = getScaleY();
                 setScaleX(1.0f);
                 setScaleY(1.0f);
-                mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, currentDragView,
-                        cleanUpRunnable, null);
+                mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, currentDragView, null);
                 setScaleX(scaleX);
                 setScaleY(scaleY);
             } else {
@@ -1264,6 +1241,8 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             mInfo.setOption(FolderInfo.FLAG_MULTI_PAGE_ANIMATION, true, mLauncher.getModelWriter());
         }
 
+        mLauncher.exitSpringLoadedDragMode(true,
+                Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT);
         if (d.stateAnnouncer != null) {
             d.stateAnnouncer.completeAction(R.string.item_moved);
         }

@@ -582,8 +582,8 @@ public class Launcher extends BaseActivity
         Runnable exitSpringLoaded = new Runnable() {
             @Override
             public void run() {
-                exitSpringLoadedDragModeDelayed((resultCode != RESULT_CANCELED),
-                        EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
+                exitSpringLoadedDragMode((resultCode != RESULT_CANCELED),
+                        EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT);
             }
         };
 
@@ -635,7 +635,7 @@ public class Launcher extends BaseActivity
                 final Runnable onComplete = new Runnable() {
                     @Override
                     public void run() {
-                        exitSpringLoadedDragModeDelayed(false, 0, null);
+                        exitSpringLoadedDragMode(false, 0);
                     }
                 };
 
@@ -763,8 +763,8 @@ public class Launcher extends BaseActivity
                 @Override
                 public void run() {
                     completeAddAppWidget(appWidgetId, requestArgs, layout, null);
-                    exitSpringLoadedDragModeDelayed((resultCode != RESULT_CANCELED),
-                            EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
+                    exitSpringLoadedDragMode((resultCode != RESULT_CANCELED),
+                            EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT);
                 }
             };
         } else if (resultCode == RESULT_CANCELED) {
@@ -1231,7 +1231,7 @@ public class Launcher extends BaseActivity
 
                 // If appropriate, either create a folder or add to an existing folder
                 if (mWorkspace.createUserFolderIfNecessary(view, container, layout, cellXY, 0,
-                        true, null, null)) {
+                        true, null)) {
                     return;
                 }
                 DragObject dragObject = new DragObject();
@@ -1714,8 +1714,8 @@ public class Launcher extends BaseActivity
                 @Override
                 public void run() {
                     // Exit spring loaded mode if necessary after adding the widget
-                    exitSpringLoadedDragModeDelayed(true, EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT,
-                            null);
+                    exitSpringLoadedDragMode(true, EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT
+                    );
                 }
             };
             completeAddAppWidget(appWidgetId, info, boundWidget, addFlowHandler.getProviderInfo(this));
@@ -2598,15 +2598,35 @@ public class Launcher extends BaseActivity
             return;
         }
 
+        // Lock the orientation:
+        if (mRotationEnabled) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+        }
+
+        // Prevent any Un/InstallShortcutReceivers from updating the db while we are
+        // in spring loaded mode
+        InstallShortcutReceiver.enableInstallQueue(InstallShortcutReceiver.FLAG_DRAG_AND_DROP);
+
         mStateTransitionAnimation.startAnimationToWorkspace(mState, mWorkspace.getState(),
                 Workspace.State.SPRING_LOADED, true /* animated */,
                 null /* onCompleteRunnable */);
         setState(State.WORKSPACE_SPRING_LOADED);
     }
 
-    public void exitSpringLoadedDragModeDelayed(final boolean successfulDrop, int delay,
+    public void exitSpringLoadedDragMode(final boolean successfulDrop, int delay) {
+        exitSpringLoadedDragMode(successfulDrop, delay, null);
+    }
+
+    public void exitSpringLoadedDragMode(final boolean successfulDrop, int delay,
             final Runnable onCompleteRunnable) {
         if (!isStateSpringLoaded()) return;
+
+        // Unlock rotation lock
+        unlockScreenOrientation(false);
+
+        // Re-enable any Un/InstallShortcutReceiver and now process any queued items
+        InstallShortcutReceiver.disableAndFlushInstallQueue(
+                InstallShortcutReceiver.FLAG_DRAG_AND_DROP, this);
 
         if (mExitSpringLoadedModeRunnable != null) {
             mHandler.removeCallbacks(mExitSpringLoadedModeRunnable);
@@ -2621,8 +2641,10 @@ public class Launcher extends BaseActivity
                     // exitSpringLoadedDragMode made it visible. This is a bit hacky; we should
                     // clean up our state transition functions
                     showWorkspace(true, onCompleteRunnable);
-                } else {
-                    exitSpringLoadedDragMode();
+                } else if (mState == State.APPS_SPRING_LOADED) {
+                    showAppsView(true /* animated */);
+                } else if (mState == State.WORKSPACE_SPRING_LOADED) {
+                    showWorkspace(true);
                 }
                 mExitSpringLoadedModeRunnable = null;
             }
@@ -2633,14 +2655,6 @@ public class Launcher extends BaseActivity
     boolean isStateSpringLoaded() {
         return mState == State.WORKSPACE_SPRING_LOADED || mState == State.APPS_SPRING_LOADED
                 || mState == State.WIDGETS_SPRING_LOADED;
-    }
-
-    public void exitSpringLoadedDragMode() {
-        if (mState == State.APPS_SPRING_LOADED) {
-            showAppsView(true /* animated */);
-        } else if (mState == State.WORKSPACE_SPRING_LOADED) {
-            showWorkspace(true);
-        }
     }
 
     @Override
@@ -3396,12 +3410,6 @@ public class Launcher extends BaseActivity
      */
     public void refreshAndBindWidgetsForPackageUser(@Nullable PackageUserKey packageUser) {
         mModel.refreshAndBindWidgetsAndShortcuts(packageUser);
-    }
-
-    public void lockScreenOrientation() {
-        if (mRotationEnabled) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
-        }
     }
 
     public void unlockScreenOrientation(boolean immediate) {
