@@ -87,7 +87,6 @@ import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
-import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.LauncherAppsCompatVO;
@@ -110,6 +109,7 @@ import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.pageindicators.PageIndicator;
+import com.android.launcher3.popup.BaseActionPopup;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
@@ -1347,9 +1347,9 @@ public class Launcher extends BaseActivity
                 mWorkspace.updateIconBadges(updatedBadges);
                 mAppsView.updateIconBadges(updatedBadges);
 
-                PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(Launcher.this);
-                if (popup != null) {
-                    popup.updateNotificationHeader(updatedBadges);
+                BaseActionPopup popup = BaseActionPopup.getOpen(Launcher.this);
+                if (popup instanceof PopupContainerWithArrow) {
+                    ((PopupContainerWithArrow) popup).updateNotificationHeader(updatedBadges);
                 }
             }
         };
@@ -3558,7 +3558,7 @@ public class Launcher extends BaseActivity
                             && mAccessibilityDelegate.performAction(focusedView,
                                     (ItemInfo) focusedView.getTag(),
                                     LauncherAccessibilityDelegate.DEEP_SHORTCUTS)) {
-                        PopupContainerWithArrow.getOpen(this).requestFocus();
+                        BaseActionPopup.getOpen(this).requestFocus();
                         return true;
                     }
                     break;

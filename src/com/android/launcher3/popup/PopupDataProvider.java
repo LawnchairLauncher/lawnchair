@@ -102,11 +102,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
                 mPackageUserToBadgeInfos.remove(removedPackageUserKey);
             }
             updateLauncherIconBadges(Utilities.singletonHashSet(removedPackageUserKey));
-
-            PopupContainerWithArrow openContainer = PopupContainerWithArrow.getOpen(mLauncher);
-            if (openContainer != null) {
-                openContainer.trimNotifications(mPackageUserToBadgeInfos);
-            }
+            trimNotifications(mPackageUserToBadgeInfos);
         }
     }
 
@@ -143,10 +139,13 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         if (!updatedBadges.isEmpty()) {
             updateLauncherIconBadges(updatedBadges.keySet());
         }
+        trimNotifications(updatedBadges);
+    }
 
-        PopupContainerWithArrow openContainer = PopupContainerWithArrow.getOpen(mLauncher);
-        if (openContainer != null) {
-            openContainer.trimNotifications(updatedBadges);
+    private void trimNotifications(Map<PackageUserKey, BadgeInfo> updatedBadges) {
+        BaseActionPopup openContainer = BaseActionPopup.getOpen(mLauncher);
+        if (openContainer instanceof PopupContainerWithArrow) {
+            ((PopupContainerWithArrow) openContainer).trimNotifications(updatedBadges);
         }
     }
 

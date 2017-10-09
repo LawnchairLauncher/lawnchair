@@ -32,7 +32,7 @@ import android.widget.FrameLayout;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.popup.PopupContainerWithArrow.RoundedCornerFlags;
+import com.android.launcher3.popup.BaseActionPopup.RoundedCornerFlags;
 
 import static com.android.launcher3.popup.PopupContainerWithArrow.ROUNDED_BOTTOM_CORNERS;
 import static com.android.launcher3.popup.PopupContainerWithArrow.ROUNDED_TOP_CORNERS;

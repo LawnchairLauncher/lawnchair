@@ -38,14 +38,14 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
 
     @IntDef(flag = true, value = {
             TYPE_FOLDER,
-            TYPE_POPUP_CONTAINER_WITH_ARROW,
+            TYPE_ACTION_POPUP,
             TYPE_WIDGETS_BOTTOM_SHEET,
             TYPE_WIDGET_RESIZE_FRAME
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface FloatingViewType {}
     public static final int TYPE_FOLDER = 1 << 0;
-    public static final int TYPE_POPUP_CONTAINER_WITH_ARROW = 1 << 1;
+    public static final int TYPE_ACTION_POPUP = 1 << 1;
     public static final int TYPE_WIDGETS_BOTTOM_SHEET = 1 << 2;
     public static final int TYPE_WIDGET_RESIZE_FRAME = 1 << 3;
 
@@ -138,7 +138,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     }
 
     public static AbstractFloatingView getTopOpenView(Launcher launcher) {
-        return getOpenView(launcher, TYPE_FOLDER | TYPE_POPUP_CONTAINER_WITH_ARROW
+        return getOpenView(launcher, TYPE_FOLDER | TYPE_ACTION_POPUP
                 | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGET_RESIZE_FRAME);
     }
 }
