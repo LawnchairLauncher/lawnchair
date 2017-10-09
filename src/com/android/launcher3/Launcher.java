@@ -91,6 +91,7 @@ import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.LauncherAppsCompatVO;
+import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -136,6 +137,7 @@ import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetsContainerView;
+
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -250,6 +252,10 @@ public class Launcher extends BaseActivity
 
     // Main container view and the model for the widget tray screen.
     @Thunk WidgetsContainerView mWidgetsView;
+
+    // We need to store the orientation Launcher was created with, due to a bug (b/64916689)
+    // that results in widgets being inflated in the wrong orientation.
+    private int mOrientation;
 
     // We set the state in both onCreate and then onNewIntent in some cases, which causes both
     // scroll issues (because the workspace may not have been measured yet) and extra work.
@@ -383,6 +389,7 @@ public class Launcher extends BaseActivity
             mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
         }
 
+        mOrientation = getResources().getConfiguration().orientation;
         mSharedPrefs = Utilities.getPrefs(this);
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
         mModel = app.setLauncher(this);
@@ -1668,6 +1675,8 @@ public class Launcher extends BaseActivity
     public SharedPreferences getSharedPrefs() {
         return mSharedPrefs;
     }
+
+    public int getOrientation() { return mOrientation; }
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -3886,7 +3895,8 @@ public class Launcher extends BaseActivity
     }
 
     private boolean shouldShowDiscoveryBounce() {
-        return mState == State.WORKSPACE && !mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false);
+        UserManagerCompat um = UserManagerCompat.getInstance(this);
+        return mState == State.WORKSPACE && !mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false) && !um.isDemoUser();
     }
 
     protected void moveWorkspaceToDefaultScreen() {

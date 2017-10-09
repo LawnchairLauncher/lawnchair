@@ -142,9 +142,8 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         return false;
     }
 
-    public boolean isReinflateRequired() {
+    public boolean isReinflateRequired(int orientation) {
         // Re-inflate is required if the orientation has changed since last inflated.
-        int orientation = mContext.getResources().getConfiguration().orientation;
         if (mPreviousOrientation != orientation) {
            return true;
        }
