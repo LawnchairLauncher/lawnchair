@@ -25,6 +25,8 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.badge.BadgeInfo;
+import com.android.launcher3.model.PackageItemInfo;
+import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.notification.NotificationListener;
@@ -32,6 +34,7 @@ import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.widget.WidgetListRowEntry;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,6 +65,8 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     private MultiHashMap<ComponentKey, String> mDeepShortcutMap = new MultiHashMap<>();
     /** Maps packages to their BadgeInfo's . */
     private Map<PackageUserKey, BadgeInfo> mPackageUserToBadgeInfos = new HashMap<>();
+    /** Maps packages to their Widgets */
+    private ArrayList<WidgetListRowEntry> mAllWidgets = new ArrayList<>();
 
     public PopupDataProvider(Launcher launcher) {
         mLauncher = launcher;
@@ -264,5 +269,30 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             return;
         }
         notificationListener.cancelNotification(notificationKey);
+    }
+
+    public void setAllWidgets(ArrayList<WidgetListRowEntry> allWidgets) {
+        mAllWidgets = allWidgets;
+    }
+
+    public ArrayList<WidgetListRowEntry> getAllWidgets() {
+        return mAllWidgets;
+    }
+
+    public List<WidgetItem> getWidgetsForPackageUser(PackageUserKey packageUserKey) {
+        for (WidgetListRowEntry entry : mAllWidgets) {
+            if (entry.pkgItem.packageName.equals(packageUserKey.mPackageName)) {
+                ArrayList<WidgetItem> widgets = new ArrayList<>(entry.widgets);
+                // Remove widgets not associated with the correct user.
+                Iterator<WidgetItem> iterator = widgets.iterator();
+                while (iterator.hasNext()) {
+                    if (!iterator.next().user.equals(packageUserKey.mUser)) {
+                        iterator.remove();
+                    }
+                }
+                return widgets.isEmpty() ? null : widgets;
+            }
+        }
+        return null;
     }
 }

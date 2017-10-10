@@ -294,7 +294,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         float hotseatAlpha = mHotseatAccelInterpolator.getInterpolation(workspaceHotseatAlpha);
 
         updateAllAppsBg(alpha);
-        mAppsView.getContentView().setAlpha(alpha);
+        mAppsView.setAlpha(alpha);
         mAppsView.setTranslationY(shiftCurrent);
 
         if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {

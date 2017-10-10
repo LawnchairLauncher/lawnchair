@@ -59,8 +59,9 @@ public abstract class SystemShortcut extends ItemInfo {
         @Override
         public View.OnClickListener getOnClickListener(final Launcher launcher,
                 final ItemInfo itemInfo) {
-            final List<WidgetItem> widgets = launcher.getWidgetsForPackageUser(new PackageUserKey(
-                    itemInfo.getTargetComponent().getPackageName(), itemInfo.user));
+            final List<WidgetItem> widgets =
+                    launcher.getPopupDataProvider().getWidgetsForPackageUser(new PackageUserKey(
+                            itemInfo.getTargetComponent().getPackageName(), itemInfo.user));
             if (widgets == null) {
                 return null;
             }

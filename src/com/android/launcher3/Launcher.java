@@ -54,6 +54,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.os.Process;
 import android.os.StrictMode;
 import android.os.UserHandle;
@@ -63,6 +64,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Display;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
@@ -105,8 +107,6 @@ import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.ModelWriter;
-import com.android.launcher3.model.PackageItemInfo;
-import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.popup.BaseActionPopup;
@@ -136,7 +136,8 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
 import com.android.launcher3.widget.WidgetHostViewLoader;
-import com.android.launcher3.widget.WidgetsContainerView;
+import com.android.launcher3.widget.WidgetListRowEntry;
+import com.android.launcher3.widget.WidgetsFullSheet;
 import com.android.launcher3.widget.custom.CustomWidgetParser;
 
 import java.io.FileDescriptor;
@@ -198,6 +199,8 @@ public class Launcher extends BaseActivity
     private static final String RUNTIME_STATE_PENDING_REQUEST_ARGS = "launcher.request_args";
     // Type: ActivityResultInfo
     private static final String RUNTIME_STATE_PENDING_ACTIVITY_RESULT = "launcher.activity_result";
+    // Type: SparseArray<Parcelable>
+    private static final String RUNTIME_STATE_WIDGET_PANEL = "launcher.widget_panel";
 
     static final String APPS_VIEW_SHOWN = "launcher.apps_view_shown";
 
@@ -234,16 +237,12 @@ public class Launcher extends BaseActivity
     private ViewGroup mOverviewPanel;
 
     private View mAllAppsButton;
-    private View mWidgetsButton;
 
     private DropTargetBar mDropTargetBar;
 
     // Main container view for the all apps screen.
     @Thunk AllAppsContainerView mAppsView;
     AllAppsTransitionController mAllAppsController;
-
-    // Main container view and the model for the widget tray screen.
-    @Thunk WidgetsContainerView mWidgetsView;
 
     // We need to store the orientation Launcher was created with, due to a bug (b/64916689)
     // that results in widgets being inflated in the wrong orientation.
@@ -1043,8 +1042,6 @@ public class Launcher extends BaseActivity
                 ? stateValues[stateOrdinal] : State.WORKSPACE;
         if (state == State.APPS) {
             showAppsView(false /* animated */);
-        } else if (state == State.WIDGETS) {
-            showWidgetsView(false, false);
         }
 
         PendingRequestArgs requestArgs = savedState.getParcelable(RUNTIME_STATE_PENDING_REQUEST_ARGS);
@@ -1053,6 +1050,12 @@ public class Launcher extends BaseActivity
         }
 
         mPendingActivityResult = savedState.getParcelable(RUNTIME_STATE_PENDING_ACTIVITY_RESULT);
+
+        SparseArray<Parcelable> widgetsState =
+                savedState.getSparseParcelableArray(RUNTIME_STATE_WIDGET_PANEL);
+        if (widgetsState != null) {
+            WidgetsFullSheet.show(this, false).restoreHierarchyState(widgetsState);
+        }
     }
 
     /**
@@ -1093,9 +1096,8 @@ public class Launcher extends BaseActivity
         // Get the search/delete/uninstall bar
         mDropTargetBar = mDragLayer.findViewById(R.id.drop_target_bar);
 
-        // Setup Apps and Widgets
-        mAppsView = (AllAppsContainerView) findViewById(R.id.apps_view);
-        mWidgetsView = (WidgetsContainerView) findViewById(R.id.widgets_view);
+        // Setup Apps
+        mAppsView = findViewById(R.id.apps_view);
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         mDragController.setMoveTarget(mWorkspace);
@@ -1110,7 +1112,7 @@ public class Launcher extends BaseActivity
     }
 
     private void setupOverviewPanel() {
-        mOverviewPanel = (ViewGroup) findViewById(R.id.overview_panel);
+        mOverviewPanel = findViewById(R.id.overview_panel);
 
         // Bind wallpaper button actions
         View wallpaperButton = findViewById(R.id.wallpaper_button);
@@ -1122,13 +1124,12 @@ public class Launcher extends BaseActivity
         }.attachTo(wallpaperButton);
 
         // Bind widget button actions
-        mWidgetsButton = findViewById(R.id.widget_button);
         new OverviewButtonClickListener(ControlType.WIDGETS_BUTTON) {
             @Override
             public void handleViewClick(View view) {
                 onClickAddWidgetButton(view);
             }
-        }.attachTo(mWidgetsButton);
+        }.attachTo(findViewById(R.id.widget_button));
 
         // Bind settings actions
         View settingsButton = findViewById(R.id.settings_button);
@@ -1153,14 +1154,6 @@ public class Launcher extends BaseActivity
      */
     public void setAllAppsButton(View allAppsButton) {
         mAllAppsButton = allAppsButton;
-    }
-
-    public View getStartViewForAllAppsRevealAnimation() {
-        return FeatureFlags.NO_ALL_APPS_ICON ? mWorkspace.getPageIndicator() : mAllAppsButton;
-    }
-
-    public View getWidgetsButton() {
-        return mWidgetsButton;
     }
 
     /**
@@ -1325,7 +1318,7 @@ public class Launcher extends BaseActivity
             if (Intent.ACTION_SCREEN_OFF.equals(action)) {
                 // Reset AllApps to its initial state only if we are not in the middle of
                 // processing a multi-step drop
-                if (mAppsView != null && mWidgetsView != null && mPendingRequestArgs == null) {
+                if (mAppsView != null && mPendingRequestArgs == null) {
                     if (!showWorkspace(false)) {
                         // If we are already on the workspace, then manually reset all apps
                         mAppsView.reset();
@@ -1383,10 +1376,6 @@ public class Launcher extends BaseActivity
 
     public AllAppsContainerView getAppsView() {
         return mAppsView;
-    }
-
-    public WidgetsContainerView getWidgetsView() {
-        return mWidgetsView;
     }
 
     public Workspace getWorkspace() {
@@ -1468,11 +1457,6 @@ public class Launcher extends BaseActivity
                 mAppsView.reset();
             }
 
-            // Reset the widgets view
-            if (!alreadyOnHome && mWidgetsView != null) {
-                mWidgetsView.scrollToTop();
-            }
-
             if (mLauncherCallbacks != null) {
                 mLauncherCallbacks.onHomeIntent();
             }
@@ -1517,9 +1501,19 @@ public class Launcher extends BaseActivity
             outState.putInt(RUNTIME_STATE_CURRENT_SCREEN, mWorkspace.getNextPage());
 
         }
-        super.onSaveInstanceState(outState);
-
         outState.putInt(RUNTIME_STATE, mState.ordinal());
+
+
+        AbstractFloatingView widgets = AbstractFloatingView
+                .getOpenView(this, AbstractFloatingView.TYPE_WIDGETS_FULL_SHEET);
+        if (widgets != null) {
+            SparseArray<Parcelable> widgetsState = new SparseArray<>();
+            widgets.saveHierarchyState(widgetsState);
+            outState.putSparseParcelableArray(RUNTIME_STATE_WIDGET_PANEL, widgetsState);
+        } else {
+            outState.remove(RUNTIME_STATE_WIDGET_PANEL);
+        }
+
         // We close any open folders and shortcut containers since they will not be re-opened,
         // and we need to make sure this state is reflected.
         AbstractFloatingView.closeAllOpenViews(this, false);
@@ -1530,6 +1524,8 @@ public class Launcher extends BaseActivity
         if (mPendingActivityResult != null) {
             outState.putParcelable(RUNTIME_STATE_PENDING_ACTIVITY_RESULT, mPendingActivityResult);
         }
+
+        super.onSaveInstanceState(outState);
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onSaveInstanceState(outState);
@@ -2159,7 +2155,7 @@ public class Launcher extends BaseActivity
         if (mIsSafeModeEnabled) {
             Toast.makeText(this, R.string.safemode_widget_error, Toast.LENGTH_SHORT).show();
         } else {
-            showWidgetsView(true /* animated */, true /* resetPageToZero */);
+            WidgetsFullSheet.show(this, true /* animated */);
         }
     }
 
@@ -2557,24 +2553,6 @@ public class Launcher extends BaseActivity
     }
 
     /**
-     * Shows the widgets view.
-     */
-    void showWidgetsView(boolean animated, boolean resetPageToZero) {
-        if (LOGD) Log.d(TAG, "showWidgetsView:" + animated + " resetPageToZero:" + resetPageToZero);
-        if (resetPageToZero) {
-            mWidgetsView.scrollToTop();
-        }
-        showAppsOrWidgets(State.WIDGETS, animated);
-
-        mWidgetsView.post(new Runnable() {
-            @Override
-            public void run() {
-                mWidgetsView.requestFocus();
-            }
-        });
-    }
-
-    /**
      * Sets up the transition to show the apps/widgets view.
      *
      * @return whether the current from and to state allowed this operation
@@ -2642,7 +2620,6 @@ public class Launcher extends BaseActivity
                     // Before we show workspace, hide all apps again because
                     // exitSpringLoadedDragMode made it visible. This is a bit hacky; we should
                     // clean up our state transition functions
-                    mWidgetsView.setVisibility(View.GONE);
                     showWorkspace(true, onCompleteRunnable);
                 } else {
                     exitSpringLoadedDragMode();
@@ -2661,8 +2638,6 @@ public class Launcher extends BaseActivity
     public void exitSpringLoadedDragMode() {
         if (mState == State.APPS_SPRING_LOADED) {
             showAppsView(true /* animated */);
-        } else if (mState == State.WIDGETS_SPRING_LOADED) {
-            showWidgetsView(true, false);
         } else if (mState == State.WORKSPACE_SPRING_LOADED) {
             showWorkspace(true);
         }
@@ -2676,8 +2651,6 @@ public class Launcher extends BaseActivity
         // Populate event with a fake title based on the current state.
         if (mState == State.APPS) {
             text.add(getString(R.string.all_apps_button_label));
-        } else if (mState == State.WIDGETS) {
-            text.add(getString(R.string.widget_button_text));
         } else if (mWorkspace != null) {
             text.add(mWorkspace.getCurrentPageDescription());
         } else {
@@ -2777,7 +2750,11 @@ public class Launcher extends BaseActivity
      */
     public void startBinding() {
         TraceHelper.beginSection("startBinding");
-        AbstractFloatingView.closeAllOpenViews(this);
+        // Floating panels (except the full widget sheet) are associated with individual icons. If
+        // we are starting a fresh bind, close all such panels as all the icons are about
+        // to go away.
+        AbstractFloatingView.closeOpenViews(this, true,
+                AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_WIDGETS_FULL_SHEET);
 
         setWorkspaceLoading(true);
 
@@ -3388,7 +3365,8 @@ public class Launcher extends BaseActivity
     }
 
     @Override
-    public void bindAllWidgets(final MultiHashMap<PackageItemInfo, WidgetItem> allWidgets) {
+    public void bindAllWidgets(final ArrayList<WidgetListRowEntry> allWidgets) {
+        mPopupDataProvider.setAllWidgets(allWidgets);
         Runnable r = new RunnableWithId(RUNNABLE_ID_BIND_WIDGETS) {
             @Override
             public void run() {
@@ -3399,23 +3377,10 @@ public class Launcher extends BaseActivity
             return;
         }
 
-        if (mWidgetsView != null && allWidgets != null) {
-            Executor pendingExecutor = getPendingExecutor();
-            if (pendingExecutor != null && mState != State.WIDGETS) {
-                pendingExecutor.execute(r);
-                return;
-            }
-            mWidgetsView.setWidgets(allWidgets);
-        }
-
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
         if (topView != null) {
             topView.onWidgetsBound();
         }
-    }
-
-    public List<WidgetItem> getWidgetsForPackageUser(PackageUserKey packageUserKey) {
-        return mWidgetsView.getWidgetsForPackageUser(packageUserKey);
     }
 
     @Override

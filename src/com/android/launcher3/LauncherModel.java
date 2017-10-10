@@ -62,6 +62,7 @@ import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewOnDrawExecutor;
+import com.android.launcher3.widget.WidgetListRowEntry;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -153,7 +154,7 @@ public class LauncherModel extends BroadcastReceiver
         public void bindRestoreItemsChange(HashSet<ItemInfo> updates);
         public void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher);
         public void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
-        public void bindAllWidgets(MultiHashMap<PackageItemInfo, WidgetItem> widgets);
+        public void bindAllWidgets(ArrayList<WidgetListRowEntry> widgets);
         public void onPageBoundSynchronously(int page);
         public void executeOnNextDraw(ViewOnDrawExecutor executor);
         public void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMap);
