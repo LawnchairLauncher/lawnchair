@@ -17,7 +17,7 @@ public class UnicodeStrippedAppSearchAlgorithm extends DefaultAppSearchAlgorithm
     @Override
     protected boolean matches(AppInfo info, String query) {
         String title = UnicodeFilter.filter(info.title.toString().toLowerCase());
-        String strippedQuery = UnicodeFilter.filter(query);
+        String strippedQuery = UnicodeFilter.filter(query.trim());
         int queryLength = strippedQuery.length();
 
         if (title.length() < queryLength || queryLength <= 0) {
