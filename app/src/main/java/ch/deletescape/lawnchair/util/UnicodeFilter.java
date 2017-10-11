@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
  */
 public class UnicodeFilter {
     private static final Pattern DIACRITICS_PATTERN =
-            Pattern.compile("\\\\p{InCombiningDiacriticalMarks}+");
+            Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
 
     public static String filter(String source) {
         StringBuilder output = new StringBuilder(Normalizer.normalize(source, Normalizer.Form.NFD));
