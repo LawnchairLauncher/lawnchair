@@ -100,7 +100,7 @@ import ch.deletescape.lawnchair.accessibility.LauncherAccessibilityDelegate;
 import ch.deletescape.lawnchair.allapps.AllAppsContainerView;
 import ch.deletescape.lawnchair.allapps.AllAppsIconRowView;
 import ch.deletescape.lawnchair.allapps.AllAppsTransitionController;
-import ch.deletescape.lawnchair.allapps.DefaultAppSearchController;
+import ch.deletescape.lawnchair.allapps.UnicodeStrippedAppSearchController;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
@@ -1187,7 +1187,7 @@ public class Launcher extends Activity
         // Setup Apps and Widgets
         mAppsView = findViewById(R.id.apps_view);
         mWidgetsView = findViewById(R.id.widgets_view);
-        mAppsView.setSearchBarController(new DefaultAppSearchController());
+        mAppsView.setSearchBarController(new UnicodeStrippedAppSearchController());
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         mDragController.setDragScoller(mWorkspace);
