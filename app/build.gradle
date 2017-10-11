@@ -91,6 +91,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-awareness:11.2.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation 'com.pavelsikun:vintage-chroma:1.5'
+    implementation 'org.apache.commons:commons-lang3:3.6'
     implementation project(':launcherclient')
 }
 repositories {
