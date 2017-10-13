@@ -10,5 +10,5 @@ curl -F chat_id="152559768" -F document=@"proguard-$MAJOR_MINOR.$TRAVIS_BUILD_NU
 
 
 # Lawnfeed
-cp lawnfeed/build/outputs/apk/debug/app-debug.apk Lawnfeed-$MAJOR_MINOR.$TRAVIS_BUILD_NUMBER.apktxt
+cp lawnfeed/build/outputs/apk/debug/app-debug.apk Lawnfeed-$MAJOR_MINOR.$TRAVIS_BUILD_NUMBER.apk
 curl -F chat_id="-1001141434698" -F document=@"Lawnfeed-$MAJOR_MINOR.$TRAVIS_BUILD_NUMBER.apk" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
