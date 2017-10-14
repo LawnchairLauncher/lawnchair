@@ -916,7 +916,7 @@ public final class Utilities {
     }
 
     public static void showChangelog(Context context, boolean force) {
-        if (!BuildConfig.TRAVIS || BuildConfig.TAGGED_BUILD) return;
+        if (!BuildConfig.TRAVIS || BuildConfig.TAGGED_BUILD || !BuildConfig.DEBUG) return;
         final IPreferenceProvider prefs = getPrefs(context);
         if (force || BuildConfig.TRAVIS_BUILD_NUMBER != getPreviousBuildNumber(prefs)) {
             new AlertDialog.Builder(context)
