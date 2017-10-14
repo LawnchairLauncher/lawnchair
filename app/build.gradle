@@ -41,8 +41,8 @@ android {
         buildConfigField "boolean", "TRAVIS", System.getenv("TRAVIS") ?: "false"
         buildConfigField "boolean", "TAGGED_BUILD", System.getenv("TRAVIS_TAG") ? "true" : "false"
         buildConfigField "int", "TRAVIS_BUILD_NUMBER", System.getenv("TRAVIS_BUILD_NUMBER") ?: "0"
-        buildConfigField "String", "CHANGELOG", "\"${getChangelog()}\""
-        buildConfigField "String", "MOBILE_CENTER_KEY", "\"" + System.getenv("MOBILE_CENTER_KEY") + "\""
+        buildConfigField "String", "CHANGELOG", "null"
+        buildConfigField "String", "MOBILE_CENTER_KEY", "null"
 
         ext.awarenessApiKey = localProps.getProperty('awarenessApiKey') ?: System.getenv("AWARENESS_API_KEY")
         buildConfigField "boolean", "AWARENESS_API_ENABLED", ext.awarenessApiKey ? "true" : "false"
@@ -60,6 +60,9 @@ android {
     }
     buildTypes {
         debug {
+            buildConfigField "String", "CHANGELOG", "\"${getChangelog()}\""
+            buildConfigField "String", "MOBILE_CENTER_KEY", "\"" + System.getenv("MOBILE_CENTER_KEY") + "\""
+
             if (System.getenv("TRAVIS") == "true") {
                 minifyEnabled true
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
