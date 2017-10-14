@@ -1,3 +1,4 @@
+#!/usr/bin/env sh
 MERGE_PREFIX="Merge pull request"
 
 GIT_COMMIT_LOG="$(git log --format=%s $TRAVIS_COMMIT_RANGE)"
