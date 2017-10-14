@@ -205,7 +205,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                 }
             } else if (getContent() == R.xml.launcher_about_preferences) {
                 findPreference("about_version").setSummary(BuildConfig.VERSION_NAME);
-                if (BuildConfig.TRAVIS && !BuildConfig.TAGGED_BUILD && BuildConfig.DEBUG) {
+                if (BuildConfig.TRAVIS && !BuildConfig.TAGGED_BUILD) {
                     findPreference("about_changelog").setSummary(Utilities.getChangelog());
                 }
             } else if (getContent() == R.xml.launcher_behavior_preferences) {
