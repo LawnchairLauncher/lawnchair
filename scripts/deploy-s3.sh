@@ -6,11 +6,11 @@
 
 
 # Upload Lawnchair signed release apk
-cp app/release/app-release.apk Lawnchair-$MAJOR_MINOR.$TRAVIS_BUILD_NUMBER.apk
+cp app/build/outputs/apk/release/app-release.apk Lawnchair-$MAJOR_MINOR.$TRAVIS_BUILD_NUMBER.apk
 ./scripts/s3-upload.sh Lawnchair-$MAJOR_MINOR.$TRAVIS_BUILD_NUMBER.apk $S3_BUCKET $S3_HOST $S3_KEY $S3_SECRET
 
 # Upload calculated md5 checksum for app-release.apk
-md5sum $(readlink -f app/release/app-release.apk) > Lawnchair-$MAJOR_MINOR.$TRAVIS_BUILD_NUMBER.md5sum
+md5sum $(readlink -f app/build/outputs/apk/release/app-release.apk) > Lawnchair-$MAJOR_MINOR.$TRAVIS_BUILD_NUMBER.md5sum
 ./scripts/s3-upload.sh Lawnchair-$MAJOR_MINOR.$TRAVIS_BUILD_NUMBER.md5sum $S3_BUCKET $S3_HOST $S3_KEY $S3_SECRET
 
 # Upload Lawnfeed signed debug apk
