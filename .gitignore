@@ -5,6 +5,9 @@
 *.apk
 *.ap_
 
+# Calculated md5 checksums
+*.md5sum
+
 # Files for the ART/Dalvik VM
 *.dex
 
