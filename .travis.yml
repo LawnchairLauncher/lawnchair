@@ -18,6 +18,7 @@ before_install:
   - chmod a+x ./scripts/changelog.sh
 script:
   - bash ./gradlew assembleDebug check;
+  - bash ./gradlew app:assembleRelease check;
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
