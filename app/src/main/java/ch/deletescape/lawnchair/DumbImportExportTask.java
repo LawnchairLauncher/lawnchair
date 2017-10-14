@@ -31,14 +31,14 @@ public class DumbImportExportTask {
     public static void exportPrefs(Activity activity) {
         ApplicationInfo info = activity.getApplicationInfo();
         String dir = new ContextWrapper(activity).getCacheDir().getParent();
-        File prefs = new File(dir, "shared_prefs/" + info.packageName + ".prefs.xml");
+        File prefs = new File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml");
         exportFile(prefs, activity);
     }
 
     public static void importPrefs(Activity activity) {
         ApplicationInfo info = activity.getApplicationInfo();
         String dir = new ContextWrapper(activity).getCacheDir().getParent();
-        File prefs = new File(dir, "shared_prefs/" + info.packageName + ".prefs.xml");
+        File prefs = new File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml");
         importFile(prefs, activity);
     }
 

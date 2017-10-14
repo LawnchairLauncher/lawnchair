@@ -375,7 +375,7 @@ public class Launcher extends Activity
 
         setScreenOrientation();
 
-        if (!BuildConfig.MOBILE_CENTER_KEY.equalsIgnoreCase("null"))
+        if (BuildConfig.MOBILE_CENTER_KEY != null)
             MobileCenter.start(getApplication(), BuildConfig.MOBILE_CENTER_KEY, Analytics.class, Crashes.class, Distribute.class);
 
         LauncherAppState app = LauncherAppState.getInstance();
