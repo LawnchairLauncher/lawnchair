@@ -6,7 +6,7 @@ def getChangelog = { ->
     if (commitRange) {
         def stdout = new ByteArrayOutputStream()
         exec {
-            commandLine 'git', 'log', '-n', '4'
+            commandLine 'git', 'log', '--format=%s', commitRange
             standardOutput = stdout
         }
         return stdout.toString().trim().replace("\n", "\\n").replace("\"", "\\\"")
