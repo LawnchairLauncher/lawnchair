@@ -16,7 +16,7 @@
 
     <Preference
         android:title="@string/about_contributors_title"
-        android:summary="paphonb, fonix232" />
+        android:summary="paphonb, fonix232, divadsn, Rawi666" />
 
     <Preference
         android:title="@string/about_translators"
