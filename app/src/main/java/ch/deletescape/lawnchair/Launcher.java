@@ -82,11 +82,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.microsoft.azure.mobile.MobileCenter;
-import com.microsoft.azure.mobile.analytics.Analytics;
-import com.microsoft.azure.mobile.crashes.Crashes;
-import com.microsoft.azure.mobile.distribute.Distribute;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -374,9 +369,6 @@ public class Launcher extends Activity
         super.onCreate(savedInstanceState);
 
         setScreenOrientation();
-
-        if (BuildConfig.MOBILE_CENTER_KEY != null)
-            MobileCenter.start(getApplication(), BuildConfig.MOBILE_CENTER_KEY, Analytics.class, Crashes.class, Distribute.class);
 
         LauncherAppState app = LauncherAppState.getInstance();
         app.setMLauncher(this);
