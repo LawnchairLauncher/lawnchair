@@ -243,15 +243,17 @@
   <string name="label_voice_search">Căutare vocală</string>
   <string name="shortcuts_menu_with_notifications_description">%1$d comenzi rapide şi notifificări %2$d pentru %3$s</string>
   <string name="notifications_header">Notificări</string>
-  <string name="widgets_bottom_sheet_title">widget-uri %1$s</string>
+  <string name="widgets_bottom_sheet_title">Widget-uri %1$s</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair este un lansator creat de Till Kottmann (aka deletescape). E bazat pe Launcher3 din AOSP.</string>
   <string name="about_title">Despre</string>
   <string name="changelog_title">Jurnalul de modificări pentru a versiunea #%d</string>
-  <string name="week_day_format">%1$s:%2$s</string>
+  <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Set de pictograme</string>
   <string name="icon_pack_preference_summary">Selectaţi un set de pictograme</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Dock foloseste culori din fundal</string>
+  <string name="hotseat_show_arrow">Afişare săgeată</string>
+  <string name="hotseat_show_page_indicator">Afișare indicator de pagină</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Dock va fi colorat cu o culoare extrasă din fundal</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Dock va fi de culorat gri, dar ajustat de luminozitatea fundalului</string>
   <string name="transparent_hotseat_pref_title">Dock Translate</string>
@@ -259,6 +261,7 @@
   <string name="blur_pref_title">Activează blur</string>
   <string name="blur_pref_summary">Efectul de blur se aplică pe părţile interfaței\nNu e compatibil cu imagini de fundal live</string>
   <string name="blur_radius_pref_title">Rază blur</string>
+  <string name="pref_iconLabelsInTwoLines">Etichete pictograme în două linii</string>
   <string name="white_google_icon_pref_title">Utilizare pictogramă Google albă</string>
   <string name="hide_icon_labels_pref_title">Ascunde textul pictogramelor pe ecranul principal</string>
   <string name="hide_all_apps_icon_labels_pref_title">Ascunde textul pictogramelor în lista de aplicații</string>
@@ -269,7 +272,9 @@
   <string name="num_rows_pref_title">Numărul de rânduri</string>
   <string name="num_hotseat_icons_pref_title">Numărul de pictograme în dock</string>
   <string name="icon_scale_pref_title">Scală iconițe</string>
+  <string name="hotseat_height_scale">Scară înălţime</string>
   <string name="icon_text_scale_pref_title">Culoare textului de la pictogramă</string>
+  <string name="icon_text_padding_scale_pref_title">Scară umplere pictogramă</string>
   <string name="full_width_width_widgets_pref_title">Widget-uri de lăţime completă</string>
   <string name="full_width_widgets_pref_summary">Permite widget-urilor să se întindă pe toată lățimea fără să umple</string>
   <string name="notification_access_pref_title">Insigne de notificări și previzualizare</string>
@@ -295,12 +300,12 @@
   <string name="restart_lawnchair_pref_title">Reporniţi Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">Poate fi de ajutor în cazul în care unele setări nu sunt aplicate corect</string>
   <string name="rebuild_icondb_pref_title">Reconstruiți bază de date pictograme</string>
-  <string name="pinch_to_overview_pref_title">Ciupiți pentru prezentare generalâ</string>
+  <string name="pinch_to_overview_pref_title">Ciupiți pentru prezentare generală</string>
   <string name="pinch_to_overview_pref_summary">Ciupiţi pe ecranul de start pentru a deschide prezentarea generală</string>
   <string name="light_statusbar_pref_title">Bară de stare deschisă la culoare</string>
   <string name="light_statusbar_pref_force">Bara de stare va avea iconițe închise la culoare</string>
   <string name="light_statusbar_pref_off">Bara de stare va avea iconițe deschise la culoare</string>
-  <string name="haptic_feedback_pref_title">Activează vibrații</string>
+  <string name="haptic_feedback_pref_title">Activare vibrații</string>
   <string name="keep_scroll_state_pref_title">Memorează poziţia de parcurgere</string>
   <string name="keep_scroll_state_pref_summary">Salvează poziţia de parcurgere în sertarul de aplicații</string>
   <string name="home_opens_drawer_pref_title">Butonul Acasă deschide sertarul de aplicații</string>
@@ -334,7 +339,7 @@
   <string name="pull_down_notis">Arată notificările</string>
   <string name="pull_down_search">Deschide căutare</string>
   <string name="pull_down_apps_search">Căutați aplicații</string>
-  <string name="enable_screen_rotation">Permite rotirea ecranului</string>
+  <string name="enable_screen_rotation">Activaţi rotirea ecranului</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Import</string>
   <string name="backup_export_title">Export</string>
@@ -362,7 +367,7 @@
   <string name="enable_editing_pref_title">Permite editarea ecranului principal</string>
   <string name="pref_weather_provider">Furnizor vreme</string>
   <string name="loading">Se încarcă…</string>
-  <string name="icon_shape_override_label">Schimbă forma oictogramei</string>
+  <string name="icon_shape_override_label">Schimbă forma pictogramei</string>
   <string name="icon_shape_system_default">Nu schimba</string>
   <string name="icon_shape_none">Niciuna</string>
   <string name="icon_shape_square">Pătrat</string>
@@ -371,6 +376,8 @@
   <string name="icon_shape_circle">Cerc</string>
   <string name="icon_shape_teardrop">Lacrimă</string>
   <string name="animated_clock_icon_title">Pictogramă ceas animată</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Animare aplicații de ceas alternative</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Activați dacă nu utilizați Ceas Google ca aplicație implicită</string>
   <string name="about_summary_title">Rezumat</string>
   <string name="about_version">Versiune</string>
   <string name="about_icon_designer">Designer pictogramă aplicaţie</string>
@@ -391,7 +398,7 @@
   <string name="vertical_drawer_layout_pref_title">Afişare ca listă verticală</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
-  <string name="full_wday_month_day_no_year">ZZZZ, LLLL, z</string>
+  <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
   <string name="about_translators">Traducători</string>
   <string name="lock_desktop">Blocare desktop</string>
   <string name="lawnfeed_not_found">Lawnfeed neinstalat</string>
