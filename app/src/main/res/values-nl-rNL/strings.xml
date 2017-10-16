@@ -251,6 +251,8 @@
   <string name="icon_pack_preference_title">Pictogrammenpakket</string>
   <string name="icon_pack_preference_summary">Selecteer een pictogrammenpakket</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Favorietenbalk gebruikt achtergrondkleuren</string>
+  <string name="hotseat_show_arrow">Pijl weergeven</string>
+  <string name="hotseat_show_page_indicator">Pagina-indicator weergeven</string>
   <string name="hotseat_uses_extracted_colors_pref_on">De favorietenbalk zal de kleur van de achtergrond gebruiken</string>
   <string name="hotseat_uses_extracted_colors_pref_off">De favorietenbalk zal grijs zijn, maar aangepast op de helderheid van de achtergrond</string>
   <string name="transparent_hotseat_pref_title">Doorzichtige favorietenbalk</string>
@@ -258,6 +260,7 @@
   <string name="blur_pref_title">Blur inschakelen</string>
   <string name="blur_pref_summary">Blur effect toepassen op delen van de interface\nNiet compatibel met live wallpapers</string>
   <string name="blur_radius_pref_title">Blur intensiteit</string>
+  <string name="pref_iconLabelsInTwoLines">Pictogram labels op twee regels</string>
   <string name="white_google_icon_pref_title">Gebruik wit Google pictogram</string>
   <string name="hide_icon_labels_pref_title">Verberg pictogram labels op startscherm</string>
   <string name="hide_all_apps_icon_labels_pref_title">Pictogram labels verbergen in lade</string>
@@ -268,7 +271,9 @@
   <string name="num_rows_pref_title">Aantal rijen</string>
   <string name="num_hotseat_icons_pref_title">Aantal pictogrammen in favorietenbalk</string>
   <string name="icon_scale_pref_title">Pictogram grootte</string>
+  <string name="hotseat_height_scale">Hoogte schaal</string>
   <string name="icon_text_scale_pref_title">Pictogram tekstgrootte</string>
+  <string name="icon_text_padding_scale_pref_title">Pictogram opvulling schaal</string>
   <string name="full_width_width_widgets_pref_title">Volledige breedte widgets</string>
   <string name="full_width_widgets_pref_summary">Widgets toestaan de volledige breedte te omvatten</string>
   <string name="notification_access_pref_title">Notificatie pictogram en voorvertoning</string>
@@ -370,6 +375,8 @@
   <string name="icon_shape_circle">Cirkel</string>
   <string name="icon_shape_teardrop">Druppel</string>
   <string name="animated_clock_icon_title">Geanimeerd klok pictogram</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Alternatieve klok apps animeren</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Inschakelen als de Google Klok niet jouw standaard klok app is</string>
   <string name="about_summary_title">Samenvatting</string>
   <string name="about_version">Versie</string>
   <string name="about_icon_designer">App Pictogram Designer</string>
