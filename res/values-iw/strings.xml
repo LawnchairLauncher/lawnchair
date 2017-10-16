@@ -93,7 +93,7 @@
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"משנה את הצורה של הסמלים"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"לא ידוע"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"הסר"</string>
-    <string name="abandoned_search" msgid="891119232568284442">"חפש"</string>
+    <string name="abandoned_search" msgid="891119232568284442">"חיפוש"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"אפליקציה זו אינה מותקנת"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"האפליקציה של סמל זה אינה מותקנת. ניתן להסיר אותו, או לחפש את האפליקציה ולהתקין אותה ידנית."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"מוריד את <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> הושלמו"</string>

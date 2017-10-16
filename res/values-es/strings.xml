@@ -83,7 +83,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Para mostrar burbujas de notificación, activa las notificaciones de <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Cambiar ajustes"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Añadir icono a la pantalla de inicio"</string>
-    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Para nuevas aplicaciones"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Para aplicaciones nuevas"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Cambiar forma de los iconos"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Usar opción predeterminada del sistema"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Cuadrado"</string>

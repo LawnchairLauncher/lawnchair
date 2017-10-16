@@ -27,10 +27,10 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ਡਾਊਨਲੋਡ ਕੀਤਾ ਐਪ ਸੁਰੱਖਿਅਤ ਮੋਡ ਵਿੱਚ ਅਸਮਰਥਿਤ"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"ਵਿਜੇਟ ਸੁਰੱਖਿਅਤ ਮੋਡ ਵਿੱਚ ਅਸਮਰਥਿਤ"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"ਸ਼ਾਰਟਕੱਟ ਉਪਲਬਧ ਨਹੀਂ ਹੈ"</string>
-    <string name="home_screen" msgid="806512411299847073">"ਮੁੱਖ ਸਕ੍ਰੀਨ"</string>
-    <string name="custom_actions" msgid="3747508247759093328">"ਵਿਸ਼ੇਸ਼-ਵਿਉਂਤਬੱਧ ਕਾਰਵਾਈਆਂ"</string>
+    <string name="home_screen" msgid="806512411299847073">"ਹੋਮ ਸਕ੍ਰੀਨ"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"ਵਿਉਂਂਤੀ ਕਾਰਵਾਈਆਂ"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"ਇੱਕ ਵਿਜੇਟ ਚੁਣਨ ਲਈ ਛੋਹਵੋT &amp; ਹੋਲਡ ਕਰੋ।"</string>
-    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"ਡਬਲ-ਟੈਪ &amp; ਇੱਕ ਵਿਜੇਟ ਚੁਣਨ ਲਈ ਹੋਲਡ ਕਰੋ ਅਤੇ ਕਸਟਮ ਕਿਰਿਆਵਾਂ ਵਰਤੋ।"</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"ਇੱਕ ਵਿਜੇਟ ਚੁਣਨ ਲਈ ਜਾਂ ਵਿਉਂਂਤੀ ਕਾਰਵਾਈਆਂ ਵਰਤਣ ਲਈ ਦੋ ਵਾਰ ਟੈਪ ਕਰੋ ਅਤੇ ਦਬਾ ਕੇ ਰੱਖੋ।"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d ਚੌੜਾਈ ਅਤੇ %2$d ਲੰਬਾਈ"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"ਹੱਥੀਂ ਰੱਖਣ ਲਈ ਸਪੱਰਸ਼ ਕਰੋ ਅਤੇ ਦਬਾਈ ਰੱਖੋ"</string>
@@ -45,15 +45,15 @@
     <string name="all_apps_button_label" msgid="8130441508702294465">"ਐਪ ਸੂਚੀ"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"ਹੋਮ"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"ਹਟਾਓ"</string>
-    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"ਸਥਾਪਨਾ ਰੱਦ ਕਰੋ"</string>
+    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"ਅਣਸਥਾਪਤ ਕਰੋ"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ਐਪ ਜਾਣਕਾਰੀ"</string>
-    <string name="permlab_install_shortcut" msgid="5632423390354674437">"ਸ਼ਾਰਟਕੱਟ ਇੰਸਟੌਲ ਕਰੋ"</string>
-    <string name="permdesc_install_shortcut" msgid="923466509822011139">"ਇੱਕ ਐਪ ਨੂੰ ਉਪਭੋਗਤਾ ਦੇ ਦਖ਼ਲ ਤੋਂ ਬਿਨਾਂ ਸ਼ਾਰਟਕੱਟ ਜੋੜਨ ਦੀ ਆਗਿਆ ਦਿੰਦਾ ਹੈ।"</string>
+    <string name="permlab_install_shortcut" msgid="5632423390354674437">"ਸ਼ਾਰਟਕੱਟ ਸਥਾਪਤ ਕਰੋ"</string>
+    <string name="permdesc_install_shortcut" msgid="923466509822011139">"ਇੱਕ ਐਪ ਨੂੰ ਵਰਤੋਂਕਾਰ ਦੇ ਦਖ਼ਲ ਤੋਂ ਬਿਨਾਂ ਸ਼ਾਰਟਕੱਟ ਸ਼ਾਮਲ ਕਰਨ ਦੀ ਆਗਿਆ ਦਿੰਦਾ ਹੈ।"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"ਹੋਮ ਸੈਟਿੰਗਾਂ ਅਤੇ ਸ਼ਾਰਟਕੱਟ ਪੜ੍ਹੋ"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"ਐਪ ਨੂੰ ਹੋਮ ਵਿੱਚ ਸੈਟਿੰਗਾਂ ਅਤੇ ਸ਼ਾਰਟਕੱਟ ਪੜ੍ਹਨ ਦੀ ਆਗਿਆ ਦਿੰਦਾ ਹੈ।"</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"ਹੋਮ ਸੈਟਿੰਗਾਂ ਅਤੇ ਸ਼ਾਰਟਕੱਟ ਲਿਖੋ"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"ਐਪ ਨੂੰ ਹੋਮ ਵਿੱਚ ਸੈਟਿੰਗਾਂ ਅਤੇ ਸ਼ਾਰਟਕੱਟ ਬਦਲਣ ਦੀ ਆਗਿਆ ਦਿੰਦਾ ਹੈ।"</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ਨੂੰ ਫੋਨ ਕਾਲਾਂ ਕਰਨ ਦੀ ਆਗਿਆ ਨਹੀਂ ਹੈ"</string>
+    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ਨੂੰ ਫ਼ੋਨ ਕਾਲਾਂ ਕਰਨ ਦੀ ਆਗਿਆ ਨਹੀਂ ਹੈ"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"ਵਿਜੇਟ ਲੋਡ ਕਰਨ ਵਿੱਚ ਸਮੱਸਿਆ"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"ਸਥਾਪਤ ਕਰੋ"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ਇਹ ਇੱਕ ਸਿਸਟਮ ਐਪ ਹੈ ਅਤੇ ਇਸਨੂੰ ਅਣਇੰਸਟੌਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ।"</string>
@@ -73,47 +73,47 @@
     <string name="settings_button_text" msgid="8873672322605444408">"ਹੋਮ ਸੈਟਿੰਗਾਂ"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ਤੁਹਾਡੇ ਪ੍ਰਸ਼ਾਸਕ ਦੁਆਰਾ ਅਯੋਗ ਬਣਾਈ ਗਈ"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"ਰੂਪ-ਰੇਖਾ"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"ਮੁੱਖ ਸਕ੍ਰੀਨ ਨੂੰ ਘੁੰਮਾਉਣ ਦੀ ਆਗਿਆ ਦਿਓ"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"ਹੋਮ ਸਕ੍ਰੀਨ ਨੂੰ ਘੁੰਮਾਉਣ ਦੀ ਆਗਿਆ ਦਿਓ"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ਜਦੋਂ ਫ਼ੋਨ ਘੁੰਮਾਇਆ ਜਾਂਦਾ ਹੈ"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"ਵਰਤਮਾਨ ਡਿਸਪਲੇ ਸੈਟਿੰਗ ਘੁੰਮਾਉਣ ਦੀ ਇਜਾਜ਼ਤ ਨਹੀਂ ਦਿੰਦੀ ਹੈ"</string>
     <string name="icon_badging_title" msgid="874121399231955394">"ਸੂਚਨਾ ਬਿੰਦੂ"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"ਚਾਲੂ"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"ਬੰਦ"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"ਸੂਚਨਾ ਪਹੁੰਚ ਲੋੜੀਂਦੀ ਹੈ"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"ਸੂਚਨਾ ਬਿੰਦੀਆਂ ਦਿਖਾਉਣ ਲਈ, <xliff:g id="NAME">%1$s</xliff:g> ਲਈ ਐਪ ਸੂਚਨਾਵਾਂ ਚਾਲੂ ਕਰੋ"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"ਸੂਚਨਾ ਬਿੰਦੂਆਂ ਦਿਖਾਉਣ ਲਈ, <xliff:g id="NAME">%1$s</xliff:g> ਲਈ ਐਪ ਸੂਚਨਾਵਾਂ ਚਾਲੂ ਕਰੋ"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ਸੈਟਿੰਗਾਂ ਬਦਲੋ"</string>
-    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ਮੁੱਖ ਸਕ੍ਰੀਨ \'ਤੇ ਪ੍ਰਤੀਕ ਸ਼ਾਮਲ ਕਰੋ"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਪ੍ਰਤੀਕ ਸ਼ਾਮਲ ਕਰੋ"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ਨਵੀਆਂ ਐਪਾਂ ਲਈ"</string>
-    <string name="icon_shape_override_label" msgid="2977264953998281004">"ਆਈਕਨ ਦੀ ਆਕ੍ਰਿਤੀ ਬਦਲੋ"</string>
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"ਪ੍ਰਤੀਕ ਦੀ ਆਕ੍ਰਿਤੀ ਬਦਲੋ"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"ਸਿਸਟਮ ਦੀ ਪੂਰਵ-ਨਿਰਧਾਰਤ ਸੈਟਿੰਗ ਵਰਤੋ"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"ਵਰਗ"</string>
     <string name="icon_shape_squircle" msgid="5658049910802669495">"ਵਰਗਾਕਾਰ-ਚੱਕਰ"</string>
     <string name="icon_shape_circle" msgid="6550072265930144217">"ਚੱਕਰ"</string>
     <string name="icon_shape_teardrop" msgid="4525869388200835463">"ਹੰਝੂ ਦੀ ਬੂੰਦ"</string>
-    <string name="icon_shape_override_progress" msgid="3461735694970239908">"ਆਈਕਨ ਦੀ ਆਕ੍ਰਿਤੀ ਵਿੱਚ ਤਬਦੀਲੀਆਂ ਨੂੰ ਲਾਗੂ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"</string>
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"ਪ੍ਰਤੀਕ ਦੀ ਆਕ੍ਰਿਤੀ ਵਿੱਚ ਤਬਦੀਲੀਆਂ ਨੂੰ ਲਾਗੂ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"ਅਗਿਆਤ"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ਹਟਾਓ"</string>
     <string name="abandoned_search" msgid="891119232568284442">"ਖੋਜੋ"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ਇਹ ਐਪ ਇੰਸਟੌਲ ਨਹੀਂ ਕੀਤਾ ਹੋਇਆ ਹੈ।"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ਇਸ ਆਈਕਨ ਲਈ ਐਪ ਇੰਸਟੌਲ ਨਹੀਂ ਕੀਤਾ ਹੋਇਆ ਹੈ। ਤੁਸੀਂ ਇਸਨੂੰ ਹਟਾ ਸਕਦੇ ਹੋ ਜਾਂ ਐਪ ਖੋਜ ਸਕਦੇ ਹੋ ਅਤੇ ਇਸਨੂੰ ਮੈਨੂਅਲੀ ਇੰਸਟੌਲ ਕਰ ਸਕਦੇ ਹੋ।"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ਇਸ ਪ੍ਰਤੀਕ ਲਈ ਐਪ ਸਥਾਪਤ ਨਹੀਂ ਕੀਤਾ ਹੋਇਆ ਹੈ। ਤੁਸੀਂ ਇਸਨੂੰ ਹਟਾ ਸਕਦੇ ਹੋ ਜਾਂ ਐਪ ਖੋਜ ਸਕਦੇ ਹੋ ਅਤੇ ਇਸਨੂੰ ਮੈਨੂਅਲੀ ਸਥਾਪਤ ਕਰ ਸਕਦੇ ਹੋ।"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ਡਾਉਨਲੋਡ ਹੋਰ ਰਿਹਾ ਹੈ, <xliff:g id="PROGRESS">%2$s</xliff:g> ਸੰਪੂਰਣ"</string>
-    <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ਸਥਾਪਿਤ ਕਰਨ ਦੀ ਉਡੀਕ ਕਰ ਰਿਹਾ ਹੈ"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ਸਥਾਪਤ ਕਰਨ ਦੀ ਉਡੀਕ ਕਰ ਰਿਹਾ ਹੈ"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> ਵਿਜੇਟ"</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"ਹੋਮ ਸਕ੍ਰੀਨ ਵਿੱਚ ਜੋੜੋ"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"ਹੋਮ ਸਕ੍ਰੀਨ ਵਿੱਚ ਸ਼ਾਮਲ ਕਰੋ"</string>
     <string name="action_move_here" msgid="2170188780612570250">"ਆਈਟਮ ਨੂੰ ਇੱਥੇ ਮੂਵ ਕਰੋ"</string>
-    <string name="item_added_to_workspace" msgid="4211073925752213539">"ਆਈਟਮ ਨੂੰ ਮੁੱਖ ਸਕ੍ਰੀਨ ਵਿੱਚ ਜੋੜਿਆ ਗਿਆ"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"ਆਈਟਮ ਨੂੰ ਹੋਮ ਸਕ੍ਰੀਨ ਵਿੱਚ ਜੋੜਿਆ ਗਿਆ"</string>
     <string name="item_removed" msgid="851119963877842327">"ਅਈਟਮ ਹਟਾਈ ਗਈ"</string>
     <string name="action_move" msgid="4339390619886385032">"ਆਈਟਮ ਨੂੰ ਮੂਵ ਕਰੋ"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"ਕਤਾਰ <xliff:g id="NUMBER_0">%1$s</xliff:g> ਕਾਲਮ <xliff:g id="NUMBER_1">%2$s</xliff:g> ਵਿੱਚ ਮੂਵ ਕਰੋ"</string>
     <string name="move_to_position" msgid="6750008980455459790">"ਸਥਿਤੀ <xliff:g id="NUMBER">%1$s</xliff:g> ਵਿੱਚ ਮੂਵ ਕਰੋ"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"ਮਨਪਸੰਦ ਸਥਿਤੀ <xliff:g id="NUMBER">%1$s</xliff:g> ਵਿੱਚ ਮੂਵ ਕਰੋ"</string>
     <string name="item_moved" msgid="4606538322571412879">"ਆਈਟਮ ਮੂਵ ਕੀਤੀ ਗਈ"</string>
-    <string name="add_to_folder" msgid="9040534766770853243">"ਇਸ ਫੋਲਡਰ ਵਿੱਚ ਜੋੜੋ: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="add_to_folder_with_app" msgid="4534929978967147231">"<xliff:g id="NAME">%1$s</xliff:g> ਦੇ ਨਾਲ ਫੋਲਡਰ ਵਿੱਚ ਜੋੜੋ"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"ਇਸ ਫੋਲਡਰ ਵਿੱਚ ਸ਼ਾਮਲ ਕਰੋ: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"<xliff:g id="NAME">%1$s</xliff:g> ਦੇ ਨਾਲ ਫੋਲਡਰ ਵਿੱਚ ਸ਼ਾਮਲ ਕਰੋ"</string>
     <string name="added_to_folder" msgid="4793259502305558003">"ਆਈਟਮ ਨੂੰ ਫੋਲਡਰ ਵਿੱਚ ਜੋੜਿਆ ਗਿਆ"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"ਇਸਦੇ ਨਾਲ ਫੋਲਡਰ ਬਣਾਓ: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"ਫੋਲਡਰ ਬਣਾਇਆ ਗਿਆ"</string>
-    <string name="action_move_to_workspace" msgid="1603837886334246317">"ਮੁੱਖ ਸਕ੍ਰੀਨ ਵਿੱਚ ਮੂਵ ਕਰੋ"</string>
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"ਹੋਮ ਸਕ੍ਰੀਨ ਵਿੱਚ ਮੂਵ ਕਰੋ"</string>
     <string name="action_move_screen_left" msgid="8854216831569401665">"ਸਕ੍ਰੀਨ ਨੂੰ ਖੱਬੇ ਮੂਵ ਕਰੋ"</string>
     <string name="action_move_screen_right" msgid="329334910274311123">"ਸਕ੍ਰੀਨ ਨੂੰ ਸੱਜੇ ਮੂਵ ਕਰੋ"</string>
     <string name="screen_moved" msgid="266230079505650577">"ਸਕ੍ਰੀਨ ਨੂੰ ਮੂਵ ਕੀਤਾ ਗਿਆ"</string>
