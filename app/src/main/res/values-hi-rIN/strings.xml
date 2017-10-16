@@ -251,6 +251,8 @@
   <string name="icon_pack_preference_title">आइकन पैक</string>
   <string name="icon_pack_preference_summary">Select an icon Pack</string>
   <string name="hotseat_uses_extracted_colors_pref_title">डॉक वॉलपेपर के रंग का उपयोग करेगा</string>
+  <string name="hotseat_show_arrow">तीर दिखाएँ</string>
+  <string name="hotseat_show_page_indicator">पृष्ठ संकेतक दिखाएँ</string>
   <string name="hotseat_uses_extracted_colors_pref_on">वॉलपेपर से निकाली गई एक रंग के साथ डॉक का रंग हो जाएगा</string>
   <string name="hotseat_uses_extracted_colors_pref_off">डॉक का रंग ग्रे होगा, लेकिन वॉलपेपरकी चमक के साथ घुलमिल जायेगा</string>
   <string name="transparent_hotseat_pref_title">पारदर्शी डॉक</string>
@@ -269,7 +271,9 @@
   <string name="num_rows_pref_title">पंक्तियों की संख्या</string>
   <string name="num_hotseat_icons_pref_title">डोक में चिह्नों की संख्या</string>
   <string name="icon_scale_pref_title">आइकोन स्केल</string>
+  <string name="hotseat_height_scale">ऊँचाई पैमाने</string>
   <string name="icon_text_scale_pref_title">आइकोन लेबल स्केल</string>
+  <string name="icon_text_padding_scale_pref_title">चिह्न भराई मापक</string>
   <string name="full_width_width_widgets_pref_title">पूर्ण चौड़ाई विजेट</string>
   <string name="full_width_widgets_pref_summary">पैडिंग बिना पूरी चौड़ाई से अधिक अवधि के लिए विजेट की अनुमति दें</string>
   <string name="notification_access_pref_title">अधिसूचना बैज और पूर्वावलोकन</string>
