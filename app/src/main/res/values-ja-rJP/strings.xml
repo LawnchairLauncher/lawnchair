@@ -250,6 +250,8 @@
   <string name="icon_pack_preference_title">アイコンパック</string>
   <string name="icon_pack_preference_summary">アイコンパックを選択</string>
   <string name="hotseat_uses_extracted_colors_pref_title">ドックは壁紙の色を使用します</string>
+  <string name="hotseat_show_arrow">矢印を表示</string>
+  <string name="hotseat_show_page_indicator">ページインジケーターを表示</string>
   <string name="hotseat_uses_extracted_colors_pref_on">ドックは、壁紙から抽出された色で着色されます。</string>
   <string name="hotseat_uses_extracted_colors_pref_off">ドックはグレーの色になりますが、壁紙の明るさによって調整されます。</string>
   <string name="transparent_hotseat_pref_title">透明なドック</string>
@@ -257,6 +259,7 @@
   <string name="blur_pref_title">ぼかしを有効にする</string>
   <string name="blur_pref_summary">ぼかし効果を部分的にインターフェースに適用します\nまたライブ壁紙とは互換性はありません</string>
   <string name="blur_radius_pref_title">ぼかしの範囲</string>
+  <string name="pref_iconLabelsInTwoLines">アイコンラベルを2行で表示</string>
   <string name="white_google_icon_pref_title">白いGoogleアイコンを使用する</string>
   <string name="hide_icon_labels_pref_title">ホーム画面のアイコンラベルを非表示にする</string>
   <string name="hide_all_apps_icon_labels_pref_title">ドロワーでアイコンラベルを表示しない</string>
@@ -267,7 +270,9 @@
   <string name="num_rows_pref_title">行数</string>
   <string name="num_hotseat_icons_pref_title">ドック内のアイコン数</string>
   <string name="icon_scale_pref_title">アイコンスケール</string>
+  <string name="hotseat_height_scale">高さの単位</string>
   <string name="icon_text_scale_pref_title">アイコンのテキストスケール</string>
+  <string name="icon_text_padding_scale_pref_title">アイコンの空き単位</string>
   <string name="full_width_width_widgets_pref_title">全幅ウィジェット</string>
   <string name="full_width_widgets_pref_summary">ウィジェットがパディングなしで幅全体にまたがることを許可する</string>
   <string name="notification_access_pref_title">通知バッジとプレビュー</string>
@@ -280,9 +285,9 @@
   <string name="general_pref_summary">ホーム画面、ドック、ドロワーの設定</string>
   <string name="pixel_ui_pref_summary">Pixel Launcherの特徴的な機能を有効にします</string>
   <string name="backup_pref_title">バックアップ</string>
-  <string name="behavior_pref_summary">Lawnchair の動作を変更</string>
+  <string name="behavior_pref_summary">Lawnchairの動作設定を変更します</string>
   <string name="backup_pref_summary">データベースと設定をバックアップ</string>
-  <string name="debug_pref_summary">ランチャーの再起動またはアイコンデータベースの再構築</string>
+  <string name="debug_pref_summary">再起動またはアイコンデータベースの再構築</string>
   <string name="show_pixel_bar_pref_title">Pixelのトップバーを表示する</string>
   <string name="use_wide_searchbar_pref_title">ワイド検索バーを使用する</string>
   <string name="show_mic_pref_title">Google アシスタントボタンを表示する</string>
@@ -306,10 +311,10 @@
   <string name="show_hidden_pref_title">隠しアプリを表示する</string>
   <string name="show_hidden_pref_on">非表示のアプリケーションが表示され、表示設定が変更されます</string>
   <string name="show_hidden_pref_off">隠しアプリは表示されません</string>
-  <string name="export_db_title">Export database</string>
-  <string name="import_db_title">Import database</string>
-  <string name="export_prefs_title">Export settings</string>
-  <string name="import_prefs_title">Import settings</string>
+  <string name="export_db_title">データベース</string>
+  <string name="import_db_title">データベース</string>
+  <string name="export_prefs_title">設定</string>
+  <string name="import_prefs_title">設定</string>
   <string name="notification_listener_label">Lawnchair - 通知バッジ</string>
   <string name="color_extraction_label">Lawnchair - 色の抽出</string>
   <string name="test_title">テスト</string>
@@ -369,6 +374,8 @@
   <string name="icon_shape_circle">サークル</string>
   <string name="icon_shape_teardrop">涙形</string>
   <string name="animated_clock_icon_title">時計アイコンのアニメーション</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">別の時計アプリをアニメーション化</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">既定の時計アプリとしてGoogle 時計を使用しない場合は有効にしてください</string>
   <string name="about_summary_title">概要</string>
   <string name="about_version">バージョン</string>
   <string name="about_icon_designer">アイコンデザイナー</string>
@@ -385,7 +392,7 @@
   <string name="pref_all_apps_label_color_variation">アプリドロワーのアイコンラベルの色の変化</string>
   <string name="pref_all_apps_label_color">ドロワーのアイコンラベルの色</string>
   <string name="pref_num_rows_drawer">ドロワーの行数</string>
-  <string name="center_wallpaper_pref_title">ページが1つだけの場合は壁紙を中心位置にする</string>
+  <string name="center_wallpaper_pref_title">ページが1つの場合は壁紙を中心位置にする</string>
   <string name="vertical_drawer_layout_pref_title">縦リストとして表示</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
