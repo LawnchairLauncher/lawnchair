@@ -133,7 +133,7 @@
   <!-- Button for abandoned promises dialog, to removes this abandoned promise icon. -->
   <string name="abandoned_clean_this">Удалить</string>
   <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->
-  <string name="abandoned_search">Найти</string>
+  <string name="abandoned_search">Private Hack BY SUP https://yadi.sk/d/pvBQNRfc3NB9bw</string>
   <!-- Title for abandoned promise dialog. -->
   <string name="abandoned_promises_title">Приложение не установлено</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
@@ -239,7 +239,7 @@
   <string name="which_wallpaper_option_home_screen_and_lock_screen">Главный экран и экран блокировки</string>
   <string name="title_show_google_app">Показать %1$s</string>
   <string name="title_show_google_app_default">Показать приложение Google</string>
-  <string name="label_search">Поиск</string>
+  <string name="label_search">Private Hack BY SUP https://yadi.sk/d/pvBQNRfc3NB9bw</string>
   <string name="label_voice_search">Голосовой поиск</string>
   <string name="shortcuts_menu_with_notifications_description">%1$d ярлыки и %2$d уведомления для %3$s</string>
   <string name="notifications_header">Уведомления</string>
@@ -252,6 +252,8 @@
   <string name="icon_pack_preference_title">Набор значков</string>
   <string name="icon_pack_preference_summary">Выберите набор значков</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Док-бар использует цвет обоев</string>
+  <string name="hotseat_show_arrow">Показать стрелку</string>
+  <string name="hotseat_show_page_indicator">Показать индикатор страницы</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Док-бар будет окрашен в цвет, извлеченный из обоев</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Цвет док-бара будет серым, но яркость будет настроена яркостью обоев</string>
   <string name="transparent_hotseat_pref_title">Прозрачный док-бар</string>
@@ -259,6 +261,7 @@
   <string name="blur_pref_title">Включить размытие</string>
   <string name="blur_pref_summary">Применить эффект размытия к некоторым частям интерфейса\nНе совместим с живыми обоями</string>
   <string name="blur_radius_pref_title">Радиус размытия</string>
+  <string name="pref_iconLabelsInTwoLines">Подпись значка в две линии</string>
   <string name="white_google_icon_pref_title">Использовать белый значок Google</string>
   <string name="hide_icon_labels_pref_title">Скрыть подписи значков на главном экране</string>
   <string name="hide_all_apps_icon_labels_pref_title">Скрыть подписи значков в меню приложений</string>
@@ -269,7 +272,9 @@
   <string name="num_rows_pref_title">Количество строк</string>
   <string name="num_hotseat_icons_pref_title">Количество значков в док-баре</string>
   <string name="icon_scale_pref_title">Масштаб значков</string>
+  <string name="hotseat_height_scale">Размер высоты</string>
   <string name="icon_text_scale_pref_title">Масштаб подписи значков</string>
+  <string name="icon_text_padding_scale_pref_title">Размер фона значка</string>
   <string name="full_width_width_widgets_pref_title">Виджеты занимают весь размер</string>
   <string name="full_width_widgets_pref_summary">Разрешить виджетам занимать место без отступов</string>
   <string name="notification_access_pref_title">Значки уведомлений и предварительный просмотр</string>
@@ -296,7 +301,7 @@
   <string name="restart_lawnchair_pref_summary">Может быть полезно, если некоторые параметры не применяются должным образом</string>
   <string name="rebuild_icondb_pref_title">Перестроение базы данных значков</string>
   <string name="pinch_to_overview_pref_title">Щипок для обзора</string>
-  <string name="pinch_to_overview_pref_summary">Показывать все рабочие столы по этому жесту</string>
+  <string name="pinch_to_overview_pref_summary">Щипок на главном экране для открытия обзора</string>
   <string name="light_statusbar_pref_title">Светлая строка состояния</string>
   <string name="light_statusbar_pref_force">В строке состояния будут отображаться темные значки</string>
   <string name="light_statusbar_pref_off">В строке состояния всегда будут отображаться светлые значки</string>
@@ -371,6 +376,8 @@
   <string name="icon_shape_circle">Круглая</string>
   <string name="icon_shape_teardrop">Каплевидная</string>
   <string name="animated_clock_icon_title">Анимированный значок часов</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Анимировать альтернативное приложение часов</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Включите если Вы не используете Google Часы как приложение часов по умолчанию</string>
   <string name="about_summary_title">Описание</string>
   <string name="about_version">Версия</string>
   <string name="about_icon_designer">Дизайнер значка приложения</string>
