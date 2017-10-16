@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 MERGE_PREFIX="Merge pull request"
 
-GIT_COMMIT_LOG="$(git log --format=%s $TRAVIS_COMMIT_RANGE)"
+GIT_COMMIT_LOG="$(git log git log --format=\"%s by %cn\" $TRAVIS_COMMIT_RANGE)"
 
 echo " <b>Changelog for build ${MAJOR_MINOR}.${TRAVIS_BUILD_NUMBER}</b>${NEWLINE}"
 
