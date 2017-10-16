@@ -250,6 +250,8 @@
   <string name="icon_pack_preference_title">Paket Ikon</string>
   <string name="icon_pack_preference_summary">Pilih paket ikon</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Dock menggunakan warna wallpaper</string>
+  <string name="hotseat_show_arrow">Tampilkan panah</string>
+  <string name="hotseat_show_page_indicator">Tampilkan halaman indikator</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Dock akan diwarnai dengan warna yang diekstrak dari wallpaper</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Dock akan berwarna abu-abu, tetapi disesuaikan dengan kecerahan wallpaper</string>
   <string name="transparent_hotseat_pref_title">Dock Transparan</string>
@@ -268,7 +270,9 @@
   <string name="num_rows_pref_title">Jumlah baris</string>
   <string name="num_hotseat_icons_pref_title">Jumlah ikon di dock</string>
   <string name="icon_scale_pref_title">Skala ikon</string>
+  <string name="hotseat_height_scale">Skala tinggi</string>
   <string name="icon_text_scale_pref_title">Skala teks ikon</string>
+  <string name="icon_text_padding_scale_pref_title">Skala bantalan ikon</string>
   <string name="full_width_width_widgets_pref_title">Widget lebar penuh</string>
   <string name="full_width_widgets_pref_summary">Izinkan widget untuk menjangkau seluruh lebar tanpa bantalan</string>
   <string name="notification_access_pref_title">Pemberitahuan lencana dan Tinjauan</string>
@@ -370,6 +374,8 @@
   <string name="icon_shape_circle">Lingkaran</string>
   <string name="icon_shape_teardrop">Titik air</string>
   <string name="animated_clock_icon_title">Ikon jam animasi</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Animasikan aplikasi jam alternatif</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Aktifkan ini jika anda tidak menggunakan Google Clock sebagai aplikasi jam bawaan anda</string>
   <string name="about_summary_title">Ringkasan</string>
   <string name="about_version">Versi</string>
   <string name="about_icon_designer">Perancang Ikon App</string>
