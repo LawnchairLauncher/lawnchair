@@ -252,6 +252,8 @@
   <string name="icon_pack_preference_title">Balíček ikon</string>
   <string name="icon_pack_preference_summary">Vyberte balíček ikon</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Dok používá barvy tapety</string>
+  <string name="hotseat_show_arrow">Zobrazit šipku</string>
+  <string name="hotseat_show_page_indicator">Zobrazit indikátor stránky</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Dok bude zbarvený barvou extrahovanou z tapety</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Dok bude zbarvený do šeda, ale jas bude nastaven podle tapety plochy</string>
   <string name="transparent_hotseat_pref_title">Průhledný dok</string>
@@ -270,7 +272,9 @@
   <string name="num_rows_pref_title">Počet řádků</string>
   <string name="num_hotseat_icons_pref_title">Počet zástupců v doku</string>
   <string name="icon_scale_pref_title">Velikost ikon</string>
+  <string name="hotseat_height_scale">Měřítko výšky</string>
   <string name="icon_text_scale_pref_title">Velikost textu ikon</string>
+  <string name="icon_text_padding_scale_pref_title">Ikona stupnice odsazení</string>
   <string name="full_width_width_widgets_pref_title">Widgety s plnou šířkou</string>
   <string name="full_width_widgets_pref_summary">Povolte widgetům pokrývat celou šířku bez odsazení</string>
   <string name="notification_access_pref_title">Zobrazení oznámení a náhledů</string>
