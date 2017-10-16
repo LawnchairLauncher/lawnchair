@@ -177,13 +177,11 @@ public class UserEventDispatcher {
     }
 
     public void logActionCommand(int command, int containerType) {
-        logActionCommand(command, containerType, 0);
+        logActionCommand(command, newContainerTarget(containerType));
     }
 
-    public void logActionCommand(int command, int containerType, int pageIndex) {
-        LauncherEvent event = newLauncherEvent(
-                newCommandAction(command), newContainerTarget(containerType));
-        event.srcTarget[0].pageIndex = pageIndex;
+    public void logActionCommand(int command, Target target) {
+        LauncherEvent event = newLauncherEvent(newCommandAction(command), target);
         dispatchUserEvent(event, null);
     }
 

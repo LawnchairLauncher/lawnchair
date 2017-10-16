@@ -16,6 +16,9 @@
 
 package com.android.launcher3.folder;
 
+import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -44,8 +47,6 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.Themes;
 
 import java.util.List;
-
-import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 
 /**
  * Manages the opening and closing animations for a {@link Folder}.
@@ -77,19 +78,6 @@ public class FolderAnimationManager {
 
     private final PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0, 0);
 
-    private static final Property<View, Float> SCALE_PROPERTY =
-            new Property<View, Float>(Float.class, "scale") {
-                @Override
-                public Float get(View view) {
-                    return view.getScaleX();
-                }
-
-                @Override
-                public void set(View view, Float scale) {
-                    view.setScaleX(scale);
-                    view.setScaleY(scale);
-                }
-            };
 
     public FolderAnimationManager(Folder folder, boolean isOpening) {
         mFolder = folder;

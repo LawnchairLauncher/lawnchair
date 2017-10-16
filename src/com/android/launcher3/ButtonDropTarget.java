@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_NEXT_FRAME;
+
 import android.animation.AnimatorSet;
 import android.animation.FloatArrayEvaluator;
 import android.animation.ObjectAnimator;
@@ -229,7 +231,7 @@ public abstract class ButtonDropTarget extends TextView
             public void run() {
                 completeDrop(d);
                 mDropTargetBar.onDragEnd();
-                mLauncher.exitSpringLoadedDragMode(true, 0);
+                mLauncher.exitSpringLoadedDragMode(SPRING_LOADED_EXIT_NEXT_FRAME);
             }
         };
         dragLayer.animateView(d.dragView, from, to, scale, 1f, 1f, 0.1f, 0.1f,

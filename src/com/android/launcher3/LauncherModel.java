@@ -134,7 +134,7 @@ public class LauncherModel extends BroadcastReceiver
         }
     };
 
-    public interface Callbacks extends LauncherAppWidgetHost.ProviderChangedListener {
+    public interface Callbacks {
         public boolean setLoadOnResume();
         public int getCurrentWorkspaceScreen();
         public void clearPendingBinds();
