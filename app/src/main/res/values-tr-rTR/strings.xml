@@ -251,6 +251,8 @@
   <string name="icon_pack_preference_title">Simge Paketi</string>
   <string name="icon_pack_preference_summary">Simge paketini seçin</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Alt panel duvar kağıdı renklerini kullanır</string>
+  <string name="hotseat_show_arrow">Oku göster</string>
+  <string name="hotseat_show_page_indicator">Sayfa göstergesini göster</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Alt panel duvar kağıdından alınan bir renkle renklendirilir</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Alt panel gri renkte olacak, ancak duvar kağıdı parlaklığıyla ayarlanacaktır</string>
   <string name="transparent_hotseat_pref_title">Şeffaf Alt Panel</string>
@@ -258,7 +260,7 @@
   <string name="blur_pref_title">Bulanıklığı etkinleştir</string>
   <string name="blur_pref_summary">Arayüzün bazı kısımlarına bulanıklık efekti uygulayın\nCanlı duvar kağıtları ile uyumlu değil</string>
   <string name="blur_radius_pref_title">Bulanıklık yarıçapı</string>
-  <string name="pref_iconLabelsInTwoLines">Simge etiketleri tek satır</string>
+  <string name="pref_iconLabelsInTwoLines">Simge etiketleri iki satır</string>
   <string name="white_google_icon_pref_title">Beyaz Google simgesi kullanın</string>
   <string name="hide_icon_labels_pref_title">Ana ekrandaki simge etiketlerini gizle</string>
   <string name="hide_all_apps_icon_labels_pref_title">Çekmecedeki simge etiketlerini gizle</string>
@@ -269,7 +271,9 @@
   <string name="num_rows_pref_title">Satır sayısı</string>
   <string name="num_hotseat_icons_pref_title">Alt paneldeki simge sayısı</string>
   <string name="icon_scale_pref_title">Simge boyutu</string>
+  <string name="hotseat_height_scale">Yükseklik ölçeği</string>
   <string name="icon_text_scale_pref_title">Simge yazı boyutu</string>
+  <string name="icon_text_padding_scale_pref_title">Simge doldurma ölçeği</string>
   <string name="full_width_width_widgets_pref_title">Widget\'lere tam genişlik</string>
   <string name="full_width_widgets_pref_summary">Widget\'ların dolgu olmadan tüm genişliğe yayılmasına izin ver</string>
   <string name="notification_access_pref_title">Bildirim rozetleri ve önizleme</string>
@@ -371,7 +375,7 @@
   <string name="icon_shape_circle">Daire</string>
   <string name="icon_shape_teardrop">Gözyaşı</string>
   <string name="animated_clock_icon_title">Hareketli saat simgesi</string>
-  <string name="animated_clock_icon_alternative_clock_apps_title">Alternatif saat uygulamalarını canlandır</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Alternatif saat uygulamalarını animasyon ile göster</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">Google Saat\'i varsayılan saat uygulaması olarak kullanmıyorsanız bunu etkinleştirin</string>
   <string name="about_summary_title">Özet</string>
   <string name="about_version">Sürüm</string>
