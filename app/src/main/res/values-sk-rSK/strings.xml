@@ -252,6 +252,8 @@
   <string name="icon_pack_preference_title">Balíček ikon</string>
   <string name="icon_pack_preference_summary">Vyberte balíček ikon</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Dok používa farby tapety</string>
+  <string name="hotseat_show_arrow">Zobraziť šipku</string>
+  <string name="hotseat_show_page_indicator">Zobraziť indikátor stránky</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Dok bude sfarbený farbou extrahovanou z tapety</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Dok bude sfarbený do šeda, ale jas bude nastavený podľa tapety plochy</string>
   <string name="transparent_hotseat_pref_title">Priehľadný dok</string>
@@ -259,6 +261,7 @@
   <string name="blur_pref_title">Povoliť rozostrenie</string>
   <string name="blur_pref_summary">Použiť efekt rozostrenia na časti interfejsu\nNie je kompatibilné so živými tapetami</string>
   <string name="blur_radius_pref_title">Rozsah rozostrenia</string>
+  <string name="pref_iconLabelsInTwoLines">Názvy ikon v dvoch riadkoch</string>
   <string name="white_google_icon_pref_title">Použiť biele ikony vo vyhľadávacej miniaplikácií</string>
   <string name="hide_icon_labels_pref_title">Skryť menovky ikon z domovskej obrazovky</string>
   <string name="hide_all_apps_icon_labels_pref_title">Skryť menovky ikon v ponuke aplikácií</string>
@@ -269,7 +272,9 @@
   <string name="num_rows_pref_title">Počet riadkov</string>
   <string name="num_hotseat_icons_pref_title">Počet ikon v doku</string>
   <string name="icon_scale_pref_title">Mierka ikon</string>
+  <string name="hotseat_height_scale">Mierka výšky</string>
   <string name="icon_text_scale_pref_title">Veľkosť textu ikon</string>
+  <string name="icon_text_padding_scale_pref_title">Ikona stupnice odsadenia</string>
   <string name="full_width_width_widgets_pref_title">Widgety s plnou šírkou</string>
   <string name="full_width_widgets_pref_summary">Povoliť, aby sa miniaplikácie rozprestierali po celej šírke bez výplne</string>
   <string name="notification_access_pref_title">Prehľad ikon upozornení</string>
@@ -371,6 +376,8 @@
   <string name="icon_shape_circle">Kruh</string>
   <string name="icon_shape_teardrop">Slza</string>
   <string name="animated_clock_icon_title">Ikona animovaných hodín</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Animovať aplikáciu alternatívnych hodín</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Povoľte, ak nepoužívate hodiny Google ako predvolenú aplikáciu pre hodiny</string>
   <string name="about_summary_title">Zhrnutie</string>
   <string name="about_version">Verzia</string>
   <string name="about_icon_designer">Návrhár ikon aplikácií</string>
