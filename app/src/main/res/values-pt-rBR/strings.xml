@@ -251,6 +251,8 @@
   <string name="icon_pack_preference_title">Pacote de Ícones</string>
   <string name="icon_pack_preference_summary">Select an icon Pack</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Usar cores do papel de parede no dock</string>
+  <string name="hotseat_show_arrow">Mostrar indicador de exibição</string>
+  <string name="hotseat_show_page_indicator">Mostrar indicador de página</string>
   <string name="hotseat_uses_extracted_colors_pref_on">O dock será colorido com uma cor extraída do papel de parede</string>
   <string name="hotseat_uses_extracted_colors_pref_off">O dock será de cor cinza, mas ajustada pelo brilho do papel de parede</string>
   <string name="transparent_hotseat_pref_title">Dock transparente</string>
@@ -258,6 +260,7 @@
   <string name="blur_pref_title">Ativar desfoque</string>
   <string name="blur_pref_summary">Aplicar o efeito de desfoque para partes do interface\nNão compatível com papéis de parede ao vivo</string>
   <string name="blur_radius_pref_title">Raio de desfoque</string>
+  <string name="pref_iconLabelsInTwoLines">Etiquetas de ícones em duas linhas</string>
   <string name="white_google_icon_pref_title">Usar o ícone branco da Google</string>
   <string name="hide_icon_labels_pref_title">Hide icon labels on homescreen</string>
   <string name="hide_all_apps_icon_labels_pref_title">Esconder texto dos ícones na gaveta de apps</string>
@@ -268,7 +271,9 @@
   <string name="num_rows_pref_title">Número de linhas</string>
   <string name="num_hotseat_icons_pref_title">Número de ícones no dock</string>
   <string name="icon_scale_pref_title">Escala de ícones</string>
+  <string name="hotseat_height_scale">Escala de altura</string>
   <string name="icon_text_scale_pref_title">Escala de texto dos ícones</string>
+  <string name="icon_text_padding_scale_pref_title">Escala de títulos dos ícones</string>
   <string name="full_width_width_widgets_pref_title">Preencher widgets na horizontal</string>
   <string name="full_width_widgets_pref_summary">Permitir que os widgets abranger a largura inteira sem preenchimento</string>
   <string name="notification_access_pref_title">Visualização e emblemas de notificação</string>
@@ -370,6 +375,8 @@
   <string name="icon_shape_circle">Círculo</string>
   <string name="icon_shape_teardrop">Lágrima</string>
   <string name="animated_clock_icon_title">Ícone do relógio animado</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Animação alternativa do relógio</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Ative isso se você não usa o relógio do Google como relógio padrão</string>
   <string name="about_summary_title">Resumo</string>
   <string name="about_version">Versão</string>
   <string name="about_icon_designer">Criador do Ícones</string>
