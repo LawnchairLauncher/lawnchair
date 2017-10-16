@@ -24,7 +24,7 @@
     <string name="work_folder_name" msgid="3753320833950115786">"Travail"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"L\'application n\'est pas installée."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Application indisponible"</string>
-    <string name="safemode_shortcut_error" msgid="9160126848219158407">"L\'application téléchargée est désactivée en mode sécurisé."</string>
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"L\'application téléchargée est désactivée en mode sans échec."</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widgets désactivés en mode sans échec"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Le raccourci n\'est pas disponible"</string>
     <string name="home_screen" msgid="806512411299847073">"Écran d\'accueil"</string>

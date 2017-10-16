@@ -76,11 +76,11 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Թույլ տալ հիմնական էկրանի պտտումը"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Հեռախոսը պտտելու դեպքում"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Ցուցադրման ընթացիկ կարգավորումներն արգելում են պտտումը"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"Ծանուցման կետեր"</string>
+    <string name="icon_badging_title" msgid="874121399231955394">"Ծանուցումների կետիկներ"</string>
     <string name="icon_badging_desc_on" msgid="2627952638544674079">"Միացված է"</string>
     <string name="icon_badging_desc_off" msgid="5503319969924580241">"Անջատված է"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Անհրաժեշտ է ծանուցման թույլտվություն"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"Ծանուցման կետերը ցուցադրելու համար միացրեք հավելվածի ծանուցումները <xliff:g id="NAME">%1$s</xliff:g>-ի համար"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Ծանուցումների կետիկները ցուցադրելու համար միացրեք ծանուցումները <xliff:g id="NAME">%1$s</xliff:g>-ի համար"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Փոխել կարգավորումները"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Ավելացնել պատկերակը Հիմնական էկրանին"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Նոր հավելվածների համար"</string>

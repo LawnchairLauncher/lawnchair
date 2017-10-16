@@ -82,7 +82,7 @@
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Perlu akses notifikasi"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Guna menampilkan Titik Notifikasi, aktifkan notifikasi aplikasi untuk <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Ubah setelan"</string>
-    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Tambahkan ikon ke layar Utama"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Tambahkan ikon ke Layar utama"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Untuk aplikasi baru"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Ubah bentuk ikon"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Gunakan default sistem"</string>
