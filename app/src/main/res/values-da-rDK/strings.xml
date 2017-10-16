@@ -30,7 +30,7 @@
   <!-- SafeMode shortcut error string -->
   <string name="safemode_shortcut_error">Downloadet app er deaktiveret i sikker tilstand</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">Widgets er deaktiveret i Beskyttet tilstand</string>
+  <string name="safemode_widget_error">Widgets er deaktiveret i beskyttet tilstand</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">Genvejen er ikke tilgængelig</string>
   <!-- Widgets -->
@@ -57,7 +57,7 @@
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">Der er ikke mere plads i bakken Foretrukne</string>
   <!-- All applications label -->
-  <string name="all_apps_button_label">Liste med apps</string>
+  <string name="all_apps_button_label">Appliste</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
   <string name="all_apps_home_button_label">Startskærm</string>
@@ -251,6 +251,8 @@
   <string name="icon_pack_preference_title">Ikon pakke</string>
   <string name="icon_pack_preference_summary">Vælg et ikon Pack</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Dock anvender tapetfarver</string>
+  <string name="hotseat_show_arrow">Vis pil</string>
+  <string name="hotseat_show_page_indicator">Vis sideindikator</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Havnen vil blive farvet med en farve uddraget fra tapetet</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Docken vil blive farvet grå, men justeret af tapetets lysstyrke</string>
   <string name="transparent_hotseat_pref_title">Gennemsigtig Dock</string>
@@ -258,6 +260,7 @@
   <string name="blur_pref_title">Aktiver sløringseffekt</string>
   <string name="blur_pref_summary">Anvend sløringseffekt på dele af interface\nIkke kompatibel med live wallpapers</string>
   <string name="blur_radius_pref_title">Slør radius</string>
+  <string name="pref_iconLabelsInTwoLines">Ikonetiketter i to linjer</string>
   <string name="white_google_icon_pref_title">Brug hvidt Google ikon</string>
   <string name="hide_icon_labels_pref_title">Skjul ikontekster på hjemmeskærmen</string>
   <string name="hide_all_apps_icon_labels_pref_title">Skjul ikontekst i draweren</string>
@@ -268,6 +271,7 @@
   <string name="num_rows_pref_title">Antal rækker</string>
   <string name="num_hotseat_icons_pref_title">Antal ikoner i docken</string>
   <string name="icon_scale_pref_title">Ikon størrelse</string>
+  <string name="hotseat_height_scale">Dock højde</string>
   <string name="icon_text_scale_pref_title">Ikon tekst størrelse</string>
   <string name="full_width_width_widgets_pref_title">Fuld bredde widgets</string>
   <string name="full_width_widgets_pref_summary">Tillad widgets at spænde over hele bredden uden polstring</string>
@@ -276,8 +280,12 @@
   <string name="general_pref_title">General</string>
   <string name="pixel_ui_pref_title">Pixel brugerflade</string>
   <string name="behavior_pref_title">Adfærd</string>
-  <string name="debug_pref_title">Fejlfindnig</string>
+  <string name="debug_pref_title">Fejlfinding</string>
   <string name="import_export_pref_title">Importér/eksportér</string>
+  <string name="general_pref_summary">Hjemmeskærm, dock og appskuffe</string>
+  <string name="backup_pref_title">Sikkerhedskopiering</string>
+  <string name="backup_pref_summary">Sikkerhedskopier dine indstillinger</string>
+  <string name="debug_pref_summary">Genstart eller genopret ikondatabasen</string>
   <string name="show_pixel_bar_pref_title">Vis Pixel topbar</string>
   <string name="use_wide_searchbar_pref_title">Brug bred søgebar</string>
   <string name="show_mic_pref_title">Vis knappen \'Google Assistant\'</string>
@@ -301,6 +309,10 @@
   <string name="show_hidden_pref_title">Vis skjulte apps</string>
   <string name="show_hidden_pref_on">Skjulte apps bliver vist til at ændre indstillinger for synlighed</string>
   <string name="show_hidden_pref_off">Skjulte apps vil ikke være synlige</string>
+  <string name="export_db_title">Database</string>
+  <string name="import_db_title">Database</string>
+  <string name="export_prefs_title">Indstillinger</string>
+  <string name="import_prefs_title">Indstillinger</string>
   <string name="notification_listener_label">Lawnchair - Notifikationsskilte</string>
   <string name="color_extraction_label">Lawnchar - Farveudtræk</string>
   <string name="test_title">Test</string>
@@ -322,8 +334,11 @@
   <string name="pull_down_do_nothing">Gør ingenting</string>
   <string name="pull_down_notis">Vis notifikationer</string>
   <string name="pull_down_search">Åbn søgefunktionen</string>
+  <string name="pull_down_apps_search">Søg i apps</string>
   <string name="enable_screen_rotation">Aktiver skærmrotation</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">Importér</string>
+  <string name="backup_export_title">Eksportér</string>
   <string name="imexport_success">Fuldført!</string>
   <string name="imexport_error">Fejl: Kunne ikke kopiere fil</string>
   <string name="imexport_no_backup_found">Ingen sikkerhedskopi fundet</string>
@@ -345,10 +360,16 @@
   <string name="dock_allapps"><![CDATA[Dock & drawer]]></string>
   <string name="app_shortcuts">App genveje</string>
   <string name="blur_effect">Sløringseffekt</string>
+  <string name="enable_editing_pref_title">Tillad redigering af hjemmeskærm</string>
   <string name="pref_weather_provider">Udbyder af vejrdata</string>
   <string name="loading">Indlæser...</string>
+  <string name="icon_shape_none">Ingen</string>
   <string name="icon_shape_square">Firkant</string>
+  <string name="icon_shape_rounded_square">Afrundet firkant</string>
   <string name="icon_shape_circle">Cirkel</string>
+  <string name="icon_shape_teardrop">Dråbeform</string>
+  <string name="animated_clock_icon_title">Animeret ur-ikon</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Animér alternative ur-apps</string>
   <string name="about_summary_title">Oversigt</string>
   <string name="about_version">Udgave</string>
   <string name="about_contributors_title">Bidragsydere</string>
