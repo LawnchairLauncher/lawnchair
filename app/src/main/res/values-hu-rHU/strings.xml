@@ -26,13 +26,13 @@
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
   <string name="activity_not_found">Az alkalmazás nincs telepítve.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
-  <string name="activity_not_available">Az alkalmazás nem érhető el</string>
+  <string name="activity_not_available">Az alkalmazás nem elérhető</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">A letöltött alkalmazás Csökkentett módban ki van kapcsolva</string>
+  <string name="safemode_shortcut_error">A letöltött alkalmazások Csökkentett módban ki vannak kapcsolva</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">A modulok ki vannak kapcsolva Csökkentett módban</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
-  <string name="shortcut_not_available">A gyorsparancs nem áll rendelkezésre</string>
+  <string name="shortcut_not_available">Parancsikon nem érhető el</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
   <string name="long_press_widget_to_add">Modul felvételéhez érintse meg, és tartsa lenyomva</string>
@@ -251,6 +251,8 @@
   <string name="icon_pack_preference_title">Ikoncsomag</string>
   <string name="icon_pack_preference_summary">Ikoncsomag kiválasztása</string>
   <string name="hotseat_uses_extracted_colors_pref_title">A dokk a háttérkép színeit használja</string>
+  <string name="hotseat_show_arrow">Nyíl mutatása</string>
+  <string name="hotseat_show_page_indicator">Oldaljelző mutatása</string>
   <string name="hotseat_uses_extracted_colors_pref_on">A dokk a háttérképből kinyert színnel lesz színezve</string>
   <string name="hotseat_uses_extracted_colors_pref_off">A dokk szürke lesz, de a háttérkép fényerejéhez lesz igazítva</string>
   <string name="transparent_hotseat_pref_title">Átlátszó dokk</string>
@@ -269,7 +271,9 @@
   <string name="num_rows_pref_title">Sorok száma</string>
   <string name="num_hotseat_icons_pref_title">Dokk ikonok száma</string>
   <string name="icon_scale_pref_title">Ikonok mérete</string>
+  <string name="hotseat_height_scale">Magasság léptéke</string>
   <string name="icon_text_scale_pref_title">Ikonok szövegének mérete</string>
+  <string name="icon_text_padding_scale_pref_title">Ikonok közti térköz mértéke</string>
   <string name="full_width_width_widgets_pref_title">Teljes szélességű modulok</string>
   <string name="full_width_widgets_pref_summary">Engedélyezi, hogy a modulok átíveljenek a teljes szélességben keret nélkül</string>
   <string name="notification_access_pref_title">Értesítés bogyók és előnézetek</string>
