@@ -252,6 +252,8 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <string name="icon_pack_preference_title">Paquet d\'icones</string>
   <string name="icon_pack_preference_summary">Seleccioneu un paquet d\'icones</string>
   <string name="hotseat_uses_extracted_colors_pref_title">La barra d\'aplicacions utilitza els colors del fons de pantalla</string>
+  <string name="hotseat_show_arrow">Mostra el cursor</string>
+  <string name="hotseat_show_page_indicator">Mostra l\'indicador de pàgina</string>
   <string name="hotseat_uses_extracted_colors_pref_on">La barra d\'aplicacions es tintarà a partir del fons de pantalla</string>
   <string name="hotseat_uses_extracted_colors_pref_off">La barra d\'aplicacions es tintarà en gris, però en funció de la brillantor del fons de pantalla</string>
   <string name="transparent_hotseat_pref_title">Barra d\'aplicacions transparent</string>
@@ -259,6 +261,7 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <string name="blur_pref_title">Habilitar el difuminat</string>
   <string name="blur_pref_summary">Aplicar l\'efecte borrós a parts de la interface\nNot compatible amb empapera en directe</string>
   <string name="blur_radius_pref_title">Difuminar el radi</string>
+  <string name="pref_iconLabelsInTwoLines">Etiquetes d\'icona en dues línies</string>
   <string name="white_google_icon_pref_title">Utilitza la icona blanca de Google</string>
   <string name="hide_icon_labels_pref_title">Amaga les etiquetes de les icones de la pantalla d\'inici</string>
   <string name="hide_all_apps_icon_labels_pref_title">Amaga les etiquetes de les icones al calaix</string>
@@ -269,7 +272,9 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <string name="num_rows_pref_title">Nombre de files</string>
   <string name="num_hotseat_icons_pref_title">Nombre d\'icones a la barra d\'aplicacions</string>
   <string name="icon_scale_pref_title">Escala d\'icona</string>
+  <string name="hotseat_height_scale">Escala d\'alçada</string>
   <string name="icon_text_scale_pref_title">Color del text de la icona</string>
+  <string name="icon_text_padding_scale_pref_title">Escala de farciment d\'icona</string>
   <string name="full_width_width_widgets_pref_title">Widgets d\'amplada completa</string>
   <string name="full_width_widgets_pref_summary">Permet que els widgets apareguin ocupant tota l\'amplada</string>
   <string name="notification_access_pref_title">Distintius de notificació i previsualització</string>
@@ -371,6 +376,8 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <string name="icon_shape_circle">Cercle</string>
   <string name="icon_shape_teardrop">Llàgrima</string>
   <string name="animated_clock_icon_title">Icona del rellotge animada</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Animar rellotge alternativa apps</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Permetre això si no utilitzes Google rellotge com el seu app de rellotge d\'omissió</string>
   <string name="about_summary_title">Resum</string>
   <string name="about_version">Versió</string>
   <string name="about_icon_designer">Dissenyador/a de la icona de l\'aplicació</string>
