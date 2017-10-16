@@ -23,18 +23,8 @@
         launcher:screen="0"
         launcher:x="0"
         launcher:y="-1">
-        <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_EMAIL;end" />
-        <favorite launcher:uri="mailto:" />
-
-    </resolve>
-
-    <resolve
-        launcher:screen="0"
-        launcher:x="1"
-        launcher:y="-1">
-        <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_GALLERY;end" />
-        <favorite launcher:uri="#Intent;type=images/*;end" />
-
+        <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_MAPS;end" />
+        <favorite launcher:uri="geo:" />
     </resolve>
 
     <resolve
@@ -42,6 +32,7 @@
         launcher:x="4"
         launcher:y="-1">
         <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_MARKET;end" />
-        <favorite launcher:uri="market://details?id=com.android.launcher" />
+        <favorite launcher:uri="market:" />
     </resolve>
+
 </favorites>
