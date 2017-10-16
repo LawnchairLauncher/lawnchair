@@ -21,8 +21,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.FloatProperty;
-import android.util.Log;
 import android.util.Property;
 import android.util.SparseIntArray;
 import android.view.MotionEvent;
@@ -64,7 +62,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     private HeaderElevationController mElevationController;
     private SpringAnimationHandler<AllAppsGridAdapter.ViewHolder> mSpringAnimationHandler;
 
-    private float mContentTranslationY;
     private OverScrollHelper mOverScrollHelper;
     private VerticalPullDetector mPullDetector;
 
@@ -80,7 +77,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         super(context, attrs, defStyleAttr);
         addOnItemTouchListener(this);
         mScrollbar.setDetachThumbOnFastScroll();
-        mContentTranslationY = 0.0f;
         addOnItemTouchListener(this);
         mOverScrollHelper = new OverScrollHelper();
         mPullDetector = new VerticalPullDetector(getContext());
@@ -187,21 +183,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         if (mElevationController != null) {
             mElevationController.reset();
         }
-    }
-
-    public void onDraw(Canvas canvas) {
-        canvas.translate(0, this.mContentTranslationY);
-        super.onDraw(canvas);
-    }
-
-
-    public float getContentTranslationY() {
-        return mContentTranslationY;
-    }
-
-    public void setContentTranslationY(float f) {
-        mContentTranslationY = f;
-        invalidate();
     }
 
     /**
