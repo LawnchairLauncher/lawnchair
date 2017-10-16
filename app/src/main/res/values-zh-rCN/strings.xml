@@ -115,7 +115,7 @@
   <string name="folder_name_format">文件夹：<xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Strings for the customization mode -->
   <!-- Text for widget add button -->
-  <string name="widget_button_text">微件</string>
+  <string name="widget_button_text">小部件</string>
   <!-- Text for wallpaper change button -->
   <string name="wallpaper_button_text">壁纸</string>
   <!-- Text for settings button -->
@@ -250,6 +250,8 @@
   <string name="icon_pack_preference_title">图标包</string>
   <string name="icon_pack_preference_summary">选择一个图标包</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Dock 栏从壁纸取色</string>
+  <string name="hotseat_show_arrow">显示箭头标识</string>
+  <string name="hotseat_show_page_indicator">显示页面指示器</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Dock 栏将使用壁纸中的某种颜色</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Dock 栏将会变成灰色，但会根据壁纸亮度作适当调整</string>
   <string name="transparent_hotseat_pref_title">透明化 Dock 栏</string>
@@ -257,6 +259,7 @@
   <string name="blur_pref_title">开启模糊</string>
   <string name="blur_pref_summary">为界面开启模糊效果\n不兼容动态壁纸</string>
   <string name="blur_radius_pref_title">模糊程度</string>
+  <string name="pref_iconLabelsInTwoLines">两行显示图标标签</string>
   <string name="white_google_icon_pref_title">使用白色的 Google 图标</string>
   <string name="hide_icon_labels_pref_title">在主屏幕上隐藏图标标签</string>
   <string name="hide_all_apps_icon_labels_pref_title">在抽屉里隐藏图标标签</string>
@@ -267,7 +270,9 @@
   <string name="num_rows_pref_title">行数</string>
   <string name="num_hotseat_icons_pref_title">Dock 栏图标数</string>
   <string name="icon_scale_pref_title">图标大小</string>
+  <string name="hotseat_height_scale">高度</string>
   <string name="icon_text_scale_pref_title">图标标签大小</string>
+  <string name="icon_text_padding_scale_pref_title">行间距大小</string>
   <string name="full_width_width_widgets_pref_title">全宽微件</string>
   <string name="full_width_widgets_pref_summary">允许微件填充整个桌面宽度</string>
   <string name="notification_access_pref_title">通知角标与预览</string>
@@ -369,6 +374,8 @@
   <string name="icon_shape_circle">圆形</string>
   <string name="icon_shape_teardrop">泪珠形</string>
   <string name="animated_clock_icon_title">动态时钟图标</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">动态显示其他时钟应用</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">当谷歌时钟并非你的默认时钟应用时启用此选项</string>
   <string name="about_summary_title">概述</string>
   <string name="about_version">版本</string>
   <string name="about_icon_designer">图标设计者</string>
