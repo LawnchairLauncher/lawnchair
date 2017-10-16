@@ -251,6 +251,8 @@
   <string name="icon_pack_preference_title">Πακέτο εικονιδίων</string>
   <string name="icon_pack_preference_summary">Επιλογή πακέτου εικονιδίων</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Η μπάρα εφαρμογών χρησιμοποιεί χρώματα της ταπετσαρίας</string>
+  <string name="hotseat_show_arrow">Εμφάνιση βέλους</string>
+  <string name="hotseat_show_page_indicator">Εμφάνιση ένδειξης κύλισης</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Η μπάρα εφαρμογών θα χρωματιστεί με χρώμα που εξάγεται από την ταπετσαρία</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Η μπάρα εφαρμογών θα χρωματιστεί γκρι, αλλά ρυθμιζόμενη από τη φωτεινότητα της ταπετσαρίας</string>
   <string name="transparent_hotseat_pref_title">Διαφανής μπάρα εφαρμογών</string>
@@ -258,7 +260,7 @@
   <string name="blur_pref_title">Ενεργοποίηση θολότητας</string>
   <string name="blur_pref_summary">Εφαρμόστε το εφέ θολότητας τμηματικά σε μέρη του γραφικού περιβάλλοντος\nΜη συμβατό με ζωντανές ταπετσαρίες</string>
   <string name="blur_radius_pref_title">Ακτίνα θολότητας</string>
-  <string name="pref_iconLabelsInTwoLines">Κείμενο εικονιδίων σε δύο γραμμές</string>
+  <string name="pref_iconLabelsInTwoLines">Ετικέτες εικονιδίων σε δύο γραμμές</string>
   <string name="white_google_icon_pref_title">Χρήση λευκού εικονιδίου Google</string>
   <string name="hide_icon_labels_pref_title">Απόκρυψη ετικετών εικονιδίων στην αρχική οθόνη</string>
   <string name="hide_all_apps_icon_labels_pref_title">Απόκρυψη ετικετών εικονιδίων στο συρτάρι εφαρμογών</string>
@@ -269,7 +271,9 @@
   <string name="num_rows_pref_title">Αριθμός γραμμών αρχικής οθόνης</string>
   <string name="num_hotseat_icons_pref_title">Αριθμός εικονιδίων στην μπάρα εφαρμογών</string>
   <string name="icon_scale_pref_title">Κλίμακα εικονιδίου</string>
+  <string name="hotseat_height_scale">Κλίμακα ύψους</string>
   <string name="icon_text_scale_pref_title">Κλίμακα κειμένου εικονιδίου</string>
+  <string name="icon_text_padding_scale_pref_title">Κλίμακα διάκενου εικονιδίου και ετικέτας</string>
   <string name="full_width_width_widgets_pref_title">Γραφικά στοιχεία σε πλήρες πλάτος</string>
   <string name="full_width_widgets_pref_summary">Να επιτραπεί στα γραφικά στοιχεία να εκτείνονται σε ολόκληρο το πλάτος χωρίς κενά περιθώρια</string>
   <string name="notification_access_pref_title">Εικονίδια ειδοποιήσεων και προεπισκόπηση</string>
