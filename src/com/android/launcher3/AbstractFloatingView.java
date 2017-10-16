@@ -20,6 +20,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.IntDef;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -40,7 +41,8 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             TYPE_FOLDER,
             TYPE_ACTION_POPUP,
             TYPE_WIDGETS_BOTTOM_SHEET,
-            TYPE_WIDGET_RESIZE_FRAME
+            TYPE_WIDGET_RESIZE_FRAME,
+            TYPE_WIDGETS_FULL_SHEET
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface FloatingViewType {}
@@ -48,6 +50,10 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_ACTION_POPUP = 1 << 1;
     public static final int TYPE_WIDGETS_BOTTOM_SHEET = 1 << 2;
     public static final int TYPE_WIDGET_RESIZE_FRAME = 1 << 3;
+    public static final int TYPE_WIDGETS_FULL_SHEET = 1 << 4;
+
+    public static final int TYPE_ALL = TYPE_FOLDER | TYPE_ACTION_POPUP
+            | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_WIDGETS_FULL_SHEET;
 
     protected boolean mIsOpen;
 
@@ -121,16 +127,24 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
         }
     }
 
-    public static void closeAllOpenViews(Launcher launcher, boolean animate) {
+    public static void closeOpenViews(Launcher launcher, boolean animate,
+            @FloatingViewType int type) {
         DragLayer dragLayer = launcher.getDragLayer();
         // Iterate in reverse order. AbstractFloatingView is added later to the dragLayer,
         // and will be one of the last views.
         for (int i = dragLayer.getChildCount() - 1; i >= 0; i--) {
             View child = dragLayer.getChildAt(i);
             if (child instanceof AbstractFloatingView) {
-                ((AbstractFloatingView) child).close(animate);
+                AbstractFloatingView abs = (AbstractFloatingView) child;
+                if (abs.isOfType(type)) {
+                    abs.close(animate);
+                }
             }
         }
+    }
+
+    public static void closeAllOpenViews(Launcher launcher, boolean animate) {
+        closeOpenViews(launcher, animate, TYPE_ALL);
     }
 
     public static void closeAllOpenViews(Launcher launcher) {
@@ -138,7 +152,6 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     }
 
     public static AbstractFloatingView getTopOpenView(Launcher launcher) {
-        return getOpenView(launcher, TYPE_FOLDER | TYPE_ACTION_POPUP
-                | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGET_RESIZE_FRAME);
+        return getOpenView(launcher, TYPE_ALL);
     }
 }

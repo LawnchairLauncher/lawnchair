@@ -36,6 +36,8 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.ViewOnDrawExecutor;
+import com.android.launcher3.widget.WidgetListRowEntry;
+import com.android.launcher3.widget.WidgetsListAdapter;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -362,8 +364,8 @@ public class LoaderResults {
     }
 
     public void bindWidgets() {
-        final MultiHashMap<PackageItemInfo, WidgetItem> widgets
-                = mBgDataModel.widgetsModel.getWidgetsMap();
+        final ArrayList<WidgetListRowEntry> widgets =
+                mBgDataModel.widgetsModel.getWidgetsList(mApp.getContext());
         Runnable r = new Runnable() {
             public void run() {
                 Callbacks callbacks = mCallbacks.get();

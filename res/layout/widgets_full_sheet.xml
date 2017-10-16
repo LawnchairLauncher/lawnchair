@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2015 The Android Open Source Project
+<!-- Copyright (C) 2017 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,40 +13,31 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<!-- The top and bottom paddings are defined in this container, but since we want
-     the list view to span the full width (for touch interception purposes), we
-     will bake the left/right padding into that view's background itself. -->
-<com.android.launcher3.widget.WidgetsContainerView
+<com.android.launcher3.widget.WidgetsFullSheet
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/widgets_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:descendantFocusability="afterDescendants"
-    android:theme="?attr/widgetsTheme"
-    launcher:revealBackground="@drawable/round_rect_primary">
+    android:orientation="vertical"
+    android:theme="?attr/widgetsTheme" >
 
-    <View
-        android:id="@+id/reveal_view"
+    <com.android.launcher3.graphics.GradientView
+        android:id="@+id/gradient_bg"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:elevation="2dp"
-        android:focusable="false"
-        android:visibility="invisible" />
+        android:layout_height="match_parent" />
 
     <FrameLayout
-        android:id="@+id/main_content"
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:elevation="15dp"
-        android:visibility="gone">
+        android:background="?android:attr/colorPrimary"
+        android:elevation="4dp">
 
         <com.android.launcher3.widget.WidgetsRecyclerView
             android:id="@+id/widgets_list_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            />
 
         <!-- Fast scroller popup -->
         <TextView
@@ -55,12 +46,6 @@
             android:layout_gravity="top|end"
             android:layout_marginEnd="@dimen/fastscroll_popup_margin" />
 
-        <ProgressBar
-            android:id="@+id/loader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-
         <com.android.launcher3.views.RecyclerViewFastScroller
             android:id="@+id/fast_scroller"
             android:layout_width="@dimen/fastscroll_width"
@@ -68,6 +53,12 @@
             android:layout_gravity="end"
             android:layout_marginEnd="@dimen/fastscroll_end_margin" />
 
+        <View
+            android:id="@+id/nav_bar_bg"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="bottom"
+            android:background="?attr/allAppsNavBarScrimColor"
+            android:focusable="false"  />
     </FrameLayout>
-
-</com.android.launcher3.widget.WidgetsContainerView>
+</com.android.launcher3.widget.WidgetsFullSheet>

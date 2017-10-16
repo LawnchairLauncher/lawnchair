@@ -57,10 +57,8 @@
 
     <!-- Fade/zoom in/out duration & scale in a Launcher overlay transition.
          Note: This should be less than the config_overlayTransitionTime as they happen together. -->
-    <integer name="config_overlayRevealTime">220</integer>
     <integer name="config_overlaySlideRevealTime">320</integer>
     <integer name="config_overlayTransitionTime">300</integer>
-    <integer name="config_overlayItemsAlphaStagger">60</integer>
 
     <!-- This constant stores the ratio of the all apps button drawable which
          is used for internal (baked-in) padding -->

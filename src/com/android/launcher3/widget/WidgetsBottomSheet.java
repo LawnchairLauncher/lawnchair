@@ -16,62 +16,38 @@
 
 package com.android.launcher3.widget;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
 
-import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.DropTarget;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.PropertyListBuilder;
-import com.android.launcher3.dragndrop.DragController;
-import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.graphics.GradientView;
 import com.android.launcher3.model.WidgetItem;
-import com.android.launcher3.touch.SwipeDetector;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.PackageUserKey;
-import com.android.launcher3.util.SystemUiController;
-import com.android.launcher3.util.Themes;
 
 import java.util.List;
 
 /**
  * Bottom sheet for the "Widgets" system shortcut in the long-press popup.
  */
-public class WidgetsBottomSheet extends AbstractFloatingView implements Insettable,
-        SwipeDetector.Listener, View.OnClickListener, View.OnLongClickListener,
-        DragController.DragListener {
+public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
 
-    private int mTranslationYOpen;
-    private int mTranslationYClosed;
-    private float mTranslationYRange;
-
-    private Launcher mLauncher;
+    private static final int DEFAULT_CLOSE_DURATION = 200;
     private ItemInfo mOriginalItemInfo;
-    private ObjectAnimator mOpenCloseAnimator;
     private Interpolator mFastOutSlowInInterpolator;
-    private SwipeDetector.ScrollInterpolator mScrollInterpolator;
     private Rect mInsets;
-    private SwipeDetector mSwipeDetector;
-    private GradientView mGradientBackground;
 
     public WidgetsBottomSheet(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -80,23 +56,20 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
     public WidgetsBottomSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setWillNotDraw(false);
-        mLauncher = Launcher.getLauncher(context);
-        mOpenCloseAnimator = LauncherAnimUtils.ofPropertyValuesHolder(this);
         mFastOutSlowInInterpolator =
                 AnimationUtils.loadInterpolator(context, android.R.interpolator.fast_out_slow_in);
-        mScrollInterpolator = new SwipeDetector.ScrollInterpolator();
         mInsets = new Rect();
-        mSwipeDetector = new SwipeDetector(context, this, SwipeDetector.VERTICAL);
-        mGradientBackground = (GradientView) mLauncher.getLayoutInflater().inflate(
+
+        mGradientView = (GradientView) mLauncher.getLayoutInflater().inflate(
                 R.layout.gradient_bg, mLauncher.getDragLayer(), false);
+        mGradientView.setProgress(1, false);
+        mContent = this;
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        mTranslationYOpen = 0;
-        mTranslationYClosed = getMeasuredHeight();
-        mTranslationYRange = mTranslationYClosed - mTranslationYOpen;
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        setTranslationShift(mTranslationShift);
     }
 
     public void populateAndShow(ItemInfo itemInfo) {
@@ -106,21 +79,21 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
 
         onWidgetsBound();
 
-        mLauncher.getDragLayer().addView(mGradientBackground);
+        mLauncher.getDragLayer().addView(mGradientView);
         mLauncher.getDragLayer().addView(this);
-        measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
-        setTranslationY(mTranslationYClosed);
         mIsOpen = false;
         open(true);
     }
 
     @Override
     protected void onWidgetsBound() {
-        List<WidgetItem> widgets = mLauncher.getWidgetsForPackageUser(new PackageUserKey(
-                mOriginalItemInfo.getTargetComponent().getPackageName(), mOriginalItemInfo.user));
+        List<WidgetItem> widgets = mLauncher.getPopupDataProvider().getWidgetsForPackageUser(
+                new PackageUserKey(
+                        mOriginalItemInfo.getTargetComponent().getPackageName(),
+                        mOriginalItemInfo.user));
 
-        ViewGroup widgetRow = (ViewGroup) findViewById(R.id.widgets);
-        ViewGroup widgetCells = (ViewGroup) widgetRow.findViewById(R.id.widgets_cell_list);
+        ViewGroup widgetRow = findViewById(R.id.widgets);
+        ViewGroup widgetCells = widgetRow.findViewById(R.id.widgets_cell_list);
 
         widgetCells.removeAllViews();
 
@@ -166,72 +139,31 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
         return widget;
     }
 
-    @Override
-    public void onClick(View view) {
-        mLauncher.getWidgetsView().handleClick();
-    }
-
-    @Override
-    public boolean onLongClick(View view) {
-        mLauncher.getDragController().addDragListener(this);
-        return mLauncher.getWidgetsView().handleLongClick(view);
-    }
-
     private void open(boolean animate) {
         if (mIsOpen || mOpenCloseAnimator.isRunning()) {
             return;
         }
         mIsOpen = true;
-        boolean isSheetDark = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
-        mLauncher.getSystemUiController().updateUiState(
-                SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET,
-                isSheetDark ? SystemUiController.FLAG_DARK_NAV : SystemUiController.FLAG_LIGHT_NAV);
+        setupNavBarColor();
         if (animate) {
-            mOpenCloseAnimator.setValues(new PropertyListBuilder()
-                    .translationY(mTranslationYOpen).build());
-            mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mSwipeDetector.finishedScrolling();
-                }
-            });
+            mOpenCloseAnimator.setValues(
+                    PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
             mOpenCloseAnimator.setInterpolator(mFastOutSlowInInterpolator);
             mOpenCloseAnimator.start();
         } else {
-            setTranslationY(mTranslationYOpen);
+            setTranslationShift(TRANSLATION_SHIFT_OPENED);
         }
     }
 
     @Override
     protected void handleClose(boolean animate) {
-        if (!mIsOpen || mOpenCloseAnimator.isRunning()) {
-            return;
-        }
-        if (animate) {
-            mOpenCloseAnimator.setValues(new PropertyListBuilder()
-                    .translationY(mTranslationYClosed).build());
-            mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mSwipeDetector.finishedScrolling();
-                    onCloseComplete();
-                }
-            });
-            mOpenCloseAnimator.setInterpolator(mSwipeDetector.isIdleState()
-                    ? mFastOutSlowInInterpolator : mScrollInterpolator);
-            mOpenCloseAnimator.start();
-        } else {
-            setTranslationY(mTranslationYClosed);
-            onCloseComplete();
-        }
+        handleClose(animate, DEFAULT_CLOSE_DURATION);
     }
 
-    private void onCloseComplete() {
-        mIsOpen = false;
-        mLauncher.getDragLayer().removeView(mGradientBackground);
-        mLauncher.getDragLayer().removeView(WidgetsBottomSheet.this);
-        mLauncher.getSystemUiController().updateUiState(
-                SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, 0);
+    @Override
+    protected void onCloseComplete() {
+        super.onCloseComplete();
+        mLauncher.getDragLayer().removeView(mGradientView);
     }
 
     @Override
@@ -248,84 +180,5 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
         mInsets.set(insets);
         setPadding(getPaddingLeft() + leftInset, getPaddingTop(),
                 getPaddingRight() + rightInset, getPaddingBottom() + bottomInset);
-    }
-
-    /* SwipeDetector.Listener */
-
-    @Override
-    public void onDragStart(boolean start) {
-    }
-
-    @Override
-    public boolean onDrag(float displacement, float velocity) {
-        setTranslationY(Utilities.boundToRange(displacement, mTranslationYOpen,
-                mTranslationYClosed));
-        return true;
-    }
-
-    @Override
-    public void setTranslationY(float translationY) {
-        super.setTranslationY(translationY);
-        if (mGradientBackground == null) return;
-        float p = (mTranslationYClosed - translationY) / mTranslationYRange;
-        boolean showScrim = p <= 0;
-        mGradientBackground.setProgress(p, showScrim);
-    }
-
-    @Override
-    public void onDragEnd(float velocity, boolean fling) {
-        if ((fling && velocity > 0) || getTranslationY() > (mTranslationYRange) / 2) {
-            mScrollInterpolator.setVelocityAtZero(velocity);
-            mOpenCloseAnimator.setDuration(SwipeDetector.calculateDuration(velocity,
-                    (mTranslationYClosed - getTranslationY()) / mTranslationYRange));
-            close(true);
-        } else {
-            mIsOpen = false;
-            mOpenCloseAnimator.setDuration(SwipeDetector.calculateDuration(velocity,
-                    (getTranslationY() - mTranslationYOpen) / mTranslationYRange));
-            open(true);
-        }
-    }
-
-    @Override
-    public void logActionCommand(int command) {
-        // TODO: be more specific
-        mLauncher.getUserEventDispatcher().logActionCommand(command, ContainerType.WIDGETS);
-    }
-
-    @Override
-    public boolean onControllerTouchEvent(MotionEvent ev) {
-        return mSwipeDetector.onTouchEvent(ev);
-    }
-
-    @Override
-    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_UP) {
-            // If we got ACTION_UP without ever returning true on intercept,
-            // the user never started dragging the bottom sheet.
-            if (!mLauncher.getDragLayer().isEventOverView(this, ev)) {
-                close(true);
-                return false;
-            }
-        }
-
-        int directionsToDetectScroll = mSwipeDetector.isIdleState() ?
-                SwipeDetector.DIRECTION_NEGATIVE : 0;
-        mSwipeDetector.setDetectableScrollConditions(
-                directionsToDetectScroll, false);
-        mSwipeDetector.onTouchEvent(ev);
-        return mSwipeDetector.isDraggingOrSettling();
-    }
-
-    /* DragListener */
-
-    @Override
-    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
-        // A widget or custom shortcut was dragged.
-        close(true);
-    }
-
-    @Override
-    public void onDragEnd() {
     }
 }
