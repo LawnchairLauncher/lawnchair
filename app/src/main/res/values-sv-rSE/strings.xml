@@ -251,6 +251,8 @@
   <string name="icon_pack_preference_title">Ikonpaket</string>
   <string name="icon_pack_preference_summary">Välj ett ikonpaket</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Dockan använder färger från bakgrundsbilden</string>
+  <string name="hotseat_show_arrow">Visa pilen</string>
+  <string name="hotseat_show_page_indicator">Visa sidindikatorn</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Dockan använder en färg som utvinns ur bakgrundsbilden</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Dockan kommer att färgas grå, men justeras av ljusstyrkan i bakgrundsbilden</string>
   <string name="transparent_hotseat_pref_title">Genomskinlig docka</string>
@@ -258,6 +260,7 @@
   <string name="blur_pref_title">Använd oskärpa</string>
   <string name="blur_pref_summary">Tillämpa suddig effekt på delar av gränssnittet\nInte kompatibelt med levande bakgrunder</string>
   <string name="blur_radius_pref_title">Radius för suddighet</string>
+  <string name="pref_iconLabelsInTwoLines">Ikonetiketter i två rader</string>
   <string name="white_google_icon_pref_title">Använd vit Google ikon</string>
   <string name="hide_icon_labels_pref_title">Dölj ikonetiketter på startskärmen</string>
   <string name="hide_all_apps_icon_labels_pref_title">Göm ikonetiketter i applistan</string>
@@ -268,7 +271,9 @@
   <string name="num_rows_pref_title">Antal rader</string>
   <string name="num_hotseat_icons_pref_title">Antalet ikoner i dockan</string>
   <string name="icon_scale_pref_title">Skala på ikoner</string>
+  <string name="hotseat_height_scale">Höjdskalan</string>
   <string name="icon_text_scale_pref_title">Skala på ikontext</string>
+  <string name="icon_text_padding_scale_pref_title">Ikonen stoppning skala</string>
   <string name="full_width_width_widgets_pref_title">Full bredd widgetar</string>
   <string name="full_width_widgets_pref_summary">Tillåt widgetar att sträcka sig över hela bredden utan spaltfyllnad</string>
   <string name="notification_access_pref_title">Notifikationsmärken och förhandsgranskning</string>
@@ -370,6 +375,8 @@
   <string name="icon_shape_circle">Cirkel</string>
   <string name="icon_shape_teardrop">Tårdropp</string>
   <string name="animated_clock_icon_title">Animerade klockikon</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Animera alternativa klockan appar</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Aktivera detta om du inte använder Google klocka som standardapp för klocka</string>
   <string name="about_summary_title">Sammanfattning</string>
   <string name="about_version">Version</string>
   <string name="about_icon_designer">App ikon designer</string>
