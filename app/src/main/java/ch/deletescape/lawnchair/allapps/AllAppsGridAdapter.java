@@ -20,8 +20,12 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
+import android.support.animation.DynamicAnimation;
+import android.support.animation.SpringAnimation;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +42,7 @@ import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.allapps.theme.IAllAppsThemer;
+import ch.deletescape.lawnchair.anim.SpringAnimationHandler;
 
 /**
  * The grid view adapter of all the apps.
@@ -67,7 +72,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             | VIEW_TYPE_SECTION_BREAK;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
 
-
     public interface BindViewCallback {
         void onBindView(ViewHolder holder);
     }
@@ -83,6 +87,67 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             mContent = v;
         }
     }
+
+    class AllAppsSpringAnimationFactory implements SpringAnimationHandler.AnimationFactory<ViewHolder> {
+
+        @NonNull
+        public SpringAnimation initialize(ViewHolder viewHolder) {
+            return SpringAnimationHandler.Companion.forView(viewHolder.itemView, DynamicAnimation.TRANSLATION_Y, 0);
+        }
+
+        public void update(@NonNull SpringAnimation springAnimation, ViewHolder viewHolder) {
+            int appPosition = getAppPosition(viewHolder.getAdapterPosition(), AllAppsGridAdapter.this.mAppsPerRow, AllAppsGridAdapter.this.mAppsPerRow);
+            int get1 = appPosition % AllAppsGridAdapter.this.mAppsPerRow;
+            appPosition /= AllAppsGridAdapter.this.mAppsPerRow;
+            int numAppRows = AllAppsGridAdapter.this.mApps.getNumAppRows() - 1;
+            if (appPosition > numAppRows / 2) {
+                appPosition = Math.abs(numAppRows - appPosition);
+            }
+            float f = ((float) (appPosition + 1)) * 0.5f;
+            float columnFactor = getColumnFactor(get1, AllAppsGridAdapter.this.mAppsPerRow);
+            float f2 = (f + columnFactor) * -100.0f;
+            columnFactor = (columnFactor + f) * 100.0f;
+            springAnimation
+                    .setMinValue(f2)
+                    .setMaxValue(columnFactor)
+                    .getSpring()
+                    .setStiffness(Utilities.boundToRange(900.0f - (((float) appPosition) * 50.0f), 580.0f, 900.0f))
+                    .setDampingRatio(0.55f);
+        }
+
+        private int getAppPosition(int i, int i2, int i3) {
+            int i4 = 0;
+            if (i < i2) {
+                return i;
+            }
+            if (i2 != 0) {
+                i4 = 1;
+            }
+            return ((i3 - i2) + i) - i4;
+        }
+
+        private float getColumnFactor(int i, int i2) {
+            Object obj = null;
+            float f = (float) (i2 / 2);
+            int abs = (int) Math.abs(((float) i) - f);
+            if (i2 % 2 == 0) {
+                obj = 1;
+            }
+            if (obj != null && ((float) i) < f) {
+                abs--;
+            }
+            float f2 = 0.0f;
+            for (int i3 = abs; i3 > 0; i3--) {
+                if (i3 == 1) {
+                    f2 += 0.2f;
+                } else {
+                    f2 += 0.1f;
+                }
+            }
+            return f2;
+        }
+    }
+
 
     /**
      * A subclass of GridLayoutManager that overrides accessibility values during app search.
@@ -165,6 +230,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private int mAppIconTextMaxLines;
     private final IAllAppsThemer mTheme;
 
+    private final SpringAnimationHandler<ViewHolder> mSpringAnimationHandler;
+
     public AllAppsGridAdapter(Launcher launcher, AlphabeticalAppsList apps, View.OnClickListener
             iconClickListener, View.OnLongClickListener iconLongClickListener) {
         Resources res = launcher.getResources();
@@ -177,6 +244,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
         mTheme = Utilities.getThemer().allAppsTheme(launcher);
+        mSpringAnimationHandler = new SpringAnimationHandler<>(0, new AllAppsSpringAnimationFactory());
     }
 
     public static boolean isDividerViewType(int viewType) {
@@ -350,5 +418,23 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public void setAppIconTextStyle(int color, int maxLines) {
         mAppIconTextColor = color;
         mAppIconTextMaxLines = maxLines;
+    }
+
+    public SpringAnimationHandler<ViewHolder> getSpringAnimationHandler() {
+        return mSpringAnimationHandler;
+    }
+
+    @Override
+    public void onViewAttachedToWindow(ViewHolder holder) {
+        int itemViewType = holder.getItemViewType();
+        if (isViewType(itemViewType, 70))
+            mSpringAnimationHandler.add(holder.itemView, holder);
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(ViewHolder holder) {
+        int itemViewType = holder.getItemViewType();
+        if (isViewType(itemViewType, 70))
+            mSpringAnimationHandler.remove(holder.itemView);
     }
 }

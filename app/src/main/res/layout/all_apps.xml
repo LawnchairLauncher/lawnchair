@@ -50,6 +50,7 @@
             android:clipToPadding="false"
             android:descendantFocusability="afterDescendants"
             android:focusable="true"
+            android:overScrollMode="never"
             android:theme="@style/CustomOverscroll.Light" />
 
     </ch.deletescape.lawnchair.allapps.AllAppsRecyclerViewContainerView>

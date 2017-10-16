@@ -54,6 +54,7 @@ import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.allapps.theme.IAllAppsThemer;
+import ch.deletescape.lawnchair.anim.SpringAnimationHandler;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.folder.Folder;
@@ -84,6 +85,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private final Launcher mLauncher;
     private final AlphabeticalAppsList mApps;
     private final AllAppsGridAdapter mAdapter;
+    private final SpringAnimationHandler<AllAppsGridAdapter.ViewHolder> mSpringAnimationHandler;
     private final RecyclerView.LayoutManager mLayoutManager;
 
     // The computed bounds of the container
@@ -125,6 +127,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mSectionNamesMargin = res.getDimensionPixelSize(R.dimen.all_apps_grid_view_start_margin);
         mApps = new AlphabeticalAppsList(context);
         mAdapter = new AllAppsGridAdapter(mLauncher, mApps, mLauncher, this);
+        mSpringAnimationHandler = mAdapter.getSpringAnimationHandler();
         mApps.setAdapter(mAdapter);
         mLayoutManager = mAdapter.getLayoutManager();
         DeviceProfile grid = mLauncher.getDeviceProfile();
@@ -295,6 +298,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAppsRecyclerView.setLayoutManager(mLayoutManager);
         mAppsRecyclerView.setAdapter(mAdapter);
         mAppsRecyclerView.setHasFixedSize(true);
+        mAppsRecyclerView.setItemAnimator(null);
+        mAppsRecyclerView.setSpringAnimationHandler(mSpringAnimationHandler);
         if (!mUseRoundSearchBar) {
             mElevationController = new HeaderElevationController.ControllerVL(mSearchContainer);
             mAppsRecyclerView.addOnScrollListener(mElevationController);
@@ -668,4 +673,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAdapter.setAppIconTextStyle(color, maxLines);
         mAdapter.notifyDataSetChanged();
     }
+
+    public SpringAnimationHandler<AllAppsGridAdapter.ViewHolder> getSpringAnimationHandler() {
+        return mSpringAnimationHandler;
+    }
+
 }
