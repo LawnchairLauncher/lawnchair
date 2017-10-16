@@ -62,7 +62,7 @@
          for accessibilty (spoken when the button gets focus). -->
   <string name="all_apps_home_button_label">홈</string>
   <!-- Label for remove drop target. [CHAR_LIMIT=20] -->
-  <string name="remove_drop_target_label">홈에서 삭제</string>
+  <string name="remove_drop_target_label">삭제</string>
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
   <string name="uninstall_drop_target_label">제거</string>
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
@@ -131,7 +131,7 @@
   <!-- Label on an icon that references an uninstalled package, for which we have no information about when it might be installed. [CHAR_LIMIT=15] -->
   <string name="package_state_unknown">알 수 없음</string>
   <!-- Button for abandoned promises dialog, to removes this abandoned promise icon. -->
-  <string name="abandoned_clean_this">제거</string>
+  <string name="abandoned_clean_this">삭제</string>
   <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->
   <string name="abandoned_search">검색</string>
   <!-- Title for abandoned promise dialog. -->
@@ -250,6 +250,8 @@
   <string name="icon_pack_preference_title">아이콘 팩</string>
   <string name="icon_pack_preference_summary">아이콘 팩 선택</string>
   <string name="hotseat_uses_extracted_colors_pref_title">독에 배경화면 색을 적용합니다.</string>
+  <string name="hotseat_show_arrow">화살표 보이기</string>
+  <string name="hotseat_show_page_indicator">페이지 표시기 보이기</string>
   <string name="hotseat_uses_extracted_colors_pref_on">배경화면에서 추출된 색상으로 독의 색상이 바뀝니다.</string>
   <string name="hotseat_uses_extracted_colors_pref_off">독 색상이 배경화면 밝기에 맞춘 회색으로 바뀝니다.</string>
   <string name="transparent_hotseat_pref_title">투명 독</string>
@@ -268,7 +270,9 @@
   <string name="num_rows_pref_title">행 개수</string>
   <string name="num_hotseat_icons_pref_title">독 아이콘 개수</string>
   <string name="icon_scale_pref_title">아이콘 크기</string>
+  <string name="hotseat_height_scale">독 높이</string>
   <string name="icon_text_scale_pref_title">아이콘 글자 크기</string>
+  <string name="icon_text_padding_scale_pref_title">아이콘 패딩 크기</string>
   <string name="full_width_width_widgets_pref_title">위젯 너비 화면 폭에 꽉차게 하기</string>
   <string name="full_width_widgets_pref_summary">위젯이 간격 없이 전체 너비로 확장되도록 허용</string>
   <string name="notification_access_pref_title">알림 뱃지와 미리보기</string>
@@ -284,11 +288,11 @@
   <string name="behavior_pref_summary">Lawnchair의 동작 설정</string>
   <string name="backup_pref_summary">데이터베이스 및 설정 백업</string>
   <string name="debug_pref_summary">런처 다시 시작, 아이콘 데이터베이스를 다시 만들기</string>
-  <string name="show_pixel_bar_pref_title">Pixel 검색 바 보이기</string>
+  <string name="show_pixel_bar_pref_title">픽셀 검색 바 보이기</string>
   <string name="use_wide_searchbar_pref_title">넓은 검색 바</string>
   <string name="show_mic_pref_title">Google 어시스턴트 버튼 보이기</string>
   <string name="use_round_searhbar">둥근 앱 검색 바 사용</string>
-  <string name="pixel_style_icons_pref_title">Pixel 아이콘</string>
+  <string name="pixel_style_icons_pref_title">픽셀 아이콘</string>
   <string name="pixel_style_icons_pref_summary">활성화 시, 가능한한 원형의 아이콘으로 표시됩니다.</string>
   <string name="show_google_now_tab_pref_title">Google Now 페이지 보이기</string>
   <string name="restart_lawnchair_pref_title">Lawnchair 다시 시작</string>
