@@ -251,6 +251,8 @@
   <string name="icon_pack_preference_title">Ikon-pakke</string>
   <string name="icon_pack_preference_summary">Velg en ikon-pakke</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Dock bruker farger fra bakgrunn</string>
+  <string name="hotseat_show_arrow">Vise pil</string>
+  <string name="hotseat_show_page_indicator">Vis siden indikator</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Dock-en farges med en farge fra bakgrunnsbildet</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Dock-en vil være farget grå, men justert av bakgrunnslysstyrken</string>
   <string name="transparent_hotseat_pref_title">Gjennomsiktig dock</string>
@@ -258,6 +260,7 @@
   <string name="blur_pref_title">Aktiver uskarphet</string>
   <string name="blur_pref_summary">Anvend uskarphet på deler av grensesnittet\nIkke kompatibelt med direkte-bakgrunner</string>
   <string name="blur_radius_pref_title">Uskarphetsradius</string>
+  <string name="pref_iconLabelsInTwoLines">Ikonet etiketter på to linjer</string>
   <string name="white_google_icon_pref_title">Bruk hvitt Google-ikon</string>
   <string name="hide_icon_labels_pref_title">Hide icon labels on homescreen</string>
   <string name="hide_all_apps_icon_labels_pref_title">Skjul ikon-etiketter i skuff</string>
@@ -268,14 +271,24 @@
   <string name="num_rows_pref_title">Antall rader</string>
   <string name="num_hotseat_icons_pref_title">Antall ikoner i dock</string>
   <string name="icon_scale_pref_title">Ikon-størrelse</string>
+  <string name="hotseat_height_scale">Høyde skala</string>
   <string name="icon_text_scale_pref_title">Ikon-tekst-størrelse</string>
+  <string name="icon_text_padding_scale_pref_title">Ikonet polstring skala</string>
   <string name="full_width_width_widgets_pref_title">Full bredde på moduler</string>
   <string name="full_width_widgets_pref_summary">Tillat moduler å spenne hele bredden uten padding</string>
   <string name="notification_access_pref_title">Varsling-merker og forhåndsvisning</string>
   <string name="notification_access_pref_summary">Gi Lawnchair tilgang til varslingene dine for å aktivere denne funksjonen</string>
+  <string name="general_pref_title">Generelt</string>
+  <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Oppførsel</string>
   <string name="debug_pref_title">Feilsøk</string>
   <string name="import_export_pref_title">Importér/eksportér</string>
+  <string name="general_pref_summary">Homescreen, dock og app skuff</string>
+  <string name="pixel_ui_pref_summary">Aktiver Pixel Launcher eksklusive funksjoner</string>
+  <string name="backup_pref_title">Sikkerhetskopiering</string>
+  <string name="behavior_pref_summary">Endre Lawnchair</string>
+  <string name="backup_pref_summary">Sikkerhetskopiere databasen og innstillinger</string>
+  <string name="debug_pref_summary">Hvile eller bygge ikonet database</string>
   <string name="show_pixel_bar_pref_title">Vis Pixel-topplinje</string>
   <string name="use_wide_searchbar_pref_title">Bruk bred søkelinje</string>
   <string name="show_mic_pref_title">Vis Google Assistant-knapp</string>
@@ -327,6 +340,8 @@
   <string name="pull_down_apps_search">App-søk</string>
   <string name="enable_screen_rotation">Aktiver skjermrotering</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">Import</string>
+  <string name="backup_export_title">Eksporter</string>
   <string name="imexport_success">Suksess!</string>
   <string name="imexport_error">Feil: kunne ikke kopiere fil</string>
   <string name="imexport_no_backup_found">Ingen sikkerhetskopi funnet</string>
@@ -353,12 +368,15 @@
   <string name="loading">Laster inn …</string>
   <string name="icon_shape_override_label">Endre ikon-form</string>
   <string name="icon_shape_system_default">Ikke endre</string>
+  <string name="icon_shape_none">Ingen</string>
   <string name="icon_shape_square">Kvadrat</string>
   <string name="icon_shape_rounded_square">Avrundet kvadrat</string>
   <string name="icon_shape_squircle">Kvadrat-sirkel</string>
   <string name="icon_shape_circle">Sirkel</string>
   <string name="icon_shape_teardrop">Dråpe</string>
   <string name="animated_clock_icon_title">Animert klokke-ikon</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Animere alternativ klokke apps</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Aktivere dette hvis du ikke bruker Google klokke som standard klokke app</string>
   <string name="about_summary_title">Sammendrag</string>
   <string name="about_version">Versjon</string>
   <string name="about_icon_designer">App-ikon-designer</string>
@@ -380,4 +398,10 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, d. MMMM</string>
+  <string name="about_translators">Oversettere</string>
+  <string name="lock_desktop">Lås skrivebordet</string>
+  <string name="lawnfeed_not_found">Lawnfeed ikke installert</string>
+  <string name="google_app_not_found">Google app ikke installert</string>
+  <string name="popup_card_theme_title">Flat stil popup</string>
+  <string name="set_default_launcher">Angi standard bærerakett</string>
 </resources>
