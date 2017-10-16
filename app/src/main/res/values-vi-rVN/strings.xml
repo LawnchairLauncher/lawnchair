@@ -250,6 +250,8 @@
   <string name="icon_pack_preference_title">Gói Biểu Tượng</string>
   <string name="icon_pack_preference_summary">Chọn Gói Biểu tượng</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Sử dụng màu sắc hình nền cho thanh dock</string>
+  <string name="hotseat_show_arrow">Mũi tên hiển thị</string>
+  <string name="hotseat_show_page_indicator">Hiển thị trang chỉ số</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Thanh dock sẽ đổi màu theo màu sắc được lấy từ hình nền của bạn.</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Thanh dock sẽ có màu xám, nhưng điều chỉnh bởi độ sáng hình nền</string>
   <string name="transparent_hotseat_pref_title">Thanh dock trong suốt</string>
@@ -257,6 +259,7 @@
   <string name="blur_pref_title">Bật hiệu ứng mờ</string>
   <string name="blur_pref_summary">Áp dụng hiệu ứng mờ đến các thành phần của giao diện\nKhông tương thích với hình nền động</string>
   <string name="blur_radius_pref_title">Phạm vi mờ</string>
+  <string name="pref_iconLabelsInTwoLines">Nhãn biểu tượng trong hai dòng</string>
   <string name="white_google_icon_pref_title">Sử dụng biểu tượng Google màu trắng</string>
   <string name="hide_icon_labels_pref_title">Ẩn nhãn biểu tượng trên màn hình chính</string>
   <string name="hide_all_apps_icon_labels_pref_title">Ẩn biểu tượng nhãn trong ngăn ứng dụng</string>
@@ -267,7 +270,9 @@
   <string name="num_rows_pref_title">Số hàng</string>
   <string name="num_hotseat_icons_pref_title">Số lượng các biểu tượng trong dock</string>
   <string name="icon_scale_pref_title">Icon scale</string>
+  <string name="hotseat_height_scale">Quy mô chiều cao</string>
   <string name="icon_text_scale_pref_title">Icon text scale</string>
+  <string name="icon_text_padding_scale_pref_title">Biểu tượng padding quy mô</string>
   <string name="full_width_width_widgets_pref_title">Toàn bộ chiều rộng widget</string>
   <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
   <string name="notification_access_pref_title">Notification badges and preview</string>
@@ -369,6 +374,8 @@
   <string name="icon_shape_circle">Hình tròn</string>
   <string name="icon_shape_teardrop">Giọt nước</string>
   <string name="animated_clock_icon_title">Biểu tượng đồng hồ động</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Animate thay thế đồng hồ ứng dụng</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Kích hoạt này nếu bạn không sử dụng Google đồng hồ như ứng dụng clock mặc định của bạn</string>
   <string name="about_summary_title">Tổng quan</string>
   <string name="about_version">Phiên bản</string>
   <string name="about_icon_designer">Người thiết kế biểu tượng</string>
