@@ -292,6 +292,8 @@ public class Launcher extends BaseActivity
     public ViewGroupFocusHelper mFocusHandler;
     private boolean mRotationEnabled = false;
 
+    private boolean mAppLaunchSuccess;
+
     @Thunk void setOrientation() {
         if (mRotationEnabled) {
             unlockScreenOrientation(true);
@@ -781,6 +783,10 @@ public class Launcher extends BaseActivity
             mAppWidgetHost.stopListening();
         }
 
+        if (!mAppLaunchSuccess) {
+            getUserEventDispatcher().logActionCommand(Action.Command.STOP,
+                    mWorkspace.getState().containerType);
+        }
         NotificationListener.removeNotificationsChangedListener();
     }
 
@@ -827,6 +833,7 @@ public class Launcher extends BaseActivity
         super.onResume();
         TraceHelper.partitionSection("ON_RESUME", "superCall");
 
+        mAppLaunchSuccess = false;
         getUserEventDispatcher().resetElapsedSessionMillis();
         mPaused = false;
         if (mOnResumeNeedsLoad) {
@@ -2115,7 +2122,6 @@ public class Launcher extends BaseActivity
             throw new IllegalArgumentException("Input must have a valid intent");
         }
         startActivitySafely(v, intent, item);
-        getUserEventDispatcher().logAppLaunch(v, intent); // TODO for discovered apps b/35802115
     }
 
     /**
@@ -2276,9 +2282,10 @@ public class Launcher extends BaseActivity
     }
 
     public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
+        mAppLaunchSuccess = false;
         if (mIsSafeModeEnabled && !Utilities.isSystemApp(this, intent)) {
             Toast.makeText(this, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
-            return false;
+            return mAppLaunchSuccess;
         }
         // Only launch using the new animation if the shortcut has not opted out (this is a
         // private contract between launcher and may be ignored in the future).
@@ -2318,12 +2325,13 @@ public class Launcher extends BaseActivity
                 btv.setStayPressed(true);
                 setOnResumeCallback(btv);
             }
-            return true;
+            mAppLaunchSuccess = true;
+            getUserEventDispatcher().logAppLaunch(v, intent); // TODO for discovered apps b/35802115
         } catch (ActivityNotFoundException|SecurityException e) {
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Unable to launch. tag=" + item + " intent=" + intent, e);
         }
-        return false;
+        return mAppLaunchSuccess;
     }
 
     @Override

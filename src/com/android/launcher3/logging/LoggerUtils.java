@@ -91,7 +91,8 @@ public class LoggerUtils {
                 return getFieldName(t.controlType, ControlType.class);
             case Target.Type.CONTAINER:
                 String str = getFieldName(t.containerType, ContainerType.class);
-                if (t.containerType == ContainerType.WORKSPACE) {
+                if (t.containerType == ContainerType.WORKSPACE ||
+                        t.containerType == ContainerType.HOTSEAT) {
                     str += " id=" + t.pageIndex;
                 } else if (t.containerType == ContainerType.FOLDER) {
                     str += " grid(" + t.gridX + "," + t.gridY+ ")";
@@ -105,13 +106,16 @@ public class LoggerUtils {
     private static String getItemStr(Target t) {
         String typeStr = getFieldName(t.itemType, ItemType.class);
         if (t.packageNameHash != 0) {
-            typeStr += ", packageHash=" + t.packageNameHash + ", predictiveRank=" + t.predictedRank;
+            typeStr += ", packageHash=" + t.packageNameHash;
         }
         if (t.componentHash != 0) {
-            typeStr += ", componentHash=" + t.componentHash + ", predictiveRank=" + t.predictedRank;
+            typeStr += ", componentHash=" + t.componentHash;
         }
         if (t.intentHash != 0) {
-            typeStr += ", intentHash=" + t.intentHash + ", predictiveRank=" + t.predictedRank;
+            typeStr += ", intentHash=" + t.intentHash;
+        }
+        if (t.packageNameHash != 0 || t.componentHash != 0 || t.intentHash != 0) {
+            typeStr += ", predictiveRank=" + t.predictedRank;
         }
         return typeStr + ", grid(" + t.gridX + "," + t.gridY + "), span(" + t.spanX + "," + t.spanY
                 + "), pageIdx=" + t.pageIndex;

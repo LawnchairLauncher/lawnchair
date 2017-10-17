@@ -26,7 +26,8 @@ import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.GradientView;
 import com.android.launcher3.touch.SwipeDetector;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
@@ -207,16 +208,11 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
 
         final int containerType = mTouchEventStartedOnHotseat
                 ? ContainerType.HOTSEAT : ContainerType.WORKSPACE;
-
         if (fling) {
             if (velocity < 0) {
                 calculateDuration(velocity, mAppsView.getTranslationY());
-
                 if (!mLauncher.isInState(LauncherState.ALL_APPS)) {
-                    mLauncher.getUserEventDispatcher().logActionOnContainer(
-                            Action.Touch.FLING,
-                            Action.Direction.UP,
-                            containerType);
+                    logSwipeOnContainer(Touch.FLING, Direction.UP, containerType);
                 }
                 mLauncher.showAppsView(true /* animated */);
                 if (hasSpringAnimationHandler()) {
@@ -226,24 +222,41 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
                 }
             } else {
                 calculateDuration(velocity, Math.abs(mShiftRange - mAppsView.getTranslationY()));
-                mLauncher.showWorkspace(true);
+                if (mLauncher.isInState(LauncherState.ALL_APPS)) {
+                    logSwipeOnContainer(Touch.FLING, Direction.DOWN, ContainerType.ALLAPPS);
+                }
+                mLauncher.showWorkspace(true /* animated */);
             }
             // snap to top or bottom using the release velocity
         } else {
             if (mAppsView.getTranslationY() > mShiftRange / 2) {
                 calculateDuration(velocity, Math.abs(mShiftRange - mAppsView.getTranslationY()));
-                mLauncher.showWorkspace(true);
+                if (mLauncher.isInState(LauncherState.ALL_APPS)) {
+                    logSwipeOnContainer(Touch.SWIPE, Direction.DOWN, ContainerType.ALLAPPS);
+                }
+                mLauncher.showWorkspace(true /* animated */);
             } else {
                 calculateDuration(velocity, Math.abs(mAppsView.getTranslationY()));
                 if (!mLauncher.isInState(LauncherState.ALL_APPS)) {
-                    mLauncher.getUserEventDispatcher().logActionOnContainer(
-                            Action.Touch.SWIPE,
-                            Action.Direction.UP,
-                            containerType);
+                    logSwipeOnContainer(Touch.SWIPE, Direction.UP, containerType);
                 }
                 mLauncher.showAppsView(true /* animated */);
             }
         }
+    }
+
+    /**
+     * Important, make sure that this method is called only when actual launcher state transition
+     * happen and not when user swipes in one direction only to cancel that swipe seconds later.
+     *
+     * @param touchType Swipe or Fling
+     * @param direction Up or Down
+     * @param containerType Workspace or Allapps
+     */
+    private void logSwipeOnContainer(int touchType, int direction, int containerType) {
+        mLauncher.getUserEventDispatcher().logActionOnContainer(
+                touchType, direction, containerType,
+                mLauncher.getWorkspace().getCurrentPage());
     }
 
     public boolean isTransitioning() {

@@ -132,7 +132,9 @@ message Action {
                   // not using the HOME_INTENT
     CANCEL = 3;   // Indicates that a confirmation screen was cancelled
     CONFIRM = 4;  // Indicates thata confirmation screen was accepted
+    STOP = 5;     // Indicates onStop() was called (screen time out, power off)
   }
+
   optional Type type = 1;
   optional Touch touch = 2;
   optional Direction dir = 3;
