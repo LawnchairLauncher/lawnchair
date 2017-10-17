@@ -1,4 +1,4 @@
-# Lawnchair - [![Travis](https://img.shields.io/travis/Deletescape-Media/Lawnchair.svg)](https://travis-ci.org/Deletescape-Media/Lawnchair) - [![Github All Releases](https://img.shields.io/github/downloads/Deletescape-Media/Lawnchair/total.svg)](https://github.com/Deletescape-Media/Lawnchair/releases) - [![Crowdin](https://d322cqt584bo4o.cloudfront.net/lawnchairandroid/localized.svg)](https://crowdin.com/project/lawnchairandroid) - [![Codacy grade](https://img.shields.io/codacy/grade/e2727925367548d7bbef71d54209d35b.svg)](https://www.codacy.com/app/deletescape/Lawnchair/dashboard) - [![Donate on PayPal](https://img.shields.io/badge/PayPal-Donate%20Now-brightgreen.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=E2EFKTUC62KDQ)
+# Lawnchair - [![Travis](https://img.shields.io/travis/Deletescape-Media/Lawnchair.svg)](https://travis-ci.org/Deletescape-Media/Lawnchair) - [![Github All Releases](https://img.shields.io/github/downloads/Deletescape-Media/Lawnchair/total.svg)](https://github.com/Deletescape-Media/Lawnchair/releases) - [![Crowdin](https://d322cqt584bo4o.cloudfront.net/lawnchairandroid/localized.svg)](http://translate.lawnchair.info) - [![Codacy grade](https://img.shields.io/codacy/grade/e2727925367548d7bbef71d54209d35b.svg)](https://www.codacy.com/app/deletescape/Lawnchair/dashboard) - [![Donate on PayPal](https://img.shields.io/badge/PayPal-Donate%20Now-brightgreen.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=E2EFKTUC62KDQ)
 
 ![Lawnchair](banner.png)
 
@@ -9,7 +9,7 @@ Download now!
 
 ## Now what does this cost?
 
-Nothing, I am promising that Lawnchair, including all it's features, will always be free! But if you really like it, you can still pay me a beer or something on [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=E2EFKTUC62KDQ).
+Nothing, I am promising that Lawnchair, including all it's features, will always be free! But if you really like it, you can still pay me a beer or something on [PayPal](https://www.paypal.me/deletescape).
 
 ## How to Contribute?
 

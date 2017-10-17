@@ -16,10 +16,10 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="@dimen/deep_shortcut_drag_handle_size"
     android:height="@dimen/deep_shortcut_drag_handle_size"
-    android:viewportWidth="24.0"
-    android:viewportHeight="24.0">
+    android:viewportHeight="24.0"
+    android:viewportWidth="24.0">
 
     <path
-        android:pathData="M20 9H4v2h16V9zM4 15h16v-2H4v2z"
-        android:fillColor="?attr/deepShortcutsHandleColor" />
+        android:fillColor="?attr/deepShortcutsHandleColor"
+        android:pathData="M19,9H5c-0.55,0-1,0.45-1,1l0,0c0,0.55,0.45,1,1,1h14c0.55,0,1-0.45,1-1l0,0C20,9.45,19.55,9,19,9z M5,         15h14c0.55,0,1-0.45,1-1l0,0c0-0.55-0.45-1-1-1H5c-0.55,0-1,0.45-1,1l0,0C4,14.55,4.45,15,5,15z" />
 </vector>
