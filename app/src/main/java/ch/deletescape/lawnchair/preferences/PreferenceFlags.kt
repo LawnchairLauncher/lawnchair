@@ -106,7 +106,6 @@ object PreferenceFlags {
     const val EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED"
 
     // STATES
-    const val KEY_REQUIRES_ICON_CACHE_RELOAD = "requiresIconCacheReload"
     // The set of shortcuts that are pending install
     const val APPS_PENDING_INSTALL = "apps_to_install"
     const val RESTORE_TASK_PENDING = "restore_task_pending"
