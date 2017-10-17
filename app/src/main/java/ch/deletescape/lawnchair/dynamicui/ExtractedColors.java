@@ -56,8 +56,8 @@ public class ExtractedColors {
     private static final int IS_SUPER_DARK = 16;
     public static final int NAVIGATION_BAR_INDEX = 17;
 
-    public static final int NUM_COLOR_PROFILES = 16;
-    public static final int VERSION = 7;
+    public static final int NUM_COLOR_PROFILES = 17;
+    public static final int VERSION = 8;
 
     private static final String COLOR_SEPARATOR = ",";
 
