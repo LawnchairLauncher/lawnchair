@@ -75,8 +75,7 @@ public class PinchAnimationManager {
 
         mOverviewScale = mWorkspace.getOverviewModeShrinkFactor();
         mOverviewTranslationY = mWorkspace.getOverviewModeTranslationY();
-        mNormalOverviewTransitionDuration = mWorkspace.getStateTransitionAnimation()
-                .mOverviewTransitionTime;
+        mNormalOverviewTransitionDuration = LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
     }
 
     public int getNormalOverviewTransitionDuration() {
@@ -131,7 +130,8 @@ public class PinchAnimationManager {
         mWorkspace.setScaleX(interpolatedScale);
         mWorkspace.setScaleY(interpolatedScale);
         mWorkspace.setTranslationY(interpolatedTranslationY);
-        setOverviewPanelsAlpha(1f - interpolatedProgress, 0);
+        int alpha = (int) ((1f - interpolatedProgress) * 255);
+        setOverviewPanelsAlpha(alpha, 0);
     }
 
     /**
@@ -180,14 +180,15 @@ public class PinchAnimationManager {
         }
     }
 
-    private void setOverviewPanelsAlpha(float alpha, int duration) {
+    private void setOverviewPanelsAlpha(int alpha, int duration) {
         int childCount = mWorkspace.getChildCount();
         for (int i = 0; i < childCount; i++) {
             final CellLayout cl = (CellLayout) mWorkspace.getChildAt(i);
             if (duration == 0) {
-                cl.setBackgroundAlpha(alpha);
+                cl.getScrimBackground().setAlpha(alpha);
             } else {
-                ObjectAnimator.ofFloat(cl, "backgroundAlpha", alpha).setDuration(duration).start();
+                ObjectAnimator.ofInt(cl.getScrimBackground(),
+                        LauncherAnimUtils.DRAWABLE_ALPHA, alpha).setDuration(duration).start();
             }
         }
     }
@@ -202,9 +203,9 @@ public class PinchAnimationManager {
     }
 
     private void animateScrim(boolean show) {
-        float endValue = show ? mWorkspace.getStateTransitionAnimation().mWorkspaceScrimAlpha : 0;
-        startAnimator(INDEX_SCRIM,
-                ObjectAnimator.ofFloat(mLauncher.getDragLayer(), "backgroundAlpha", endValue),
+        int endValue = show ? mWorkspace.getStateTransitionAnimation().mWorkspaceScrimAlpha : 0;
+        startAnimator(INDEX_SCRIM, ObjectAnimator.ofInt(
+                mLauncher.getDragLayer().getScrim(), LauncherAnimUtils.DRAWABLE_ALPHA, endValue),
                 mNormalOverviewTransitionDuration);
     }
 

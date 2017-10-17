@@ -104,8 +104,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     private final ArrayList<PreviewBackground> mFolderBackgrounds = new ArrayList<>();
     final PreviewBackground mFolderLeaveBehind = new PreviewBackground();
 
-    private float mBackgroundAlpha;
-
     private static final int[] BACKGROUND_STATE_ACTIVE = new int[] { android.R.attr.state_active };
     private static final int[] BACKGROUND_STATE_DEFAULT = new int[0];
     private final Drawable mBackground;
@@ -221,7 +219,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
         mBackground = res.getDrawable(R.drawable.bg_celllayout);
         mBackground.setCallback(this);
-        mBackground.setAlpha((int) (mBackgroundAlpha * 255));
+        mBackground.setAlpha(0);
 
         mReorderPreviewAnimationMagnitude = (REORDER_PREVIEW_MAGNITUDE * grid.iconSizePx);
 
@@ -440,7 +438,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         // When we're small, we are either drawn normally or in the "accepts drops" state (during
         // a drag). However, we also drag the mini hover background *over* one of those two
         // backgrounds
-        if (mBackgroundAlpha > 0.0f) {
+        if (mBackground.getAlpha() > 0) {
             mBackground.draw(canvas);
         }
 
@@ -847,15 +845,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         return getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - (mCountX * mCellWidth);
     }
 
-    public float getBackgroundAlpha() {
-        return mBackgroundAlpha;
-    }
-
-    public void setBackgroundAlpha(float alpha) {
-        if (mBackgroundAlpha != alpha) {
-            mBackgroundAlpha = alpha;
-            mBackground.setAlpha((int) (mBackgroundAlpha * 255));
-        }
+    public Drawable getScrimBackground() {
+        return mBackground;
     }
 
     @Override

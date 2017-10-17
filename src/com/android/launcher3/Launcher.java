@@ -16,6 +16,9 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_NEXT_FRAME;
+import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_SHORT_TIMEOUT;
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_APPS;
 import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_WIDGETS;
 
@@ -117,6 +120,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -205,15 +209,13 @@ public class Launcher extends BaseActivity
     static final String APPS_VIEW_SHOWN = "launcher.apps_view_shown";
 
     /** The different states that Launcher can be in. */
-    enum State { WORKSPACE, WORKSPACE_SPRING_LOADED, APPS, APPS_SPRING_LOADED,
-        WIDGETS, WIDGETS_SPRING_LOADED }
+    enum State { WORKSPACE, WORKSPACE_SPRING_LOADED, APPS}
 
     @Thunk State mState = State.WORKSPACE;
     @Thunk LauncherStateTransitionAnimation mStateTransitionAnimation;
 
     private boolean mIsSafeModeEnabled;
 
-    public static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 500;
     private static final int ON_ACTIVITY_RESULT_ANIMATION_DELAY = 500;
 
     // How long to wait before the new-shortcut animation automatically pans the workspace
@@ -366,9 +368,6 @@ public class Launcher extends BaseActivity
         mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
 
         mAppWidgetHost = new LauncherAppWidgetHost(this);
-        if (Utilities.ATLEAST_MARSHMALLOW) {
-            mAppWidgetHost.addProviderChangeListener(this);
-        }
         mAppWidgetHost.startListening();
 
         // If we are getting an onCreate, we can actually preempt onResume and unset mPaused here,
@@ -582,8 +581,7 @@ public class Launcher extends BaseActivity
         Runnable exitSpringLoaded = new Runnable() {
             @Override
             public void run() {
-                exitSpringLoadedDragMode((resultCode != RESULT_CANCELED),
-                        EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT);
+                exitSpringLoadedDragMode(SPRING_LOADED_EXIT_SHORT_TIMEOUT);
             }
         };
 
@@ -635,7 +633,7 @@ public class Launcher extends BaseActivity
                 final Runnable onComplete = new Runnable() {
                     @Override
                     public void run() {
-                        exitSpringLoadedDragMode(false, 0);
+                        exitSpringLoadedDragMode(SPRING_LOADED_EXIT_NEXT_FRAME);
                     }
                 };
 
@@ -763,8 +761,7 @@ public class Launcher extends BaseActivity
                 @Override
                 public void run() {
                     completeAddAppWidget(appWidgetId, requestArgs, layout, null);
-                    exitSpringLoadedDragMode((resultCode != RESULT_CANCELED),
-                            EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT);
+                    exitSpringLoadedDragMode(SPRING_LOADED_EXIT_SHORT_TIMEOUT);
                 }
             };
         } else if (resultCode == RESULT_CANCELED) {
@@ -1439,8 +1436,9 @@ public class Launcher extends BaseActivity
             if (topOpenView != null) {
                 topOpenView.logActionCommand(Action.Command.HOME_INTENT);
             } else if (alreadyOnHome) {
-                ued.logActionCommand(Action.Command.HOME_INTENT,
-                        mWorkspace.getState().containerType, mWorkspace.getCurrentPage());
+                Target target = newContainerTarget(mWorkspace.getState().containerType);
+                target.pageIndex = mWorkspace.getCurrentPage();
+                ued.logActionCommand(Action.Command.HOME_INTENT, target);
             }
 
             // In all these cases, only animate if we're already on home
@@ -1714,8 +1712,7 @@ public class Launcher extends BaseActivity
                 @Override
                 public void run() {
                     // Exit spring loaded mode if necessary after adding the widget
-                    exitSpringLoadedDragMode(true, EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT
-                    );
+                    exitSpringLoadedDragMode(SPRING_LOADED_EXIT_SHORT_TIMEOUT);
                 }
             };
             completeAddAppWidget(appWidgetId, info, boundWidget, addFlowHandler.getProviderInfo(this));
@@ -1899,9 +1896,6 @@ public class Launcher extends BaseActivity
         } else if (isAppsViewVisible()) {
             ued.logActionCommand(Action.Command.BACK, ContainerType.ALLAPPS);
             showWorkspace(true);
-        } else if (isWidgetsViewVisible())  {
-            ued.logActionCommand(Action.Command.BACK, ContainerType.WIDGETS);
-            showOverviewMode(true);
         } else if (mWorkspace.isInOverviewMode()) {
             ued.logActionCommand(Action.Command.BACK, ContainerType.OVERVIEW);
             showWorkspace(true);
@@ -2444,10 +2438,6 @@ public class Launcher extends BaseActivity
         return mState == State.APPS;
     }
 
-    public boolean isWidgetsViewVisible() {
-        return mState == State.WIDGETS;
-    }
-
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
@@ -2546,27 +2536,16 @@ public class Launcher extends BaseActivity
 
     /**
      * Shows the apps view.
-     */
-    public void showAppsView(boolean animated) {
-        markAppsViewShown();
-        showAppsOrWidgets(State.APPS, animated);
-    }
-
-    /**
-     * Sets up the transition to show the apps/widgets view.
      *
      * @return whether the current from and to state allowed this operation
      */
     // TODO: calling method should use the return value so that when {@code false} is returned
     // the workspace transition doesn't fall into invalid state.
-    private boolean showAppsOrWidgets(State toState, boolean animated) {
+    public boolean showAppsView(boolean animated) {
+        markAppsViewShown();
+
         if (!(mState == State.WORKSPACE ||
-                mState == State.APPS_SPRING_LOADED ||
-                mState == State.WIDGETS_SPRING_LOADED ||
                 (mState == State.APPS && mAllAppsController.isTransitioning()))) {
-            return false;
-        }
-        if (toState != State.APPS && toState != State.WIDGETS) {
             return false;
         }
 
@@ -2576,14 +2555,10 @@ public class Launcher extends BaseActivity
             mExitSpringLoadedModeRunnable = null;
         }
 
-        if (toState == State.APPS) {
-            mStateTransitionAnimation.startAnimationToAllApps(animated);
-        } else {
-            mStateTransitionAnimation.startAnimationToWidgets(animated);
-        }
+        mStateTransitionAnimation.startAnimationToAllApps(animated);
 
         // Change the state *after* we've called all the transition code
-        setState(toState);
+        setState(State.APPS);
         AbstractFloatingView.closeAllOpenViews(this);
 
         // Send an accessibility event to announce the context change
@@ -2613,12 +2588,11 @@ public class Launcher extends BaseActivity
         setState(State.WORKSPACE_SPRING_LOADED);
     }
 
-    public void exitSpringLoadedDragMode(final boolean successfulDrop, int delay) {
-        exitSpringLoadedDragMode(successfulDrop, delay, null);
+    public void exitSpringLoadedDragMode(int delay) {
+        exitSpringLoadedDragMode(delay, null);
     }
 
-    public void exitSpringLoadedDragMode(final boolean successfulDrop, int delay,
-            final Runnable onCompleteRunnable) {
+    public void exitSpringLoadedDragMode(int delay, final Runnable onCompleteRunnable) {
         if (!isStateSpringLoaded()) return;
 
         // Unlock rotation lock
@@ -2634,18 +2608,12 @@ public class Launcher extends BaseActivity
         mExitSpringLoadedModeRunnable = new Runnable() {
             @Override
             public void run() {
-                if (successfulDrop) {
-                    // TODO(hyunyoungs): verify if this hack is still needed, if not, delete.
-                    //
-                    // Before we show workspace, hide all apps again because
-                    // exitSpringLoadedDragMode made it visible. This is a bit hacky; we should
-                    // clean up our state transition functions
-                    showWorkspace(true, onCompleteRunnable);
-                } else if (mState == State.APPS_SPRING_LOADED) {
-                    showAppsView(true /* animated */);
-                } else if (mState == State.WORKSPACE_SPRING_LOADED) {
-                    showWorkspace(true);
-                }
+                // TODO(hyunyoungs): verify if this hack is still needed, if not, delete.
+                //
+                // Before we show workspace, hide all apps again because
+                // exitSpringLoadedDragMode made it visible. This is a bit hacky; we should
+                // clean up our state transition functions
+                showWorkspace(true, onCompleteRunnable);
                 mExitSpringLoadedModeRunnable = null;
             }
         };
@@ -2653,8 +2621,7 @@ public class Launcher extends BaseActivity
     }
 
     boolean isStateSpringLoaded() {
-        return mState == State.WORKSPACE_SPRING_LOADED || mState == State.APPS_SPRING_LOADED
-                || mState == State.WIDGETS_SPRING_LOADED;
+        return mState == State.WORKSPACE_SPRING_LOADED;
     }
 
     @Override
@@ -3394,13 +3361,6 @@ public class Launcher extends BaseActivity
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
         if (topView != null) {
             topView.onWidgetsBound();
-        }
-    }
-
-    @Override
-    public void notifyWidgetProvidersChanged() {
-        if (mWorkspace.getState().shouldUpdateWidget) {
-            refreshAndBindWidgetsForPackageUser(null);
         }
     }
 

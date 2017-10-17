@@ -181,4 +181,9 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
         setPadding(getPaddingLeft() + leftInset, getPaddingTop(),
                 getPaddingRight() + rightInset, getPaddingBottom() + bottomInset);
     }
+
+    @Override
+    protected int getElementsRowCount() {
+        return 1;
+    }
 }

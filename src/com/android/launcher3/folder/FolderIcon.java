@@ -296,7 +296,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 to = new Rect();
                 Workspace workspace = mLauncher.getWorkspace();
                 // Set cellLayout and this to it's final state to compute final animation locations
-                workspace.setFinalTransitionTransform((CellLayout) getParent().getParent());
+                workspace.setFinalTransitionTransform();
                 float scaleX = getScaleX();
                 float scaleY = getScaleY();
                 setScaleX(1.0f);
@@ -305,7 +305,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 // Finished computing final animation locations, restore current state
                 setScaleX(scaleX);
                 setScaleY(scaleY);
-                workspace.resetTransitionTransform((CellLayout) getParent().getParent());
+                workspace.resetTransitionTransform();
             }
 
             int numItemsInPreview = Math.min(MAX_NUM_ITEMS_IN_PREVIEW, index + 1);

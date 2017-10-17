@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.widget;
 
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -32,7 +34,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.Toast;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.ItemInfo;
@@ -41,7 +42,6 @@ import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.folder.Folder;
 import com.android.launcher3.graphics.GradientView;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -264,11 +264,16 @@ abstract class BaseWidgetSheet extends AbstractFloatingView
     @Override
     public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
         targetParent.containerType = ContainerType.WIDGETS;
+        targetParent.cardinality = getElementsRowCount();
     }
 
     @Override
     public final void logActionCommand(int command) {
-        // TODO: be more specific
-        mLauncher.getUserEventDispatcher().logActionCommand(command, ContainerType.WIDGETS);
+        Target target = newContainerTarget(ContainerType.WIDGETS);
+        target.cardinality = getElementsRowCount();
+        mLauncher.getUserEventDispatcher().logActionCommand(command, target);
     }
+
+    protected abstract int getElementsRowCount();
+
 }

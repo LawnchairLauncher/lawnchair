@@ -16,6 +16,8 @@
 
 package com.android.launcher3.dragndrop;
 
+import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_SHORT_TIMEOUT;
+
 import android.content.ComponentName;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -261,8 +263,7 @@ public class DragController implements DragDriver.EventListener, TouchController
         if (!accepted) {
             // If it was not accepted, cleanup the state. If it was accepted, it is the
             // responsibility of the drop target to cleanup the state.
-            mLauncher.exitSpringLoadedDragMode(false,
-                    Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT);
+            mLauncher.exitSpringLoadedDragMode(SPRING_LOADED_EXIT_SHORT_TIMEOUT);
             mDragObject.deferDragViewCleanupPostAnimation = false;
         }
 

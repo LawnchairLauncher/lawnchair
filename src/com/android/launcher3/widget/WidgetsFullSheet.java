@@ -219,4 +219,9 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         sheet.open(animate);
         return sheet;
     }
+
+    @Override
+    protected int getElementsRowCount() {
+        return mAdapter.getItemCount();
+    }
 }

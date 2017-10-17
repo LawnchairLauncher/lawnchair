@@ -25,8 +25,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.graphics.Region;
-import android.support.v4.graphics.ColorUtils;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -50,7 +49,6 @@ import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
@@ -83,19 +81,15 @@ public class DragLayer extends InsettableFrameLayout {
 
     private boolean mHoverPointClosesFolder = false;
     private final Rect mHitRect = new Rect();
-    private final Rect mHighlightRect = new Rect();
 
     private TouchCompleteListener mTouchCompleteListener;
 
     private int mTopViewIndex;
     private int mChildCountOnLastUpdate = -1;
 
-    // Darkening scrim
-    private float mBackgroundAlpha = 0;
-
     // Related to adjacent page hints
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
-    private final WallpaperColorInfo mWallpaperColorInfo;
+    private final PageCutOutScrimDrawable mPageCutOutScrim;
 
     // Related to pinch-to-go-to-overview gesture.
     private PinchToOverviewListener mPinchListener = null;
@@ -118,7 +112,8 @@ public class DragLayer extends InsettableFrameLayout {
         setChildrenDrawingOrderEnabled(true);
 
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
-        mWallpaperColorInfo = WallpaperColorInfo.getInstance(getContext());
+        mPageCutOutScrim = new PageCutOutScrimDrawable(this);
+        mPageCutOutScrim.setCallback(this);
     }
 
     public void setup(Launcher launcher, DragController dragController,
@@ -139,6 +134,11 @@ public class DragLayer extends InsettableFrameLayout {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         return mDragController.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    protected boolean verifyDrawable(Drawable who) {
+        return super.verifyDrawable(who) || who == mPageCutOutScrim;
     }
 
     public void onAccessibilityStateChanged(boolean isAccessibilityEnabled) {
@@ -772,46 +772,21 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     public void invalidateScrim() {
-        if (mBackgroundAlpha > 0.0f) {
+        if (mPageCutOutScrim.getAlpha() > 0) {
             invalidate();
         }
+    }
+
+    public Drawable getScrim() {
+        return mPageCutOutScrim;
     }
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
         // Draw the background below children.
-        if (mBackgroundAlpha > 0.0f) {
-            // Update the scroll position first to ensure scrim cutout is in the right place.
-            mLauncher.getWorkspace().computeScrollWithoutInvalidation();
-
-            int alpha = (int) (mBackgroundAlpha * 255);
-            CellLayout currCellLayout = mLauncher.getWorkspace().getCurrentDragOverlappingLayout();
-            canvas.save();
-            if (currCellLayout != null && currCellLayout != mLauncher.getHotseat().getLayout()) {
-                // Cut a hole in the darkening scrim on the page that should be highlighted, if any.
-                getDescendantRectRelativeToSelf(currCellLayout, mHighlightRect);
-                canvas.clipRect(mHighlightRect, Region.Op.DIFFERENCE);
-            }
-            // for super light wallpaper it needs to be darken for contrast to workspace
-            // for dark wallpapers the text is white so darkening works as well
-            int color = ColorUtils.compositeColors(0x66000000, mWallpaperColorInfo.getMainColor());
-            canvas.drawColor(ColorUtils.setAlphaComponent(color, alpha));
-            canvas.restore();
-        }
-
+        mPageCutOutScrim.draw(canvas);
         mFocusIndicatorHelper.draw(canvas);
         super.dispatchDraw(canvas);
-    }
-
-    public void setBackgroundAlpha(float alpha) {
-        if (alpha != mBackgroundAlpha) {
-            mBackgroundAlpha = alpha;
-            invalidate();
-        }
-    }
-
-    public float getBackgroundAlpha() {
-        return mBackgroundAlpha;
     }
 
     @Override

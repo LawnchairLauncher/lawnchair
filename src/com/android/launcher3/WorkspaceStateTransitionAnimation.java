@@ -16,6 +16,9 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
+import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -24,17 +27,14 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Property;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
-import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.DecelerateInterpolator;
 
+import com.android.launcher3.LauncherStateTransitionAnimation.AnimationConfig;
+import com.android.launcher3.Workspace.State;
 import com.android.launcher3.anim.AnimationLayerSet;
-import com.android.launcher3.anim.PropertyListBuilder;
-import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.util.Thunk;
 
 /**
  * A convenience class to update a view's visibility state after an alpha animation.
@@ -131,78 +131,24 @@ class ZoomInInterpolator implements TimeInterpolator {
 }
 
 /**
- * Stores the transition states for convenience.
- */
-class TransitionStates {
-
-    // Raw states
-    final boolean oldStateIsNormal;
-    final boolean oldStateIsSpringLoaded;
-    final boolean oldStateIsNormalHidden;
-    final boolean oldStateIsOverviewHidden;
-    final boolean oldStateIsOverview;
-
-    final boolean stateIsNormal;
-    final boolean stateIsSpringLoaded;
-    final boolean stateIsNormalHidden;
-    final boolean stateIsOverviewHidden;
-    final boolean stateIsOverview;
-
-    // Convenience members
-    final boolean workspaceToAllApps;
-    final boolean overviewToAllApps;
-    final boolean allAppsToWorkspace;
-    final boolean workspaceToOverview;
-    final boolean overviewToWorkspace;
-
-    public TransitionStates(final Workspace.State fromState, final Workspace.State toState) {
-        oldStateIsNormal = (fromState == Workspace.State.NORMAL);
-        oldStateIsSpringLoaded = (fromState == Workspace.State.SPRING_LOADED);
-        oldStateIsNormalHidden = (fromState == Workspace.State.NORMAL_HIDDEN);
-        oldStateIsOverviewHidden = (fromState == Workspace.State.OVERVIEW_HIDDEN);
-        oldStateIsOverview = (fromState == Workspace.State.OVERVIEW);
-
-        stateIsNormal = (toState == Workspace.State.NORMAL);
-        stateIsSpringLoaded = (toState == Workspace.State.SPRING_LOADED);
-        stateIsNormalHidden = (toState == Workspace.State.NORMAL_HIDDEN);
-        stateIsOverviewHidden = (toState == Workspace.State.OVERVIEW_HIDDEN);
-        stateIsOverview = (toState == Workspace.State.OVERVIEW);
-
-        workspaceToOverview = (oldStateIsNormal && stateIsOverview);
-        workspaceToAllApps = (oldStateIsNormal && stateIsNormalHidden);
-        overviewToWorkspace = (oldStateIsOverview && stateIsNormal);
-        overviewToAllApps = (oldStateIsOverview && stateIsOverviewHidden);
-        allAppsToWorkspace = (oldStateIsNormalHidden && stateIsNormal);
-    }
-}
-
-/**
  * Manages the animations between each of the workspace states.
  */
 public class WorkspaceStateTransitionAnimation {
 
-    public static final String TAG = "WorkspaceStateTransitionAnimation";
+    private static final PropertySetter NO_ANIM_PROPERTY_SETTER = new PropertySetter();
 
-    @Thunk static final int BACKGROUND_FADE_OUT_DURATION = 350;
+    private final ZoomInInterpolator mZoomInInterpolator = new ZoomInInterpolator();
 
-    final @Thunk Launcher mLauncher;
-    final @Thunk Workspace mWorkspace;
+    public final int mWorkspaceScrimAlpha;
 
-    @Thunk AnimatorSet mStateAnimator;
+    private final Launcher mLauncher;
+    private final Workspace mWorkspace;
 
-    @Thunk float mCurrentScale;
-    @Thunk float mNewScale;
+    private final float mSpringLoadedShrinkFactor;
+    private final float mOverviewModeShrinkFactor;
+    private final boolean mWorkspaceFadeInAdjacentScreens;
 
-    @Thunk final ZoomInInterpolator mZoomInInterpolator = new ZoomInInterpolator();
-
-    @Thunk float mSpringLoadedShrinkFactor;
-    @Thunk float mOverviewModeShrinkFactor;
-    @Thunk float mWorkspaceScrimAlpha;
-    @Thunk int mAllAppsTransitionTime;
-    @Thunk int mOverviewTransitionTime;
-    @Thunk int mOverlayTransitionTime;
-    @Thunk int mSpringLoadedTransitionTime;
-    @Thunk boolean mWorkspaceFadeInAdjacentScreens;
+    private float mNewScale;
 
     public WorkspaceStateTransitionAnimation(Launcher launcher, Workspace workspace) {
         mLauncher = launcher;
@@ -210,32 +156,24 @@ public class WorkspaceStateTransitionAnimation {
 
         DeviceProfile grid = mLauncher.getDeviceProfile();
         Resources res = launcher.getResources();
-        mAllAppsTransitionTime = res.getInteger(R.integer.config_allAppsTransitionTime);
-        mOverviewTransitionTime = res.getInteger(R.integer.config_overviewTransitionTime);
-        mOverlayTransitionTime = res.getInteger(R.integer.config_overlayTransitionTime);
-        mSpringLoadedTransitionTime = mOverlayTransitionTime / 2;
         mSpringLoadedShrinkFactor = mLauncher.getDeviceProfile().workspaceSpringLoadShrinkFactor;
         mOverviewModeShrinkFactor =
                 res.getInteger(R.integer.config_workspaceOverviewShrinkPercentage) / 100f;
-        mWorkspaceScrimAlpha = res.getInteger(R.integer.config_workspaceScrimAlpha) / 100f;
+        mWorkspaceScrimAlpha = res.getInteger(R.integer.config_workspaceScrimAlpha);
         mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
     }
 
-    public void snapToPageFromOverView(int whichPage) {
-        mWorkspace.snapToPage(whichPage, mOverviewTransitionTime, mZoomInInterpolator);
+    public void setState(Workspace.State toState) {
+        setWorkspaceProperty(toState, NO_ANIM_PROPERTY_SETTER);
     }
 
-    public AnimatorSet getAnimationToState(Workspace.State fromState, Workspace.State toState,
-            boolean animated, AnimationLayerSet layerViews) {
-        AccessibilityManager am = (AccessibilityManager)
-                mLauncher.getSystemService(Context.ACCESSIBILITY_SERVICE);
-        final boolean accessibilityEnabled = am.isEnabled();
-        TransitionStates states = new TransitionStates(fromState, toState);
-        int workspaceDuration = getAnimationDuration(states);
-        animateWorkspace(states, animated, workspaceDuration, layerViews,
-                accessibilityEnabled);
-        animateBackgroundGradient(states, animated, BACKGROUND_FADE_OUT_DURATION);
-        return mStateAnimator;
+    public void setStateWithAnimation(Workspace.State fromState, Workspace.State toState,
+            AnimatorSet anim, AnimationLayerSet layerViews, AnimationConfig config) {
+        long duration = config.getDuration(toState == State.NORMAL
+                ? fromState.transitionDuration : toState.transitionDuration);
+        AnimatedPropertySetter proertSetter =
+                new AnimatedPropertySetter(duration, layerViews, anim);
+        setWorkspaceProperty(toState, proertSetter);
     }
 
     public float getFinalScale() {
@@ -243,242 +181,138 @@ public class WorkspaceStateTransitionAnimation {
     }
 
     /**
-     * Returns the proper animation duration for a transition.
-     */
-    private int getAnimationDuration(TransitionStates states) {
-        if (states.workspaceToAllApps || states.overviewToAllApps) {
-            return mAllAppsTransitionTime;
-        } else if (states.workspaceToOverview || states.overviewToWorkspace) {
-            return mOverviewTransitionTime;
-        } else if (mLauncher.mState == Launcher.State.WORKSPACE_SPRING_LOADED
-                || states.oldStateIsNormal && states.stateIsSpringLoaded) {
-            return mSpringLoadedTransitionTime;
-        } else {
-            return mOverlayTransitionTime;
-        }
-    }
-
-    /**
      * Starts a transition animation for the workspace.
      */
-    private void animateWorkspace(final TransitionStates states, final boolean animated,
-            final int duration, AnimationLayerSet layerViews, final boolean accessibilityEnabled) {
-        // Cancel existing workspace animations and create a new animator set if requested
-        cancelAnimation();
-        if (animated) {
-            mStateAnimator = LauncherAnimUtils.createAnimatorSet();
-        }
-
+    private void setWorkspaceProperty(Workspace.State state, PropertySetter propertySetter) {
         // Update the workspace state
-        float finalBackgroundAlpha = (states.stateIsSpringLoaded || states.stateIsOverview) ?
-                1.0f : 0f;
-        float finalHotseatAlpha = (states.stateIsNormal || states.stateIsSpringLoaded ||
-                states.stateIsNormalHidden) ? 1f : 0f;
+        int finalBackgroundAlpha = state.hasScrim ? 255 : 0;
 
-        float finalWorkspaceTranslationY = 0;
-        if (states.stateIsOverview || states.stateIsOverviewHidden) {
-            finalWorkspaceTranslationY = mWorkspace.getOverviewModeTranslationY();
-        } else if (states.stateIsSpringLoaded) {
-            finalWorkspaceTranslationY = mWorkspace.getSpringLoadedTranslationY();
-        }
-
-        final int childCount = mWorkspace.getChildCount();
-
-        mNewScale = 1.0f;
-
-        if (states.oldStateIsOverview) {
-            mWorkspace.disableFreeScroll();
-        } else if (states.stateIsOverview) {
-            mWorkspace.enableFreeScroll();
-        }
-
-        if (!states.stateIsNormal) {
-            if (states.stateIsSpringLoaded) {
-                mNewScale = mSpringLoadedShrinkFactor;
-            } else if (states.stateIsOverview || states.stateIsOverviewHidden) {
+        final float finalWorkspaceTranslationY;
+        switch (state) {
+            case OVERVIEW:
                 mNewScale = mOverviewModeShrinkFactor;
-            }
+                finalWorkspaceTranslationY = mWorkspace.getOverviewModeTranslationY();
+                break;
+            case SPRING_LOADED:
+                mNewScale = mSpringLoadedShrinkFactor;
+                finalWorkspaceTranslationY = mWorkspace.getSpringLoadedTranslationY();
+                break;
+            default:
+                mNewScale = 1f;
+                finalWorkspaceTranslationY = 0;
         }
 
         int toPage = mWorkspace.getPageNearestToCenterOfScreen();
-        // TODO: Animate the celllayout alpha instead of the pages.
+        final int childCount = mWorkspace.getChildCount();
         for (int i = 0; i < childCount; i++) {
             final CellLayout cl = (CellLayout) mWorkspace.getChildAt(i);
-            float initialAlpha = cl.getShortcutsAndWidgets().getAlpha();
-            float finalAlpha;
-            if (states.stateIsOverviewHidden) {
-                finalAlpha = 0f;
-            } else if(states.stateIsNormalHidden) {
-                finalAlpha = (i == mWorkspace.getNextPage()) ? 1 : 0;
-            } else if (states.stateIsNormal && mWorkspaceFadeInAdjacentScreens) {
-                finalAlpha = (i == toPage) ? 1f : 0f;
-            } else {
-                finalAlpha = 1f;
-            }
+            propertySetter.setInt(cl.getScrimBackground(),
+                    DRAWABLE_ALPHA, finalBackgroundAlpha, mZoomInInterpolator);
 
-            // If we are animating to/from the small state, then hide the side pages and fade the
-            // current page in
-            if (!FeatureFlags.NO_ALL_APPS_ICON && !mWorkspace.isSwitchingState()) {
-                if (states.workspaceToAllApps || states.allAppsToWorkspace) {
-                    boolean isCurrentPage = (i == toPage);
-                    if (states.allAppsToWorkspace && isCurrentPage) {
-                        initialAlpha = 0f;
-                    } else if (!isCurrentPage) {
-                        initialAlpha = finalAlpha = 0f;
-                    }
-                    cl.setShortcutAndWidgetAlpha(initialAlpha);
-                }
-            }
-
-            if (animated) {
-                float oldBackgroundAlpha = cl.getBackgroundAlpha();
-                if (initialAlpha != finalAlpha) {
-                    Animator alphaAnim = ObjectAnimator.ofFloat(
-                            cl.getShortcutsAndWidgets(), View.ALPHA, finalAlpha);
-                    alphaAnim.setDuration(duration)
-                            .setInterpolator(mZoomInInterpolator);
-                    mStateAnimator.play(alphaAnim);
-                }
-                if (oldBackgroundAlpha != 0 || finalBackgroundAlpha != 0) {
-                    ValueAnimator bgAnim = ObjectAnimator.ofFloat(cl, "backgroundAlpha",
-                            oldBackgroundAlpha, finalBackgroundAlpha);
-                    bgAnim.setInterpolator(mZoomInInterpolator);
-                    bgAnim.setDuration(duration);
-                    mStateAnimator.play(bgAnim);
-                }
-            } else {
-                cl.setBackgroundAlpha(finalBackgroundAlpha);
-                cl.setShortcutAndWidgetAlpha(finalAlpha);
+            // Only animate the page alpha when we actually fade pages
+            if (mWorkspaceFadeInAdjacentScreens) {
+                float finalAlpha = state == State.NORMAL && i != toPage ? 0 : 1f;
+                propertySetter.setFloat(cl.getShortcutsAndWidgets(), View.ALPHA,
+                        finalAlpha, mZoomInInterpolator);
             }
         }
 
-        final ViewGroup overviewPanel = mLauncher.getOverviewPanel();
+        float finalHotseatAlpha = state.hotseatAlpha;
 
-        float finalOverviewPanelAlpha = states.stateIsOverview ? 1f : 0f;
-        if (animated) {
-            // This is true when transitioning between:
-            // - Overview <-> Workspace
-            // - Overview <-> Widget Tray
-            if (finalOverviewPanelAlpha != overviewPanel.getAlpha()) {
-                Animator overviewPanelAlpha = ObjectAnimator.ofFloat(
-                        overviewPanel, View.ALPHA, finalOverviewPanelAlpha);
-                overviewPanelAlpha.addListener(new AlphaUpdateListener(overviewPanel,
-                        accessibilityEnabled));
-                layerViews.addView(overviewPanel);
+        // This is true when transitioning between:
+        // - Overview <-> Workspace
+        propertySetter.setViewAlpha(null, mLauncher.getOverviewPanel(), 1 - finalHotseatAlpha);
+        propertySetter.setViewAlpha(mWorkspace.createHotseatAlphaAnimator(finalHotseatAlpha),
+                mLauncher.getHotseat(), finalHotseatAlpha);
 
-                if (states.overviewToWorkspace) {
-                    overviewPanelAlpha.setInterpolator(new DecelerateInterpolator(2));
-                } else if (states.workspaceToOverview) {
-                    overviewPanelAlpha.setInterpolator(null);
-                }
+        propertySetter.setFloat(mWorkspace, SCALE_PROPERTY, mNewScale, mZoomInInterpolator);
+        propertySetter.setFloat(mWorkspace, View.TRANSLATION_Y,
+                finalWorkspaceTranslationY, mZoomInInterpolator);
 
-                overviewPanelAlpha.setDuration(duration);
-                mStateAnimator.play(overviewPanelAlpha);
+        // Set scrim
+        propertySetter.setInt(mLauncher.getDragLayer().getScrim(), DRAWABLE_ALPHA,
+                state.hasScrim ? mWorkspaceScrimAlpha : 0, new DecelerateInterpolator(1.5f));
+    }
+
+    private static class PropertySetter {
+
+        public void setViewAlpha(Animator anim, View view, float alpha) {
+            if (anim != null) {
+                anim.end();
+                return;
             }
+            view.setAlpha(alpha);
+            AlphaUpdateListener.updateVisibility(view, isAccessibilityEnabled(view));
+        }
 
-            Animator scale = LauncherAnimUtils.ofPropertyValuesHolder(mWorkspace,
-                    new PropertyListBuilder().scale(mNewScale)
-                            .translationY(finalWorkspaceTranslationY).build())
-                    .setDuration(duration);
-            scale.setInterpolator(mZoomInInterpolator);
-            mStateAnimator.play(scale);
+        public <T> void setFloat(T target, Property<T, Float> property, float value,
+                TimeInterpolator interpolator) {
+            property.set(target, value);
+        }
 
-            // For animation optimization, we may need to provide the Launcher transition
-            // with a set of views on which to force build and manage layers in certain scenarios.
-            layerViews.addView(mLauncher.getHotseat());
-            layerViews.addView(mWorkspace.getPageIndicator());
+        public <T> void setInt(T target, Property<T, Integer> property, int value,
+                TimeInterpolator interpolator) {
+            property.set(target, value);
+        }
 
-            Animator hotseatAlpha = mWorkspace.createHotseatAlphaAnimator(finalHotseatAlpha);
-            if (states.workspaceToOverview) {
-                hotseatAlpha.setInterpolator(new DecelerateInterpolator(2));
-            } else if (states.overviewToWorkspace) {
-                hotseatAlpha.setInterpolator(null);
-            }
-            hotseatAlpha.setDuration(duration);
-            mStateAnimator.play(hotseatAlpha);
-            mStateAnimator.addListener(new AnimatorListenerAdapter() {
-                boolean canceled = false;
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    canceled = true;
-                }
-
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    mWorkspace.getPageIndicator().setShouldAutoHide(!states.stateIsSpringLoaded);
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mStateAnimator = null;
-                    if (canceled) return;
-                    if (accessibilityEnabled && overviewPanel.getVisibility() == View.VISIBLE) {
-                        overviewPanel.getChildAt(0).performAccessibilityAction(
-                                AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS, null);
-                    }
-                }
-            });
-        } else {
-            overviewPanel.setAlpha(finalOverviewPanelAlpha);
-            AlphaUpdateListener.updateVisibility(overviewPanel, accessibilityEnabled);
-            mWorkspace.getPageIndicator().setShouldAutoHide(!states.stateIsSpringLoaded);
-
-            mWorkspace.createHotseatAlphaAnimator(finalHotseatAlpha).end();
-            mWorkspace.setScaleX(mNewScale);
-            mWorkspace.setScaleY(mNewScale);
-            mWorkspace.setTranslationY(finalWorkspaceTranslationY);
-
-            if (accessibilityEnabled && overviewPanel.getVisibility() == View.VISIBLE) {
-                overviewPanel.getChildAt(0).performAccessibilityAction(
-                        AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS, null);
-            }
+        protected boolean isAccessibilityEnabled(View v) {
+            AccessibilityManager am = (AccessibilityManager)
+                    v.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+            return am.isEnabled();
         }
     }
 
-    /**
-     * Animates the background scrim. Add to the state animator to prevent jankiness.
-     *
-     * @param states the current and final workspace states
-     * @param animated whether or not to set the background alpha immediately
-     * @duration duration of the animation
-     */
-    private void animateBackgroundGradient(TransitionStates states,
-            boolean animated, int duration) {
+    private static class AnimatedPropertySetter extends PropertySetter {
 
-        final DragLayer dragLayer = mLauncher.getDragLayer();
-        final float startAlpha = dragLayer.getBackgroundAlpha();
-        float finalAlpha = states.stateIsNormal || states.stateIsNormalHidden ?
-                0 : mWorkspaceScrimAlpha;
+        private final long mDuration;
+        private final AnimationLayerSet mLayerViews;
+        private final AnimatorSet mStateAnimator;
 
-        if (finalAlpha != startAlpha) {
-            if (animated) {
-                // These properties refer to the background protection gradient used for AllApps
-                // and Widget tray.
-                ValueAnimator bgFadeOutAnimation = ValueAnimator.ofFloat(startAlpha, finalAlpha);
-                bgFadeOutAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        dragLayer.setBackgroundAlpha(
-                                ((Float)animation.getAnimatedValue()).floatValue());
-                    }
-                });
-                bgFadeOutAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
-                bgFadeOutAnimation.setDuration(duration);
-                mStateAnimator.play(bgFadeOutAnimation);
-            } else {
-                dragLayer.setBackgroundAlpha(finalAlpha);
+        AnimatedPropertySetter(long duration, AnimationLayerSet layerView, AnimatorSet anim) {
+            mDuration = duration;
+            mLayerViews = layerView;
+            mStateAnimator = anim;
+        }
+
+        @Override
+        public void setViewAlpha(Animator anim, View view, float alpha) {
+            if (anim == null) {
+                if (view.getAlpha() == alpha) {
+                    return;
+                }
+                anim = ObjectAnimator.ofFloat(view, View.ALPHA, alpha);
+                anim.addListener(new AlphaUpdateListener(view, isAccessibilityEnabled(view)));
             }
-        }
-    }
 
-    /**
-     * Cancels the current animation.
-     */
-    private void cancelAnimation() {
-        if (mStateAnimator != null) {
-            mStateAnimator.setDuration(0);
-            mStateAnimator.cancel();
+            anim.setDuration(mDuration).setInterpolator(getFadeInterpolator(alpha));
+            mLayerViews.addView(view);
+            mStateAnimator.play(anim);
         }
-        mStateAnimator = null;
+
+        @Override
+        public <T> void setFloat(T target, Property<T, Float> property, float value,
+                TimeInterpolator interpolator) {
+            if (property.get(target) == value) {
+                return;
+            }
+            Animator anim = ObjectAnimator.ofFloat(target, property, value);
+            anim.setDuration(mDuration).setInterpolator(interpolator);
+            mStateAnimator.play(anim);
+        }
+
+        @Override
+        public <T> void setInt(T target, Property<T, Integer> property, int value,
+                TimeInterpolator interpolator) {
+            if (property.get(target) == value) {
+                return;
+            }
+            Animator anim = ObjectAnimator.ofInt(target, property, value);
+            anim.setDuration(mDuration).setInterpolator(interpolator);
+            mStateAnimator.play(anim);
+        }
+
+        private TimeInterpolator getFadeInterpolator(float finalAlpha) {
+            return finalAlpha == 0 ? new DecelerateInterpolator(2) : null;
+        }
     }
 }

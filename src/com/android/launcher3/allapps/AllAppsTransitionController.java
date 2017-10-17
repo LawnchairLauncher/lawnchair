@@ -11,12 +11,14 @@ import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
+import com.android.launcher3.LauncherStateTransitionAnimation.AnimationConfig;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
@@ -329,15 +331,15 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         mAnimationDuration = SwipeDetector.calculateDuration(velocity, disp / mShiftRange);
     }
 
-    public boolean animateToAllApps(AnimatorSet animationOut, long duration) {
-        boolean shouldPost = true;
+    public void animateToAllApps(AnimatorSet animationOut, AnimationConfig outConfig) {
+        outConfig.shouldPost = true;
         if (animationOut == null) {
-            return shouldPost;
+            return;
         }
         Interpolator interpolator;
         if (mDetector.isIdleState()) {
             preparePull(true);
-            mAnimationDuration = duration;
+            mAnimationDuration = LauncherAnimUtils.ALL_APPS_TRANSITION_MS;
             mShiftStart = mAppsView.getTranslationY();
             interpolator = mFastOutSlowInInterpolator;
         } else {
@@ -347,9 +349,10 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
             if (nextFrameProgress >= 0f) {
                 mProgress = nextFrameProgress;
             }
-            shouldPost = false;
+            outConfig.shouldPost = false;
         }
 
+        outConfig.overrideDuration(mAnimationDuration);
         ObjectAnimator driftAndAlpha = ObjectAnimator.ofFloat(this, "progress",
                 mProgress, 0f);
         driftAndAlpha.setDuration(mAnimationDuration);
@@ -396,7 +399,6 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
             }
         });
         mCurrentAnimation = animationOut;
-        return shouldPost;
     }
 
     public void showDiscoveryBounce() {
@@ -432,15 +434,15 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         });
     }
 
-    public boolean animateToWorkspace(AnimatorSet animationOut, long duration) {
-        boolean shouldPost = true;
+    public void animateToWorkspace(AnimatorSet animationOut, AnimationConfig outconfig) {
+        outconfig.shouldPost = true;
         if (animationOut == null) {
-            return shouldPost;
+            return;
         }
         Interpolator interpolator;
         if (mDetector.isIdleState()) {
             preparePull(true);
-            mAnimationDuration = duration;
+            mAnimationDuration = LauncherAnimUtils.ALL_APPS_TRANSITION_MS;
             mShiftStart = mAppsView.getTranslationY();
             interpolator = mFastOutSlowInInterpolator;
         } else {
@@ -450,9 +452,10 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
             if (nextFrameProgress <= 1f) {
                 mProgress = nextFrameProgress;
             }
-            shouldPost = false;
+            outconfig.shouldPost = false;
         }
 
+        outconfig.overrideDuration(mAnimationDuration);
         ObjectAnimator driftAndAlpha = ObjectAnimator.ofFloat(this, "progress",
                 mProgress, 1f);
         driftAndAlpha.setDuration(mAnimationDuration);
@@ -479,7 +482,6 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
             }
         });
         mCurrentAnimation = animationOut;
-        return shouldPost;
     }
 
     public void finishPullUp() {
