@@ -260,6 +260,12 @@
             app:defaultSeekbarValue="1.0"
             app:steps="190"
             android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_enablePhysics"
+            android:title="@string/enable_spring_pref_title"
+            android:defaultValue="true"
+            android:persistent="true" />
     </PreferenceCategory>
 
     <PreferenceCategory

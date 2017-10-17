@@ -230,7 +230,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private int mAppIconTextMaxLines;
     private final IAllAppsThemer mTheme;
 
-    private final SpringAnimationHandler<ViewHolder> mSpringAnimationHandler;
+    private SpringAnimationHandler<ViewHolder> mSpringAnimationHandler;
 
     public AllAppsGridAdapter(Launcher launcher, AlphabeticalAppsList apps, View.OnClickListener
             iconClickListener, View.OnLongClickListener iconLongClickListener) {
@@ -244,7 +244,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
         mTheme = Utilities.getThemer().allAppsTheme(launcher);
-        mSpringAnimationHandler = new SpringAnimationHandler<>(0, new AllAppsSpringAnimationFactory());
+        if (Utilities.getPrefs(launcher).getEnablePhysics())
+            mSpringAnimationHandler = new SpringAnimationHandler<>(0, new AllAppsSpringAnimationFactory());
     }
 
     public static boolean isDividerViewType(int viewType) {
@@ -427,14 +428,14 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     @Override
     public void onViewAttachedToWindow(ViewHolder holder) {
         int itemViewType = holder.getItemViewType();
-        if (isViewType(itemViewType, 70))
+        if (mSpringAnimationHandler != null && isViewType(itemViewType, 70))
             mSpringAnimationHandler.add(holder.itemView, holder);
     }
 
     @Override
     public void onViewDetachedFromWindow(ViewHolder holder) {
         int itemViewType = holder.getItemViewType();
-        if (isViewType(itemViewType, 70))
+        if (mSpringAnimationHandler != null && isViewType(itemViewType, 70))
             mSpringAnimationHandler.remove(holder.itemView);
     }
 }

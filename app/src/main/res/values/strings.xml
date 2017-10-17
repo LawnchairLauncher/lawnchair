@@ -474,4 +474,5 @@
     <string name="google_app_not_found">Google app not installed</string>
     <string name="popup_card_theme_title">Flat style popup</string>
     <string name="set_default_launcher">Set default launcher</string>
+    <string name="enable_spring_pref_title">Enable spring effec</string>
 </resources>

@@ -130,6 +130,7 @@ interface IPreferenceProvider {
     val iconPackPackage: String
     val hotseatIconScale: Float
     val hotseatHeightScale: Float
+    val enablePhysics: Boolean
 
     // -----------------
     // GENERAL - BITS

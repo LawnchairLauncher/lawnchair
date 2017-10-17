@@ -85,6 +85,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     }
 
     public void setSpringAnimationHandler(SpringAnimationHandler<AllAppsGridAdapter.ViewHolder> springAnimationHandler) {
+        if (springAnimationHandler == null) return;
+        setOverScrollMode(OVER_SCROLL_NEVER);
         mSpringAnimationHandler = springAnimationHandler;
         addOnScrollListener(new SpringMotionOnScrollListener());
     }
@@ -92,8 +94,10 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        mPullDetector.onTouchEvent(ev);
-        mSpringAnimationHandler.addMovement(ev);
+        if (mSpringAnimationHandler != null) {
+            mPullDetector.onTouchEvent(ev);
+            mSpringAnimationHandler.addMovement(ev);
+        }
         return super.onTouchEvent(ev);
     }
 
@@ -205,6 +209,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (mSpringAnimationHandler == null) return super.onInterceptTouchEvent(ev);
         mPullDetector.onTouchEvent(ev);
         return super.onInterceptTouchEvent(ev) || mOverScrollHelper.isInOverScroll();
     }
@@ -449,7 +454,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         private void reset(boolean z) {
             float contentTranslationY = AllAppsRecyclerView.this.getContentTranslationY();
             if (Float.compare(contentTranslationY, 0.0f) != 0) {
-                AllAppsRecyclerView.this.mSpringAnimationHandler.animateToPositionWithVelocity(0.0f, -1, -((contentTranslationY / getDampedOverScroll((float) AllAppsRecyclerView.this.getHeight())) * 5000.0f));
+                if (mSpringAnimationHandler != null)
+                    mSpringAnimationHandler.animateToPositionWithVelocity(0.0f, -1, -((contentTranslationY / getDampedOverScroll((float) AllAppsRecyclerView.this.getHeight())) * 5000.0f));
                 ObjectAnimator.ofFloat(AllAppsRecyclerView.this, AllAppsRecyclerView.CONTENT_TRANS_Y, new float[]{0.0f}).setDuration(100).start();
             }
             this.mIsInOverScroll = false;
@@ -489,11 +495,11 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         }
 
         public void onScrolled(RecyclerView recyclerView, int i, int i2) {
-            if (!AllAppsRecyclerView.this.mOverScrollHelper.isInOverScroll()) {
-                if (i2 < 0 && !AllAppsRecyclerView.this.canScrollVertically(-1)) {
-                    AllAppsRecyclerView.this.mSpringAnimationHandler.animateToFinalPosition(0.0f, 1);
-                } else if (i2 > 0 && !AllAppsRecyclerView.this.canScrollVertically(1)) {
-                    AllAppsRecyclerView.this.mSpringAnimationHandler.animateToFinalPosition(0.0f, -1);
+            if (!mOverScrollHelper.isInOverScroll()) {
+                if (i2 < 0 && !canScrollVertically(-1)) {
+                    mSpringAnimationHandler.animateToFinalPosition(0.0f, 1);
+                } else if (i2 > 0 && !canScrollVertically(1)) {
+                    mSpringAnimationHandler.animateToFinalPosition(0.0f, -1);
                 }
             }
         }
