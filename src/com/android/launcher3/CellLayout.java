@@ -52,7 +52,6 @@ import com.android.launcher3.accessibility.FolderAccessibilityHelper;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.util.CellAndSpan;
@@ -342,7 +341,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         // the home screen mode, however, once in overview mode stylus button press should be
         // enabled to allow rearranging the different home screens. So check what mode
         // the workspace is in, and only perform stylus button presses while in overview mode.
-        if (mLauncher.mWorkspace.isInOverviewMode()
+        if (mLauncher.isInState(LauncherState.OVERVIEW)
                 && mStylusEventHelper.onMotionEvent(ev)) {
             return true;
         }

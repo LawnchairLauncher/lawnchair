@@ -1351,7 +1351,7 @@ public class Workspace extends PagedView
     @Override
     public void announceForAccessibility(CharSequence text) {
         // Don't announce if apps is on top of us.
-        if (!mLauncher.isAppsViewVisible()) {
+        if (!mLauncher.isInState(LauncherState.ALL_APPS)) {
             super.announceForAccessibility(text);
         }
     }
@@ -1545,10 +1545,6 @@ public class Workspace extends PagedView
 
         // Re-enable auto layout transitions for page deletion.
         enableLayoutTransitions();
-    }
-
-    public boolean isInOverviewMode() {
-        return mState == LauncherState.OVERVIEW;
     }
 
     public void snapToPageFromOverView(int whichPage) {

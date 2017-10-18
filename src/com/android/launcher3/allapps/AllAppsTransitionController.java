@@ -11,13 +11,13 @@ import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Animation;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateTransitionAnimation.AnimationConfig;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -113,9 +113,9 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = false;
             mTouchEventStartedOnHotseat = mLauncher.getDragLayer().isEventOverHotseat(ev);
-            if (!mLauncher.isAllAppsVisible() && mLauncher.getWorkspace().workspaceInModalState()) {
+            if (!mLauncher.isInState(LauncherState.ALL_APPS) && mLauncher.getWorkspace().workspaceInModalState()) {
                 mNoIntercept = true;
-            } else if (mLauncher.isAllAppsVisible() &&
+            } else if (mLauncher.isInState(LauncherState.ALL_APPS) &&
                     !mAppsView.shouldContainerScroll(ev)) {
                 mNoIntercept = true;
             } else if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
@@ -127,7 +127,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
                 boolean ignoreSlopWhenSettling = false;
 
                 if (mDetector.isIdleState()) {
-                    if (mLauncher.isAllAppsVisible()) {
+                    if (mLauncher.isInState(LauncherState.ALL_APPS)) {
                         directionsToDetectScroll |= SwipeDetector.DIRECTION_NEGATIVE;
                     } else {
                         directionsToDetectScroll |= SwipeDetector.DIRECTION_POSITIVE;
@@ -212,7 +212,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
             if (velocity < 0) {
                 calculateDuration(velocity, mAppsView.getTranslationY());
 
-                if (!mLauncher.isAllAppsVisible()) {
+                if (!mLauncher.isInState(LauncherState.ALL_APPS)) {
                     mLauncher.getUserEventDispatcher().logActionOnContainer(
                             Action.Touch.FLING,
                             Action.Direction.UP,
@@ -235,7 +235,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
                 mLauncher.showWorkspace(true);
             } else {
                 calculateDuration(velocity, Math.abs(mAppsView.getTranslationY()));
-                if (!mLauncher.isAllAppsVisible()) {
+                if (!mLauncher.isInState(LauncherState.ALL_APPS)) {
                     mLauncher.getUserEventDispatcher().logActionOnContainer(
                             Action.Touch.SWIPE,
                             Action.Direction.UP,

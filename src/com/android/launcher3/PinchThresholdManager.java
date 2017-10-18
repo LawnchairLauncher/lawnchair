@@ -29,12 +29,14 @@ public class PinchThresholdManager {
     public static final float THRESHOLD_TWO = 0.70f;
     public static final float THRESHOLD_THREE = 0.95f;
 
-    private Workspace mWorkspace;
+    private final Workspace mWorkspace;
+    private final Launcher mLauncher;
 
     private float mPassedThreshold = THRESHOLD_ZERO;
 
     public PinchThresholdManager(Workspace workspace) {
         mWorkspace = workspace;
+        mLauncher = mWorkspace.mLauncher;
     }
 
     /**
@@ -50,7 +52,7 @@ public class PinchThresholdManager {
      */
     public float updateAndAnimatePassedThreshold(float progress,
             PinchAnimationManager animationManager) {
-        if (!mWorkspace.isInOverviewMode()) {
+        if (!mLauncher.isInState(LauncherState.OVERVIEW)) {
             // Invert the progress, because going from workspace to overview is 1 to 0.
             progress = 1f - progress;
         }
@@ -68,10 +70,9 @@ public class PinchThresholdManager {
         }
 
         if (mPassedThreshold != previousPassedThreshold) {
-            LauncherState fromState = mWorkspace.isInOverviewMode() ? LauncherState.OVERVIEW
-                    : LauncherState.NORMAL;
-            LauncherState toState = mWorkspace.isInOverviewMode() ? LauncherState.NORMAL
-                    : LauncherState.OVERVIEW;
+            LauncherState fromState = mLauncher.getWorkspace().getState();
+            LauncherState toState = mLauncher.isInState(LauncherState.OVERVIEW)
+                    ? LauncherState.NORMAL : LauncherState.OVERVIEW;
             float thresholdToAnimate = mPassedThreshold;
             if (mPassedThreshold < previousPassedThreshold) {
                 // User reversed pinch, so heading back to the state that they started from.

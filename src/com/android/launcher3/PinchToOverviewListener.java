@@ -80,7 +80,7 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
-        if (mLauncher.mState != Launcher.State.WORKSPACE) {
+        if (!mLauncher.isInState(LauncherState.NORMAL)) {
             // Don't listen for the pinch gesture if on all apps, widget picker, -1, etc.
             return false;
         }
@@ -107,9 +107,9 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
             return false;
         }
 
-        mPreviousProgress = mWorkspace.isInOverviewMode() ? OVERVIEW_PROGRESS : WORKSPACE_PROGRESS;
+        mPreviousProgress = mLauncher.isInState(LauncherState.OVERVIEW) ? OVERVIEW_PROGRESS : WORKSPACE_PROGRESS;
         mPreviousTimeMillis = System.currentTimeMillis();
-        mInterpolator = mWorkspace.isInOverviewMode() ? new LogDecelerateInterpolator(100, 0)
+        mInterpolator = mLauncher.isInState(LauncherState.OVERVIEW) ? new LogDecelerateInterpolator(100, 0)
                 : new LogAccelerateInterpolator(100, 0);
         mPinchStarted = true;
         mWorkspace.onPrepareStateTransition(true);
@@ -122,21 +122,21 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
 
         float progressVelocity = mProgressDelta / mTimeDelta;
         float passedThreshold = mThresholdManager.getPassedThreshold();
-        boolean isFling = mWorkspace.isInOverviewMode() && progressVelocity >= FLING_VELOCITY
-                || !mWorkspace.isInOverviewMode() && progressVelocity <= -FLING_VELOCITY;
+        boolean isFling = mLauncher.isInState(LauncherState.OVERVIEW) && progressVelocity >= FLING_VELOCITY
+                || !mLauncher.isInState(LauncherState.OVERVIEW) && progressVelocity <= -FLING_VELOCITY;
         boolean shouldCancelPinch = !isFling && passedThreshold < PinchThresholdManager.THRESHOLD_ONE;
         // If we are going towards overview, mPreviousProgress is how much further we need to
         // go, since it is going from 1 to 0. If we are going to workspace, we want
         // 1 - mPreviousProgress.
         float remainingProgress = mPreviousProgress;
-        if (mWorkspace.isInOverviewMode() || shouldCancelPinch) {
+        if (mLauncher.isInState(LauncherState.OVERVIEW) || shouldCancelPinch) {
             remainingProgress = 1f - mPreviousProgress;
         }
         int duration = computeDuration(remainingProgress, progressVelocity);
         if (shouldCancelPinch) {
             cancelPinch(mPreviousProgress, duration);
         } else if (passedThreshold < PinchThresholdManager.THRESHOLD_THREE) {
-            float toProgress = mWorkspace.isInOverviewMode() ?
+            float toProgress = mLauncher.isInState(LauncherState.OVERVIEW) ?
                     WORKSPACE_PROGRESS : OVERVIEW_PROGRESS;
             mAnimationManager.animateToProgress(mPreviousProgress, toProgress, duration,
                     mThresholdManager);
@@ -165,7 +165,7 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
     private void cancelPinch(float currentProgress, int duration) {
         if (mPinchCanceled) return;
         mPinchCanceled = true;
-        float toProgress = mWorkspace.isInOverviewMode() ? OVERVIEW_PROGRESS : WORKSPACE_PROGRESS;
+        float toProgress = mLauncher.isInState(LauncherState.OVERVIEW) ? OVERVIEW_PROGRESS : WORKSPACE_PROGRESS;
         mAnimationManager.animateToProgress(currentProgress, toProgress, duration,
                 mThresholdManager);
         mPinchStarted = false;
@@ -182,15 +182,15 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
         }
 
         float pinchDist = detector.getCurrentSpan() - detector.getPreviousSpan();
-        if (pinchDist < 0 && mWorkspace.isInOverviewMode() ||
-                pinchDist > 0 && !mWorkspace.isInOverviewMode()) {
+        if (pinchDist < 0 && mLauncher.isInState(LauncherState.OVERVIEW) ||
+                pinchDist > 0 && !mLauncher.isInState(LauncherState.OVERVIEW)) {
             // Pinching the wrong way, so ignore.
             return false;
         }
         // Pinch distance must equal the workspace width before switching states.
         int pinchDistanceToCompleteTransition = mWorkspace.getWidth();
         float overviewScale = mWorkspace.getOverviewModeShrinkFactor();
-        float initialWorkspaceScale = mWorkspace.isInOverviewMode() ? overviewScale : 1f;
+        float initialWorkspaceScale = mLauncher.isInState(LauncherState.OVERVIEW) ? overviewScale : 1f;
         float pinchScale = initialWorkspaceScale + pinchDist / pinchDistanceToCompleteTransition;
         // Bound the scale between the overview scale and the normal workspace scale (1f).
         pinchScale = Math.max(overviewScale, Math.min(pinchScale, 1f));

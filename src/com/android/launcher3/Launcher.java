@@ -79,7 +79,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.OvershootInterpolator;
@@ -186,11 +185,6 @@ public class Launcher extends BaseActivity
      */
     protected static final int REQUEST_LAST = 100;
 
-    private static final int SOFT_INPUT_MODE_DEFAULT =
-            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN;
-    private static final int SOFT_INPUT_MODE_ALL_APPS =
-            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
-
     // The Intent extra that defines whether to ignore the launch animation
     static final String INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION =
             "com.android.launcher3.intent.extra.shortcut.INGORE_LAUNCH_ANIMATION";
@@ -208,10 +202,6 @@ public class Launcher extends BaseActivity
 
     static final String APPS_VIEW_SHOWN = "launcher.apps_view_shown";
 
-    /** The different states that Launcher can be in. */
-    enum State { WORKSPACE, WORKSPACE_SPRING_LOADED, APPS}
-
-    @Thunk State mState = State.WORKSPACE;
     @Thunk LauncherStateTransitionAnimation mStateTransitionAnimation;
 
     private boolean mIsSafeModeEnabled;
@@ -601,7 +591,7 @@ public class Launcher extends BaseActivity
             }
             return;
         } else if (requestCode == REQUEST_PICK_WALLPAPER) {
-            if (resultCode == RESULT_OK && mWorkspace.isInOverviewMode()) {
+            if (resultCode == RESULT_OK && isInState(LauncherState.OVERVIEW)) {
                 // User could have free-scrolled between pages before picking a wallpaper; make sure
                 // we move to the closest one now.
                 mWorkspace.setCurrentPage(mWorkspace.getPageNearestToCenterOfScreen());
@@ -1001,8 +991,7 @@ public class Launcher extends BaseActivity
                 AbstractFloatingView.closeAllOpenViews(this);
 
                 // Show the overview mode if we are on the workspace
-                if (mState == State.WORKSPACE && !mWorkspace.isInOverviewMode() &&
-                        !mWorkspace.isSwitchingState()) {
+                if (isInState(LauncherState.NORMAL) && !mWorkspace.isSwitchingState()) {
                     mOverviewPanel.requestFocus();
                     showOverviewMode(true, true /* requestButtonFocus */);
                 }
@@ -1023,6 +1012,10 @@ public class Launcher extends BaseActivity
         Selection.setSelection(mDefaultKeySsb, 0);
     }
 
+    public boolean isInState(LauncherState state) {
+        return mWorkspace.getState() == state;
+    }
+
     /**
      * Restores the previous state, if it exists.
      *
@@ -1033,12 +1026,15 @@ public class Launcher extends BaseActivity
             return;
         }
 
-        int stateOrdinal = savedState.getInt(RUNTIME_STATE, State.WORKSPACE.ordinal());
-        State[] stateValues = State.values();
-        State state = (stateOrdinal >= 0 && stateOrdinal < stateValues.length)
-                ? stateValues[stateOrdinal] : State.WORKSPACE;
-        if (state == State.APPS) {
-            showAppsView(false /* animated */);
+        int stateOrdinal = savedState.getInt(RUNTIME_STATE, LauncherState.NORMAL.ordinal());
+        LauncherState[] stateValues = LauncherState.values();
+        LauncherState state = stateValues[stateOrdinal];
+        if (!state.doNotRestore) {
+            if (state == LauncherState.ALL_APPS) {
+                showAppsView(false /* animated */);
+            } else {
+                // TODO: Add logic for other states
+            }
         }
 
         PendingRequestArgs requestArgs = savedState.getParcelable(RUNTIME_STATE_PENDING_REQUEST_ARGS);
@@ -1419,8 +1415,8 @@ public class Launcher extends BaseActivity
                 != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 
         // Check this condition before handling isActionMain, as this will get reset.
-        boolean shouldMoveToDefaultScreen = alreadyOnHome &&
-                mState == State.WORKSPACE && AbstractFloatingView.getTopOpenView(this) == null;
+        boolean shouldMoveToDefaultScreen = alreadyOnHome && isInState(LauncherState.NORMAL)
+                && AbstractFloatingView.getTopOpenView(this) == null;
 
         boolean isActionMain = Intent.ACTION_MAIN.equals(intent.getAction());
         if (isActionMain) {
@@ -1499,7 +1495,7 @@ public class Launcher extends BaseActivity
             outState.putInt(RUNTIME_STATE_CURRENT_SCREEN, mWorkspace.getNextPage());
 
         }
-        outState.putInt(RUNTIME_STATE, mState.ordinal());
+        outState.putInt(RUNTIME_STATE, mWorkspace.getState().ordinal());
 
 
         AbstractFloatingView widgets = AbstractFloatingView
@@ -1893,10 +1889,10 @@ public class Launcher extends BaseActivity
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
         if (topView != null) {
             topView.onBackPressed();
-        } else if (isAppsViewVisible()) {
+        } else if (isInState(LauncherState.ALL_APPS)) {
             ued.logActionCommand(Action.Command.BACK, ContainerType.ALLAPPS);
             showWorkspace(true);
-        } else if (mWorkspace.isInOverviewMode()) {
+        } else if (isInState(LauncherState.OVERVIEW)) {
             ued.logActionCommand(Action.Command.BACK, ContainerType.OVERVIEW);
             showWorkspace(true);
         } else {
@@ -1922,7 +1918,7 @@ public class Launcher extends BaseActivity
         }
 
         if (v instanceof Workspace) {
-            if (mWorkspace.isInOverviewMode()) {
+            if (isInState(LauncherState.OVERVIEW)) {
                 getUserEventDispatcher().logActionOnContainer(LauncherLogProto.Action.Type.TOUCH,
                         LauncherLogProto.Action.Direction.NONE,
                         LauncherLogProto.ContainerType.OVERVIEW, mWorkspace.getCurrentPage());
@@ -1932,7 +1928,7 @@ public class Launcher extends BaseActivity
         }
 
         if (v instanceof CellLayout) {
-            if (mWorkspace.isInOverviewMode()) {
+            if (isInState(LauncherState.OVERVIEW)) {
                 int page = mWorkspace.indexOfChild(v);
                 getUserEventDispatcher().logActionOnContainer(LauncherLogProto.Action.Type.TOUCH,
                         LauncherLogProto.Action.Direction.NONE,
@@ -2010,7 +2006,7 @@ public class Launcher extends BaseActivity
      */
     protected void onClickAllAppsButton(View v) {
         if (LOGD) Log.d(TAG, "onClickAllAppsButton");
-        if (!isAppsViewVisible()) {
+        if (!isInState(LauncherState.ALL_APPS)) {
             getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
                     ControlType.ALL_APPS_BUTTON);
             showAppsView(true /* animated */);
@@ -2340,13 +2336,13 @@ public class Launcher extends BaseActivity
     public boolean onLongClick(View v) {
         if (!isDraggingEnabled()) return false;
         if (isWorkspaceLocked()) return false;
-        if (mState != State.WORKSPACE) return false;
+        if (!isInState(LauncherState.NORMAL)) return false;
 
         boolean ignoreLongPressToOverview =
                 mDeviceProfile.shouldIgnoreLongPressToOverview(mLastDispatchTouchEventX);
 
         if (v instanceof Workspace) {
-            if (!mWorkspace.isInOverviewMode()) {
+            if (!isInState(LauncherState.OVERVIEW)) {
                 if (!mWorkspace.isTouchActive() && !ignoreLongPressToOverview) {
                     getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
                             Action.Direction.NONE, ContainerType.WORKSPACE,
@@ -2377,7 +2373,7 @@ public class Launcher extends BaseActivity
         if (!mDragController.isDragging()) {
             if (itemUnderLongClick == null) {
                 // User long pressed on empty space
-                if (mWorkspace.isInOverviewMode()) {
+                if (isInState(LauncherState.OVERVIEW)) {
                     mWorkspace.startReordering(v);
                     getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
                             Action.Direction.NONE, ContainerType.OVERVIEW);
@@ -2427,17 +2423,6 @@ public class Launcher extends BaseActivity
         }
     }
 
-    /**
-     * For overridden classes.
-     */
-    public boolean isAllAppsVisible() {
-        return isAppsViewVisible();
-    }
-
-    public boolean isAppsViewVisible() {
-        return mState == State.APPS;
-    }
-
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
@@ -2459,11 +2444,10 @@ public class Launcher extends BaseActivity
     }
 
     public boolean showWorkspace(boolean animated, Runnable onCompleteRunnable) {
-        boolean changed = mState != State.WORKSPACE ||
-                mWorkspace.getState() != LauncherState.NORMAL;
+        boolean changed = !isInState(LauncherState.NORMAL);
         if (changed || mAllAppsController.isTransitioning()) {
             mWorkspace.setVisibility(View.VISIBLE);
-            mStateTransitionAnimation.startAnimationToWorkspace(mState, mWorkspace.getState(),
+            mStateTransitionAnimation.startAnimationToWorkspace(
                     LauncherState.NORMAL, animated, onCompleteRunnable);
 
             // Set focus to the AppsCustomize button
@@ -2471,9 +2455,6 @@ public class Launcher extends BaseActivity
                 mAllAppsButton.requestFocus();
             }
         }
-
-        // Change the state *after* we've called all the transition code
-        setState(State.WORKSPACE);
 
         if (changed) {
             // Send an accessibility event to announce the context change
@@ -2508,30 +2489,12 @@ public class Launcher extends BaseActivity
             };
         }
         mWorkspace.setVisibility(View.VISIBLE);
-        mStateTransitionAnimation.startAnimationToWorkspace(mState, mWorkspace.getState(),
+        mStateTransitionAnimation.startAnimationToWorkspace(
                 LauncherState.OVERVIEW, animated, postAnimRunnable);
-        setState(State.WORKSPACE);
 
         // If animated from long press, then don't allow any of the controller in the drag
         // layer to intercept any remaining touch.
         mWorkspace.requestDisallowInterceptTouchEvent(animated);
-    }
-
-    private void setState(State state) {
-        this.mState = state;
-        updateSoftInputMode();
-    }
-
-    private void updateSoftInputMode() {
-        if (FeatureFlags.LAUNCHER3_UPDATE_SOFT_INPUT_MODE) {
-            final int mode;
-            if (isAppsViewVisible()) {
-                mode = SOFT_INPUT_MODE_ALL_APPS;
-            } else {
-                mode = SOFT_INPUT_MODE_DEFAULT;
-            }
-            getWindow().setSoftInputMode(mode);
-        }
     }
 
     /**
@@ -2544,8 +2507,8 @@ public class Launcher extends BaseActivity
     public boolean showAppsView(boolean animated) {
         markAppsViewShown();
 
-        if (!(mState == State.WORKSPACE ||
-                (mState == State.APPS && mAllAppsController.isTransitioning()))) {
+        if (!(isInState(LauncherState.NORMAL) ||
+                (isInState(LauncherState.ALL_APPS) && mAllAppsController.isTransitioning()))) {
             return false;
         }
 
@@ -2558,7 +2521,6 @@ public class Launcher extends BaseActivity
         mStateTransitionAnimation.startAnimationToAllApps(animated);
 
         // Change the state *after* we've called all the transition code
-        setState(State.APPS);
         AbstractFloatingView.closeAllOpenViews(this);
 
         // Send an accessibility event to announce the context change
@@ -2568,8 +2530,9 @@ public class Launcher extends BaseActivity
     }
 
     public void enterSpringLoadedDragMode() {
-        if (LOGD) Log.d(TAG, String.format("enterSpringLoadedDragMode [mState=%s", mState.name()));
-        if (isStateSpringLoaded()) {
+        if (LOGD) Log.d(TAG, String.format("enterSpringLoadedDragMode [mState=%s",
+                mWorkspace.getState().name()));
+        if (isInState(LauncherState.SPRING_LOADED)) {
             return;
         }
 
@@ -2582,10 +2545,9 @@ public class Launcher extends BaseActivity
         // in spring loaded mode
         InstallShortcutReceiver.enableInstallQueue(InstallShortcutReceiver.FLAG_DRAG_AND_DROP);
 
-        mStateTransitionAnimation.startAnimationToWorkspace(mState, mWorkspace.getState(),
+        mStateTransitionAnimation.startAnimationToWorkspace(
                 LauncherState.SPRING_LOADED, true /* animated */,
                 null /* onCompleteRunnable */);
-        setState(State.WORKSPACE_SPRING_LOADED);
     }
 
     public void exitSpringLoadedDragMode(int delay) {
@@ -2593,7 +2555,7 @@ public class Launcher extends BaseActivity
     }
 
     public void exitSpringLoadedDragMode(int delay, final Runnable onCompleteRunnable) {
-        if (!isStateSpringLoaded()) return;
+        if (!isInState(LauncherState.SPRING_LOADED)) return;
 
         // Unlock rotation lock
         unlockScreenOrientation(false);
@@ -2615,17 +2577,13 @@ public class Launcher extends BaseActivity
         mHandler.postDelayed(mExitSpringLoadedModeRunnable, delay);
     }
 
-    boolean isStateSpringLoaded() {
-        return mState == State.WORKSPACE_SPRING_LOADED;
-    }
-
     @Override
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
         final boolean result = super.dispatchPopulateAccessibilityEvent(event);
         final List<CharSequence> text = event.getText();
         text.clear();
         // Populate event with a fake title based on the current state.
-        if (mState == State.APPS) {
+        if (isInState(LauncherState.ALL_APPS)) {
             text.add(getString(R.string.all_apps_button_label));
         } else if (mWorkspace != null) {
             text.add(mWorkspace.getCurrentPageDescription());
@@ -3182,7 +3140,7 @@ public class Launcher extends BaseActivity
 
         if (mAppsView != null) {
             Executor pendingExecutor = getPendingExecutor();
-            if (pendingExecutor != null && mState != State.APPS) {
+            if (pendingExecutor != null && !isInState(LauncherState.ALL_APPS)) {
                 // Wait until the fade in animation has finished before setting all apps list.
                 pendingExecutor.execute(r);
                 return;
@@ -3389,8 +3347,8 @@ public class Launcher extends BaseActivity
     }
 
     private boolean shouldShowDiscoveryBounce() {
-        UserManagerCompat um = UserManagerCompat.getInstance(this);
-        return mState == State.WORKSPACE && !mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false) && !um.isDemoUser();
+        return isInState(LauncherState.NORMAL) && !mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false)
+                && !UserManagerCompat.getInstance(this).isDemoUser();
     }
 
     /**
@@ -3448,7 +3406,7 @@ public class Launcher extends BaseActivity
             List<KeyboardShortcutGroup> data, Menu menu, int deviceId) {
 
         ArrayList<KeyboardShortcutInfo> shortcutInfos = new ArrayList<>();
-        if (mState == State.WORKSPACE) {
+        if (isInState(LauncherState.NORMAL)) {
             shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.all_apps_button_label),
                     KeyEvent.KEYCODE_A, KeyEvent.META_CTRL_ON));
         }
@@ -3474,7 +3432,7 @@ public class Launcher extends BaseActivity
         if (event.hasModifiers(KeyEvent.META_CTRL_ON)) {
             switch (keyCode) {
                 case KeyEvent.KEYCODE_A:
-                    if (mState == State.WORKSPACE) {
+                    if (isInState(LauncherState.NORMAL)) {
                         showAppsView(true);
                         return true;
                     }

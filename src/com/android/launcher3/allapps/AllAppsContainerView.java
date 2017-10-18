@@ -38,6 +38,7 @@ import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.SpringAnimationHandler;
@@ -292,7 +293,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     @Override
     public boolean onLongClick(final View v) {
         // When we have exited all apps or are in transition, disregard long clicks
-        if (!mLauncher.isAppsViewVisible() ||
+        if (!mLauncher.isInState(LauncherState.ALL_APPS) ||
                 mLauncher.getWorkspace().isSwitchingState()) return false;
         // Return if global dragging is not enabled or we are already dragging
         if (!mLauncher.isDraggingEnabled()) return false;

@@ -22,6 +22,7 @@ import static com.android.launcher3.LauncherAnimUtils.ALL_APPS_TRANSITION_MS;
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_TRANSITION_MS;
 import static com.android.launcher3.StateFlags.FLAG_DISABLE_ACCESSIBILITY;
+import static com.android.launcher3.StateFlags.FLAG_DO_NOT_RESTORE;
 import static com.android.launcher3.StateFlags.FLAG_HIDE_HOTSEAT;
 import static com.android.launcher3.StateFlags.FLAG_MULTI_PAGE;
 import static com.android.launcher3.StateFlags.FLAG_SHOW_SCRIM;
@@ -33,6 +34,7 @@ interface StateFlags {
     int FLAG_MULTI_PAGE = 1 << 1;
     int FLAG_HIDE_HOTSEAT = 1 << 2;
     int FLAG_DISABLE_ACCESSIBILITY = 1 << 3;
+    int FLAG_DO_NOT_RESTORE = 1 << 4;
 }
 
 /**
@@ -40,16 +42,32 @@ interface StateFlags {
  */
 public enum LauncherState {
 
-    NORMAL          (ContainerType.WORKSPACE, 0, 0),
+    NORMAL          (ContainerType.WORKSPACE, 0, FLAG_DO_NOT_RESTORE),
     ALL_APPS        (ContainerType.ALLAPPS, ALL_APPS_TRANSITION_MS, FLAG_DISABLE_ACCESSIBILITY),
     SPRING_LOADED   (ContainerType.WORKSPACE, SPRING_LOADED_TRANSITION_MS,
-            FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE | FLAG_DISABLE_ACCESSIBILITY),
+            FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE | FLAG_DISABLE_ACCESSIBILITY | FLAG_DO_NOT_RESTORE),
     OVERVIEW        (ContainerType.OVERVIEW, OVERVIEW_TRANSITION_MS,
-            FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE | FLAG_HIDE_HOTSEAT);
+            FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE | FLAG_HIDE_HOTSEAT | FLAG_DO_NOT_RESTORE);
 
+    /**
+     * Used for containerType in {@link com.android.launcher3.logging.UserEventDispatcher}
+     */
     public final int containerType;
 
+    /**
+     * True if the state can be persisted across activity restarts.
+     */
+    public final boolean doNotRestore;
+
+    /**
+     * True if workspace has multiple pages visible.
+     */
     public final boolean hasMultipleVisiblePages;
+
+    /**
+     * Accessibility flag for workspace and its pages.
+     * @see android.view.View#setImportantForAccessibility(int)
+     */
     public final int workspaceAccessibilityFlag;
 
     // Properties related to state transition animation.
@@ -67,5 +85,6 @@ public enum LauncherState {
         this.workspaceAccessibilityFlag = (flags & FLAG_DISABLE_ACCESSIBILITY) != 0
                 ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                 : IMPORTANT_FOR_ACCESSIBILITY_AUTO;
+        this.doNotRestore = (flags & FLAG_DO_NOT_RESTORE) != 0;
     }
 }

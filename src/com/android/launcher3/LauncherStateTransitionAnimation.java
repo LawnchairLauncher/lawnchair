@@ -145,8 +145,7 @@ public class LauncherStateTransitionAnimation {
     /**
      * Starts an animation to the workspace from the current overlay view.
      */
-    public void startAnimationToWorkspace(final Launcher.State fromState,
-            final LauncherState fromWorkspaceState, final LauncherState toWorkspaceState,
+    public void startAnimationToWorkspace(final LauncherState toWorkspaceState,
             final boolean animated, final Runnable onCompleteRunnable) {
         if (toWorkspaceState != LauncherState.NORMAL &&
                 toWorkspaceState != LauncherState.SPRING_LOADED &&
@@ -154,12 +153,11 @@ public class LauncherStateTransitionAnimation {
             Log.e(TAG, "Unexpected call to startAnimationToWorkspace");
         }
 
-        if (fromState == Launcher.State.APPS || mAllAppsController.isTransitioning()) {
-            startAnimationToWorkspaceFromAllApps(fromWorkspaceState, toWorkspaceState,
-                    animated, onCompleteRunnable);
+        if (mLauncher.isInState(LauncherState.ALL_APPS) || mAllAppsController.isTransitioning()) {
+            startAnimationToWorkspaceFromAllApps(mLauncher.getWorkspace().getState(),
+                    toWorkspaceState, animated, onCompleteRunnable);
         } else {
-            startAnimationToNewWorkspaceState(fromWorkspaceState, toWorkspaceState,
-                    animated, onCompleteRunnable);
+            startAnimationToNewWorkspaceState(toWorkspaceState, animated, onCompleteRunnable);
         }
     }
 
@@ -233,7 +231,7 @@ public class LauncherStateTransitionAnimation {
     /**
      * Starts an animation to the workspace from another workspace state, e.g. normal to overview.
      */
-    private void startAnimationToNewWorkspaceState(final LauncherState fromWorkspaceState,
+    private void startAnimationToNewWorkspaceState(
             final LauncherState toWorkspaceState, final boolean animated,
             final Runnable onCompleteRunnable) {
         final View fromWorkspace = mLauncher.getWorkspace();
