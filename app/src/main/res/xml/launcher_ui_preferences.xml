@@ -24,6 +24,26 @@
             android:defaultValue="false"
             android:disableDependentsState="true"
             android:persistent="true" />
+        
+        <SwitchPreference
+            android:key="pref_showPixelBar"
+            android:title="@string/show_pixel_bar_pref_title"
+            android:defaultValue="true"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_fullWidthSearchbar"
+            android:defaultValue="false"
+            android:title="@string/use_wide_searchbar_pref_title"
+            android:dependency="pref_showPixelBar"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_showMic"
+            android:defaultValue="false"
+            android:title="@string/show_mic_pref_title"
+            android:dependency="pref_showPixelBar"
+            android:persistent="true" />
 
         <SwitchPreference
             android:key="pref_hideAppLabels"
