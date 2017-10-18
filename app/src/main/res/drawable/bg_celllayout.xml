@@ -16,16 +16,23 @@
 ** limitations under the License.
 */
 -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_active="true">
-        <shape android:shape="rectangle">
-            <stroke android:width="@dimen/spring_loaded_panel_border" android:color="@color/spring_loaded_highlighted_panel_border_color" />
+
+<transition xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape xmlns:android="http://schemas.android.com/apk/res/android"
+            android:shape="rectangle">
             <solid android:color="@color/spring_loaded_panel_color" />
         </shape>
     </item>
     <item>
-        <shape android:shape="rectangle">
-            <solid android:color="@color/spring_loaded_panel_color" />
+        <shape xmlns:android="http://schemas.android.com/apk/res/android"
+            android:shape="rectangle">
+            <stroke
+                android:width="@dimen/spring_loaded_panel_border"
+                android:color="@color/spring_loaded_highlighted_panel_border_color" />
+            <solid android:color="@android:color/transparent" />
         </shape>
     </item>
-</selector>
+
+</transition>
