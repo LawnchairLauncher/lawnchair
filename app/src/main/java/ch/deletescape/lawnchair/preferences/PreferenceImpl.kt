@@ -175,8 +175,6 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
 
     override var appsViewShown by MutableBooleanPref(PreferenceFlags.APPS_VIEW_SHOWN, false)
 
-    override var requiresIconCacheReload by MutableBooleanPref(PreferenceFlags.KEY_REQUIRES_ICON_CACHE_RELOAD, true)
-
     override val darkTheme: Boolean by BooleanPref(FeatureFlags.KEY_PREF_DARK_THEME, false)
     override val pulldownAction by StringPref(FeatureFlags.KEY_PREF_PULLDOWN_ACTION, "1")
     val pulldownNotis by BooleanPref(FeatureFlags.KEY_PREF_PULLDOWN_NOTIS, true)

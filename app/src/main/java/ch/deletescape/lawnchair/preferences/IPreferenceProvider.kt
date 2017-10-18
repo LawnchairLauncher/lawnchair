@@ -143,7 +143,6 @@ interface IPreferenceProvider {
     // STATES
     // -----------------
 
-    var requiresIconCacheReload: Boolean
     var emptyDatabaseCreated: Boolean
     fun removeEmptyDatabaseCreated()
     fun userCreationTimeKeyExists(key: Long): Boolean
