@@ -75,11 +75,6 @@ deploy:
     skip_cleanup: true
     script: scripts/deploy-s3.sh
     on:
-      branch: alpha
-  - provider: script
-    skip_cleanup: true
-    script: scripts/deploy-s3.sh
-    on:
       branch: beta
   - provider: script
     skip_cleanup: true
