@@ -287,7 +287,7 @@
   <string name="backup_pref_title">Cadang</string>
   <string name="behavior_pref_summary">Mengubah perilaku Lawnchair</string>
   <string name="backup_pref_summary">Cadangan database dan pengaturan</string>
-  <string name="debug_pref_summary">Me-restart atau membangun kembali database ikon</string>
+  <string name="debug_pref_summary">Mulai ulang atau membangun kembali database ikon</string>
   <string name="show_pixel_bar_pref_title">Tampilkan bar atas Pixel</string>
   <string name="use_wide_searchbar_pref_title">Gunakan batang pencarian lebar</string>
   <string name="show_mic_pref_title">Tampilkan tombol Google asisten</string>
@@ -306,7 +306,7 @@
   <string name="haptic_feedback_pref_title">Hidupkan getaran</string>
   <string name="keep_scroll_state_pref_title">Jaga posisi gulir</string>
   <string name="keep_scroll_state_pref_summary">Mengingat posisi gulir di laci</string>
-  <string name="home_opens_drawer_pref_title">Tombol beranda membuka app laci</string>
+  <string name="home_opens_drawer_pref_title">Tombol beranda membuka laci aplikasi</string>
   <string name="home_opens_drawer_pref_summary">Menekan tombol beranda saat berada di layar awal akan membuka laci aplikasi</string>
   <string name="show_hidden_pref_title">Tampilkan aplikasi tersembunyi</string>
   <string name="show_hidden_pref_on">Aplikasi tersembunyi akan ditampilkan untuk mengubah setelan keterlihatan</string>
@@ -316,7 +316,7 @@
   <string name="export_prefs_title">Pengaturan</string>
   <string name="import_prefs_title">Pengaturan</string>
   <string name="notification_listener_label">Lawnchair - lencana pemberitahuan</string>
-  <string name="color_extraction_label">Lawnchair - Warna ekstraksi</string>
+  <string name="color_extraction_label">Lawnchair - Ekstraksi warna</string>
   <string name="test_title">Tes</string>
   <string name="visibility">Visibilitas</string>
   <string name="default_text">Standar</string>
@@ -384,7 +384,7 @@
   <string name="num_cols_drawer_pref_title">Jumlah kolom di laci app</string>
   <string name="pref_cat_drawer">Laci</string>
   <string name="shortcut_backport_warning">Ini bisa menjadi lambat, gunakan dengan resiko anda sendiri</string>
-  <string name="pref_backport_shortcuts">Pintasan backport</string>
+  <string name="pref_backport_shortcuts">Implementasi pintasan baru</string>
   <string name="weather_api_key_not_set">Kunci API belum diatur</string>
   <string name="pref_weather_api_key_title">Kunci API</string>
   <string name="about_changelog">Daftar perubahan</string>
