@@ -23,3 +23,7 @@ cp lawnfeed/build/outputs/apk/debug/lawnfeed-debug.apk $APP_VERSION/Lawnfeed-$AP
 # Upload calculated md5 checksum for lawnfeed-debug.apk
 md5sum $(readlink -f lawnfeed/build/outputs/apk/debug/lawnfeed-debug.apk) > $APP_VERSION/Lawnfeed-$APP_VERSION.md5sum
 ./scripts/s3-upload.sh $APP_VERSION/Lawnfeed-$APP_VERSION.md5sum $S3_BUCKET $S3_HOST $S3_KEY $S3_SECRET
+
+# Upload version info
+echo -e "{\"major_minor\":\""$MAJOR_MINOR"\", \"travis_build_number\":\""$TRAVIS_BUILD_NUMBER"\", \"app_version\":\""$APP_VERSION"\"}" > version.json
+./scripts/s3-upload.sh version.json $S3_BUCKET $S3_HOST $S3_KEY $S3_SECRET
