@@ -279,12 +279,12 @@
   <string name="notification_access_pref_title">Insignia en notificaciones y vista previa</string>
   <string name="notification_access_pref_summary">Deberá permitir a Lawnchair el acceso a notificaciones para poder habilitar esta función</string>
   <string name="general_pref_title">General</string>
-  <string name="pixel_ui_pref_title">Interfaz de usuario Pixel</string>
+  <string name="pixel_ui_pref_title">Píxeles interfaz de usuario</string>
   <string name="behavior_pref_title">Comportamiento</string>
   <string name="debug_pref_title">Opciones de depuración</string>
   <string name="import_export_pref_title">Importar/Exportar</string>
   <string name="general_pref_summary">Pantalla de inicio, dock y cajón de aplicaciones</string>
-  <string name="pixel_ui_pref_summary">Habilitar características exclusivas de Pixel Launcher</string>
+  <string name="pixel_ui_pref_summary">Habilitar características exclusivas de lanzador de Pixel</string>
   <string name="backup_pref_title">Copia de seguridad</string>
   <string name="behavior_pref_summary">Cambiar el comportamiento de Lawnchair</string>
   <string name="backup_pref_summary">Copia de seguridad de su base de datos y ajustes</string>
