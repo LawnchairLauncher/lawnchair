@@ -63,6 +63,7 @@
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:title="@string/about_title"
+        android:summary="@string/about_pref_summary"
         android:icon="@drawable/ic_information"
         app:content="@xml/launcher_about_preferences" />
 
