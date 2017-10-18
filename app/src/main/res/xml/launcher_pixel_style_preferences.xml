@@ -1,29 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
         android:key="prefCat_homeScreen"
         android:title="@string/pref_cat_homescreen">
-        <SwitchPreference
-            android:key="pref_showPixelBar"
-            android:title="@string/show_pixel_bar_pref_title"
-            android:defaultValue="true"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_fullWidthSearchbar"
-            android:defaultValue="false"
-            android:title="@string/use_wide_searchbar_pref_title"
-            android:dependency="pref_showPixelBar"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_showMic"
-            android:defaultValue="false"
-            android:title="@string/show_mic_pref_title"
-            android:dependency="pref_showPixelBar"
-            android:persistent="true" />
-
         <SwitchPreference
             android:key="pref_pixelStyleIcons"
             android:title="@string/pixel_style_icons_pref_title"
@@ -53,11 +34,57 @@
             android:dependency="pref_animatedClockIcon"
             android:persistent="true" />
 
-        <ch.deletescape.lawnchair.preferences.GoogleNowPreference
-            android:key="pref_showGoogleNowTab"
-            android:persistent="true"
-            android:title="@string/show_google_now_tab_pref_title"
-            android:defaultValue="true" />
+        <SwitchPreference
+            android:key="pref_enableDynamicUi"
+            android:title="@string/dynamic_ui_pref_title"
+            android:defaultValue="false"
+            android:persistent="true" />
+
+        <ListPreference
+            android:key="pref_theme"
+            android:title="@string/theme_pref_title"
+            android:entryValues="@array/themeValues"
+            android:entries="@array/themeTexts"
+            android:summary="%s"
+            android:defaultValue="0"
+            android:persistent="true" />
+
+        <ch.deletescape.lawnchair.preferences.BitSetPreference
+            android:key="pref_themeMode"
+            android:title="@string/pref_applyTheme"
+            android:entries="@array/themeModeTexts"
+            android:entryValues="@array/themeModeValues" />
+
+        <SwitchPreference
+            android:key="pref_popupCardTheme"
+            android:title="@string/popup_card_theme_title"
+            android:defaultValue="false"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_enableBlur"
+            android:title="@string/blur_pref_title"
+            android:summary="@string/blur_pref_summary"
+            android:defaultValue="false"
+            android:persistent="true" />
+
+        <ch.deletescape.lawnchair.preferences.BitSetPreference
+            android:key="pref_blurMode"
+            android:title="@string/pref_applyBlur"
+            android:dependency="pref_enableBlur"
+            android:entries="@array/blurModeTexts"
+            android:entryValues="@array/blurModeValues" />
+
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_blurRadius"
+            android:title="@string/blur_radius_pref_title"
+            android:dependency="pref_enableBlur"
+            app:minValue="10"
+            app:maxValue="150"
+            app:defaultSeekbarValue="75"
+            app:summaryFormat="%.0f"
+            app:steps="140"
+            android:persistent="true" />
     </PreferenceCategory>
     
     <PreferenceCategory
@@ -100,15 +127,5 @@
             android:dependency="pref_weather"
             android:enabled="false"
             android:entries="@array/weatherProviderTexts" />
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:key="prefCat_misc"
-        android:title="@string/pref_cat_miscellaneous">
-        <SwitchPreference
-            android:key="pref_useRoundSearchBar"
-            android:defaultValue="false"
-            android:title="@string/use_round_searhbar"
-            android:persistent="true" />
     </PreferenceCategory>
 </PreferenceScreen>
