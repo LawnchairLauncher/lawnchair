@@ -283,8 +283,8 @@
   <string name="behavior_pref_title">Verhalten</string>
   <string name="debug_pref_title">Entwickleroptionen</string>
   <string name="import_export_pref_title">Import/Export</string>
-  <string name="general_pref_summary">Startbildschirm, Dock und App-Übersicht</string>
-  <string name="pixel_ui_pref_summary">Aktiviere die exklusiven Funktionen des Pixel-Launchers</string>
+  <string name="general_pref_summary">Startbildschirm, Dock, und App-Übersicht</string>
+  <string name="pixel_ui_pref_summary">Aktiviere die exklusiven Funktionen des Pixel Launchers</string>
   <string name="backup_pref_title">Sicherung</string>
   <string name="behavior_pref_summary">Ändere das Verhalten von Lawnchair</string>
   <string name="backup_pref_summary">Sichere deine Datenbank und die Einstellungen</string>
