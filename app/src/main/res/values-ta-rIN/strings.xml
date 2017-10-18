@@ -286,7 +286,6 @@
   <string name="behavior_pref_title">நடத்தை</string>
   <string name="debug_pref_title">பிழைநீக்கு</string>
   <string name="import_export_pref_title">இறக்குமதி/ஏற்றுமதி</string>
-  <string name="general_pref_summary">முகப்புத், கப்பல்துறை, மற்றும் பயன்பாடு தட்டு</string>
   <string name="pixel_ui_pref_summary">பிக்சல் ஏவி பிரத்யேக அம்சங்களை செயல்படுத்து</string>
   <string name="backup_pref_title">பத்திரப்படுத்து</string>
   <string name="behavior_pref_summary">Lawnchair நடத்தை மாற்ற</string>
