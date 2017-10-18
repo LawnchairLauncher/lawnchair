@@ -206,10 +206,10 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     // The intent to send off to the market app, updated each time the search query changes.
     private Intent mMarketSearchIntent;
 
-    private SpringAnimationHandler<ViewHolder> mSpringAnimationHandler;
+    private final SpringAnimationHandler<ViewHolder> mSpringAnimationHandler;
 
     public AllAppsGridAdapter(Launcher launcher, AlphabeticalAppsList apps, View.OnClickListener
-            iconClickListener, View.OnLongClickListener iconLongClickListener) {
+            iconClickListener, View.OnLongClickListener iconLongClickListener, boolean springAnim) {
         Resources res = launcher.getResources();
         mLauncher = launcher;
         mApps = apps;
@@ -220,9 +220,11 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mLayoutInflater = LayoutInflater.from(launcher);
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
-        if (FeatureFlags.LAUNCHER3_PHYSICS) {
+        if (FeatureFlags.LAUNCHER3_PHYSICS && springAnim) {
             mSpringAnimationHandler = new SpringAnimationHandler<>(
                     SpringAnimationHandler.Y_DIRECTION, new AllAppsSpringAnimationFactory());
+        } else {
+            mSpringAnimationHandler = null;
         }
     }
 
@@ -377,7 +379,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     @Override
     public void onViewAttachedToWindow(ViewHolder holder) {
         int type = holder.getItemViewType();
-        if (FeatureFlags.LAUNCHER3_PHYSICS && isViewType(type, VIEW_TYPE_MASK_HAS_SPRINGS)) {
+        if (mSpringAnimationHandler != null && isViewType(type, VIEW_TYPE_MASK_HAS_SPRINGS)) {
             mSpringAnimationHandler.add(holder.itemView, holder);
         }
     }
@@ -385,7 +387,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     @Override
     public void onViewDetachedFromWindow(ViewHolder holder) {
         int type = holder.getItemViewType();
-        if (FeatureFlags.LAUNCHER3_PHYSICS && isViewType(type, VIEW_TYPE_MASK_HAS_SPRINGS)) {
+        if (mSpringAnimationHandler != null && isViewType(type, VIEW_TYPE_MASK_HAS_SPRINGS)) {
             mSpringAnimationHandler.remove(holder.itemView);
         }
     }

@@ -27,25 +27,52 @@
     android:focusableInTouchMode="true"
     android:saveEnabled="false" >
 
-    <!-- DO NOT CHANGE THE ID -->
-    <com.android.launcher3.allapps.AllAppsRecyclerView
-        android:id="@+id/apps_list_view"
+    <include layout="@layout/all_apps_rv_layout" />
+
+    <include layout="@layout/all_apps_fast_scroller" />
+
+    <RelativeLayout
+        android:id="@+id/all_apps_header"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/search_container_all_apps"
-        android:layout_gravity="center_horizontal|top"
-        android:clipToPadding="false"
-        android:descendantFocusability="afterDescendants"
-        android:focusable="true"
-        android:overScrollMode="never" />
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:paddingTop="30dp"
+        android:layout_below="@id/search_container_all_apps" >
+
+        <com.android.launcher3.allapps.PredictionRowView
+            android:id="@+id/header_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/all_apps_header_tab_height"
+            android:layout_below="@id/header_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/tab_personal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/all_apps_personal_tab"
+                android:background="?android:attr/selectableItemBackground"/>
+            <Button
+                android:id="@+id/tab_work"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/all_apps_work_tab"
+                android:background="?android:attr/selectableItemBackground"/>
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <!-- Note: we are reusing/repurposing a system attribute for search layout, because of a
      platform bug, which prevents using custom attributes in <include> tag -->
     <include
         android:id="@id/search_container_all_apps"
-        layout="?android:attr/keyboardLayout" />
-
-    <include layout="@layout/all_apps_fast_scroller" />
+        layout="?android:attr/keyboardLayout"/>
 
     <View
         android:id="@+id/nav_bar_bg"

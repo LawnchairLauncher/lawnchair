@@ -90,6 +90,7 @@
     <dimen name="all_apps_background_canvas_width">700dp</dimen>
     <dimen name="all_apps_background_canvas_height">475dp</dimen>
     <dimen name="all_apps_caret_workspace_offset">18dp</dimen>
+    <dimen name="all_apps_header_tab_height">50dp</dimen>
 
 <!-- Search bar in All Apps -->
     <dimen name="all_apps_header_max_elevation">3dp</dimen>
