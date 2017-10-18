@@ -23,6 +23,18 @@
         android:summary="@string/general_pref_summary"
         android:title="@string/general_pref_title"
         app:content="@xml/launcher_ui_preferences" />
+     
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
+        android:icon="@drawable/ic_ui"
+        android:summary="@string/dock_pref_summary"
+        android:title="@string/dock_pref_title"
+        app:content="@xml/launcher_dock_preferences" />
+
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
+        android:icon="@drawable/ic_ui"
+        android:summary="@string/app_drawer_pref_summary"
+        android:title="@string/app_drawer_pref_title"
+        app:content="@xml/launcher_app_drawer_preferences" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:title="@string/pixel_ui_pref_title"
