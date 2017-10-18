@@ -61,6 +61,7 @@ android {
         debug {
             if (System.getenv("TRAVIS") == "true") {
                 minifyEnabled true
+                shrinkResources true
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
                 if (System.getenv("TRAVIS_EVENT_TYPE") != "pull_request") {
                     signingConfig signingConfigs.travis
@@ -74,6 +75,7 @@ android {
             buildConfigField "boolean", "ENABLE_LAWNFEED", "true"
 
             minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             if (System.getenv("TRAVIS_EVENT_TYPE") != "pull_request") {
                 signingConfig signingConfigs.travis
