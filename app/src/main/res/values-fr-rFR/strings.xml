@@ -252,7 +252,7 @@
   <string name="icon_pack_preference_summary">Choisissez un pack d\'icônes</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Le dock utilise les couleurs du fond d\'écran</string>
   <string name="hotseat_show_arrow">Afficher la flèche</string>
-  <string name="hotseat_show_page_indicator">Montrer l\'indicateur de la page</string>
+  <string name="hotseat_show_page_indicator">Afficher l\'indicateur de la page</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Le dock sera coloré avec une couleur extraite du fond d\'écran</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Le dock sera de couleur grise, mais ajusté par la luminosité du fond d\'écran</string>
   <string name="transparent_hotseat_pref_title">Dock transparent</string>
@@ -260,7 +260,7 @@
   <string name="blur_pref_title">Activer le flou</string>
   <string name="blur_pref_summary">Appliquer un effet de flou sur des parties de l\'interface\nNon compatible avec les fonds d\'écrans animés</string>
   <string name="blur_radius_pref_title">Rayon du flou</string>
-  <string name="pref_iconLabelsInTwoLines">Étiquettes d\'icônes sur 2 lignes</string>
+  <string name="pref_iconLabelsInTwoLines">Libellés d\'icônes sur 2 lignes</string>
   <string name="white_google_icon_pref_title">Utiliser l\'icône blanche de Google</string>
   <string name="hide_icon_labels_pref_title">Masquer le nom des icônes sur l\'écran d\'accueil</string>
   <string name="hide_all_apps_icon_labels_pref_title">Masquer le nom des icônes dans le tiroir des applications</string>
@@ -273,7 +273,7 @@
   <string name="icon_scale_pref_title">Taille des icônes</string>
   <string name="hotseat_height_scale">Échelle de hauteur</string>
   <string name="icon_text_scale_pref_title">Taille de la police des libellés des icônes</string>
-  <string name="icon_text_padding_scale_pref_title">Échelle de remplissage d\'icônes</string>
+  <string name="icon_text_padding_scale_pref_title">Échelle de remplissage des icônes</string>
   <string name="full_width_width_widgets_pref_title">Widgets de pleine largeur</string>
   <string name="full_width_widgets_pref_summary">Permettre aux widgets de s’étendre sur toute la largeur sans marge</string>
   <string name="notification_access_pref_title">Badges de notification</string>
@@ -283,8 +283,8 @@
   <string name="behavior_pref_title">Comportement</string>
   <string name="debug_pref_title">Debug</string>
   <string name="import_export_pref_title">Importer/Exporter</string>
-  <string name="general_pref_summary">Écran d\'accueil, dock et tiroir d\'application</string>
-  <string name="pixel_ui_pref_summary">Activer les fonctionnalités du launcher Pixel</string>
+  <string name="general_pref_summary">Écran d\'accueil, dock et tiroir d\'applications</string>
+  <string name="pixel_ui_pref_summary">Activer les fonctionnalités du Pixel Launcher</string>
   <string name="backup_pref_title">Sauvegarde</string>
   <string name="behavior_pref_summary">Modifier le comportement de Lawnchair</string>
   <string name="backup_pref_summary">Sauvegarder votre base de données et vos paramètres</string>
@@ -312,10 +312,10 @@
   <string name="show_hidden_pref_title">Afficher les applications cachées</string>
   <string name="show_hidden_pref_on">Les applications cachées seront affichées pour modifier les paramètres de visibilité</string>
   <string name="show_hidden_pref_off">Les applications cachées ne seront pas visibles</string>
-  <string name="export_db_title">les Bases de Données</string>
-  <string name="import_db_title">les Bases de Données</string>
-  <string name="export_prefs_title">Export settings</string>
-  <string name="import_prefs_title">les Paramètres</string>
+  <string name="export_db_title">la base de données</string>
+  <string name="import_db_title">la base de données</string>
+  <string name="export_prefs_title">les paramètres</string>
+  <string name="import_prefs_title">les paramètres</string>
   <string name="notification_listener_label">Lawnchair - Badges de notification</string>
   <string name="color_extraction_label">Lawnchair - Extraction de la couleur</string>
   <string name="test_title">Test</string>
@@ -400,8 +400,8 @@
   <string name="full_wday_month_day_no_year">EEEE d MMMM</string>
   <string name="about_translators">Traducteurs</string>
   <string name="lock_desktop">Verrouiller l\'écran d\'accueil</string>
-  <string name="lawnfeed_not_found">Paquets non installés</string>
-  <string name="google_app_not_found">Appli. Google non installé</string>
+  <string name="lawnfeed_not_found">Lawnfeed non installé</string>
+  <string name="google_app_not_found">Application Google non installée</string>
   <string name="popup_card_theme_title">Pop-up en flat design </string>
-  <string name="set_default_launcher">Définir comme launcher par défaut</string>
+  <string name="set_default_launcher">Définir le launcher par défaut</string>
 </resources>
