@@ -326,5 +326,9 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             return fragment;
         }
 
+        @Override
+        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+            return super.onCreateView(FeatureFlags.INSTANCE.getLayoutInflator(inflater), container, savedInstanceState);
+        }
     }
 }
