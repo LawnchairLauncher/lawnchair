@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <SwitchPreference
+            android:key="pref_hotseatShouldUseExtractedColors"
+            android:title="@string/hotseat_uses_extracted_colors_pref_title"
+            android:summaryOn="@string/hotseat_uses_extracted_colors_pref_on"
+            android:summaryOff="@string/hotseat_uses_extracted_colors_pref_off"
+            android:defaultValue="true"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_isHotseatTransparent"
+            android:title="@string/transparent_hotseat_pref_title"
+            android:defaultValue="false"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_hideHotseat"
+            android:title="@string/hide_hotseat_pref_title"
+            android:defaultValue="false"
+            android:dependency="pref_isHotseatTransparent"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_hotseatShowArrow"
+            android:title="@string/hotseat_show_arrow"
+            android:defaultValue="true"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_hotseatShowPageIndicator"
+            android:title="@string/hotseat_show_page_indicator"
+            android:defaultValue="true"
+            android:persistent="true" />
+
+        <ListPreference
+            android:key="pref_numHotseatIcons"
+            android:title="@string/num_hotseat_icons_pref_title"
+            android:entryValues="@array/numHotseatIconsValues"
+            android:entries="@array/numHotseatIconsTexts"
+            android:defaultValue="@string/generalDefault"
+            android:summary="%s"
+            android:persistent="true" />
+
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_hotseatIconScale"
+            android:title="@string/icon_scale_pref_title"
+            app:minValue="0.3"
+            app:maxValue="1.5"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100"
+            app:defaultSeekbarValue="1.0"
+            app:steps="120"
+            android:persistent="true" />
+
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_hotseatHeightScale"
+            android:title="@string/hotseat_height_scale"
+            app:minValue="0.5"
+            app:maxValue="1.5"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100"
+            app:defaultSeekbarValue="1.0"
+            android:persistent="true" />
+</PreferenceScreen>
