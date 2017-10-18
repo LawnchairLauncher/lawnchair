@@ -282,7 +282,6 @@
   <string name="behavior_pref_title">Adfærd</string>
   <string name="debug_pref_title">Fejlfinding</string>
   <string name="import_export_pref_title">Importér/eksportér</string>
-  <string name="general_pref_summary">Hjemmeskærm, dock og appskuffe</string>
   <string name="backup_pref_title">Sikkerhedskopiering</string>
   <string name="backup_pref_summary">Sikkerhedskopier dine indstillinger</string>
   <string name="debug_pref_summary">Genstart eller genopret ikondatabasen</string>
