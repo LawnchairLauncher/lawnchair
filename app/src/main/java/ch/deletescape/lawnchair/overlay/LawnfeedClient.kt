@@ -58,11 +58,21 @@ class LawnfeedClient(private val launcher: Launcher) : ILauncherClient {
             state = proxy?.reconnect() ?: 0
             if (state == 0) {
                 launcher.runOnUiThread { notifyStatusChanged(0) }
+            } else if (state == 1) {
+                onOverlayConnected()
             }
         } else {
             if (Utilities.getPrefs(launcher).showGoogleNowTab) {
                 connectProxy()
             }
+        }
+    }
+
+    fun onOverlayConnected() {
+        state = 1
+        serviceConnected = true
+        if (windowAttrs != null) {
+            applyWindowToken()
         }
     }
 
@@ -123,9 +133,7 @@ class LawnfeedClient(private val launcher: Launcher) : ILauncherClient {
     }
 
     override fun onDestroy() {
-        if (Utilities.getPrefs(launcher).showGoogleNowTab) {
-            removeClient(!launcher.isChangingConfigurations)
-        }
+        removeClient(!launcher.isChangingConfigurations)
     }
 
     override fun onAttachedToWindow() {
@@ -307,11 +315,7 @@ class LawnfeedClient(private val launcher: Launcher) : ILauncherClient {
         }
 
         override fun onServiceConnected() {
-            state = 1
-            serviceConnected = true
-            if (windowAttrs != null) {
-                applyWindowToken()
-            }
+            onOverlayConnected()
         }
 
         override fun onServiceDisconnected() {
