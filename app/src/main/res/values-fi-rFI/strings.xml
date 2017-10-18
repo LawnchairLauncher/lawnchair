@@ -278,13 +278,9 @@
   <string name="full_width_widgets_pref_summary">Salli widgettien kattaa koko leveys ilman välejä</string>
   <string name="notification_access_pref_title">Ilmoitusten merkit ja esikatselu</string>
   <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
-  <string name="general_pref_title">Yleiset</string>
-  <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Käyttäytyminen</string>
   <string name="debug_pref_title">Debug</string>
   <string name="import_export_pref_title">Tuo/Vie</string>
-  <string name="general_pref_summary">Aloitusnäyttö, telakka, ja sovellusvalikko</string>
-  <string name="pixel_ui_pref_summary">Ota käyttöön Pixel Launcherin eksklusiiviset ominaisuudet</string>
   <string name="backup_pref_title">Varmuuskopiointi</string>
   <string name="behavior_pref_summary">Muuta Lawnchairin toimintaa</string>
   <string name="backup_pref_summary">Varmuuskopioi tietokantasi ja asetukset</string>
