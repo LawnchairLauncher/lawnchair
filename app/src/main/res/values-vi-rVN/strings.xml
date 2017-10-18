@@ -282,8 +282,8 @@
   <string name="behavior_pref_title">Hành vi</string>
   <string name="debug_pref_title">Gỡ lỗi</string>
   <string name="import_export_pref_title">Nhập/Xuất dữ liệu</string>
-  <string name="general_pref_summary">Màn hình chính, thanh dock và ngăn chứa ứng dụng</string>
-  <string name="pixel_ui_pref_summary">Bật các tính năng chỉ có ở trình khởi chạy Pixel</string>
+  <string name="general_pref_summary">Màn hình chính, thanh dock và menu ứng dụng</string>
+  <string name="pixel_ui_pref_summary">Bật các tính năng chỉ có ở Pixel Launcher</string>
   <string name="backup_pref_title">Sao lưu</string>
   <string name="behavior_pref_summary">Thay đổi hành vi của Lawnchair</string>
   <string name="backup_pref_summary">Sao lưu dữ liệu cài đặt</string>
