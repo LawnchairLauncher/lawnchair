@@ -83,7 +83,7 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
     public com.android.launcher3.ShortcutInfo createShortcutInfo() {
         // Total duration for the drop animation to complete.
         long duration = mContext.getResources().getInteger(R.integer.config_dropAnimMaxDuration) +
-                LauncherAnimUtils.SPRING_LOADED_EXIT_SHORT_TIMEOUT +
+                LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY +
                 LauncherAnimUtils.SPRING_LOADED_TRANSITION_MS;
         // Delay the actual accept() call until the drop animation is complete.
         return LauncherAppsCompatVO.createShortcutInfoFromPinItemRequest(

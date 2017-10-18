@@ -17,7 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_NEXT_FRAME;
-import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_SHORT_TIMEOUT;
+import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_APPS;
 import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_WIDGETS;
@@ -581,7 +581,7 @@ public class Launcher extends BaseActivity
         Runnable exitSpringLoaded = new Runnable() {
             @Override
             public void run() {
-                exitSpringLoadedDragMode(SPRING_LOADED_EXIT_SHORT_TIMEOUT);
+                exitSpringLoadedDragMode(SPRING_LOADED_EXIT_DELAY);
             }
         };
 
@@ -761,7 +761,7 @@ public class Launcher extends BaseActivity
                 @Override
                 public void run() {
                     completeAddAppWidget(appWidgetId, requestArgs, layout, null);
-                    exitSpringLoadedDragMode(SPRING_LOADED_EXIT_SHORT_TIMEOUT);
+                    exitSpringLoadedDragMode(SPRING_LOADED_EXIT_DELAY);
                 }
             };
         } else if (resultCode == RESULT_CANCELED) {
@@ -1712,7 +1712,7 @@ public class Launcher extends BaseActivity
                 @Override
                 public void run() {
                     // Exit spring loaded mode if necessary after adding the widget
-                    exitSpringLoadedDragMode(SPRING_LOADED_EXIT_SHORT_TIMEOUT);
+                    exitSpringLoadedDragMode(SPRING_LOADED_EXIT_DELAY);
                 }
             };
             completeAddAppWidget(appWidgetId, info, boundWidget, addFlowHandler.getProviderInfo(this));
@@ -2460,11 +2460,11 @@ public class Launcher extends BaseActivity
 
     public boolean showWorkspace(boolean animated, Runnable onCompleteRunnable) {
         boolean changed = mState != State.WORKSPACE ||
-                mWorkspace.getState() != Workspace.State.NORMAL;
+                mWorkspace.getState() != LauncherState.NORMAL;
         if (changed || mAllAppsController.isTransitioning()) {
             mWorkspace.setVisibility(View.VISIBLE);
             mStateTransitionAnimation.startAnimationToWorkspace(mState, mWorkspace.getState(),
-                    Workspace.State.NORMAL, animated, onCompleteRunnable);
+                    LauncherState.NORMAL, animated, onCompleteRunnable);
 
             // Set focus to the AppsCustomize button
             if (mAllAppsButton != null) {
@@ -2509,7 +2509,7 @@ public class Launcher extends BaseActivity
         }
         mWorkspace.setVisibility(View.VISIBLE);
         mStateTransitionAnimation.startAnimationToWorkspace(mState, mWorkspace.getState(),
-                Workspace.State.OVERVIEW, animated, postAnimRunnable);
+                LauncherState.OVERVIEW, animated, postAnimRunnable);
         setState(State.WORKSPACE);
 
         // If animated from long press, then don't allow any of the controller in the drag
@@ -2583,7 +2583,7 @@ public class Launcher extends BaseActivity
         InstallShortcutReceiver.enableInstallQueue(InstallShortcutReceiver.FLAG_DRAG_AND_DROP);
 
         mStateTransitionAnimation.startAnimationToWorkspace(mState, mWorkspace.getState(),
-                Workspace.State.SPRING_LOADED, true /* animated */,
+                LauncherState.SPRING_LOADED, true /* animated */,
                 null /* onCompleteRunnable */);
         setState(State.WORKSPACE_SPRING_LOADED);
     }
@@ -2608,11 +2608,6 @@ public class Launcher extends BaseActivity
         mExitSpringLoadedModeRunnable = new Runnable() {
             @Override
             public void run() {
-                // TODO(hyunyoungs): verify if this hack is still needed, if not, delete.
-                //
-                // Before we show workspace, hide all apps again because
-                // exitSpringLoadedDragMode made it visible. This is a bit hacky; we should
-                // clean up our state transition functions
                 showWorkspace(true, onCompleteRunnable);
                 mExitSpringLoadedModeRunnable = null;
             }

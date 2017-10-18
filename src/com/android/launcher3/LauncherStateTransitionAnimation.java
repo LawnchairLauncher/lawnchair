@@ -100,7 +100,7 @@ public class LauncherStateTransitionAnimation {
         cancelAnimation();
 
         if (!animated) {
-            mLauncher.getWorkspace().setState(Workspace.State.NORMAL_HIDDEN);
+            mLauncher.getWorkspace().setState(LauncherState.ALL_APPS);
 
             mAllAppsController.finishPullUp();
             toView.setTranslationX(0.0f);
@@ -129,7 +129,7 @@ public class LauncherStateTransitionAnimation {
 
         mConfig.reset();
         mAllAppsController.animateToAllApps(animation, mConfig);
-        mLauncher.getWorkspace().setStateWithAnimation(Workspace.State.NORMAL_HIDDEN,
+        mLauncher.getWorkspace().setStateWithAnimation(LauncherState.ALL_APPS,
                 layerViews, animation, mConfig);
 
         Runnable startAnimRunnable = new StartAnimRunnable(animation, toView);
@@ -146,11 +146,11 @@ public class LauncherStateTransitionAnimation {
      * Starts an animation to the workspace from the current overlay view.
      */
     public void startAnimationToWorkspace(final Launcher.State fromState,
-            final Workspace.State fromWorkspaceState, final Workspace.State toWorkspaceState,
+            final LauncherState fromWorkspaceState, final LauncherState toWorkspaceState,
             final boolean animated, final Runnable onCompleteRunnable) {
-        if (toWorkspaceState != Workspace.State.NORMAL &&
-                toWorkspaceState != Workspace.State.SPRING_LOADED &&
-                toWorkspaceState != Workspace.State.OVERVIEW) {
+        if (toWorkspaceState != LauncherState.NORMAL &&
+                toWorkspaceState != LauncherState.SPRING_LOADED &&
+                toWorkspaceState != LauncherState.OVERVIEW) {
             Log.e(TAG, "Unexpected call to startAnimationToWorkspace");
         }
 
@@ -166,8 +166,8 @@ public class LauncherStateTransitionAnimation {
     /**
      * Starts an animation to the workspace from the apps view.
      */
-    private void startAnimationToWorkspaceFromAllApps(final Workspace.State fromWorkspaceState,
-            final Workspace.State toWorkspaceState, boolean animated,
+    private void startAnimationToWorkspaceFromAllApps(final LauncherState fromWorkspaceState,
+            final LauncherState toWorkspaceState, boolean animated,
             final Runnable onCompleteRunnable) {
         final AllAppsContainerView fromView = mLauncher.getAppsView();
         // If for some reason our views aren't initialized, don't animate
@@ -180,7 +180,7 @@ public class LauncherStateTransitionAnimation {
         cancelAnimation();
 
         if (!animated) {
-            if (fromWorkspaceState == Workspace.State.NORMAL_HIDDEN) {
+            if (fromWorkspaceState == LauncherState.ALL_APPS) {
                 mAllAppsController.finishPullDown();
             }
             fromView.setVisibility(View.GONE);
@@ -233,8 +233,8 @@ public class LauncherStateTransitionAnimation {
     /**
      * Starts an animation to the workspace from another workspace state, e.g. normal to overview.
      */
-    private void startAnimationToNewWorkspaceState(final Workspace.State fromWorkspaceState,
-            final Workspace.State toWorkspaceState, final boolean animated,
+    private void startAnimationToNewWorkspaceState(final LauncherState fromWorkspaceState,
+            final LauncherState toWorkspaceState, final boolean animated,
             final Runnable onCompleteRunnable) {
         final View fromWorkspace = mLauncher.getWorkspace();
         // Cancel the current animation

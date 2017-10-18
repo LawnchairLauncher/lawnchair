@@ -17,8 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_NEXT_FRAME;
-import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_SHORT_TIMEOUT;
-import static com.android.launcher3.LauncherAnimUtils.ALL_APPS_TRANSITION_MS;
+import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_TRANSITION_MS;
 
@@ -185,33 +184,6 @@ public class Workspace extends PagedView
     private SpringLoadedDragController mSpringLoadedDragController;
     private final float mOverviewModeShrinkFactor;
 
-    // State variable that indicates whether the pages are small (ie when you're
-    // in all apps or customize mode)
-
-    public enum State {
-        NORMAL          (false, ContainerType.WORKSPACE, false, 1, 0),
-        NORMAL_HIDDEN   (false, ContainerType.ALLAPPS, false, 1, ALL_APPS_TRANSITION_MS),
-        SPRING_LOADED   (true, ContainerType.WORKSPACE, true, 1, SPRING_LOADED_TRANSITION_MS),
-        OVERVIEW        (true, ContainerType.OVERVIEW, true, 0, OVERVIEW_TRANSITION_MS);
-
-        public final boolean hasMultipleVisiblePages;
-        public final int containerType;
-
-        // Properties related to state transition animation.
-        public final boolean hasScrim;
-        public final float hotseatAlpha;
-        public final int transitionDuration;
-
-        State(boolean hasMultipleVisiblePages, int containerType,
-                boolean hasScrim, float hotseatAlpha, int transitionDuration) {
-            this.hasMultipleVisiblePages = hasMultipleVisiblePages;
-            this.containerType = containerType;
-            this.hasScrim = hasScrim;
-            this.hotseatAlpha = hotseatAlpha;
-            this.transitionDuration = transitionDuration;
-        }
-    }
-
     // Direction used for moving the workspace and hotseat UI
     public enum Direction {
         X  (TRANSLATION_X),
@@ -238,7 +210,7 @@ public class Workspace extends PagedView
     private final float[] mHotseatAlpha = new float[] {1, 1, 1};
 
     @ViewDebug.ExportedProperty(category = "launcher")
-    private State mState = State.NORMAL;
+    private LauncherState mState = LauncherState.NORMAL;
     private boolean mIsSwitchingState = false;
 
     boolean mChildrenLayersEnabled = true;
@@ -1447,16 +1419,16 @@ public class Workspace extends PagedView
     }
 
     public boolean workspaceInModalState() {
-        return mState != State.NORMAL;
+        return mState != LauncherState.NORMAL;
     }
 
     /** Returns whether a drag should be allowed to be started from the current workspace state. */
     public boolean workspaceIconsCanBeDragged() {
-        return mState == State.NORMAL || mState == State.SPRING_LOADED;
+        return mState == LauncherState.NORMAL || mState == LauncherState.SPRING_LOADED;
     }
 
     private void updateChildrenLayersEnabled() {
-        boolean small = mState == State.OVERVIEW || mIsSwitchingState;
+        boolean small = mState == LauncherState.OVERVIEW || mIsSwitchingState;
         boolean enableChildrenLayers = small || isPageInTransition();
 
         if (enableChildrenLayers != mChildrenLayersEnabled) {
@@ -1576,7 +1548,7 @@ public class Workspace extends PagedView
     }
 
     public boolean isInOverviewMode() {
-        return mState == State.OVERVIEW;
+        return mState == LauncherState.OVERVIEW;
     }
 
     public void snapToPageFromOverView(int whichPage) {
@@ -1626,9 +1598,9 @@ public class Workspace extends PagedView
 
 
     /**
-     * Sets the current workspace {@link State} and updates the UI without any animations
+     * Sets the current workspace {@link LauncherState} and updates the UI without any animations
      */
-    public void setState(State toState) {
+    public void setState(LauncherState toState) {
         // Update the current state
         mState = toState;
         mStateTransitionAnimation.setState(mState);
@@ -1640,11 +1612,11 @@ public class Workspace extends PagedView
     }
 
     /**
-     * Sets the current workspace {@link State}, while animating the UI
+     * Sets the current workspace {@link LauncherState}, then animates the UI
      */
-    public void setStateWithAnimation(State toState, AnimationLayerSet layerViews, AnimatorSet anim,
-            AnimationConfig config) {
-        final State fromState = mState;
+    public void setStateWithAnimation(LauncherState toState, AnimationLayerSet layerViews,
+            AnimatorSet anim, AnimationConfig config) {
+        final LauncherState fromState = mState;
 
         // Update the current state
         mState = toState;
@@ -1662,7 +1634,7 @@ public class Workspace extends PagedView
         anim.addListener(listener);
     }
 
-    public State getState() {
+    public LauncherState getState() {
         return mState;
     }
 
@@ -1673,14 +1645,12 @@ public class Workspace extends PagedView
             for (int i = 0; i < total; i++) {
                 updateAccessibilityFlags((CellLayout) getPageAt(i), i);
             }
-            setImportantForAccessibility((mState == State.NORMAL || mState == State.OVERVIEW)
-                    ? IMPORTANT_FOR_ACCESSIBILITY_AUTO
-                    : IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+            setImportantForAccessibility(mState.workspaceAccessibilityFlag);
         }
     }
 
     private void updateAccessibilityFlags(CellLayout page, int pageNo) {
-        if (mState == State.OVERVIEW) {
+        if (mState == LauncherState.OVERVIEW) {
             page.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
             page.getShortcutsAndWidgets().setImportantForAccessibility(
                     IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
@@ -1694,11 +1664,9 @@ public class Workspace extends PagedView
                 page.setAccessibilityDelegate(mPagesAccessibilityDelegate);
             }
         } else {
-            int accessible = mState == State.NORMAL ?
-                    IMPORTANT_FOR_ACCESSIBILITY_AUTO :
-                        IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
             page.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
-            page.getShortcutsAndWidgets().setImportantForAccessibility(accessible);
+            page.getShortcutsAndWidgets()
+                    .setImportantForAccessibility(mState.workspaceAccessibilityFlag);
             page.setContentDescription(null);
             page.setAccessibilityDelegate(null);
         }
@@ -1717,11 +1685,11 @@ public class Workspace extends PagedView
     }
 
     private void onStartStateTransition() {
-        if (mState == State.SPRING_LOADED) {
+        if (mState == LauncherState.SPRING_LOADED) {
             // Show the page indicator at the same time as the rest of the transition.
             showPageIndicatorAtCurrentScroll();
         }
-        getPageIndicator().setShouldAutoHide(mState != State.SPRING_LOADED);
+        getPageIndicator().setShouldAutoHide(mState != LauncherState.SPRING_LOADED);
     }
 
     public void onEndStateTransition() {
@@ -1730,7 +1698,7 @@ public class Workspace extends PagedView
         mForceDrawAdjacentPages = false;
         mTransitionProgress = 1;
 
-        if (mState == State.OVERVIEW) {
+        if (mState == LauncherState.OVERVIEW) {
             enableFreeScroll();
         } else {
             disableFreeScroll();
@@ -1840,7 +1808,7 @@ public class Workspace extends PagedView
 
     private boolean transitionStateShouldAllowDrop() {
         return ((!isSwitchingState() || mTransitionProgress > ALLOW_DROP_TRANSITION_PROGRESS) &&
-                (mState == State.NORMAL || mState == State.SPRING_LOADED));
+                (mState == LauncherState.NORMAL || mState == LauncherState.SPRING_LOADED));
     }
 
     /**
@@ -2111,7 +2079,7 @@ public class Workspace extends PagedView
                         dropTargetLayout, mTargetCell, distance, false, d.dragView) ||
                         addToExistingFolderIfNecessary(cell, dropTargetLayout, mTargetCell,
                                 distance, d, false)) {
-                    mLauncher.exitSpringLoadedDragMode(SPRING_LOADED_EXIT_SHORT_TIMEOUT);
+                    mLauncher.exitSpringLoadedDragMode(SPRING_LOADED_EXIT_DELAY);
                     return;
                 }
 
@@ -2250,7 +2218,7 @@ public class Workspace extends PagedView
             parent.onDropChild(cell);
 
             mLauncher.exitSpringLoadedDragMode(
-                    SPRING_LOADED_EXIT_SHORT_TIMEOUT, onCompleteRunnable);
+                    SPRING_LOADED_EXIT_DELAY, onCompleteRunnable);
         }
 
         if (d.stateAnnouncer != null && !droppedOnOriginalCell) {
@@ -2782,7 +2750,7 @@ public class Workspace extends PagedView
         final long screenId = getIdForScreen(cellLayout);
         if (!mLauncher.isHotseatLayout(cellLayout)
                 && screenId != getScreenIdForPageIndex(mCurrentPage)
-                && mState != State.SPRING_LOADED) {
+                && mState != LauncherState.SPRING_LOADED) {
             snapToPage(getPageIndexForScreenId(screenId));
         }
 
@@ -2857,7 +2825,7 @@ public class Workspace extends PagedView
                     animationStyle, finalView, true);
         } else {
             // This is for other drag/drop cases, like dragging from All Apps
-            mLauncher.exitSpringLoadedDragMode(SPRING_LOADED_EXIT_SHORT_TIMEOUT);
+            mLauncher.exitSpringLoadedDragMode(SPRING_LOADED_EXIT_DELAY);
 
             View view;
 
@@ -3601,7 +3569,7 @@ public class Workspace extends PagedView
 
     @Override
     public boolean enableFreeScroll() {
-        if (getState() == State.OVERVIEW) {
+        if (getState() == LauncherState.OVERVIEW) {
             return super.enableFreeScroll();
         } else {
             Log.w(TAG, "enableFreeScroll called but not in overview: state=" + getState());

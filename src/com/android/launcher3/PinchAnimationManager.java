@@ -28,8 +28,8 @@ import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
-import static com.android.launcher3.Workspace.State.NORMAL;
-import static com.android.launcher3.Workspace.State.OVERVIEW;
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
 
 /**
  * Manages the animations that play as the user pinches to/from overview mode.
@@ -141,12 +141,12 @@ public class PinchAnimationManager {
      * @param threshold One of {@link PinchThresholdManager#THRESHOLD_ONE},
      *                  {@link PinchThresholdManager#THRESHOLD_TWO}, or
      *                  {@link PinchThresholdManager#THRESHOLD_THREE}
-     * @param startState {@link Workspace.State#NORMAL} or {@link Workspace.State#OVERVIEW}.
-     * @param goingTowards {@link Workspace.State#NORMAL} or {@link Workspace.State#OVERVIEW}.
+     * @param startState {@link LauncherState#NORMAL} or {@link LauncherState#OVERVIEW}.
+     * @param goingTowards {@link LauncherState#NORMAL} or {@link LauncherState#OVERVIEW}.
      *                     Note that this doesn't have to be the opposite of startState;
      */
-    public void animateThreshold(float threshold, Workspace.State startState,
-            Workspace.State goingTowards) {
+    public void animateThreshold(float threshold, LauncherState startState,
+            LauncherState goingTowards) {
         if (threshold == PinchThresholdManager.THRESHOLD_ONE) {
             if (startState == OVERVIEW) {
                 animateOverviewPanelButtons(goingTowards == OVERVIEW);

@@ -33,7 +33,6 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
 
 import com.android.launcher3.LauncherStateTransitionAnimation.AnimationConfig;
-import com.android.launcher3.Workspace.State;
 import com.android.launcher3.anim.AnimationLayerSet;
 
 /**
@@ -163,17 +162,17 @@ public class WorkspaceStateTransitionAnimation {
         mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
     }
 
-    public void setState(Workspace.State toState) {
+    public void setState(LauncherState toState) {
         setWorkspaceProperty(toState, NO_ANIM_PROPERTY_SETTER);
     }
 
-    public void setStateWithAnimation(Workspace.State fromState, Workspace.State toState,
+    public void setStateWithAnimation(LauncherState fromState, LauncherState toState,
             AnimatorSet anim, AnimationLayerSet layerViews, AnimationConfig config) {
-        long duration = config.getDuration(toState == State.NORMAL
+        long duration = config.getDuration(toState == LauncherState.NORMAL
                 ? fromState.transitionDuration : toState.transitionDuration);
-        AnimatedPropertySetter proertSetter =
+        AnimatedPropertySetter propertySetter =
                 new AnimatedPropertySetter(duration, layerViews, anim);
-        setWorkspaceProperty(toState, proertSetter);
+        setWorkspaceProperty(toState, propertySetter);
     }
 
     public float getFinalScale() {
@@ -183,7 +182,7 @@ public class WorkspaceStateTransitionAnimation {
     /**
      * Starts a transition animation for the workspace.
      */
-    private void setWorkspaceProperty(Workspace.State state, PropertySetter propertySetter) {
+    private void setWorkspaceProperty(LauncherState state, PropertySetter propertySetter) {
         // Update the workspace state
         int finalBackgroundAlpha = state.hasScrim ? 255 : 0;
 
@@ -211,13 +210,13 @@ public class WorkspaceStateTransitionAnimation {
 
             // Only animate the page alpha when we actually fade pages
             if (mWorkspaceFadeInAdjacentScreens) {
-                float finalAlpha = state == State.NORMAL && i != toPage ? 0 : 1f;
+                float finalAlpha = state == LauncherState.NORMAL && i != toPage ? 0 : 1f;
                 propertySetter.setFloat(cl.getShortcutsAndWidgets(), View.ALPHA,
                         finalAlpha, mZoomInInterpolator);
             }
         }
 
-        float finalHotseatAlpha = state.hotseatAlpha;
+        float finalHotseatAlpha = state.hideHotseat ? 0f : 1f;
 
         // This is true when transitioning between:
         // - Overview <-> Workspace

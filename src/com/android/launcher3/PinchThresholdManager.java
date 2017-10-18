@@ -68,10 +68,10 @@ public class PinchThresholdManager {
         }
 
         if (mPassedThreshold != previousPassedThreshold) {
-            Workspace.State fromState = mWorkspace.isInOverviewMode() ? Workspace.State.OVERVIEW
-                    : Workspace.State.NORMAL;
-            Workspace.State toState = mWorkspace.isInOverviewMode() ? Workspace.State.NORMAL
-                    : Workspace.State.OVERVIEW;
+            LauncherState fromState = mWorkspace.isInOverviewMode() ? LauncherState.OVERVIEW
+                    : LauncherState.NORMAL;
+            LauncherState toState = mWorkspace.isInOverviewMode() ? LauncherState.NORMAL
+                    : LauncherState.OVERVIEW;
             float thresholdToAnimate = mPassedThreshold;
             if (mPassedThreshold < previousPassedThreshold) {
                 // User reversed pinch, so heading back to the state that they started from.
