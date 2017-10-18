@@ -366,8 +366,8 @@
   <string name="enable_editing_pref_title">Kezdőképernyő szerkesztése</string>
   <string name="pref_weather_provider">Időjárás szolgáltató</string>
   <string name="loading">Betöltés…</string>
-  <string name="icon_shape_override_label">Ikon alakjának cseréje</string>
-  <string name="icon_shape_system_default">Ne cserélje</string>
+  <string name="icon_shape_override_label">Ikonok formájának módosítása</string>
+  <string name="icon_shape_system_default">Alapértelmezett használata</string>
   <string name="icon_shape_none">Egyik sem</string>
   <string name="icon_shape_square">Négyzet</string>
   <string name="icon_shape_rounded_square">Lekerekített négyzet</string>
@@ -375,7 +375,7 @@
   <string name="icon_shape_circle">Kör</string>
   <string name="icon_shape_teardrop">Könnycsepp</string>
   <string name="animated_clock_icon_title">Animált óra ikon</string>
-  <string name="animated_clock_icon_alternative_clock_apps_title">Alter óra alkalmazások animálása</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Egyéb óra alkalmazások animálása</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">Engedélyezze, ha nem a Google Órát használja alapértelmezett óra alkalmazásként</string>
   <string name="about_summary_title">Összegzés</string>
   <string name="about_version">Verzió</string>
