@@ -2,10 +2,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory
-        android:key="prefCat_homeScreen"
-        android:title="@string/pref_cat_homescreen">
-
         <ch.deletescape.lawnchair.preferences.IconPackPreference
             android:key="pref_iconPackPackage"
             android:title="@string/icon_pack_preference_title"
@@ -23,6 +19,26 @@
             android:title="@string/enable_screen_rotation"
             android:defaultValue="false"
             android:disableDependentsState="true"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_showPixelBar"
+            android:title="@string/show_pixel_bar_pref_title"
+            android:defaultValue="true"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_fullWidthSearchbar"
+            android:defaultValue="false"
+            android:title="@string/use_wide_searchbar_pref_title"
+            android:dependency="pref_showPixelBar"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_showMic"
+            android:defaultValue="false"
+            android:title="@string/show_mic_pref_title"
+            android:dependency="pref_showPixelBar"
             android:persistent="true" />
 
         <SwitchPreference
@@ -98,235 +114,4 @@
             android:summary="@string/notification_access_pref_summary">
             <intent android:action="android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS" />
         </Preference>
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:key="prefCat_hotseat"
-        android:title="@string/pref_cat_hotseat">
-
-        <SwitchPreference
-            android:key="pref_hotseatShouldUseExtractedColors"
-            android:title="@string/hotseat_uses_extracted_colors_pref_title"
-            android:summaryOn="@string/hotseat_uses_extracted_colors_pref_on"
-            android:summaryOff="@string/hotseat_uses_extracted_colors_pref_off"
-            android:defaultValue="true"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_isHotseatTransparent"
-            android:title="@string/transparent_hotseat_pref_title"
-            android:defaultValue="false"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_hideHotseat"
-            android:title="@string/hide_hotseat_pref_title"
-            android:defaultValue="false"
-            android:dependency="pref_isHotseatTransparent"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_hotseatShowArrow"
-            android:title="@string/hotseat_show_arrow"
-            android:defaultValue="true"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_hotseatShowPageIndicator"
-            android:title="@string/hotseat_show_page_indicator"
-            android:defaultValue="true"
-            android:persistent="true" />
-
-        <ListPreference
-            android:key="pref_numHotseatIcons"
-            android:title="@string/num_hotseat_icons_pref_title"
-            android:entryValues="@array/numHotseatIconsValues"
-            android:entries="@array/numHotseatIconsTexts"
-            android:defaultValue="@string/generalDefault"
-            android:summary="%s"
-            android:persistent="true" />
-
-        <ch.deletescape.lawnchair.preferences.SeekbarPreference
-            android:key="pref_hotseatIconScale"
-            android:title="@string/icon_scale_pref_title"
-            app:minValue="0.3"
-            app:maxValue="1.5"
-            app:summaryFormat="%.0f%%"
-            app:summaryMultiplier="100"
-            app:defaultSeekbarValue="1.0"
-            app:steps="120"
-            android:persistent="true" />
-
-        <ch.deletescape.lawnchair.preferences.SeekbarPreference
-            android:key="pref_hotseatHeightScale"
-            android:title="@string/hotseat_height_scale"
-            app:minValue="0.5"
-            app:maxValue="1.5"
-            app:summaryFormat="%.0f%%"
-            app:summaryMultiplier="100"
-            app:defaultSeekbarValue="1.0"
-            android:persistent="true" />
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:key="prefCat_drawer"
-        android:title="@string/pref_cat_drawer">
-        <ListPreference
-            android:key="pref_numColsDrawer"
-            android:title="@string/num_cols_drawer_pref_title"
-            android:entries="@array/numColsTexts"
-            android:entryValues="@array/numColsValues"
-            android:defaultValue="@string/generalDefault"
-            android:summary="%s"
-            android:dependency="pref_verticalDrawerLayout"
-            android:persistent="true" />
-
-        <ListPreference
-            android:key="pref_numRowsDrawer"
-            android:title="@string/pref_num_rows_drawer"
-            android:entryValues="@array/numRowsValues"
-            android:entries="@array/numRowsTexts"
-            android:defaultValue="@string/generalDefault"
-            android:summary="%s"
-            android:dependency="pref_verticalDrawerLayout"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_verticalDrawerLayout"
-            android:title="@string/vertical_drawer_layout_pref_title"
-            android:defaultValue="false"
-            android:disableDependentsState="true"
-            android:persistent="true" />
-
-        <ch.deletescape.lawnchair.preferences.SeekbarPreference
-            android:key="pref_allAppsOpacitySB"
-            android:title="@string/all_apps_opacity_pref_title"
-            app:minValue="0"
-            app:maxValue="1"
-            app:defaultSeekbarValue="1"
-            app:summaryFormat="%.0f%%"
-            app:summaryMultiplier="100"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_hideAllAppsAppLabels"
-            android:title="@string/hide_all_apps_icon_labels_pref_title"
-            android:defaultValue="false"
-            android:dependency="pref_verticalDrawerLayout"
-            android:disableDependentsState="true"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_allAppsCustomLabelColor"
-            android:title="@string/pref_all_apps_custom_label_color" />
-
-        <com.pavelsikun.vintagechroma.ChromaPreference
-            android:dependency="pref_allAppsCustomLabelColor"
-            android:key="pref_workspaceLabelColor"
-            android:title="@string/pref_all_apps_label_color"
-            app:chromaColorMode="ARGB"
-            app:chromaIndicatorMode="HEX"
-            app:chromaInitialColor="@color/quantum_panel_text_color"/>
-
-        <ch.deletescape.lawnchair.preferences.SeekbarPreference
-            android:key="pref_allAppsIconScale"
-            android:title="@string/icon_scale_pref_title"
-            app:minValue="0.3"
-            app:maxValue="1.5"
-            app:summaryFormat="%.0f%%"
-            app:summaryMultiplier="100"
-            app:defaultSeekbarValue="1.0"
-            app:steps="120"
-            android:persistent="true" />
-
-        <ch.deletescape.lawnchair.preferences.SeekbarPreference
-            android:key="pref_allAppsIconTextScale"
-            android:title="@string/icon_text_scale_pref_title"
-            app:minValue="0.3"
-            app:maxValue="1.5"
-            app:summaryFormat="%.0f%%"
-            app:summaryMultiplier="100"
-            app:defaultSeekbarValue="1.0"
-            app:steps="120"
-            android:persistent="true" />
-
-        <ch.deletescape.lawnchair.preferences.SeekbarPreference
-            android:key="pref_allAppsIconPaddingScale"
-            android:title="@string/icon_text_padding_scale_pref_title"
-            app:minValue="0.1"
-            app:maxValue="2.0"
-            app:summaryFormat="%.0f%%"
-            app:summaryMultiplier="100"
-            app:defaultSeekbarValue="1.0"
-            app:steps="190"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_enablePhysics"
-            android:title="@string/enable_spring_pref_title"
-            android:defaultValue="true"
-            android:persistent="true" />
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:key="prefCat_theme"
-        android:title="@string/pref_cat_theme">
-        <SwitchPreference
-            android:key="pref_enableDynamicUi"
-            android:title="@string/dynamic_ui_pref_title"
-            android:defaultValue="false"
-            android:persistent="true" />
-
-        <ListPreference
-            android:key="pref_theme"
-            android:title="@string/theme_pref_title"
-            android:entryValues="@array/themeValues"
-            android:entries="@array/themeTexts"
-            android:summary="%s"
-            android:defaultValue="0"
-            android:persistent="true" />
-
-        <ch.deletescape.lawnchair.preferences.BitSetPreference
-            android:key="pref_themeMode"
-            android:title="@string/pref_applyTheme"
-            android:entries="@array/themeModeTexts"
-            android:entryValues="@array/themeModeValues" />
-
-        <SwitchPreference
-            android:key="pref_popupCardTheme"
-            android:title="@string/popup_card_theme_title"
-            android:defaultValue="false"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_enableBlur"
-            android:title="@string/blur_pref_title"
-            android:summary="@string/blur_pref_summary"
-            android:defaultValue="false"
-            android:persistent="true" />
-
-        <ch.deletescape.lawnchair.preferences.BitSetPreference
-            android:key="pref_blurMode"
-            android:title="@string/pref_applyBlur"
-            android:dependency="pref_enableBlur"
-            android:entries="@array/blurModeTexts"
-            android:entryValues="@array/blurModeValues" />
-
-        <ch.deletescape.lawnchair.preferences.SeekbarPreference
-            android:key="pref_blurRadius"
-            android:title="@string/blur_radius_pref_title"
-            android:dependency="pref_enableBlur"
-            app:minValue="10"
-            app:maxValue="150"
-            app:defaultSeekbarValue="75"
-            app:summaryFormat="%.0f"
-            app:steps="140"
-            android:persistent="true" />
-
-        <SwitchPreference
-            android:key="pref_iconLabelsInTwoLines"
-            android:title="@string/pref_iconLabelsInTwoLines"
-            android:defaultValue="false"
-            android:persistent="true" />
-    </PreferenceCategory>
 </PreferenceScreen>
