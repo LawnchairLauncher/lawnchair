@@ -58,26 +58,6 @@ deploy:
       tags: true
   - provider: script
     skip_cleanup: true
-    script: scripts/deploy-vsmc.sh Beta
-    on:
-      branch: beta
-  - provider: script
-    skip_cleanup: true
-    script: scripts/deploy-vsmc.sh Alpha
-    on:
-      branch: alpha
-  - provider: script
-    skip_cleanup: true
-    script: scripts/deploy-vsmc.sh Release
-    on:
-      tags: true
-  - provider: script
-    skip_cleanup: true
-    script: scripts/deploy-s3.sh
-    on:
-      branch: alpha
-  - provider: script
-    skip_cleanup: true
     script: scripts/deploy-s3.sh
     on:
       branch: beta
