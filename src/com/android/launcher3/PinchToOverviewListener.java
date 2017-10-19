@@ -16,49 +16,52 @@
 
 package com.android.launcher3;
 
-import android.animation.TimeInterpolator;
-import android.content.Context;
+import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.annotation.TargetApi;
+import android.os.Build;
+import android.util.Range;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.ScaleGestureDetector.OnScaleGestureListener;
 
 import com.android.launcher3.util.TouchController;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Detects pinches and animates the Workspace to/from overview mode.
- *
- * Usage: Pass MotionEvents to onInterceptTouchEvent() and onTouchEvent(). This class will handle
- * the pinch detection, and use {@link PinchAnimationManager} to handle the animations.
- *
- * @see PinchThresholdManager
- * @see PinchAnimationManager
  */
-public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleGestureListener
-        implements TouchController {
-    private static final float OVERVIEW_PROGRESS = 0f;
-    private static final float WORKSPACE_PROGRESS = 1f;
+@TargetApi(Build.VERSION_CODES.O)
+public class PinchToOverviewListener
+        implements TouchController, OnScaleGestureListener, Runnable {
+
+    private static final float ACCEPT_THRESHOLD = 0.65f;
     /**
      * The velocity threshold at which a pinch will be completed instead of canceled,
-     * even if the first threshold has not been passed. Measured in progress / millisecond
+     * even if the first threshold has not been passed. Measured in scale / millisecond
      */
-    private static final float FLING_VELOCITY = 0.003f;
+    private static final float FLING_VELOCITY = 0.001f;
 
-    private ScaleGestureDetector mPinchDetector;
+    private final ScaleGestureDetector mPinchDetector;
     private Launcher mLauncher;
     private Workspace mWorkspace = null;
     private boolean mPinchStarted = false;
-    private float mPreviousProgress;
-    private float mProgressDelta;
-    private long mPreviousTimeMillis;
-    private long mTimeDelta;
-    private boolean mPinchCanceled = false;
-    private TimeInterpolator mInterpolator;
 
-    private PinchThresholdManager mThresholdManager;
-    private PinchAnimationManager mAnimationManager;
+    private AnimatorSet mCurrentAnimation;
+    private float mCurrentScale;
+    private Range<Integer> mDurationRange;
+    private boolean mShouldGoToFinalState;
+
+    private LauncherState mToState;
 
     public PinchToOverviewListener(Launcher launcher) {
         mLauncher = launcher;
-        mPinchDetector = new ScaleGestureDetector((Context) mLauncher, this);
+        mPinchDetector = new ScaleGestureDetector(mLauncher, this);
     }
 
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
@@ -67,24 +70,17 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
     }
 
     public boolean onControllerTouchEvent(MotionEvent ev) {
-        if (mPinchStarted) {
-            if (ev.getPointerCount() > 2) {
-                // Using more than two fingers causes weird behavior, so just cancel the pinch.
-                cancelPinch(mPreviousProgress, -1);
-            } else {
-                return mPinchDetector.onTouchEvent(ev);
-            }
-        }
-        return false;
+        return mPinchDetector.onTouchEvent(ev);
     }
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
-        if (!mLauncher.isInState(LauncherState.NORMAL)) {
+        if (!mLauncher.isInState(LauncherState.NORMAL)
+                && !mLauncher.isInState(LauncherState.OVERVIEW)) {
             // Don't listen for the pinch gesture if on all apps, widget picker, -1, etc.
             return false;
         }
-        if (mAnimationManager != null && mAnimationManager.isAnimating()) {
+        if (mCurrentAnimation != null) {
             // Don't listen for the pinch gesture if we are already animating from a previous one.
             return false;
         }
@@ -94,8 +90,6 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
         }
         if (mWorkspace == null) {
             mWorkspace = mLauncher.getWorkspace();
-            mThresholdManager = new PinchThresholdManager(mWorkspace);
-            mAnimationManager = new PinchAnimationManager(mLauncher);
         }
         if (mWorkspace.isSwitchingState() || mWorkspace.mScrollInteractionBegan) {
             // Don't listen for the pinch gesture while switching state, as it will cause a jump
@@ -107,109 +101,87 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
             return false;
         }
 
-        mPreviousProgress = mLauncher.isInState(LauncherState.OVERVIEW) ? OVERVIEW_PROGRESS : WORKSPACE_PROGRESS;
-        mPreviousTimeMillis = System.currentTimeMillis();
-        mInterpolator = mLauncher.isInState(LauncherState.OVERVIEW) ? new LogDecelerateInterpolator(100, 0)
-                : new LogAccelerateInterpolator(100, 0);
-        mPinchStarted = true;
-        mWorkspace.onPrepareStateTransition(true);
-        return true;
-    }
-
-    @Override
-    public void onScaleEnd(ScaleGestureDetector detector) {
-        super.onScaleEnd(detector);
-
-        float progressVelocity = mProgressDelta / mTimeDelta;
-        float passedThreshold = mThresholdManager.getPassedThreshold();
-        boolean isFling = mLauncher.isInState(LauncherState.OVERVIEW) && progressVelocity >= FLING_VELOCITY
-                || !mLauncher.isInState(LauncherState.OVERVIEW) && progressVelocity <= -FLING_VELOCITY;
-        boolean shouldCancelPinch = !isFling && passedThreshold < PinchThresholdManager.THRESHOLD_ONE;
-        // If we are going towards overview, mPreviousProgress is how much further we need to
-        // go, since it is going from 1 to 0. If we are going to workspace, we want
-        // 1 - mPreviousProgress.
-        float remainingProgress = mPreviousProgress;
-        if (mLauncher.isInState(LauncherState.OVERVIEW) || shouldCancelPinch) {
-            remainingProgress = 1f - mPreviousProgress;
-        }
-        int duration = computeDuration(remainingProgress, progressVelocity);
-        if (shouldCancelPinch) {
-            cancelPinch(mPreviousProgress, duration);
-        } else if (passedThreshold < PinchThresholdManager.THRESHOLD_THREE) {
-            float toProgress = mLauncher.isInState(LauncherState.OVERVIEW) ?
-                    WORKSPACE_PROGRESS : OVERVIEW_PROGRESS;
-            mAnimationManager.animateToProgress(mPreviousProgress, toProgress, duration,
-                    mThresholdManager);
-        } else {
-            mThresholdManager.reset();
-            mWorkspace.onEndStateTransition();
-        }
-        mPinchStarted = false;
-        mPinchCanceled = false;
-    }
-
-    /**
-     * Compute the amount of time required to complete the transition based on the current pinch
-     * speed. If this time is too long, instead return the normal duration, ignoring the speed.
-     */
-    private int computeDuration(float remainingProgress, float progressVelocity) {
-        float progressSpeed = Math.abs(progressVelocity);
-        int remainingMillis = (int) (remainingProgress / progressSpeed);
-        return Math.min(remainingMillis, mAnimationManager.getNormalOverviewTransitionDuration());
-    }
-
-    /**
-     * Cancels the current pinch, returning back to where the pinch started (either workspace or
-     * overview). If duration is -1, the default overview transition duration is used.
-     */
-    private void cancelPinch(float currentProgress, int duration) {
-        if (mPinchCanceled) return;
-        mPinchCanceled = true;
-        float toProgress = mLauncher.isInState(LauncherState.OVERVIEW) ? OVERVIEW_PROGRESS : WORKSPACE_PROGRESS;
-        mAnimationManager.animateToProgress(currentProgress, toProgress, duration,
-                mThresholdManager);
-        mPinchStarted = false;
-    }
-
-    @Override
-    public boolean onScale(ScaleGestureDetector detector) {
-        if (mThresholdManager.getPassedThreshold() == PinchThresholdManager.THRESHOLD_THREE) {
-            // We completed the pinch, so stop listening to further movement until user lets go.
-            return true;
-        }
         if (mLauncher.getDragController().isDragging()) {
             mLauncher.getDragController().cancelDrag();
         }
 
-        float pinchDist = detector.getCurrentSpan() - detector.getPreviousSpan();
-        if (pinchDist < 0 && mLauncher.isInState(LauncherState.OVERVIEW) ||
-                pinchDist > 0 && !mLauncher.isInState(LauncherState.OVERVIEW)) {
-            // Pinching the wrong way, so ignore.
-            return false;
-        }
-        // Pinch distance must equal the workspace width before switching states.
-        int pinchDistanceToCompleteTransition = mWorkspace.getWidth();
-        float overviewScale = mWorkspace.getOverviewModeShrinkFactor();
-        float initialWorkspaceScale = mLauncher.isInState(LauncherState.OVERVIEW) ? overviewScale : 1f;
-        float pinchScale = initialWorkspaceScale + pinchDist / pinchDistanceToCompleteTransition;
-        // Bound the scale between the overview scale and the normal workspace scale (1f).
-        pinchScale = Math.max(overviewScale, Math.min(pinchScale, 1f));
-        // Progress ranges from 0 to 1, where 0 corresponds to the overview scale and 1
-        // corresponds to the normal workspace scale (1f).
-        float progress = (pinchScale - overviewScale) / (1f - overviewScale);
-        float interpolatedProgress = mInterpolator.getInterpolation(progress);
+        mToState = mLauncher.isInState(LauncherState.OVERVIEW)
+                ? LauncherState.NORMAL : LauncherState.OVERVIEW;
+        mCurrentAnimation = mLauncher.mStateTransitionAnimation
+                .createAnimationToNewWorkspace(mToState, this);
+        mPinchStarted = true;
+        mCurrentScale = 1;
+        mDurationRange = Range.create(0, LauncherAnimUtils.OVERVIEW_TRANSITION_MS);
+        mShouldGoToFinalState = false;
 
-        mAnimationManager.setAnimationProgress(interpolatedProgress);
-        float passedThreshold = mThresholdManager.updateAndAnimatePassedThreshold(
-                interpolatedProgress, mAnimationManager);
-        if (passedThreshold == PinchThresholdManager.THRESHOLD_THREE) {
-            return true;
+        dispatchOnStart(mCurrentAnimation);
+        return true;
+    }
+
+    @Override
+    public void run() {
+        mCurrentAnimation = null;
+        mPinchStarted = false;
+    }
+
+    @Override
+    public void onScaleEnd(ScaleGestureDetector detector) {
+        if (mShouldGoToFinalState) {
+            mCurrentAnimation.start();
+        } else {
+            mCurrentAnimation.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if (mToState == LauncherState.OVERVIEW) {
+                        mLauncher.showWorkspace(false);
+                    } else {
+                        mLauncher.showOverviewMode(false);
+                    }
+                }
+            });
+            mCurrentAnimation.reverse();
+        }
+    }
+
+    @Override
+    public boolean onScale(ScaleGestureDetector detector) {
+        mCurrentScale = detector.getScaleFactor() * mCurrentScale;
+
+        // If we are zooming out, inverse the mCurrentScale so that animationFraction = [0, 1]
+        // 0 => Animation complete
+        // 1=> Animation started
+        float animationFraction = mToState ==
+                LauncherState.OVERVIEW ? mCurrentScale : (1 / mCurrentScale);
+
+        float velocity = (1 - detector.getScaleFactor()) / detector.getTimeDelta();
+        if (Math.abs(velocity) >= FLING_VELOCITY) {
+            LauncherState toState = velocity > 0 ? LauncherState.OVERVIEW : LauncherState.NORMAL;
+            mShouldGoToFinalState = toState == mToState;
+        } else {
+            mShouldGoToFinalState = animationFraction <= ACCEPT_THRESHOLD;
         }
 
-        mProgressDelta = interpolatedProgress - mPreviousProgress;
-        mPreviousProgress = interpolatedProgress;
-        mTimeDelta = System.currentTimeMillis() - mPreviousTimeMillis;
-        mPreviousTimeMillis = System.currentTimeMillis();
-        return false;
+        // Move the transition animation to that duration.
+        long playPosition = mDurationRange.clamp(
+                (int) ((1 - animationFraction) * mDurationRange.getUpper()));
+        mCurrentAnimation.setCurrentPlayTime(playPosition);
+
+        return true;
+    }
+
+    private void dispatchOnStart(Animator animator) {
+        for (AnimatorListener l : nonNullList(animator.getListeners())) {
+            l.onAnimationStart(animator);
+        }
+
+        if (animator instanceof AnimatorSet) {
+            for (Animator anim : nonNullList(((AnimatorSet) animator).getChildAnimations())) {
+                dispatchOnStart(anim);
+            }
+        }
+    }
+
+    private static <T> List<T> nonNullList(ArrayList<T> list) {
+        return list == null ? Collections.<T>emptyList() : list;
     }
 }
