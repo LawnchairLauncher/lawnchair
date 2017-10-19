@@ -234,10 +234,8 @@ public class LauncherStateTransitionAnimation {
     private void startAnimationToNewWorkspaceState(
             final LauncherState toWorkspaceState, final boolean animated,
             final Runnable onCompleteRunnable) {
-        final View fromWorkspace = mLauncher.getWorkspace();
         // Cancel the current animation
         cancelAnimation();
-
         mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
 
         if (!animated) {
@@ -249,11 +247,20 @@ public class LauncherStateTransitionAnimation {
             return;
         }
 
+        final AnimatorSet animation =
+                createAnimationToNewWorkspace(toWorkspaceState, onCompleteRunnable);
+        mLauncher.getWorkspace().post(new StartAnimRunnable(animation, null));
+        mCurrentAnimation = animation;
+    }
+
+    protected AnimatorSet createAnimationToNewWorkspace(LauncherState state,
+            final Runnable onCompleteRunnable) {
+        cancelAnimation();
+
         final AnimationLayerSet layerViews = new AnimationLayerSet();
         final AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
         mConfig.reset();
-        mLauncher.getWorkspace().setStateWithAnimation(toWorkspaceState,
-                layerViews, animation, mConfig);
+        mLauncher.getWorkspace().setStateWithAnimation(state, layerViews, animation, mConfig);
 
         animation.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -268,8 +275,7 @@ public class LauncherStateTransitionAnimation {
             }
         });
         animation.addListener(layerViews);
-        fromWorkspace.post(new StartAnimRunnable(animation, null));
-        mCurrentAnimation = animation;
+        return animation;
     }
 
     /**
