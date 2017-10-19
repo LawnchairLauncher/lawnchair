@@ -1026,7 +1026,7 @@ public class Launcher extends BaseActivity
             return;
         }
 
-        int stateOrdinal = savedState.getInt(RUNTIME_STATE, LauncherState.NORMAL.ordinal());
+        int stateOrdinal = savedState.getInt(RUNTIME_STATE, LauncherState.NORMAL.ordinal);
         LauncherState[] stateValues = LauncherState.values();
         LauncherState state = stateValues[stateOrdinal];
         if (!state.doNotRestore) {
@@ -1495,7 +1495,7 @@ public class Launcher extends BaseActivity
             outState.putInt(RUNTIME_STATE_CURRENT_SCREEN, mWorkspace.getNextPage());
 
         }
-        outState.putInt(RUNTIME_STATE, mWorkspace.getState().ordinal());
+        outState.putInt(RUNTIME_STATE, mWorkspace.getState().ordinal);
 
 
         AbstractFloatingView widgets = AbstractFloatingView
@@ -2336,7 +2336,7 @@ public class Launcher extends BaseActivity
     public boolean onLongClick(View v) {
         if (!isDraggingEnabled()) return false;
         if (isWorkspaceLocked()) return false;
-        if (!isInState(LauncherState.NORMAL)) return false;
+        if (!isInState(LauncherState.NORMAL) && !isInState(LauncherState.OVERVIEW)) return false;
 
         boolean ignoreLongPressToOverview =
                 mDeviceProfile.shouldIgnoreLongPressToOverview(mLastDispatchTouchEventX);
@@ -2531,7 +2531,7 @@ public class Launcher extends BaseActivity
 
     public void enterSpringLoadedDragMode() {
         if (LOGD) Log.d(TAG, String.format("enterSpringLoadedDragMode [mState=%s",
-                mWorkspace.getState().name()));
+                mWorkspace.getState().ordinal));
         if (isInState(LauncherState.SPRING_LOADED)) {
             return;
         }

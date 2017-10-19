@@ -21,33 +21,40 @@ import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
 import static com.android.launcher3.LauncherAnimUtils.ALL_APPS_TRANSITION_MS;
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_TRANSITION_MS;
-import static com.android.launcher3.StateFlags.FLAG_DISABLE_ACCESSIBILITY;
-import static com.android.launcher3.StateFlags.FLAG_DO_NOT_RESTORE;
-import static com.android.launcher3.StateFlags.FLAG_HIDE_HOTSEAT;
-import static com.android.launcher3.StateFlags.FLAG_MULTI_PAGE;
-import static com.android.launcher3.StateFlags.FLAG_SHOW_SCRIM;
 
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
-interface StateFlags {
-    int FLAG_SHOW_SCRIM = 1 << 0;
-    int FLAG_MULTI_PAGE = 1 << 1;
-    int FLAG_HIDE_HOTSEAT = 1 << 2;
-    int FLAG_DISABLE_ACCESSIBILITY = 1 << 3;
-    int FLAG_DO_NOT_RESTORE = 1 << 4;
-}
+import java.util.Arrays;
+
 
 /**
  * Various states for launcher
  */
-public enum LauncherState {
+public class LauncherState {
 
-    NORMAL          (ContainerType.WORKSPACE, 0, FLAG_DO_NOT_RESTORE),
-    ALL_APPS        (ContainerType.ALLAPPS, ALL_APPS_TRANSITION_MS, FLAG_DISABLE_ACCESSIBILITY),
-    SPRING_LOADED   (ContainerType.WORKSPACE, SPRING_LOADED_TRANSITION_MS,
-            FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE | FLAG_DISABLE_ACCESSIBILITY | FLAG_DO_NOT_RESTORE),
-    OVERVIEW        (ContainerType.OVERVIEW, OVERVIEW_TRANSITION_MS,
+    protected static final int FLAG_SHOW_SCRIM = 1 << 0;
+    protected static final int FLAG_MULTI_PAGE = 1 << 1;
+    protected static final int FLAG_HIDE_HOTSEAT = 1 << 2;
+    protected static final int FLAG_DISABLE_ACCESSIBILITY = 1 << 3;
+    protected static final int FLAG_DO_NOT_RESTORE = 1 << 4;
+
+    private static final LauncherState[] sAllStates = new LauncherState[4];
+
+    public static LauncherState NORMAL = new LauncherState(0, ContainerType.WORKSPACE,
+            0, FLAG_DO_NOT_RESTORE);
+
+    public static LauncherState ALL_APPS = new LauncherState(1, ContainerType.ALLAPPS,
+            ALL_APPS_TRANSITION_MS, FLAG_DISABLE_ACCESSIBILITY);
+
+    public static LauncherState SPRING_LOADED = new LauncherState(2, ContainerType.WORKSPACE,
+            SPRING_LOADED_TRANSITION_MS,
+            FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE | FLAG_DISABLE_ACCESSIBILITY | FLAG_DO_NOT_RESTORE);
+
+    public static LauncherState OVERVIEW = new LauncherState(3, ContainerType.OVERVIEW,
+            OVERVIEW_TRANSITION_MS,
             FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE | FLAG_HIDE_HOTSEAT | FLAG_DO_NOT_RESTORE);
+
+    public final int ordinal;
 
     /**
      * Used for containerType in {@link com.android.launcher3.logging.UserEventDispatcher}
@@ -75,7 +82,7 @@ public enum LauncherState {
     public final boolean hideHotseat;
     public final int transitionDuration;
 
-    LauncherState(int containerType, int transitionDuration, int flags) {
+    public LauncherState(int id, int containerType, int transitionDuration, int flags) {
         this.containerType = containerType;
         this.transitionDuration = transitionDuration;
 
@@ -86,5 +93,12 @@ public enum LauncherState {
                 ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                 : IMPORTANT_FOR_ACCESSIBILITY_AUTO;
         this.doNotRestore = (flags & FLAG_DO_NOT_RESTORE) != 0;
+
+        this.ordinal = id;
+        sAllStates[id] = this;
+    }
+
+    public static LauncherState[] values() {
+        return Arrays.copyOf(sAllStates, sAllStates.length);
     }
 }

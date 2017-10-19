@@ -18,6 +18,8 @@ package com.android.launcher3;
 
 import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.LauncherState.SPRING_LOADED;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -187,18 +189,15 @@ public class WorkspaceStateTransitionAnimation {
         int finalBackgroundAlpha = state.hasScrim ? 255 : 0;
 
         final float finalWorkspaceTranslationY;
-        switch (state) {
-            case OVERVIEW:
-                mNewScale = mOverviewModeShrinkFactor;
-                finalWorkspaceTranslationY = mWorkspace.getOverviewModeTranslationY();
-                break;
-            case SPRING_LOADED:
-                mNewScale = mSpringLoadedShrinkFactor;
-                finalWorkspaceTranslationY = mWorkspace.getSpringLoadedTranslationY();
-                break;
-            default:
-                mNewScale = 1f;
-                finalWorkspaceTranslationY = 0;
+        if (state == OVERVIEW) {
+            mNewScale = mOverviewModeShrinkFactor;
+            finalWorkspaceTranslationY = mWorkspace.getOverviewModeTranslationY();
+        } else if (state == SPRING_LOADED) {
+            mNewScale = mSpringLoadedShrinkFactor;
+            finalWorkspaceTranslationY = mWorkspace.getSpringLoadedTranslationY();
+        } else {
+            mNewScale = 1f;
+            finalWorkspaceTranslationY = 0;
         }
 
         int toPage = mWorkspace.getPageNearestToCenterOfScreen();
