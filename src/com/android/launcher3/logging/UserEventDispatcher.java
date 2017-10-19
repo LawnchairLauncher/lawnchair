@@ -232,6 +232,10 @@ public class UserEventDispatcher {
         event.action.dir = dir;
         event.srcTarget[0].pageIndex = pageIndex;
         dispatchUserEvent(event, null);
+
+        if (action == Action.Touch.SWIPE) {
+            resetElapsedContainerMillis();
+        }
     }
 
     public void logActionOnItem(int action, int dir, int itemType) {
@@ -323,6 +327,7 @@ public class UserEventDispatcher {
                 ev.actionDurationMillis);
         log += "\n isInLandscapeMode " + ev.isInLandscapeMode;
         log += "\n isInMultiWindowMode " + ev.isInMultiWindowMode;
+        log += "\n";
         Log.d(TAG, log);
     }
 
