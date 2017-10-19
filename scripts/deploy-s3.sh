@@ -16,6 +16,10 @@ cp app/build/outputs/apk/release/app-release.apk $APP_VERSION/Lawnchair-$APP_VER
 md5sum $(readlink -f app/build/outputs/apk/release/app-release.apk) > $APP_VERSION/Lawnchair-$APP_VERSION.md5sum
 ./scripts/s3-upload.sh $APP_VERSION/Lawnchair-$APP_VERSION.md5sum $S3_BUCKET $S3_HOST $S3_KEY $S3_SECRET
 
+# Upload proguard file
+cp app/build/outputs/mapping/release/mapping.txt $APP_VERSION/proguard-$MAJOR_MINOR.$TRAVIS_BUILD_NUMBER.txt
+./scripts/s3-upload.sh $APP_VERSION/proguard-$MAJOR_MINOR.$TRAVIS_BUILD_NUMBER.txt $S3_BUCKET $S3_HOST $S3_KEY $S3_SECRET
+
 # Upload Lawnfeed signed debug apk
 cp lawnfeed/build/outputs/apk/debug/lawnfeed-debug.apk $APP_VERSION/Lawnfeed-$APP_VERSION.apk
 ./scripts/s3-upload.sh $APP_VERSION/Lawnfeed-$APP_VERSION.apk $S3_BUCKET $S3_HOST $S3_KEY $S3_SECRET
