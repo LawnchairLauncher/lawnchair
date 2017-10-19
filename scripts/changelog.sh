@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 MERGE_PREFIX="Merge pull request"
 
-if [[ ! -z $TRAVIS_TAG ]]
+if [ ! -z "$TRAVIS_TAG" ]
 then
     TRAVIS_COMMIT_RANGE="$(git describe --abbrev=0 --tags $TRAVIS_TAG^)...$TRAVIS_TAG"
 fi
