@@ -111,9 +111,7 @@ object FeatureFlags {
         val context = layoutInflater.context
         Utilities.getPrefs(context).migrateThemePref(context)
         loadThemePreference(context)
-        if (FeatureFlags.useDarkTheme)
-            return LayoutInflater.from(ContextThemeWrapper(context, SETTINGS_THEMES[currentTheme]))
-        return layoutInflater
+        return LayoutInflater.from(ContextThemeWrapper(context, SETTINGS_THEMES[currentTheme]))
     }
 
     private val LAUNCHER_THEMES = intArrayOf(R.style.LauncherTheme, R.style.LauncherTheme_Dark, R.style.LauncherTheme_Black)
