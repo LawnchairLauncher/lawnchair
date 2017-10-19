@@ -614,6 +614,12 @@ public final class Utilities {
         return c == null || c.isEmpty();
     }
 
+    public static boolean isAccessibilityEnabled(Context context) {
+        AccessibilityManager accessibilityManager = (AccessibilityManager)
+                context.getSystemService(Context.ACCESSIBILITY_SERVICE);
+        return accessibilityManager.isEnabled();
+    }
+
     public static void sendCustomAccessibilityEvent(View target, int type, String text) {
         AccessibilityManager accessibilityManager = (AccessibilityManager)
                 target.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);

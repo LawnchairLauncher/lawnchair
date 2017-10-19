@@ -1341,12 +1341,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     /**
      * return true if freescroll has been enabled, false otherwise
      */
-    public boolean enableFreeScroll() {
+    protected void enableFreeScroll() {
         setEnableFreeScroll(true);
-        return true;
     }
 
-    public void disableFreeScroll() {
+    protected void disableFreeScroll() {
         setEnableFreeScroll(false);
     }
 

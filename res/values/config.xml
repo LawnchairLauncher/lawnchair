@@ -50,8 +50,6 @@
 
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">90</integer>
-    <!-- Out of 100, the percent to shrink the workspace during overview mode. -->
-    <integer name="config_workspaceOverviewShrinkPercentage">70</integer>
 
     <!-- This constant stores the ratio of the all apps button drawable which
          is used for internal (baked-in) padding -->

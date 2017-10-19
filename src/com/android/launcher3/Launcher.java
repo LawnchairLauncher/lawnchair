@@ -16,6 +16,9 @@
 
 package com.android.launcher3;
 
+import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_NOSENSOR;
+import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
+
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_NEXT_FRAME;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
@@ -47,7 +50,6 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
@@ -264,10 +266,6 @@ public class Launcher extends BaseActivity
 
     private PopupDataProvider mPopupDataProvider;
 
-    // Determines how long to wait after a rotation before restoring the screen orientation to
-    // match the sensor state.
-    private static final int RESTORE_SCREEN_ORIENTATION_DELAY = 500;
-
     private final ArrayList<Integer> mSynchronouslyBoundPages = new ArrayList<>();
 
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
@@ -291,17 +289,7 @@ public class Launcher extends BaseActivity
 
     public ViewGroupFocusHelper mFocusHandler;
     private boolean mRotationEnabled = false;
-
     private boolean mAppLaunchSuccess;
-
-    @Thunk void setOrientation() {
-        if (mRotationEnabled) {
-            unlockScreenOrientation(true);
-        } else {
-            setRequestedOrientation(
-                    ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
-        }
-    }
 
     private RotationPrefChangeHandler mRotationPrefChangeHandler;
 
@@ -416,7 +404,8 @@ public class Launcher extends BaseActivity
 
         // On large interfaces, or on devices that a user has specifically enabled screen rotation,
         // we want the screen to auto-rotate based on the current orientation
-        setOrientation();
+        setRequestedOrientation(mRotationEnabled
+                ? SCREEN_ORIENTATION_UNSPECIFIED : SCREEN_ORIENTATION_NOSENSOR);
 
         setContentView(mLauncherView);
 
@@ -1896,11 +1885,8 @@ public class Launcher extends BaseActivity
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
         if (topView != null) {
             topView.onBackPressed();
-        } else if (isInState(LauncherState.ALL_APPS)) {
-            ued.logActionCommand(Action.Command.BACK, ContainerType.ALLAPPS);
-            showWorkspace(true);
-        } else if (isInState(LauncherState.OVERVIEW)) {
-            ued.logActionCommand(Action.Command.BACK, ContainerType.OVERVIEW);
+        } else if (!isInState(LauncherState.NORMAL)) {
+            ued.logActionCommand(Action.Command.BACK, mWorkspace.getState().containerType);
             showWorkspace(true);
         } else {
             // Back button is a no-op here, but give at least some feedback for the button press
@@ -2381,7 +2367,7 @@ public class Launcher extends BaseActivity
         if (!mDragController.isDragging()) {
             if (itemUnderLongClick == null) {
                 // User long pressed on empty space
-                if (isInState(LauncherState.OVERVIEW)) {
+                if (mWorkspace.isPageRearrangeEnabled()) {
                     mWorkspace.startReordering(v);
                     getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
                             Action.Direction.NONE, ContainerType.OVERVIEW);
@@ -2544,15 +2530,6 @@ public class Launcher extends BaseActivity
             return;
         }
 
-        // Lock the orientation:
-        if (mRotationEnabled) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
-        }
-
-        // Prevent any Un/InstallShortcutReceivers from updating the db while we are
-        // in spring loaded mode
-        InstallShortcutReceiver.enableInstallQueue(InstallShortcutReceiver.FLAG_DRAG_AND_DROP);
-
         mStateTransitionAnimation.startAnimationToWorkspace(
                 LauncherState.SPRING_LOADED, true /* animated */,
                 null /* onCompleteRunnable */);
@@ -2564,13 +2541,6 @@ public class Launcher extends BaseActivity
 
     public void exitSpringLoadedDragMode(int delay, final Runnable onCompleteRunnable) {
         if (!isInState(LauncherState.SPRING_LOADED)) return;
-
-        // Unlock rotation lock
-        unlockScreenOrientation(false);
-
-        // Re-enable any Un/InstallShortcutReceiver and now process any queued items
-        InstallShortcutReceiver.disableAndFlushInstallQueue(
-                InstallShortcutReceiver.FLAG_DRAG_AND_DROP, this);
 
         if (mExitSpringLoadedModeRunnable != null) {
             mHandler.removeCallbacks(mExitSpringLoadedModeRunnable);
@@ -3333,18 +3303,8 @@ public class Launcher extends BaseActivity
         mModel.refreshAndBindWidgetsAndShortcuts(packageUser);
     }
 
-    public void unlockScreenOrientation(boolean immediate) {
-        if (mRotationEnabled) {
-            if (immediate) {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-            } else {
-                mHandler.postDelayed(new Runnable() {
-                    public void run() {
-                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-                    }
-                }, RESTORE_SCREEN_ORIENTATION_DELAY);
-            }
-        }
+    public boolean isRotationEnabled () {
+        return mRotationEnabled;
     }
 
     private void markAppsViewShown() {

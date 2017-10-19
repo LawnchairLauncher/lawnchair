@@ -18,8 +18,6 @@ package com.android.launcher3;
 
 import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.LauncherState.SPRING_LOADED;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -145,8 +143,6 @@ public class WorkspaceStateTransitionAnimation {
     private final Launcher mLauncher;
     private final Workspace mWorkspace;
 
-    private final float mSpringLoadedShrinkFactor;
-    private final float mOverviewModeShrinkFactor;
     private final boolean mWorkspaceFadeInAdjacentScreens;
 
     private float mNewScale;
@@ -157,9 +153,6 @@ public class WorkspaceStateTransitionAnimation {
 
         DeviceProfile grid = mLauncher.getDeviceProfile();
         Resources res = launcher.getResources();
-        mSpringLoadedShrinkFactor = mLauncher.getDeviceProfile().workspaceSpringLoadShrinkFactor;
-        mOverviewModeShrinkFactor =
-                res.getInteger(R.integer.config_workspaceOverviewShrinkPercentage) / 100f;
         mWorkspaceScrimAlpha = res.getInteger(R.integer.config_workspaceScrimAlpha);
         mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
     }
@@ -188,17 +181,9 @@ public class WorkspaceStateTransitionAnimation {
         // Update the workspace state
         int finalBackgroundAlpha = state.hasScrim ? 255 : 0;
 
-        final float finalWorkspaceTranslationY;
-        if (state == OVERVIEW) {
-            mNewScale = mOverviewModeShrinkFactor;
-            finalWorkspaceTranslationY = mWorkspace.getOverviewModeTranslationY();
-        } else if (state == SPRING_LOADED) {
-            mNewScale = mSpringLoadedShrinkFactor;
-            finalWorkspaceTranslationY = mWorkspace.getSpringLoadedTranslationY();
-        } else {
-            mNewScale = 1f;
-            finalWorkspaceTranslationY = 0;
-        }
+        float[] scaleAndTranslationY = state.getWorkspaceScaleAndTranslation(mLauncher);
+        final float mNewScale = scaleAndTranslationY[0];
+        final float finalWorkspaceTranslationY = scaleAndTranslationY[1];
 
         int toPage = mWorkspace.getPageNearestToCenterOfScreen();
         final int childCount = mWorkspace.getChildCount();

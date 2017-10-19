@@ -19,9 +19,9 @@ import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
 import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
 
 import static com.android.launcher3.LauncherAnimUtils.ALL_APPS_TRANSITION_MS;
-import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
-import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_TRANSITION_MS;
 
+import com.android.launcher3.states.OverviewState;
+import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 import java.util.Arrays;
@@ -40,19 +40,15 @@ public class LauncherState {
 
     private static final LauncherState[] sAllStates = new LauncherState[4];
 
-    public static LauncherState NORMAL = new LauncherState(0, ContainerType.WORKSPACE,
+    public static final LauncherState NORMAL = new LauncherState(0, ContainerType.WORKSPACE,
             0, FLAG_DO_NOT_RESTORE);
 
-    public static LauncherState ALL_APPS = new LauncherState(1, ContainerType.ALLAPPS,
+    public static final LauncherState ALL_APPS = new LauncherState(1, ContainerType.ALLAPPS,
             ALL_APPS_TRANSITION_MS, FLAG_DISABLE_ACCESSIBILITY);
 
-    public static LauncherState SPRING_LOADED = new LauncherState(2, ContainerType.WORKSPACE,
-            SPRING_LOADED_TRANSITION_MS,
-            FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE | FLAG_DISABLE_ACCESSIBILITY | FLAG_DO_NOT_RESTORE);
+    public static final LauncherState SPRING_LOADED = new SpringLoadedState(2);
 
-    public static LauncherState OVERVIEW = new LauncherState(3, ContainerType.OVERVIEW,
-            OVERVIEW_TRANSITION_MS,
-            FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE | FLAG_HIDE_HOTSEAT | FLAG_DO_NOT_RESTORE);
+    public static final LauncherState OVERVIEW = new OverviewState(3);
 
     public final int ordinal;
 
@@ -101,4 +97,12 @@ public class LauncherState {
     public static LauncherState[] values() {
         return Arrays.copyOf(sAllStates, sAllStates.length);
     }
+
+    public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
+        return new float[] {1, 0};
+    }
+
+    public void onStateEnabled(Launcher launcher) { }
+
+    public void onStateDisabled(Launcher launcher) { }
 }

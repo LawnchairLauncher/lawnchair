@@ -570,7 +570,7 @@ public class DeviceProfile {
         }
     }
 
-    int getOverviewModeButtonBarHeight() {
+    public int getOverviewModeButtonBarHeight() {
         int zoneHeight = (int) (overviewModeIconZoneRatio * availableHeightPx);
         return Utilities.boundToRange(zoneHeight,
                 overviewModeMinIconZoneHeightPx,
