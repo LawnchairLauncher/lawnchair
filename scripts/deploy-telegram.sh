@@ -9,3 +9,5 @@ curl -F chat_id="442800997" -F document=@"proguard-$MAJOR_MINOR.$TRAVIS_BUILD_NU
 
 cp app/build/outputs/mapping/release/mapping.txt proguard-$MAJOR_MINOR.${TRAVIS_BUILD_NUMBER}_plah.txt
 curl -F chat_id="442800997" -F document=@"proguard-$MAJOR_MINOR.${TRAVIS_BUILD_NUMBER}_plah.txt" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
+
+echo $(./scripts/changelog.sh)
