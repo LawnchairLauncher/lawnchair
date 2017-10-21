@@ -117,6 +117,7 @@ import com.android.launcher3.popup.BaseActionPopup;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.states.AllAppsState;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -202,9 +203,7 @@ public class Launcher extends BaseActivity
     // Type: SparseArray<Parcelable>
     private static final String RUNTIME_STATE_WIDGET_PANEL = "launcher.widget_panel";
 
-    static final String APPS_VIEW_SHOWN = "launcher.apps_view_shown";
-
-    @Thunk LauncherStateTransitionAnimation mStateTransitionAnimation;
+    private LauncherStateTransitionAnimation mStateTransitionAnimation;
 
     private boolean mIsSafeModeEnabled;
 
@@ -429,6 +428,10 @@ public class Launcher extends BaseActivity
     @Override
     public void onThemeChanged() {
         recreate();
+    }
+
+    public LauncherStateTransitionAnimation getStateTransition() {
+        return mStateTransitionAnimation;
     }
 
     protected void overrideTheme(boolean isDark, boolean supportsDarkText) {
@@ -2441,8 +2444,7 @@ public class Launcher extends BaseActivity
         boolean changed = !isInState(LauncherState.NORMAL);
         if (changed || mAllAppsController.isTransitioning()) {
             mWorkspace.setVisibility(View.VISIBLE);
-            mStateTransitionAnimation.startAnimationToWorkspace(
-                    LauncherState.NORMAL, animated, onCompleteRunnable);
+            mStateTransitionAnimation.goToState(LauncherState.NORMAL, animated, onCompleteRunnable);
 
             // Set focus to the AppsCustomize button
             if (mAllAppsButton != null) {
@@ -2483,8 +2485,7 @@ public class Launcher extends BaseActivity
             };
         }
         mWorkspace.setVisibility(View.VISIBLE);
-        mStateTransitionAnimation.startAnimationToWorkspace(
-                LauncherState.OVERVIEW, animated, postAnimRunnable);
+        mStateTransitionAnimation.goToState(LauncherState.OVERVIEW, animated, postAnimRunnable);
 
         // If animated from long press, then don't allow any of the controller in the drag
         // layer to intercept any remaining touch.
@@ -2499,8 +2500,6 @@ public class Launcher extends BaseActivity
     // TODO: calling method should use the return value so that when {@code false} is returned
     // the workspace transition doesn't fall into invalid state.
     public boolean showAppsView(boolean animated) {
-        markAppsViewShown();
-
         if (!(isInState(LauncherState.NORMAL) ||
                 (isInState(LauncherState.ALL_APPS) && mAllAppsController.isTransitioning()))) {
             return false;
@@ -2512,7 +2511,7 @@ public class Launcher extends BaseActivity
             mExitSpringLoadedModeRunnable = null;
         }
 
-        mStateTransitionAnimation.startAnimationToAllApps(animated);
+        mStateTransitionAnimation.goToState(LauncherState.ALL_APPS, animated, null);
 
         // Change the state *after* we've called all the transition code
         AbstractFloatingView.closeAllOpenViews(this);
@@ -2529,10 +2528,7 @@ public class Launcher extends BaseActivity
         if (isInState(LauncherState.SPRING_LOADED)) {
             return;
         }
-
-        mStateTransitionAnimation.startAnimationToWorkspace(
-                LauncherState.SPRING_LOADED, true /* animated */,
-                null /* onCompleteRunnable */);
+        mStateTransitionAnimation.goToState(LauncherState.SPRING_LOADED, true, null);
     }
 
     public void exitSpringLoadedDragMode(int delay) {
@@ -3307,15 +3303,9 @@ public class Launcher extends BaseActivity
         return mRotationEnabled;
     }
 
-    private void markAppsViewShown() {
-        if (mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false)) {
-            return;
-        }
-        mSharedPrefs.edit().putBoolean(APPS_VIEW_SHOWN, true).apply();
-    }
-
     private boolean shouldShowDiscoveryBounce() {
-        return isInState(LauncherState.NORMAL) && !mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false)
+        return isInState(LauncherState.NORMAL)
+                && !mSharedPrefs.getBoolean(AllAppsState.APPS_VIEW_SHOWN, false)
                 && !UserManagerCompat.getInstance(this).isDemoUser();
     }
 

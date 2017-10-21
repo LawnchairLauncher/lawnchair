@@ -19,14 +19,13 @@ package com.android.launcher3;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 
-import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimationLayerSet;
-import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.util.Thunk;
+import com.android.launcher3.anim.AnimationSuccessListener;
 
 /**
  * TODO: figure out what kind of tests we can write for this
@@ -74,223 +73,75 @@ public class LauncherStateTransitionAnimation {
     public static final String TAG = "LSTAnimation";
 
     private final AnimationConfig mConfig = new AnimationConfig();
-    @Thunk Launcher mLauncher;
-    @Thunk AnimatorSet mCurrentAnimation;
-    AllAppsTransitionController mAllAppsController;
+    private final Handler mUiHandler;
+    private final Launcher mLauncher;
+    private final AllAppsTransitionController mAllAppsController;
 
-    public LauncherStateTransitionAnimation(Launcher l, AllAppsTransitionController allAppsController) {
+    public LauncherStateTransitionAnimation(
+            Launcher l, AllAppsTransitionController allAppsController) {
+        mUiHandler = new Handler(Looper.getMainLooper());
         mLauncher = l;
         mAllAppsController = allAppsController;
     }
 
-    /**
-     * Starts an animation to the apps view.
-     */
-    public void startAnimationToAllApps(boolean animated) {
-        final AllAppsContainerView toView = mLauncher.getAppsView();
-
-        // If for some reason our views aren't initialized, don't animate
-        animated = animated && (toView != null);
-
-        final AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
-
-        final AnimationLayerSet layerViews = new AnimationLayerSet();
-
+    public void goToState(LauncherState state, boolean animated, Runnable onCompleteRunnable) {
         // Cancel the current animation
-        cancelAnimation();
-
-        if (!animated) {
-            mLauncher.getWorkspace().setState(LauncherState.ALL_APPS);
-
-            mAllAppsController.finishPullUp();
-            toView.setTranslationX(0.0f);
-            toView.setTranslationY(0.0f);
-            toView.setScaleX(1.0f);
-            toView.setScaleY(1.0f);
-            toView.setAlpha(1.0f);
-            toView.setVisibility(View.VISIBLE);
-
-            mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
-            return;
-        }
-
-        if (!FeatureFlags.LAUNCHER3_PHYSICS) {
-            // We are animating the content view alpha, so ensure we have a layer for it.
-            layerViews.addView(toView);
-        }
-
-        animation.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                cleanupAnimation();
-                mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
-            }
-        });
-
         mConfig.reset();
-        mAllAppsController.animateToAllApps(animation, mConfig);
-        mLauncher.getWorkspace().setStateWithAnimation(LauncherState.ALL_APPS,
-                layerViews, animation, mConfig);
-
-        Runnable startAnimRunnable = new StartAnimRunnable(animation, toView);
-        mCurrentAnimation = animation;
-        mCurrentAnimation.addListener(layerViews);
-        if (mConfig.shouldPost) {
-            toView.post(startAnimRunnable);
-        } else {
-            startAnimRunnable.run();
-        }
-    }
-
-    /**
-     * Starts an animation to the workspace from the current overlay view.
-     */
-    public void startAnimationToWorkspace(final LauncherState toWorkspaceState,
-            final boolean animated, final Runnable onCompleteRunnable) {
-        if (toWorkspaceState != LauncherState.NORMAL &&
-                toWorkspaceState != LauncherState.SPRING_LOADED &&
-                toWorkspaceState != LauncherState.OVERVIEW) {
-            Log.e(TAG, "Unexpected call to startAnimationToWorkspace");
-        }
-
-        if (mLauncher.isInState(LauncherState.ALL_APPS) || mAllAppsController.isTransitioning()) {
-            startAnimationToWorkspaceFromAllApps(mLauncher.getWorkspace().getState(),
-                    toWorkspaceState, animated, onCompleteRunnable);
-        } else {
-            startAnimationToNewWorkspaceState(toWorkspaceState, animated, onCompleteRunnable);
-        }
-    }
-
-    /**
-     * Starts an animation to the workspace from the apps view.
-     */
-    private void startAnimationToWorkspaceFromAllApps(final LauncherState fromWorkspaceState,
-            final LauncherState toWorkspaceState, boolean animated,
-            final Runnable onCompleteRunnable) {
-        final AllAppsContainerView fromView = mLauncher.getAppsView();
-        // If for some reason our views aren't initialized, don't animate
-        animated = animated & (fromView != null);
-
-        final AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
-        final AnimationLayerSet layerViews = new AnimationLayerSet();
-
-        // Cancel the current animation
-        cancelAnimation();
 
         if (!animated) {
-            if (fromWorkspaceState == LauncherState.ALL_APPS) {
-                mAllAppsController.finishPullDown();
-            }
-            fromView.setVisibility(View.GONE);
-            mLauncher.getWorkspace().setState(toWorkspaceState);
+            mAllAppsController.setFinalProgress(state.verticalProgress);
+            mLauncher.getWorkspace().setState(state);
             mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
 
-            // Run any queued runnables
+            // Run any queued runnable
             if (onCompleteRunnable != null) {
                 onCompleteRunnable.run();
             }
             return;
         }
 
-        animation.addListener(new AnimatorListenerAdapter() {
-            boolean canceled = false;
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                canceled = true;
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (canceled) return;
-                // Run any queued runnables
-                if (onCompleteRunnable != null) {
-                    onCompleteRunnable.run();
-                }
-
-                cleanupAnimation();
-                mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
-            }
-
-        });
-
-        mConfig.reset();
-        mAllAppsController.animateToWorkspace(animation, mConfig);
-        mLauncher.getWorkspace().setStateWithAnimation(toWorkspaceState, layerViews, animation,
-                mConfig);
-
-        Runnable startAnimRunnable = new StartAnimRunnable(animation, mLauncher.getWorkspace());
-        mCurrentAnimation = animation;
-        mCurrentAnimation.addListener(layerViews);
+        AnimatorSet animation = createAnimationToNewWorkspace(state, onCompleteRunnable);
+        Runnable runnable = new StartAnimRunnable(animation, state.getFinalFocus(mLauncher));
         if (mConfig.shouldPost) {
-            fromView.post(startAnimRunnable);
+            mUiHandler.post(runnable);
         } else {
-            startAnimRunnable.run();
+            runnable.run();
         }
-    }
-
-    /**
-     * Starts an animation to the workspace from another workspace state, e.g. normal to overview.
-     */
-    private void startAnimationToNewWorkspaceState(
-            final LauncherState toWorkspaceState, final boolean animated,
-            final Runnable onCompleteRunnable) {
-        // Cancel the current animation
-        cancelAnimation();
-        mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
-
-        if (!animated) {
-            mLauncher.getWorkspace().setState(toWorkspaceState);
-            // Run any queued runnables
-            if (onCompleteRunnable != null) {
-                onCompleteRunnable.run();
-            }
-            return;
-        }
-
-        final AnimatorSet animation =
-                createAnimationToNewWorkspace(toWorkspaceState, onCompleteRunnable);
-        mLauncher.getWorkspace().post(new StartAnimRunnable(animation, null));
-        mCurrentAnimation = animation;
     }
 
     protected AnimatorSet createAnimationToNewWorkspace(LauncherState state,
             final Runnable onCompleteRunnable) {
-        cancelAnimation();
-
-        final AnimationLayerSet layerViews = new AnimationLayerSet();
-        final AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
         mConfig.reset();
-        mLauncher.getWorkspace().setStateWithAnimation(state, layerViews, animation, mConfig);
 
-        animation.addListener(new AnimatorListenerAdapter() {
+        final AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
+        final AnimationLayerSet layerViews = new AnimationLayerSet();
+
+        mAllAppsController.animateToFinalProgress(state.verticalProgress,
+                state.hasVerticalSpring, animation, mConfig);
+        mLauncher.getWorkspace().setStateWithAnimation(state,
+                layerViews, animation, mConfig);
+
+        animation.addListener(layerViews);
+        animation.addListener(new AnimationSuccessListener() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationSuccess(Animator animator) {
                 // Run any queued runnables
                 if (onCompleteRunnable != null) {
                     onCompleteRunnable.run();
                 }
 
-                // This can hold unnecessary references to views.
-                cleanupAnimation();
+                mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
             }
         });
-        animation.addListener(layerViews);
-        return animation;
+        mConfig.setAnimation(animation);
+        return mConfig.mCurrentAnimation;
     }
 
     /**
      * Cancels the current animation.
      */
-    private void cancelAnimation() {
-        if (mCurrentAnimation != null) {
-            mCurrentAnimation.setDuration(0);
-            mCurrentAnimation.cancel();
-            mCurrentAnimation = null;
-        }
-    }
-
-    @Thunk void cleanupAnimation() {
-        mCurrentAnimation = null;
+    public void cancelAnimation() {
+        mConfig.reset();
     }
 
     private class StartAnimRunnable implements Runnable {
@@ -305,7 +156,7 @@ public class LauncherStateTransitionAnimation {
 
         @Override
         public void run() {
-            if (mCurrentAnimation != mAnim) {
+            if (mConfig.mCurrentAnimation != mAnim) {
                 return;
             }
             if (mViewToFocus != null) {
@@ -315,14 +166,21 @@ public class LauncherStateTransitionAnimation {
         }
     }
 
-    public static class AnimationConfig {
+    public static class AnimationConfig extends AnimatorListenerAdapter {
         public boolean shouldPost;
 
         private long mOverriddenDuration = -1;
+        private AnimatorSet mCurrentAnimation;
 
         public void reset() {
             shouldPost = false;
             mOverriddenDuration = -1;
+
+            if (mCurrentAnimation != null) {
+                mCurrentAnimation.setDuration(0);
+                mCurrentAnimation.cancel();
+                mCurrentAnimation = null;
+            }
         }
 
         public void overrideDuration(long duration) {
@@ -331,6 +189,18 @@ public class LauncherStateTransitionAnimation {
 
         public long getDuration(long defaultDuration) {
             return mOverriddenDuration >= 0 ? mOverriddenDuration : defaultDuration;
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            if (mCurrentAnimation == animation) {
+                mCurrentAnimation = null;
+            }
+        }
+
+        public void setAnimation(AnimatorSet animation) {
+            mCurrentAnimation = animation;
+            mCurrentAnimation.addListener(this);
         }
     }
 }

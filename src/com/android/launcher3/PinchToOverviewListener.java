@@ -107,7 +107,7 @@ public class PinchToOverviewListener
 
         mToState = mLauncher.isInState(LauncherState.OVERVIEW)
                 ? LauncherState.NORMAL : LauncherState.OVERVIEW;
-        mCurrentAnimation = mLauncher.mStateTransitionAnimation
+        mCurrentAnimation = mLauncher.getStateTransition()
                 .createAnimationToNewWorkspace(mToState, this);
         mPinchStarted = true;
         mCurrentScale = 1;

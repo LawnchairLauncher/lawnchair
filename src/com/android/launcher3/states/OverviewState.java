@@ -19,6 +19,7 @@ import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.Utilities.isAccessibilityEnabled;
 
 import android.graphics.Rect;
+import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.android.launcher3.DeviceProfile;
@@ -39,7 +40,7 @@ public class OverviewState extends LauncherState {
             FLAG_DO_NOT_RESTORE;
 
     public OverviewState(int id) {
-        super(id, ContainerType.WORKSPACE, OVERVIEW_TRANSITION_MS, STATE_FLAGS);
+        super(id, ContainerType.WORKSPACE, OVERVIEW_TRANSITION_MS, 1f, STATE_FLAGS);
     }
 
     @Override
@@ -74,5 +75,10 @@ public class OverviewState extends LauncherState {
     @Override
     public void onStateDisabled(Launcher launcher) {
         launcher.getWorkspace().setPageRearrangeEnabled(false);
+    }
+
+    @Override
+    public View getFinalFocus(Launcher launcher) {
+        return launcher.getOverviewPanel();
     }
 }

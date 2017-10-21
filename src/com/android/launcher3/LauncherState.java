@@ -20,6 +20,9 @@ import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
 
 import static com.android.launcher3.LauncherAnimUtils.ALL_APPS_TRANSITION_MS;
 
+import android.view.View;
+
+import com.android.launcher3.states.AllAppsState;
 import com.android.launcher3.states.OverviewState;
 import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -28,7 +31,7 @@ import java.util.Arrays;
 
 
 /**
- * Various states for launcher
+ * Base state for various states used for the Launcher
  */
 public class LauncherState {
 
@@ -37,14 +40,14 @@ public class LauncherState {
     protected static final int FLAG_HIDE_HOTSEAT = 1 << 2;
     protected static final int FLAG_DISABLE_ACCESSIBILITY = 1 << 3;
     protected static final int FLAG_DO_NOT_RESTORE = 1 << 4;
+    protected static final int FLAG_HAS_SPRING = 1 << 5;
 
     private static final LauncherState[] sAllStates = new LauncherState[4];
 
     public static final LauncherState NORMAL = new LauncherState(0, ContainerType.WORKSPACE,
-            0, FLAG_DO_NOT_RESTORE);
+            0, 1f, FLAG_DO_NOT_RESTORE);
 
-    public static final LauncherState ALL_APPS = new LauncherState(1, ContainerType.ALLAPPS,
-            ALL_APPS_TRANSITION_MS, FLAG_DISABLE_ACCESSIBILITY);
+    public static final LauncherState ALL_APPS = new AllAppsState(1);
 
     public static final LauncherState SPRING_LOADED = new SpringLoadedState(2);
 
@@ -73,12 +76,25 @@ public class LauncherState {
      */
     public final int workspaceAccessibilityFlag;
 
-    // Properties related to state transition animation.
+    /**
+     * Properties related to state transition animation
+     *
+     * @see WorkspaceStateTransitionAnimation
+     */
     public final boolean hasScrim;
     public final boolean hideHotseat;
     public final int transitionDuration;
 
-    public LauncherState(int id, int containerType, int transitionDuration, int flags) {
+    /**
+     * Fraction shift in the vertical translation UI and related properties
+     *
+     * @see com.android.launcher3.allapps.AllAppsTransitionController
+     */
+    public final float verticalProgress;
+    public final boolean hasVerticalSpring;
+
+    public LauncherState(int id, int containerType, int transitionDuration, float verticalProgress,
+            int flags) {
         this.containerType = containerType;
         this.transitionDuration = transitionDuration;
 
@@ -89,6 +105,9 @@ public class LauncherState {
                 ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                 : IMPORTANT_FOR_ACCESSIBILITY_AUTO;
         this.doNotRestore = (flags & FLAG_DO_NOT_RESTORE) != 0;
+
+        this.verticalProgress = verticalProgress;
+        this.hasVerticalSpring = (flags & FLAG_HAS_SPRING) != 0;
 
         this.ordinal = id;
         sAllStates[id] = this;
@@ -105,4 +124,8 @@ public class LauncherState {
     public void onStateEnabled(Launcher launcher) { }
 
     public void onStateDisabled(Launcher launcher) { }
+
+    public View getFinalFocus(Launcher launcher) {
+        return launcher.getWorkspace();
+    }
 }

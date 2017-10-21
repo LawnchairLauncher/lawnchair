@@ -20,6 +20,7 @@ import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_TRANSITION_M
 import android.content.pm.ActivityInfo;
 import android.graphics.Rect;
 import android.os.Handler;
+import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InstallShortcutReceiver;
@@ -41,7 +42,7 @@ public class SpringLoadedState extends LauncherState {
     private static final int RESTORE_SCREEN_ORIENTATION_DELAY = 500;
 
     public SpringLoadedState(int id) {
-        super(id, ContainerType.OVERVIEW, SPRING_LOADED_TRANSITION_MS, STATE_FLAGS);
+        super(id, ContainerType.OVERVIEW, SPRING_LOADED_TRANSITION_MS, 1f, STATE_FLAGS);
     }
 
     @Override
@@ -104,5 +105,10 @@ public class SpringLoadedState extends LauncherState {
         // Re-enable any Un/InstallShortcutReceiver and now process any queued items
         InstallShortcutReceiver.disableAndFlushInstallQueue(
                 InstallShortcutReceiver.FLAG_DRAG_AND_DROP, launcher);
+    }
+
+    @Override
+    public View getFinalFocus(Launcher launcher) {
+        return null;
     }
 }
