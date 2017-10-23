@@ -44,7 +44,7 @@ fun setResSdk(res: Resources, sdk: Int): Resources {
 
         if (Utilities.ATLEAST_OREO)
             setConfigurationMethod.invoke(assets, configuration.mcc, configuration.mnc,
-                    "en-US",
+                    configuration.locale.toLanguageTag(),
                     configuration.orientation,
                     configuration.touchscreen,
                     configuration.densityDpi, configuration.keyboard,
@@ -55,7 +55,7 @@ fun setResSdk(res: Resources, sdk: Int): Resources {
                     configuration.colorMode, sdk)
         else
             setConfigurationMethod.invoke(assets, configuration.mcc, configuration.mnc,
-                    "en-US",
+                    configuration.locale.toLanguageTag(),
                     configuration.orientation,
                     configuration.touchscreen,
                     configuration.densityDpi, configuration.keyboard,

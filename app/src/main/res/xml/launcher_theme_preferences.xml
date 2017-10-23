@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:key="prefCat_homeScreen"
+        android:title="@string/pref_cat_homescreen">
+
+        <ch.deletescape.lawnchair.preferences.IconPackPreference
+            android:key="pref_iconPackPackage"
+            android:persistent="true"
+            android:summary="@string/icon_pack_preference_summary"
+            android:title="@string/icon_pack_preference_title" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="pref_pixelStyleIcons"
+            android:persistent="true"
+            android:summary="@string/pixel_style_icons_pref_summary"
+            android:title="@string/pixel_style_icons_pref_title" />
+
+        <ListPreference
+            android:entries="@array/icon_shape_override_paths_names"
+            android:entryValues="@array/icon_shape_override_paths_values"
+            android:key="pref_override_icon_shape"
+            android:persistent="false"
+            android:summary="%s"
+            android:title="@string/icon_shape_override_label" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_animatedClockIcon"
+            android:persistent="true"
+            android:title="@string/animated_clock_icon_title" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="pref_animatedClockIcon"
+            android:key="pref_animatedClockIconAlternativeClockApps"
+            android:persistent="true"
+            android:summary="@string/animated_clock_icon_alternative_clock_apps_summary"
+            android:title="@string/animated_clock_icon_alternative_clock_apps_title" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_enableDynamicUi"
+            android:persistent="true"
+            android:title="@string/dynamic_ui_pref_title" />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/themeTexts"
+            android:entryValues="@array/themeValues"
+            android:key="pref_theme"
+            android:persistent="true"
+            android:summary="%s"
+            android:title="@string/theme_pref_title" />
+
+        <ch.deletescape.lawnchair.preferences.BitSetPreference
+            android:entries="@array/themeModeTexts"
+            android:entryValues="@array/themeModeValues"
+            android:key="pref_themeMode"
+            android:title="@string/pref_applyTheme" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_popupCardTheme"
+            android:persistent="true"
+            android:title="@string/popup_card_theme_title" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_enableBlur"
+            android:persistent="true"
+            android:summary="@string/blur_pref_summary"
+            android:title="@string/blur_pref_title" />
+
+        <ch.deletescape.lawnchair.preferences.BitSetPreference
+            android:dependency="pref_enableBlur"
+            android:entries="@array/blurModeTexts"
+            android:entryValues="@array/blurModeValues"
+            android:key="pref_blurMode"
+            android:title="@string/pref_applyBlur" />
+
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:dependency="pref_enableBlur"
+            android:key="pref_blurRadius"
+            android:persistent="true"
+            android:title="@string/blur_radius_pref_title"
+            app:defaultSeekbarValue="75"
+            app:maxValue="150"
+            app:minValue="10"
+            app:steps="140"
+            app:summaryFormat="%.0f" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="prefCat_weather"
+        android:title="@string/pref_cat_weather">
+
+        <SwitchPreference
+            android:key="pref_weather"
+            android:title="@string/pref_weather_title" />
+
+        <ListPreference
+            android:defaultValue="metric"
+            android:dependency="pref_weather"
+            android:entries="@array/unitsTexts"
+            android:entryValues="@array/unitsValues"
+            android:key="pref_weather_units"
+            android:summary="%s"
+            android:title="@string/pref_weather_units" />
+
+
+        <ch.deletescape.lawnchair.preferences.CustomLocationPreference
+            android:defaultValue="Lucerne, CH"
+            android:dependency="pref_weather"
+            android:key="pref_weather_city"
+            android:summary="@string/pref_weather_city_summary"
+            android:title="@string/pref_weather_city_title" />
+
+        <ch.deletescape.lawnchair.preferences.ApiKeyPreference
+            android:defaultValue="17a6438b1d63d5b05f7039e7cb52cde7"
+            android:dependency="pref_weather"
+            android:key="pref_weatherApiKey"
+            android:title="@string/pref_weather_api_key_title" />
+
+        <ListPreference
+            android:defaultValue="1"
+            android:dependency="pref_weather"
+            android:enabled="false"
+            android:entries="@array/weatherProviderTexts"
+            android:entryValues="@array/weatherProviderValues"
+            android:key="pref_weatherProvider"
+            android:summary="%s"
+            android:title="@string/pref_weather_provider" />
+    </PreferenceCategory>
+</PreferenceScreen>

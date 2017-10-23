@@ -158,17 +158,21 @@ public class DeviceProfile {
         defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
         desiredWorkspaceLeftRightMarginPx = edgeMarginPx;
-        if (prefs.getHotseatShowArrow())
+        if (prefs.getHotseatShowArrow()) {
             pageIndicatorHeightPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_height);
-        else
+                    res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_height);
+            pageIndicatorLandGutterLeftNavBarPx = res.getDimensionPixelSize(
+                    R.dimen.dynamic_grid_page_indicator_gutter_width_left_nav_bar);
+            pageIndicatorLandGutterRightNavBarPx = res.getDimensionPixelSize(
+                    R.dimen.dynamic_grid_page_indicator_gutter_width_right_nav_bar);
+        } else {
             pageIndicatorHeightPx = 0;
-        pageIndicatorLandGutterLeftNavBarPx = res.getDimensionPixelSize(
-                R.dimen.dynamic_grid_page_indicator_gutter_width_left_nav_bar);
+            pageIndicatorLandGutterLeftNavBarPx = 0;
+            pageIndicatorLandGutterRightNavBarPx = 0;
+        }
+
         pageIndicatorLandWorkspaceOffsetPx =
                 res.getDimensionPixelSize(R.dimen.all_apps_caret_workspace_offset);
-        pageIndicatorLandGutterRightNavBarPx = res.getDimensionPixelSize(
-                R.dimen.dynamic_grid_page_indicator_gutter_width_right_nav_bar);
         defaultPageSpacingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_workspace_page_spacing);
         topWorkspacePadding =

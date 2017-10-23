@@ -42,6 +42,7 @@ object PreferenceFlags {
     const val KEY_POPUP_CARD_THEME = "pref_popupCardTheme"
     const val KEY_ICON_LABELS_IN_TWO_LINES = "pref_iconLabelsInTwoLines"
     const val KEY_ANIMATED_CLOCK_ICON_ALTERNATIVE_CLOCK_APPS = "pref_animatedClockIconAlternativeClockApps"
+    const val KEY_ENABLE_PHYSICS = "pref_enablePhysics"
 
     // Various
     const val KEY_PREF_WS_LABEL_COLOR = "pref_workspaceLabelColor"
@@ -105,7 +106,6 @@ object PreferenceFlags {
     const val EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED"
 
     // STATES
-    const val KEY_REQUIRES_ICON_CACHE_RELOAD = "requiresIconCacheReload"
     // The set of shortcuts that are pending install
     const val APPS_PENDING_INSTALL = "apps_to_install"
     const val RESTORE_TASK_PENDING = "restore_task_pending"

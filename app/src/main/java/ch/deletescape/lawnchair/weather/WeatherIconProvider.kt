@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.util.Log
 import ch.deletescape.lawnchair.R
 import ch.deletescape.lawnchair.Utilities
 import java.util.*
@@ -11,7 +12,13 @@ import java.util.*
 class WeatherIconProvider(private val context: Context) {
 
     fun getIcon(iconID: String): Drawable {
-        val bitmap = BitmapFactory.decodeResource(context.resources, ID_MAP[iconID]!!)
+        var resID = iconID
+        if (!ID_MAP.containsKey(resID)) {
+            Log.e("WeatherIconProvider", "No weather icon exists for condition: " + resID)
+            resID = CONDITION_UNKNOWN
+        }
+
+        val bitmap = BitmapFactory.decodeResource(context.resources, ID_MAP[resID]!!)
         return BitmapDrawable(context.resources,
                 Utilities.addShadowToIcon(bitmap, bitmap.width))
     }

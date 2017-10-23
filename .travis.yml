@@ -10,14 +10,16 @@ android:
   components:
     - tools
     - platform-tools
-    - build-tools-26.0.1
+    - build-tools-26.0.2
     - android-26
     - extra-google-m2repository
 before_install: 
   - chmod a+x ./scripts/deploy-*.sh
   - chmod a+x ./scripts/changelog.sh
+  - chmod a+x ./scripts/s3-upload.sh
 script:
   - bash ./gradlew assembleDebug check;
+  - bash ./gradlew app:assembleRelease check;
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -37,35 +39,20 @@ deploy:
     skip_cleanup: true
     script: scripts/deploy-telegram.sh
     on:
+      tags: true
+  - provider: script
+    skip_cleanup: true
+    script: scripts/deploy-s3.sh
+    on:
       branch: beta
   - provider: script
     skip_cleanup: true
-    script: scripts/deploy-telegram.sh
-    on:
-      branch: master
-  - provider: script
-    skip_cleanup: true
-    script: scripts/deploy-telegram.sh
+    script: scripts/deploy-s3.sh
     on:
       tags: true
   - provider: releases
     skip_cleanup: true
     api_key: $GITHUB_OAUTH_TOKEN
     file: "Lawnchair-$MAJOR_MINOR.$TRAVIS_BUILD_NUMBER.apk"
-    on:
-      tags: true
-  - provider: script
-    skip_cleanup: true
-    script: scripts/deploy-vsmc.sh Beta
-    on:
-      branch: beta
-  - provider: script
-    skip_cleanup: true
-    script: scripts/deploy-vsmc.sh Alpha
-    on:
-      branch: alpha
-  - provider: script
-    skip_cleanup: true
-    script: scripts/deploy-vsmc.sh Release
     on:
       tags: true

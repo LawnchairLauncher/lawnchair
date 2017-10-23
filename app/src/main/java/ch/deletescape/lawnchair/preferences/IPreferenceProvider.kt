@@ -130,6 +130,7 @@ interface IPreferenceProvider {
     val iconPackPackage: String
     val hotseatIconScale: Float
     val hotseatHeightScale: Float
+    val enablePhysics: Boolean
 
     // -----------------
     // GENERAL - BITS
@@ -142,7 +143,6 @@ interface IPreferenceProvider {
     // STATES
     // -----------------
 
-    var requiresIconCacheReload: Boolean
     var emptyDatabaseCreated: Boolean
     fun removeEmptyDatabaseCreated()
     fun userCreationTimeKeyExists(key: Long): Boolean

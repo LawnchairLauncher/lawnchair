@@ -313,17 +313,17 @@ public class DragLayer extends InsettableFrameLayout {
 
         mActiveController = null;
 
-        if (mDragController.onInterceptTouchEvent(ev)) {
+        if (mDragController.onControllerInterceptTouchEvent(ev)) {
             mActiveController = mDragController;
             return true;
         }
 
-        if (!mPreventAllApps && mAllAppsController.onInterceptTouchEvent(ev)) {
+        if (!mPreventAllApps && mAllAppsController.onControllerInterceptTouchEvent(ev)) {
             mActiveController = mAllAppsController;
             return true;
         }
 
-        if (mPinchListener != null && mPinchListener.onInterceptTouchEvent(ev)) {
+        if (mPinchListener != null && mPinchListener.onControllerInterceptTouchEvent(ev)) {
             // Stop listening for scrolling etc. (onTouchEvent() handles the rest of the pinch.)
             mActiveController = mPinchListener;
             return true;
@@ -455,7 +455,7 @@ public class DragLayer extends InsettableFrameLayout {
                     mCurrentResizeFrame = null;
             }
         }
-        return handled || mActiveController != null && mActiveController.onTouchEvent(ev);
+        return handled || mActiveController != null && mActiveController.onControllerTouchEvent(ev);
     }
 
     @TargetApi(Build.VERSION_CODES.N)

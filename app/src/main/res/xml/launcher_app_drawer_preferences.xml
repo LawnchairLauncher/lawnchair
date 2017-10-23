@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <ListPreference
+            android:key="pref_numColsDrawer"
+            android:title="@string/num_cols_drawer_pref_title"
+            android:entries="@array/numColsTexts"
+            android:entryValues="@array/numColsValues"
+            android:defaultValue="@string/generalDefault"
+            android:summary="%s"
+            android:dependency="pref_verticalDrawerLayout"
+            android:persistent="true" />
+
+        <ListPreference
+            android:key="pref_numRowsDrawer"
+            android:title="@string/pref_num_rows_drawer"
+            android:entryValues="@array/numRowsValues"
+            android:entries="@array/numRowsTexts"
+            android:defaultValue="@string/generalDefault"
+            android:summary="%s"
+            android:dependency="pref_verticalDrawerLayout"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_verticalDrawerLayout"
+            android:title="@string/vertical_drawer_layout_pref_title"
+            android:defaultValue="false"
+            android:disableDependentsState="true"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_useRoundSearchBar"
+            android:defaultValue="false"
+            android:title="@string/use_round_searhbar"
+            android:persistent="true" />
+
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_allAppsOpacitySB"
+            android:title="@string/all_apps_opacity_pref_title"
+            app:minValue="0"
+            app:maxValue="1"
+            app:defaultSeekbarValue="1"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_hideAllAppsAppLabels"
+            android:title="@string/hide_all_apps_icon_labels_pref_title"
+            android:defaultValue="false"
+            android:dependency="pref_verticalDrawerLayout"
+            android:disableDependentsState="true"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_allAppsCustomLabelColor"
+            android:title="@string/pref_all_apps_custom_label_color" />
+
+        <com.pavelsikun.vintagechroma.ChromaPreference
+            android:dependency="pref_allAppsCustomLabelColor"
+            android:key="pref_workspaceLabelColor"
+            android:title="@string/pref_all_apps_label_color"
+            app:chromaColorMode="ARGB"
+            app:chromaIndicatorMode="HEX"
+            app:chromaInitialColor="@color/quantum_panel_text_color"/>
+
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_allAppsIconScale"
+            android:title="@string/icon_scale_pref_title"
+            app:minValue="0.3"
+            app:maxValue="1.5"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100"
+            app:defaultSeekbarValue="1.0"
+            app:steps="120"
+            android:persistent="true" />
+
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_allAppsIconTextScale"
+            android:title="@string/icon_text_scale_pref_title"
+            app:minValue="0.3"
+            app:maxValue="1.5"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100"
+            app:defaultSeekbarValue="1.0"
+            app:steps="120"
+            android:persistent="true" />
+
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_allAppsIconPaddingScale"
+            android:title="@string/icon_text_padding_scale_pref_title"
+            app:minValue="0.1"
+            app:maxValue="2.0"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100"
+            app:defaultSeekbarValue="1.0"
+            app:steps="190"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_iconLabelsInTwoLines"
+            android:title="@string/pref_iconLabelsInTwoLines"
+            android:defaultValue="false"
+            android:persistent="true" />
+
+        <SwitchPreference
+            android:key="pref_enablePhysics"
+            android:title="@string/enable_spring_pref_title"
+            android:defaultValue="true"
+            android:persistent="true" />
+</PreferenceScreen>

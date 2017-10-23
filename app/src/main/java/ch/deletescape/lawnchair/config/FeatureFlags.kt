@@ -20,6 +20,7 @@ import android.app.Activity
 import android.content.Context
 import android.support.annotation.IntDef
 import android.view.ContextThemeWrapper
+import android.view.LayoutInflater
 import ch.deletescape.lawnchair.R
 import ch.deletescape.lawnchair.Utilities
 import ch.deletescape.lawnchair.preferences.PreferenceProvider
@@ -103,9 +104,17 @@ object FeatureFlags {
         Utilities.getPrefs(activity).migrateThemePref(activity)
         loadThemePreference(activity)
         if (FeatureFlags.useDarkTheme)
-            activity.setTheme(SETTINGS_THEMES[currentTheme])
+            activity.setTheme(SETTINGS_HOME_THEMES[currentTheme])
+    }
+
+    fun getLayoutInflator(layoutInflater: LayoutInflater) : LayoutInflater {
+        val context = layoutInflater.context
+        Utilities.getPrefs(context).migrateThemePref(context)
+        loadThemePreference(context)
+        return LayoutInflater.from(ContextThemeWrapper(context, SETTINGS_THEMES[currentTheme]))
     }
 
     private val LAUNCHER_THEMES = intArrayOf(R.style.LauncherTheme, R.style.LauncherTheme_Dark, R.style.LauncherTheme_Black)
     private val SETTINGS_THEMES = intArrayOf(R.style.SettingsTheme, R.style.SettingsTheme_Dark, R.style.SettingsTheme_Black)
+    private val SETTINGS_HOME_THEMES = intArrayOf(R.style.SettingsHome, R.style.SettingsHome_Dark, R.style.SettingsHome_Black)
 }

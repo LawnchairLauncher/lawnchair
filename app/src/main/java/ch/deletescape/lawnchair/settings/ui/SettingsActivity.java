@@ -18,7 +18,6 @@
 package ch.deletescape.lawnchair.settings.ui;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -43,8 +42,6 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import java.util.Random;
 
 import ch.deletescape.lawnchair.BuildConfig;
 import ch.deletescape.lawnchair.DumbImportExportTask;
@@ -187,7 +184,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             super.onCreate(savedInstanceState);
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
             addPreferencesFromResource(getContent());
-            if (getContent() == R.xml.launcher_pixel_style_preferences) {
+            if (getContent() == R.xml.launcher_theme_preferences) {
                 Preference prefWeatherEnabled = findPreference(FeatureFlags.KEY_PREF_WEATHER);
                 prefWeatherEnabled.setOnPreferenceChangeListener(this);
                 Preference prefWeatherProvider = findPreference(PreferenceFlags.KEY_WEATHER_PROVIDER);
@@ -207,18 +204,13 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
                 }
             } else if (getContent() == R.xml.launcher_about_preferences) {
                 findPreference("about_version").setSummary(BuildConfig.VERSION_NAME);
-                if (BuildConfig.TRAVIS && !BuildConfig.TAGGED_BUILD) {
+                if (BuildConfig.TRAVIS && !BuildConfig.BUILD_TYPE.equalsIgnoreCase("stable")) {
                     findPreference("about_changelog").setSummary(Utilities.getChangelog());
                 }
             } else if (getContent() == R.xml.launcher_behavior_preferences) {
                 if (Utilities.ATLEAST_NOUGAT_MR1 && BuildConfig.TRAVIS) {
                     getPreferenceScreen().removePreference(findPreference(FeatureFlags.KEY_PREF_ENABLE_BACKPORT_SHORTCUTS));
                 }
-            } else if (getContent() == R.xml.launcher_hidden_preferences) {
-                Preference eminemPref = findPreference("random_eminem_quote");
-                String[] eminemQuotes = getResources().getStringArray(R.array.eminem_quotes);
-                int index = new Random().nextInt(eminemQuotes.length);
-                eminemPref.setSummary(eminemQuotes[index]);
             }
         }
 
@@ -333,5 +325,9 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             return fragment;
         }
 
+        @Override
+        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+            return super.onCreateView(FeatureFlags.INSTANCE.getLayoutInflator(inflater), container, savedInstanceState);
+        }
     }
 }

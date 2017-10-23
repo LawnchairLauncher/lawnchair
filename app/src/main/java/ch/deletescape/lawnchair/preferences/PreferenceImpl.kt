@@ -41,6 +41,7 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val verticalDrawerLayout by BooleanPref(PreferenceFlags.KEY_PREF_DRAWER_VERTICAL_LAYOUT, false)
     override val iconLabelsInTwoLines by BooleanPref(PreferenceFlags.KEY_ICON_LABELS_IN_TWO_LINES, false)
     override val animatedClockIconAlternativeClockApps by BooleanPref(PreferenceFlags.KEY_ANIMATED_CLOCK_ICON_ALTERNATIVE_CLOCK_APPS, false)
+    override val enablePhysics by BooleanPref(PreferenceFlags.KEY_ENABLE_PHYSICS, true)
 
     override fun lightStatusBarKeyCache(default: Boolean): Boolean {
         return getBoolean(PreferenceFlags.KEY_LIGHT_STATUS_BAR, default)
@@ -173,8 +174,6 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val blurRadius by FloatPref(PreferenceFlags.KEY_BLUR_RADIUS, 75f)
 
     override var appsViewShown by MutableBooleanPref(PreferenceFlags.APPS_VIEW_SHOWN, false)
-
-    override var requiresIconCacheReload by MutableBooleanPref(PreferenceFlags.KEY_REQUIRES_ICON_CACHE_RELOAD, true)
 
     override val darkTheme: Boolean by BooleanPref(FeatureFlags.KEY_PREF_DARK_THEME, false)
     override val pulldownAction by StringPref(FeatureFlags.KEY_PREF_PULLDOWN_ACTION, "1")

@@ -109,6 +109,10 @@
         <item name="blurTintColor">#45ffffff</item>
     </style>
 
+    <style name="SettingsHome" parent="SettingsTheme">
+        <item name="android:listDivider">@null</item>
+    </style>
+
     <style name="SettingsTheme.Dark" parent="Theme.AppCompat">
         <item name="colorPrimaryDark">#ff242424</item>
         <item name="colorPrimary">#ff2d2d2d</item>
@@ -117,11 +121,19 @@
         <item name="blurTintColor">#45212121</item>
     </style>
 
+    <style name="SettingsHome.Dark" parent="SettingsTheme.Dark">
+        <item name="android:listDivider">@null</item>
+    </style>
+
     <style name="SettingsTheme.Black" parent="SettingsTheme.Dark">
         <item name="colorPrimaryDark">@android:color/black</item>
         <item name="colorPrimary">@android:color/black</item>
         <item name="android:windowBackground">@android:color/black</item>
         <item name="android:listDivider">@android:color/transparent</item>
+    </style>
+
+    <style name="SettingsHome.Black" parent="SettingsTheme.Black">
+        <item name="android:listDivider">@null</item>
     </style>
 
     <!-- Theme for the widget container. -->

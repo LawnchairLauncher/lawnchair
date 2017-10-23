@@ -61,13 +61,13 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
+    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         mPinchDetector.onTouchEvent(ev);
         return mPinchStarted;
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean onControllerTouchEvent(MotionEvent ev) {
         if (mPinchStarted) {
             if (ev.getPointerCount() > 2) {
                 // Using more than two fingers causes weird behavior, so just cancel the pinch.

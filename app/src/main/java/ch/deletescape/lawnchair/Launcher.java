@@ -82,11 +82,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.microsoft.azure.mobile.MobileCenter;
-import com.microsoft.azure.mobile.analytics.Analytics;
-import com.microsoft.azure.mobile.crashes.Crashes;
-import com.microsoft.azure.mobile.distribute.Distribute;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -100,7 +95,7 @@ import ch.deletescape.lawnchair.accessibility.LauncherAccessibilityDelegate;
 import ch.deletescape.lawnchair.allapps.AllAppsContainerView;
 import ch.deletescape.lawnchair.allapps.AllAppsIconRowView;
 import ch.deletescape.lawnchair.allapps.AllAppsTransitionController;
-import ch.deletescape.lawnchair.allapps.DefaultAppSearchController;
+import ch.deletescape.lawnchair.allapps.UnicodeStrippedAppSearchController;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
@@ -375,9 +370,6 @@ public class Launcher extends Activity
 
         setScreenOrientation();
 
-        if (!BuildConfig.MOBILE_CENTER_KEY.equalsIgnoreCase("null"))
-            MobileCenter.start(getApplication(), BuildConfig.MOBILE_CENTER_KEY, Analytics.class, Crashes.class, Distribute.class);
-
         LauncherAppState app = LauncherAppState.getInstance();
         app.setMLauncher(this);
 
@@ -440,11 +432,6 @@ public class Launcher extends Activity
         registerReceiver(mUiBroadcastReceiver, filter);
 
         mLauncherTab = new LauncherTab(this);
-
-        if (mSharedPrefs.getRequiresIconCacheReload()) {
-            mSharedPrefs.setRequiresIconCacheReload(false);
-            reloadIcons();
-        }
 
         Window window = getWindow();
         WindowManager.LayoutParams attributes = window.getAttributes();
@@ -1187,7 +1174,7 @@ public class Launcher extends Activity
         // Setup Apps and Widgets
         mAppsView = findViewById(R.id.apps_view);
         mWidgetsView = findViewById(R.id.widgets_view);
-        mAppsView.setSearchBarController(new DefaultAppSearchController());
+        mAppsView.setSearchBarController(new UnicodeStrippedAppSearchController());
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         mDragController.setDragScoller(mWorkspace);
