@@ -246,6 +246,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair on käynnistysohjelma, jonka on luonut Till Kottmann (Deletescape). Se pohjautuu Launcher3 -käynnistysohjelmaan.</string>
   <string name="about_title">Tietoja</string>
+  <string name="about_pref_summary">Opi tuntemaan Lawnchair tiimi</string>
   <string name="changelog_title">Muutosloki buildille #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Kuvakepaketti</string>
@@ -278,9 +279,17 @@
   <string name="full_width_widgets_pref_summary">Salli widgettien kattaa koko leveys ilman välejä</string>
   <string name="notification_access_pref_title">Ilmoitusten merkit ja esikatselu</string>
   <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
+  <string name="general_pref_title">Työpöytä</string>
+  <string name="dock_pref_title">Telakka</string>
+  <string name="app_drawer_pref_title">Sovellusvalikko</string>
+  <string name="pixel_ui_pref_title">Teema</string>
   <string name="behavior_pref_title">Käyttäytyminen</string>
   <string name="debug_pref_title">Debug</string>
   <string name="import_export_pref_title">Tuo/Vie</string>
+  <string name="general_pref_summary">Muokkaa työpöytääsi</string>
+  <string name="dock_pref_summary">Muokkaa telakkaa</string>
+  <string name="app_drawer_pref_summary">Muokkaa sovellusvalikkoa</string>
+  <string name="pixel_ui_pref_summary">Eri elementtien teemat</string>
   <string name="backup_pref_title">Varmuuskopiointi</string>
   <string name="behavior_pref_summary">Muuta Lawnchairin toimintaa</string>
   <string name="backup_pref_summary">Varmuuskopioi tietokantasi ja asetukset</string>
@@ -400,4 +409,5 @@
   <string name="google_app_not_found">Google sovellus ei ole asennettu</string>
   <string name="popup_card_theme_title">Flat tyylinen ponnahdusikkuna</string>
   <string name="set_default_launcher">Aseta oletus käynnistyssovellus</string>
+  <string name="enable_spring_pref_title">Ota jousi efekti käyttöön</string>
 </resources>
