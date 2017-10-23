@@ -245,6 +245,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair 是由 Till Kottmann(deletescape) 建立的啟動器應用程式，基於 AOSP 的 Launcher3。</string>
   <string name="about_title">關於</string>
+  <string name="about_pref_summary">瞭解 Lawnchair 團隊</string>
   <string name="changelog_title">更新日誌 #%d</string>
   <string name="week_day_format">%1$s：%2$s</string>
   <string name="icon_pack_preference_title">圖示包</string>
@@ -278,11 +279,15 @@
   <string name="notification_access_pref_title">未讀計數和預覽</string>
   <string name="notification_access_pref_summary">允許 Lawnchair 訪問您的通知許可權以啟用此功能</string>
   <string name="general_pref_title">一般</string>
+  <string name="dock_pref_title">Dock欄</string>
+  <string name="app_drawer_pref_title">應用程式清單</string>
   <string name="pixel_ui_pref_title">Pixel 使用者介面</string>
   <string name="behavior_pref_title">功能</string>
   <string name="debug_pref_title">除錯模式</string>
   <string name="import_export_pref_title">匯入／匯出</string>
   <string name="general_pref_summary">主畫面、Dock 欄及應用程式抽屜</string>
+  <string name="dock_pref_summary">自訂您的Dock欄</string>
+  <string name="app_drawer_pref_summary">自訂您的應用程式抽屜</string>
   <string name="pixel_ui_pref_summary">開啟Pixel 啟動器特殊功能</string>
   <string name="backup_pref_title">備份</string>
   <string name="behavior_pref_summary">改變 Lawnchair 的特性</string>
@@ -403,4 +408,5 @@
   <string name="google_app_not_found">未安裝 Google 應用</string>
   <string name="popup_card_theme_title">平面樣式的彈出選單</string>
   <string name="set_default_launcher">設定預設啟動器</string>
+  <string name="enable_spring_pref_title">啟用彈簧效果</string>
 </resources>
