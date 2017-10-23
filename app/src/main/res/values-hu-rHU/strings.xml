@@ -32,7 +32,7 @@
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">A modulok ki vannak kapcsolva Csökkentett módban</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
-  <string name="shortcut_not_available">Parancsikon nem érhető el</string>
+  <string name="shortcut_not_available">A parancsikon nem érhető el</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
   <string name="long_press_widget_to_add">Modul felvételéhez érintse meg, és tartsa lenyomva</string>
@@ -88,12 +88,12 @@
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
   <string name="gadget_setup_text">Beállítás</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
-  <string name="uninstall_system_app_text">Ez egy rendszeralkalmazás, és nem lehet eltávolítani.</string>
+  <string name="uninstall_system_app_text">Ez egy rendszeralkalmazás, nem lehet eltávolítani.</string>
   <!-- Default folder title -->
   <string name="folder_hint_text">Névtelen mappa</string>
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
-  <string name="disabled_app_label">A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> letiltva</string>
+  <string name="disabled_app_label"><xliff:g id="APP_NAME">%1$s</xliff:g> letiltva</string>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">%2$d/%1$d. oldal</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
@@ -108,7 +108,7 @@
   <!-- Instruction that clicking outside will commit folder rename -->
   <string name="folder_tap_to_rename">Koppintson ide az átnevezés mentéséhez</string>
   <!-- Indication that folder closed -->
-  <string name="folder_closed">Mappa lezárva</string>
+  <string name="folder_closed">Mappa bezárva</string>
   <!-- Folder renamed format -->
   <string name="folder_renamed">A mappa új neve: <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Folder name format -->
@@ -193,9 +193,9 @@
   <!-- Accessibility confirmation for widget resize. -->
   <string name="widget_resized">Modul átméretezve <xliff:g id="NUMBER_0">%1$s</xliff:g> szélességre és <xliff:g id="NUMBER_1">%2$s</xliff:g> magasságra</string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
-  <string name="action_deep_shortcut">Gyorsparancsok</string>
+  <string name="action_deep_shortcut">Parancsikonok</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
-  <string name="shortcuts_menu_description"><xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> gyorsparancs a(z) <xliff:g id="APP_NAME">%2$s</xliff:g> számára</string>
+  <string name="shortcuts_menu_description"><xliff:g example="3" id="number_of_shortcuts">%1$d</xliff:g> parancsikon <xliff:g example="Messenger" id="app_name">%2$s</xliff:g> számára</string>
   <string name="edit_drop_target_label">Szerkesztés</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
   <string name="wallpaper_instructions">Háttérkép beállítása</string>
@@ -246,6 +246,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">A Lawnchair egy kezdőképernyő-alkalmazás, melyet Till Kottmann (aka deletescape) készített. Az AOSP-ben található Launcher3 adja az alapját.</string>
   <string name="about_title">Névjegy</string>
+  <string name="about_pref_summary">Ismerje meg a Lawnchair csapatát</string>
   <string name="changelog_title">Változások a #%d verzióban</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Ikoncsomag</string>
@@ -278,13 +279,17 @@
   <string name="full_width_widgets_pref_summary">Engedélyezi, hogy a modulok átíveljenek a teljes szélességben keret nélkül</string>
   <string name="notification_access_pref_title">Értesítés bogyók és előnézetek</string>
   <string name="notification_access_pref_summary">Engedélyezze a Lawnchairnek, hogy hozzáférjen az értesítésekhez a funkció használatához</string>
-  <string name="general_pref_title">Általános</string>
-  <string name="pixel_ui_pref_title">Pixel UI</string>
+  <string name="general_pref_title">Asztal</string>
+  <string name="dock_pref_title">Dokk</string>
+  <string name="app_drawer_pref_title">Alkalmazásfiók</string>
+  <string name="pixel_ui_pref_title">Téma</string>
   <string name="behavior_pref_title">Viselkedés</string>
   <string name="debug_pref_title">Hibakeresés</string>
   <string name="import_export_pref_title">Mentés/visszaállítás</string>
-  <string name="general_pref_summary">Kezdőképernyő, dokk és alkalmazásfiók</string>
-  <string name="pixel_ui_pref_summary">Pixel launcher-exklúzív funkciók engedélyezése</string>
+  <string name="general_pref_summary">Szabja testre az asztalt</string>
+  <string name="dock_pref_summary">Dokk testreszabása</string>
+  <string name="app_drawer_pref_summary">Alkalmazásfiók testreszabása</string>
+  <string name="pixel_ui_pref_summary">Témázza a különböző elemeket</string>
   <string name="backup_pref_title">Biztonsági mentés</string>
   <string name="behavior_pref_summary">A Lawnchair viselkedésének módosítása</string>
   <string name="backup_pref_summary">Adatok és beállítások mentése</string>
@@ -404,4 +409,5 @@
   <string name="google_app_not_found">Google alkalmazás nincs telepítve</string>
   <string name="popup_card_theme_title">Flat stílusú felugró ablakok</string>
   <string name="set_default_launcher">Alapértelmezett kezdőképernyő beállítása</string>
+  <string name="enable_spring_pref_title">Rugózás engedélyezése</string>
 </resources>
