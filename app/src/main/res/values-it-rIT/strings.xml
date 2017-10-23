@@ -32,7 +32,7 @@
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">I Widget sono disabilitati in modalità provvisoria</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
-  <string name="shortcut_not_available">La scorciatoia non è disponibile</string>
+  <string name="shortcut_not_available">Scorciatoia non disponibile</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
   <string name="long_press_widget_to_add">Tocca e tieni premuto per scegliere un widget.</string>
@@ -75,7 +75,7 @@
   <!-- Permission short label -->
   <string name="permlab_read_settings">lettura di impostazioni e scorciatoie della Home</string>
   <!-- Permission description -->
-  <string name="permdesc_read_settings">Consente all\'app di leggere le impostazioni e le scorciatoie della Home.</string>
+  <string name="permdesc_read_settings">Consenti all\'app di leggere le impostazioni e le scorciatoie della Home.</string>
   <!-- Permission short label -->
   <string name="permlab_write_settings">scrivi le impostazioni e scorciatoie della Home</string>
   <!-- Permission description -->
@@ -251,6 +251,8 @@
   <string name="icon_pack_preference_title">Pacchetto icone</string>
   <string name="icon_pack_preference_summary">Seleziona un pacchetto icone</string>
   <string name="hotseat_uses_extracted_colors_pref_title">La dock utilizza il colore del wallpaper</string>
+  <string name="hotseat_show_arrow">Mostra freccia</string>
+  <string name="hotseat_show_page_indicator">Mostra l\'indicatore di pagina</string>
   <string name="hotseat_uses_extracted_colors_pref_on">La dock verrà colorata con un colore estratto dallo sfondo</string>
   <string name="hotseat_uses_extracted_colors_pref_off">La dock sarà grigia ma adattata alla luminosità dello sfondo</string>
   <string name="transparent_hotseat_pref_title">Dock trasparente</string>
@@ -258,6 +260,7 @@
   <string name="blur_pref_title">Attiva effetto sfocato</string>
   <string name="blur_pref_summary">Applica un effetto di sfocatura a parti dell\'interfaccia\nNon compatibile con sfondi animati</string>
   <string name="blur_radius_pref_title">Raggio sfocatura</string>
+  <string name="pref_iconLabelsInTwoLines">Etichette delle icone su due righe</string>
   <string name="white_google_icon_pref_title">Utilizza l\'icona bianca per Google</string>
   <string name="hide_icon_labels_pref_title">Nascondi nome icone sull\' home screen</string>
   <string name="hide_all_apps_icon_labels_pref_title">Nascondi nome icone nel drawer</string>
@@ -268,7 +271,9 @@
   <string name="num_rows_pref_title">Numero di righe</string>
   <string name="num_hotseat_icons_pref_title">Numero di icone nella dock</string>
   <string name="icon_scale_pref_title">Grandezza icone</string>
+  <string name="hotseat_height_scale">Scala di altezza</string>
   <string name="icon_text_scale_pref_title">Grandezza testo icone</string>
+  <string name="icon_text_padding_scale_pref_title">Scala per il padding delle icone</string>
   <string name="full_width_width_widgets_pref_title">Widget a piena larghezza</string>
   <string name="full_width_widgets_pref_summary">Consente ai widget di estendersi lunga tutta la larghezza dello schermo</string>
   <string name="notification_access_pref_title">Badge di notifica e anteprima</string>
@@ -370,6 +375,8 @@
   <string name="icon_shape_circle">Cerchio</string>
   <string name="icon_shape_teardrop">Goccia</string>
   <string name="animated_clock_icon_title">Icona dell\'orologio animata</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Icona animata per app alternative per l\'orologio</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Attiva quest\'opzione se non usi l\'orologio Google come app predefinita per l\'orologio</string>
   <string name="about_summary_title">Sommario</string>
   <string name="about_version">Versione</string>
   <string name="about_icon_designer">Design delle icone</string>

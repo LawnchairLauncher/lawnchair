@@ -28,65 +28,65 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">האפליקציה לא זמינה</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">אפליקציה שהורדת הושבתה במצב בטוח</string>
+  <string name="safemode_shortcut_error">אפליקציות שהורדת מושבתות במצב בטוח</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">ווידג\'טים מושבתים במצב בטוח</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">קיצור הדרך אינו זמין</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">נגיעה&amp; רציפה בווידג\'ט כדי לבחור בו</string>
+  <string name="long_press_widget_to_add">גע והחזק בווידג\'ט כדי לבחור בו.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-  <string name="long_accessible_way_to_add">הקשה כפולה &amp; ונגיעה בווידג\'ט כדי לבחור בו, או להשתמש בפעולות מותאמות אישית</string>
+  <string name="long_accessible_way_to_add">הקש הקשה כפולה והחזק בווידג\'ט כדי לבחור בו, או להשתמש בפעולות מותאמות אישית.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
-  <string name="widget_accessible_dims_format">‏רוחב %1$d וגובה %2$d</string>
+  <string name="widget_accessible_dims_format">‏רוחב %1$d על גובה %2$d</string>
   <!-- All Apps -->
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_bar_hint">חפש יישומים</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_loading_message">יישומים נטענים &#8230;</string>
+  <string name="all_apps_loading_message">טוען יישומים &#8230;</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
   <string name="all_apps_no_search_results">לא נמצאו יישומים התואמים ל-\"<xliff:g id="QUERY">%1$s</xliff:g>\"</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">חיפוש יישומים נוספים</string>
   <!-- Drag and drop -->
   <!-- Error message when user has filled a page -->
-  <string name="out_of_space">אין עוד מקום במסך הזה</string>
+  <string name="out_of_space">אין עוד מקום במסך זה.</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">אין עוד מקום במגש המועדפים.</string>
   <!-- All applications label -->
   <string name="all_apps_button_label">רשימת יישומים</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
-  <string name="all_apps_home_button_label">מסך הבית</string>
+  <string name="all_apps_home_button_label">בית</string>
   <!-- Label for remove drop target. [CHAR_LIMIT=20] -->
-  <string name="remove_drop_target_label">הסרה</string>
+  <string name="remove_drop_target_label">הסר</string>
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
-  <string name="uninstall_drop_target_label">הסרת ההתקנה</string>
+  <string name="uninstall_drop_target_label">הסר התקנה</string>
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
   <string name="app_info_drop_target_label">פרטי יישום</string>
   <!-- Permissions: -->
   <!-- Permission short label -->
-  <string name="permlab_install_shortcut">התקנת קיצורי דרך</string>
+  <string name="permlab_install_shortcut">התקן קיצורי דרך</string>
   <!-- Permission description -->
   <string name="permdesc_install_shortcut">מאפשר לאפליקציה להוסיף קיצורי דרך ללא התערבות המשתמש.</string>
   <!-- Permission short label -->
-  <string name="permlab_read_settings">קורא הגדרות וקיצורי דרך של מסך הבית</string>
+  <string name="permlab_read_settings">קרא הגדרות וקיצורי דרך של דף הבית</string>
   <!-- Permission description -->
-  <string name="permdesc_read_settings">הרשאה לאפליקציה לקרוא את ההגדרות וקיצורי הדרך בדף הבית.</string>
+  <string name="permdesc_read_settings">מאפשר לאפליקציה לקרוא את ההגדרות וקיצורי הדרך בדף הבית.</string>
   <!-- Permission short label -->
-  <string name="permlab_write_settings">כתיבת הגדרות וקיצורי דרך של מסך הבית</string>
+  <string name="permlab_write_settings">כתוב הגדרות וקיצורי דרך של דף הבית</string>
   <!-- Permission description -->
-  <string name="permdesc_write_settings">הרשאה לאפליקציה לשנות את ההגדרות וקיצורי הדרך בדף הבית.</string>
+  <string name="permdesc_write_settings">מאפשר לאפליקציה לשנות את ההגדרות וקיצורי הדרך בדף הבית.</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission"><xliff:g id="App_NAME">%1$s</xliff:g> אינו רשאי לבצע שיחות טלפון</string>
   <!-- Widgets: -->
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">בעיה בטעינת ווידג\'ט</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
-  <string name="gadget_setup_text">הגדרות</string>
+  <string name="gadget_setup_text">הגדרה</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
   <string name="uninstall_system_app_text">זוהי אפליקציית מערכת ולא ניתן להסיר את התקנתה.</string>
   <!-- Default folder title -->
@@ -104,9 +104,9 @@
   <!-- The format string for when a folder is opened, speaks the dimensions -->
   <string name="folder_opened">תיקיה נפתחה, <xliff:g id="Width">%1$d</xliff:g> על <xliff:g id="Height">%2$d</xliff:g></string>
   <!-- Instruction that clicking outside will close folder -->
-  <string name="folder_tap_to_close">הקשה לסגירת התיקייה</string>
+  <string name="folder_tap_to_close">הקש כדי לסגור את התיקייה</string>
   <!-- Instruction that clicking outside will commit folder rename -->
-  <string name="folder_tap_to_rename">הקשה לשמירת שינוי שם</string>
+  <string name="folder_tap_to_rename">הקש כדי לשמור שינוי שם</string>
   <!-- Indication that folder closed -->
   <string name="folder_closed">התיקיה נסגרה</string>
   <!-- Folder renamed format -->
@@ -135,26 +135,25 @@
   <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->
   <string name="abandoned_search">חפש</string>
   <!-- Title for abandoned promise dialog. -->
-  <string name="abandoned_promises_title">אפליקציה זו איננה מותקנת</string>
+  <string name="abandoned_promises_title">אפליקציה זו אינה מותקנת</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
-  <string name="abandoned_promise_explanation">האפליקציה בשביל אייקון זה איננה מותקנת.
-תוכל למחוק אותו, או לחפש את האפליקציה ולהתקין אותו ידנית.    </string>
+  <string name="abandoned_promise_explanation">האפליקציה של סמל זה אינה מותקנת. ניתן להסיר אותו, או לחפש את האפליקציה ולהתקין אותה ידנית.    </string>
   <!-- Title for an app which is being downloaded. -->
-  <string name="app_downloading_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> ההורדה, <xliff:g example="30%" id="progress">%2$s</xliff:g> הסתיימה</string>
+  <string name="app_downloading_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> מוריד, <xliff:g example="30%" id="progress">%2$s</xliff:g> הושלם</string>
   <!-- Title for an app whose download has been started. -->
-  <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> מחכה להתקנה</string>
+  <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> ממתין להתקנה</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_add_to_workspace">Add to Home screen</string>
+  <string name="action_add_to_workspace">הוסף למסך הבית</string>
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
-  <string name="action_move_here">הזז לכאן</string>
+  <string name="action_move_here">העבר פריט לכאן</string>
   <!-- Accessibility confirmation for item added to workspace. -->
-  <string name="item_added_to_workspace">נוסף בהצלחה לשולחן העבודה</string>
+  <string name="item_added_to_workspace">הפריט נוסף למסך הבית</string>
   <!-- Accessibility confirmation for item removed. -->
-  <string name="item_removed">נמחק בהצלחה</string>
+  <string name="item_removed">הפריט הוסר</string>
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
-  <string name="action_move">הזז אובייקט</string>
+  <string name="action_move">הזז פריט</string>
   <!-- Accessibility description to move item to empty cell. -->
   <string name="move_to_empty_cell">העבר אל שורה <xliff:g example="1" id="number">%1$s</xliff:g> עמודה <xliff:g example="1" id="number">%2$s</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
@@ -162,11 +161,11 @@
   <!-- Accessibility description to move item to the hotseat. -->
   <string name="move_to_hotseat_position">הזז למיקום המועדפים <xliff:g example="1" id="number">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for item move. -->
-  <string name="item_moved">הוזז בהצלחה</string>
+  <string name="item_moved">הפריט הועבר</string>
   <!-- Accessibility description to move item into an existing folder. -->
-  <string name="add_to_folder">הזז לתיקייה: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
+  <string name="add_to_folder">הוסף לתיקייה: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
-  <string name="add_to_folder_with_app">הזז לתיקייה המכילה <xliff:g example="Messenger" id="name">%1$s</xliff:g></string>
+  <string name="add_to_folder_with_app">הזז לתיקייה המכילה את <xliff:g example="Messenger" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for item added to folder. -->
   <string name="added_to_folder">הפריט נוסף לתיקייה</string>
   <!-- Accessibility description to create folder with another item. -->
@@ -174,7 +173,7 @@
   <!-- Accessibility confirmation for folder created. -->
   <string name="folder_created">התיקייה נוצרה</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_move_to_workspace">Move to Home screen</string>
+  <string name="action_move_to_workspace">העבר אל מסך הבית</string>
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
   <string name="action_move_screen_left">הזז מסך שמאלה</string>
   <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
@@ -207,13 +206,19 @@
          but the wallpaper cropper cannot load it. The user will
          usually see this when using another app and trying to set
          an image as the wallpaper -->
-  <string name="wallpaper_load_fail">לא ניתן היה להגדיר את התמונה כטפט</string>
+  <string name="wallpaper_load_fail">לא ניתן היה להגדיר את התמונה כרקע</string>
   <!-- Error message when an image is selected as a wallpaper,
          but something goes wrong when the user clicks "Set wallpaper" -->
   <string name="wallpaper_set_fail">לא ניתן היה להגדיר את התמונה כרקע</string>
   <!-- Shown when wallpapers are selected in Wallpaper picker -->
   <!-- String indicating how many media item(s) is(are) selected
             eg. 1 selected [CHAR LIMIT=30] -->
+  <plurals name="number_of_items_selected">
+    <item quantity="one">%1$d נבחר</item>
+    <item quantity="two">%1$d נבחרו</item>
+    <item quantity="many">%1$d נבחרו</item>
+    <item quantity="other">%1$d נבחרו</item>
+  </plurals>
   <!-- Accessibility string used as a label for a particular wallpaper in the Wallpaper Picker list.
          e.g. "Wallpaper 3 of 10" -->
   <string name="wallpaper_accessibility_name">רקע %1$d מ-%2$d</string>
@@ -235,7 +240,7 @@
   <string name="which_wallpaper_option_home_screen_and_lock_screen">מסכי הבית והנעילה</string>
   <string name="title_show_google_app">הצג %1$s</string>
   <string name="title_show_google_app_default">הצגת מסך Google</string>
-  <string name="label_search">חיפוש</string>
+  <string name="label_search">חפש</string>
   <string name="label_voice_search">חיפוש קולי</string>
   <string name="shortcuts_menu_with_notifications_description">%1$d קיצורי דרך ו %2$d התראות עבור %3$s</string>
   <string name="notifications_header">התראות</string>
@@ -243,11 +248,14 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair הוא יישום משגר שנוצרו על-ידי עד Kottmann (ידוע כ- deletescape). מבוסס על Launcher3 מ- AOSP.</string>
   <string name="about_title">אודות</string>
+  <string name="about_pref_summary">הכר את צוות Lawnchair</string>
   <string name="changelog_title">רשימת שינויים לגירסא #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
-  <string name="icon_pack_preference_title">ערכת אייקונים</string>
+  <string name="icon_pack_preference_title">ערכת סמלים</string>
   <string name="icon_pack_preference_summary">בחר ערכת סמלים</string>
   <string name="hotseat_uses_extracted_colors_pref_title">שורת העגינה תשתמש בצבעי הטפט</string>
+  <string name="hotseat_show_arrow">הצג חץ</string>
+  <string name="hotseat_show_page_indicator">הצג דף מחוון</string>
   <string name="hotseat_uses_extracted_colors_pref_on">שורת העגינה תיצבע באחד הצבעים מתוך הטפט</string>
   <string name="hotseat_uses_extracted_colors_pref_off">שורת העגינה תיצבע באפור, ותותאם לבהירות הטפט</string>
   <string name="transparent_hotseat_pref_title">שורת עגינה שקופה</string>
@@ -255,27 +263,34 @@
   <string name="blur_pref_title">אפשר טשטוש</string>
   <string name="blur_pref_summary">הפעל אפקט טשטוש לחלקים מהממשק n\ לא תואם לטפט חי</string>
   <string name="blur_radius_pref_title">רדיוס טשטוש</string>
+  <string name="pref_iconLabelsInTwoLines">כיתוב סמלים בשתי שורות</string>
   <string name="white_google_icon_pref_title">השתמש באייקון גוגל לבן</string>
-  <string name="hide_icon_labels_pref_title">הסתר תוויות על מסך הבית</string>
-  <string name="hide_all_apps_icon_labels_pref_title">הסתר תוויות במגירת היישומים</string>
-  <string name="workspace_label_color_hue_pref_title">צבע תוויות סמלים על מסך הבית</string>
-  <string name="workspace_label_color_variation_pref_title">צבע וריאציה של תוויות סמלים על מסך הבית</string>
+  <string name="hide_icon_labels_pref_title">הסתר כיתוב סמלים על מסך הבית</string>
+  <string name="hide_all_apps_icon_labels_pref_title">הסתר כיתוב סמלים במגירת היישומים</string>
+  <string name="workspace_label_color_hue_pref_title">צבע כיתוב סמלים על מסך הבית</string>
+  <string name="workspace_label_color_variation_pref_title">שינוי צבע כיתוב של סמלים על מסך הבית</string>
   <string name="all_apps_opacity_pref_title">שקיפות מגירת היישומים</string>
   <string name="num_cols_pref_title">מספר עמודות</string>
   <string name="num_rows_pref_title">מספר שורות</string>
   <string name="num_hotseat_icons_pref_title">מספר האייקונים בשורת העגינה</string>
   <string name="icon_scale_pref_title">גודל אייקון</string>
-  <string name="icon_text_scale_pref_title">גודל תווית אייקון</string>
+  <string name="hotseat_height_scale">סולם הגובה</string>
+  <string name="icon_text_scale_pref_title">גודל טקסט סמל</string>
+  <string name="icon_text_padding_scale_pref_title">גודל ריווח הסמל</string>
   <string name="full_width_width_widgets_pref_title">וויד\'גטים ברוחב מלא</string>
-  <string name="full_width_widgets_pref_summary">הרשה לווידג\'טים להתפרש לכל רוחב המסך</string>
+  <string name="full_width_widgets_pref_summary">אפשר לווידג\'טים להתפרש על כל רוחב המסך</string>
   <string name="notification_access_pref_title">תגיות להתראות ותצוגה מקדימה</string>
-  <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
+  <string name="notification_access_pref_summary">אפשר ל-Lawnchair לגשת להודעות שלך כדי להפוך תכונה זו לזמינה</string>
   <string name="general_pref_title">כללי</string>
+  <string name="dock_pref_title">Dock</string>
+  <string name="app_drawer_pref_title">מגירת יישומים</string>
   <string name="pixel_ui_pref_title">ממשק Pixel</string>
   <string name="behavior_pref_title">התנהגות</string>
   <string name="debug_pref_title">תיקון שגיאות</string>
   <string name="import_export_pref_title">ייבוא/ייצוא</string>
   <string name="general_pref_summary">מסך בית, Dock, ומגירת יישומים</string>
+  <string name="dock_pref_summary">התאם אישית את ה-Dock</string>
+  <string name="app_drawer_pref_summary">התאמה אישית של מגירת היישומים</string>
   <string name="pixel_ui_pref_summary">אפשר תכונות ייחודיות של מפעיל Pixel</string>
   <string name="backup_pref_title">גיבוי</string>
   <string name="behavior_pref_summary">שנה את ההתנהגות של Lawnchair</string>
@@ -286,19 +301,19 @@
   <string name="show_mic_pref_title">הצגת לחצן Google Assistant</string>
   <string name="use_round_searhbar">שורת חיפוש ישומים מעוגלת</string>
   <string name="pixel_style_icons_pref_title">שימוש בסמלי Pixel</string>
-  <string name="pixel_style_icons_pref_summary">סמלים מעוגלים יוצגו במידת האפשר</string>
+  <string name="pixel_style_icons_pref_summary">כאשר מופעל, סמלים מעוגלים יוצגו היכן שהדבר אפשרי</string>
   <string name="show_google_now_tab_pref_title">הצגת עמוד Google Now</string>
   <string name="restart_lawnchair_pref_title">הפעל מחדש את Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">יכול להיות שימושי אם חלק מההגדרות לא מיושמות היטב</string>
-  <string name="rebuild_icondb_pref_title">בנה מחדש את מסד הנתונים של סמלים</string>
+  <string name="rebuild_icondb_pref_title">בנה מחדש את מסד הנתונים של הסמלים</string>
   <string name="pinch_to_overview_pref_title">צבוט בכדי לסקור</string>
   <string name="pinch_to_overview_pref_summary">צביטה במסך הבית כדי להגיע לסקירה</string>
   <string name="light_statusbar_pref_title">שורת מצב בהירה</string>
   <string name="light_statusbar_pref_force">שורת המצב תציג סמלים כהים</string>
-  <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
-  <string name="haptic_feedback_pref_title">רטט</string>
+  <string name="light_statusbar_pref_off">שורת המצב תציג סמלים בהירים</string>
+  <string name="haptic_feedback_pref_title">הפעל רטט</string>
   <string name="keep_scroll_state_pref_title">שמירת מיקום הגלילה</string>
-  <string name="keep_scroll_state_pref_summary">שמירת מיקום הגלילה במגירת היישומים</string>
+  <string name="keep_scroll_state_pref_summary">שומר את מיקום הגלילה במגירת היישומים</string>
   <string name="home_opens_drawer_pref_title">כפתור הבית פותח את מגירת היישומים</string>
   <string name="home_opens_drawer_pref_summary">לחיצה על כפתור הבית כאשר נמצאים במסך הבית תפתח את מגירת היישומים</string>
   <string name="show_hidden_pref_title">הצגת יישומים מוסתרים</string>
@@ -314,8 +329,8 @@
   <string name="visibility">נראות</string>
   <string name="default_text">ברירת מחדל</string>
   <string name="edit_icon_reset">איפוס</string>
-  <string name="show_top_shadow_title">הצג צללית עליונה</string>
-  <string name="pref_cat_homescreen">מסך הבית</string>
+  <string name="show_top_shadow_title">הצג צל עליון</string>
+  <string name="pref_cat_homescreen">מסך בית</string>
   <string name="pref_cat_miscellaneous">שונות</string>
   <string name="pref_cat_hotseat">Dock</string>
   <string name="pref_cat_theme">ערכת נושא</string>
@@ -324,7 +339,7 @@
   <string name="theme_dark">כהה</string>
   <string name="theme_black">שחור</string>
   <string name="hide_hotseat_pref_title">הסתר שורת Dock</string>
-  <string name="all_icons">כל האייקונים</string>
+  <string name="all_icons">כל הסמלים</string>
   <string name="pull_down_action_pref_title">פעולת החלקה למטה</string>
   <string name="pull_down_do_nothing">אל תעשה דבר</string>
   <string name="pull_down_notis">הצג חלונית התראות</string>
@@ -338,7 +353,7 @@
   <string name="imexport_error">שגיאה: לא ניתן להעתיק קובץ</string>
   <string name="imexport_no_backup_found">לא נמצא גיבוי</string>
   <string name="imexport_external_storage_unreadable">אחסון חיצוני אינו קריא (אנא הענק הרשאה בהגדרות)</string>
-  <string name="imexport_external_storage_unwritable">אחסון חיצוני אינו קריא (אנא הענק הרשאה בהגדרות)</string>
+  <string name="imexport_external_storage_unwritable">אחסון חיצוני אינו ניתן לכתיבה (אנא הענק הרשאה בהגדרות)</string>
   <string name="units_metric">מטרי</string>
   <string name="units_imperial">אימפריאלי</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
@@ -350,15 +365,15 @@
   <string name="none">כלום</string>
   <string name="pref_applyTheme">החלת ערכת נושא על</string>
   <string name="pref_applyBlur">החל טשטוש על</string>
-  <string name="search_bar">תיבת חיפוש</string>
+  <string name="search_bar">סרגל חיפוש</string>
   <string name="folder">תיקייה</string>
-  <string name="dock_allapps"><![CDATA[Dock & מגירת אפליקציות]]></string>
-  <string name="app_shortcuts">קיצורי דרך באפליקציה</string>
+  <string name="dock_allapps"><![CDATA[Dock ומגירת אפליקציות]]></string>
+  <string name="app_shortcuts">קיצורי דרך של אפליקציות</string>
   <string name="blur_effect">אפקט טשטוש</string>
   <string name="enable_editing_pref_title">אפשר עריכת מסך בית</string>
   <string name="pref_weather_provider">ספק מזג אוויר</string>
   <string name="loading">טוען…</string>
-  <string name="icon_shape_override_label">שנה צורת אייקון</string>
+  <string name="icon_shape_override_label">שנה צורת סמל</string>
   <string name="icon_shape_system_default">ללא שינוי</string>
   <string name="icon_shape_none">ללא</string>
   <string name="icon_shape_square">ריבוע</string>
@@ -367,6 +382,8 @@
   <string name="icon_shape_circle">עיגול</string>
   <string name="icon_shape_teardrop">דמעה</string>
   <string name="animated_clock_icon_title">אייקון שעון מונפש</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">הנפש אפליקציות שעון חלופיות</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">הפעל אפשרות זו אם אינך משתמש בשעון של Google בתור אפליקציית השעון המוגדרת כברירת מחדל</string>
   <string name="about_summary_title">סיכום</string>
   <string name="about_version">גרסה</string>
   <string name="about_icon_designer">מעצב סמל האפליקציה</string>
@@ -379,17 +396,20 @@
   <string name="weather_api_key_not_set">מפתח API לא מוגדר</string>
   <string name="pref_weather_api_key_title">מפתח API</string>
   <string name="about_changelog">יומן שינויים</string>
-  <string name="pref_all_apps_custom_label_color">השתמש בצבע תווית מותאים אישית</string>
-  <string name="pref_all_apps_label_color_variation">גוון צבע תוויות הסמלים במגירת היישומים</string>
-  <string name="pref_all_apps_label_color">צבע תוויות הסמלים במגירת היישומים</string>
+  <string name="pref_all_apps_custom_label_color">השתמש בצבע כיתוב מותאם אישית</string>
+  <string name="pref_all_apps_label_color_variation">שינוי צבע כיתוב הסמלים במגירת היישומים</string>
+  <string name="pref_all_apps_label_color">צבע כיתוב הסמלים במגירת היישומים</string>
   <string name="pref_num_rows_drawer">מספר השורות במגירת היישומים</string>
   <string name="center_wallpaper_pref_title">מרכז את הטפט כאשר ישנו רק מסך אחד</string>
   <string name="vertical_drawer_layout_pref_title">הצג כרשימה אנכית</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
   <string name="about_translators">מתרגמים</string>
   <string name="lock_desktop">נעל את מסך הבית</string>
   <string name="lawnfeed_not_found">Lawnfeed אינו מותקן</string>
   <string name="google_app_not_found">היישום של Google אינו מותקן</string>
-  <string name="set_default_launcher">הגדר כברירת מחדל</string>
+  <string name="popup_card_theme_title">הודעה קופצת בסגנון שטוח</string>
+  <string name="set_default_launcher">הגדר כמפעיל אפליקציות ברירת מחדל</string>
+  <string name="enable_spring_pref_title">אפשר אפקט קפיץ</string>
 </resources>

@@ -246,11 +246,14 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair is een Launcher-app gemaakt door Till Kottmann (bekend als deletescape). Het is gebaseerd op Launcher3 uit AOSP.</string>
   <string name="about_title">Over</string>
+  <string name="about_pref_summary">Leer het Lawnchair-team kennen</string>
   <string name="changelog_title">Changelog voor build #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Pictogrammenpakket</string>
   <string name="icon_pack_preference_summary">Selecteer een pictogrammenpakket</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Favorietenbalk gebruikt achtergrondkleuren</string>
+  <string name="hotseat_show_arrow">Pijl weergeven</string>
+  <string name="hotseat_show_page_indicator">Pagina-indicator weergeven</string>
   <string name="hotseat_uses_extracted_colors_pref_on">De favorietenbalk zal de kleur van de achtergrond gebruiken</string>
   <string name="hotseat_uses_extracted_colors_pref_off">De favorietenbalk zal grijs zijn, maar aangepast op de helderheid van de achtergrond</string>
   <string name="transparent_hotseat_pref_title">Doorzichtige favorietenbalk</string>
@@ -258,6 +261,7 @@
   <string name="blur_pref_title">Blur inschakelen</string>
   <string name="blur_pref_summary">Blur effect toepassen op delen van de interface\nNiet compatibel met live wallpapers</string>
   <string name="blur_radius_pref_title">Blur intensiteit</string>
+  <string name="pref_iconLabelsInTwoLines">Pictogram labels op twee regels</string>
   <string name="white_google_icon_pref_title">Gebruik wit Google pictogram</string>
   <string name="hide_icon_labels_pref_title">Verberg pictogram labels op startscherm</string>
   <string name="hide_all_apps_icon_labels_pref_title">Pictogram labels verbergen in lade</string>
@@ -268,17 +272,23 @@
   <string name="num_rows_pref_title">Aantal rijen</string>
   <string name="num_hotseat_icons_pref_title">Aantal pictogrammen in favorietenbalk</string>
   <string name="icon_scale_pref_title">Pictogram grootte</string>
+  <string name="hotseat_height_scale">Hoogte schaal</string>
   <string name="icon_text_scale_pref_title">Pictogram tekstgrootte</string>
+  <string name="icon_text_padding_scale_pref_title">Pictogram opvulling schaal</string>
   <string name="full_width_width_widgets_pref_title">Volledige breedte widgets</string>
   <string name="full_width_widgets_pref_summary">Widgets toestaan de volledige breedte te omvatten</string>
   <string name="notification_access_pref_title">Notificatie pictogram en voorvertoning</string>
   <string name="notification_access_pref_summary">Geef Lawnchair toestemming tot uw notificaties om deze functie in te schakelen</string>
   <string name="general_pref_title">Algemeen</string>
+  <string name="dock_pref_title">Dock</string>
+  <string name="app_drawer_pref_title">App drawer</string>
   <string name="pixel_ui_pref_title">Pixel-UI</string>
   <string name="behavior_pref_title">Gedrag</string>
   <string name="debug_pref_title">Debuggen</string>
   <string name="import_export_pref_title">Importeren/exporteren</string>
   <string name="general_pref_summary">Thuisscherm, dock en applicatielade</string>
+  <string name="dock_pref_summary">Pas je dock aan</string>
+  <string name="app_drawer_pref_summary">Pas je app drawer aan</string>
   <string name="pixel_ui_pref_summary">Pixel Launcher exclusieve functies inschakelen</string>
   <string name="backup_pref_title">Back-up</string>
   <string name="behavior_pref_summary">Wijzig het gedrag van Lawnchair</string>
@@ -370,6 +380,8 @@
   <string name="icon_shape_circle">Cirkel</string>
   <string name="icon_shape_teardrop">Druppel</string>
   <string name="animated_clock_icon_title">Geanimeerd klok pictogram</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Alternatieve klok apps animeren</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Inschakelen als de Google Klok niet jouw standaard klok app is</string>
   <string name="about_summary_title">Samenvatting</string>
   <string name="about_version">Versie</string>
   <string name="about_icon_designer">App Pictogram Designer</string>
@@ -397,4 +409,5 @@
   <string name="google_app_not_found">Google app niet geïnstalleerd</string>
   <string name="popup_card_theme_title">Vlakke stijl pop-up</string>
   <string name="set_default_launcher">Standaard launcher instellen</string>
+  <string name="enable_spring_pref_title">Veereffect inschakelen</string>
 </resources>

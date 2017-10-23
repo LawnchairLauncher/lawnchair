@@ -256,6 +256,8 @@
   <string name="icon_pack_preference_title">حزم الإيقونات</string>
   <string name="icon_pack_preference_summary">اختر حزمة أيقونات</string>
   <string name="hotseat_uses_extracted_colors_pref_title">منصة التطبيقات تستخدم ألوان خلفية الشاشة</string>
+  <string name="hotseat_show_arrow">إظهار السهم</string>
+  <string name="hotseat_show_page_indicator">إظهار مؤشر الصفحة</string>
   <string name="hotseat_uses_extracted_colors_pref_on">منصة التطبيقات ستلون بلون مستخرج من صورة خلفية الشاشة</string>
   <string name="hotseat_uses_extracted_colors_pref_off">منصة التطبيقات ستكون بلون رمادي، لكن معدلة بدرجة سطوع صورة الخلفية</string>
   <string name="transparent_hotseat_pref_title">منصة شفافة</string>
@@ -274,7 +276,9 @@
   <string name="num_rows_pref_title">عدد الصفوف</string>
   <string name="num_hotseat_icons_pref_title">عدد الايقونات في منصة التطبيقات</string>
   <string name="icon_scale_pref_title">حجم الأيقونة</string>
+  <string name="hotseat_height_scale">مقياس الارتفاع</string>
   <string name="icon_text_scale_pref_title">حجم نص الأيقونة</string>
+  <string name="icon_text_padding_scale_pref_title">رمز حجم الحشو</string>
   <string name="full_width_width_widgets_pref_title">أدوات بالعرض الكامل</string>
   <string name="full_width_widgets_pref_summary">السماح للأدوات بالتمدد على كامل عرض الشاشة من غير حشو</string>
   <string name="notification_access_pref_title">علامات الإشعارات و معاينتها</string>

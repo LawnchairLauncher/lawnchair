@@ -245,11 +245,14 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair 是由 Till Kottmann(deletescape) 建立的啟動器應用程式，基於 AOSP 的 Launcher3。</string>
   <string name="about_title">關於</string>
+  <string name="about_pref_summary">瞭解 Lawnchair 團隊</string>
   <string name="changelog_title">更新日誌 #%d</string>
   <string name="week_day_format">%1$s：%2$s</string>
   <string name="icon_pack_preference_title">圖示包</string>
   <string name="icon_pack_preference_summary">選擇一個圖示包</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Dock欄使用桌布的顏色</string>
+  <string name="hotseat_show_arrow">顯示箭頭</string>
+  <string name="hotseat_show_page_indicator">顯示頁面的指標</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Dock欄將從壁紙中提取的顏色著色</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Dock欄使用灰色，但會根據桌布亮度自動調整</string>
   <string name="transparent_hotseat_pref_title">透明的Dock欄</string>
@@ -257,6 +260,7 @@
   <string name="blur_pref_title">開啟模糊</string>
   <string name="blur_pref_summary">介面的模糊效果\n無法用於動態桌布</string>
   <string name="blur_radius_pref_title">模糊範圍</string>
+  <string name="pref_iconLabelsInTwoLines">兩行圖示標籤</string>
   <string name="white_google_icon_pref_title">使用白色的 Google 圖示</string>
   <string name="hide_icon_labels_pref_title">隱藏主畫面上的文字</string>
   <string name="hide_all_apps_icon_labels_pref_title">隱藏應用程式清單中的文字</string>
@@ -267,17 +271,23 @@
   <string name="num_rows_pref_title">行數</string>
   <string name="num_hotseat_icons_pref_title">Dock欄上的圖示數量</string>
   <string name="icon_scale_pref_title">圖示大小</string>
+  <string name="hotseat_height_scale">高度範圍</string>
   <string name="icon_text_scale_pref_title">圖示字型大小</string>
+  <string name="icon_text_padding_scale_pref_title">圖示填滿範圍</string>
   <string name="full_width_width_widgets_pref_title">全寬小工具</string>
   <string name="full_width_widgets_pref_summary">允許小工具填滿桌面寬度</string>
   <string name="notification_access_pref_title">未讀計數和預覽</string>
   <string name="notification_access_pref_summary">允許 Lawnchair 訪問您的通知許可權以啟用此功能</string>
   <string name="general_pref_title">一般</string>
+  <string name="dock_pref_title">Dock欄</string>
+  <string name="app_drawer_pref_title">應用程式清單</string>
   <string name="pixel_ui_pref_title">Pixel 使用者介面</string>
   <string name="behavior_pref_title">功能</string>
   <string name="debug_pref_title">除錯模式</string>
   <string name="import_export_pref_title">匯入／匯出</string>
   <string name="general_pref_summary">主畫面、Dock 欄及應用程式抽屜</string>
+  <string name="dock_pref_summary">自訂您的Dock欄</string>
+  <string name="app_drawer_pref_summary">自訂您的應用程式抽屜</string>
   <string name="pixel_ui_pref_summary">開啟Pixel 啟動器特殊功能</string>
   <string name="backup_pref_title">備份</string>
   <string name="behavior_pref_summary">改變 Lawnchair 的特性</string>
@@ -369,6 +379,8 @@
   <string name="icon_shape_circle">圓形</string>
   <string name="icon_shape_teardrop">水滴型</string>
   <string name="animated_clock_icon_title">動態時鐘圖示</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">動畫替代時鐘</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">如果您不使用Google時鐘作為默認時鐘，請啟用此功能</string>
   <string name="about_summary_title">概要</string>
   <string name="about_version">版本</string>
   <string name="about_icon_designer">應用程式圖示的設計者</string>
@@ -396,4 +408,5 @@
   <string name="google_app_not_found">未安裝 Google 應用</string>
   <string name="popup_card_theme_title">平面樣式的彈出選單</string>
   <string name="set_default_launcher">設定預設啟動器</string>
+  <string name="enable_spring_pref_title">啟用彈簧效果</string>
 </resources>
