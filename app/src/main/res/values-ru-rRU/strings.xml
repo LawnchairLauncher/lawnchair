@@ -247,6 +247,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair - это лаунчер, созданный Till Kottmann (aka deletescape). Он основан на Launcher3 из AOSP.</string>
   <string name="about_title">О программе</string>
+  <string name="about_pref_summary">Узнайте о команде Lawnchair</string>
   <string name="changelog_title">Изменения в сборке #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Набор значков</string>
@@ -280,11 +281,15 @@
   <string name="notification_access_pref_title">Значки уведомлений и предварительный просмотр</string>
   <string name="notification_access_pref_summary">Разрешить Lawnchair доступ к вашим уведомлениям для включения этой функции</string>
   <string name="general_pref_title">Основные</string>
+  <string name="dock_pref_title">Док-бар</string>
+  <string name="app_drawer_pref_title">Меню приложений</string>
   <string name="pixel_ui_pref_title">Интерфейс Pixel</string>
   <string name="behavior_pref_title">Поведение</string>
   <string name="debug_pref_title">Отладка</string>
   <string name="import_export_pref_title">Импорт/Экспорт</string>
   <string name="general_pref_summary">Главный экран, док-бар и меню приложений</string>
+  <string name="dock_pref_summary">Настройте Ваш док-бар</string>
+  <string name="app_drawer_pref_summary">Настройте Ваше меню приложений</string>
   <string name="pixel_ui_pref_summary">Включить функции, эксклюзивные для Pixel Launcher</string>
   <string name="backup_pref_title">Резервное копирование</string>
   <string name="behavior_pref_summary">Изменить поведение Lawnchair</string>
@@ -405,4 +410,5 @@
   <string name="google_app_not_found">Приложение Google не установлено</string>
   <string name="popup_card_theme_title">Плоский стиль всплывающих окон</string>
   <string name="set_default_launcher">Установить лаунчер по умолчанию</string>
+  <string name="enable_spring_pref_title">Включить эффект отскока</string>
 </resources>
