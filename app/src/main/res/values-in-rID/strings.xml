@@ -245,6 +245,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair adalah sebuah peluncur aplikasi yang dibuat oleh Till Kottmann (alias deletescape). Dibuat berdasar kepada Launcher3 dari AOSP.</string>
   <string name="about_title">Tentang</string>
+  <string name="about_pref_summary">Mengenal tentang tim Lawnchair</string>
   <string name="changelog_title">Perubahan pada #%d</string>
   <string name="week_day_format">%1$s %2$s</string>
   <string name="icon_pack_preference_title">Paket Ikon</string>
@@ -278,11 +279,15 @@
   <string name="notification_access_pref_title">Pemberitahuan lencana dan Tinjauan</string>
   <string name="notification_access_pref_summary">Memungkinkan Lawnchair untuk mengakses notifikasi anda untuk mengaktifkan fitur ini</string>
   <string name="general_pref_title">Umum</string>
+  <string name="dock_pref_title">Dok</string>
+  <string name="app_drawer_pref_title">Laci Aplikasi</string>
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Perilaku</string>
   <string name="debug_pref_title">Debug</string>
   <string name="import_export_pref_title">Impor/Ekspor</string>
   <string name="general_pref_summary">Layar utama, dock dan laci aplikasi</string>
+  <string name="dock_pref_summary">Sesuaikan dok Anda</string>
+  <string name="app_drawer_pref_summary">Sesuaikan laci aplikasi anda</string>
   <string name="pixel_ui_pref_summary">Mengaktifkan fitur eksklusif Pixel Launcher</string>
   <string name="backup_pref_title">Cadang</string>
   <string name="behavior_pref_summary">Mengubah perilaku Lawnchair</string>
@@ -403,4 +408,5 @@
   <string name="google_app_not_found">Google app tidak terpasang</string>
   <string name="popup_card_theme_title">Gaya datar popup</string>
   <string name="set_default_launcher">Tetapkan peluncur bawaan</string>
+  <string name="enable_spring_pref_title">Aktifkan efek spring</string>
 </resources>
