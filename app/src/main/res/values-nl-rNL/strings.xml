@@ -246,6 +246,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair is een Launcher-app gemaakt door Till Kottmann (bekend als deletescape). Het is gebaseerd op Launcher3 uit AOSP.</string>
   <string name="about_title">Over</string>
+  <string name="about_pref_summary">Leer het Lawnchair-team kennen</string>
   <string name="changelog_title">Changelog voor build #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Pictogrammenpakket</string>
@@ -279,11 +280,15 @@
   <string name="notification_access_pref_title">Notificatie pictogram en voorvertoning</string>
   <string name="notification_access_pref_summary">Geef Lawnchair toestemming tot uw notificaties om deze functie in te schakelen</string>
   <string name="general_pref_title">Algemeen</string>
+  <string name="dock_pref_title">Dock</string>
+  <string name="app_drawer_pref_title">App drawer</string>
   <string name="pixel_ui_pref_title">Pixel-UI</string>
   <string name="behavior_pref_title">Gedrag</string>
   <string name="debug_pref_title">Debuggen</string>
   <string name="import_export_pref_title">Importeren/exporteren</string>
   <string name="general_pref_summary">Thuisscherm, dock en applicatielade</string>
+  <string name="dock_pref_summary">Pas je dock aan</string>
+  <string name="app_drawer_pref_summary">Pas je app drawer aan</string>
   <string name="pixel_ui_pref_summary">Pixel Launcher exclusieve functies inschakelen</string>
   <string name="backup_pref_title">Back-up</string>
   <string name="behavior_pref_summary">Wijzig het gedrag van Lawnchair</string>
@@ -404,4 +409,5 @@
   <string name="google_app_not_found">Google app niet geïnstalleerd</string>
   <string name="popup_card_theme_title">Vlakke stijl pop-up</string>
   <string name="set_default_launcher">Standaard launcher instellen</string>
+  <string name="enable_spring_pref_title">Veereffect inschakelen</string>
 </resources>
