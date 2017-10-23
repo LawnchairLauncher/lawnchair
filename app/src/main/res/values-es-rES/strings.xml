@@ -246,6 +246,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair es un Launcher creado por Till Kottmann (alias deletescape). Basado en Launcher3 de AOSP.</string>
   <string name="about_title">Acerca de</string>
+  <string name="about_pref_summary">Conoce acerca del equipo de Lawnchair</string>
   <string name="changelog_title">Registro de cambios de la build #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Paquete de iconos</string>
@@ -279,11 +280,15 @@
   <string name="notification_access_pref_title">Insignia en notificaciones y vista previa</string>
   <string name="notification_access_pref_summary">Deberá permitir a Lawnchair el acceso a notificaciones para poder habilitar esta función</string>
   <string name="general_pref_title">General</string>
+  <string name="dock_pref_title">Barra de íconos</string>
+  <string name="app_drawer_pref_title">Cajón de Aplicaciones</string>
   <string name="pixel_ui_pref_title">Píxeles interfaz de usuario</string>
   <string name="behavior_pref_title">Comportamiento</string>
   <string name="debug_pref_title">Opciones de depuración</string>
   <string name="import_export_pref_title">Importar/Exportar</string>
   <string name="general_pref_summary">Pantalla de inicio, dock y cajón de aplicaciones</string>
+  <string name="dock_pref_summary">Personaliza tu barra de íconos</string>
+  <string name="app_drawer_pref_summary">Personaliza tu cajón de aplicaciones</string>
   <string name="pixel_ui_pref_summary">Habilitar características exclusivas de lanzador de Pixel</string>
   <string name="backup_pref_title">Copia de seguridad</string>
   <string name="behavior_pref_summary">Cambiar el comportamiento de Lawnchair</string>
@@ -404,4 +409,5 @@
   <string name="google_app_not_found">Aplicación de Google no instalada</string>
   <string name="popup_card_theme_title">Emergente de estilo plano</string>
   <string name="set_default_launcher">Establecer launcher por defecto</string>
+  <string name="enable_spring_pref_title">Habilitar efecto de rebote</string>
 </resources>
