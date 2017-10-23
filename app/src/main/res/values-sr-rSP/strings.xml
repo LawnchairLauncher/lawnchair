@@ -247,6 +247,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair је апликација за покретање коју је креирао Till Kottmann (aka deletescape). Заснован је на Launcher3 из AOSP-а.</string>
   <string name="about_title">О програму</string>
+  <string name="about_pref_summary">Упознајте Lawnchair тим</string>
   <string name="changelog_title">Промене за изградњу #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Пакет икона</string>
@@ -280,11 +281,15 @@
   <string name="notification_access_pref_title">Значке обавештења и приказ</string>
   <string name="notification_access_pref_summary">Дозволи да Lawnchair приступи вашим обавештењима да бисте омогућили ову функцију</string>
   <string name="general_pref_title">Главно</string>
+  <string name="dock_pref_title">Док</string>
+  <string name="app_drawer_pref_title">Апликације Drawer-а</string>
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Понашање</string>
   <string name="debug_pref_title">Отклањање грешака</string>
   <string name="import_export_pref_title">Увоз / Извоз</string>
   <string name="general_pref_summary">Почетни екран, док и фиока апликација</string>
+  <string name="dock_pref_summary">Прилагоди твој Док</string>
+  <string name="app_drawer_pref_summary">Прилагоди твоје апликације drawer-а</string>
   <string name="pixel_ui_pref_summary">Омогућите ексклузивне функције Pixel Launcher-а</string>
   <string name="backup_pref_title">Резервна копија</string>
   <string name="behavior_pref_summary">Промените понашање Lawnchair</string>
@@ -405,4 +410,5 @@
   <string name="google_app_not_found">Google апликација није инсталирана</string>
   <string name="popup_card_theme_title">Искачући мени раван стил</string>
   <string name="set_default_launcher">Постави подразумевани покретач</string>
+  <string name="enable_spring_pref_title">Омогући ефекат опруге</string>
 </resources>
