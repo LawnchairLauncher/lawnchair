@@ -28,7 +28,8 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">Η εφαρμογή δεν είναι διαθέσιμη</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Η λήψη εφαρμογών απενεργοποήθηκε στην Ασφαλή λειτουργία</string>
+  <string name="safemode_shortcut_error">Στην Ασφαλή λειτουργία,
+απενεργοποιούνται οι εφαρμογές που εσείς έχετε εγκαταστήσει</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">Τα γραφικά στοιχεία απενεργοποιήθηκαν στην ασφαλή λειτουργία</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
@@ -246,6 +247,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Ο Lawnchair είναι μια εφαρμογή εκκίνησης που δημιουργήθηκε από τον Till Kottmann (γνωστός και ως deletescape). Βασίζεται στον εκκινητή Launcher3 του ανοιχτού κώδικα λειτουργικού συστήματος Android (AOSP).</string>
   <string name="about_title">Σχετικά με</string>
+  <string name="about_pref_summary">Ενημερωθείτε σχετικά με την ομάδα του Lawnchair</string>
   <string name="changelog_title">Αρχείο καταγραφής αλλαγών της έκδοσης #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Πακέτο εικονιδίων</string>
@@ -279,11 +281,15 @@
   <string name="notification_access_pref_title">Εικονίδια ειδοποιήσεων και προεπισκόπηση</string>
   <string name="notification_access_pref_summary">Επιτρέψτε στο Lawnchair να αποκτήσει πρόσβαση στης ειδοποιήσεις σας για να ενεργοποιηθεί αυτό το χαρακτηριστικό</string>
   <string name="general_pref_title">Γενικές ρυθμίσεις</string>
+  <string name="dock_pref_title">Μπάρα Εφαρμογών</string>
+  <string name="app_drawer_pref_title">Συρτάρι Εφαρμογών</string>
   <string name="pixel_ui_pref_title">Χαρακτηριστικά Pixel</string>
   <string name="behavior_pref_title">Συμπεριφορά</string>
   <string name="debug_pref_title">Αντιμετώπιση σφαλμάτων</string>
   <string name="import_export_pref_title">Αντίγραφα ασφαλείας ρυθμίσεων</string>
   <string name="general_pref_summary">Αρχική οθόνη, μπάρα εφαρμογών, μενού εφαρμογών</string>
+  <string name="dock_pref_summary">Διαμορφώστε την μπάρα εφαρμογών σας</string>
+  <string name="app_drawer_pref_summary">Διαμορφώστε το συρτάρι εφαρμογών σας</string>
   <string name="pixel_ui_pref_summary">Ενεργοποίηση αποκλειστικών χαρακτηριστικών τύπου εκκινητή Pixel</string>
   <string name="backup_pref_title">Αντίγραφα Ασφαλείας</string>
   <string name="behavior_pref_summary">Αλλάξτε την συμπεριφορά του Lawnchair</string>
@@ -333,8 +339,8 @@
   <string name="theme_black">Μαύρο</string>
   <string name="hide_hotseat_pref_title">Απόκρυψη μπάρας εφαρμογών</string>
   <string name="all_icons">Όλα τα εικονίδια</string>
-  <string name="pull_down_action_pref_title">Ενέργεια τραβήγματος προς τα κάτω</string>
-  <string name="pull_down_do_nothing">Να μη γίνει καμία ενέργεια</string>
+  <string name="pull_down_action_pref_title">Σύρετε προς τα κάτω για…</string>
+  <string name="pull_down_do_nothing">Δεν θα κάνει τίποτα</string>
   <string name="pull_down_notis">Εμφάνιση ειδοποιήσεων</string>
   <string name="pull_down_search">Άνοιγμα αναζήτησης Google</string>
   <string name="pull_down_apps_search">Αναζήτηση εφαρμογών</string>
@@ -404,4 +410,5 @@
   <string name="google_app_not_found">Η εφαρμογή Goggle δεν είναι εγκατεστημένη</string>
   <string name="popup_card_theme_title">Επίπεδο στυλ γρήγορων συντομεύσεων</string>
   <string name="set_default_launcher">Ορισμός προεπιλεγμένου εκτοξευτή</string>
+  <string name="enable_spring_pref_title">Ενεργοποίηση εφέ μεταπήδησης</string>
 </resources>
