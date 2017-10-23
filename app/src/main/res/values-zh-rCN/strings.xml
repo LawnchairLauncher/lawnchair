@@ -84,7 +84,7 @@
   <string name="msg_no_phone_permission">不允许使用“<xliff:g id="APP_NAME">%1$s</xliff:g>”拨打电话</string>
   <!-- Widgets: -->
   <!-- Text to show user in place of a gadget when we can't display it properly -->
-  <string name="gadget_error_text">加载微件时出现问题</string>
+  <string name="gadget_error_text">加载小部件时出现问题</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
   <string name="gadget_setup_text">设置</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
@@ -245,6 +245,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair 是 Till Kottmann（又名deletescape）基于 AOSP 的 Launcher3 所开发的启动器应用程序。</string>
   <string name="about_title">关于</string>
+  <string name="about_pref_summary">了解 Lawnchair 团队</string>
   <string name="changelog_title">#%d 版的更新日志</string>
   <string name="week_day_format">%1$s， %2$s</string>
   <string name="icon_pack_preference_title">图标包</string>
@@ -278,11 +279,15 @@
   <string name="notification_access_pref_title">通知角标与预览</string>
   <string name="notification_access_pref_summary">允许 Lawnchair 访问您的通知以启用此功能</string>
   <string name="general_pref_title">常规</string>
+  <string name="dock_pref_title">Dock</string>
+  <string name="app_drawer_pref_title">应用抽屉</string>
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">行为</string>
   <string name="debug_pref_title">调试</string>
   <string name="import_export_pref_title">导入/导出</string>
   <string name="general_pref_summary">主屏幕，dock 和应用抽屉</string>
+  <string name="dock_pref_summary">定制您的 dock</string>
+  <string name="app_drawer_pref_summary">定制您的应用抽屉</string>
   <string name="pixel_ui_pref_summary">启用 Pixel Launcher 独家功能</string>
   <string name="backup_pref_title">备份</string>
   <string name="behavior_pref_summary">更改 Lawnchair 行为</string>
@@ -403,4 +408,5 @@
   <string name="google_app_not_found">未安装 Google 应用</string>
   <string name="popup_card_theme_title">扁平风格弹出菜单</string>
   <string name="set_default_launcher">设置默认桌面</string>
+  <string name="enable_spring_pref_title">启用回弹特效</string>
 </resources>
