@@ -246,6 +246,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair är en startskärmsapp skapad av Till Kottmann (deletescape). Den är baserad på Launcher3 från AOSP.</string>
   <string name="about_title">Om</string>
+  <string name="about_pref_summary">Lär känna Lawnchair-teamet</string>
   <string name="changelog_title">Ändringar för version #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Ikonpaket</string>
@@ -279,11 +280,15 @@
   <string name="notification_access_pref_title">Aviseringsprickar och förhandsgranskning</string>
   <string name="notification_access_pref_summary">Tillåt Lawnchair att komma åt dina aviseringar för att aktivera denna funktion</string>
   <string name="general_pref_title">Allmänt</string>
+  <string name="dock_pref_title">Docka</string>
+  <string name="app_drawer_pref_title">Applista</string>
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Beteende</string>
   <string name="debug_pref_title">Felsök</string>
   <string name="import_export_pref_title">Importera/exportera</string>
   <string name="general_pref_summary">Startskärm, docka och applista</string>
+  <string name="dock_pref_summary">Anpassa dockan</string>
+  <string name="app_drawer_pref_summary">Anpassa applistan</string>
   <string name="pixel_ui_pref_summary">Aktivera exklusiva funktioner från Översikt för Pixel</string>
   <string name="backup_pref_title">Säkerhetskopia</string>
   <string name="behavior_pref_summary">Ändra beteendet för Lawnchair</string>
@@ -404,4 +409,5 @@
   <string name="google_app_not_found">Google-appen är inte installerad</string>
   <string name="popup_card_theme_title">Platt stil på popup</string>
   <string name="set_default_launcher">Sätt som standard</string>
+  <string name="enable_spring_pref_title">Aktivera fjädereffekt</string>
 </resources>
