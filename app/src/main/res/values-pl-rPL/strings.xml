@@ -44,7 +44,7 @@
   <string name="widget_accessible_dims_format">%1$d szerokie, %2$d wysokie</string>
   <!-- All Apps -->
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
-  <string name="all_apps_search_bar_hint">Szukaj aplikacji</string>
+  <string name="all_apps_search_bar_hint">Szukaj w aplikacjach</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
   <string name="all_apps_loading_message">Ładowanie aplikacji&#8230;</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
@@ -247,6 +247,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair to launcher stworzony przez Till Kottmann\'a (aka deletescape). Oparty o Launcher3 z AOSP (Android Open Source Project).</string>
   <string name="about_title">О aplikacji</string>
+  <string name="about_pref_summary">Poznaj zespół Lawnchaira</string>
   <string name="changelog_title">Lista zmian dla wersji #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Zestaw ikon</string>
@@ -280,11 +281,15 @@
   <string name="notification_access_pref_title">Odznaki powiadomień i podgląd</string>
   <string name="notification_access_pref_summary">Zezwól Lawnchair na dostęp do twoich powiadomień żeby włączyć te funkcje</string>
   <string name="general_pref_title">Głownie</string>
+  <string name="dock_pref_title">Dock</string>
+  <string name="app_drawer_pref_title">Szuflada aplikacji</string>
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Zachowanie</string>
   <string name="debug_pref_title">Opcje debugujące</string>
   <string name="import_export_pref_title">Importuj/Eksportuj</string>
   <string name="general_pref_summary">Ekran główny, panel dolny, lista aplikacji</string>
+  <string name="dock_pref_summary">Spersonalizuj dock</string>
+  <string name="app_drawer_pref_summary">Spersonalizuj szufladę aplikacji</string>
   <string name="pixel_ui_pref_summary">Włącz funkcje specjalne Pixel Launcher</string>
   <string name="backup_pref_title">Kopia zapasowa</string>
   <string name="behavior_pref_summary">Zmień zachowanie Lawnchair</string>
