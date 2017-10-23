@@ -248,6 +248,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair הוא יישום משגר שנוצרו על-ידי עד Kottmann (ידוע כ- deletescape). מבוסס על Launcher3 מ- AOSP.</string>
   <string name="about_title">אודות</string>
+  <string name="about_pref_summary">הכר את צוות Lawnchair</string>
   <string name="changelog_title">רשימת שינויים לגירסא #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">ערכת סמלים</string>
@@ -281,11 +282,15 @@
   <string name="notification_access_pref_title">תגיות להתראות ותצוגה מקדימה</string>
   <string name="notification_access_pref_summary">אפשר ל-Lawnchair לגשת להודעות שלך כדי להפוך תכונה זו לזמינה</string>
   <string name="general_pref_title">כללי</string>
+  <string name="dock_pref_title">Dock</string>
+  <string name="app_drawer_pref_title">מגירת יישומים</string>
   <string name="pixel_ui_pref_title">ממשק Pixel</string>
   <string name="behavior_pref_title">התנהגות</string>
   <string name="debug_pref_title">תיקון שגיאות</string>
   <string name="import_export_pref_title">ייבוא/ייצוא</string>
   <string name="general_pref_summary">מסך בית, Dock, ומגירת יישומים</string>
+  <string name="dock_pref_summary">התאם אישית את ה-Dock</string>
+  <string name="app_drawer_pref_summary">התאמה אישית של מגירת היישומים</string>
   <string name="pixel_ui_pref_summary">אפשר תכונות ייחודיות של מפעיל Pixel</string>
   <string name="backup_pref_title">גיבוי</string>
   <string name="behavior_pref_summary">שנה את ההתנהגות של Lawnchair</string>
@@ -406,4 +411,5 @@
   <string name="google_app_not_found">היישום של Google אינו מותקן</string>
   <string name="popup_card_theme_title">הודעה קופצת בסגנון שטוח</string>
   <string name="set_default_launcher">הגדר כמפעיל אפליקציות ברירת מחדל</string>
+  <string name="enable_spring_pref_title">אפשר אפקט קפיץ</string>
 </resources>
