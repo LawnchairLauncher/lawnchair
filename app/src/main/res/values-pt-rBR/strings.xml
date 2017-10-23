@@ -246,6 +246,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
   <string name="about_title">Sobre</string>
+  <string name="about_pref_summary">Conheça a equipe da Lawnchair</string>
   <string name="changelog_title">Alterações para a versão #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Pacote de Ícones</string>
@@ -279,11 +280,15 @@
   <string name="notification_access_pref_title">Visualização e emblemas de notificação</string>
   <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
   <string name="general_pref_title">Geral</string>
+  <string name="dock_pref_title">Barra de aplicativos</string>
+  <string name="app_drawer_pref_title">Gaveta de aplicativos</string>
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Comportamento</string>
   <string name="debug_pref_title">Depuração</string>
   <string name="import_export_pref_title">Importar/exportar</string>
   <string name="general_pref_summary">Tela inicial, dock e gaveta de aplicativos</string>
+  <string name="dock_pref_summary">Personalize seu Dock</string>
+  <string name="app_drawer_pref_summary">Personalizar sua gaveta de aplicativos</string>
   <string name="pixel_ui_pref_summary">Habilitar funções exclusivas do Pixel Launcher</string>
   <string name="backup_pref_title">Backup</string>
   <string name="behavior_pref_summary">Mudar o comportamento do Lawnchair</string>
@@ -404,4 +409,5 @@
   <string name="google_app_not_found">Aplicativo Google não instalado</string>
   <string name="popup_card_theme_title">Pop-up estilo fino</string>
   <string name="set_default_launcher">Definir como Launcher padrão</string>
+  <string name="enable_spring_pref_title">Habilitar o efeito mola</string>
 </resources>
