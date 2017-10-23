@@ -245,6 +245,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair는 Till Kottmann (@deletescape)이 제작한 AOSP의 Launcher3를 기반으로 하는 런처 앱입니다.</string>
   <string name="about_title">Lawnchair 정보</string>
+  <string name="about_pref_summary">Lawnchair 팀 관련 정보</string>
   <string name="changelog_title">%d 빌드의 변경사항</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">아이콘 팩</string>
@@ -278,11 +279,15 @@
   <string name="notification_access_pref_title">알림 뱃지와 미리보기</string>
   <string name="notification_access_pref_summary">이 기능을 활성화하려면 Lawnchair가 기기의 알림을 확인 할 수 있는 권한이 필요합니다.</string>
   <string name="general_pref_title">일반 설정</string>
+  <string name="dock_pref_title">독</string>
+  <string name="app_drawer_pref_title">앱 서랍</string>
   <string name="pixel_ui_pref_title">픽셀 UI</string>
   <string name="behavior_pref_title">동작</string>
   <string name="debug_pref_title">디버그</string>
   <string name="import_export_pref_title">가져오기/내보내기</string>
   <string name="general_pref_summary">홈 화면, 독, 앱 서랍</string>
+  <string name="dock_pref_summary">독 사용자 지정</string>
+  <string name="app_drawer_pref_summary">앱 서랍 사용자 지정</string>
   <string name="pixel_ui_pref_summary">픽셀 런처 전용 기능 설정</string>
   <string name="backup_pref_title">설정 백업</string>
   <string name="behavior_pref_summary">Lawnchair의 동작 설정</string>
@@ -403,4 +408,5 @@
   <string name="google_app_not_found">Google 앱이 설치 되지 않았습니다.</string>
   <string name="popup_card_theme_title">플랫 스타일 팝업</string>
   <string name="set_default_launcher">기본 런처 설정</string>
+  <string name="enable_spring_pref_title">스프링 효과 사용</string>
 </resources>
