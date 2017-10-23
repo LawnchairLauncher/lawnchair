@@ -182,7 +182,7 @@ public class WorkspaceStateTransitionAnimation {
         int finalBackgroundAlpha = state.hasScrim ? 255 : 0;
 
         float[] scaleAndTranslationY = state.getWorkspaceScaleAndTranslation(mLauncher);
-        final float mNewScale = scaleAndTranslationY[0];
+        mNewScale = scaleAndTranslationY[0];
         final float finalWorkspaceTranslationY = scaleAndTranslationY[1];
 
         int toPage = mWorkspace.getPageNearestToCenterOfScreen();
