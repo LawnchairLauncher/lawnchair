@@ -28,16 +28,16 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">Ứng dụng không có sẵn</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Ứng dụng đã tải xuống bị tắt ở chế độ An toàn</string>
+  <string name="safemode_shortcut_error">Ứng dụng đã tải xuống bị tắt ở chế độ an toàn</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">Tiện ích con bị vô hiệu hóa ở chế độ an toàn</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">Lối tắt không khả dụng</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">Chọn &amp; giữ để chọn tiện ích con.</string>
+  <string name="long_press_widget_to_add">Chạm và giữ để chọn tiện ích con.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-  <string name="long_accessible_way_to_add">Chạm hai lần &amp; giữ để chọn tiện ích hoặc sử dụng hành động tùy chỉnh.</string>
+  <string name="long_accessible_way_to_add">Nhấn đúp và giữ để chọn tiện ích hoặc sử dụng tác vụ tùy chỉnh.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
@@ -50,7 +50,7 @@
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
   <string name="all_apps_no_search_results">Không tìm thấy ứng dụng nào phù hợp với \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
-  <string name="all_apps_search_market_message">Tìm kiếm thêm ứng dụng</string>
+  <string name="all_apps_search_market_message">Tìm thêm ứng dụng</string>
   <!-- Drag and drop -->
   <!-- Error message when user has filled a page -->
   <string name="out_of_space">Không còn chỗ trống trên trang này.</string>
@@ -75,13 +75,13 @@
   <!-- Permission short label -->
   <string name="permlab_read_settings">đọc các tùy chỉnh màn hình chính và lối tắt</string>
   <!-- Permission description -->
-  <string name="permdesc_read_settings">Cho phép ứng dụng đọc cài đặt và lối tắt trên màn hình chính.</string>
+  <string name="permdesc_read_settings">Cho phép ứng dụng đọc cài đặt và         lối tắt trên màn hình chính.</string>
   <!-- Permission short label -->
   <string name="permlab_write_settings">ghi đè tùy chỉnh màn hình chính và lối tắt</string>
   <!-- Permission description -->
-  <string name="permdesc_write_settings">Cho phép ứng dụng thay đổi cài đặt và lối tắt trên màn hình chính.</string>
+  <string name="permdesc_write_settings">Cho phép ứng dụng thay đổi cài đặt và        lối tắt trên màn hình chính.</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
-  <string name="msg_no_phone_permission"><xliff:g example="Launcher3" id="app_name">%1$s</xliff:g> không được phép thực hiện cuộc gọi điện thoại</string>
+  <string name="msg_no_phone_permission"><xliff:g example="Launcher3" id="app_name">%1$s</xliff:g> không được cấp quyền gọi điện thoại</string>
   <!-- Widgets: -->
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">Lỗi khi tải tiện ích con</string>
@@ -138,7 +138,7 @@
   <string name="abandoned_promises_title">Ứng dụng này chưa được cài đặt</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
-  <string name="abandoned_promise_explanation">Các ứng dụng cho các biểu tượng này không được cài đặt.         Bạn có thể gỡ bỏ nó hoặc tìm kiếm các ứng dụng và cài đặt nó bằng tay.    </string>
+  <string name="abandoned_promise_explanation">Ứng dụng liên kết với biểu tượng này không được cài đặt.         Bạn có thể xóa nó hoặc tìm kiếm ứng dụng liên kết và cài đặt nó bằng tay.    </string>
   <!-- Title for an app which is being downloaded. -->
   <string name="app_downloading_title"><xliff:g example="Tin nhắn" id="name">%1$s</xliff:g> đang tải xuống, <xliff:g example="30%" id="progress">%2$s</xliff:g> hoàn thành</string>
   <!-- Title for an app whose download has been started. -->
@@ -236,15 +236,16 @@
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
   <string name="which_wallpaper_option_home_screen_and_lock_screen">Màn hình chính và màn hình khóa</string>
   <string name="title_show_google_app">Hiển thị %1$s</string>
-  <string name="title_show_google_app_default">Hiển thị Google app</string>
+  <string name="title_show_google_app_default">Hiển thị ứng dụng Google</string>
   <string name="label_search">Tìm kiếm</string>
   <string name="label_voice_search">Tìm kiếm bằng giọng nói</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d phím tắt và thông báo %2$d cho %3$s</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d lối tắt và %2$d thông báo của %3$s</string>
   <string name="notifications_header">Thông báo</string>
-  <string name="widgets_bottom_sheet_title">%1$s widgets</string>
+  <string name="widgets_bottom_sheet_title">%1$s tiện ích con</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair là một trình khởi chạy tạo bởi Till Kottmann (aka deletescape). Nó được dựa trên Launcher3 từ AOSP.</string>
   <string name="about_title">Thông tin</string>
+  <string name="about_pref_summary">Tìm hiểu về đội ngũ Lawnchair</string>
   <string name="changelog_title">Những thay đổi của bản xây dựng #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Gói Biểu Tượng</string>
@@ -277,19 +278,23 @@
   <string name="full_width_widgets_pref_summary">Cho phép tiện ích con lấp đầy chiều rộng mà không có lề</string>
   <string name="notification_access_pref_title">Huy hiệu và xem trước thông báo</string>
   <string name="notification_access_pref_summary">Cho phép Lawnchair truy cập vào thông báo của bạn để kích hoạt tính năng này</string>
-  <string name="general_pref_title">Chung</string>
-  <string name="pixel_ui_pref_title">Giao diện Pixel</string>
+  <string name="general_pref_title">Màn hình chính</string>
+  <string name="dock_pref_title">Thanh Dock</string>
+  <string name="app_drawer_pref_title">Ngăn chứa Ứng dụng</string>
+  <string name="pixel_ui_pref_title">Giao diện</string>
   <string name="behavior_pref_title">Hành vi</string>
   <string name="debug_pref_title">Gỡ lỗi</string>
   <string name="import_export_pref_title">Nhập/Xuất dữ liệu</string>
-  <string name="general_pref_summary">Màn hình chính, thanh dock và menu ứng dụng</string>
-  <string name="pixel_ui_pref_summary">Bật các tính năng chỉ có ở Pixel Launcher</string>
+  <string name="general_pref_summary">Tùy chỉnh màn hình chính của bạn</string>
+  <string name="dock_pref_summary">Tùy chỉnh thanh dock của bạn</string>
+  <string name="app_drawer_pref_summary">Tùy chỉnh ngăn chứa ứng dụng của bạn</string>
+  <string name="pixel_ui_pref_summary">Các yếu tố khác của chủ đề</string>
   <string name="backup_pref_title">Sao lưu</string>
   <string name="behavior_pref_summary">Thay đổi hành vi của Lawnchair</string>
   <string name="backup_pref_summary">Sao lưu dữ liệu cài đặt</string>
   <string name="debug_pref_summary">Khởi động lại hoặc xây dựng lại dữ liệu biểu tượng</string>
   <string name="show_pixel_bar_pref_title">Hiển thị thanh tiện ích Pixel</string>
-  <string name="use_wide_searchbar_pref_title">Sử dụng thanh tìm kiếm cổ điển</string>
+  <string name="use_wide_searchbar_pref_title">Sử dụng thanh tìm kiếm dài</string>
   <string name="show_mic_pref_title">Hiển thị biểu tượng Google Assistant</string>
   <string name="use_round_searhbar">Sử dụng thanh tìm kiếm ứng dụng bo tròn</string>
   <string name="pixel_style_icons_pref_title">Sử dụng các biểu tượng của Pixel</string>
@@ -298,31 +303,31 @@
   <string name="restart_lawnchair_pref_title">Khởi động lại Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">Có thể hữu ích nếu một số cài đặt không có tác dụng</string>
   <string name="rebuild_icondb_pref_title">Dựng lại dữ liệu các biểu tượng</string>
-  <string name="pinch_to_overview_pref_title">Xoạc hai ngón tay để xem tổng quan</string>
-  <string name="pinch_to_overview_pref_summary">Xoạc ngón tay ngoài màn hình chính để xem tổng quan</string>
-  <string name="light_statusbar_pref_title">Light statusbar</string>
+  <string name="pinch_to_overview_pref_title">Cử chỉ thu nhỏ để xem tổng quan</string>
+  <string name="pinch_to_overview_pref_summary">Cử chỉ thu nhỏ ngoài màn hình chính để xem tổng quan</string>
+  <string name="light_statusbar_pref_title">Thanh trạng thái màu sáng</string>
   <string name="light_statusbar_pref_force">Hiển thị biểu tượng thanh trạng thái màu tối</string>
   <string name="light_statusbar_pref_off">Hiển thị biểu tượng thanh trạng thái màu sáng</string>
   <string name="haptic_feedback_pref_title">Rung phản hồi</string>
   <string name="keep_scroll_state_pref_title">Lưu vị trí cuộn</string>
-  <string name="keep_scroll_state_pref_summary">Lưu vị trí cuộn trong menu ứng dụng</string>
-  <string name="home_opens_drawer_pref_title">Bấm nút Home để mở menu ứng dụng</string>
-  <string name="home_opens_drawer_pref_summary">Bấm nút Home khi ở ngoài Trang chính để mở menu ứng dụng</string>
-  <string name="show_hidden_pref_title">Hiển thị ứng dụng ẩn</string>
-  <string name="show_hidden_pref_on">Các ứng dụng được ẩn sẽ hiển thị để thay đổi tùy chọn hiển thị</string>
+  <string name="keep_scroll_state_pref_summary">Lưu vị trí cuộn trong ngăn chứa ứng dụng</string>
+  <string name="home_opens_drawer_pref_title">Bấm nút Home để mở ngăn chứa ứng dụng</string>
+  <string name="home_opens_drawer_pref_summary">Bấm nút Home khi ở ngoài Trang chính để mở ngăn chứa ứng dụng</string>
+  <string name="show_hidden_pref_title">Hiện ứng dụng ẩn</string>
+  <string name="show_hidden_pref_on">Hiện các ứng dụng ẩn để thay đổi tùy chọn hiển thị</string>
   <string name="show_hidden_pref_off">Không hiện các ứng dụng ẩn</string>
   <string name="export_db_title">Cơ sở dữ liệu</string>
   <string name="import_db_title">Cơ sở dữ liệu</string>
   <string name="export_prefs_title">Cài đặt</string>
   <string name="import_prefs_title">Cài đặt</string>
-  <string name="notification_listener_label">Lawnchair - Notification badges</string>
-  <string name="color_extraction_label">Lawnchair - Color extraction</string>
-  <string name="test_title">Test</string>
-  <string name="visibility">Visibility</string>
+  <string name="notification_listener_label">Lawnchair - Huy hiệu thông báo</string>
+  <string name="color_extraction_label">Lawnchair - Chiết xuất màu sắc</string>
+  <string name="test_title">Kiểm tra</string>
+  <string name="visibility">Kiểu hiển thị</string>
   <string name="default_text">Mặc định</string>
   <string name="edit_icon_reset">Khôi phục</string>
   <string name="show_top_shadow_title">Hiển thị đổ bóng trên cùng</string>
-  <string name="pref_cat_homescreen">Home screen</string>
+  <string name="pref_cat_homescreen">Màn hình chính</string>
   <string name="pref_cat_miscellaneous">Cài đặt khác</string>
   <string name="pref_cat_hotseat">Thanh Dock</string>
   <string name="pref_cat_theme">Giao diện</string>
@@ -336,7 +341,7 @@
   <string name="pull_down_do_nothing">Không làm gì</string>
   <string name="pull_down_notis">Hiển thị thông báo</string>
   <string name="pull_down_search">Mở tìm kiếm</string>
-  <string name="pull_down_apps_search">Apps search</string>
+  <string name="pull_down_apps_search">Tìm kiếm ứng dụng</string>
   <string name="enable_screen_rotation">Cho phép xoay màn hình</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Nhập dữ liệu</string>
@@ -376,14 +381,14 @@
   <string name="animated_clock_icon_title">Biểu tượng đồng hồ động</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">Hiệu ứng cho ứng dụng đồng hồ khác</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">Kích hoạt nếu bạn không sử dụng ứng dụng đồng hồ của Google làm ứng dụng đồng hồ mặc định</string>
-  <string name="about_summary_title">Tổng quan</string>
+  <string name="about_summary_title">Sơ lược</string>
   <string name="about_version">Phiên bản</string>
   <string name="about_icon_designer">Người thiết kế biểu tượng</string>
   <string name="about_contributors_title">Người đóng góp</string>
   <string name="location_permission_warn">Cần quyền truy cập vị trí để đổi nhà cung cấp</string>
   <string name="num_cols_drawer_pref_title">Số cột trong ngăn chứa</string>
   <string name="pref_cat_drawer">Ngăn chứa ứng dụng</string>
-  <string name="shortcut_backport_warning">Tính năng này có thể khiến máy bạn chậm lại, vui lòng cân nhắc kỹ trước khi kích hoạt</string>
+  <string name="shortcut_backport_warning">Tính năng này có thể khiến máy bạn chậm lại, hãy cân nhắc trước khi kích hoạt</string>
   <string name="pref_backport_shortcuts">Lối tắt chồng lên nhau</string>
   <string name="weather_api_key_not_set">Khoá API chưa được thiết lập</string>
   <string name="pref_weather_api_key_title">Khoá API</string>
@@ -398,9 +403,10 @@
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
   <string name="about_translators">Dịch giả</string>
-  <string name="lock_desktop">Khóa màn hình</string>
+  <string name="lock_desktop">Khóa màn hình chính</string>
   <string name="lawnfeed_not_found">Lawnfeed không được cài đặt (Tải về và cài đặt từ bit.ly/lawnfeed)</string>
   <string name="google_app_not_found">Ứng dụng Google không được cài đặt</string>
   <string name="popup_card_theme_title">Popup phong cách phẳng</string>
   <string name="set_default_launcher">Đặt làm trình khởi chạy mặc định</string>
+  <string name="enable_spring_pref_title">Bật hiệu ứng thạch</string>
 </resources>
