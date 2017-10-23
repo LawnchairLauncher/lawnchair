@@ -247,6 +247,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair este un lansator creat de Till Kottmann (aka deletescape). E bazat pe Launcher3 din AOSP.</string>
   <string name="about_title">Despre</string>
+  <string name="about_pref_summary">Aflați despre echipa Lawnchair</string>
   <string name="changelog_title">Jurnalul de modificări pentru a versiunea #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Set de pictograme</string>
@@ -280,11 +281,15 @@
   <string name="notification_access_pref_title">Insigne de notificări și previzualizare</string>
   <string name="notification_access_pref_summary">Permite Lawnchair accesul la notificări ca să activezi această funcție</string>
   <string name="general_pref_title">General</string>
+  <string name="dock_pref_title">Doc</string>
+  <string name="app_drawer_pref_title">Listă aplicații</string>
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Comportament</string>
   <string name="debug_pref_title">Depanare</string>
   <string name="import_export_pref_title">Importați/Exportați</string>
   <string name="general_pref_summary">Ecran de pornire, doc și listă de aplicații</string>
+  <string name="dock_pref_summary">Personalizați docul</string>
+  <string name="app_drawer_pref_summary">Personalizați lista aplicațiilor</string>
   <string name="pixel_ui_pref_summary">Activați caracteristicile exclusive ale lansatorului Pixel</string>
   <string name="backup_pref_title">Copie de rezervă</string>
   <string name="behavior_pref_summary">Modificați comportamentul Lawnchair</string>
@@ -393,7 +398,7 @@
   <string name="pref_all_apps_custom_label_color">Utilizați culoarea etichetei personalizate</string>
   <string name="pref_all_apps_label_color_variation">Variaţie de culori a etichetelor pictogramelor din lista aplicațiilor</string>
   <string name="pref_all_apps_label_color">Culoarea etichetelor pictogramelor în sertarul de aplicații</string>
-  <string name="pref_num_rows_drawer">Număruo de rânduri în sertarul de aplicații</string>
+  <string name="pref_num_rows_drawer">Numărul de rânduri în sertarul de aplicații</string>
   <string name="center_wallpaper_pref_title">Centrează fundalul când este o singură pagină</string>
   <string name="vertical_drawer_layout_pref_title">Afişare ca listă verticală</string>
   <!-- Time format for Weather Widget -->
@@ -405,4 +410,5 @@
   <string name="google_app_not_found">Aplicația Google nu este instalată</string>
   <string name="popup_card_theme_title">Stil popup plat</string>
   <string name="set_default_launcher">Setaţi lansator implicit</string>
+  <string name="enable_spring_pref_title">Activați efectul elastic</string>
 </resources>
