@@ -247,6 +247,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair je aplikácia spúšťača, ktorú vytvoril Till Kottmann (aka deletescape). Je založená na spúšťači Launcher3 z AOSP.</string>
   <string name="about_title">O aplikácii</string>
+  <string name="about_pref_summary">Zoznámte sa s týmom Lawnchair</string>
   <string name="changelog_title">Zoznam zmien pre vydanie #%d</string>
   <string name="week_day_format">%1$s %2$s</string>
   <string name="icon_pack_preference_title">Balíček ikon</string>
@@ -280,11 +281,15 @@
   <string name="notification_access_pref_title">Prehľad ikon upozornení</string>
   <string name="notification_access_pref_summary">Pre zapnutie tejto funkcie povoľte spúšťaču Lawnchair prístup k vašim upozorneniam</string>
   <string name="general_pref_title">Všeobecné</string>
+  <string name="dock_pref_title">Dok</string>
+  <string name="app_drawer_pref_title">Ponuka aplikácií</string>
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Správanie</string>
   <string name="debug_pref_title">Ladenie</string>
   <string name="import_export_pref_title">Import/Export</string>
   <string name="general_pref_summary">Domovská obrazovka, dok a ponuka aplikácií</string>
+  <string name="dock_pref_summary">Prispôsobiť dok</string>
+  <string name="app_drawer_pref_summary">Prispôsobiť ponuku aplikácií</string>
   <string name="pixel_ui_pref_summary">Povoliť exkluzívne funkcie spúšťača Pixel</string>
   <string name="backup_pref_title">Zálohovanie</string>
   <string name="behavior_pref_summary">Zmeniť správanie Lawnchair</string>
@@ -405,4 +410,5 @@
   <string name="google_app_not_found">Google aplikácie nie sú nainštalované</string>
   <string name="popup_card_theme_title">Plochý štýl vyskakujúceho okna</string>
   <string name="set_default_launcher">Nastavenie predvoleného spúšťača</string>
+  <string name="enable_spring_pref_title">Povoliť efekt pružiny</string>
 </resources>
