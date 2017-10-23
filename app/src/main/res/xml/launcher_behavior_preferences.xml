@@ -7,6 +7,13 @@
         android:summary="@string/shortcut_backport_warning" />
 
     <SwitchPreference
+        android:key="pref_enableScreenRotation"
+        android:title="@string/enable_screen_rotation"
+        android:defaultValue="false"
+        android:disableDependentsState="true"
+        android:persistent="true" />
+
+    <SwitchPreference
         android:key="pref_pinchToOverview"
         android:title="@string/pinch_to_overview_pref_title"
         android:summary="@string/pinch_to_overview_pref_summary"

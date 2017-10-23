@@ -18,7 +18,6 @@
 package ch.deletescape.lawnchair.settings.ui;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -185,7 +184,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             super.onCreate(savedInstanceState);
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
             addPreferencesFromResource(getContent());
-            if (getContent() == R.xml.launcher_pixel_style_preferences) {
+            if (getContent() == R.xml.launcher_theme_preferences) {
                 Preference prefWeatherEnabled = findPreference(FeatureFlags.KEY_PREF_WEATHER);
                 prefWeatherEnabled.setOnPreferenceChangeListener(this);
                 Preference prefWeatherProvider = findPreference(PreferenceFlags.KEY_WEATHER_PROVIDER);
