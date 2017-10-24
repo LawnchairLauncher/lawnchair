@@ -49,7 +49,6 @@ import android.view.animation.Interpolator;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.touch.OverScroll;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -87,8 +86,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     public static final int INVALID_RESTORE_PAGE = -1001;
 
     private boolean mFreeScroll = false;
-    private int mFreeScrollMinScrollX = -1;
-    private int mFreeScrollMaxScrollX = -1;
 
     protected int mFlingThresholdVelocity;
     protected int mMinFlingVelocity;
@@ -137,7 +134,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected int mTouchSlop;
     private int mMaximumVelocity;
     protected boolean mAllowOverScroll = true;
-    protected int[] mTempVisiblePagesRange = new int[2];
 
     protected static final int INVALID_POINTER = -1;
 
@@ -380,16 +376,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     private int validateNewPage(int newPage) {
-        int validatedPage = newPage;
-        // When in free scroll mode, we need to clamp to the free scroll page range.
-        if (mFreeScroll) {
-            getFreeScrollPageRange(mTempVisiblePagesRange);
-            validatedPage = Math.max(mTempVisiblePagesRange[0],
-                    Math.min(newPage, mTempVisiblePagesRange[1]));
-        }
         // Ensure that it is clamped by the actual set of children in all cases
-        validatedPage = Utilities.boundToRange(validatedPage, 0, getPageCount() - 1);
-        return validatedPage;
+        return Utilities.boundToRange(newPage, 0, getPageCount() - 1);
     }
 
     /**
@@ -491,13 +479,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (mFreeScroll) {
             // If the scroller is trying to move to a location beyond the maximum allowed
             // in the free scroll mode, we make sure to end the scroll operation.
-            if (!mScroller.isFinished() &&
-                    (x > mFreeScrollMaxScrollX || x < mFreeScrollMinScrollX)) {
+            if (!mScroller.isFinished() && (x > mMaxScrollX || x < 0)) {
                 forceFinishScroller(false);
             }
 
-            x = Math.min(x, mFreeScrollMaxScrollX);
-            x = Math.max(x, mFreeScrollMinScrollX);
+            x = Utilities.boundToRange(x, 0, mMaxScrollX);
         }
 
         mUnboundedScrollX = x;
@@ -886,7 +872,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         return 0;
     }
 
-    @Thunk void updateMaxScrollX() {
+    private void updateMaxScrollX() {
         mMaxScrollX = computeMaxScrollX();
     }
 
@@ -915,13 +901,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         // This ensures that when children are added, they get the correct transforms / alphas
         // in accordance with any scroll effects.
-        updateFreescrollBounds();
         invalidate();
     }
 
     @Override
     public void onChildViewRemoved(View parent, View child) {
-        updateFreescrollBounds();
         mCurrentPage = validateNewPage(mCurrentPage);
         invalidate();
     }
@@ -972,11 +956,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         int offset = getPageAt(index).getLeft() - getViewportOffsetX();
 
         return offset;
-    }
-
-    protected void getFreeScrollPageRange(int[] range) {
-        range[0] = 0;
-        range[1] = Math.max(0, getChildCount() - 1);
     }
 
     @Override
@@ -1349,29 +1328,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         setEnableFreeScroll(false);
     }
 
-    void updateFreescrollBounds() {
-        getFreeScrollPageRange(mTempVisiblePagesRange);
-        if (mIsRtl) {
-            mFreeScrollMinScrollX = getScrollForPage(mTempVisiblePagesRange[1]);
-            mFreeScrollMaxScrollX = getScrollForPage(mTempVisiblePagesRange[0]);
-        } else {
-            mFreeScrollMinScrollX = getScrollForPage(mTempVisiblePagesRange[0]);
-            mFreeScrollMaxScrollX = getScrollForPage(mTempVisiblePagesRange[1]);
-        }
-    }
-
     private void setEnableFreeScroll(boolean freeScroll) {
         boolean wasFreeScroll = mFreeScroll;
         mFreeScroll = freeScroll;
 
         if (mFreeScroll) {
-            updateFreescrollBounds();
-            getFreeScrollPageRange(mTempVisiblePagesRange);
-            if (getCurrentPage() < mTempVisiblePagesRange[0]) {
-                setCurrentPage(mTempVisiblePagesRange[0]);
-            } else if (getCurrentPage() > mTempVisiblePagesRange[1]) {
-                setCurrentPage(mTempVisiblePagesRange[1]);
-            }
+            setCurrentPage(getNextPage());
         } else if (wasFreeScroll) {
             snapToPage(getNextPage());
         }
@@ -1387,12 +1349,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (mDragView != null) {
             int dragX = (int) (mDragView.getLeft() + (mDragView.getMeasuredWidth() / 2)
                     + mDragView.getTranslationX());
-            getFreeScrollPageRange(mTempVisiblePagesRange);
             int minDistance = Integer.MAX_VALUE;
             int minIndex = indexOfChild(mDragView);
-            for (int i = mTempVisiblePagesRange[0]; i <= mTempVisiblePagesRange[1]; i++) {
+            int maxPageNo = getChildCount() - 1;
+            for (int i = 0; i <= maxPageNo; i++) {
                 View page = getPageAt(i);
-                int pageX = (int) (page.getLeft() + page.getMeasuredWidth() / 2);
+                int pageX = (page.getLeft() + page.getMeasuredWidth() / 2);
                 int d = Math.abs(dragX - pageX);
                 if (d < minDistance) {
                     minIndex = i;
@@ -1487,11 +1449,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 final int pageUnderPointIndex = getNearestHoverOverPageIndex();
                 // Do not allow any page to be moved to 0th position.
                 if (pageUnderPointIndex > 0 && pageUnderPointIndex != indexOfChild(mDragView)) {
-                    mTempVisiblePagesRange[0] = 0;
-                    mTempVisiblePagesRange[1] = getPageCount() - 1;
-                    getFreeScrollPageRange(mTempVisiblePagesRange);
-                    if (mTempVisiblePagesRange[0] <= pageUnderPointIndex &&
-                            pageUnderPointIndex <= mTempVisiblePagesRange[1] &&
+                    if (0 <= pageUnderPointIndex && pageUnderPointIndex <= getPageCount() - 1 &&
                             pageUnderPointIndex != mSidePageHoverIndex && mScroller.isFinished()) {
                         mSidePageHoverIndex = pageUnderPointIndex;
                         mSidePageHoverRunnable = new Runnable() {
@@ -2025,18 +1983,14 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // Do not allow the first page to be moved around
         if (mTouchState != TOUCH_STATE_REST || dragViewIndex <= 0) return false;
 
-        mTempVisiblePagesRange[0] = 0;
-        mTempVisiblePagesRange[1] = getPageCount() - 1;
-        getFreeScrollPageRange(mTempVisiblePagesRange);
-        mReorderingStarted = true;
-
         // Check if we are within the reordering range
-        if (mTempVisiblePagesRange[0] <= dragViewIndex &&
-            dragViewIndex <= mTempVisiblePagesRange[1]) {
+        if (0 <= dragViewIndex && dragViewIndex <= getPageCount() - 1) {
             // Find the drag view under the pointer
             mDragView = getChildAt(dragViewIndex);
             mDragView.animate().scaleX(1.15f).scaleY(1.15f).setDuration(100).start();
             mDragViewBaselineLeft = mDragView.getLeft();
+            mReorderingStarted = true;
+
             snapToPage(getPageNearestToCenterOfScreen());
             disableFreeScroll();
             onStartReordering();

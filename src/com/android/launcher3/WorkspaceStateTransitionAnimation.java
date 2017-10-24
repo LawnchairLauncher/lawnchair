@@ -178,9 +178,6 @@ public class WorkspaceStateTransitionAnimation {
      * Starts a transition animation for the workspace.
      */
     private void setWorkspaceProperty(LauncherState state, PropertySetter propertySetter) {
-        // Update the workspace state
-        int finalBackgroundAlpha = state.hasScrim ? 255 : 0;
-
         float[] scaleAndTranslationY = state.getWorkspaceScaleAndTranslation(mLauncher);
         mNewScale = scaleAndTranslationY[0];
         final float finalWorkspaceTranslationY = scaleAndTranslationY[1];
@@ -188,16 +185,8 @@ public class WorkspaceStateTransitionAnimation {
         int toPage = mWorkspace.getPageNearestToCenterOfScreen();
         final int childCount = mWorkspace.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            final CellLayout cl = (CellLayout) mWorkspace.getChildAt(i);
-            propertySetter.setInt(cl.getScrimBackground(),
-                    DRAWABLE_ALPHA, finalBackgroundAlpha, mZoomInInterpolator);
-
-            // Only animate the page alpha when we actually fade pages
-            if (mWorkspaceFadeInAdjacentScreens) {
-                float finalAlpha = state == LauncherState.NORMAL && i != toPage ? 0 : 1f;
-                propertySetter.setFloat(cl.getShortcutsAndWidgets(), View.ALPHA,
-                        finalAlpha, mZoomInInterpolator);
-            }
+            applyChildState(state, (CellLayout) mWorkspace.getChildAt(i), i, toPage,
+                    propertySetter);
         }
 
         float finalHotseatAlpha = state.hideHotseat ? 0f : 1f;
@@ -215,6 +204,24 @@ public class WorkspaceStateTransitionAnimation {
         // Set scrim
         propertySetter.setInt(mLauncher.getDragLayer().getScrim(), DRAWABLE_ALPHA,
                 state.hasScrim ? mWorkspaceScrimAlpha : 0, new DecelerateInterpolator(1.5f));
+    }
+
+    public void applyChildState(LauncherState state, CellLayout cl, int childIndex) {
+        applyChildState(state, cl, childIndex, mWorkspace.getPageNearestToCenterOfScreen(),
+                NO_ANIM_PROPERTY_SETTER);
+    }
+
+    private void applyChildState(LauncherState state, CellLayout cl, int childIndex,
+            int centerPage, PropertySetter propertySetter) {
+        propertySetter.setInt(cl.getScrimBackground(),
+                DRAWABLE_ALPHA, state.hasScrim ? 255 : 0, mZoomInInterpolator);
+
+        // Only animate the page alpha when we actually fade pages
+        if (mWorkspaceFadeInAdjacentScreens) {
+            float finalAlpha = state == LauncherState.NORMAL && childIndex != centerPage ? 0 : 1f;
+            propertySetter.setFloat(cl.getShortcutsAndWidgets(), View.ALPHA,
+                    finalAlpha, mZoomInInterpolator);
+        }
     }
 
     private static class PropertySetter {

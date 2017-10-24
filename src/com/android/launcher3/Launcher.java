@@ -1031,8 +1031,8 @@ public class Launcher extends BaseActivity
         if (!state.doNotRestore) {
             if (state == LauncherState.ALL_APPS) {
                 showAppsView(false /* animated */);
-            } else {
-                // TODO: Add logic for other states
+            } else if (state == LauncherState.OVERVIEW) {
+                showOverviewMode(false);
             }
         }
 
