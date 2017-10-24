@@ -16,30 +16,22 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 
 import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.annotation.TargetApi;
-import android.os.Build;
-import android.util.Range;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
 
+import com.android.launcher3.compat.AnimatorSetCompat;
 import com.android.launcher3.util.TouchController;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Detects pinches and animates the Workspace to/from overview mode.
  */
-@TargetApi(Build.VERSION_CODES.O)
 public class PinchToOverviewListener
         implements TouchController, OnScaleGestureListener, Runnable {
 
@@ -55,9 +47,8 @@ public class PinchToOverviewListener
     private Workspace mWorkspace = null;
     private boolean mPinchStarted = false;
 
-    private AnimatorSet mCurrentAnimation;
+    private AnimatorSetCompat mCurrentAnimation;
     private float mCurrentScale;
-    private Range<Integer> mDurationRange;
     private boolean mShouldGoToFinalState;
 
     private LauncherState mToState;
@@ -109,14 +100,13 @@ public class PinchToOverviewListener
         }
 
         mToState = mLauncher.isInState(OVERVIEW) ? NORMAL : OVERVIEW;
-        mCurrentAnimation = mLauncher.getStateManager()
-                .createAnimationToNewWorkspace(mToState, this);
+        mCurrentAnimation = AnimatorSetCompat.wrap(mLauncher.getStateManager()
+                .createAnimationToNewWorkspace(mToState, this), OVERVIEW_TRANSITION_MS);
         mPinchStarted = true;
         mCurrentScale = 1;
-        mDurationRange = Range.create(0, LauncherAnimUtils.OVERVIEW_TRANSITION_MS);
         mShouldGoToFinalState = false;
 
-        dispatchOnStart(mCurrentAnimation);
+        mCurrentAnimation.dispatchOnStart();
         return true;
     }
 
@@ -160,26 +150,7 @@ public class PinchToOverviewListener
         }
 
         // Move the transition animation to that duration.
-        long playPosition = mDurationRange.clamp(
-                (int) ((1 - animationFraction) * mDurationRange.getUpper()));
-        mCurrentAnimation.setCurrentPlayTime(playPosition);
-
+        mCurrentAnimation.setPlayFraction(1 - animationFraction);
         return true;
-    }
-
-    private void dispatchOnStart(Animator animator) {
-        for (AnimatorListener l : nonNullList(animator.getListeners())) {
-            l.onAnimationStart(animator);
-        }
-
-        if (animator instanceof AnimatorSet) {
-            for (Animator anim : nonNullList(((AnimatorSet) animator).getChildAnimations())) {
-                dispatchOnStart(anim);
-            }
-        }
-    }
-
-    private static <T> List<T> nonNullList(ArrayList<T> list) {
-        return list == null ? Collections.<T>emptyList() : list;
     }
 }
