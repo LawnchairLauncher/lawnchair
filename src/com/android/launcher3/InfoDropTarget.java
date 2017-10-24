@@ -26,6 +26,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.util.Themes;
 
@@ -49,8 +50,8 @@ public class InfoDropTarget extends UninstallDropTarget {
     }
 
     @Override
-    protected ComponentName performDropAction(DragObject d) {
-        return performDropAction(mLauncher, d.dragInfo, null, null);
+    protected ComponentName performDropAction(ItemInfo item) {
+        return performDropAction(mLauncher, item, null, null);
     }
 
     /**
@@ -96,13 +97,15 @@ public class InfoDropTarget extends UninstallDropTarget {
     }
 
     @Override
-    protected boolean supportsDrop(ItemInfo info) {
-        return supportsDrop(getContext(), info);
+    public int getAccessibilityAction() {
+        return LauncherAccessibilityDelegate.INFO;
     }
 
-    public static boolean supportsDrop(Context context, ItemInfo info) {
+    @Override
+    protected boolean supportsDrop(ItemInfo info) {
         // Only show the App Info drop target if developer settings are enabled.
-        boolean developmentSettingsEnabled = Settings.Global.getInt(context.getContentResolver(),
+        boolean developmentSettingsEnabled = Settings.Global.getInt(
+                getContext().getContentResolver(),
                 Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) == 1;
         if (!developmentSettingsEnabled) {
             return false;

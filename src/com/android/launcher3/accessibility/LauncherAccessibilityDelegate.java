@@ -17,6 +17,7 @@ import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.ButtonDropTarget;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DropTarget.DragObject;
@@ -45,9 +46,9 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
     private static final String TAG = "LauncherAccessibilityDelegate";
 
-    protected static final int REMOVE = R.id.action_remove;
-    protected static final int INFO = R.id.action_info;
-    protected static final int UNINSTALL = R.id.action_uninstall;
+    public static final int REMOVE = R.id.action_remove;
+    public static final int INFO = R.id.action_info;
+    public static final int UNINSTALL = R.id.action_uninstall;
     protected static final int ADD_TO_WORKSPACE = R.id.action_add_to_workspace;
     protected static final int MOVE = R.id.action_move;
     protected static final int MOVE_TO_WORKSPACE = R.id.action_move_to_workspace;
@@ -108,14 +109,10 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             info.addAction(mActions.get(DEEP_SHORTCUTS));
         }
 
-        if (DeleteDropTarget.supportsAccessibleDrop(item)) {
-            info.addAction(mActions.get(REMOVE));
-        }
-        if (UninstallDropTarget.supportsDrop(host.getContext(), item)) {
-            info.addAction(mActions.get(UNINSTALL));
-        }
-        if (InfoDropTarget.supportsDrop(host.getContext(), item)) {
-            info.addAction(mActions.get(INFO));
+        for (ButtonDropTarget target : mLauncher.getDropTargetBar().getDropTargets()) {
+            if (target.supportsAccessibilityDrop(item)) {
+                info.addAction(mActions.get(target.getAccessibilityAction()));
+            }
         }
 
         // Do not add move actions for keyboard request as this uses virtual nodes.
@@ -148,15 +145,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     }
 
     public boolean performAction(final View host, final ItemInfo item, int action) {
-        if (action == REMOVE) {
-            DeleteDropTarget.removeWorkspaceOrFolderItem(mLauncher, item, host);
-            return true;
-        } else if (action == INFO) {
-            InfoDropTarget.startDetailsActivityForInfo(item, mLauncher, null, null);
-            return true;
-        } else if (action == UNINSTALL) {
-            return UninstallDropTarget.startUninstallActivity(mLauncher, item);
-        } else if (action == MOVE) {
+        if (action == MOVE) {
             beginAccessibleDrag(host, item);
         } else if (action == ADD_TO_WORKSPACE) {
             final int[] coordinates = new int[2];
@@ -231,6 +220,13 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             return true;
         } else if (action == DEEP_SHORTCUTS) {
             return PopupContainerWithArrow.showForIcon((BubbleTextView) host) != null;
+        } else {
+            for (ButtonDropTarget dropTarget : mLauncher.getDropTargetBar().getDropTargets()) {
+                if (action == dropTarget.getAccessibilityAction()) {
+                    dropTarget.onAccessibilityDrop(host, item);
+                    return true;
+                }
+            }
         }
         return false;
     }
