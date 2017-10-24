@@ -17,8 +17,7 @@ package com.android.launcher3;
 
 import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
 import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
-
-import static com.android.launcher3.LauncherAnimUtils.ALL_APPS_TRANSITION_MS;
+import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
 import android.view.View;
 
@@ -121,11 +120,21 @@ public class LauncherState {
         return new float[] {1, 0};
     }
 
-    public void onStateEnabled(Launcher launcher) { }
+    public void onStateEnabled(Launcher launcher) {
+        dispatchWindowStateChanged(launcher);
+    }
 
     public void onStateDisabled(Launcher launcher) { }
 
     public View getFinalFocus(Launcher launcher) {
         return launcher.getWorkspace();
+    }
+
+    public String getDescription(Launcher launcher) {
+        return launcher.getWorkspace().getCurrentPageDescription();
+    }
+
+    protected static void dispatchWindowStateChanged(Launcher launcher) {
+        launcher.getWindow().getDecorView().sendAccessibilityEvent(TYPE_WINDOW_STATE_CHANGED);
     }
 }

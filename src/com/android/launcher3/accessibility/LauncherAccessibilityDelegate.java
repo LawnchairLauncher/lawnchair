@@ -1,5 +1,7 @@
 package com.android.launcher3.accessibility;
 
+import static com.android.launcher3.LauncherState.NORMAL;
+
 import android.app.AlertDialog;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.DialogInterface;
@@ -27,6 +29,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetHostView;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
@@ -161,14 +164,14 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         } else if (action == ADD_TO_WORKSPACE) {
             final int[] coordinates = new int[2];
             final long screenId = findSpaceOnWorkspace(item, coordinates);
-            mLauncher.showWorkspace(true, new Runnable() {
+            mLauncher.getStateManager().goToState(NORMAL, true, new Runnable() {
 
                 @Override
                 public void run() {
                     if (item instanceof AppInfo) {
                         ShortcutInfo info = ((AppInfo) item).makeShortcut();
                         mLauncher.getModelWriter().addItemToDatabase(info,
-                                LauncherSettings.Favorites.CONTAINER_DESKTOP,
+                                Favorites.CONTAINER_DESKTOP,
                                 screenId, coordinates[0], coordinates[1]);
 
                         ArrayList<ItemInfo> itemList = new ArrayList<>();
@@ -178,7 +181,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                         PendingAddItemInfo info = (PendingAddItemInfo) item;
                         Workspace workspace = mLauncher.getWorkspace();
                         workspace.snapToPage(workspace.getPageIndexForScreenId(screenId));
-                        mLauncher.addPendingItem(info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
+                        mLauncher.addPendingItem(info, Favorites.CONTAINER_DESKTOP,
                                 screenId, coordinates, info.spanX, info.spanY);
                     }
                     announceConfirmation(R.string.item_added_to_workspace);

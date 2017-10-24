@@ -16,10 +16,12 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_NEXT_FRAME;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_TRANSITION_MS;
+import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.isAccessibilityEnabled;
 
 import android.animation.Animator;
@@ -60,7 +62,7 @@ import android.widget.Toast;
 
 import com.android.launcher3.Launcher.LauncherOverlay;
 import com.android.launcher3.LauncherAppWidgetHost.ProviderChangedListener;
-import com.android.launcher3.LauncherStateTransitionAnimation.AnimationConfig;
+import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.OverviewAccessibilityDelegate;
 import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
@@ -205,7 +207,7 @@ public class Workspace extends PagedView
     private final float[] mHotseatAlpha = new float[] {1, 1, 1};
 
     @ViewDebug.ExportedProperty(category = "launcher")
-    private LauncherState mState = LauncherState.NORMAL;
+    private LauncherState mState = NORMAL;
     private boolean mIsSwitchingState = false;
 
     boolean mChildrenLayersEnabled = true;
@@ -411,7 +413,7 @@ public class Workspace extends PagedView
         }
 
         // Always enter the spring loaded mode
-        mLauncher.enterSpringLoadedDragMode();
+        mLauncher.getStateManager().goToState(SPRING_LOADED);
     }
 
     public void deferRemoveExtraEmptyScreen() {
@@ -1342,7 +1344,7 @@ public class Workspace extends PagedView
     @Override
     public void announceForAccessibility(CharSequence text) {
         // Don't announce if apps is on top of us.
-        if (!mLauncher.isInState(LauncherState.ALL_APPS)) {
+        if (!mLauncher.isInState(ALL_APPS)) {
             super.announceForAccessibility(text);
         }
     }
@@ -1410,12 +1412,12 @@ public class Workspace extends PagedView
     }
 
     public boolean workspaceInModalState() {
-        return mState != LauncherState.NORMAL;
+        return mState != NORMAL;
     }
 
     /** Returns whether a drag should be allowed to be started from the current workspace state. */
     public boolean workspaceIconsCanBeDragged() {
-        return mState == LauncherState.NORMAL || mState == LauncherState.SPRING_LOADED;
+        return mState == NORMAL || mState == SPRING_LOADED;
     }
 
     private void updateChildrenLayersEnabled() {
@@ -2014,7 +2016,7 @@ public class Workspace extends PagedView
                         dropTargetLayout, mTargetCell, distance, false, d.dragView) ||
                         addToExistingFolderIfNecessary(cell, dropTargetLayout, mTargetCell,
                                 distance, d, false)) {
-                    mLauncher.exitSpringLoadedDragMode(SPRING_LOADED_EXIT_DELAY);
+                    mLauncher.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
                     return;
                 }
 
@@ -2129,7 +2131,7 @@ public class Workspace extends PagedView
                     // spring-loaded mode so the page meets the icon where it was picked up.
                     mLauncher.getDragController().animateDragViewToOriginalPosition(
                             onCompleteRunnable, cell, SPRING_LOADED_TRANSITION_MS);
-                    mLauncher.exitSpringLoadedDragMode(SPRING_LOADED_EXIT_NEXT_FRAME);
+                    mLauncher.getStateManager().goToState(NORMAL);
                     mLauncher.getDropTargetBar().onDragEnd();
                     parent.onDropChild(cell);
                     return;
@@ -2152,8 +2154,8 @@ public class Workspace extends PagedView
             }
             parent.onDropChild(cell);
 
-            mLauncher.exitSpringLoadedDragMode(
-                    SPRING_LOADED_EXIT_DELAY, onCompleteRunnable);
+            mLauncher.getStateManager().goToState(
+                    NORMAL, SPRING_LOADED_EXIT_DELAY, onCompleteRunnable);
         }
 
         if (d.stateAnnouncer != null && !droppedOnOriginalCell) {
@@ -2685,7 +2687,7 @@ public class Workspace extends PagedView
         final long screenId = getIdForScreen(cellLayout);
         if (!mLauncher.isHotseatLayout(cellLayout)
                 && screenId != getScreenIdForPageIndex(mCurrentPage)
-                && mState != LauncherState.SPRING_LOADED) {
+                && mState != SPRING_LOADED) {
             snapToPage(getPageIndexForScreenId(screenId));
         }
 
@@ -2760,7 +2762,7 @@ public class Workspace extends PagedView
                     animationStyle, finalView, true);
         } else {
             // This is for other drag/drop cases, like dragging from All Apps
-            mLauncher.exitSpringLoadedDragMode(SPRING_LOADED_EXIT_DELAY);
+            mLauncher.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
 
             View view;
 

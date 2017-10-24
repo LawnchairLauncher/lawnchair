@@ -32,7 +32,7 @@ import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
 
-import com.android.launcher3.LauncherStateTransitionAnimation.AnimationConfig;
+import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.anim.AnimationLayerSet;
 
 /**

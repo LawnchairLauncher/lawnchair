@@ -68,23 +68,73 @@ import com.android.launcher3.anim.AnimationSuccessListener;
  *          - From the center workspace
  *          - From another workspace
  */
-public class LauncherStateTransitionAnimation {
+public class LauncherStateManager {
 
-    public static final String TAG = "LSTAnimation";
+    public static final String TAG = "StateManager";
 
     private final AnimationConfig mConfig = new AnimationConfig();
     private final Handler mUiHandler;
     private final Launcher mLauncher;
     private final AllAppsTransitionController mAllAppsController;
 
-    public LauncherStateTransitionAnimation(
+    public LauncherStateManager(
             Launcher l, AllAppsTransitionController allAppsController) {
         mUiHandler = new Handler(Looper.getMainLooper());
         mLauncher = l;
         mAllAppsController = allAppsController;
     }
 
+    /**
+     * @see #goToState(LauncherState, boolean, Runnable)
+     */
+    public void goToState(LauncherState state) {
+        goToState(state, true, 0, null);
+    }
+
+    /**
+     * @see #goToState(LauncherState, boolean, Runnable)
+     */
+    public void goToState(LauncherState state, boolean animated) {
+        goToState(state, animated, 0, null);
+    }
+
+    /**
+     * Changes the Launcher state to the provided state.
+     *
+     * @param animated false if the state should change immediately without any animation,
+     *                true otherwise
+     * @paras onCompleteRunnable any action to perform at the end of the transition, of null.
+     */
     public void goToState(LauncherState state, boolean animated, Runnable onCompleteRunnable) {
+        goToState(state, animated, 0, onCompleteRunnable);
+    }
+
+    /**
+     * Changes the Launcher state to the provided state after the given delay.
+     */
+    public void goToState(LauncherState state, long delay, Runnable onCompleteRunnable) {
+        goToState(state, true, delay, onCompleteRunnable);
+    }
+
+    /**
+     * Changes the Launcher state to the provided state after the given delay.
+     */
+    public void goToState(LauncherState state, long delay) {
+        goToState(state, true, delay, null);
+    }
+
+    private void goToState(LauncherState state, boolean animated, long delay,
+            Runnable onCompleteRunnable) {
+        if (mLauncher.isInState(state) && mConfig.mCurrentAnimation == null
+                && !mAllAppsController.isTransitioning()) {
+
+            // Run any queued runnable
+            if (onCompleteRunnable != null) {
+                onCompleteRunnable.run();
+            }
+            return;
+        }
+
         // Cancel the current animation
         mConfig.reset();
 
@@ -102,7 +152,9 @@ public class LauncherStateTransitionAnimation {
 
         AnimatorSet animation = createAnimationToNewWorkspace(state, onCompleteRunnable);
         Runnable runnable = new StartAnimRunnable(animation, state.getFinalFocus(mLauncher));
-        if (mConfig.shouldPost) {
+        if (delay > 0) {
+            mUiHandler.postDelayed(runnable, delay);
+        } else if (mConfig.shouldPost) {
             mUiHandler.post(runnable);
         } else {
             runnable.run();

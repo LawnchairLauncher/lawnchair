@@ -1,5 +1,8 @@
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.NORMAL;
+
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
@@ -19,7 +22,7 @@ import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateTransitionAnimation.AnimationConfig;
+import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
@@ -193,7 +196,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
     @Override
     public void onDragStart(boolean start) {
         mCaretController.onDragStart();
-        mLauncher.getStateTransition().cancelAnimation();
+        mLauncher.getStateManager().cancelAnimation();
         cancelDiscoveryAnimation();
         mShiftStart = mAppsView.getTranslationY();
         onProgressAnimationStart();
@@ -230,7 +233,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
                 if (!mLauncher.isInState(LauncherState.ALL_APPS)) {
                     logSwipeOnContainer(Touch.FLING, Direction.UP, containerType);
                 }
-                mLauncher.showAppsView(true /* animated */);
+                mLauncher.getStateManager().goToState(ALL_APPS);
                 if (hasSpringAnimationHandler()) {
                     mSpringAnimationHandler.add(mSearchSpring, true /* setDefaultValues */);
                     // The icons are moving upwards, so we go to 0 from 1. (y-axis 1 is below 0.)
@@ -241,7 +244,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
                 if (mLauncher.isInState(LauncherState.ALL_APPS)) {
                     logSwipeOnContainer(Touch.FLING, Direction.DOWN, ContainerType.ALLAPPS);
                 }
-                mLauncher.showWorkspace(true /* animated */);
+                mLauncher.getStateManager().goToState(NORMAL);
             }
             // snap to top or bottom using the release velocity
         } else {
@@ -250,13 +253,13 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
                 if (mLauncher.isInState(LauncherState.ALL_APPS)) {
                     logSwipeOnContainer(Touch.SWIPE, Direction.DOWN, ContainerType.ALLAPPS);
                 }
-                mLauncher.showWorkspace(true /* animated */);
+                mLauncher.getStateManager().goToState(NORMAL);
             } else {
                 calculateDuration(velocity, Math.abs(mAppsView.getTranslationY()));
                 if (!mLauncher.isInState(LauncherState.ALL_APPS)) {
                     logSwipeOnContainer(Touch.SWIPE, Direction.UP, containerType);
                 }
-                mLauncher.showAppsView(true /* animated */);
+                mLauncher.getStateManager().goToState(ALL_APPS);
             }
         }
     }

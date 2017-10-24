@@ -38,7 +38,6 @@ public class LauncherAnimUtils {
     public static final int OVERVIEW_TRANSITION_MS = 250;
     public static final int SPRING_LOADED_TRANSITION_MS = 150;
     public static final int SPRING_LOADED_EXIT_DELAY = 500;
-    public static final int SPRING_LOADED_EXIT_NEXT_FRAME = 0;
 
     static WeakHashMap<Animator, Object> sAnimators = new WeakHashMap<Animator, Object>();
     static Animator.AnimatorListener sEndAnimListener = new Animator.AnimatorListener() {

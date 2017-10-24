@@ -17,6 +17,7 @@
 package com.android.launcher3.folder;
 
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
+import static com.android.launcher3.LauncherState.NORMAL;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -1243,7 +1244,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             mInfo.setOption(FolderInfo.FLAG_MULTI_PAGE_ANIMATION, true, mLauncher.getModelWriter());
         }
 
-        mLauncher.exitSpringLoadedDragMode(SPRING_LOADED_EXIT_DELAY);
+        mLauncher.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
         if (d.stateAnnouncer != null) {
             d.stateAnnouncer.completeAction(R.string.item_moved);
         }

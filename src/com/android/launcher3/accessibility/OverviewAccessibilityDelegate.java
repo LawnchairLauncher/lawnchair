@@ -24,6 +24,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
@@ -55,7 +56,7 @@ public class OverviewAccessibilityDelegate extends AccessibilityDelegate {
     public boolean performAccessibilityAction(View host, int action, Bundle args) {
         Launcher launcher = Launcher.getLauncher(host.getContext());
         if (action == OVERVIEW) {
-            launcher.showOverviewMode(true);
+            launcher.getStateManager().goToState(LauncherState.OVERVIEW);
             return true;
         } else if (action == WALLPAPERS) {
             launcher.onClickWallpaperPicker(host);

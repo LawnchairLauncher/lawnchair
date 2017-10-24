@@ -16,6 +16,9 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
+
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
@@ -75,8 +78,8 @@ public class PinchToOverviewListener
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
-        if (!mLauncher.isInState(LauncherState.NORMAL)
-                && !mLauncher.isInState(LauncherState.OVERVIEW)) {
+        if (!mLauncher.isInState(NORMAL)
+                && !mLauncher.isInState(OVERVIEW)) {
             // Don't listen for the pinch gesture if on all apps, widget picker, -1, etc.
             return false;
         }
@@ -105,9 +108,8 @@ public class PinchToOverviewListener
             mLauncher.getDragController().cancelDrag();
         }
 
-        mToState = mLauncher.isInState(LauncherState.OVERVIEW)
-                ? LauncherState.NORMAL : LauncherState.OVERVIEW;
-        mCurrentAnimation = mLauncher.getStateTransition()
+        mToState = mLauncher.isInState(OVERVIEW) ? NORMAL : OVERVIEW;
+        mCurrentAnimation = mLauncher.getStateManager()
                 .createAnimationToNewWorkspace(mToState, this);
         mPinchStarted = true;
         mCurrentScale = 1;
@@ -132,11 +134,8 @@ public class PinchToOverviewListener
             mCurrentAnimation.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    if (mToState == LauncherState.OVERVIEW) {
-                        mLauncher.showWorkspace(false);
-                    } else {
-                        mLauncher.showOverviewMode(false);
-                    }
+                    mLauncher.getStateManager().goToState(
+                            mToState == OVERVIEW ? NORMAL : OVERVIEW, false);
                 }
             });
             mCurrentAnimation.reverse();
@@ -150,12 +149,11 @@ public class PinchToOverviewListener
         // If we are zooming out, inverse the mCurrentScale so that animationFraction = [0, 1]
         // 0 => Animation complete
         // 1=> Animation started
-        float animationFraction = mToState ==
-                LauncherState.OVERVIEW ? mCurrentScale : (1 / mCurrentScale);
+        float animationFraction = mToState == OVERVIEW ? mCurrentScale : (1 / mCurrentScale);
 
         float velocity = (1 - detector.getScaleFactor()) / detector.getTimeDelta();
         if (Math.abs(velocity) >= FLING_VELOCITY) {
-            LauncherState toState = velocity > 0 ? LauncherState.OVERVIEW : LauncherState.NORMAL;
+            LauncherState toState = velocity > 0 ? OVERVIEW : NORMAL;
             mShouldGoToFinalState = toState == mToState;
         } else {
             mShouldGoToFinalState = animationFraction <= ACCEPT_THRESHOLD;

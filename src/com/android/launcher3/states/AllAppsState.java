@@ -19,8 +19,10 @@ import static com.android.launcher3.LauncherAnimUtils.ALL_APPS_TRANSITION_MS;
 
 import android.view.View;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.R;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 /**
@@ -41,6 +43,14 @@ public class AllAppsState extends LauncherState {
         if (!launcher.getSharedPrefs().getBoolean(APPS_VIEW_SHOWN, false)) {
             launcher.getSharedPrefs().edit().putBoolean(APPS_VIEW_SHOWN, true).apply();
         }
+
+        AbstractFloatingView.closeAllOpenViews(launcher);
+        dispatchWindowStateChanged(launcher);
+    }
+
+    @Override
+    public String getDescription(Launcher launcher) {
+        return launcher.getString(R.string.all_apps_button_label);
     }
 
     @Override
