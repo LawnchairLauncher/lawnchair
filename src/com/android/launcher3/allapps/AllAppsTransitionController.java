@@ -133,9 +133,9 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = false;
             mTouchEventStartedOnHotseat = mLauncher.getDragLayer().isEventOverHotseat(ev);
-            if (!mLauncher.isInState(LauncherState.ALL_APPS) && mLauncher.getWorkspace().workspaceInModalState()) {
+            if (!mLauncher.isInState(ALL_APPS) && !mLauncher.isInState(NORMAL)) {
                 mNoIntercept = true;
-            } else if (mLauncher.isInState(LauncherState.ALL_APPS) &&
+            } else if (mLauncher.isInState(ALL_APPS) &&
                     !mAppsView.shouldContainerScroll(ev)) {
                 mNoIntercept = true;
             } else if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
@@ -147,7 +147,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
                 boolean ignoreSlopWhenSettling = false;
 
                 if (mDetector.isIdleState()) {
-                    if (mLauncher.isInState(LauncherState.ALL_APPS)) {
+                    if (mLauncher.isInState(ALL_APPS)) {
                         directionsToDetectScroll |= SwipeDetector.DIRECTION_NEGATIVE;
                     } else {
                         directionsToDetectScroll |= SwipeDetector.DIRECTION_POSITIVE;
@@ -230,7 +230,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         if (fling) {
             if (velocity < 0) {
                 calculateDuration(velocity, mAppsView.getTranslationY());
-                if (!mLauncher.isInState(LauncherState.ALL_APPS)) {
+                if (!mLauncher.isInState(ALL_APPS)) {
                     logSwipeOnContainer(Touch.FLING, Direction.UP, containerType);
                 }
                 mLauncher.getStateManager().goToState(ALL_APPS);
@@ -241,7 +241,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
                 }
             } else {
                 calculateDuration(velocity, Math.abs(mShiftRange - mAppsView.getTranslationY()));
-                if (mLauncher.isInState(LauncherState.ALL_APPS)) {
+                if (mLauncher.isInState(ALL_APPS)) {
                     logSwipeOnContainer(Touch.FLING, Direction.DOWN, ContainerType.ALLAPPS);
                 }
                 mLauncher.getStateManager().goToState(NORMAL);
@@ -250,13 +250,13 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         } else {
             if (mAppsView.getTranslationY() > mShiftRange / 2) {
                 calculateDuration(velocity, Math.abs(mShiftRange - mAppsView.getTranslationY()));
-                if (mLauncher.isInState(LauncherState.ALL_APPS)) {
+                if (mLauncher.isInState(ALL_APPS)) {
                     logSwipeOnContainer(Touch.SWIPE, Direction.DOWN, ContainerType.ALLAPPS);
                 }
                 mLauncher.getStateManager().goToState(NORMAL);
             } else {
                 calculateDuration(velocity, Math.abs(mAppsView.getTranslationY()));
-                if (!mLauncher.isInState(LauncherState.ALL_APPS)) {
+                if (!mLauncher.isInState(ALL_APPS)) {
                     logSwipeOnContainer(Touch.SWIPE, Direction.UP, containerType);
                 }
                 mLauncher.getStateManager().goToState(ALL_APPS);
@@ -403,7 +403,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
             outConfig.shouldPost = false;
         }
 
-        outConfig.overrideDuration(mAnimationDuration);
+        outConfig.duration = mAnimationDuration;
         ObjectAnimator anim = ObjectAnimator.ofFloat(this, PROGRESS, mProgress, progress);
         anim.setDuration(mAnimationDuration);
         anim.setInterpolator(interpolator);

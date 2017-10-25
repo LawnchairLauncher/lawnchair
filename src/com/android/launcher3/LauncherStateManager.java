@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherState.NORMAL;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -77,11 +79,17 @@ public class LauncherStateManager {
     private final Launcher mLauncher;
     private final AllAppsTransitionController mAllAppsController;
 
+    private LauncherState mState = NORMAL;
+
     public LauncherStateManager(
             Launcher l, AllAppsTransitionController allAppsController) {
         mUiHandler = new Handler(Looper.getMainLooper());
         mLauncher = l;
         mAllAppsController = allAppsController;
+    }
+
+    public LauncherState getState() {
+        return mState;
     }
 
     /**
@@ -139,6 +147,7 @@ public class LauncherStateManager {
         mConfig.reset();
 
         if (!animated) {
+            setState(state);
             mAllAppsController.setFinalProgress(state.verticalProgress);
             mLauncher.getWorkspace().setState(state);
             mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
@@ -161,9 +170,10 @@ public class LauncherStateManager {
         }
     }
 
-    protected AnimatorSet createAnimationToNewWorkspace(LauncherState state,
+    protected AnimatorSet createAnimationToNewWorkspace(final LauncherState state,
             final Runnable onCompleteRunnable) {
         mConfig.reset();
+        mConfig.duration = state == NORMAL ? mState.transitionDuration : state.transitionDuration;
 
         final AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
         final AnimationLayerSet layerViews = new AnimationLayerSet();
@@ -175,6 +185,13 @@ public class LauncherStateManager {
 
         animation.addListener(layerViews);
         animation.addListener(new AnimationSuccessListener() {
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                // Change the internal state only when the transition actually starts
+                setState(state);
+            }
+
             @Override
             public void onAnimationSuccess(Animator animator) {
                 // Run any queued runnables
@@ -187,6 +204,12 @@ public class LauncherStateManager {
         });
         mConfig.setAnimation(animation);
         return mConfig.mCurrentAnimation;
+    }
+
+    private void setState(LauncherState state) {
+        mState.onStateDisabled(mLauncher);
+        mState = state;
+        mState.onStateEnabled(mLauncher);
     }
 
     /**
@@ -220,27 +243,19 @@ public class LauncherStateManager {
 
     public static class AnimationConfig extends AnimatorListenerAdapter {
         public boolean shouldPost;
+        public long duration;
 
-        private long mOverriddenDuration = -1;
         private AnimatorSet mCurrentAnimation;
 
         public void reset() {
-            shouldPost = false;
-            mOverriddenDuration = -1;
+            shouldPost = true;
+            duration = 0;
 
             if (mCurrentAnimation != null) {
                 mCurrentAnimation.setDuration(0);
                 mCurrentAnimation.cancel();
                 mCurrentAnimation = null;
             }
-        }
-
-        public void overrideDuration(long duration) {
-            mOverriddenDuration = duration;
-        }
-
-        public long getDuration(long defaultDuration) {
-            return mOverriddenDuration >= 0 ? mOverriddenDuration : defaultDuration;
         }
 
         @Override
