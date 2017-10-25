@@ -27,7 +27,9 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.CornerPathEffect;
+import android.graphics.Outline;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
@@ -42,6 +44,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
@@ -68,6 +71,7 @@ import ch.deletescape.lawnchair.accessibility.ShortcutMenuAccessibilityDelegate;
 import ch.deletescape.lawnchair.allapps.AllAppsIconRowView;
 import ch.deletescape.lawnchair.anim.PropertyListBuilder;
 import ch.deletescape.lawnchair.anim.PropertyResetListener;
+import ch.deletescape.lawnchair.anim.RoundedRectRevealOutlineProvider;
 import ch.deletescape.lawnchair.badge.BadgeInfo;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragController;
@@ -112,6 +116,9 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     private AnimatorSet mReduceHeightAnimatorSet;
 
     private IPopupThemer mTheme;
+
+    private final Rect mStartRect = new Rect();
+    private final Rect mEndRect = new Rect();
 
     public PopupContainerWithArrow(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -341,6 +348,29 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         return getChildCount() - 1;
     }
 
+    private Point computeAnimStartPoint(int y) {
+        int x;
+        Resources resources = getResources();
+        if (mIsLeftAligned != mIsRtl) {
+            x = R.dimen.popup_arrow_horizontal_center_start;
+        } else {
+            x = R.dimen.popup_arrow_horizontal_center_end;
+        }
+        x = resources.getDimensionPixelSize(x);
+        if (!mIsLeftAligned) {
+            x = getMeasuredWidth() - x;
+        }
+        int measuredHeight = ((getMeasuredHeight() - getPaddingTop()) - getPaddingBottom()) - y;
+        int paddingTop = getPaddingTop();
+        if (!mIsAboveIcon) {
+            y = measuredHeight;
+        }
+        if (mIsCenterAligned) {
+            x = getMeasuredWidth() / 2;
+        }
+        return new Point(x, paddingTop + y);
+    }
+
     private void animateOpen() {
         setVisibility(View.VISIBLE);
         mIsOpen = true;
@@ -349,40 +379,27 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         final int itemCount = getItemCount();
 
         final long duration = getResources().getInteger(
-                R.integer.config_deepShortcutOpenDuration);
-        final long arrowScaleDuration = getResources().getInteger(
-                R.integer.config_deepShortcutArrowOpenDuration);
-        final long arrowScaleDelay = duration - arrowScaleDuration;
-        final long stagger = getResources().getInteger(
-                R.integer.config_deepShortcutOpenStagger);
-        final TimeInterpolator fadeInterpolator = new LogAccelerateInterpolator(100, 0);
+                R.integer.config_popupOpenCloseDuration);
 
-        // Animate shortcuts
-        DecelerateInterpolator interpolator = new DecelerateInterpolator();
+        TimeInterpolator interpolator = new AccelerateDecelerateInterpolator();
+        int totalHeight = 0;
         for (int i = 0; i < itemCount; i++) {
-            final PopupItemView popupItemView = getItemViewAt(i);
-            popupItemView.setVisibility(INVISIBLE);
-            popupItemView.setAlpha(0);
-
-            Animator anim = popupItemView.createOpenAnimation(mIsAboveIcon, mIsLeftAligned);
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    popupItemView.setVisibility(VISIBLE);
-                }
-            });
-            anim.setDuration(duration);
-            int animationIndex = mIsAboveIcon ? itemCount - i - 1 : i;
-            anim.setStartDelay(stagger * animationIndex);
-            anim.setInterpolator(interpolator);
-            shortcutAnims.play(anim);
-
-            Animator fadeAnim = ObjectAnimator.ofFloat(popupItemView, View.ALPHA, 1);
-            fadeAnim.setInterpolator(fadeInterpolator);
-            // We want the shortcut to be fully opaque before the arrow starts animating.
-            fadeAnim.setDuration(arrowScaleDelay);
-            shortcutAnims.play(fadeAnim);
+            totalHeight += getItemViewAt(i).getMeasuredHeight();
         }
+
+        Point startPoint = computeAnimStartPoint(totalHeight);
+        int y = mIsAboveIcon ? getPaddingTop() : startPoint.y;
+        float backgroundRadius = getItemViewAt(0).getBackgroundRadius();
+        mStartRect.set(startPoint.x, startPoint.y, startPoint.x, startPoint.y);
+        mEndRect.set(0, y, getMeasuredWidth(), totalHeight + y);
+        ValueAnimator revealAnim = new RoundedRectRevealOutlineProvider(backgroundRadius,
+                backgroundRadius, mStartRect, mEndRect).createRevealAnimator(this, false);
+        revealAnim.setDuration(duration);
+        revealAnim.setInterpolator(interpolator);
+        Animator fadeAnim = ObjectAnimator.ofFloat(this, ALPHA, 0.0f, 1.0f);
+        fadeAnim.setDuration(duration);
+        fadeAnim.setInterpolator(interpolator);
+        shortcutAnims.play(fadeAnim);
         shortcutAnims.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -397,11 +414,9 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         // Animate the arrow
         mArrow.setScaleX(0);
         mArrow.setScaleY(0);
-        Animator arrowScale = createArrowScaleAnim(1).setDuration(arrowScaleDuration);
-        arrowScale.setStartDelay(arrowScaleDelay);
-        shortcutAnims.play(arrowScale);
-
+        Animator arrowScale = createArrowScaleAnim(1).setDuration((long) getResources().getInteger(R.integer.config_popupArrowOpenDuration));
         mOpenCloseAnimator = shortcutAnims;
+        shortcutAnims.playSequentially(revealAnim, arrowScale);
         shortcutAnims.start();
     }
 
@@ -851,53 +866,47 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         if (!mIsOpen) {
             return;
         }
+
+        mEndRect.setEmpty();
         if (mOpenCloseAnimator != null) {
+            if (Utilities.ATLEAST_NOUGAT) {
+                Outline outline = new Outline();
+                getOutlineProvider().getOutline(this, outline);
+                outline.getRect(mEndRect);
+            }
             mOpenCloseAnimator.cancel();
         }
+
         mIsOpen = false;
 
         final AnimatorSet shortcutAnims = LauncherAnimUtils.createAnimatorSet();
         final int itemCount = getItemCount();
-        int numOpenShortcuts = 0;
+        int totalHeight = 0;
         for (int i = 0; i < itemCount; i++) {
-            if (getItemViewAt(i).isOpenOrOpening()) {
-                numOpenShortcuts++;
-            }
+            totalHeight += getItemViewAt(i).getHeight();
         }
-        final long duration = getResources().getInteger(
-                R.integer.config_deepShortcutCloseDuration);
-        final long arrowScaleDuration = getResources().getInteger(
-                R.integer.config_deepShortcutArrowOpenDuration);
-        final long stagger = getResources().getInteger(
-                R.integer.config_deepShortcutCloseStagger);
-        final TimeInterpolator fadeInterpolator = new LogAccelerateInterpolator(100, 0);
+        final long duration = (long) getResources().getInteger(R.integer.config_popupOpenCloseDuration);
+        final TimeInterpolator interpolator = new AccelerateDecelerateInterpolator();
 
-        int firstOpenItemIndex = mIsAboveIcon ? itemCount - numOpenShortcuts : 0;
-        for (int i = firstOpenItemIndex; i < firstOpenItemIndex + numOpenShortcuts; i++) {
-            final PopupItemView view = getItemViewAt(i);
-            Animator anim;
-            anim = view.createCloseAnimation(mIsAboveIcon, mIsLeftAligned, duration);
-            int animationIndex = mIsAboveIcon ? i - firstOpenItemIndex
-                    : numOpenShortcuts - i - 1;
-            anim.setStartDelay(stagger * animationIndex);
+        Point startPoint = computeAnimStartPoint(totalHeight);
+        int y = mIsAboveIcon ? getPaddingTop() : startPoint.y;
 
-            Animator fadeAnim = ObjectAnimator.ofFloat(view, View.ALPHA, 0);
-            // Don't start fading until the arrow is gone.
-            fadeAnim.setStartDelay(stagger * animationIndex + arrowScaleDuration);
-            fadeAnim.setDuration(duration - arrowScaleDuration);
-            fadeAnim.setInterpolator(fadeInterpolator);
-            shortcutAnims.play(fadeAnim);
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    view.setVisibility(INVISIBLE);
-                }
-            });
-            shortcutAnims.play(anim);
+        float backgroundRadius = getItemViewAt(0).getBackgroundRadius();
+        mStartRect.set(startPoint.x, startPoint.y, startPoint.x, startPoint.y);
+        if (mEndRect.isEmpty()) {
+            mEndRect.set(0, y, getMeasuredWidth(), totalHeight + y);
         }
-        Animator arrowAnim = createArrowScaleAnim(0).setDuration(arrowScaleDuration);
-        arrowAnim.setStartDelay(0);
-        shortcutAnims.play(arrowAnim);
+
+        Animator revealAnimator = new RoundedRectRevealOutlineProvider(backgroundRadius,
+                backgroundRadius, mStartRect, mEndRect).createRevealAnimator(this, true);
+        revealAnimator.setDuration(duration);
+        revealAnimator.setInterpolator(interpolator);
+        shortcutAnims.play(revealAnimator);
+
+        Animator fadeAnimator = ObjectAnimator.ofFloat(this, ALPHA, 0);
+        fadeAnimator.setDuration(duration);
+        fadeAnimator.setInterpolator(interpolator);
+        shortcutAnims.play(fadeAnimator);
 
         shortcutAnims.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -910,6 +919,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 }
             }
         });
+
         mOpenCloseAnimator = shortcutAnims;
         shortcutAnims.start();
         mOriginalIcon.forceHideBadge(false);

@@ -74,6 +74,8 @@
     <integer name="config_deepShortcutCloseDuration">150</integer>
     <integer name="config_deepShortcutCloseStagger">20</integer>
     <integer name="config_removeNotificationViewDuration">300</integer>
+    <integer name="config_popupOpenCloseDuration">150</integer>
+    <integer name="config_popupArrowOpenDuration">80</integer>
 
     <!-- Accessibility actions -->
     <item type="id" name="action_remove" />
