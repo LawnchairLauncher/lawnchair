@@ -34,10 +34,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -65,7 +67,12 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FeatureFlags.INSTANCE.applyDarkTheme(this);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_settings);
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
         if (FeatureFlags.INSTANCE.getCurrentTheme() != 2)
             BlurWallpaperProvider.Companion.applyBlurBackground(this);
@@ -73,7 +80,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
         if (savedInstanceState == null) {
             // Display the fragment as the main content.
             getFragmentManager().beginTransaction()
-                    .replace(android.R.id.content, new LauncherSettingsFragment())
+                    .replace(R.id.content, new LauncherSettingsFragment())
                     .commit();
         }
 
@@ -89,7 +96,7 @@ public class SettingsActivity extends AppCompatActivity implements PreferenceFra
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             setTitle(pref.getTitle());
             transaction.setCustomAnimations(R.animator.fly_in, R.animator.fade_out, R.animator.fade_in, R.animator.fly_out);
-            transaction.replace(android.R.id.content, fragment);
+            transaction.replace(R.id.content, fragment);
             transaction.addToBackStack("PreferenceFragment");
             transaction.commit();
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

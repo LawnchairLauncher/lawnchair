@@ -103,22 +103,24 @@
         <item name="folderBgColorBlur">#75000000</item>
     </style>
 
-    <style name="SettingsTheme" parent="Theme.AppCompat.Light">
+    <style name="SettingsTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorAccent">@color/accent_material_light</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="blurTintColor">#45ffffff</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="SettingsHome" parent="SettingsTheme">
         <item name="android:listDivider">@null</item>
     </style>
 
-    <style name="SettingsTheme.Dark" parent="Theme.AppCompat">
+    <style name="SettingsTheme.Dark" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimaryDark">#ff242424</item>
         <item name="colorPrimary">#ff2d2d2d</item>
         <item name="colorAccent">@color/accent_material_light</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <item name="blurTintColor">#45212121</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="SettingsHome.Dark" parent="SettingsTheme.Dark">
