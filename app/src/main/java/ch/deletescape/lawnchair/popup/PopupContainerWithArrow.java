@@ -35,6 +35,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -102,6 +103,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     private final Rect mTempRect = new Rect();
     private PointF mInterceptTouchDown = new PointF();
     private boolean mIsLeftAligned;
+    private boolean mIsCenterAligned;
     protected boolean mIsAboveIcon;
     private View mArrow;
 
@@ -503,15 +505,19 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             mIsAboveIcon = true;
         }
 
+        int gravity = ((FrameLayout.LayoutParams) getLayoutParams()).gravity;
+
         if (x < dragLayer.getLeft() || x + width > dragLayer.getRight()) {
             // If we are still off screen, center horizontally too.
             ((FrameLayout.LayoutParams) getLayoutParams()).gravity |= Gravity.CENTER_HORIZONTAL;
+            setX(mTempRect.left + icon.getPaddingLeft() + (iconWidth - width) / 2);
+            mIsCenterAligned = true;
+        } else {
+            if (!Gravity.isHorizontal(gravity)) {
+                setX(x);
+            }
         }
 
-        int gravity = ((FrameLayout.LayoutParams) getLayoutParams()).gravity;
-        if (!Gravity.isHorizontal(gravity)) {
-            setX(x);
-        }
         if (!Gravity.isVertical(gravity)) {
             setY(y);
         }
@@ -531,6 +537,8 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         if (mIsLeftAligned) {
             layoutParams.gravity = Gravity.LEFT;
             layoutParams.leftMargin = horizontalOffset;
+        } else if (mIsCenterAligned) {
+            layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
         } else {
             layoutParams.gravity = Gravity.RIGHT;
             layoutParams.rightMargin = horizontalOffset;
