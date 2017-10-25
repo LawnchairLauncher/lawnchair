@@ -59,7 +59,7 @@ android {
             versionName = System.getenv("MAJOR_MINOR") + "." + System.getenv("TRAVIS_BUILD_NUMBER")
         } else {
             versionCode 1
-            versionName "prerelease"
+            versionName "dev"
         }
     }
     buildTypes {
