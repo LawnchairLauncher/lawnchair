@@ -19,4 +19,4 @@ Before implementing any new big features I would be happy if you would either hi
 
 ## Graphics
 
-The official Lawnchair graphics were designed and provided by Josh Baldassarre. Thanks a lot to him!
+The official Lawnchair graphics were designed and provided by Josh Baldassarre & Lumiq Creative. Thanks a lot to those awesome designers!
