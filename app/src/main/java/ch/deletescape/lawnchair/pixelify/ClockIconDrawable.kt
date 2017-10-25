@@ -110,17 +110,25 @@ class ClockIconDrawable(val context: Context, val adaptive: Boolean) : Drawable(
     }
 
     companion object {
-        fun create(context: Context): Drawable {
-            if (Utilities.ATLEAST_OREO) {
-                return Wrapper(AdaptiveIconDrawable(
-                        ColorDrawable(context.resources.getColor(R.color.blue_grey_100)),
-                        ClockIconDrawable(context, true)), true)
-            } else if (Utilities.ATLEAST_NOUGAT) {
-                return Wrapper(AdaptiveIconDrawableCompat(
-                        ColorDrawable(context.resources.getColor(R.color.blue_grey_100)),
-                        ClockIconDrawable(context, true), false), true)
+        fun createWrapped(context: Context): Wrapper {
+            return if (Utilities.ATLEAST_NOUGAT) {
+                Wrapper(create(context), true)
             } else {
-                return Wrapper(ClockIconDrawable(context, false), false)
+                Wrapper(create(context), false)
+            }
+        }
+
+        fun create(context: Context): Drawable {
+            return if (Utilities.ATLEAST_OREO) {
+                AdaptiveIconDrawable(
+                        ColorDrawable(context.resources.getColor(R.color.blue_grey_100)),
+                        ClockIconDrawable(context, true))
+            } else if (Utilities.ATLEAST_NOUGAT) {
+                AdaptiveIconDrawableCompat(
+                        ColorDrawable(context.resources.getColor(R.color.blue_grey_100)),
+                        ClockIconDrawable(context, true), false)
+            } else {
+                ClockIconDrawable(context, false)
             }
         }
 

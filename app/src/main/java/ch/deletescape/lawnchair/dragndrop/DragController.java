@@ -230,6 +230,7 @@ public class DragController implements DragDriver.EventListener, TouchController
                 : 0f;
         final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
                 registrationY, initialDragViewScale, scaleDps);
+        dragView.setItemInfo(dragInfo);
 
         mDragObject.dragComplete = false;
         if (mOptions.isAccessibleDrag) {
