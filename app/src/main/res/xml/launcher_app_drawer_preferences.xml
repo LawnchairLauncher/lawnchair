@@ -57,7 +57,7 @@
             android:key="pref_allAppsCustomLabelColor"
             android:title="@string/pref_all_apps_custom_label_color" />
 
-        <com.pavelsikun.vintagechroma.ChromaPreference
+        <com.pavelsikun.vintagechroma.ChromaPreferenceCompat
             android:dependency="pref_allAppsCustomLabelColor"
             android:key="pref_workspaceLabelColor"
             android:title="@string/pref_all_apps_label_color"

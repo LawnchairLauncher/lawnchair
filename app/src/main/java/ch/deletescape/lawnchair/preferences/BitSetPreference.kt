@@ -1,7 +1,7 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
-import android.preference.MultiSelectListPreference
+import android.support.v14.preference.MultiSelectListPreference
 import android.text.TextUtils
 import android.util.AttributeSet
 import ch.deletescape.lawnchair.R

@@ -11,9 +11,12 @@ import ch.deletescape.lawnchair.LauncherFiles
 import ch.deletescape.lawnchair.Utilities
 import ch.deletescape.lawnchair.config.FeatureFlags
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors
+import java.io.File
 import kotlin.reflect.KProperty
 
 open class PreferenceImpl(context: Context) : IPreferenceProvider {
+    val context = context.applicationContext!!
+
     override val workSpaceLabelColor by IntPref(PreferenceFlags.KEY_PREF_WS_LABEL_COLOR, Color.WHITE)
     override val allAppsLabelColor by IntPref(PreferenceFlags.KEY_PREF_ALL_APPS_LABEL_COLOR, Color.BLACK)
 
@@ -249,8 +252,7 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     // Helper functions and class
     // ----------------
 
-    private var sharedPrefs: SharedPreferences = context.applicationContext.getSharedPreferences(
-            LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+    private val sharedPrefs: SharedPreferences = getSharedPrefs()
 
     private fun setBoolean(pref: String, value: Boolean, commit: Boolean) {
         commitOrApply(sharedPrefs.edit().putBoolean(pref, value), commit)
@@ -390,6 +392,17 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
 
     private interface MutablePrefDelegate<T> {
         operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T)
+    }
+
+    fun getSharedPrefs() : SharedPreferences {
+        val dir = context.cacheDir.parent
+        val oldFile = File(dir, "shared_prefs/" + LauncherFiles.OLD_SHARED_PREFERENCES_KEY + ".xml")
+        val newFile = File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml")
+        if (oldFile.exists() && !newFile.exists()) {
+            oldFile.renameTo(newFile)
+            oldFile.delete()
+        }
+        return context.applicationContext.getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
     }
 
     private abstract inner class PrefDelegate<T>(val key: String?, val defaultValue: T) {

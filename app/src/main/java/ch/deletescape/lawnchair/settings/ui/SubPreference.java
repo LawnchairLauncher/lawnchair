@@ -2,7 +2,8 @@ package ch.deletescape.lawnchair.settings.ui;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.preference.Preference;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceViewHolder;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -32,6 +33,12 @@ public class SubPreference extends Preference implements View.OnLongClickListene
 
     public int getContent() {
         return mLongClick ? mLongClickContent : mContent;
+    }
+
+    @Override
+    public void onBindViewHolder(PreferenceViewHolder holder) {
+        super.onBindViewHolder(holder);
+        holder.itemView.setOnLongClickListener(this);
     }
 
     @Override

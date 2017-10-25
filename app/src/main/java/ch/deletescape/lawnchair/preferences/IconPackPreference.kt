@@ -6,7 +6,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.graphics.drawable.Drawable
-import android.preference.Preference
+import android.support.v7.preference.Preference
+import android.support.v7.preference.PreferenceManager
+import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -28,9 +30,9 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
         pm = context.packageManager
     }
 
-    override fun onCreateView(parent: ViewGroup): View {
+    override fun onAttached() {
+        super.onAttached()
         init()
-        return super.onCreateView(parent)
     }
 
     private fun init() {

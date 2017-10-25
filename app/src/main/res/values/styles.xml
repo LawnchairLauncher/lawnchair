@@ -111,7 +111,7 @@
     </style>
 
     <style name="SettingsHome" parent="SettingsTheme">
-        <item name="android:listDivider">@null</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
 
     <style name="SettingsTheme.Dark" parent="Theme.AppCompat.NoActionBar">

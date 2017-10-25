@@ -1,7 +1,8 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
-import android.preference.Preference
+import android.support.v7.preference.Preference
+import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -41,8 +42,9 @@ class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: Attri
         ta.recycle()
     }
 
-    override fun onBindView(view: View) {
-        super.onBindView(view)
+    override fun onBindViewHolder(holder: PreferenceViewHolder) {
+        super.onBindViewHolder(holder)
+        val view = holder.itemView
         mSeekbar = view.findViewById<SeekBar>(R.id.seekbar)
         mValueText = view.findViewById<TextView>(R.id.txtValue)
         mSeekbar!!.max = steps
@@ -54,17 +56,12 @@ class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: Attri
         updateSummary()
     }
 
-    override fun onCreateView(parent: ViewGroup): View {
-        return super.onCreateView(parent)
-    }
-
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
         current = min + (max - min) / steps * progress
         current = Math.round(current * 100f)/100f; //round to .00 places
         updateSummary()
 
         persistFloat(current)
-
     }
 
     private fun updateSummary() {

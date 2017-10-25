@@ -35,7 +35,7 @@
         android:persistent="true"
         android:title="@string/hide_icon_labels_pref_title" />
 
-    <com.pavelsikun.vintagechroma.ChromaPreference
+    <com.pavelsikun.vintagechroma.ChromaPreferenceCompat
         android:key="pref_workspaceLabelColor"
         android:title="@string/workspace_label_color_hue_pref_title"
         app:chromaColorMode="ARGB"
