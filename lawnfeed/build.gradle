@@ -6,7 +6,7 @@ android {
 
     signingConfigs {
         travis {
-            storeFile file("debug.jks")
+            storeFile file("../app/debug.jks")
             storePassword System.getenv("STORE_PASSWORD")
             keyAlias "Lawnchair"
             keyPassword System.getenv("KEY_PASSWORD")
