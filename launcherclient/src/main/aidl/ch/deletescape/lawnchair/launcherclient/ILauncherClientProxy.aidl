@@ -28,6 +28,8 @@ interface ILauncherClientProxy {
 
     void windowDetached(boolean isChangingConfigurations);
 
+    void onQsbClick(inout Intent intent);
+
     int init(ILauncherClientProxyCallback callback);
 
     int reconnect();

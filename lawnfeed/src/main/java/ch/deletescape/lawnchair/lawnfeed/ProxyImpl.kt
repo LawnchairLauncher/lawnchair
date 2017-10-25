@@ -1,9 +1,6 @@
 package ch.deletescape.lawnchair.lawnfeed
 
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
+import android.content.*
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Binder
@@ -129,6 +126,17 @@ class ProxyImpl(val context: Context) : ILauncherClientProxy.Stub() {
     override fun windowDetached(isChangingConfigurations: Boolean) {
         enforcePermission()
         overlay?.windowDetached(isChangingConfigurations)
+    }
+
+    override fun onQsbClick(intent: Intent?) {
+        enforcePermission()
+        context.sendOrderedBroadcast(intent, null, object : BroadcastReceiver() {
+
+            @Suppress("NAME_SHADOWING")
+            override fun onReceive(context: Context?, intent: Intent?) {
+                proxyCallback.onQsbResult(resultCode)
+            }
+        }, null, 0, null, null)
     }
 
     override fun init(callback: ILauncherClientProxyCallback): Int {

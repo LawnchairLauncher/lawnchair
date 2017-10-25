@@ -29,6 +29,8 @@ class LawnfeedClient(private val launcher: Launcher) : ILauncherClient {
         }
     }
 
+    private var qsbReceiver: QsbReceiver? = null
+
     init {
         val filter = IntentFilter(Intent.ACTION_PACKAGE_ADDED)
         filter.addAction(Intent.ACTION_PACKAGE_CHANGED)
@@ -224,6 +226,13 @@ class LawnfeedClient(private val launcher: Launcher) : ILauncherClient {
         serviceStatus = status
     }
 
+    fun onQsbClick(intent: Intent, receiver: QsbReceiver) {
+        ifConnected {
+            proxy?.onQsbClick(intent)
+            qsbReceiver = receiver
+        }
+    }
+
     private inline fun ifConnected(body: () -> Unit) {
         if (!isConnected || !Utilities.getPrefs(launcher).showGoogleNowTab) {
             return
@@ -314,6 +323,11 @@ class LawnfeedClient(private val launcher: Launcher) : ILauncherClient {
             mWindow = client.launcher.window
         }
 
+        override fun onQsbResult(resultCode: Int) {
+            qsbReceiver?.onResult(resultCode)
+            qsbReceiver = null
+        }
+
         override fun onServiceConnected() {
             onOverlayConnected()
         }
@@ -341,6 +355,11 @@ class LawnfeedClient(private val launcher: Launcher) : ILauncherClient {
                 sProxyConnection = null
             }
         }
+    }
+
+    interface QsbReceiver {
+
+        fun onResult(resultCode: Int)
     }
 
     companion object {
