@@ -113,7 +113,7 @@ public class SettingsActivity extends AppCompatActivity implements
     }
 
     private void updateUpButton() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(getFragmentManager().getBackStackEntryCount() != 0);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(getSupportFragmentManager().getBackStackEntryCount() != 0);
     }
 
     @Override
