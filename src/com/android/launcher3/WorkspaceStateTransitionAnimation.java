@@ -30,10 +30,10 @@ import android.content.res.Resources;
 import android.util.Property;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
-import android.view.animation.DecelerateInterpolator;
 
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.anim.AnimationLayerSet;
+import com.android.launcher3.anim.Interpolators;
 
 /**
  * A convenience class to update a view's visibility state after an alpha animation.
@@ -86,57 +86,11 @@ class AlphaUpdateListener extends AnimatorListenerAdapter implements ValueAnimat
 }
 
 /**
- * This interpolator emulates the rate at which the perceived scale of an object changes
- * as its distance from a camera increases. When this interpolator is applied to a scale
- * animation on a view, it evokes the sense that the object is shrinking due to moving away
- * from the camera.
- */
-class ZInterpolator implements TimeInterpolator {
-    private float focalLength;
-
-    public ZInterpolator(float foc) {
-        focalLength = foc;
-    }
-
-    public float getInterpolation(float input) {
-        return (1.0f - focalLength / (focalLength + input)) /
-                (1.0f - focalLength / (focalLength + 1.0f));
-    }
-}
-
-/**
- * The exact reverse of ZInterpolator.
- */
-class InverseZInterpolator implements TimeInterpolator {
-    private ZInterpolator zInterpolator;
-    public InverseZInterpolator(float foc) {
-        zInterpolator = new ZInterpolator(foc);
-    }
-    public float getInterpolation(float input) {
-        return 1 - zInterpolator.getInterpolation(1 - input);
-    }
-}
-
-/**
- * InverseZInterpolator compounded with an ease-out.
- */
-class ZoomInInterpolator implements TimeInterpolator {
-    private final InverseZInterpolator inverseZInterpolator = new InverseZInterpolator(0.35f);
-    private final DecelerateInterpolator decelerate = new DecelerateInterpolator(3.0f);
-
-    public float getInterpolation(float input) {
-        return decelerate.getInterpolation(inverseZInterpolator.getInterpolation(input));
-    }
-}
-
-/**
  * Manages the animations between each of the workspace states.
  */
 public class WorkspaceStateTransitionAnimation {
 
     private static final PropertySetter NO_ANIM_PROPERTY_SETTER = new PropertySetter();
-
-    private final ZoomInInterpolator mZoomInInterpolator = new ZoomInInterpolator();
 
     public final int mWorkspaceScrimAlpha;
 
@@ -197,13 +151,13 @@ public class WorkspaceStateTransitionAnimation {
         propertySetter.setViewAlpha(mWorkspace.createHotseatAlphaAnimator(finalHotseatAlpha),
                 mLauncher.getHotseat(), finalHotseatAlpha);
 
-        propertySetter.setFloat(mWorkspace, SCALE_PROPERTY, mNewScale, mZoomInInterpolator);
+        propertySetter.setFloat(mWorkspace, SCALE_PROPERTY, mNewScale, Interpolators.ZOOM_IN);
         propertySetter.setFloat(mWorkspace, View.TRANSLATION_Y,
-                finalWorkspaceTranslationY, mZoomInInterpolator);
+                finalWorkspaceTranslationY, Interpolators.ZOOM_IN);
 
         // Set scrim
         propertySetter.setInt(mLauncher.getDragLayer().getScrim(), DRAWABLE_ALPHA,
-                state.hasScrim ? mWorkspaceScrimAlpha : 0, new DecelerateInterpolator(1.5f));
+                state.hasScrim ? mWorkspaceScrimAlpha : 0, Interpolators.DEACCEL_1_5);
     }
 
     public void applyChildState(LauncherState state, CellLayout cl, int childIndex) {
@@ -214,13 +168,13 @@ public class WorkspaceStateTransitionAnimation {
     private void applyChildState(LauncherState state, CellLayout cl, int childIndex,
             int centerPage, PropertySetter propertySetter) {
         propertySetter.setInt(cl.getScrimBackground(),
-                DRAWABLE_ALPHA, state.hasScrim ? 255 : 0, mZoomInInterpolator);
+                DRAWABLE_ALPHA, state.hasScrim ? 255 : 0, Interpolators.ZOOM_IN);
 
         // Only animate the page alpha when we actually fade pages
         if (mWorkspaceFadeInAdjacentScreens) {
             float finalAlpha = state == LauncherState.NORMAL && childIndex != centerPage ? 0 : 1f;
             propertySetter.setFloat(cl.getShortcutsAndWidgets(), View.ALPHA,
-                    finalAlpha, mZoomInInterpolator);
+                    finalAlpha, Interpolators.ZOOM_IN);
         }
     }
 
@@ -302,7 +256,7 @@ public class WorkspaceStateTransitionAnimation {
         }
 
         private TimeInterpolator getFadeInterpolator(float finalAlpha) {
-            return finalAlpha == 0 ? new DecelerateInterpolator(2) : null;
+            return finalAlpha == 0 ? Interpolators.DEACCEL_2 : null;
         }
     }
 }

@@ -37,10 +37,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
 
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -240,8 +239,7 @@ public abstract class ButtonDropTarget extends TextView
         };
         dragLayer.animateView(d.dragView, from, to, scale, 1f, 1f, 0.1f, 0.1f,
                 DRAG_VIEW_DROP_DURATION,
-                new DecelerateInterpolator(2),
-                new LinearInterpolator(), onAnimationEndRunnable,
+                Interpolators.DEACCEL_2, Interpolators.LINEAR, onAnimationEndRunnable,
                 DragLayer.ANIMATION_END_DISAPPEAR, null);
     }
 

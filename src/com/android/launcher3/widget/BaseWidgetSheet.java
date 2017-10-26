@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.widget;
 
+import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 
 import android.animation.Animator;
@@ -29,8 +30,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.widget.Toast;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -41,6 +41,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.graphics.GradientView;
 import com.android.launcher3.touch.SwipeDetector;
@@ -76,12 +77,12 @@ abstract class BaseWidgetSheet extends AbstractFloatingView
     private Toast mWidgetInstructionToast;
 
     protected final Launcher mLauncher;
-    protected final SwipeDetector.ScrollInterpolator mScrollInterpolator;
     protected final SwipeDetector mSwipeDetector;
     protected final ObjectAnimator mOpenCloseAnimator;
 
     protected View mContent;
     protected GradientView mGradientView;
+    protected Interpolator mScrollInterpolator;
 
     // range [0, 1], 0=> completely open, 1=> completely closed
     protected float mTranslationShift = TRANSLATION_SHIFT_CLOSED;
@@ -92,7 +93,7 @@ abstract class BaseWidgetSheet extends AbstractFloatingView
         super(context, attrs, defStyleAttr);
         mLauncher = Launcher.getLauncher(context);
 
-        mScrollInterpolator = new SwipeDetector.ScrollInterpolator();
+        mScrollInterpolator = Interpolators.SCROLL_CUBIC;
         mSwipeDetector = new SwipeDetector(context, this, SwipeDetector.VERTICAL);
 
         mOpenCloseAnimator = LauncherAnimUtils.ofPropertyValuesHolder(this);
@@ -206,7 +207,7 @@ abstract class BaseWidgetSheet extends AbstractFloatingView
     @Override
     public void onDragEnd(float velocity, boolean fling) {
         if ((fling && velocity > 0) || mTranslationShift > 0.5f) {
-            mScrollInterpolator.setVelocityAtZero(velocity);
+            mScrollInterpolator = scrollInterpolatorForVelocity(velocity);
             mOpenCloseAnimator.setDuration(SwipeDetector.calculateDuration(
                     velocity, TRANSLATION_SHIFT_CLOSED - mTranslationShift));
             close(true);
@@ -215,7 +216,7 @@ abstract class BaseWidgetSheet extends AbstractFloatingView
                     TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
             mOpenCloseAnimator.setDuration(
                     SwipeDetector.calculateDuration(velocity, mTranslationShift))
-                    .setInterpolator(new DecelerateInterpolator());
+                    .setInterpolator(Interpolators.DEACCEL);
             mOpenCloseAnimator.start();
         }
     }
@@ -236,7 +237,7 @@ abstract class BaseWidgetSheet extends AbstractFloatingView
             if (mSwipeDetector.isIdleState()) {
                 mOpenCloseAnimator
                         .setDuration(defaultDuration)
-                        .setInterpolator(new AccelerateInterpolator());
+                        .setInterpolator(Interpolators.ACCEL);
             } else {
                 mOpenCloseAnimator.setInterpolator(mScrollInterpolator);
             }

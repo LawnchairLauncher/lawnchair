@@ -21,10 +21,10 @@ import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.os.Build;
-import android.view.animation.LinearInterpolator;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.Interpolators;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +58,7 @@ public abstract class AnimatorSetCompat implements ValueAnimator.AnimatorUpdateL
         mDuration = duration;
 
         mAnimationPlayer = ValueAnimator.ofFloat(0, 1);
-        mAnimationPlayer.setInterpolator(new LinearInterpolator());
+        mAnimationPlayer.setInterpolator(Interpolators.LINEAR);
         mAnimationPlayer.addUpdateListener(this);
     }
 

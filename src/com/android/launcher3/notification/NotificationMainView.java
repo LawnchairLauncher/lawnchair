@@ -16,6 +16,8 @@
 
 package com.android.launcher3.notification;
 
+import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
+
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -25,7 +27,6 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewPropertyAnimator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -167,14 +168,11 @@ public class NotificationMainView extends FrameLayout implements SwipeDetector.L
             endTranslation = 0;
         }
 
-        SwipeDetector.ScrollInterpolator interpolator = new SwipeDetector.ScrollInterpolator();
-        interpolator.setVelocityAtZero(velocity);
-
         long duration = SwipeDetector.calculateDuration(velocity,
                 (endTranslation - getTranslationX()) / getWidth());
         animate()
                 .setDuration(duration)
-                .setInterpolator(interpolator)
+                .setInterpolator(scrollInterpolatorForVelocity(velocity))
                 .translationX(endTranslation)
                 .withEndAction(new Runnable() {
                     @Override

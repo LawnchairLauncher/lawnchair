@@ -33,7 +33,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -48,6 +47,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsTransitionController;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
@@ -74,7 +74,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     // Variables relating to animation of views after drop
     private ValueAnimator mDropAnim = null;
-    private final TimeInterpolator mCubicEaseOutInterpolator = new DecelerateInterpolator(1.5f);
+    private final TimeInterpolator mCubicEaseOutInterpolator = Interpolators.DEACCEL_1_5;
     @Thunk DragView mDropView = null;
     @Thunk int mAnchorViewInitialScrollX = 0;
     @Thunk View mAnchorView = null;
