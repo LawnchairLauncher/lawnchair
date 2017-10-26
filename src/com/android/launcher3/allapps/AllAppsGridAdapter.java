@@ -336,6 +336,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_PREDICTION_ICON:
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
                 BubbleTextView icon = (BubbleTextView) holder.itemView;
+                icon.reset();
                 icon.applyFromApplicationInfo(info);
                 break;
             case VIEW_TYPE_DISCOVERY_ITEM:

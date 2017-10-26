@@ -177,6 +177,15 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
 
     }
 
+    /**
+     * Resets the view so it can be recycled.
+     */
+    public void reset() {
+        mBadgeInfo = null;
+        mBadgePalette = null;
+        mForceHideBadge = false;
+    }
+
     public void applyFromShortcutInfo(ShortcutInfo info) {
         applyFromShortcutInfo(info, false);
     }
