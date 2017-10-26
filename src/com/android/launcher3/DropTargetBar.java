@@ -16,6 +16,9 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.AlphaUpdateListener.updateVisibility;
+import static com.android.launcher3.Utilities.isAccessibilityEnabled;
+
 import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -23,12 +26,13 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
-import android.view.accessibility.AccessibilityManager;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
+
+import java.util.ArrayList;
 
 /*
  * The top bar containing various drop targets: Delete/App Info/Uninstall.
@@ -42,10 +46,7 @@ public class DropTargetBar extends LinearLayout implements DragController.DragLi
 
         @Override
         public void run() {
-            AccessibilityManager am = (AccessibilityManager)
-                    getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-            boolean accessibilityEnabled = am.isEnabled();
-            AlphaUpdateListener.updateVisibility(DropTargetBar.this, accessibilityEnabled);
+            updateVisibility(DropTargetBar.this, isAccessibilityEnabled(getContext()));
         }
     };
 
@@ -55,6 +56,7 @@ public class DropTargetBar extends LinearLayout implements DragController.DragLi
     @ViewDebug.ExportedProperty(category = "launcher")
     protected boolean mVisible = false;
 
+    private ButtonDropTarget[] mDropTargets;
     private ViewPropertyAnimator mCurrentAnimation;
 
     public DropTargetBar(Context context, AttributeSet attrs) {
@@ -75,7 +77,27 @@ public class DropTargetBar extends LinearLayout implements DragController.DragLi
 
     public void setup(DragController dragController) {
         dragController.addDragListener(this);
-        setupButtonDropTarget(this, dragController);
+        ArrayList<ButtonDropTarget> outList = new ArrayList<>();
+        findDropTargets(this, outList);
+
+        mDropTargets = new ButtonDropTarget[outList.size()];
+        for (int i = 0; i < mDropTargets.length; i++) {
+            mDropTargets[i] = outList.get(i);
+            mDropTargets[i].setDropTargetBar(this);
+            dragController.addDragListener(mDropTargets[i]);
+            dragController.addDropTarget(mDropTargets[i]);
+        }
+    }
+
+    private static void findDropTargets(View view, ArrayList<ButtonDropTarget> outTargets) {
+        if (view instanceof ButtonDropTarget) {
+            outTargets.add((ButtonDropTarget) view);
+        } else if (view instanceof ViewGroup) {
+            ViewGroup vg = (ViewGroup) view;
+            for (int i = vg.getChildCount() - 1; i >= 0; i--) {
+                findDropTargets(vg.getChildAt(i), outTargets);
+            }
+        }
     }
 
     @Override
@@ -130,20 +152,6 @@ public class DropTargetBar extends LinearLayout implements DragController.DragLi
         return result;
     }
 
-    private void setupButtonDropTarget(View view, DragController dragController) {
-        if (view instanceof ButtonDropTarget) {
-            ButtonDropTarget bdt = (ButtonDropTarget) view;
-            bdt.setDropTargetBar(this);
-            dragController.addDragListener(bdt);
-            dragController.addDropTarget(bdt);
-        } else if (view instanceof ViewGroup) {
-            ViewGroup vg = (ViewGroup) view;
-            for (int i = vg.getChildCount() - 1; i >= 0; i--) {
-                setupButtonDropTarget(vg.getChildAt(i), dragController);
-            }
-        }
-    }
-
     private void animateToVisibility(boolean isVisible) {
         if (mVisible != isVisible) {
             mVisible = isVisible;
@@ -189,5 +197,9 @@ public class DropTargetBar extends LinearLayout implements DragController.DragLi
         } else {
             mDeferOnDragEnd = false;
         }
+    }
+
+    public ButtonDropTarget[] getDropTargets() {
+        return mDropTargets;
     }
 }

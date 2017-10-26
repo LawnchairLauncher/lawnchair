@@ -21,6 +21,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
 
@@ -49,11 +50,19 @@ public class DeleteDropTarget extends ButtonDropTarget {
         setTextBasedOnDragSource(dragObject.dragInfo);
     }
 
-    /** @return true for items that should have a "Remove" action in accessibility. */
-    public static boolean supportsAccessibleDrop(ItemInfo info) {
+    /**
+     * @return true for items that should have a "Remove" action in accessibility.
+     */
+    @Override
+    public boolean supportsAccessibilityDrop(ItemInfo info) {
         return (info instanceof ShortcutInfo)
                 || (info instanceof LauncherAppWidgetInfo)
                 || (info instanceof FolderInfo);
+    }
+
+    @Override
+    public int getAccessibilityAction() {
+        return LauncherAccessibilityDelegate.REMOVE;
     }
 
     @Override
@@ -77,19 +86,21 @@ public class DeleteDropTarget extends ButtonDropTarget {
     public void completeDrop(DragObject d) {
         ItemInfo item = d.dragInfo;
         if ((d.dragSource instanceof Workspace) || (d.dragSource instanceof Folder)) {
-            removeWorkspaceOrFolderItem(mLauncher, item, null);
+            onAccessibilityDrop(null, item);
         }
     }
 
     /**
      * Removes the item from the workspace. If the view is not null, it also removes the view.
      */
-    public static void removeWorkspaceOrFolderItem(Launcher launcher, ItemInfo item, View view) {
+    @Override
+    public void onAccessibilityDrop(View view, ItemInfo item) {
         // Remove the item from launcher and the db, we can ignore the containerInfo in this call
         // because we already remove the drag view from the folder (if the drag originated from
         // a folder) in Folder.beginDrag()
-        launcher.removeItem(view, item, true /* deleteFromDb */);
-        launcher.getWorkspace().stripEmptyScreens();
-        launcher.getDragLayer().announceForAccessibility(launcher.getString(R.string.item_removed));
+        mLauncher.removeItem(view, item, true /* deleteFromDb */);
+        mLauncher.getWorkspace().stripEmptyScreens();
+        mLauncher.getDragLayer()
+                .announceForAccessibility(getContext().getString(R.string.item_removed));
     }
 }

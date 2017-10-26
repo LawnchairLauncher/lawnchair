@@ -201,6 +201,10 @@ public abstract class ButtonDropTarget extends TextView
 
     protected abstract boolean supportsDrop(ItemInfo info);
 
+    public boolean supportsAccessibilityDrop(ItemInfo info) {
+        return supportsDrop(info);
+    }
+
     @Override
     public boolean isDropEnabled() {
         return mActive && (mAccessibleDrag ||
@@ -241,8 +245,12 @@ public abstract class ButtonDropTarget extends TextView
                 DragLayer.ANIMATION_END_DISAPPEAR, null);
     }
 
+    public abstract int getAccessibilityAction();
+
     @Override
     public void prepareAccessibilityDrop() { }
+
+    public abstract void onAccessibilityDrop(View view, ItemInfo item);
 
     public abstract void completeDrop(DragObject d);
 
