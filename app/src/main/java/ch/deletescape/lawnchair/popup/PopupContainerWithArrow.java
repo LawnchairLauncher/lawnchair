@@ -525,22 +525,30 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             mIsAboveIcon = true;
         }
 
-        int gravity = ((FrameLayout.LayoutParams) getLayoutParams()).gravity;
-
         if (x < dragLayer.getLeft() || x + width > dragLayer.getRight()) {
             // If we are still off screen, center horizontally too.
             ((FrameLayout.LayoutParams) getLayoutParams()).gravity |= Gravity.CENTER_HORIZONTAL;
-            setX(mTempRect.left + icon.getPaddingLeft() + (iconWidth - width) / 2);
-            mIsCenterAligned = true;
-        } else {
-            if (!Gravity.isHorizontal(gravity)) {
-                setX(x);
-            }
         }
 
+        int gravity = ((FrameLayout.LayoutParams) getLayoutParams()).gravity;
+        if (!Gravity.isHorizontal(gravity)) {
+            setX(x);
+        }
         if (!Gravity.isVertical(gravity)) {
             setY(y);
         }
+
+        enforceContainedWithinScreen(x, width);
+    }
+
+    private void enforceContainedWithinScreen(int i, int i2) {
+        DragLayer dragLayer = mLauncher.getDragLayer();
+        boolean z = false;
+        if (getTranslationX() + i < 0.0f || getTranslationX() + i2 > dragLayer.getWidth()) {
+            setX((float) ((dragLayer.getWidth() / 2) - (getMeasuredWidth() / 2)));
+            z = true;
+        }
+        mIsCenterAligned = z;
     }
 
     private boolean isAlignedWithStart() {
