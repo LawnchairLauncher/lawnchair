@@ -20,7 +20,7 @@
     android:layout_width="@dimen/bg_popup_item_width"
     android:layout_height="wrap_content"
     android:elevation="@dimen/deep_shortcuts_elevation"
-    android:backgroundTint="?attr/notificationBeneathColor">
+    android:backgroundTint="?attr/popupColorTertiary">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -42,14 +42,14 @@
             android:layout_below="@id/top_divider"
             android:paddingStart="@dimen/notification_padding_start"
             android:paddingEnd="@dimen/notification_padding_end"
-            android:background="?attr/appPopupHeaderBgColor"
+            android:background="?attr/popupColorPrimary"
             android:elevation="@dimen/notification_elevation">
             <TextView
                 android:id="@+id/notification_text"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
-                android:gravity="center_vertical"
+                android:gravity="bottom"
                 android:text="@string/notifications_header"
                 android:textSize="@dimen/notification_header_text_size"
                 android:textColor="?attr/appPopupTextColor" />

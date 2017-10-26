@@ -311,6 +311,7 @@
     <!-- About Lawnchair -->
     <string name="about_text">Lawnchair is a launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
     <string name="about_title">About</string>
+    <string name="about_pref_summary">Get to know about the Lawnchair team</string>
     <string name="changelog_title">Changelog for build #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Icon Pack</string>
@@ -343,13 +344,17 @@
     <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
     <string name="notification_access_pref_title">Notification badges and preview</string>
     <string name="notification_access_pref_summary">Allow Lawnchair to access your notifications to enable this feature</string>
-    <string name="general_pref_title">General</string>
-    <string name="pixel_ui_pref_title">Pixel UI</string>
+    <string name="general_pref_title">Desktop</string>
+    <string name="dock_pref_title">Dock</string>
+    <string name="app_drawer_pref_title">App Drawer</string>
+    <string name="pixel_ui_pref_title">Theme</string>
     <string name="behavior_pref_title">Behavior</string>
     <string name="debug_pref_title">Debug</string>
     <string name="import_export_pref_title">Import/Export</string>
-     <string name="general_pref_summary">Homescreen, dock, and app drawer</string>
-    <string name="pixel_ui_pref_summary">Enable Pixel Launcher exclusive features</string>
+    <string name="general_pref_summary">Customize your desktop</string>
+    <string name="dock_pref_summary">Customize your dock</string>
+    <string name="app_drawer_pref_summary">Customize your app drawer</string>
+    <string name="pixel_ui_pref_summary">Theme different elements</string>
     <string name="backup_pref_title">Backup</string>
     <string name="behavior_pref_summary">Change the behavior of Lawnchair</string>
     <string name="backup_pref_summary">Backup your database and settings</string>
@@ -474,4 +479,5 @@
     <string name="google_app_not_found">Google app not installed</string>
     <string name="popup_card_theme_title">Flat style popup</string>
     <string name="set_default_launcher">Set default launcher</string>
+    <string name="enable_spring_pref_title">Enable spring effect</string>
 </resources>

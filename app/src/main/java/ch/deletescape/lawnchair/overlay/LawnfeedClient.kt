@@ -29,6 +29,8 @@ class LawnfeedClient(private val launcher: Launcher) : ILauncherClient {
         }
     }
 
+    private var qsbReceiver: QsbReceiver? = null
+
     init {
         val filter = IntentFilter(Intent.ACTION_PACKAGE_ADDED)
         filter.addAction(Intent.ACTION_PACKAGE_CHANGED)
@@ -58,11 +60,21 @@ class LawnfeedClient(private val launcher: Launcher) : ILauncherClient {
             state = proxy?.reconnect() ?: 0
             if (state == 0) {
                 launcher.runOnUiThread { notifyStatusChanged(0) }
+            } else if (state == 1) {
+                onOverlayConnected()
             }
         } else {
             if (Utilities.getPrefs(launcher).showGoogleNowTab) {
                 connectProxy()
             }
+        }
+    }
+
+    fun onOverlayConnected() {
+        state = 1
+        serviceConnected = true
+        if (windowAttrs != null) {
+            applyWindowToken()
         }
     }
 
@@ -123,9 +135,7 @@ class LawnfeedClient(private val launcher: Launcher) : ILauncherClient {
     }
 
     override fun onDestroy() {
-        if (Utilities.getPrefs(launcher).showGoogleNowTab) {
-            removeClient(!launcher.isChangingConfigurations)
-        }
+        removeClient(!launcher.isChangingConfigurations)
     }
 
     override fun onAttachedToWindow() {
@@ -214,6 +224,13 @@ class LawnfeedClient(private val launcher: Launcher) : ILauncherClient {
         }
 
         serviceStatus = status
+    }
+
+    fun onQsbClick(intent: Intent, receiver: QsbReceiver) {
+        ifConnected {
+            proxy?.onQsbClick(intent)
+            qsbReceiver = receiver
+        }
     }
 
     private inline fun ifConnected(body: () -> Unit) {
@@ -306,12 +323,13 @@ class LawnfeedClient(private val launcher: Launcher) : ILauncherClient {
             mWindow = client.launcher.window
         }
 
+        override fun onQsbResult(resultCode: Int) {
+            qsbReceiver?.onResult(resultCode)
+            qsbReceiver = null
+        }
+
         override fun onServiceConnected() {
-            state = 1
-            serviceConnected = true
-            if (windowAttrs != null) {
-                applyWindowToken()
-            }
+            onOverlayConnected()
         }
 
         override fun onServiceDisconnected() {
@@ -337,6 +355,11 @@ class LawnfeedClient(private val launcher: Launcher) : ILauncherClient {
                 sProxyConnection = null
             }
         }
+    }
+
+    interface QsbReceiver {
+
+        fun onResult(resultCode: Int)
     }
 
     companion object {

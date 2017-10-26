@@ -5,10 +5,8 @@ import android.content.Context
 import android.content.res.Resources
 import android.os.Build
 import android.os.Process
-import android.preference.ListPreference
-import android.preference.Preference
-import android.preference.Preference.OnPreferenceChangeListener
-import android.provider.Settings.Global
+import android.support.v7.preference.ListPreference
+import android.support.v7.preference.Preference
 import android.text.TextUtils
 import android.util.Log
 import ch.deletescape.lawnchair.LauncherAppState
@@ -20,7 +18,7 @@ import java.lang.reflect.Field
 @TargetApi(Build.VERSION_CODES.O)
 class IconShapeOverride {
 
-    class PreferenceChangeHandler constructor(val context: Context) : OnPreferenceChangeListener {
+    class PreferenceChangeHandler constructor(val context: Context) : Preference.OnPreferenceChangeListener {
 
         override fun onPreferenceChange(preference: Preference, obj: Any): Boolean {
             val str = obj as String

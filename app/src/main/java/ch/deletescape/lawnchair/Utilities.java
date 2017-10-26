@@ -39,6 +39,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.AdaptiveIconDrawable;
@@ -989,6 +990,44 @@ public final class Utilities {
     }
 
     public static boolean isAdaptive(Drawable drawable) {
-        return ATLEAST_OREO && drawable instanceof AdaptiveIconDrawable || drawable instanceof AdaptiveIconDrawableCompat;
+        return drawable != null && (ATLEAST_OREO && drawable instanceof AdaptiveIconDrawable || drawable instanceof AdaptiveIconDrawableCompat);
     }
+
+    private static void ensureAdaptiveIcon(Drawable drawable) {
+        if (!isAdaptive(drawable))
+            throw new IllegalStateException("Not an adaptive icon");
+    }
+
+    public static Drawable getBackground(Drawable drawable) {
+        ensureAdaptiveIcon(drawable);
+        if (ATLEAST_OREO && drawable instanceof AdaptiveIconDrawable)
+            return ((AdaptiveIconDrawable) drawable).getBackground();
+        else if (drawable instanceof AdaptiveIconDrawableCompat)
+            return ((AdaptiveIconDrawableCompat) drawable).getBackground();
+        return null;
+    }
+
+    public static Drawable getForeground(Drawable drawable) {
+        ensureAdaptiveIcon(drawable);
+        if (ATLEAST_OREO && drawable instanceof AdaptiveIconDrawable)
+            return ((AdaptiveIconDrawable) drawable).getForeground();
+        else if (drawable instanceof AdaptiveIconDrawableCompat)
+            return ((AdaptiveIconDrawableCompat) drawable).getForeground();
+        return null;
+    }
+
+    public static Path getIconMask(Drawable drawable) {
+        ensureAdaptiveIcon(drawable);
+        if (ATLEAST_OREO && drawable instanceof AdaptiveIconDrawable)
+            return ((AdaptiveIconDrawable) drawable).getIconMask();
+        else if (drawable instanceof AdaptiveIconDrawableCompat)
+            return ((AdaptiveIconDrawableCompat) drawable).getIconMask();
+        return null;
+    }
+
+    public static boolean isAnimatedClock(Context context, ComponentName componentName) {
+        return Utilities.getPrefs(context).getAnimatedClockIcon() &&
+                Utilities.isComponentClock(componentName, !Utilities.getPrefs(context).getAnimatedClockIconAlternativeClockApps());
+    }
+
 }

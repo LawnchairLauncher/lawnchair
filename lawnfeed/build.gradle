@@ -4,13 +4,26 @@ android {
     compileSdkVersion 26
     buildToolsVersion "26.0.2"
 
-
+    signingConfigs {
+        travis {
+            storeFile file("../app/debug.jks")
+            storePassword System.getenv("STORE_PASSWORD")
+            keyAlias "Lawnchair"
+            keyPassword System.getenv("KEY_PASSWORD")
+        }
+    }
     defaultConfig {
         applicationId "ch.deletescape.lawnchair.lawnfeed"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+
+        if (System.getenv("TRAVIS") == "true") {
+            versionCode = Integer.valueOf(System.getenv("TRAVIS_BUILD_NUMBER"))
+            versionName = System.getenv("MAJOR_MINOR") + "." + System.getenv("TRAVIS_BUILD_NUMBER")
+        } else {
+            versionCode 1
+            versionName "dev"
+        }
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -19,6 +32,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (System.getenv("TRAVIS_EVENT_TYPE") != "pull_request") {
+                signingConfig signingConfigs.travis
+            }
         }
     }
 }

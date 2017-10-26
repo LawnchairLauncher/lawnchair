@@ -28,7 +28,7 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">Sovellus ei ole käytettävissä</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Ladattu sovellus poistettiin käytöstä suojatussa tilassa</string>
+  <string name="safemode_shortcut_error">Ladatut sovellukset on poistettu käytöstä suojatussa tilassa</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">Widgetit poistettu käytöstä vikasietotilassa</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
@@ -104,9 +104,9 @@
   <!-- The format string for when a folder is opened, speaks the dimensions -->
   <string name="folder_opened">Kansio avattu, koko <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g></string>
   <!-- Instruction that clicking outside will close folder -->
-  <string name="folder_tap_to_close">Sulje kansio koskettamalla.</string>
+  <string name="folder_tap_to_close">Sulje kansio koskettamalla</string>
   <!-- Instruction that clicking outside will commit folder rename -->
-  <string name="folder_tap_to_rename">Tallenna uusi nimi koskettamalla.</string>
+  <string name="folder_tap_to_rename">Tallenna uusi nimi koskettamalla</string>
   <!-- Indication that folder closed -->
   <string name="folder_closed">Kansio on suljettu</string>
   <!-- Folder renamed format -->
@@ -119,7 +119,7 @@
   <!-- Text for wallpaper change button -->
   <string name="wallpaper_button_text">Taustakuvat</string>
   <!-- Text for settings button -->
-  <string name="settings_button_text">Asetukset</string>
+  <string name="settings_button_text">Kotiasetukset</string>
   <!-- Message shown when a feature is disabled by the administrator -->
   <string name="msg_disabled_by_admin">Järjestelmänvalvoja on poistanut toiminnon käytöstä.</string>
   <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
@@ -236,20 +236,35 @@
   <string name="which_wallpaper_option_lock_screen">Lukitusnäyttö</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
   <string name="which_wallpaper_option_home_screen_and_lock_screen">Aloitus- ja lukitusnäyttö</string>
+  <string name="title_show_google_app">Näytä %1$s</string>
+  <string name="title_show_google_app_default">Näytä Google ohjelma</string>
+  <string name="label_search">Haku</string>
+  <string name="label_voice_search">Puhehaku</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d pikakuvaketta ja %2$d ilmoitusta %3$s</string>
   <string name="notifications_header">Ilmoitukset</string>
+  <string name="widgets_bottom_sheet_title">%1$s widgettiä</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair on käynnistysohjelma, jonka on luonut Till Kottmann (Deletescape). Se pohjautuu Launcher3 -käynnistysohjelmaan.</string>
   <string name="about_title">Tietoja</string>
+  <string name="about_pref_summary">Opi tuntemaan Lawnchair tiimi</string>
+  <string name="changelog_title">Muutosloki buildille #%d</string>
+  <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Kuvakepaketti</string>
   <string name="icon_pack_preference_summary">Valitse kuvakepaketti</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Telakka käyttää taustakuvan värejä</string>
+  <string name="hotseat_show_arrow">Näytä nuoli</string>
+  <string name="hotseat_show_page_indicator">Näytä sivun ilmaisin</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Telakka väritetään taustakuvasta poimitulla värillä</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Telakka väritetään harmaaksi, mutta säädetään taustakuvan kirkkauden mukaan</string>
   <string name="transparent_hotseat_pref_title">Läpikuultava telakka</string>
   <string name="dynamic_ui_pref_title">Poimi aksenttiväri taustakuvasta</string>
   <string name="blur_pref_title">Käytä sumennusta</string>
+  <string name="blur_pref_summary">Käytä sumennus tehostetta käyttöliittymän osissa\nEi yhteensopiva live taustakuvien kanssa</string>
   <string name="blur_radius_pref_title">Sumennuksen Säde</string>
+  <string name="pref_iconLabelsInTwoLines">Kuvakkeiden tekstit kahdella rivillä</string>
   <string name="white_google_icon_pref_title">Käytä valkoista Google-kuvaketta</string>
+  <string name="hide_icon_labels_pref_title">Piilota kuvakkeiden tekstit aloitusnäytöllä</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Piilota kuvakkeiden tekstit sovellusvalikossa</string>
   <string name="workspace_label_color_hue_pref_title">Kuvaketekstien väri aloitusnäytöllä</string>
   <string name="workspace_label_color_variation_pref_title">Color variation of icon labels on homescreen</string>
   <string name="all_apps_opacity_pref_title">Sovellusvalikon opasiteetti</string>
@@ -257,19 +272,142 @@
   <string name="num_rows_pref_title">Rivien määrä</string>
   <string name="num_hotseat_icons_pref_title">Kuvakkeiden lukumäärä telakassa</string>
   <string name="icon_scale_pref_title">Kuvakkeen skaalaus</string>
+  <string name="hotseat_height_scale">Korkeuden skaalaus</string>
   <string name="icon_text_scale_pref_title">Kuvakkeen tekstin skaalaus</string>
+  <string name="icon_text_padding_scale_pref_title">Kuvakkeiden etäisyyden skaalaus</string>
+  <string name="full_width_width_widgets_pref_title">Koko leveyden widgetit</string>
+  <string name="full_width_widgets_pref_summary">Salli widgettien kattaa koko leveys ilman välejä</string>
   <string name="notification_access_pref_title">Ilmoitusten merkit ja esikatselu</string>
   <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
+  <string name="general_pref_title">Työpöytä</string>
+  <string name="dock_pref_title">Telakka</string>
+  <string name="app_drawer_pref_title">Sovellusvalikko</string>
+  <string name="pixel_ui_pref_title">Teema</string>
+  <string name="behavior_pref_title">Käyttäytyminen</string>
+  <string name="debug_pref_title">Debug</string>
   <string name="import_export_pref_title">Tuo/Vie</string>
+  <string name="general_pref_summary">Muokkaa työpöytääsi</string>
+  <string name="dock_pref_summary">Muokkaa telakkaa</string>
+  <string name="app_drawer_pref_summary">Muokkaa sovellusvalikkoa</string>
+  <string name="pixel_ui_pref_summary">Eri elementtien teemat</string>
+  <string name="backup_pref_title">Varmuuskopiointi</string>
+  <string name="behavior_pref_summary">Muuta Lawnchairin toimintaa</string>
+  <string name="backup_pref_summary">Varmuuskopioi tietokantasi ja asetukset</string>
+  <string name="debug_pref_summary">Käynnistä tai rakenna uudelleen kuvaketietokanta</string>
+  <string name="show_pixel_bar_pref_title">Näytä Pixel yläpalkki</string>
+  <string name="use_wide_searchbar_pref_title">Käytä leveää hakupalkkia</string>
   <string name="show_mic_pref_title">Näytä Google Assistant-painike</string>
+  <string name="use_round_searhbar">Käytä pyöristettyä sovellushakupalkkia</string>
   <string name="pixel_style_icons_pref_title">Käytä Pixel-kuvakkeita</string>
+  <string name="pixel_style_icons_pref_summary">Kun käytössä pyöreitä kuvakkeita käytetään siellä missä se on mahdollista</string>
+  <string name="show_google_now_tab_pref_title">Näytä Google Now sivu</string>
   <string name="restart_lawnchair_pref_title">Käynnistä Lawnchair uudelleen</string>
+  <string name="restart_lawnchair_pref_summary">Voi olla hyödyllistä, jos jotkin asetukset eivät toimi oikein</string>
+  <string name="rebuild_icondb_pref_title">Rakenna kuvaketietokanta uudelleen</string>
+  <string name="pinch_to_overview_pref_title">Nipistämällä yleisnäkymään</string>
+  <string name="pinch_to_overview_pref_summary">Nipistä aloitusnäytöllä avataksesi yleisnäkymän</string>
+  <string name="light_statusbar_pref_title">Vaalea ilmoituspalkki</string>
+  <string name="light_statusbar_pref_force">Ilmoituspalkki näyttää tummat kuvakkeet</string>
   <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
+  <string name="haptic_feedback_pref_title">Käytä värinää</string>
+  <string name="keep_scroll_state_pref_title">Muista vierityskohta</string>
+  <string name="keep_scroll_state_pref_summary">Muistaa vierityskohdan sovellusvalikossa</string>
+  <string name="home_opens_drawer_pref_title">Koti-painike avaa sovellusvalikon</string>
+  <string name="home_opens_drawer_pref_summary">Koti-painikeen painaminen aloitusnäytössä avaa sovellusvalikon</string>
+  <string name="show_hidden_pref_title">Näytä piilotetut sovellukset</string>
+  <string name="show_hidden_pref_on">Piilotetut sovellukset näytetään näkyvyysasetuksia muutettaessa</string>
+  <string name="show_hidden_pref_off">Piilotetut sovellukset eivät näy</string>
+  <string name="export_db_title">Tietokanta</string>
+  <string name="import_db_title">Tietokanta</string>
+  <string name="export_prefs_title">Asetukset</string>
+  <string name="import_prefs_title">Asetukset</string>
+  <string name="notification_listener_label">Lawnchair - Ilmoituksen merkit</string>
+  <string name="color_extraction_label">Lawnchair - Värin poiminta</string>
   <string name="test_title">Testi</string>
   <string name="visibility">Näkyvyys</string>
   <string name="default_text">Oletus</string>
+  <string name="edit_icon_reset">Nollaa</string>
+  <string name="show_top_shadow_title">Näytä ylävarjo</string>
+  <string name="pref_cat_homescreen">Aloitusnäyttö</string>
+  <string name="pref_cat_miscellaneous">Sekalaista</string>
+  <string name="pref_cat_hotseat">Telakka</string>
+  <string name="pref_cat_theme">Teema</string>
+  <string name="theme_pref_title">Teema</string>
+  <string name="theme_light">Vaalea</string>
+  <string name="theme_dark">Tumma</string>
+  <string name="theme_black">Musta</string>
+  <string name="hide_hotseat_pref_title">Piilota telakka</string>
+  <string name="all_icons">Kaikki kuvakkeet</string>
+  <string name="pull_down_action_pref_title">Alasveto toiminto</string>
+  <string name="pull_down_do_nothing">Älä tee mitään</string>
+  <string name="pull_down_notis">Näytä ilmoitukset</string>
+  <string name="pull_down_search">Avaa haku</string>
+  <string name="pull_down_apps_search">Sovellushaku</string>
+  <string name="enable_screen_rotation">Salli näytön kiertäminen</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">Tuo</string>
+  <string name="backup_export_title">Vie</string>
+  <string name="imexport_success">Onnistui!</string>
+  <string name="imexport_error">Virhe: Tiedoston kopiointi epäonnistui</string>
+  <string name="imexport_no_backup_found">Varmuuskopioita ei löytynyt</string>
+  <string name="imexport_external_storage_unreadable">Ulkoinen muisti ei ole luettavissa (anna käyttöoikeus asetuksissa)</string>
+  <string name="imexport_external_storage_unwritable">Ulkoinen muisti ei ole kirjoitettavissa (anna käyttöoikeus asetuksissa)</string>
+  <string name="units_metric">Metrijärjestelmä</string>
+  <string name="units_imperial">Brittiläinen yksikköjärjestelmä</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="pref_cat_weather">Sää</string>
+  <string name="pref_weather_title">Ota sää käyttöön</string>
+  <string name="pref_weather_units">Sää yksiköt</string>
+  <string name="pref_weather_city_summary">Saat parhaat tulokset lisäämällä maakoodin</string>
+  <string name="pref_weather_city_title">Paikkakunta</string>
+  <string name="none">Ei mitään</string>
+  <string name="pref_applyTheme">Käytä teemaa</string>
+  <string name="pref_applyBlur">Käytä sumennusta</string>
+  <string name="search_bar">Hakupalkki</string>
+  <string name="folder">Kansio</string>
+  <string name="dock_allapps"><![CDATA[Telakka & sovellusvalikko]]></string>
+  <string name="app_shortcuts">Sovelluspikakuvakkeet</string>
+  <string name="blur_effect">Sumennustehoste</string>
+  <string name="enable_editing_pref_title">Salli aloitusnäytön muokkaus</string>
+  <string name="pref_weather_provider">Säätietojen toimittaja</string>
+  <string name="loading">Ladataan…</string>
+  <string name="icon_shape_override_label">Vaihda kuvakkeiden muoto</string>
+  <string name="icon_shape_system_default">Älä muuta</string>
+  <string name="icon_shape_none">Ei mitään</string>
+  <string name="icon_shape_square">Neliö</string>
+  <string name="icon_shape_rounded_square">Pyöristetty neliö</string>
+  <string name="icon_shape_squircle">Squircle</string>
+  <string name="icon_shape_circle">Ympyrä</string>
+  <string name="icon_shape_teardrop">Pisara</string>
+  <string name="animated_clock_icon_title">Animoitu kellokuvake</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Animoi vaihtoehtoiset kellosovellukset</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Ota käyttöön, jos et käytä Google Kelloa oletus kellosovelluksena</string>
+  <string name="about_summary_title">Yhteenveto</string>
+  <string name="about_version">Versio</string>
+  <string name="about_icon_designer">Sovelluksen kuvakesuunnittelija</string>
+  <string name="about_contributors_title">Avustajat</string>
+  <string name="location_permission_warn">Sijainnin käyttöoikeus vaaditaan palveluntarjoajan vaihtamiseen!</string>
+  <string name="num_cols_drawer_pref_title">Sarakkeiden määrä sovellusvalikossa</string>
+  <string name="pref_cat_drawer">Sovellusvalikko</string>
+  <string name="shortcut_backport_warning">Tämä voi olla hidas, käyttö omalla vastuulla</string>
+  <string name="pref_backport_shortcuts">Backporttaa pikakuvakkeet</string>
+  <string name="weather_api_key_not_set">API avainta ei ole määritetty</string>
+  <string name="pref_weather_api_key_title">API avain</string>
+  <string name="about_changelog">Muutosloki</string>
+  <string name="pref_all_apps_custom_label_color">Käytä mukautettua kuvaketeksti väriä</string>
+  <string name="pref_all_apps_label_color_variation">Kuvaketekstien värivaihtoehdot sovelluvalikossa</string>
+  <string name="pref_all_apps_label_color">Kuvaketekstien väri sovellusvalikossa</string>
+  <string name="pref_num_rows_drawer">Rivien lukumäärä sovellusvalikossa</string>
+  <string name="center_wallpaper_pref_title">Keskitä taustakuva kun käytössä on vain yksi sivu</string>
+  <string name="vertical_drawer_layout_pref_title">Näytä pystysuuntainen luettelo</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="full_wday_month_day_no_year">EEEE d. MMMM</string>
+  <string name="about_translators">Kääntäjät</string>
+  <string name="lock_desktop">Lukitse työpöytä</string>
+  <string name="lawnfeed_not_found">Lawnfeed ei ole asennettu</string>
+  <string name="google_app_not_found">Google sovellus ei ole asennettu</string>
+  <string name="popup_card_theme_title">Flat tyylinen ponnahdusikkuna</string>
+  <string name="set_default_launcher">Aseta oletus käynnistyssovellus</string>
+  <string name="enable_spring_pref_title">Ota jousi efekti käyttöön</string>
 </resources>

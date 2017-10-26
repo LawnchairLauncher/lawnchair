@@ -6,6 +6,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.v4.graphics.ColorUtils;
@@ -26,6 +27,7 @@ import ch.deletescape.lawnchair.ShortcutAndWidgetContainer;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.allapps.theme.IAllAppsThemer;
+import ch.deletescape.lawnchair.anim.SpringAnimationHandler;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.util.TouchController;
@@ -79,6 +81,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     // When {@link mProgress} is 1, all apps container is pulled down.
     private float mShiftStart;      // [0, mShiftRange]
     private float mShiftRange;      // changes depending on the orientation
+    private SpringAnimationHandler<AllAppsGridAdapter.ViewHolder> mSpringAnimationHandler;
     private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
     private int mPullDownState;
 
@@ -134,7 +137,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
+    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = false;
             if (!mLauncher.isAllAppsVisible() && mLauncher.getWorkspace().workspaceInModalState()) {
@@ -202,14 +205,16 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         }
         return true;
     }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        return mDetector.onTouchEvent(ev);
-    }
     
     private boolean isInDisallowRecatchTopZone() {
         return mProgress < RECATCH_REJECTION_FRACTION;
+    }
+
+    @Override
+    public boolean onControllerTouchEvent(MotionEvent ev) {
+        if (hasSpringAnimationHandler())
+            mSpringAnimationHandler.addMovement(ev);
+        return mDetector.onTouchEvent(ev);
     }
 
     private boolean isInDisallowRecatchBottomZone() {
@@ -225,6 +230,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         if (mPullDownState != 4)
             mPullDownState = (mPullDownAction != 0 && mProgress == 1) ? 1 : 0;
         preparePull(start);
+        if (hasSpringAnimationHandler())
+            mSpringAnimationHandler.skipToEnd();
     }
 
     @Override
@@ -270,6 +277,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             if (velocity < 0 && mPullDownState < 2) {
                 calculateDuration(velocity, mAppsView.getTranslationY());
                 mLauncher.showAppsView(true /* animated */, false /* focusSearchBar */);
+                if (hasSpringAnimationHandler())
+                    mSpringAnimationHandler.animateToFinalPosition(0, 1);
             } else if (mPullDownAction != FeatureFlags.PULLDOWN_APPS_SEARCH || mPullDownState < 2) {
                 calculateDuration(velocity, Math.abs(mShiftRange - mAppsView.getTranslationY()));
                 mLauncher.showWorkspace(true);
@@ -418,6 +427,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             shouldPost = false;
         }
 
+
         ObjectAnimator driftAndAlpha = ObjectAnimator.ofFloat(this, "progress",
                 mProgress, 0f);
         driftAndAlpha.setDuration(mAnimationDuration);
@@ -528,6 +538,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     public void finishPullUp() {
         mHotseat.setVisibility(View.INVISIBLE);
+        if (hasSpringAnimationHandler())
+            mSpringAnimationHandler.reset();
         setProgress(0f);
     }
 
@@ -536,6 +548,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mHotseat.setBackgroundTransparent(false /* transparent */);
         mHotseat.setVisibility(View.VISIBLE);
         mAppsView.reset();
+        if (hasSpringAnimationHandler())
+            mSpringAnimationHandler.reset();
         setProgress(1f);
     }
 
@@ -566,7 +580,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mHotseat.addOnLayoutChangeListener(this);
         mHotseat.bringToFront();
         mCaretController = new AllAppsCaretController(
-                mWorkspace.getPageIndicator().getCaretDrawable(), mLauncher);
+        mWorkspace.getPageIndicator().getCaretDrawable(), mLauncher);
+        mSpringAnimationHandler = mAppsView.getSpringAnimationHandler();
     }
 
     @Override
@@ -579,6 +594,11 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         }
         setProgress(mProgress);
     }
+
+    private boolean hasSpringAnimationHandler() {
+        return mSpringAnimationHandler != null;
+    }
+
 
     static class ScrollInterpolator implements Interpolator {
 

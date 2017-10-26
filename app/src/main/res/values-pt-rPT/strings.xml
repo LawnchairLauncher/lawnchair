@@ -251,6 +251,8 @@
   <string name="icon_pack_preference_title">Pacote de ícones</string>
   <string name="icon_pack_preference_summary">Selecione um pacote de ícones</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Doca usa cores do wallpaper</string>
+  <string name="hotseat_show_arrow">Mostrar setas</string>
+  <string name="hotseat_show_page_indicator">Mostrar indicador de página</string>
   <string name="hotseat_uses_extracted_colors_pref_on">A dock vai ser colorida com a cor extraída do wallpaper</string>
   <string name="hotseat_uses_extracted_colors_pref_off">A doca será cinza, mas ajustada pelo brilho do wallpaper</string>
   <string name="transparent_hotseat_pref_title">Dock transparente</string>
@@ -258,6 +260,7 @@
   <string name="blur_pref_title">Ativar o blur</string>
   <string name="blur_pref_summary">Aplicar efeito de desfoque em partes da interface\nNão é compatível com papeis de parede animados</string>
   <string name="blur_radius_pref_title">Raio de blur</string>
+  <string name="pref_iconLabelsInTwoLines">Etiquetas do ícone em duas linhas</string>
   <string name="white_google_icon_pref_title">Usar o ícone branco da Google</string>
   <string name="hide_icon_labels_pref_title">Coultar etiquetas dos ícones no ecrã inicial</string>
   <string name="hide_all_apps_icon_labels_pref_title">Ocultar as etiquetas dos ícones na gaveta de aplicações</string>
@@ -268,7 +271,9 @@
   <string name="num_rows_pref_title">Número de linhas</string>
   <string name="num_hotseat_icons_pref_title">Número de ícones da dock</string>
   <string name="icon_scale_pref_title">Escala dos ícones</string>
+  <string name="hotseat_height_scale">Escala de altura</string>
   <string name="icon_text_scale_pref_title">Tamanho do rótulo do ícone</string>
+  <string name="icon_text_padding_scale_pref_title">Escala de enchimento de ícone</string>
   <string name="full_width_width_widgets_pref_title">Widget grandes</string>
   <string name="full_width_widgets_pref_summary">Permitir que widgets abranjam o launcher todo</string>
   <string name="notification_access_pref_title">Crachás de notificação e pré-visualização</string>
@@ -370,6 +375,8 @@
   <string name="icon_shape_circle">Círculo</string>
   <string name="icon_shape_teardrop">Lágrima</string>
   <string name="animated_clock_icon_title">Estilo do relógio animado</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Animar aplicações de relógio alternativas</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Habilitar isso, se você não usa relógio de Google como seu aplicativo de relógio padrão</string>
   <string name="about_summary_title">Sumário</string>
   <string name="about_version">Versão</string>
   <string name="about_icon_designer">Designer do ícone da aplicação</string>

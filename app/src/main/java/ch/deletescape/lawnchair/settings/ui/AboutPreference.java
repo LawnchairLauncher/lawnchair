@@ -4,7 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.preference.Preference;
+import android.support.v7.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
 

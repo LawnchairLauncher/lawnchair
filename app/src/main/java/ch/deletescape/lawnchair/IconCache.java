@@ -178,6 +178,11 @@ public class IconCache {
         return info.getIcon(mIconDpi);
     }
 
+    public Drawable getFullResIcon(LauncherActivityInfoCompat launcherActivityInfo, boolean z) {
+        return pip.getIcon(launcherActivityInfo, mIconDpi);
+    }
+
+
     private Bitmap makeDefaultIcon(UserHandle user) {
         Drawable unbadged = getFullResDefaultActivityIcon();
         return Utilities.createBadgedIconBitmap(unbadged, user, mContext);

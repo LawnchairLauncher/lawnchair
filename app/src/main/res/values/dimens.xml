@@ -127,7 +127,8 @@
     <dimen name="pending_widget_elevation">2dp</dimen>
 
     <!-- Deep shortcuts -->
-    <dimen name="deep_shortcuts_elevation">9dp</dimen>
+    <dimen name="popup_elevation">9dp</dimen>
+    <dimen name="deep_shortcuts_elevation">1dp</dimen>
     <dimen name="deferred_drag_view_scale">6dp</dimen>
     <!-- an icon with shortcuts must be dragged this far before the container is removed. -->
     <dimen name="deep_shortcuts_start_drag_threshold">16dp</dimen>
@@ -159,7 +160,7 @@
     <dimen name="notification_padding_end">12.0dip</dimen>
     <dimen name="notification_footer_icon_row_padding">15.0dip</dimen>
     <dimen name="notification_header_height">32.0dip</dimen>
-    <dimen name="notification_main_height">80.0dip</dimen>
+    <dimen name="notification_main_height">96dip</dimen>
     <dimen name="notification_footer_height">32.0dip</dimen>
     <dimen name="notification_header_text_size">13.0sp</dimen>
     <dimen name="notification_header_count_text_size">12.0sp</dimen>
@@ -167,7 +168,7 @@
     <dimen name="notification_icon_size">24.0dip</dimen>
     <dimen name="notification_footer_icon_size">18.0dip</dimen>
     <dimen name="notification_main_text_padding_end">52.0dip</dimen>
-    <dimen name="notification_elevation">2.0dip</dimen>
+    <dimen name="notification_elevation">1dp</dimen>
     <dimen name="badge_small_padding">0.0dip</dimen>
     <dimen name="badge_large_padding">3.0dip</dimen>
     <dimen name="bg_round_rect_radius">12.0dip</dimen>
@@ -187,6 +188,7 @@
     <dimen name="popup_arrow_horizontal_offset_start">23.0dip</dimen>
     <dimen name="popup_arrow_horizontal_offset_end">19.0dip</dimen>
     <dimen name="popup_arrow_corner_radius">2.0dip</dimen>
+    <dimen name="popup_system_shortcut_height">48dp</dimen>
     <dimen name="bg_popup_item_width">220.0dip</dimen>
     <dimen name="bg_popup_item_height">56.0dip</dimen>
     <dimen name="popup_items_spacing">4.0dip</dimen>

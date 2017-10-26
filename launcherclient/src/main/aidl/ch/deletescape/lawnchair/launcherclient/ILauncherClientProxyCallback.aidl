@@ -9,4 +9,6 @@ interface ILauncherClientProxyCallback {
     void onServiceConnected();
 
     void onServiceDisconnected();
+
+    void onQsbResult(int resultCode);
 }

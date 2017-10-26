@@ -1,7 +1,7 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
-import android.preference.SwitchPreference
+import android.support.v14.preference.SwitchPreference
 import android.util.AttributeSet
 import ch.deletescape.lawnchair.R
 import ch.deletescape.lawnchair.overlay.ILauncherClient

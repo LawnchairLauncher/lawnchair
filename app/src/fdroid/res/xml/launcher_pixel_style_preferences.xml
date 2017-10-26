@@ -3,5 +3,5 @@
 
 <ListPreference
         android:key="pref_weatherProvider"
-        android:defaultValue="1" />
+        android:defaultValue="0" />
 </PreferenceScreen>

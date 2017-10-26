@@ -22,7 +22,7 @@ class MainItemView(context: Context, attrs: AttributeSet?, defStyle: Int) : Popu
     }
 
     override fun getArrowColor(isArrowAttachedToBottom: Boolean): Int {
-        return Utilities.resolveAttributeData(context, R.attr.appPopupBgColor)
+        return Utilities.resolveAttributeData(context, R.attr.popupColorPrimary)
     }
 
     override fun addView(child: View?) {
@@ -40,5 +40,9 @@ class MainItemView(context: Context, attrs: AttributeSet?, defStyle: Int) : Popu
         val newHeight = height - heightToRemove
         return PillHeightRevealOutlineProvider(mPillRect,
                 backgroundRadius, newHeight, reverse).createRevealAnimator(this, true, false, true)
+    }
+
+    override fun getBackgroundRadius(): Float {
+        return resources.getDimensionPixelSize(mTheme.backgroundRadius).toFloat()
     }
 }

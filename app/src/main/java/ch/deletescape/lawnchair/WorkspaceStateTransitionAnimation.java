@@ -367,7 +367,7 @@ public class WorkspaceStateTransitionAnimation {
                     mStateAnimator.play(anim);
                 } else {
                     mWorkspace.mQsbAlphaController.setAlphaAtIndex(
-                            finalAlpha, Workspace.QSB_ALPHA_INDEX_PAGE_SCROLL);
+                            finalQsbAlpha, Workspace.QSB_ALPHA_INDEX_PAGE_SCROLL);
                 }
             }
         }
@@ -439,6 +439,7 @@ public class WorkspaceStateTransitionAnimation {
         } else {
             overviewPanel.setAlpha(finalOverviewPanelAlpha);
             AlphaUpdateListener.updateVisibility(overviewPanel, accessibilityEnabled);
+            mWorkspace.mQsbAlphaController.setAlphaAtIndex(finalQsbAlpha, Workspace.QSB_ALPHA_INDEX_STATE_CHANGE);
 
             //qsbAlphaAnimation.end();
             mWorkspace.createHotseatAlphaAnimator(finalHotseatAlpha).end();

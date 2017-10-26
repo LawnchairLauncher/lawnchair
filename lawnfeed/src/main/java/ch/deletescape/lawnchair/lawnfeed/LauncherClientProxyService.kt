@@ -12,6 +12,7 @@ class LauncherClientProxyService : Service() {
 
     override fun onUnbind(intent: Intent?): Boolean {
         binder?.onUnbind()
+        binder = null
         stopSelf()
         return super.onUnbind(intent)
     }

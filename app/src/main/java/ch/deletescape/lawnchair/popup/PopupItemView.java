@@ -56,7 +56,7 @@ public abstract class PopupItemView extends FrameLayout
     private final Matrix mMatrix = new Matrix();
     private Bitmap mRoundedCornerBitmap;
 
-    private IPopupThemer mTheme;
+    protected IPopupThemer mTheme;
 
     public PopupItemView(Context context) {
         this(context, null, 0);
@@ -74,11 +74,13 @@ public abstract class PopupItemView extends FrameLayout
 
         // Initialize corner clipping Bitmap and Paint.
         int radius = (int) getBackgroundRadius();
-        mRoundedCornerBitmap = Bitmap.createBitmap(radius, radius, Bitmap.Config.ALPHA_8);
-        Canvas canvas = new Canvas();
-        canvas.setBitmap(mRoundedCornerBitmap);
-        canvas.drawArc(0, 0, radius*2, radius*2, 180, 90, true, mBackgroundClipPaint);
-        mBackgroundClipPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+        if (radius > 0) {
+            mRoundedCornerBitmap = Bitmap.createBitmap(radius, radius, Bitmap.Config.ALPHA_8);
+            Canvas canvas = new Canvas();
+            canvas.setBitmap(mRoundedCornerBitmap);
+            canvas.drawArc(0, 0, radius * 2, radius * 2, 180, 90, true, mBackgroundClipPaint);
+            mBackgroundClipPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+        }
 
         mIsRtl = Utilities.isRtl(getResources());
     }
@@ -100,25 +102,27 @@ public abstract class PopupItemView extends FrameLayout
         int saveCount = canvas.saveLayer(0, 0, getWidth(), getHeight(), null);
         super.dispatchDraw(canvas);
 
-        int cornerWidth = mRoundedCornerBitmap.getWidth();
-        int cornerHeight = mRoundedCornerBitmap.getHeight();
-        // Clip top left corner.
-        mMatrix.reset();
-        canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
-        // Clip top right corner.
-        mMatrix.setRotate(90, cornerWidth / 2, cornerHeight / 2);
-        mMatrix.postTranslate(canvas.getWidth() - cornerWidth, 0);
-        canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
-        // Clip bottom right corner.
-        mMatrix.setRotate(180, cornerWidth / 2, cornerHeight / 2);
-        mMatrix.postTranslate(canvas.getWidth() - cornerWidth, canvas.getHeight() - cornerHeight);
-        canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
-        // Clip bottom left corner.
-        mMatrix.setRotate(270, cornerWidth / 2, cornerHeight / 2);
-        mMatrix.postTranslate(0, canvas.getHeight() - cornerHeight);
-        canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
+        if (mRoundedCornerBitmap != null) {
+            int cornerWidth = mRoundedCornerBitmap.getWidth();
+            int cornerHeight = mRoundedCornerBitmap.getHeight();
+            // Clip top left corner.
+            mMatrix.reset();
+            canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
+            // Clip top right corner.
+            mMatrix.setRotate(90, cornerWidth / 2, cornerHeight / 2);
+            mMatrix.postTranslate(canvas.getWidth() - cornerWidth, 0);
+            canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
+            // Clip bottom right corner.
+            mMatrix.setRotate(180, cornerWidth / 2, cornerHeight / 2);
+            mMatrix.postTranslate(canvas.getWidth() - cornerWidth, canvas.getHeight() - cornerHeight);
+            canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
+            // Clip bottom left corner.
+            mMatrix.setRotate(270, cornerWidth / 2, cornerHeight / 2);
+            mMatrix.postTranslate(0, canvas.getHeight() - cornerHeight);
+            canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
 
-        canvas.restoreToCount(saveCount);
+            canvas.restoreToCount(saveCount);
+        }
     }
 
     /**
@@ -184,7 +188,7 @@ public abstract class PopupItemView extends FrameLayout
     }
 
     protected float getBackgroundRadius() {
-        return getResources().getDimensionPixelSize(mTheme.getBackgroundRadius());
+        return 0;
     }
 
     protected PopupContainerWithArrow getContainer() {

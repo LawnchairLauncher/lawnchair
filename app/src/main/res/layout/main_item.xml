@@ -2,7 +2,7 @@
 <ch.deletescape.lawnchair.popup.MainItemView
     android:layout_width="@dimen/bg_popup_item_width"
     android:layout_height="wrap_content"
-    android:elevation="@dimen/deep_shortcuts_elevation"
+    android:elevation="@dimen/popup_elevation"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout

@@ -1,8 +1,8 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
-import android.preference.EditTextPreference
-import android.preference.PreferenceManager
+import android.support.v7.preference.EditTextPreference
+import android.support.v7.preference.PreferenceManager
 import android.text.TextUtils
 import android.util.AttributeSet
 
@@ -19,17 +19,14 @@ class ApiKeyPreference : EditTextPreference {
         updateSummary()
     }
 
-    override fun onDialogClosed(positiveResult: Boolean) {
-        super.onDialogClosed(positiveResult)
-        if (positiveResult) {
-            updateSummary()
-        }
+    override fun persistString(value: String?): Boolean {
+        return super.persistString(value).apply { updateSummary() }
     }
 
     private fun updateSummary() {
         val apiKey = sharedPreferences.getString(PreferenceFlags.KEY_WEATHER_API_KEY, PreferenceFlags.PREF_DEFAULT_WEATHER_API_KEY)
         if (!TextUtils.isEmpty(apiKey))
-            setSummary(apiKey.replace("[A-Za-z0-9]".toRegex(), "*"))
+            summary = apiKey.replace("[A-Za-z0-9]".toRegex(), "*")
         else
             setSummary(R.string.weather_api_key_not_set)
     }

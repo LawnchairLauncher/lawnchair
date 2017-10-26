@@ -76,7 +76,7 @@
             android:name=".settings.ui.SettingsActivity"
             android:autoRemoveFromRecents="true"
             android:label="@string/settings_button_text"
-            android:theme="@style/SettingsTheme">
+            android:theme="@style/SettingsHome">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
 

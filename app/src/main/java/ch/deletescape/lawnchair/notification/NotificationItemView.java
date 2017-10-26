@@ -45,6 +45,7 @@ public class NotificationItemView extends PopupItemView {
 
     private static final Rect sTempRect = new Rect();
 
+    private TextView mHeaderText;
     private TextView mHeaderCount;
     private View mDivider;
     private FrameLayout mHeaderView;
@@ -69,6 +70,7 @@ public class NotificationItemView extends PopupItemView {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mHeaderText = findViewById(R.id.notification_text);
         mHeaderCount = findViewById(R.id.notification_count);
         mHeaderView = findViewById(R.id.header);
         mMainView = findViewById(R.id.main_view);
@@ -101,6 +103,7 @@ public class NotificationItemView extends PopupItemView {
                         IconPalette.resolveContrastColor(getContext(), palette.dominantColor,
                                 getResources().getColor(R.color.popup_header_background_color));
             }
+            mHeaderText.setTextColor(mNotificationHeaderTextColor);
             mHeaderCount.setTextColor(mNotificationHeaderTextColor);
         }
     }
@@ -173,7 +176,7 @@ public class NotificationItemView extends PopupItemView {
     public int getArrowColor(boolean isArrowAttachedToBottom) {
         Context context = getContext();
         if (isArrowAttachedToBottom) {
-            return Utilities.resolveAttributeData(context, R.attr.appPopupBgColor);
+            return Utilities.resolveAttributeData(context, R.attr.popupColorPrimary);
         } else {
             return Utilities.resolveAttributeData(context, R.attr.appPopupHeaderBgColor);
         }

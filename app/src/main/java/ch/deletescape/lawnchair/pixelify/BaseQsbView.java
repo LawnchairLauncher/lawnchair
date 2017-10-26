@@ -22,6 +22,7 @@ import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
+import ch.deletescape.lawnchair.overlay.LawnfeedClient;
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.preferences.PreferenceProvider;
 import ch.deletescape.lawnchair.util.PackageManagerHelper;
@@ -127,6 +128,8 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     public void onClick(View view) {
         if (view.getId() == R.id.mic_icon) {
             startQsbActivity(VOICE_ASSIST);
+        } else if (mLauncher.getClient() instanceof LawnfeedClient) {
+            ((LawnfeedClient) mLauncher.getClient()).onQsbClick(bm("com.google.nexuslauncher.FAST_TEXT_SEARCH"), new Receiver(this));
         } else {
             getContext().sendOrderedBroadcast(bm("com.google.nexuslauncher.FAST_TEXT_SEARCH"), null, new C0287l(this), null, 0, null, null);
         }
@@ -143,7 +146,11 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
         if (micIcon != null) {
             intent.putExtra("source_mic_offset", bn(micIcon, rect));
         }
-        return intent.putExtra("source_round_left", true).putExtra("source_round_right", true).putExtra("source_logo_offset", bn(findViewById(R.id.g_icon), rect)).setPackage("com.google.android.googlequicksearchbox");//.addFlags(1342177280);
+        return intent
+                .putExtra("source_round_left", true)
+                .putExtra("source_round_right", true)
+                .putExtra("source_logo_offset", bn(findViewById(R.id.g_icon), rect))
+                .setPackage("com.google.android.googlequicksearchbox");//.addFlags(1342177280);
     }
 
     private Point bn(View view, Rect rect) {
@@ -242,18 +249,36 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     }
 
     final class C0287l extends BroadcastReceiver {
-        final /* synthetic */ BaseQsbView cq;
+        final /* synthetic */ BaseQsbView qsbView;
 
         C0287l(BaseQsbView qsbView) {
-            cq = qsbView;
+            this.qsbView = qsbView;
         }
 
         @Override
         public void onReceive(Context context, Intent intent) {
             if (getResultCode() == 0) {
-                cq.startQsbActivity(BaseQsbView.TEXT_ASSIST);
+                qsbView.startQsbActivity(BaseQsbView.TEXT_ASSIST);
             } else {
-                cq.bq();
+                qsbView.bq();
+            }
+        }
+    }
+
+    final class Receiver implements LawnfeedClient.QsbReceiver {
+
+        private final BaseQsbView qsbView;
+
+        Receiver(BaseQsbView qsbView) {
+            this.qsbView = qsbView;
+        }
+
+        @Override
+        public void onResult(int resultCode) {
+            if (resultCode == 0) {
+                qsbView.startQsbActivity(BaseQsbView.TEXT_ASSIST);
+            } else {
+                qsbView.bq();
             }
         }
     }

@@ -69,7 +69,7 @@
   <string name="app_info_drop_target_label">Информације о апликацији</string>
   <!-- Permissions: -->
   <!-- Permission short label -->
-  <string name="permlab_install_shortcut">инсталирај пречицу</string>
+  <string name="permlab_install_shortcut">инсталирај пречице</string>
   <!-- Permission description -->
   <string name="permdesc_install_shortcut">Дозвољава апликацији да додаје пречице без интервенције корисника.</string>
   <!-- Permission short label -->
@@ -247,11 +247,14 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair је апликација за покретање коју је креирао Till Kottmann (aka deletescape). Заснован је на Launcher3 из AOSP-а.</string>
   <string name="about_title">О програму</string>
+  <string name="about_pref_summary">Упознајте Lawnchair тим</string>
   <string name="changelog_title">Промене за изградњу #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Пакет икона</string>
   <string name="icon_pack_preference_summary">Изабери пакет икона</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Док користи боју позадине</string>
+  <string name="hotseat_show_arrow">Прикажи стрелицу</string>
+  <string name="hotseat_show_page_indicator">Прикажи индикатор странице</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Док ће бити обојен бојом издвојене из позадине</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Док ће бити обојен сиво, али прилагођен осветљењу позадине</string>
   <string name="transparent_hotseat_pref_title">Провидан Док</string>
@@ -259,6 +262,7 @@
   <string name="blur_pref_title">Омогући замућења</string>
   <string name="blur_pref_summary">Примени ефекат замућено на интерфејс\nНије подржан са живим позадинама</string>
   <string name="blur_radius_pref_title">Радијус замућења</string>
+  <string name="pref_iconLabelsInTwoLines">Прикажи имена апликација у 2 реда</string>
   <string name="white_google_icon_pref_title">Користи белу Google икону</string>
   <string name="hide_icon_labels_pref_title">Сакриј називе икона на почетном екрану</string>
   <string name="hide_all_apps_icon_labels_pref_title">Сакриј етикете икона у drawer-у</string>
@@ -269,17 +273,23 @@
   <string name="num_rows_pref_title">Број редова</string>
   <string name="num_hotseat_icons_pref_title">Број икона на Доку</string>
   <string name="icon_scale_pref_title">Величина икона</string>
+  <string name="hotseat_height_scale">Промени висину</string>
   <string name="icon_text_scale_pref_title">Величина текста икона</string>
+  <string name="icon_text_padding_scale_pref_title">Ikona punjenja skale</string>
   <string name="full_width_width_widgets_pref_title">Пуна ширина виџета</string>
   <string name="full_width_widgets_pref_summary">Дозволи допуњавању виџета преко целе ширине без подлоге</string>
   <string name="notification_access_pref_title">Значке обавештења и приказ</string>
   <string name="notification_access_pref_summary">Дозволи да Lawnchair приступи вашим обавештењима да бисте омогућили ову функцију</string>
   <string name="general_pref_title">Главно</string>
+  <string name="dock_pref_title">Док</string>
+  <string name="app_drawer_pref_title">Апликације Drawer-а</string>
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Понашање</string>
   <string name="debug_pref_title">Отклањање грешака</string>
   <string name="import_export_pref_title">Увоз / Извоз</string>
   <string name="general_pref_summary">Почетни екран, док и фиока апликација</string>
+  <string name="dock_pref_summary">Прилагоди твој Док</string>
+  <string name="app_drawer_pref_summary">Прилагоди твоје апликације drawer-а</string>
   <string name="pixel_ui_pref_summary">Омогућите ексклузивне функције Pixel Launcher-а</string>
   <string name="backup_pref_title">Резервна копија</string>
   <string name="behavior_pref_summary">Промените понашање Lawnchair</string>
@@ -371,6 +381,8 @@
   <string name="icon_shape_circle">Круг</string>
   <string name="icon_shape_teardrop">Суза</string>
   <string name="animated_clock_icon_title">Анимирана икона сата</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Анимирај алтернативне апликације сата</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Омогућите ово ако не користите Google Clock апликацију</string>
   <string name="about_summary_title">Резиме</string>
   <string name="about_version">Верзија</string>
   <string name="about_icon_designer">Дизајнер икона</string>
@@ -398,4 +410,5 @@
   <string name="google_app_not_found">Google апликација није инсталирана</string>
   <string name="popup_card_theme_title">Искачући мени раван стил</string>
   <string name="set_default_launcher">Постави подразумевани покретач</string>
+  <string name="enable_spring_pref_title">Омогући ефекат опруге</string>
 </resources>

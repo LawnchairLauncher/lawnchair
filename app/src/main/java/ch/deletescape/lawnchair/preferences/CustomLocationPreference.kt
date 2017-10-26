@@ -17,8 +17,8 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
-import android.preference.EditTextPreference
-import android.preference.PreferenceManager
+import android.support.v7.preference.EditTextPreference
+import android.support.v7.preference.PreferenceManager
 import android.text.TextUtils
 import android.util.AttributeSet
 
@@ -35,11 +35,8 @@ class CustomLocationPreference : EditTextPreference {
         updateSummary()
     }
 
-    override fun onDialogClosed(positiveResult: Boolean) {
-        super.onDialogClosed(positiveResult)
-        if (positiveResult) {
-            updateSummary()
-        }
+    override fun persistString(value: String?): Boolean {
+        return super.persistString(value).apply { updateSummary() }
     }
 
     private fun updateSummary() {
