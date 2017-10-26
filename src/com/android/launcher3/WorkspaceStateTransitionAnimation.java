@@ -161,12 +161,10 @@ public class WorkspaceStateTransitionAnimation {
         setWorkspaceProperty(toState, NO_ANIM_PROPERTY_SETTER);
     }
 
-    public void setStateWithAnimation(LauncherState fromState, LauncherState toState,
-            AnimatorSet anim, AnimationLayerSet layerViews, AnimationConfig config) {
-        long duration = config.getDuration(toState == LauncherState.NORMAL
-                ? fromState.transitionDuration : toState.transitionDuration);
+    public void setStateWithAnimation(LauncherState toState, AnimatorSet anim,
+            AnimationLayerSet layerViews, AnimationConfig config) {
         AnimatedPropertySetter propertySetter =
-                new AnimatedPropertySetter(duration, layerViews, anim);
+                new AnimatedPropertySetter(config.duration, layerViews, anim);
         setWorkspaceProperty(toState, propertySetter);
     }
 

@@ -772,7 +772,7 @@ public class Launcher extends BaseActivity
 
         if (!mAppLaunchSuccess) {
             getUserEventDispatcher().logActionCommand(Action.Command.STOP,
-                    mWorkspace.getState().containerType);
+                    mStateManager.getState().containerType);
         }
         NotificationListener.removeNotificationsChangedListener();
     }
@@ -1014,7 +1014,7 @@ public class Launcher extends BaseActivity
     }
 
     public boolean isInState(LauncherState state) {
-        return mWorkspace.getState() == state;
+        return mStateManager.getState() == state;
     }
 
     /**
@@ -1426,7 +1426,7 @@ public class Launcher extends BaseActivity
             if (topOpenView != null) {
                 topOpenView.logActionCommand(Action.Command.HOME_INTENT);
             } else if (alreadyOnHome) {
-                Target target = newContainerTarget(mWorkspace.getState().containerType);
+                Target target = newContainerTarget(mStateManager.getState().containerType);
                 target.pageIndex = mWorkspace.getCurrentPage();
                 ued.logActionCommand(Action.Command.HOME_INTENT, target);
             }
@@ -1489,7 +1489,7 @@ public class Launcher extends BaseActivity
             outState.putInt(RUNTIME_STATE_CURRENT_SCREEN, mWorkspace.getNextPage());
 
         }
-        outState.putInt(RUNTIME_STATE, mWorkspace.getState().ordinal);
+        outState.putInt(RUNTIME_STATE, mStateManager.getState().ordinal);
 
 
         AbstractFloatingView widgets = AbstractFloatingView
@@ -1884,7 +1884,7 @@ public class Launcher extends BaseActivity
         if (topView != null) {
             topView.onBackPressed();
         } else if (!isInState(NORMAL)) {
-            ued.logActionCommand(Action.Command.BACK, mWorkspace.getState().containerType);
+            ued.logActionCommand(Action.Command.BACK, mStateManager.getState().containerType);
             mStateManager.goToState(NORMAL);
         } else {
             // Back button is a no-op here, but give at least some feedback for the button press
@@ -2440,7 +2440,7 @@ public class Launcher extends BaseActivity
         // TODO: When can workspace be null?
         text.add(mWorkspace == null
                 ? getString(R.string.all_apps_home_button_label)
-                : mWorkspace.getState().getDescription(this));
+                : mStateManager.getState().getDescription(this));
         return result;
     }
 

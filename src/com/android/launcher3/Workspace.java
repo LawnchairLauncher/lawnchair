@@ -206,8 +206,6 @@ public class Workspace extends PagedView
      */
     private final float[] mHotseatAlpha = new float[] {1, 1, 1};
 
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private LauncherState mState = NORMAL;
     private boolean mIsSwitchingState = false;
 
     boolean mChildrenLayersEnabled = true;
@@ -576,7 +574,8 @@ public class Workspace extends PagedView
         mWorkspaceScreens.put(screenId, newScreen);
         mScreenOrder.add(insertIndex, screenId);
         addView(newScreen, insertIndex);
-        mStateTransitionAnimation.applyChildState(mState, newScreen, insertIndex);
+        mStateTransitionAnimation.applyChildState(
+                mLauncher.getStateManager().getState(), newScreen, insertIndex);
 
         if (mLauncher.getAccessibilityDelegate().isInAccessibleDrag()) {
             newScreen.enableAccessibleDrag(true, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
@@ -1411,13 +1410,13 @@ public class Workspace extends PagedView
         return super.getDescendantFocusability();
     }
 
-    public boolean workspaceInModalState() {
-        return mState != NORMAL;
+    private boolean workspaceInModalState() {
+        return !mLauncher.isInState(NORMAL);
     }
 
     /** Returns whether a drag should be allowed to be started from the current workspace state. */
     public boolean workspaceIconsCanBeDragged() {
-        return mState == NORMAL || mState == SPRING_LOADED;
+        return mLauncher.isInState(NORMAL) || mLauncher.isInState(SPRING_LOADED);
     }
 
     private void updateChildrenLayersEnabled() {
@@ -1545,11 +1544,6 @@ public class Workspace extends PagedView
     }
 
     private void onStartStateTransition(LauncherState state) {
-        // Change the internal state only when the transition actually starts
-        mState.onStateDisabled(mLauncher);
-        mState = state;
-        mState.onStateEnabled(mLauncher);
-
         mIsSwitchingState = true;
         mTransitionProgress = 0;
 
@@ -1570,7 +1564,7 @@ public class Workspace extends PagedView
      */
     public void setState(LauncherState toState) {
         onStartStateTransition(toState);
-        mStateTransitionAnimation.setState(mState);
+        mStateTransitionAnimation.setState(toState);
         onEndStateTransition();
     }
 
@@ -1580,7 +1574,7 @@ public class Workspace extends PagedView
     public void setStateWithAnimation(LauncherState toState, AnimationLayerSet layerViews,
             AnimatorSet anim, AnimationConfig config) {
         StateTransitionListener listener = new StateTransitionListener(toState);
-        mStateTransitionAnimation.setStateWithAnimation(mState, toState, anim, layerViews, config);
+        mStateTransitionAnimation.setStateWithAnimation(toState, anim, layerViews, config);
 
         // Invalidate the pages now, so that we have the visible pages before the
         // animation is started
@@ -1595,22 +1589,19 @@ public class Workspace extends PagedView
         anim.addListener(listener);
     }
 
-    public LauncherState getState() {
-        return mState;
-    }
-
     public void updateAccessibilityFlags() {
         // TODO: Update the accessibility flags appropriately when dragging.
+        int accessibilityFlag = mLauncher.getStateManager().getState().workspaceAccessibilityFlag;
         if (!mLauncher.getAccessibilityDelegate().isInAccessibleDrag()) {
             int total = getPageCount();
             for (int i = 0; i < total; i++) {
-                updateAccessibilityFlags((CellLayout) getPageAt(i), i);
+                updateAccessibilityFlags(accessibilityFlag, (CellLayout) getPageAt(i), i);
             }
-            setImportantForAccessibility(mState.workspaceAccessibilityFlag);
+            setImportantForAccessibility(accessibilityFlag);
         }
     }
 
-    private void updateAccessibilityFlags(CellLayout page, int pageNo) {
+    private void updateAccessibilityFlags(int accessibilityFlag, CellLayout page, int pageNo) {
         if (isPageRearrangeEnabled()) {
             page.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
             page.getShortcutsAndWidgets().setImportantForAccessibility(
@@ -1626,8 +1617,7 @@ public class Workspace extends PagedView
             }
         } else {
             page.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
-            page.getShortcutsAndWidgets()
-                    .setImportantForAccessibility(mState.workspaceAccessibilityFlag);
+            page.getShortcutsAndWidgets().setImportantForAccessibility(accessibilityFlag);
             page.setContentDescription(null);
             page.setAccessibilityDelegate(null);
         }
@@ -2687,7 +2677,7 @@ public class Workspace extends PagedView
         final long screenId = getIdForScreen(cellLayout);
         if (!mLauncher.isHotseatLayout(cellLayout)
                 && screenId != getScreenIdForPageIndex(mCurrentPage)
-                && mState != SPRING_LOADED) {
+                && !mLauncher.isInState(SPRING_LOADED)) {
             snapToPage(getPageIndexForScreenId(screenId));
         }
 
