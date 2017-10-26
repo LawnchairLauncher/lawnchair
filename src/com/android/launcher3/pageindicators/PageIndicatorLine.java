@@ -26,7 +26,7 @@ import com.android.launcher3.dynamicui.WallpaperColorInfo;
  *
  * The fraction is 1 / number of pages and the position is based on the progress of the page scroll.
  */
-public class PageIndicatorLineCaret extends PageIndicator {
+public class PageIndicatorLine extends PageIndicator {
 
     private static final int LINE_ANIMATE_DURATION = ViewConfiguration.getScrollBarFadeDuration();
     private static final int LINE_FADE_DELAY = ViewConfiguration.getScrollDefaultDelay();
@@ -56,43 +56,43 @@ public class PageIndicatorLineCaret extends PageIndicator {
     private final int mLineHeight;
     private ImageView mAllAppsHandle;
 
-    private static final Property<PageIndicatorLineCaret, Integer> PAINT_ALPHA
-            = new Property<PageIndicatorLineCaret, Integer>(Integer.class, "paint_alpha") {
+    private static final Property<PageIndicatorLine, Integer> PAINT_ALPHA
+            = new Property<PageIndicatorLine, Integer>(Integer.class, "paint_alpha") {
         @Override
-        public Integer get(PageIndicatorLineCaret obj) {
+        public Integer get(PageIndicatorLine obj) {
             return obj.mLinePaint.getAlpha();
         }
 
         @Override
-        public void set(PageIndicatorLineCaret obj, Integer alpha) {
+        public void set(PageIndicatorLine obj, Integer alpha) {
             obj.mLinePaint.setAlpha(alpha);
             obj.invalidate();
         }
     };
 
-    private static final Property<PageIndicatorLineCaret, Float> NUM_PAGES
-            = new Property<PageIndicatorLineCaret, Float>(Float.class, "num_pages") {
+    private static final Property<PageIndicatorLine, Float> NUM_PAGES
+            = new Property<PageIndicatorLine, Float>(Float.class, "num_pages") {
         @Override
-        public Float get(PageIndicatorLineCaret obj) {
+        public Float get(PageIndicatorLine obj) {
             return obj.mNumPagesFloat;
         }
 
         @Override
-        public void set(PageIndicatorLineCaret obj, Float numPages) {
+        public void set(PageIndicatorLine obj, Float numPages) {
             obj.mNumPagesFloat = numPages;
             obj.invalidate();
         }
     };
 
-    private static final Property<PageIndicatorLineCaret, Integer> TOTAL_SCROLL
-            = new Property<PageIndicatorLineCaret, Integer>(Integer.class, "total_scroll") {
+    private static final Property<PageIndicatorLine, Integer> TOTAL_SCROLL
+            = new Property<PageIndicatorLine, Integer>(Integer.class, "total_scroll") {
         @Override
-        public Integer get(PageIndicatorLineCaret obj) {
+        public Integer get(PageIndicatorLine obj) {
             return obj.mTotalScroll;
         }
 
         @Override
-        public void set(PageIndicatorLineCaret obj, Integer totalScroll) {
+        public void set(PageIndicatorLine obj, Integer totalScroll) {
             obj.mTotalScroll = totalScroll;
             obj.invalidate();
         }
@@ -105,15 +105,15 @@ public class PageIndicatorLineCaret extends PageIndicator {
         }
     };
 
-    public PageIndicatorLineCaret(Context context) {
+    public PageIndicatorLine(Context context) {
         this(context, null);
     }
 
-    public PageIndicatorLineCaret(Context context, AttributeSet attrs) {
+    public PageIndicatorLine(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public PageIndicatorLineCaret(Context context, AttributeSet attrs, int defStyle) {
+    public PageIndicatorLine(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         Resources res = context.getResources();
@@ -122,7 +122,6 @@ public class PageIndicatorLineCaret extends PageIndicator {
 
         mLauncher = Launcher.getLauncher(context);
         mLineHeight = res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_line_height);
-        setCaretDrawable(new CaretDrawable(context));
 
         boolean darkText = WallpaperColorInfo.getInstance(context).supportsDarkText();
         mActiveAlpha = darkText ? BLACK_ALPHA : WHITE_ALPHA;
@@ -132,8 +131,7 @@ public class PageIndicatorLineCaret extends PageIndicator {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mAllAppsHandle = (ImageView) findViewById(R.id.all_apps_handle);
-        mAllAppsHandle.setImageDrawable(getCaretDrawable());
+        mAllAppsHandle = findViewById(R.id.all_apps_handle);
         mAllAppsHandle.setOnClickListener(mLauncher);
         mAllAppsHandle.setOnFocusChangeListener(mLauncher.mFocusHandler);
         mLauncher.setAllAppsButton(mAllAppsHandle);

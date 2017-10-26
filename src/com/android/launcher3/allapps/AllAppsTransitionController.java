@@ -81,8 +81,6 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
     private Workspace mWorkspace;
     private Hotseat mHotseat;
 
-    private AllAppsCaretController mCaretController;
-
     private final Launcher mLauncher;
     private final SwipeDetector mDetector;
     private final boolean mIsDarkTheme;
@@ -193,7 +191,6 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
 
     @Override
     public void onDragStart(boolean start) {
-        mCaretController.onDragStart();
         mLauncher.getStateManager().cancelAnimation();
         cancelDiscoveryAnimation();
         mShiftStart = mAppsView.getTranslationY();
@@ -349,7 +346,6 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
                     System.currentTimeMillis());
         }
 
-        mCaretController.updateCaret(progress, mContainerVelocity, mDetector.isDraggingState());
         updateLightStatusBar(shiftCurrent);
     }
 
@@ -479,8 +475,6 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         mHotseat = hotseat;
         mWorkspace = workspace;
         mHotseat.bringToFront();
-        mCaretController = new AllAppsCaretController(
-                mWorkspace.getPageIndicator().getCaretDrawable(), mLauncher);
         mAppsView.getSearchUiManager().addOnScrollRangeChangeListener(this);
         mSpringAnimationHandler = mAppsView.getSpringAnimationHandler();
         mSearchSpring = mAppsView.getSearchUiManager().getSpringForFling();

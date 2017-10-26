@@ -16,49 +16,30 @@
 package com.android.launcher3.pageindicators;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
 
 /**
  * Simply draws the caret drawable bottom-right aligned in the view. This ensures that we can have
  * a view with as large an area as we want (for touching) while maintaining a caret of size
  * all_apps_caret_size.  Used only for the landscape layout.
  */
-public class PageIndicatorCaretLandscape extends PageIndicator {
+public class PageIndicatorLandscape extends PageIndicator {
     // all apps pull up handle drawable.
 
-    public PageIndicatorCaretLandscape(Context context) {
+    public PageIndicatorLandscape(Context context) {
         this(context, null);
     }
 
-    public PageIndicatorCaretLandscape(Context context, AttributeSet attrs) {
+    public PageIndicatorLandscape(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public PageIndicatorCaretLandscape(Context context, AttributeSet attrs, int defStyle) {
+    public PageIndicatorLandscape(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
-        int caretSize = context.getResources().getDimensionPixelSize(R.dimen.all_apps_caret_size);
-        CaretDrawable caretDrawable = new CaretDrawable(context);
-        caretDrawable.setBounds(0, 0, caretSize, caretSize);
-        setCaretDrawable(caretDrawable);
-
         Launcher l = Launcher.getLauncher(context);
         setOnClickListener(l);
         setOnFocusChangeListener(l.mFocusHandler);
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        Rect drawableBounds = getCaretDrawable().getBounds();
-        int count = canvas.save();
-        canvas.translate((getWidth() - drawableBounds.width()) / 2,
-                getHeight() - drawableBounds.height());
-        getCaretDrawable().draw(canvas);
-        canvas.restoreToCount(count);
     }
 }

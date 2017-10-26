@@ -86,9 +86,6 @@
     <dimen name="all_apps_empty_search_bg_top_offset">144dp</dimen>
     <dimen name="all_apps_background_canvas_width">700dp</dimen>
     <dimen name="all_apps_background_canvas_height">475dp</dimen>
-    <dimen name="all_apps_caret_stroke_width">2dp</dimen>
-    <dimen name="all_apps_caret_shadow_spread">1dp</dimen>
-    <dimen name="all_apps_caret_size">13dp</dimen>
     <dimen name="all_apps_caret_workspace_offset">18dp</dimen>
 
 <!-- Search bar in All Apps -->
