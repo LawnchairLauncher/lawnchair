@@ -160,7 +160,7 @@
     <dimen name="notification_padding_end">12.0dip</dimen>
     <dimen name="notification_footer_icon_row_padding">15.0dip</dimen>
     <dimen name="notification_header_height">32.0dip</dimen>
-    <dimen name="notification_main_height">80.0dip</dimen>
+    <dimen name="notification_main_height">96dip</dimen>
     <dimen name="notification_footer_height">32.0dip</dimen>
     <dimen name="notification_header_text_size">13.0sp</dimen>
     <dimen name="notification_header_count_text_size">12.0sp</dimen>
