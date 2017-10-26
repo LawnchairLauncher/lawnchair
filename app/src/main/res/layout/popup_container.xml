@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:elevation="@dimen/deep_shortcuts_elevation"
+    android:elevation="@dimen/popup_elevation"
     android:orientation="vertical"
     android:paddingBottom="8.0dip"
     android:paddingTop="8.0dip" />

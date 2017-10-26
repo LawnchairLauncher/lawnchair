@@ -252,7 +252,7 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
     public int getArrowColor(boolean isArrowAttachedToBottom) {
         return Utilities.resolveAttributeData(getContext(),
                 isArrowAttachedToBottom || mSystemShortcutIcons == null
-                        ? R.attr.appPopupBgColor
+                        ? R.attr.popupColorPrimary
                         : R.attr.appPopupHeaderBgColor);
     }
 }

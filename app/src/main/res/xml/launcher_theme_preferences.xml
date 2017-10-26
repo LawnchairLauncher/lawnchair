@@ -64,12 +64,6 @@
 
         <SwitchPreference
             android:defaultValue="false"
-            android:key="pref_popupCardTheme"
-            android:persistent="true"
-            android:title="@string/popup_card_theme_title" />
-
-        <SwitchPreference
-            android:defaultValue="false"
             android:key="pref_enableBlur"
             android:persistent="true"
             android:summary="@string/blur_pref_summary"

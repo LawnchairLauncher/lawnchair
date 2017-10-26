@@ -3,7 +3,7 @@
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:background="?android:attr/selectableItemBackground"
     android:layout_width="@dimen/bg_popup_item_width"
-    android:layout_height="@dimen/bg_popup_item_height">
+    android:layout_height="@dimen/popup_system_shortcut_height">
 
     <ch.deletescape.lawnchair.BubbleTextView
         android:id="@+id/bubble_text"
@@ -15,7 +15,7 @@
         android:paddingEnd="@dimen/popup_padding_end"
         android:paddingStart="@dimen/deep_shortcuts_text_padding_start"
         android:textAlignment="viewStart"
-        android:textColor="?android:textColorSecondary"
+        android:textColor="?android:textColorPrimary"
         android:textSize="14.0sp"
         launcher:disableShadows="true"
         launcher:iconDisplay="deep_shortcut"

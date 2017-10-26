@@ -37,7 +37,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -45,7 +44,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
 import java.util.Collections;
@@ -63,7 +61,6 @@ import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAnimUtils;
 import ch.deletescape.lawnchair.LauncherModel;
 import ch.deletescape.lawnchair.LauncherSettings;
-import ch.deletescape.lawnchair.LogAccelerateInterpolator;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.accessibility.LauncherAccessibilityDelegate;
@@ -81,10 +78,10 @@ import ch.deletescape.lawnchair.graphics.IconPalette;
 import ch.deletescape.lawnchair.graphics.TriangleShape;
 import ch.deletescape.lawnchair.notification.NotificationItemView;
 import ch.deletescape.lawnchair.notification.NotificationKeyData;
+import ch.deletescape.lawnchair.popup.theme.IPopupThemer;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutView;
 import ch.deletescape.lawnchair.shortcuts.ShortcutsItemView;
-import ch.deletescape.lawnchair.popup.theme.IPopupThemer;
 import ch.deletescape.lawnchair.util.PackageUserKey;
 
 /**
@@ -328,11 +325,10 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     }
 
     private void applyCorrectBackground(View item, boolean force) {
-        if (!force && mTheme.getWrapInMain()) {
-            item.setBackground(null);
-        } else {
+        if (item == mMainItemView)
             item.setBackgroundResource(mTheme.getItemBg());
-        }
+        else
+            item.setBackgroundResource(mTheme.getChildItemBg());
     }
 
     protected PopupItemView getItemViewAt(int index) {
@@ -343,9 +339,18 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         return (PopupItemView) getChildAt(index);
     }
 
+    protected PopupItemView getItemViewInMainAt(int index) {
+        return (PopupItemView) mMainItemView.itemContainer.getChildAt(index);
+    }
+
     protected int getItemCount() {
         // All children except the arrow are items.
         return getChildCount() - 1;
+    }
+
+    protected int getItemCountInMain() {
+        // All children except the arrow are items.
+        return mMainItemView.itemContainer.getChildCount();
     }
 
     private Point computeAnimStartPoint(int y) {
@@ -667,7 +672,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             final int spacing = getResources().getDimensionPixelSize(mTheme.getItemSpacing());
             removeNotification.play(reduceNotificationViewHeight(
                     mNotificationItemView.getHeightMinusFooter() + spacing, duration));
-            final View removeMarginView = mIsAboveIcon ? getItemViewAt(getItemCount() - 2)
+            final View removeMarginView = mIsAboveIcon ? getItemViewInMainAt(getItemCountInMain() - 2)
                     : mNotificationItemView;
             if (removeMarginView != null) {
                 ValueAnimator removeMargin = ValueAnimator.ofFloat(1, 0).setDuration(duration);

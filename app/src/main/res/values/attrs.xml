@@ -133,9 +133,11 @@
     </declare-styleable>
 
     <attr name="materialPanelBgColor" format="color" />
+    <attr name="popupColorPrimary" format="color" />
+    <attr name="popupColorSecondary" format="color" />
+    <attr name="popupColorTertiary" format="color" />
     <attr name="appPopupTextColor" format="color" />
     <attr name="appPopupHeaderBgColor" format="color" />
-    <attr name="appPopupBgColor" format="color" />
     <attr name="folderBgIntensity" format="integer" />
     <attr name="folderIconTextColor" format="color" />
     <attr name="folderNameTextColor" format="color" />
@@ -144,7 +146,6 @@
     <attr name="allAppsEmptySearchTextColor" format="color" />
     <attr name="blurTintColor" format="color" />
     <attr name="deepShortcutsHandleColor" format="color" />
-    <attr name="notificationBeneathColor" format="color" />
     <attr name="qsbBgColor" format="color" />
     <attr name="folderBgColorBlur" format="color" />
     <attr name="roundSearchBarBgColor" format="color" />
