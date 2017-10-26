@@ -10,13 +10,14 @@ android:
   components:
     - tools
     - platform-tools
-    - build-tools-26.0.2
-    - android-26
+    - build-tools-27.0.0
+    - android-27
     - extra-google-m2repository
 before_install: 
   - chmod a+x ./scripts/deploy-*.sh
   - chmod a+x ./scripts/changelog.sh
   - chmod a+x ./scripts/s3-upload.sh
+  - git fetch --tags
 script:
   - bash ./gradlew assembleDebug check;
   - bash ./gradlew app:assembleRelease check;
