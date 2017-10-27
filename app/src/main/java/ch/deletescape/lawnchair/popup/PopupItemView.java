@@ -16,8 +16,6 @@
 
 package ch.deletescape.lawnchair.popup;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -28,15 +26,15 @@ import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RoundRectShape;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import ch.deletescape.lawnchair.LogAccelerateInterpolator;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.popup.theme.IPopupThemer;
-import ch.deletescape.lawnchair.util.PillRevealOutlineProvider;
 
 /**
  * An abstract {@link FrameLayout} that supports animating an item's content
@@ -44,6 +42,9 @@ import ch.deletescape.lawnchair.util.PillRevealOutlineProvider;
  */
 public abstract class PopupItemView extends FrameLayout
         implements ValueAnimator.AnimatorUpdateListener {
+    public static final int CORNERS_TOP = 1;
+    public static final int CORNERS_BOTTOM = 2;
+    public static final int CORNERS_ALL = CORNERS_TOP | CORNERS_BOTTOM;
 
     protected static final Point sTempPoint = new Point();
 
@@ -57,6 +58,7 @@ public abstract class PopupItemView extends FrameLayout
     private Bitmap mRoundedCornerBitmap;
 
     protected IPopupThemer mTheme;
+    protected int mCorners = CORNERS_ALL;
 
     public PopupItemView(Context context) {
         this(context, null, 0);
@@ -74,13 +76,11 @@ public abstract class PopupItemView extends FrameLayout
 
         // Initialize corner clipping Bitmap and Paint.
         int radius = (int) getBackgroundRadius();
-        if (radius > 0) {
-            mRoundedCornerBitmap = Bitmap.createBitmap(radius, radius, Bitmap.Config.ALPHA_8);
-            Canvas canvas = new Canvas();
-            canvas.setBitmap(mRoundedCornerBitmap);
-            canvas.drawArc(0, 0, radius * 2, radius * 2, 180, 90, true, mBackgroundClipPaint);
-            mBackgroundClipPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
-        }
+        mRoundedCornerBitmap = Bitmap.createBitmap(radius, radius, Bitmap.Config.ALPHA_8);
+        Canvas canvas = new Canvas();
+        canvas.setBitmap(mRoundedCornerBitmap);
+        canvas.drawArc(0, 0, radius * 2, radius * 2, 180, 90, true, mBackgroundClipPaint);
+        mBackgroundClipPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
 
         mIsRtl = Utilities.isRtl(getResources());
     }
@@ -102,9 +102,9 @@ public abstract class PopupItemView extends FrameLayout
         int saveCount = canvas.saveLayer(0, 0, getWidth(), getHeight(), null);
         super.dispatchDraw(canvas);
 
-        if (mRoundedCornerBitmap != null) {
-            int cornerWidth = mRoundedCornerBitmap.getWidth();
-            int cornerHeight = mRoundedCornerBitmap.getHeight();
+        int cornerWidth = mRoundedCornerBitmap.getWidth();
+        int cornerHeight = mRoundedCornerBitmap.getHeight();
+        if ((mCorners & CORNERS_TOP) != 0) {
             // Clip top left corner.
             mMatrix.reset();
             canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
@@ -112,6 +112,8 @@ public abstract class PopupItemView extends FrameLayout
             mMatrix.setRotate(90, cornerWidth / 2, cornerHeight / 2);
             mMatrix.postTranslate(canvas.getWidth() - cornerWidth, 0);
             canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
+        }
+        if ((mCorners & CORNERS_BOTTOM) != 0) {
             // Clip bottom right corner.
             mMatrix.setRotate(180, cornerWidth / 2, cornerHeight / 2);
             mMatrix.postTranslate(canvas.getWidth() - cornerWidth, canvas.getHeight() - cornerHeight);
@@ -120,25 +122,21 @@ public abstract class PopupItemView extends FrameLayout
             mMatrix.setRotate(270, cornerWidth / 2, cornerHeight / 2);
             mMatrix.postTranslate(0, canvas.getHeight() - cornerHeight);
             canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
-
-            canvas.restoreToCount(saveCount);
         }
+
+        canvas.restoreToCount(saveCount);
     }
 
-    /**
-     * Creates an animator to play when the shortcut container is being opened.
-     */
-    public Animator createOpenAnimation(boolean isContainerAboveIcon, boolean pivotLeft) {
-        Point center = getIconCenter();
-        int arrowCenter = getResources().getDimensionPixelSize(pivotLeft ^ mIsRtl ?
-                R.dimen.popup_arrow_horizontal_center_start:
-                R.dimen.popup_arrow_horizontal_center_end);
-        ValueAnimator openAnimator =  new ZoomRevealOutlineProvider(center.x, center.y,
-                mPillRect, this, mIconView, isContainerAboveIcon, pivotLeft, arrowCenter)
-                .createRevealAnimator(this, false);
-        mOpenAnimationProgress = 0f;
-        openAnimator.addUpdateListener(this);
-        return openAnimator;
+    public void setBackgroundWithCorners(int i, int i2) {
+        float f = 0.0f;
+        mCorners = i2;
+        float backgroundRadius = (i2 & 1) == 0 ? 0.0f : getBackgroundRadius();
+        if ((i2 & 2) != 0) {
+            f = getBackgroundRadius();
+        }
+        ShapeDrawable shapeDrawable = new ShapeDrawable(new RoundRectShape(new float[]{backgroundRadius, backgroundRadius, backgroundRadius, backgroundRadius, f, f, f, f}, null, null));
+        shapeDrawable.getPaint().setColor(i);
+        setBackground(shapeDrawable);
     }
 
     @Override
@@ -148,31 +146,6 @@ public abstract class PopupItemView extends FrameLayout
 
     public boolean isOpenOrOpening() {
         return mOpenAnimationProgress > 0;
-    }
-
-    /**
-     * Creates an animator to play when the shortcut container is being closed.
-     */
-    public Animator createCloseAnimation(boolean isContainerAboveIcon, boolean pivotLeft,
-                                         long duration) {
-        Point center = getIconCenter();
-        int arrowCenter = getResources().getDimensionPixelSize(pivotLeft ^ mIsRtl ?
-                R.dimen.popup_arrow_horizontal_center_start :
-                R.dimen.popup_arrow_horizontal_center_end);
-        ValueAnimator closeAnimator = new ZoomRevealOutlineProvider(center.x, center.y,
-                mPillRect, this, mIconView, isContainerAboveIcon, pivotLeft, arrowCenter)
-                .createRevealAnimator(this, true);
-        // Scale down the duration and interpolator according to the progress
-        // that the open animation was at when the close started.
-        closeAnimator.setDuration((long) (duration * mOpenAnimationProgress));
-        closeAnimator.setInterpolator(new CloseInterpolator(mOpenAnimationProgress));
-        closeAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mOpenAnimationProgress = 0;
-            }
-        });
-        return closeAnimator;
     }
 
     /**
@@ -188,7 +161,7 @@ public abstract class PopupItemView extends FrameLayout
     }
 
     protected float getBackgroundRadius() {
-        return 0;
+        return getResources().getDimensionPixelSize(mTheme.getBackgroundRadius());
     }
 
     protected PopupContainerWithArrow getContainer() {
@@ -200,73 +173,4 @@ public abstract class PopupItemView extends FrameLayout
     }
 
     public abstract int getArrowColor(boolean isArrowAttachedToBottom);
-
-    /**
-     * Extension of {@link PillRevealOutlineProvider} which scales the icon based on the height.
-     */
-    private static class ZoomRevealOutlineProvider extends PillRevealOutlineProvider {
-
-        private final View mTranslateView;
-        private final View mZoomView;
-
-        private final float mFullHeight;
-        private final float mTranslateYMultiplier;
-
-        private final boolean mPivotLeft;
-        private final float mTranslateX;
-        private final float mArrowCenter;
-
-        public ZoomRevealOutlineProvider(int x, int y, Rect pillRect, PopupItemView translateView,
-                                         View zoomView, boolean isContainerAboveIcon, boolean pivotLeft, float arrowCenter) {
-            super(x, y, pillRect, translateView.getBackgroundRadius());
-            mTranslateView = translateView;
-            mZoomView = zoomView;
-            mFullHeight = pillRect.height();
-
-            mTranslateYMultiplier = isContainerAboveIcon ? 0.5f : -0.5f;
-
-            mPivotLeft = pivotLeft;
-            mTranslateX = pivotLeft ? arrowCenter : pillRect.right - arrowCenter;
-            mArrowCenter = arrowCenter;
-        }
-
-        @Override
-        public void setProgress(float progress) {
-            super.setProgress(progress);
-
-            if (mZoomView != null) {
-                mZoomView.setScaleX(progress);
-                mZoomView.setScaleY(progress);
-            }
-
-            float height = mOutline.height();
-            mTranslateView.setTranslationY(mTranslateYMultiplier * (mFullHeight - height));
-
-            float offsetX = Math.min(mOutline.width(), mArrowCenter);
-            float pivotX = mPivotLeft ? (mOutline.left + offsetX) : (mOutline.right - offsetX);
-            mTranslateView.setTranslationX(mTranslateX - pivotX);
-        }
-    }
-
-    /**
-     * An interpolator that reverses the current open animation progress.
-     */
-    private static class CloseInterpolator extends LogAccelerateInterpolator {
-        private float mStartProgress;
-        private float mRemainingProgress;
-
-        /**
-         * @param openAnimationProgress The progress that the open interpolator ended at.
-         */
-        public CloseInterpolator(float openAnimationProgress) {
-            super(100, 0);
-            mStartProgress = 1f - openAnimationProgress;
-            mRemainingProgress = openAnimationProgress;
-        }
-
-        @Override
-        public float getInterpolation(float v) {
-            return mStartProgress + super.getInterpolation(v) * mRemainingProgress;
-        }
-    }
 }

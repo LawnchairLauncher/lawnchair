@@ -83,6 +83,7 @@ import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutView;
 import ch.deletescape.lawnchair.shortcuts.ShortcutsItemView;
 import ch.deletescape.lawnchair.util.PackageUserKey;
+import ch.deletescape.lawnchair.util.Themes;
 
 /**
  * A container for shortcuts to deep links within apps.
@@ -162,8 +163,10 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         List<SystemShortcut> systemShortcuts = popupDataProvider
                 .getEnabledSystemShortcutsForItem(itemInfo);
 
+        LayoutInflater layoutInflater =
+                LayoutInflater.from(FeatureFlags.INSTANCE.applyDarkTheme(launcher, FeatureFlags.DARK_SHORTCUTS));
         final PopupContainerWithArrow container =
-                (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
+                (PopupContainerWithArrow) layoutInflater.inflate(
                         R.layout.popup_container, launcher.getDragLayer(), false);
         container.setTheme(Utilities.getThemer().popupTheme(launcher));
         container.setVisibility(View.INVISIBLE);
@@ -259,20 +262,41 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                                boolean notificationFooterHasIcons) {
         final Resources res = getResources();
         final int spacing = res.getDimensionPixelSize(mTheme.getItemSpacing());
-        final LayoutInflater inflater = LayoutInflater.from(FeatureFlags.INSTANCE.applyDarkTheme(mLauncher, FeatureFlags.DARK_SHORTCUTS));
+        final LayoutInflater inflater = LayoutInflater.from(getContext());
+        int corners = PopupItemView.CORNERS_ALL;
+        boolean i4, i5;
+        int i6;
 
         int numItems = itemTypesToPopulate.length;
         for (int i = 0; i < numItems; i++) {
             PopupPopulator.Item itemTypeToPopulate = itemTypesToPopulate[i];
+            PopupPopulator.Item previousItemTypeToPopulate =
+                    i > 0 ? itemTypesToPopulate[i - 1] : null;
             PopupPopulator.Item nextItemTypeToPopulate =
                     i < numItems - 1 ? itemTypesToPopulate[i + 1] : null;
             final View item = inflater.inflate(itemTypeToPopulate.layoutId, this, false);
+            i4 = previousItemTypeToPopulate != null && previousItemTypeToPopulate.isShortcut != itemTypeToPopulate.isShortcut;
+            i5 = nextItemTypeToPopulate != null && nextItemTypeToPopulate.isShortcut != itemTypeToPopulate.isShortcut;
 
             if (itemTypeToPopulate == PopupPopulator.Item.NOTIFICATION) {
                 mNotificationItemView = (NotificationItemView) item;
                 int footerHeight = notificationFooterHasIcons ?
-                        res.getDimensionPixelSize(R.dimen.notification_footer_height) : 0;
+                        res.getDimensionPixelSize(R.dimen.notification_footer_height) :
+                        res.getDimensionPixelSize(R.dimen.notification_empty_footer_height);
+                if (notificationFooterHasIcons)
+                    mNotificationItemView.findViewById(R.id.divider).setVisibility(VISIBLE);
                 item.findViewById(R.id.footer).getLayoutParams().height = footerHeight;
+                i6 = PopupItemView.CORNERS_ALL;
+                if (i4) {
+                    i6 = PopupItemView.CORNERS_BOTTOM;
+                    mNotificationItemView.findViewById(R.id.gutter_top).setVisibility(VISIBLE);
+                }
+                if (i5) {
+                    i6 &= -PopupItemView.CORNERS_ALL;
+                    mNotificationItemView.findViewById(R.id.gutter_bottom).setVisibility(VISIBLE);
+                }
+                mNotificationItemView.setBackgroundWithCorners(
+                        Utilities.resolveAttributeData(getContext(), R.attr.popupColorTertiary), i6);
                 mNotificationItemView.getMainView().setAccessibilityDelegate(mAccessibilityDelegate);
             } else if (itemTypeToPopulate == PopupPopulator.Item.SHORTCUT) {
                 item.setAccessibilityDelegate(mAccessibilityDelegate);
@@ -285,25 +309,24 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 if (mShortcutsItemView == null) {
                     mShortcutsItemView = (ShortcutsItemView) inflater.inflate(
                             R.layout.shortcuts_item, this, false);
-                    applyCorrectBackground(mShortcutsItemView);
                     addItem(inflater, mShortcutsItemView);
+                    if (i4) {
+                        corners &= -PopupItemView.CORNERS_BOTTOM;
+                    }
                 }
                 mShortcutsItemView.addShortcutView(item, itemTypeToPopulate);
                 if (shouldAddBottomMargin && spacing != 0) {
                     ((LayoutParams) mShortcutsItemView.getLayoutParams()).bottomMargin = spacing;
                 }
+                if (i5) {
+                    corners &= -PopupItemView.CORNERS_ALL;
+                }
             } else {
                 addItem(inflater, item);
-                applyCorrectBackground(item);
-                if (item instanceof NotificationItemView && spacing == 0) {
-                    item.setElevation(0);
-                    item.setBackgroundColor(Color.WHITE);
-                    ((NotificationItemView) item).showSectionDivider(mIsAboveIcon);
-                } else if (shouldAddBottomMargin && spacing != 0) {
-                    ((LayoutParams) item.getLayoutParams()).bottomMargin = spacing;
-                }
+                ((LayoutParams) item.getLayoutParams()).bottomMargin = spacing;
             }
         }
+        mShortcutsItemView.setBackgroundWithCorners(Utilities.resolveAttributeData(getContext(), R.attr.popupColorPrimary), corners);
     }
 
     private void addItem(LayoutInflater inflater, View item) {
@@ -311,24 +334,12 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             if (mMainItemView == null) {
                 mMainItemView = (MainItemView) inflater.inflate(
                         R.layout.main_item, this, false);
-                applyCorrectBackground(mMainItemView, true);
                 addView(mMainItemView);
             }
             mMainItemView.addView(item);
         } else {
             addView(item);
         }
-    }
-
-    private void applyCorrectBackground(View item) {
-        applyCorrectBackground(item, false);
-    }
-
-    private void applyCorrectBackground(View item, boolean force) {
-        if (item == mMainItemView)
-            item.setBackgroundResource(mTheme.getItemBg());
-        else
-            item.setBackgroundResource(mTheme.getChildItemBg());
     }
 
     protected PopupItemView getItemViewAt(int index) {
@@ -677,21 +688,11 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             AnimatorSet removeNotification = LauncherAnimUtils.createAnimatorSet();
             final int duration = getResources().getInteger(
                     R.integer.config_removeNotificationViewDuration);
-            final int spacing = getResources().getDimensionPixelSize(mTheme.getItemSpacing());
             removeNotification.play(reduceNotificationViewHeight(
-                    mNotificationItemView.getHeightMinusFooter() + spacing, duration));
-            final View removeMarginView = mIsAboveIcon ? getItemViewInMainAt(getItemCountInMain() - 2)
-                    : mNotificationItemView;
-            if (removeMarginView != null) {
-                ValueAnimator removeMargin = ValueAnimator.ofFloat(1, 0).setDuration(duration);
-                removeMargin.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                        ((MarginLayoutParams) removeMarginView.getLayoutParams()).bottomMargin
-                                = (int) (spacing * (float) valueAnimator.getAnimatedValue());
-                    }
-                });
-                removeNotification.play(removeMargin);
+                    mNotificationItemView.getHeightMinusFooter(), duration));
+            if (mShortcutsItemView != null) {
+                mShortcutsItemView.setBackgroundWithCorners(
+                        Utilities.resolveAttributeData(getContext(), R.attr.popupColorPrimary), PopupItemView.CORNERS_ALL);
             }
             AnimatorListenerAdapter removeNotificationView = new AnimatorListenerAdapter() {
                 @Override
@@ -707,21 +708,17 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                     }
                 }
             };
-            if (mMainItemView == null) {
-                Animator fade = ObjectAnimator.ofFloat(mNotificationItemView, ALPHA, 0)
-                        .setDuration(duration);
-                fade.addListener(removeNotificationView);
-                removeNotification.play(fade);
-                final long arrowScaleDuration = getResources().getInteger(
-                        R.integer.config_deepShortcutArrowOpenDuration);
-                Animator hideArrow = createArrowScaleAnim(0).setDuration(arrowScaleDuration);
-                hideArrow.setStartDelay(0);
-                Animator showArrow = createArrowScaleAnim(1).setDuration(arrowScaleDuration);
-                showArrow.setStartDelay((long) (duration - arrowScaleDuration * 1.5));
-                removeNotification.playSequentially(hideArrow, showArrow);
-            } else {
-                removeNotification.addListener(removeNotificationView);
-            }
+            Animator fade = ObjectAnimator.ofFloat(mNotificationItemView, ALPHA, 0)
+                    .setDuration(duration);
+            fade.addListener(removeNotificationView);
+            removeNotification.play(fade);
+            final long arrowScaleDuration = getResources().getInteger(
+                    R.integer.config_deepShortcutArrowOpenDuration);
+            Animator hideArrow = createArrowScaleAnim(0).setDuration(arrowScaleDuration);
+            hideArrow.setStartDelay(0);
+            Animator showArrow = createArrowScaleAnim(1).setDuration(arrowScaleDuration);
+            showArrow.setStartDelay((long) (duration - arrowScaleDuration * 1.5));
+            removeNotification.playSequentially(hideArrow, showArrow);
             removeNotification.start();
             return;
         }
@@ -752,59 +749,30 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         mReduceHeightAnimatorSet = LauncherAnimUtils.createAnimatorSet();
         PropertyResetListener<View, Float> resetTranslationYListener
                 = new PropertyResetListener<>(TRANSLATION_Y, 0f);
-        if (mMainItemView != null) {
-            mNotificationItemView.setElevation(0);
-            mReduceHeightAnimatorSet.play(mNotificationItemView.animateHeightRemoval(heightToRemove));
-            mReduceHeightAnimatorSet.play(mMainItemView.animateHeightRemoval(heightToRemove, mIsAboveIcon));
-            for (int i = 0; i < mMainItemView.getItemContainer().getChildCount(); i++) {
-                final PopupItemView itemView = (PopupItemView) mMainItemView.getItemContainer().getChildAt(i);
-                if (!mIsAboveIcon && itemView == mNotificationItemView) {
-                    // The notification view is already in the right place when container is below icon.
-                    continue;
-                }
-                ValueAnimator translateItem = ObjectAnimator.ofFloat(itemView, TRANSLATION_Y,
-                        itemView.getTranslationY() + translateYBy).setDuration(duration);
-                translateItem.addListener(resetTranslationYListener);
-                mReduceHeightAnimatorSet.play(translateItem);
+        mReduceHeightAnimatorSet.play(mNotificationItemView.animateHeightRemoval(heightToRemove, false));
+        for (int i = 0; i < getItemCount(); i++) {
+            final PopupItemView itemView = getItemViewAt(i);
+            if (!mIsAboveIcon && itemView == mNotificationItemView) {
+                // The notification view is already in the right place when container is below icon.
+                continue;
             }
-            mReduceHeightAnimatorSet.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    if (mIsAboveIcon) {
-                        // All the items, including the notification item, translated down, but the
-                        // container itself did not. This means the items would jump back to their
-                        // original translation unless we update the container's translationY here.
-                        setTranslationY(getTranslationY() + translateYBy);
-                    }
-                    mReduceHeightAnimatorSet = null;
-                }
-            });
-        } else {
-            mReduceHeightAnimatorSet.play(mNotificationItemView.animateHeightRemoval(heightToRemove));
-            for (int i = 0; i < getItemCount(); i++) {
-                final PopupItemView itemView = getItemViewAt(i);
-                if (!mIsAboveIcon && itemView == mNotificationItemView) {
-                    // The notification view is already in the right place when container is below icon.
-                    continue;
-                }
-                ValueAnimator translateItem = ObjectAnimator.ofFloat(itemView, TRANSLATION_Y,
-                        itemView.getTranslationY() + translateYBy).setDuration(duration);
-                translateItem.addListener(resetTranslationYListener);
-                mReduceHeightAnimatorSet.play(translateItem);
-            }
-            mReduceHeightAnimatorSet.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    if (mIsAboveIcon) {
-                        // All the items, including the notification item, translated down, but the
-                        // container itself did not. This means the items would jump back to their
-                        // original translation unless we update the container's translationY here.
-                        setTranslationY(getTranslationY() + translateYBy);
-                    }
-                    mReduceHeightAnimatorSet = null;
-                }
-            });
+            ValueAnimator translateItem = ObjectAnimator.ofFloat(itemView, TRANSLATION_Y,
+                    itemView.getTranslationY() + translateYBy).setDuration(duration);
+            translateItem.addListener(resetTranslationYListener);
+            mReduceHeightAnimatorSet.play(translateItem);
         }
+        mReduceHeightAnimatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (mIsAboveIcon) {
+                    // All the items, including the notification item, translated down, but the
+                    // container itself did not. This means the items would jump back to their
+                    // original translation unless we update the container's translationY here.
+                    setTranslationY(getTranslationY() + translateYBy);
+                }
+                mReduceHeightAnimatorSet = null;
+            }
+        });
         return mReduceHeightAnimatorSet;
     }
 

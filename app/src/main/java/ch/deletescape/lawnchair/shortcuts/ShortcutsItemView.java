@@ -212,43 +212,6 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
     }
 
     @Override
-    public Animator createOpenAnimation(boolean isContainerAboveIcon, boolean pivotLeft) {
-        AnimatorSet openAnimation = LauncherAnimUtils.createAnimatorSet();
-        openAnimation.play(super.createOpenAnimation(isContainerAboveIcon, pivotLeft));
-        for (int i = 0; i < mShortcutsLayout.getChildCount(); i++) {
-            if (!(mShortcutsLayout.getChildAt(i) instanceof DeepShortcutView)) {
-                continue;
-            }
-            DeepShortcutView shortcutView = ((DeepShortcutView) mShortcutsLayout.getChildAt(i));
-            View deepShortcutIcon = shortcutView.getIconView();
-            deepShortcutIcon.setScaleX(0);
-            deepShortcutIcon.setScaleY(0);
-            openAnimation.play(LauncherAnimUtils.ofPropertyValuesHolder(
-                    deepShortcutIcon, new PropertyListBuilder().scale(1).build()));
-        }
-        return openAnimation;
-    }
-
-    @Override
-    public Animator createCloseAnimation(boolean isContainerAboveIcon, boolean pivotLeft,
-                                         long duration) {
-        AnimatorSet closeAnimation = LauncherAnimUtils.createAnimatorSet();
-        closeAnimation.play(super.createCloseAnimation(isContainerAboveIcon, pivotLeft, duration));
-        for (int i = 0; i < mShortcutsLayout.getChildCount(); i++) {
-            if (!(mShortcutsLayout.getChildAt(i) instanceof DeepShortcutView)) {
-                continue;
-            }
-            DeepShortcutView shortcutView = ((DeepShortcutView) mShortcutsLayout.getChildAt(i));
-            View deepShortcutIcon = shortcutView.getIconView();
-            deepShortcutIcon.setScaleX(1);
-            deepShortcutIcon.setScaleY(1);
-            closeAnimation.play(LauncherAnimUtils.ofPropertyValuesHolder(
-                    deepShortcutIcon, new PropertyListBuilder().scale(0).build()));
-        }
-        return closeAnimation;
-    }
-
-    @Override
     public int getArrowColor(boolean isArrowAttachedToBottom) {
         return Utilities.resolveAttributeData(getContext(),
                 isArrowAttachedToBottom || mSystemShortcutIcons == null

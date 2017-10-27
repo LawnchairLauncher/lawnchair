@@ -197,7 +197,7 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
 
     override val pinchToOverview by BooleanPref(FeatureFlags.KEY_PREF_PINCH_TO_OVERVIEW, true)
     override val centerWallpaper by BooleanPref(PreferenceFlags.KEY_CENTER_WALLPAPER, true)
-    override val popupCardTheme = true
+    override val popupCardTheme = false
     override val lightStatusBar by BooleanPref(FeatureFlags.KEY_PREF_LIGHT_STATUS_BAR, false)
     override val hotseatShouldUseExtractedColors by BooleanPref(FeatureFlags.KEY_PREF_HOTSEAT_EXTRACTED_COLORS, true)
     override val hotseatShowArrow by BooleanPref(PreferenceFlags.KEY_PREF_HOTSEAT_SHOW_ARROW, true)
