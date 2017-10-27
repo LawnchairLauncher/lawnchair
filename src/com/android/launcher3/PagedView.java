@@ -46,6 +46,7 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Interpolator;
 
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.touch.OverScroll;
@@ -214,7 +215,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
      */
     protected void init() {
         mScroller = new LauncherScroller(getContext());
-        setDefaultInterpolator(new ScrollInterpolator());
+        setDefaultInterpolator(Interpolators.SCROLL);
         mCurrentPage = 0;
 
         final ViewConfiguration configuration = ViewConfiguration.get(getContext());
@@ -1764,16 +1765,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             return OVERSCROLL_PAGE_SNAP_ANIMATION_DURATION;
         }
         return PAGE_SNAP_ANIMATION_DURATION;
-    }
-
-    public static class ScrollInterpolator implements Interpolator {
-        public ScrollInterpolator() {
-        }
-
-        public float getInterpolation(float t) {
-            t -= 1.0f;
-            return t*t*t*t*t + 1;
-        }
     }
 
     // We want the duration of the page snap animation to be influenced by the distance that

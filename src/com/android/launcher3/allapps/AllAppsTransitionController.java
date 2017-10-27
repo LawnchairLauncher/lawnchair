@@ -2,6 +2,7 @@ package com.android.launcher3.allapps;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
@@ -10,11 +11,9 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.support.animation.SpringAnimation;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.Property;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -27,6 +26,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.GradientView;
@@ -70,11 +70,9 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
     // The delay (as a % of the animation duration) to start the springs.
     private static final float SPRING_DELAY = 0.3f;
 
-    private final Interpolator mWorkspaceAccelnterpolator = new AccelerateInterpolator(2f);
-    private final Interpolator mHotseatAccelInterpolator = new AccelerateInterpolator(1.5f);
-    private final Interpolator mFastOutSlowInInterpolator = new FastOutSlowInInterpolator();
-    private final SwipeDetector.ScrollInterpolator mScrollInterpolator
-            = new SwipeDetector.ScrollInterpolator();
+    private final Interpolator mWorkspaceAccelnterpolator = Interpolators.ACCEL_2;
+    private final Interpolator mHotseatAccelInterpolator = Interpolators.ACCEL_1_5;
+    private final Interpolator mFastOutSlowInInterpolator = Interpolators.FAST_OUT_SLOW_IN;
 
     private static final float PARALLAX_COEFFICIENT = .125f;
     private static final int SINGLE_FRAME_MS = 16;
@@ -396,8 +394,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
             mShiftStart = mAppsView.getTranslationY();
             interpolator = mFastOutSlowInInterpolator;
         } else {
-            mScrollInterpolator.setVelocityAtZero(Math.abs(mContainerVelocity));
-            interpolator = mScrollInterpolator;
+            interpolator = scrollInterpolatorForVelocity(mContainerVelocity);
             mProgress = Utilities.boundToRange(
                     mProgress + mContainerVelocity * SINGLE_FRAME_MS / mShiftRange, 0f, 1f);
             outConfig.shouldPost = false;

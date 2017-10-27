@@ -16,8 +16,8 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
+import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_TRANSITION_MS;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -56,8 +56,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
 import android.widget.Toast;
 
 import com.android.launcher3.Launcher.LauncherOverlay;
@@ -68,6 +66,7 @@ import com.android.launcher3.accessibility.OverviewAccessibilityDelegate;
 import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.AnimationLayerSet;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.badge.FolderBadgeInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -1162,8 +1161,6 @@ public class Workspace extends PagedView
                 super.shouldFlingForVelocity(velocityX);
     }
 
-    private final Interpolator mAlphaInterpolator = new DecelerateInterpolator(3f);
-
     /**
      * The overlay scroll is being controlled locally, just update our overlay effect
      */
@@ -1188,7 +1185,7 @@ public class Workspace extends PagedView
         scroll = Math.max(scroll - offset, 0);
         scroll = Math.min(1, scroll / (1 - offset));
 
-        float alpha = 1 - mAlphaInterpolator.getInterpolation(scroll);
+        float alpha = 1 - Interpolators.DEACCEL_3.getInterpolation(scroll);
         float transX = mLauncher.getDragLayer().getMeasuredWidth() * scroll;
         transX *= 1 - slip;
 
@@ -1540,7 +1537,7 @@ public class Workspace extends PagedView
     }
 
     public void snapToPageFromOverView(int whichPage) {
-        snapToPage(whichPage, OVERVIEW_TRANSITION_MS, new ZoomInInterpolator());
+        snapToPage(whichPage, OVERVIEW_TRANSITION_MS, Interpolators.ZOOM_IN);
     }
 
     private void onStartStateTransition(LauncherState state) {

@@ -16,6 +16,7 @@
 package com.android.launcher3.touch;
 
 import static android.view.MotionEvent.INVALID_POINTER_ID;
+
 import android.content.Context;
 import android.graphics.PointF;
 import android.support.annotation.NonNull;
@@ -23,7 +24,6 @@ import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
-import android.view.animation.Interpolator;
 
 /**
  * One dimensional scroll/drag/swipe gesture detector.
@@ -43,7 +43,6 @@ public class SwipeDetector {
     public static final int DIRECTION_BOTH = DIRECTION_NEGATIVE | DIRECTION_POSITIVE;
 
     private static final float ANIMATION_DURATION = 1200;
-    private static final float FAST_FLING_PX_MS = 10;
 
     protected int mActivePointerId = INVALID_POINTER_ID;
 
@@ -350,23 +349,5 @@ public class SwipeDetector {
             Log.d(TAG, String.format("calculateDuration=%d, v=%f, d=%f", duration, velocity, progressNeeded));
         }
         return duration;
-    }
-
-    public static class ScrollInterpolator implements Interpolator {
-
-        boolean mSteeper;
-
-        public void setVelocityAtZero(float velocity) {
-            mSteeper = velocity > FAST_FLING_PX_MS;
-        }
-
-        public float getInterpolation(float t) {
-            t -= 1.0f;
-            float output = t * t * t;
-            if (mSteeper) {
-                output *= t * t; // Make interpolation initial slope steeper
-            }
-            return output + 1;
-        }
     }
 }

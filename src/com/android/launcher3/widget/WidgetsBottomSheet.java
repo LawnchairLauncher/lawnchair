@@ -24,8 +24,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
-import android.view.animation.Interpolator;
 import android.widget.TextView;
 
 import com.android.launcher3.Insettable;
@@ -33,6 +31,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.graphics.GradientView;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.PackageUserKey;
@@ -46,7 +45,6 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
 
     private static final int DEFAULT_CLOSE_DURATION = 200;
     private ItemInfo mOriginalItemInfo;
-    private Interpolator mFastOutSlowInInterpolator;
     private Rect mInsets;
 
     public WidgetsBottomSheet(Context context, AttributeSet attrs) {
@@ -56,8 +54,6 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
     public WidgetsBottomSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setWillNotDraw(false);
-        mFastOutSlowInInterpolator =
-                AnimationUtils.loadInterpolator(context, android.R.interpolator.fast_out_slow_in);
         mInsets = new Rect();
 
         mGradientView = (GradientView) mLauncher.getLayoutInflater().inflate(
@@ -148,7 +144,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
         if (animate) {
             mOpenCloseAnimator.setValues(
                     PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-            mOpenCloseAnimator.setInterpolator(mFastOutSlowInInterpolator);
+            mOpenCloseAnimator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
             mOpenCloseAnimator.start();
         } else {
             setTranslationShift(TRANSLATION_SHIFT_OPENED);

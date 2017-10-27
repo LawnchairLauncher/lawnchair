@@ -44,12 +44,13 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.animation.DecelerateInterpolator;
+
 import com.android.launcher3.BubbleTextView.BubbleTextShadowHandler;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.accessibility.FolderAccessibilityHelper;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.PreviewBackground;
@@ -59,6 +60,7 @@ import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.ParcelableSparseArray;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -223,7 +225,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mReorderPreviewAnimationMagnitude = (REORDER_PREVIEW_MAGNITUDE * grid.iconSizePx);
 
         // Initialize the data structures used for the drag visualization.
-        mEaseOutInterpolator = new DecelerateInterpolator(2.5f); // Quint ease out
+        mEaseOutInterpolator = Interpolators.DEACCEL_2_5; // Quint ease out
         mDragCell[0] = mDragCell[1] = -1;
         for (int i = 0; i < mDragOutlines.length; i++) {
             mDragOutlines[i] = new Rect(-1, -1, -1, -1);

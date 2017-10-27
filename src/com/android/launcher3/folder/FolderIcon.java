@@ -16,6 +16,9 @@
 
 package com.android.launcher3.folder;
 
+import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
+import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMATION_DURATION;
+
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -33,8 +36,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.Alarm;
@@ -56,6 +57,7 @@ import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.badge.BadgeRenderer;
 import com.android.launcher3.badge.FolderBadgeInfo;
 import com.android.launcher3.dragndrop.BaseItemDragListener;
@@ -67,9 +69,6 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
-import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMATION_DURATION;
 
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
@@ -350,7 +349,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             float finalScale = scale * scaleRelativeToDragLayer;
             dragLayer.animateView(animateView, from, to, finalAlpha,
                     1, 1, finalScale, finalScale, DROP_IN_ANIMATION_DURATION,
-                    new DecelerateInterpolator(2), new AccelerateInterpolator(2),
+                    Interpolators.DEACCEL_2, Interpolators.ACCEL_2,
                     null, DragLayer.ANIMATION_END_DISAPPEAR, null);
 
             mFolder.hideItem(item);

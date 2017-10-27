@@ -26,9 +26,9 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
-import android.view.animation.AccelerateInterpolator;
 import android.widget.LinearLayout;
 
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 
@@ -40,7 +40,7 @@ import java.util.ArrayList;
 public class DropTargetBar extends LinearLayout implements DragController.DragListener {
 
     protected static final int DEFAULT_DRAG_FADE_DURATION = 175;
-    protected static final TimeInterpolator DEFAULT_INTERPOLATOR = new AccelerateInterpolator();
+    protected static final TimeInterpolator DEFAULT_INTERPOLATOR = Interpolators.ACCEL;
 
     private final Runnable mFadeAnimationEndRunnable = new Runnable() {
 
