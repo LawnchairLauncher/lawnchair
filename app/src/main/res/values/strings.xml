@@ -346,7 +346,7 @@
     <string name="notification_access_pref_summary">Allow Lawnchair to access your notifications to enable this feature</string>
     <string name="general_pref_title">Desktop</string>
     <string name="dock_pref_title">Dock</string>
-    <string name="app_drawer_pref_title">App Drawer</string>
+    <string name="app_drawer_pref_title">App drawer</string>
     <string name="pixel_ui_pref_title">Theme</string>
     <string name="behavior_pref_title">Behavior</string>
     <string name="debug_pref_title">Debug</string>
@@ -355,9 +355,9 @@
     <string name="dock_pref_summary">Customize your dock</string>
     <string name="app_drawer_pref_summary">Customize your app drawer</string>
     <string name="pixel_ui_pref_summary">Theme different elements</string>
-    <string name="backup_pref_title">Backup</string>
+    <string name="backup_pref_title">Backup &amp; restore</string>
     <string name="behavior_pref_summary">Change the behavior of Lawnchair</string>
-    <string name="backup_pref_summary">Backup your database and settings</string>
+    <string name="backup_pref_summary">Backup\/restore your settings and database</string>
     <string name="debug_pref_summary">Restart or rebuild icon database</string>
     <string name="show_pixel_bar_pref_title">Show Pixel top bar</string>
     <string name="use_wide_searchbar_pref_title">Use wide searchbar</string>
@@ -412,13 +412,19 @@
     <string name="enable_screen_rotation">Enable screen rotation</string>
 
     <!-- Import/Export Strings -->
-     <string name="backup_import_title">Import</string>
-    <string name="backup_export_title">Export</string>
+    <string name="backup_import_title">Restore</string>
+    <string name="backup_export_title">Backup</string>
     <string name="imexport_success">Success!</string>
+    <string name="settings_export_success">Settings backed up successfully</string>
+    <string name="db_export_success">Database backed up successfully</string>
+    <string name="settings_import_success">Settings restored successfully</string>
+    <string name="db_import_success">Database restored successfully</string>
     <string name="imexport_error">Error: Failed to copy file</string>
-    <string name="imexport_no_backup_found">No backup found</string>
-    <string name="imexport_external_storage_unreadable">External storage is not readable (grant permission in settings)</string>
-    <string name="imexport_external_storage_unwritable">External storage is not writable (grant permission in settings)</string>
+    <string name="export_error">Couldn\'t backup</string>
+    <string name="import_error">Couldn'\'t restore</string>
+    <string name="imexport_no_backup_found">No backup file found</string>
+    <string name="imexport_external_storage_unreadable">Make external storage readable in Settings</string>
+    <string name="imexport_external_storage_unwritable">Make external storage writable in Settings</string>
 
     <string name="units_metric">Metric</string>
     <string name="units_imperial">Imperial</string>
