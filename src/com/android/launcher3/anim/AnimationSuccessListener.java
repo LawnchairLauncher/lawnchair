@@ -24,7 +24,7 @@ import android.animation.AnimatorListenerAdapter;
  */
 public abstract class AnimationSuccessListener extends AnimatorListenerAdapter {
 
-    private boolean mCancelled = false;
+    protected boolean mCancelled = false;
 
     @Override
     public void onAnimationCancel(Animator animation) {

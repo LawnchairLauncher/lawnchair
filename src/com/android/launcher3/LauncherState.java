@@ -39,7 +39,6 @@ public class LauncherState {
     protected static final int FLAG_HIDE_HOTSEAT = 1 << 2;
     protected static final int FLAG_DISABLE_ACCESSIBILITY = 1 << 3;
     protected static final int FLAG_DO_NOT_RESTORE = 1 << 4;
-    protected static final int FLAG_HAS_SPRING = 1 << 5;
 
     private static final LauncherState[] sAllStates = new LauncherState[4];
 
@@ -90,7 +89,6 @@ public class LauncherState {
      * @see com.android.launcher3.allapps.AllAppsTransitionController
      */
     public final float verticalProgress;
-    public final boolean hasVerticalSpring;
 
     public LauncherState(int id, int containerType, int transitionDuration, float verticalProgress,
             int flags) {
@@ -106,7 +104,6 @@ public class LauncherState {
         this.doNotRestore = (flags & FLAG_DO_NOT_RESTORE) != 0;
 
         this.verticalProgress = verticalProgress;
-        this.hasVerticalSpring = (flags & FLAG_HAS_SPRING) != 0;
 
         this.ordinal = id;
         sAllStates[id] = this;
