@@ -27,8 +27,6 @@ import android.content.pm.PackageInstaller;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Process;
-import android.os.SystemClock;
-import android.os.Trace;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -76,6 +74,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 
 /**
@@ -466,13 +467,13 @@ public class LoaderTask implements Runnable {
                                                     true /* badged */, fallbackIconProvider);
                                     if (pmHelper.isAppSuspended(
                                             pinnedShortcut.getPackage(), info.user)) {
-                                        info.isDisabled |= ShortcutInfo.FLAG_DISABLED_SUSPENDED;
+                                        info.runtimeStatusFlags |= FLAG_DISABLED_SUSPENDED;
                                     }
                                     intent = info.intent;
                                 } else {
                                     // Create a shortcut info in disabled mode for now.
                                     info = c.loadSimpleShortcut();
-                                    info.isDisabled |= ShortcutInfo.FLAG_DISABLED_LOCKED_USER;
+                                    info.runtimeStatusFlags |= FLAG_DISABLED_LOCKED_USER;
                                 }
                             } else { // item type == ITEM_TYPE_SHORTCUT
                                 info = c.loadSimpleShortcut();
@@ -480,7 +481,7 @@ public class LoaderTask implements Runnable {
                                 // Shortcuts are only available on the primary profile
                                 if (!TextUtils.isEmpty(targetPkg)
                                         && pmHelper.isAppSuspended(targetPkg, c.user)) {
-                                    disabledState |= ShortcutInfo.FLAG_DISABLED_SUSPENDED;
+                                    disabledState |= FLAG_DISABLED_SUSPENDED;
                                 }
 
                                 // App shortcuts that used to be automatically added to Launcher
@@ -503,9 +504,9 @@ public class LoaderTask implements Runnable {
                                 info.rank = c.getInt(rankIndex);
                                 info.spanX = 1;
                                 info.spanY = 1;
-                                info.isDisabled |= disabledState;
+                                info.runtimeStatusFlags |= disabledState;
                                 if (isSafeMode && !Utilities.isSystemApp(context, intent)) {
-                                    info.isDisabled |= ShortcutInfo.FLAG_DISABLED_SAFEMODE;
+                                    info.runtimeStatusFlags |= FLAG_DISABLED_SAFEMODE;
                                 }
 
                                 if (c.restoreFlag != 0 && !TextUtils.isEmpty(targetPkg)) {

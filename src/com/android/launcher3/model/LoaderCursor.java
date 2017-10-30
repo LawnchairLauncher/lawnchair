@@ -16,11 +16,15 @@
 
 package com.android.launcher3.model;
 
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_NO;
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_YES;
+
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.database.Cursor;
 import android.database.CursorWrapper;
@@ -274,8 +278,13 @@ public class LoaderCursor extends CursorWrapper {
             info.iconBitmap = icon != null ? icon : info.iconBitmap;
         }
 
-        if (lai != null && PackageManagerHelper.isAppSuspended(lai.getApplicationInfo())) {
-            info.isDisabled = ShortcutInfo.FLAG_DISABLED_SUSPENDED;
+        if (lai != null) {
+            ApplicationInfo appInfo = lai.getApplicationInfo();
+            if (PackageManagerHelper.isAppSuspended(appInfo)) {
+                info.runtimeStatusFlags |= ShortcutInfo.FLAG_DISABLED_SUSPENDED;
+            }
+            info.runtimeStatusFlags |= (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0
+                    ? FLAG_SYSTEM_NO : FLAG_SYSTEM_YES;
         }
 
         // from the db

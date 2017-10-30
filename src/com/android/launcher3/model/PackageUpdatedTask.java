@@ -244,9 +244,9 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                 infoUpdated = true;
                             }
 
-                            int oldDisabledFlags = si.isDisabled;
-                            si.isDisabled = flagOp.apply(si.isDisabled);
-                            if (si.isDisabled != oldDisabledFlags) {
+                            int oldRuntimeFlags = si.runtimeStatusFlags;
+                            si.runtimeStatusFlags = flagOp.apply(si.runtimeStatusFlags);
+                            if (si.runtimeStatusFlags != oldRuntimeFlags) {
                                 shortcutUpdated = true;
                             }
                         }

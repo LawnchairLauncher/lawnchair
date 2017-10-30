@@ -1,5 +1,8 @@
 package com.android.launcher3;
 
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_MASK;
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_NO;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -83,10 +86,10 @@ public class UninstallDropTarget extends ButtonDropTarget implements OnAlarmList
             return false;
         }
 
-        if (info instanceof AppInfo) {
-            AppInfo appInfo = (AppInfo) info;
-            if (appInfo.isSystemApp != AppInfo.FLAG_SYSTEM_UNKNOWN) {
-                return (appInfo.isSystemApp & AppInfo.FLAG_SYSTEM_NO) != 0;
+        if (info instanceof ItemInfoWithIcon) {
+            ItemInfoWithIcon iconInfo = (ItemInfoWithIcon) info;
+            if ((iconInfo.runtimeStatusFlags & FLAG_SYSTEM_MASK) != 0) {
+                return (iconInfo.runtimeStatusFlags & FLAG_SYSTEM_NO) != 0;
             }
         }
         return getUninstallTarget(info) != null;

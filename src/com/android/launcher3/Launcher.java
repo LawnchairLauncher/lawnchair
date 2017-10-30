@@ -19,6 +19,11 @@ package com.android.launcher3;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_NOSENSOR;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
 
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_BY_PUBLISHER;
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_QUIET_USER;
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -2053,10 +2058,10 @@ public class Launcher extends BaseActivity
         // Open shortcut
         final ShortcutInfo shortcut = (ShortcutInfo) tag;
 
-        if (shortcut.isDisabled != 0) {
-            if ((shortcut.isDisabled &
-                    ~ShortcutInfo.FLAG_DISABLED_SUSPENDED &
-                    ~ShortcutInfo.FLAG_DISABLED_QUIET_USER) == 0) {
+        if (shortcut.isDisabled()) {
+            if ((shortcut.runtimeStatusFlags &
+                    ~FLAG_DISABLED_SUSPENDED &
+                    ~FLAG_DISABLED_QUIET_USER) == 0) {
                 // If the app is only disabled because of the above flags, launch activity anyway.
                 // Framework will tell the user why the app is suspended.
             } else {
@@ -2067,10 +2072,10 @@ public class Launcher extends BaseActivity
                 }
                 // Otherwise just use a generic error message.
                 int error = R.string.activity_not_available;
-                if ((shortcut.isDisabled & ShortcutInfo.FLAG_DISABLED_SAFEMODE) != 0) {
+                if ((shortcut.runtimeStatusFlags & FLAG_DISABLED_SAFEMODE) != 0) {
                     error = R.string.safemode_shortcut_error;
-                } else if ((shortcut.isDisabled & ShortcutInfo.FLAG_DISABLED_BY_PUBLISHER) != 0 ||
-                        (shortcut.isDisabled & ShortcutInfo.FLAG_DISABLED_LOCKED_USER) != 0) {
+                } else if ((shortcut.runtimeStatusFlags & FLAG_DISABLED_BY_PUBLISHER) != 0 ||
+                        (shortcut.runtimeStatusFlags & FLAG_DISABLED_LOCKED_USER) != 0) {
                     error = R.string.shortcut_not_available;
                 }
                 Toast.makeText(this, error, Toast.LENGTH_SHORT).show();

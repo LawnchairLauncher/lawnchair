@@ -41,7 +41,6 @@ public class AppDiscoveryAppInfo extends AppInfo {
         this.intent = item.isInstantApp ? item.launchIntent : item.installIntent;
         this.title = item.title;
         this.iconBitmap = item.bitmap;
-        this.isDisabled = ShortcutInfo.DEFAULT;
         this.usingLowResIcon = false;
         this.isInstantApp = item.isInstantApp;
         this.isRecent = item.isRecent;
