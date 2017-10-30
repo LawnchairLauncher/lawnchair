@@ -52,9 +52,13 @@ public class DumbImportExportTask {
             backup.delete();
         }
         if (copy(file, backup)) {
-            Toast.makeText(activity, activity.getString(R.string.imexport_success), Toast.LENGTH_LONG).show();
+            if (file.getName().equals(LauncherFiles.SHARED_PREFERENCES_KEY + ".xml")) {
+                Toast.makeText(activity, activity.getString(R.string.settings_export_success), Toast.LENGTH_LONG).show();
+            } else if (file.getName().equals(LauncherFiles.LAUNCHER_DB)) {
+                Toast.makeText(activity, activity.getString(R.string.db_export_success), Toast.LENGTH_LONG).show();
+            }
         } else {
-            Toast.makeText(activity, activity.getString(R.string.imexport_error), Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, activity.getString(R.string.export_error), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -72,9 +76,13 @@ public class DumbImportExportTask {
             file.delete();
         }
         if (copy(backup, file)) {
-            Toast.makeText(activity, activity.getString(R.string.imexport_success), Toast.LENGTH_LONG).show();
+            if (file.getName().equals(LauncherFiles.SHARED_PREFERENCES_KEY + ".xml")) {
+                Toast.makeText(activity, activity.getString(R.string.settings_import_success), Toast.LENGTH_LONG).show();
+            } else if (file.getName().equals(LauncherFiles.LAUNCHER_DB)) {
+                Toast.makeText(activity, activity.getString(R.string.db_import_success), Toast.LENGTH_LONG).show();
+          }
         } else {
-            Toast.makeText(activity, activity.getString(R.string.imexport_error), Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, activity.getString(R.string.import_error), Toast.LENGTH_LONG).show();
         }
     }
 
