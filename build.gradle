@@ -40,7 +40,20 @@ android {
             applicationId 'com.android.launcher3'
             testApplicationId 'com.android.launcher3.tests'
         }
+
+        quickstep {
+            applicationId 'com.android.launcher3'
+            testApplicationId 'com.android.launcher3.tests'
+        }
     }
+
+    // Disable release builds for now
+    android.variantFilter { variant ->
+        if (variant.buildType.name.endsWith('release')) {
+            variant.setIgnore(true);
+        }
+    }
+
     sourceSets {
         main {
             res.srcDirs = ['res']
@@ -52,31 +65,34 @@ android {
             }
         }
 
+        debug {
+            manifest.srcFile "AndroidManifest.xml"
+        }
+
         androidTest {
             res.srcDirs = ['tests/res']
             java.srcDirs = ['tests/src']
             manifest.srcFile "tests/AndroidManifest-common.xml"
         }
 
-        aosp {
-            java.srcDirs = ['src_flags']
-            manifest.srcFile "AndroidManifest.xml"
+        androidTestDebug {
+            manifest.srcFile "tests/AndroidManifest.xml"
         }
 
-        aospAndroidTest {
-            manifest.srcFile "tests/AndroidManifest.xml"
+        aosp {
+            java.srcDirs = ['src_flags']
         }
 
         l3go {
             res.srcDirs = ['go/res']
             java.srcDirs = ['go/src_flags']
-            // Note: we are using the Launcher3 manifest here because the gradle manifest-merger uses
-            // different attributes than the build system.
-            manifest.srcFile "AndroidManifest.xml"
+            manifest.srcFile "go/AndroidManifest.xml"
         }
 
-        l3goAndroidTest {
-            manifest.srcFile "tests/AndroidManifest.xml"
+        quickstep {
+            res.srcDirs = ['quickstep/res']
+            java.srcDirs = ['quickstep/src_flags', 'quickstep/src']
+            manifest.srcFile "quickstep/AndroidManifest.xml"
         }
     }
 }

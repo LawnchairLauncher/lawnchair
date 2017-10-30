@@ -21,8 +21,8 @@ import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CH
 
 import android.view.View;
 
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.states.AllAppsState;
-import com.android.launcher3.states.OverviewState;
 import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
@@ -50,7 +50,7 @@ public class LauncherState {
 
     public static final LauncherState SPRING_LOADED = new SpringLoadedState(2);
 
-    public static final LauncherState OVERVIEW = new OverviewState(3);
+    public static final LauncherState OVERVIEW = FeatureFlags.createOverviewState(3);
 
     public final int ordinal;
 

@@ -16,6 +16,9 @@
 
 package com.android.launcher3.config;
 
+import com.android.launcher3.LauncherState;
+import com.android.launcher3.states.OverviewState;
+
 /**
  * Defines a set of flags used to control various launcher behaviors.
  *
@@ -58,4 +61,8 @@ abstract class BaseFlags {
 
     // Features to control Launcher3Go behavior
     public static final boolean GO_DISABLE_WIDGETS = false;
+
+    public static LauncherState createOverviewState(int id) {
+        return new OverviewState(id);
+    }
 }
