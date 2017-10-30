@@ -133,7 +133,6 @@ import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.util.RunnableWithId;
 import com.android.launcher3.util.SystemUiController;
-import com.android.launcher3.util.TestingUtils;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TraceHelper;
@@ -1095,10 +1094,6 @@ public class Launcher extends BaseActivity
         mDropTargetBar.setup(mDragController);
 
         mAllAppsController.setupViews(mAppsView, mHotseat, mWorkspace);
-
-        if (TestingUtils.MEMORY_DUMP_ENABLED) {
-            TestingUtils.addWeightWatcher(this);
-        }
     }
 
     private void setupOverviewPanel() {
