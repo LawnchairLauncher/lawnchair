@@ -16,6 +16,8 @@
 
 package com.android.launcher3.graphics;
 
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_ADAPTIVE_ICON;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
@@ -29,6 +31,7 @@ import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
 
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.R;
 
 /**
@@ -36,6 +39,12 @@ import com.android.launcher3.R;
  * and drag-n-drop respectively.
  */
 public class HolographicOutlineHelper {
+
+    /**
+     * Bitmap used as shadow for Adaptive icons
+     */
+    public static final Bitmap ADAPTIVE_ICON_SHADOW_BITMAP =
+            Bitmap.createBitmap(1, 1, Bitmap.Config.ALPHA_8);
 
     private static HolographicOutlineHelper sInstance;
 
@@ -63,6 +72,11 @@ public class HolographicOutlineHelper {
     }
 
     public Bitmap createMediumDropShadow(BubbleTextView view) {
+        if (view.getTag() instanceof ItemInfoWithIcon &&
+                ((((ItemInfoWithIcon) view.getTag()).runtimeStatusFlags & FLAG_ADAPTIVE_ICON)
+                        != 0)) {
+            return ADAPTIVE_ICON_SHADOW_BITMAP;
+        }
         Drawable drawable = view.getIcon();
         if (drawable == null) {
             return null;
@@ -119,7 +133,7 @@ public class HolographicOutlineHelper {
     }
 
     public void recycleShadowBitmap(Bitmap bitmap) {
-        if (bitmap != null) {
+        if (bitmap != null && bitmap != ADAPTIVE_ICON_SHADOW_BITMAP) {
             mBitmapCache.put((bitmap.getWidth() << 16) | bitmap.getHeight(), bitmap);
         }
     }

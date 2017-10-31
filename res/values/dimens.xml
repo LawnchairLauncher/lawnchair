@@ -15,7 +15,10 @@
 -->
 
 <resources>
-<!-- Dynamic Grid -->
+
+    <dimen name="click_shadow_elevation">4dp</dimen>
+
+    <!-- Dynamic Grid -->
     <dimen name="dynamic_grid_edge_margin">8dp</dimen>
     <dimen name="dynamic_grid_min_page_indicator_size">32dp</dimen>
     <dimen name="dynamic_grid_page_indicator_line_height">1dp</dimen>

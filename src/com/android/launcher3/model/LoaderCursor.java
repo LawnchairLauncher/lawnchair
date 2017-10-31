@@ -16,15 +16,11 @@
 
 package com.android.launcher3.model;
 
-import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_NO;
-import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_YES;
-
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.database.Cursor;
 import android.database.CursorWrapper;
@@ -36,6 +32,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
 
+import com.android.launcher3.AppInfo;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
@@ -52,7 +49,6 @@ import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.LongArrayMap;
-import com.android.launcher3.util.PackageManagerHelper;
 
 import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
@@ -206,7 +202,6 @@ public class LoaderCursor extends CursorWrapper {
         return TextUtils.isEmpty(title) ? "" : Utilities.trim(title);
     }
 
-
     /**
      * Make an ShortcutInfo object for a restored application or shortcut item that points
      * to a package that is not yet installed on the system.
@@ -279,12 +274,7 @@ public class LoaderCursor extends CursorWrapper {
         }
 
         if (lai != null) {
-            ApplicationInfo appInfo = lai.getApplicationInfo();
-            if (PackageManagerHelper.isAppSuspended(appInfo)) {
-                info.runtimeStatusFlags |= ShortcutInfo.FLAG_DISABLED_SUSPENDED;
-            }
-            info.runtimeStatusFlags |= (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0
-                    ? FLAG_SYSTEM_NO : FLAG_SYSTEM_YES;
+            AppInfo.updateRuntimeFlagsForActivityTarget(info, lai);
         }
 
         // from the db

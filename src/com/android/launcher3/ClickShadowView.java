@@ -16,21 +16,36 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.FastBitmapDrawable.CLICK_FEEDBACK_DURATION;
+import static com.android.launcher3.FastBitmapDrawable.CLICK_FEEDBACK_INTERPOLATOR;
+import static com.android.launcher3.LauncherAnimUtils.ELEVATION;
+import static com.android.launcher3.graphics.HolographicOutlineHelper.ADAPTIVE_ICON_SHADOW_BITMAP;
+
+import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.AdaptiveIconDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.util.Property;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
 
 public class ClickShadowView extends View {
 
     private static final int SHADOW_SIZE_FACTOR = 3;
     private static final int SHADOW_LOW_ALPHA = 30;
     private static final int SHADOW_HIGH_ALPHA = 60;
+
+    private static float sAdaptiveIconScaleFactor = 1f;
 
     private final Paint mPaint;
 
@@ -40,6 +55,10 @@ public class ClickShadowView extends View {
     private final float mShadowPadding;
 
     private Bitmap mBitmap;
+    private ObjectAnimator mAnim;
+
+    private Drawable mAdaptiveIcon;
+    private ViewOutlineProvider mOutlineProvider;
 
     public ClickShadowView(Context context) {
         super(context);
@@ -50,6 +69,10 @@ public class ClickShadowView extends View {
         mShadowOffset = getResources().getDimension(R.dimen.click_shadow_high_shift);
     }
 
+    public static void setAdaptiveIconScaleFactor(float factor) {
+        sAdaptiveIconScaleFactor = factor;
+    }
+
     /**
      * @return extra space required by the view to show the shadow.
      */
@@ -57,11 +80,64 @@ public class ClickShadowView extends View {
         return (int) (SHADOW_SIZE_FACTOR * mShadowPadding);
     }
 
+    public void setPressedIcon(BubbleTextView icon, Bitmap background) {
+        if (icon == null) {
+            setBitmap(null);
+            cancelAnim();
+            return;
+        }
+        if (background == null) {
+            if (mBitmap == ADAPTIVE_ICON_SHADOW_BITMAP) {
+                // clear animation shadow
+            }
+            setBitmap(null);
+            cancelAnim();
+            icon.setOutlineProvider(null);
+        } else if (setBitmap(background)) {
+            if (mBitmap == ADAPTIVE_ICON_SHADOW_BITMAP) {
+                setupAdaptiveShadow(icon);
+                cancelAnim();
+                startAnim(icon, ELEVATION,
+                        getResources().getDimension(R.dimen.click_shadow_elevation));
+            } else {
+                alignWithIconView(icon);
+                startAnim(this, ALPHA, 1);
+            }
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.O)
+    private void setupAdaptiveShadow(final BubbleTextView view) {
+        if (mAdaptiveIcon == null) {
+            mAdaptiveIcon = new AdaptiveIconDrawable(null, null);
+            mOutlineProvider = new ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, Outline outline) {
+                    mAdaptiveIcon.getOutline(outline);
+                }
+            };
+        }
+
+        int iconWidth = view.getRight() - view.getLeft();
+        int iconHSpace = iconWidth - view.getCompoundPaddingRight() - view.getCompoundPaddingLeft();
+        int drawableWidth = view.getIcon().getBounds().width();
+
+        Rect bounds = new Rect();
+        bounds.left = view.getCompoundPaddingLeft() + (iconHSpace - drawableWidth) / 2;
+        bounds.right = bounds.left + drawableWidth;
+        bounds.top = view.getPaddingTop();
+        bounds.bottom = bounds.top + view.getIcon().getBounds().height();
+        Utilities.scaleRectAboutCenter(bounds, sAdaptiveIconScaleFactor);
+
+        mAdaptiveIcon.setBounds(bounds);
+        view.setOutlineProvider(mOutlineProvider);
+    }
+
     /**
      * Applies the new bitmap.
      * @return true if the view was invalidated.
      */
-    public boolean setBitmap(Bitmap b) {
+    private boolean setBitmap(Bitmap b) {
         if (b != mBitmap){
             mBitmap = b;
             invalidate();
@@ -80,48 +156,51 @@ public class ClickShadowView extends View {
         }
     }
 
-    public void animateShadow() {
-        setAlpha(0);
-        animate().alpha(1)
-            .setDuration(FastBitmapDrawable.CLICK_FEEDBACK_DURATION)
-            .setInterpolator(FastBitmapDrawable.CLICK_FEEDBACK_INTERPOLATOR)
-            .start();
+    private void cancelAnim() {
+        if (mAnim != null) {
+            mAnim.cancel();
+            mAnim.setCurrentPlayTime(0);
+            mAnim = null;
+        }
+    }
+
+    private void startAnim(View target, Property<View, Float> property, float endValue) {
+        cancelAnim();
+        property.set(target, 0f);
+        mAnim = ObjectAnimator.ofFloat(target, property, endValue);
+        mAnim.setDuration(CLICK_FEEDBACK_DURATION)
+                .setInterpolator(CLICK_FEEDBACK_INTERPOLATOR);
+        mAnim.start();
     }
 
     /**
      * Aligns the shadow with {@param view}
-     * @param viewParent immediate parent of {@param view}. It must be a sibling of this view.
+     * Note: {@param view} must be a descendant of my parent.
      */
-    public void alignWithIconView(BubbleTextView view, ViewGroup viewParent, View clipAgainstView) {
-        float leftShift = view.getLeft() + viewParent.getLeft() - getLeft();
-        float topShift = view.getTop() + viewParent.getTop() - getTop();
+    private void alignWithIconView(BubbleTextView view) {
+        int[] coords = new int[] {0, 0};
+        Utilities.getDescendantCoordRelativeToAncestor(
+                (ViewGroup) view.getParent(), (View) getParent(), coords, false);
+
+        float leftShift = view.getLeft() + coords[0] - getLeft();
+        float topShift = view.getTop() + coords[1] - getTop();
         int iconWidth = view.getRight() - view.getLeft();
         int iconHeight = view.getBottom() - view.getTop();
         int iconHSpace = iconWidth - view.getCompoundPaddingRight() - view.getCompoundPaddingLeft();
         float drawableWidth = view.getIcon().getBounds().width();
 
-        if (clipAgainstView != null) {
-            // Set the bounds to clip against
-            int[] coords = new int[] {0, 0};
-            Utilities.getDescendantCoordRelativeToAncestor(clipAgainstView, (View) getParent(),
-                    coords, false);
-            int clipLeft = (int) Math.max(0, coords[0] - leftShift - mShadowPadding);
-            int clipTop = (int) Math.max(0, coords[1] - topShift - mShadowPadding) ;
-            setClipBounds(new Rect(clipLeft, clipTop, clipLeft + iconWidth, clipTop + iconHeight));
-        } else {
-            // Reset the clip bounds
-            setClipBounds(null);
-        }
+        // Set the bounds to clip against
+        int clipLeft = (int) Math.max(0, coords[0] - leftShift - mShadowPadding);
+        int clipTop = (int) Math.max(0, coords[1] - topShift - mShadowPadding) ;
+        setClipBounds(new Rect(clipLeft, clipTop, clipLeft + iconWidth, clipTop + iconHeight));
 
         setTranslationX(leftShift
-                + viewParent.getTranslationX()
                 + view.getCompoundPaddingLeft() * view.getScaleX()
                 + (iconHSpace - drawableWidth) * view.getScaleX() / 2  /* drawable gap */
                 + iconWidth * (1 - view.getScaleX()) / 2  /* gap due to scale */
                 - mShadowPadding  /* extra shadow size */
                 );
         setTranslationY(topShift
-                + viewParent.getTranslationY()
                 + view.getPaddingTop() * view.getScaleY()  /* drawable gap */
                 + view.getHeight() * (1 - view.getScaleY()) / 2  /* gap due to scale */
                 - mShadowPadding  /* extra shadow size */

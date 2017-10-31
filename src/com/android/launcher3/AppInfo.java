@@ -21,9 +21,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
+import android.os.Build;
+import android.os.Process;
 import android.os.UserHandle;
 
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
 
@@ -59,17 +62,12 @@ public class AppInfo extends ItemInfoWithIcon {
         this.componentName = info.getComponentName();
         this.container = ItemInfo.NO_ID;
         this.user = user;
-        if (PackageManagerHelper.isAppSuspended(info.getApplicationInfo())) {
-            runtimeStatusFlags |= ShortcutInfo.FLAG_DISABLED_SUSPENDED;
-        }
-        if (quietModeEnabled) {
-            runtimeStatusFlags |= ShortcutInfo.FLAG_DISABLED_QUIET_USER;
-        }
-
         intent = makeLaunchIntent(info);
-        runtimeStatusFlags |= (info.getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) == 0
-                ? FLAG_SYSTEM_NO : FLAG_SYSTEM_YES;
 
+        if (quietModeEnabled) {
+            runtimeStatusFlags |= FLAG_DISABLED_QUIET_USER;
+        }
+        updateRuntimeFlagsForActivityTarget(this, info);
     }
 
     public AppInfo(AppInfo info) {
@@ -101,5 +99,22 @@ public class AppInfo extends ItemInfoWithIcon {
                 .addCategory(Intent.CATEGORY_LAUNCHER)
                 .setComponent(cn)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+    }
+
+    public static void updateRuntimeFlagsForActivityTarget(
+            ItemInfoWithIcon info, LauncherActivityInfo lai) {
+        ApplicationInfo appInfo = lai.getApplicationInfo();
+        if (PackageManagerHelper.isAppSuspended(appInfo)) {
+            info.runtimeStatusFlags |= FLAG_DISABLED_SUSPENDED;
+        }
+        info.runtimeStatusFlags |= (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0
+                ? FLAG_SYSTEM_NO : FLAG_SYSTEM_YES;
+
+        if (FeatureFlags.LEGACY_ICON_TREATMENT && Utilities.ATLEAST_OREO
+                && appInfo.targetSdkVersion >= Build.VERSION_CODES.O
+                && Process.myUserHandle().equals(lai.getUser())) {
+            // The icon for a non-primary user is badged, hence it's not exactly an adaptive icon.
+            info.runtimeStatusFlags |= FLAG_ADAPTIVE_ICON;
+        }
     }
 }

@@ -164,4 +164,17 @@ public class LauncherAnimUtils {
                     view.setScaleY(scale);
                 }
             };
+
+    public static final Property<View, Float> ELEVATION =
+            new Property<View, Float>(Float.class, "elevation") {
+                @Override
+                public Float get(View view) {
+                    return view.getElevation();
+                }
+
+                @Override
+                public void set(View view, Float elevation) {
+                    view.setElevation(elevation);
+                }
+            };
 }

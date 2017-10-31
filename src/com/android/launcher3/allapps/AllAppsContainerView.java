@@ -157,14 +157,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
 
     @Override
     public void setPressedIcon(BubbleTextView icon, Bitmap background) {
-        if (icon == null || background == null) {
-            mTouchFeedbackView.setBitmap(null);
-            mTouchFeedbackView.animate().cancel();
-        } else if (mTouchFeedbackView.setBitmap(background)) {
-            View rv = findViewById(R.id.apps_list_view);
-            mTouchFeedbackView.alignWithIconView(icon, (ViewGroup) icon.getParent(), rv);
-            mTouchFeedbackView.animateShadow();
-        }
+        mTouchFeedbackView.setPressedIcon(icon, background);
     }
 
     /**
