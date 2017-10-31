@@ -22,18 +22,19 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
 
-import com.android.launcher3.compat.AnimatorSetCompat;
+import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.util.TouchController;
 
 /**
  * Detects pinches and animates the Workspace to/from overview mode.
  */
-public class PinchToOverviewListener
-        implements TouchController, OnScaleGestureListener, Runnable {
+public class PinchToOverviewListener extends AnimatorListenerAdapter
+        implements TouchController, OnScaleGestureListener {
 
     private static final float ACCEPT_THRESHOLD = 0.65f;
     /**
@@ -47,7 +48,7 @@ public class PinchToOverviewListener
     private Workspace mWorkspace = null;
     private boolean mPinchStarted = false;
 
-    private AnimatorSetCompat mCurrentAnimation;
+    private AnimatorPlaybackController mCurrentAnimation;
     private float mCurrentScale;
     private boolean mShouldGoToFinalState;
 
@@ -100,8 +101,9 @@ public class PinchToOverviewListener
         }
 
         mToState = mLauncher.isInState(OVERVIEW) ? NORMAL : OVERVIEW;
-        mCurrentAnimation = AnimatorSetCompat.wrap(mLauncher.getStateManager()
-                .createAnimationToNewWorkspace(mToState, this), OVERVIEW_TRANSITION_MS);
+        mCurrentAnimation = mLauncher.getStateManager()
+                .createAnimationToNewWorkspace(mToState, OVERVIEW_TRANSITION_MS);
+        mCurrentAnimation.getTarget().addListener(this);
         mPinchStarted = true;
         mCurrentScale = 1;
         mShouldGoToFinalState = false;
@@ -111,7 +113,7 @@ public class PinchToOverviewListener
     }
 
     @Override
-    public void run() {
+    public void onAnimationEnd(Animator animation) {
         mCurrentAnimation = null;
         mPinchStarted = false;
     }
@@ -121,9 +123,9 @@ public class PinchToOverviewListener
         if (mShouldGoToFinalState) {
             mCurrentAnimation.start();
         } else {
-            mCurrentAnimation.addListener(new AnimatorListenerAdapter() {
+            mCurrentAnimation.setEndAction(new Runnable() {
                 @Override
-                public void onAnimationEnd(Animator animation) {
+                public void run() {
                     mLauncher.getStateManager().goToState(
                             mToState == OVERVIEW ? NORMAL : OVERVIEW, false);
                 }

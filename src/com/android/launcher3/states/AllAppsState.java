@@ -32,7 +32,7 @@ public class AllAppsState extends LauncherState {
 
     public static final String APPS_VIEW_SHOWN = "launcher.apps_view_shown";
 
-    private static final int STATE_FLAGS = FLAG_DISABLE_ACCESSIBILITY | FLAG_HAS_SPRING;
+    private static final int STATE_FLAGS = FLAG_DISABLE_ACCESSIBILITY;
 
     public AllAppsState(int id) {
         super(id, ContainerType.ALLAPPS, ALL_APPS_TRANSITION_MS, 0f, STATE_FLAGS);

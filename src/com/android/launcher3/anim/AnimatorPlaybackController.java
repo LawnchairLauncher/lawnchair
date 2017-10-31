@@ -13,37 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.compat;
+package com.android.launcher3.anim;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
-import android.os.Build;
-
-import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.AnimationSuccessListener;
-import com.android.launcher3.anim.Interpolators;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Compat implementation for various new APIs in {@link AnimatorSet}
+ * Helper class to control the playback of an {@link AnimatorSet}, with custom interpolators
+ * and durations.
  *
- * Note: The compat implementation does not support start delays on child animations or
+ * Note: The implementation does not support start delays on child animations or
  * sequential playbacks.
  */
-public abstract class AnimatorSetCompat implements ValueAnimator.AnimatorUpdateListener {
+public abstract class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateListener {
 
-    public static AnimatorSetCompat wrap(AnimatorSet anim, int duration) {
-        if (Utilities.ATLEAST_OREO) {
-            return new AnimatorSetCompatVO(anim, duration);
-        } else {
-            return new AnimatorSetCompatVL(anim, duration);
-        }
+    public static AnimatorPlaybackController wrap(AnimatorSet anim, long duration) {
+
+        /**
+         * TODO: use {@link AnimatorSet#setCurrentPlayTime(long)} once b/68382377 is fixed.
+         */
+        return new AnimatorPlaybackControllerVL(anim, duration);
     }
 
     private final ValueAnimator mAnimationPlayer;
@@ -52,14 +47,20 @@ public abstract class AnimatorSetCompat implements ValueAnimator.AnimatorUpdateL
     protected final AnimatorSet mAnim;
 
     protected float mCurrentFraction;
+    private Runnable mEndAction;
 
-    protected AnimatorSetCompat(AnimatorSet anim, int duration) {
+    protected AnimatorPlaybackController(AnimatorSet anim, long duration) {
         mAnim = anim;
         mDuration = duration;
 
         mAnimationPlayer = ValueAnimator.ofFloat(0, 1);
         mAnimationPlayer.setInterpolator(Interpolators.LINEAR);
+        mAnimationPlayer.addListener(new OnAnimationEndDispatcher());
         mAnimationPlayer.addUpdateListener(this);
+    }
+
+    public AnimatorSet getTarget() {
+        return mAnim;
     }
 
     /**
@@ -68,7 +69,6 @@ public abstract class AnimatorSetCompat implements ValueAnimator.AnimatorUpdateL
     public void start() {
         mAnimationPlayer.setFloatValues(mCurrentFraction, 1);
         mAnimationPlayer.setDuration(clampDuration(1 - mCurrentFraction));
-        mAnimationPlayer.addListener(new OnAnimationEndDispatcher());
         mAnimationPlayer.start();
     }
 
@@ -78,8 +78,21 @@ public abstract class AnimatorSetCompat implements ValueAnimator.AnimatorUpdateL
     public void reverse() {
         mAnimationPlayer.setFloatValues(mCurrentFraction, 0);
         mAnimationPlayer.setDuration(clampDuration(mCurrentFraction));
-        mAnimationPlayer.addListener(new OnAnimationEndDispatcher());
         mAnimationPlayer.start();
+    }
+
+    /**
+     * Pauses the currently playing animation.
+     */
+    public void pause() {
+        mAnimationPlayer.cancel();
+    }
+
+    /**
+     * Returns the underlying animation used for controlling the set.
+     */
+    public ValueAnimator getAnimationPlayer() {
+        return mAnimationPlayer;
     }
 
     /**
@@ -87,11 +100,16 @@ public abstract class AnimatorSetCompat implements ValueAnimator.AnimatorUpdateL
      */
     public abstract void setPlayFraction(float fraction);
 
+    public float getProgressFraction() {
+        return mCurrentFraction;
+    }
+
     /**
-     * @see Animator#addListener(AnimatorListener)
+     * Sets the action to be called when the animation is completed. Also clears any
+     * previously set action.
      */
-    public void addListener(Animator.AnimatorListener listener) {
-        mAnimationPlayer.addListener(listener);
+    public void setEndAction(Runnable runnable) {
+        mEndAction = runnable;
     }
 
     @Override
@@ -124,11 +142,11 @@ public abstract class AnimatorSetCompat implements ValueAnimator.AnimatorUpdateL
         }
     }
 
-    public static class AnimatorSetCompatVL extends AnimatorSetCompat {
+    public static class AnimatorPlaybackControllerVL extends AnimatorPlaybackController {
 
         private final ValueAnimator[] mChildAnimations;
 
-        private AnimatorSetCompatVL(AnimatorSet anim, int duration) {
+        private AnimatorPlaybackControllerVL(AnimatorSet anim, long duration) {
             super(anim, duration);
 
             // Build animation list
@@ -164,25 +182,19 @@ public abstract class AnimatorSetCompat implements ValueAnimator.AnimatorUpdateL
 
     }
 
-    @TargetApi(Build.VERSION_CODES.O)
-    private static class AnimatorSetCompatVO extends AnimatorSetCompat {
-
-        private AnimatorSetCompatVO(AnimatorSet anim, int duration) {
-            super(anim, duration);
-        }
+    private class OnAnimationEndDispatcher extends AnimationSuccessListener {
 
         @Override
-        public void setPlayFraction(float fraction) {
-            mCurrentFraction = fraction;
-            mAnim.setCurrentPlayTime(clampDuration(fraction));
+        public void onAnimationStart(Animator animation) {
+            mCancelled = false;
         }
-    }
-
-    private class OnAnimationEndDispatcher extends AnimationSuccessListener {
 
         @Override
         public void onAnimationSuccess(Animator animator) {
             dispatchOnEndRecursively(mAnim);
+            if (mEndAction != null) {
+                mEndAction.run();
+            }
         }
 
         private void dispatchOnEndRecursively(Animator animator) {

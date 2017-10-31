@@ -28,6 +28,7 @@ import android.view.View;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.AnimatorPlaybackController;
 
 /**
  * TODO: figure out what kind of tests we can write for this
@@ -133,8 +134,7 @@ public class LauncherStateManager {
 
     private void goToState(LauncherState state, boolean animated, long delay,
             Runnable onCompleteRunnable) {
-        if (mLauncher.isInState(state) && mConfig.mCurrentAnimation == null
-                && !mAllAppsController.isTransitioning()) {
+        if (mLauncher.isInState(state) && mConfig.mCurrentAnimation == null) {
 
             // Run any queued runnable
             if (onCompleteRunnable != null) {
@@ -159,27 +159,42 @@ public class LauncherStateManager {
             return;
         }
 
-        AnimatorSet animation = createAnimationToNewWorkspace(state, onCompleteRunnable);
+        // Since state NORMAL can be reached from multiple states, just assume that the
+        // transition plays in reverse and use the same duration as previous state.
+        mConfig.duration = state == NORMAL ? mState.transitionDuration : state.transitionDuration;
+
+        AnimatorSet animation = createAnimationToNewWorkspaceInternal(state, onCompleteRunnable);
         Runnable runnable = new StartAnimRunnable(animation, state.getFinalFocus(mLauncher));
         if (delay > 0) {
             mUiHandler.postDelayed(runnable, delay);
-        } else if (mConfig.shouldPost) {
-            mUiHandler.post(runnable);
         } else {
-            runnable.run();
+            mUiHandler.post(runnable);
         }
     }
 
-    protected AnimatorSet createAnimationToNewWorkspace(final LauncherState state,
-            final Runnable onCompleteRunnable) {
+    /**
+     * Creates a {@link AnimatorPlaybackController} that can be used for a controlled
+     * state transition.
+     * @param state the final state for the transition.
+     * @param duration intended duration for normal playback. Use higher duration for better
+     *                accuracy.
+     */
+    protected AnimatorPlaybackController createAnimationToNewWorkspace(
+            LauncherState state, long duration) {
         mConfig.reset();
-        mConfig.duration = state == NORMAL ? mState.transitionDuration : state.transitionDuration;
+        mConfig.userControlled = true;
+        mConfig.duration = duration;
+        return AnimatorPlaybackController.wrap(
+                createAnimationToNewWorkspaceInternal(state, null), duration);
+    }
+
+    protected AnimatorSet createAnimationToNewWorkspaceInternal(final LauncherState state,
+            final Runnable onCompleteRunnable) {
 
         final AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
         final AnimationLayerSet layerViews = new AnimationLayerSet();
 
-        mAllAppsController.animateToFinalProgress(state.verticalProgress,
-                state.hasVerticalSpring, animation, mConfig);
+        mAllAppsController.animateToFinalProgress(state.verticalProgress, animation, mConfig);
         mLauncher.getWorkspace().setStateWithAnimation(state,
                 layerViews, animation, mConfig);
 
@@ -242,14 +257,14 @@ public class LauncherStateManager {
     }
 
     public static class AnimationConfig extends AnimatorListenerAdapter {
-        public boolean shouldPost;
         public long duration;
+        public boolean userControlled;
 
         private AnimatorSet mCurrentAnimation;
 
         public void reset() {
-            shouldPost = true;
             duration = 0;
+            userControlled = false;
 
             if (mCurrentAnimation != null) {
                 mCurrentAnimation.setDuration(0);

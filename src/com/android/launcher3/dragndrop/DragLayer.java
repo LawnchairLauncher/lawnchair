@@ -46,6 +46,7 @@ import com.android.launcher3.PinchToOverviewListener;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.VerticalSwipeController;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
@@ -96,6 +97,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     // Handles all apps pull up interaction
     private AllAppsTransitionController mAllAppsController;
+    private VerticalSwipeController mVerticalSwipeController;
 
     private TouchController mActiveController;
     /**
@@ -121,6 +123,7 @@ public class DragLayer extends InsettableFrameLayout {
         mLauncher = launcher;
         mDragController = dragController;
         mAllAppsController = allAppsTransitionController;
+        mVerticalSwipeController = new VerticalSwipeController(mLauncher);
 
         boolean isAccessibilityEnabled = ((AccessibilityManager) mLauncher.getSystemService(
                 Context.ACCESSIBILITY_SERVICE)).isEnabled();
@@ -191,8 +194,8 @@ public class DragLayer extends InsettableFrameLayout {
             return true;
         }
 
-        if (mAllAppsController.onControllerInterceptTouchEvent(ev)) {
-            mActiveController = mAllAppsController;
+        if (mVerticalSwipeController.onControllerInterceptTouchEvent(ev)) {
+            mActiveController = mVerticalSwipeController;
             return true;
         }
 
