@@ -183,6 +183,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
     public void reset() {
         mBadgeInfo = null;
         mBadgePalette = null;
+        mBadgeScale = 0f;
         mForceHideBadge = false;
     }
 
