@@ -18,81 +18,83 @@
 -->
 
 <resources>
-    <style name="Theme.Light.CustomOverscroll" parent="@android:style/Theme.DeviceDefault">
-        <item name="android:colorEdgeEffect">@color/folder_edge_effect_color</item>
+    <!-- Launcher theme -->
+    <style name="BaseLauncherTheme" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:colorEdgeEffect">#FF757575</item>
     </style>
 
-    <style name="Theme.Dark.CustomOverscroll" parent="@android:style/Theme.DeviceDefault">
-        <item name="android:colorEdgeEffect">@color/workspace_edge_effect_color</item>
+    <style name="LauncherTheme" parent="@style/BaseLauncherTheme"></style>
+
+    <!-- Theme for the widget container. Overridden on API 26. -->
+    <style name="WidgetContainerTheme" parent="@android:style/Theme.DeviceDefault.Settings">
+        <item name="android:colorEdgeEffect">?android:attr/textColorSecondaryInverse</item>
+        <item name="android:textColorPrimary">?android:attr/textColorPrimaryInverse</item>
+        <item name="android:textColorSecondary">?android:attr/textColorSecondaryInverse</item>
     </style>
 
-    <style name="Icon">
+    <style name="FastScrollerPopup" >
+        <item name="android:background">@drawable/container_fastscroll_popup_bg</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:minWidth">@dimen/container_fastscroll_popup_size</item>
+        <item name="android:layout_height">@dimen/container_fastscroll_popup_size</item>
+        <item name="android:textSize">@dimen/container_fastscroll_popup_text_size</item>
+        <item name="android:gravity">center</item>
+        <item name="android:alpha">0</item>
+        <item name="android:elevation">3dp</item>
+        <item name="android:saveEnabled">false</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <!-- Style for nav bar background in all-apps screen -->
+    <style name="AllAppsNavBarProtection">
+        <item name="android:alpha">?android:attr/spotShadowAlpha</item>
+        <item name="android:background">@color/default_shadow_color_no_alpha</item>
+    </style>
+
+    <!-- Base theme for BubbleTextView and sub classes -->
+    <style name="BaseIcon">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_gravity">center</item>
+        <item name="android:focusable">true</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">marquee</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+
+        <!-- No shadows in the base theme -->
+        <item name="android:shadowRadius">0</item>
+        <item name="customShadows">false</item>
+    </style>
+
+    <!-- Icon displayed on the worksapce -->
+    <style name="BaseIcon.Workspace">
+        <item name="customShadows">true</item>
         <item name="android:textColor">@color/workspace_icon_text_color</item>
         <item name="android:shadowRadius">2.0</item>
         <item name="android:shadowColor">#B0000000</item>
-        <item name="android:fontFamily">sans-serif-condensed</item>
     </style>
 
-    <style name="Icon.AllApps">
-        <item name="android:background">@null</item>
-        <item name="android:textColor">@color/quantum_panel_text_color</item>
-        <item name="android:drawablePadding">@dimen/dynamic_grid_icon_drawable_padding</item>
-        <item name="android:shadowRadius">0</item>
-        <item name="android:paddingLeft">4dp</item>
-        <item name="android:paddingRight">4dp</item>
-        <item name="customShadows">false</item>
-    </style>
-
-    <style name="Icon.Folder">
-        <item name="android:background">@null</item>
-        <item name="android:textColor">@color/quantum_panel_text_color</item>
-        <item name="android:shadowRadius">0</item>
-        <item name="customShadows">false</item>
-    </style>
-
-    <style name="SearchButton"></style>
-
-    <style name="DropTargetButtonContainer">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">match_parent</item>
-    </style>
-
+    <!-- Drop targets -->
     <style name="DropTargetButtonBase">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_gravity">center</item>
-        <item name="android:gravity">center_vertical</item>
         <item name="android:drawablePadding">7.5dp</item>
-        <item name="android:paddingLeft">25dp</item>
-        <item name="android:paddingRight">25dp</item>
-        <item name="android:textColor">#FFFFFFFF</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:textColor">@color/workspace_icon_text_color</item>
         <item name="android:textSize">@dimen/drop_target_text_size</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:shadowColor">#FF000000</item>
+        <item name="android:shadowColor">@color/default_shadow_color_no_alpha</item>
         <item name="android:shadowDx">0.0</item>
         <item name="android:shadowDy">1.0</item>
         <item name="android:shadowRadius">4.0</item>
     </style>
 
     <style name="DropTargetButton" parent="DropTargetButtonBase" />
-
-    <style name="PreloadIcon">
-        <item name="background">@drawable/virtual_preload</item>
-        <item name="indicatorSize">4dp</item>
-        <item name="ringOutset">4dp</item>
-    </style>
-
-    <style name="PreloadIcon.Folder">
-        <item name="background">@drawable/virtual_preload_folder</item>
-        <item name="indicatorSize">4dp</item>
-        <item name="ringOutset">4dp</item>
-    </style>
-
 </resources>

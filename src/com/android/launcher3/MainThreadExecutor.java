@@ -16,65 +16,18 @@
 
 package com.android.launcher3;
 
-import android.os.Handler;
 import android.os.Looper;
 
-import java.util.List;
-import java.util.concurrent.AbstractExecutorService;
-import java.util.concurrent.TimeUnit;
+import com.android.launcher3.util.LooperExecuter;
 
 /**
  * An executor service that executes its tasks on the main thread.
  *
  * Shutting down this executor is not supported.
  */
-public class MainThreadExecutor extends AbstractExecutorService {
+public class MainThreadExecutor extends LooperExecuter {
 
-    private Handler mHandler = new Handler(Looper.getMainLooper());
-
-    @Override
-    public void execute(Runnable runnable) {
-        if (Looper.getMainLooper() == Looper.myLooper()) {
-            runnable.run();
-        } else {
-            mHandler.post(runnable);
-        }
-    }
-
-    /**
-     * Not supported and throws an exception when used.
-     */
-    @Override
-    @Deprecated
-    public void shutdown() {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Not supported and throws an exception when used.
-     */
-    @Override
-    @Deprecated
-    public List<Runnable> shutdownNow() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean isShutdown() {
-        return false;
-    }
-
-    @Override
-    public boolean isTerminated() {
-        return false;
-    }
-
-    /**
-     * Not supported and throws an exception when used.
-     */
-    @Override
-    @Deprecated
-    public boolean awaitTermination(long l, TimeUnit timeUnit) throws InterruptedException {
-        throw new UnsupportedOperationException();
+    public MainThreadExecutor() {
+        super(Looper.getMainLooper());
     }
 }

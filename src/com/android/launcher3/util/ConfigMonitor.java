@@ -23,8 +23,6 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.util.Log;
 
-import com.android.launcher3.Utilities;
-
 /**
  * {@link BroadcastReceiver} which watches configuration changes and
  * restarts the process in case changes which affect the device profile occur.
@@ -40,13 +38,13 @@ public class ConfigMonitor extends BroadcastReceiver {
 
         Configuration config = context.getResources().getConfiguration();
         mFontScale = config.fontScale;
-        mDensity = getDensity(config);
+        mDensity = config.densityDpi;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         Configuration config = context.getResources().getConfiguration();
-        if (mFontScale != config.fontScale || mDensity != getDensity(config)) {
+        if (mFontScale != config.fontScale || mDensity != config.densityDpi) {
             Log.d("ConfigMonitor", "Configuration changed, restarting launcher");
             mContext.unregisterReceiver(this);
             android.os.Process.killProcess(android.os.Process.myPid());
@@ -55,9 +53,5 @@ public class ConfigMonitor extends BroadcastReceiver {
 
     public void register() {
         mContext.registerReceiver(this, new IntentFilter(Intent.ACTION_CONFIGURATION_CHANGED));
-    }
-
-    private static int getDensity(Configuration config) {
-        return Utilities.ATLEAST_JB_MR1 ? config.densityDpi : 0;
     }
 }

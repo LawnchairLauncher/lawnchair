@@ -22,14 +22,11 @@ import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * The default search implementation.
  */
 public class DefaultAppSearchAlgorithm {
-
-    private static final Pattern SPLIT_PATTERN = Pattern.compile("[\\s|\\p{javaSpaceChar}]+");
 
     private final List<AppInfo> mApps;
     protected final Handler mResultHandler;
@@ -61,34 +58,80 @@ public class DefaultAppSearchAlgorithm {
         // Do an intersection of the words in the query and each title, and filter out all the
         // apps that don't match all of the words in the query.
         final String queryTextLower = query.toLowerCase();
-        final String[] queryWords = SPLIT_PATTERN.split(queryTextLower);
-
         final ArrayList<ComponentKey> result = new ArrayList<>();
         for (AppInfo info : mApps) {
-            if (matches(info, queryWords)) {
+            if (matches(info, queryTextLower)) {
                 result.add(info.toComponentKey());
             }
         }
         return result;
     }
 
-    protected boolean matches(AppInfo info, String[] queryWords) {
+    protected boolean matches(AppInfo info, String query) {
+        int queryLength = query.length();
+
         String title = info.title.toString();
-        String[] words = SPLIT_PATTERN.split(title.toLowerCase());
-        for (int qi = 0; qi < queryWords.length; qi++) {
-            boolean foundMatch = false;
-            for (int i = 0; i < words.length; i++) {
-                if (words[i].startsWith(queryWords[qi])) {
-                    foundMatch = true;
-                    break;
-                }
-            }
-            if (!foundMatch) {
-                // If there is a word in the query that does not match any words in this
-                // title, so skip it.
-                return false;
+        int titleLength = title.length();
+
+        if (titleLength < queryLength || queryLength <= 0) {
+            return false;
+        }
+
+        int lastType;
+        int thisType = Character.UNASSIGNED;
+        int nextType = Character.getType(title.codePointAt(0));
+
+        int end = titleLength - queryLength;
+        for (int i = 0; i <= end; i++) {
+            lastType = thisType;
+            thisType = nextType;
+            nextType = i < (titleLength - 1) ?
+                    Character.getType(title.codePointAt(i + 1)) : Character.UNASSIGNED;
+            if (isBreak(thisType, lastType, nextType) &&
+                    title.substring(i, i + queryLength).equalsIgnoreCase(query)) {
+                return true;
             }
         }
-        return true;
+        return false;
+    }
+
+    /**
+     * Returns true if the current point should be a break point. Following cases
+     * are considered as break points:
+     *      1) Any non space character after a space character
+     *      2) Any digit after a non-digit character
+     *      3) Any capital character after a digit or small character
+     *      4) Any capital character before a small character
+     */
+    protected boolean isBreak(int thisType, int prevType, int nextType) {
+        switch (thisType) {
+            case Character.UPPERCASE_LETTER:
+                if (nextType == Character.UPPERCASE_LETTER) {
+                    return true;
+                }
+                // Follow through
+            case Character.TITLECASE_LETTER:
+                // Break point if previous was not a upper case
+                return prevType != Character.UPPERCASE_LETTER;
+            case Character.LOWERCASE_LETTER:
+                // Break point if previous was not a letter.
+                return prevType > Character.OTHER_LETTER || prevType <= Character.UNASSIGNED;
+            case Character.DECIMAL_DIGIT_NUMBER:
+            case Character.LETTER_NUMBER:
+            case Character.OTHER_NUMBER:
+                // Break point if previous was not a number
+                return !(prevType == Character.DECIMAL_DIGIT_NUMBER
+                        || prevType == Character.LETTER_NUMBER
+                        || prevType == Character.OTHER_NUMBER);
+            case Character.MATH_SYMBOL:
+            case Character.CURRENCY_SYMBOL:
+            case Character.OTHER_PUNCTUATION:
+            case Character.DASH_PUNCTUATION:
+                // Always a break point for a symbol
+                return true;
+            default:
+                // Always a break point at first character
+                return  prevType == Character.UNASSIGNED;
+        }
     }
 }

@@ -48,7 +48,7 @@ public class InterruptibleInOutAnimator {
     @Thunk int mDirection = STOPPED;
 
     public InterruptibleInOutAnimator(View view, long duration, float fromValue, float toValue) {
-        mAnimator = LauncherAnimUtils.ofFloat(view, fromValue, toValue).setDuration(duration);
+        mAnimator = LauncherAnimUtils.ofFloat(fromValue, toValue).setDuration(duration);
         mOriginalDuration = duration;
         mOriginalFromValue = fromValue;
         mOriginalToValue = toValue;

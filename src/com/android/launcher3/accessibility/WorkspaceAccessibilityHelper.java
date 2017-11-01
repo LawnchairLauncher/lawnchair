@@ -17,6 +17,8 @@
 package com.android.launcher3.accessibility;
 
 import android.content.Context;
+import android.graphics.Rect;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -24,14 +26,19 @@ import com.android.launcher3.AppInfo;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.DragType;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.dragndrop.DragLayer;
 
 /**
  * Implementation of {@link DragAndDropAccessibilityDelegate} to support DnD on workspace.
  */
 public class WorkspaceAccessibilityHelper extends DragAndDropAccessibilityDelegate {
+
+    private final Rect mTempRect = new Rect();
+    private final int[] mTempCords = new int[2];
 
     public WorkspaceAccessibilityHelper(CellLayout layout) {
         super(layout);
@@ -50,7 +57,7 @@ public class WorkspaceAccessibilityHelper extends DragAndDropAccessibilityDelega
         int y = id / mCountX;
         LauncherAccessibilityDelegate.DragInfo dragInfo = mDelegate.getDragInfo();
 
-        if (dragInfo.dragType == DragType.WIDGET && mView.isHotseat()) {
+        if (dragInfo.dragType == DragType.WIDGET && !mView.acceptsWidget()) {
             return INVALID_POSITION;
         }
 
@@ -128,6 +135,25 @@ public class WorkspaceAccessibilityHelper extends DragAndDropAccessibilityDelega
     }
 
     @Override
+    protected void onPopulateNodeForVirtualView(int id, AccessibilityNodeInfoCompat node) {
+        super.onPopulateNodeForVirtualView(id, node);
+
+
+        // ExploreByTouchHelper does not currently handle view scale.
+        // Update BoundsInScreen to appropriate value.
+        DragLayer dragLayer = Launcher.getLauncher(mView.getContext()).getDragLayer();
+        mTempCords[0] = mTempCords[1] = 0;
+        float scale = dragLayer.getDescendantCoordRelativeToSelf(mView, mTempCords);
+
+        node.getBoundsInParent(mTempRect);
+        mTempRect.left = mTempCords[0] + (int) (mTempRect.left * scale);
+        mTempRect.right = mTempCords[0] + (int) (mTempRect.right * scale);
+        mTempRect.top = mTempCords[1] + (int) (mTempRect.top * scale);
+        mTempRect.bottom = mTempCords[1] + (int) (mTempRect.bottom * scale);
+        node.setBoundsInScreen(mTempRect);
+    }
+
+    @Override
     protected String getLocationDescriptionForIconDrop(int id) {
         int x = id % mView.getCountX();
         int y = id / mView.getCountX();
@@ -135,11 +161,7 @@ public class WorkspaceAccessibilityHelper extends DragAndDropAccessibilityDelega
 
         View child = mView.getChildAt(x, y);
         if (child == null || child == dragInfo.item) {
-            if (mView.isHotseat()) {
-                return mContext.getString(R.string.move_to_hotseat_position, id + 1);
-            } else {
-                return mContext.getString(R.string.move_to_empty_cell, y + 1, x + 1);
-            }
+            return mView.getItemMoveDescription(x, y);
         } else {
             return getDescriptionForDropOver(child, mContext);
         }

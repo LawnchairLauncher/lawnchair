@@ -15,9 +15,6 @@
 -->
 
 <resources>
-<!-- QSB -->
-    <dimen name="toolbar_button_vertical_padding">8dip</dimen>
-    <dimen name="toolbar_button_horizontal_padding">0dip</dimen>
-     <!-- Container -->
+<!-- Container -->
      <item name="container_margin" format="fraction" type="fraction">12%</item>
 </resources>

@@ -18,50 +18,41 @@ package com.android.launcher3;
 
 import android.app.WallpaperManager;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.launcher3.CellLayout.ContainerType;
+
 public class ShortcutAndWidgetContainer extends ViewGroup {
-    static final String TAG = "CellLayoutChildren";
+    static final String TAG = "ShortcutAndWidgetContainer";
 
     // These are temporary variables to prevent having to allocate a new object just to
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
     private final int[] mTmpCellXY = new int[2];
 
+    @ContainerType private final int mContainerType;
     private final WallpaperManager mWallpaperManager;
-
-    private boolean mIsHotseatLayout;
 
     private int mCellWidth;
     private int mCellHeight;
 
-    private int mWidthGap;
-    private int mHeightGap;
-
     private int mCountX;
-    private int mCountY;
 
     private Launcher mLauncher;
-
     private boolean mInvertIfRtl = false;
 
-    public ShortcutAndWidgetContainer(Context context) {
+    public ShortcutAndWidgetContainer(Context context, @ContainerType int containerType) {
         super(context);
-        mLauncher = (Launcher) context;
+        mLauncher = Launcher.getLauncher(context);
         mWallpaperManager = WallpaperManager.getInstance(context);
+        mContainerType = containerType;
     }
 
-    public void setCellDimensions(int cellWidth, int cellHeight, int widthGap, int heightGap,
-            int countX, int countY) {
+    public void setCellDimensions(int cellWidth, int cellHeight, int countX, int countY) {
         mCellWidth = cellWidth;
         mCellHeight = cellHeight;
-        mWidthGap = widthGap;
-        mHeightGap = heightGap;
         mCountX = countX;
-        mCountY = countY;
     }
 
     public View getChildAt(int x, int y) {
@@ -76,24 +67,6 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
             }
         }
         return null;
-    }
-
-    @Override
-    protected void dispatchDraw(Canvas canvas) {
-        @SuppressWarnings("all") // suppress dead code warning
-        final boolean debug = false;
-        if (debug) {
-            // Debug drawing for hit space
-            Paint p = new Paint();
-            p.setColor(0x6600FF00);
-            for (int i = getChildCount() - 1; i >= 0; i--) {
-                final View child = getChildAt(i);
-                final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
-
-                canvas.drawRect(lp.x, lp.y, lp.x + lp.width, lp.y + lp.height, p);
-            }
-        }
-        super.dispatchDraw(canvas);
     }
 
     @Override
@@ -112,9 +85,15 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         }
     }
 
-    public void setupLp(CellLayout.LayoutParams lp) {
-        lp.setup(mCellWidth, mCellHeight, mWidthGap, mHeightGap, invertLayoutHorizontally(),
-                mCountX);
+    public void setupLp(View child) {
+        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
+        if (child instanceof LauncherAppWidgetHostView) {
+            DeviceProfile profile = mLauncher.getDeviceProfile();
+            lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX,
+                    profile.appWidgetScale.x, profile.appWidgetScale.y);
+        } else {
+            lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX);
+        }
     }
 
     // Set whether or not to invert the layout horizontally if the layout is in RTL mode.
@@ -122,38 +101,26 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         mInvertIfRtl = invert;
     }
 
-    public void setIsHotseat(boolean isHotseat) {
-        mIsHotseatLayout = isHotseat;
-    }
-
-    int getCellContentWidth() {
-        final DeviceProfile grid = mLauncher.getDeviceProfile();
-        return Math.min(getMeasuredHeight(), mIsHotseatLayout ?
-                grid.hotseatCellWidthPx: grid.cellWidthPx);
-    }
-
     int getCellContentHeight() {
-        final DeviceProfile grid = mLauncher.getDeviceProfile();
-        return Math.min(getMeasuredHeight(), mIsHotseatLayout ?
-                grid.hotseatCellHeightPx : grid.cellHeightPx);
+        return Math.min(getMeasuredHeight(),
+                mLauncher.getDeviceProfile().getCellHeight(mContainerType));
     }
 
     public void measureChild(View child) {
-        final DeviceProfile grid = mLauncher.getDeviceProfile();
-        final int cellWidth = mCellWidth;
-        final int cellHeight = mCellHeight;
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
         if (!lp.isFullscreen) {
-            lp.setup(cellWidth, cellHeight, mWidthGap, mHeightGap, invertLayoutHorizontally(),
-                    mCountX);
+            final DeviceProfile profile = mLauncher.getDeviceProfile();
 
             if (child instanceof LauncherAppWidgetHostView) {
-                // Widgets have their own padding, so skip
+                lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX,
+                        profile.appWidgetScale.x, profile.appWidgetScale.y);
+                // Widgets have their own padding
             } else {
-                // Otherwise, center the icon
+                lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX);
+                // Center the icon/folder
                 int cHeight = getCellContentHeight();
                 int cellPaddingY = (int) Math.max(0, ((lp.height - cHeight) / 2f));
-                int cellPaddingX = (int) (grid.edgeMarginPx / 2f);
+                int cellPaddingX = (int) (profile.edgeMarginPx / 2f);
                 child.setPadding(cellPaddingX, cellPaddingY, cellPaddingX, 0);
             }
         } else {
@@ -178,6 +145,20 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
             final View child = getChildAt(i);
             if (child.getVisibility() != GONE) {
                 CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
+
+                if (child instanceof LauncherAppWidgetHostView) {
+                    LauncherAppWidgetHostView lahv = (LauncherAppWidgetHostView) child;
+
+                    // Scale and center the widget to fit within its cells.
+                    DeviceProfile profile = mLauncher.getDeviceProfile();
+                    float scaleX = profile.appWidgetScale.x;
+                    float scaleY = profile.appWidgetScale.y;
+
+                    lahv.setScaleToFit(Math.min(scaleX, scaleY));
+                    lahv.setTranslationForCentering(-(lp.width - (lp.width * scaleX)) / 2.0f,
+                            -(lp.height - (lp.height * scaleY)) / 2.0f);
+                }
+
                 int childLeft = lp.x;
                 int childTop = lp.y;
                 child.layout(childLeft, childTop, childLeft + lp.width, childTop + lp.height);
@@ -221,23 +202,5 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
             final View child = getChildAt(i);
             child.cancelLongPress();
         }
-    }
-
-    @Override
-    protected void setChildrenDrawingCacheEnabled(boolean enabled) {
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            final View view = getChildAt(i);
-            view.setDrawingCacheEnabled(enabled);
-            // Update the drawing caches
-            if (!view.isHardwareAccelerated() && enabled) {
-                view.buildDrawingCache(true);
-            }
-        }
-    }
-
-    @Override
-    protected void setChildrenDrawnWithCacheEnabled(boolean enabled) {
-        super.setChildrenDrawnWithCacheEnabled(enabled);
     }
 }

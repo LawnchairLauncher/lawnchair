@@ -16,13 +16,22 @@
 
 package com.android.launcher3;
 
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
+import android.graphics.Rect;
+import android.os.Bundle;
+import android.provider.Settings;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.widget.Toast;
 
-import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.util.Themes;
 
-public class InfoDropTarget extends ButtonDropTarget {
+public class InfoDropTarget extends UninstallDropTarget {
+
+    private static final String TAG = "InfoDropTarget";
 
     public InfoDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -36,12 +45,29 @@ public class InfoDropTarget extends ButtonDropTarget {
     protected void onFinishInflate() {
         super.onFinishInflate();
         // Get the hover color
-        mHoverColor = getResources().getColor(R.color.info_target_hover_tint);
+        mHoverColor = Themes.getColorAccent(getContext());
 
         setDrawable(R.drawable.ic_info_launcher);
     }
 
-    public static void startDetailsActivityForInfo(Object info, Launcher launcher) {
+    @Override
+    public void completeDrop(DragObject d) {
+        DropTargetResultCallback callback = d.dragSource instanceof DropTargetResultCallback
+                ? (DropTargetResultCallback) d.dragSource : null;
+        startDetailsActivityForInfo(d.dragInfo, mLauncher, callback);
+    }
+
+    /**
+     * @return Whether the activity was started.
+     */
+    public static boolean startDetailsActivityForInfo(
+            ItemInfo info, Launcher launcher, DropTargetResultCallback callback) {
+        return startDetailsActivityForInfo(info, launcher, callback, null, null);
+    }
+
+    public static boolean startDetailsActivityForInfo(ItemInfo info, Launcher launcher,
+            DropTargetResultCallback callback, Rect sourceBounds, Bundle opts) {
+        boolean result = false;
         ComponentName componentName = null;
         if (info instanceof AppInfo) {
             componentName = ((AppInfo) info).componentName;
@@ -49,30 +75,43 @@ public class InfoDropTarget extends ButtonDropTarget {
             componentName = ((ShortcutInfo) info).intent.getComponent();
         } else if (info instanceof PendingAddItemInfo) {
             componentName = ((PendingAddItemInfo) info).componentName;
+        } else if (info instanceof LauncherAppWidgetInfo) {
+            componentName = ((LauncherAppWidgetInfo) info).providerName;
         }
-        final UserHandleCompat user;
-        if (info instanceof ItemInfo) {
-            user = ((ItemInfo) info).user;
-        } else {
-            user = UserHandleCompat.myUserHandle();
+        if (componentName != null) {
+            try {
+                LauncherAppsCompat.getInstance(launcher)
+                        .showAppDetailsForProfile(componentName, info.user, sourceBounds, opts);
+                result = true;
+            } catch (SecurityException | ActivityNotFoundException e) {
+                Toast.makeText(launcher, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Unable to launch settings", e);
+            }
         }
 
-        if (componentName != null) {
-            launcher.startApplicationDetailsActivity(componentName, user);
+        if (callback != null) {
+            sendUninstallResult(launcher, result, componentName, info.user, callback);
         }
+        return result;
     }
 
     @Override
-    protected boolean supportsDrop(DragSource source, Object info) {
+    protected boolean supportsDrop(DragSource source, ItemInfo info) {
         return source.supportsAppInfoDropTarget() && supportsDrop(getContext(), info);
     }
 
-    public static boolean supportsDrop(Context context, Object info) {
-        return info instanceof AppInfo || info instanceof PendingAddItemInfo;
-    }
-
-    @Override
-    void completeDrop(DragObject d) {
-        startDetailsActivityForInfo(d.dragInfo, mLauncher);
+    public static boolean supportsDrop(Context context, ItemInfo info) {
+        // Only show the App Info drop target if developer settings are enabled.
+        boolean developmentSettingsEnabled = Settings.Global.getInt(context.getContentResolver(),
+                Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) == 1;
+        if (!developmentSettingsEnabled) {
+            return false;
+        }
+        return info.itemType != LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT &&
+                (info instanceof AppInfo ||
+                (info instanceof ShortcutInfo && !((ShortcutInfo) info).isPromise()) ||
+                (info instanceof LauncherAppWidgetInfo &&
+                        ((LauncherAppWidgetInfo) info).restoreStatus == 0) ||
+                info instanceof PendingAddItemInfo);
     }
 }

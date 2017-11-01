@@ -17,30 +17,26 @@
 package com.android.launcher3.widget;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.os.CancellationSignal;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLayoutChangeListener;
+import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
+import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.WidgetPreviewLoader;
-import com.android.launcher3.WidgetPreviewLoader.PreviewLoadRequest;
-import com.android.launcher3.compat.AppWidgetManagerCompat;
+import com.android.launcher3.graphics.DrawableFactory;
+import com.android.launcher3.model.WidgetItem;
 
 /**
  * Represents the individual cell of the widget inside the widget tray. The preview is drawn
@@ -64,21 +60,22 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     /** Widget preview width is calculated by multiplying this factor to the widget cell width. */
     private static final float PREVIEW_SCALE = 0.8f;
 
-    private int mPresetPreviewSize;
-    int cellSize;
+    protected int mPresetPreviewSize;
+    private int mCellSize;
 
     private WidgetImageView mWidgetImage;
     private TextView mWidgetName;
     private TextView mWidgetDims;
 
-    private String mDimensionsFormatString;
-    private Object mInfo;
+    protected WidgetItem mItem;
 
     private WidgetPreviewLoader mWidgetPreviewLoader;
-    private PreviewLoadRequest mActiveRequest;
     private StylusEventHelper mStylusEventHelper;
 
-    private Launcher mLauncher;
+    protected CancellationSignal mActiveRequest;
+    private boolean mAnimatePreview = true;
+
+    protected final BaseActivity mActivity;
 
     public WidgetCell(Context context) {
         this(context, null);
@@ -91,21 +88,19 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     public WidgetCell(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        final Resources r = context.getResources();
-        mLauncher = (Launcher) context;
-        mStylusEventHelper = new StylusEventHelper(this);
+        mActivity = BaseActivity.fromContext(context);
+        mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
-        mDimensionsFormatString = r.getString(R.string.widget_dims_format);
         setContainerWidth();
         setWillNotDraw(false);
         setClipToPadding(false);
-        setAccessibilityDelegate(LauncherAppState.getInstance().getAccessibilityDelegate());
+        setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
     }
 
     private void setContainerWidth() {
-        DeviceProfile profile = mLauncher.getDeviceProfile();
-        cellSize = (int) (profile.cellWidthPx * WIDTH_SCALE);
-        mPresetPreviewSize = (int) (cellSize * PREVIEW_SCALE);
+        DeviceProfile profile = mActivity.getDeviceProfile();
+        mCellSize = (int) (profile.cellWidthPx * WIDTH_SCALE);
+        mPresetPreviewSize = (int) (mCellSize * PREVIEW_SCALE);
     }
 
     @Override
@@ -125,72 +120,68 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             Log.d(TAG, "reset called on:" + mWidgetName.getText());
         }
         mWidgetImage.animate().cancel();
-        mWidgetImage.setBitmap(null);
+        mWidgetImage.setBitmap(null, null);
         mWidgetName.setText(null);
         mWidgetDims.setText(null);
 
         if (mActiveRequest != null) {
-            mActiveRequest.cleanup();
+            mActiveRequest.cancel();
             mActiveRequest = null;
         }
     }
 
-    /**
-     * Apply the widget provider info to the view.
-     */
-    public void applyFromAppWidgetProviderInfo(LauncherAppWidgetProviderInfo info,
-            WidgetPreviewLoader loader) {
-
-        InvariantDeviceProfile profile =
-                LauncherAppState.getInstance().getInvariantDeviceProfile();
-        mInfo = info;
-        // TODO(hyunyoungs): setup a cache for these labels.
-        mWidgetName.setText(AppWidgetManagerCompat.getInstance(getContext()).loadLabel(info));
-        int hSpan = Math.min(info.spanX, profile.numColumns);
-        int vSpan = Math.min(info.spanY, profile.numRows);
-        mWidgetDims.setText(String.format(mDimensionsFormatString, hSpan, vSpan));
+    public void applyFromCellItem(WidgetItem item, WidgetPreviewLoader loader) {
+        mItem = item;
+        mWidgetName.setText(mItem.label);
+        mWidgetDims.setText(getContext().getString(R.string.widget_dims_format,
+                mItem.spanX, mItem.spanY));
+        mWidgetDims.setContentDescription(getContext().getString(
+                R.string.widget_accessible_dims_format, mItem.spanX, mItem.spanY));
         mWidgetPreviewLoader = loader;
+
+        if (item.activityInfo != null) {
+            setTag(new PendingAddShortcutInfo(item.activityInfo));
+        } else {
+            setTag(new PendingAddWidgetInfo(item.widgetInfo));
+        }
     }
 
-    /**
-     * Apply the resolve info to the view.
-     */
-    public void applyFromResolveInfo(
-            PackageManager pm, ResolveInfo info, WidgetPreviewLoader loader) {
-        mInfo = info;
-        CharSequence label = info.loadLabel(pm);
-        mWidgetName.setText(label);
-        mWidgetDims.setText(String.format(mDimensionsFormatString, 1, 1));
-        mWidgetPreviewLoader = loader;
+    public WidgetImageView getWidgetView() {
+        return mWidgetImage;
     }
 
-    public int[] getPreviewSize() {
-        int[] maxSize = new int[2];
-
-        maxSize[0] = mPresetPreviewSize;
-        maxSize[1] = mPresetPreviewSize;
-        return maxSize;
+    public void setAnimatePreview(boolean shouldAnimate) {
+        mAnimatePreview = shouldAnimate;
     }
 
     public void applyPreview(Bitmap bitmap) {
+        applyPreview(bitmap, true);
+    }
+
+    public void applyPreview(Bitmap bitmap, boolean animate) {
         if (bitmap != null) {
-            mWidgetImage.setBitmap(bitmap);
-            mWidgetImage.setAlpha(0f);
-            ViewPropertyAnimator anim = mWidgetImage.animate();
-            anim.alpha(1.0f).setDuration(FADE_IN_DURATION_MS);
+            mWidgetImage.setBitmap(bitmap,
+                    DrawableFactory.get(getContext()).getBadgeForUser(mItem.user, getContext()));
+            if (mAnimatePreview) {
+                mWidgetImage.setAlpha(0f);
+                ViewPropertyAnimator anim = mWidgetImage.animate();
+                anim.alpha(1.0f).setDuration(FADE_IN_DURATION_MS);
+            } else {
+                mWidgetImage.setAlpha(1f);
+            }
         }
     }
 
     public void ensurePreview() {
+        ensurePreview(true);
+    }
+
+    public void ensurePreview(boolean animate) {
         if (mActiveRequest != null) {
             return;
         }
-        int[] size = getPreviewSize();
-        if (DEBUG) {
-            Log.d(TAG, String.format("[tag=%s] ensurePreview (%d, %d):",
-                    getTagToString(), size[0], size[1]));
-        }
-        mActiveRequest = mWidgetPreviewLoader.getPreview(mInfo, size[0], size[1], this);
+        mActiveRequest = mWidgetPreviewLoader.getPreview(
+                mItem, mPresetPreviewSize, mPresetPreviewSize, this, animate);
     }
 
     @Override
@@ -200,18 +191,10 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         ensurePreview();
     }
 
-    public int getActualItemWidth() {
-        ItemInfo info = (ItemInfo) getTag();
-        int[] size = getPreviewSize();
-        int cellWidth = mLauncher.getDeviceProfile().cellWidthPx;
-
-        return Math.min(size[0], info.spanX * cellWidth);
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         boolean handled = super.onTouchEvent(ev);
-        if (mStylusEventHelper.checkAndPerformStylusEvent(ev)) {
+        if (mStylusEventHelper.onMotionEvent(ev)) {
             return true;
         }
         return handled;
@@ -226,5 +209,16 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             return getTag().toString();
         }
         return "";
+    }
+
+    @Override
+    public void setLayoutParams(ViewGroup.LayoutParams params) {
+        params.width = params.height = mCellSize;
+        super.setLayoutParams(params);
+    }
+
+    @Override
+    public CharSequence getAccessibilityClassName() {
+        return WidgetCell.class.getName();
     }
 }

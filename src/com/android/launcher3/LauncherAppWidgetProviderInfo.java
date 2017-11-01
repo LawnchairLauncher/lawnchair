@@ -1,6 +1,5 @@
 package com.android.launcher3;
 
-import android.annotation.TargetApi;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
@@ -9,8 +8,9 @@ import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Parcel;
+import android.os.Process;
+import android.os.UserHandle;
 
 /**
  * This class is a thin wrapper around the framework AppWidgetProviderInfo class. This class affords
@@ -29,22 +29,27 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
 
     public static LauncherAppWidgetProviderInfo fromProviderInfo(Context context,
             AppWidgetProviderInfo info) {
+        final LauncherAppWidgetProviderInfo launcherInfo;
+        if (info instanceof LauncherAppWidgetProviderInfo) {
+            launcherInfo = (LauncherAppWidgetProviderInfo) info;
+        } else {
 
-        // In lieu of a public super copy constructor, we first write the AppWidgetProviderInfo
-        // into a parcel, and then construct a new LauncherAppWidgetProvider info from the
-        // associated super parcel constructor. This allows us to copy non-public members without
-        // using reflection.
-        Parcel p = Parcel.obtain();
-        info.writeToParcel(p, 0);
-        p.setDataPosition(0);
-        LauncherAppWidgetProviderInfo lawpi = new LauncherAppWidgetProviderInfo(p);
-        p.recycle();
-        return lawpi;
+            // In lieu of a public super copy constructor, we first write the AppWidgetProviderInfo
+            // into a parcel, and then construct a new LauncherAppWidgetProvider info from the
+            // associated super parcel constructor. This allows us to copy non-public members without
+            // using reflection.
+            Parcel p = Parcel.obtain();
+            info.writeToParcel(p, 0);
+            p.setDataPosition(0);
+            launcherInfo = new LauncherAppWidgetProviderInfo(p);
+            p.recycle();
+        }
+        launcherInfo.initSpans(context);
+        return launcherInfo;
     }
 
-    public LauncherAppWidgetProviderInfo(Parcel in) {
+    private LauncherAppWidgetProviderInfo(Parcel in) {
         super(in);
-        initSpans();
     }
 
     public LauncherAppWidgetProviderInfo(Context context, CustomAppWidget widget) {
@@ -56,32 +61,30 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         previewImage = widget.getPreviewImage();
         initialLayout = widget.getWidgetLayout();
         resizeMode = widget.getResizeMode();
-        initSpans();
+        initSpans(context);
     }
 
-    public void initSpans() {
-        LauncherAppState app = LauncherAppState.getInstance();
-        InvariantDeviceProfile idp = app.getInvariantDeviceProfile();
+    public void initSpans(Context context) {
+        InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
 
-        // We only care out the cell size, which is independent of the the layout direction.
-        Rect paddingLand = idp.landscapeProfile.getWorkspacePadding(false /* isLayoutRtl */);
-        Rect paddingPort = idp.portraitProfile.getWorkspacePadding(false /* isLayoutRtl */);
+        Point paddingLand = idp.landscapeProfile.getTotalWorkspacePadding();
+        Point paddingPort = idp.portraitProfile.getTotalWorkspacePadding();
 
         // Always assume we're working with the smallest span to make sure we
         // reserve enough space in both orientations.
         float smallestCellWidth = DeviceProfile.calculateCellWidth(Math.min(
-                idp.landscapeProfile.widthPx - paddingLand.left - paddingLand.right,
-                idp.portraitProfile.widthPx - paddingPort.left - paddingPort.right),
+                idp.landscapeProfile.widthPx - paddingLand.x,
+                idp.portraitProfile.widthPx - paddingPort.x),
                 idp.numColumns);
         float smallestCellHeight = DeviceProfile.calculateCellWidth(Math.min(
-                idp.landscapeProfile.heightPx - paddingLand.top - paddingLand.bottom,
-                idp.portraitProfile.heightPx - paddingPort.top - paddingPort.bottom),
+                idp.landscapeProfile.heightPx - paddingLand.y,
+                idp.portraitProfile.heightPx - paddingPort.y),
                 idp.numRows);
 
         // We want to account for the extra amount of padding that we are adding to the widget
         // to ensure that it gets the full amount of space that it has requested.
         Rect widgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(
-                app.getContext(), provider, null);
+                context, provider, null);
         spanX = Math.max(1, (int) Math.ceil(
                         (minWidth + widgetPadding.left + widgetPadding.right) / smallestCellWidth));
         spanY = Math.max(1, (int) Math.ceil(
@@ -93,7 +96,6 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
                 (minResizeHeight + widgetPadding.top + widgetPadding.bottom) / smallestCellHeight));
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public String getLabel(PackageManager packageManager) {
         if (isCustomWidget) {
             return Utilities.trim(label);
@@ -101,13 +103,11 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         return super.loadLabel(packageManager);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public Drawable getIcon(Context context, IconCache cache) {
         if (isCustomWidget) {
             return cache.getFullResIcon(provider.getPackageName(), icon);
         }
-        return super.loadIcon(context,
-                LauncherAppState.getInstance().getInvariantDeviceProfile().fillResIconDpi);
+        return super.loadIcon(context, LauncherAppState.getIDP(context).fillResIconDpi);
     }
 
     public String toString(PackageManager pm) {
@@ -122,5 +122,9 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         return new Point(
                 (resizeMode & RESIZE_HORIZONTAL) != 0 ? minSpanX : -1,
                         (resizeMode & RESIZE_VERTICAL) != 0 ? minSpanY : -1);
+    }
+
+    public UserHandle getUser() {
+        return isCustomWidget ? Process.myUserHandle() : getProfile();
     }
  }

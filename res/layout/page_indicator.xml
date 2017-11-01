@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2013 The Android Open Source Project
+<!-- Copyright (C) 2016 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,9 +13,15 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.PageIndicator
+
+<com.android.launcher3.pageindicators.PageIndicatorLineCaret
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res-auto"
-    android:animateLayoutChanges="true"
-    launcher:windowSize="@integer/config_maxNumberOfPageIndicatorsToShow">
-</com.android.launcher3.PageIndicator>
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dynamic_grid_page_indicator_height">
+        <ImageView
+            android:id="@+id/all_apps_handle"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:scaleType="centerInside"/>
+</com.android.launcher3.pageindicators.PageIndicatorLineCaret>

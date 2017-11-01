@@ -1,0 +1,160 @@
+/*
+ * Copyright (C) 2016 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+syntax = "proto2";
+
+option java_package = "com.android.launcher3.userevent";
+option java_outer_classname = "LauncherLogProto";
+
+package userevent;
+
+message Target {
+  enum Type {
+    NONE = 0;
+    ITEM = 1;
+    CONTROL = 2;
+    CONTAINER = 3;
+  }
+
+  optional Type type = 1;
+
+  // For container type and item type
+  // Used mainly for ContainerType.FOLDER, ItemType.*
+  optional int32 page_index = 2;
+  optional int32 rank = 3;
+  optional int32 grid_x = 4;
+  optional int32 grid_y = 5;
+
+  // For container types only
+  optional ContainerType container_type = 6;
+  optional int32 cardinality = 7;
+
+  // For control types only
+  optional ControlType control_type = 8;
+
+  // For item types only
+  optional ItemType item_type = 9;
+  optional int32 package_name_hash = 10;
+  optional int32 component_hash = 11;      // Used for ItemType.WIDGET
+  optional int32 intent_hash = 12;         // Used for ItemType.SHORTCUT
+  optional int32 span_x = 13 [default = 1];// Used for ItemType.WIDGET
+  optional int32 span_y = 14 [default = 1];// Used for ItemType.WIDGET
+  optional int32 predictedRank = 15;
+}
+
+// Used to define what type of item a Target would represent.
+enum ItemType {
+  DEFAULT_ITEMTYPE = 0;
+  APP_ICON = 1;
+  SHORTCUT = 2;
+  WIDGET = 3;
+  FOLDER_ICON = 4;
+  DEEPSHORTCUT = 5;
+  SEARCHBOX = 6;
+  EDITTEXT = 7;
+  NOTIFICATION = 8;
+}
+
+// Used to define what type of container a Target would represent.
+enum ContainerType {
+  DEFAULT_CONTAINERTYPE = 0;
+  WORKSPACE = 1;
+  HOTSEAT = 2;
+  FOLDER = 3;
+  ALLAPPS = 4;
+  WIDGETS = 5;
+  OVERVIEW = 6;
+  PREDICTION = 7;
+  SEARCHRESULT = 8;
+  DEEPSHORTCUTS = 9;
+  PINITEM = 10;    // confirmation screen
+}
+
+// Used to define what type of control a Target would represent.
+enum ControlType {
+  DEFAULT_CONTROLTYPE = 0;
+  ALL_APPS_BUTTON = 1;
+  WIDGETS_BUTTON = 2;
+  WALLPAPER_BUTTON = 3;
+  SETTINGS_BUTTON = 4;
+  REMOVE_TARGET = 5;
+  UNINSTALL_TARGET = 6;
+  APPINFO_TARGET = 7;
+  RESIZE_HANDLE = 8;
+  VERTICAL_SCROLL = 9;
+  HOME_INTENT = 10; // Deprecated, use enum Command instead
+  BACK_BUTTON = 11; // Deprecated, use enum Command instead
+  // GO_TO_PLAYSTORE
+}
+
+// Used to define the action component of the LauncherEvent.
+message Action {
+  enum Type {
+    TOUCH = 0;
+    AUTOMATED = 1;
+    COMMAND = 2;
+    // SOFT_KEYBOARD, HARD_KEYBOARD, ASSIST
+  }
+  enum Touch {
+    TAP = 0;
+    LONGPRESS = 1;
+    DRAGDROP = 2;
+    SWIPE = 3;
+    FLING = 4;
+    PINCH = 5;
+  }
+ enum Direction {
+    NONE = 0;
+    UP = 1;
+    DOWN = 2;
+    LEFT = 3;
+    RIGHT = 4;
+  }
+  enum Command {
+    HOME_INTENT = 0;
+    BACK = 1;
+    ENTRY = 2;    // Indicates entry to one of Launcher container type target
+                  // not using the HOME_INTENT
+    CANCEL = 3;   // Indicates that a confirmation screen was cancelled
+    CONFIRM = 4;  // Indicates thata confirmation screen was accepted
+  }
+  optional Type type = 1;
+  optional Touch touch = 2;
+  optional Direction dir = 3;
+  optional Command command = 4;
+  // Log if the action was performed on outside of the container
+  optional bool is_outside = 5;
+}
+
+//
+// Context free grammar of typical user interaction:
+//         Action (Touch) + Target
+//         Action (Touch) + Target + Target
+//
+message LauncherEvent {
+
+  required Action action = 1;
+
+  // List of targets that touch actions can be operated on.
+  repeated Target src_target = 2;
+  repeated Target dest_target = 3;
+
+  optional int64 action_duration_millis = 4;
+  optional int64 elapsed_container_millis = 5;
+  optional int64 elapsed_session_millis = 6;
+
+  optional bool is_in_multi_window_mode = 7;
+  optional bool is_in_landscape_mode = 8;
+}

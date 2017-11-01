@@ -6,55 +6,82 @@ import android.view.ViewConfiguration;
 
 /**
  * Helper for identifying when a stylus touches a view while the primary stylus button is pressed.
- * This can occur in {@value MotionEvent#ACTION_DOWN} or {@value MotionEvent#ACTION_MOVE}. On a
- * stylus button press this performs the view's {@link View#performLongClick()} method, if the view
- * is long clickable.
+ * This can occur in {@value MotionEvent#ACTION_DOWN} or {@value MotionEvent#ACTION_MOVE}.
  */
 public class StylusEventHelper {
-    private boolean mIsButtonPressed;
-    private View mView;
-
-    public StylusEventHelper(View view) {
-        mView = view;
-    }
 
     /**
-     * Call this in onTouchEvent method of a view to identify a stylus button press and perform a
-     * long click (if the view is long clickable).
-     *
-     * @param event The event to check for a stylus button press.
-     * @return Whether a stylus event occurred and was handled.
+     * Implement this interface to receive callbacks for a stylus button press and release.
      */
-    public boolean checkAndPerformStylusEvent(MotionEvent event) {
-        final float slop = ViewConfiguration.get(mView.getContext()).getScaledTouchSlop();
+    public interface StylusButtonListener {
+        /**
+         * Called when the stylus button is pressed.
+         *
+         * @param event The MotionEvent that the button press occurred for.
+         * @return Whether the event was handled.
+         */
+        public boolean onPressed(MotionEvent event);
 
-        if (!mView.isLongClickable()) {
-            // We don't do anything unless the view is long clickable.
-            return false;
+        /**
+         * Called when the stylus button is released after a button press. This is also called if
+         * the event is canceled or the stylus is lifted off the screen.
+         *
+         * @param event The MotionEvent the button release occurred for.
+         * @return Whether the event was handled.
+         */
+        public boolean onReleased(MotionEvent event);
+    }
+
+    private boolean mIsButtonPressed;
+    private View mView;
+    private StylusButtonListener mListener;
+    private final float mSlop;
+
+    /**
+     * Constructs a helper for listening to stylus button presses and releases. Ensure that {
+     * {@link #onMotionEvent(MotionEvent)} and {@link #onGenericMotionEvent(MotionEvent)} are called on
+     * the helper to correctly identify stylus events.
+     *
+     * @param listener The listener to call for stylus events.
+     * @param view Optional view associated with the touch events.
+     */
+    public StylusEventHelper(StylusButtonListener listener, View view) {
+        mListener = listener;
+        mView = view;
+        if (mView != null) {
+            mSlop = ViewConfiguration.get(mView.getContext()).getScaledTouchSlop();
+        } else {
+            mSlop = ViewConfiguration.getTouchSlop();
         }
+    }
 
+    public boolean onMotionEvent(MotionEvent event) {
         final boolean stylusButtonPressed = isStylusButtonPressed(event);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mIsButtonPressed = false;
-                if (stylusButtonPressed && mView.performLongClick()) {
-                    mIsButtonPressed = true;
-                    return true;
+                mIsButtonPressed = stylusButtonPressed;
+                if (mIsButtonPressed) {
+                    return mListener.onPressed(event);
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (Utilities.pointInView(mView, event.getX(), event.getY(), slop)) {
-                    if (!mIsButtonPressed && stylusButtonPressed && mView.performLongClick()) {
-                        mIsButtonPressed = true;
-                        return true;
-                    } else if (mIsButtonPressed && !stylusButtonPressed) {
-                        mIsButtonPressed = false;
-                    }
+                if (!Utilities.pointInView(mView, event.getX(), event.getY(), mSlop)) {
+                    return false;
+                }
+                if (!mIsButtonPressed && stylusButtonPressed) {
+                    mIsButtonPressed = true;
+                    return mListener.onPressed(event);
+                } else if (mIsButtonPressed && !stylusButtonPressed) {
+                    mIsButtonPressed = false;
+                    return mListener.onReleased(event);
                 }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                mIsButtonPressed = false;
+                if (mIsButtonPressed) {
+                    mIsButtonPressed = false;
+                    return mListener.onReleased(event);
+                }
                 break;
         }
         return false;

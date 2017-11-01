@@ -1,6 +1,8 @@
 package com.android.launcher3;
 
 import android.appwidget.AppWidgetHost;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -9,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -33,7 +36,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     private static final String TAG_FAVORITES = "favorites";
     protected static final String TAG_FAVORITE = "favorite";
     private static final String TAG_APPWIDGET = "appwidget";
-    private static final String TAG_SHORTCUT = "shortcut";
+    protected static final String TAG_SHORTCUT = "shortcut";
     private static final String TAG_FOLDER = "folder";
     private static final String TAG_PARTNER_FOLDER = "partner-folder";
 
@@ -42,14 +45,13 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     private static final String ATTR_SCREEN = "screen";
     private static final String ATTR_FOLDER_ITEMS = "folderItems";
 
+    // TODO: Remove support for this broadcast, instead use widget options to send bind time options
+    private static final String ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE =
+            "com.android.launcher.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
+
     public DefaultLayoutParser(Context context, AppWidgetHost appWidgetHost,
             LayoutParserCallback callback, Resources sourceRes, int layoutId) {
         super(context, appWidgetHost, callback, sourceRes, layoutId, TAG_FAVORITES);
-    }
-
-    public DefaultLayoutParser(Context context, AppWidgetHost appWidgetHost,
-            LayoutParserCallback callback, Resources sourceRes, int layoutId, String rootTag) {
-        super(context, appWidgetHost, callback, sourceRes, layoutId, rootTag);
     }
 
     @Override
@@ -89,7 +91,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     /**
      * AppShortcutParser which also supports adding URI based intents
      */
-    @Thunk class AppShortcutWithUriParser extends AppShortcutParser {
+    public class AppShortcutWithUriParser extends AppShortcutParser {
 
         @Override
         protected long invalidPackageOrClass(XmlResourceParser parser) {
@@ -179,7 +181,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     /**
      * Shortcut parser which allows any uri and not just web urls.
      */
-    private class UriShortcutParser extends ShortcutParser {
+    public class UriShortcutParser extends ShortcutParser {
 
         public UriShortcutParser(Resources iconRes) {
             super(iconRes);
@@ -201,7 +203,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     /**
      * Contains a list of <favorite> nodes, and accepts the first successfully parsed node.
      */
-    protected class ResolveParser implements TagParser {
+    public class ResolveParser implements TagParser {
 
         private final AppShortcutWithUriParser mChildParser = new AppShortcutWithUriParser();
 
@@ -268,6 +270,63 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
                 beginDocument(parser, TAG_FOLDER);
             }
             return super.parseAndAdd(parser);
+        }
+    }
+
+
+    /**
+     * AppWidget parser which enforces that the app is already installed when the layout is parsed.
+     */
+    protected class AppWidgetParser extends PendingWidgetParser {
+
+        @Override
+        protected long verifyAndInsert(ComponentName cn, Bundle extras) {
+            try {
+                mPackageManager.getReceiverInfo(cn, 0);
+            } catch (Exception e) {
+                String[] packages = mPackageManager.currentToCanonicalPackageNames(
+                        new String[] { cn.getPackageName() });
+                cn = new ComponentName(packages[0], cn.getClassName());
+                try {
+                    mPackageManager.getReceiverInfo(cn, 0);
+                } catch (Exception e1) {
+                    Log.d(TAG, "Can't find widget provider: " + cn.getClassName());
+                    return -1;
+                }
+            }
+
+            final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
+            long insertedId = -1;
+            try {
+                int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
+
+                if (!appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, cn)) {
+                    Log.e(TAG, "Unable to bind app widget id " + cn);
+                    mAppWidgetHost.deleteAppWidgetId(appWidgetId);
+                    return -1;
+                }
+
+                mValues.put(Favorites.APPWIDGET_ID, appWidgetId);
+                mValues.put(Favorites.APPWIDGET_PROVIDER, cn.flattenToString());
+                mValues.put(Favorites._ID, mCallback.generateNewItemId());
+                insertedId = mCallback.insertAndCheck(mDb, mValues);
+                if (insertedId < 0) {
+                    mAppWidgetHost.deleteAppWidgetId(appWidgetId);
+                    return insertedId;
+                }
+
+                // Send a broadcast to configure the widget
+                if (!extras.isEmpty()) {
+                    Intent intent = new Intent(ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE);
+                    intent.setComponent(cn);
+                    intent.putExtras(extras);
+                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+                    mContext.sendBroadcast(intent);
+                }
+            } catch (RuntimeException ex) {
+                Log.e(TAG, "Problem allocating appWidgetId", ex);
+            }
+            return insertedId;
         }
     }
 }

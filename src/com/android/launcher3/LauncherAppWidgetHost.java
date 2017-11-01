@@ -20,10 +20,8 @@ import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
-import android.os.DeadObjectException;
-import android.os.TransactionTooLargeException;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
-import android.view.View;
 
 import java.util.ArrayList;
 
@@ -36,8 +34,8 @@ import java.util.ArrayList;
 public class LauncherAppWidgetHost extends AppWidgetHost {
 
     private final ArrayList<Runnable> mProviderChangeListeners = new ArrayList<Runnable>();
+    private final SparseArray<LauncherAppWidgetHostView> mViews = new SparseArray<>();
 
-    private int mQsbWidgetId = -1;
     private Launcher mLauncher;
 
     public LauncherAppWidgetHost(Launcher launcher, int hostId) {
@@ -45,24 +43,12 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         mLauncher = launcher;
     }
 
-    public void setQsbWidgetId(int widgetId) {
-        mQsbWidgetId = widgetId;
-    }
-
     @Override
-    protected AppWidgetHostView onCreateView(Context context, int appWidgetId,
+    protected LauncherAppWidgetHostView onCreateView(Context context, int appWidgetId,
             AppWidgetProviderInfo appWidget) {
-        if (appWidgetId == mQsbWidgetId) {
-            return new LauncherAppWidgetHostView(context) {
-
-                @Override
-                protected View getErrorView() {
-                    // For the QSB, show an empty view instead of an error view.
-                    return new View(getContext());
-                }
-            };
-        }
-        return new LauncherAppWidgetHostView(context);
+        LauncherAppWidgetHostView view = new LauncherAppWidgetHostView(context);
+        mViews.put(appWidgetId, view);
+        return view;
     }
 
     @Override
@@ -70,22 +56,14 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         try {
             super.startListening();
         } catch (Exception e) {
-            if (e.getCause() instanceof TransactionTooLargeException ||
-                    e.getCause() instanceof DeadObjectException) {
-                // We're willing to let this slide. The exception is being caused by the list of
-                // RemoteViews which is being passed back. The startListening relationship will
-                // have been established by this point, and we will end up populating the
-                // widgets upon bind anyway. See issue 14255011 for more context.
-            } else {
+            if (!Utilities.isBinderSizeError(e)) {
                 throw new RuntimeException(e);
             }
+            // We're willing to let this slide. The exception is being caused by the list of
+            // RemoteViews which is being passed back. The startListening relationship will
+            // have been established by this point, and we will end up populating the
+            // widgets upon bind anyway. See issue 14255011 for more context.
         }
-    }
-
-    @Override
-    public void stopListening() {
-        super.stopListening();
-        clearViews();
     }
 
     public void addProviderChangeListener(Runnable callback) {
@@ -119,7 +97,24 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
             lahv.updateLastInflationOrientation();
             return lahv;
         } else {
-            return super.createView(context, appWidgetId, appWidget);
+            try {
+                return super.createView(context, appWidgetId, appWidget);
+            } catch (Exception e) {
+                if (!Utilities.isBinderSizeError(e)) {
+                    throw new RuntimeException(e);
+                }
+
+                // If the exception was thrown while fetching the remote views, let the view stay.
+                // This will ensure that if the widget posts a valid update later, the view
+                // will update.
+                LauncherAppWidgetHostView view = mViews.get(appWidgetId);
+                if (view == null) {
+                    view = onCreateView(mLauncher, appWidgetId, appWidget);
+                }
+                view.setAppWidget(appWidgetId, appWidget);
+                view.switchToErrorView();
+                return  view;
+            }
         }
     }
 
@@ -133,6 +128,18 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         super.onProviderChanged(appWidgetId, info);
         // The super method updates the dimensions of the providerInfo. Update the
         // launcher spans accordingly.
-        info.initSpans();
+        info.initSpans(mLauncher);
+    }
+
+    @Override
+    public void deleteAppWidgetId(int appWidgetId) {
+        super.deleteAppWidgetId(appWidgetId);
+        mViews.remove(appWidgetId);
+    }
+
+    @Override
+    protected void clearViews() {
+        super.clearViews();
+        mViews.clear();
     }
 }

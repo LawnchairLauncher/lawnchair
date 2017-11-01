@@ -26,20 +26,27 @@
     <string name="activity_not_available" msgid="7456344436509528827">"Aplikacija nije dostupna"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Preuzeta aplikacija je onemogućena u Bezbednom režimu"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Vidžeti su onemogućeni u Bezbednom režimu"</string>
+    <string name="shortcut_not_available" msgid="2536503539825726397">"Prečica nije dostupna"</string>
+    <string name="home_screen" msgid="806512411299847073">"Početni ekran"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"Prilagođene radnje"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Dodirnite i zadržite da biste izabrali vidžet."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Dvaput dodirnite i zadržite da biste izabrali vidžet ili koristite prilagođene radnje."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d×%2$d"</string>
-    <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"Pretražite aplikacije..."</string>
+    <string name="widget_accessible_dims_format" msgid="3640149169885301790">"širina od %1$d i visina od %2$d"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Dodirnite i zadržite da biste postavili ručno"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"Automatski dodaj"</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Pretražite aplikacije"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Aplikacije se učitavaju..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Nije pronađena nijedna aplikacija za „<xliff:g id="QUERY">%1$s</xliff:g>“"</string>
-    <string name="all_apps_search_market_message" msgid="5470761048755751471">"Idi na aplikaciju <xliff:g id="QUERY">%1$s</xliff:g>"</string>
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Pretraži još aplikacija"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"Obaveštenja"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Nema više prostora na ovom početnom ekranu."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Nema više prostora na traci Omiljeno"</string>
-    <string name="all_apps_button_label" msgid="9110807029020582876">"Aplikacije"</string>
+    <string name="all_apps_button_label" msgid="8130441508702294465">"Lista aplikacija"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Početna"</string>
-    <string name="delete_target_label" msgid="1822697352535677073">"Ukloni"</string>
-    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Deinstaliraj"</string>
-    <string name="info_target_label" msgid="8053346143994679532">"Informacije o aplikaciji"</string>
+    <string name="remove_drop_target_label" msgid="7812859488053230776">"Ukloni"</string>
+    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Deinstaliraj"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"Inform. o aplikaciji"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"instaliranje prečica"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Dozvoljava aplikaciji da dodaje prečice bez intervencije korisnika."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"čitanje podešavanja i prečica na početnom ekranu"</string>
@@ -51,20 +58,13 @@
     <string name="gadget_setup_text" msgid="8274003207686040488">"Podešavanje"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Ovo je sistemska aplikacija i ne može da se deinstalira."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Neimenovani direktorijum"</string>
+    <string name="disabled_app_label" msgid="6673129024321402780">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> je onemogućena"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"%1$d. stranica od %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%1$d. početni ekran od %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Nova stranica početnog ekrana"</string>
-    <string name="first_run_cling_title" msgid="2459738000155917941">"Dobro došli"</string>
-    <string name="migration_cling_title" msgid="9181776667882933767">"Kopirajte ikone aplikacija"</string>
-    <string name="migration_cling_description" msgid="2752413805582227644">"Uvesti ikone i direktorijume sa starih početnih ekrana?"</string>
-    <string name="migration_cling_copy_apps" msgid="946331230090919440">"KOPIRAJTE IKONE"</string>
-    <string name="migration_cling_use_default" msgid="2626475813981258626">"POČNITE ISPOČETKA"</string>
-    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Pozadine, vidžeti i podešavanja"</string>
-    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Dodirnite i zadržite pozadinu da biste prilagodili"</string>
-    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"VAŽI"</string>
     <string name="folder_opened" msgid="94695026776264709">"Direktorijum je otvoren, <xliff:g id="WIDTH">%1$d</xliff:g> puta <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
-    <string name="folder_tap_to_close" msgid="1884479294466410023">"Dodirnite da biste zatvorili direktorijum"</string>
-    <string name="folder_tap_to_rename" msgid="9191075570492871147">"Dodirnite da biste sačuvali promenu imena"</string>
+    <string name="folder_tap_to_close" msgid="4625795376335528256">"Dodirnite da biste zatvorili direktorijum"</string>
+    <string name="folder_tap_to_rename" msgid="4017685068016979677">"Dodirnite da biste sačuvali preimenovanje"</string>
     <string name="folder_closed" msgid="4100806530910930934">"Direktorijum je zatvoren"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Direktorijum je preimenovan u <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format" msgid="6629239338071103179">"Direktorijum: <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -72,7 +72,20 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Pozadine"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Podešavanja"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Administrator je onemogućio"</string>
-    <string name="allow_rotation_title" msgid="2118706734511831751">"Dozvoli rotaciju"</string>
+    <string name="accessibility_action_overview" msgid="6257665857640347026">"Pregled"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Dozvoli rotaciju početnog ekrana"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"Kada se telefon rotira"</string>
+    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Aktuelno podešavanje prikaza ne dozvoljava rotaciju"</string>
+    <string name="icon_badging_title" msgid="4418239350706629417">"Dodavanje znački na ikone"</string>
+    <string name="icon_badging_desc_on" msgid="6022379097717134764">"Uključeno za sve aplikacije"</string>
+    <string name="icon_badging_desc_off" msgid="1574640601251590211">"Isključeno za sve aplikacije"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Dodaj ikonu na početni ekran"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Za nove aplikacije"</string>
+    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
+    <skip />
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"Koristi podrazumevano sistemsko podešavanje"</string>
+    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"Nepoznato"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Ukloni"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Pretraži"</string>
@@ -80,6 +93,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Aplikacija za ovu ikonu nije instalirana. Možete da je uklonite ili da potražite aplikaciju i instalirate je ručno."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> se preuzima, završeno je <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> čeka na instaliranje"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Vidžeti za <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Dodaj na početni ekran"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Premesti stavku ovde"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Stavka je dodata na početni ekran"</string>
@@ -104,4 +118,9 @@
     <string name="action_decrease_width" msgid="1374549771083094654">"Smanji širinu"</string>
     <string name="action_decrease_height" msgid="282377193880900022">"Smanji visinu"</string>
     <string name="widget_resized" msgid="9130327887929620">"Veličina vidžeta je promenjena na širinu <xliff:g id="NUMBER_0">%1$s</xliff:g> i visinu <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="action_deep_shortcut" msgid="2864038805849372848">"Prečice"</string>
+    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> prečice(a) za <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"Prečice (<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>) i obaveštenja (<xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g>) za <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"Odbaci"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"Obaveštenje je odbačeno"</string>
 </resources>

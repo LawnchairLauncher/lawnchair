@@ -23,7 +23,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability="afterDescendants"
-    launcher:revealBackground="@drawable/quantum_panel_shape_dark">
+    launcher:revealBackground="@drawable/round_rect_primary"
+    android:theme="@style/WidgetContainerTheme">
 
     <View
         android:id="@+id/reveal_view"
@@ -44,9 +45,22 @@
 
         <com.android.launcher3.widget.WidgetsRecyclerView
             android:id="@+id/widgets_list_view"
-            android:theme="@style/Theme.Dark.CustomOverscroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <!-- Fast scroller popup -->
+        <TextView
+            style="@style/FastScrollerPopup"
+            android:layout_below="@+id/search_container"
+            android:id="@+id/fast_scroller_popup"
+            android:layout_gravity="top|end"
+            android:layout_marginEnd="@dimen/container_fastscroll_popup_margin" />
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/loader"
+            android:layout_gravity="center" />
     </FrameLayout>
 
 

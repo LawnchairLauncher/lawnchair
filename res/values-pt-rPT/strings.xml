@@ -26,20 +26,27 @@
     <string name="activity_not_available" msgid="7456344436509528827">"A aplicação não está disponível"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Aplicação transferida desativada no Modo de segurança"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widgets desativados no Modo de segurança"</string>
+    <string name="shortcut_not_available" msgid="2536503539825726397">"O atalho não está disponível"</string>
+    <string name="home_screen" msgid="806512411299847073">"Ecrã principal"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"Ações personalizadas"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Prima sem soltar para escolher um widget."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Toque duas vezes sem soltar para escolher um widget ou utilize ações personalizadas."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"Pesquisar aplicações..."</string>
+    <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d de largura por %2$d de altura"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Toque sem soltar para colocar manualmente"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"Adicionar automaticamente"</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Pesquisar aplicações"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"A carregar aplicações..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Não foram encontradas aplic. que correspondam a \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
-    <string name="all_apps_search_market_message" msgid="5470761048755751471">"Aceder a <xliff:g id="QUERY">%1$s</xliff:g>"</string>
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Pesquisar mais aplicações"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"Notificações"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Sem espaço suficiente neste Ecrã principal."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Não existe mais espaço no tabuleiro de Favoritos"</string>
-    <string name="all_apps_button_label" msgid="9110807029020582876">"Aplicações"</string>
+    <string name="all_apps_button_label" msgid="8130441508702294465">"Lista de aplicações"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Ecrã principal"</string>
-    <string name="delete_target_label" msgid="1822697352535677073">"Remover"</string>
-    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Desinstalar"</string>
-    <string name="info_target_label" msgid="8053346143994679532">"Informações da aplicação"</string>
+    <string name="remove_drop_target_label" msgid="7812859488053230776">"Remover"</string>
+    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Desinstalar"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"Inf. da aplicação"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"instalar atalhos"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Permite a uma aplicação adicionar atalhos sem a intervenção do utilizador."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"ler definições e atalhos do Ecrã Principal"</string>
@@ -51,20 +58,13 @@
     <string name="gadget_setup_text" msgid="8274003207686040488">"Configuração"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"É uma aplicação de sistema e não pode ser desinstalada."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Pasta sem nome"</string>
+    <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> desativado"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Página %1$d de %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Ecrã principal %1$d de %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Nova página do ecrã principal"</string>
-    <string name="first_run_cling_title" msgid="2459738000155917941">"Bem-vindo(a)"</string>
-    <string name="migration_cling_title" msgid="9181776667882933767">"Copiar ícones das aplicações"</string>
-    <string name="migration_cling_description" msgid="2752413805582227644">"Importar ícones e pastas dos ecrãs principais antigos?"</string>
-    <string name="migration_cling_copy_apps" msgid="946331230090919440">"COPIAR ÍCONES"</string>
-    <string name="migration_cling_use_default" msgid="2626475813981258626">"COMEÇAR DO INÍCIO"</string>
-    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Imagens de fundo, widgets e definições"</string>
-    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Toque sem soltar no fundo para personalizar"</string>
-    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"COMPREENDI"</string>
     <string name="folder_opened" msgid="94695026776264709">"Pasta aberta, <xliff:g id="WIDTH">%1$d</xliff:g> por <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
-    <string name="folder_tap_to_close" msgid="1884479294466410023">"Toque para fechar a pasta"</string>
-    <string name="folder_tap_to_rename" msgid="9191075570492871147">"Toque para guardar o nome novo"</string>
+    <string name="folder_tap_to_close" msgid="4625795376335528256">"Tocar para fechar a pasta"</string>
+    <string name="folder_tap_to_rename" msgid="4017685068016979677">"Tocar para guardar o nome novo"</string>
     <string name="folder_closed" msgid="4100806530910930934">"Pasta fechada"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Nome de pasta alterado para <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format" msgid="6629239338071103179">"Pasta: <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -72,7 +72,20 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Imagens de fundo"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Definições"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Desativada pelo administrador"</string>
-    <string name="allow_rotation_title" msgid="2118706734511831751">"Permitir rotação"</string>
+    <string name="accessibility_action_overview" msgid="6257665857640347026">"Vista geral"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Permitir rotação do ecrã principal"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"Quando o telemóvel é rodado"</string>
+    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"A definição de visualização atual não permite a rotação"</string>
+    <string name="icon_badging_title" msgid="4418239350706629417">"Emblemas dos ícones"</string>
+    <string name="icon_badging_desc_on" msgid="6022379097717134764">"Ativada para todas as aplicações"</string>
+    <string name="icon_badging_desc_off" msgid="1574640601251590211">"Desativada para todas as aplicações"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Adicionar ícone ao ecrã principal"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Para novas aplicações"</string>
+    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
+    <skip />
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"Utilizar a predefinição do sistema"</string>
+    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"Desconhecido"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Remover"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Pesquisar"</string>
@@ -80,6 +93,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"A aplicação deste ícone não está instalada. Pode removê-lo ou pesquisar a aplicação e instalá-la manualmente."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"A transferir o <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> concluído"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"A aguardar a instalação do <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Widgets de <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Adicionar ao Ecrã principal"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Mover o item para aqui"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Item adicionado ao ecrã principal"</string>
@@ -104,4 +118,9 @@
     <string name="action_decrease_width" msgid="1374549771083094654">"Diminuir largura"</string>
     <string name="action_decrease_height" msgid="282377193880900022">"Diminuir altura"</string>
     <string name="widget_resized" msgid="9130327887929620">"Widget redimensionado para a largura <xliff:g id="NUMBER_0">%1$s</xliff:g>, altura <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="action_deep_shortcut" msgid="2864038805849372848">"Atalhos"</string>
+    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> atalhos para a aplicação <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> atalhos e <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> notificações para a aplicação <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"Ignorar"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"Notificação ignorada"</string>
 </resources>

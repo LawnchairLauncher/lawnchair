@@ -5,13 +5,22 @@ import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
+import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.config.FeatureFlags;
 
 public class InsettableFrameLayout extends FrameLayout implements
     ViewGroup.OnHierarchyChangeListener, Insettable {
 
+    @ViewDebug.ExportedProperty(category = "launcher")
     protected Rect mInsets = new Rect();
+
+    public Rect getInsets() {
+        return mInsets;
+    }
 
     public InsettableFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -34,6 +43,10 @@ public class InsettableFrameLayout extends FrameLayout implements
 
     @Override
     public void setInsets(Rect insets) {
+        // If the insets haven't changed, this is a no-op. Avoid unnecessary layout caused by
+        // modifying child layout params.
+        if (insets.equals(mInsets)) return;
+
         final int n = getChildCount();
         for (int i = 0; i < n; i++) {
             final View child = getChildAt(i);

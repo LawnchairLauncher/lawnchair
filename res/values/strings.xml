@@ -21,15 +21,6 @@
     <!-- General -->
     <skip />
 
-    <!-- URI used to import old favorites. [DO NOT TRANSLATE] -->
-    <string name="old_launcher_provider_uri" translatable="false">content://com.android.launcher2.settings/favorites?notify=true</string>
-
-    <!-- Permission to receive the com.android.launcher3.action.LAUNCH intent. [DO NOT TRANSLATE] -->
-    <string name="receive_launch_broadcasts_permission" translatable="false">com.android.launcher3.permission.RECEIVE_LAUNCH_BROADCASTS</string>
-
-    <!-- Permission to receive the com.android.launcher3.action.FIRST_LOAD_COMPLETE intent. [DO NOT TRANSLATE] -->
-    <string name="receive_first_load_broadcast_permission" translatable="false">com.android.launcher3.permission.RECEIVE_FIRST_LOAD_BROADCAST</string>
-
     <!-- Application name -->
     <string name="app_name">Launcher3</string>
     <!-- Default folder name -->
@@ -44,6 +35,12 @@
     <string name="safemode_shortcut_error">Downloaded app disabled in Safe mode</string>
     <!-- SafeMode widget error string -->
     <string name="safemode_widget_error">Widgets disabled in Safe mode</string>
+    <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
+    <string name="shortcut_not_available">Shortcut isn\'t available</string>
+    <!-- User visible name for the launcher/home screen. [CHAR_LIMIT=30] -->
+    <string name="home_screen">Home screen</string>
+    <!-- Label for showing custom action list of a shortcut or widget. [CHAR_LIMIT=30] -->
+    <string name="custom_actions">Custom actions</string>
 
     <!-- Widgets -->
     <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
@@ -53,17 +50,26 @@
     <!-- The format string for the dimensions of a widget in the drawer -->
     <!-- There is a special version of this format string for Farsi -->
     <string name="widget_dims_format">%1$d \u00d7 %2$d</string>
+    <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
+    <string name="widget_accessible_dims_format">%1$d wide by %2$d high</string>
+    <!-- Message to tell the user to press and hold a widget/icon to add it  -->
+    <string name="add_item_request_drag_hint">Touch &amp; hold to place manually</string>
+    <!-- Button label to automatically add icon on home screen [CHAR_LIMIT=50] -->
+    <string name="place_automatically">Add automatically</string>
 
     <!-- All Apps -->
     <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
-    <string name="all_apps_search_bar_hint">Search Apps&#8230;</string>
+    <string name="all_apps_search_bar_hint">Search Apps</string>
     <!-- Loading apps text. [CHAR_LIMIT=50] -->
     <string name="all_apps_loading_message">Loading Apps&#8230;</string>
     <!-- No-search-results text. [CHAR_LIMIT=50] -->
     <string name="all_apps_no_search_results">No Apps found matching \"<xliff:g id="query" example="Android">%1$s</xliff:g>\"</string>
-    <!-- Search market text.  This is a format string where the first argument is the name of the activity
-         handling the search.  The format string does not need to handle both of these arguments. [CHAR_LIMIT=50] -->
-    <string name="all_apps_search_market_message">Go to <xliff:g id="query" example="Play Store">%1$s</xliff:g></string>
+    <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
+    <string name="all_apps_search_market_message">Search for more apps</string>
+
+    <!-- Popup items -->
+    <!-- Text to display as the header above notifications. [CHAR_LIMIT=30] -->
+    <string name="notifications_header">Notifications</string>
 
     <!-- Drag and drop -->
     <skip />
@@ -73,17 +79,17 @@
     <string name="hotseat_out_of_space">No more room in the Favorites tray</string>
 
     <!-- All applications label -->
-    <string name="all_apps_button_label">Apps</string>
+    <string name="all_apps_button_label">Apps list</string>
     <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
     <string name="all_apps_home_button_label">Home</string>
 
-    <!-- Label for delete drop target. [CHAR_LIMIT=20] -->
-    <string name="delete_target_label">Remove</string>
+    <!-- Label for remove drop target. [CHAR_LIMIT=20] -->
+    <string name="remove_drop_target_label">Remove</string>
     <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
-    <string name="delete_target_uninstall_label">Uninstall</string>
-    <!-- Label for the info icon. [CHAR_LIMIT=20] -->
-    <string name="info_target_label">App info</string>
+    <string name="uninstall_drop_target_label">Uninstall</string>
+    <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
+    <string name="app_info_drop_target_label">App info</string>
 
     <!-- Permissions: -->
     <skip />
@@ -122,6 +128,8 @@
     <string name="folder_hint_text">Unnamed Folder</string>
 
     <!-- Accessibility -->
+    <!-- The format string for when an app is temporarily disabled. -->
+    <string name="disabled_app_label">Disabled <xliff:g id="app_name" example="Messenger">%1$s</xliff:g></string>
     <skip />
 
     <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
@@ -131,31 +139,13 @@
     <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
     <string name="workspace_new_page">New home screen page</string>
 
-    <!-- Clings -->
-    <!-- The title text for the workspace cling [CHAR_LIMIT=30] -->
-    <string name="first_run_cling_title">Welcome</string>
-    <!-- The title text for the migration cling [CHAR_LIMIT=30] -->
-    <string name="migration_cling_title">Copy your app icons</string>
-    <!-- The description of what migration does [CHAR_LIMIT=70] -->
-    <string name="migration_cling_description">Import icons and folders from your old Home screens?</string>
-    <!-- The description of the button to migrate apps from another launcher [CHAR_LIMIT=30] -->
-    <string name="migration_cling_copy_apps">COPY ICONS</string>
-    <!-- The description of the button to use the default launcher layout [CHAR_LIMIT=30] -->
-    <string name="migration_cling_use_default">START FRESH</string>
-    <!-- The title text for workspace longpress action [CHAR_LIMIT=40] -->
-    <string name="workspace_cling_longpress_title">Wallpapers, widgets, &amp; settings</string>
-    <!-- The description of how to use the workspace [CHAR_LIMIT=70] -->
-    <string name="workspace_cling_longpress_description">Touch &amp; hold background to customize</string>
-    <!-- The description of the button to dismiss the cling [CHAR_LIMIT=30] -->
-    <string name="workspace_cling_longpress_dismiss">GOT IT</string>
-
     <!-- Folder accessibility -->
     <!-- The format string for when a folder is opened, speaks the dimensions -->
     <string name="folder_opened">Folder opened, <xliff:g id="width" example="5">%1$d</xliff:g> by <xliff:g id="height" example="3">%2$d</xliff:g></string>
     <!-- Instruction that clicking outside will close folder -->
-    <string name="folder_tap_to_close">Touch to close folder</string>
+    <string name="folder_tap_to_close">Tap to close folder</string>
     <!-- Instruction that clicking outside will commit folder rename -->
-    <string name="folder_tap_to_rename">Touch to save rename</string>
+    <string name="folder_tap_to_rename">Tap to save rename</string>
     <!-- Indication that folder closed -->
     <string name="folder_closed">Folder closed</string>
     <!-- Folder renamed format -->
@@ -172,10 +162,34 @@
     <string name="settings_button_text">Settings</string>
     <!-- Message shown when a feature is disabled by the administrator -->
     <string name="msg_disabled_by_admin">Disabled by your admin</string>
+    <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
+    <string name="accessibility_action_overview">Overview</string>
 
     <!-- Strings for settings -->
     <!-- Title for Allow Rotation setting. [CHAR LIMIT=50] -->
-    <string name="allow_rotation_title">Allow rotation</string>
+    <string name="allow_rotation_title">Allow Home screen rotation</string>
+    <!-- Text explaining when the home screen will get rotated. [CHAR LIMIT=100] -->
+    <string name="allow_rotation_desc">When phone is rotated</string>
+    <!-- Text explaining that rotation is disabled in Display settings. 'Display' refers to the Display section in system settings [CHAR LIMIT=100] -->
+    <string name="allow_rotation_blocked_desc">Current Display setting doesn\'t permit rotation</string>
+    <!-- Title for Notification dots setting. Tapping this will link to the system Notifications settings screen where the user can turn off notification dots globally. [CHAR LIMIT=50] -->
+    <string name="icon_badging_title">Notification dots</string>
+    <!-- Text to indicate that the system icon badging setting is on [CHAR LIMIT=100] -->
+    <string name="icon_badging_desc_on">On</string>
+    <!-- Text to indicate that the system icon badging setting is off [CHAR LIMIT=100] -->
+    <string name="icon_badging_desc_off">Off</string>
+
+    <!-- Label for the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=40] -->
+    <string name="auto_add_shortcuts_label">Add icon to Home screen</string>
+    <!-- Text description of the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=NONE] -->
+    <string name="auto_add_shortcuts_description">For new apps</string>
+
+    <!-- Developer setting to change the shape of icons on home screen. [CHAR LIMIT=50] -->
+    <string name="icon_shape_override_label">Change icon shape</string>
+    <!-- Option to not change the icon shape on home screen and use the system default setting instead. [CHAR LIMIT=50] -->
+    <string name="icon_shape_system_default">Use system default</string>
+    <!-- Message shown in the progress dialog when the icon shape override is being applied [CHAR LIMIT=100]-->
+    <string name="icon_shape_override_progress">Applying icon shape changes</string>
 
     <!-- Label on an icon that references an uninstalled package, for which we have no information about when it might be installed. [CHAR_LIMIT=15] -->
     <string name="package_state_unknown">Unknown</string>
@@ -195,6 +209,10 @@
     <string name="app_downloading_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> downloading, <xliff:g id="progress" example="30%">%2$s</xliff:g> complete</string>
     <!-- Title for an app whose download has been started. -->
     <string name="app_waiting_download_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> waiting to install</string>
+
+    <!-- Strings for widgets & more in the popup container/bottom sheet -->
+    <!-- Title for a bottom sheet that shows widgets for a particular app -->
+    <string name="widgets_bottom_sheet_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> widgets</string>
 
 <!-- Strings for accessibility actions -->
     <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
@@ -268,5 +286,19 @@
 
     <!-- Accessibility confirmation for widget resize. -->
     <string name="widget_resized">Widget resized to width <xliff:g id="number" example="2">%1$s</xliff:g> height <xliff:g id="number" example="1">%2$s</xliff:g></string>
+
+    <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
+    <string name="action_deep_shortcut">Shortcuts</string>
+
+    <!-- Accessibility description for the shortcuts menu shown for an app. -->
+    <string name="shortcuts_menu_description"><xliff:g id="number_of_shortcuts" example="3">%1$d</xliff:g> shortcuts for <xliff:g id="app_name" example="Messenger">%2$s</xliff:g></string>
+    <!-- Accessibility description when the shortcuts menu has notifications as well as shortcuts. -->
+    <string name="shortcuts_menu_with_notifications_description"><xliff:g id="number_of_shortcuts" example="3">%1$d</xliff:g> shortcuts and <xliff:g id="number_of_notifications" example="3">%2$d</xliff:g> notifications for <xliff:g id="app_name" example="Messenger">%3$s</xliff:g></string>
+
+    <!-- Accessibility action to dismiss a notification in the shortcuts menu for an icon. [CHAR_LIMIT=30] -->
+    <string name="action_dismiss_notification">Dismiss</string>
+
+    <!-- Accessibility confirmation for notification being dismissed. -->
+    <string name="notification_dismissed">Notification dismissed</string>
 
 </resources>

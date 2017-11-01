@@ -22,7 +22,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.launcher3.CellLayout;
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ShortcutAndWidgetContainer;
+import com.android.launcher3.config.FeatureFlags;
 
 import java.util.Arrays;
 
@@ -76,8 +79,7 @@ public class FocusLogic {
         return (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT ||
                 keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN ||
                 keyCode == KeyEvent.KEYCODE_MOVE_HOME || keyCode == KeyEvent.KEYCODE_MOVE_END ||
-                keyCode == KeyEvent.KEYCODE_PAGE_UP || keyCode == KeyEvent.KEYCODE_PAGE_DOWN ||
-                keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_FORWARD_DEL);
+                keyCode == KeyEvent.KEYCODE_PAGE_UP || keyCode == KeyEvent.KEYCODE_PAGE_DOWN);
     }
 
     public static int handleKeyEvent(int keyCode, int [][] map, int iconIdx, int pageIndex,
@@ -190,15 +192,17 @@ public class FocusLogic {
      * in portrait orientation. In landscape, [(icon + hotseat) column count x (icon row count)]
      */
     // TODO: get rid of the dynamic matrix creation
-    public static int[][] createSparseMatrixWithHotseat(CellLayout iconLayout,
-            CellLayout hotseatLayout, boolean isHotseatHorizontal, int allappsiconRank) {
+    public static int[][] createSparseMatrixWithHotseat(
+            CellLayout iconLayout, CellLayout hotseatLayout, DeviceProfile dp) {
 
         ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
         ViewGroup hotseatParent = hotseatLayout.getShortcutsAndWidgets();
 
-        boolean moreIconsInHotseatThanWorkspace = isHotseatHorizontal ?
-                hotseatLayout.getCountX() > iconLayout.getCountX() :
-                hotseatLayout.getCountY() > iconLayout.getCountY();
+        boolean isHotseatHorizontal = !dp.isVerticalBarLayout();
+        boolean moreIconsInHotseatThanWorkspace = !FeatureFlags.NO_ALL_APPS_ICON &&
+                (isHotseatHorizontal
+                        ? hotseatLayout.getCountX() > iconLayout.getCountX()
+                        : hotseatLayout.getCountY() > iconLayout.getCountY());
 
         int m, n;
         if (isHotseatHorizontal) {
@@ -210,6 +214,7 @@ public class FocusLogic {
         }
         int[][] matrix = createFullMatrix(m, n);
         if (moreIconsInHotseatThanWorkspace) {
+            int allappsiconRank = dp.inv.getAllAppsButtonRank();
             if (isHotseatHorizontal) {
                 for (int j = 0; j < n; j++) {
                     matrix[allappsiconRank][j] = ALL_APPS_COLUMN;
@@ -229,6 +234,7 @@ public class FocusLogic {
             int cx = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellX;
             int cy = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellY;
             if (moreIconsInHotseatThanWorkspace) {
+                int allappsiconRank = dp.inv.getAllAppsButtonRank();
                 if (isHotseatHorizontal && cx >= allappsiconRank) {
                     // Add 1 to account for the All Apps button.
                     cx++;

@@ -1,25 +1,29 @@
 package com.android.launcher3.model;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Point;
 import android.test.ProviderTestCase2;
+import android.test.suitebuilder.annotation.MediumTest;
 
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.model.GridSizeMigrationTask.MultiStepMigrationTask;
 import com.android.launcher3.util.TestLauncherProvider;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 /**
  * Unit tests for {@link GridSizeMigrationTask}
  */
+@MediumTest
 public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherProvider> {
 
     private static final long DESKTOP = LauncherSettings.Favorites.CONTAINER_DESKTOP;
@@ -57,10 +61,16 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
                 addItem(APPLICATION, 4, HOTSEAT, 0, 0),
         };
 
-        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, 5, 2, 3, 1)
+        mIdp.numHotseatIcons = 3;
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, 5, 3)
                 .migrateHotseat();
-        // First & last items are dropped as they have the least weight.
-        verifyHotseat(hotseatItems[1], -1, hotseatItems[3]);
+        if (FeatureFlags.NO_ALL_APPS_ICON) {
+            // First item is dropped as it has the least weight.
+            verifyHotseat(hotseatItems[1], hotseatItems[3], hotseatItems[4]);
+        } else {
+            // First & last items are dropped as they have the least weight.
+            verifyHotseat(hotseatItems[1], -1, hotseatItems[3]);
+        }
     }
 
     public void testHotseatMigration_shortcuts_dropped() throws Exception {
@@ -72,10 +82,16 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
                 addItem(10, 4, HOTSEAT, 0, 0),
         };
 
-        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, 5, 2, 3, 1)
+        mIdp.numHotseatIcons = 3;
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, 5, 3)
                 .migrateHotseat();
-        // First & third items are dropped as they have the least weight.
-        verifyHotseat(hotseatItems[1], -1, hotseatItems[4]);
+        if (FeatureFlags.NO_ALL_APPS_ICON) {
+            // First item is dropped as it has the least weight.
+            verifyHotseat(hotseatItems[1], hotseatItems[3], hotseatItems[4]);
+        } else {
+            // First & third items are dropped as they have the least weight.
+            verifyHotseat(hotseatItems[1], -1, hotseatItems[4]);
+        }
     }
 
     private void verifyHotseat(long... sortedIds) {
@@ -116,7 +132,7 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
                 {  5,  2, -1,  6},
         }});
 
-        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, new HashMap<String, Point>(),
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages,
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Column 2 and row 2 got removed.
@@ -135,7 +151,7 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
                 {  5,  2, -1,  6},
         }});
 
-        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, new HashMap<String, Point>(),
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages,
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Items in the second column get moved to new screen
@@ -159,7 +175,7 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
                 {  3,  1, -1,  4},
         }});
 
-        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, new HashMap<String, Point>(),
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages,
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Items in the second column of the first screen should get placed on the 3rd
@@ -190,7 +206,7 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
                 {  5,  2, -1,  6},
         }});
 
-        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, new HashMap<String, Point>(),
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages,
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Items in the second column of the first screen should get placed on a new screen.
@@ -207,6 +223,57 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
         }});
     }
 
+    public void testWorkspace_first_row_blocked() throws Exception {
+        // The first screen has one item on the 4th column which needs moving, as the first row
+        // will be kept empty.
+        long[][][] ids = createGrid(new int[][][]{{
+                { -1, -1, -1, -1},
+                {  3,  1,  7,  0},
+                {  8,  7,  7, -1},
+                {  5,  2,  7, -1},
+        }}, 0);
+
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages,
+                new Point(4, 4), new Point(3, 4)).migrateWorkspace();
+
+        // Items in the second column of the first screen should get placed on a new screen.
+        verifyWorkspace(new long[][][] {{
+                {          -1,           -1,           -1},
+                {ids[0][1][0], ids[0][1][1], ids[0][1][2]},
+                {ids[0][2][0], ids[0][2][1], ids[0][2][2]},
+                {ids[0][3][0], ids[0][3][1], ids[0][3][2]},
+        }, {
+                {ids[0][1][3]},
+        }});
+    }
+
+    public void testWorkspace_items_moved_to_empty_first_row() throws Exception {
+        // Items will get moved to the next screen to keep the first screen empty.
+        long[][][] ids = createGrid(new int[][][]{{
+                { -1, -1, -1, -1},
+                {  0,  1,  0,  0},
+                {  8,  7,  7, -1},
+                {  5,  6,  7, -1},
+        }}, 0);
+
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages,
+                new Point(4, 4), new Point(3, 3)).migrateWorkspace();
+
+        // Items in the second column of the first screen should get placed on a new screen.
+        verifyWorkspace(new long[][][] {{
+                {          -1,           -1,           -1},
+                {ids[0][2][0], ids[0][2][1], ids[0][2][2]},
+                {ids[0][3][0], ids[0][3][1], ids[0][3][2]},
+        }, {
+                {ids[0][1][1], ids[0][1][0], ids[0][1][2]},
+                {ids[0][1][3]},
+        }});
+    }
+
+    private long[][][] createGrid(int[][][] typeArray) throws Exception {
+        return createGrid(typeArray, 1);
+    }
+
     /**
      * Initializes the DB with dummy elements to represent the provided grid structure.
      * @param typeArray A 3d array of item types. {@see #addItem(int, long, long, int, int)} for
@@ -214,12 +281,19 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
      *                  two represent the workspace grid.
      * @return the same grid representation where each entry is the corresponding item id.
      */
-    private long[][][] createGrid(int[][][] typeArray) throws Exception {
+    private long[][][] createGrid(int[][][] typeArray, long startScreen) throws Exception {
+        LauncherSettings.Settings.call(getMockContentResolver(),
+                LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
         long[][][] ids = new long[typeArray.length][][];
 
         for (int i = 0; i < typeArray.length; i++) {
             // Add screen to DB
-            long screenId = LauncherAppState.getLauncherProvider().generateNewScreenId();
+            long screenId = startScreen + i;
+
+            // Keep the screen id counter up to date
+            LauncherSettings.Settings.call(getMockContentResolver(),
+                    LauncherSettings.Settings.METHOD_NEW_SCREEN_ID);
+
             ContentValues v = new ContentValues();
             v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
             v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
@@ -266,7 +340,8 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
                     } else {
                         assertEquals(1, c.getCount());
                         c.moveToNext();
-                        assertEquals(id, c.getLong(0));
+                        assertEquals(String.format("Failed to verify item at %d %d, %d", i, y, x),
+                                id, c.getLong(0));
                         total++;
                     }
                     c.close();
@@ -288,7 +363,9 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
      *             folder (where the type represents the number of items in the folder).
      */
     private long addItem(int type, long screen, long container, int x, int y) throws Exception {
-        long id = LauncherAppState.getLauncherProvider().generateNewItemId();
+        long id = LauncherSettings.Settings.call(getMockContentResolver(),
+                LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
+                .getLong(LauncherSettings.Settings.EXTRA_VALUE);
 
         ContentValues values = new ContentValues();
         values.put(LauncherSettings.Favorites._ID, id);
@@ -313,5 +390,54 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
 
         getMockContentResolver().insert(LauncherSettings.Favorites.CONTENT_URI, values);
         return id;
+    }
+
+    public void testMultiStepMigration_small_to_large() throws Exception {
+        MultiStepMigrationTaskVerifier verifier = new MultiStepMigrationTaskVerifier();
+        verifier.migrate(new Point(3, 3), new Point(5, 5));
+        verifier.assertCompleted();
+    }
+
+    public void testMultiStepMigration_large_to_small() throws Exception {
+        MultiStepMigrationTaskVerifier verifier = new MultiStepMigrationTaskVerifier(
+                5, 5, 4, 4,
+                4, 4, 3, 4
+        );
+        verifier.migrate(new Point(5, 5), new Point(3, 4));
+        verifier.assertCompleted();
+    }
+
+    public void testMultiStepMigration_zig_zag() throws Exception {
+        MultiStepMigrationTaskVerifier verifier = new MultiStepMigrationTaskVerifier(
+                5, 7, 4, 7,
+                4, 7, 3, 7
+        );
+        verifier.migrate(new Point(5, 5), new Point(3, 7));
+        verifier.assertCompleted();
+    }
+
+    private static class MultiStepMigrationTaskVerifier extends MultiStepMigrationTask {
+
+        private final LinkedList<Point> mPoints;
+
+        public MultiStepMigrationTaskVerifier(int... points) {
+            super(null, null);
+
+            mPoints = new LinkedList<>();
+            for (int i = 0; i < points.length; i += 2) {
+                mPoints.add(new Point(points[i], points[i + 1]));
+            }
+        }
+
+        @Override
+        protected boolean runStepTask(Point sourceSize, Point nextSize) throws Exception {
+            assertEquals(sourceSize, mPoints.poll());
+            assertEquals(nextSize, mPoints.poll());
+            return false;
+        }
+
+        public void assertCompleted() {
+            assertTrue(mPoints.isEmpty());
+        }
     }
 }

@@ -4,16 +4,16 @@
 **
 ** Copyright 2008, The Android Open Source Project
 **
-** Licensed under the Apache License, Version 2.0 (the "License"); 
-** you may not use this file except in compliance with the License. 
-** You may obtain a copy of the License at 
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
 **
-**     http://www.apache.org/licenses/LICENSE-2.0 
+**     http://www.apache.org/licenses/LICENSE-2.0
 **
-** Unless required by applicable law or agreed to in writing, software 
-** distributed under the License is distributed on an "AS IS" BASIS, 
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-** See the License for the specific language governing permissions and 
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
 ** limitations under the License.
 */
 -->
@@ -22,32 +22,31 @@
          over the delete target or the info target -->
     <color name="delete_target_hover_tint">#FFC1C1C1</color>
     <color name="uninstall_target_hover_tint">#FFF0592B</color>
-    <color name="info_target_hover_tint">#FF009688</color>
-    <color name="cling_scrim_background">#80000000</color>
 
     <color name="focused_background">#80c6c5c5</color>
 
     <color name="workspace_icon_text_color">#FFF</color>
-
     <color name="workspace_edge_effect_color">#FFFFFFFF</color>
-    <color name="folder_edge_effect_color">#FF757575</color>
 
-    <color name="quantum_panel_text_color">#FF666666</color>
-    <color name="quantum_panel_bg_color">#FFF5F5F5</color>
-    <color name="quantum_panel_bg_color_dark">#FF374248</color>
+    <color name="default_shadow_color_no_alpha">#FF000000</color>
 
     <color name="outline_color">#FFFFFFFF</color>
 
-    <!-- Containers -->
-    <color name="container_fastscroll_thumb_inactive_color">#009688</color>
-    <color name="container_fastscroll_thumb_active_color">#009688</color>
+    <color name="spring_loaded_panel_color">#40FFFFFF</color>
+    <color name="spring_loaded_highlighted_panel_border_color">#FFF</color>
 
-    <!-- All Apps -->
-    <color name="all_apps_grid_section_text_color">#009688</color>
-    <color name="all_apps_search_market_button_focused_bg_color">#DDDDDD</color>
+    <!-- Popup container -->
+    <color name="popup_header_background_color">#EEEEEE</color> <!-- Gray 200 -->
+    <color name="popup_background_color">#FFF</color>
+    <color name="notification_icon_default_color">#757575</color> <!-- Gray 600 -->
+    <color name="notification_color_beneath">#E0E0E0</color> <!-- Gray 300 -->
 
-    <!-- Widgets view -->
-    <color name="widgets_view_section_text_color">#FFFFFF</color>
-    <color name="widgets_view_item_text_color">#C4C4C4</color>
-    <color name="widgets_cell_color">#263238</color>
+    <color name="badge_color">#1DE9B6</color> <!-- Teal A400 -->
+    <color name="folder_badge_color">#1DE9B6</color> <!-- Teal A400 -->
+
+    <!-- System shortcuts -->
+    <color name="system_shortcuts_icon_color">@android:color/tertiary_text_light</color>
+
+    <color name="legacy_icon_background">#FFFFFF</color>
+    <color name="icon_background">#E0E0E0</color> <!-- Gray 300 -->
 </resources>

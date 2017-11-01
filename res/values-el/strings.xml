@@ -26,20 +26,27 @@
     <string name="activity_not_available" msgid="7456344436509528827">"Η εφαρμογή δεν είναι διαθέσιμη"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Η λήψη εφαρμογών απενεργοποήθηκε στην Ασφαλή λειτουργία"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Τα γραφικά στοιχεία απενεργοποιήθηκαν στην ασφαλή λειτουργία"</string>
+    <string name="shortcut_not_available" msgid="2536503539825726397">"Η συντόμευση δεν είναι διαθέσιμη"</string>
+    <string name="home_screen" msgid="806512411299847073">"Αρχική οθόνη"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"Προσαρμοσμένες ενέργειες"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Αγγίξτε παρατεταμένα για να πάρετε ένα γραφ.στοιχ."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Πατήστε δύο φορές παρατεταμένα για επιλογή γραφικού στοιχείου ή χρήση προσαρμοσμένων ενεργειών."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"Αναζήτηση εφαρμογών…"</string>
+    <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Πλάτος %1$d επί ύψος %2$d"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Αγγίξτε παρατεταμένα για μη αυτόματη τοποθέτηση"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"Αυτόματη προσθήκη"</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Αναζήτηση εφαρμογών"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Φόρτωση εφαρμογών…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Δεν βρέθηκαν εφαρμογές για το ερώτημα \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
-    <string name="all_apps_search_market_message" msgid="5470761048755751471">"Μετάβαση σε <xliff:g id="QUERY">%1$s</xliff:g>"</string>
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Αναζήτηση περισσότερων εφαρμογών"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"Ειδοποιήσεις"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Δεν υπάρχει χώρος σε αυτήν την αρχική οθόνη."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Δεν υπάρχει επιπλέον χώρος στην περιοχή Αγαπημένα"</string>
-    <string name="all_apps_button_label" msgid="9110807029020582876">"Εφαρμογές"</string>
+    <string name="all_apps_button_label" msgid="8130441508702294465">"Λίστα εφαρμογών"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Αρχική οθόνη"</string>
-    <string name="delete_target_label" msgid="1822697352535677073">"Κατάργηση"</string>
-    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Κατάργηση εγκατάστασης"</string>
-    <string name="info_target_label" msgid="8053346143994679532">"Πληροφορίες εφαρμογής"</string>
+    <string name="remove_drop_target_label" msgid="7812859488053230776">"Κατάργηση"</string>
+    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Απεγκατάσταση"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"Πληροφορίες εφαρμογής"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"εγκατάσταση συντομεύσεων"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Επιτρέπει σε μια εφαρμογή την προσθήκη συντομεύσεων χωρίς την παρέμβαση του χρήστη."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"ανάγνωση ρυθμίσεων και συντομεύσεων αρχικής οθόνης"</string>
@@ -51,20 +58,13 @@
     <string name="gadget_setup_text" msgid="8274003207686040488">"Ρύθμιση"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Αυτή είναι μια εφαρμογή συστήματος και δεν είναι δυνατή η κατάργηση της εγκατάστασής της."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Φάκελος χωρίς όνομα"</string>
+    <string name="disabled_app_label" msgid="6673129024321402780">"Η εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> είναι απενεργοποιημένη"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Σελίδα %1$d από %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Αρχική οθόνη %1$d από %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Νέα σελίδα αρχικής οθόνης"</string>
-    <string name="first_run_cling_title" msgid="2459738000155917941">"Καλώς ορίσατε"</string>
-    <string name="migration_cling_title" msgid="9181776667882933767">"Αντιγραφή εικονιδίων εφαρμογών"</string>
-    <string name="migration_cling_description" msgid="2752413805582227644">"Εισαγωγή εικονιδίων και φακέλων από παλιές αρχικές οθόνες;"</string>
-    <string name="migration_cling_copy_apps" msgid="946331230090919440">"ΑΝΤΙΓΡΑΦΗ ΕΙΚΟΝΙΔΙΩΝ"</string>
-    <string name="migration_cling_use_default" msgid="2626475813981258626">"ΝΕΑ ΕΝΑΡΞΗ"</string>
-    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Ταπετσαρίες, γραφικά στοιχεία και ρυθμίσεις"</string>
-    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Αγγίξτε παρατεταμένα το παρασκήνιο για προσαρμογή"</string>
-    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ΤΟ ΚΑΤΑΛΑΒΑ"</string>
     <string name="folder_opened" msgid="94695026776264709">"Άνοιγμα φακέλου, <xliff:g id="WIDTH">%1$d</xliff:g> επί <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
-    <string name="folder_tap_to_close" msgid="1884479294466410023">"Αγγίξτε για να κλείσετε τον φάκελο"</string>
-    <string name="folder_tap_to_rename" msgid="9191075570492871147">"Αγγίξτε για να αποθηκεύσετε το νέο όνομα"</string>
+    <string name="folder_tap_to_close" msgid="4625795376335528256">"Πατήστε για να κλείσετε το φάκελο"</string>
+    <string name="folder_tap_to_rename" msgid="4017685068016979677">"Πατήστε για να αποθηκεύσετε τη νέα ονομασία"</string>
     <string name="folder_closed" msgid="4100806530910930934">"Ο φάκελος έκλεισε"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Ο φάκελος μετονομάστηκε σε <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format" msgid="6629239338071103179">"Φάκελος: <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -72,7 +72,20 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Ταπετσαρίες"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Ρυθμίσεις"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Απενεργοποιήθηκε από τον διαχειριστή σας"</string>
-    <string name="allow_rotation_title" msgid="2118706734511831751">"Να επιτρέπεται η περιστροφή"</string>
+    <string name="accessibility_action_overview" msgid="6257665857640347026">"Επισκόπηση"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Να επιτρέπεται η περιστροφή της αρχικής οθόνης"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"Όταν το τηλέφωνο περιστρέφεται"</string>
+    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Η τρέχουσα ρύθμιση οθόνης δεν επιτρέπει την περιστροφή"</string>
+    <string name="icon_badging_title" msgid="4418239350706629417">"Σήματα εικονιδίων"</string>
+    <string name="icon_badging_desc_on" msgid="6022379097717134764">"Ενεργοποιημένα για όλες τις εφαρμογές"</string>
+    <string name="icon_badging_desc_off" msgid="1574640601251590211">"Απενεργοποιημένα για όλες τις εφαρμογές"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Προσθήκη εικονιδίου στην Αρχική οθόνη"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Για νέες εφαρμογές"</string>
+    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
+    <skip />
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"Χρήση προεπιλογής συστήματος"</string>
+    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"Άγνωστο"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Κατάργηση"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Αναζήτηση"</string>
@@ -80,6 +93,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Η εφαρμογή γι\' αυτό το εικονίδιο δεν είναι εγκατεστημένη. Μπορείτε να το καταργήσετε ή να αναζητήσετε την εφαρμογή και να την εγκαταστήσετε με μη αυτόματο τρόπο."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Λήψη <xliff:g id="NAME">%1$s</xliff:g>, ολοκληρώθηκε <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> σε αναμονή για εγκατάσταση"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Γραφικά στοιχεία <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Προσθήκη στην αρχική οθόνη"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Μετακίνηση στοιχείου εδώ"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Το στοιχείο προστέθηκε στην αρχική οθόνη"</string>
@@ -104,4 +118,9 @@
     <string name="action_decrease_width" msgid="1374549771083094654">"μείωση του πλάτους"</string>
     <string name="action_decrease_height" msgid="282377193880900022">"Μείωση του ύψους"</string>
     <string name="widget_resized" msgid="9130327887929620">"Έγινε προσαρμογή του μεγέθους του γραφικού στοιχείου σε <xliff:g id="NUMBER_0">%1$s</xliff:g> πλάτος και <xliff:g id="NUMBER_1">%2$s</xliff:g> ύψος"</string>
+    <string name="action_deep_shortcut" msgid="2864038805849372848">"Συντομεύσεις"</string>
+    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> συντομεύσεις για <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> συντομεύσεις και <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> ειδοποιήσεις για την εφαρμογή <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"Παράβλεψη"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"Η ειδοποίηση παραβλέφθηκε"</string>
 </resources>

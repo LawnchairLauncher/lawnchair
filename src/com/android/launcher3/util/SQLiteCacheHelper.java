@@ -9,6 +9,9 @@ import android.database.sqlite.SQLiteFullException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.android.launcher3.Utilities;
+import com.android.launcher3.config.ProviderConfig;
+
 /**
  * An extension of {@link SQLiteOpenHelper} with utility methods for a single table cache DB.
  * Any exception during write operations are ignored, and any version change causes a DB reset.
@@ -16,32 +19,22 @@ import android.util.Log;
 public abstract class SQLiteCacheHelper {
     private static final String TAG = "SQLiteCacheHelper";
 
+    private static final boolean NO_ICON_CACHE = ProviderConfig.IS_DOGFOOD_BUILD &&
+            Utilities.isPropertyEnabled(LogConfig.MEMORY_ONLY_ICON_CACHE);
+
     private final String mTableName;
     private final MySQLiteOpenHelper mOpenHelper;
 
     private boolean mIgnoreWrites;
 
     public SQLiteCacheHelper(Context context, String name, int version, String tableName) {
+        if (NO_ICON_CACHE) {
+            name = null;
+        }
         mTableName = tableName;
         mOpenHelper = new MySQLiteOpenHelper(context, name, version);
 
         mIgnoreWrites = false;
-    }
-
-    /**
-     * @see SQLiteDatabase#update(String, ContentValues, String, String[])
-     */
-    public void update(ContentValues values, String whereClause, String[] whereArgs) {
-        if (mIgnoreWrites) {
-            return;
-        }
-        try {
-            mOpenHelper.getWritableDatabase().update(mTableName, values, whereClause, whereArgs);
-        } catch (SQLiteFullException e) {
-            onDiskFull(e);
-        } catch (SQLiteException e) {
-            Log.d(TAG, "Ignoring sqlite exception", e);
-        }
     }
 
     /**
@@ -90,6 +83,10 @@ public abstract class SQLiteCacheHelper {
                 mTableName, columns, selection, selectionArgs, null, null, null);
     }
 
+    public void clear() {
+        mOpenHelper.clearDB(mOpenHelper.getWritableDatabase());
+    }
+
     protected abstract void onCreateTable(SQLiteDatabase db);
 
     /**
@@ -98,7 +95,7 @@ public abstract class SQLiteCacheHelper {
     private class MySQLiteOpenHelper extends SQLiteOpenHelper {
 
         public MySQLiteOpenHelper(Context context, String name, int version) {
-            super(context, name, null, version);
+            super(new NoLocaleSqliteContext(context), name, null, version);
         }
 
         @Override

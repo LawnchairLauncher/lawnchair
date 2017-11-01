@@ -9,11 +9,16 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewDebug;
 
 public class LauncherRootView extends InsettableFrameLayout {
 
     private final Paint mOpaquePaint;
-    private boolean mDrawRightInsetBar;
+    @ViewDebug.ExportedProperty(category = "launcher")
+    private boolean mDrawSideInsetBar;
+    @ViewDebug.ExportedProperty(category = "launcher")
+    private int mLeftInsetBarWidth;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private int mRightInsetBarWidth;
 
     private View mAlignedView;
@@ -39,13 +44,15 @@ public class LauncherRootView extends InsettableFrameLayout {
     @TargetApi(23)
     @Override
     protected boolean fitSystemWindows(Rect insets) {
-        mDrawRightInsetBar = insets.right > 0 &&
+        boolean rawInsetsChanged = !mInsets.equals(insets);
+        mDrawSideInsetBar = (insets.right > 0 || insets.left > 0) &&
                 (!Utilities.ATLEAST_MARSHMALLOW ||
                 getContext().getSystemService(ActivityManager.class).isLowRamDevice());
         mRightInsetBarWidth = insets.right;
-        setInsets(mDrawRightInsetBar ? new Rect(0, insets.top, 0, insets.bottom) : insets);
+        mLeftInsetBarWidth = insets.left;
+        setInsets(mDrawSideInsetBar ? new Rect(0, insets.top, 0, insets.bottom) : insets);
 
-        if (mAlignedView != null && mDrawRightInsetBar) {
+        if (mAlignedView != null && mDrawSideInsetBar) {
             // Apply margins on aligned view to handle left/right insets.
             MarginLayoutParams lp = (MarginLayoutParams) mAlignedView.getLayoutParams();
             if (lp.leftMargin != insets.left || lp.rightMargin != insets.right) {
@@ -53,6 +60,12 @@ public class LauncherRootView extends InsettableFrameLayout {
                 lp.rightMargin = insets.right;
                 mAlignedView.setLayoutParams(lp);
             }
+        }
+
+        if (rawInsetsChanged) {
+            // Update the grid again
+            Launcher launcher = Launcher.getLauncher(getContext());
+            launcher.onInsetsChanged(insets);
         }
 
         return true; // I'll take it from here
@@ -63,9 +76,14 @@ public class LauncherRootView extends InsettableFrameLayout {
         super.dispatchDraw(canvas);
 
         // If the right inset is opaque, draw a black rectangle to ensure that is stays opaque.
-        if (mDrawRightInsetBar) {
-            int width = getWidth();
-            canvas.drawRect(width - mRightInsetBarWidth, 0, width, getHeight(), mOpaquePaint);
+        if (mDrawSideInsetBar) {
+            if (mRightInsetBarWidth > 0) {
+                int width = getWidth();
+                canvas.drawRect(width - mRightInsetBarWidth, 0, width, getHeight(), mOpaquePaint);
+            }
+            if (mLeftInsetBarWidth > 0) {
+                canvas.drawRect(0, 0, mLeftInsetBarWidth, getHeight(), mOpaquePaint);
+            }
         }
     }
 }

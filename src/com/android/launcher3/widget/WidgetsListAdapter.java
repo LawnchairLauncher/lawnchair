@@ -15,32 +15,30 @@
  */
 package com.android.launcher3.widget;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
-import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.LinearLayout;
 
-import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.WidgetPreviewLoader;
+import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.model.PackageItemInfo;
-import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.util.LabelComparator;
+import com.android.launcher3.util.MultiHashMap;
+import com.android.launcher3.util.PackageUserKey;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * List view adapter for the widget tray.
@@ -55,48 +53,79 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
     private static final String TAG = "WidgetsListAdapter";
     private static final boolean DEBUG = false;
 
-    private Launcher mLauncher;
-    private LayoutInflater mLayoutInflater;
+    private final WidgetPreviewLoader mWidgetPreviewLoader;
+    private final LayoutInflater mLayoutInflater;
 
-    private WidgetsModel mWidgetsModel;
-    private WidgetPreviewLoader mWidgetPreviewLoader;
+    private final View.OnClickListener mIconClickListener;
+    private final View.OnLongClickListener mIconLongClickListener;
 
-    private View.OnClickListener mIconClickListener;
-    private View.OnLongClickListener mIconLongClickListener;
+    private final ArrayList<WidgetListRowEntry> mEntries = new ArrayList<>();
+    private final AlphabeticIndexCompat mIndexer;
 
-    private static final int PRESET_INDENT_SIZE_TABLET = 56;
-    private int mIndent = 0;
+    private final int mIndent;
 
-    public WidgetsListAdapter(Context context,
-            View.OnClickListener iconClickListener,
+    public WidgetsListAdapter(View.OnClickListener iconClickListener,
             View.OnLongClickListener iconLongClickListener,
-            Launcher launcher) {
+            Context context) {
         mLayoutInflater = LayoutInflater.from(context);
+        mWidgetPreviewLoader = LauncherAppState.getInstance(context).getWidgetCache();
+
+        mIndexer = new AlphabeticIndexCompat(context);
 
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
-        mLauncher = launcher;
-
-        setContainerHeight();
+        mIndent = context.getResources().getDimensionPixelSize(R.dimen.widget_section_indent);
     }
 
-    public void setWidgetsModel(WidgetsModel w) {
-        mWidgetsModel = w;
+    public void setWidgets(MultiHashMap<PackageItemInfo, WidgetItem> widgets) {
+        mEntries.clear();
+        WidgetItemComparator widgetComparator = new WidgetItemComparator();
+
+        for (Map.Entry<PackageItemInfo, ArrayList<WidgetItem>> entry : widgets.entrySet()) {
+            WidgetListRowEntry row = new WidgetListRowEntry(entry.getKey(), entry.getValue());
+            row.titleSectionName = mIndexer.computeSectionName(row.pkgItem.title);
+            Collections.sort(row.widgets, widgetComparator);
+            mEntries.add(row);
+        }
+
+        Collections.sort(mEntries, new WidgetListRowEntryComparator());
     }
 
     @Override
     public int getItemCount() {
-        if (mWidgetsModel == null) {
-            return 0;
+        return mEntries.size();
+    }
+
+    public String getSectionName(int pos) {
+        return mEntries.get(pos).titleSectionName;
+    }
+
+    /**
+     * Copies and returns the widgets associated with the package and user of the ComponentKey.
+     */
+    public List<WidgetItem> copyWidgetsForPackageUser(PackageUserKey packageUserKey) {
+        for (WidgetListRowEntry entry : mEntries) {
+            if (entry.pkgItem.packageName.equals(packageUserKey.mPackageName)) {
+                ArrayList<WidgetItem> widgets = new ArrayList<>(entry.widgets);
+                // Remove widgets not associated with the correct user.
+                Iterator<WidgetItem> iterator = widgets.iterator();
+                while (iterator.hasNext()) {
+                    if (!iterator.next().user.equals(packageUserKey.mUser)) {
+                        iterator.remove();
+                    }
+                }
+                return widgets.isEmpty() ? null : widgets;
+            }
         }
-        return mWidgetsModel.getPackageSize();
+        return null;
     }
 
     @Override
     public void onBindViewHolder(WidgetsRowViewHolder holder, int pos) {
-        List<Object> infoList = mWidgetsModel.getSortedWidgets(pos);
+        WidgetListRowEntry entry = mEntries.get(pos);
+        List<WidgetItem> infoList = entry.widgets;
 
-        ViewGroup row = ((ViewGroup) holder.getContent().findViewById(R.id.widgets_cell_list));
+        ViewGroup row = holder.cellContainer;
         if (DEBUG) {
             Log.d(TAG, String.format(
                     "onBindViewHolder [pos=%d, widget#=%d, row.getChildCount=%d]",
@@ -105,57 +134,47 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
         // Add more views.
         // if there are too many, hide them.
-        int diff = infoList.size() - row.getChildCount();
+        int expectedChildCount = infoList.size() + Math.max(0, infoList.size() - 1);
+        int childCount = row.getChildCount();
 
-        if (diff > 0) {
-            for (int i = 0; i < diff; i++) {
-                WidgetCell widget = (WidgetCell) mLayoutInflater.inflate(
-                        R.layout.widget_cell, row, false);
+        if (expectedChildCount > childCount) {
+            for (int i = childCount ; i < expectedChildCount; i++) {
+                if ((i & 1) == 1) {
+                    // Add a divider for odd index
+                    mLayoutInflater.inflate(R.layout.widget_list_divider, row);
+                } else {
+                    // Add cell for even index
+                    WidgetCell widget = (WidgetCell) mLayoutInflater.inflate(
+                            R.layout.widget_cell, row, false);
 
-                // set up touch.
-                widget.setOnClickListener(mIconClickListener);
-                widget.setOnLongClickListener(mIconLongClickListener);
-                LayoutParams lp = widget.getLayoutParams();
-                lp.height = widget.cellSize;
-                lp.width = widget.cellSize;
-                widget.setLayoutParams(lp);
-
-                row.addView(widget);
+                    // set up touch.
+                    widget.setOnClickListener(mIconClickListener);
+                    widget.setOnLongClickListener(mIconLongClickListener);
+                    row.addView(widget);
+                }
             }
-        } else if (diff < 0) {
-            for (int i=infoList.size() ; i < row.getChildCount(); i++) {
+        } else if (expectedChildCount < childCount) {
+            for (int i = expectedChildCount ; i < childCount; i++) {
                 row.getChildAt(i).setVisibility(View.GONE);
             }
         }
 
         // Bind the views in the application info section.
-        PackageItemInfo infoOut = mWidgetsModel.getPackageItemInfo(pos);
-        BubbleTextView tv = ((BubbleTextView) holder.getContent().findViewById(R.id.section));
-        tv.applyFromPackageItemInfo(infoOut);
+        holder.title.applyFromPackageItemInfo(entry.pkgItem);
 
         // Bind the view in the widget horizontal tray region.
-        if (getWidgetPreviewLoader() == null) {
-            return;
-        }
         for (int i=0; i < infoList.size(); i++) {
-            WidgetCell widget = (WidgetCell) row.getChildAt(i);
-            if (infoList.get(i) instanceof LauncherAppWidgetProviderInfo) {
-                LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo) infoList.get(i);
-                PendingAddWidgetInfo pawi = new PendingAddWidgetInfo(mLauncher, info, null);
-                widget.setTag(pawi);
-                widget.applyFromAppWidgetProviderInfo(info, mWidgetPreviewLoader);
-            } else if (infoList.get(i) instanceof ResolveInfo) {
-                ResolveInfo info = (ResolveInfo) infoList.get(i);
-                PendingAddShortcutInfo pasi = new PendingAddShortcutInfo(info.activityInfo);
-                widget.setTag(pasi);
-                widget.applyFromResolveInfo(mLauncher.getPackageManager(), info, mWidgetPreviewLoader);
-            }
+            WidgetCell widget = (WidgetCell) row.getChildAt(2*i);
+            widget.applyFromCellItem(infoList.get(i), mWidgetPreviewLoader);
             widget.ensurePreview();
             widget.setVisibility(View.VISIBLE);
+
+            if (i > 0) {
+                row.getChildAt(2*i - 1).setVisibility(View.VISIBLE);
+            }
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public WidgetsRowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (DEBUG) {
@@ -164,25 +183,19 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
         ViewGroup container = (ViewGroup) mLayoutInflater.inflate(
                 R.layout.widgets_list_row_view, parent, false);
-        LinearLayout cellList = (LinearLayout) container.findViewById(R.id.widgets_cell_list);
 
         // if the end padding is 0, then container view (horizontal scroll view) doesn't respect
         // the end of the linear layout width + the start padding and doesn't allow scrolling.
-        if (Utilities.ATLEAST_JB_MR1) {
-            cellList.setPaddingRelative(mIndent, 0, 1, 0);
-        } else {
-            cellList.setPadding(mIndent, 0, 1, 0);
-        }
+        container.findViewById(R.id.widgets_cell_list).setPaddingRelative(mIndent, 0, 1, 0);
 
         return new WidgetsRowViewHolder(container);
     }
 
     @Override
     public void onViewRecycled(WidgetsRowViewHolder holder) {
-        ViewGroup row = ((ViewGroup) holder.getContent().findViewById(R.id.widgets_cell_list));
-
-        for (int i = 0; i < row.getChildCount(); i++) {
-            WidgetCell widget = (WidgetCell) row.getChildAt(i);
+        int total = holder.cellContainer.getChildCount();
+        for (int i = 0; i < total; i+=2) {
+            WidgetCell widget = (WidgetCell) holder.cellContainer.getChildAt(i);
             widget.clear();
         }
     }
@@ -200,18 +213,17 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         return pos;
     }
 
-    private WidgetPreviewLoader getWidgetPreviewLoader() {
-        if (mWidgetPreviewLoader == null) {
-            mWidgetPreviewLoader = LauncherAppState.getInstance().getWidgetCache();
+    /**
+     * Comparator for sorting WidgetListRowEntry based on package title
+     */
+    public static class WidgetListRowEntryComparator implements Comparator<WidgetListRowEntry> {
+
+        private final LabelComparator mComparator = new LabelComparator();
+
+        @Override
+        public int compare(WidgetListRowEntry a, WidgetListRowEntry b) {
+            return mComparator.compare(a.pkgItem.title.toString(), b.pkgItem.title.toString());
         }
-        return mWidgetPreviewLoader;
     }
 
-    private void setContainerHeight() {
-        Resources r = mLauncher.getResources();
-        DeviceProfile profile = mLauncher.getDeviceProfile();
-        if (profile.isLargeTablet || profile.isTablet) {
-            mIndent = Utilities.pxFromDp(PRESET_INDENT_SIZE_TABLET, r.getDisplayMetrics());
-        }
-    }
 }
