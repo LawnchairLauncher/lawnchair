@@ -22,10 +22,12 @@ import com.android.launcher3.util.Thunk;
 
 public class CheckLongPressHelper {
 
+    public static final int DEFAULT_LONG_PRESS_TIMEOUT = 300;
+
     @Thunk View mView;
     @Thunk View.OnLongClickListener mListener;
     @Thunk boolean mHasPerformedLongPress;
-    private int mLongPressTimeout = 300;
+    private int mLongPressTimeout = DEFAULT_LONG_PRESS_TIMEOUT;
     private CheckForLongPress mPendingCheckForLongPress;
 
     class CheckForLongPress implements Runnable {

@@ -1,7 +1,10 @@
 package com.android.launcher3.compat;
 
+import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.Configuration;
+import android.icu.text.AlphabeticIndex;
+import android.os.Build;
+import android.os.LocaleList;
 import android.util.Log;
 
 import com.android.launcher3.Utilities;
@@ -20,7 +23,7 @@ public class AlphabeticIndexCompat {
         BaseIndex index = null;
 
         try {
-            if (Utilities.ATLEAST_N) {
+            if (Utilities.ATLEAST_NOUGAT) {
                 index = new AlphabeticIndexVN(context);
             }
         } catch (Exception e) {
@@ -156,69 +159,39 @@ public class AlphabeticIndexCompat {
     }
 
     /**
-     * Reflected android.icu.text.AlphabeticIndex implementation, falls back to the base
-     * alphabetic index.
+     * Implementation based on {@link AlphabeticIndex}.
      */
+    @TargetApi(Build.VERSION_CODES.N)
     private static class AlphabeticIndexVN extends BaseIndex {
 
-        private Object mAlphabeticIndex;
-        private Method mGetBucketIndexMethod;
+        private final AlphabeticIndex.ImmutableIndex mAlphabeticIndex;
 
-        private Method mGetBucketMethod;
-        private Method mGetLabelMethod;
+        public AlphabeticIndexVN(Context context) {
+            LocaleList locales = context.getResources().getConfiguration().getLocales();
+            int localeCount = locales.size();
 
-        public AlphabeticIndexVN(Context context) throws Exception {
-            // TODO: Replace this with locale list once available.
-            Object locales = Configuration.class.getDeclaredMethod("getLocales").invoke(
-                    context.getResources().getConfiguration());
-            int localeCount = (Integer) locales.getClass().getDeclaredMethod("size").invoke(locales);
-            Method localeGetter = locales.getClass().getDeclaredMethod("get", int.class);
-            Locale primaryLocale = localeCount == 0 ? Locale.ENGLISH :
-                    (Locale) localeGetter.invoke(locales, 0);
-
-            Class clazz = Class.forName("android.icu.text.AlphabeticIndex");
-            mAlphabeticIndex = clazz.getConstructor(Locale.class).newInstance(primaryLocale);
-
-            Method addLocales = clazz.getDeclaredMethod("addLabels", Locale[].class);
+            Locale primaryLocale = localeCount == 0 ? Locale.ENGLISH : locales.get(0);
+            AlphabeticIndex indexBuilder = new AlphabeticIndex(primaryLocale);
             for (int i = 1; i < localeCount; i++) {
-                Locale l = (Locale) localeGetter.invoke(locales, i);
-                addLocales.invoke(mAlphabeticIndex, new Object[]{ new Locale[] {l}});
+                indexBuilder.addLabels(locales.get(i));
             }
-            addLocales.invoke(mAlphabeticIndex, new Object[]{ new Locale[] {Locale.ENGLISH}});
+            indexBuilder.addLabels(Locale.ENGLISH);
 
-            mAlphabeticIndex = mAlphabeticIndex.getClass()
-                    .getDeclaredMethod("buildImmutableIndex")
-                    .invoke(mAlphabeticIndex);
-
-            mGetBucketIndexMethod = mAlphabeticIndex.getClass().getDeclaredMethod(
-                    "getBucketIndex", CharSequence.class);
-            mGetBucketMethod = mAlphabeticIndex.getClass().getDeclaredMethod("getBucket", int.class);
-            mGetLabelMethod = mGetBucketMethod.getReturnType().getDeclaredMethod("getLabel");
+            mAlphabeticIndex = indexBuilder.buildImmutableIndex();
         }
 
         /**
          * Returns the index of the bucket in which {@param s} should appear.
          */
         protected int getBucketIndex(String s) {
-            try {
-                return (Integer) mGetBucketIndexMethod.invoke(mAlphabeticIndex, s);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return super.getBucketIndex(s);
+            return mAlphabeticIndex.getBucketIndex(s);
         }
 
         /**
          * Returns the label for the bucket at the given index
          */
         protected String getBucketLabel(int index) {
-            try {
-                return (String) mGetLabelMethod.invoke(
-                        mGetBucketMethod.invoke(mAlphabeticIndex, index));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return super.getBucketLabel(index);
+            return mAlphabeticIndex.getBucket(index).getLabel();
         }
     }
 }

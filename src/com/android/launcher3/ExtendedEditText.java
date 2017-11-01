@@ -17,7 +17,9 @@ package com.android.launcher3;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.DragEvent;
 import android.view.KeyEvent;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 
@@ -25,6 +27,9 @@ import android.widget.EditText;
  * The edit text that reports back when the back key has been pressed.
  */
 public class ExtendedEditText extends EditText {
+
+    private boolean mShowImeAfterFirstLayout;
+    private boolean mForceDisableSuggestions = false;
 
     /**
      * Implemented by listeners of the back key.
@@ -36,10 +41,12 @@ public class ExtendedEditText extends EditText {
     private OnBackKeyListener mBackKeyListener;
 
     public ExtendedEditText(Context context) {
+        // ctor chaining breaks the touch handling
         super(context);
     }
 
     public ExtendedEditText(Context context, AttributeSet attrs) {
+        // ctor chaining breaks the touch handling
         super(context, attrs);
     }
 
@@ -61,5 +68,57 @@ public class ExtendedEditText extends EditText {
             return false;
         }
         return super.onKeyPreIme(keyCode, event);
+    }
+
+    @Override
+    public boolean onDragEvent(DragEvent event) {
+        // We don't want this view to interfere with Launcher own drag and drop.
+        return false;
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        if (mShowImeAfterFirstLayout) {
+            // soft input only shows one frame after the layout of the EditText happens,
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    showSoftInput();
+                    mShowImeAfterFirstLayout = false;
+                }
+            });
+        }
+    }
+
+    public void showKeyboard() {
+        mShowImeAfterFirstLayout = !showSoftInput();
+    }
+
+    private boolean showSoftInput() {
+        return requestFocus() &&
+                ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE))
+                    .showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    public void dispatchBackKey() {
+        ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE))
+                .hideSoftInputFromWindow(getWindowToken(), 0);
+        if (mBackKeyListener != null) {
+            mBackKeyListener.onBackKey();
+        }
+    }
+
+    /**
+     * Set to true when you want isSuggestionsEnabled to return false.
+     * Use this to disable the red underlines that appear under typos when suggestions is enabled.
+     */
+    public void forceDisableSuggestions(boolean forceDisableSuggestions) {
+        mForceDisableSuggestions = forceDisableSuggestions;
+    }
+
+    @Override
+    public boolean isSuggestionsEnabled() {
+        return !mForceDisableSuggestions && super.isSuggestionsEnabled();
     }
 }

@@ -19,14 +19,16 @@
 
 <resources>
 
-    <!-- Workspace -->
-    <style name="SearchButton"></style>
-
-    <style name="DropTargetButtonContainer">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">match_parent</item>
+    <style name="BaseLauncherTheme" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
     </style>
 
+    <!-- Workspace -->
     <style name="DropTargetButton" parent="DropTargetButtonBase">
         <item name="android:paddingLeft">60dp</item>
         <item name="android:paddingRight">60dp</item>

@@ -21,7 +21,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.view.View;
+import android.view.ViewDebug;
 import android.view.ViewGroup;
 
 public class ClickShadowView extends View {
@@ -32,7 +34,9 @@ public class ClickShadowView extends View {
 
     private final Paint mPaint;
 
+    @ViewDebug.ExportedProperty(category = "launcher")
     private final float mShadowOffset;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private final float mShadowPadding;
 
     private Bitmap mBitmap;
@@ -88,12 +92,26 @@ public class ClickShadowView extends View {
      * Aligns the shadow with {@param view}
      * @param viewParent immediate parent of {@param view}. It must be a sibling of this view.
      */
-    public void alignWithIconView(BubbleTextView view, ViewGroup viewParent) {
+    public void alignWithIconView(BubbleTextView view, ViewGroup viewParent, View clipAgainstView) {
         float leftShift = view.getLeft() + viewParent.getLeft() - getLeft();
         float topShift = view.getTop() + viewParent.getTop() - getTop();
         int iconWidth = view.getRight() - view.getLeft();
+        int iconHeight = view.getBottom() - view.getTop();
         int iconHSpace = iconWidth - view.getCompoundPaddingRight() - view.getCompoundPaddingLeft();
         float drawableWidth = view.getIcon().getBounds().width();
+
+        if (clipAgainstView != null) {
+            // Set the bounds to clip against
+            int[] coords = new int[] {0, 0};
+            Utilities.getDescendantCoordRelativeToAncestor(clipAgainstView, (View) getParent(),
+                    coords, false);
+            int clipLeft = (int) Math.max(0, coords[0] - leftShift - mShadowPadding);
+            int clipTop = (int) Math.max(0, coords[1] - topShift - mShadowPadding) ;
+            setClipBounds(new Rect(clipLeft, clipTop, clipLeft + iconWidth, clipTop + iconHeight));
+        } else {
+            // Reset the clip bounds
+            setClipBounds(null);
+        }
 
         setTranslationX(leftShift
                 + viewParent.getTranslationX()

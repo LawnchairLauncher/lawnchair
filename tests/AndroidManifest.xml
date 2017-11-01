@@ -18,14 +18,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.android.launcher3.tests">
 
+    <uses-sdk android:targetSdkVersion="25" android:minSdkVersion="21"/>
     <uses-sdk tools:overrideLibrary="android.support.test.uiautomator.v18"/>
 
-    <application>
+    <application android:debuggable="true">
         <uses-library android:name="android.test.runner" />
     </application>
 
     <instrumentation
-        android:name="android.test.InstrumentationTestRunner"
+        android:functionalTest="false"
+        android:handleProfiling="false"
+        android:name="android.support.test.runner.AndroidJUnitRunner"
         android:targetPackage="com.android.launcher3" >
     </instrumentation>
 </manifest>

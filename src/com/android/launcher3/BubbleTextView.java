@@ -16,30 +16,38 @@
 
 package com.android.launcher3;
 
-import android.annotation.TargetApi;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.Region;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.AttributeSet;
-import android.util.SparseArray;
+import android.util.Property;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewDebug;
 import android.view.ViewParent;
 import android.widget.TextView;
 
 import com.android.launcher3.IconCache.IconLoadRequest;
+import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
+import com.android.launcher3.badge.BadgeInfo;
+import com.android.launcher3.badge.BadgeRenderer;
+import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.graphics.DrawableFactory;
+import com.android.launcher3.graphics.HolographicOutlineHelper;
+import com.android.launcher3.graphics.IconPalette;
+import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.PackageItemInfo;
 
 import java.text.NumberFormat;
@@ -49,23 +57,26 @@ import java.text.NumberFormat;
  * because we want to make the bubble taller than the text and TextView's clip is
  * too aggressive.
  */
-public class BubbleTextView extends TextView
-        implements BaseRecyclerViewFastScrollBar.FastScrollFocusableView {
+public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
 
-    private static SparseArray<Theme> sPreloaderThemes = new SparseArray<Theme>(2);
-
-    private static final float SHADOW_LARGE_RADIUS = 4.0f;
-    private static final float SHADOW_SMALL_RADIUS = 1.75f;
-    private static final float SHADOW_Y_OFFSET = 2.0f;
-    private static final int SHADOW_LARGE_COLOUR = 0xDD000000;
-    private static final int SHADOW_SMALL_COLOUR = 0xCC000000;
+    // Dimensions in DP
+    private static final float AMBIENT_SHADOW_RADIUS = 2.5f;
+    private static final float KEY_SHADOW_RADIUS = 1f;
+    private static final float KEY_SHADOW_OFFSET = 0.5f;
+    private static final int AMBIENT_SHADOW_COLOR = 0x33000000;
+    private static final int KEY_SHADOW_COLOR = 0x66000000;
 
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
+    private static final int DISPLAY_FOLDER = 2;
+
+    private static final int[] STATE_PRESSED = new int[] {android.R.attr.state_pressed};
 
     private final Launcher mLauncher;
     private Drawable mIcon;
+    private final boolean mCenterVertically;
     private final Drawable mBackground;
+    private OnLongClickListener mOnLongClickListener;
     private final CheckLongPressHelper mLongPressHelper;
     private final HolographicOutlineHelper mOutlineHelper;
     private final StylusEventHelper mStylusEventHelper;
@@ -80,10 +91,36 @@ public class BubbleTextView extends TextView
     private final boolean mCustomShadowsEnabled;
     private final boolean mLayoutHorizontal;
     private final int mIconSize;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private int mTextColor;
 
+    private BadgeInfo mBadgeInfo;
+    private BadgeRenderer mBadgeRenderer;
+    private IconPalette mBadgePalette;
+    private float mBadgeScale;
+    private boolean mForceHideBadge;
+    private Point mTempSpaceForBadgeOffset = new Point();
+    private Rect mTempIconBounds = new Rect();
+
+    private static final Property<BubbleTextView, Float> BADGE_SCALE_PROPERTY
+            = new Property<BubbleTextView, Float>(Float.TYPE, "badgeScale") {
+        @Override
+        public Float get(BubbleTextView bubbleTextView) {
+            return bubbleTextView.mBadgeScale;
+        }
+
+        @Override
+        public void set(BubbleTextView bubbleTextView, Float value) {
+            bubbleTextView.mBadgeScale = value;
+            bubbleTextView.invalidate();
+        }
+    };
+
+    @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mStayPressed;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mIgnorePressedStateChange;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mDisableRelayout = false;
 
     private IconLoadRequest mIconLoadRequest;
@@ -98,12 +135,12 @@ public class BubbleTextView extends TextView
 
     public BubbleTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mLauncher = (Launcher) context;
+        mLauncher = Launcher.getLauncher(context);
         DeviceProfile grid = mLauncher.getDeviceProfile();
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BubbleTextView, defStyle, 0);
-        mCustomShadowsEnabled = a.getBoolean(R.styleable.BubbleTextView_customShadows, true);
+        mCustomShadowsEnabled = a.getBoolean(R.styleable.BubbleTextView_customShadows, false);
         mLayoutHorizontal = a.getBoolean(R.styleable.BubbleTextView_layoutHorizontal, false);
         mDeferShadowGenerationOnTouch =
                 a.getBoolean(R.styleable.BubbleTextView_deferShadowGeneration, false);
@@ -113,81 +150,67 @@ public class BubbleTextView extends TextView
         if (display == DISPLAY_WORKSPACE) {
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
         } else if (display == DISPLAY_ALL_APPS) {
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, grid.allAppsIconTextSizeSp);
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
+            setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
+        } else if (display == DISPLAY_FOLDER) {
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.folderChildTextSizePx);
+            setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
+            defaultIconSize = grid.folderChildIconSizePx;
         }
+        mCenterVertically = a.getBoolean(R.styleable.BubbleTextView_centerVertically, false);
 
         mIconSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_iconSizeOverride,
                 defaultIconSize);
-
         a.recycle();
 
         if (mCustomShadowsEnabled) {
             // Draw the background itself as the parent is drawn twice.
             mBackground = getBackground();
             setBackground(null);
+
+            // Set shadow layer as the larger shadow to that the textView does not clip the shadow.
+            float density = getResources().getDisplayMetrics().density;
+            setShadowLayer(density * AMBIENT_SHADOW_RADIUS, 0, 0, AMBIENT_SHADOW_COLOR);
         } else {
             mBackground = null;
         }
 
         mLongPressHelper = new CheckLongPressHelper(this);
-        mStylusEventHelper = new StylusEventHelper(this);
+        mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
-        mOutlineHelper = HolographicOutlineHelper.obtain(getContext());
-        if (mCustomShadowsEnabled) {
-            setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
-        }
-
-        setAccessibilityDelegate(LauncherAppState.getInstance().getAccessibilityDelegate());
+        mOutlineHelper = HolographicOutlineHelper.getInstance(getContext());
+        setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
     }
 
-    public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache) {
-        applyFromShortcutInfo(info, iconCache, false);
+    public void applyFromShortcutInfo(ShortcutInfo info) {
+        applyFromShortcutInfo(info, false);
     }
 
-    public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache,
-            boolean promiseStateChanged) {
-        Bitmap b = info.getIcon(iconCache);
-
-        FastBitmapDrawable iconDrawable = mLauncher.createIconDrawable(b);
-        if (info.isDisabled()) {
-            iconDrawable.setState(FastBitmapDrawable.State.DISABLED);
-        }
-        setIcon(iconDrawable, mIconSize);
-        if (info.contentDescription != null) {
-            setContentDescription(info.contentDescription);
-        }
-        setText(info.title);
+    public void applyFromShortcutInfo(ShortcutInfo info, boolean promiseStateChanged) {
+        applyIconAndLabel(info.iconBitmap, info);
         setTag(info);
-
         if (promiseStateChanged || info.isPromise()) {
-            applyState(promiseStateChanged);
+            applyPromiseState(promiseStateChanged);
         }
+
+        applyBadgeState(info, false /* animate */);
     }
 
     public void applyFromApplicationInfo(AppInfo info) {
-        FastBitmapDrawable iconDrawable = mLauncher.createIconDrawable(info.iconBitmap);
-        if (info.isDisabled()) {
-            iconDrawable.setState(FastBitmapDrawable.State.DISABLED);
-        }
-        setIcon(iconDrawable, mIconSize);
-        setText(info.title);
-        if (info.contentDescription != null) {
-            setContentDescription(info.contentDescription);
-        }
+        applyIconAndLabel(info.iconBitmap, info);
+
         // We don't need to check the info since it's not a ShortcutInfo
         super.setTag(info);
 
         // Verify high res immediately
         verifyHighRes();
+
+        applyBadgeState(info, false /* animate */);
     }
 
     public void applyFromPackageItemInfo(PackageItemInfo info) {
-        setIcon(mLauncher.createIconDrawable(info.iconBitmap), mIconSize);
-        setText(info.title);
-        if (info.contentDescription != null) {
-            setContentDescription(info.contentDescription);
-        }
+        applyIconAndLabel(info.iconBitmap, info);
         // We don't need to check the info since it's not a ShortcutInfo
         super.setTag(info);
 
@@ -195,13 +218,16 @@ public class BubbleTextView extends TextView
         verifyHighRes();
     }
 
-    /**
-     * Used for measurement only, sets some dummy values on this view.
-     */
-    public void applyDummyInfo() {
-        ColorDrawable d = new ColorDrawable();
-        setIcon(mLauncher.resizeIconDrawable(d), mIconSize);
-        setText("");
+    private void applyIconAndLabel(Bitmap icon, ItemInfo info) {
+        FastBitmapDrawable iconDrawable = DrawableFactory.get(getContext()).newIcon(icon, info);
+        iconDrawable.setIsDisabled(info.isDisabled());
+        setIcon(iconDrawable);
+        setText(info.title);
+        if (info.contentDescription != null) {
+            setContentDescription(info.isDisabled()
+                    ? getContext().getString(R.string.disabled_app_label, info.contentDescription)
+                    : info.contentDescription);
+        }
     }
 
     /**
@@ -233,12 +259,19 @@ public class BubbleTextView extends TextView
     }
 
     @Override
-    public void setPressed(boolean pressed) {
-        super.setPressed(pressed);
-
+    public void refreshDrawableState() {
         if (!mIgnorePressedStateChange) {
-            updateIconState();
+            super.refreshDrawableState();
         }
+    }
+
+    @Override
+    protected int[] onCreateDrawableState(int extraSpace) {
+        final int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
+        if (mStayPressed) {
+            mergeDrawableStates(drawableState, STATE_PRESSED);
+        }
+        return drawableState;
     }
 
     /** Returns the icon for this view. */
@@ -251,18 +284,14 @@ public class BubbleTextView extends TextView
         return mLayoutHorizontal;
     }
 
-    private void updateIconState() {
-        if (mIcon instanceof FastBitmapDrawable) {
-            FastBitmapDrawable d = (FastBitmapDrawable) mIcon;
-            if (getTag() instanceof ItemInfo
-                    && ((ItemInfo) getTag()).isDisabled()) {
-                d.animateState(FastBitmapDrawable.State.DISABLED);
-            } else if (isPressed() || mStayPressed) {
-                d.animateState(FastBitmapDrawable.State.PRESSED);
-            } else {
-                d.animateState(FastBitmapDrawable.State.NORMAL);
-            }
-        }
+    @Override
+    public void setOnLongClickListener(OnLongClickListener l) {
+        super.setOnLongClickListener(l);
+        mOnLongClickListener = l;
+    }
+
+    public OnLongClickListener getOnLongClickListener() {
+        return mOnLongClickListener;
     }
 
     @Override
@@ -272,7 +301,7 @@ public class BubbleTextView extends TextView
         boolean result = super.onTouchEvent(event);
 
         // Check for a stylus button press, if it occurs cancel any long press checks.
-        if (mStylusEventHelper.checkAndPerformStylusEvent(event)) {
+        if (mStylusEventHelper.onMotionEvent(event)) {
             mLongPressHelper.cancelLongPress();
             result = true;
         }
@@ -313,6 +342,7 @@ public class BubbleTextView extends TextView
     void setStayPressed(boolean stayPressed) {
         mStayPressed = stayPressed;
         if (!stayPressed) {
+            HolographicOutlineHelper.getInstance(getContext()).recycleShadowBitmap(mPressedBackground);
             mPressedBackground = null;
         } else {
             if (mPressedBackground == null) {
@@ -327,7 +357,7 @@ public class BubbleTextView extends TextView
                     this, mPressedBackground);
         }
 
-        updateIconState();
+        refreshDrawableState();
     }
 
     void clearPressedBackground() {
@@ -357,7 +387,7 @@ public class BubbleTextView extends TextView
 
         mPressedBackground = null;
         mIgnorePressedStateChange = false;
-        updateIconState();
+        refreshDrawableState();
         return result;
     }
 
@@ -365,6 +395,7 @@ public class BubbleTextView extends TextView
     public void draw(Canvas canvas) {
         if (!mCustomShadowsEnabled) {
             super.draw(canvas);
+            drawBadgeIfNecessary(canvas);
             return;
         }
 
@@ -388,22 +419,69 @@ public class BubbleTextView extends TextView
         }
 
         // If text is transparent, don't draw any shadow
-        if (getCurrentTextColor() == getResources().getColor(android.R.color.transparent)) {
+        if ((getCurrentTextColor() >> 24) == 0) {
             getPaint().clearShadowLayer();
             super.draw(canvas);
+            drawBadgeIfNecessary(canvas);
             return;
         }
 
         // We enhance the shadow by drawing the shadow twice
-        getPaint().setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
+        float density = getResources().getDisplayMetrics().density;
+        getPaint().setShadowLayer(density * AMBIENT_SHADOW_RADIUS, 0, 0, AMBIENT_SHADOW_COLOR);
         super.draw(canvas);
         canvas.save(Canvas.CLIP_SAVE_FLAG);
         canvas.clipRect(getScrollX(), getScrollY() + getExtendedPaddingTop(),
                 getScrollX() + getWidth(),
                 getScrollY() + getHeight(), Region.Op.INTERSECT);
-        getPaint().setShadowLayer(SHADOW_SMALL_RADIUS, 0.0f, 0.0f, SHADOW_SMALL_COLOUR);
+        getPaint().setShadowLayer(
+                density * KEY_SHADOW_RADIUS, 0.0f, density * KEY_SHADOW_OFFSET, KEY_SHADOW_COLOR);
         super.draw(canvas);
         canvas.restore();
+
+        drawBadgeIfNecessary(canvas);
+    }
+
+    /**
+     * Draws the icon badge in the top right corner of the icon bounds.
+     * @param canvas The canvas to draw to.
+     */
+    private void drawBadgeIfNecessary(Canvas canvas) {
+        if (!mForceHideBadge && (hasBadge() || mBadgeScale > 0)) {
+            getIconBounds(mTempIconBounds);
+            mTempSpaceForBadgeOffset.set((getWidth() - mIconSize) / 2, getPaddingTop());
+            final int scrollX = getScrollX();
+            final int scrollY = getScrollY();
+            canvas.translate(scrollX, scrollY);
+            mBadgeRenderer.draw(canvas, mBadgePalette, mBadgeInfo, mTempIconBounds, mBadgeScale,
+                    mTempSpaceForBadgeOffset);
+            canvas.translate(-scrollX, -scrollY);
+        }
+    }
+
+    public void forceHideBadge(boolean forceHideBadge) {
+        if (mForceHideBadge == forceHideBadge) {
+            return;
+        }
+        mForceHideBadge = forceHideBadge;
+
+        if (forceHideBadge) {
+            invalidate();
+        } else if (hasBadge()) {
+            ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, 0, 1).start();
+        }
+    }
+
+    private boolean hasBadge() {
+        return mBadgeInfo != null;
+    }
+
+    public void getIconBounds(Rect outBounds) {
+        int top = getPaddingTop();
+        int left = (getWidth() - mIconSize) / 2;
+        int right = left + mIconSize;
+        int bottom = top + mIconSize;
+        outBounds.set(left, top, right, bottom);
     }
 
     @Override
@@ -411,11 +489,20 @@ public class BubbleTextView extends TextView
         super.onAttachedToWindow();
 
         if (mBackground != null) mBackground.setCallback(this);
-
-        if (mIcon instanceof PreloadIconDrawable) {
-            ((PreloadIconDrawable) mIcon).applyPreloaderTheme(getPreloaderTheme());
-        }
         mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (mCenterVertically) {
+            Paint.FontMetrics fm = getPaint().getFontMetrics();
+            int cellHeightPx = mIconSize + getCompoundDrawablePadding() +
+                    (int) Math.ceil(fm.bottom - fm.top);
+            int height = MeasureSpec.getSize(heightMeasureSpec);
+            setPadding(getPaddingLeft(), (height - cellHeightPx) / 2, getPaddingRight(),
+                    getPaddingBottom());
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
@@ -452,7 +539,7 @@ public class BubbleTextView extends TextView
         mLongPressHelper.cancelLongPress();
     }
 
-    public void applyState(boolean promiseStateChanged) {
+    public void applyPromiseState(boolean promiseStateChanged) {
         if (getTag() instanceof ShortcutInfo) {
             ShortcutInfo info = (ShortcutInfo) getTag();
             final boolean isPromise = info.isPromise();
@@ -461,8 +548,8 @@ public class BubbleTextView extends TextView
                             info.getInstallProgress() : 0)) : 100;
 
             setContentDescription(progressLevel > 0 ?
-                getContext().getString(R.string.app_downloading_title, info.title,
-                        NumberFormat.getPercentInstance().format(progressLevel * 0.01)) :
+                    getContext().getString(R.string.app_downloading_title, info.title,
+                            NumberFormat.getPercentInstance().format(progressLevel * 0.01)) :
                     getContext().getString(R.string.app_waiting_download_title, info.title));
 
             if (mIcon != null) {
@@ -470,8 +557,9 @@ public class BubbleTextView extends TextView
                 if (mIcon instanceof PreloadIconDrawable) {
                     preloadDrawable = (PreloadIconDrawable) mIcon;
                 } else {
-                    preloadDrawable = new PreloadIconDrawable(mIcon, getPreloaderTheme());
-                    setIcon(preloadDrawable, mIconSize);
+                    preloadDrawable = DrawableFactory.get(getContext())
+                            .newPendingIcon(info.iconBitmap, getContext());
+                    setIcon(preloadDrawable);
                 }
 
                 preloadDrawable.setLevel(progressLevel);
@@ -482,39 +570,48 @@ public class BubbleTextView extends TextView
         }
     }
 
-    private Theme getPreloaderTheme() {
-        Object tag = getTag();
-        int style = ((tag != null) && (tag instanceof ShortcutInfo) &&
-                (((ShortcutInfo) tag).container >= 0)) ? R.style.PreloadIcon_Folder
-                        : R.style.PreloadIcon;
-        Theme theme = sPreloaderThemes.get(style);
-        if (theme == null) {
-            theme = getResources().newTheme();
-            theme.applyStyle(style, true);
-            sPreloaderThemes.put(style, theme);
+    public void applyBadgeState(ItemInfo itemInfo, boolean animate) {
+        if (mIcon instanceof FastBitmapDrawable) {
+            boolean wasBadged = mBadgeInfo != null;
+            mBadgeInfo = mLauncher.getPopupDataProvider().getBadgeInfoForItem(itemInfo);
+            boolean isBadged = mBadgeInfo != null;
+            float newBadgeScale = isBadged ? 1f : 0;
+            mBadgeRenderer = mLauncher.getDeviceProfile().mBadgeRenderer;
+            if (wasBadged || isBadged) {
+                mBadgePalette = IconPalette.getBadgePalette(getResources());
+                if (mBadgePalette == null) {
+                    mBadgePalette = ((FastBitmapDrawable) mIcon).getIconPalette();
+                }
+                // Animate when a badge is first added or when it is removed.
+                if (animate && (wasBadged ^ isBadged) && isShown()) {
+                    ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, newBadgeScale).start();
+                } else {
+                    mBadgeScale = newBadgeScale;
+                    invalidate();
+                }
+            }
         }
-        return theme;
+    }
+
+    public IconPalette getBadgePalette() {
+        return mBadgePalette;
     }
 
     /**
      * Sets the icon for this view based on the layout direction.
      */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private Drawable setIcon(Drawable icon, int iconSize) {
+    private void setIcon(Drawable icon) {
         mIcon = icon;
-        if (iconSize != -1) {
-            mIcon.setBounds(0, 0, iconSize, iconSize);
-        }
+        mIcon.setBounds(0, 0, mIconSize, mIconSize);
+        applyCompoundDrawables(mIcon);
+    }
+
+    protected void applyCompoundDrawables(Drawable icon) {
         if (mLayoutHorizontal) {
-            if (Utilities.ATLEAST_JB_MR1) {
-                setCompoundDrawablesRelative(mIcon, null, null, null);
-            } else {
-                setCompoundDrawables(mIcon, null, null, null);
-            }
+            setCompoundDrawablesRelative(icon, null, null, null);
         } else {
-            setCompoundDrawables(null, mIcon, null, null);
+            setCompoundDrawables(null, icon, null, null);
         }
-        return icon;
     }
 
     @Override
@@ -527,20 +624,16 @@ public class BubbleTextView extends TextView
     /**
      * Applies the item info if it is same as what the view is pointing to currently.
      */
-    public void reapplyItemInfo(final ItemInfo info) {
+    @Override
+    public void reapplyItemInfo(ItemInfoWithIcon info) {
         if (getTag() == info) {
-            FastBitmapDrawable.State prevState = FastBitmapDrawable.State.NORMAL;
-            if (mIcon instanceof FastBitmapDrawable) {
-                prevState = ((FastBitmapDrawable) mIcon).getCurrentState();
-            }
             mIconLoadRequest = null;
             mDisableRelayout = true;
 
             if (info instanceof AppInfo) {
                 applyFromApplicationInfo((AppInfo) info);
             } else if (info instanceof ShortcutInfo) {
-                applyFromShortcutInfo((ShortcutInfo) info,
-                        LauncherAppState.getInstance().getIconCache());
+                applyFromShortcutInfo((ShortcutInfo) info);
                 if ((info.rank < FolderIcon.NUM_ITEMS_IN_PREVIEW) && (info.container >= 0)) {
                     View folderIcon =
                             mLauncher.getWorkspace().getHomescreenIconByItemId(info.container);
@@ -550,12 +643,6 @@ public class BubbleTextView extends TextView
                 }
             } else if (info instanceof PackageItemInfo) {
                 applyFromPackageItemInfo((PackageItemInfo) info);
-            }
-
-            // If we are reapplying over an old icon, then we should update the new icon to the same
-            // state as the old icon
-            if (mIcon instanceof FastBitmapDrawable) {
-                ((FastBitmapDrawable) mIcon).setState(prevState);
             }
 
             mDisableRelayout = false;
@@ -570,68 +657,13 @@ public class BubbleTextView extends TextView
             mIconLoadRequest.cancel();
             mIconLoadRequest = null;
         }
-        if (getTag() instanceof AppInfo) {
-            AppInfo info = (AppInfo) getTag();
+        if (getTag() instanceof ItemInfoWithIcon) {
+            ItemInfoWithIcon info = (ItemInfoWithIcon) getTag();
             if (info.usingLowResIcon) {
-                mIconLoadRequest = LauncherAppState.getInstance().getIconCache()
-                        .updateIconInBackground(BubbleTextView.this, info);
-            }
-        } else if (getTag() instanceof ShortcutInfo) {
-            ShortcutInfo info = (ShortcutInfo) getTag();
-            if (info.usingLowResIcon) {
-                mIconLoadRequest = LauncherAppState.getInstance().getIconCache()
-                        .updateIconInBackground(BubbleTextView.this, info);
-            }
-        } else if (getTag() instanceof PackageItemInfo) {
-            PackageItemInfo info = (PackageItemInfo) getTag();
-            if (info.usingLowResIcon) {
-                mIconLoadRequest = LauncherAppState.getInstance().getIconCache()
+                mIconLoadRequest = LauncherAppState.getInstance(getContext()).getIconCache()
                         .updateIconInBackground(BubbleTextView.this, info);
             }
         }
-    }
-
-    @Override
-    public void setFastScrollFocusState(final FastBitmapDrawable.State focusState, boolean animated) {
-        // We can only set the fast scroll focus state on a FastBitmapDrawable
-        if (!(mIcon instanceof FastBitmapDrawable)) {
-            return;
-        }
-
-        FastBitmapDrawable d = (FastBitmapDrawable) mIcon;
-        if (animated) {
-            FastBitmapDrawable.State prevState = d.getCurrentState();
-            if (d.animateState(focusState)) {
-                // If the state was updated, then update the view accordingly
-                animate().scaleX(focusState.viewScale)
-                        .scaleY(focusState.viewScale)
-                        .setStartDelay(getStartDelayForStateChange(prevState, focusState))
-                        .setDuration(d.getDurationForStateChange(prevState, focusState))
-                        .start();
-            }
-        } else {
-            if (d.setState(focusState)) {
-                // If the state was updated, then update the view accordingly
-                animate().cancel();
-                setScaleX(focusState.viewScale);
-                setScaleY(focusState.viewScale);
-            }
-        }
-    }
-
-    /**
-     * Returns the start delay when animating between certain {@link FastBitmapDrawable} states.
-     */
-    private static int getStartDelayForStateChange(final FastBitmapDrawable.State fromState,
-            final FastBitmapDrawable.State toState) {
-        switch (toState) {
-            case NORMAL:
-                switch (fromState) {
-                    case FAST_SCROLL_HIGHLIGHTED:
-                        return FastBitmapDrawable.FAST_SCROLL_INACTIVE_DURATION / 4;
-                }
-        }
-        return 0;
     }
 
     /**

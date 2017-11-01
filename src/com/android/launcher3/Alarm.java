@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import android.os.Handler;
+import android.os.SystemClock;
 
 public class Alarm implements Runnable{
     // if we reach this time and the alarm hasn't been cancelled, call the listener
@@ -41,9 +42,16 @@ public class Alarm implements Runnable{
     // Sets the alarm to go off in a certain number of milliseconds. If the alarm is already set,
     // it's overwritten and only the new alarm setting is used
     public void setAlarm(long millisecondsInFuture) {
-        long currentTime = System.currentTimeMillis();
+        long currentTime = SystemClock.uptimeMillis();
         mAlarmPending = true;
+        long oldTriggerTime = mAlarmTriggerTime;
         mAlarmTriggerTime = currentTime + millisecondsInFuture;
+
+        // If the previous alarm was set for a longer duration, cancel it.
+        if (mWaitingForCallback && oldTriggerTime > mAlarmTriggerTime) {
+            mHandler.removeCallbacks(this);
+            mWaitingForCallback = false;
+        }
         if (!mWaitingForCallback) {
             mHandler.postDelayed(this, mAlarmTriggerTime - currentTime);
             mWaitingForCallback = true;
@@ -51,15 +59,14 @@ public class Alarm implements Runnable{
     }
 
     public void cancelAlarm() {
-        mAlarmTriggerTime = 0;
         mAlarmPending = false;
     }
 
     // this is called when our timer runs out
     public void run() {
         mWaitingForCallback = false;
-        if (mAlarmTriggerTime != 0) {
-            long currentTime = System.currentTimeMillis();
+        if (mAlarmPending) {
+            long currentTime = SystemClock.uptimeMillis();
             if (mAlarmTriggerTime > currentTime) {
                 // We still need to wait some time to trigger spring loaded mode--
                 // post a new callback

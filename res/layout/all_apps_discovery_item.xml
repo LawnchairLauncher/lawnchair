@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2017 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<com.android.launcher3.discovery.AppDiscoveryItemView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:background="?android:selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:padding="8dp"
+        android:scaleType="fitCenter"
+        android:focusable="false"
+        android:importantForAccessibility="no"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/image">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?android:textColorSecondary"
+            android:textSize="15sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?android:textColorSecondary"
+                android:textSize="14sp"
+                android:layout_gravity="center_vertical"
+                android:includeFontPadding="false"/>
+
+            <com.android.launcher3.discovery.RatingView
+                android:id="@+id/rating_view"
+                android:layout_width="70dp"
+                android:layout_height="16dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_gravity="center_vertical"/>
+
+            <TextView
+                android:id="@+id/review_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:textColor="?android:textColorHint"
+                android:textSize="14sp"
+                android:layout_gravity="center_vertical"/>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?android:textColorHint"
+                android:textSize="14sp"
+                android:layout_marginRight="12dp"
+                android:textAllCaps="true"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:importantForAccessibility="no"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:paddingLeft="@dimen/container_fastscroll_thumb_max_width"
+        android:paddingRight="@dimen/container_fastscroll_thumb_max_width"
+        android:src="@drawable/all_apps_divider"
+        android:scaleType="fitXY"
+        android:focusable="false" />
+</com.android.launcher3.discovery.AppDiscoveryItemView>

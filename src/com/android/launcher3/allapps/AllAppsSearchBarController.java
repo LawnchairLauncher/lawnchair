@@ -19,7 +19,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
@@ -31,6 +34,8 @@ import android.widget.TextView.OnEditorActionListener;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.discovery.AppDiscoveryItem;
+import com.android.launcher3.discovery.AppDiscoveryUpdateState;
 import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
@@ -45,10 +50,14 @@ public abstract class AllAppsSearchBarController
     protected AlphabeticalAppsList mApps;
     protected Callbacks mCb;
     protected ExtendedEditText mInput;
+    protected String mQuery;
 
     protected DefaultAppSearchAlgorithm mSearchAlgorithm;
     protected InputMethodManager mInputMethodManager;
 
+    public void setVisibility(int visibility) {
+        mInput.setVisibility(visibility);
+    }
     /**
      * Sets the references to the apps model and the search result callback.
      */
@@ -68,6 +77,14 @@ public abstract class AllAppsSearchBarController
                 mInput.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         mSearchAlgorithm = onInitializeSearch();
+
+        onInitialized();
+    }
+
+    /**
+     * You can override this method to perform custom initialization.
+     */
+    protected void onInitialized() {
     }
 
     /**
@@ -87,14 +104,23 @@ public abstract class AllAppsSearchBarController
 
     @Override
     public void afterTextChanged(final Editable s) {
-        String query = s.toString();
-        if (query.isEmpty()) {
+        mQuery = s.toString();
+        if (mQuery.isEmpty()) {
             mSearchAlgorithm.cancel(true);
             mCb.clearSearchResult();
         } else {
             mSearchAlgorithm.cancel(false);
-            mSearchAlgorithm.doSearch(query, mCb);
+            mSearchAlgorithm.doSearch(mQuery, mCb);
         }
+    }
+
+    protected void refreshSearchResult() {
+        if (TextUtils.isEmpty(mQuery)) {
+            return;
+        }
+        // If play store continues auto updating an app, we want to show partial result.
+        mSearchAlgorithm.cancel(false);
+        mSearchAlgorithm.doSearch(mQuery, mCb);
     }
 
     @Override
@@ -103,6 +129,7 @@ public abstract class AllAppsSearchBarController
         if (actionId != EditorInfo.IME_ACTION_SEARCH) {
             return false;
         }
+
         // Skip if the query is empty
         String query = v.getText().toString();
         if (query.isEmpty()) {
@@ -113,10 +140,9 @@ public abstract class AllAppsSearchBarController
 
     @Override
     public boolean onBackKey() {
-        // Only hide the search field if there is no query, or if there
-        // are no filtered results
+        // Only hide the search field if there is no query
         String query = Utilities.trim(mInput.getEditableText().toString());
-        if (query.isEmpty() || mApps.hasNoFilteredResults()) {
+        if (query.isEmpty()) {
             reset();
             return true;
         }
@@ -130,6 +156,11 @@ public abstract class AllAppsSearchBarController
         unfocusSearchField();
         mCb.clearSearchResult();
         mInput.setText("");
+        mQuery = null;
+        hideKeyboard();
+    }
+
+    protected void hideKeyboard() {
         mInputMethodManager.hideSoftInputFromWindow(mInput.getWindowToken(), 0);
     }
 
@@ -144,8 +175,7 @@ public abstract class AllAppsSearchBarController
      * Focuses the search field to handle key events.
      */
     public void focusSearchField() {
-        mInput.requestFocus();
-        mInputMethodManager.showSoftInput(mInput, InputMethodManager.SHOW_IMPLICIT);
+        mInput.showKeyboard();
     }
 
     /**
@@ -175,6 +205,7 @@ public abstract class AllAppsSearchBarController
         /**
          * Called when the bounds of the search bar has changed.
          */
+        @Deprecated
         void onBoundsChanged(Rect newBounds);
 
         /**
@@ -188,5 +219,19 @@ public abstract class AllAppsSearchBarController
          * Called when the search results should be cleared.
          */
         void clearSearchResult();
+
+
+        /**
+         * Called when the app discovery is providing an update of search, which can either be
+         * START for starting a new discovery,
+         * UPDATE for providing a new search result, can be called multiple times,
+         * END for indicating the end of results.
+         *
+         * @param app result item if UPDATE, else null
+         * @param app the update state, START, UPDATE or END
+         */
+        void onAppDiscoverySearchUpdate(@Nullable AppDiscoveryItem app,
+                @NonNull AppDiscoveryUpdateState state);
     }
+
 }

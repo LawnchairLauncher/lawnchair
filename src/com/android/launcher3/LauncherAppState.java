@@ -16,44 +16,55 @@
 
 package com.android.launcher3;
 
-import android.app.SearchManager;
+import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Looper;
 import android.util.Log;
 
-import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.util.ConfigMonitor;
+import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.TestingUtils;
-import com.android.launcher3.util.Thunk;
 
-import java.lang.ref.WeakReference;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 public class LauncherAppState {
 
-    private final AppFilter mAppFilter;
-    @Thunk final LauncherModel mModel;
-    private final IconCache mIconCache;
-    private final WidgetPreviewLoader mWidgetCache;
+    public static final boolean PROFILE_STARTUP = ProviderConfig.IS_DOGFOOD_BUILD;
 
-    private boolean mWallpaperChangedSinceLastCheck;
-
-    private static WeakReference<LauncherProvider> sLauncherProvider;
-    private static Context sContext;
-
+    // We do not need any synchronization for this variable as its only written on UI thread.
     private static LauncherAppState INSTANCE;
 
-    private InvariantDeviceProfile mInvariantDeviceProfile;
+    private final Context mContext;
+    private final LauncherModel mModel;
+    private final IconCache mIconCache;
+    private final WidgetPreviewLoader mWidgetCache;
+    private final InvariantDeviceProfile mInvariantDeviceProfile;
 
-    private LauncherAccessibilityDelegate mAccessibilityDelegate;
 
-    public static LauncherAppState getInstance() {
+    public static LauncherAppState getInstance(final Context context) {
         if (INSTANCE == null) {
-            INSTANCE = new LauncherAppState();
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                INSTANCE = new LauncherAppState(context.getApplicationContext());
+            } else {
+                try {
+                    return new MainThreadExecutor().submit(new Callable<LauncherAppState>() {
+                        @Override
+                        public LauncherAppState call() throws Exception {
+                            return LauncherAppState.getInstance(context);
+                        }
+                    }).get();
+                } catch (InterruptedException|ExecutionException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
         return INSTANCE;
     }
@@ -63,83 +74,67 @@ public class LauncherAppState {
     }
 
     public Context getContext() {
-        return sContext;
+        return mContext;
     }
 
-    public static void setApplicationContext(Context context) {
-        if (sContext != null) {
-            Log.w(Launcher.TAG, "setApplicationContext called twice! old=" + sContext + " new=" + context);
+    private LauncherAppState(Context context) {
+        if (getLocalProvider(context) == null) {
+            throw new RuntimeException(
+                    "Initializing LauncherAppState in the absence of LauncherProvider");
         }
-        sContext = context.getApplicationContext();
-    }
-
-    private LauncherAppState() {
-        if (sContext == null) {
-            throw new IllegalStateException("LauncherAppState inited before app context set");
-        }
-
-        Log.v(Launcher.TAG, "LauncherAppState inited");
+        Log.v(Launcher.TAG, "LauncherAppState initiated");
+        Preconditions.assertUIThread();
+        mContext = context;
 
         if (TestingUtils.MEMORY_DUMP_ENABLED) {
-            TestingUtils.startTrackingMemory(sContext);
+            TestingUtils.startTrackingMemory(mContext);
         }
 
-        mInvariantDeviceProfile = new InvariantDeviceProfile(sContext);
-        mIconCache = new IconCache(sContext, mInvariantDeviceProfile);
-        mWidgetCache = new WidgetPreviewLoader(sContext, mIconCache);
+        mInvariantDeviceProfile = new InvariantDeviceProfile(mContext);
+        mIconCache = new IconCache(mContext, mInvariantDeviceProfile);
+        mWidgetCache = new WidgetPreviewLoader(mContext, mIconCache);
 
-        mAppFilter = AppFilter.loadByName(sContext.getString(R.string.app_filter_class));
-        mModel = new LauncherModel(this, mIconCache, mAppFilter);
+        mModel = new LauncherModel(this, mIconCache,
+                Utilities.getOverrideObject(AppFilter.class, mContext, R.string.app_filter_class));
 
-        LauncherAppsCompat.getInstance(sContext).addOnAppsChangedCallback(mModel);
+        LauncherAppsCompat.getInstance(mContext).addOnAppsChangedCallback(mModel);
 
         // Register intent receivers
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_LOCALE_CHANGED);
-        filter.addAction(SearchManager.INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED);
         // For handling managed profiles
-        filter.addAction(LauncherAppsCompat.ACTION_MANAGED_PROFILE_ADDED);
-        filter.addAction(LauncherAppsCompat.ACTION_MANAGED_PROFILE_REMOVED);
-        filter.addAction(LauncherAppsCompat.ACTION_MANAGED_PROFILE_AVAILABLE);
-        filter.addAction(LauncherAppsCompat.ACTION_MANAGED_PROFILE_UNAVAILABLE);
+        filter.addAction(Intent.ACTION_MANAGED_PROFILE_ADDED);
+        filter.addAction(Intent.ACTION_MANAGED_PROFILE_REMOVED);
+        filter.addAction(Intent.ACTION_MANAGED_PROFILE_AVAILABLE);
+        filter.addAction(Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE);
+        filter.addAction(Intent.ACTION_MANAGED_PROFILE_UNLOCKED);
+        // For extracting colors from the wallpaper
+        if (Utilities.ATLEAST_NOUGAT) {
+            // TODO: add a broadcast entry to the manifest for pre-N.
+            filter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
+        }
 
-        sContext.registerReceiver(mModel, filter);
-        UserManagerCompat.getInstance(sContext).enableAndResetCache();
-        new ConfigMonitor(sContext).register();
+        mContext.registerReceiver(mModel, filter);
+        UserManagerCompat.getInstance(mContext).enableAndResetCache();
+        new ConfigMonitor(mContext).register();
 
-        sContext.registerReceiver(
-                new WallpaperChangedReceiver(), new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED));
+        ExtractionUtils.startColorExtractionServiceIfNecessary(mContext);
     }
 
     /**
      * Call from Application.onTerminate(), which is not guaranteed to ever be called.
      */
     public void onTerminate() {
-        sContext.unregisterReceiver(mModel);
-        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(sContext);
+        mContext.unregisterReceiver(mModel);
+        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(mContext);
         launcherApps.removeOnAppsChangedCallback(mModel);
-        PackageInstallerCompat.getInstance(sContext).onStop();
-    }
-
-    /**
-     * Reloads the workspace items from the DB and re-binds the workspace. This should generally
-     * not be called as DB updates are automatically followed by UI update
-     */
-    public void reloadWorkspace() {
-        mModel.resetLoadedState(false, true);
-        mModel.startLoaderFromBackground();
+        PackageInstallerCompat.getInstance(mContext).onStop();
     }
 
     LauncherModel setLauncher(Launcher launcher) {
-        getLauncherProvider().setLauncherProviderChangeListener(launcher);
+        getLocalProvider(mContext).setLauncherProviderChangeListener(launcher);
         mModel.initialize(launcher);
-        mAccessibilityDelegate = ((launcher != null) && Utilities.ATLEAST_LOLLIPOP) ?
-            new LauncherAccessibilityDelegate(launcher) : null;
         return mModel;
-    }
-
-    public LauncherAccessibilityDelegate getAccessibilityDelegate() {
-        return mAccessibilityDelegate;
     }
 
     public IconCache getIconCache() {
@@ -150,33 +145,25 @@ public class LauncherAppState {
         return mModel;
     }
 
-    static void setLauncherProvider(LauncherProvider provider) {
-        sLauncherProvider = new WeakReference<LauncherProvider>(provider);
-    }
-
-    public static LauncherProvider getLauncherProvider() {
-        return sLauncherProvider.get();
-    }
-
     public WidgetPreviewLoader getWidgetCache() {
         return mWidgetCache;
-    }
-
-    public void onWallpaperChanged() {
-        mWallpaperChangedSinceLastCheck = true;
-    }
-
-    public boolean hasWallpaperChangedSinceLastCheck() {
-        boolean result = mWallpaperChangedSinceLastCheck;
-        mWallpaperChangedSinceLastCheck = false;
-        return result;
     }
 
     public InvariantDeviceProfile getInvariantDeviceProfile() {
         return mInvariantDeviceProfile;
     }
 
-    public static boolean isDogfoodBuild() {
-        return FeatureFlags.IS_ALPHA_BUILD || FeatureFlags.IS_DEV_BUILD;
+    /**
+     * Shorthand for {@link #getInvariantDeviceProfile()}
+     */
+    public static InvariantDeviceProfile getIDP(Context context) {
+        return LauncherAppState.getInstance(context).getInvariantDeviceProfile();
+    }
+
+    private static LauncherProvider getLocalProvider(Context context) {
+        try (ContentProviderClient cl = context.getContentResolver()
+                .acquireContentProviderClient(LauncherProvider.AUTHORITY)) {
+            return (LauncherProvider) cl.getLocalContentProvider();
+        }
     }
 }

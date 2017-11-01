@@ -17,6 +17,7 @@
 package com.android.launcher3.compat;
 
 import android.content.Context;
+import android.os.UserHandle;
 
 import com.android.launcher3.Utilities;
 
@@ -32,14 +33,14 @@ public abstract class UserManagerCompat {
     public static UserManagerCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                if (Utilities.ATLEAST_N) {
+                if (Utilities.ATLEAST_NOUGAT_MR1) {
+                    sInstance = new UserManagerCompatVNMr1(context.getApplicationContext());
+                } else if (Utilities.ATLEAST_NOUGAT) {
                     sInstance = new UserManagerCompatVN(context.getApplicationContext());
-                } else if (Utilities.ATLEAST_LOLLIPOP) {
-                    sInstance = new UserManagerCompatVL(context.getApplicationContext());
-                } else if (Utilities.ATLEAST_JB_MR1) {
-                    sInstance = new UserManagerCompatV17(context.getApplicationContext());
+                } else if (Utilities.ATLEAST_MARSHMALLOW) {
+                    sInstance = new UserManagerCompatVM(context.getApplicationContext());
                 } else {
-                    sInstance = new UserManagerCompatV16();
+                    sInstance = new UserManagerCompatVL(context.getApplicationContext());
                 }
             }
             return sInstance;
@@ -51,10 +52,13 @@ public abstract class UserManagerCompat {
      */
     public abstract void enableAndResetCache();
 
-    public abstract List<UserHandleCompat> getUserProfiles();
-    public abstract long getSerialNumberForUser(UserHandleCompat user);
-    public abstract UserHandleCompat getUserForSerialNumber(long serialNumber);
-    public abstract CharSequence getBadgedLabelForUser(CharSequence label, UserHandleCompat user);
-    public abstract long getUserCreationTime(UserHandleCompat user);
-    public abstract boolean isQuietModeEnabled(UserHandleCompat user);
+    public abstract List<UserHandle> getUserProfiles();
+    public abstract long getSerialNumberForUser(UserHandle user);
+    public abstract UserHandle getUserForSerialNumber(long serialNumber);
+    public abstract CharSequence getBadgedLabelForUser(CharSequence label, UserHandle user);
+    public abstract long getUserCreationTime(UserHandle user);
+    public abstract boolean isQuietModeEnabled(UserHandle user);
+    public abstract boolean isUserUnlocked(UserHandle user);
+
+    public abstract boolean isDemoUser();
 }

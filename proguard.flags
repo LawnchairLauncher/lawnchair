@@ -1,3 +1,7 @@
+-keep,allowshrinking,allowoptimization class com.android.launcher3.** {
+  *;
+}
+
 -keep class com.android.launcher3.allapps.AllAppsBackgroundDrawable {
   public void setAlpha(int);
   public int getAlpha();
@@ -35,7 +39,7 @@
   public int getY();
 }
 
--keep class com.android.launcher3.DragLayer$LayoutParams {
+-keep class com.android.launcher3.dragndrop.DragLayer$LayoutParams {
   public void setWidth(int);
   public int getWidth();
   public void setHeight(int);
@@ -62,6 +66,11 @@
   public void setAnimationProgress(float);
 }
 
+-keep class com.android.launcher3.pageindicators.CaretDrawable {
+  public float getCaretProgress();
+  public void setCaretProgress(float);
+}
+
 -keep class com.android.launcher3.Workspace {
   public float getBackgroundAlpha();
   public void setBackgroundAlpha(float);
@@ -73,3 +82,19 @@
   *;
 }
 
+# Proguard will strip methods required for talkback to properly scroll to
+# next row when focus is on the last item of last row when using a RecyclerView
+# Keep optimized and shrunk proguard to prevent issues like this when using
+# support jar.
+#-keep,allowoptimization,allowshrinking class android.support.** {
+#  *;
+#}
+-keep class android.support.v7.widget.RecyclerView { *; }
+
+-keep interface com.android.launcher3.userevent.nano.LauncherLogProto.** {
+  *;
+}
+
+-keep interface com.android.launcher3.model.nano.LauncherDumpProto.** {
+  *;
+}

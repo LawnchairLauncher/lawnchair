@@ -26,20 +26,27 @@
     <string name="activity_not_available" msgid="7456344436509528827">"App non disponibile"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"L\'app scaricata è stata disattivata in modalità provvisoria"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widget disabilitati in modalità provvisoria"</string>
+    <string name="shortcut_not_available" msgid="2536503539825726397">"La scorciatoia non è disponibile"</string>
+    <string name="home_screen" msgid="806512411299847073">"Schermata Home"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"Azioni personalizzate"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Tocca e tieni premuto per scegliere un widget."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Tocca due volte e tieni premuto per scegliere un widget o per utilizzare azioni personalizzate."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"Ricerca app…"</string>
+    <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d di larghezza per %2$d di altezza"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Tieni premuto per posizionare l\'elemento manualmente"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"Aggiungi automaticamente"</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Cerca app"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Caricamento di app…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Nessuna app trovata corrispondente a \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
-    <string name="all_apps_search_market_message" msgid="5470761048755751471">"Vai a <xliff:g id="QUERY">%1$s</xliff:g>"</string>
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Cerca altre app"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"Notifiche"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Spazio nella schermata Home esaurito."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Spazio esaurito nella barra dei Preferiti"</string>
-    <string name="all_apps_button_label" msgid="9110807029020582876">"App"</string>
+    <string name="all_apps_button_label" msgid="8130441508702294465">"Elenco di app"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Home page"</string>
-    <string name="delete_target_label" msgid="1822697352535677073">"Rimuovi"</string>
-    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Disinstalla"</string>
-    <string name="info_target_label" msgid="8053346143994679532">"Informazioni app"</string>
+    <string name="remove_drop_target_label" msgid="7812859488053230776">"Rimuovi"</string>
+    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Disinstalla"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"Informazioni app"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"aggiunta di scorciatoie"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Consente a un\'app di aggiungere scorciatoie automaticamente."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"lettura di impostazioni e scorciatoie in Home"</string>
@@ -51,20 +58,13 @@
     <string name="gadget_setup_text" msgid="8274003207686040488">"Configurazione"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Questa è un\'app di sistema e non può essere disinstallata."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Cartella senza nome"</string>
+    <string name="disabled_app_label" msgid="6673129024321402780">"App <xliff:g id="APP_NAME">%1$s</xliff:g> disattivata"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Pagina %1$d di %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Schermata Home %1$d di %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Nuova pagina Schermata Home"</string>
-    <string name="first_run_cling_title" msgid="2459738000155917941">"Benvenuto"</string>
-    <string name="migration_cling_title" msgid="9181776667882933767">"Copia le icone delle tue app"</string>
-    <string name="migration_cling_description" msgid="2752413805582227644">"Importare icone e cartelle dalle schermate Home precedenti?"</string>
-    <string name="migration_cling_copy_apps" msgid="946331230090919440">"COPIA ICONE"</string>
-    <string name="migration_cling_use_default" msgid="2626475813981258626">"RICOMINCIA"</string>
-    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Sfondi, widget e impostazioni"</string>
-    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Tieni premuto un dito sullo sfondo per personalizzare"</string>
-    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"OK"</string>
     <string name="folder_opened" msgid="94695026776264709">"Cartella aperta, <xliff:g id="WIDTH">%1$d</xliff:g> per <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
-    <string name="folder_tap_to_close" msgid="1884479294466410023">"Tocca per chiudere la cartella"</string>
-    <string name="folder_tap_to_rename" msgid="9191075570492871147">"Tocca per salvare nuovo nome"</string>
+    <string name="folder_tap_to_close" msgid="4625795376335528256">"Tocca per chiudere la cartella"</string>
+    <string name="folder_tap_to_rename" msgid="4017685068016979677">"Tocca per salvare il nuovo nome"</string>
     <string name="folder_closed" msgid="4100806530910930934">"Cartella chiusa"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Nome della cartella sostituito con <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format" msgid="6629239338071103179">"Cartella: <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -72,7 +72,20 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Sfondi"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Impostazioni"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Disattivata dall\'amministratore"</string>
-    <string name="allow_rotation_title" msgid="2118706734511831751">"Consenti rotazione"</string>
+    <string name="accessibility_action_overview" msgid="6257665857640347026">"Panoramica"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Consenti rotazione della schermata Home"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"Con il telefono ruotato"</string>
+    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"L\'impostazione corrente del display non consente la rotazione"</string>
+    <string name="icon_badging_title" msgid="4418239350706629417">"Badge per le icone"</string>
+    <string name="icon_badging_desc_on" msgid="6022379097717134764">"Impostazione attiva per tutte le app"</string>
+    <string name="icon_badging_desc_off" msgid="1574640601251590211">"Impostazione non attiva per tutte le app"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Aggiungi icone alla schermata Home"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Per le nuove app"</string>
+    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
+    <skip />
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"Usa impostazione predefinita di sistema"</string>
+    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"Sconosciuto"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Rimuovi"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Cerca"</string>
@@ -80,6 +93,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"L\'app per questa icona non è installata. Puoi rimuoverla o cercare l\'app e installarla manualmente."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Download di <xliff:g id="NAME">%1$s</xliff:g> in corso, <xliff:g id="PROGRESS">%2$s</xliff:g> completato"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> in attesa di installazione"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Widget di <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Aggiungi a schermata Home"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Sposta elemento qui"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Elemento aggiunto alla schermata Home"</string>
@@ -104,4 +118,9 @@
     <string name="action_decrease_width" msgid="1374549771083094654">"Riduci larghezza"</string>
     <string name="action_decrease_height" msgid="282377193880900022">"Riduci altezza"</string>
     <string name="widget_resized" msgid="9130327887929620">"Widget ridimensionato a larghezza <xliff:g id="NUMBER_0">%1$s</xliff:g>, altezza <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="action_deep_shortcut" msgid="2864038805849372848">"Scorciatoie"</string>
+    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> scorciatoie per <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> scorciatoie e <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> notifiche relative a <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"Ignora"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"Notifica ignorata"</string>
 </resources>

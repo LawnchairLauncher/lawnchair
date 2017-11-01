@@ -1,0 +1,61 @@
+package com.android.launcher3.util;
+
+import android.test.suitebuilder.annotation.SmallTest;
+
+import junit.framework.TestCase;
+
+/**
+ * Unit tests for {@link GridOccupancy}
+ */
+@SmallTest
+public class GridOccupancyTest extends TestCase {
+
+    public void testFindVacantCell() {
+        GridOccupancy grid = initGrid(4,
+                1, 1, 1, 0, 0,
+                0, 0, 1, 1, 0,
+                0, 0, 0, 0, 0,
+                1, 1, 0, 0, 0
+                );
+
+        int[] vacant = new int[2];
+        assertTrue(grid.findVacantCell(vacant, 2, 2));
+        assertEquals(vacant[0], 0);
+        assertEquals(vacant[1], 1);
+
+        assertTrue(grid.findVacantCell(vacant, 3, 2));
+        assertEquals(vacant[0], 2);
+        assertEquals(vacant[1], 2);
+
+        assertFalse(grid.findVacantCell(vacant, 3, 3));
+    }
+
+    public void testIsRegionVacant() {
+        GridOccupancy grid = initGrid(4,
+                1, 1, 1, 0, 0,
+                0, 0, 1, 1, 0,
+                0, 0, 0, 0, 0,
+                1, 1, 0, 0, 0
+        );
+
+        assertTrue(grid.isRegionVacant(4, 0, 1, 4));
+        assertTrue(grid.isRegionVacant(0, 1, 2, 2));
+        assertTrue(grid.isRegionVacant(2, 2, 3, 2));
+
+        assertFalse(grid.isRegionVacant(3, 0, 2, 4));
+        assertFalse(grid.isRegionVacant(0, 0, 2, 1));
+    }
+
+    private GridOccupancy initGrid(int rows, int... cells) {
+        int cols = cells.length / rows;
+        int i = 0;
+        GridOccupancy grid = new GridOccupancy(cols, rows);
+        for (int y = 0; y < rows; y++) {
+            for (int x = 0; x < cols; x++) {
+                grid.cells[x][y] = cells[i] != 0;
+                i++;
+            }
+        }
+        return grid;
+    }
+}

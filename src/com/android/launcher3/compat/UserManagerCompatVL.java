@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2014 The Android Open Source Project
  *
@@ -17,12 +16,11 @@
 
 package com.android.launcher3.compat;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.UserHandle;
+import android.os.UserManager;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.LongArrayMap;
@@ -32,17 +30,58 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class UserManagerCompatVL extends UserManagerCompatV17 {
+public class UserManagerCompatVL extends UserManagerCompat {
     private static final String USER_CREATION_TIME_KEY = "user_creation_time_";
 
+    protected final UserManager mUserManager;
     private final PackageManager mPm;
     private final Context mContext;
 
+    protected LongArrayMap<UserHandle> mUsers;
+    // Create a separate reverse map as LongArrayMap.indexOfValue checks if objects are same
+    // and not {@link Object#equals}
+    protected HashMap<UserHandle, Long> mUserToSerialMap;
+
     UserManagerCompatVL(Context context) {
-        super(context);
+        mUserManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
         mPm = context.getPackageManager();
         mContext = context;
+    }
+
+    @Override
+    public long getSerialNumberForUser(UserHandle user) {
+        synchronized (this) {
+            if (mUserToSerialMap != null) {
+                Long serial = mUserToSerialMap.get(user);
+                return serial == null ? 0 : serial;
+            }
+        }
+        return mUserManager.getSerialNumberForUser(user);
+    }
+
+    @Override
+    public UserHandle getUserForSerialNumber(long serialNumber) {
+        synchronized (this) {
+            if (mUsers != null) {
+                return mUsers.get(serialNumber);
+            }
+        }
+        return mUserManager.getUserForSerialNumber(serialNumber);
+    }
+
+    @Override
+    public boolean isQuietModeEnabled(UserHandle user) {
+        return false;
+    }
+
+    @Override
+    public boolean isUserUnlocked(UserHandle user) {
+        return true;
+    }
+
+    @Override
+    public boolean isDemoUser() {
+        return false;
     }
 
     @Override
@@ -54,49 +93,35 @@ public class UserManagerCompatVL extends UserManagerCompatV17 {
             if (users != null) {
                 for (UserHandle user : users) {
                     long serial = mUserManager.getSerialNumberForUser(user);
-                    UserHandleCompat userCompat = UserHandleCompat.fromUser(user);
-                    mUsers.put(serial, userCompat);
-                    mUserToSerialMap.put(userCompat, serial);
+                    mUsers.put(serial, user);
+                    mUserToSerialMap.put(user, serial);
                 }
             }
         }
     }
 
     @Override
-    public List<UserHandleCompat> getUserProfiles() {
+    public List<UserHandle> getUserProfiles() {
         synchronized (this) {
             if (mUsers != null) {
-                List<UserHandleCompat> users = new ArrayList<>();
-                users.addAll(mUserToSerialMap.keySet());
-                return users;
+                return new ArrayList<>(mUserToSerialMap.keySet());
             }
         }
 
         List<UserHandle> users = mUserManager.getUserProfiles();
-        if (users == null) {
-            return Collections.emptyList();
-        }
-        ArrayList<UserHandleCompat> compatUsers = new ArrayList<UserHandleCompat>(
-                users.size());
-        for (UserHandle user : users) {
-            compatUsers.add(UserHandleCompat.fromUser(user));
-        }
-        return compatUsers;
+        return users == null ? Collections.<UserHandle>emptyList() : users;
     }
 
     @Override
-    public CharSequence getBadgedLabelForUser(CharSequence label, UserHandleCompat user) {
+    public CharSequence getBadgedLabelForUser(CharSequence label, UserHandle user) {
         if (user == null) {
             return label;
         }
-        return mPm.getUserBadgedLabel(label, user.getUser());
+        return mPm.getUserBadgedLabel(label, user);
     }
 
     @Override
-    public long getUserCreationTime(UserHandleCompat user) {
-        if (Utilities.ATLEAST_MARSHMALLOW) {
-            return mUserManager.getUserCreationTime(user.getUser());
-        }
+    public long getUserCreationTime(UserHandle user) {
         SharedPreferences prefs = Utilities.getPrefs(mContext);
         String key = USER_CREATION_TIME_KEY + getSerialNumberForUser(user);
         if (!prefs.contains(key)) {

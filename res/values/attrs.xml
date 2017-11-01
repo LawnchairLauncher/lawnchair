@@ -25,60 +25,18 @@
         <attr name="iconDisplay" format="integer">
             <enum name="workspace" value="0" />
             <enum name="all_apps" value="1" />
-            <enum name="widget_section" value="2" />
+            <enum name="folder" value="2" />
+            <enum name="widget_section" value="3" />
+            <enum name="shortcut_popup" value="4" />
         </attr>
         <attr name="deferShadowGeneration" format="boolean" />
         <attr name="customShadows" format="boolean" />
-    </declare-styleable>
-
-    <!-- Page Indicator specific attributes. -->
-    <declare-styleable name="PageIndicator">
-        <attr name="windowSize" format="integer"  />
-    </declare-styleable>
-
-    <!-- Workspace specific attributes. These attributes are used to customize
-         the workspace in XML files. -->
-    <declare-styleable name="Workspace">
-        <!-- The first screen the workspace should display. -->
-        <attr name="defaultScreen" format="integer"  />
-        <!-- The number of horizontal cells in the CellLayout -->
-        <attr name="cellCountX" format="integer"  />
-        <!-- The number of vertical cells in the CellLayout -->
-        <attr name="cellCountY" format="integer"  />
-    </declare-styleable>
-    
-    <!-- Hotseat specific attributes. These attributes are used to customize
-         the hotseat in XML files. -->
-    <declare-styleable name="Hotseat">
-        <!-- The number of horizontal cells in the CellLayout -->
-        <attr name="cellCountX" />
-        <!-- The number of vertical cells in the CellLayout -->
-        <attr name="cellCountY" />
-    </declare-styleable>
-
-    <!-- CellLayout specific attributes. These attributes are used to customize
-         a CellLayout view in XML files. -->
-    <declare-styleable name="CellLayout">
-        <!-- The width of a single cell -->
-        <attr name="cellWidth" format="dimension"  />
-        <!-- The height of a single cell -->
-        <attr name="cellHeight" format="dimension"  />
-        <!-- An override for the width and height gap to allow users to specify
-             a specific size for the page using spacing instead of resolving the
-             spacing from the width of the page -->
-        <attr name="widthGap" format="dimension" />
-        <attr name="heightGap" format="dimension" />
-        <!-- The max gap size for each dimension -->
-        <attr name="maxGap" format="dimension" />
+        <attr name="centerVertically" format="boolean" />
     </declare-styleable>
 
     <!-- PagedView specific attributes. These attributes are used to customize
          a PagedView view in XML files. -->
     <declare-styleable name="PagedView">
-        <!-- A spacing override for the icons within a page -->
-        <attr name="pageLayoutWidthGap" format="dimension" />
-        <attr name="pageLayoutHeightGap" format="dimension" />
-
         <!-- The page indicator for this workspace -->
         <attr name="pageIndicator" format="reference" />
     </declare-styleable>
@@ -114,13 +72,43 @@
         <attr name="folderItems" format="reference" />
     </declare-styleable>
 
-    <declare-styleable name="PreloadIconDrawable">
-        <attr name="background" format="reference" />
-        <attr name="ringOutset" format="dimension" />
-        <attr name="indicatorSize" format="dimension" />
-    </declare-styleable>
-
     <declare-styleable name="InsettableFrameLayout_Layout">
         <attr name="layout_ignoreInsets" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="ButtonDropTarget">
+        <attr name="hideParentOnDisable" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="InvariantDeviceProfile">
+        <attr name="name" format="string" />
+        <attr name="minWidthDps" format="float" />
+        <attr name="minHeightDps" format="float" />
+
+        <attr name="numRows" format="integer" />
+        <attr name="numColumns" format="integer" />
+        <!-- numFolderRows & numFolderColumns defaults to numRows & numColumns, if not specified -->
+        <attr name="numFolderRows" format="integer" />
+        <attr name="numFolderColumns" format="integer" />
+        <!-- minAllAppsPredictionColumns defaults to numColumns, if not specified -->
+        <attr name="minAllAppsPredictionColumns" format="integer" />
+        <!-- numHotseatIcons defaults to numColumns, if not specified -->
+        <attr name="numHotseatIcons" format="integer" />
+
+        <attr name="iconSize" format="float" />
+        <attr name="iconTextSize" format="float" />
+        <!-- hotseatIconSize defaults to iconSize, if not specified -->
+        <attr name="hotseatIconSize" format="float" />
+
+        <attr name="defaultLayoutId" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="CellLayout">
+        <attr name="containerType" format="integer">
+            <enum name="workspace" value="0" />
+            <enum name="hotseat" value="1" />
+            <enum name="folder" value="2" />
+        </attr>
+    </declare-styleable>
+
 </resources>

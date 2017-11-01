@@ -7,9 +7,9 @@ package com.android.launcher3;
  */
 public interface LauncherProviderChangeListener {
 
-    public void onLauncherProviderChange();
+    void onLauncherProviderChanged();
 
-    public void onSettingsChanged(String settings, boolean value);
+    void onExtractedColorsChanged();
 
-    public void onAppWidgetHostReset();
+    void onAppWidgetHostReset();
 }

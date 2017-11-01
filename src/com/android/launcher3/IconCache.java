@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -36,26 +37,31 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Handler;
+import android.os.Process;
 import android.os.SystemClock;
+import android.os.UserHandle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.Preconditions;
+import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.SQLiteCacheHelper;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.Stack;
 
@@ -72,23 +78,25 @@ public class IconCache {
     private static final String EMPTY_CLASS_NAME = ".";
 
     private static final boolean DEBUG = false;
+    private static final boolean DEBUG_IGNORE_CACHE = false;
 
     private static final int LOW_RES_SCALE_FACTOR = 5;
 
     @Thunk static final Object ICON_UPDATE_TOKEN = new Object();
 
-    @Thunk static class CacheEntry {
+    public static class CacheEntry {
         public Bitmap icon;
         public CharSequence title = "";
         public CharSequence contentDescription = "";
         public boolean isLowResIcon;
     }
 
-    private final HashMap<UserHandleCompat, Bitmap> mDefaultIcons = new HashMap<>();
+    private final HashMap<UserHandle, Bitmap> mDefaultIcons = new HashMap<>();
     @Thunk final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
 
     private final Context mContext;
     private final PackageManager mPackageManager;
+    private IconProvider mIconProvider;
     @Thunk final UserManagerCompat mUserManager;
     private final LauncherAppsCompat mLauncherApps;
     private final HashMap<ComponentKey, CacheEntry> mCache =
@@ -107,8 +115,6 @@ public class IconCache {
     private final int mPackageBgColor;
     private final BitmapFactory.Options mLowResOptions;
 
-    private String mSystemState;
-    private Bitmap mLowResBitmap;
     private Canvas mLowResCanvas;
     private Paint mLowResPaint;
 
@@ -119,16 +125,20 @@ public class IconCache {
         mLauncherApps = LauncherAppsCompat.getInstance(mContext);
         mIconDpi = inv.fillResIconDpi;
         mIconDb = new IconDB(context, inv.iconBitmapSize);
+        mLowResCanvas = new Canvas();
+        mLowResPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
 
+        mIconProvider = Utilities.getOverrideObject(
+                IconProvider.class, context, R.string.icon_provider_class);
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
 
-        mActivityBgColor = context.getResources().getColor(R.color.quantum_panel_bg_color);
-        mPackageBgColor = context.getResources().getColor(R.color.quantum_panel_bg_color_dark);
+        mActivityBgColor = Themes.getColorPrimary(context, R.style.LauncherTheme);
+        mPackageBgColor = Themes.getColorPrimary(context, R.style.WidgetContainerTheme);
+
         mLowResOptions = new BitmapFactory.Options();
         // Always prefer RGB_565 config for low res. If the bitmap has transparency, it will
         // automatically be loaded as ALPHA_8888.
         mLowResOptions.inPreferredConfig = Bitmap.Config.RGB_565;
-        updateSystemStateString();
     }
 
     private Drawable getFullResDefaultActivityIcon() {
@@ -179,22 +189,26 @@ public class IconCache {
         return getFullResDefaultActivityIcon();
     }
 
-    private Bitmap makeDefaultIcon(UserHandleCompat user) {
+    public Drawable getFullResIcon(LauncherActivityInfo info) {
+        return mIconProvider.getIcon(info, mIconDpi);
+    }
+
+    protected Bitmap makeDefaultIcon(UserHandle user) {
         Drawable unbadged = getFullResDefaultActivityIcon();
-        return Utilities.createBadgedIconBitmap(unbadged, user, mContext);
+        return LauncherIcons.createBadgedIconBitmap(unbadged, user, mContext, Build.VERSION_CODES.O);
     }
 
     /**
      * Remove any records for the supplied ComponentName.
      */
-    public synchronized void remove(ComponentName componentName, UserHandleCompat user) {
+    public synchronized void remove(ComponentName componentName, UserHandle user) {
         mCache.remove(new ComponentKey(componentName, user));
     }
 
     /**
      * Remove any records for the supplied package name from memory.
      */
-    private void removeFromMemCacheLocked(String packageName, UserHandleCompat user) {
+    private void removeFromMemCacheLocked(String packageName, UserHandle user) {
         HashSet<ComponentKey> forDeletion = new HashSet<ComponentKey>();
         for (ComponentKey key: mCache.keySet()) {
             if (key.componentName.getPackageName().equals(packageName)
@@ -210,14 +224,14 @@ public class IconCache {
     /**
      * Updates the entries related to the given package in memory and persistent DB.
      */
-    public synchronized void updateIconsForPkg(String packageName, UserHandleCompat user) {
+    public synchronized void updateIconsForPkg(String packageName, UserHandle user) {
         removeIconsForPkg(packageName, user);
         try {
             PackageInfo info = mPackageManager.getPackageInfo(packageName,
                     PackageManager.GET_UNINSTALLED_PACKAGES);
             long userSerial = mUserManager.getSerialNumberForUser(user);
-            for (LauncherActivityInfoCompat app : mLauncherApps.getActivityList(packageName, user)) {
-                addIconToDBAndMemCache(app, info, userSerial);
+            for (LauncherActivityInfo app : mLauncherApps.getActivityList(packageName, user)) {
+                addIconToDBAndMemCache(app, info, userSerial, false /*replace existing*/);
             }
         } catch (NameNotFoundException e) {
             Log.d(TAG, "Package not found", e);
@@ -228,7 +242,7 @@ public class IconCache {
     /**
      * Removes the entries related to the given package in memory and persistent DB.
      */
-    public synchronized void removeIconsForPkg(String packageName, UserHandleCompat user) {
+    public synchronized void removeIconsForPkg(String packageName, UserHandle user) {
         removeFromMemCacheLocked(packageName, user);
         long userSerial = mUserManager.getSerialNumberForUser(user);
         mIconDb.delete(
@@ -240,10 +254,10 @@ public class IconCache {
         // Remove all active icon update tasks.
         mWorkerHandler.removeCallbacksAndMessages(ICON_UPDATE_TOKEN);
 
-        updateSystemStateString();
-        for (UserHandleCompat user : mUserManager.getUserProfiles()) {
+        mIconProvider.updateSystemStateString();
+        for (UserHandle user : mUserManager.getUserProfiles()) {
             // Query for the set of apps
-            final List<LauncherActivityInfoCompat> apps = mLauncherApps.getActivityList(null, user);
+            final List<LauncherActivityInfo> apps = mLauncherApps.getActivityList(null, user);
             // Fail if we don't have any apps
             // TODO: Fix this. Only fail for the current user.
             if (apps == null || apps.isEmpty()) {
@@ -252,7 +266,7 @@ public class IconCache {
 
             // Update icon cache. This happens in segments and {@link #onPackageIconsUpdated}
             // is called by the icon cache when the job is complete.
-            updateDBIcons(user, apps, UserHandleCompat.myUserHandle().equals(user)
+            updateDBIcons(user, apps, Process.myUserHandle().equals(user)
                     ? ignorePackagesForMainUser : Collections.<String>emptySet());
         }
     }
@@ -262,7 +276,7 @@ public class IconCache {
      * the DB and are updated.
      * @return The set of packages for which icons have updated.
      */
-    private void updateDBIcons(UserHandleCompat user, List<LauncherActivityInfoCompat> apps,
+    private void updateDBIcons(UserHandle user, List<LauncherActivityInfo> apps,
             Set<String> ignorePackages) {
         long userSerial = mUserManager.getSerialNumberForUser(user);
         PackageManager pm = mContext.getPackageManager();
@@ -271,13 +285,13 @@ public class IconCache {
             pkgInfoMap.put(info.packageName, info);
         }
 
-        HashMap<ComponentName, LauncherActivityInfoCompat> componentMap = new HashMap<>();
-        for (LauncherActivityInfoCompat app : apps) {
+        HashMap<ComponentName, LauncherActivityInfo> componentMap = new HashMap<>();
+        for (LauncherActivityInfo app : apps) {
             componentMap.put(app.getComponentName(), app);
         }
 
         HashSet<Integer> itemsToRemove = new HashSet<Integer>();
-        Stack<LauncherActivityInfoCompat> appsToUpdate = new Stack<>();
+        Stack<LauncherActivityInfo> appsToUpdate = new Stack<>();
 
         Cursor c = null;
         try {
@@ -312,9 +326,10 @@ public class IconCache {
 
                 long updateTime = c.getLong(indexLastUpdate);
                 int version = c.getInt(indexVersion);
-                LauncherActivityInfoCompat app = componentMap.remove(component);
+                LauncherActivityInfo app = componentMap.remove(component);
                 if (version == info.versionCode && updateTime == info.lastUpdateTime &&
-                        TextUtils.equals(mSystemState, c.getString(systemStateIndex))) {
+                        TextUtils.equals(c.getString(systemStateIndex),
+                                mIconProvider.getIconSystemState(info.packageName))) {
                     continue;
                 }
                 if (app == null) {
@@ -339,36 +354,21 @@ public class IconCache {
 
         // Insert remaining apps.
         if (!componentMap.isEmpty() || !appsToUpdate.isEmpty()) {
-            Stack<LauncherActivityInfoCompat> appsToAdd = new Stack<>();
+            Stack<LauncherActivityInfo> appsToAdd = new Stack<>();
             appsToAdd.addAll(componentMap.values());
             new SerializedIconUpdateTask(userSerial, pkgInfoMap,
                     appsToAdd, appsToUpdate).scheduleNext();
         }
     }
 
-    @Thunk void addIconToDBAndMemCache(LauncherActivityInfoCompat app, PackageInfo info,
-            long userSerial) {
-        // Reuse the existing entry if it already exists in the DB. This ensures that we do not
-        // create bitmap if it was already created during loader.
-        ContentValues values = updateCacheAndGetContentValues(app, false);
-        addIconToDB(values, app.getComponentName(), info, userSerial);
-    }
-
     /**
-     * Updates {@param values} to contain versoning information and adds it to the DB.
-     * @param values {@link ContentValues} containing icon & title
+     * Adds an entry into the DB and the in-memory cache.
+     * @param replaceExisting if true, it will recreate the bitmap even if it already exists in
+     *                        the memory. This is useful then the previous bitmap was created using
+     *                        old data.
      */
-    private void addIconToDB(ContentValues values, ComponentName key,
-            PackageInfo info, long userSerial) {
-        values.put(IconDB.COLUMN_COMPONENT, key.flattenToString());
-        values.put(IconDB.COLUMN_USER, userSerial);
-        values.put(IconDB.COLUMN_LAST_UPDATED, info.lastUpdateTime);
-        values.put(IconDB.COLUMN_VERSION, info.versionCode);
-        mIconDb.insertOrReplace(values);
-    }
-
-    @Thunk ContentValues updateCacheAndGetContentValues(LauncherActivityInfoCompat app,
-            boolean replaceExisting) {
+    @Thunk synchronized void addIconToDBAndMemCache(LauncherActivityInfo app,
+            PackageInfo info, long userSerial, boolean replaceExisting) {
         final ComponentKey key = new ComponentKey(app.getComponentName(), app.getUser());
         CacheEntry entry = null;
         if (!replaceExisting) {
@@ -380,35 +380,46 @@ public class IconCache {
         }
         if (entry == null) {
             entry = new CacheEntry();
-            entry.icon = Utilities.createBadgedIconBitmap(
-                    app.getIcon(mIconDpi), app.getUser(), mContext);
+            entry.icon = LauncherIcons.createBadgedIconBitmap(getFullResIcon(app), app.getUser(),
+                    mContext,  app.getApplicationInfo().targetSdkVersion);
         }
         entry.title = app.getLabel();
         entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, app.getUser());
-        mCache.put(new ComponentKey(app.getComponentName(), app.getUser()), entry);
+        mCache.put(key, entry);
 
-        return newContentValues(entry.icon, entry.title.toString(), mActivityBgColor);
+        Bitmap lowResIcon = generateLowResIcon(entry.icon, mActivityBgColor);
+        ContentValues values = newContentValues(entry.icon, lowResIcon, entry.title.toString(),
+                app.getApplicationInfo().packageName);
+        addIconToDB(values, app.getComponentName(), info, userSerial);
+    }
+
+    /**
+     * Updates {@param values} to contain versioning information and adds it to the DB.
+     * @param values {@link ContentValues} containing icon & title
+     */
+    private void addIconToDB(ContentValues values, ComponentName key,
+            PackageInfo info, long userSerial) {
+        values.put(IconDB.COLUMN_COMPONENT, key.flattenToString());
+        values.put(IconDB.COLUMN_USER, userSerial);
+        values.put(IconDB.COLUMN_LAST_UPDATED, info.lastUpdateTime);
+        values.put(IconDB.COLUMN_VERSION, info.versionCode);
+        mIconDb.insertOrReplace(values);
     }
 
     /**
      * Fetches high-res icon for the provided ItemInfo and updates the caller when done.
      * @return a request ID that can be used to cancel the request.
      */
-    public IconLoadRequest updateIconInBackground(final BubbleTextView caller, final ItemInfo info) {
+    public IconLoadRequest updateIconInBackground(final ItemInfoUpdateReceiver caller,
+            final ItemInfoWithIcon info) {
         Runnable request = new Runnable() {
 
             @Override
             public void run() {
-                if (info instanceof AppInfo) {
-                    getTitleAndIcon((AppInfo) info, null, false);
-                } else if (info instanceof ShortcutInfo) {
-                    ShortcutInfo st = (ShortcutInfo) info;
-                    getTitleAndIcon(st,
-                            st.promisedIntent != null ? st.promisedIntent : st.intent,
-                            st.user, false);
+                if (info instanceof AppInfo || info instanceof ShortcutInfo) {
+                    getTitleAndIcon(info, false);
                 } else if (info instanceof PackageItemInfo) {
-                    PackageItemInfo pti = (PackageItemInfo) info;
-                    getTitleAndIconForApp(pti.packageName, pti.user, false, pti);
+                    getTitleAndIconForApp((PackageItemInfo) info, false);
                 }
                 mMainThreadExecutor.execute(new Runnable() {
 
@@ -423,108 +434,82 @@ public class IconCache {
         return new IconLoadRequest(request, mWorkerHandler);
     }
 
-    private Bitmap getNonNullIcon(CacheEntry entry, UserHandleCompat user) {
-        return entry.icon == null ? getDefaultIcon(user) : entry.icon;
-    }
-
-    /**
-     * Fill in "application" with the icon and label for "info."
-     */
-    public synchronized void getTitleAndIcon(AppInfo application,
-            LauncherActivityInfoCompat info, boolean useLowResIcon) {
-        UserHandleCompat user = info == null ? application.user : info.getUser();
-        CacheEntry entry = cacheLocked(application.componentName, info, user,
-                false, useLowResIcon);
-        application.title = Utilities.trim(entry.title);
-        application.iconBitmap = getNonNullIcon(entry, user);
-        application.contentDescription = entry.contentDescription;
-        application.usingLowResIcon = entry.isLowResIcon;
-    }
-
     /**
      * Updates {@param application} only if a valid entry is found.
      */
     public synchronized void updateTitleAndIcon(AppInfo application) {
-        CacheEntry entry = cacheLocked(application.componentName, null, application.user,
-                false, application.usingLowResIcon);
+        CacheEntry entry = cacheLocked(application.componentName,
+                Provider.<LauncherActivityInfo>of(null),
+                application.user, false, application.usingLowResIcon);
         if (entry.icon != null && !isDefaultIcon(entry.icon, application.user)) {
-            application.title = Utilities.trim(entry.title);
-            application.iconBitmap = entry.icon;
-            application.contentDescription = entry.contentDescription;
-            application.usingLowResIcon = entry.isLowResIcon;
+            applyCacheEntry(entry, application);
         }
     }
 
     /**
-     * Returns a high res icon for the given intent and user
+     * Fill in {@param info} with the icon and label for {@param activityInfo}
      */
-    public synchronized Bitmap getIcon(Intent intent, UserHandleCompat user) {
-        ComponentName component = intent.getComponent();
-        // null info means not installed, but if we have a component from the intent then
-        // we should still look in the cache for restored app icons.
-        if (component == null) {
-            return getDefaultIcon(user);
-        }
-
-        LauncherActivityInfoCompat launcherActInfo = mLauncherApps.resolveActivity(intent, user);
-        CacheEntry entry = cacheLocked(component, launcherActInfo, user, true, false /* useLowRes */);
-        return entry.icon;
+    public synchronized void getTitleAndIcon(ItemInfoWithIcon info,
+            LauncherActivityInfo activityInfo, boolean useLowResIcon) {
+        // If we already have activity info, no need to use package icon
+        getTitleAndIcon(info, Provider.of(activityInfo), false, useLowResIcon);
     }
 
     /**
-     * Fill in {@param shortcutInfo} with the icon and label for {@param intent}. If the
+     * Fill in {@param info} with the icon and label. If the
      * corresponding activity is not found, it reverts to the package icon.
      */
-    public synchronized void getTitleAndIcon(ShortcutInfo shortcutInfo, Intent intent,
-            UserHandleCompat user, boolean useLowResIcon) {
-        ComponentName component = intent.getComponent();
+    public synchronized void getTitleAndIcon(ItemInfoWithIcon info, boolean useLowResIcon) {
         // null info means not installed, but if we have a component from the intent then
         // we should still look in the cache for restored app icons.
-        if (component == null) {
-            shortcutInfo.setIcon(getDefaultIcon(user));
-            shortcutInfo.title = "";
-            shortcutInfo.usingFallbackIcon = true;
-            shortcutInfo.usingLowResIcon = false;
+        if (info.getTargetComponent() == null) {
+            info.iconBitmap = getDefaultIcon(info.user);
+            info.title = "";
+            info.contentDescription = "";
+            info.usingLowResIcon = false;
         } else {
-            LauncherActivityInfoCompat info = mLauncherApps.resolveActivity(intent, user);
-            getTitleAndIcon(shortcutInfo, component, info, user, true, useLowResIcon);
+            getTitleAndIcon(info, new ActivityInfoProvider(info.getIntent(), info.user),
+                    true, useLowResIcon);
         }
     }
 
     /**
      * Fill in {@param shortcutInfo} with the icon and label for {@param info}
      */
-    public synchronized void getTitleAndIcon(
-            ShortcutInfo shortcutInfo, ComponentName component, LauncherActivityInfoCompat info,
-            UserHandleCompat user, boolean usePkgIcon, boolean useLowResIcon) {
-        CacheEntry entry = cacheLocked(component, info, user, usePkgIcon, useLowResIcon);
-        shortcutInfo.setIcon(getNonNullIcon(entry, user));
-        shortcutInfo.title = Utilities.trim(entry.title);
-        shortcutInfo.usingFallbackIcon = isDefaultIcon(entry.icon, user);
-        shortcutInfo.usingLowResIcon = entry.isLowResIcon;
+    private synchronized void getTitleAndIcon(
+            @NonNull ItemInfoWithIcon infoInOut,
+            @NonNull Provider<LauncherActivityInfo> activityInfoProvider,
+            boolean usePkgIcon, boolean useLowResIcon) {
+        CacheEntry entry = cacheLocked(infoInOut.getTargetComponent(), activityInfoProvider,
+                infoInOut.user, usePkgIcon, useLowResIcon);
+        applyCacheEntry(entry, infoInOut);
     }
 
     /**
-     * Fill in {@param appInfo} with the icon and label for {@param packageName}
+     * Fill in {@param infoInOut} with the corresponding icon and label.
      */
     public synchronized void getTitleAndIconForApp(
-            String packageName, UserHandleCompat user, boolean useLowResIcon,
-            PackageItemInfo infoOut) {
-        CacheEntry entry = getEntryForPackageLocked(packageName, user, useLowResIcon);
-        infoOut.iconBitmap = getNonNullIcon(entry, user);
-        infoOut.title = Utilities.trim(entry.title);
-        infoOut.usingLowResIcon = entry.isLowResIcon;
-        infoOut.contentDescription = entry.contentDescription;
+            PackageItemInfo infoInOut, boolean useLowResIcon) {
+        CacheEntry entry = getEntryForPackageLocked(
+                infoInOut.packageName, infoInOut.user, useLowResIcon);
+        applyCacheEntry(entry, infoInOut);
     }
 
-    public synchronized Bitmap getDefaultIcon(UserHandleCompat user) {
+    private void applyCacheEntry(CacheEntry entry, ItemInfoWithIcon info) {
+        info.title = Utilities.trim(entry.title);
+        info.contentDescription = entry.contentDescription;
+        info.iconBitmap = entry.icon == null ? getDefaultIcon(info.user) : entry.icon;
+        info.usingLowResIcon = entry.isLowResIcon;
+    }
+
+    public synchronized Bitmap getDefaultIcon(UserHandle user) {
         if (!mDefaultIcons.containsKey(user)) {
             mDefaultIcons.put(user, makeDefaultIcon(user));
         }
         return mDefaultIcons.get(user);
     }
 
-    public boolean isDefaultIcon(Bitmap icon, UserHandleCompat user) {
+    public boolean isDefaultIcon(Bitmap icon, UserHandle user) {
         return mDefaultIcons.get(user) == icon;
     }
 
@@ -532,8 +517,11 @@ public class IconCache {
      * Retrieves the entry from the cache. If the entry is not present, it creates a new entry.
      * This method is not thread safe, it must be called from a synchronized method.
      */
-    private CacheEntry cacheLocked(ComponentName componentName, LauncherActivityInfoCompat info,
-            UserHandleCompat user, boolean usePackageIcon, boolean useLowResIcon) {
+    protected CacheEntry cacheLocked(
+            @NonNull ComponentName componentName,
+            @NonNull Provider<LauncherActivityInfo> infoProvider,
+            UserHandle user, boolean usePackageIcon, boolean useLowResIcon) {
+        Preconditions.assertWorkerThread();
         ComponentKey cacheKey = new ComponentKey(componentName, user);
         CacheEntry entry = mCache.get(cacheKey);
         if (entry == null || (entry.isLowResIcon && !useLowResIcon)) {
@@ -541,10 +529,17 @@ public class IconCache {
             mCache.put(cacheKey, entry);
 
             // Check the DB first.
-            if (!getEntryFromDB(cacheKey, entry, useLowResIcon)) {
+            LauncherActivityInfo info = null;
+            boolean providerFetchedOnce = false;
+
+            if (!getEntryFromDB(cacheKey, entry, useLowResIcon) || DEBUG_IGNORE_CACHE) {
+                info = infoProvider.get();
+                providerFetchedOnce = true;
+
                 if (info != null) {
-                    entry.icon = Utilities.createBadgedIconBitmap(
-                            info.getIcon(mIconDpi), info.getUser(), mContext);
+                    entry.icon = LauncherIcons.createBadgedIconBitmap(
+                            getFullResIcon(info), info.getUser(), mContext,
+                            infoProvider.get().getApplicationInfo().targetSdkVersion);
                 } else {
                     if (usePackageIcon) {
                         CacheEntry packageEntry = getEntryForPackageLocked(
@@ -565,19 +560,30 @@ public class IconCache {
                 }
             }
 
-            if (TextUtils.isEmpty(entry.title) && info != null) {
-                entry.title = info.getLabel();
-                entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
+            if (TextUtils.isEmpty(entry.title)) {
+                if (info == null && !providerFetchedOnce) {
+                    info = infoProvider.get();
+                    providerFetchedOnce = true;
+                }
+                if (info != null) {
+                    entry.title = info.getLabel();
+                    entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
+                }
             }
         }
         return entry;
+    }
+
+    public synchronized void clear() {
+        Preconditions.assertWorkerThread();
+        mIconDb.clear();
     }
 
     /**
      * Adds a default package entry in the cache. This entry is not persisted and will be removed
      * when the cache is flushed.
      */
-    public synchronized void cachePackageInstallInfo(String packageName, UserHandleCompat user,
+    public synchronized void cachePackageInstallInfo(String packageName, UserHandle user,
             Bitmap icon, CharSequence title) {
         removeFromMemCacheLocked(packageName, user);
 
@@ -593,11 +599,11 @@ public class IconCache {
             entry.title = title;
         }
         if (icon != null) {
-            entry.icon = Utilities.createIconBitmap(icon, mContext);
+            entry.icon = LauncherIcons.createIconBitmap(icon, mContext);
         }
     }
 
-    private static ComponentKey getPackageKey(String packageName, UserHandleCompat user) {
+    private static ComponentKey getPackageKey(String packageName, UserHandle user) {
         ComponentName cn = new ComponentName(packageName, packageName + EMPTY_CLASS_NAME);
         return new ComponentKey(cn, user);
     }
@@ -606,8 +612,9 @@ public class IconCache {
      * Gets an entry for the package, which can be used as a fallback entry for various components.
      * This method is not thread safe, it must be called from a synchronized method.
      */
-    private CacheEntry getEntryForPackageLocked(String packageName, UserHandleCompat user,
+    private CacheEntry getEntryForPackageLocked(String packageName, UserHandle user,
             boolean useLowResIcon) {
+        Preconditions.assertWorkerThread();
         ComponentKey cacheKey = getPackageKey(packageName, user);
         CacheEntry entry = mCache.get(cacheKey);
 
@@ -618,23 +625,28 @@ public class IconCache {
             // Check the DB first.
             if (!getEntryFromDB(cacheKey, entry, useLowResIcon)) {
                 try {
-                    int flags = UserHandleCompat.myUserHandle().equals(user) ? 0 :
+                    int flags = Process.myUserHandle().equals(user) ? 0 :
                         PackageManager.GET_UNINSTALLED_PACKAGES;
                     PackageInfo info = mPackageManager.getPackageInfo(packageName, flags);
                     ApplicationInfo appInfo = info.applicationInfo;
                     if (appInfo == null) {
                         throw new NameNotFoundException("ApplicationInfo is null");
                     }
-                    entry.icon = Utilities.createBadgedIconBitmap(
-                            appInfo.loadIcon(mPackageManager), user, mContext);
+
+                    // Load the full res icon for the application, but if useLowResIcon is set, then
+                    // only keep the low resolution icon instead of the larger full-sized icon
+                    Bitmap icon = LauncherIcons.createBadgedIconBitmap(
+                            appInfo.loadIcon(mPackageManager), user, mContext, appInfo.targetSdkVersion);
+                    Bitmap lowResIcon =  generateLowResIcon(icon, mPackageBgColor);
                     entry.title = appInfo.loadLabel(mPackageManager);
                     entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
-                    entry.isLowResIcon = false;
+                    entry.icon = useLowResIcon ? lowResIcon : icon;
+                    entry.isLowResIcon = useLowResIcon;
 
                     // Add the icon in the DB here, since these do not get written during
                     // package updates.
                     ContentValues values =
-                            newContentValues(entry.icon, entry.title.toString(), mPackageBgColor);
+                            newContentValues(icon, lowResIcon, entry.title.toString(), packageName);
                     addIconToDB(values, cacheKey.componentName, info,
                             mUserManager.getSerialNumberForUser(user));
 
@@ -650,36 +662,6 @@ public class IconCache {
             }
         }
         return entry;
-    }
-
-    /**
-     * Pre-load an icon into the persistent cache.
-     *
-     * <P>Queries for a component that does not exist in the package manager
-     * will be answered by the persistent cache.
-     *
-     * @param componentName the icon should be returned for this component
-     * @param icon the icon to be persisted
-     * @param dpi the native density of the icon
-     */
-    public void preloadIcon(ComponentName componentName, Bitmap icon, int dpi, String label,
-            long userSerial, InvariantDeviceProfile idp) {
-        // TODO rescale to the correct native DPI
-        try {
-            PackageManager packageManager = mContext.getPackageManager();
-            packageManager.getActivityIcon(componentName);
-            // component is present on the system already, do nothing
-            return;
-        } catch (PackageManager.NameNotFoundException e) {
-            // pass
-        }
-
-        ContentValues values = newContentValues(
-                Bitmap.createScaledBitmap(icon, idp.iconBitmapSize, idp.iconBitmapSize, true),
-                label, Color.TRANSPARENT);
-        values.put(IconDB.COLUMN_COMPONENT, componentName.flattenToString());
-        values.put(IconDB.COLUMN_USER, userSerial);
-        mIconDb.insertOrReplace(values);
     }
 
     private boolean getEntryFromDB(ComponentKey cacheKey, CacheEntry entry, boolean lowRes) {
@@ -730,19 +712,19 @@ public class IconCache {
 
     /**
      * A runnable that updates invalid icons and adds missing icons in the DB for the provided
-     * LauncherActivityInfoCompat list. Items are updated/added one at a time, so that the
+     * LauncherActivityInfo list. Items are updated/added one at a time, so that the
      * worker thread doesn't get blocked.
      */
     @Thunk class SerializedIconUpdateTask implements Runnable {
         private final long mUserSerial;
         private final HashMap<String, PackageInfo> mPkgInfoMap;
-        private final Stack<LauncherActivityInfoCompat> mAppsToAdd;
-        private final Stack<LauncherActivityInfoCompat> mAppsToUpdate;
+        private final Stack<LauncherActivityInfo> mAppsToAdd;
+        private final Stack<LauncherActivityInfo> mAppsToUpdate;
         private final HashSet<String> mUpdatedPackages = new HashSet<String>();
 
         @Thunk SerializedIconUpdateTask(long userSerial, HashMap<String, PackageInfo> pkgInfoMap,
-                Stack<LauncherActivityInfoCompat> appsToAdd,
-                Stack<LauncherActivityInfoCompat> appsToUpdate) {
+                Stack<LauncherActivityInfo> appsToAdd,
+                Stack<LauncherActivityInfo> appsToUpdate) {
             mUserSerial = userSerial;
             mPkgInfoMap = pkgInfoMap;
             mAppsToAdd = appsToAdd;
@@ -752,29 +734,27 @@ public class IconCache {
         @Override
         public void run() {
             if (!mAppsToUpdate.isEmpty()) {
-                LauncherActivityInfoCompat app = mAppsToUpdate.pop();
-                String cn = app.getComponentName().flattenToString();
-                ContentValues values = updateCacheAndGetContentValues(app, true);
-                mIconDb.update(values,
-                        IconDB.COLUMN_COMPONENT + " = ? AND " + IconDB.COLUMN_USER + " = ?",
-                        new String[]{cn, Long.toString(mUserSerial)});
-                mUpdatedPackages.add(app.getComponentName().getPackageName());
+                LauncherActivityInfo app = mAppsToUpdate.pop();
+                String pkg = app.getComponentName().getPackageName();
+                PackageInfo info = mPkgInfoMap.get(pkg);
+                addIconToDBAndMemCache(app, info, mUserSerial, true /*replace existing*/);
+                mUpdatedPackages.add(pkg);
 
                 if (mAppsToUpdate.isEmpty() && !mUpdatedPackages.isEmpty()) {
                     // No more app to update. Notify model.
-                    LauncherAppState.getInstance().getModel().onPackageIconsUpdated(
+                    LauncherAppState.getInstance(mContext).getModel().onPackageIconsUpdated(
                             mUpdatedPackages, mUserManager.getUserForSerialNumber(mUserSerial));
                 }
 
                 // Let it run one more time.
                 scheduleNext();
             } else if (!mAppsToAdd.isEmpty()) {
-                LauncherActivityInfoCompat app = mAppsToAdd.pop();
+                LauncherActivityInfo app = mAppsToAdd.pop();
                 PackageInfo info = mPkgInfoMap.get(app.getComponentName().getPackageName());
+                // We do not check the mPkgInfoMap when generating the mAppsToAdd. Although every
+                // app should have package info, this is not guaranteed by the api
                 if (info != null) {
-                    synchronized (IconCache.this) {
-                        addIconToDBAndMemCache(app, info, mUserSerial);
-                    }
+                    addIconToDBAndMemCache(app, info, mUserSerial, false /*replace existing*/);
                 }
 
                 if (!mAppsToAdd.isEmpty()) {
@@ -788,15 +768,11 @@ public class IconCache {
         }
     }
 
-    private void updateSystemStateString() {
-        mSystemState = Locale.getDefault().toString();
-    }
-
     private static final class IconDB extends SQLiteCacheHelper {
-        private final static int DB_VERSION = 7;
+        private final static int DB_VERSION = 13;
 
         private final static int RELEASE_VERSION = DB_VERSION +
-                (FeatureFlags.LAUNCHER3_ICON_NORMALIZATION ? 1 : 0);
+                (FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ? 0 : 1);
 
         private final static String TABLE_NAME = "icons";
         private final static String COLUMN_ROWID = "rowid";
@@ -831,34 +807,39 @@ public class IconCache {
         }
     }
 
-    private ContentValues newContentValues(Bitmap icon, String label, int lowResBackgroundColor) {
+    private ContentValues newContentValues(Bitmap icon, Bitmap lowResIcon, String label,
+            String packageName) {
         ContentValues values = new ContentValues();
         values.put(IconDB.COLUMN_ICON, Utilities.flattenBitmap(icon));
+        values.put(IconDB.COLUMN_ICON_LOW_RES, Utilities.flattenBitmap(lowResIcon));
 
         values.put(IconDB.COLUMN_LABEL, label);
-        values.put(IconDB.COLUMN_SYSTEM_STATE, mSystemState);
+        values.put(IconDB.COLUMN_SYSTEM_STATE, mIconProvider.getIconSystemState(packageName));
 
+        return values;
+    }
+
+    /**
+     * Generates a new low-res icon given a high-res icon.
+     */
+    private Bitmap generateLowResIcon(Bitmap icon, int lowResBackgroundColor) {
         if (lowResBackgroundColor == Color.TRANSPARENT) {
-          values.put(IconDB.COLUMN_ICON_LOW_RES, Utilities.flattenBitmap(
-          Bitmap.createScaledBitmap(icon,
-                  icon.getWidth() / LOW_RES_SCALE_FACTOR,
-                  icon.getHeight() / LOW_RES_SCALE_FACTOR, true)));
+            return Bitmap.createScaledBitmap(icon,
+                            icon.getWidth() / LOW_RES_SCALE_FACTOR,
+                            icon.getHeight() / LOW_RES_SCALE_FACTOR, true);
         } else {
+            Bitmap lowResIcon = Bitmap.createBitmap(icon.getWidth() / LOW_RES_SCALE_FACTOR,
+                    icon.getHeight() / LOW_RES_SCALE_FACTOR, Bitmap.Config.RGB_565);
             synchronized (this) {
-                if (mLowResBitmap == null) {
-                    mLowResBitmap = Bitmap.createBitmap(icon.getWidth() / LOW_RES_SCALE_FACTOR,
-                            icon.getHeight() / LOW_RES_SCALE_FACTOR, Bitmap.Config.RGB_565);
-                    mLowResCanvas = new Canvas(mLowResBitmap);
-                    mLowResPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
-                }
+                mLowResCanvas.setBitmap(lowResIcon);
                 mLowResCanvas.drawColor(lowResBackgroundColor);
                 mLowResCanvas.drawBitmap(icon, new Rect(0, 0, icon.getWidth(), icon.getHeight()),
-                        new Rect(0, 0, mLowResBitmap.getWidth(), mLowResBitmap.getHeight()),
+                        new Rect(0, 0, lowResIcon.getWidth(), lowResIcon.getHeight()),
                         mLowResPaint);
-                values.put(IconDB.COLUMN_ICON_LOW_RES, Utilities.flattenBitmap(mLowResBitmap));
+                mLowResCanvas.setBitmap(null);
             }
+            return lowResIcon;
         }
-        return values;
     }
 
     private static Bitmap loadIconNoResize(Cursor c, int iconIndex, BitmapFactory.Options options) {
@@ -868,5 +849,29 @@ public class IconCache {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private class ActivityInfoProvider extends Provider<LauncherActivityInfo> {
+
+        private final Intent mIntent;
+        private final UserHandle mUser;
+
+        public ActivityInfoProvider(Intent intent, UserHandle user) {
+            mIntent = intent;
+            mUser = user;
+        }
+
+        @Override
+        public LauncherActivityInfo get() {
+            return mLauncherApps.resolveActivity(mIntent, mUser);
+        }
+    }
+
+    /**
+     * Interface for receiving itemInfo with high-res icon.
+     */
+    public interface ItemInfoUpdateReceiver {
+
+        void reapplyItemInfo(ItemInfoWithIcon info);
     }
 }

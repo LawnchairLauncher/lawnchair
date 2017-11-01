@@ -21,12 +21,11 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
-import android.os.Build;
+import android.util.Property;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-
-import com.android.launcher3.util.UiThreadCircularReveal;
+import android.widget.ViewAnimator;
 
 import java.util.HashSet;
 import java.util.WeakHashMap;
@@ -95,49 +94,40 @@ public class LauncherAnimUtils {
         return anim;
     }
 
-    public static ValueAnimator ofFloat(View target, float... values) {
+    public static ValueAnimator ofFloat(float... values) {
         ValueAnimator anim = new ValueAnimator();
         anim.setFloatValues(values);
         cancelOnDestroyActivity(anim);
         return anim;
     }
 
-    public static ObjectAnimator ofFloat(View target, String propertyName, float... values) {
-        ObjectAnimator anim = new ObjectAnimator();
-        anim.setTarget(target);
-        anim.setPropertyName(propertyName);
-        anim.setFloatValues(values);
+    public static ObjectAnimator ofFloat(View target, Property<View, Float> property,
+            float... values) {
+        ObjectAnimator anim = ObjectAnimator.ofFloat(target, property, values);
         cancelOnDestroyActivity(anim);
         new FirstFrameAnimatorHelper(anim, target);
         return anim;
+    }
+
+    public static ObjectAnimator ofViewAlphaAndScale(View target,
+            float alpha, float scaleX, float scaleY) {
+        return ofPropertyValuesHolder(target,
+                PropertyValuesHolder.ofFloat(View.ALPHA, alpha),
+                PropertyValuesHolder.ofFloat(View.SCALE_X, scaleX),
+                PropertyValuesHolder.ofFloat(View.SCALE_Y, scaleY));
     }
 
     public static ObjectAnimator ofPropertyValuesHolder(View target,
             PropertyValuesHolder... values) {
-        ObjectAnimator anim = new ObjectAnimator();
-        anim.setTarget(target);
-        anim.setValues(values);
-        cancelOnDestroyActivity(anim);
-        new FirstFrameAnimatorHelper(anim, target);
-        return anim;
+        return ofPropertyValuesHolder(target, target, values);
     }
 
     public static ObjectAnimator ofPropertyValuesHolder(Object target,
             View view, PropertyValuesHolder... values) {
-        ObjectAnimator anim = new ObjectAnimator();
-        anim.setTarget(target);
-        anim.setValues(values);
+        ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(target, values);
         cancelOnDestroyActivity(anim);
         new FirstFrameAnimatorHelper(anim, view);
         return anim;
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static ValueAnimator createCircularReveal(View view, int centerX,
-            int centerY, float startRadius, float endRadius) {
-        ValueAnimator anim = UiThreadCircularReveal.createCircularReveal(view, centerX,
-                centerY, startRadius, endRadius);
-        new FirstFrameAnimatorHelper(anim, view);
-        return anim;
-    }
 }

@@ -19,7 +19,6 @@
     android:id="@+id/widgets_cell_list_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/widgets_cell_color"
     android:orientation="vertical"
     android:focusable="true"
     android:descendantFocusability="afterDescendants">
@@ -30,18 +29,17 @@
         android:id="@+id/section"
         android:layout_width="match_parent"
         android:layout_height="@dimen/widget_section_height"
-        android:background="@color/quantum_panel_bg_color_dark"
+        android:background="?android:attr/colorPrimary"
         android:drawablePadding="@dimen/widget_section_horizontal_padding"
         android:ellipsize="end"
         android:focusable="true"
         android:gravity="start|center_vertical"
-        android:importantForAccessibility="no"
         android:paddingBottom="@dimen/widget_section_vertical_padding"
         android:paddingLeft="@dimen/widget_section_horizontal_padding"
         android:paddingRight="@dimen/widget_section_horizontal_padding"
         android:paddingTop="@dimen/widget_section_vertical_padding"
         android:singleLine="true"
-        android:textColor="@color/widgets_view_section_text_color"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="16sp"
         launcher:customShadows="false"
         launcher:deferShadowGeneration="true"
@@ -49,20 +47,5 @@
         launcher:iconSizeOverride="@dimen/widget_section_icon_size"
         launcher:layoutHorizontal="true" />
 
-    <HorizontalScrollView
-        android:id="@+id/widgets_scroll_container"
-        android:theme="@style/Theme.Dark.CustomOverscroll"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scrollbars="none">
-        <LinearLayout
-            android:id="@+id/widgets_cell_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/widget_row_padding"
-            android:layout_marginLeft="@dimen/widget_row_padding"
-            android:orientation="horizontal"
-            android:divider="@drawable/widgets_row_divider"
-            android:showDividers="middle"/>
-    </HorizontalScrollView>
+    <include layout="@layout/widgets_scroll_container" />
 </LinearLayout>

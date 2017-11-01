@@ -16,14 +16,14 @@
 <com.android.launcher3.BubbleTextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
-    style="@style/Icon.AllApps"
+    style="@style/BaseIcon"
     android:id="@+id/icon"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:paddingTop="@dimen/all_apps_icon_top_bottom_padding"
-    android:paddingBottom="@dimen/all_apps_icon_top_bottom_padding"
-    android:focusable="true"
-    android:background="@drawable/focusable_view_bg"
-    launcher:iconDisplay="all_apps" />
+    android:stateListAnimator="@animator/all_apps_fastscroll_icon_anim"
+    launcher:iconDisplay="all_apps"
+    launcher:centerVertically="true"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp"
+    android:drawablePadding="@dimen/dynamic_grid_icon_drawable_padding" />
 

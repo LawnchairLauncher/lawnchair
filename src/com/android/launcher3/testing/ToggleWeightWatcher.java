@@ -22,7 +22,7 @@ public class ToggleWeightWatcher extends Activity {
         show = !show;
         sp.edit().putBoolean(TestingUtils.SHOW_WEIGHT_WATCHER, show).apply();
 
-        Launcher launcher = (Launcher) LauncherAppState.getInstance().getModel().getCallback();
+        Launcher launcher = (Launcher) LauncherAppState.getInstance(this).getModel().getCallback();
         if (launcher != null && launcher.mWeightWatcher != null) {
             launcher.mWeightWatcher.setVisibility(show ? View.VISIBLE : View.GONE);
         }

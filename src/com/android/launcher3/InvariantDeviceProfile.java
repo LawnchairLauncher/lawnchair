@@ -18,13 +18,23 @@ package com.android.launcher3;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.TypedArray;
+import android.content.res.XmlResourceParser;
 import android.graphics.Point;
 import android.util.DisplayMetrics;
+import android.util.Xml;
 import android.view.Display;
 import android.view.WindowManager;
 
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.util.Thunk;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -58,6 +68,7 @@ public class InvariantDeviceProfile {
     /**
      * The minimum number of predicted apps in all apps.
      */
+    @Deprecated
     int minAllAppsPredictionColumns;
 
     /**
@@ -75,13 +86,13 @@ public class InvariantDeviceProfile {
      */
     public int numHotseatIcons;
     float hotseatIconSize;
+    public float hotseatScale;
     int defaultLayoutId;
 
-    // Derived invariant properties
-    public int hotseatAllAppsRank;
+    public DeviceProfile landscapeProfile;
+    public DeviceProfile portraitProfile;
 
-    DeviceProfile landscapeProfile;
-    DeviceProfile portraitProfile;
+    public Point defaultWallpaperSize;
 
     public InvariantDeviceProfile() {
     }
@@ -95,11 +106,6 @@ public class InvariantDeviceProfile {
 
     InvariantDeviceProfile(String n, float w, float h, int r, int c, int fr, int fc, int maapc,
             float is, float its, int hs, float his, int dlId) {
-        // Ensure that we have an odd number of hotseat items (since we need to place all apps)
-        if (hs % 2 == 0) {
-            throw new RuntimeException("All Device Profiles must have an odd number of hotseat spaces");
-        }
-
         name = n;
         minWidthDps = w;
         minHeightDps = h;
@@ -113,6 +119,8 @@ public class InvariantDeviceProfile {
         numHotseatIcons = hs;
         hotseatIconSize = his;
         defaultLayoutId = dlId;
+
+        hotseatScale = hotseatIconSize / iconSize;
     }
 
     @TargetApi(23)
@@ -130,8 +138,8 @@ public class InvariantDeviceProfile {
         minWidthDps = Utilities.dpiFromPx(Math.min(smallestSize.x, smallestSize.y), dm);
         minHeightDps = Utilities.dpiFromPx(Math.min(largestSize.x, largestSize.y), dm);
 
-        ArrayList<InvariantDeviceProfile> closestProfiles =
-                findClosestDeviceProfiles(minWidthDps, minHeightDps, getPredefinedDeviceProfiles());
+        ArrayList<InvariantDeviceProfile> closestProfiles = findClosestDeviceProfiles(
+                minWidthDps, minHeightDps, getPredefinedDeviceProfiles(context));
         InvariantDeviceProfile interpolatedDeviceProfileOut =
                 invDistWeightedInterpolate(minWidthDps,  minHeightDps, closestProfiles);
 
@@ -139,7 +147,6 @@ public class InvariantDeviceProfile {
         numRows = closestProfile.numRows;
         numColumns = closestProfile.numColumns;
         numHotseatIcons = closestProfile.numHotseatIcons;
-        hotseatAllAppsRank = (int) (numHotseatIcons / 2);
         defaultLayoutId = closestProfile.defaultLayoutId;
         numFolderRows = closestProfile.numFolderRows;
         numFolderColumns = closestProfile.numFolderColumns;
@@ -155,6 +162,8 @@ public class InvariantDeviceProfile {
         // Supported overrides: numRows, numColumns, iconSize
         applyPartnerDeviceProfileOverrides(context, dm);
 
+        hotseatScale = hotseatIconSize / iconSize;
+
         Point realSize = new Point();
         display.getRealSize(realSize);
         // The real size never changes. smallSide and largeSide will remain the
@@ -166,38 +175,53 @@ public class InvariantDeviceProfile {
                 largeSide, smallSide, true /* isLandscape */);
         portraitProfile = new DeviceProfile(context, this, smallestSize, largestSize,
                 smallSide, largeSide, false /* isLandscape */);
+
+        // We need to ensure that there is enough extra space in the wallpaper
+        // for the intended parallax effects
+        if (context.getResources().getConfiguration().smallestScreenWidthDp >= 720) {
+            defaultWallpaperSize = new Point(
+                    (int) (largeSide * wallpaperTravelToScreenWidthRatio(largeSide, smallSide)),
+                    largeSide);
+        } else {
+            defaultWallpaperSize = new Point(Math.max(smallSide * 2, largeSide), largeSide);
+        }
     }
 
-    ArrayList<InvariantDeviceProfile> getPredefinedDeviceProfiles() {
-        ArrayList<InvariantDeviceProfile> predefinedDeviceProfiles = new ArrayList<>();
-        // width, height, #rows, #columns, #folder rows, #folder columns,
-        // iconSize, iconTextSize, #hotseat, #hotseatIconSize, defaultLayoutId.
-        predefinedDeviceProfiles.add(new InvariantDeviceProfile("Super Short Stubby",
-                255, 300,     2, 3, 2, 3, 3, 48, 13, 3, 48, R.xml.default_workspace_3x3));
-        predefinedDeviceProfiles.add(new InvariantDeviceProfile("Shorter Stubby",
-                255, 400,     3, 3, 3, 3, 3, 48, 13, 3, 48, R.xml.default_workspace_3x3));
-        predefinedDeviceProfiles.add(new InvariantDeviceProfile("Short Stubby",
-                275, 420,     3, 4, 3, 4, 4, 48, 13, 5, 48, R.xml.default_workspace_4x4));
-        predefinedDeviceProfiles.add(new InvariantDeviceProfile("Stubby",
-                255, 450,     3, 4, 3, 4, 4, 48, 13, 5, 48, R.xml.default_workspace_4x4));
-        predefinedDeviceProfiles.add(new InvariantDeviceProfile("Nexus S",
-                296, 491.33f, 4, 4, 4, 4, 4, 48, 13, 5, 48, R.xml.default_workspace_4x4));
-        predefinedDeviceProfiles.add(new InvariantDeviceProfile("Nexus 4",
-                359, 567,     4, 4, 4, 4, 4, DEFAULT_ICON_SIZE_DP, 13, 5, 56, R.xml.default_workspace_4x4));
-        predefinedDeviceProfiles.add(new InvariantDeviceProfile("Nexus 5",
-                335, 567,     4, 4, 4, 4, 4, DEFAULT_ICON_SIZE_DP, 13, 5, 56, R.xml.default_workspace_4x4));
-        predefinedDeviceProfiles.add(new InvariantDeviceProfile("Large Phone",
-                406, 694,     5, 5, 4, 4, 4, 64, 14.4f,  5, 56, R.xml.default_workspace_5x5));
-        // The tablet profile is odd in that the landscape orientation
-        // also includes the nav bar on the side
-        predefinedDeviceProfiles.add(new InvariantDeviceProfile("Nexus 7",
-                575, 904,     5, 6, 4, 5, 4, 72, 14.4f,  7, 60, R.xml.default_workspace_5x6));
-        // Larger tablet profiles always have system bars on the top & bottom
-        predefinedDeviceProfiles.add(new InvariantDeviceProfile("Nexus 10",
-                727, 1207,    5, 6, 4, 5, 4, 76, 14.4f,  7, 76, R.xml.default_workspace_5x6));
-        predefinedDeviceProfiles.add(new InvariantDeviceProfile("20-inch Tablet",
-                1527, 2527,   7, 7, 6, 6, 4, 100, 20,  7, 72, R.xml.default_workspace_5x6));
-        return predefinedDeviceProfiles;
+    ArrayList<InvariantDeviceProfile> getPredefinedDeviceProfiles(Context context) {
+        ArrayList<InvariantDeviceProfile> profiles = new ArrayList<>();
+        try (XmlResourceParser parser = context.getResources().getXml(R.xml.device_profiles)) {
+            final int depth = parser.getDepth();
+            int type;
+
+            while (((type = parser.next()) != XmlPullParser.END_TAG ||
+                    parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
+                if ((type == XmlPullParser.START_TAG) && "profile".equals(parser.getName())) {
+                    TypedArray a = context.obtainStyledAttributes(
+                            Xml.asAttributeSet(parser), R.styleable.InvariantDeviceProfile);
+                    int numRows = a.getInt(R.styleable.InvariantDeviceProfile_numRows, 0);
+                    int numColumns = a.getInt(R.styleable.InvariantDeviceProfile_numColumns, 0);
+                    float iconSize = a.getFloat(R.styleable.InvariantDeviceProfile_iconSize, 0);
+                    profiles.add(new InvariantDeviceProfile(
+                            a.getString(R.styleable.InvariantDeviceProfile_name),
+                            a.getFloat(R.styleable.InvariantDeviceProfile_minWidthDps, 0),
+                            a.getFloat(R.styleable.InvariantDeviceProfile_minHeightDps, 0),
+                            numRows,
+                            numColumns,
+                            a.getInt(R.styleable.InvariantDeviceProfile_numFolderRows, numRows),
+                            a.getInt(R.styleable.InvariantDeviceProfile_numFolderColumns, numColumns),
+                            a.getInt(R.styleable.InvariantDeviceProfile_minAllAppsPredictionColumns, numColumns),
+                            iconSize,
+                            a.getFloat(R.styleable.InvariantDeviceProfile_iconTextSize, 0),
+                            a.getInt(R.styleable.InvariantDeviceProfile_numHotseatIcons, numColumns),
+                            a.getFloat(R.styleable.InvariantDeviceProfile_hotseatIconSize, iconSize),
+                            a.getResourceId(R.styleable.InvariantDeviceProfile_defaultLayoutId, 0)));
+                    a.recycle();
+                }
+            }
+        } catch (IOException|XmlPullParserException e) {
+            throw new RuntimeException(e);
+        }
+        return profiles;
     }
 
     private int getLauncherIconDensity(int requiredSize) {
@@ -292,6 +316,22 @@ public class InvariantDeviceProfile {
         return this;
     }
 
+    public int getAllAppsButtonRank() {
+        if (ProviderConfig.IS_DOGFOOD_BUILD && FeatureFlags.NO_ALL_APPS_ICON) {
+            throw new IllegalAccessError("Accessing all apps rank when all-apps is disabled");
+        }
+        return numHotseatIcons / 2;
+    }
+
+    public boolean isAllAppsButtonRank(int rank) {
+        return rank == getAllAppsButtonRank();
+    }
+
+    public DeviceProfile getDeviceProfile(Context context) {
+        return context.getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE ? landscapeProfile : portraitProfile;
+    }
+
     private float weight(float x0, float y0, float x1, float y1, float pow) {
         float d = dist(x0, y0, x1, y1);
         if (Float.compare(d, 0f) == 0) {
@@ -299,4 +339,34 @@ public class InvariantDeviceProfile {
         }
         return (float) (WEIGHT_EFFICIENT / Math.pow(d, pow));
     }
+
+    /**
+     * As a ratio of screen height, the total distance we want the parallax effect to span
+     * horizontally
+     */
+    private static float wallpaperTravelToScreenWidthRatio(int width, int height) {
+        float aspectRatio = width / (float) height;
+
+        // At an aspect ratio of 16/10, the wallpaper parallax effect should span 1.5 * screen width
+        // At an aspect ratio of 10/16, the wallpaper parallax effect should span 1.2 * screen width
+        // We will use these two data points to extrapolate how much the wallpaper parallax effect
+        // to span (ie travel) at any aspect ratio:
+
+        final float ASPECT_RATIO_LANDSCAPE = 16/10f;
+        final float ASPECT_RATIO_PORTRAIT = 10/16f;
+        final float WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE = 1.5f;
+        final float WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT = 1.2f;
+
+        // To find out the desired width at different aspect ratios, we use the following two
+        // formulas, where the coefficient on x is the aspect ratio (width/height):
+        //   (16/10)x + y = 1.5
+        //   (10/16)x + y = 1.2
+        // We solve for x and y and end up with a final formula:
+        final float x =
+                (WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE - WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT) /
+                        (ASPECT_RATIO_LANDSCAPE - ASPECT_RATIO_PORTRAIT);
+        final float y = WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT - x * ASPECT_RATIO_PORTRAIT;
+        return x * aspectRatio + y;
+    }
+
 }

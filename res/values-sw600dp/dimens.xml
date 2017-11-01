@@ -15,23 +15,13 @@
 -->
 
 <resources>
-    <!-- Container -->
-    <dimen name="container_min_margin">16dp</dimen>
-
-    <!-- All Apps -->
-    <dimen name="all_apps_grid_view_start_margin">0dp</dimen>
-    <dimen name="all_apps_grid_section_text_size">26sp</dimen>
-    <dimen name="all_apps_icon_top_bottom_padding">12dp</dimen>
+<!-- All Apps -->
     <dimen name="all_apps_background_canvas_width">850dp</dimen>
     <dimen name="all_apps_background_canvas_height">525dp</dimen>
-    <dimen name="all_apps_icon_width_gap">36dp</dimen>
 
-<!-- Cling -->
-    <dimen name="cling_migration_logo_height">400dp</dimen>
-    <dimen name="cling_migration_logo_width">274dp</dimen>
-    <dimen name="cling_migration_bg_size">600dp</dimen>
-    <dimen name="cling_migration_bg_shift">-300dp</dimen>
-    <dimen name="cling_migration_content_margin">64dp</dimen>
-    <dimen name="cling_migration_content_width">280dp</dimen>
+<!-- Widget tray -->
+    <dimen name="widget_section_indent">56dp</dimen>
 
+<!-- DragController -->
+    <dimen name="drag_flingToDeleteMinVelocity">-1000dp</dimen>
 </resources>

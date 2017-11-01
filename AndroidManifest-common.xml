@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2016, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.android.launcher3">
+    <uses-sdk android:targetSdkVersion="23" android:minSdkVersion="21"/>
+
+    <!--
+    The manifest defines the common entries that should be present in any derivative of Launcher3.
+    The components should generally not require any changes.
+
+    Rest of the components are defined in AndroidManifest.xml which is merged with this manifest
+    at compile time. Note that the components defined in AndroidManifest.xml are also required,
+    with some minor changed based on the derivative app.
+    -->
+    <permission
+        android:name="com.android.launcher.permission.INSTALL_SHORTCUT"
+        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
+        android:protectionLevel="dangerous"
+        android:label="@string/permlab_install_shortcut"
+        android:description="@string/permdesc_install_shortcut" />
+
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
+    <uses-permission android:name="android.permission.BIND_APPWIDGET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <application
+        android:backupAgent="com.android.launcher3.LauncherBackupAgent"
+        android:fullBackupOnly="true"
+        android:fullBackupContent="@xml/backupscheme"
+        android:hardwareAccelerated="true"
+        android:icon="@drawable/ic_launcher_home"
+        android:label="@string/derived_app_name"
+        android:largeHeap="@bool/config_largeHeap"
+        android:restoreAnyVersion="true"
+        android:supportsRtl="true" >
+
+        <!-- Intent received used to install shortcuts from other applications -->
+        <receiver
+            android:name="com.android.launcher3.InstallShortcutReceiver"
+            android:permission="com.android.launcher.permission.INSTALL_SHORTCUT"
+            android:enabled="@bool/enable_install_shortcut_api" >
+            <intent-filter>
+                <action android:name="com.android.launcher.action.INSTALL_SHORTCUT" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Intent received when a session is committed -->
+        <receiver
+            android:name="com.android.launcher3.SessionCommitReceiver" >
+            <intent-filter>
+                <action android:name="android.content.pm.action.SESSION_COMMITTED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Intent received used to initialize a restored widget -->
+        <receiver android:name="com.android.launcher3.AppWidgetsRestoredReceiver" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_HOST_RESTORED"/>
+            </intent-filter>
+        </receiver>
+
+        <service android:name="com.android.launcher3.dynamicui.ColorExtractionService"
+            android:exported="false"
+            android:process=":wallpaper_chooser"
+            android:permission="android.permission.BIND_JOB_SERVICE">
+        </service>
+
+        <service android:name="com.android.launcher3.notification.NotificationListener"
+                 android:enabled="@bool/notification_badging_enabled"
+                 android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
+        <meta-data android:name="android.nfc.disable_beam_default"
+                       android:value="true" />
+
+        <activity android:name="com.android.launcher3.dragndrop.AddItemActivity"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog.Alert"
+            android:excludeFromRecents="true"
+            android:autoRemoveFromRecents="true"
+            android:label="@string/action_add_to_workspace" >
+            <intent-filter>
+                <action android:name="android.content.pm.action.CONFIRM_PIN_SHORTCUT" />
+                <action android:name="android.content.pm.action.CONFIRM_PIN_APPWIDGET" />
+            </intent-filter>
+        </activity>
+
+        <!--
+        Should point to the content provider which can be used to dump Launcher3 compatible
+        worspace configuration to the dump's file descriptor by using launcher_dump.proto
+        -->
+        <meta-data
+            android:name="com.android.launcher3.launcher_dump_provider"
+            android:value="com.android.launcher3.LauncherProvider" />
+
+    </application>
+</manifest>

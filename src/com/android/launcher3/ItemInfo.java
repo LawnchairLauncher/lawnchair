@@ -16,33 +16,26 @@
 
 package com.android.launcher3;
 
+import android.content.ComponentName;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.os.Process;
+import android.os.UserHandle;
 
-import com.android.launcher3.compat.UserHandleCompat;
-import com.android.launcher3.compat.UserManagerCompat;
-
-import java.util.Arrays;
+import com.android.launcher3.util.ContentWriter;
 
 /**
  * Represents an item in the launcher.
  */
 public class ItemInfo {
 
-    /**
-     * Intent extra to store the profile. Format: UserHandle
-     */
-    static final String EXTRA_PROFILE = "profile";
-    
     public static final int NO_ID = -1;
-    
+
     /**
      * The id in the settings database for this item
      */
     public long id = NO_ID;
-    
+
     /**
      * One of {@link LauncherSettings.Favorites#ITEM_TYPE_APPLICATION},
      * {@link LauncherSettings.Favorites#ITEM_TYPE_SHORTCUT},
@@ -50,20 +43,20 @@ public class ItemInfo {
      * {@link LauncherSettings.Favorites#ITEM_TYPE_APPWIDGET}.
      */
     public int itemType;
-    
+
     /**
-     * The id of the container that holds this item. For the desktop, this will be 
+     * The id of the container that holds this item. For the desktop, this will be
      * {@link LauncherSettings.Favorites#CONTAINER_DESKTOP}. For the all applications folder it
      * will be {@link #NO_ID} (since it is not stored in the settings DB). For user folders
      * it will be the id of the folder.
      */
     public long container = NO_ID;
-    
+
     /**
-     * Iindicates the screen in which the shortcut appears.
+     * Indicates the screen in which the shortcut appears.
      */
     public long screenId = -1;
-    
+
     /**
      * Indicates the X position of the associated cell.
      */
@@ -100,11 +93,6 @@ public class ItemInfo {
     public int rank = 0;
 
     /**
-     * Indicates that this item needs to be updated in the db
-     */
-    public boolean requiresDbUpdate = false;
-
-    /**
      * Title of the item
      */
     public CharSequence title;
@@ -114,15 +102,10 @@ public class ItemInfo {
      */
     public CharSequence contentDescription;
 
-    /**
-     * The position of the item in a drag-and-drop operation.
-     */
-    public int[] dropPos = null;
-
-    public UserHandleCompat user;
+    public UserHandle user;
 
     public ItemInfo() {
-        user = UserHandleCompat.myUserHandle();
+        user = Process.myUserHandle();
     }
 
     ItemInfo(ItemInfo info) {
@@ -146,56 +129,67 @@ public class ItemInfo {
     }
 
     public Intent getIntent() {
-        throw new RuntimeException("Unexpected Intent");
+        return null;
+    }
+
+    public ComponentName getTargetComponent() {
+        return getIntent() == null ? null : getIntent().getComponent();
+    }
+
+    public void writeToValues(ContentWriter writer) {
+        writer.put(LauncherSettings.Favorites.ITEM_TYPE, itemType)
+                .put(LauncherSettings.Favorites.CONTAINER, container)
+                .put(LauncherSettings.Favorites.SCREEN, screenId)
+                .put(LauncherSettings.Favorites.CELLX, cellX)
+                .put(LauncherSettings.Favorites.CELLY, cellY)
+                .put(LauncherSettings.Favorites.SPANX, spanX)
+                .put(LauncherSettings.Favorites.SPANY, spanY)
+                .put(LauncherSettings.Favorites.RANK, rank);
+    }
+
+    public void readFromValues(ContentValues values) {
+        itemType = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
+        container = values.getAsLong(LauncherSettings.Favorites.CONTAINER);
+        screenId = values.getAsLong(LauncherSettings.Favorites.SCREEN);
+        cellX = values.getAsInteger(LauncherSettings.Favorites.CELLX);
+        cellY = values.getAsInteger(LauncherSettings.Favorites.CELLY);
+        spanX = values.getAsInteger(LauncherSettings.Favorites.SPANX);
+        spanY = values.getAsInteger(LauncherSettings.Favorites.SPANY);
+        rank = values.getAsInteger(LauncherSettings.Favorites.RANK);
     }
 
     /**
      * Write the fields of this item to the DB
-     * 
-     * @param context A context object to use for getting UserManagerCompat
-     * @param values
      */
-
-    void onAddToDatabase(Context context, ContentValues values) {
-        values.put(LauncherSettings.BaseLauncherColumns.ITEM_TYPE, itemType);
-        values.put(LauncherSettings.Favorites.CONTAINER, container);
-        values.put(LauncherSettings.Favorites.SCREEN, screenId);
-        values.put(LauncherSettings.Favorites.CELLX, cellX);
-        values.put(LauncherSettings.Favorites.CELLY, cellY);
-        values.put(LauncherSettings.Favorites.SPANX, spanX);
-        values.put(LauncherSettings.Favorites.SPANY, spanY);
-        values.put(LauncherSettings.Favorites.RANK, rank);
-        long serialNumber = UserManagerCompat.getInstance(context).getSerialNumberForUser(user);
-        values.put(LauncherSettings.Favorites.PROFILE_ID, serialNumber);
-
+    public void onAddToDatabase(ContentWriter writer) {
         if (screenId == Workspace.EXTRA_EMPTY_SCREEN_ID) {
             // We should never persist an item on the extra empty screen.
             throw new RuntimeException("Screen id should not be EXTRA_EMPTY_SCREEN_ID");
         }
-    }
 
-    static void writeBitmap(ContentValues values, Bitmap bitmap) {
-        if (bitmap != null) {
-            byte[] data = Utilities.flattenBitmap(bitmap);
-            values.put(LauncherSettings.Favorites.ICON, data);
-        }
-    }
-
-    /**
-     * It is very important that sub-classes implement this if they contain any references
-     * to the activity (anything in the view hierarchy etc.). If not, leaks can result since
-     * ItemInfo objects persist across rotation and can hence leak by holding stale references
-     * to the old view hierarchy / activity.
-     */
-    void unbind() {
+        writeToValues(writer);
+        writer.put(LauncherSettings.Favorites.PROFILE_ID, user);
     }
 
     @Override
-    public String toString() {
-        return "Item(id=" + this.id + " type=" + this.itemType + " container=" + this.container
-            + " screen=" + screenId + " cellX=" + cellX + " cellY=" + cellY + " spanX=" + spanX
-            + " spanY=" + spanY + " dropPos=" + Arrays.toString(dropPos)
-            + " user=" + user + ")";
+    public final String toString() {
+        return getClass().getSimpleName() + "(" + dumpProperties() + ")";
+    }
+
+    protected String dumpProperties() {
+        return "id=" + id
+                + " type=" + itemType
+                + " container=" + container
+                + " screen=" + screenId
+                + " cellX=" + cellX
+                + " cellY=" + cellY
+                + " spanX=" + spanX
+                + " spanY=" + spanY
+                + " minSpanX=" + minSpanX
+                + " minSpanY=" + minSpanY
+                + " rank=" + rank
+                + " user=" + user
+                + " title=" + title;
     }
 
     /**

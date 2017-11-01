@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2015 The Android Open Source Project
+<!-- Copyright (C) 2016 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -16,14 +16,13 @@
 <!-- The top and bottom paddings are defined in this container, but since we want
      the list view to span the full width (for touch interception purposes), we
      will bake the left/right padding into that view's background itself. -->
-<com.android.launcher3.allapps.AllAppsContainerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher3.allapps.AllAppsContainerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/apps_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    launcher:revealBackground="@drawable/quantum_panel_shape">
+    launcher:revealBackground="@drawable/round_rect_primary">
 
     <View
         android:id="@+id/reveal_view"
@@ -31,61 +30,75 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:focusable="false"
-        android:elevation="2dp"
         android:visibility="invisible" />
 
 
     <com.android.launcher3.allapps.AllAppsRecyclerViewContainerView
+        android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/main_content"
-        android:saveEnabled="false"
-        android:visibility="gone"
         android:layout_gravity="center"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:elevation="15dp" >
+        android:saveEnabled="false"
+        android:visibility="gone">
 
         <!-- DO NOT CHANGE THE ID -->
         <com.android.launcher3.allapps.AllAppsRecyclerView
             android:id="@+id/apps_list_view"
-            android:theme="@style/Theme.Light.CustomOverscroll"
+            android:layout_below="@+id/search_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal|top"
             android:clipToPadding="false"
+            android:descendantFocusability="afterDescendants"
             android:focusable="true"
-            android:layout_marginTop="@dimen/all_apps_search_bar_height"
-            android:descendantFocusability="afterDescendants" />
+            android:paddingStart="@dimen/container_fastscroll_thumb_max_width"
+            android:paddingEnd="@dimen/container_fastscroll_thumb_max_width" />
 
-        <LinearLayout
+        <!-- Fast scroller popup -->
+        <TextView
+            style="@style/FastScrollerPopup"
+            android:layout_below="@+id/search_container"
+            android:id="@+id/fast_scroller_popup"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/container_fastscroll_popup_margin" />
+
+        <FrameLayout
             android:id="@+id/search_container"
             android:layout_width="match_parent"
-            android:saveEnabled="false"
             android:layout_height="@dimen/all_apps_search_bar_height"
-            android:layout_gravity="start|top"
+            android:layout_gravity="center|top"
+            android:gravity="center|bottom"
             android:orientation="horizontal"
-            android:background="@drawable/all_apps_search_bg" >
+            android:saveEnabled="false">
 
             <com.android.launcher3.ExtendedEditText
                 android:id="@+id/search_box_input"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="@dimen/all_apps_search_bar_field_height"
                 android:background="@android:color/transparent"
+                android:layout_gravity="bottom"
                 android:focusableInTouchMode="true"
-                android:gravity="fill_horizontal|center_vertical"
-                android:hint="@string/all_apps_search_bar_hint"
-                android:inputType="text|textNoSuggestions|textCapWords"
+                android:gravity="center"
                 android:imeOptions="actionSearch|flagNoExtractUi"
+                android:inputType="text|textNoSuggestions|textCapWords"
                 android:maxLines="1"
                 android:scrollHorizontally="true"
-                android:layout_marginLeft="@dimen/container_fastscroll_thumb_max_width"
-                android:layout_marginRight="@dimen/container_fastscroll_thumb_max_width"
                 android:singleLine="true"
-                android:textColor="#4c4c4c"
-                android:textColorHint="#9c9c9c"
+                android:textColor="?android:attr/textColorSecondary"
+                android:hint="@string/all_apps_search_bar_hint"
+                android:textColorHint="@drawable/all_apps_search_hint"
                 android:textSize="16sp" />
-        </LinearLayout>
+        </FrameLayout>
 
     </com.android.launcher3.allapps.AllAppsRecyclerViewContainerView>
+    <View
+        style="@style/AllAppsNavBarProtection"
+        android:id="@+id/nav_bar_bg"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="bottom"
+        android:focusable="false"
+        android:visibility="invisible" />
 </com.android.launcher3.allapps.AllAppsContainerView>

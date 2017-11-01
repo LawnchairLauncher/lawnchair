@@ -16,13 +16,12 @@
 
 package com.android.launcher3;
 
-import android.content.ContentValues;
-import android.content.Context;
+import android.os.Process;
 
-import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.model.ModelWriter;
+import com.android.launcher3.util.ContentWriter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Represents a folder containing shortcuts or apps.
@@ -46,11 +45,6 @@ public class FolderInfo extends ItemInfo {
      */
     public static final int FLAG_MULTI_PAGE_ANIMATION = 0x00000004;
 
-    /**
-     * Whether this folder has been opened
-     */
-    boolean opened;
-
     public int options;
 
     /**
@@ -62,7 +56,7 @@ public class FolderInfo extends ItemInfo {
 
     public FolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
-        user = UserHandleCompat.myUserHandle();
+        user = Process.myUserHandle();
     }
 
     /**
@@ -70,12 +64,12 @@ public class FolderInfo extends ItemInfo {
      *
      * @param item
      */
-    public void add(ShortcutInfo item) {
+    public void add(ShortcutInfo item, boolean animate) {
         contents.add(item);
         for (int i = 0; i < listeners.size(); i++) {
             listeners.get(i).onAdd(item);
         }
-        itemsChanged();
+        itemsChanged(animate);
     }
 
     /**
@@ -83,12 +77,12 @@ public class FolderInfo extends ItemInfo {
      *
      * @param item
      */
-    public void remove(ShortcutInfo item) {
+    public void remove(ShortcutInfo item, boolean animate) {
         contents.remove(item);
         for (int i = 0; i < listeners.size(); i++) {
             listeners.get(i).onRemove(item);
         }
-        itemsChanged();
+        itemsChanged(animate);
     }
 
     public void setTitle(CharSequence title) {
@@ -99,48 +93,39 @@ public class FolderInfo extends ItemInfo {
     }
 
     @Override
-    void onAddToDatabase(Context context, ContentValues values) {
-        super.onAddToDatabase(context, values);
-        values.put(LauncherSettings.Favorites.TITLE, title.toString());
-        values.put(LauncherSettings.Favorites.OPTIONS, options);
+    public void onAddToDatabase(ContentWriter writer) {
+        super.onAddToDatabase(writer);
+        writer.put(LauncherSettings.Favorites.TITLE, title)
+                .put(LauncherSettings.Favorites.OPTIONS, options);
 
     }
 
-    void addListener(FolderListener listener) {
+    public void addListener(FolderListener listener) {
         listeners.add(listener);
     }
 
-    void removeListener(FolderListener listener) {
-        if (listeners.contains(listener)) {
-            listeners.remove(listener);
-        }
+    public void removeListener(FolderListener listener) {
+        listeners.remove(listener);
     }
 
-    void itemsChanged() {
+    public void itemsChanged(boolean animate) {
         for (int i = 0; i < listeners.size(); i++) {
-            listeners.get(i).onItemsChanged();
+            listeners.get(i).onItemsChanged(animate);
         }
     }
 
-    @Override
-    void unbind() {
-        super.unbind();
-        listeners.clear();
+    public void prepareAutoUpdate() {
+        for (int i = 0; i < listeners.size(); i++) {
+            listeners.get(i).prepareAutoUpdate();
+        }
     }
 
-    interface FolderListener {
+    public interface FolderListener {
         public void onAdd(ShortcutInfo item);
         public void onRemove(ShortcutInfo item);
         public void onTitleChanged(CharSequence title);
-        public void onItemsChanged();
-    }
-
-    @Override
-    public String toString() {
-        return "FolderInfo(id=" + this.id + " type=" + this.itemType
-                + " container=" + this.container + " screen=" + screenId
-                + " cellX=" + cellX + " cellY=" + cellY + " spanX=" + spanX
-                + " spanY=" + spanY + " dropPos=" + Arrays.toString(dropPos) + ")";
+        public void onItemsChanged(boolean animate);
+        public void prepareAutoUpdate();
     }
 
     public boolean hasOption(int optionFlag) {
@@ -150,17 +135,17 @@ public class FolderInfo extends ItemInfo {
     /**
      * @param option flag to set or clear
      * @param isEnabled whether to set or clear the flag
-     * @param context if not null, save changes to the db.
+     * @param writer if not null, save changes to the db.
      */
-    public void setOption(int option, boolean isEnabled, Context context) {
+    public void setOption(int option, boolean isEnabled, ModelWriter writer) {
         int oldOptions = options;
         if (isEnabled) {
             options |= option;
         } else {
             options &= ~option;
         }
-        if (context != null && oldOptions != options) {
-            LauncherModel.updateItemInDatabase(context, this);
+        if (writer != null && oldOptions != options) {
+            writer.updateItemInDatabase(this);
         }
     }
 }

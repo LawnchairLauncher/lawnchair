@@ -20,32 +20,22 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.UserHandle;
-import android.os.UserManager;
-import android.util.Log;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 @TargetApi(Build.VERSION_CODES.N)
-public class UserManagerCompatVN extends UserManagerCompatVL {
-
-    private static final String TAG = "UserManagerCompatVN";
+public class UserManagerCompatVN extends UserManagerCompatVM {
 
     UserManagerCompatVN(Context context) {
         super(context);
     }
 
     @Override
-    public boolean isQuietModeEnabled(UserHandleCompat user) {
-        if (user != null) {
-            try {
-                return mUserManager.isQuietModeEnabled(user.getUser());
-            } catch (IllegalArgumentException e) {
-                // TODO remove this when API is fixed to not throw this
-                // when called on user that isn't a managed profile.
-            }
-        }
-        return false;
+    public boolean isQuietModeEnabled(UserHandle user) {
+        return mUserManager.isQuietModeEnabled(user);
+    }
+
+    @Override
+    public boolean isUserUnlocked(UserHandle user) {
+        return mUserManager.isUserUnlocked(user);
     }
 }
 
