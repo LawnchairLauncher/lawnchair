@@ -1350,7 +1350,10 @@ public class LauncherModel extends BroadcastReceiver
             } else {
                 ExtractionUtils.startColorExtractionService(context);
             }
-            BlurWallpaperProvider.Companion.getInstance().updateAsync();
+            BlurWallpaperProvider bwp = BlurWallpaperProvider.Companion.getInstance();
+            if(bwp!= null){
+                bwp.updateAsync();
+            }
         }
     }
 
