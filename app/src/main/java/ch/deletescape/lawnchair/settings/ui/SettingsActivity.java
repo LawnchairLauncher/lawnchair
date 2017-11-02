@@ -18,7 +18,7 @@
 package ch.deletescape.lawnchair.settings.ui;
 
 import android.Manifest;
-import android.app.Dialog;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -40,6 +40,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -290,10 +292,18 @@ public class SettingsActivity extends AppCompatActivity implements
                         }
                         break;
                     case "about_translators":
-                        Dialog dialog = new Dialog(getActivity());
-                        dialog.setTitle(R.string.about_translators);
-                        dialog.setContentView(R.layout.dialog_translators);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(R.string.about_translators);
+                        builder.setView(R.layout.dialog_translators);
+                        builder.setNeutralButton("OK", null);
+                        AlertDialog dialog = builder.create();
                         dialog.show();
+
+                        // Custom LayoutParams for neutral button of AlertDialog
+                        final Button neutralButton = dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+                        LinearLayout.LayoutParams neutralButtonLL = (LinearLayout.LayoutParams) neutralButton.getLayoutParams();
+                        neutralButtonLL.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                        neutralButton.setLayoutParams(neutralButtonLL);
                         break;
                     default:
                         return false;
