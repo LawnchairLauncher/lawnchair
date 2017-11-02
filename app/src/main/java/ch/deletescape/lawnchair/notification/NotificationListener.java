@@ -26,6 +26,7 @@ import android.service.notification.StatusBarNotification;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
+import android.util.Log;
 
 import ch.deletescape.lawnchair.LauncherModel;
 import ch.deletescape.lawnchair.config.FeatureFlags;
@@ -64,21 +65,26 @@ public class NotificationListener extends NotificationListenerService {
     private Handler.Callback mWorkerCallback = new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
-            switch (message.what) {
-                case MSG_NOTIFICATION_POSTED:
-                    mUiHandler.obtainMessage(message.what, message.obj).sendToTarget();
-                    break;
-                case MSG_NOTIFICATION_REMOVED:
-                    mUiHandler.obtainMessage(message.what, message.obj).sendToTarget();
-                    break;
-                case MSG_NOTIFICATION_FULL_REFRESH:
-                    final List<StatusBarNotification> activeNotifications = sIsConnected
-                            ? filterNotifications(getActiveNotifications())
-                            : new ArrayList<StatusBarNotification>();
-                    mUiHandler.obtainMessage(message.what, activeNotifications).sendToTarget();
-                    break;
+            try {
+                switch (message.what) {
+                    case MSG_NOTIFICATION_POSTED:
+                        mUiHandler.obtainMessage(message.what, message.obj).sendToTarget();
+                        break;
+                    case MSG_NOTIFICATION_REMOVED:
+                        mUiHandler.obtainMessage(message.what, message.obj).sendToTarget();
+                        break;
+                    case MSG_NOTIFICATION_FULL_REFRESH:
+                        final List<StatusBarNotification> activeNotifications = sIsConnected
+                                ? filterNotifications(getActiveNotifications())
+                                : new ArrayList<StatusBarNotification>();
+                        mUiHandler.obtainMessage(message.what, activeNotifications).sendToTarget();
+                        break;
+                }
+                return true;
+            } catch(SecurityException e){
+                Log.e(getClass().getSimpleName(), "F*** Huawei ffs", e);
             }
-            return true;
+            return false;
         }
     };
 
