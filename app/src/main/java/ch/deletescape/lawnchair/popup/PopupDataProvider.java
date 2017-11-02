@@ -185,29 +185,34 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
      * @return Whether the badge icon potentially changed (true unless it stayed null).
      */
     private boolean updateBadgeIcon(BadgeInfo badgeInfo) {
-        boolean hadNotificationToShow = badgeInfo.hasNotificationToShow();
-        NotificationInfo notificationInfo = null;
-        NotificationListener notificationListener = NotificationListener.getInstanceIfConnected();
-        if (notificationListener != null && badgeInfo.getNotificationKeys().size() >= 1) {
-            // Look for the most recent notification that has an icon that should be shown in badge.
-            for (NotificationKeyData notificationKeyData : badgeInfo.getNotificationKeys()) {
-                String notificationKey = notificationKeyData.notificationKey;
-                StatusBarNotification[] activeNotifications = notificationListener
-                        .getActiveNotifications(new String[]{notificationKey});
-                if (activeNotifications.length == 1) {
-                    notificationInfo = new NotificationInfo(mLauncher, activeNotifications[0]);
-                    if (notificationInfo.shouldShowIconInBadge()) {
-                        // Found an appropriate icon.
-                        break;
-                    } else {
-                        // Keep looking.
-                        notificationInfo = null;
+        try {
+            boolean hadNotificationToShow = badgeInfo.hasNotificationToShow();
+            NotificationInfo notificationInfo = null;
+            NotificationListener notificationListener = NotificationListener.getInstanceIfConnected();
+            if (notificationListener != null && badgeInfo.getNotificationKeys().size() >= 1) {
+                // Look for the most recent notification that has an icon that should be shown in badge.
+                for (NotificationKeyData notificationKeyData : badgeInfo.getNotificationKeys()) {
+                    String notificationKey = notificationKeyData.notificationKey;
+                    StatusBarNotification[] activeNotifications = notificationListener
+                            .getActiveNotifications(new String[]{notificationKey});
+                    if (activeNotifications.length == 1) {
+                        notificationInfo = new NotificationInfo(mLauncher, activeNotifications[0]);
+                        if (notificationInfo.shouldShowIconInBadge()) {
+                            // Found an appropriate icon.
+                            break;
+                        } else {
+                            // Keep looking.
+                            notificationInfo = null;
+                        }
                     }
                 }
             }
+            badgeInfo.setNotificationToShow(notificationInfo);
+            return hadNotificationToShow || badgeInfo.hasNotificationToShow();
+        } catch(SecurityException e) {
+            Log.e(getClass().getSimpleName(), "F*** Huawei ffs", e);
         }
-        badgeInfo.setNotificationToShow(notificationInfo);
-        return hadNotificationToShow || badgeInfo.hasNotificationToShow();
+        return true;
     }
 
     public void setDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMapCopy) {
