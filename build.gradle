@@ -109,6 +109,8 @@ dependencies {
     compile "com.android.support:recyclerview-v7:${SUPPORT_LIBS_VERSION}"
     compile 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
 
+    quickstepCompile fileTree(dir: "quickstep/libs", include: 'sysui_shared.jar')
+
     testCompile 'junit:junit:4.12'
     androidTestCompile "org.mockito:mockito-core:1.9.5"
     androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
