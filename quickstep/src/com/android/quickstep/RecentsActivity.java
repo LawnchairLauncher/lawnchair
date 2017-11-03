@@ -17,6 +17,7 @@ package com.android.quickstep;
 
 import android.app.ListActivity;
 import android.os.Bundle;
+import android.os.UserHandle;
 import android.support.annotation.Nullable;
 import android.widget.ArrayAdapter;
 
@@ -36,7 +37,7 @@ public class RecentsActivity extends ListActivity {
         super.onCreate(savedInstanceState);
 
         RecentsTaskLoadPlan plan = new RecentsTaskLoadPlan(this);
-        plan.preloadPlan(new RecentsTaskLoader(this, 1, 1, 0), -1);
+        plan.preloadPlan(new RecentsTaskLoader(this, 1, 1, 0), -1, UserHandle.myUserId());
 
         mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         mAdapter.addAll(plan.getTaskStack().getStackTasks());
