@@ -21,7 +21,22 @@ public class StringSetAppFilter extends PreferenceAppFilter {
             "com.android.vending.billing.InAppBillingService.LUCK",
             "com.android.protips",
             "com.android.vending.billing.InAppBillingService.CLON",
-            "com.android.vendinc"};
+            "com.android.vendinc",
+            "com.appcake",
+            "ac.market.store",
+            "org.sbtools.gamehack",
+            "com.zune.gamekiller",
+            "com.aag.killer",
+            "com.killerapp.gamekiller",
+            "cn.lm.sq",
+            "net.schwarzis.game_cih",
+            "org.creeplays.hack",
+            "com.baseappfull.fwd",
+            "com.zmapp",
+            "com.dv.marketmod.installer",
+            "org.mobilism.android",
+            "com.blackmartalpha",
+            "org.blackmart.market"};
     private Set<ComponentName> mHiddenComponents = new HashSet<>();
 
     StringSetAppFilter() {
