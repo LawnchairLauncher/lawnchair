@@ -195,6 +195,8 @@
 
     <!-- Developer setting to change the shape of icons on home screen. [CHAR LIMIT=50] -->
     <string name="icon_shape_override_label">Change icon shape</string>
+    <!-- Subtext explaining that the icons will only be affected on the home screen. This text follows the actual icon action: Change icon shape, on Home screen [CHAR LIMIT=100] -->
+    <string name="icon_shape_override_label_location">on Home screen</string>
     <!-- Option to not change the icon shape on home screen and use the system default setting instead. [CHAR LIMIT=50] -->
     <string name="icon_shape_system_default">Use system default</string>
     <!-- Option to change the shape of the home screen icons to a square. [CHAR LIMIT=50] -->

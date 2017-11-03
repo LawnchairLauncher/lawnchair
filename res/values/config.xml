@@ -119,6 +119,10 @@
     <!-- Tag id used for view scrim -->
     <item type="id" name="view_scrim" />
 
+    <!-- View IDs to store item highlight information -->
+    <item type="id" name="view_unhighlight_background" />
+    <item type="id" name="view_highlighted" />
+
 <!-- Popup items -->
     <integer name="config_popupOpenCloseDuration">150</integer>
     <integer name="config_popupArrowOpenDuration">80</integer>
