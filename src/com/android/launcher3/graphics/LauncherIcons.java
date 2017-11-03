@@ -72,7 +72,7 @@ public class LauncherIcons {
         PackageManager packageManager = context.getPackageManager();
         // the resource
         try {
-            Resources resources = packageManager.getResourcesForApplication(iconRes.resourceName);
+            Resources resources = packageManager.getResourcesForApplication(iconRes.packageName);
             if (resources != null) {
                 final int id = resources.getIdentifier(iconRes.resourceName, null, null);
                 // do not stamp old legacy shortcuts as the app may have already forgotten about it
