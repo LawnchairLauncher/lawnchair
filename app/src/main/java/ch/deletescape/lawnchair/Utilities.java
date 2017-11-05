@@ -141,12 +141,44 @@ public final class Utilities {
     private static final int CORE_POOL_SIZE = CPU_COUNT + 1;
     private static final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;
     private static final int KEEP_ALIVE = 1;
+
     /**
      * An {@link Executor} to be used with async task with no limit on the queue size.
      */
     public static final Executor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(
             CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
             TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+
+    // Blacklisted APKs which will be hidden, these include simple regex formatting, without
+    // full regex formatting (e.g. com.android. will block everything that starts with com.android.)
+    // Taken from: https://github.com/substratum/template/blob/kt-n/app/src/main/kotlin/substratum/theme/template/Constants.kt
+    private static final String[] BLACKLISTED_APPLICATIONS = {"com.android.vending.billing.InAppBillingService.LOCK",
+            "com.android.vending.billing.InAppBillingService.LACK",
+            "cc.madkite.freedom",
+            "zone.jasi2169.uretpatcher",
+            "uret.jasi2169.patcher",
+            "com.dimonvideo.luckypatcher",
+            "com.chelpus.lackypatch",
+            "com.forpda.lp",
+            "com.android.vending.billing.InAppBillingService.LUCK",
+            "com.android.protips",
+            "com.android.vending.billing.InAppBillingService.CLON",
+            "com.android.vendinc",
+            "com.appcake",
+            "ac.market.store",
+            "org.sbtools.gamehack",
+            "com.zune.gamekiller",
+            "com.aag.killer",
+            "com.killerapp.gamekiller",
+            "cn.lm.sq",
+            "net.schwarzis.game_cih",
+            "org.creeplays.hack",
+            "com.baseappfull.fwd",
+            "com.zmapp",
+            "com.dv.marketmod.installer",
+            "org.mobilism.android",
+            "com.blackmartalpha",
+            "org.blackmart.market"};
 
     public static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
@@ -1030,4 +1062,18 @@ public final class Utilities {
                 Utilities.isComponentClock(componentName, !Utilities.getPrefs(context).getAnimatedClockIconAlternativeClockApps());
     }
 
+    public static boolean isBlacklistedAppInstalled(Context context) {
+        PackageManager pm = context.getPackageManager();
+        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+
+        for (ApplicationInfo packageInfo : packages) {
+            for (String blacklistedApp : BLACKLISTED_APPLICATIONS) {
+                if (packageInfo.packageName.startsWith(blacklistedApp)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }
