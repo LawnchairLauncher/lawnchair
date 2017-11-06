@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.config;
+package com.android.launcher3.uioverrides;
 
-import com.android.launcher3.LauncherState;
-import com.android.launcher3.states.OverviewState;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.VerticalSwipeController;
+import com.android.launcher3.util.TouchController;
 
-/**
- * Defines a set of flags used to control various launcher behaviors
- */
-public final class FeatureFlags extends BaseFlags {
+public class UiFactory {
 
-    private FeatureFlags() {}
-
-    public static LauncherState createOverviewState(int id) {
-        return new OverviewState(id);
+    public static TouchController[] createTouchControllers(Launcher launcher) {
+        return new TouchController[] {
+                new VerticalSwipeController(launcher), new PinchToOverviewListener(launcher)};
     }
 }

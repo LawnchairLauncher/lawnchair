@@ -42,17 +42,15 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.DropTargetBar;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.PinchToOverviewListener;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.VerticalSwipeController;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
@@ -92,13 +90,10 @@ public class DragLayer extends InsettableFrameLayout {
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
     private final PageCutOutScrimDrawable mPageCutOutScrim;
 
-    // Related to pinch-to-go-to-overview gesture.
-    private PinchToOverviewListener mPinchListener = null;
-
     // Handles all apps pull up interaction
     private AllAppsTransitionController mAllAppsController;
-    private VerticalSwipeController mVerticalSwipeController;
 
+    protected TouchController[] mControllers;
     private TouchController mActiveController;
     /**
      * Used to create a new DragLayer from XML.
@@ -123,11 +118,7 @@ public class DragLayer extends InsettableFrameLayout {
         mLauncher = launcher;
         mDragController = dragController;
         mAllAppsController = allAppsTransitionController;
-        mVerticalSwipeController = new VerticalSwipeController(mLauncher);
-
-        boolean isAccessibilityEnabled = ((AccessibilityManager) mLauncher.getSystemService(
-                Context.ACCESSIBILITY_SERVICE)).isEnabled();
-        onAccessibilityStateChanged(isAccessibilityEnabled);
+        mControllers = UiFactory.createTouchControllers(mLauncher);
     }
 
     public ViewGroupFocusHelper getFocusIndicatorHelper() {
@@ -142,11 +133,6 @@ public class DragLayer extends InsettableFrameLayout {
     @Override
     protected boolean verifyDrawable(Drawable who) {
         return super.verifyDrawable(who) || who == mPageCutOutScrim;
-    }
-
-    public void onAccessibilityStateChanged(boolean isAccessibilityEnabled) {
-        mPinchListener = FeatureFlags.LAUNCHER3_DISABLE_PINCH_TO_OVERVIEW || isAccessibilityEnabled
-                ? null : new PinchToOverviewListener(mLauncher);
     }
 
     public boolean isEventOverHotseat(MotionEvent ev) {
@@ -194,15 +180,11 @@ public class DragLayer extends InsettableFrameLayout {
             return true;
         }
 
-        if (mVerticalSwipeController.onControllerInterceptTouchEvent(ev)) {
-            mActiveController = mVerticalSwipeController;
-            return true;
-        }
-
-        if (mPinchListener != null && mPinchListener.onControllerInterceptTouchEvent(ev)) {
-            // Stop listening for scrolling etc. (onTouchEvent() handles the rest of the pinch.)
-            mActiveController = mPinchListener;
-            return true;
+        for (TouchController controller : mControllers) {
+            if (controller.onControllerInterceptTouchEvent(ev)) {
+                mActiveController = controller;
+                return true;
+            }
         }
         return false;
     }
