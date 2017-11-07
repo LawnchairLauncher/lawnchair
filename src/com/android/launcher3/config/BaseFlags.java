@@ -16,9 +16,6 @@
 
 package com.android.launcher3.config;
 
-import com.android.launcher3.LauncherState;
-import com.android.launcher3.states.OverviewState;
-
 /**
  * Defines a set of flags used to control various launcher behaviors.
  *
@@ -32,10 +29,10 @@ abstract class BaseFlags {
     BaseFlags() {}
 
     public static final boolean IS_DOGFOOD_BUILD = false;
+    public static final String AUTHORITY = "com.android.launcher3.settings".intern();
 
     // Custom flags go below this
     public static boolean LAUNCHER3_DISABLE_ICON_NORMALIZATION = false;
-    public static boolean LAUNCHER3_DISABLE_PINCH_TO_OVERVIEW = false;
     // When enabled allows to use any point on the fast scrollbar to start dragging.
     public static final boolean LAUNCHER3_DIRECT_SCROLL = true;
     // When enabled the promise icon is visible in all apps while installation an app.
@@ -62,7 +59,4 @@ abstract class BaseFlags {
     // Features to control Launcher3Go behavior
     public static final boolean GO_DISABLE_WIDGETS = false;
 
-    public static LauncherState createOverviewState(int id) {
-        return new OverviewState(id);
-    }
 }

@@ -179,7 +179,7 @@ public class LauncherStateManager {
      * @param duration intended duration for normal playback. Use higher duration for better
      *                accuracy.
      */
-    protected AnimatorPlaybackController createAnimationToNewWorkspace(
+    public AnimatorPlaybackController createAnimationToNewWorkspace(
             LauncherState state, long duration) {
         mConfig.reset();
         mConfig.userControlled = true;

@@ -166,7 +166,6 @@ import java.util.concurrent.Executor;
 public class Launcher extends BaseActivity
         implements LauncherExterns, View.OnClickListener, OnLongClickListener,
                    LauncherModel.Callbacks, View.OnTouchListener, LauncherProviderChangeListener,
-                   AccessibilityManager.AccessibilityStateChangeListener,
                    WallpaperColorInfo.OnThemeChangeListener {
     public static final String TAG = "Launcher";
     static final boolean LOGD = false;
@@ -359,9 +358,6 @@ public class Launcher extends BaseActivity
         mDeviceProfile.layout(this, false /* notifyListeners */);
 
         mPopupDataProvider = new PopupDataProvider(this);
-
-        ((AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE))
-                .addAccessibilityStateChangeListener(this);
 
         restoreState(savedInstanceState);
 
@@ -1547,10 +1543,6 @@ public class Launcher extends BaseActivity
         mAppWidgetHost = null;
 
         TextKeyListener.getInstance().release();
-
-        ((AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE))
-                .removeAccessibilityStateChangeListener(this);
-
         WallpaperColorInfo.getInstance(this).setOnThemeChangeListener(null);
 
         LauncherAnimUtils.onDestroyActivity();
@@ -2183,11 +2175,6 @@ public class Launcher extends BaseActivity
         intent.setSourceBounds(getViewBounds(v));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent, getActivityLaunchOptions(v));
-    }
-
-    @Override
-    public void onAccessibilityStateChanged(boolean enabled) {
-        mDragLayer.onAccessibilityStateChanged(enabled);
     }
 
     private void startShortcutIntentSafely(Intent intent, Bundle optsBundle, ItemInfo info) {

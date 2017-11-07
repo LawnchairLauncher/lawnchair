@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.Utilities.isAccessibilityEnabled;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
 
+import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.util.TouchController;
 
@@ -70,8 +74,10 @@ public class PinchToOverviewListener extends AnimatorListenerAdapter
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
-        if (!mLauncher.isInState(NORMAL)
-                && !mLauncher.isInState(OVERVIEW)) {
+        if (isAccessibilityEnabled(mLauncher)) {
+            return false;
+        }
+        if (!mLauncher.isInState(NORMAL) && !mLauncher.isInState(OVERVIEW)) {
             // Don't listen for the pinch gesture if on all apps, widget picker, -1, etc.
             return false;
         }
@@ -86,7 +92,7 @@ public class PinchToOverviewListener extends AnimatorListenerAdapter
         if (mWorkspace == null) {
             mWorkspace = mLauncher.getWorkspace();
         }
-        if (mWorkspace.isSwitchingState() || mWorkspace.mScrollInteractionBegan) {
+        if (mWorkspace.isSwitchingState()) {
             // Don't listen for the pinch gesture while switching state, as it will cause a jump
             // once the state switching animation is complete.
             return false;

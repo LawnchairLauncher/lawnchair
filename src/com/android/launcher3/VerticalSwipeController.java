@@ -75,7 +75,7 @@ public class VerticalSwipeController extends AnimatorListenerAdapter
 
     private boolean canInterceptTouch(MotionEvent ev) {
         if (!mLauncher.isInState(NORMAL) && !mLauncher.isInState(ALL_APPS)) {
-            // Don't listen for the pinch gesture if on all apps, widget picker, -1, etc.
+            // Don't listen for the swipe gesture if we are already in some other state.
             return false;
         }
         if (mCurrentAnimation != null) {
