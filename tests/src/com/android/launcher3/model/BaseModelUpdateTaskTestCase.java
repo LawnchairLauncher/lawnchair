@@ -1,7 +1,9 @@
 package com.android.launcher3.model;
 
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
 import android.content.res.Resources;
@@ -11,7 +13,8 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
-import android.test.ProviderTestCase2;
+import android.support.test.rule.provider.ProviderTestRule;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppFilter;
@@ -28,6 +31,8 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.TestLauncherProvider;
 
+import org.junit.Before;
+import org.junit.Rule;
 import org.mockito.ArgumentCaptor;
 
 import java.io.BufferedReader;
@@ -46,7 +51,12 @@ import static org.mockito.Mockito.when;
 /**
  * Base class for writing tests for Model update tasks.
  */
-public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherProvider> {
+public class BaseModelUpdateTaskTestCase {
+
+    @Rule
+    public ProviderTestRule mProviderRule =
+            new ProviderTestRule.Builder(TestLauncherProvider.class, LauncherProvider.AUTHORITY)
+                    .build();
 
     public final HashMap<Class, HashMap<String, Field>> fieldCache = new HashMap<>();
 
@@ -63,14 +73,8 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
     public AllAppsList allAppsList;
     public Callbacks callbacks;
 
-    public BaseModelUpdateTaskTestCase() {
-        super(TestLauncherProvider.class, LauncherProvider.AUTHORITY);
-    }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    @Before
+    public void setUp() throws Exception {
         callbacks = mock(Callbacks.class);
         appState = mock(LauncherAppState.class);
         model = mock(LauncherModel.class);
@@ -83,7 +87,12 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
         myUser = Process.myUserHandle();
 
         bgDataModel = new BgDataModel();
-        targetContext = InstrumentationRegistry.getTargetContext();
+        targetContext = new ContextWrapper(InstrumentationRegistry.getTargetContext()) {
+            @Override
+            public ContentResolver getContentResolver() {
+                return mProviderRule.getResolver();
+            }
+        };
         idp = new InvariantDeviceProfile();
         iconCache = new MyIconCache(targetContext, idp);
 
@@ -91,6 +100,8 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
 
         when(appState.getIconCache()).thenReturn(iconCache);
         when(appState.getInvariantDeviceProfile()).thenReturn(idp);
+        when(appState.getContext()).thenReturn(targetContext);
+
     }
 
     /**
