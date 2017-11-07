@@ -90,7 +90,7 @@ class AlphaUpdateListener extends AnimatorListenerAdapter implements ValueAnimat
  */
 public class WorkspaceStateTransitionAnimation {
 
-    private static final PropertySetter NO_ANIM_PROPERTY_SETTER = new PropertySetter();
+    public static final PropertySetter NO_ANIM_PROPERTY_SETTER = new PropertySetter();
 
     public final int mWorkspaceScrimAlpha;
 
@@ -141,14 +141,6 @@ public class WorkspaceStateTransitionAnimation {
                     propertySetter);
         }
 
-        float finalHotseatAlpha = state.hideHotseat ? 0f : 1f;
-
-        // This is true when transitioning between:
-        // - Overview <-> Workspace
-        propertySetter.setViewAlpha(null, mLauncher.getOverviewPanel(), 1 - finalHotseatAlpha);
-        propertySetter.setViewAlpha(mWorkspace.createHotseatAlphaAnimator(finalHotseatAlpha),
-                mLauncher.getHotseat(), finalHotseatAlpha);
-
         propertySetter.setFloat(mWorkspace, SCALE_PROPERTY, mNewScale, Interpolators.ZOOM_IN);
         propertySetter.setFloat(mWorkspace, View.TRANSLATION_Y,
                 finalWorkspaceTranslationY, Interpolators.ZOOM_IN);
@@ -176,7 +168,7 @@ public class WorkspaceStateTransitionAnimation {
         }
     }
 
-    private static class PropertySetter {
+    public static class PropertySetter {
 
         public void setViewAlpha(Animator anim, View view, float alpha) {
             if (anim != null) {
@@ -204,13 +196,14 @@ public class WorkspaceStateTransitionAnimation {
         }
     }
 
-    private static class AnimatedPropertySetter extends PropertySetter {
+    public static class AnimatedPropertySetter extends PropertySetter {
 
         private final long mDuration;
         private final AnimationLayerSet mLayerViews;
         private final AnimatorSet mStateAnimator;
 
-        AnimatedPropertySetter(long duration, AnimationLayerSet layerView, AnimatorSet anim) {
+        public AnimatedPropertySetter(
+                long duration, AnimationLayerSet layerView, AnimatorSet anim) {
             mDuration = duration;
             mLayerViews = layerView;
             mStateAnimator = anim;

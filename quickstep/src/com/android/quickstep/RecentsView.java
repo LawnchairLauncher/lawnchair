@@ -17,13 +17,19 @@
 package com.android.quickstep;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.widget.HorizontalScrollView;
+
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Insettable;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
 
 /**
  * A placeholder view for recents
  */
-public class RecentsView extends HorizontalScrollView {
+public class RecentsView extends HorizontalScrollView implements Insettable {
     public RecentsView(Context context) {
         this(context, null);
     }
@@ -35,7 +41,23 @@ public class RecentsView extends HorizontalScrollView {
     public RecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setAlpha(0);
+        setVisibility(INVISIBLE);
     }
 
     public void setViewVisible(boolean isVisible) { }
+
+    @Override
+    public void setInsets(Rect insets) {
+        MarginLayoutParams lp = (MarginLayoutParams) getLayoutParams();
+        lp.topMargin = insets.top;
+        lp.bottomMargin = insets.bottom;
+        lp.leftMargin = insets.left;
+        lp.rightMargin = insets.right;
+
+        DeviceProfile dp = Launcher.getLauncher(getContext()).getDeviceProfile();
+        if (!dp.isVerticalBarLayout()) {
+             lp.bottomMargin += dp.hotseatBarSizePx + getResources().getDimensionPixelSize(
+                     R.dimen.dynamic_grid_min_page_indicator_size);
+        }
+    }
 }
