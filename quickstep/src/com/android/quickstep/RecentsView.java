@@ -14,21 +14,28 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.uioverrides;
+package com.android.quickstep;
 
-import android.view.View.AccessibilityDelegate;
+import android.content.Context;
+import android.util.AttributeSet;
+import android.widget.HorizontalScrollView;
 
-import com.android.launcher3.Launcher;
-import com.android.launcher3.VerticalSwipeController;
-import com.android.launcher3.util.TouchController;
-
-public class UiFactory {
-
-    public static TouchController[] createTouchControllers(Launcher launcher) {
-        return new TouchController[] {new VerticalSwipeController(launcher)};
+/**
+ * A placeholder view for recents
+ */
+public class RecentsView extends HorizontalScrollView {
+    public RecentsView(Context context) {
+        this(context, null);
     }
 
-    public static AccessibilityDelegate newPageIndicatorAccessibilityDelegate() {
-        return null;
+    public RecentsView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
     }
+
+    public RecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        setAlpha(0);
+    }
+
+    public void setViewVisible(boolean isVisible) { }
 }

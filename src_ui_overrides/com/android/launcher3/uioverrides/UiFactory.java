@@ -16,6 +16,8 @@
 
 package com.android.launcher3.uioverrides;
 
+import android.view.View.AccessibilityDelegate;
+
 import com.android.launcher3.Launcher;
 import com.android.launcher3.VerticalSwipeController;
 import com.android.launcher3.util.TouchController;
@@ -25,5 +27,9 @@ public class UiFactory {
     public static TouchController[] createTouchControllers(Launcher launcher) {
         return new TouchController[] {
                 new VerticalSwipeController(launcher), new PinchToOverviewListener(launcher)};
+    }
+
+    public static AccessibilityDelegate newPageIndicatorAccessibilityDelegate() {
+        return new OverviewAccessibilityDelegate();
     }
 }

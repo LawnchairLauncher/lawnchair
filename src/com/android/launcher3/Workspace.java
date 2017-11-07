@@ -61,7 +61,6 @@ import com.android.launcher3.Launcher.LauncherOverlay;
 import com.android.launcher3.LauncherAppWidgetHost.ProviderChangedListener;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
-import com.android.launcher3.accessibility.OverviewAccessibilityDelegate;
 import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.AnimationLayerSet;
@@ -82,6 +81,7 @@ import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
 import com.android.launcher3.uioverrides.OverviewState;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -454,7 +454,7 @@ public class Workspace extends PagedView
     @Override
     public void initParentViews(View parent) {
         super.initParentViews(parent);
-        mPageIndicator.setAccessibilityDelegate(new OverviewAccessibilityDelegate());
+        mPageIndicator.setAccessibilityDelegate(UiFactory.newPageIndicatorAccessibilityDelegate());
     }
 
     private void setupLayoutTransition() {

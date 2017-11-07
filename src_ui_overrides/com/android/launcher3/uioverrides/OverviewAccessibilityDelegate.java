@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.accessibility;
+package com.android.launcher3.uioverrides;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -55,6 +55,7 @@ public class OverviewAccessibilityDelegate extends AccessibilityDelegate {
     @Override
     public boolean performAccessibilityAction(View host, int action, Bundle args) {
         Launcher launcher = Launcher.getLauncher(host.getContext());
+        OverviewPanel overviewPanel = launcher.findViewById(R.id.overview_panel);
         if (action == OVERVIEW) {
             launcher.getStateManager().goToState(LauncherState.OVERVIEW);
             return true;
@@ -62,10 +63,10 @@ public class OverviewAccessibilityDelegate extends AccessibilityDelegate {
             launcher.onClickWallpaperPicker(host);
             return true;
         } else if (action == WIDGETS) {
-            launcher.onClickAddWidgetButton(host);
+            overviewPanel.onClickAddWidgetButton();
             return true;
         } else if (action == SETTINGS) {
-            launcher.onClickSettingsButton(host);
+            overviewPanel.onClickSettingsButton(host);
             return true;
         }
         return super.performAccessibilityAction(host, action, args);

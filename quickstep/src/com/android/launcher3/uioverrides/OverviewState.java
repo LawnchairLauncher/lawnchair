@@ -27,6 +27,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.quickstep.RecentsView;
 
 /**
  * Definition for overview state
@@ -44,36 +45,18 @@ public class OverviewState extends LauncherState {
 
     @Override
     public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
-        DeviceProfile grid = launcher.getDeviceProfile();
-        Workspace ws = launcher.getWorkspace();
-        Rect insets = launcher.getDragLayer().getInsets();
-
-        int overviewButtonBarHeight = grid.getOverviewModeButtonBarHeight();
-        int scaledHeight = (int) (SCALE_FACTOR * ws.getNormalChildHeight());
-        Rect workspacePadding = grid.getWorkspacePadding(null);
-        int workspaceTop = insets.top + workspacePadding.top;
-        int workspaceBottom = ws.getViewportHeight() - insets.bottom - workspacePadding.bottom;
-        int overviewTop = insets.top;
-        int overviewBottom = ws.getViewportHeight() - insets.bottom - overviewButtonBarHeight;
-        int workspaceOffsetTopEdge =
-                workspaceTop + ((workspaceBottom - workspaceTop) - scaledHeight) / 2;
-        int overviewOffsetTopEdge = overviewTop + (overviewBottom - overviewTop - scaledHeight) / 2;
-        return new float[] {SCALE_FACTOR, -workspaceOffsetTopEdge + overviewOffsetTopEdge };
+        // TODO: Find a better transition
+        return new float[] {SCALE_FACTOR, 0};
     }
 
     @Override
     public void onStateEnabled(Launcher launcher) {
-        launcher.getWorkspace().setPageRearrangeEnabled(true);
-
-        if (isAccessibilityEnabled(launcher)) {
-            launcher.getOverviewPanel().getChildAt(0).performAccessibilityAction(
-                    AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS, null);
-        }
+        ((RecentsView) launcher.getOverviewPanel()).setViewVisible(true);
     }
 
     @Override
     public void onStateDisabled(Launcher launcher) {
-        launcher.getWorkspace().setPageRearrangeEnabled(false);
+        ((RecentsView) launcher.getOverviewPanel()).setViewVisible(false);
     }
 
     @Override

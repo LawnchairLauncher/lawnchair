@@ -48,7 +48,7 @@ public class OverviewState extends LauncherState {
         Workspace ws = launcher.getWorkspace();
         Rect insets = launcher.getDragLayer().getInsets();
 
-        int overviewButtonBarHeight = grid.getOverviewModeButtonBarHeight();
+        int overviewButtonBarHeight = OverviewPanel.getButtonBarHeight(launcher);
         int scaledHeight = (int) (SCALE_FACTOR * ws.getNormalChildHeight());
         Rect workspacePadding = grid.getWorkspacePadding(null);
         int workspaceTop = insets.top + workspacePadding.top;

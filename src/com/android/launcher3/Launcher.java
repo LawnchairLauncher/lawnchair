@@ -88,7 +88,6 @@ import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityManager;
 import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -910,7 +909,7 @@ public class Launcher extends BaseActivity
         }
     }
 
-    protected boolean hasSettings() {
+    public boolean hasSettings() {
         if (mLauncherCallbacks != null) {
             return mLauncherCallbacks.hasSettings();
         } else {
@@ -976,32 +975,6 @@ public class Launcher extends BaseActivity
         return handled;
     }
 
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_MENU) {
-            // Ignore the menu key if we are currently dragging or are on the custom content screen
-            if (!mDragController.isDragging()) {
-                // Close any open floating view
-                AbstractFloatingView.closeAllOpenViews(this);
-
-                // Show the overview mode if we are on the workspace
-                if (isInState(NORMAL) && !mWorkspace.isSwitchingState()) {
-                    mStateManager.goToState(OVERVIEW, true /* animate */, new Runnable() {
-                        @Override
-                        public void run() {
-                            // Hitting the menu button when in touch mode does not trigger touch
-                            // mode to be disabled, so if requested, force focus on one of the
-                            // overview panel buttons.
-                            mOverviewPanel.requestFocusFromTouch();
-                        }
-                    });
-                }
-            }
-            return true;
-        }
-        return super.onKeyUp(keyCode, event);
-    }
-
     private String getTypedText() {
         return mDefaultKeySsb.toString();
     }
@@ -1056,6 +1029,7 @@ public class Launcher extends BaseActivity
         mFocusHandler = mDragLayer.getFocusIndicatorHelper();
         mWorkspace = mDragLayer.findViewById(R.id.workspace);
         mWorkspace.initParentViews(mDragLayer);
+        mOverviewPanel = findViewById(R.id.overview_panel);
 
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -1069,9 +1043,6 @@ public class Launcher extends BaseActivity
         if (mHotseat != null) {
             mHotseat.setOnLongClickListener(this);
         }
-
-        // Setup the overview panel
-        setupOverviewPanel();
 
         // Setup the workspace
         mWorkspace.setHapticFeedbackEnabled(false);
@@ -1095,43 +1066,6 @@ public class Launcher extends BaseActivity
         mDropTargetBar.setup(mDragController);
 
         mAllAppsController.setupViews(mAppsView, mHotseat, mWorkspace);
-    }
-
-    private void setupOverviewPanel() {
-        mOverviewPanel = findViewById(R.id.overview_panel);
-
-        // Bind wallpaper button actions
-        View wallpaperButton = findViewById(R.id.wallpaper_button);
-        new OverviewButtonClickListener(ControlType.WALLPAPER_BUTTON) {
-            @Override
-            public void handleViewClick(View view) {
-                onClickWallpaperPicker(view);
-            }
-        }.attachTo(wallpaperButton);
-
-        // Bind widget button actions
-        new OverviewButtonClickListener(ControlType.WIDGETS_BUTTON) {
-            @Override
-            public void handleViewClick(View view) {
-                onClickAddWidgetButton(view);
-            }
-        }.attachTo(findViewById(R.id.widget_button));
-
-        // Bind settings actions
-        View settingsButton = findViewById(R.id.settings_button);
-        boolean hasSettings = hasSettings();
-        if (hasSettings) {
-            new OverviewButtonClickListener(ControlType.SETTINGS_BUTTON) {
-                @Override
-                public void handleViewClick(View view) {
-                    onClickSettingsButton(view);
-                }
-            }.attachTo(settingsButton);
-        } else {
-            settingsButton.setVisibility(View.GONE);
-        }
-
-        mOverviewPanel.setAlpha(0f);
     }
 
     /**
@@ -2119,19 +2053,6 @@ public class Launcher extends BaseActivity
     }
 
     /**
-     * Event handler for the (Add) Widgets button that appears after a long press
-     * on the home screen.
-     */
-    public void onClickAddWidgetButton(View view) {
-        if (LOGD) Log.d(TAG, "onClickAddWidgetButton");
-        if (mIsSafeModeEnabled) {
-            Toast.makeText(this, R.string.safemode_widget_error, Toast.LENGTH_SHORT).show();
-        } else {
-            WidgetsFullSheet.show(this, true /* animated */);
-        }
-    }
-
-    /**
      * Event handler for the wallpaper picker button that appears after a long press
      * on the home screen.
      */
@@ -2162,19 +2083,6 @@ public class Launcher extends BaseActivity
             setWaitingForResult(null);
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
         }
-    }
-
-    /**
-     * Event handler for a click on the settings button that appears after a long press
-     * on the home screen.
-     */
-    public void onClickSettingsButton(View v) {
-        if (LOGD) Log.d(TAG, "onClickSettingsButton");
-        Intent intent = new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
-                .setPackage(getPackageName());
-        intent.setSourceBounds(getViewBounds(v));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent, getActivityLaunchOptions(v));
     }
 
     private void startShortcutIntentSafely(Intent intent, Bundle optsBundle, ItemInfo info) {
