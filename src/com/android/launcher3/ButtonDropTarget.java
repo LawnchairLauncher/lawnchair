@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherState.NORMAL;
+
 import android.animation.AnimatorSet;
 import android.animation.FloatArrayEvaluator;
 import android.animation.ObjectAnimator;
@@ -35,10 +37,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
 
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -178,7 +179,7 @@ public abstract class ButtonDropTarget extends TextView
 
     @Override
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
-        mActive = supportsDrop(dragObject.dragSource, dragObject.dragInfo);
+        mActive = supportsDrop(dragObject.dragInfo);
         mDrawable.setColorFilter(null);
         if (mCurrentColorAnim != null) {
             mCurrentColorAnim.cancel();
@@ -194,10 +195,14 @@ public abstract class ButtonDropTarget extends TextView
 
     @Override
     public final boolean acceptDrop(DragObject dragObject) {
-        return supportsDrop(dragObject.dragSource, dragObject.dragInfo);
+        return supportsDrop(dragObject.dragInfo);
     }
 
-    protected abstract boolean supportsDrop(DragSource source, ItemInfo info);
+    protected abstract boolean supportsDrop(ItemInfo info);
+
+    public boolean supportsAccessibilityDrop(ItemInfo info) {
+        return supportsDrop(info);
+    }
 
     @Override
     public boolean isDropEnabled() {
@@ -215,7 +220,7 @@ public abstract class ButtonDropTarget extends TextView
      * On drop animate the dropView to the icon.
      */
     @Override
-    public void onDrop(final DragObject d) {
+    public void onDrop(final DragObject d, final DragOptions options) {
         final DragLayer dragLayer = mLauncher.getDragLayer();
         final Rect from = new Rect();
         dragLayer.getViewRectRelativeToSelf(d.dragView, from);
@@ -229,18 +234,21 @@ public abstract class ButtonDropTarget extends TextView
             public void run() {
                 completeDrop(d);
                 mDropTargetBar.onDragEnd();
-                mLauncher.exitSpringLoadedDragModeDelayed(true, 0, null);
+                mLauncher.getStateManager().goToState(NORMAL);
             }
         };
         dragLayer.animateView(d.dragView, from, to, scale, 1f, 1f, 0.1f, 0.1f,
                 DRAG_VIEW_DROP_DURATION,
-                new DecelerateInterpolator(2),
-                new LinearInterpolator(), onAnimationEndRunnable,
+                Interpolators.DEACCEL_2, Interpolators.LINEAR, onAnimationEndRunnable,
                 DragLayer.ANIMATION_END_DISAPPEAR, null);
     }
 
+    public abstract int getAccessibilityAction();
+
     @Override
     public void prepareAccessibilityDrop() { }
+
+    public abstract void onAccessibilityDrop(View view, ItemInfo item);
 
     public abstract void completeDrop(DragObject d);
 

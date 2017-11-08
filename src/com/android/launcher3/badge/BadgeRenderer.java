@@ -26,6 +26,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.android.launcher3.R;
@@ -37,6 +38,8 @@ import com.android.launcher3.graphics.ShadowGenerator;
  * @see BadgeInfo for the data to draw
  */
 public class BadgeRenderer {
+
+    private static final String TAG = "BadgeRenderer";
 
     private static final boolean DOTS_ONLY = true;
 
@@ -95,6 +98,10 @@ public class BadgeRenderer {
      */
     public void draw(Canvas canvas, IconPalette palette, @Nullable BadgeInfo badgeInfo,
             Rect iconBounds, float badgeScale, Point spaceForOffset) {
+        if (palette == null || iconBounds == null || spaceForOffset == null) {
+            Log.e(TAG, "Invalid null argument(s) passed in call to draw.");
+            return;
+        }
         mTextPaint.setColor(palette.textColor);
         IconDrawer iconDrawer = badgeInfo != null && badgeInfo.isIconLarge()
                 ? mLargeIconDrawer : mSmallIconDrawer;

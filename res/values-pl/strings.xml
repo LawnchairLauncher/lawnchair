@@ -47,6 +47,7 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Usuń"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Odinstaluj"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"O aplikacji"</string>
+    <string name="install_drop_target_label" msgid="2539096853673231757">"Zainstaluj"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"instalowanie skrótów"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Pozwala aplikacji dodawać skróty bez interwencji użytkownika."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"odczytywanie ustawień i skrótów na ekranie głównym"</string>

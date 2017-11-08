@@ -30,9 +30,9 @@ import android.graphics.PathMeasure;
 import android.graphics.Rect;
 import android.util.Property;
 import android.util.SparseArray;
-import android.view.animation.LinearInterpolator;
 
 import com.android.launcher3.FastBitmapDrawable;
+import com.android.launcher3.anim.Interpolators;
 
 import java.lang.ref.WeakReference;
 
@@ -226,7 +226,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
             mCurrentAnim = ObjectAnimator.ofFloat(this, INTERNAL_STATE, finalProgress);
             mCurrentAnim.setDuration(
                     (long) ((finalProgress - mInternalStateProgress) * DURATION_SCALE));
-            mCurrentAnim.setInterpolator(new LinearInterpolator());
+            mCurrentAnim.setInterpolator(Interpolators.LINEAR);
             if (isFinish) {
                 mCurrentAnim.addListener(new AnimatorListenerAdapter() {
                     @Override
@@ -237,7 +237,6 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
             }
             mCurrentAnim.start();
         }
-
     }
 
     /**

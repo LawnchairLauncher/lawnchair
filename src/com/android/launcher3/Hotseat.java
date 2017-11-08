@@ -16,16 +16,9 @@
 
 package com.android.launcher3;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -35,11 +28,9 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-import com.android.launcher3.util.Themes;
 
 public class Hotseat extends FrameLayout
         implements UserEventDispatcher.LogContainerProvider {
@@ -50,12 +41,6 @@ public class Hotseat extends FrameLayout
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private final boolean mHasVerticalHotseat;
-
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private int mBackgroundColor;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private ColorDrawable mBackground;
-    private ValueAnimator mBackgroundColorAnimator;
 
     public Hotseat(Context context) {
         this(context, null);
@@ -69,12 +54,6 @@ public class Hotseat extends FrameLayout
         super(context, attrs, defStyle);
         mLauncher = Launcher.getLauncher(context);
         mHasVerticalHotseat = mLauncher.getDeviceProfile().isVerticalBarLayout();
-        mBackgroundColor = ColorUtils.setAlphaComponent(
-                Themes.getAttrColor(context, android.R.attr.colorPrimary), 0);
-        mBackground = new ColorDrawable(mBackgroundColor);
-        if (!FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
-            setBackground(mBackground);
-        }
     }
 
     public CellLayout getLayout() {
@@ -176,50 +155,5 @@ public class Hotseat extends FrameLayout
         target.gridX = info.cellX;
         target.gridY = info.cellY;
         targetParent.containerType = ContainerType.HOTSEAT;
-    }
-
-    public void updateColor(ExtractedColors extractedColors, boolean animate) {
-        if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
-            // not hotseat visible
-            return;
-        }
-        if (!mHasVerticalHotseat) {
-            int color = extractedColors.getColor(ExtractedColors.HOTSEAT_INDEX);
-            if (mBackgroundColorAnimator != null) {
-                mBackgroundColorAnimator.cancel();
-            }
-            if (!animate) {
-                setBackgroundColor(color);
-            } else {
-                mBackgroundColorAnimator = ValueAnimator.ofInt(mBackgroundColor, color);
-                mBackgroundColorAnimator.setEvaluator(new ArgbEvaluator());
-                mBackgroundColorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        mBackground.setColor((Integer) animation.getAnimatedValue());
-                    }
-                });
-                mBackgroundColorAnimator.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mBackgroundColorAnimator = null;
-                    }
-                });
-                mBackgroundColorAnimator.start();
-            }
-            mBackgroundColor = color;
-        }
-    }
-
-    public void setBackgroundTransparent(boolean enable) {
-        if (enable) {
-            mBackground.setAlpha(0);
-        } else {
-            mBackground.setAlpha(255);
-        }
-    }
-
-    public int getBackgroundDrawableColor() {
-        return mBackgroundColor;
     }
 }

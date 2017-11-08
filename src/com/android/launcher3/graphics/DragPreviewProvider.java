@@ -18,10 +18,15 @@ package com.android.launcher3.graphics;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.view.View;
 
 import com.android.launcher3.BubbleTextView;
@@ -30,6 +35,9 @@ import com.android.launcher3.LauncherAppWidgetHostView;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.util.UiThreadHelper;
+
+import java.nio.ByteBuffer;
 
 /**
  * A utility class to generate preview bitmap for dragging.
@@ -45,6 +53,7 @@ public class DragPreviewProvider {
 
     protected final int blurSizeOutline;
 
+    private OutlineGeneratorCallback mOutlineGeneratorCallback;
     public Bitmap generatedDragOutline;
 
     public DragPreviewProvider(View view) {
@@ -106,7 +115,7 @@ public class DragPreviewProvider {
      * Returns a new bitmap to show when the {@link #mView} is being dragged around.
      * Responsibility for the bitmap is transferred to the caller.
      */
-    public Bitmap createDragBitmap(Canvas canvas) {
+    public Bitmap createDragBitmap() {
         float scale = 1f;
         int width = mView.getWidth();
         int height = mView.getHeight();
@@ -124,7 +133,7 @@ public class DragPreviewProvider {
 
         Bitmap b = Bitmap.createBitmap(width + blurSizeOutline, height + blurSizeOutline,
                 Bitmap.Config.ARGB_8888);
-        canvas.setBitmap(b);
+        Canvas canvas = new Canvas(b);
 
         canvas.save();
         canvas.scale(scale, scale);
@@ -136,43 +145,13 @@ public class DragPreviewProvider {
         return b;
     }
 
-    public final void generateDragOutline(Canvas canvas) {
-        if (FeatureFlags.IS_DOGFOOD_BUILD && generatedDragOutline != null) {
+    public final void generateDragOutline(Bitmap preview) {
+        if (FeatureFlags.IS_DOGFOOD_BUILD && mOutlineGeneratorCallback != null) {
             throw new RuntimeException("Drag outline generated twice");
         }
 
-        generatedDragOutline = createDragOutline(canvas);
-    }
-
-    /**
-     * Returns a new bitmap to be used as the object outline, e.g. to visualize the drop location.
-     * Responsibility for the bitmap is transferred to the caller.
-     */
-    public Bitmap createDragOutline(Canvas canvas) {
-        float scale = 1f;
-        int width = mView.getWidth();
-        int height = mView.getHeight();
-
-        if (mView instanceof LauncherAppWidgetHostView) {
-            scale = ((LauncherAppWidgetHostView) mView).getScaleToFit();
-            width = (int) Math.floor(mView.getWidth() * scale);
-            height = (int) Math.floor(mView.getHeight() * scale);
-        }
-
-        Bitmap b = Bitmap.createBitmap(width + blurSizeOutline, height + blurSizeOutline,
-                Bitmap.Config.ALPHA_8);
-        canvas.setBitmap(b);
-
-        canvas.save();
-        canvas.scale(scale, scale);
-        drawDragView(canvas);
-        canvas.restore();
-
-        HolographicOutlineHelper.getInstance(mView.getContext())
-                .applyExpensiveOutlineWithBlur(b, canvas);
-
-        canvas.setBitmap(null);
-        return b;
+        mOutlineGeneratorCallback = new OutlineGeneratorCallback(preview);
+        new Handler(UiThreadHelper.getBackgroundLooper()).post(mOutlineGeneratorCallback);
     }
 
     protected static Rect getDrawableBounds(Drawable d) {
@@ -200,5 +179,90 @@ public class DragPreviewProvider {
         outPos[1] = Math.round(outPos[1] - (1 - scale) * preview.getHeight() / 2
                 - previewPadding / 2);
         return scale;
+    }
+
+    protected Bitmap convertPreviewToAlphaBitmap(Bitmap preview) {
+        return preview.copy(Bitmap.Config.ALPHA_8, true);
+    }
+
+    private class OutlineGeneratorCallback implements Runnable {
+
+        private final Bitmap mPreviewSnapshot;
+        private final Context mContext;
+
+        OutlineGeneratorCallback(Bitmap preview) {
+            mPreviewSnapshot = preview;
+            mContext = mView.getContext();
+        }
+
+        @Override
+        public void run() {
+            Bitmap preview = convertPreviewToAlphaBitmap(mPreviewSnapshot);
+
+            // We start by removing most of the alpha channel so as to ignore shadows, and
+            // other types of partial transparency when defining the shape of the object
+            byte[] pixels = new byte[preview.getWidth() * preview.getHeight()];
+            ByteBuffer buffer = ByteBuffer.wrap(pixels);
+            buffer.rewind();
+            preview.copyPixelsToBuffer(buffer);
+
+            for (int i = 0; i < pixels.length; i++) {
+                if ((pixels[i] & 0xFF) < 188) {
+                    pixels[i] = 0;
+                }
+            }
+
+            buffer.rewind();
+            preview.copyPixelsFromBuffer(buffer);
+
+            final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+            Canvas canvas = new Canvas();
+
+            // calculate the outer blur first
+            paint.setMaskFilter(new BlurMaskFilter(blurSizeOutline, BlurMaskFilter.Blur.OUTER));
+            int[] outerBlurOffset = new int[2];
+            Bitmap thickOuterBlur = preview.extractAlpha(paint, outerBlurOffset);
+
+            paint.setMaskFilter(new BlurMaskFilter(
+                    mContext.getResources().getDimension(R.dimen.blur_size_thin_outline),
+                    BlurMaskFilter.Blur.OUTER));
+            int[] brightOutlineOffset = new int[2];
+            Bitmap brightOutline = preview.extractAlpha(paint, brightOutlineOffset);
+
+            // calculate the inner blur
+            canvas.setBitmap(preview);
+            canvas.drawColor(0xFF000000, PorterDuff.Mode.SRC_OUT);
+            paint.setMaskFilter(new BlurMaskFilter(blurSizeOutline, BlurMaskFilter.Blur.NORMAL));
+            int[] thickInnerBlurOffset = new int[2];
+            Bitmap thickInnerBlur = preview.extractAlpha(paint, thickInnerBlurOffset);
+
+            // mask out the inner blur
+            paint.setMaskFilter(null);
+            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+            canvas.setBitmap(thickInnerBlur);
+            canvas.drawBitmap(preview, -thickInnerBlurOffset[0],
+                    -thickInnerBlurOffset[1], paint);
+            canvas.drawRect(0, 0, -thickInnerBlurOffset[0], thickInnerBlur.getHeight(), paint);
+            canvas.drawRect(0, 0, thickInnerBlur.getWidth(), -thickInnerBlurOffset[1], paint);
+
+            // draw the inner and outer blur
+            paint.setXfermode(null);
+            canvas.setBitmap(preview);
+            canvas.drawColor(0, PorterDuff.Mode.CLEAR);
+            canvas.drawBitmap(thickInnerBlur, thickInnerBlurOffset[0], thickInnerBlurOffset[1],
+                    paint);
+            canvas.drawBitmap(thickOuterBlur, outerBlurOffset[0], outerBlurOffset[1], paint);
+
+            // draw the bright outline
+            canvas.drawBitmap(brightOutline, brightOutlineOffset[0], brightOutlineOffset[1], paint);
+
+            // cleanup
+            canvas.setBitmap(null);
+            brightOutline.recycle();
+            thickOuterBlur.recycle();
+            thickInnerBlur.recycle();
+
+            generatedDragOutline = preview;
+        }
     }
 }

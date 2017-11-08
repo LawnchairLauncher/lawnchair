@@ -1,37 +1,29 @@
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
-import android.graphics.Color;
-import android.support.animation.SpringAnimation;
-import android.support.v4.graphics.ColorUtils;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
-import android.view.MotionEvent;
+import android.util.Property;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
-import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAnimUtils;
+import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.anim.SpringAnimationHandler;
-import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.graphics.GradientView;
-import com.android.launcher3.touch.SwipeDetector;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
-import com.android.launcher3.util.TouchController;
 
 /**
  * Handles AllApps view transition.
@@ -43,35 +35,32 @@ import com.android.launcher3.util.TouchController;
  * If release velocity < THRES1, snap according to either top or bottom depending on whether it's
  * closer to top or closer to the page indicator.
  */
-public class AllAppsTransitionController implements TouchController, SwipeDetector.Listener,
-         SearchUiManager.OnScrollRangeChangeListener {
+public class AllAppsTransitionController implements SearchUiManager.OnScrollRangeChangeListener {
 
-    private static final String TAG = "AllAppsTrans";
-    private static final boolean DBG = false;
+    private static final Property<AllAppsTransitionController, Float> PROGRESS =
+            new Property<AllAppsTransitionController, Float>(Float.class, "progress") {
 
-    private final Interpolator mWorkspaceAccelnterpolator = new AccelerateInterpolator(2f);
-    private final Interpolator mHotseatAccelInterpolator = new AccelerateInterpolator(1.5f);
-    private final Interpolator mDecelInterpolator = new DecelerateInterpolator(3f);
-    private final Interpolator mFastOutSlowInInterpolator = new FastOutSlowInInterpolator();
-    private final SwipeDetector.ScrollInterpolator mScrollInterpolator
-            = new SwipeDetector.ScrollInterpolator();
+        @Override
+        public Float get(AllAppsTransitionController controller) {
+            return controller.mProgress;
+        }
+
+        @Override
+        public void set(AllAppsTransitionController controller, Float progress) {
+            controller.setProgress(progress);
+        }
+    };
+
+    private final Interpolator mWorkspaceAccelnterpolator = Interpolators.ACCEL_2;
+    private final Interpolator mHotseatAccelInterpolator = Interpolators.ACCEL_1_5;
 
     private static final float PARALLAX_COEFFICIENT = .125f;
-    private static final int SINGLE_FRAME_MS = 16;
 
     private AllAppsContainerView mAppsView;
-    private int mAllAppsBackgroundColor;
     private Workspace mWorkspace;
     private Hotseat mHotseat;
-    private int mHotseatBackgroundColor;
-
-    private AllAppsCaretController mCaretController;
-
-    private float mStatusBarHeight;
 
     private final Launcher mLauncher;
-    private final SwipeDetector mDetector;
-    private final ArgbEvaluator mEvaluator;
     private final boolean mIsDarkTheme;
 
     // Animation in this class is controlled by a single variable {@link mProgress}.
@@ -80,215 +69,36 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
 
     // When {@link mProgress} is 0, all apps container is pulled up.
     // When {@link mProgress} is 1, all apps container is pulled down.
-    private float mShiftStart;      // [0, mShiftRange]
     private float mShiftRange;      // changes depending on the orientation
     private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
 
-    // Velocity of the container. Unit is in px/ms.
-    private float mContainerVelocity;
-
     private static final float DEFAULT_SHIFT_RANGE = 10;
 
-    private static final float RECATCH_REJECTION_FRACTION = .0875f;
-
-    private long mAnimationDuration;
-
-    private AnimatorSet mCurrentAnimation;
-    private boolean mNoIntercept;
-    private boolean mTouchEventStartedOnHotseat;
-
-    // Used in discovery bounce animation to provide the transition without workspace changing.
     private boolean mIsTranslateWithoutWorkspace = false;
     private Animator mDiscoBounceAnimation;
     private GradientView mGradientView;
 
-    private SpringAnimation mSearchSpring;
-    private SpringAnimationHandler mSpringAnimationHandler;
-
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
-        mDetector = new SwipeDetector(l, this, SwipeDetector.VERTICAL);
         mShiftRange = DEFAULT_SHIFT_RANGE;
         mProgress = 1f;
 
-        mEvaluator = new ArgbEvaluator();
-        mAllAppsBackgroundColor = Themes.getAttrColor(l, android.R.attr.colorPrimary);
         mIsDarkTheme = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
     }
 
-    @Override
-    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            mNoIntercept = false;
-            mTouchEventStartedOnHotseat = mLauncher.getDragLayer().isEventOverHotseat(ev);
-            if (!mLauncher.isAllAppsVisible() && mLauncher.getWorkspace().workspaceInModalState()) {
-                mNoIntercept = true;
-            } else if (mLauncher.isAllAppsVisible() &&
-                    !mAppsView.shouldContainerScroll(ev)) {
-                mNoIntercept = true;
-            } else if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
-                mNoIntercept = true;
-            } else {
-                // Now figure out which direction scroll events the controller will start
-                // calling the callbacks.
-                int directionsToDetectScroll = 0;
-                boolean ignoreSlopWhenSettling = false;
-
-                if (mDetector.isIdleState()) {
-                    if (mLauncher.isAllAppsVisible()) {
-                        directionsToDetectScroll |= SwipeDetector.DIRECTION_NEGATIVE;
-                    } else {
-                        directionsToDetectScroll |= SwipeDetector.DIRECTION_POSITIVE;
-                    }
-                } else {
-                    if (isInDisallowRecatchBottomZone()) {
-                        directionsToDetectScroll |= SwipeDetector.DIRECTION_POSITIVE;
-                    } else if (isInDisallowRecatchTopZone()) {
-                        directionsToDetectScroll |= SwipeDetector.DIRECTION_NEGATIVE;
-                    } else {
-                        directionsToDetectScroll |= SwipeDetector.DIRECTION_BOTH;
-                        ignoreSlopWhenSettling = true;
-                    }
-                }
-                mDetector.setDetectableScrollConditions(directionsToDetectScroll,
-                        ignoreSlopWhenSettling);
-            }
-        }
-
-        if (mNoIntercept) {
-            return false;
-        }
-        mDetector.onTouchEvent(ev);
-        if (mDetector.isSettlingState() && (isInDisallowRecatchBottomZone() || isInDisallowRecatchTopZone())) {
-            return false;
-        }
-        return mDetector.isDraggingOrSettling();
+    public float getShiftRange() {
+        return mShiftRange;
     }
 
-    @Override
-    public boolean onControllerTouchEvent(MotionEvent ev) {
-        if (hasSpringAnimationHandler()) {
-            mSpringAnimationHandler.addMovement(ev);
-        }
-        return mDetector.onTouchEvent(ev);
-    }
-
-    private boolean isInDisallowRecatchTopZone() {
-        return mProgress < RECATCH_REJECTION_FRACTION;
-    }
-
-    private boolean isInDisallowRecatchBottomZone() {
-        return mProgress > 1 - RECATCH_REJECTION_FRACTION;
-    }
-
-    @Override
-    public void onDragStart(boolean start) {
-        mCaretController.onDragStart();
-        cancelAnimation();
-        mCurrentAnimation = LauncherAnimUtils.createAnimatorSet();
-        mShiftStart = mAppsView.getTranslationY();
-        preparePull(start);
-        if (hasSpringAnimationHandler()) {
-            mSpringAnimationHandler.skipToEnd();
-        }
-    }
-
-    @Override
-    public boolean onDrag(float displacement, float velocity) {
-        if (mAppsView == null) {
-            return false;   // early termination.
-        }
-
-        mContainerVelocity = velocity;
-
-        float shift = Math.min(Math.max(0, mShiftStart + displacement), mShiftRange);
-        setProgress(shift / mShiftRange);
-
-        return true;
-    }
-
-    @Override
-    public void onDragEnd(float velocity, boolean fling) {
-        if (mAppsView == null) {
-            return; // early termination.
-        }
-
-        final int containerType = mTouchEventStartedOnHotseat
-                ? ContainerType.HOTSEAT : ContainerType.WORKSPACE;
-
-        if (fling) {
-            if (velocity < 0) {
-                calculateDuration(velocity, mAppsView.getTranslationY());
-
-                if (!mLauncher.isAllAppsVisible()) {
-                    mLauncher.getUserEventDispatcher().logActionOnContainer(
-                            Action.Touch.FLING,
-                            Action.Direction.UP,
-                            containerType);
-                }
-                mLauncher.showAppsView(true /* animated */, false /* updatePredictedApps */);
-                if (hasSpringAnimationHandler()) {
-                    mSpringAnimationHandler.add(mSearchSpring, true /* setDefaultValues */);
-                    // The icons are moving upwards, so we go to 0 from 1. (y-axis 1 is below 0.)
-                    mSpringAnimationHandler.animateToFinalPosition(0 /* pos */, 1 /* startValue */);
-                }
-            } else {
-                calculateDuration(velocity, Math.abs(mShiftRange - mAppsView.getTranslationY()));
-                mLauncher.showWorkspace(true);
-            }
-            // snap to top or bottom using the release velocity
-        } else {
-            if (mAppsView.getTranslationY() > mShiftRange / 2) {
-                calculateDuration(velocity, Math.abs(mShiftRange - mAppsView.getTranslationY()));
-                mLauncher.showWorkspace(true);
-            } else {
-                calculateDuration(velocity, Math.abs(mAppsView.getTranslationY()));
-                if (!mLauncher.isAllAppsVisible()) {
-                    mLauncher.getUserEventDispatcher().logActionOnContainer(
-                            Action.Touch.SWIPE,
-                            Action.Direction.UP,
-                            containerType);
-                }
-                mLauncher.showAppsView(true, /* animated */ false /* updatePredictedApps */);
-            }
-        }
-    }
-
-    public boolean isTransitioning() {
-        return mDetector.isDraggingOrSettling();
-    }
-
-    /**
-     * @param start {@code true} if start of new drag.
-     */
-    public void preparePull(boolean start) {
-        if (start) {
-            // Initialize values that should not change until #onDragEnd
-            mStatusBarHeight = mLauncher.getDragLayer().getInsets().top;
-            mHotseat.setVisibility(View.VISIBLE);
-            mHotseatBackgroundColor = mHotseat.getBackgroundDrawableColor();
-            mHotseat.setBackgroundTransparent(true /* transparent */);
-            if (!mLauncher.isAllAppsVisible()) {
-                mLauncher.tryAndUpdatePredictedApps();
-                mAppsView.setVisibility(View.VISIBLE);
-                if (!FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
-                    mAppsView.setRevealDrawableColor(mHotseatBackgroundColor);
-                }
-            }
-        }
+    private void onProgressAnimationStart() {
+        // Initialize values that should not change until #onDragEnd
+        mHotseat.setVisibility(View.VISIBLE);
+        mAppsView.setVisibility(View.VISIBLE);
     }
 
     private void updateLightStatusBar(float shift) {
-        // Do not modify status bar on landscape as all apps is not full bleed.
-        if (!FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS
-                && mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-            return;
-        }
-
         // Use a light system UI (dark icons) if all apps is behind at least half of the status bar.
-        boolean forceChange = FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS ?
-                shift <= mShiftRange / 4 :
-                shift <= mStatusBarHeight / 2;
+        boolean forceChange = shift <= mShiftRange / 4;
         if (forceChange) {
             mLauncher.getSystemUiController().updateUiState(
                     SystemUiController.UI_STATE_ALL_APPS, !mIsDarkTheme);
@@ -301,17 +111,21 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
     private void updateAllAppsBg(float progress) {
         // gradient
         if (mGradientView == null) {
-            mGradientView = (GradientView) mLauncher.findViewById(R.id.gradient_bg);
-            mGradientView.setVisibility(View.VISIBLE);
+            mGradientView = mLauncher.findViewById(R.id.gradient_bg);
         }
         mGradientView.setProgress(progress);
     }
 
     /**
-     * @param progress       value between 0 and 1, 0 shows all apps and 1 shows workspace
+     * Note this method should not be called outside this class. This is public because it is used
+     * in xml-based animations which also handle updating the appropriate UI.
+     *
+     * @param progress value between 0 and 1, 0 shows all apps and 1 shows workspace
+     *
+     * @see #setFinalProgress(float)
+     * @see #animateToFinalProgress(float, AnimatorSet, AnimationConfig)
      */
     public void setProgress(float progress) {
-        float shiftPrevious = mProgress * mShiftRange;
         mProgress = progress;
         float shiftCurrent = progress * mShiftRange;
 
@@ -320,18 +134,8 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         float workspaceAlpha = mWorkspaceAccelnterpolator.getInterpolation(workspaceHotseatAlpha);
         float hotseatAlpha = mHotseatAccelInterpolator.getInterpolation(workspaceHotseatAlpha);
 
-        int color = (Integer) mEvaluator.evaluate(mDecelInterpolator.getInterpolation(alpha),
-                mHotseatBackgroundColor, mAllAppsBackgroundColor);
-        int bgAlpha = Color.alpha((int) mEvaluator.evaluate(alpha,
-                mHotseatBackgroundColor, mAllAppsBackgroundColor));
-
-        if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
-            updateAllAppsBg(alpha);
-        } else {
-            mAppsView.setRevealDrawableColor(ColorUtils.setAlphaComponent(color, bgAlpha));
-        }
-
-        mAppsView.getContentView().setAlpha(alpha);
+        updateAllAppsBg(alpha);
+        mAppsView.setAlpha(alpha);
         mAppsView.setTranslationY(shiftCurrent);
 
         if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
@@ -349,12 +153,6 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         mWorkspace.setWorkspaceYTranslationAndAlpha(
                 PARALLAX_COEFFICIENT * (-mShiftRange + shiftCurrent), workspaceAlpha);
 
-        if (!mDetector.isDraggingState()) {
-            mContainerVelocity = mDetector.computeVelocity(shiftCurrent - shiftPrevious,
-                    System.currentTimeMillis());
-        }
-
-        mCaretController.updateCaret(progress, mContainerVelocity, mDetector.isDraggingState());
         updateLightStatusBar(shiftCurrent);
     }
 
@@ -362,58 +160,48 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         return mProgress;
     }
 
-    private void calculateDuration(float velocity, float disp) {
-        mAnimationDuration = SwipeDetector.calculateDuration(velocity, disp / mShiftRange);
+    /**
+     * Sets the vertical transition progress to {@param progress} and updates all the dependent UI
+     * accordingly.
+     */
+    public void setFinalProgress(float progress) {
+        setProgress(progress);
+        onProgressAnimationEnd();
     }
 
-    public boolean animateToAllApps(AnimatorSet animationOut, long duration) {
-        boolean shouldPost = true;
-        if (animationOut == null) {
-            return shouldPost;
-        }
-        Interpolator interpolator;
-        if (mDetector.isIdleState()) {
-            preparePull(true);
-            mAnimationDuration = duration;
-            mShiftStart = mAppsView.getTranslationY();
-            interpolator = mFastOutSlowInInterpolator;
-        } else {
-            mScrollInterpolator.setVelocityAtZero(Math.abs(mContainerVelocity));
-            interpolator = mScrollInterpolator;
-            float nextFrameProgress = mProgress + mContainerVelocity * SINGLE_FRAME_MS / mShiftRange;
-            if (nextFrameProgress >= 0f) {
-                mProgress = nextFrameProgress;
-            }
-            shouldPost = false;
+    /**
+     * Creates an animation which updates the vertical transition progress and updates all the
+     * dependent UI using various animation events
+     *
+     * @param progress the final vertical progress at the end of the animation
+     * @param animationOut the target AnimatorSet where this animation should be added
+     * @param outConfig an in/out configuration which can be shared with other animations
+     */
+    public void animateToFinalProgress(
+            float progress, AnimatorSet animationOut, AnimationConfig outConfig) {
+        if (Float.compare(mProgress, progress) == 0) {
+            // Fail fast
+            onProgressAnimationEnd();
+            return;
         }
 
-        ObjectAnimator driftAndAlpha = ObjectAnimator.ofFloat(this, "progress",
-                mProgress, 0f);
-        driftAndAlpha.setDuration(mAnimationDuration);
-        driftAndAlpha.setInterpolator(interpolator);
-        animationOut.play(driftAndAlpha);
-
-        animationOut.addListener(new AnimatorListenerAdapter() {
-            boolean canceled = false;
-
+        Interpolator interpolator = outConfig.userControlled ? LINEAR : FAST_OUT_SLOW_IN;
+        ObjectAnimator anim = ObjectAnimator.ofFloat(this, PROGRESS, mProgress, progress);
+        anim.setDuration(outConfig.duration);
+        anim.setInterpolator(interpolator);
+        anim.addListener(new AnimationSuccessListener() {
             @Override
-            public void onAnimationCancel(Animator animation) {
-                canceled = true;
+            public void onAnimationSuccess(Animator animator) {
+                onProgressAnimationEnd();
             }
 
             @Override
-            public void onAnimationEnd(Animator animation) {
-                if (canceled) {
-                    return;
-                } else {
-                    finishPullUp();
-                    cleanUpAnimation();
-                    mDetector.finishedScrolling();
-                }
+            public void onAnimationStart(Animator animation) {
+                onProgressAnimationStart();
             }
         });
-        mCurrentAnimation = animationOut;
-        return shouldPost;
+
+        animationOut.play(anim);
     }
 
     public void showDiscoveryBounce() {
@@ -427,12 +215,12 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
             @Override
             public void onAnimationStart(Animator animator) {
                 mIsTranslateWithoutWorkspace = true;
-                preparePull(true);
+                onProgressAnimationStart();
             }
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                finishPullDown();
+                onProgressAnimationEnd();
                 mDiscoBounceAnimation = null;
                 mIsTranslateWithoutWorkspace = false;
             }
@@ -449,84 +237,6 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         });
     }
 
-    public boolean animateToWorkspace(AnimatorSet animationOut, long duration) {
-        boolean shouldPost = true;
-        if (animationOut == null) {
-            return shouldPost;
-        }
-        Interpolator interpolator;
-        if (mDetector.isIdleState()) {
-            preparePull(true);
-            mAnimationDuration = duration;
-            mShiftStart = mAppsView.getTranslationY();
-            interpolator = mFastOutSlowInInterpolator;
-        } else {
-            mScrollInterpolator.setVelocityAtZero(Math.abs(mContainerVelocity));
-            interpolator = mScrollInterpolator;
-            float nextFrameProgress = mProgress + mContainerVelocity * SINGLE_FRAME_MS / mShiftRange;
-            if (nextFrameProgress <= 1f) {
-                mProgress = nextFrameProgress;
-            }
-            shouldPost = false;
-        }
-
-        ObjectAnimator driftAndAlpha = ObjectAnimator.ofFloat(this, "progress",
-                mProgress, 1f);
-        driftAndAlpha.setDuration(mAnimationDuration);
-        driftAndAlpha.setInterpolator(interpolator);
-        animationOut.play(driftAndAlpha);
-
-        animationOut.addListener(new AnimatorListenerAdapter() {
-            boolean canceled = false;
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                canceled = true;
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (canceled) {
-                    return;
-                } else {
-                    finishPullDown();
-                    cleanUpAnimation();
-                    mDetector.finishedScrolling();
-                }
-            }
-        });
-        mCurrentAnimation = animationOut;
-        return shouldPost;
-    }
-
-    public void finishPullUp() {
-        mHotseat.setVisibility(View.INVISIBLE);
-        if (hasSpringAnimationHandler()) {
-            mSpringAnimationHandler.remove(mSearchSpring);
-            mSpringAnimationHandler.reset();
-        }
-        setProgress(0f);
-    }
-
-    public void finishPullDown() {
-        mAppsView.setVisibility(View.INVISIBLE);
-        mHotseat.setBackgroundTransparent(false /* transparent */);
-        mHotseat.setVisibility(View.VISIBLE);
-        mAppsView.reset();
-        if (hasSpringAnimationHandler()) {
-            mSpringAnimationHandler.reset();
-        }
-        setProgress(1f);
-    }
-
-    private void cancelAnimation() {
-        if (mCurrentAnimation != null) {
-            mCurrentAnimation.cancel();
-            mCurrentAnimation = null;
-        }
-        cancelDiscoveryAnimation();
-    }
-
     public void cancelDiscoveryAnimation() {
         if (mDiscoBounceAnimation == null) {
             return;
@@ -535,29 +245,32 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         mDiscoBounceAnimation = null;
     }
 
-    private void cleanUpAnimation() {
-        mCurrentAnimation = null;
-    }
-
     public void setupViews(AllAppsContainerView appsView, Hotseat hotseat, Workspace workspace) {
         mAppsView = appsView;
         mHotseat = hotseat;
         mWorkspace = workspace;
         mHotseat.bringToFront();
-        mCaretController = new AllAppsCaretController(
-                mWorkspace.getPageIndicator().getCaretDrawable(), mLauncher);
         mAppsView.getSearchUiManager().addOnScrollRangeChangeListener(this);
-        mSpringAnimationHandler = mAppsView.getSpringAnimationHandler();
-        mSearchSpring = mAppsView.getSearchUiManager().getSpringForFling();
-    }
-
-    private boolean hasSpringAnimationHandler() {
-        return FeatureFlags.LAUNCHER3_PHYSICS && mSpringAnimationHandler != null;
     }
 
     @Override
     public void onScrollRangeChanged(int scrollRange) {
         mShiftRange = scrollRange;
         setProgress(mProgress);
+    }
+
+    /**
+     * Set the final view states based on the progress.
+     * TODO: This logic should go in {@link LauncherState}
+     */
+    private void onProgressAnimationEnd() {
+        if (Float.compare(mProgress, 1f) == 0) {
+            mAppsView.setVisibility(View.INVISIBLE);
+            mHotseat.setVisibility(View.VISIBLE);
+            mAppsView.reset();
+        } else if (Float.compare(mProgress, 0f) == 0) {
+            mHotseat.setVisibility(View.INVISIBLE);
+            mAppsView.setVisibility(View.VISIBLE);
+        }
     }
 }

@@ -29,12 +29,12 @@ import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
 
@@ -64,7 +64,7 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
     private final int mMaskHeight, mMaskWidth;
     private final int mAlphaColors;
     private final Paint mDebugPaint = DEBUG ? new Paint() : null;
-    private final Interpolator mAccelerator = new AccelerateInterpolator();
+    private final Interpolator mAccelerator = Interpolators.ACCEL;
     private final float mAlphaStart;
     private final WallpaperColorInfo mWallpaperColorInfo;
     private final int mScrimColor;

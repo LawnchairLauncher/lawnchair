@@ -42,6 +42,7 @@ import android.widget.TextView;
 
 import com.android.launcher3.IconCache.IconLoadRequest;
 import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
+import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.badge.BadgeRenderer;
 import com.android.launcher3.folder.FolderIcon;
@@ -59,7 +60,7 @@ import java.text.NumberFormat;
  * because we want to make the bubble taller than the text and TextView's clip is
  * too aggressive.
  */
-public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
+public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, OnResumeCallback {
 
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
@@ -175,6 +176,16 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
         mOutlineHelper = HolographicOutlineHelper.getInstance(getContext());
         setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
 
+    }
+
+    /**
+     * Resets the view so it can be recycled.
+     */
+    public void reset() {
+        mBadgeInfo = null;
+        mBadgePalette = null;
+        mBadgeScale = 0f;
+        mForceHideBadge = false;
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info) {
@@ -328,6 +339,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
         }
 
         refreshDrawableState();
+    }
+
+    @Override
+    public void onLauncherResume() {
+        // Reset the pressed state of icon that was locked in the press state while activity
+        // was launching
+        setStayPressed(false);
     }
 
     void clearPressedBackground() {
@@ -496,11 +514,17 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
     public PreloadIconDrawable applyProgressLevel(int progressLevel) {
         if (getTag() instanceof ItemInfoWithIcon) {
             ItemInfoWithIcon info = (ItemInfoWithIcon) getTag();
-            setContentDescription(progressLevel > 0
-                    ? getContext().getString(R.string.app_downloading_title, info.title,
-                    NumberFormat.getPercentInstance().format(progressLevel * 0.01))
-                    : getContext().getString(R.string.app_waiting_download_title, info.title));
-
+            if (progressLevel >= 100) {
+                setContentDescription(info.contentDescription != null
+                        ? info.contentDescription : "");
+            } else if (progressLevel > 0) {
+                setContentDescription(getContext()
+                        .getString(R.string.app_downloading_title, info.title,
+                                NumberFormat.getPercentInstance().format(progressLevel * 0.01)));
+            } else {
+                setContentDescription(getContext()
+                        .getString(R.string.app_waiting_download_title, info.title));
+            }
             if (mIcon != null) {
                 final PreloadIconDrawable preloadDrawable;
                 if (mIcon instanceof PreloadIconDrawable) {

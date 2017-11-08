@@ -177,13 +177,11 @@ public class UserEventDispatcher {
     }
 
     public void logActionCommand(int command, int containerType) {
-        logActionCommand(command, containerType, 0);
+        logActionCommand(command, newContainerTarget(containerType));
     }
 
-    public void logActionCommand(int command, int containerType, int pageIndex) {
-        LauncherEvent event = newLauncherEvent(
-                newCommandAction(command), newContainerTarget(containerType));
-        event.srcTarget[0].pageIndex = pageIndex;
+    public void logActionCommand(int command, Target target) {
+        LauncherEvent event = newLauncherEvent(newCommandAction(command), target);
         dispatchUserEvent(event, null);
     }
 
@@ -234,6 +232,10 @@ public class UserEventDispatcher {
         event.action.dir = dir;
         event.srcTarget[0].pageIndex = pageIndex;
         dispatchUserEvent(event, null);
+
+        if (action == Action.Touch.SWIPE) {
+            resetElapsedContainerMillis();
+        }
     }
 
     public void logActionOnItem(int action, int dir, int itemType) {
@@ -325,6 +327,7 @@ public class UserEventDispatcher {
                 ev.actionDurationMillis);
         log += "\n isInLandscapeMode " + ev.isInLandscapeMode;
         log += "\n isInMultiWindowMode " + ev.isInMultiWindowMode;
+        log += "\n";
         Log.d(TAG, log);
     }
 

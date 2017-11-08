@@ -37,7 +37,6 @@ import android.util.Pair;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.model.AddWorkspaceItemsTask;
 import com.android.launcher3.model.BgDataModel;
@@ -63,6 +62,7 @@ import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewOnDrawExecutor;
+import com.android.launcher3.widget.WidgetListRowEntry;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -134,7 +134,7 @@ public class LauncherModel extends BroadcastReceiver
         }
     };
 
-    public interface Callbacks extends LauncherAppWidgetHost.ProviderChangedListener {
+    public interface Callbacks {
         public boolean setLoadOnResume();
         public int getCurrentWorkspaceScreen();
         public void clearPendingBinds();
@@ -154,7 +154,7 @@ public class LauncherModel extends BroadcastReceiver
         public void bindRestoreItemsChange(HashSet<ItemInfo> updates);
         public void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher);
         public void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
-        public void bindAllWidgets(MultiHashMap<PackageItemInfo, WidgetItem> widgets);
+        public void bindAllWidgets(ArrayList<WidgetListRowEntry> widgets);
         public void onPageBoundSynchronously(int page);
         public void executeOnNextDraw(ViewOnDrawExecutor executor);
         public void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMap);
@@ -193,9 +193,8 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Adds the provided items to the workspace.
      */
-    public void addAndBindAddedWorkspaceItems(
-            Provider<List<Pair<ItemInfo, Object>>> appsProvider) {
-        enqueueModelUpdateTask(new AddWorkspaceItemsTask(appsProvider));
+    public void addAndBindAddedWorkspaceItems(List<Pair<ItemInfo, Object>> itemList) {
+        enqueueModelUpdateTask(new AddWorkspaceItemsTask(itemList));
     }
 
     public ModelWriter getWriter(boolean hasVerticalHotseat) {
@@ -406,8 +405,6 @@ public class LauncherModel extends BroadcastReceiver
                     enqueueModelUpdateTask(new UserLockStateChangedTask(user));
                 }
             }
-        } else if (Intent.ACTION_WALLPAPER_CHANGED.equals(action)) {
-            ExtractionUtils.startColorExtractionServiceIfNecessary(context);
         }
     }
 

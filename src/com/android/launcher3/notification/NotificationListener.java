@@ -38,7 +38,9 @@ import com.android.launcher3.util.SettingsObserver;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static com.android.launcher3.SettingsActivity.NOTIFICATION_BADGING;
@@ -66,6 +68,8 @@ public class NotificationListener extends NotificationListenerService {
     private final Handler mWorkerHandler;
     private final Handler mUiHandler;
     private final Ranking mTempRanking = new Ranking();
+    /** Maps groupKey's to the corresponding group of notifications. */
+    private final Map<String, NotificationGroup> mNotificationGroupMap = new HashMap<>();
 
     private SettingsObserver mNotificationBadgingObserver;
 
@@ -227,6 +231,15 @@ public class NotificationListener extends NotificationListenerService {
                         NotificationKeyData.fromNotification(sbn));
         mWorkerHandler.obtainMessage(MSG_NOTIFICATION_REMOVED, packageUserKeyAndNotificationKey)
                 .sendToTarget();
+
+        NotificationGroup notificationGroup = mNotificationGroupMap.get(sbn.getGroupKey());
+        if (notificationGroup != null) {
+            notificationGroup.removeChildKey(sbn.getKey());
+            if (notificationGroup.isEmpty()) {
+                cancelNotification(notificationGroup.getGroupSummaryKey());
+                mNotificationGroupMap.remove(sbn.getGroupKey());
+            }
+        }
     }
 
     /** This makes a potentially expensive binder call and should be run on a background thread. */
@@ -264,18 +277,34 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private boolean shouldBeFilteredOut(StatusBarNotification sbn) {
+        Notification notification = sbn.getNotification();
+
+        boolean isGroupHeader = (notification.flags & Notification.FLAG_GROUP_SUMMARY) != 0;
+        if (sbn.isGroup()) {
+            // Maintain group info so we can cancel the summary when the last child is canceled.
+            NotificationGroup notificationGroup = mNotificationGroupMap.get(sbn.getGroupKey());
+            if (notificationGroup == null) {
+                notificationGroup = new NotificationGroup();
+                mNotificationGroupMap.put(sbn.getGroupKey(), notificationGroup);
+            }
+            if (isGroupHeader) {
+                notificationGroup.setGroupSummaryKey(sbn.getKey());
+            } else {
+                notificationGroup.addChildKey(sbn.getKey());
+            }
+        }
+
         getCurrentRanking().getRanking(sbn.getKey(), mTempRanking);
         if (!mTempRanking.canShowBadge()) {
             return true;
         }
-        Notification notification = sbn.getNotification();
         if (mTempRanking.getChannel().getId().equals(NotificationChannel.DEFAULT_CHANNEL_ID)) {
             // Special filtering for the default, legacy "Miscellaneous" channel.
             if ((notification.flags & Notification.FLAG_ONGOING_EVENT) != 0) {
                 return true;
             }
         }
-        boolean isGroupHeader = (notification.flags & Notification.FLAG_GROUP_SUMMARY) != 0;
+
         CharSequence title = notification.extras.getCharSequence(Notification.EXTRA_TITLE);
         CharSequence text = notification.extras.getCharSequence(Notification.EXTRA_TEXT);
         boolean missingTitleAndText = TextUtils.isEmpty(title) && TextUtils.isEmpty(text);

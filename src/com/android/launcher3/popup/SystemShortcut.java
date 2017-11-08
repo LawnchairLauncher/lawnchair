@@ -1,6 +1,7 @@
 package com.android.launcher3.popup;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -11,7 +12,10 @@ import com.android.launcher3.InfoDropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.util.InstantAppResolver;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.WidgetsBottomSheet;
 
@@ -55,8 +59,9 @@ public abstract class SystemShortcut extends ItemInfo {
         @Override
         public View.OnClickListener getOnClickListener(final Launcher launcher,
                 final ItemInfo itemInfo) {
-            final List<WidgetItem> widgets = launcher.getWidgetsForPackageUser(new PackageUserKey(
-                    itemInfo.getTargetComponent().getPackageName(), itemInfo.user));
+            final List<WidgetItem> widgets =
+                    launcher.getPopupDataProvider().getWidgetsForPackageUser(new PackageUserKey(
+                            itemInfo.getTargetComponent().getPackageName(), itemInfo.user));
             if (widgets == null) {
                 return null;
             }
@@ -88,9 +93,40 @@ public abstract class SystemShortcut extends ItemInfo {
                 public void onClick(View view) {
                     Rect sourceBounds = launcher.getViewBounds(view);
                     Bundle opts = launcher.getActivityLaunchOptions(view);
-                    InfoDropTarget.startDetailsActivityForInfo(itemInfo, launcher, null, sourceBounds, opts);
+                    InfoDropTarget.startDetailsActivityForInfo(itemInfo, launcher, sourceBounds, opts);
                     launcher.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
                             ControlType.APPINFO_TARGET, view);
+                }
+            };
+        }
+    }
+
+    public static class Install extends SystemShortcut {
+        public Install() {
+            super(R.drawable.ic_install_no_shadow, R.string.install_drop_target_label);
+        }
+
+        @Override
+        public View.OnClickListener getOnClickListener(final Launcher launcher,
+                final ItemInfo itemInfo) {
+            boolean supportsWebUI = (itemInfo instanceof ShortcutInfo) &&
+                    ((ShortcutInfo) itemInfo).hasStatusFlag(ShortcutInfo.FLAG_SUPPORTS_WEB_UI);
+            boolean isInstantApp = false;
+            if (itemInfo instanceof com.android.launcher3.AppInfo) {
+                com.android.launcher3.AppInfo appInfo = (com.android.launcher3.AppInfo) itemInfo;
+                isInstantApp = InstantAppResolver.newInstance(launcher).isInstantApp(appInfo);
+            }
+            boolean enabled = supportsWebUI || isInstantApp;
+            if (!enabled) {
+                return null;
+            }
+            return new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = PackageManagerHelper.getMarketIntent(itemInfo
+                            .getTargetComponent().getPackageName());
+                    launcher.startActivitySafely(view, intent, itemInfo);
+                    AbstractFloatingView.closeAllOpenViews(launcher);
                 }
             };
         }

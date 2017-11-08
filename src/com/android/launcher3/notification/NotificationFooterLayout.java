@@ -37,6 +37,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.anim.PropertyResetListener;
+import com.android.launcher3.popup.BaseActionPopup;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 
 import java.util.ArrayList;
@@ -193,16 +194,17 @@ public class NotificationFooterLayout extends FrameLayout {
 
     private void removeViewFromIconRow(View child) {
         mIconRow.removeView(child);
-        mNotifications.remove((NotificationInfo) child.getTag());
+        mNotifications.remove(child.getTag());
         updateOverflowEllipsisVisibility();
         if (mIconRow.getChildCount() == 0) {
             // There are no more icons in the footer, so hide it.
-            PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(
+            BaseActionPopup popup = BaseActionPopup.getOpen(
                     Launcher.getLauncher(getContext()));
-            if (popup != null) {
+            if (popup instanceof PopupContainerWithArrow) {
                 final int newHeight = getResources().getDimensionPixelSize(
                         R.dimen.notification_empty_footer_height);
-                Animator collapseFooter = popup.reduceNotificationViewHeight(getHeight() - newHeight,
+                Animator collapseFooter = ((PopupContainerWithArrow) popup)
+                        .reduceNotificationViewHeight(getHeight() - newHeight,
                         getResources().getInteger(R.integer.config_removeNotificationViewDuration));
                 collapseFooter.addListener(new AnimatorListenerAdapter() {
                     @Override

@@ -43,6 +43,7 @@
     <uses-permission android:name="android.permission.BIND_APPWIDGET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
 
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
@@ -79,12 +80,6 @@
                 <action android:name="android.appwidget.action.APPWIDGET_HOST_RESTORED"/>
             </intent-filter>
         </receiver>
-
-        <service android:name="com.android.launcher3.dynamicui.ColorExtractionService"
-            android:exported="false"
-            android:process=":wallpaper_chooser"
-            android:permission="android.permission.BIND_JOB_SERVICE">
-        </service>
 
         <service
             android:name="com.android.launcher3.compat.WallpaperManagerCompatVL$ColorExtractionService"

@@ -42,6 +42,19 @@
             android:layout_gravity="center"
             launcher:pageIndicator="@id/page_indicator" />
 
+        <com.android.launcher3.pageindicators.PageIndicatorLandscape
+            android:id="@+id/page_indicator"
+            android:theme="@style/HomeScreenElementTheme"
+            android:layout_width="@dimen/dynamic_grid_min_page_indicator_size"
+            android:layout_height="@dimen/dynamic_grid_min_page_indicator_size"
+            android:layout_gravity="bottom|left">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/all_apps_handle_landscape"
+                android:layout_gravity="center" />
+        </com.android.launcher3.pageindicators.PageIndicatorLandscape>
+
         <include layout="@layout/gradient_bg" />
 
         <!-- DO NOT CHANGE THE ID -->
@@ -60,24 +73,11 @@
             android:id="@+id/overview_panel"
             android:visibility="gone" />
 
-        <include layout="@layout/widgets_view"
-            android:id="@+id/widgets_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="invisible" />
-
         <include layout="@layout/all_apps"
             android:id="@+id/apps_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />
-
-        <com.android.launcher3.pageindicators.PageIndicatorCaretLandscape
-            android:id="@+id/page_indicator"
-            android:theme="@style/HomeScreenElementTheme"
-            android:layout_width="@dimen/dynamic_grid_min_page_indicator_size"
-            android:layout_height="@dimen/dynamic_grid_min_page_indicator_size"
-            android:layout_gravity="bottom|left"/>
 
     </com.android.launcher3.dragndrop.DragLayer>
 
