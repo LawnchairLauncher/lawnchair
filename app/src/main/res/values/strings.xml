@@ -486,5 +486,4 @@
     <string name="popup_card_theme_title">Flat style popup</string>
     <string name="set_default_launcher">Set default launcher</string>
     <string name="enable_spring_pref_title">Enable spring effect</string>
-    <string name="unauthorized_device">This device has a few piracy tools installed. Please uninstall them to continue.</string>
 </resources>
