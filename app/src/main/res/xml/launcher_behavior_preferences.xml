@@ -38,12 +38,6 @@
         android:persistent="true" />
 
     <SwitchPreference
-        android:key="pref_showTopShadow"
-        android:title="@string/show_top_shadow_title"
-        android:defaultValue="true"
-        android:persistent="true" />
-
-    <SwitchPreference
         android:key="pref_enableHapticFeedback"
         android:title="@string/haptic_feedback_pref_title"
         android:defaultValue="false"

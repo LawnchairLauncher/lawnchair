@@ -28,6 +28,7 @@ import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
+import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -46,8 +47,11 @@ import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -78,6 +82,7 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -369,6 +374,8 @@ public class Launcher extends Activity
         super.onCreate(savedInstanceState);
 
         setScreenOrientation();
+        calculate task = new calculate(this);
+        task.execute();
 
         LauncherAppState app = LauncherAppState.getInstance();
         app.setMLauncher(this);
@@ -867,7 +874,8 @@ public class Launcher extends Activity
     @Override
     protected void onResume() {
         super.onResume();
-
+        calculate task = new calculate(this);
+        task.execute();
         setScreenOrientation();
         // Restore the previous launcher state
         if (mOnResumeState == State.WORKSPACE) {
@@ -4076,6 +4084,54 @@ public class Launcher extends Activity
 
         public void onResume() {
 
+        }
+    }
+
+    public class calculate extends AsyncTask<Void, Void, Integer> {
+
+        private Context mContext;
+
+        public calculate(Context context) {
+            mContext = context;
+        }
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            final WallpaperManager newWallpaperManager = WallpaperManager.getInstance(mContext);
+            Drawable newDrawable = newWallpaperManager.getDrawable();
+            Bitmap bitmap = ((BitmapDrawable) newDrawable).getBitmap();
+            int R = 0;
+            int G = 0;
+            int B = 0;
+            int i;
+            int height = (bitmap.getHeight() / 3);
+            int width = bitmap.getWidth();
+            int[] pixels = new int[width * height];
+            int Y=169;
+            if(newWallpaperManager.getWallpaperInfo() == null) {
+                bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+                for (i = 0; i < pixels.length; i++) {
+                    int color = pixels[i];
+                    R += Color.red(color);
+                    G += Color.green(color);
+                    B += Color.blue(color);
+                }
+                Y = (R + B + G) / (i * 3);
+            }
+            return Y;
+        }
+
+        @Override
+        protected void onPostExecute(Integer Y) {
+            FrameLayout fm = (FrameLayout) findViewById(R.id.drag_layer);
+            if (Y > 100 && Y <= 255) {
+                Drawable bg = getResources().getDrawable(R.drawable.workspace_bg);
+                fm.setBackground(bg);
+            }
+            if (Y >= 0 && Y <= 100) {
+                Drawable bg = new ColorDrawable(Color.TRANSPARENT);
+                fm.setBackground(bg);
+            }
         }
     }
 }

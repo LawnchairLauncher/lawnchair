@@ -88,7 +88,6 @@ interface IPreferenceProvider {
     val useWhiteGoogleIcon: Boolean
     val useRoundSearchBar: Boolean
     val enableBackportShortcuts: Boolean
-    val showTopShadow: Boolean
     val hideHotseat: Boolean
     val enablePlanes: Boolean
     val showWeather: Boolean
