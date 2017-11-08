@@ -17,7 +17,6 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.TextView
-import android.widget.Toast
 import ch.deletescape.lawnchair.R
 import ch.deletescape.lawnchair.Utilities
 import java.util.*
@@ -60,13 +59,6 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
 
     override fun onClick() {
         super.onClick()
-
-        // TODO: Add some 'Arr!' flavor to it
-        if (Utilities.isBlacklistedAppInstalled(context)) {
-            Toast.makeText(context, R.string.unauthorized_device, Toast.LENGTH_SHORT).show()
-            return
-        }
-
         showDialog()
     }
 
