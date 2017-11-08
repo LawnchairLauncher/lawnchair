@@ -135,6 +135,7 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
     $(call all-java-files-under, quickstep/src) \
+    $(call all-java-files-under, src_flags) \
     $(call all-proto-files-under, protos) \
     $(call all-proto-files-under, proto_overrides)
 
