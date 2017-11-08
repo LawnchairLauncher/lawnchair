@@ -16,30 +16,24 @@
 
 package com.android.launcher3.util;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 import android.view.KeyEvent;
-import android.view.View;
 
-import com.android.launcher3.util.FocusLogic;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests the {@link FocusLogic} class that handles key event based focus handling.
  */
 @SmallTest
-public final class FocusLogicTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public final class FocusLogicTest {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        // Nothing to set up as this class only tests static methods.
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        // Nothing to tear down as this class only tests static methods.
-    }
-
+    @Test
     public void testShouldConsume() {
          assertTrue(FocusLogic.shouldConsume(KeyEvent.KEYCODE_DPAD_LEFT));
          assertTrue(FocusLogic.shouldConsume(KeyEvent.KEYCODE_DPAD_RIGHT));
@@ -51,12 +45,14 @@ public final class FocusLogicTest extends AndroidTestCase {
          assertTrue(FocusLogic.shouldConsume(KeyEvent.KEYCODE_PAGE_DOWN));
     }
 
+    @Test
     public void testCreateSparseMatrix() {
          // Either, 1) create a helper method to generate/instantiate all possible cell layout that
          // may get created in real world to test this method. OR 2) Move all the matrix
          // management routine to celllayout and write tests for them.
     }
 
+    @Test
     public void testMoveFromBottomRightToBottomLeft() {
         int[][] map = transpose(new int[][] {
                 {-1, 0, -1, -1, -1, -1},
@@ -69,6 +65,7 @@ public final class FocusLogicTest extends AndroidTestCase {
         assertEquals(1, i);
     }
 
+    @Test
     public void testMoveFromBottomRightToTopLeft() {
         int[][] map = transpose(new int[][] {
                 {-1, 0, -1, -1, -1, -1},
@@ -81,6 +78,7 @@ public final class FocusLogicTest extends AndroidTestCase {
         assertEquals(FocusLogic.NEXT_PAGE_FIRST_ITEM, i);
     }
 
+    @Test
     public void testMoveIntoHotseatWithEqualHotseatAndWorkspaceColumns() {
         // Test going from an icon right above the All Apps button to the All Apps button.
         int[][] map = transpose(new int[][] {
@@ -105,6 +103,7 @@ public final class FocusLogicTest extends AndroidTestCase {
         assertEquals(4, i);
     }
 
+    @Test
     public void testMoveIntoHotseatWithExtraColumnForAllApps() {
         // Test going from an icon above and to the left
         // of the All Apps button to the All Apps button.
@@ -187,6 +186,7 @@ public final class FocusLogicTest extends AndroidTestCase {
         assertEquals(12, i);
     }
 
+    @Test
     public void testCrossingAllAppsColumn() {
         // Test crossing from left to right in portrait.
         int[][] map = transpose(new int[][] {

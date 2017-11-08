@@ -21,42 +21,47 @@
     android:background="@drawable/widget_resize_shadow"
     android:foreground="@drawable/widget_resize_frame"
     android:foregroundTint="?attr/workspaceTextColor"
-    android:padding="0dp" >
+    android:padding="0dp">
 
-    <!-- Left -->
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left|center_vertical"
-        android:layout_marginLeft="@dimen/widget_handle_margin"
-        android:src="@drawable/ic_widget_resize_handle"
-        android:tint="?attr/workspaceTextColor" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
 
-    <!-- Top -->
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="@dimen/widget_handle_margin"
-        android:src="@drawable/ic_widget_resize_handle"
-        android:tint="?attr/workspaceTextColor" />
+        <!-- Left -->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center_vertical"
+            android:layout_marginLeft="@dimen/widget_handle_margin"
+            android:src="@drawable/ic_widget_resize_handle"
+            android:tint="?attr/workspaceTextColor" />
 
-    <!-- Right -->
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|center_vertical"
-        android:layout_marginRight="@dimen/widget_handle_margin"
-        android:src="@drawable/ic_widget_resize_handle"
-        android:tint="?attr/workspaceTextColor" />
+        <!-- Top -->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="@dimen/widget_handle_margin"
+            android:src="@drawable/ic_widget_resize_handle"
+            android:tint="?attr/workspaceTextColor" />
 
-    <!-- Bottom -->
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="@dimen/widget_handle_margin"
-        android:src="@drawable/ic_widget_resize_handle"
-        android:tint="?attr/workspaceTextColor" />
+        <!-- Right -->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="@dimen/widget_handle_margin"
+            android:src="@drawable/ic_widget_resize_handle"
+            android:tint="?attr/workspaceTextColor" />
 
+        <!-- Bottom -->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="@dimen/widget_handle_margin"
+            android:src="@drawable/ic_widget_resize_handle"
+            android:tint="?attr/workspaceTextColor" />
+
+    </FrameLayout>
 </com.android.launcher3.AppWidgetResizeFrame>

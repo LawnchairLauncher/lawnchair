@@ -65,12 +65,6 @@ public class DeviceProfile {
 
     private static final float TALL_DEVICE_ASPECT_RATIO_THRESHOLD = 2.0f;
 
-    // Overview mode
-    private final int overviewModeMinIconZoneHeightPx;
-    private final int overviewModeMaxIconZoneHeightPx;
-    private final int overviewModeBarItemWidthPx;
-    private final int overviewModeBarSpacerWidthPx;
-    private final float overviewModeIconZoneRatio;
 
     // Workspace
     private final int desiredWorkspaceLeftRightMarginPx;
@@ -196,16 +190,6 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_workspace_page_spacing);
         topWorkspacePadding =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_workspace_top_padding);
-        overviewModeMinIconZoneHeightPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_min_icon_zone_height);
-        overviewModeMaxIconZoneHeightPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_max_icon_zone_height);
-        overviewModeBarItemWidthPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_bar_item_width);
-        overviewModeBarSpacerWidthPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_bar_spacer_width);
-        overviewModeIconZoneRatio =
-                res.getInteger(R.integer.config_dynamic_grid_overview_icon_zone_percentage) / 100f;
         iconDrawablePaddingOriginalPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_icon_drawable_padding);
         dropTargetBarSizePx = res.getDimensionPixelSize(R.dimen.dynamic_grid_drop_target_size);
@@ -277,8 +261,12 @@ public class DeviceProfile {
         DeviceProfile profile = new DeviceProfile(context, inv, mwSize, mwSize, mwSize.x, mwSize.y,
                 isLandscape);
 
-        // Hide labels on the workspace.
-        profile.adjustToHideWorkspaceLabels();
+        // If there isn't enough vertical cell padding with the labels displayed, hide the labels.
+        float workspaceCellPaddingY = profile.getCellSize().y - profile.iconSizePx
+                - iconDrawablePaddingPx - profile.iconTextSizePx;
+        if (workspaceCellPaddingY < profile.iconDrawablePaddingPx * 2) {
+            profile.adjustToHideWorkspaceLabels();
+        }
 
         // We use these scales to measure and layout the widgets using their full invariant profile
         // sizes and then draw them scaled and centered to fit in their multi-window mode cellspans.
@@ -566,13 +554,6 @@ public class DeviceProfile {
         }
     }
 
-    int getOverviewModeButtonBarHeight() {
-        int zoneHeight = (int) (overviewModeIconZoneRatio * availableHeightPx);
-        return Utilities.boundToRange(zoneHeight,
-                overviewModeMinIconZoneHeightPx,
-                overviewModeMaxIconZoneHeightPx);
-    }
-
     public static int calculateCellWidth(int width, int countX) {
         return width / countX;
     }
@@ -591,16 +572,6 @@ public class DeviceProfile {
 
     boolean shouldFadeAdjacentWorkspaceScreens() {
         return isVerticalBarLayout() || isLargeTablet;
-    }
-
-    private int getVisibleChildCount(ViewGroup parent) {
-        int visibleChildren = 0;
-        for (int i = 0; i < parent.getChildCount(); i++) {
-            if (parent.getChildAt(i).getVisibility() != View.GONE) {
-                visibleChildren++;
-            }
-        }
-        return visibleChildren;
     }
 
     public void layout(Launcher launcher, boolean notifyListeners) {
@@ -695,20 +666,6 @@ public class DeviceProfile {
                 lp.bottomMargin = hotseatBarSizePx + mInsets.bottom;
             }
             pageIndicator.setLayoutParams(lp);
-        }
-
-        // Layout the Overview Mode
-        ViewGroup overviewMode = launcher.getOverviewPanel();
-        if (overviewMode != null) {
-            int visibleChildCount = getVisibleChildCount(overviewMode);
-            int totalItemWidth = visibleChildCount * overviewModeBarItemWidthPx;
-            int maxWidth = totalItemWidth + (visibleChildCount - 1) * overviewModeBarSpacerWidthPx;
-
-            lp = (FrameLayout.LayoutParams) overviewMode.getLayoutParams();
-            lp.width = Math.min(availableWidthPx, maxWidth);
-            lp.height = getOverviewModeButtonBarHeight();
-            lp.bottomMargin = mInsets.bottom;
-            overviewMode.setLayoutParams(lp);
         }
 
         // Layout the AllAppsRecyclerView

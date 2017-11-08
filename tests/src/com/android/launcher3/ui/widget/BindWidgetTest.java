@@ -16,6 +16,7 @@
 package com.android.launcher3.ui.widget;
 
 import android.appwidget.AppWidgetHost;
+import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -171,8 +172,9 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         // Widget has a valid Id now.
         assertEquals(0, mCursor.getInt(mCursor.getColumnIndex(LauncherSettings.Favorites.RESTORED))
                 & LauncherAppWidgetInfo.FLAG_ID_NOT_VALID);
-        assertNotNull(mWidgetManager.getAppWidgetInfo(mCursor.getInt(mCursor.getColumnIndex(
-                LauncherSettings.Favorites.APPWIDGET_ID))));
+        assertNotNull(AppWidgetManager.getInstance(mTargetContext)
+                .getAppWidgetInfo(mCursor.getInt(mCursor.getColumnIndex(
+                        LauncherSettings.Favorites.APPWIDGET_ID))));
     }
 
     @Test
@@ -297,7 +299,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         item.spanY = info.minSpanY;
         item.minSpanX = info.minSpanX;
         item.minSpanY = info.minSpanY;
-        item.user = info.getUser();
+        item.user = info.getProfile();
         item.cellX = 0;
         item.cellY = 1;
         item.container = LauncherSettings.Favorites.CONTAINER_DESKTOP;

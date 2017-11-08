@@ -75,6 +75,9 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     protected CancellationSignal mActiveRequest;
     private boolean mAnimatePreview = true;
 
+    private boolean mApplyBitmapDeferred = false;
+    private Bitmap mDeferredBitmap;
+
     protected final BaseActivity mActivity;
 
     public WidgetCell(Context context) {
@@ -150,15 +153,31 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         return mWidgetImage;
     }
 
+    /**
+     * Sets if applying bitmap preview should be deferred. The UI will still load the bitmap, but
+     * will not cause invalidate, so that when deferring is disabled later, all the bitmaps are
+     * ready.
+     * This prevents invalidates while the animation is running.
+     */
+    public void setApplyBitmapDeferred(boolean isDeferred) {
+        if (mApplyBitmapDeferred != isDeferred) {
+            mApplyBitmapDeferred = isDeferred;
+            if (!mApplyBitmapDeferred && mDeferredBitmap != null) {
+                applyPreview(mDeferredBitmap);
+                mDeferredBitmap = null;
+            }
+        }
+    }
+
     public void setAnimatePreview(boolean shouldAnimate) {
         mAnimatePreview = shouldAnimate;
     }
 
     public void applyPreview(Bitmap bitmap) {
-        applyPreview(bitmap, true);
-    }
-
-    public void applyPreview(Bitmap bitmap, boolean animate) {
+        if (mApplyBitmapDeferred) {
+            mDeferredBitmap = bitmap;
+            return;
+        }
         if (bitmap != null) {
             mWidgetImage.setBitmap(bitmap,
                     DrawableFactory.get(getContext()).getBadgeForUser(mItem.user, getContext()));
@@ -173,15 +192,11 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     }
 
     public void ensurePreview() {
-        ensurePreview(true);
-    }
-
-    public void ensurePreview(boolean animate) {
         if (mActiveRequest != null) {
             return;
         }
         mActiveRequest = mWidgetPreviewLoader.getPreview(
-                mItem, mPresetPreviewSize, mPresetPreviewSize, this, animate);
+                mItem, mPresetPreviewSize, mPresetPreviewSize, this);
     }
 
     @Override

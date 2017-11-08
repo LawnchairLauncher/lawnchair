@@ -88,7 +88,7 @@ public class OverviewScreenAccessibilityDelegate extends AccessibilityDelegate {
             info.addAction(mActions.get(MOVE_FORWARD));
         }
 
-        int startIndex = mWorkspace.numCustomPages() + (FeatureFlags.QSB_ON_FIRST_SCREEN ? 1 : 0);
+        int startIndex = FeatureFlags.QSB_ON_FIRST_SCREEN ? 1 : 0;
         if (index > startIndex) {
             info.addAction(mActions.get(MOVE_BACKWARD));
         }

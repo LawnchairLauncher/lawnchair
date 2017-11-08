@@ -288,25 +288,11 @@ public class FocusHelper {
             case FocusLogic.PREVIOUS_PAGE_RIGHT_COLUMN:
                 // Go to the previous page but keep the focus on the same hotseat icon.
                 workspace.snapToPage(pageIndex - 1);
-                // If the page we are going to is fullscreen, have it take the focus from hotseat.
-                CellLayout prevPage = (CellLayout) workspace.getPageAt(pageIndex - 1);
-                boolean isPrevPageFullscreen = ((CellLayout.LayoutParams) prevPage
-                        .getShortcutsAndWidgets().getChildAt(0).getLayoutParams()).isFullscreen;
-                if (isPrevPageFullscreen) {
-                    workspace.getPageAt(pageIndex - 1).requestFocus();
-                }
                 break;
             case FocusLogic.NEXT_PAGE_LEFT_COLUMN:
             case FocusLogic.NEXT_PAGE_RIGHT_COLUMN:
                 // Go to the next page but keep the focus on the same hotseat icon.
                 workspace.snapToPage(pageIndex + 1);
-                // If the page we are going to is fullscreen, have it take the focus from hotseat.
-                CellLayout nextPage = (CellLayout) workspace.getPageAt(pageIndex + 1);
-                boolean isNextPageFullscreen = ((CellLayout.LayoutParams) nextPage
-                        .getShortcutsAndWidgets().getChildAt(0).getLayoutParams()).isFullscreen;
-                if (isNextPageFullscreen) {
-                    workspace.getPageAt(pageIndex + 1).requestFocus();
-                }
                 break;
         }
         if (parent == iconParent && newIconIndex >= iconParent.getChildCount()) {

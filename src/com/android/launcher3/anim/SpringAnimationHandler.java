@@ -83,6 +83,10 @@ public class SpringAnimationHandler<T> {
         mAnimations.add(spring);
     }
 
+    public AnimationFactory<T> getFactory() {
+        return mAnimationFactory;
+    }
+
     /**
      * Adds a new or recycled animation to the list of springs handled by this class.
      *

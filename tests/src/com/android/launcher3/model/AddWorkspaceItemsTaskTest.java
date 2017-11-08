@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.support.test.runner.AndroidJUnit4;
 import android.util.Pair;
 
 import com.android.launcher3.ItemInfo;
@@ -15,21 +16,25 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.LongArrayMap;
-import com.android.launcher3.util.Provider;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Matchers.isNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Tests for {@link AddWorkspaceItemsTask}
  */
+@RunWith(AndroidJUnit4.class)
 public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
 
     private final ComponentName mComponent1 = new ComponentName("a", "b");
@@ -39,9 +44,8 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
     private ArrayList<Long> newScreens;
     private LongArrayMap<GridOccupancy> screenOccupancy;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void initData() throws Exception {
         existingScreens = new ArrayList<>();
         screenOccupancy = new LongArrayMap<>();
         newScreens = new ArrayList<>();
@@ -55,13 +59,14 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
         for (ItemInfo item : items) {
             list.add(Pair.create(item, null));
         }
-        return new AddWorkspaceItemsTask(Provider.of(list)) {
+        return new AddWorkspaceItemsTask(list) {
 
             @Override
             protected void updateScreens(Context context, ArrayList<Long> workspaceScreens) { }
         };
     }
 
+    @Test
     public void testFindSpaceForItem_prefers_second() {
         // First screen has only one hole of size 1
         int nextId = setupWorkspaceWithHoles(1, 1, new Rect(2, 2, 3, 3));
@@ -83,12 +88,11 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
                 .isRegionVacant(spaceFound.second[0], spaceFound.second[1], 2, 3));
     }
 
+    @Test
     public void testFindSpaceForItem_adds_new_screen() throws Exception {
         // First screen has 2 holes of sizes 3x2 and 2x3
         setupWorkspaceWithHoles(1, 1, new Rect(2, 0, 5, 2), new Rect(0, 2, 2, 5));
         commitScreensToDb();
-
-        when(appState.getContext()).thenReturn(getMockContext());
 
         ArrayList<Long> oldScreens = new ArrayList<>(existingScreens);
         Pair<Long, int[]> spaceFound = newTask()
@@ -97,6 +101,7 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
         assertTrue(newScreens.contains(spaceFound.first));
     }
 
+    @Test
     public void testAddItem_existing_item_ignored() throws Exception {
         ShortcutInfo info = new ShortcutInfo();
         info.intent = new Intent().setComponent(mComponent1);
@@ -105,12 +110,11 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
         setupWorkspaceWithHoles(1, 1, new Rect(2, 2, 3, 3));
         commitScreensToDb();
 
-        when(appState.getContext()).thenReturn(getMockContext());
-
         // Nothing was added
         assertTrue(executeTaskForTest(newTask(info)).isEmpty());
     }
 
+    @Test
     public void testAddItem_some_items_added() throws Exception {
         ShortcutInfo info = new ShortcutInfo();
         info.intent = new Intent().setComponent(mComponent1);
@@ -121,8 +125,6 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
         // Setup a screen with a hole
         setupWorkspaceWithHoles(1, 1, new Rect(2, 2, 3, 3));
         commitScreensToDb();
-
-        when(appState.getContext()).thenReturn(getMockContext());
 
         executeTaskForTest(newTask(info, info2)).get(0).run();
         ArgumentCaptor<ArrayList> notAnimated = ArgumentCaptor.forClass(ArrayList.class);
@@ -168,7 +170,7 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
     }
 
     private void commitScreensToDb() throws Exception {
-        LauncherSettings.Settings.call(getMockContentResolver(),
+        LauncherSettings.Settings.call(mProviderRule.getResolver(),
                 LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
 
         Uri uri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
@@ -183,6 +185,6 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
             v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
             ops.add(ContentProviderOperation.newInsert(uri).withValues(v).build());
         }
-        getMockContentResolver().applyBatch(LauncherProvider.AUTHORITY, ops);
+        mProviderRule.getResolver().applyBatch(LauncherProvider.AUTHORITY, ops);
     }
 }

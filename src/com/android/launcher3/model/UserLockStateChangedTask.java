@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.model;
 
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
+
 import android.content.Context;
 import android.os.UserHandle;
 
@@ -87,12 +89,12 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
                         removedKeys.add(key);
                         continue;
                     }
-                    si.isDisabled &= ~ShortcutInfo.FLAG_DISABLED_LOCKED_USER;
+                    si.runtimeStatusFlags &= ~FLAG_DISABLED_LOCKED_USER;
                     si.updateFromDeepShortcutInfo(shortcut, context);
                     si.iconBitmap = LauncherIcons.createShortcutIcon(shortcut, context,
                             si.iconBitmap);
                 } else {
-                    si.isDisabled |= ShortcutInfo.FLAG_DISABLED_LOCKED_USER;
+                    si.runtimeStatusFlags |= FLAG_DISABLED_LOCKED_USER;
                 }
                 updatedShortcutInfos.add(si);
             }

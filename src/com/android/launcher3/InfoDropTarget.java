@@ -26,6 +26,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.util.Themes;
 
@@ -49,28 +50,29 @@ public class InfoDropTarget extends UninstallDropTarget {
     }
 
     @Override
-    public void completeDrop(DragObject d) {
-        DropTargetResultCallback callback = d.dragSource instanceof DropTargetResultCallback
-                ? (DropTargetResultCallback) d.dragSource : null;
-        startDetailsActivityForInfo(d.dragInfo, mLauncher, callback);
+    protected ComponentName performDropAction(ItemInfo item) {
+        return performDropAction(mLauncher, item, null, null);
     }
 
     /**
      * @return Whether the activity was started.
      */
     public static boolean startDetailsActivityForInfo(
-            ItemInfo info, Launcher launcher, DropTargetResultCallback callback) {
-        return startDetailsActivityForInfo(info, launcher, callback, null, null);
+            ItemInfo info, Launcher launcher, Rect sourceBounds, Bundle opts) {
+        return performDropAction(launcher, info, sourceBounds, opts) != null;
     }
 
-    public static boolean startDetailsActivityForInfo(ItemInfo info, Launcher launcher,
-            DropTargetResultCallback callback, Rect sourceBounds, Bundle opts) {
+    /**
+     * Performs the drop action and returns the target component for the dragObject or null if
+     * the action was not performed.
+     */
+    private static ComponentName performDropAction(Context context, ItemInfo info,
+            Rect sourceBounds, Bundle opts) {
         if (info instanceof PromiseAppInfo) {
             PromiseAppInfo promiseAppInfo = (PromiseAppInfo) info;
-            launcher.startActivity(promiseAppInfo.getMarketIntent());
-            return true;
+            context.startActivity(promiseAppInfo.getMarketIntent());
+            return null;
         }
-        boolean result = false;
         ComponentName componentName = null;
         if (info instanceof AppInfo) {
             componentName = ((AppInfo) info).componentName;
@@ -83,29 +85,27 @@ public class InfoDropTarget extends UninstallDropTarget {
         }
         if (componentName != null) {
             try {
-                LauncherAppsCompat.getInstance(launcher)
+                LauncherAppsCompat.getInstance(context)
                         .showAppDetailsForProfile(componentName, info.user, sourceBounds, opts);
-                result = true;
+                return componentName;
             } catch (SecurityException | ActivityNotFoundException e) {
-                Toast.makeText(launcher, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Unable to launch settings", e);
             }
         }
-
-        if (callback != null) {
-            sendUninstallResult(launcher, result, componentName, info.user, callback);
-        }
-        return result;
+        return null;
     }
 
     @Override
-    protected boolean supportsDrop(DragSource source, ItemInfo info) {
-        return source.supportsAppInfoDropTarget() && supportsDrop(getContext(), info);
+    public int getAccessibilityAction() {
+        return LauncherAccessibilityDelegate.INFO;
     }
 
-    public static boolean supportsDrop(Context context, ItemInfo info) {
+    @Override
+    protected boolean supportsDrop(ItemInfo info) {
         // Only show the App Info drop target if developer settings are enabled.
-        boolean developmentSettingsEnabled = Settings.Global.getInt(context.getContentResolver(),
+        boolean developmentSettingsEnabled = Settings.Global.getInt(
+                getContext().getContentResolver(),
                 Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) == 1;
         if (!developmentSettingsEnabled) {
             return false;

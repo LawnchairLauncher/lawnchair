@@ -28,6 +28,8 @@ import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
+import com.android.launcher3.widget.WidgetListRowEntry;
+import com.android.launcher3.widget.WidgetsListAdapter;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
@@ -117,8 +119,8 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     }
 
     public void bindUpdatedWidgets(BgDataModel dataModel) {
-        final MultiHashMap<PackageItemInfo, WidgetItem> widgets
-                = dataModel.widgetsModel.getWidgetsMap();
+        final ArrayList<WidgetListRowEntry> widgets =
+                dataModel.widgetsModel.getWidgetsList(mApp.getContext());
         scheduleCallbackTask(new CallbackTask() {
             @Override
             public void execute(Callbacks callbacks) {

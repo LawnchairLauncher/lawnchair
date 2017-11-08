@@ -1,23 +1,34 @@
 package com.android.launcher3.model;
 
+import android.support.test.runner.AndroidJUnit4;
+
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.ShortcutInfo;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.util.Arrays;
 import java.util.HashSet;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 
 /**
  * Tests for {@link CacheDataUpdatedTask}
  */
+@RunWith(AndroidJUnit4.class)
 public class CacheDataUpdatedTaskTest extends BaseModelUpdateTaskTestCase {
 
     private static final String NEW_LABEL_PREFIX = "new-label-";
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    @Before
+    public void initData() throws Exception {
         initializeData("cache_data_updated_task_data");
         // Add dummy entries in the cache to simulate update
         for (ItemInfo info : bgDataModel.itemsIdMap) {
@@ -29,6 +40,7 @@ public class CacheDataUpdatedTaskTest extends BaseModelUpdateTaskTestCase {
         return new CacheDataUpdatedTask(op, myUser, new HashSet<>(Arrays.asList(pkg)));
     }
 
+    @Test
     public void testCacheUpdate_update_apps() throws Exception {
         // Clear all icons from apps list so that its easy to check what was updated
         for (AppInfo info : allAppsList.data) {
@@ -52,6 +64,7 @@ public class CacheDataUpdatedTaskTest extends BaseModelUpdateTaskTestCase {
         }
     }
 
+    @Test
     public void testSessionUpdate_ignores_normal_apps() throws Exception {
         executeTaskForTest(newTask(CacheDataUpdatedTask.OP_SESSION_UPDATE, "app1"));
 
@@ -59,6 +72,7 @@ public class CacheDataUpdatedTaskTest extends BaseModelUpdateTaskTestCase {
         verifyUpdate();
     }
 
+    @Test
     public void testSessionUpdate_updates_pending_apps() throws Exception {
         executeTaskForTest(newTask(CacheDataUpdatedTask.OP_SESSION_UPDATE, "app3"));
 

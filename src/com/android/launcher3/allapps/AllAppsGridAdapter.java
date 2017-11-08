@@ -336,6 +336,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_PREDICTION_ICON:
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
                 BubbleTextView icon = (BubbleTextView) holder.itemView;
+                icon.reset();
                 icon.applyFromApplicationInfo(info);
                 break;
             case VIEW_TYPE_DISCOVERY_ITEM:
@@ -424,6 +425,9 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         // The amount by which each adjacent rows' stiffness will differ.
         private static final float ROW_STIFFNESS_COEFFICIENT = 50f;
 
+        // The percentage by which we multiply each row to create the row factor.
+        private static final float ROW_PERCENTAGE = 0.3f;
+
         @Override
         public SpringAnimation initialize(ViewHolder vh) {
             return SpringAnimationHandler.forView(vh.itemView, DynamicAnimation.TRANSLATION_Y, 0);
@@ -462,7 +466,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
          * effect.
          */
         private void calculateSpringValues(SpringAnimation spring, int row, int col) {
-            float rowFactor = (1 + row) * 0.5f;
+            float rowFactor = (1 + row) * ROW_PERCENTAGE;
             float colFactor = getColumnFactor(col, mAppsPerRow);
 
             float minValue = DEFAULT_MIN_VALUE_PX * (rowFactor + colFactor);

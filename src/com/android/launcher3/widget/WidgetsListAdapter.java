@@ -25,13 +25,11 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 
+import com.android.launcher3.IconCache;
 import com.android.launcher3.R;
 import com.android.launcher3.WidgetPreviewLoader;
-import com.android.launcher3.compat.AlphabeticIndexCompat;
-import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.LabelComparator;
-import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
@@ -39,7 +37,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * List view adapter for the widget tray.
@@ -56,7 +53,6 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
     private final WidgetPreviewLoader mWidgetPreviewLoader;
     private final LayoutInflater mLayoutInflater;
-    private final AlphabeticIndexCompat mIndexer;
 
     private final OnClickListener mIconClickListener;
     private final OnLongClickListener mIconLongClickListener;
@@ -64,56 +60,43 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
     private ArrayList<WidgetListRowEntry> mEntries = new ArrayList<>();
     private final WidgetsDiffReporter mDiffReporter;
 
+    private boolean mApplyBitmapDeferred;
+
     public WidgetsListAdapter(Context context, LayoutInflater layoutInflater,
-            WidgetPreviewLoader widgetPreviewLoader, AlphabeticIndexCompat indexCompat,
-            OnClickListener iconClickListener, OnLongClickListener iconLongClickListener,
-            WidgetsDiffReporter diffReporter) {
+            WidgetPreviewLoader widgetPreviewLoader, IconCache iconCache,
+            OnClickListener iconClickListener, OnLongClickListener iconLongClickListener) {
         mLayoutInflater = layoutInflater;
         mWidgetPreviewLoader = widgetPreviewLoader;
-        mIndexer = indexCompat;
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
         mIndent = context.getResources().getDimensionPixelSize(R.dimen.widget_section_indent);
-        mDiffReporter = diffReporter;
+        mDiffReporter = new WidgetsDiffReporter(iconCache, this);
     }
 
-    public void setNotifyListener() {
-        mDiffReporter.setListener(new WidgetsDiffReporter.NotifyListener() {
-            @Override
-            public void notifyDataSetChanged() {
-                WidgetsListAdapter.this.notifyDataSetChanged();
-            }
+    /**
+     * Defers applying bitmap on all the {@link WidgetCell} in the {@param rv}
+     *
+     * @see WidgetCell#setApplyBitmapDeferred(boolean)
+     */
+    public void setApplyBitmapDeferred(boolean isDeferred, RecyclerView rv) {
+        mApplyBitmapDeferred = isDeferred;
 
-            @Override
-            public void notifyItemChanged(int index) {
-                WidgetsListAdapter.this.notifyItemChanged(index);
+        for (int i = rv.getChildCount() - 1; i >= 0; i--) {
+            WidgetsRowViewHolder holder = (WidgetsRowViewHolder)
+                    rv.getChildViewHolder(rv.getChildAt(i));
+            for (int j = holder.cellContainer.getChildCount() - 1; j >= 0; j--) {
+                View v = holder.cellContainer.getChildAt(j);
+                if (v instanceof WidgetCell) {
+                    ((WidgetCell) v).setApplyBitmapDeferred(mApplyBitmapDeferred);
+                }
             }
-
-            @Override
-            public void notifyItemInserted(int index) {
-                WidgetsListAdapter.this.notifyItemInserted(index);
-            }
-
-            @Override
-            public void notifyItemRemoved(int index) {
-                WidgetsListAdapter.this.notifyItemRemoved(index);
-            }
-        });
+        }
     }
 
     /**
      * Update the widget list.
      */
-    public void setWidgets(MultiHashMap<PackageItemInfo, WidgetItem> widgets) {
-        ArrayList<WidgetListRowEntry> tempEntries = new ArrayList<>();
-
-        WidgetItemComparator widgetComparator = new WidgetItemComparator();
-        for (Map.Entry<PackageItemInfo, ArrayList<WidgetItem>> entry : widgets.entrySet()) {
-            WidgetListRowEntry row = new WidgetListRowEntry(entry.getKey(), entry.getValue());
-            row.titleSectionName = mIndexer.computeSectionName(row.pkgItem.title);
-            Collections.sort(row.widgets, widgetComparator);
-            tempEntries.add(row);
-        }
+    public void setWidgets(ArrayList<WidgetListRowEntry> tempEntries) {
         WidgetListRowEntryComparator rowComparator = new WidgetListRowEntryComparator();
         Collections.sort(tempEntries, rowComparator);
         mDiffReporter.process(mEntries, tempEntries, rowComparator);
@@ -126,26 +109,6 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
     public String getSectionName(int pos) {
         return mEntries.get(pos).titleSectionName;
-    }
-
-    /**
-     * Copies and returns the widgets associated with the package and user of the ComponentKey.
-     */
-    public List<WidgetItem> copyWidgetsForPackageUser(PackageUserKey packageUserKey) {
-        for (WidgetListRowEntry entry : mEntries) {
-            if (entry.pkgItem.packageName.equals(packageUserKey.mPackageName)) {
-                ArrayList<WidgetItem> widgets = new ArrayList<>(entry.widgets);
-                // Remove widgets not associated with the correct user.
-                Iterator<WidgetItem> iterator = widgets.iterator();
-                while (iterator.hasNext()) {
-                    if (!iterator.next().user.equals(packageUserKey.mUser)) {
-                        iterator.remove();
-                    }
-                }
-                return widgets.isEmpty() ? null : widgets;
-            }
-        }
-        return null;
     }
 
     @Override
@@ -194,6 +157,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         for (int i=0; i < infoList.size(); i++) {
             WidgetCell widget = (WidgetCell) row.getChildAt(2*i);
             widget.applyFromCellItem(infoList.get(i), mWidgetPreviewLoader);
+            widget.setApplyBitmapDeferred(mApplyBitmapDeferred);
             widget.ensurePreview();
             widget.setVisibility(View.VISIBLE);
 
@@ -253,5 +217,4 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
             return mComparator.compare(a.pkgItem.title.toString(), b.pkgItem.title.toString());
         }
     }
-
 }

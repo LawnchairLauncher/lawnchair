@@ -16,6 +16,8 @@
 
 package com.android.launcher3.accessibility;
 
+import static com.android.launcher3.LauncherState.NORMAL;
+
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
@@ -79,9 +81,7 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
                 }
             };
 
-            if (!mLauncher.showWorkspace(true, onComplete)) {
-                onComplete.run();
-            }
+            mLauncher.getStateManager().goToState(NORMAL, true, onComplete);
             return true;
         } else if (action == DISMISS_NOTIFICATION) {
             if (!(host instanceof NotificationMainView)) {

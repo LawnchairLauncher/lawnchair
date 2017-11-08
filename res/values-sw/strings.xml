@@ -30,7 +30,7 @@
     <string name="home_screen" msgid="806512411299847073">"Skrini ya kwanza"</string>
     <string name="custom_actions" msgid="3747508247759093328">"Vitendo maalum"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Gusa na ushikilie ili kuteua wijeti."</string>
-    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Gonga mara mbili na ushikilie ile uchague wijeti au utumie vitendo maalum."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Gusa mara mbili na ushikilie ile uchague wijeti au utumie vitendo maalum."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Upana wa %1$d na kimo cha %2$d"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Gusa na ushikilie ili uweke mwenyewe"</string>
@@ -47,6 +47,7 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Ondoa"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Ondoa"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Maelezo ya programu"</string>
+    <string name="install_drop_target_label" msgid="2539096853673231757">"Sakinisha"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"kuweka njia za mkato"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Huruhusu programu kuongeza njia za mkato bila mtumiaji kuingilia kati."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"soma mipangilio ya Mwanzo na njia za mkato"</string>
@@ -97,7 +98,7 @@
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Ondoa"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Tafuta"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Programu hii haijasakinishwa"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Programu ya ikoni hii haijasakinishwa. Unaweza kuiondoa, au utafute programu na uisakinishe wewe mwenyewe."</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Programu ya aikoni hii haijasakinishwa. Unaweza kuiondoa, au utafute programu na uisakinishe wewe mwenyewe."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> inapakuliwa, <xliff:g id="PROGRESS">%2$s</xliff:g> imekamilika"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> inasubiri kusakinisha"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Wijeti za <xliff:g id="NAME">%1$s</xliff:g>"</string>

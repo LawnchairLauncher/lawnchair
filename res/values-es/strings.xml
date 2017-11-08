@@ -47,6 +47,7 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Quitar"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Desinstalar"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Datos de aplicación"</string>
+    <string name="install_drop_target_label" msgid="2539096853673231757">"Instalar"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"instalar accesos directos"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Permite que una aplicación añada accesos directos sin intervención del usuario."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"leer información de accesos directos y de ajustes de la pantalla de inicio"</string>
@@ -83,7 +84,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Para mostrar burbujas de notificación, activa las notificaciones de <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Cambiar ajustes"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Añadir icono a la pantalla de inicio"</string>
-    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Para nuevas aplicaciones"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Para aplicaciones nuevas"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"Cambiar forma de los iconos"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Usar opción predeterminada del sistema"</string>
     <string name="icon_shape_square" msgid="633575066111622774">"Cuadrado"</string>

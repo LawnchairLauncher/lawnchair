@@ -19,6 +19,7 @@ package com.android.launcher3.util;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 
+import com.android.launcher3.AppInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
@@ -36,6 +37,10 @@ public class InstantAppResolver {
     }
 
     public boolean isInstantApp(ApplicationInfo info) {
+        return false;
+    }
+
+    public boolean isInstantApp(AppInfo info) {
         return false;
     }
 
