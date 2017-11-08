@@ -25,7 +25,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 
-import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -83,6 +82,8 @@ public class LauncherStateManager {
     private StateHandler[] mStateHandlers;
     private LauncherState mState = NORMAL;
 
+    private StateListener mStateListener;
+
     public LauncherStateManager(Launcher l) {
         mUiHandler = new Handler(Looper.getMainLooper());
         mLauncher = l;
@@ -97,6 +98,10 @@ public class LauncherStateManager {
             mStateHandlers = UiFactory.getStateHandler(mLauncher);
         }
         return mStateHandlers;
+    }
+
+    public void setStateListener(StateListener stateListener) {
+        mStateListener = stateListener;
     }
 
     /**
@@ -157,6 +162,9 @@ public class LauncherStateManager {
             for (StateHandler handler : getStateHandlers()) {
                 handler.setState(state);
             }
+            if (mStateListener != null) {
+                mStateListener.onStateSetImmediately(state);
+            }
             mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
 
             // Run any queued runnable
@@ -210,6 +218,17 @@ public class LauncherStateManager {
             public void onAnimationStart(Animator animation) {
                 // Change the internal state only when the transition actually starts
                 setState(state);
+                if (mStateListener != null) {
+                    mStateListener.onStateTransitionStart(state);
+                }
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                if (mStateListener != null) {
+                    mStateListener.onStateTransitionComplete(mState);
+                }
             }
 
             @Override
@@ -303,5 +322,16 @@ public class LauncherStateManager {
          */
         void setStateWithAnimation(LauncherState toState, AnimationLayerSet layerViews,
                 AnimatorSet anim, AnimationConfig config);
+    }
+
+    public interface StateListener {
+
+        /**
+         * Called when the state is set without an animation.
+         */
+        void onStateSetImmediately(LauncherState state);
+
+        void onStateTransitionStart(LauncherState toState);
+        void onStateTransitionComplete(LauncherState finalState);
     }
 }

@@ -703,13 +703,14 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     @Override
-    public void onChildViewAdded(View parent, View child) {
-        super.onChildViewAdded(parent, child);
+    public void onViewAdded(View child) {
+        super.onViewAdded(child);
         updateChildIndices();
     }
 
     @Override
-    public void onChildViewRemoved(View parent, View child) {
+    public void onViewRemoved(View child) {
+        super.onViewRemoved(child);
         updateChildIndices();
     }
 
