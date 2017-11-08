@@ -105,7 +105,7 @@ import java.util.Set;
 public class Workspace extends PagedView
         implements DropTarget, DragSource, View.OnTouchListener,
         DragController.DragListener, ViewGroup.OnHierarchyChangeListener,
-        Insettable {
+        Insettable, LauncherStateManager.StateHandler {
     private static final String TAG = "Launcher.Workspace";
 
     /** The value that {@link #mTransitionProgress} must be greater than for
@@ -1558,6 +1558,7 @@ public class Workspace extends PagedView
     /**
      * Sets the current workspace {@link LauncherState} and updates the UI without any animations
      */
+    @Override
     public void setState(LauncherState toState) {
         onStartStateTransition(toState);
         mStateTransitionAnimation.setState(toState);
@@ -1567,6 +1568,7 @@ public class Workspace extends PagedView
     /**
      * Sets the current workspace {@link LauncherState}, then animates the UI
      */
+    @Override
     public void setStateWithAnimation(LauncherState toState, AnimationLayerSet layerViews,
             AnimatorSet anim, AnimationConfig config) {
         StateTransitionListener listener = new StateTransitionListener(toState);

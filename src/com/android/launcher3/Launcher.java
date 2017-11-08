@@ -339,7 +339,7 @@ public class Launcher extends BaseActivity
 
         mDragController = new DragController(this);
         mAllAppsController = new AllAppsTransitionController(this);
-        mStateManager = new LauncherStateManager(this, mAllAppsController);
+        mStateManager = new LauncherStateManager(this);
 
         mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
 
@@ -1285,6 +1285,10 @@ public class Launcher extends BaseActivity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onDetachedFromWindow();
         }
+    }
+
+    public AllAppsTransitionController getAllAppsController() {
+        return mAllAppsController;
     }
 
     public DragLayer getDragLayer() {

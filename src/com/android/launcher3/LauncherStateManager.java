@@ -29,6 +29,7 @@ import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.uioverrides.UiFactory;
 
 /**
  * TODO: figure out what kind of tests we can write for this
@@ -78,19 +79,24 @@ public class LauncherStateManager {
     private final AnimationConfig mConfig = new AnimationConfig();
     private final Handler mUiHandler;
     private final Launcher mLauncher;
-    private final AllAppsTransitionController mAllAppsController;
 
+    private StateHandler[] mStateHandlers;
     private LauncherState mState = NORMAL;
 
-    public LauncherStateManager(
-            Launcher l, AllAppsTransitionController allAppsController) {
+    public LauncherStateManager(Launcher l) {
         mUiHandler = new Handler(Looper.getMainLooper());
         mLauncher = l;
-        mAllAppsController = allAppsController;
     }
 
     public LauncherState getState() {
         return mState;
+    }
+
+    private StateHandler[] getStateHandlers() {
+        if (mStateHandlers == null) {
+            mStateHandlers = UiFactory.getStateHandler(mLauncher);
+        }
+        return mStateHandlers;
     }
 
     /**
@@ -148,8 +154,9 @@ public class LauncherStateManager {
 
         if (!animated) {
             setState(state);
-            mAllAppsController.setFinalProgress(state.verticalProgress);
-            mLauncher.getWorkspace().setState(state);
+            for (StateHandler handler : getStateHandlers()) {
+                handler.setState(state);
+            }
             mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
 
             // Run any queued runnable
@@ -190,14 +197,12 @@ public class LauncherStateManager {
 
     protected AnimatorSet createAnimationToNewWorkspaceInternal(final LauncherState state,
             final Runnable onCompleteRunnable) {
-
         final AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
         final AnimationLayerSet layerViews = new AnimationLayerSet();
 
-        mAllAppsController.animateToFinalProgress(state.verticalProgress, animation, mConfig);
-        mLauncher.getWorkspace().setStateWithAnimation(state,
-                layerViews, animation, mConfig);
-
+        for (StateHandler handler : getStateHandlers()) {
+            handler.setStateWithAnimation(state, layerViews, animation, mConfig);
+        }
         animation.addListener(layerViews);
         animation.addListener(new AnimationSuccessListener() {
 
@@ -284,5 +289,19 @@ public class LauncherStateManager {
             mCurrentAnimation = animation;
             mCurrentAnimation.addListener(this);
         }
+    }
+
+    public interface StateHandler {
+
+        /**
+         * Updates the UI to {@param state} without any animations
+         */
+        void setState(LauncherState state);
+
+        /**
+         * Sets the UI to {@param state} by animating any changes.
+         */
+        void setStateWithAnimation(LauncherState toState, AnimationLayerSet layerViews,
+                AnimatorSet anim, AnimationConfig config);
     }
 }
