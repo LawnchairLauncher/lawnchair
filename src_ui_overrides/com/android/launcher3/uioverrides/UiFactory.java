@@ -18,13 +18,18 @@ package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherState.OVERVIEW;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
+import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.util.TouchController;
 
 public class UiFactory {
+
+    public static final boolean USE_HARDWARE_BITMAP = false;
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
         return new TouchController[] {
@@ -43,5 +48,12 @@ public class UiFactory {
 
     public static void onWorkspaceLongPress(Launcher launcher) {
         launcher.getStateManager().goToState(OVERVIEW);
+    }
+
+    public static Bitmap createFromRenderer(int width, int height, boolean forceSoftwareRenderer,
+            BitmapRenderer renderer) {
+        Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        renderer.render(new Canvas(result));
+        return result;
     }
 }

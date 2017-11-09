@@ -49,6 +49,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.Provider;
 
 /**
@@ -132,7 +133,12 @@ public class LauncherIcons {
         Bitmap bitmap = createIconBitmap(icon, context, scale);
         if (FeatureFlags.ADAPTIVE_ICON_SHADOW && Utilities.ATLEAST_OREO &&
                 icon instanceof AdaptiveIconDrawable) {
-            bitmap = ShadowGenerator.getInstance(context).recreateIcon(bitmap);
+            synchronized (sCanvas) {
+                sCanvas.setBitmap(bitmap);
+                ShadowGenerator.getInstance(context).recreateIcon(
+                        Bitmap.createBitmap(bitmap), sCanvas);
+                sCanvas.setBitmap(null);
+            }
         }
 
         if (user != null && !Process.myUserHandle().equals(user)) {
@@ -183,16 +189,25 @@ public class LauncherIcons {
         return createIconBitmap(icon, context, scale);
     }
 
-    public static Bitmap badgeWithDrawable(Bitmap srcTgt, Drawable badge, Context context) {
-        int badgeSize = context.getResources().getDimensionPixelSize(R.dimen.profile_badge_size);
+    /**
+     * Adds the {@param badge} on top of {@param target} using the badge dimensions.
+     */
+    public static void badgeWithDrawable(Bitmap target, Drawable badge, Context context) {
         synchronized (sCanvas) {
-            sCanvas.setBitmap(srcTgt);
-            int iconSize = srcTgt.getWidth();
-            badge.setBounds(iconSize - badgeSize, iconSize - badgeSize, iconSize, iconSize);
-            badge.draw(sCanvas);
+            sCanvas.setBitmap(target);
+            badgeWithDrawable(sCanvas, badge, context);
             sCanvas.setBitmap(null);
         }
-        return srcTgt;
+    }
+
+    /**
+     * Adds the {@param badge} on top of {@param target} using the badge dimensions.
+     */
+    private static void badgeWithDrawable(Canvas target, Drawable badge, Context context) {
+        int badgeSize = context.getResources().getDimensionPixelSize(R.dimen.profile_badge_size);
+        int iconSize = LauncherAppState.getIDP(context).iconBitmapSize;
+        badge.setBounds(iconSize - badgeSize, iconSize - badgeSize, iconSize, iconSize);
+        badge.draw(target);
     }
 
     /**
@@ -326,9 +341,16 @@ public class LauncherIcons {
         if (!badged) {
             return unbadgedBitmap;
         }
-        unbadgedBitmap = ShadowGenerator.getInstance(context).recreateIcon(unbadgedBitmap);
-        return badgeWithDrawable(unbadgedBitmap,
-                new FastBitmapDrawable(getShortcutInfoBadge(shortcutInfo, cache)), context);
+
+        int size = app.getInvariantDeviceProfile().iconBitmapSize;
+
+        final Bitmap unbadgedfinal = unbadgedBitmap;
+        final Bitmap badge = getShortcutInfoBadge(shortcutInfo, cache);
+
+        return UiFactory.createFromRenderer(size, size, false, (c) -> {
+            ShadowGenerator.getInstance(context).recreateIcon(unbadgedfinal, c);
+            badgeWithDrawable(c, new FastBitmapDrawable(badge), context);
+        });
     }
 
     public static Bitmap getShortcutInfoBadge(ShortcutInfoCompat shortcutInfo, IconCache cache) {

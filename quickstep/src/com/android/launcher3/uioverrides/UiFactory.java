@@ -17,6 +17,8 @@
 package com.android.launcher3.uioverrides;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.view.View.AccessibilityDelegate;
 import android.widget.PopupMenu;
 import android.widget.Toast;
@@ -24,10 +26,15 @@ import android.widget.Toast;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.widget.WidgetsFullSheet;
+import com.android.systemui.shared.recents.view.RecentsTransition;
 
 public class UiFactory {
+
+    public static final boolean USE_HARDWARE_BITMAP = FeatureFlags.IS_DOGFOOD_BUILD;
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
 
@@ -76,5 +83,16 @@ public class UiFactory {
             });
         }
         menu.show();
+    }
+
+    public static Bitmap createFromRenderer(int width, int height, boolean forceSoftwareRenderer,
+            BitmapRenderer renderer) {
+        if (USE_HARDWARE_BITMAP && !forceSoftwareRenderer) {
+            return RecentsTransition.createHardwareBitmap(width, height, renderer::render);
+        } else {
+            Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            renderer.render(new Canvas(result));
+            return result;
+        }
     }
 }
