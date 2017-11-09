@@ -27,7 +27,7 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
-import com.android.launcher3.popup.BaseActionPopup;
+import com.android.launcher3.popup.PopupContainerWithArrow;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,7 +46,7 @@ public class CustomActionsPopup implements OnMenuItemClickListener {
     public CustomActionsPopup(Launcher launcher, View icon) {
         mLauncher = launcher;
         mIcon = icon;
-        BaseActionPopup container = BaseActionPopup.getOpen(launcher);
+        PopupContainerWithArrow container = PopupContainerWithArrow.getOpen(launcher);
         if (container != null) {
             mDelegate = container.getAccessibilityDelegate();
         } else {

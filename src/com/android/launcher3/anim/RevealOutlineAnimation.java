@@ -28,10 +28,6 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
     /** Sets the progress, from 0 to 1, of the reveal animation. */
     abstract void setProgress(float progress);
 
-    public ValueAnimator createRevealAnimator(final View revealView) {
-        return createRevealAnimator(revealView, false);
-    }
-
     public ValueAnimator createRevealAnimator(final View revealView, boolean isReversed) {
         ValueAnimator va =
                 isReversed ? ValueAnimator.ofFloat(1f, 0f) : ValueAnimator.ofFloat(0f, 1f);
@@ -39,8 +35,13 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
 
         va.addListener(new AnimatorListenerAdapter() {
             private boolean mWasCanceled = false;
+            private boolean mIsClippedToOutline;
+            private ViewOutlineProvider mOldOutlineProvider;
 
             public void onAnimationStart(Animator animation) {
+                mIsClippedToOutline = revealView.getClipToOutline();
+                mOldOutlineProvider = revealView.getOutlineProvider();
+
                 revealView.setOutlineProvider(RevealOutlineAnimation.this);
                 revealView.setClipToOutline(true);
                 if (shouldRemoveElevationDuringAnimation()) {
@@ -55,8 +56,8 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
 
             public void onAnimationEnd(Animator animation) {
                 if (!mWasCanceled) {
-                    revealView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
-                    revealView.setClipToOutline(false);
+                    revealView.setOutlineProvider(mOldOutlineProvider);
+                    revealView.setClipToOutline(mIsClippedToOutline);
                     if (shouldRemoveElevationDuringAnimation()) {
                         revealView.setTranslationZ(0);
                     }
