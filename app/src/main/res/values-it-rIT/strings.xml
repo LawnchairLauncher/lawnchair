@@ -30,7 +30,7 @@
   <!-- SafeMode shortcut error string -->
   <string name="safemode_shortcut_error">Le app scaricate sono disattivate in modalità provvisoria</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">I Widget sono disabilitati in modalità provvisoria</string>
+  <string name="safemode_widget_error">I widget sono disabilitati in modalità provvisoria</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">Scorciatoia non disponibile</string>
   <!-- Widgets -->
@@ -44,7 +44,7 @@
   <string name="widget_accessible_dims_format">%1$d di larghezza per %2$d di altezza</string>
   <!-- All Apps -->
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
-  <string name="all_apps_search_bar_hint">Cerca App</string>
+  <string name="all_apps_search_bar_hint">Cerca app</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
   <string name="all_apps_loading_message">Caricamento app&#8230;</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
@@ -53,7 +53,7 @@
   <string name="all_apps_search_market_message">Cerca altre app</string>
   <!-- Drag and drop -->
   <!-- Error message when user has filled a page -->
-  <string name="out_of_space">Spazio nella schermata Home esaurito.</string>
+  <string name="out_of_space">Spazio esaurito nella schermata Home.</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">Spazio esaurito nella barra dei Preferiti.</string>
   <!-- All applications label -->
@@ -73,9 +73,10 @@
   <!-- Permission description -->
   <string name="permdesc_install_shortcut">Consente ad un\'app di aggiungere scorciatoie automaticamente.</string>
   <!-- Permission short label -->
-  <string name="permlab_read_settings">lettura di impostazioni e scorciatoie della Home</string>
+  <string name="permlab_read_settings">lettura delle impostazioni e scorciatoie della home</string>
   <!-- Permission description -->
-  <string name="permdesc_read_settings">Consenti all\'app di leggere le impostazioni e le scorciatoie della Home.</string>
+  <string name="permdesc_read_settings">Consenti all\'app di leggere le impostazioni e le
+        scorciatoie della home.</string>
   <!-- Permission short label -->
   <string name="permlab_write_settings">scrivi le impostazioni e scorciatoie della Home</string>
   <!-- Permission description -->
@@ -97,9 +98,9 @@
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">Pagina %1$d di %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
-  <string name="workspace_scroll_format">Schermata Home %1$d di %2$d</string>
+  <string name="workspace_scroll_format">Schermata home %1$d di %2$d</string>
   <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
-  <string name="workspace_new_page">Nuova pagina della Schermata Home</string>
+  <string name="workspace_new_page">Nuova pagina della schermata home</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
   <string name="folder_opened">Cartella aperta, <xliff:g id="WIDTH">%1$d</xliff:g> per <xliff:g id="HEIGHT">%2$d</xliff:g></string>
@@ -145,11 +146,11 @@
   <string name="app_waiting_download_title"><xliff:g id="NAME">%1$s</xliff:g> in attesa di installazione</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_add_to_workspace">Aggiungi alla schermata Home</string>
+  <string name="action_add_to_workspace">Aggiungi alla schermata home</string>
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
   <string name="action_move_here">Sposta elemento qui</string>
   <!-- Accessibility confirmation for item added to workspace. -->
-  <string name="item_added_to_workspace">Elemento aggiunto alla schermata Home</string>
+  <string name="item_added_to_workspace">Elemento aggiunto alla schermata home</string>
   <!-- Accessibility confirmation for item removed. -->
   <string name="item_removed">Elemento rimosso</string>
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
@@ -173,7 +174,7 @@
   <!-- Accessibility confirmation for folder created. -->
   <string name="folder_created">Cartella creata</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_move_to_workspace">Sposta nella schermata Home</string>
+  <string name="action_move_to_workspace">Sposta nella schermata home</string>
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
   <string name="action_move_screen_left">Sposta schermata a sinistra</string>
   <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
@@ -235,7 +236,7 @@
   <!-- Option for setting the wallpaper only on the lock screen. -->
   <string name="which_wallpaper_option_lock_screen">Schermata di blocco</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
-  <string name="which_wallpaper_option_home_screen_and_lock_screen">Schermata home e Schermata di blocco</string>
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">Schermata home e schermata di blocco</string>
   <string name="title_show_google_app">Mostra %1$s</string>
   <string name="title_show_google_app_default">Mostra l\'app Google</string>
   <string name="label_search">Ricerca</string>
@@ -246,6 +247,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair è un Launcher creato da Till Kottmann (aka deletescape). E\' basato su Launcher3 da AOSP.</string>
   <string name="about_title">Info</string>
+  <string name="about_pref_summary">Conosci il Team di Lawnchair</string>
   <string name="changelog_title">Cambiamenti nella versione #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Pacchetto icone</string>
@@ -263,7 +265,7 @@
   <string name="pref_iconLabelsInTwoLines">Etichette delle icone su due righe</string>
   <string name="white_google_icon_pref_title">Utilizza l\'icona bianca per Google</string>
   <string name="hide_icon_labels_pref_title">Nascondi nome icone sull\' home screen</string>
-  <string name="hide_all_apps_icon_labels_pref_title">Nascondi nome icone nel drawer</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Nascondi nome icone nel menù delle applicazioni</string>
   <string name="workspace_label_color_hue_pref_title">Colore delle etichette delle icone nella schermata home</string>
   <string name="workspace_label_color_variation_pref_title">Variazione di colore per le etichette nella schermata home</string>
   <string name="all_apps_opacity_pref_title">Opacità menù delle applicazioni</string>
@@ -278,17 +280,20 @@
   <string name="full_width_widgets_pref_summary">Consente ai widget di estendersi lunga tutta la larghezza dello schermo</string>
   <string name="notification_access_pref_title">Badge di notifica e anteprima</string>
   <string name="notification_access_pref_summary">Permetti l\'accesso alle notifiche a Lawnchair per abilitare queste funzioni</string>
-  <string name="general_pref_title">Generale</string>
+  <string name="general_pref_title">Schermata home</string>
+  <string name="dock_pref_title">Dock</string>
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Gesti e funzionalità</string>
   <string name="debug_pref_title">Debug</string>
   <string name="import_export_pref_title">Importa/Esporta</string>
-  <string name="general_pref_summary">Schermata Home, Dock, e App Drawer</string>
+  <string name="general_pref_summary">Personalizza la tua homescreen</string>
+  <string name="dock_pref_summary">Personalizza la tua dock</string>
+  <string name="app_drawer_pref_summary">Personalizza il menù delle applicazioni</string>
   <string name="pixel_ui_pref_summary">Imposta le caratteristiche del Pixel Laucher</string>
   <string name="backup_pref_title">Backup</string>
-  <string name="behavior_pref_summary">Cambia le Gesture di Lawnchair</string>
+  <string name="behavior_pref_summary">Cambia le gesture di Lawnchair</string>
   <string name="backup_pref_summary">Backup dati e impostazioni di Lawnchair</string>
-  <string name="debug_pref_summary">Resetta i cambiamenti Delle icone</string>
+  <string name="debug_pref_summary">Resetta i cambiamenti delle icone</string>
   <string name="show_pixel_bar_pref_title">Mostra la barra Pixel in alto</string>
   <string name="use_wide_searchbar_pref_title">Usa la barra di ricerca estesa</string>
   <string name="show_mic_pref_title">Mostra il pulsante di Google Assistant</string>
@@ -300,7 +305,7 @@
   <string name="restart_lawnchair_pref_summary">Può essere utile se alcune impostazioni non sono state applicate correttamente</string>
   <string name="rebuild_icondb_pref_title">Ricostruisci il database delle icone</string>
   <string name="pinch_to_overview_pref_title">Pinch per la panoramica</string>
-  <string name="pinch_to_overview_pref_summary">Premere nell\' home screen per aprire la panoramica</string>
+  <string name="pinch_to_overview_pref_summary">Premere nella home screen per aprire la panoramica</string>
   <string name="light_statusbar_pref_title">Statusbar chiara</string>
   <string name="light_statusbar_pref_force">La barra di stato mostrerà icone scure</string>
   <string name="light_statusbar_pref_off">La status bar mostrerà sempre icone chiare.</string>
@@ -331,13 +336,13 @@
   <string name="theme_light">Chiaro</string>
   <string name="theme_dark">Scuro</string>
   <string name="theme_black">Nero</string>
-  <string name="hide_hotseat_pref_title">Mostra Dock</string>
+  <string name="hide_hotseat_pref_title">Nascondi dock</string>
   <string name="all_icons">Tutte le icone</string>
   <string name="pull_down_action_pref_title">Azione di tirare giù</string>
   <string name="pull_down_do_nothing">Non fare nulla</string>
   <string name="pull_down_notis">Mostra notifiche</string>
   <string name="pull_down_search">Apri ricerca</string>
-  <string name="pull_down_apps_search">Ricerca apps</string>
+  <string name="pull_down_apps_search">Ricerca app</string>
   <string name="enable_screen_rotation">Attiva rotazione schermo</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Importa</string>
@@ -352,15 +357,15 @@
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <string name="pref_cat_weather">Meteo</string>
   <string name="pref_weather_title">Attiva meteo</string>
-  <string name="pref_weather_units">Unità Meteo</string>
+  <string name="pref_weather_units">Unità meteo</string>
   <string name="pref_weather_city_summary">Per ottenere migliori risultati includi il codice paese</string>
   <string name="pref_weather_city_title">Città</string>
   <string name="none">Nessuno</string>
-  <string name="pref_applyTheme">Tema applicato attivo</string>
-  <string name="pref_applyBlur">Blur attivo</string>
+  <string name="pref_applyTheme">Applica tema su</string>
+  <string name="pref_applyBlur">Applica sfocatura su</string>
   <string name="search_bar">Barra di ricerca</string>
   <string name="folder">Cartella</string>
-  <string name="dock_allapps"><![CDATA[Dock & drawer]]></string>
+  <string name="dock_allapps"><![CDATA[Dock & menù delle applicazioni]]></string>
   <string name="app_shortcuts">Scorciatoie app</string>
   <string name="blur_effect">Effetto sfocatura</string>
   <string name="enable_editing_pref_title">Attivare modifica homescreen</string>
@@ -379,29 +384,30 @@
   <string name="animated_clock_icon_alternative_clock_apps_summary">Attiva quest\'opzione se non usi l\'orologio Google come app predefinita per l\'orologio</string>
   <string name="about_summary_title">Sommario</string>
   <string name="about_version">Versione</string>
-  <string name="about_icon_designer">Design delle icone</string>
+  <string name="about_icon_designer">Designer delle icone</string>
   <string name="about_contributors_title">Collaboratori</string>
   <string name="location_permission_warn">È richiesta la posizione per passare ad un altro provider!</string>
-  <string name="num_cols_drawer_pref_title">Numero di colonne nel menu</string>
-  <string name="pref_cat_drawer">Menu</string>
-  <string name="shortcut_backport_warning">Potrebbe essere lento, utilizzarlo a proprio rischio</string>
+  <string name="num_cols_drawer_pref_title">Numero di colonne nel menù delle applicazioni</string>
+  <string name="pref_cat_drawer">Menù delle applicazioni</string>
+  <string name="shortcut_backport_warning">Potrebbe essere lento, utilizzalo a tuo rischio</string>
   <string name="pref_backport_shortcuts">Backport shortcuts</string>
   <string name="weather_api_key_not_set">Poi key non settata</string>
   <string name="pref_weather_api_key_title">API key</string>
   <string name="about_changelog">Changelog</string>
   <string name="pref_all_apps_custom_label_color">Utilizzare un colore personalizzato</string>
   <string name="pref_all_apps_label_color_variation">Variazione di colore per le etichette delle icone del menu delle applicazioni</string>
-  <string name="pref_all_apps_label_color">Colore delle icone nel drawer</string>
-  <string name="pref_num_rows_drawer">Numero di righe nel menu</string>
+  <string name="pref_all_apps_label_color">Colore delle icone nel menù delle applicazioni</string>
+  <string name="pref_num_rows_drawer">Numero di righe nel menù delle applicazioni</string>
   <string name="center_wallpaper_pref_title">Centra lo sfondo quando c\'è solo una pagina</string>
   <string name="vertical_drawer_layout_pref_title">Visualizza come lista verticale</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
   <string name="about_translators">Traduttori</string>
-  <string name="lock_desktop">Blocca il desktop</string>
+  <string name="lock_desktop">Blocca la schermata home</string>
   <string name="lawnfeed_not_found">Lawnfeed non installato</string>
   <string name="google_app_not_found">App Google non installata</string>
   <string name="popup_card_theme_title">Stile popup flat</string>
   <string name="set_default_launcher">Imposta come laumcher predefinito</string>
+  <string name="enable_spring_pref_title">Abilita effetto a molla</string>
 </resources>
