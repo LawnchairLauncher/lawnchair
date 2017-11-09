@@ -48,7 +48,7 @@
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
   <string name="all_apps_loading_message">Carregando Apps &amp; # 8230;</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_no_search_results">Nenhum aplicativo encontrado correspondente \" <xliff:g example =" Android " id =" query "> % 1 $ s </xliff:g> \"</string>
+  <string name="all_apps_no_search_results">Nenhum aplicativo encontrado correspondente \" <xliff:g example=" Android " id=" query "> % 1 $ s </xliff:g> \"</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">Procure mais aplicativos</string>
   <!-- Drag and drop -->
