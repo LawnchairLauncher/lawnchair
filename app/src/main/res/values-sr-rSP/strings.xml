@@ -22,42 +22,42 @@
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
-  <string name="work_folder_name">Рад</string>
+  <string name="work_folder_name">Посао</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
   <string name="activity_not_found">Апликација није инсталирана.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">Апликација није доступна</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Преузета апликација је онемогућена у Безбедном режиму</string>
+  <string name="safemode_shortcut_error">Преузете апликације су онемогућене у безбедном режиму</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">Виџети су онемогућени у Безбедном режиму</string>
+  <string name="safemode_widget_error">Виџети су онемогућени у безбедном режиму</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">Пречица није доступна</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">Додирните &amp; и задржите да бисте изабрали виџет.</string>
+  <string name="long_press_widget_to_add">Додирните и задржите виџет да бисте га изабрали.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-  <string name="long_accessible_way_to_add">Двапут додирните &amp; и задржите да бисте изабрали виџет или користите прилагођене радње.</string>
+  <string name="long_accessible_way_to_add">Додирните двапут и задржите за избор виџета или коришћење прилагођених радњи.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
-  <string name="widget_accessible_dims_format">ширина од %1$d и висина од %2$d</string>
+  <string name="widget_accessible_dims_format">Ширина %1$d, висина %2$d</string>
   <!-- All Apps -->
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
-  <string name="all_apps_search_bar_hint">Претражите апликације</string>
+  <string name="all_apps_search_bar_hint">Претрага апликација</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_loading_message">Учитавање &#8230;</string>
+  <string name="all_apps_loading_message">Учитавам апликације&#8230;</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_no_search_results">Није пронађена ниједна апликација за „<xliff:g id="Query">%1$s</xliff:g>“</string>
+  <string name="all_apps_no_search_results">Ниједна апликација не одговара упиту „<xliff:g example="Android" id="query">%1$s</xliff:g>“</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">Претражи још апликација</string>
   <!-- Drag and drop -->
   <!-- Error message when user has filled a page -->
-  <string name="out_of_space">Нема више простора на овом почетном екрану.</string>
+  <string name="out_of_space">Овај екран је попуњен.</string>
   <!-- Error message when user has filled the hotseat -->
-  <string name="hotseat_out_of_space">Нема више простора на траци Омиљено.</string>
+  <string name="hotseat_out_of_space">У одељку „Омиљено“ више нема места.</string>
   <!-- All applications label -->
-  <string name="all_apps_button_label">Листа апликација</string>
+  <string name="all_apps_button_label">Списак апликација</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
   <string name="all_apps_home_button_label">Почетна</string>
@@ -71,26 +71,26 @@
   <!-- Permission short label -->
   <string name="permlab_install_shortcut">инсталирај пречице</string>
   <!-- Permission description -->
-  <string name="permdesc_install_shortcut">Дозвољава апликацији да додаје пречице без интервенције корисника.</string>
+  <string name="permdesc_install_shortcut">Дозвољава апликацији да самостално додаје пречице.</string>
   <!-- Permission short label -->
   <string name="permlab_read_settings">читање подешавања и пречица на почетном екрану</string>
   <!-- Permission description -->
   <string name="permdesc_read_settings">Дозвољава апликацији да чита подешавања и пречице на почетном екрану.</string>
   <!-- Permission short label -->
-  <string name="permlab_write_settings">уписивање подешавања и пречица на почетном екрану</string>
+  <string name="permlab_write_settings">писање подешавања и пречица на почетном екрану</string>
   <!-- Permission description -->
   <string name="permdesc_write_settings">Дозвољава апликацији да мења подешавања и пречице на почетном екрану.</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
-  <string name="msg_no_phone_permission"><xliff:g id="App_NAME">%1$s</xliff:g> нема дозволу за упућивање телефонских позива</string>
+  <string name="msg_no_phone_permission"><xliff:g example="Launcher3" id="app_name">%1$s</xliff:g> нема дозволу за упућивање телефонских позива</string>
   <!-- Widgets: -->
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">Проблем при учитавању виџета</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
   <string name="gadget_setup_text">Подешавање</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
-  <string name="uninstall_system_app_text">Ово је системска апликација и не може да се деинсталира.</string>
+  <string name="uninstall_system_app_text">Ово је системска апликација и не може бити деинсталирана.</string>
   <!-- Default folder title -->
-  <string name="folder_hint_text">Неименовани директоријум</string>
+  <string name="folder_hint_text">Неименована фасцикла</string>
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
   <string name="disabled_app_label">Апликација <xliff:g id="App_NAME">%1$s</xliff:g> је онемогућена</string>
@@ -99,20 +99,20 @@
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">%1$d. почетни екран од %2$d</string>
   <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
-  <string name="workspace_new_page">Нова страница почетног екрана</string>
+  <string name="workspace_new_page">Нови екран</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
   <string name="folder_opened">Директоријум је отворен, <xliff:g id="Width">%1$d</xliff:g> пута <xliff:g id="Height">%2$d</xliff:g></string>
   <!-- Instruction that clicking outside will close folder -->
-  <string name="folder_tap_to_close">Додирните да бисте затворили директоријум</string>
+  <string name="folder_tap_to_close">Додирните да бисте затворили фасциклу</string>
   <!-- Instruction that clicking outside will commit folder rename -->
-  <string name="folder_tap_to_rename">Додирните да бисте сачували промену имена</string>
+  <string name="folder_tap_to_rename">Додирните да бисте потврдили преименовање</string>
   <!-- Indication that folder closed -->
-  <string name="folder_closed">Директоријум је затворен</string>
+  <string name="folder_closed">Фасцикла је затворена</string>
   <!-- Folder renamed format -->
-  <string name="folder_renamed">Директоријум је преименован у <xliff:g id="Name">%1$s</xliff:g></string>
+  <string name="folder_renamed">Фасцикла је преименована у „<xliff:g example="Games" id="name">%1$s</xliff:g>“</string>
   <!-- Folder name format -->
-  <string name="folder_name_format">Директоријум: <xliff:g id="Name">%1$s</xliff:g></string>
+  <string name="folder_name_format">Фасцикла: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
   <!-- Strings for the customization mode -->
   <!-- Text for widget add button -->
   <string name="widget_button_text">Виџети</string>
@@ -121,7 +121,7 @@
   <!-- Text for settings button -->
   <string name="settings_button_text">Подешавања</string>
   <!-- Message shown when a feature is disabled by the administrator -->
-  <string name="msg_disabled_by_admin">Администратор је онемогућио</string>
+  <string name="msg_disabled_by_admin">Функцију је онемогућио администратор</string>
   <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
   <string name="accessibility_action_overview">Преглед</string>
   <!-- Strings for settings -->
@@ -133,7 +133,7 @@
   <!-- Button for abandoned promises dialog, to removes this abandoned promise icon. -->
   <string name="abandoned_clean_this">Уклони</string>
   <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->
-  <string name="abandoned_search">Тражи</string>
+  <string name="abandoned_search">Претражи</string>
   <!-- Title for abandoned promise dialog. -->
   <string name="abandoned_promises_title">Ова апликација није инсталирана</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
@@ -243,9 +243,9 @@
   <string name="label_voice_search">Гласовна претрага</string>
   <string name="shortcuts_menu_with_notifications_description">%1$d пречице и обавештења о %2$d за %3$s</string>
   <string name="notifications_header">Обавештења</string>
-  <string name="widgets_bottom_sheet_title">%1$s виџети</string>
+  <string name="widgets_bottom_sheet_title">%1$s виџета</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair је апликација за покретање коју је креирао Till Kottmann (aka deletescape). Заснован је на Launcher3 из AOSP-а.</string>
+  <string name="about_text">Lawnchair је покретач ког је креирао Till Kottmann (deletescape). Заснован је на апликацији Launcher3 из AOSP-а.</string>
   <string name="about_title">О програму</string>
   <string name="about_pref_summary">Упознајте Lawnchair тим</string>
   <string name="changelog_title">Промене за изградњу #%d</string>
@@ -397,18 +397,18 @@
   <string name="about_changelog">Историја измена</string>
   <string name="pref_all_apps_custom_label_color">Боја по избору</string>
   <string name="pref_all_apps_label_color_variation">Варијација боје назива икона на drawer-у</string>
-  <string name="pref_all_apps_label_color">Боја ознаке икона у drawer-у</string>
-  <string name="pref_num_rows_drawer">Број колона у drawer-у</string>
-  <string name="center_wallpaper_pref_title">Центар позадине када постоји само једна страница</string>
-  <string name="vertical_drawer_layout_pref_title">Приказати као вертикалну листу</string>
+  <string name="pref_all_apps_label_color">Боја ознака икона</string>
+  <string name="pref_num_rows_drawer">Број редова</string>
+  <string name="center_wallpaper_pref_title">Центрирај позадину ако има само један екран</string>
+  <string name="vertical_drawer_layout_pref_title">Вертикална листа</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
-  <string name="full_wday_month_day_no_year">ГГГГ, ММММ д</string>
+  <string name="full_wday_month_day_no_year">EEEE, d. MMMM</string>
   <string name="about_translators">Преводиоци</string>
   <string name="lock_desktop">Закључај радну површину</string>
   <string name="lawnfeed_not_found">Lawnfeed није инсталиран</string>
-  <string name="google_app_not_found">Google апликација није инсталирана</string>
-  <string name="popup_card_theme_title">Искачући мени раван стил</string>
+  <string name="google_app_not_found">Апликација Google није инсталирана</string>
+  <string name="popup_card_theme_title">Раван стил искачућег прозора</string>
   <string name="set_default_launcher">Постави подразумевани покретач</string>
-  <string name="enable_spring_pref_title">Омогући ефекат опруге</string>
+  <string name="enable_spring_pref_title">Ефекат одскока</string>
 </resources>
