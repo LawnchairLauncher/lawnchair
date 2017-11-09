@@ -28,7 +28,7 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">Aplikasi tidak tersedia</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Aplikasi yang diunduh dinonaktifkan dalam mode Aman</string>
+  <string name="safemode_shortcut_error">Aplikasi yang diunduh dinonaktifkan dalam mode aman</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">Widget dinonaktifkan dalam Mode Aman</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
@@ -37,7 +37,7 @@
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
   <string name="long_press_widget_to_add">Sentuh lama untuk memilih widget.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-  <string name="long_accessible_way_to_add">Ketuk dua kali &amp; tahan untuk mengambil widget atau menggunakan tindakan khusus.</string>
+  <string name="long_accessible_way_to_add">Ketuk dua kali &amp; tahan untuk memilih widget atau menggunakan tindakan khusus.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
@@ -46,14 +46,14 @@
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_bar_hint">Telusuri Aplikasi</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_loading_message">Memuat Aplikasi…</string>
+  <string name="all_apps_loading_message">Memuat Aplikasi&#8230;</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
   <string name="all_apps_no_search_results">Tidak ditemukan Aplikasi yang cocok dengan \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">Telusuri aplikasi lainnya</string>
   <!-- Drag and drop -->
   <!-- Error message when user has filled a page -->
-  <string name="out_of_space">Tidak ada ruang lagi pada layar ini.</string>
+  <string name="out_of_space">Tidak tersedia lagi ruang pada layar ini.</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">Tidak ada ruang tersisa di baki favorit.</string>
   <!-- All applications label -->
@@ -64,31 +64,34 @@
   <!-- Label for remove drop target. [CHAR_LIMIT=20] -->
   <string name="remove_drop_target_label">Hapus</string>
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
-  <string name="uninstall_drop_target_label">Buang</string>
+  <string name="uninstall_drop_target_label">Hapus</string>
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
   <string name="app_info_drop_target_label">Info aplikasi</string>
   <!-- Permissions: -->
   <!-- Permission short label -->
-  <string name="permlab_install_shortcut">memasang pintasan</string>
+  <string name="permlab_install_shortcut">membuat pintasan</string>
   <!-- Permission description -->
-  <string name="permdesc_install_shortcut">Izinkan aplikasi menambahkan pintasan tanpa campur tangan pengguna.</string>
+  <string name="permdesc_install_shortcut">Izinkan aplikasi menambah
+        pintasan tanpa campur tangan pengguna.</string>
   <!-- Permission short label -->
-  <string name="permlab_read_settings">membaca setelan pintasan dan layar utama</string>
+  <string name="permlab_read_settings">melihat setelan dan pintasan beranda</string>
   <!-- Permission description -->
-  <string name="permdesc_read_settings">Izinkan aplikasi membaca setelan dan pintasan di layar utama.</string>
+  <string name="permdesc_read_settings">Izinkan aplikasi melihat setelan dan
+        pintasan di beranda.</string>
   <!-- Permission short label -->
-  <string name="permlab_write_settings">menulis setelan pintasan dan layar utama</string>
+  <string name="permlab_write_settings">mengubah setelan dan pintasaan beranda</string>
   <!-- Permission description -->
-  <string name="permdesc_write_settings">Izinkan aplikasi mengubah setelan dan pintasan di layar utama.</string>
+  <string name="permdesc_write_settings">Izinkan aplikasi mengubah setelan dan
+        pintasan di beranda.</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission"><xliff:g example="Launcher3" id="app_name">%1$s</xliff:g> tidak diizinkan untuk melakukan panggilan telepon</string>
   <!-- Widgets: -->
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">Masalah memuat widget</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
-  <string name="gadget_setup_text">Pengaturan</string>
+  <string name="gadget_setup_text">Siapkan</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
-  <string name="uninstall_system_app_text">Aplikasi ini adalah aplikasi sistem dan tidak dapat dicopot pemasangannya.</string>
+  <string name="uninstall_system_app_text">Aplikasi ini adalah aplikasi sistem dan tidak dapat dicopot.</string>
   <!-- Default folder title -->
   <string name="folder_hint_text">Folder tanpa nama</string>
   <!-- Accessibility -->
@@ -97,9 +100,9 @@
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">Halaman %1$d dari %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
-  <string name="workspace_scroll_format">Layar utama %1$d dari %2$d</string>
+  <string name="workspace_scroll_format">Layar beranda %1$d dari %2$d</string>
   <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
-  <string name="workspace_new_page">Halaman baru layar utama</string>
+  <string name="workspace_new_page">Halaman baru beranda</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
   <string name="folder_opened">Folder dibuka, <xliff:g example="5" id="width">%1$d</xliff:g> by <xliff:g example="3" id="height">%2$d</xliff:g></string>
@@ -119,9 +122,9 @@
   <!-- Text for wallpaper change button -->
   <string name="wallpaper_button_text">Wallpaper</string>
   <!-- Text for settings button -->
-  <string name="settings_button_text">Pengaturan</string>
+  <string name="settings_button_text">Setelan</string>
   <!-- Message shown when a feature is disabled by the administrator -->
-  <string name="msg_disabled_by_admin">Dinonaktifkan oleh admin</string>
+  <string name="msg_disabled_by_admin">Dinonaktifkan oleh pengurus</string>
   <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
   <string name="accessibility_action_overview">Tinjauan</string>
   <!-- Strings for settings -->
@@ -133,23 +136,25 @@
   <!-- Button for abandoned promises dialog, to removes this abandoned promise icon. -->
   <string name="abandoned_clean_this">Hapus</string>
   <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->
-  <string name="abandoned_search">Cari</string>
+  <string name="abandoned_search">Pencarian</string>
   <!-- Title for abandoned promise dialog. -->
-  <string name="abandoned_promises_title">Aplikasi ini belum terpasang</string>
+  <string name="abandoned_promises_title">Aplikasi ini tidak terpasang</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
-  <string name="abandoned_promise_explanation">Aplikasi untuk ikon ini belum dipasang. Anda dapat membuangnya, atau menelusuri aplikasi dan memasangnya secara manual.    </string>
+  <string name="abandoned_promise_explanation">Aplikasi dengan ikon ini tidak terpasang.
+        Anda dapat menghapusnya, atau mencari dan memasangnya secara manual.
+    </string>
   <!-- Title for an app which is being downloaded. -->
   <string name="app_downloading_title">Mengunduh <xliff:g example="Messenger" id="name">%1$s</xliff:g>, <xliff:g example="30%" id="progress">%2$s</xliff:g> selesai</string>
   <!-- Title for an app whose download has been started. -->
   <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> menunggu dipasang</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_add_to_workspace">Tambahkan ke layar utama</string>
+  <string name="action_add_to_workspace">Tambahkan ke beranda</string>
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
   <string name="action_move_here">Pindahkan item ke sini</string>
   <!-- Accessibility confirmation for item added to workspace. -->
-  <string name="item_added_to_workspace">Item ditambahkan ke layar utama</string>
+  <string name="item_added_to_workspace">Item ditambahkan ke beranda</string>
   <!-- Accessibility confirmation for item removed. -->
   <string name="item_removed">Item dihapus</string>
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
@@ -169,11 +174,11 @@
   <!-- Accessibility confirmation for item added to folder. -->
   <string name="added_to_folder">Item ditambahkan ke folder</string>
   <!-- Accessibility description to create folder with another item. -->
-  <string name="create_folder_with">Buat folder dengan: <xliff:g example="Game" id="name">%1$s</xliff:g></string>
+  <string name="create_folder_with">Membuat folder dengan: <xliff:g example="Game" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
   <string name="folder_created">Folder dibuat</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_move_to_workspace">Pindahkan ke layar Utama</string>
+  <string name="action_move_to_workspace">Pindahkan ke layar utama</string>
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
   <string name="action_move_screen_left">Pindahkan layar ke kiri</string>
   <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
@@ -232,73 +237,73 @@
   <!-- Option for setting the wallpaper only on the home screen. -->
   <string name="which_wallpaper_option_home_screen">Layar Utama</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
-  <string name="which_wallpaper_option_lock_screen">Kunci layar</string>
+  <string name="which_wallpaper_option_lock_screen">Layar kunci</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
   <string name="which_wallpaper_option_home_screen_and_lock_screen">Layar utama dan layar kunci</string>
   <string name="title_show_google_app">Tampilkan %1$s</string>
   <string name="title_show_google_app_default">Tampilkan Google app</string>
-  <string name="label_search">Cari</string>
-  <string name="label_voice_search">Pencarian suara</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d pintasan dan %2$d notifikasi untuk %3$s</string>
-  <string name="notifications_header">Notifikasi</string>
+  <string name="label_search">Penelusuran</string>
+  <string name="label_voice_search">Penelusuran suara</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d pintasan dan %2$d pemberitahuan untuk %3$s</string>
+  <string name="notifications_header">Pemberitahuan</string>
   <string name="widgets_bottom_sheet_title">%1$s widget</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair adalah sebuah peluncur aplikasi yang dibuat oleh Till Kottmann (alias deletescape). Dibuat berdasar kepada Launcher3 dari AOSP.</string>
+  <string name="about_text">Lawnchair adalah sebuah aplikasi peluncur yang dibuat oleh Till Kottmann (alias deletescape). Dibuat berdasar kepada Launcher3 dari AOSP.</string>
   <string name="about_title">Tentang</string>
-  <string name="about_pref_summary">Mengenal tentang tim Lawnchair</string>
+  <string name="about_pref_summary">Mengenal tim Lawnchair</string>
   <string name="changelog_title">Perubahan pada #%d</string>
-  <string name="week_day_format">%1$s %2$s</string>
+  <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Paket Ikon</string>
   <string name="icon_pack_preference_summary">Pilih paket ikon</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Dock menggunakan warna wallpaper</string>
   <string name="hotseat_show_arrow">Tampilkan panah</string>
-  <string name="hotseat_show_page_indicator">Tampilkan halaman indikator</string>
+  <string name="hotseat_show_page_indicator">Tampilkan indikator halaman</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Dock akan diwarnai dengan warna yang diekstrak dari wallpaper</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Dock akan berwarna abu-abu, tetapi disesuaikan dengan kecerahan wallpaper</string>
   <string name="transparent_hotseat_pref_title">Dock Transparan</string>
   <string name="dynamic_ui_pref_title">Ekstrak aksen warna dari wallpaper</string>
-  <string name="blur_pref_title">Hidupkan kabur</string>
-  <string name="blur_pref_summary">Menerapkan efek blur ke bagian interface\nTidak kompatibel dengan Live Wallpaper</string>
-  <string name="blur_radius_pref_title">Area buram</string>
-  <string name="pref_iconLabelsInTwoLines">Icon labels in two lines</string>
-  <string name="white_google_icon_pref_title">Gunakan Google icon putih</string>
+  <string name="blur_pref_title">Aktifkan blur</string>
+  <string name="blur_pref_summary">Menerapkan efek blur ke bagian antar muka\nTidak kompatibel dengan Live Wallpaper</string>
+  <string name="blur_radius_pref_title">Radius blur</string>
+  <string name="pref_iconLabelsInTwoLines">Label ikon dalam dua baris</string>
+  <string name="white_google_icon_pref_title">Gunakan ikon putih Google</string>
   <string name="hide_icon_labels_pref_title">Sembunyikan label ikon pada layar beranda</string>
   <string name="hide_all_apps_icon_labels_pref_title">Menyembunyikan ikon label di laci</string>
   <string name="workspace_label_color_hue_pref_title">Warna label ikon pada layar beranda</string>
   <string name="workspace_label_color_variation_pref_title">Variasi warna label ikon pada layar beranda</string>
-  <string name="all_apps_opacity_pref_title">Kegelapan Drawer</string>
+  <string name="all_apps_opacity_pref_title">Transparansi laci</string>
   <string name="num_cols_pref_title">Jumlah kolom</string>
   <string name="num_rows_pref_title">Jumlah baris</string>
   <string name="num_hotseat_icons_pref_title">Jumlah ikon di dock</string>
-  <string name="icon_scale_pref_title">Skala ikon</string>
-  <string name="hotseat_height_scale">Skala tinggi</string>
-  <string name="icon_text_scale_pref_title">Skala teks ikon</string>
-  <string name="icon_text_padding_scale_pref_title">Skala bantalan ikon</string>
+  <string name="icon_scale_pref_title">Pensekalaan ikon</string>
+  <string name="hotseat_height_scale">Pensekalaan tinggi</string>
+  <string name="icon_text_scale_pref_title">Pensekalaan teks ikon</string>
+  <string name="icon_text_padding_scale_pref_title">Pensekalaan antar ikon</string>
   <string name="full_width_width_widgets_pref_title">Widget lebar penuh</string>
-  <string name="full_width_widgets_pref_summary">Izinkan widget untuk menjangkau seluruh lebar tanpa bantalan</string>
-  <string name="notification_access_pref_title">Pemberitahuan lencana dan Tinjauan</string>
-  <string name="notification_access_pref_summary">Memungkinkan Lawnchair untuk mengakses notifikasi anda untuk mengaktifkan fitur ini</string>
-  <string name="general_pref_title">Umum</string>
-  <string name="dock_pref_title">Dok</string>
+  <string name="full_width_widgets_pref_summary">Izinkan widget untuk memenuhi seluruh lebar area tanpa batasan</string>
+  <string name="notification_access_pref_title">Peninjau dan lencana pemberitahuan</string>
+  <string name="notification_access_pref_summary">Izinkan Lawnchair untuk mengakses pemberitahuan anda untuk mengaktifkan fitur ini</string>
+  <string name="general_pref_title">Beranda</string>
+  <string name="dock_pref_title">Dock</string>
   <string name="app_drawer_pref_title">Laci Aplikasi</string>
-  <string name="pixel_ui_pref_title">Pixel UI</string>
-  <string name="behavior_pref_title">Perilaku</string>
-  <string name="debug_pref_title">Debug</string>
+  <string name="pixel_ui_pref_title">Tema</string>
+  <string name="behavior_pref_title">Tindakan</string>
+  <string name="debug_pref_title">Pengembanagan</string>
   <string name="import_export_pref_title">Impor/Ekspor</string>
-  <string name="general_pref_summary">Layar utama, dock dan laci aplikasi</string>
-  <string name="dock_pref_summary">Sesuaikan dok Anda</string>
+  <string name="general_pref_summary">Sesuaikan beranda anda</string>
+  <string name="dock_pref_summary">Sesuaikan dock anda</string>
   <string name="app_drawer_pref_summary">Sesuaikan laci aplikasi anda</string>
-  <string name="pixel_ui_pref_summary">Mengaktifkan fitur eksklusif Pixel Launcher</string>
+  <string name="pixel_ui_pref_summary">Elemen tema yang berbeda</string>
   <string name="backup_pref_title">Cadang</string>
-  <string name="behavior_pref_summary">Mengubah perilaku Lawnchair</string>
+  <string name="behavior_pref_summary">Mengubah tindakan Lawnchair</string>
   <string name="backup_pref_summary">Cadangan database dan pengaturan</string>
   <string name="debug_pref_summary">Mulai ulang atau membangun kembali database ikon</string>
-  <string name="show_pixel_bar_pref_title">Tampilkan bar atas Pixel</string>
-  <string name="use_wide_searchbar_pref_title">Gunakan batang pencarian lebar</string>
-  <string name="show_mic_pref_title">Tampilkan tombol Google asisten</string>
-  <string name="use_round_searhbar">Gunakan batang pencarian aplikasi bulat</string>
+  <string name="show_pixel_bar_pref_title">Tampilkan bilah atas Pixel</string>
+  <string name="use_wide_searchbar_pref_title">Gunakan bilah pencarian lebar</string>
+  <string name="show_mic_pref_title">Tampilkan tombol asisten Google</string>
+  <string name="use_round_searhbar">Gunakan bilah pencarian membulat</string>
   <string name="pixel_style_icons_pref_title">Gunakan ikon Pixel</string>
-  <string name="pixel_style_icons_pref_summary">Bila dihidupkan ikon melingkar akan digunakan bila memungkinkan</string>
+  <string name="pixel_style_icons_pref_summary">Ketika diaktifkan ikon membulat akan digunakan bila memungkinkan</string>
   <string name="show_google_now_tab_pref_title">Tampilkan halaman Google Now</string>
   <string name="restart_lawnchair_pref_title">Mulai ulang Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">Dapat membantu jika beberapa setelan tidak diterapkan dengan benar</string>
@@ -308,7 +313,7 @@
   <string name="light_statusbar_pref_title">Statusbar terang</string>
   <string name="light_statusbar_pref_force">Status bar akan menampilkan ikon gelap</string>
   <string name="light_statusbar_pref_off">Status bar akan menampilkan ikon terang</string>
-  <string name="haptic_feedback_pref_title">Hidupkan getaran</string>
+  <string name="haptic_feedback_pref_title">Aktifkan getaran</string>
   <string name="keep_scroll_state_pref_title">Jaga posisi gulir</string>
   <string name="keep_scroll_state_pref_summary">Mengingat posisi gulir di laci</string>
   <string name="home_opens_drawer_pref_title">Tombol beranda membuka laci aplikasi</string>
@@ -318,18 +323,18 @@
   <string name="show_hidden_pref_off">Aplikasi tersembunyi tidak akan terlihat</string>
   <string name="export_db_title">Database</string>
   <string name="import_db_title">Database</string>
-  <string name="export_prefs_title">Pengaturan</string>
-  <string name="import_prefs_title">Pengaturan</string>
-  <string name="notification_listener_label">Lawnchair - lencana pemberitahuan</string>
+  <string name="export_prefs_title">Setelan</string>
+  <string name="import_prefs_title">Setelan</string>
+  <string name="notification_listener_label">Lawnchair - Lencana pemberitahuan</string>
   <string name="color_extraction_label">Lawnchair - Ekstraksi warna</string>
   <string name="test_title">Tes</string>
   <string name="visibility">Visibilitas</string>
-  <string name="default_text">Standar</string>
+  <string name="default_text">Bawaan</string>
   <string name="edit_icon_reset">Atur ulang</string>
-  <string name="show_top_shadow_title">Tunjukkan bayangan atas</string>
-  <string name="pref_cat_homescreen">Layar Utama</string>
+  <string name="show_top_shadow_title">Tampilkan bayangan atas</string>
+  <string name="pref_cat_homescreen">Layar beranda</string>
   <string name="pref_cat_miscellaneous">Lain-Lain</string>
-  <string name="pref_cat_hotseat">Dok</string>
+  <string name="pref_cat_hotseat">Dock</string>
   <string name="pref_cat_theme">Tema</string>
   <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Terang</string>
@@ -337,12 +342,12 @@
   <string name="theme_black">Hitam</string>
   <string name="hide_hotseat_pref_title">Sembunyikan Dock</string>
   <string name="all_icons">Semua Ikon</string>
-  <string name="pull_down_action_pref_title">Tindakan tarik kebawah</string>
+  <string name="pull_down_action_pref_title">Tindakan menarik kebawah</string>
   <string name="pull_down_do_nothing">Tidak melakukan apapun</string>
-  <string name="pull_down_notis">Tampilkan notifikasi</string>
-  <string name="pull_down_search">Buka pencarian</string>
-  <string name="pull_down_apps_search">Cari aplikasi</string>
-  <string name="enable_screen_rotation">Hidupkan rotasi layar</string>
+  <string name="pull_down_notis">Tampilkan pemberitahuan</string>
+  <string name="pull_down_search">Buka penelusuran</string>
+  <string name="pull_down_apps_search">Aplikasi penelusuran</string>
+  <string name="enable_screen_rotation">Aktifkan rotasi layar</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Impor</string>
   <string name="backup_export_title">Ekspor</string>
@@ -355,49 +360,49 @@
   <string name="units_imperial">Imperial</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <string name="pref_cat_weather">Cuaca</string>
-  <string name="pref_weather_title">Mengaktifkan cuaca</string>
-  <string name="pref_weather_units">Unit Cuaca</string>
-  <string name="pref_weather_city_summary">Untuk hasil terbaik termasuk kode negara</string>
+  <string name="pref_weather_title">Aktifkan cuaca</string>
+  <string name="pref_weather_units">Satuan Cuaca</string>
+  <string name="pref_weather_city_summary">Untuk hasil yang lebih baik masukan kode negara</string>
   <string name="pref_weather_city_title">Kota</string>
   <string name="none">Tidak ada</string>
   <string name="pref_applyTheme">Terapkan tema pada</string>
-  <string name="pref_applyBlur">Terapkan kabur pada</string>
-  <string name="search_bar">Kotak pencarian</string>
-  <string name="folder">Direktori</string>
+  <string name="pref_applyBlur">Terapkan blur pada</string>
+  <string name="search_bar">Bilah penelusuran</string>
+  <string name="folder">Folder</string>
   <string name="dock_allapps"><![CDATA[Dock & laci]]></string>
   <string name="app_shortcuts">Pintasan aplikasi</string>
   <string name="blur_effect">Efek blur</string>
-  <string name="enable_editing_pref_title">Hidupkan penyesuaian homescreen</string>
-  <string name="pref_weather_provider">Penyedia cuaca</string>
+  <string name="enable_editing_pref_title">Hidupkan penyesuaian beranda</string>
+  <string name="pref_weather_provider">Penyedia layanan cuaca</string>
   <string name="loading">Memuat…</string>
   <string name="icon_shape_override_label">Ubah bentuk ikon</string>
   <string name="icon_shape_system_default">Jangan diubah</string>
   <string name="icon_shape_none">Tidak ada</string>
-  <string name="icon_shape_square">Kotak</string>
-  <string name="icon_shape_rounded_square">Kotak bulat</string>
-  <string name="icon_shape_squircle">Persegi bulat</string>
-  <string name="icon_shape_circle">Lingkaran</string>
+  <string name="icon_shape_square">Persegi</string>
+  <string name="icon_shape_rounded_square">Persegi membulat</string>
+  <string name="icon_shape_squircle">Persegi melengkung</string>
+  <string name="icon_shape_circle">Bulat</string>
   <string name="icon_shape_teardrop">Titik air</string>
-  <string name="animated_clock_icon_title">Ikon jam animasi</string>
+  <string name="animated_clock_icon_title">Animasi ikon jam</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">Animasikan aplikasi jam alternatif</string>
-  <string name="animated_clock_icon_alternative_clock_apps_summary">Aktifkan ini jika anda tidak menggunakan Google Clock sebagai aplikasi jam bawaan anda</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Aktifkan bila anda tidak menggunakan Google Clock sebagai aplikasi jam bawaan anda</string>
   <string name="about_summary_title">Ringkasan</string>
   <string name="about_version">Versi</string>
   <string name="about_icon_designer">Perancang Ikon App</string>
   <string name="about_contributors_title">Kontributor</string>
-  <string name="location_permission_warn">Izin lokasi yang diperlukan untuk beralih ke layanan lain!</string>
+  <string name="location_permission_warn">Izin lokasi dibutuhkan untuk beralih ke penyedia lain!</string>
   <string name="num_cols_drawer_pref_title">Jumlah kolom di laci app</string>
   <string name="pref_cat_drawer">Laci</string>
   <string name="shortcut_backport_warning">Ini bisa menjadi lambat, gunakan dengan resiko anda sendiri</string>
   <string name="pref_backport_shortcuts">Implementasi pintasan baru</string>
-  <string name="weather_api_key_not_set">Kunci API belum diatur</string>
+  <string name="weather_api_key_not_set">Kunci API belum disetel</string>
   <string name="pref_weather_api_key_title">Kunci API</string>
   <string name="about_changelog">Daftar perubahan</string>
-  <string name="pref_all_apps_custom_label_color">Gunakan warna label kustom</string>
-  <string name="pref_all_apps_label_color_variation">Variasi warna dari label ikon di laci app</string>
-  <string name="pref_all_apps_label_color">Warna dari ikon label di laci</string>
-  <string name="pref_num_rows_drawer">Jumlah baris dalam laci</string>
-  <string name="center_wallpaper_pref_title">Pusatkan wallpaper ketika ada hanya satu halaman</string>
+  <string name="pref_all_apps_custom_label_color">Gunakan warna label kusus</string>
+  <string name="pref_all_apps_label_color_variation">Variasi warna label ikon pada laci aplikasi</string>
+  <string name="pref_all_apps_label_color">Warna label ikon di laci</string>
+  <string name="pref_num_rows_drawer">Jumlah baris pada laci</string>
+  <string name="center_wallpaper_pref_title">Pusatkan wallpaper ketika hanya ada satu halaman</string>
   <string name="vertical_drawer_layout_pref_title">Tampilkan sebagai daftar vertikal</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -407,6 +412,6 @@
   <string name="lawnfeed_not_found">Lawnfeed tidak terpasang</string>
   <string name="google_app_not_found">Google app tidak terpasang</string>
   <string name="popup_card_theme_title">Gaya datar popup</string>
-  <string name="set_default_launcher">Tetapkan peluncur bawaan</string>
-  <string name="enable_spring_pref_title">Aktifkan efek spring</string>
+  <string name="set_default_launcher">Setel sebagai peluncur bawaan</string>
+  <string name="enable_spring_pref_title">Aktifkan efek memantul</string>
 </resources>

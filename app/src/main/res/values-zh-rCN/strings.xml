@@ -396,7 +396,7 @@
   <string name="pref_all_apps_custom_label_color">使用自定义标签颜色</string>
   <string name="pref_all_apps_label_color_variation">抽屉应用标签颜色变化</string>
   <string name="pref_all_apps_label_color">抽屉应用标签颜色</string>
-  <string name="pref_num_rows_drawer">抽屉网格列数</string>
+  <string name="pref_num_rows_drawer">抽屉网格行数</string>
   <string name="center_wallpaper_pref_title">当桌面只有一页时，居中壁纸</string>
   <string name="vertical_drawer_layout_pref_title">垂直列表布局</string>
   <!-- Time format for Weather Widget -->
