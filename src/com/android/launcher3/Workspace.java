@@ -296,7 +296,6 @@ public class Workspace extends PagedView
 
         mLauncher = Launcher.getLauncher(context);
         mStateTransitionAnimation = new WorkspaceStateTransitionAnimation(mLauncher, this);
-        final Resources res = getResources();
         DeviceProfile grid = mLauncher.getDeviceProfile();
         mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
         mWallpaperManager = WallpaperManager.getInstance(context);

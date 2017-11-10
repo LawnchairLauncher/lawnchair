@@ -222,15 +222,12 @@ public class Launcher extends BaseActivity
     @Thunk DragLayer mDragLayer;
     private DragController mDragController;
 
-    public View mWeightWatcher;
-
     private AppWidgetManagerCompat mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
 
     private final int[] mTmpAddItemCellCoordinates = new int[2];
 
     @Thunk Hotseat mHotseat;
-    private ViewGroup mOverviewPanel;
 
     private View mAllAppsButton;
 
@@ -239,6 +236,9 @@ public class Launcher extends BaseActivity
     // Main container view for the all apps screen.
     @Thunk AllAppsContainerView mAppsView;
     AllAppsTransitionController mAllAppsController;
+
+    // UI and state for the overview panel
+    private ViewGroup mOverviewPanel;
 
     // We need to store the orientation Launcher was created with, due to a bug (b/64916689)
     // that results in widgets being inflated in the wrong orientation.
@@ -1307,8 +1307,8 @@ public class Launcher extends BaseActivity
         return mHotseat;
     }
 
-    public ViewGroup getOverviewPanel() {
-        return mOverviewPanel;
+    public <T extends ViewGroup> T getOverviewPanel() {
+        return (T) mOverviewPanel;
     }
 
     public DropTargetBar getDropTargetBar() {
