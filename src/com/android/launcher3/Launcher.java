@@ -63,6 +63,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -123,6 +124,7 @@ import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.states.AllAppsState;
+import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -1405,6 +1407,7 @@ public class Launcher extends BaseActivity
                 });
             }
         }
+        InternalStateHandler.handleIntent(this, intent);
 
         TraceHelper.endSection("NEW_INTENT");
     }

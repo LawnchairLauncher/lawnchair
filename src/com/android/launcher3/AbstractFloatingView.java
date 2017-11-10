@@ -20,7 +20,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.IntDef;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -42,7 +41,8 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             TYPE_ACTION_POPUP,
             TYPE_WIDGETS_BOTTOM_SHEET,
             TYPE_WIDGET_RESIZE_FRAME,
-            TYPE_WIDGETS_FULL_SHEET
+            TYPE_WIDGETS_FULL_SHEET,
+            TYPE_QUICKSTEP_PREVIEW
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface FloatingViewType {}
@@ -51,9 +51,11 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_WIDGETS_BOTTOM_SHEET = 1 << 2;
     public static final int TYPE_WIDGET_RESIZE_FRAME = 1 << 3;
     public static final int TYPE_WIDGETS_FULL_SHEET = 1 << 4;
+    public static final int TYPE_QUICKSTEP_PREVIEW = 1 << 5;
 
     public static final int TYPE_ALL = TYPE_FOLDER | TYPE_ACTION_POPUP
-            | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_WIDGETS_FULL_SHEET;
+            | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_WIDGETS_FULL_SHEET
+            | TYPE_QUICKSTEP_PREVIEW;
 
     protected boolean mIsOpen;
 

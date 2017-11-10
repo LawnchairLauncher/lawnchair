@@ -19,28 +19,33 @@
     android:theme="@style/HomeScreenElementTheme"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp"
+    android:clipToPadding="false"
     android:layout_gravity="center_horizontal|bottom"
     android:gravity="top">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:paddingStart="40dp"
+        android:paddingEnd="40dp"
         android:orientation="horizontal">
 
-        <View
-            android:layout_width="300dp"
+        <com.android.quickstep.SimpleTaskView
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="#44FF0000"
             android:layout_marginEnd="10dp"/>
 
-        <View
-            android:layout_width="300dp"
+        <com.android.quickstep.SimpleTaskView
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="#4400FF00"
             android:layout_marginEnd="10dp"/>
 
-        <View
-            android:layout_width="300dp"
+        <com.android.quickstep.SimpleTaskView
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="#440000FF" />
     </LinearLayout>

@@ -30,6 +30,7 @@ import com.android.launcher3.R;
  * A placeholder view for recents
  */
 public class RecentsView extends HorizontalScrollView implements Insettable {
+
     public RecentsView(Context context) {
         this(context, null);
     }
