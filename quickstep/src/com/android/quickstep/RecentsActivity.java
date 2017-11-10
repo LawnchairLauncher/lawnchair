@@ -40,7 +40,7 @@ public class RecentsActivity extends ListActivity {
         plan.preloadPlan(new RecentsTaskLoader(this, 1, 1, 0), -1, UserHandle.myUserId());
 
         mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-        mAdapter.addAll(plan.getTaskStack().getStackTasks());
+        mAdapter.addAll(plan.getTaskStack().getTasks());
         setListAdapter(mAdapter);
     }
 }
