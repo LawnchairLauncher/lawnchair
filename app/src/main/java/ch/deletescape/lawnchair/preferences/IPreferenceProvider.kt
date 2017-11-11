@@ -112,6 +112,7 @@ interface IPreferenceProvider {
     fun removeAlternateIcon(key: String)
     fun appVisibility(context: Context, key: String, visible: Boolean, commit: Boolean = false)
     fun appVisibility(context: Context, key: String): Boolean
+    var hiddenAppsSet : Set<String>
     var previousBuildNumber : Int
     var overrideIconShape: String
     val backportAdaptiveIcons: Boolean

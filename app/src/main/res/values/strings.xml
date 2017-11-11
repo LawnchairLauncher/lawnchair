@@ -486,5 +486,12 @@
     <string name="popup_card_theme_title">Flat style popup</string>
     <string name="set_default_launcher">Set default launcher</string>
     <string name="enable_spring_pref_title">Enable spring effect</string>
+    <string name="hide_app">Hide app</string>
+    <string name="hide_app_sum">Hide app from the app drawer</string>
+    <string name="hide_app_selected">&#160;selected</string>
+    <string name="hidden_app">Hidden app</string>
+    <string name="hide_selected">Hide selected app</string>
+    <string name="hide_app_apply">Apply</string>
     <string name="unauthorized_device">This device has a few piracy tools installed. Please uninstall them to continue.</string>
+    <string name="hide_app_reset">Reset</string>
 </resources>

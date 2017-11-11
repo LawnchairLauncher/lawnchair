@@ -912,11 +912,16 @@ public final class Utilities {
     }
 
     public static void setAppVisibility(Context context, String key, boolean visible) {
-        getPrefs(context).appVisibility(context, key, visible, false);
+        Set<String> hiddenApps = getPrefs(context).getHiddenAppsSet();
+        if (visible)
+            hiddenApps.remove(key);
+        else
+            hiddenApps.add(key);
+        getPrefs(context).setHiddenAppsSet(hiddenApps);
     }
 
     public static boolean isAppHidden(Context context, String key) {
-        return !getPrefs(context).appVisibility(context, key);
+        return getPrefs(context).getHiddenAppsSet().contains(key);
     }
 
     public static int getDynamicAccent(Context context) {

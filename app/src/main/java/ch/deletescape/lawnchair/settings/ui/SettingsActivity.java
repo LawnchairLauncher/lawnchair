@@ -57,7 +57,6 @@ import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.graphics.IconShapeOverride;
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.preferences.PreferenceFlags;
-import ch.deletescape.lawnchair.util.SharedPreferenceDataStore;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
@@ -84,6 +83,7 @@ public class SettingsActivity extends AppCompatActivity implements
             // Display the fragment as the main content.
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content, new LauncherSettingsFragment())
+
                     .commit();
         }
 
@@ -94,8 +94,13 @@ public class SettingsActivity extends AppCompatActivity implements
 
     @Override
     public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref) {
+        Fragment fragment;
         if (pref instanceof SubPreference) {
-            Fragment fragment = SubSettingsFragment.newInstance(((SubPreference) pref));
+            fragment = SubSettingsFragment.newInstance(((SubPreference) pref));
+        } else {
+            fragment = Fragment.instantiate(this, pref.getFragment());
+        }
+        if (fragment != null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             setTitle(pref.getTitle());
             transaction.setCustomAnimations(R.animator.fly_in, R.animator.fade_out, R.animator.fade_in, R.animator.fly_out);
@@ -307,11 +312,11 @@ public class SettingsActivity extends AppCompatActivity implements
                         neutralButton.setLayoutParams(neutralButtonLL);
                         break;
                     default:
-                        return false;
+                        return super.onPreferenceTreeClick(preference);
                 }
                 return true;
             }
-            return false;
+            return super.onPreferenceTreeClick(preference);
         }
 
         private boolean checkStoragePermission() {

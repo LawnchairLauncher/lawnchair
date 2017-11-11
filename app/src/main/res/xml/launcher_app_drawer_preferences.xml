@@ -35,6 +35,12 @@
             android:title="@string/use_round_searhbar"
             android:persistent="true" />
 
+        <Preference
+            android:key="pref_hiddenApps"
+            android:title="@string/hide_app"
+            android:summary="@string/hide_app_sum"
+            android:fragment="ch.deletescape.lawnchair.preferences.HiddenAppsFragment" />
+
         <ch.deletescape.lawnchair.preferences.SeekbarPreference
             android:key="pref_allAppsOpacitySB"
             android:title="@string/all_apps_opacity_pref_title"

@@ -69,7 +69,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <meta-data android:name="android.app.shortcuts"
+            <meta-data
+                android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity
@@ -175,13 +176,14 @@
             android:name="android.max_aspect"
             android:value="2.1" />
 
-        <activity android:name=".BlankActivity"
+        <activity
+            android:name=".BlankActivity"
             android:theme="@style/Theme.Transparent" />
 
         <activity-alias
             android:name=".FakeLauncher"
-            android:targetActivity=".BlankActivity"
-            android:enabled="false">
+            android:enabled="false"
+            android:targetActivity=".BlankActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

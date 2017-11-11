@@ -157,6 +157,12 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val weatherProvider by StringPref(PreferenceFlags.KEY_WEATHER_PROVIDER, PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS)
     override var previousBuildNumber by MutableIntPref(PreferenceFlags.KEY_PREVIOUS_BUILD_NUMBER, 0)
 
+    override var hiddenAppsSet: Set<String>
+        get() = sharedPrefs.getStringSet(PreferenceFlags.KEY_HIDDEN_APPS_SET, HashSet<String>())
+        set(value) {
+            sharedPrefs.edit().putStringSet(PreferenceFlags.KEY_HIDDEN_APPS_SET, value).apply()
+        }
+
     override fun appVisibility(context: Context, key: String, visible: Boolean, commit: Boolean) {
         commitOrApply(sharedPrefs.edit().putBoolean(PreferenceFlags.KEY_APP_VISIBILITY_PREFIX + key, visible), commit)
     }
