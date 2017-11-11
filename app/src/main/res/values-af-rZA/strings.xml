@@ -48,7 +48,7 @@
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
   <string name="all_apps_loading_message">Laai programme;</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_no_search_results">Geen programme gevind wat ooreenstem met \"<xliff:g example =" Android " id =" navraag ">% 1 $ s </xliff:g>\"</string>
+  <string name="all_apps_no_search_results">Geen programme gevind wat ooreenstem met \"<xliff:g example=" Android " id=" navraag ">% 1 $ s </xliff:g>\"</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">Soek vir meer programme</string>
   <!-- Drag and drop -->
@@ -83,7 +83,7 @@
   <string name="permdesc_write_settings">Laat die program toe om die instellings te verander en
         kortpaaie in die huis.</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
-  <string name="msg_no_phone_permission"><xliff:g example = "Launcher3" id = "app_name">% 1 $ s </xliff:g> mag nie oproepe maak nie</string>
+  <string name="msg_no_phone_permission"><xliff:g example="Launcher3" id="app_name">% 1 $ s </xliff:g> mag nie oproepe maak nie</string>
   <!-- Widgets: -->
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">Probleem laai widget</string>
@@ -95,7 +95,7 @@
   <string name="folder_hint_text">Naamloos gids</string>
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
-  <string name="disabled_app_label">Gestremde <xliff:g example = "Messenger" id = "app_name">% 1 $ s </xliff:g></string>
+  <string name="disabled_app_label">Gestremde <xliff:g example="Messenger" id="app_name">% 1 $ s </xliff:g></string>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
