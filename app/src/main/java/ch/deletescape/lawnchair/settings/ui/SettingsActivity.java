@@ -288,6 +288,7 @@ public class SettingsActivity extends AppCompatActivity implements
                     case "import_prefs":
                         if (checkStoragePermission()) {
                             DumbImportExportTask.importPrefs(getActivity());
+                            LauncherAppState.getInstance().getLauncher().scheduleReloadIcons();
                             LauncherAppState.getInstance().getLauncher().scheduleKill();
                         }
                         break;

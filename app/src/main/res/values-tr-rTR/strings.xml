@@ -53,7 +53,7 @@
   <string name="all_apps_search_market_message">Daha fazla uygulama ara</string>
   <!-- Drag and drop -->
   <!-- Error message when user has filled a page -->
-  <string name="out_of_space">Bu Ana ekranda yer kalmadı.</string>
+  <string name="out_of_space">Bu ekranda yer kalmadı.</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">Favoriler tepsisinde başka yer kalmadı</string>
   <!-- All applications label -->

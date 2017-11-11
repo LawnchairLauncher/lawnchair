@@ -57,7 +57,7 @@
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">אין עוד מקום במגש המועדפים.</string>
   <!-- All applications label -->
-  <string name="all_apps_button_label">רשימת יישומים</string>
+  <string name="all_apps_button_label">רשימת אפליקציות</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
   <string name="all_apps_home_button_label">בית</string>
@@ -129,7 +129,7 @@
   <!-- Text explaining when the home screen will get rotated. [CHAR LIMIT=100] -->
   <!-- Text explaining that rotation is disabled in Display settings. 'Display' refers to the Display section in system settings [CHAR LIMIT=100] -->
   <!-- Label on an icon that references an uninstalled package, for which we have no information about when it might be installed. [CHAR_LIMIT=15] -->
-  <string name="package_state_unknown">לא ידועה</string>
+  <string name="package_state_unknown">לא ידוע</string>
   <!-- Button for abandoned promises dialog, to removes this abandoned promise icon. -->
   <string name="abandoned_clean_this">הסר</string>
   <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->

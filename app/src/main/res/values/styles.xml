@@ -43,8 +43,8 @@
 
         <item name="materialPanelBgColor">@color/quantum_panel_bg_color</item>
         <item name="folderIconTextColor">@color/quantum_panel_text_color</item>
-        <item name="folderNameTextColor">#EE777777</item>
-        <item name="folderBgIntensity">245</item>
+        <item name="folderNameTextColor">@color/folder_name_text_color</item>
+        <item name="folderBgIntensity">@integer/folderBgIntensity</item>
         <item name="deepShortcutsHandleColor">?android:textColorSecondary</item>
         <item name="appPopupTextColor">?android:textColorSecondary</item>
         <item name="appPopupHeaderBgColor">@color/popup_header_background_color</item>
@@ -52,15 +52,15 @@
         <item name="popupColorSecondary">#fff5f5f5</item>
         <item name="popupColorTertiary">@color/notification_color_beneath</item>
         <item name="allAppsContainerColor">@color/all_apps_container_color</item>
-        <item name="allAppsContainerColorBlur">#00ffffff</item>
-        <item name="allAppsEmptySearchTextColor">#212121</item>
-        <item name="blurTintColor">#45ffffff</item>
-        <item name="qsbBgColor">@android:color/white</item>
-        <item name="folderBgColorBlur">#75ffffff</item>
-        <item name="roundSearchBarBgColor">#10000000</item>
-        <item name="roundSearchBarDividerColor">#10111111</item>
-        <item name="roundSearchBarHintColor">@color/quantum_panel_text_color</item>
-        <item name="roundSearchBarTextColor">#4c4c4c</item>
+        <item name="allAppsContainerColorBlur">@color/all_apps_container_color_blur</item>
+        <item name="allAppsEmptySearchTextColor">@color/all_apps_empty_search_text_color</item>
+        <item name="blurTintColor">@color/blur_tint_color</item>
+        <item name="qsbBgColor">@color/qsb_background</item>
+        <item name="folderBgColorBlur">@color/folder_bg_color_blur</item>
+        <item name="roundSearchBarBgColor">@color/all_apps_round_searchbar_bg_color</item>
+        <item name="roundSearchBarDividerColor">@color/all_apps_round_searchbar_divider_color</item>
+        <item name="roundSearchBarHintColor">@color/all_apps_round_searchbar_hint_color</item>
+        <item name="roundSearchBarTextColor">@color/all_apps_round_searchbar_text_color</item>
     </style>
 
     <style name="LauncherTheme.Dark" parent="@style/BaseLauncherTheme.Dark">
@@ -71,44 +71,47 @@
         <item name="android:navigationBarColor">#00000000</item>
         <item name="materialPanelBgColor">@color/quantum_panel_bg_color_dark</item>
         <item name="folderIconTextColor">@color/quantum_panel_text_color_dark</item>
-        <item name="folderNameTextColor">#EEEEEEEE</item>
-        <item name="folderBgIntensity">75</item>
+        <item name="folderNameTextColor">@color/folder_name_text_color_dark</item>
+        <item name="folderBgIntensity">@integer/folderBgIntensityDark</item>
         <item name="deepShortcutsHandleColor">?android:textColorSecondary</item>
         <item name="appPopupTextColor">?android:textColorSecondary</item>
-        <item name="appPopupHeaderBgColor">#ff101010</item>
+        <item name="appPopupHeaderBgColor">@color/popup_header_background_color_dark</item>
         <item name="popupColorPrimary">#ff212121</item>
         <item name="popupColorSecondary">#ff424242</item>
         <item name="popupColorTertiary">#ff757575</item>
-        <item name="allAppsContainerColor">#ff212121</item>
-        <item name="allAppsContainerColorBlur">#00212121</item>
-        <item name="allAppsEmptySearchTextColor">@android:color/white</item>
-        <item name="blurTintColor">#45212121</item>
-        <item name="qsbBgColor">@color/quantum_panel_bg_color_dark</item>
-        <item name="folderBgColorBlur">#75212121</item>
-        <item name="roundSearchBarBgColor">#10ffffff</item>
-        <item name="roundSearchBarDividerColor">#10eeeeee</item>
-        <item name="roundSearchBarHintColor">@android:color/white</item>
-        <item name="roundSearchBarTextColor">@android:color/white</item>
+        <item name="allAppsContainerColor">@color/all_apps_container_color_dark</item>
+        <item name="allAppsContainerColorBlur">@color/all_apps_container_color_blur_dark</item>
+        <item name="allAppsEmptySearchTextColor">@color/all_apps_empty_search_text_color</item>
+        <item name="blurTintColor">@color/blur_tint_color_dark</item>
+        <item name="qsbBgColor">@color/qsb_background_dark</item>
+        <item name="folderBgColorBlur">@color/folder_bg_color_blur_dark</item>
+        <item name="roundSearchBarBgColor">@color/all_apps_round_searchbar_bg_color_dark</item>
+        <item name="roundSearchBarDividerColor">@color/all_apps_round_searchbar_divider_color_dark</item>
+        <item name="roundSearchBarHintColor">@color/all_apps_round_searchbar_hint_color_dark</item>
+        <item name="roundSearchBarTextColor">@color/all_apps_round_searchbar_text_color_dark</item>
     </style>
 
     <style name="LauncherTheme.Black" parent="LauncherTheme.Dark">
-        <item name="materialPanelBgColor">@android:color/black</item>
-        <item name="folderBgIntensity">0</item>
-        <item name="appPopupHeaderBgColor">@android:color/black</item>
+        <item name="materialPanelBgColor">@color/quantum_panel_bg_color_black</item>
+        <item name="folderBgIntensity">@integer/folderBgIntensityBlack</item>
+        <item name="appPopupHeaderBgColor">@color/popup_header_background_color_black</item>
         <item name="popupColorPrimary">#ff000000</item>
         <item name="popupColorSecondary">#ff000000</item>
         <item name="popupColorTertiary">#ff000000</item>
-        <item name="allAppsContainerColor">@android:color/black</item>
-        <item name="allAppsContainerColorBlur">#00000000</item>
-        <item name="blurTintColor">#45000000</item>
-        <item name="qsbBgColor">@android:color/black</item>
-        <item name="folderBgColorBlur">#75000000</item>
+        <item name="allAppsContainerColor">@color/all_apps_container_color_black</item>
+        <item name="allAppsContainerColorBlur">@color/all_apps_container_color_blur_black</item>
+        <item name="blurTintColor">@color/blur_tint_color_black</item>
+        <item name="qsbBgColor">@color/qsb_background_black</item>
+        <item name="folderBgColorBlur">@color/folder_bg_color_blur_black</item>
     </style>
 
     <style name="SettingsTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimaryDark">@color/color_primary_dark_settings</item>
+        <item name="colorPrimary">@color/color_primary_settings</item>
         <item name="colorAccent">@color/accent_material_light</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="blurTintColor">#45ffffff</item>
+        <item name="android:navigationBarColor">@color/color_navigationbar_settings</item>
         <item name="windowNoTitle">true</item>
     </style>
 
@@ -117,11 +120,12 @@
     </style>
 
     <style name="SettingsTheme.Dark" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimaryDark">#ff242424</item>
-        <item name="colorPrimary">#ff2d2d2d</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark_settings_dark</item>
+        <item name="colorPrimary">@color/color_primary_settings_dark</item>
         <item name="colorAccent">@color/accent_material_light</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <item name="blurTintColor">#45212121</item>
+        <item name="android:navigationBarColor">@color/color_navigationbar_settings_dark</item>
         <item name="windowNoTitle">true</item>
     </style>
 
@@ -130,10 +134,11 @@
     </style>
 
     <style name="SettingsTheme.Black" parent="SettingsTheme.Dark">
-        <item name="colorPrimaryDark">@android:color/black</item>
-        <item name="colorPrimary">@android:color/black</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark_settings_black</item>
+        <item name="colorPrimary">@color/color_primary_settings_black</item>
         <item name="android:windowBackground">@android:color/black</item>
         <item name="android:listDivider">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/color_navigationbar_settings_black</item>
     </style>
 
     <style name="SettingsHome.Black" parent="SettingsTheme.Black">

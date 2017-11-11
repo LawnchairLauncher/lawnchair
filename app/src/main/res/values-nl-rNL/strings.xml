@@ -281,7 +281,6 @@
   <string name="notification_access_pref_summary">Geef Lawnchair toestemming tot uw notificaties om deze functie in te schakelen</string>
   <string name="general_pref_title">Algemeen</string>
   <string name="dock_pref_title">Dock</string>
-  <string name="app_drawer_pref_title">App drawer</string>
   <string name="pixel_ui_pref_title">Pixel-UI</string>
   <string name="behavior_pref_title">Gedrag</string>
   <string name="debug_pref_title">Debuggen</string>

@@ -22,6 +22,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -100,6 +101,7 @@ public abstract class PopupItemView extends FrameLayout
     @Override
     protected void dispatchDraw(Canvas canvas) {
         int saveCount = canvas.saveLayer(0, 0, getWidth(), getHeight(), null);
+        canvas.clipRect(mPillRect);
         super.dispatchDraw(canvas);
 
         int cornerWidth = mRoundedCornerBitmap.getWidth();
@@ -110,17 +112,17 @@ public abstract class PopupItemView extends FrameLayout
             canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
             // Clip top right corner.
             mMatrix.setRotate(90, cornerWidth / 2, cornerHeight / 2);
-            mMatrix.postTranslate(canvas.getWidth() - cornerWidth, 0);
+            mMatrix.postTranslate(mPillRect.width() - cornerWidth, 0);
             canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
         }
         if ((mCorners & CORNERS_BOTTOM) != 0) {
             // Clip bottom right corner.
             mMatrix.setRotate(180, cornerWidth / 2, cornerHeight / 2);
-            mMatrix.postTranslate(canvas.getWidth() - cornerWidth, canvas.getHeight() - cornerHeight);
+            mMatrix.postTranslate(mPillRect.width() - cornerWidth, mPillRect.height() - cornerHeight);
             canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
             // Clip bottom left corner.
             mMatrix.setRotate(270, cornerWidth / 2, cornerHeight / 2);
-            mMatrix.postTranslate(0, canvas.getHeight() - cornerHeight);
+            mMatrix.postTranslate(0, mPillRect.height() - cornerHeight);
             canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
         }
 

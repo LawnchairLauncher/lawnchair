@@ -2,4 +2,8 @@
 <resources>
     <integer name="fadeinAnimTime">200</integer>
     <integer name="fadeoutAnimTime">200</integer>
+
+    <integer name="folderBgIntensity">245</integer>
+    <integer name="folderBgIntensityDark">75</integer>
+    <integer name="folderBgIntensityBlack">0</integer>
 </resources>

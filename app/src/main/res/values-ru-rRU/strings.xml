@@ -133,7 +133,7 @@
   <!-- Button for abandoned promises dialog, to removes this abandoned promise icon. -->
   <string name="abandoned_clean_this">Удалить</string>
   <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->
-  <string name="abandoned_search">Private Hack BY SUP https://yadi.sk/d/pvBQNRfc3NB9bw</string>
+  <string name="abandoned_search">Найти</string>
   <!-- Title for abandoned promise dialog. -->
   <string name="abandoned_promises_title">Приложение не установлено</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
@@ -239,7 +239,7 @@
   <string name="which_wallpaper_option_home_screen_and_lock_screen">Главный экран и экран блокировки</string>
   <string name="title_show_google_app">Показать %1$s</string>
   <string name="title_show_google_app_default">Показать приложение Google</string>
-  <string name="label_search">Private Hack BY SUP https://yadi.sk/d/pvBQNRfc3NB9bw</string>
+  <string name="label_search">Поиск</string>
   <string name="label_voice_search">Голосовой поиск</string>
   <string name="shortcuts_menu_with_notifications_description">%1$d ярлыки и %2$d уведомления для %3$s</string>
   <string name="notifications_header">Уведомления</string>
