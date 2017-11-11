@@ -34,12 +34,28 @@
     <color name="quantum_panel_text_color_dark">@color/workspace_icon_text_color</color>
     <color name="quantum_panel_bg_color">#FFF5F5F5</color>
     <color name="quantum_panel_bg_color_dark">#ff212121</color>
+    <color name="quantum_panel_bg_color_black">@android:color/black</color>
 
     <color name="outline_color">#FFFFFFFF</color>
     <color name="all_apps_divider_color">#1E000000</color>
     <color name="all_apps_caret_color">#FFFFFFFF</color>
     <color name="all_apps_caret_shadow_color">#22000000</color>
     <color name="all_apps_container_color">#FFF2F2F2</color>
+    <color name="all_apps_container_color_dark">#ff212121</color>
+    <color name="all_apps_container_color_black">@android:color/black</color>
+    <color name="all_apps_container_color_blur">#00ffffff</color>
+    <color name="all_apps_container_color_blur_dark">#00212121</color>
+    <color name="all_apps_container_color_blur_black">#00000000</color>
+    <color name="all_apps_empty_search_text_color">#212121</color>
+    <color name="all_apps_empty_search_text_color_dark">@android:color/white</color>
+    <color name="all_apps_round_searchbar_bg_color">#10000000</color>
+    <color name="all_apps_round_searchbar_bg_color_dark">#10ffffff</color>
+    <color name="all_apps_round_searchbar_divider_color">#10111111</color>
+    <color name="all_apps_round_searchbar_divider_color_dark">#10eeeeee</color>
+    <color name="all_apps_round_searchbar_hint_color">@color/quantum_panel_text_color</color>
+    <color name="all_apps_round_searchbar_hint_color_dark">@android:color/white</color>
+    <color name="all_apps_round_searchbar_text_color">#4c4c4c</color>
+    <color name="all_apps_round_searchbar_text_color_dark">@android:color/white</color>
     <color name="all_apps_statusbar_color">#28000000</color>
 
     <color name="spring_loaded_panel_color">#40FFFFFF</color>
@@ -55,12 +71,20 @@
 
     <color name="qsb_connector">#fff2f2f2</color>
     <color name="qsb_background">#ffffffff</color>
+    <color name="qsb_background_dark">#ff212121</color>
+    <color name="qsb_background_black">@android:color/black</color>
     <color name="weather_widget_text_color">#ffffffff</color>
     <color name="default_shadow_color_no_alpha">#ff000000</color>
     <color name="popup_header_background_color">#ffeeeeee</color>
+    <color name="popup_header_background_color_dark">#ff101010</color>
+    <color name="popup_header_background_color_black">@android:color/black</color>
     <color name="popup_background_color">#ffffffff</color>
+    <color name="popup_background_color_dark">#ff212121</color>
+    <color name="popup_background_color_black">#ff101010</color>
     <color name="notification_icon_default_color">#ff757575</color>
     <color name="notification_color_beneath">#ffe0e0e0</color>
+    <color name="notification_color_beneath_dark">#ff252525</color>
+    <color name="notification_color_beneath_black">#ff101010</color>
     <color name="badge_color">#fff</color>
     <color name="blue_grey_100">#ffcfd8dc</color>
     <color name="search_bar_text_color">#4c4c4c</color>
@@ -72,8 +96,28 @@
     <color name="drop_target_text_color">#fff</color>
     <color name="overview_button_text_color">#fff</color>
     <color name="plane_color">#fff</color>
+    <color name="folder_name_text_color">#EE777777</color>
+    <color name="folder_name_text_color_dark">#EEEEEEEE</color>
     <color name="folder_name_highlight_color">#ffCCCCCC</color>
     <color name="folder_name_hint_color">#ff808080</color>
     <color name="wallpaper_picker_item_label_text_color">#fff</color>
     <color name="qsb_connector_gradient_end_color">#66ffffff</color>
+
+    <color name="blur_tint_color">#45ffffff</color>
+    <color name="blur_tint_color_dark">#45212121</color>
+    <color name="blur_tint_color_black">#45212121</color>
+    <color name="folder_bg_color_blur">#75FFFFFF</color>
+    <color name="folder_bg_color_blur_dark">#75212121</color>
+    <color name="folder_bg_color_blur_black">#75000000</color>
+
+    <color name="color_primary_settings">#fff5f5f5</color>
+    <color name="color_primary_dark_settings">#757575</color>
+    <color name="color_primary_dark_settings_v23">#e0e0e0</color>
+    <color name="color_primary_settings_dark">#ff2d2d2d</color>
+    <color name="color_primary_dark_settings_dark">#ff242424</color>
+    <color name="color_primary_settings_black">@android:color/black</color>
+    <color name="color_primary_dark_settings_black">@android:color/black</color>
+    <color name="color_navigationbar_settings">#ff000000</color>
+    <color name="color_navigationbar_settings_dark">#ff000000</color>
+    <color name="color_navigationbar_settings_black">#ff000000</color>
 </resources>
