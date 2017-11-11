@@ -36,9 +36,7 @@ abstract class SelectableAdapter<VH extends RecyclerView.ViewHolder> extends Rec
     }
 
     public String toggleSelection(int position, String packageName) {
-
         if (mSelections.contains(packageName)) {
-
             mSelections.remove(packageName);
         } else {
             mSelections.add(packageName);
@@ -49,6 +47,12 @@ abstract class SelectableAdapter<VH extends RecyclerView.ViewHolder> extends Rec
         } else {
             return mContext.getString(R.string.hidden_app);
         }
+    }
+
+    public String clearSelection() {
+        mSelections.clear();
+        notifyDataSetChanged();
+        return mContext.getString(R.string.hidden_app);
     }
 
     public void addSelectionsToHideList(Context context) {

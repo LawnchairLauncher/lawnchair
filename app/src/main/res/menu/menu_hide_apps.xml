@@ -6,4 +6,7 @@
         android:title="@string/hide_app_apply"
         android:icon="@drawable/ic_check"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_reset"
+        android:title="@string/hide_app_reset" />
 </menu>

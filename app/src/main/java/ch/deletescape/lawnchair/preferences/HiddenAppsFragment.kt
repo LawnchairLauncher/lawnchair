@@ -68,9 +68,12 @@ class HiddenAppsFragment : Fragment(), MultiSelectRecyclerViewAdapter.ItemClickL
         return when (item.itemId) {
             R.id.action_apply -> {
                 adapter.addSelectionsToHideList(activity)
-                val appState = LauncherAppState.getInstanceNoCreate()
-                appState.reloadAllApps()
+                LauncherAppState.getInstanceNoCreate().reloadAllApps()
                 activity!!.onBackPressed()
+                true
+            }
+            R.id.action_reset -> {
+                activity!!.title = adapter.clearSelection()
                 true
             }
             else -> super.onOptionsItemSelected(item)
