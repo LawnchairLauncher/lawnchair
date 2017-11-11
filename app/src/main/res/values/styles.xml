@@ -105,28 +105,26 @@
         <item name="folderBgColorBlur">@color/folder_bg_color_blur_black</item>
     </style>
 
-    <style name="SettingsTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="SettingsTheme" parent="Theme.AppCompat.Light">
         <item name="colorPrimaryDark">@color/color_primary_dark_settings</item>
         <item name="colorPrimary">@color/color_primary_settings</item>
         <item name="colorAccent">@color/accent_material_light</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="blurTintColor">#45ffffff</item>
         <item name="android:navigationBarColor">@color/color_navigationbar_settings</item>
-        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="SettingsHome" parent="SettingsTheme">
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
 
-    <style name="SettingsTheme.Dark" parent="Theme.AppCompat.NoActionBar">
+    <style name="SettingsTheme.Dark" parent="Theme.AppCompat">
         <item name="colorPrimaryDark">@color/color_primary_dark_settings_dark</item>
         <item name="colorPrimary">@color/color_primary_settings_dark</item>
         <item name="colorAccent">@color/accent_material_light</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <item name="blurTintColor">#45212121</item>
         <item name="android:navigationBarColor">@color/color_navigationbar_settings_dark</item>
-        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="SettingsHome.Dark" parent="SettingsTheme.Dark">
