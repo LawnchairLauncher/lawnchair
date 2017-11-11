@@ -1,8 +1,5 @@
 package ch.deletescape.lawnchair;
 
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,16 +10,16 @@ import android.widget.TextView;
 
 import java.util.List;
 
-class MultiSelectRecyclerViewAdapter extends SelectableAdapter<MultiSelectRecyclerViewAdapter.ViewHolder> {
+import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 
-    private List<ResolveInfo> mResolveInfos;
+public class MultiSelectRecyclerViewAdapter extends SelectableAdapter<MultiSelectRecyclerViewAdapter.ViewHolder> {
+
+    private List<LauncherActivityInfoCompat> mResolveInfos;
     private ItemClickListener mClickListener;
-    private PackageManager mPackageManager;
 
-    MultiSelectRecyclerViewAdapter(Context context, List<ResolveInfo> resolveInfos, ItemClickListener clickListener) {
+    public MultiSelectRecyclerViewAdapter(List<LauncherActivityInfoCompat> resolveInfos, ItemClickListener clickListener) {
         mResolveInfos = resolveInfos;
         mClickListener = clickListener;
-        mPackageManager = context.getPackageManager();
     }
 
     // Create new views
@@ -38,11 +35,11 @@ class MultiSelectRecyclerViewAdapter extends SelectableAdapter<MultiSelectRecycl
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
 
-        String packageName = mResolveInfos.get(position).activityInfo.packageName;
-        viewHolder.label.setText(mResolveInfos.get(position).loadLabel(mPackageManager));
-        viewHolder.icon.setImageDrawable(mResolveInfos.get(position).loadIcon(mPackageManager));
+        String component = mResolveInfos.get(position).getComponentName().flattenToString();
+        viewHolder.label.setText(mResolveInfos.get(position).getLabel());
+        viewHolder.icon.setImageDrawable(mResolveInfos.get(position).getIcon(0));
 
-        viewHolder.checkBox.setChecked(isSelected(packageName));
+        viewHolder.checkBox.setChecked(isSelected(component));
     }
 
     @Override
@@ -62,9 +59,9 @@ class MultiSelectRecyclerViewAdapter extends SelectableAdapter<MultiSelectRecycl
 
             this.listener = listener;
 
-            label = (TextView) itemLayoutView.findViewById(R.id.label);
-            icon = (ImageView) itemLayoutView.findViewById(R.id.icon);
-            checkBox = (CheckBox) itemLayoutView.findViewById(R.id.check);
+            label = itemLayoutView.findViewById(R.id.label);
+            icon = itemLayoutView.findViewById(R.id.icon);
+            checkBox = itemLayoutView.findViewById(R.id.check);
 
             itemLayoutView.setOnClickListener(this);
         }
@@ -77,7 +74,7 @@ class MultiSelectRecyclerViewAdapter extends SelectableAdapter<MultiSelectRecycl
         }
     }
 
-    interface ItemClickListener {
+    public interface ItemClickListener {
         void onItemClicked(int position);
     }
 }

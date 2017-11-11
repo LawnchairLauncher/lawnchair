@@ -35,7 +35,7 @@ abstract class SelectableAdapter<VH extends RecyclerView.ViewHolder> extends Rec
         return mSelections.contains(packageName);
     }
 
-    void toggleSelection(ActionBar actionBar, int position, String packageName) {
+    public String toggleSelection(int position, String packageName) {
 
         if (mSelections.contains(packageName)) {
 
@@ -43,15 +43,15 @@ abstract class SelectableAdapter<VH extends RecyclerView.ViewHolder> extends Rec
         } else {
             mSelections.add(packageName);
         }
-        if (!mSelections.isEmpty()) {
-            actionBar.setTitle(String.valueOf(mSelections.size()) + mContext.getString(R.string.hide_app_selected));
-        } else {
-            actionBar.setTitle(mContext.getString(R.string.hidden_app));
-        }
         notifyItemChanged(position);
+        if (!mSelections.isEmpty()) {
+            return String.valueOf(mSelections.size()) + mContext.getString(R.string.hide_app_selected);
+        } else {
+            return mContext.getString(R.string.hidden_app);
+        }
     }
 
-    void addSelectionsToHideList(Context context) {
+    public void addSelectionsToHideList(Context context) {
         PreferenceProvider.INSTANCE.getPreferences(context).setHiddenAppsSet(mSelections);
     }
 }

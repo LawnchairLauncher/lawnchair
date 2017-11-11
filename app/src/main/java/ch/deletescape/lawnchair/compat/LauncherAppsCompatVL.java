@@ -49,7 +49,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
     LauncherAppsCompatVL(Context context) {
         mContext = context;
-        mLauncherApps = (LauncherApps) context.getSystemService("launcherapps");
+        mLauncherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
     }
 
     @Override

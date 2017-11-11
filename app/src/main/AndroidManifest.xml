@@ -180,12 +180,6 @@
             android:name=".BlankActivity"
             android:theme="@style/Theme.Transparent" />
 
-        <activity
-            android:name="ch.deletescape.lawnchair.MultiSelectRecyclerViewActivity"
-            android:autoRemoveFromRecents="true"
-            android:label="string/hidden_app"
-            android:theme="@style/SettingsTheme" />
-
         <activity-alias
             android:name=".FakeLauncher"
             android:enabled="false"

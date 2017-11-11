@@ -492,4 +492,5 @@
     <string name="hide_app_selected">&#160;selected</string>
     <string name="hidden_app">Hidden app</string>
     <string name="hide_selected">Hide selected app</string>
+    <string name="hide_app_apply">Apply</string>
 </resources>
