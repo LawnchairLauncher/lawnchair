@@ -29,8 +29,9 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
@@ -72,7 +73,7 @@ public class DragView extends FrameLayout {
     private Bitmap mBitmap;
     private Bitmap mCrossFadeBitmap;
     @Thunk
-    Paint mPaint;
+    Paint mPaint, mMaskPaint;
     private final int mRegistrationX;
     private final int mRegistrationY;
 
@@ -107,8 +108,10 @@ public class DragView extends FrameLayout {
     private SpringAnimation mSpringX;
     private SpringAnimation mSpringY;
 
-    private Path mScaledMaskPath;
     private float mDelta;
+
+    private Canvas mTmpCanvas;
+    private Bitmap mTmpBitmap;
 
     /**
      * Construct the drag view.
@@ -165,6 +168,8 @@ public class DragView extends FrameLayout {
         int ms = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         measure(ms, ms);
         mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
+        mMaskPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
+        mMaskPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
 
         setElevation(getResources().getDimension(R.dimen.drag_elevation));
         mInitialScale = initialScale;
@@ -420,15 +425,15 @@ public class DragView extends FrameLayout {
                         float dimension = mLauncher.getResources().getDimension(R.dimen.blur_size_medium_outline);
                         float scale = IconNormalizer.getInstance().getScale(fullDrawable, null) * ((((float) width) - dimension) / ((float) width));
                         fullDrawable.setBounds(0, 0, width, height);
-                        final Path wrap0 = getMaskPath(fullDrawable, scale);
                         mFgImageView = setupImageView(Utilities.getForeground(fullDrawable), scale);
                         mBgImageView = setupImageView(Utilities.getBackground(fullDrawable), scale);
                         mSpringX = setupSpringAnimation((-width) / 4, width / 4, DynamicAnimation.TRANSLATION_X);
                         mSpringY = setupSpringAnimation((-height) / 4, height / 4, DynamicAnimation.TRANSLATION_Y);
+                        mTmpBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                        mTmpCanvas = new Canvas(mTmpBitmap);
                         Handler handler = new Handler(Looper.getMainLooper());
                         handler.post(new Runnable() {
                             public void run() {
-                                mScaledMaskPath = wrap0;
                                 addView(mBgImageView);
                                 addView(mFgImageView);
                                 setWillNotDraw(true);
@@ -517,12 +522,10 @@ public class DragView extends FrameLayout {
     }
 
     protected void dispatchDraw(Canvas canvas) {
-        if (this.mScaledMaskPath != null) {
-            int save = canvas.save();
-            canvas.drawBitmap(mBitmap, 0, 0, mPaint);
-            canvas.clipPath(mScaledMaskPath);
-            super.dispatchDraw(canvas);
-            canvas.restoreToCount(save);
+        if (mTmpCanvas != null) {
+            super.dispatchDraw(mTmpCanvas);
+            mTmpCanvas.drawBitmap(mBitmap, 0, 0, mMaskPaint);
+            canvas.drawBitmap(mTmpBitmap, 0, 0, mPaint);
             return;
         }
         super.dispatchDraw(canvas);
