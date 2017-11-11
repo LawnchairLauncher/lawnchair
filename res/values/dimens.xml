@@ -232,4 +232,7 @@
     <dimen name="horizontal_ellipsis_offset">19dp</dimen>
     <dimen name="popup_item_divider_height">0.5dp</dimen>
     <dimen name="swipe_helper_falsing_threshold">70dp</dimen>
+
+<!-- Recents -->
+    <dimen name="recents_page_spacing">10dp</dimen>
 </resources>

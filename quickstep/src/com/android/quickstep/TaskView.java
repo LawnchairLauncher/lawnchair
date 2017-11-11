@@ -16,16 +16,25 @@
 
 package com.android.quickstep;
 
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.android.launcher3.R;
+import com.android.launcher3.uioverrides.OverviewState;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskCallbacks;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecCompat;
+import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecsFuture;
+import com.android.systemui.shared.recents.view.RecentsTransition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A task in the Recents view.
@@ -48,10 +57,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks {
         super(context, attrs, defStyleAttr);
         setWillNotDraw(false);
         setOnClickListener((view) -> {
-            if (mTask != null) {
-                ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(mTask.key,
-                        null, null, null);
-            }
+            launchTask(true /* animate */);
         });
     }
 
@@ -65,20 +71,63 @@ public class TaskView extends FrameLayout implements TaskCallbacks {
      * Updates this task view to the given {@param task}.
      */
     public void bind(Task task) {
+        if (mTask != null) {
+            mTask.removeCallback(this);
+        }
         mTask = task;
         task.addCallback(this);
+    }
+
+    public Task getTask() {
+        return mTask;
+    }
+
+    public TaskThumbnailView getThumbnail() {
+        return mSnapshotView;
+    }
+
+    public void launchTask(boolean animate) {
+        if (mTask != null) {
+            final ActivityOptions opts;
+            if (animate) {
+                // Calculate the bounds of the thumbnail to animate from
+                final Rect bounds = new Rect();
+                final int[] pos = new int[2];
+                mSnapshotView.getLocationInWindow(pos);
+                bounds.set(pos[0], pos[1],
+                        pos[0] + mSnapshotView.getWidth(),
+                        pos[1] + mSnapshotView.getHeight());
+                AppTransitionAnimationSpecsFuture animFuture =
+                        new AppTransitionAnimationSpecsFuture(getHandler()) {
+                            @Override
+                            public List<AppTransitionAnimationSpecCompat> composeSpecs() {
+                                ArrayList<AppTransitionAnimationSpecCompat> specs =
+                                        new ArrayList<>();
+                                specs.add(new AppTransitionAnimationSpecCompat(mTask.key.id, null,
+                                        bounds));
+                                return specs;
+                            }
+                        };
+                opts = RecentsTransition.createAspectScaleAnimation(
+                        getContext(), getHandler(), true /* scaleUp */, animFuture, null);
+            } else {
+                opts = ActivityOptions.makeCustomAnimation(getContext(), 0, 0);
+            }
+            ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(mTask.key,
+                    opts, null, null);
+        }
     }
 
     @Override
     public void onTaskDataLoaded(Task task, ThumbnailData thumbnailData) {
         mSnapshotView.setThumbnail(thumbnailData);
-        mSnapshotView.setDimAlpha(1f);
         mIconView.setImageDrawable(task.icon);
     }
 
     @Override
     public void onTaskDataUnloaded() {
-        // Do nothing
+        mSnapshotView.setThumbnail(null);
+        mIconView.setImageDrawable(null);
     }
 
     @Override

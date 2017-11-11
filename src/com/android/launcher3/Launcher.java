@@ -63,7 +63,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -361,6 +360,8 @@ public class Launcher extends BaseActivity
         mPopupDataProvider = new PopupDataProvider(this);
 
         restoreState(savedInstanceState);
+
+        InternalStateHandler.handleCreate(this, getIntent());
 
         // We only load the page synchronously if the user rotates (or triggers a
         // configuration change) while launcher is in the foreground
@@ -1347,7 +1348,6 @@ public class Launcher extends BaseActivity
         // Check this condition before handling isActionMain, as this will get reset.
         boolean shouldMoveToDefaultScreen = alreadyOnHome && isInState(NORMAL)
                 && AbstractFloatingView.getTopOpenView(this) == null;
-
         boolean isActionMain = Intent.ACTION_MAIN.equals(intent.getAction());
         if (isActionMain) {
             if (mWorkspace == null) {
@@ -1407,7 +1407,7 @@ public class Launcher extends BaseActivity
                 });
             }
         }
-        InternalStateHandler.handleIntent(this, intent);
+        InternalStateHandler.handleNewIntent(this, intent, alreadyOnHome);
 
         TraceHelper.endSection("NEW_INTENT");
     }

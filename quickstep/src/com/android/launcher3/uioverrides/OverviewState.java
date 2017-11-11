@@ -46,12 +46,14 @@ public class OverviewState extends LauncherState {
 
     @Override
     public void onStateEnabled(Launcher launcher) {
-        ((RecentsView) launcher.getOverviewPanel()).setViewVisible(true);
+        RecentsView rv = launcher.getOverviewPanel();
+        rv.setOverviewStateEnabled(true);
     }
 
     @Override
     public void onStateDisabled(Launcher launcher) {
-        ((RecentsView) launcher.getOverviewPanel()).setViewVisible(false);
+        RecentsView rv = launcher.getOverviewPanel();
+        rv.setOverviewStateEnabled(false);
     }
 
     @Override

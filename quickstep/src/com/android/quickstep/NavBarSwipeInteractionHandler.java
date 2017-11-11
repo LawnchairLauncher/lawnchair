@@ -40,8 +40,15 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.states.InternalStateHandler;
+import com.android.launcher3.uioverrides.OverviewState;
+import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.BackgroundExecutor;
+import com.android.systemui.shared.system.WindowManagerWrapper;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @TargetApi(Build.VERSION_CODES.O)
 public class NavBarSwipeInteractionHandler extends InternalStateHandler implements FrameCallback {
@@ -66,13 +73,15 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler implemen
 
     private static final float MIN_PROGRESS_FOR_OVERVIEW = 0.5f;
 
+    private final Rect mStableInsets = new Rect();
     private final Rect mSourceRect = new Rect();
     private final Rect mTargetRect = new Rect();
     private final Rect mCurrentRect = new Rect();
     private final RectEvaluator mRectEvaluator = new RectEvaluator(mCurrentRect);
 
     private final Bitmap mTaskSnapshot;
-    private final RunningTaskInfo mTaskInfo;
+    private final int mRunningTaskId;
+    private Future<RecentsTaskLoadPlan> mFutureLoadPlan;
 
     private Launcher mLauncher;
     private Choreographer mChoreographer;
@@ -94,9 +103,10 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler implemen
     private boolean mTouchEnded = false;
     private float mEndVelocity;
 
-    NavBarSwipeInteractionHandler(Bitmap taskSnapShot, RunningTaskInfo taskInfo) {
+    NavBarSwipeInteractionHandler(Bitmap taskSnapShot, RunningTaskInfo runningTaskInfo) {
         mTaskSnapshot = taskSnapShot;
-        mTaskInfo = taskInfo;
+        mRunningTaskId = runningTaskInfo.id;
+        WindowManagerWrapper.getInstance().getStableInsets(mStableInsets);
     }
 
     @Override
@@ -109,22 +119,39 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler implemen
     }
 
     @Override
-    public void onNewIntent(Launcher launcher) {
+    public void onCreate(Launcher launcher) {
         mLauncher = launcher;
-
-        // Go immediately
-        launcher.getStateManager().goToState(LauncherState.OVERVIEW, false);
-
-        // Optimization
-        launcher.getAppsView().setVisibility(View.GONE);
-
-        mDragView = new SnapshotDragView(launcher, mTaskSnapshot);
-        launcher.getDragLayer().addView(mDragView);
+        mDragView = new SnapshotDragView(mLauncher, mTaskSnapshot);
+        mLauncher.getDragLayer().addView(mDragView);
         mDragView.setPivotX(0);
         mDragView.setPivotY(0);
-        mRecentsView = launcher.getOverviewPanel();
-        mRecentsView.scrollTo(0, 0);
-        mHotseat = launcher.getHotseat();
+        mRecentsView = mLauncher.getOverviewPanel();
+        mHotseat = mLauncher.getHotseat();
+
+        // Optimization
+        mLauncher.getAppsView().setVisibility(View.GONE);
+
+        // Launch overview
+        mRecentsView.update(consumeLastLoadPlan());
+        mLauncher.getStateManager().goToState(LauncherState.OVERVIEW, false /* animate */);
+    }
+
+    @Override
+    public void onNewIntent(Launcher launcher, boolean alreadyOnHome) {
+        mLauncher = launcher;
+        mDragView = new SnapshotDragView(mLauncher, mTaskSnapshot);
+        mLauncher.getDragLayer().addView(mDragView);
+        mDragView.setPivotX(0);
+        mDragView.setPivotY(0);
+        mRecentsView = mLauncher.getOverviewPanel();
+        mHotseat = mLauncher.getHotseat();
+
+        // Optimization
+        mLauncher.getAppsView().setVisibility(View.GONE);
+
+        // Launch overview, animate if already on home
+        mRecentsView.update(consumeLastLoadPlan());
+        mLauncher.getStateManager().goToState(LauncherState.OVERVIEW, alreadyOnHome);
     }
 
     @BinderThread
@@ -167,19 +194,46 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler implemen
             // Init target rect.
             View targetView = ((ViewGroup) mRecentsView.getChildAt(0)).getChildAt(0);
             dl.getViewRectRelativeToSelf(targetView, mTargetRect);
+            mTargetRect.right = mTargetRect.left + mTargetRect.width();
+            mTargetRect.bottom = mTargetRect.top + mTargetRect.height();
             mSourceRect.set(0, 0, dl.getWidth(), dl.getHeight());
         }
 
-        mCurrentShift = shift;
-        int hotseatHeight = mHotseat.getHeight();
-        mHotseat.setTranslationY((1 - shift) * hotseatHeight);
+        if (!mSourceRect.isEmpty()) {
+            mCurrentShift = shift;
+            int hotseatHeight = mHotseat.getHeight();
+            mHotseat.setTranslationY((1 - shift) * hotseatHeight);
 
-        mRectEvaluator.evaluate(shift, mSourceRect, mTargetRect);
+            mRectEvaluator.evaluate(shift, mSourceRect, mTargetRect);
 
-        mDragView.setTranslationX(mCurrentRect.left);
-        mDragView.setTranslationY(mCurrentRect.top);
-        mDragView.setScaleX((float) mCurrentRect.width() / mSourceRect.width());
-        mDragView.setScaleY((float) mCurrentRect.width() / mSourceRect.width());
+            float scale = (float) mCurrentRect.width() / mSourceRect.width();
+            mDragView.setTranslationX(mCurrentRect.left - mStableInsets.left * scale * shift);
+            mDragView.setTranslationY(mCurrentRect.top - mStableInsets.top * scale * shift);
+            mDragView.setScaleX(scale);
+            mDragView.setScaleY(scale);
+            mDragView.getViewBounds().setClipTop((int) (mStableInsets.top * shift));
+            mDragView.getViewBounds().setClipBottom((int) (mStableInsets.bottom * shift));
+        }
+    }
+
+    void setLastLoadPlan(Future<RecentsTaskLoadPlan> futureLoadPlan) {
+        if (mFutureLoadPlan != null) {
+            mFutureLoadPlan.cancel(true);
+        }
+        mFutureLoadPlan = futureLoadPlan;
+    }
+
+    private RecentsTaskLoadPlan consumeLastLoadPlan() {
+        try {
+            if (mFutureLoadPlan != null) {
+                return mFutureLoadPlan.get();
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        } finally {
+            mFutureLoadPlan = null;
+        }
+        return null;
     }
 
     @UiThread
@@ -229,9 +283,8 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler implemen
         mHotseat.setTranslationY(0);
         mLauncher.setOnResumeCallback(() -> mDragView.close(false));
 
-        // TODO: Task key should be received from Recents model
-        TaskKey taskKey = new TaskKey(mTaskInfo.id, 0, null, UserHandle.myUserId(), 0);
-        ActivityManagerWrapper.getInstance()
-                .startActivityFromRecentsAsync(taskKey, null, null, null);
+        // TODO: For now, assume that the task stack will have loaded in the bg, will update
+        // the lib api later for direct call
+        mRecentsView.launchTaskWithId(mRunningTaskId);
     }
 }
