@@ -80,7 +80,6 @@ import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
-import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -440,10 +439,7 @@ public class Workspace extends PagedView
         setClipChildren(false);
         setClipToPadding(false);
 
-        // TODO: Remove this
-        setMinScale(OverviewState.SCALE_FACTOR);
         setupLayoutTransition();
-
         mMaxDistanceForFolderCreation = (0.55f * grid.iconSizePx);
 
         // Set the wallpaper dimensions when Launcher starts up

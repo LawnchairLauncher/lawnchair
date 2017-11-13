@@ -1064,7 +1064,6 @@ public class Launcher extends BaseActivity
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         mDragController.setMoveTarget(mWorkspace);
-        mDragController.addDropTarget(mWorkspace);
         mDropTargetBar.setup(mDragController);
 
         mAllAppsController.setupViews(mAppsView, mHotseat, mWorkspace);
