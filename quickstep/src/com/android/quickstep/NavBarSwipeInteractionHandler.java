@@ -90,9 +90,9 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler implemen
     private float mCurrentShift;
 
     // These are updated on the binder thread, and eventually picked up on doFrame
-    private float mCurrentDisplacement;
-    private boolean mTouchEnded = false;
-    private float mEndVelocity;
+    private volatile float mCurrentDisplacement;
+    private volatile float mEndVelocity;
+    private volatile boolean mTouchEnded = false;
 
     NavBarSwipeInteractionHandler(Bitmap taskSnapShot, RunningTaskInfo taskInfo) {
         mTaskSnapshot = taskSnapShot;
@@ -127,6 +127,12 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler implemen
         mHotseat = launcher.getHotseat();
     }
 
+    /**
+     * This is updated on the binder thread and is picked up on the UI thread during the next
+     * scheduled frame.
+     * TODO: Instead of continuously scheduling frames, post the motion events to UI thread
+     * (can ignore all continuous move events until the last move).
+     */
     @BinderThread
     public void updateDisplacement(float displacement) {
         mCurrentDisplacement = displacement;
@@ -134,8 +140,8 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler implemen
 
     @BinderThread
     public void endTouch(float endVelocity) {
-        mTouchEnded = true;
         mEndVelocity = endVelocity;
+        mTouchEnded = true;
     }
 
     @UiThread
