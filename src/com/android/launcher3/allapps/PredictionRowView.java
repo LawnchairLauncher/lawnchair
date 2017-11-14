@@ -21,9 +21,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ComponentKeyMapper;
@@ -43,6 +45,8 @@ public class PredictionRowView extends LinearLayout {
     private final List<ComponentKeyMapper<AppInfo>> mPredictedAppComponents = new ArrayList<>();
     // The set of predicted apps resolved from the component names and the current set of apps
     private final List<AppInfo> mPredictedApps = new ArrayList<>();
+    // This adapter is only used to create an identical item w/ same behavior as in the all apps RV
+    private AllAppsGridAdapter mAdapter;
 
     public PredictionRowView(@NonNull Context context) {
         this(context, null);
@@ -53,8 +57,11 @@ public class PredictionRowView extends LinearLayout {
         setOrientation(LinearLayout.HORIZONTAL);
     }
 
-    public void setComponentToAppMap(HashMap<ComponentKey, AppInfo> componentToAppMap) {
-        this.mComponentToAppMap = componentToAppMap;
+    public void setup(AllAppsGridAdapter adapter,
+            HashMap<ComponentKey, AppInfo> componentToAppMap, int numPredictedAppsPerRow) {
+        mAdapter = adapter;
+        mComponentToAppMap = componentToAppMap;
+        mNumPredictedAppsPerRow = numPredictedAppsPerRow;
     }
 
     /**
@@ -62,10 +69,6 @@ public class PredictionRowView extends LinearLayout {
      */
     public void setNumAppsPerRow(int numPredictedAppsPerRow) {
         mNumPredictedAppsPerRow = numPredictedAppsPerRow;
-    }
-
-    public void onAppsUpdated() {
-        // TODO
     }
 
     /**
@@ -87,15 +90,35 @@ public class PredictionRowView extends LinearLayout {
     public void setPredictedApps(List<ComponentKeyMapper<AppInfo>> apps) {
         mPredictedAppComponents.clear();
         mPredictedAppComponents.addAll(apps);
+        mPredictedApps.addAll(processPredictedAppComponents(mPredictedAppComponents));
+        onAppsUpdated();
+    }
 
-        List<AppInfo> newPredictedApps = processPredictedAppComponents(apps);
-        // We only need to do work if any of the visible predicted apps have changed.
-        if (!newPredictedApps.equals(mPredictedApps)) {
-            if (newPredictedApps.size() == mPredictedApps.size()) {
-                swapInNewPredictedApps(newPredictedApps);
+    private void onAppsUpdated() {
+        if (getChildCount() != mNumPredictedAppsPerRow) {
+            while (getChildCount() > mNumPredictedAppsPerRow) {
+                removeViewAt(0);
+            }
+            while (getChildCount() < mNumPredictedAppsPerRow) {
+                AllAppsGridAdapter.ViewHolder holder = mAdapter
+                        .onCreateViewHolder(this, AllAppsGridAdapter.VIEW_TYPE_ICON);
+                BubbleTextView icon = (BubbleTextView) holder.itemView;
+                LinearLayout.LayoutParams params =
+                        new LayoutParams(0, icon.getLayoutParams().height);
+                params.weight = 1;
+                icon.setLayoutParams(params);
+                addView(icon);
+            }
+        }
+
+        for (int i = 0; i < getChildCount(); i++) {
+            BubbleTextView icon = (BubbleTextView) getChildAt(i);
+            icon.reset();
+            if (mPredictedApps.size() > i) {
+                icon.setVisibility(View.VISIBLE);
+                icon.applyFromApplicationInfo(mPredictedApps.get(i));
             } else {
-                // We need to update the appIndex of all the items.
-                onAppsUpdated();
+                icon.setVisibility(View.INVISIBLE);
             }
         }
     }
@@ -124,16 +147,4 @@ public class PredictionRowView extends LinearLayout {
         }
         return predictedApps;
     }
-
-    /**
-     * Swaps out the old predicted apps with the new predicted apps, in place. This optimization
-     * allows us to skip an entire relayout that would otherwise be called by notifyDataSetChanged.
-     *
-     * Note: This should only be called if the # of predicted apps is the same.
-     *       This method assumes that predicted apps are the first items in the adapter.
-     */
-    private void swapInNewPredictedApps(List<AppInfo> apps) {
-        // TODO
-    }
-
 }

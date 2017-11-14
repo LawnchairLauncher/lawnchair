@@ -35,21 +35,27 @@
         android:id="@+id/all_apps_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:paddingTop="30dp"
+        android:paddingTop="@dimen/all_apps_header_top_padding"
+        android:clipToPadding="false"
         android:layout_below="@id/search_container_all_apps" >
 
         <com.android.launcher3.allapps.PredictionRowView
             android:id="@+id/header_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
+
+        <include layout="@layout/all_apps_divider"
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tabs" />
 
         <com.android.launcher3.views.SlidingTabStrip
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="@dimen/all_apps_header_tab_height"
             android:layout_below="@id/header_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal" >
             <Button
                 android:id="@+id/tab_personal"
                 android:layout_width="0dp"
@@ -67,7 +73,6 @@
                 android:textColor="@color/all_apps_tab_text"
                 android:background="?android:attr/selectableItemBackground"/>
         </com.android.launcher3.views.SlidingTabStrip>
-
     </RelativeLayout>
 
     <!-- Note: we are reusing/repurposing a system attribute for search layout, because of a
