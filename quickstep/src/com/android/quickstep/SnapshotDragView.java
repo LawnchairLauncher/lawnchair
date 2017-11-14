@@ -23,6 +23,7 @@ import android.view.MotionEvent;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
+import com.android.systemui.shared.recents.view.AnimateableViewBounds;
 
 /**
  * Floating view which shows the task snapshot allowing it to be dragged and placed.
@@ -31,12 +32,20 @@ public class SnapshotDragView extends AbstractFloatingView implements Insettable
 
     private final Launcher mLauncher;
     private final Bitmap mSnapshot;
+    private final AnimateableViewBounds mViewBounds;
 
     public SnapshotDragView(Launcher launcher, Bitmap snapshot) {
         super(launcher, null);
         mLauncher = launcher;
         mSnapshot = snapshot;
+        mViewBounds = new AnimateableViewBounds(this, 0);
         setWillNotDraw(false);
+        setClipToOutline(true);
+        setOutlineProvider(mViewBounds);
+    }
+
+    AnimateableViewBounds getViewBounds() {
+        return mViewBounds;
     }
 
     @Override

@@ -23,8 +23,10 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
 import android.app.Service;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -32,6 +34,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.os.UserHandle;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -39,9 +42,17 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.R;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
+import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
+import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan.Options;
+import com.android.systemui.shared.recents.model.RecentsTaskLoader;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.BackgroundExecutor;
+
+import java.util.concurrent.Future;
 
 /**
  * Service connected by system-UI for handling touch interaction.
@@ -49,6 +60,8 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 public class TouchInteractionService extends Service {
 
     private static final String TAG = "TouchInteractionService";
+
+    private static RecentsTaskLoader sRecentsTaskLoader;
 
     private final IBinder mMyBinder = new IOverviewProxy.Stub() {
 
@@ -67,6 +80,7 @@ public class TouchInteractionService extends Service {
     private RunningTaskInfo mRunningTask;
     private Intent mHomeIntent;
     private ComponentName mLauncher;
+
 
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
@@ -89,12 +103,24 @@ public class TouchInteractionService extends Service {
         ResolveInfo info = getPackageManager().resolveActivity(mHomeIntent, 0);
         mLauncher = new ComponentName(getPackageName(), info.activityInfo.name);
         mHomeIntent.setComponent(mLauncher);
+
+        Resources res = getResources();
+        if (sRecentsTaskLoader == null) {
+            sRecentsTaskLoader = new RecentsTaskLoader(this,
+                    res.getInteger(R.integer.config_recentsMaxThumbnailCacheSize),
+                    res.getInteger(R.integer.config_recentsMaxIconCacheSize), 0);
+            sRecentsTaskLoader.startLoader(this);
+        }
     }
 
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "Touch service connected");
         return mMyBinder;
+    }
+
+    public static RecentsTaskLoader getRecentsTaskLoader() {
+        return sRecentsTaskLoader;
     }
 
     private void handleMotionEvent(MotionEvent ev) {
@@ -170,16 +196,46 @@ public class TouchInteractionService extends Service {
     }
 
     private void startTouchTracking() {
-        mInteractionHandler = new NavBarSwipeInteractionHandler(getCurrentTaskSnapshot(), mRunningTask);
+        // Create the shared handler
+        mInteractionHandler = new NavBarSwipeInteractionHandler(getCurrentTaskSnapshot(),
+                mRunningTask);
 
-        Bundle extras = new Bundle();
-        extras.putBinder(EXTRA_STATE_HANDLER, mInteractionHandler);
-        Intent homeIntent = new Intent(mHomeIntent).putExtras(extras);
+        // Preload and start the recents activity on a background thread
+        final Context context = this;
+        final int runningTaskId = ActivityManagerWrapper.getInstance().getRunningTask().id;
+        final RecentsTaskLoadPlan loadPlan = new RecentsTaskLoadPlan(context);
+        Future<RecentsTaskLoadPlan> loadPlanFuture = BackgroundExecutor.get().submit(() -> {
+            // Preload the plan
+            RecentsTaskLoader loader = TouchInteractionService.getRecentsTaskLoader();
+            loadPlan.preloadPlan(loader, runningTaskId, UserHandle.myUserId());
 
-        // TODO: Call ActivityManager#startRecentsActivity instead, so that the system knows that
-        // recents was started and not Home.
-        startActivity(homeIntent,
-                ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle());
+            // Pass the
+            Bundle extras = new Bundle();
+            extras.putBinder(EXTRA_STATE_HANDLER, mInteractionHandler);
+
+            // Start the activity
+            Intent homeIntent = new Intent(mHomeIntent);
+            homeIntent.putExtras(extras);
+            startActivity(homeIntent, ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle());
+            /*
+            ActivityManagerWrapper.getInstance().startRecentsActivity(null, options,
+                    ActivityOptions.makeCustomAnimation(this, 0, 0), UserHandle.myUserId(),
+                    null, null);
+             */
+
+            // Kick off loading of the plan while the activity is starting
+            Options loadOpts = new Options();
+            loadOpts.runningTaskId = runningTaskId;
+            loadOpts.loadIcons = true;
+            loadOpts.loadThumbnails = true;
+            loadOpts.numVisibleTasks = 2;
+            loadOpts.numVisibleTaskThumbnails = 2;
+            loadOpts.onlyLoadForCache = false;
+            loadOpts.onlyLoadPausedActivities = false;
+            loader.loadTasks(loadPlan, loadOpts);
+        }, loadPlan);
+
+        mInteractionHandler.setLastLoadPlan(loadPlanFuture);
     }
 
     private void endInteraction() {

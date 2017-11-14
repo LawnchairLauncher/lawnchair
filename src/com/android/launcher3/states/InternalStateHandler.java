@@ -29,15 +29,30 @@ public abstract class InternalStateHandler extends Binder implements OnResumeCal
 
     public static final String EXTRA_STATE_HANDLER = "launcher.state_handler";
 
-    public abstract void onNewIntent(Launcher launcher);
+    public abstract void onCreate(Launcher launcher);
+    public abstract void onNewIntent(Launcher launcher, boolean alreadyOnHome);
 
-    public static void handleIntent(Launcher launcher, Intent intent) {
-        IBinder stateBinder = intent.getExtras().getBinder(EXTRA_STATE_HANDLER);
-        if (stateBinder instanceof InternalStateHandler) {
-            InternalStateHandler handler = (InternalStateHandler) stateBinder;
-            launcher.setOnResumeCallback(handler);
-            handler.onNewIntent(launcher);
+    public static void handleCreate(Launcher launcher, Intent intent) {
+        if (intent.getExtras() != null) {
+            IBinder stateBinder = intent.getExtras().getBinder(EXTRA_STATE_HANDLER);
+            if (stateBinder instanceof InternalStateHandler) {
+                InternalStateHandler handler = (InternalStateHandler) stateBinder;
+                launcher.setOnResumeCallback(handler);
+                handler.onCreate(launcher);
+            }
+            intent.getExtras().remove(EXTRA_STATE_HANDLER);
         }
-        intent.getExtras().remove(EXTRA_STATE_HANDLER);
+    }
+
+    public static void handleNewIntent(Launcher launcher, Intent intent, boolean alreadyOnHome) {
+        if (intent.getExtras() != null) {
+            IBinder stateBinder = intent.getExtras().getBinder(EXTRA_STATE_HANDLER);
+            if (stateBinder instanceof InternalStateHandler) {
+                InternalStateHandler handler = (InternalStateHandler) stateBinder;
+                launcher.setOnResumeCallback(handler);
+                handler.onNewIntent(launcher, alreadyOnHome);
+            }
+            intent.getExtras().remove(EXTRA_STATE_HANDLER);
+        }
     }
 }

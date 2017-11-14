@@ -27,7 +27,6 @@ import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 
@@ -681,13 +680,13 @@ public class DeviceProfile {
         }
     }
 
-    private int getCurrentWidth() {
+    public int getCurrentWidth() {
         return isLandscape
                 ? Math.max(widthPx, heightPx)
                 : Math.min(widthPx, heightPx);
     }
 
-    private int getCurrentHeight() {
+    public int getCurrentHeight() {
         return isLandscape
                 ? Math.min(widthPx, heightPx)
                 : Math.max(widthPx, heightPx);

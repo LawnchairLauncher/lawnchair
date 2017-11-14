@@ -134,4 +134,8 @@
     <item type="id" name="search_container_hotseat" />
     <item type="id" name="search_container_all_apps" />
 
+<!-- Recents -->
+    <integer name="config_recentsMaxThumbnailCacheSize">6</integer>
+    <integer name="config_recentsMaxIconCacheSize">12</integer>
+
 </resources>
