@@ -55,7 +55,6 @@ public class TaskView extends FrameLayout implements TaskCallbacks {
 
     public TaskView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setWillNotDraw(false);
         setOnClickListener((view) -> {
             launchTask(true /* animate */);
         });

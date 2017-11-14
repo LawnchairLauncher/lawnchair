@@ -50,7 +50,7 @@ public class TaskThumbnailView extends FrameLayout {
     protected Paint mBgFillPaint = new Paint();
     protected BitmapShader mBitmapShader;
 
-    private float mDimAlpha;
+    private float mDimAlpha = 1f;
     private LightingColorFilter mLightingColorFilter = new LightingColorFilter(Color.WHITE, 0);
 
     public TaskThumbnailView(Context context) {
@@ -64,7 +64,6 @@ public class TaskThumbnailView extends FrameLayout {
     public TaskThumbnailView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setWillNotDraw(false);
-        setDimAlpha(1f);
         setClipToOutline(true);
     }
 

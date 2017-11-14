@@ -81,7 +81,8 @@ public class TouchInteractionService extends Service {
     private Intent mHomeIntent;
     private ComponentName mLauncher;
 
-
+    private int mDisplayRotation;
+    private final Point mDisplaySize = new Point();
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
     private int mActivePointerId = INVALID_POINTER_ID;
@@ -133,6 +134,9 @@ public class TouchInteractionService extends Service {
                 mDownPos.set(ev.getX(), ev.getY());
                 mLastPos.set(mDownPos);
                 mTouchSlop = ViewConfiguration.get(this).getScaledTouchSlop();
+                Display display = getSystemService(WindowManager.class).getDefaultDisplay();
+                display.getRealSize(mDisplaySize);
+                mDisplayRotation = display.getRotation();
 
                 mRunningTask = mAM.getRunningTask();
                 if (mRunningTask == null || mRunningTask.topActivity.equals(mLauncher)) {
@@ -202,12 +206,11 @@ public class TouchInteractionService extends Service {
 
         // Preload and start the recents activity on a background thread
         final Context context = this;
-        final int runningTaskId = ActivityManagerWrapper.getInstance().getRunningTask().id;
         final RecentsTaskLoadPlan loadPlan = new RecentsTaskLoadPlan(context);
         Future<RecentsTaskLoadPlan> loadPlanFuture = BackgroundExecutor.get().submit(() -> {
             // Preload the plan
             RecentsTaskLoader loader = TouchInteractionService.getRecentsTaskLoader();
-            loadPlan.preloadPlan(loader, runningTaskId, UserHandle.myUserId());
+            loadPlan.preloadPlan(loader, mRunningTask.id, UserHandle.myUserId());
 
             // Pass the
             Bundle extras = new Bundle();
@@ -222,17 +225,6 @@ public class TouchInteractionService extends Service {
                     ActivityOptions.makeCustomAnimation(this, 0, 0), UserHandle.myUserId(),
                     null, null);
              */
-
-            // Kick off loading of the plan while the activity is starting
-            Options loadOpts = new Options();
-            loadOpts.runningTaskId = runningTaskId;
-            loadOpts.loadIcons = true;
-            loadOpts.loadThumbnails = true;
-            loadOpts.numVisibleTasks = 2;
-            loadOpts.numVisibleTaskThumbnails = 2;
-            loadOpts.onlyLoadForCache = false;
-            loadOpts.onlyLoadPausedActivities = false;
-            loader.loadTasks(loadPlan, loadOpts);
         }, loadPlan);
 
         mInteractionHandler.setLastLoadPlan(loadPlanFuture);
@@ -255,14 +247,11 @@ public class TouchInteractionService extends Service {
             Log.e(TAG, "Never received systemUIProxy");
             return null;
         }
-        Display display = getSystemService(WindowManager.class).getDefaultDisplay();
-        Point size = new Point();
-        display.getRealSize(size);
 
         // TODO: We are using some hardcoded layers for now, to best approximate the activity layers
         try {
-            return mISystemUiProxy.screenshot(new Rect(), size.x, size.y, 0, 100000, false,
-                    display.getRotation());
+            return mISystemUiProxy.screenshot(new Rect(), mDisplaySize.x, mDisplaySize.y, 0, 100000,
+                    false, mDisplayRotation);
         } catch (RemoteException e) {
             Log.e(TAG, "Error capturing snapshot", e);
             return null;
