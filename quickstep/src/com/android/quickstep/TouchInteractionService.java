@@ -17,8 +17,6 @@ package com.android.quickstep;
 
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
-import static com.android.launcher3.states.InternalStateHandler.EXTRA_STATE_HANDLER;
-
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
 import android.app.Service;
@@ -31,7 +29,6 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.UserHandle;
@@ -42,7 +39,6 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
@@ -212,13 +208,8 @@ public class TouchInteractionService extends Service {
             RecentsTaskLoader loader = TouchInteractionService.getRecentsTaskLoader();
             loadPlan.preloadPlan(loader, mRunningTask.id, UserHandle.myUserId());
 
-            // Pass the
-            Bundle extras = new Bundle();
-            extras.putBinder(EXTRA_STATE_HANDLER, mInteractionHandler);
-
-            // Start the activity
-            Intent homeIntent = new Intent(mHomeIntent);
-            homeIntent.putExtras(extras);
+            // Start the activity with our custom handler
+            Intent homeIntent = mInteractionHandler.addToIntent(new Intent(mHomeIntent));
             startActivity(homeIntent, ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle());
             /*
             ActivityManagerWrapper.getInstance().startRecentsActivity(null, options,

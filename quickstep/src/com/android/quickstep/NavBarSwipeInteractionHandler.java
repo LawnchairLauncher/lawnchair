@@ -23,7 +23,6 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Build;
-import android.os.UserHandle;
 import android.support.annotation.BinderThread;
 import android.support.annotation.UiThread;
 import android.util.FloatProperty;
@@ -32,6 +31,7 @@ import android.view.Choreographer.FrameCallback;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -40,11 +40,7 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.states.InternalStateHandler;
-import com.android.launcher3.uioverrides.OverviewState;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
-import com.android.systemui.shared.recents.model.Task.TaskKey;
-import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.concurrent.ExecutionException;
@@ -119,25 +115,10 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler implemen
     }
 
     @Override
-    public void onCreate(Launcher launcher) {
-        mLauncher = launcher;
-        mDragView = new SnapshotDragView(mLauncher, mTaskSnapshot);
-        mLauncher.getDragLayer().addView(mDragView);
-        mDragView.setPivotX(0);
-        mDragView.setPivotY(0);
-        mRecentsView = mLauncher.getOverviewPanel();
-        mHotseat = mLauncher.getHotseat();
+    protected void init(Launcher launcher, boolean alreadyOnHome) {
+        AbstractFloatingView.closeAllOpenViews(launcher, alreadyOnHome);
+        launcher.getStateManager().goToState(LauncherState.OVERVIEW, alreadyOnHome);
 
-        // Optimization
-        mLauncher.getAppsView().setVisibility(View.GONE);
-
-        // Launch overview
-        mRecentsView.update(consumeLastLoadPlan());
-        mLauncher.getStateManager().goToState(LauncherState.OVERVIEW, false /* animate */);
-    }
-
-    @Override
-    public void onNewIntent(Launcher launcher, boolean alreadyOnHome) {
         mLauncher = launcher;
         mDragView = new SnapshotDragView(mLauncher, mTaskSnapshot);
         mLauncher.getDragLayer().addView(mDragView);
@@ -151,7 +132,6 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler implemen
 
         // Launch overview, animate if already on home
         mRecentsView.update(consumeLastLoadPlan());
-        mLauncher.getStateManager().goToState(LauncherState.OVERVIEW, alreadyOnHome);
     }
 
     /**

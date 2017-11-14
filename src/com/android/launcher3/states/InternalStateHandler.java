@@ -17,42 +17,52 @@ package com.android.launcher3.states;
 
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Launcher.OnResumeCallback;
 
 /**
- * Utility class to sending state handling logic to Launcher from within the same process
+ * Utility class to sending state handling logic to Launcher from within the same process.
+ *
+ * Extending {@link Binder} ensures that the platform maintains a single instance of each object
+ * which allows this object to safely navigate the system process.
  */
 public abstract class InternalStateHandler extends Binder implements OnResumeCallback {
 
     public static final String EXTRA_STATE_HANDLER = "launcher.state_handler";
 
-    public abstract void onCreate(Launcher launcher);
-    public abstract void onNewIntent(Launcher launcher, boolean alreadyOnHome);
+    protected abstract void init(Launcher launcher, boolean alreadyOnHome);
 
-    public static void handleCreate(Launcher launcher, Intent intent) {
-        if (intent.getExtras() != null) {
-            IBinder stateBinder = intent.getExtras().getBinder(EXTRA_STATE_HANDLER);
-            if (stateBinder instanceof InternalStateHandler) {
-                InternalStateHandler handler = (InternalStateHandler) stateBinder;
-                launcher.setOnResumeCallback(handler);
-                handler.onCreate(launcher);
-            }
-            intent.getExtras().remove(EXTRA_STATE_HANDLER);
-        }
+    public final Intent addToIntent(Intent intent) {
+        Bundle extras = new Bundle();
+        extras.putBinder(EXTRA_STATE_HANDLER, this);
+        intent.putExtras(extras);
+        return intent;
     }
 
-    public static void handleNewIntent(Launcher launcher, Intent intent, boolean alreadyOnHome) {
-        if (intent.getExtras() != null) {
+    public static boolean handleCreate(Launcher launcher, Intent intent) {
+        return handleIntent(launcher, intent, false);
+    }
+
+    public static boolean handleNewIntent(Launcher launcher, Intent intent, boolean alreadyOnHome) {
+        return handleIntent(launcher, intent, alreadyOnHome);
+    }
+
+    private static boolean handleIntent(
+            Launcher launcher, Intent intent, boolean alreadyOnHome) {
+        boolean result = false;
+        if (intent != null && intent.getExtras() != null) {
             IBinder stateBinder = intent.getExtras().getBinder(EXTRA_STATE_HANDLER);
             if (stateBinder instanceof InternalStateHandler) {
                 InternalStateHandler handler = (InternalStateHandler) stateBinder;
                 launcher.setOnResumeCallback(handler);
-                handler.onNewIntent(launcher, alreadyOnHome);
+                handler.init(launcher, alreadyOnHome);
+                result = true;
             }
             intent.getExtras().remove(EXTRA_STATE_HANDLER);
         }
+        return result;
     }
 }
