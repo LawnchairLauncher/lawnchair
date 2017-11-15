@@ -1096,7 +1096,7 @@ public final class Utilities {
         int enabledState = ILauncherClient.Companion.getEnabledState(context);
 
         // Check if the user have Lawnfeed installed
-        if (enabledState != ILauncherClient.ENABLED) {
+        if (enabledState == ILauncherClient.ENABLED) {
             // Check if the user have enable Google Now page
             if (prefs.getShowGoogleNowTab()) {
                 return;
@@ -1124,7 +1124,7 @@ public final class Utilities {
                 .show();
         }
         // Otherwise show a popup about missing Lawnfeed app
-        else if (enabledState == ILauncherClient.ENABLED) {
+        else if (enabledState == ILauncherClient.DISABLED_NO_PROXY_APP) {
             new AlertDialog.Builder(context)
                 .setTitle(R.string.lawnfeed_not_installed_title)
                 .setMessage(R.string.lawnfeed_not_installed)
