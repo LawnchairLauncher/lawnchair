@@ -24,6 +24,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -51,6 +52,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.UserHandle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -1102,16 +1104,19 @@ public final class Utilities {
                 return;
             }
 
-            // Show a popup with instructions how to enable Google Now page
+            // Show a popup about the disabled Google Now page option
             new AlertDialog.Builder(context)
                 .setTitle(R.string.lawnfeed_not_enabled_title)
                 .setMessage(R.string.lawnfeed_not_enabled)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        // Open settings activity
-                        Launcher launcher = LauncherAppState.getInstanceNoCreate().getLauncher();
-                        prefs.showSettings(launcher, ((Activity) context).getWindow().getDecorView());
+                        // Enable Google Now page setting
+                        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+                        settings.edit().putBoolean(PreferenceFlags.KEY_PREF_SHOW_NOW_TAB, true).commit();
+
+                        // Restart Lawnchair to enable Lawnfeed
+                        LauncherAppState.getInstanceNoCreate().getLauncher().scheduleKill();
                     }
                 })
                 .setNeutralButton(R.string.disable_popup, new DialogInterface.OnClickListener() {
