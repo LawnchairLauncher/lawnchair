@@ -1085,6 +1085,7 @@ public final class Utilities {
     }
 
     public static void showLawnfeedPopup(final Context context) {
+        if (!BuildConfig.ENABLE_LAWNFEED) return;
         final IPreferenceProvider prefs = getPrefs(context);
 
         // Don't show anything if the user have selected "Don't show again"
