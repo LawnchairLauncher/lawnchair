@@ -160,7 +160,7 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override var hiddenAppsSet: Set<String>
         get() = sharedPrefs.getStringSet(PreferenceFlags.KEY_HIDDEN_APPS_SET, HashSet<String>())
         set(value) {
-            sharedPrefs.edit().putStringSet(PreferenceFlags.KEY_HIDDEN_APPS_SET, value).commit()
+            sharedPrefs.edit().putStringSet(PreferenceFlags.KEY_HIDDEN_APPS_SET, value).apply()
         }
 
     override fun alternateIcon(key: String, alternateIcon: String, commit: Boolean) {
