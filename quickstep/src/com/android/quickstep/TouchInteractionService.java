@@ -256,7 +256,7 @@ public class TouchInteractionService extends Service {
         // TODO: We are using some hardcoded layers for now, to best approximate the activity layers
         try {
             return mISystemUiProxy.screenshot(new Rect(), mDisplaySize.x, mDisplaySize.y, 0, 100000,
-                    false, mDisplayRotation);
+                    false, mDisplayRotation).toBitmap();
         } catch (RemoteException e) {
             Log.e(TAG, "Error capturing snapshot", e);
             return null;
