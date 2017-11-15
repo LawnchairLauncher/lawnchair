@@ -1019,7 +1019,7 @@ public final class Utilities {
         // TODO: Maybe we can add all apps that end with .clockpackage/.DeskClock/.clock/???
         // Or that contain .clock./.deskclock or end with those?
         ArrayList<String> clockApps = new ArrayList<>();
-        clockApps.add("com.google.android.deskclock/com.android.deskclock.DeskClock"); // Stock
+        clockApps.add("com.android.deskclock/com.android.deskclock.DeskClock"); // Stock
         clockApps.add("com.sec.android.app.clockpackage/com.sec.android.app.clockpackage.ClockPackage"); // Samsung
         clockApps.add("com.android.deskclock/com.android.deskclock.DeskClockTabActivity"); // MIUI
 
