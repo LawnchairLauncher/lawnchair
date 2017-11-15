@@ -767,10 +767,7 @@ public class Launcher extends BaseActivity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onStop();
         }
-
-        if (Utilities.ATLEAST_NOUGAT_MR1) {
-            mAppWidgetHost.stopListening();
-        }
+        mAppWidgetHost.setListenIfResumed(false);
 
         if (!mAppLaunchSuccess) {
             getUserEventDispatcher().logActionCommand(Action.Command.STOP,
@@ -787,10 +784,7 @@ public class Launcher extends BaseActivity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onStart();
         }
-
-        if (Utilities.ATLEAST_NOUGAT_MR1) {
-            mAppWidgetHost.startListening();
-        }
+        mAppWidgetHost.setListenIfResumed(true);
 
         if (!isWorkspaceLoading()) {
             NotificationListener.setNotificationsChangedListener(mPopupDataProvider);

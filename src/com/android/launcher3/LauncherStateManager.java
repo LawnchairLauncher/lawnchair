@@ -249,6 +249,7 @@ public class LauncherStateManager {
         mState.onStateDisabled(mLauncher);
         mState = state;
         mState.onStateEnabled(mLauncher);
+        mLauncher.getAppWidgetHost().setResumed(state == LauncherState.NORMAL);
     }
 
     /**
