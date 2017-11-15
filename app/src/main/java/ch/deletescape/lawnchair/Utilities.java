@@ -912,8 +912,7 @@ public final class Utilities {
     }
 
     public static void setAppVisibility(Context context, String key, boolean visible) {
-        // We need to copy the set, as SharedPreferences doesn't return a copy of the Set object
-        Set<String> hiddenApps = new HashSet<>(getPrefs(context).getHiddenAppsSet());
+        Set<String> hiddenApps = getPrefs(context).getHiddenAppsSet();
         if (visible)
             hiddenApps.remove(key);
         else

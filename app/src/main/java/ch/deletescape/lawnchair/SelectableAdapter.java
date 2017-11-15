@@ -17,8 +17,7 @@ abstract class SelectableAdapter<VH extends RecyclerView.ViewHolder> extends Rec
 
         mContext = LauncherAppState.getInstanceNoCreate().getContext();
 
-        // We need to copy the set, as SharedPreferences doesn't return a copy of the Set object
-        Set<String> hiddenApps = new HashSet<>(PreferenceProvider.INSTANCE.getPreferences(mContext).getHiddenAppsSet());
+        Set<String> hiddenApps = PreferenceProvider.INSTANCE.getPreferences(mContext).getHiddenAppsSet();
 
         mSelections = new HashSet<>();
 
