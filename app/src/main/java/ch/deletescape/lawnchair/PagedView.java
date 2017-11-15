@@ -31,6 +31,7 @@ import android.graphics.RectF;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -44,10 +45,13 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Interpolator;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import ch.deletescape.lawnchair.overlay.ILauncherClient;
 import ch.deletescape.lawnchair.pageindicators.PageIndicator;
+import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.util.LauncherEdgeEffect;
 import ch.deletescape.lawnchair.util.Thunk;
 
@@ -187,8 +191,20 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected final Rect mInsets = new Rect();
     protected final boolean mIsRtl;
 
-    // Edge effect
-    private final LauncherEdgeEffect mEdgeGlowLeft = new LauncherEdgeEffect();
+    // Edge effect, add swipe-to-left gesture for Lawnfeed
+    private final LauncherEdgeEffect mEdgeGlowLeft = new LauncherEdgeEffect(){
+        @Override
+        public void onRelease() {
+            // Check if user swiped
+            if (mPullDistance > 0) {
+                Utilities.showLawnfeedPopup(getContext());
+            }
+
+            super.onRelease();
+        }
+    };
+
+    // Edge effect for right side
     private final LauncherEdgeEffect mEdgeGlowRight = new LauncherEdgeEffect();
 
     public PagedView(Context context) {

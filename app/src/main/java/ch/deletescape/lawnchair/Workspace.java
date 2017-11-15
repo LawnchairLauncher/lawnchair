@@ -1325,12 +1325,10 @@ public class Workspace extends PagedView
     @Override
     protected void overScroll(float amount) {
         boolean shouldScrollOverlay = mLauncherOverlay != null && mLauncher.isClientConnected() &&
-                ((amount <= 0 && !mIsRtl) || (amount >= 0 && mIsRtl)) &&
-                Utilities.getPrefs(mLauncher).getShowGoogleNowTab();
+                ((amount <= 0 && !mIsRtl) || (amount >= 0 && mIsRtl));
 
         boolean shouldZeroOverlay = mLauncherOverlay != null && mLauncher.isClientConnected() &&
-                mLastOverlaySroll != 0 && ((amount >= 0 && !mIsRtl) || (amount <= 0 && mIsRtl)) &&
-                Utilities.getPrefs(mLauncher).getShowGoogleNowTab();
+                mLastOverlaySroll != 0 && ((amount >= 0 && !mIsRtl) || (amount <= 0 && mIsRtl));
 
         if (shouldScrollOverlay) {
             if (!mStartedSendingScrollEvents && mScrollInteractionBegan) {
