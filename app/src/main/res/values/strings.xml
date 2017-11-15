@@ -494,4 +494,11 @@
     <string name="hide_app_apply">Apply</string>
     <string name="unauthorized_device">This device has a few piracy tools installed. Please uninstall them to continue.</string>
     <string name="hide_app_reset">Reset</string>
+
+    <!-- Strings for Lawnfeed gesture popup -->
+    <string name="lawnfeed_not_enabled_title">Lawnfeed not activated</string>
+    <string name="lawnfeed_not_enabled">It looks like you\'re trying to open the Google Now page, but you haven\'t activated the option in the behavior settings.\n\nDo you want to open the settings now?</string>
+    <string name="lawnfeed_not_installed_title">Lawnfeed not installed</string>
+    <string name="lawnfeed_not_installed">It looks like you\'re trying to open the Google Now page, but you haven\'t installed the Lawnfeed app from our website.\n\nDo you want to download it now?</string>
+    <string name="disable_popup">Don\'t show again</string>
 </resources>

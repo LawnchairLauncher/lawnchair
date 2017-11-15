@@ -46,6 +46,7 @@ import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -88,6 +89,7 @@ import ch.deletescape.lawnchair.config.IThemer;
 import ch.deletescape.lawnchair.config.ThemeProvider;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.graphics.ShadowGenerator;
+import ch.deletescape.lawnchair.overlay.ILauncherClient;
 import ch.deletescape.lawnchair.pixelify.AdaptiveIconDrawableCompat;
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.preferences.PreferenceFlags;
@@ -1080,5 +1082,67 @@ public final class Utilities {
         }
 
         return false;
+    }
+
+    public static void showLawnfeedPopup(final Context context) {
+        final IPreferenceProvider prefs = getPrefs(context);
+
+        // Don't show anything if the user have selected "Don't show again"
+        if (prefs.getDisableLawnfeedPopup()) {
+            return;
+        }
+
+        int enabledState = ILauncherClient.Companion.getEnabledState(context);
+
+        // Check if the user have Lawnfeed installed
+        if (enabledState != ILauncherClient.ENABLED) {
+            // Check if the user have enable Google Now page
+            if (prefs.getShowGoogleNowTab()) {
+                return;
+            }
+
+            // Show a popup with instructions how to enable Google Now page
+            new AlertDialog.Builder(context)
+                .setTitle(R.string.lawnfeed_not_enabled_title)
+                .setMessage(R.string.lawnfeed_not_enabled)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // Open settings activity
+                        Launcher launcher = LauncherAppState.getInstanceNoCreate().getLauncher();
+                        prefs.showSettings(launcher, ((Activity) context).getWindow().getDecorView());
+                    }
+                })
+                .setNeutralButton(R.string.disable_popup, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                       prefs.setDisableLawnfeedPopup(true);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+        }
+        // Otherwise show a popup about missing Lawnfeed app
+        else if (enabledState == ILauncherClient.ENABLED) {
+            new AlertDialog.Builder(context)
+                .setTitle(R.string.lawnfeed_not_installed_title)
+                .setMessage(R.string.lawnfeed_not_installed)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // Open website with download link for Lawnfeed
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://lawnchair.info/getlawnfeed.html"));
+                        context.startActivity(intent);
+                    }
+                })
+                .setNeutralButton(R.string.disable_popup, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        prefs.setDisableLawnfeedPopup(true);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+        }
     }
 }
