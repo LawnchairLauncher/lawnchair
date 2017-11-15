@@ -75,17 +75,7 @@ public class RecentsView extends PagedView {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        // TODO: These are rough calculations which currently use the stable insets
-        DeviceProfile profile = Launcher.getLauncher(getContext()).getDeviceProfile();
-        Rect stableInsets = new Rect();
-        WindowManagerWrapper.getInstance().getStableInsets(stableInsets);
-        Rect padding = profile.getWorkspacePadding(null);
-        float taskWidth = profile.getCurrentWidth() - stableInsets.left - stableInsets.right;
-        float taskHeight = profile.getCurrentHeight() - stableInsets.top - stableInsets.bottom;
-        float overviewHeight = profile.availableHeightPx - padding.top - padding.bottom
-                - stableInsets.top;
-        float overviewWidth = taskWidth * overviewHeight / taskHeight;
-        padding.left = padding.right = (int) ((profile.availableWidthPx - overviewWidth) / 2);
+        Rect padding = getPadding(Launcher.getLauncher(getContext()));
         setPadding(padding.left, padding.top, padding.right, padding.bottom);
     }
 
@@ -165,5 +155,19 @@ public class RecentsView extends PagedView {
             }
             mTaskStackListenerRegistered = registerStackListener;
         }
+    }
+
+    public static Rect getPadding(Launcher launcher) {
+        DeviceProfile profile = launcher.getDeviceProfile();
+        Rect stableInsets = new Rect();
+        WindowManagerWrapper.getInstance().getStableInsets(stableInsets);
+        Rect padding = profile.getWorkspacePadding(null);
+        float taskWidth = profile.getCurrentWidth() - stableInsets.left - stableInsets.right;
+        float taskHeight = profile.getCurrentHeight() - stableInsets.top - stableInsets.bottom;
+        float overviewHeight = profile.availableHeightPx - padding.top - padding.bottom
+                - stableInsets.top;
+        float overviewWidth = taskWidth * overviewHeight / taskHeight;
+        padding.left = padding.right = (int) ((profile.availableWidthPx - overviewWidth) / 2);
+        return padding;
     }
 }

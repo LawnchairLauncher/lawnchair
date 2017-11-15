@@ -33,12 +33,14 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.Log;
+import android.view.Choreographer;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
+import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
@@ -46,8 +48,6 @@ import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 import com.android.systemui.shared.recents.model.RecentsTaskLoader;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.BackgroundExecutor;
-
-import java.util.concurrent.Future;
 
 /**
  * Service connected by system-UI for handling touch interaction.
@@ -75,6 +75,8 @@ public class TouchInteractionService extends Service {
     private RunningTaskInfo mRunningTask;
     private Intent mHomeIntent;
     private ComponentName mLauncher;
+    private Choreographer mChoreographer;
+    private MainThreadExecutor mMainThreadExecutor;
 
     private int mDisplayRotation;
     private final Point mDisplaySize = new Point();
@@ -107,6 +109,9 @@ public class TouchInteractionService extends Service {
                     res.getInteger(R.integer.config_recentsMaxIconCacheSize), 0);
             sRecentsTaskLoader.startLoader(this);
         }
+
+        mChoreographer = Choreographer.getInstance();
+        mMainThreadExecutor = new MainThreadExecutor();
     }
 
     @Override
@@ -196,28 +201,34 @@ public class TouchInteractionService extends Service {
 
     private void startTouchTracking() {
         // Create the shared handler
-        mInteractionHandler = new NavBarSwipeInteractionHandler(getCurrentTaskSnapshot(),
-                mRunningTask);
+        final NavBarSwipeInteractionHandler handler =
+                new NavBarSwipeInteractionHandler(mRunningTask, mChoreographer, this);
 
         // Preload and start the recents activity on a background thread
         final Context context = this;
         final RecentsTaskLoadPlan loadPlan = new RecentsTaskLoadPlan(context);
-        Future<RecentsTaskLoadPlan> loadPlanFuture = BackgroundExecutor.get().submit(() -> {
-            // Preload the plan
-            RecentsTaskLoader loader = TouchInteractionService.getRecentsTaskLoader();
-            loadPlan.preloadPlan(loader, mRunningTask.id, UserHandle.myUserId());
+        final int taskId = mRunningTask.id;
 
-            // Start the activity with our custom handler
-            Intent homeIntent = mInteractionHandler.addToIntent(new Intent(mHomeIntent));
+        BackgroundExecutor.get().submit(() -> {
+            // Get the snap shot before
+            handler.setTaskSnapshot(getCurrentTaskSnapshot());
+
+            // Start the launcher activity with our custom handler
+            Intent homeIntent = handler.addToIntent(new Intent(mHomeIntent));
             startActivity(homeIntent, ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle());
             /*
             ActivityManagerWrapper.getInstance().startRecentsActivity(null, options,
                     ActivityOptions.makeCustomAnimation(this, 0, 0), UserHandle.myUserId(),
                     null, null);
              */
-        }, loadPlan);
 
-        mInteractionHandler.setLastLoadPlan(loadPlanFuture);
+            // Preload the plan
+            RecentsTaskLoader loader = TouchInteractionService.getRecentsTaskLoader();
+            loadPlan.preloadPlan(loader, taskId, UserHandle.myUserId());
+            // Set the load plan on UI thread
+            mMainThreadExecutor.execute(() -> handler.setRecentsTaskLoadPlan(loadPlan));
+        });
+        mInteractionHandler = handler;
     }
 
     private void endInteraction() {

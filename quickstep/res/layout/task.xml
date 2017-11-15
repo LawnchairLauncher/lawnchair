@@ -23,14 +23,14 @@
         android:id="@+id/snapshot"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="@dimen/task_thumbnail_top_margin"
         android:scaleType="matrix"
         android:background="@drawable/task_thumbnail_background"
         android:elevation="4dp" />
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/task_thumbnail_icon_size"
+        android:layout_height="@dimen/task_thumbnail_icon_size"
         android:layout_gravity="top|center_horizontal"
         android:elevation="5dp"/>
 </com.android.quickstep.TaskView>
