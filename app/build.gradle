@@ -28,7 +28,7 @@ if (localPropsFile.exists()) {
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '27.0.0'
+    buildToolsVersion '27.0.1'
 
     signingConfigs {
         travis {
@@ -94,7 +94,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    def supportLibVersion = '27.0.0'
+    def supportLibVersion = '27.0.1'
     implementation "com.android.support:support-v4:${supportLibVersion}"
     implementation "com.android.support:recyclerview-v7:${supportLibVersion}"
     implementation "com.android.support:palette-v7:${supportLibVersion}"
