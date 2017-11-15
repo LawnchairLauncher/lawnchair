@@ -43,7 +43,6 @@ import com.android.launcher3.R;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
-import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan.Options;
 import com.android.systemui.shared.recents.model.RecentsTaskLoader;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.BackgroundExecutor;
@@ -226,7 +225,7 @@ public class TouchInteractionService extends Service {
             mVelocityTracker.computeCurrentVelocity(1000,
                     ViewConfiguration.get(this).getScaledMaximumFlingVelocity());
 
-            mInteractionHandler.endTouch(mVelocityTracker.getXVelocity(mActivePointerId));
+            mInteractionHandler.endTouch(mVelocityTracker.getYVelocity(mActivePointerId));
             mInteractionHandler = null;
         }
         mVelocityTracker.recycle();
