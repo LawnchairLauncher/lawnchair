@@ -53,6 +53,7 @@ import com.android.launcher3.util.Thunk;
 public abstract class ButtonDropTarget extends TextView
         implements DropTarget, DragController.DragListener, OnClickListener {
 
+    private static final int[] sTempCords = new int[2];
     private static final int DRAG_VIEW_DROP_DURATION = 285;
 
     private final boolean mHideParentOnDisable;
@@ -257,9 +258,9 @@ public abstract class ButtonDropTarget extends TextView
         super.getHitRect(outRect);
         outRect.bottom += mBottomDragPadding;
 
-        int[] coords = new int[2];
-        mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, coords);
-        outRect.offsetTo(coords[0], coords[1]);
+        sTempCords[0] = sTempCords[1] = 0;
+        mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, sTempCords);
+        outRect.offsetTo(sTempCords[0], sTempCords[1]);
     }
 
     public Rect getIconRect(DragObject dragObject) {
