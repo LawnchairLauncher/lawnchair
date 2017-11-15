@@ -163,14 +163,6 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
             sharedPrefs.edit().putStringSet(PreferenceFlags.KEY_HIDDEN_APPS_SET, value).apply()
         }
 
-    override fun appVisibility(context: Context, key: String, visible: Boolean, commit: Boolean) {
-        commitOrApply(sharedPrefs.edit().putBoolean(PreferenceFlags.KEY_APP_VISIBILITY_PREFIX + key, visible), commit)
-    }
-
-    override fun appVisibility(context: Context, key: String): Boolean {
-        return sharedPrefs.getBoolean(PreferenceFlags.KEY_APP_VISIBILITY_PREFIX + key, true)
-    }
-
     override fun alternateIcon(key: String, alternateIcon: String, commit: Boolean) {
         commitOrApply(sharedPrefs.edit().putString(PreferenceFlags.KEY_ALTERNATE_ICON_PREFIX + key, alternateIcon), commit)
     }
