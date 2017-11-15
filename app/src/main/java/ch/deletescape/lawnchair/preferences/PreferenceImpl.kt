@@ -158,18 +158,13 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override var previousBuildNumber by MutableIntPref(PreferenceFlags.KEY_PREVIOUS_BUILD_NUMBER, 0)
 
     override var hiddenAppsSet: Set<String>
-        get() = sharedPrefs.getStringSet(PreferenceFlags.KEY_HIDDEN_APPS_SET, HashSet<String>())
+        get() {
+            // We need to copy the set, as SharedPreferences doesn't return a copy of the Set object
+            return HashSet<String>(sharedPrefs.getStringSet(PreferenceFlags.KEY_HIDDEN_APPS_SET, HashSet<String>()))
+        }
         set(value) {
             sharedPrefs.edit().putStringSet(PreferenceFlags.KEY_HIDDEN_APPS_SET, value).apply()
         }
-
-    override fun appVisibility(context: Context, key: String, visible: Boolean, commit: Boolean) {
-        commitOrApply(sharedPrefs.edit().putBoolean(PreferenceFlags.KEY_APP_VISIBILITY_PREFIX + key, visible), commit)
-    }
-
-    override fun appVisibility(context: Context, key: String): Boolean {
-        return sharedPrefs.getBoolean(PreferenceFlags.KEY_APP_VISIBILITY_PREFIX + key, true)
-    }
 
     override fun alternateIcon(key: String, alternateIcon: String, commit: Boolean) {
         commitOrApply(sharedPrefs.edit().putString(PreferenceFlags.KEY_ALTERNATE_ICON_PREFIX + key, alternateIcon), commit)
