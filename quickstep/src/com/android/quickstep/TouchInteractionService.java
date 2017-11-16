@@ -132,6 +132,7 @@ public class TouchInteractionService extends Service {
         }
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN: {
+                TraceHelper.beginSection("TouchInt");
                 mActivePointerId = ev.getPointerId(0);
                 mDownPos.set(ev.getX(), ev.getY());
                 mLastPos.set(mDownPos);
@@ -194,6 +195,7 @@ public class TouchInteractionService extends Service {
             case MotionEvent.ACTION_CANCEL:
                 // TODO: Should be different than ACTION_UP
             case MotionEvent.ACTION_UP: {
+                TraceHelper.endSection("TouchInt");
 
                 endInteraction();
                 break;
@@ -210,6 +212,7 @@ public class TouchInteractionService extends Service {
         final Context context = this;
         final RecentsTaskLoadPlan loadPlan = new RecentsTaskLoadPlan(context);
         final int taskId = mRunningTask.id;
+        TraceHelper.partitionSection("TouchInt", "Thershold crossed ");
 
         BackgroundExecutor.get().submit(() -> {
             // Get the snap shot before
@@ -218,6 +221,7 @@ public class TouchInteractionService extends Service {
             // Start the launcher activity with our custom handler
             Intent homeIntent = handler.addToIntent(new Intent(mHomeIntent));
             startActivity(homeIntent, ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle());
+            TraceHelper.partitionSection("TouchInt", "Home started");
 
             /*
             ActivityManagerWrapper.getInstance().startRecentsActivity(null, options,

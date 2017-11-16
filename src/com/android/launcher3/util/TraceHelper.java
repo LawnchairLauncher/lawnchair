@@ -33,9 +33,8 @@ public class TraceHelper {
 
     private static final boolean ENABLED = FeatureFlags.IS_DOGFOOD_BUILD;
 
-    private static final boolean SYSTEM_TRACE = true;
-    private static final ArrayMap<String, MutableLong> sUpTimes =
-            ENABLED ? new ArrayMap<String, MutableLong>() : null;
+    private static final boolean SYSTEM_TRACE = false;
+    private static final ArrayMap<String, MutableLong> sUpTimes = ENABLED ? new ArrayMap<>() : null;
 
     public static void beginSection(String sectionName) {
         if (ENABLED) {

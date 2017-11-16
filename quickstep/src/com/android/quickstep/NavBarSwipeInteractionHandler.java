@@ -42,6 +42,7 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.states.InternalStateHandler;
+import com.android.launcher3.util.TraceHelper;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
@@ -153,11 +154,13 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
 
     @Override
     public void onLauncherResume() {
+        TraceHelper.partitionSection("TouchInt", "Launcher On resume");
         mDragView.getViewTreeObserver().addOnPreDrawListener(new OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
                 mDragView.getViewTreeObserver().removeOnPreDrawListener(this);
                 mStateCallback.setState(STATE_LAUNCHER_READY);
+                TraceHelper.partitionSection("TouchInt", "Launcher drawn");
                 return true;
             }
         });
@@ -179,6 +182,7 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
         // Optimization
         mLauncher.getAppsView().setVisibility(View.GONE);
         mRecentsView.setVisibility(View.GONE);
+        TraceHelper.partitionSection("TouchInt", "Launcher on new intent");
     }
 
     @UiThread
