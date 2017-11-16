@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="@string/backup_export_title">
+    <android.support.v7.preference.PreferenceCategory android:title="@string/backup_export_title">
 
         <Preference
             android:key="export_prefs"
@@ -9,7 +9,7 @@
         <Preference
             android:key="export_db"
             android:title="@string/export_db_title" />
-    </PreferenceCategory>
+    </android.support.v7.preference.PreferenceCategory>
     <PreferenceCategory android:title="@string/backup_import_title">
 
         <Preference
@@ -19,4 +19,4 @@
             android:key="import_db"
             android:title="@string/import_db_title" />
     </PreferenceCategory>
-</PreferenceScreen>
+</android.support.v7.preference.PreferenceScreen>

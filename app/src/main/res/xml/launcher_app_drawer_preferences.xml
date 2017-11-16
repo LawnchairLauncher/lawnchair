@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <ListPreference
@@ -115,4 +115,4 @@
             android:title="@string/enable_spring_pref_title"
             android:defaultValue="true"
             android:persistent="true" />
-</PreferenceScreen>
+</android.support.v7.preference.PreferenceScreen>

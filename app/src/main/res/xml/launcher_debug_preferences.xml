@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Preference
         android:key="kill"
@@ -8,4 +8,4 @@
     <Preference
         android:key="rebuild_icondb"
         android:title="@string/rebuild_icondb_pref_title" />
-</PreferenceScreen>
+</android.support.v7.preference.PreferenceScreen>
