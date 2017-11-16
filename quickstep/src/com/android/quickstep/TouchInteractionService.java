@@ -45,6 +45,7 @@ import com.android.launcher3.R;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
+import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan.PreloadOptions;
 import com.android.systemui.shared.recents.model.RecentsTaskLoader;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.BackgroundExecutor;
@@ -216,6 +217,7 @@ public class TouchInteractionService extends Service {
             // Start the launcher activity with our custom handler
             Intent homeIntent = handler.addToIntent(new Intent(mHomeIntent));
             startActivity(homeIntent, ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle());
+
             /*
             ActivityManagerWrapper.getInstance().startRecentsActivity(null, options,
                     ActivityOptions.makeCustomAnimation(this, 0, 0), UserHandle.myUserId(),
@@ -224,7 +226,9 @@ public class TouchInteractionService extends Service {
 
             // Preload the plan
             RecentsTaskLoader loader = TouchInteractionService.getRecentsTaskLoader();
-            loadPlan.preloadPlan(loader, taskId, UserHandle.myUserId());
+            PreloadOptions opts = new PreloadOptions();
+            opts.loadTitles = false;
+            loadPlan.preloadPlan(opts, loader, taskId, UserHandle.myUserId());
             // Set the load plan on UI thread
             mMainThreadExecutor.execute(() -> handler.setRecentsTaskLoadPlan(loadPlan));
         });
@@ -252,7 +256,7 @@ public class TouchInteractionService extends Service {
         // TODO: We are using some hardcoded layers for now, to best approximate the activity layers
         try {
             return mISystemUiProxy.screenshot(new Rect(), mDisplaySize.x, mDisplaySize.y, 0, 100000,
-                    false, mDisplayRotation);
+                    false, mDisplayRotation).toBitmap();
         } catch (RemoteException e) {
             Log.e(TAG, "Error capturing snapshot", e);
             return null;
