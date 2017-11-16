@@ -60,6 +60,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -122,6 +123,7 @@ import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.states.AllAppsState;
 import com.android.launcher3.states.InternalStateHandler;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -2061,11 +2063,16 @@ public class Launcher extends BaseActivity
             intent.setPackage(pickerPackage);
         }
 
-        intent.setSourceBounds(getViewBounds(v));
+        final Bundle launchOptions;
+        if (v != null) {
+            intent.setSourceBounds(getViewBounds(v));
+            // If there is no target package, use the default intent chooser animation
+            launchOptions = hasTargetPackage ? getActivityLaunchOptions(v) : null;
+        } else {
+            launchOptions = null;
+        }
         try {
-            startActivityForResult(intent, REQUEST_PICK_WALLPAPER,
-                    // If there is no target package, use the default intent chooser animation
-                    hasTargetPackage ? getActivityLaunchOptions(v) : null);
+            startActivityForResult(intent, REQUEST_PICK_WALLPAPER, launchOptions);
         } catch (ActivityNotFoundException e) {
             setWaitingForResult(null);
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
@@ -2221,7 +2228,7 @@ public class Launcher extends BaseActivity
                     getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
                             Action.Direction.NONE, ContainerType.WORKSPACE,
                             mWorkspace.getCurrentPage());
-                    getStateManager().goToState(OVERVIEW);
+                    UiFactory.onWorkspaceLongPress(this);
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                     return true;
@@ -2258,7 +2265,7 @@ public class Launcher extends BaseActivity
                     getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
                             Action.Direction.NONE, ContainerType.WORKSPACE,
                             mWorkspace.getCurrentPage());
-                    getStateManager().goToState(OVERVIEW);
+                    UiFactory.onWorkspaceLongPress(this);
                 }
                 mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);

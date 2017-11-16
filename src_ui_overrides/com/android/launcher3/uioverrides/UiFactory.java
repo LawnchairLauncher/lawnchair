@@ -16,6 +16,8 @@
 
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.LauncherState.OVERVIEW;
+
 import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.Launcher;
@@ -38,5 +40,9 @@ public class UiFactory {
         return new StateHandler[] {
                 (OverviewPanel) launcher.getOverviewPanel(),
                 launcher.getAllAppsController(), launcher.getWorkspace() };
+    }
+
+    public static void onWorkspaceLongPress(Launcher launcher) {
+        launcher.getStateManager().goToState(OVERVIEW);
     }
 }
