@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.view.View
+import ch.deletescape.lawnchair.BuildConfig
 import ch.deletescape.lawnchair.Launcher
 import ch.deletescape.lawnchair.LauncherFiles
 import ch.deletescape.lawnchair.Utilities
@@ -156,6 +157,7 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val backportAdaptiveIcons = Utilities.ATLEAST_NOUGAT
     override val weatherProvider by StringPref(PreferenceFlags.KEY_WEATHER_PROVIDER, PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS)
     override var previousBuildNumber by MutableIntPref(PreferenceFlags.KEY_PREVIOUS_BUILD_NUMBER, 0)
+    override var disableLawnfeedPopup by MutableBooleanPref(PreferenceFlags.KEY_DISABLE_LAWNFEED_POPUP, false)
 
     override var hiddenAppsSet: Set<String>
         get() {
@@ -223,7 +225,7 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val hideAppLabels by BooleanPref(FeatureFlags.KEY_PREF_HIDE_APP_LABELS, false)
     override val hideAllAppsAppLabels by BooleanPref(PreferenceFlags.KEY_PREF_HIDE_ALL_APPS_APP_LABELS, false)
     override val allowFullWidthWidgets by BooleanPref(FeatureFlags.KEY_PREF_FULL_WIDTH_WIDGETS, false)
-    override val showGoogleNowTab by BooleanPref(FeatureFlags.KEY_PREF_SHOW_NOW_TAB, true)
+    override val showGoogleNowTab by BooleanPref(FeatureFlags.KEY_PREF_SHOW_NOW_TAB, !BuildConfig.ENABLE_LAWNFEED)
     override val transparentHotseat by BooleanPref(FeatureFlags.KEY_PREF_TRANSPARENT_HOTSEAT, false)
     override val enableDynamicUi by BooleanPref(FeatureFlags.KEY_PREF_ENABLE_DYNAMIC_UI, false)
     override val enableBlur by BooleanPref(FeatureFlags.KEY_PREF_ENABLE_BLUR, false)

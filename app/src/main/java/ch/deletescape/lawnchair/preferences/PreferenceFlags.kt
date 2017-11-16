@@ -98,6 +98,7 @@ object PreferenceFlags {
 
     const val KEY_APP_VISIBILITY_PREFIX = "visibility_"
     const val KEY_PREVIOUS_BUILD_NUMBER = "previousBuildNumber"
+    const val KEY_DISABLE_LAWNFEED_POPUP = "disableLawnfeedPopup"
 
     const val KEY_ALTERNATE_ICON_PREFIX = "alternateIcon_"
     const val KEY_ITEM_ALIAS_PREFIX = "alias_"
