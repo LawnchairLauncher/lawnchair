@@ -13,13 +13,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<LinearLayout
+<View
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/system_shortcut_icons"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/system_shortcut_header_height"
-    android:orientation="horizontal"
-    android:gravity="end|center_vertical"
-    android:background="?attr/popupColorSecondary"
-    android:clipToPadding="true" />
+    android:layout_height="4dp"
+    android:layout_marginTop="4dp"
+    android:background="@drawable/bg_notification_content" />

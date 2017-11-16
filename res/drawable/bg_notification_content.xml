@@ -13,13 +13,16 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="?attr/popupColorTertiary" />
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/system_shortcut_icons"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/system_shortcut_header_height"
-    android:orientation="horizontal"
-    android:gravity="end|center_vertical"
-    android:background="?attr/popupColorSecondary"
-    android:clipToPadding="true" />
+    <item android:height="3dp" android:top="0dp">
+        <shape>
+            <gradient
+                android:angle="270"
+                android:endColor="@android:color/transparent"
+                android:startColor="#33000000"
+                android:type="linear" />
+        </shape>
+    </item>
+</layer-list>

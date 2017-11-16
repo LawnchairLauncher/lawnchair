@@ -117,7 +117,6 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.pageindicators.PageIndicator;
-import com.android.launcher3.popup.BaseActionPopup;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
@@ -1259,9 +1258,9 @@ public class Launcher extends BaseActivity
                 mWorkspace.updateIconBadges(updatedBadges);
                 mAppsView.updateIconBadges(updatedBadges);
 
-                BaseActionPopup popup = BaseActionPopup.getOpen(Launcher.this);
-                if (popup instanceof PopupContainerWithArrow) {
-                    ((PopupContainerWithArrow) popup).updateNotificationHeader(updatedBadges);
+                PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(Launcher.this);
+                if (popup != null) {
+                    popup.updateNotificationHeader(updatedBadges);
                 }
             }
         };
@@ -3162,7 +3161,7 @@ public class Launcher extends BaseActivity
                             && mAccessibilityDelegate.performAction(focusedView,
                                     (ItemInfo) focusedView.getTag(),
                                     LauncherAccessibilityDelegate.DEEP_SHORTCUTS)) {
-                        BaseActionPopup.getOpen(this).requestFocus();
+                        PopupContainerWithArrow.getOpen(this).requestFocus();
                         return true;
                     }
                     break;

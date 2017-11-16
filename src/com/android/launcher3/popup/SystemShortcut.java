@@ -1,9 +1,7 @@
 package com.android.launcher3.popup;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 
@@ -31,20 +29,12 @@ import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
  * Example system shortcuts, defined as inner classes, include Widgets and AppInfo.
  */
 public abstract class SystemShortcut extends ItemInfo {
-    private final int mIconResId;
-    private final int mLabelResId;
+    public final int iconResId;
+    public final int labelResId;
 
     public SystemShortcut(int iconResId, int labelResId) {
-        mIconResId = iconResId;
-        mLabelResId = labelResId;
-    }
-
-    public Drawable getIcon(Context context) {
-        return context.getResources().getDrawable(mIconResId, context.getTheme());
-    }
-
-    public String getLabel(Context context) {
-        return context.getString(mLabelResId);
+        this.iconResId = iconResId;
+        this.labelResId = labelResId;
     }
 
     public abstract View.OnClickListener getOnClickListener(final Launcher launcher,

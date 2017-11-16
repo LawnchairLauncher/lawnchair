@@ -181,6 +181,7 @@
     <dimen name="deep_shortcut_drag_handle_size">16dp</dimen>
     <dimen name="popup_padding_start">10dp</dimen>
     <dimen name="popup_padding_end">16dp</dimen>
+    <dimen name="popup_vertical_padding">4dp</dimen>
     <dimen name="popup_arrow_width">10dp</dimen>
     <dimen name="popup_arrow_height">8dp</dimen>
     <dimen name="popup_arrow_vertical_offset">-2dp</dimen>
@@ -228,7 +229,6 @@
     <dimen name="notification_footer_icon_size">18dp</dimen>
     <!-- notification_icon_size + notification_padding_end + 16dp padding between icon and text -->
     <dimen name="notification_main_text_padding_end">52dp</dimen>
-    <dimen name="notification_elevation">2dp</dimen>
     <dimen name="horizontal_ellipsis_size">18dp</dimen>
     <!-- arrow_horizontal_offset_start - (ellipsis_size - arrow_width) / 2 -->
     <dimen name="horizontal_ellipsis_offset">19dp</dimen>
