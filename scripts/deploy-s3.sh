@@ -7,6 +7,12 @@
 APP_VERSION=$MAJOR_MINOR.$TRAVIS_BUILD_NUMBER
 mkdir -p $APP_VERSION
 
+# Fix commit range for tagged builds
+if [ ! -z "$TRAVIS_TAG" ]
+then
+    COMMIT_RANGE="$(git describe --abbrev=0 --tags $TRAVIS_TAG^)..$TRAVIS_TAG"
+fi
+
 
 # Upload Lawnchair signed release apk
 cp app/build/outputs/apk/release/app-release.apk $APP_VERSION/Lawnchair-$APP_VERSION.apk
@@ -19,6 +25,15 @@ md5sum $(readlink -f app/build/outputs/apk/release/app-release.apk) > $APP_VERSI
 # Upload proguard file
 cp app/build/outputs/mapping/release/mapping.txt $APP_VERSION/proguard-$MAJOR_MINOR.$TRAVIS_BUILD_NUMBER.txt
 ./scripts/s3-upload.sh $APP_VERSION/proguard-$MAJOR_MINOR.$TRAVIS_BUILD_NUMBER.txt $S3_BUCKET $S3_HOST $S3_KEY $S3_SECRET
+
+
+# Check if changes have been committed to Lawnfeed
+CHANGELOG="$(git diff --name-only -r $COMMIT_RANGE lawnfeed)"
+if [ -z "$CHANGELOG" ]
+then
+    # No need to deploy a new Lawnfeed build when no changes have been made
+    exit
+fi
 
 # Upload Lawnfeed signed debug apk
 cp lawnfeed/build/outputs/apk/debug/lawnfeed-debug.apk $APP_VERSION/Lawnfeed-$APP_VERSION.apk
