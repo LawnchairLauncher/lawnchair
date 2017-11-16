@@ -42,6 +42,7 @@ import android.view.WindowManager;
 
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
+import com.android.launcher3.util.TraceHelper;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
@@ -63,7 +64,7 @@ public class TouchInteractionService extends Service {
 
         @Override
         public void onMotionEvent(MotionEvent ev) {
-            handleMotionEvent(ev);
+            mEventQueue.queue(ev);
         }
 
         @Override
@@ -76,7 +77,7 @@ public class TouchInteractionService extends Service {
     private RunningTaskInfo mRunningTask;
     private Intent mHomeIntent;
     private ComponentName mLauncher;
-    private Choreographer mChoreographer;
+    private MotionEventQueue mEventQueue;
     private MainThreadExecutor mMainThreadExecutor;
 
     private int mDisplayRotation;
@@ -111,8 +112,8 @@ public class TouchInteractionService extends Service {
             sRecentsTaskLoader.startLoader(this);
         }
 
-        mChoreographer = Choreographer.getInstance();
         mMainThreadExecutor = new MainThreadExecutor();
+        mEventQueue = new MotionEventQueue(Choreographer.getInstance(), this::handleMotionEvent);
     }
 
     @Override
@@ -203,7 +204,7 @@ public class TouchInteractionService extends Service {
     private void startTouchTracking() {
         // Create the shared handler
         final NavBarSwipeInteractionHandler handler =
-                new NavBarSwipeInteractionHandler(mRunningTask, mChoreographer, this);
+                new NavBarSwipeInteractionHandler(mRunningTask, this);
 
         // Preload and start the recents activity on a background thread
         final Context context = this;
@@ -253,6 +254,7 @@ public class TouchInteractionService extends Service {
             return null;
         }
 
+        TraceHelper.beginSection("TaskSnapshot");
         // TODO: We are using some hardcoded layers for now, to best approximate the activity layers
         try {
             return mISystemUiProxy.screenshot(new Rect(), mDisplaySize.x, mDisplaySize.y, 0, 100000,
@@ -260,6 +262,8 @@ public class TouchInteractionService extends Service {
         } catch (RemoteException e) {
             Log.e(TAG, "Error capturing snapshot", e);
             return null;
+        } finally {
+            TraceHelper.endSection("TaskSnapshot");
         }
     }
 }

@@ -28,11 +28,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
 import android.os.UserHandle;
-import android.support.annotation.BinderThread;
 import android.support.annotation.UiThread;
-import android.util.DisplayMetrics;
-import android.view.Choreographer;
-import android.view.Choreographer.FrameCallback;
 import android.view.View;
 import android.view.ViewTreeObserver.OnPreDrawListener;
 
@@ -52,10 +48,8 @@ import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 @TargetApi(Build.VERSION_CODES.O)
-public class NavBarSwipeInteractionHandler extends InternalStateHandler implements FrameCallback {
+public class NavBarSwipeInteractionHandler extends InternalStateHandler {
 
     private static final int STATE_LAUNCHER_READY = 1 << 0;
     private static final int STATE_RECENTS_DELAY_COMPLETE = 1 << 1;
@@ -90,9 +84,6 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler implemen
     // animated to 1, so allow for a smooth transition.
     private final AnimatedFloat mActivityMultiplier = new AnimatedFloat(this::updateFinalShift);
 
-    private final Choreographer mChoreographer;
-    private final AtomicBoolean mFrameScheduled = new AtomicBoolean(false);
-
     private final int mRunningTaskId;
     private final Context mContext;
 
@@ -106,18 +97,12 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler implemen
 
     private boolean mLauncherReady;
     private boolean mTouchEndHandled;
+    private float mCurrentDisplacement;
 
     private Bitmap mTaskSnapshot;
 
-    // These are updated on the binder thread, and eventually picked up on doFrame
-    private volatile float mCurrentDisplacement;
-    private volatile float mEndVelocity;
-    private volatile boolean mTouchEnded = false;
-
-    NavBarSwipeInteractionHandler(
-            RunningTaskInfo runningTaskInfo, Choreographer choreographer, Context context) {
+    NavBarSwipeInteractionHandler(RunningTaskInfo runningTaskInfo, Context context) {
         mRunningTaskId = runningTaskInfo.id;
-        mChoreographer = choreographer;
         mContext = context;
         WindowManagerWrapper.getInstance().getStableInsets(mStableInsets);
 
@@ -196,37 +181,9 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler implemen
         mRecentsView.setVisibility(View.GONE);
     }
 
-    /**
-     * This is updated on the binder thread and is picked up on the UI thread during the next
-     * scheduled frame.
-     * TODO: Instead of continuously scheduling frames, post the motion events to UI thread
-     * (can ignore all continuous move events until the last move).
-     */
-    @BinderThread
+    @UiThread
     public void updateDisplacement(float displacement) {
         mCurrentDisplacement = displacement;
-        scheduleFrameIfNeeded();
-    }
-
-    @BinderThread
-    public void endTouch(float endVelocity) {
-        mEndVelocity = endVelocity;
-        mTouchEnded = true;
-        scheduleFrameIfNeeded();
-    }
-
-    private void scheduleFrameIfNeeded() {
-        boolean alreadyScheduled = mFrameScheduled.getAndSet(true);
-        if (!alreadyScheduled) {
-            // TODO: Here we might end up scheduling one additional frame in some race conditions.
-            // This can be avoided by synchronising postFrameCallback as well
-            mChoreographer.postFrameCallback(this);
-        }
-    }
-
-    @Override
-    public void doFrame(long l) {
-        mFrameScheduled.set(false);
         executeFrameUpdate();
     }
 
@@ -237,14 +194,6 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler implemen
             float translation = Utilities.boundToRange(displacement, 0, hotseatHeight);
             float shift = hotseatHeight == 0 ? 0 : translation / hotseatHeight;
             mCurrentShift.updateValue(shift);
-        }
-
-        if (mTouchEnded) {
-            if (mTouchEndHandled) {
-                return;
-            }
-            mTouchEndHandled = true;
-            animateToFinalShift();
         }
     }
 
@@ -301,25 +250,30 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler implemen
     }
 
     @UiThread
-    private void animateToFinalShift() {
+    public void endTouch(float endVelocity) {
+        if (mTouchEndHandled) {
+            return;
+        }
+        mTouchEndHandled = true;
+
         Resources res = mContext.getResources();
         float flingThreshold = res.getDimension(R.dimen.quickstep_fling_threshold_velocity);
-        boolean isFling = Math.abs(mEndVelocity) > flingThreshold;
+        boolean isFling = Math.abs(endVelocity) > flingThreshold;
 
         long duration = DEFAULT_SWIPE_DURATION;
         final float endShift;
         if (!isFling) {
             endShift = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW ? 1 : 0;
         } else {
-            endShift = mEndVelocity < 0 ? 1 : 0;
+            endShift = endVelocity < 0 ? 1 : 0;
             float minFlingVelocity = res.getDimension(R.dimen.quickstep_fling_min_velocity);
-            if (Math.abs(mEndVelocity) > minFlingVelocity && mLauncherReady) {
+            if (Math.abs(endVelocity) > minFlingVelocity && mLauncherReady) {
                 float distanceToTravel = (endShift - mCurrentShift.value) * mHotseat.getHeight();
 
                 // we want the page's snap velocity to approximately match the velocity at
                 // which the user flings, so we scale the duration by a value near to the
                 // derivative of the scroll interpolator at zero, ie. 5.
-                duration = 5 * Math.round(1000 * Math.abs(distanceToTravel / mEndVelocity));
+                duration = 5 * Math.round(1000 * Math.abs(distanceToTravel / endVelocity));
             }
         }
 
