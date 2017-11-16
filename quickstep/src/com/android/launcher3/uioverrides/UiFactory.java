@@ -16,12 +16,17 @@
 
 package com.android.launcher3.uioverrides;
 
+import android.content.Intent;
 import android.view.View.AccessibilityDelegate;
+import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
+import com.android.launcher3.R;
 import com.android.launcher3.VerticalSwipeController;
 import com.android.launcher3.util.TouchController;
+import com.android.launcher3.widget.WidgetsFullSheet;
 
 public class UiFactory {
 
@@ -37,5 +42,30 @@ public class UiFactory {
         return new StateHandler[] {
                 launcher.getAllAppsController(), launcher.getWorkspace(),
                 new RecentsViewStateController(launcher)};
+    }
+
+    public static void onWorkspaceLongPress(Launcher launcher) {
+        PopupMenu menu = new PopupMenu(launcher, launcher.getWorkspace().getPageIndicator());
+        menu.getMenu().add(R.string.wallpaper_button_text).setOnMenuItemClickListener((i) -> {
+            launcher.onClickWallpaperPicker(null);
+            return true;
+        });
+        menu.getMenu().add(R.string.widget_button_text).setOnMenuItemClickListener((i) -> {
+            if (launcher.getPackageManager().isSafeMode()) {
+                Toast.makeText(launcher, R.string.safemode_widget_error, Toast.LENGTH_SHORT).show();
+            } else {
+                WidgetsFullSheet.show(launcher, true /* animated */);
+            }
+            return true;
+        });
+        if (launcher.hasSettings()) {
+            menu.getMenu().add(R.string.settings_button_text).setOnMenuItemClickListener((i) -> {
+                launcher.startActivity(new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
+                        .setPackage(launcher.getPackageName())
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                return true;
+            });
+        }
+        menu.show();
     }
 }
