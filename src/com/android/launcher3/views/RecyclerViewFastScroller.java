@@ -98,6 +98,7 @@ public class RecyclerViewFastScroller extends View {
     private String mPopupSectionName;
 
     protected BaseRecyclerView mRv;
+    private RecyclerView.OnScrollListener mOnScrollListener;
 
     private int mDownX;
     private int mDownY;
@@ -141,7 +142,10 @@ public class RecyclerViewFastScroller extends View {
 
     public void setRecyclerView(BaseRecyclerView rv, TextView popupView) {
         mRv = rv;
-        mRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        if (mOnScrollListener != null) {
+            mRv.removeOnScrollListener(mOnScrollListener);
+        }
+        mRv.addOnScrollListener(mOnScrollListener = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 mDy = dy;
@@ -285,7 +289,7 @@ public class RecyclerViewFastScroller extends View {
             return;
         }
         int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
-        canvas.translate(getWidth() / 2, mRv.getPaddingTop());
+        canvas.translate(getWidth() / 2, mRv.getScrollBarTop());
         // Draw the track
         float halfW = mWidth / 2;
         canvas.drawRoundRect(-halfW, 0, halfW, mRv.getScrollbarTrackHeight(),
@@ -317,7 +321,7 @@ public class RecyclerViewFastScroller extends View {
      * Returns whether the specified point is inside the thumb bounds.
      */
     private boolean isNearThumb(int x, int y) {
-        int offset = y - mRv.getPaddingTop() - mThumbOffsetY;
+        int offset = y - mRv.getScrollBarTop() - mThumbOffsetY;
 
         return x >= 0 && x < getWidth() && offset >= 0 && offset <= mThumbHeight;
     }
@@ -348,7 +352,7 @@ public class RecyclerViewFastScroller extends View {
     private void updatePopupY(int lastTouchY) {
         int height = mPopupView.getHeight();
         float top = lastTouchY - (FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR * height)
-                + mRv.getPaddingTop();
+                + mRv.getScrollBarTop();
         top = Utilities.boundToRange(top,
                 mMaxWidth, mRv.getScrollbarTrackHeight() - mMaxWidth - height);
         mPopupView.setTranslationY(top);

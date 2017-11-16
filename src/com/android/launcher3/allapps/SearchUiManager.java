@@ -27,7 +27,7 @@ public interface SearchUiManager {
     /**
      * Initializes the search manager.
      */
-    void initialize(AlphabeticalAppsList appsList, AllAppsRecyclerView recyclerView);
+    void initialize(AllAppsContainerView containerView);
 
     /**
      * A {@link SpringAnimation} that will be used when the user flings.

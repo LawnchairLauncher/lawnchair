@@ -31,7 +31,6 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.graphics.IconPalette;
-import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.util.PackageUserKey;
 
 /**
@@ -73,7 +72,7 @@ public class NotificationInfo implements View.OnClickListener {
         if (icon == null) {
             // Use the small icon.
             icon = notification.getSmallIcon();
-            mIconDrawable = icon.loadDrawable(context);
+            mIconDrawable = icon == null ? null : icon.loadDrawable(context);
             mIconColor = statusBarNotification.getNotification().color;
             mIsIconLarge = false;
         } else {
@@ -110,7 +109,7 @@ public class NotificationInfo implements View.OnClickListener {
             launcher.getPopupDataProvider().cancelNotification(notificationKey);
         }
         AbstractFloatingView.closeOpenContainer(launcher, AbstractFloatingView
-                .TYPE_POPUP_CONTAINER_WITH_ARROW);
+                .TYPE_ACTION_POPUP);
     }
 
     public Drawable getIconForBackground(Context context, int background) {

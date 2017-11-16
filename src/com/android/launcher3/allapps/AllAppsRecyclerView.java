@@ -31,6 +31,7 @@ import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
@@ -40,6 +41,7 @@ import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import com.android.launcher3.views.RecyclerViewFastScroller;
 
 import java.util.List;
 
@@ -51,6 +53,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     private AlphabeticalAppsList mApps;
     private AllAppsFastScrollHelper mFastScrollHelper;
     private int mNumAppsPerRow;
+    private int mUserProfileTabContentHeight;
 
     // The specific view heights that we use to calculate scroll
     private SparseIntArray mViewHeights = new SparseIntArray();
@@ -63,7 +66,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     private SpringAnimationHandler mSpringAnimationHandler;
     private OverScrollHelper mOverScrollHelper;
     private SwipeDetector mPullDetector;
-
     private float mContentTranslationY = 0;
     public static final Property<AllAppsRecyclerView, Float> CONTENT_TRANS_Y =
             new Property<AllAppsRecyclerView, Float>(Float.class, "appsRecyclerViewContentTransY") {
@@ -122,9 +124,11 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     /**
      * Sets the list of apps in this view, used to determine the fastscroll position.
      */
-    public void setApps(AlphabeticalAppsList apps) {
+    public void setApps(AlphabeticalAppsList apps, boolean usingTabs) {
         mApps = apps;
         mFastScrollHelper = new AllAppsFastScrollHelper(this, apps);
+        mUserProfileTabContentHeight = usingTabs
+                ? Launcher.getLauncher(getContext()).getDeviceProfile().allAppsCellHeightPx : 0;;
     }
 
     public AlphabeticalAppsList getApps() {
@@ -136,7 +140,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
      */
     public void setNumAppsPerRow(DeviceProfile grid, int numAppsPerRow) {
         mNumAppsPerRow = numAppsPerRow;
-
         RecyclerView.RecycledViewPool pool = getRecycledViewPool();
         int approxRows = (int) Math.ceil(grid.availableHeightPx / grid.allAppsIconSizePx);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH, 1);
@@ -169,7 +172,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
                 AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET);
         putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
                 AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH);
-
         if (FeatureFlags.DISCOVERY_ENABLED) {
             putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
                     AllAppsGridAdapter.VIEW_TYPE_APPS_LOADING_DIVIDER);
@@ -485,8 +487,23 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
      */
     @Override
     protected int getAvailableScrollHeight() {
-        return getPaddingTop() + getCurrentScrollY(mApps.getAdapterItems().size(), 0)
-                - getHeight() + getPaddingBottom();
+        return getPaddingTop() + getCurrentScrollY(getAdapter().getItemCount(), 0)
+                - getHeight() + getPaddingBottom() + mUserProfileTabContentHeight;
+    }
+
+    public int getScrollBarTop() {
+        return super.getScrollBarTop() + mUserProfileTabContentHeight;
+    }
+
+    /**
+     * Returns the height of the fast scroll bar
+     */
+    public int getScrollbarTrackHeight() {
+        return super.getScrollbarTrackHeight() + mUserProfileTabContentHeight;
+    }
+
+    public RecyclerViewFastScroller getScrollbar() {
+        return mScrollbar;
     }
 
     /**
@@ -587,7 +604,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         private void reset(boolean shouldSpring) {
             float y = getContentTranslationY();
             if (Float.compare(y, 0) != 0) {
-                if (FeatureFlags.LAUNCHER3_PHYSICS && shouldSpring) {
+                if (mSpringAnimationHandler != null && shouldSpring) {
                     // We calculate our own velocity to give the springs the desired effect.
                     float velocity = y / getDampedOverScroll(getHeight()) * MAX_RELEASE_VELOCITY;
                     // We want to negate the velocity because we are moving to 0 from -1 due to the
@@ -614,4 +631,5 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
             return OverScroll.dampedScroll(y, getHeight());
         }
     }
+
 }

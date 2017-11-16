@@ -63,13 +63,6 @@
         <attr name="pageIndicator" format="reference" />
     </declare-styleable>
 
-    <!-- BaseContainerView specific attributes. These attributes are used to customize
-         AllApps view and WidgetsView in xml. -->
-    <declare-styleable name="BaseContainerView">
-        <!-- Drawable to use for the reveal animation -->
-        <attr name="revealBackground" format="reference" />
-    </declare-styleable>
-
     <!-- XML attributes used by default_workspace.xml -->
     <declare-styleable name="Favorite">
         <attr name="className" format="string" />
@@ -143,5 +136,20 @@
 
     <declare-styleable name="RecyclerViewFastScroller">
         <attr name="canThumbDetach" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="CustomAppWidgetProviderInfo">
+        <attr name="providerId" format="integer" />
+
+        <attr name="android:label" />
+        <attr name="android:initialLayout" />
+        <attr name="android:icon" />
+        <attr name="android:previewImage" />
+        <attr name="android:resizeMode" />
+
+        <attr name="numRows" />
+        <attr name="numColumns" />
+        <attr name="numMinRows" format="integer" />
+        <attr name="numMinColumns" format="integer" />
     </declare-styleable>
 </resources>

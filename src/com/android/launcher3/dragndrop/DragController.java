@@ -16,6 +16,9 @@
 
 package com.android.launcher3.dragndrop;
 
+import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
+import static com.android.launcher3.LauncherState.NORMAL;
+
 import android.content.ComponentName;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -27,7 +30,6 @@ import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
@@ -39,6 +41,7 @@ import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
+import com.android.launcher3.util.UiThreadHelper;
 
 import java.util.ArrayList;
 
@@ -120,6 +123,9 @@ public class DragController implements DragDriver.EventListener, TouchController
 
     /**
      * Starts a drag.
+     * When the drag is started, the UI automatically goes into spring loaded mode. On a successful
+     * drop, it is the responsibility of the {@link DropTarget} to exit out of the spring loaded
+     * mode. If the drop was cancelled for some reason, the UI will automatically exit out of this mode.
      *
      * @param b The bitmap to display as the drag image.  It will be re-scaled to the
      *          enlarged size.
@@ -138,8 +144,7 @@ public class DragController implements DragDriver.EventListener, TouchController
         }
 
         // Hide soft keyboard, if visible
-        mLauncher.getSystemService(InputMethodManager.class)
-                .hideSoftInputFromWindow(mWindowToken, 0);
+        UiThreadHelper.hideKeyboardAsync(mLauncher, mWindowToken);
 
         mOptions = options;
         if (mOptions.systemDndStartPoint != null) {
@@ -249,10 +254,21 @@ public class DragController implements DragDriver.EventListener, TouchController
             mDragObject.cancelled = true;
             mDragObject.dragComplete = true;
             if (!mIsInPreDrag) {
-                mDragObject.dragSource.onDropCompleted(null, mDragObject, false, false);
+                dispatchDropComplete(null, false);
             }
         }
         endDrag();
+    }
+
+    private void dispatchDropComplete(View dropTarget, boolean accepted) {
+        if (!accepted) {
+            // If it was not accepted, cleanup the state. If it was accepted, it is the
+            // responsibility of the drop target to cleanup the state.
+            mLauncher.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
+            mDragObject.deferDragViewCleanupPostAnimation = false;
+        }
+
+        mDragObject.dragSource.onDropCompleted(dropTarget, mDragObject, accepted);
     }
 
     public void onAppsRemoved(ItemInfoMatcher matcher) {
@@ -576,7 +592,7 @@ public class DragController implements DragDriver.EventListener, TouchController
                 if (flingAnimation != null) {
                     flingAnimation.run();
                 } else if (!mIsInPreDrag) {
-                    dropTarget.onDrop(mDragObject);
+                    dropTarget.onDrop(mDragObject, mOptions);
                 }
                 accepted = true;
             }
@@ -584,35 +600,37 @@ public class DragController implements DragDriver.EventListener, TouchController
         final View dropTargetAsView = dropTarget instanceof View ? (View) dropTarget : null;
         if (!mIsInPreDrag) {
             mLauncher.getUserEventDispatcher().logDragNDrop(mDragObject, dropTargetAsView);
-            mDragObject.dragSource.onDropCompleted(
-                    dropTargetAsView, mDragObject, flingAnimation != null, accepted);
+            dispatchDropComplete(dropTargetAsView, accepted);
         }
     }
 
     private DropTarget findDropTarget(int x, int y, int[] dropCoordinates) {
-        final Rect r = mRectTemp;
+        mDragObject.x = x;
+        mDragObject.y = y;
 
+        final Rect r = mRectTemp;
         final ArrayList<DropTarget> dropTargets = mDropTargets;
         final int count = dropTargets.size();
-        for (int i=count-1; i>=0; i--) {
+        for (int i = count - 1; i >= 0; i--) {
             DropTarget target = dropTargets.get(i);
             if (!target.isDropEnabled())
                 continue;
 
             target.getHitRectRelativeToDragLayer(r);
-
-            mDragObject.x = x;
-            mDragObject.y = y;
             if (r.contains(x, y)) {
-
                 dropCoordinates[0] = x;
                 dropCoordinates[1] = y;
                 mLauncher.getDragLayer().mapCoordInSelfToDescendant((View) target, dropCoordinates);
-
                 return target;
             }
         }
-        return null;
+        // Pass all unhandled drag to workspace. Workspace finds the correct
+        // cell layout to drop to in the existing drag/drop logic.
+        dropCoordinates[0] = x;
+        dropCoordinates[1] = y;
+        mLauncher.getDragLayer().mapCoordInSelfToDescendant(mLauncher.getWorkspace(),
+                dropCoordinates);
+        return mLauncher.getWorkspace();
     }
 
     public void setWindowToken(IBinder token) {

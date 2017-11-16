@@ -16,7 +16,8 @@
 
 package com.android.launcher3;
 
-import android.app.Activity;
+import static android.app.Activity.RESULT_CANCELED;
+
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
@@ -41,12 +42,17 @@ import java.util.ArrayList;
  */
 public class LauncherAppWidgetHost extends AppWidgetHost {
 
+    private static final int FLAG_LISTENING = 1;
+    private static final int FLAG_RESUMED = 1 << 1;
+    private static final int FLAG_LISTEN_IF_RESUMED = 1 << 2;
+
     public static final int APPWIDGET_HOST_ID = 1024;
 
     private final ArrayList<ProviderChangedListener> mProviderChangeListeners = new ArrayList<>();
     private final SparseArray<LauncherAppWidgetHostView> mViews = new SparseArray<>();
 
     private final Context mContext;
+    private int mFlags = FLAG_RESUMED;
 
     public LauncherAppWidgetHost(Context context) {
         super(context, APPWIDGET_HOST_ID);
@@ -66,7 +72,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         if (FeatureFlags.GO_DISABLE_WIDGETS) {
             return;
         }
-
+        mFlags |= FLAG_LISTENING;
         try {
             super.startListening();
         } catch (Exception e) {
@@ -85,8 +91,57 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         if (FeatureFlags.GO_DISABLE_WIDGETS) {
             return;
         }
-
+        mFlags &= ~FLAG_LISTENING;
         super.stopListening();
+    }
+
+    /**
+     * Updates the resumed state of the host.
+     * When a host is not resumed, it defers calls to startListening until host is resumed again.
+     * But if the host was already listening, it will not call stopListening.
+     *
+     * @see #setListenIfResumed(boolean)
+     */
+    public void setResumed(boolean isResumed) {
+        if (isResumed == ((mFlags & FLAG_RESUMED) != 0)) {
+            return;
+        }
+        if (isResumed) {
+            mFlags |= FLAG_RESUMED;
+            // Start listening if we were supposed to start listening on resume
+            if ((mFlags & FLAG_LISTEN_IF_RESUMED) != 0 && (mFlags & FLAG_LISTENING) == 0) {
+                startListening();
+            }
+        } else {
+            mFlags &= ~FLAG_RESUMED;
+        }
+    }
+
+    /**
+     * Updates the listening state of the host. If the host is not resumed, startListening is
+     * deferred until next resume.
+     *
+     * @see #setResumed(boolean)
+     */
+    public void setListenIfResumed(boolean listenIfResumed) {
+        if (!Utilities.ATLEAST_NOUGAT_MR1) {
+            return;
+        }
+        if (listenIfResumed == ((mFlags & FLAG_LISTEN_IF_RESUMED) != 0)) {
+            return;
+        }
+        if (listenIfResumed) {
+            mFlags |= FLAG_LISTEN_IF_RESUMED;
+            if ((mFlags & FLAG_RESUMED) != 0) {
+                // If we are resumed, start listening immediately. Note we do not check for
+                // duplicate calls before calling startListening as startListening is safe to call
+                // multiple times.
+                startListening();
+            }
+        } else {
+            mFlags &= ~FLAG_LISTEN_IF_RESUMED;
+            stopListening();
+        }
     }
 
     @Override
@@ -116,13 +171,12 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
 
     public AppWidgetHostView createView(Context context, int appWidgetId,
             LauncherAppWidgetProviderInfo appWidget) {
-        if (appWidget.isCustomWidget) {
+        if (appWidget.isCustomWidget()) {
             LauncherAppWidgetHostView lahv = new LauncherAppWidgetHostView(context);
             LayoutInflater inflater = (LayoutInflater)
                     context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             inflater.inflate(appWidget.initialLayout, lahv);
             lahv.setAppWidget(0, appWidget);
-            lahv.updateLastInflationOrientation();
             return lahv;
         } else {
             try {
@@ -204,12 +258,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     }
 
     private void sendActionCancelled(final BaseActivity activity, final int requestCode) {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                activity.onActivityResult(requestCode, Activity.RESULT_CANCELED, null);
-            }
-        });
+        new Handler().post(() -> activity.onActivityResult(requestCode, RESULT_CANCELED, null));
     }
 
     /**

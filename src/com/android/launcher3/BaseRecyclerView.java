@@ -21,6 +21,7 @@ import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -60,9 +61,13 @@ public abstract class BaseRecyclerView extends RecyclerView
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        ViewGroup parent = (ViewGroup) getParent();
+        bindFastScrollbar();
+    }
+
+    public void bindFastScrollbar() {
+        ViewGroup parent = (ViewGroup) getParent().getParent();
         mScrollbar = parent.findViewById(R.id.fast_scroller);
-        mScrollbar.setRecyclerView(this, (TextView) parent.findViewById(R.id.fast_scroller_popup));
+        mScrollbar.setRecyclerView(this, parent.findViewById(R.id.fast_scroller_popup));
     }
 
     /**
@@ -99,11 +104,15 @@ public abstract class BaseRecyclerView extends RecyclerView
         // DO NOT REMOVE, NEEDED IMPLEMENTATION FOR M BUILDS
     }
 
+    public int getScrollBarTop() {
+        return getPaddingTop();
+    }
+
     /**
      * Returns the height of the fast scroll bar
      */
     public int getScrollbarTrackHeight() {
-        return getHeight() - getPaddingTop() - getPaddingBottom();
+        return getHeight() - getScrollBarTop() - getPaddingBottom();
     }
 
     /**
@@ -119,13 +128,6 @@ public abstract class BaseRecyclerView extends RecyclerView
     protected int getAvailableScrollBarHeight() {
         int availableScrollBarHeight = getScrollbarTrackHeight() - mScrollbar.getThumbHeight();
         return availableScrollBarHeight;
-    }
-
-    /**
-     * Returns the scrollbar for this recycler view.
-     */
-    public RecyclerViewFastScroller getScrollBar() {
-        return mScrollbar;
     }
 
     @Override
@@ -157,6 +159,28 @@ public abstract class BaseRecyclerView extends RecyclerView
 
         // Calculate the position and size of the scroll bar
         mScrollbar.setThumbOffsetY(scrollBarY);
+    }
+
+    /**
+     * Returns whether the view itself will handle the touch event or not.
+     * @param ev MotionEvent in {@param eventSource}
+     */
+    public boolean shouldContainerScroll(MotionEvent ev, View eventSource) {
+        int[] point = new int[2];
+        point[0] = (int) ev.getX();
+        point[1] = (int) ev.getY();
+        Utilities.mapCoordInSelfToDescendant(mScrollbar, eventSource, point);
+        // IF the MotionEvent is inside the thumb, container should not be pulled down.
+        if (mScrollbar.shouldBlockIntercept(point[0], point[1])) {
+            return false;
+        }
+
+        // IF scroller is at the very top OR there is no scroll bar because there is probably not
+        // enough items to scroll, THEN it's okay for the container to be pulled down.
+        if (getCurrentScrollY() == 0) {
+            return true;
+        }
+        return false;
     }
 
     /**

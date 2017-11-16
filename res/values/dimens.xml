@@ -15,7 +15,10 @@
 -->
 
 <resources>
-<!-- Dynamic Grid -->
+
+    <dimen name="click_shadow_elevation">4dp</dimen>
+
+    <!-- Dynamic Grid -->
     <dimen name="dynamic_grid_edge_margin">8dp</dimen>
     <dimen name="dynamic_grid_min_page_indicator_size">32dp</dimen>
     <dimen name="dynamic_grid_page_indicator_line_height">1dp</dimen>
@@ -54,7 +57,6 @@
     <dimen name="vert_drop_target_horizontal_gap">14dp</dimen>
 
 <!-- App Widget resize frame -->
-    <dimen name="default_widget_padding">8dp</dimen>
     <dimen name="widget_handle_margin">13dp</dimen>
     <dimen name="resize_frame_background_padding">24dp</dimen>
 
@@ -87,10 +89,9 @@
     <dimen name="all_apps_empty_search_bg_top_offset">144dp</dimen>
     <dimen name="all_apps_background_canvas_width">700dp</dimen>
     <dimen name="all_apps_background_canvas_height">475dp</dimen>
-    <dimen name="all_apps_caret_stroke_width">2dp</dimen>
-    <dimen name="all_apps_caret_shadow_spread">1dp</dimen>
-    <dimen name="all_apps_caret_size">13dp</dimen>
     <dimen name="all_apps_caret_workspace_offset">18dp</dimen>
+    <dimen name="all_apps_header_tab_height">50dp</dimen>
+    <dimen name="all_apps_tabs_indicator_height">2dp</dimen>
 
 <!-- Search bar in All Apps -->
     <dimen name="all_apps_header_max_elevation">3dp</dimen>
@@ -180,6 +181,7 @@
     <dimen name="deep_shortcut_drag_handle_size">16dp</dimen>
     <dimen name="popup_padding_start">10dp</dimen>
     <dimen name="popup_padding_end">16dp</dimen>
+    <dimen name="popup_vertical_padding">4dp</dimen>
     <dimen name="popup_arrow_width">10dp</dimen>
     <dimen name="popup_arrow_height">8dp</dimen>
     <dimen name="popup_arrow_vertical_offset">-2dp</dimen>
@@ -227,14 +229,12 @@
     <dimen name="notification_footer_icon_size">18dp</dimen>
     <!-- notification_icon_size + notification_padding_end + 16dp padding between icon and text -->
     <dimen name="notification_main_text_padding_end">52dp</dimen>
-    <dimen name="notification_elevation">2dp</dimen>
     <dimen name="horizontal_ellipsis_size">18dp</dimen>
     <!-- arrow_horizontal_offset_start - (ellipsis_size - arrow_width) / 2 -->
     <dimen name="horizontal_ellipsis_offset">19dp</dimen>
     <dimen name="popup_item_divider_height">0.5dp</dimen>
     <dimen name="swipe_helper_falsing_threshold">70dp</dimen>
 
-<!-- Other -->
-    <!-- Approximates the system status bar height. Not guaranteed to be always be correct. -->
-    <dimen name="status_bar_height">24dp</dimen>
+<!-- Recents -->
+    <dimen name="recents_page_spacing">10dp</dimen>
 </resources>

@@ -22,7 +22,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.UserHandle;
@@ -93,12 +92,11 @@ public class WidgetPreviewLoader {
      * @return a request id which can be used to cancel the request.
      */
     public CancellationSignal getPreview(WidgetItem item, int previewWidth,
-            int previewHeight, WidgetCell caller, boolean animate) {
+            int previewHeight, WidgetCell caller) {
         String size = previewWidth + "x" + previewHeight;
         WidgetCacheKey key = new WidgetCacheKey(item.componentName, item.user, size);
 
-        PreviewLoadTask task = new PreviewLoadTask(key, item, previewWidth, previewHeight, caller,
-                animate);
+        PreviewLoadTask task = new PreviewLoadTask(key, item, previewWidth, previewHeight, caller);
         task.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
 
         CancellationSignal signal = new CancellationSignal();
@@ -412,7 +410,8 @@ public class WidgetPreviewLoader {
 
             // Draw icon in the center.
             try {
-                Drawable icon = info.getIcon(launcher, mIconCache);
+                Drawable icon =
+                        mIconCache.getFullResIcon(info.provider.getPackageName(), info.icon);
                 if (icon != null) {
                     int appIconSize = launcher.getDeviceProfile().iconSizePx;
                     int iconSize = (int) Math.min(appIconSize * scale,
@@ -527,19 +526,17 @@ public class WidgetPreviewLoader {
         private final int mPreviewHeight;
         private final int mPreviewWidth;
         private final WidgetCell mCaller;
-        private final boolean mAnimatePreviewIn;
         private final BaseActivity mActivity;
         @Thunk long[] mVersions;
         @Thunk Bitmap mBitmapToRecycle;
 
         PreviewLoadTask(WidgetCacheKey key, WidgetItem info, int previewWidth,
-                int previewHeight, WidgetCell caller, boolean animate) {
+                int previewHeight, WidgetCell caller) {
             mKey = key;
             mInfo = info;
             mPreviewHeight = previewHeight;
             mPreviewWidth = previewWidth;
             mCaller = caller;
-            mAnimatePreviewIn = animate;
             mActivity = BaseActivity.fromContext(mCaller.getContext());
             if (DEBUG) {
                 Log.d(TAG, String.format("%s, %s, %d, %d",
@@ -595,7 +592,7 @@ public class WidgetPreviewLoader {
 
         @Override
         protected void onPostExecute(final Bitmap preview) {
-            mCaller.applyPreview(preview, mAnimatePreviewIn);
+            mCaller.applyPreview(preview);
 
             // Write the generated preview to the DB in the worker thread
             if (mVersions != null) {

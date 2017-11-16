@@ -16,17 +16,13 @@
 package com.android.launcher3.pageindicators;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
-
-import com.android.launcher3.dynamicui.ExtractedColors;
 
 /**
  * Base class for a page indicator.
  */
 public abstract class PageIndicator extends FrameLayout {
-    private CaretDrawable mCaretDrawable;
 
     protected int mNumPages = 1;
 
@@ -54,30 +50,7 @@ public abstract class PageIndicator extends FrameLayout {
         onPageCountChanged();
     }
 
-    public CaretDrawable getCaretDrawable() {
-        return mCaretDrawable;
-    }
-
-    public void setCaretDrawable(CaretDrawable caretDrawable) {
-        if (mCaretDrawable != null) {
-            mCaretDrawable.setCallback(null);
-        }
-
-        mCaretDrawable = caretDrawable;
-
-        if (mCaretDrawable != null) {
-            mCaretDrawable.setCallback(this);
-        }
-    }
-
     protected void onPageCountChanged() {}
 
     public void setShouldAutoHide(boolean shouldAutoHide) {}
-
-    public void updateColor(ExtractedColors extractedColors) {}
-
-    @Override
-    protected boolean verifyDrawable(Drawable who) {
-        return super.verifyDrawable(who) || who == getCaretDrawable();
-    }
 }

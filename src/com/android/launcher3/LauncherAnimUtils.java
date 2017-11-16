@@ -30,6 +30,15 @@ import java.util.HashSet;
 import java.util.WeakHashMap;
 
 public class LauncherAnimUtils {
+    /**
+     * Durations for various state animations. These are not defined in resources to allow
+     * easier access from static classes and enums
+     */
+    public static final int ALL_APPS_TRANSITION_MS = 320;
+    public static final int OVERVIEW_TRANSITION_MS = 250;
+    public static final int SPRING_LOADED_TRANSITION_MS = 150;
+    public static final int SPRING_LOADED_EXIT_DELAY = 500;
+
     static WeakHashMap<Animator, Object> sAnimators = new WeakHashMap<Animator, Object>();
     static Animator.AnimatorListener sEndAnimListener = new Animator.AnimatorListener() {
         public void onAnimationStart(Animator animation) {
@@ -139,6 +148,33 @@ public class LauncherAnimUtils {
                 @Override
                 public void set(Drawable drawable, Integer alpha) {
                     drawable.setAlpha(alpha);
+                }
+            };
+
+    public static final Property<View, Float> SCALE_PROPERTY =
+            new Property<View, Float>(Float.class, "scale") {
+                @Override
+                public Float get(View view) {
+                    return view.getScaleX();
+                }
+
+                @Override
+                public void set(View view, Float scale) {
+                    view.setScaleX(scale);
+                    view.setScaleY(scale);
+                }
+            };
+
+    public static final Property<View, Float> ELEVATION =
+            new Property<View, Float>(Float.class, "elevation") {
+                @Override
+                public Float get(View view) {
+                    return view.getElevation();
+                }
+
+                @Override
+                public void set(View view, Float elevation) {
+                    view.setElevation(elevation);
                 }
             };
 }

@@ -1,5 +1,7 @@
 package com.android.launcher3.util;
 
+import static com.android.launcher3.LauncherState.NORMAL;
+
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -95,7 +97,7 @@ public class FlingAnimation implements AnimatorUpdateListener, Runnable {
         Runnable onAnimationEndRunnable = new Runnable() {
             @Override
             public void run() {
-                mLauncher.exitSpringLoadedDragMode();
+                mLauncher.getStateManager().goToState(NORMAL);
                 mDropTarget.completeDrop(mDragObject);
             }
         };

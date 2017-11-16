@@ -16,67 +16,85 @@
 package com.android.launcher3.allapps;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.InsetDrawable;
+import android.os.Process;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.android.launcher3.AppInfo;
-import com.android.launcher3.BaseContainerView;
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.DeleteDropTarget;
+import com.android.launcher3.ClickShadowView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
+import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.folder.Folder;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ComponentKeyMapper;
+import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.TransformingTouchDelegate;
+import com.android.launcher3.views.SlidingTabStrip;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
 /**
  * The all apps view container.
  */
-public class AllAppsContainerView extends BaseContainerView implements DragSource,
-        View.OnLongClickListener, Insettable {
+public class AllAppsContainerView extends RelativeLayout implements DragSource,
+        View.OnLongClickListener, Insettable, DeviceProfile.LauncherLayoutChangeListener,
+        BubbleTextView.BubbleTextShadowHandler {
+
+    protected final Rect mBasePadding = new Rect();
 
     private final Launcher mLauncher;
-    private final AlphabeticalAppsList mApps;
-    private final AllAppsGridAdapter mAdapter;
-    private final LinearLayoutManager mLayoutManager;
+    private final AdapterHolder[] mAH;
+    private final ClickShadowView mTouchFeedbackView;
+    private final ItemInfoMatcher mPersonalMatcher = ItemInfoMatcher.ofUser(Process.myUserHandle());
+    private final ItemInfoMatcher mWorkMatcher = ItemInfoMatcher.not(mPersonalMatcher);
 
-    private AllAppsRecyclerView mAppsRecyclerView;
     private SearchUiManager mSearchUiManager;
     private View mSearchContainer;
+    private InterceptingViewPager mViewPager;
+    private ViewGroup mHeader;
+    private FloatingHeaderHandler mFloatingHeaderHandler;
 
     private SpannableStringBuilder mSearchQueryBuilder = null;
 
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
 
-    private SpringAnimationHandler mSpringAnimationHandler;
+    private TransformingTouchDelegate mTouchDelegate;
+    private boolean mUsingTabs;
+
+    private final HashMap<ComponentKey, AppInfo> mComponentToAppMap = new HashMap<>();
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -90,69 +108,144 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         super(context, attrs, defStyleAttr);
 
         mLauncher = Launcher.getLauncher(context);
-        mApps = new AlphabeticalAppsList(context);
-        mAdapter = new AllAppsGridAdapter(mLauncher, mApps, mLauncher, this);
-        mSpringAnimationHandler = mAdapter.getSpringAnimationHandler();
-        mApps.setAdapter(mAdapter);
-        mLayoutManager = mAdapter.getLayoutManager();
+
         mSearchQueryBuilder = new SpannableStringBuilder();
 
         Selection.setSelection(mSearchQueryBuilder, 0);
+
+        mTouchFeedbackView = new ClickShadowView(context);
+        // Make the feedback view large enough to hold the blur bitmap.
+        int size = mLauncher.getDeviceProfile().allAppsIconSizePx
+                + mTouchFeedbackView.getExtraSize();
+        addView(mTouchFeedbackView, size, size);
+
+        mAH = new AdapterHolder[2];
+        mAH[AdapterHolder.MAIN] = new AdapterHolder();
+        mAH[AdapterHolder.WORK] = new AdapterHolder();
     }
 
     @Override
-    protected void updateBackground(
-            int paddingLeft, int paddingTop, int paddingRight, int paddingBottom) {
-        if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-            getRevealView().setBackground(new InsetDrawable(mBaseDrawable,
-                    paddingLeft, paddingTop, paddingRight, paddingBottom));
-            getContentView().setBackground(
-                    new InsetDrawable(new ColorDrawable(Color.TRANSPARENT),
-                            paddingLeft, paddingTop, paddingRight, paddingBottom));
-        } else {
-            getRevealView().setBackground(mBaseDrawable);
-        }
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
+        grid.addLauncherLayoutChangedListener(this);
+
+        applyTouchDelegate();
+    }
+
+    private void applyTouchDelegate() {
+        RecyclerView rv = getActiveRecyclerView();
+        mTouchDelegate = new TransformingTouchDelegate(rv);
+        mTouchDelegate.setBounds(
+                rv.getLeft() - mBasePadding.left,
+                rv.getTop() - mBasePadding.top,
+                rv.getRight() + mBasePadding.right,
+                rv.getBottom() + mBasePadding.bottom);
+        setTouchDelegate(mTouchDelegate);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
+        grid.removeLauncherLayoutChangedListener(this);
     }
 
     /**
-     * Sets the current set of predicted apps.
+     * Calculate the background padding as it can change due to insets/content padding change.
      */
-    public void setPredictedApps(List<ComponentKeyMapper<AppInfo>> apps) {
-        mApps.setPredictedApps(apps);
+    @Override
+    public void onLauncherLayoutChanged() {
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        if (!grid.isVerticalBarLayout()) {
+            return;
+        }
+
+        int[] padding = grid.getContainerPadding();
+        int paddingLeft = padding[0];
+        int paddingRight = padding[1];
+        mBasePadding.set(paddingLeft, 0, paddingRight, 0);
+        setPadding(paddingLeft, 0, paddingRight, 0);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        applyTouchDelegate();
+    }
+
+    @Override
+    public void setPressedIcon(BubbleTextView icon, Bitmap background) {
+        mTouchFeedbackView.setPressedIcon(icon, background);
     }
 
     /**
      * Sets the current set of apps.
      */
     public void setApps(List<AppInfo> apps) {
-        mApps.setApps(apps);
+        boolean hasWorkProfileApp = hasWorkProfileApp(apps);
+        if (mUsingTabs != hasWorkProfileApp) {
+            rebindAdapters(hasWorkProfileApp);
+        }
+        mComponentToAppMap.clear();
+        addOrUpdateApps(apps);
     }
 
     /**
      * Adds or updates existing apps in the list
      */
     public void addOrUpdateApps(List<AppInfo> apps) {
-        mApps.addOrUpdateApps(apps);
-        mSearchUiManager.refreshSearchResult();
-    }
-
-    public void updatePromiseAppProgress(PromiseAppInfo app) {
-        int childCount = mAppsRecyclerView.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            View child = mAppsRecyclerView.getChildAt(i);
-            if (child instanceof BubbleTextView && child.getTag() == app) {
-                BubbleTextView bubbleTextView = (BubbleTextView) child;
-                bubbleTextView.applyProgressLevel(app.level);
-            }
+        for (AppInfo app : apps) {
+            mComponentToAppMap.put(app.toComponentKey(), app);
         }
+        onAppsUpdated();
+        mSearchUiManager.refreshSearchResult();
     }
 
     /**
      * Removes some apps from the list.
      */
     public void removeApps(List<AppInfo> apps) {
-        mApps.removeApps(apps);
+        for (AppInfo app : apps) {
+            mComponentToAppMap.remove(app.toComponentKey());
+        }
+        onAppsUpdated();
         mSearchUiManager.refreshSearchResult();
+    }
+
+    private void onAppsUpdated() {
+        for (int i = 0; i < getNumOfAdapters(); i++) {
+            mAH[i].appsList.onAppsUpdated();
+        }
+    }
+
+    private int getNumOfAdapters() {
+        return mUsingTabs ? mAH.length : 1;
+    }
+
+    public void updatePromiseAppProgress(PromiseAppInfo app) {
+        for (int i = 0; i < mAH.length; i++) {
+            updatePromiseAppProgress(app, mAH[i].recyclerView);
+        }
+        if (mFloatingHeaderHandler != null) {
+            updatePromiseAppProgress(app, mFloatingHeaderHandler.getContentView());
+        }
+    }
+
+    private void updatePromiseAppProgress(PromiseAppInfo app, ViewGroup parent) {
+        if (parent == null) {
+            return;
+        }
+        int childCount = parent.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = parent.getChildAt(i);
+            if (child instanceof BubbleTextView && child.getTag() == app) {
+                BubbleTextView bubbleTextView = (BubbleTextView) child;
+                bubbleTextView.applyProgressLevel(app.level);
+            }
+        }
     }
 
     /**
@@ -164,31 +257,31 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         if (mLauncher.getDragLayer().isEventOverView(mSearchContainer, ev)) {
             return true;
         }
-
-        int[] point = new int[2];
-        point[0] = (int) ev.getX();
-        point[1] = (int) ev.getY();
-        Utilities.mapCoordInSelfToDescendant(
-                mAppsRecyclerView.getScrollBar(), mLauncher.getDragLayer(), point);
-        // IF the MotionEvent is inside the thumb, container should not be pulled down.
-        if (mAppsRecyclerView.getScrollBar().shouldBlockIntercept(point[0], point[1])) {
-            return false;
-        }
-
-        // IF scroller is at the very top OR there is no scroll bar because there is probably not
-        // enough items to scroll, THEN it's okay for the container to be pulled down.
-        if (mAppsRecyclerView.getCurrentScrollY() == 0) {
+        if (mUsingTabs && mLauncher.getDragLayer().isEventOverView(mHeader, ev)) {
             return true;
         }
-        return false;
+        AllAppsRecyclerView rv = getActiveRecyclerView();
+        return rv == null || rv.shouldContainerScroll(ev, mLauncher.getDragLayer());
+    }
+
+    public AllAppsRecyclerView getActiveRecyclerView() {
+        if (!mUsingTabs || mViewPager.getCurrentItem() == 0) {
+            return mAH[AdapterHolder.MAIN].recyclerView;
+        } else {
+            return mAH[AdapterHolder.WORK].recyclerView;
+        }
     }
 
     /**
      * Resets the state of AllApps.
      */
     public void reset() {
+        for (int i = 0; i < mAH.length; i++) {
+            if (mAH[i].recyclerView != null) {
+                mAH[i].recyclerView.scrollToTop();
+            }
+        }
         // Reset the search bar and base recycler view after transitioning home
-        mAppsRecyclerView.scrollToTop();
         mSearchUiManager.reset();
     }
 
@@ -198,49 +291,27 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         // This is a focus listener that proxies focus from a view into the list view.  This is to
         // work around the search box from getting first focus and showing the cursor.
-        getContentView().setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    mAppsRecyclerView.requestFocus();
+                if (hasFocus && getActiveRecyclerView() != null) {
+                    getActiveRecyclerView().requestFocus();
                 }
             }
         });
 
-        // Load the all apps recycler view
-        mAppsRecyclerView = findViewById(R.id.apps_list_view);
-        mAppsRecyclerView.setApps(mApps);
-        mAppsRecyclerView.setLayoutManager(mLayoutManager);
-        mAppsRecyclerView.setAdapter(mAdapter);
-        mAppsRecyclerView.setHasFixedSize(true);
-        // No animations will occur when changes occur to the items in this RecyclerView.
-        mAppsRecyclerView.setItemAnimator(null);
-        if (FeatureFlags.LAUNCHER3_PHYSICS) {
-            mAppsRecyclerView.setSpringAnimationHandler(mSpringAnimationHandler);
-        }
+        mHeader = findViewById(R.id.all_apps_header);
+        rebindAdapters(mUsingTabs);
 
         mSearchContainer = findViewById(R.id.search_container_all_apps);
         mSearchUiManager = (SearchUiManager) mSearchContainer;
-        mSearchUiManager.initialize(mApps, mAppsRecyclerView);
+        mSearchUiManager.initialize(this);
 
-
-        FocusedItemDecorator focusedItemDecorator = new FocusedItemDecorator(mAppsRecyclerView);
-        mAppsRecyclerView.addItemDecoration(focusedItemDecorator);
-        mAppsRecyclerView.preMeasureViews(mAdapter);
-        mAdapter.setIconFocusListener(focusedItemDecorator.getFocusListener());
-
-        getRevealView().setVisibility(View.VISIBLE);
-        getContentView().setVisibility(View.VISIBLE);
-        getContentView().setBackground(null);
+        onLauncherLayoutChanged();
     }
 
     public SearchUiManager getSearchUiManager() {
         return mSearchUiManager;
-    }
-
-    @Override
-    public View getTouchDelegateTargetView() {
-        return mAppsRecyclerView;
     }
 
     @Override
@@ -253,10 +324,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 mNumPredictedAppsPerRow != grid.inv.numColumns) {
             mNumAppsPerRow = grid.inv.numColumns;
             mNumPredictedAppsPerRow = grid.inv.numColumns;
-
-            mAppsRecyclerView.setNumAppsPerRow(grid, mNumAppsPerRow);
-            mAdapter.setNumAppsPerRow(mNumAppsPerRow);
-            mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow);
+            for (int i = 0; i < mAH.length; i++) {
+                mAH[i].applyNumsPerRow();
+            }
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
@@ -270,7 +340,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     @Override
     public boolean onLongClick(final View v) {
         // When we have exited all apps or are in transition, disregard long clicks
-        if (!mLauncher.isAppsViewVisible() ||
+        if (!mLauncher.isInState(LauncherState.ALL_APPS) ||
                 mLauncher.getWorkspace().isSwitchingState()) return false;
         // Return if global dragging is not enabled or we are already dragging
         if (!mLauncher.isDraggingEnabled()) return false;
@@ -290,42 +360,16 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 dragController.removeDragListener(this);
             }
         });
-        mLauncher.getWorkspace().beginDragShared(v, this, new DragOptions());
-        return false;
-    }
 
-    @Override
-    public boolean supportsAppInfoDropTarget() {
-        return true;
-    }
-
-    @Override
-    public boolean supportsDeleteDropTarget() {
-        return false;
-    }
-
-    @Override
-    public float getIntrinsicIconScaleFactor() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        return (float) grid.allAppsIconSizePx / grid.iconSizePx;
+        DragOptions options = new DragOptions();
+        options.intrinsicIconScaleFactor = (float) grid.allAppsIconSizePx / grid.iconSizePx;
+        mLauncher.getWorkspace().beginDragShared(v, this, options);
+        return false;
     }
 
     @Override
-    public void onDropCompleted(View target, DropTarget.DragObject d, boolean isFlingToDelete,
-            boolean success) {
-        if (isFlingToDelete || !success || (target != mLauncher.getWorkspace() &&
-                !(target instanceof DeleteDropTarget) && !(target instanceof Folder))) {
-            // Exit spring loaded mode if we have not successfully dropped or have not handled the
-            // drop in Workspace
-            mLauncher.exitSpringLoadedDragModeDelayed(true,
-                    Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
-        }
-        mLauncher.unlockScreenOrientation(false);
-
-        if (!success) {
-            d.deferDragViewCleanupPostAnimation = false;
-        }
-    }
+    public void onDropCompleted(View target, DragObject d, boolean success) { }
 
     @Override
     public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
@@ -335,10 +379,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     @Override
     public void setInsets(Rect insets) {
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        mAppsRecyclerView.setPadding(
-                mAppsRecyclerView.getPaddingLeft(), mAppsRecyclerView.getPaddingTop(),
-                mAppsRecyclerView.getPaddingRight(), insets.bottom);
-
+        for (int i = 0; i < mAH.length; i++) {
+            mAH[i].padding.bottom = insets.bottom;
+            mAH[i].applyPadding();
+        }
         if (grid.isVerticalBarLayout()) {
             ViewGroup.MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
             mlp.leftMargin = insets.left;
@@ -355,20 +399,303 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     public void updateIconBadges(Set<PackageUserKey> updatedBadges) {
         final PackageUserKey packageUserKey = new PackageUserKey(null, null);
-        final int n = mAppsRecyclerView.getChildCount();
-        for (int i = 0; i < n; i++) {
-            View child = mAppsRecyclerView.getChildAt(i);
-            if (!(child instanceof BubbleTextView) || !(child.getTag() instanceof ItemInfo)) {
-                continue;
-            }
-            ItemInfo info = (ItemInfo) child.getTag();
-            if (packageUserKey.updateFromItemInfo(info) && updatedBadges.contains(packageUserKey)) {
-                ((BubbleTextView) child).applyBadgeState(info, true /* animate */);
+        for (int j = 0; j < mAH.length; j++) {
+            if (mAH[j].recyclerView != null) {
+                final int n = mAH[j].recyclerView.getChildCount();
+                for (int i = 0; i < n; i++) {
+                    View child = mAH[j].recyclerView.getChildAt(i);
+                    if (!(child instanceof BubbleTextView) || !(child.getTag() instanceof ItemInfo)) {
+                        continue;
+                    }
+                    ItemInfo info = (ItemInfo) child.getTag();
+                    if (packageUserKey.updateFromItemInfo(info) && updatedBadges.contains(packageUserKey)) {
+                        ((BubbleTextView) child).applyBadgeState(info, true /* animate */);
+                    }
+                }
             }
         }
     }
 
     public SpringAnimationHandler getSpringAnimationHandler() {
-        return mSpringAnimationHandler;
+        return mUsingTabs ? null : mAH[AdapterHolder.MAIN].animationHandler;
     }
+
+    private void rebindAdapters(boolean showTabs) {
+        if (showTabs != mUsingTabs) {
+            replaceRVContainer(showTabs);
+        }
+        mUsingTabs = showTabs;
+
+        if (mUsingTabs) {
+            mAH[AdapterHolder.MAIN].setup(mViewPager.getChildAt(0), mPersonalMatcher);
+            mAH[AdapterHolder.WORK].setup(mViewPager.getChildAt(1), mWorkMatcher);
+            setupWorkProfileTabs();
+            setupHeader();
+            mHeader.setVisibility(View.VISIBLE);
+        } else {
+            mHeader.setVisibility(View.GONE);
+            mAH[AdapterHolder.MAIN].setup(findViewById(R.id.apps_list_view), null);
+        }
+
+        applyTouchDelegate();
+    }
+
+    private boolean hasWorkProfileApp(List<AppInfo> apps) {
+        if (FeatureFlags.ALL_APPS_TABS_ENABLED) {
+            for (AppInfo app : apps) {
+                if (mWorkMatcher.matches(app, null)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void replaceRVContainer(boolean showTabs) {
+        for (int i = 0; i < mAH.length; i++) {
+            if (mAH[i].recyclerView != null) {
+                mAH[i].recyclerView.setLayoutManager(null);
+            }
+        }
+        View oldView = getRecyclerViewContainer();
+        int index = indexOfChild(oldView);
+        removeView(oldView);
+        int layout = showTabs ? R.layout.all_apps_tabs : R.layout.all_apps_rv_layout;
+        View newView = LayoutInflater.from(getContext()).inflate(layout, this, false);
+        addView(newView, index);
+        mViewPager = showTabs ? (InterceptingViewPager) newView : null;
+    }
+
+    public View getRecyclerViewContainer() {
+        return mViewPager != null ? mViewPager : findViewById(R.id.apps_list_view);
+    }
+
+    private void setupWorkProfileTabs() {
+        final SlidingTabStrip tabs = findViewById(R.id.tabs);
+        mViewPager.setAdapter(new TabsPagerAdapter());
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            boolean mVisible = true;
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                tabs.updateIndicatorPosition(position, positionOffset);
+                if (positionOffset == 0 && !mVisible || positionOffset > 0 && mVisible) {
+                    mVisible = positionOffset == 0;
+                    for (int i = 0; i < mAH.length; i++) {
+                        if (mAH[i].recyclerView != null) {
+                            mAH[i].recyclerView.getScrollbar().setAlpha(mVisible ? 1 : 0);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onPageSelected(int pos) {
+                tabs.updateTabTextColor(pos);
+                mFloatingHeaderHandler.setMainActive(pos == 0);
+                applyTouchDelegate();
+                if (mAH[pos].recyclerView != null) {
+                    mAH[pos].recyclerView.bindFastScrollbar();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+
+        findViewById(R.id.tab_personal)
+                .setOnClickListener((View view) -> mViewPager.setCurrentItem(0));
+        findViewById(R.id.tab_work)
+                .setOnClickListener((View view) -> mViewPager.setCurrentItem(1));
+    }
+
+    public void setPredictedApps(List<ComponentKeyMapper<AppInfo>> apps) {
+        if (mUsingTabs) {
+            mFloatingHeaderHandler.getContentView().setPredictedApps(apps);
+        }
+        mAH[AdapterHolder.MAIN].appsList.setPredictedApps(apps);
+    }
+
+    public AppInfo findApp(ComponentKeyMapper<AppInfo> mapper) {
+        return mapper.getItem(mComponentToAppMap);
+    }
+
+    public AlphabeticalAppsList getApps() {
+        return mAH[AdapterHolder.MAIN].appsList;
+    }
+
+    public boolean isUsingTabs() {
+        return mUsingTabs;
+    }
+
+    public FloatingHeaderHandler getFloatingHeaderHandler() {
+        return mFloatingHeaderHandler;
+    }
+
+    private void setupHeader() {
+        int contentHeight = mLauncher.getDeviceProfile().allAppsCellHeightPx;
+        RecyclerView mainRV = mAH[AdapterHolder.MAIN].recyclerView;
+        RecyclerView workRV = mAH[AdapterHolder.WORK] != null
+                ? mAH[AdapterHolder.WORK].recyclerView : null;
+        mFloatingHeaderHandler = new FloatingHeaderHandler(mHeader, mainRV, workRV, contentHeight);
+        mFloatingHeaderHandler.getContentView().setNumAppsPerRow(mNumPredictedAppsPerRow);
+        mFloatingHeaderHandler.getContentView().setComponentToAppMap(mComponentToAppMap);
+        for (int i = 0; i < mAH.length; i++) {
+            mAH[i].paddingTopForTabs = contentHeight;
+            mAH[i].applyPadding();
+        }
+    }
+
+    public void setLastSearchQuery(String query) {
+        for (int i = 0; i < mAH.length; i++) {
+            mAH[i].adapter.setLastSearchQuery(query);
+        }
+    }
+
+    public void onSearchResultsChanged() {
+        for (int i = 0; i < mAH.length; i++) {
+            mAH[i].recyclerView.onSearchResultsChanged();
+        }
+    }
+
+    public void setRecyclerViewPaddingTop(int top) {
+        for (int i = 0; i < mAH.length; i++) {
+            mAH[i].padding.top = top;
+            mAH[i].applyPadding();
+        }
+    }
+
+    public void setRecyclerViewSidePadding(int left, int right) {
+        for (int i = 0; i < mAH.length; i++) {
+            mAH[i].padding.left = left;
+            mAH[i].padding.right = right;
+            mAH[i].applyPadding();
+        }
+    }
+
+    public void setRecyclerViewVerticalFadingEdgeEnabled(boolean enabled) {
+        for (int i = 0; i < mAH.length; i++) {
+            mAH[i].applyVerticalFadingEdgeEnabled(enabled);
+        }
+    }
+
+    public void addElevationController(RecyclerView.OnScrollListener scrollListener) {
+        if (!mUsingTabs) {
+            mAH[AdapterHolder.MAIN].recyclerView.addOnScrollListener(scrollListener);
+        }
+    }
+
+    public List<AppInfo> getPredictedApps() {
+        if (mUsingTabs) {
+            return mFloatingHeaderHandler.getContentView().getPredictedApps();
+        } else {
+            return mAH[AdapterHolder.MAIN].appsList.getPredictedApps();
+        }
+    }
+
+    public class AdapterHolder {
+        public static final int MAIN = 0;
+        public static final int WORK = 1;
+
+        final AllAppsGridAdapter adapter;
+        final LinearLayoutManager layoutManager;
+        final SpringAnimationHandler animationHandler;
+        final AlphabeticalAppsList appsList;
+        final Rect padding = new Rect();
+        int paddingTopForTabs;
+        AllAppsRecyclerView recyclerView;
+        boolean verticalFadingEdge;
+
+        AdapterHolder() {
+            appsList = new AlphabeticalAppsList(mLauncher, mComponentToAppMap);
+            adapter = new AllAppsGridAdapter(mLauncher, appsList, mLauncher,
+                    AllAppsContainerView.this, true);
+            appsList.setAdapter(adapter);
+            animationHandler = adapter.getSpringAnimationHandler();
+            layoutManager = adapter.getLayoutManager();
+        }
+
+        void setup(@NonNull View rv, @Nullable ItemInfoMatcher matcher) {
+            appsList.updateItemFilter(matcher);
+            recyclerView = (AllAppsRecyclerView) rv;
+            recyclerView.setApps(appsList, mUsingTabs);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setAdapter(adapter);
+            recyclerView.setHasFixedSize(true);
+            // No animations will occur when changes occur to the items in this RecyclerView.
+            recyclerView.setItemAnimator(null);
+            if (FeatureFlags.LAUNCHER3_PHYSICS && animationHandler != null) {
+                recyclerView.setSpringAnimationHandler(animationHandler);
+            }
+            FocusedItemDecorator focusedItemDecorator = new FocusedItemDecorator(recyclerView);
+            recyclerView.addItemDecoration(focusedItemDecorator);
+            recyclerView.preMeasureViews(adapter);
+            adapter.setIconFocusListener(focusedItemDecorator.getFocusListener());
+            applyVerticalFadingEdgeEnabled(verticalFadingEdge);
+            applyPadding();
+            applyNumsPerRow();
+        }
+
+        void applyPadding() {
+            if (recyclerView != null) {
+                int paddingTop = mUsingTabs ? paddingTopForTabs : padding.top;
+                recyclerView.setPadding(padding.left, paddingTop, padding.right, padding.bottom);
+            }
+        }
+
+        void applyNumsPerRow() {
+            if (mNumAppsPerRow > 0) {
+                if (recyclerView != null) {
+                    recyclerView.setNumAppsPerRow(mLauncher.getDeviceProfile(), mNumAppsPerRow);
+                }
+                adapter.setNumAppsPerRow(mNumAppsPerRow);
+                appsList.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow);
+                if (mUsingTabs && mFloatingHeaderHandler != null) {
+                    mFloatingHeaderHandler.getContentView()
+                            .setNumAppsPerRow(mNumPredictedAppsPerRow);
+                }
+            }
+        }
+
+        public void applyVerticalFadingEdgeEnabled(boolean enabled) {
+            verticalFadingEdge = enabled;
+            mAH[AdapterHolder.MAIN].recyclerView.setVerticalFadingEdgeEnabled(!mUsingTabs
+                    && verticalFadingEdge);
+        }
+    }
+
+    private class TabsPagerAdapter extends PagerAdapter {
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+            return view == object;
+        }
+
+        @NonNull
+        @Override
+        public Object instantiateItem(@NonNull ViewGroup container, int position) {
+            if (position == 0) {
+                return mAH[AdapterHolder.MAIN].recyclerView;
+            } else {
+                return mAH[AdapterHolder.WORK].recyclerView;
+            }
+        }
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            if (position == 0) {
+                return getResources().getString(R.string.all_apps_personal_tab);
+            } else {
+                return getResources().getString(R.string.all_apps_work_tab);
+            }
+        }
+    }
+
 }

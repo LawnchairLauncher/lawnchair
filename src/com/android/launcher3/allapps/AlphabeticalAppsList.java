@@ -30,6 +30,7 @@ import com.android.launcher3.discovery.AppDiscoveryItem;
 import com.android.launcher3.discovery.AppDiscoveryUpdateState;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ComponentKeyMapper;
+import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LabelComparator;
 
 import java.util.ArrayList;
@@ -165,7 +166,7 @@ public class AlphabeticalAppsList {
 
     // The set of apps from the system not including predictions
     private final List<AppInfo> mApps = new ArrayList<>();
-    private final HashMap<ComponentKey, AppInfo> mComponentToAppMap = new HashMap<>();
+    private final HashMap<ComponentKey, AppInfo> mComponentToAppMap;
 
     // The set of filtered apps with the current filter
     private final List<AppInfo> mFilteredApps = new ArrayList<>();
@@ -188,11 +189,18 @@ public class AlphabeticalAppsList {
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
     private int mNumAppRowsInAdapter;
+    private ItemInfoMatcher mItemFilter;
 
-    public AlphabeticalAppsList(Context context) {
+    public AlphabeticalAppsList(Context context, HashMap<ComponentKey, AppInfo> componentToAppMap) {
+        mComponentToAppMap = componentToAppMap;
         mLauncher = Launcher.getLauncher(context);
         mIndexer = new AlphabeticIndexCompat(context);
         mAppNameComparator = new AppInfoComparator(context);
+    }
+
+    public void updateItemFilter(ItemInfoMatcher itemFilter) {
+        this.mItemFilter = itemFilter;
+        onAppsUpdated();
     }
 
     /**
@@ -362,49 +370,30 @@ public class AlphabeticalAppsList {
         int size = apps.size();
         for (int i = 0; i < size; ++i) {
             AppInfo info = apps.get(i);
-            AdapterItem appItem = AdapterItem.asPredictedApp(i, "", info, i);
-            appItem.rowAppIndex = i;
-            mAdapterItems.set(i, appItem);
+            AdapterItem orgItem = mAdapterItems.get(i);
+            AdapterItem newItem = AdapterItem.asPredictedApp(orgItem.position, "", info,
+                    orgItem.appIndex);
+            newItem.rowAppIndex = orgItem.rowAppIndex;
+
+            mAdapterItems.set(i, newItem);
             mFilteredApps.set(i, info);
             mAdapter.notifyItemChanged(i);
         }
     }
 
     /**
-     * Sets the current set of apps.
-     */
-    public void setApps(List<AppInfo> apps) {
-        mComponentToAppMap.clear();
-        addOrUpdateApps(apps);
-    }
-
-    /**
-     * Adds or updates existing apps in the list
-     */
-    public void addOrUpdateApps(List<AppInfo> apps) {
-        for (AppInfo app : apps) {
-            mComponentToAppMap.put(app.toComponentKey(), app);
-        }
-        onAppsUpdated();
-    }
-
-    /**
-     * Removes some apps from the list.
-     */
-    public void removeApps(List<AppInfo> apps) {
-        for (AppInfo app : apps) {
-            mComponentToAppMap.remove(app.toComponentKey());
-        }
-        onAppsUpdated();
-    }
-
-    /**
      * Updates internals when the set of apps are updated.
      */
-    private void onAppsUpdated() {
+    void onAppsUpdated() {
         // Sort the list of apps
         mApps.clear();
-        mApps.addAll(mComponentToAppMap.values());
+
+        for (AppInfo app : mComponentToAppMap.values()) {
+            if (mItemFilter == null || mItemFilter.matches(app, null)) {
+                mApps.add(app);
+            }
+        }
+
         Collections.sort(mApps, mAppNameComparator);
 
         // As a special case for some languages (currently only Simplified Chinese), we may need to
@@ -471,42 +460,45 @@ public class AlphabeticalAppsList {
         mFastScrollerSections.clear();
         mAdapterItems.clear();
 
-        if (DEBUG_PREDICTIONS) {
-            if (mPredictedAppComponents.isEmpty() && !mApps.isEmpty()) {
-                mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
-                        Process.myUserHandle())));
-                mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
-                        Process.myUserHandle())));
-                mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
-                        Process.myUserHandle())));
-                mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
-                        Process.myUserHandle())));
-            }
-        }
-
-        // Process the predicted app components
-        mPredictedApps.clear();
-        if (mPredictedAppComponents != null && !mPredictedAppComponents.isEmpty() && !hasFilter()) {
-            mPredictedApps.addAll(processPredictedAppComponents(mPredictedAppComponents));
-
-            if (!mPredictedApps.isEmpty()) {
-                // Add a section for the predictions
-                lastFastScrollerSectionInfo = new FastScrollSectionInfo("");
-                mFastScrollerSections.add(lastFastScrollerSectionInfo);
-
-                // Add the predicted app items
-                for (AppInfo info : mPredictedApps) {
-                    AdapterItem appItem = AdapterItem.asPredictedApp(position++, "", info,
-                            appIndex++);
-                    if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
-                        lastFastScrollerSectionInfo.fastScrollToItem = appItem;
-                    }
-                    mAdapterItems.add(appItem);
-                    mFilteredApps.add(info);
+        if (!FeatureFlags.ALL_APPS_TABS_ENABLED) {
+            if (DEBUG_PREDICTIONS) {
+                if (mPredictedAppComponents.isEmpty() && !mApps.isEmpty()) {
+                    mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
+                            Process.myUserHandle())));
+                    mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
+                            Process.myUserHandle())));
+                    mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
+                            Process.myUserHandle())));
+                    mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
+                            Process.myUserHandle())));
                 }
-
-                mAdapterItems.add(AdapterItem.asPredictionDivider(position++));
             }
+
+            // Process the predicted app components
+            mPredictedApps.clear();
+            if (mPredictedAppComponents != null && !mPredictedAppComponents.isEmpty() && !hasFilter()) {
+                mPredictedApps.addAll(processPredictedAppComponents(mPredictedAppComponents));
+
+                if (!mPredictedApps.isEmpty()) {
+                    // Add a section for the predictions
+                    lastFastScrollerSectionInfo = new FastScrollSectionInfo("");
+                    mFastScrollerSections.add(lastFastScrollerSectionInfo);
+
+                    // Add the predicted app items
+                    for (AppInfo info : mPredictedApps) {
+                        AdapterItem appItem = AdapterItem.asPredictedApp(position++, "", info,
+                                appIndex++);
+                        if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
+                            lastFastScrollerSectionInfo.fastScrollToItem = appItem;
+                        }
+                        mAdapterItems.add(appItem);
+                        mFilteredApps.add(info);
+                    }
+
+                    mAdapterItems.add(AdapterItem.asPredictionDivider(position++));
+                }
+            }
+
         }
 
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
@@ -623,7 +615,6 @@ public class AlphabeticalAppsList {
         if (mSearchResults == null) {
             return mApps;
         }
-
         ArrayList<AppInfo> result = new ArrayList<>();
         for (ComponentKey key : mSearchResults) {
             AppInfo match = mComponentToAppMap.get(key);
@@ -643,10 +634,6 @@ public class AlphabeticalAppsList {
             Collections.sort(result, mAppNameComparator);
         }
         return result;
-    }
-
-    public AppInfo findApp(ComponentKeyMapper<AppInfo> mapper) {
-        return mapper.getItem(mComponentToAppMap);
     }
 
     /**

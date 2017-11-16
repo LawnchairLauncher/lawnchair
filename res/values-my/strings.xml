@@ -47,6 +47,7 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"ဖယ်ရှားမည်"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"ဖယ်ထုတ်မည်"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"အက်ပ်အချက်အလက်များ"</string>
+    <string name="install_drop_target_label" msgid="2539096853673231757">"ထည့်သွင်းရန်"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"အတိုကောက်မှတ်သားမှုများအား ထည့်သွင်းခြင်း"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"အသုံးပြုသူ လုပ်ဆောင်မှုမရှိပဲ အပ်ပလီကေးရှင်းကို အတိုကောက်မှတ်သားမှုများ ပြုလုပ်ခွင့် ပေးခြင်း"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"ပင်မမျက်နှာစာ အပြင်အဆင် နှင့် အတိုကောက်မှတ်သားမှုများအား ဖတ်ခြင်း"</string>

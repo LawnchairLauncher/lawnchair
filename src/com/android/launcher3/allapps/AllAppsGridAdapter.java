@@ -206,10 +206,10 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     // The intent to send off to the market app, updated each time the search query changes.
     private Intent mMarketSearchIntent;
 
-    private SpringAnimationHandler<ViewHolder> mSpringAnimationHandler;
+    private final SpringAnimationHandler<ViewHolder> mSpringAnimationHandler;
 
     public AllAppsGridAdapter(Launcher launcher, AlphabeticalAppsList apps, View.OnClickListener
-            iconClickListener, View.OnLongClickListener iconLongClickListener) {
+            iconClickListener, View.OnLongClickListener iconLongClickListener, boolean springAnim) {
         Resources res = launcher.getResources();
         mLauncher = launcher;
         mApps = apps;
@@ -220,9 +220,11 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mLayoutInflater = LayoutInflater.from(launcher);
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
-        if (FeatureFlags.LAUNCHER3_PHYSICS) {
+        if (FeatureFlags.LAUNCHER3_PHYSICS && springAnim) {
             mSpringAnimationHandler = new SpringAnimationHandler<>(
                     SpringAnimationHandler.Y_DIRECTION, new AllAppsSpringAnimationFactory());
+        } else {
+            mSpringAnimationHandler = null;
         }
     }
 
@@ -336,6 +338,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_PREDICTION_ICON:
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
                 BubbleTextView icon = (BubbleTextView) holder.itemView;
+                icon.reset();
                 icon.applyFromApplicationInfo(info);
                 break;
             case VIEW_TYPE_DISCOVERY_ITEM:
@@ -376,7 +379,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     @Override
     public void onViewAttachedToWindow(ViewHolder holder) {
         int type = holder.getItemViewType();
-        if (FeatureFlags.LAUNCHER3_PHYSICS && isViewType(type, VIEW_TYPE_MASK_HAS_SPRINGS)) {
+        if (mSpringAnimationHandler != null && isViewType(type, VIEW_TYPE_MASK_HAS_SPRINGS)) {
             mSpringAnimationHandler.add(holder.itemView, holder);
         }
     }
@@ -384,7 +387,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     @Override
     public void onViewDetachedFromWindow(ViewHolder holder) {
         int type = holder.getItemViewType();
-        if (FeatureFlags.LAUNCHER3_PHYSICS && isViewType(type, VIEW_TYPE_MASK_HAS_SPRINGS)) {
+        if (mSpringAnimationHandler != null && isViewType(type, VIEW_TYPE_MASK_HAS_SPRINGS)) {
             mSpringAnimationHandler.remove(holder.itemView);
         }
     }
@@ -424,6 +427,9 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         // The amount by which each adjacent rows' stiffness will differ.
         private static final float ROW_STIFFNESS_COEFFICIENT = 50f;
 
+        // The percentage by which we multiply each row to create the row factor.
+        private static final float ROW_PERCENTAGE = 0.3f;
+
         @Override
         public SpringAnimation initialize(ViewHolder vh) {
             return SpringAnimationHandler.forView(vh.itemView, DynamicAnimation.TRANSLATION_Y, 0);
@@ -462,7 +468,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
          * effect.
          */
         private void calculateSpringValues(SpringAnimation spring, int row, int col) {
-            float rowFactor = (1 + row) * 0.5f;
+            float rowFactor = (1 + row) * ROW_PERCENTAGE;
             float colFactor = getColumnFactor(col, mAppsPerRow);
 
             float minValue = DEFAULT_MIN_VALUE_PX * (rowFactor + colFactor);

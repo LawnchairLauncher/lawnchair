@@ -136,13 +136,6 @@
     <style name="PopupItem">
         <item name="android:colorControlHighlight">?attr/popupColorTertiary</item>
     </style>
-    <style name="PopupGutter">
-        <item name="android:backgroundTintMode">multiply</item>
-        <item name="android:backgroundTint">?attr/popupColorSecondary</item>
-        <item name="android:background">@drawable/gutter_horizontal</item>
-        <item name="android:elevation">@dimen/notification_elevation</item>
-        <item name="android:outlineProvider">none</item>
-    </style>
 
     <!-- Drop targets -->
     <style name="DropTargetButtonBase">

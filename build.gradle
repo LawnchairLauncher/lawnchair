@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.1'
+        classpath 'com.android.tools.build:gradle:2.3.3'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
     }
 }
@@ -13,12 +13,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.protobuf'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.0'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.0'
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
 
@@ -40,7 +40,20 @@ android {
             applicationId 'com.android.launcher3'
             testApplicationId 'com.android.launcher3.tests'
         }
+
+        quickstep {
+            applicationId 'com.android.launcher3'
+            testApplicationId 'com.android.launcher3.tests'
+        }
     }
+
+    // Disable release builds for now
+    android.variantFilter { variant ->
+        if (variant.buildType.name.endsWith('release')) {
+            variant.setIgnore(true);
+        }
+    }
+
     sourceSets {
         main {
             res.srcDirs = ['res']
@@ -52,31 +65,34 @@ android {
             }
         }
 
+        debug {
+            manifest.srcFile "AndroidManifest.xml"
+        }
+
         androidTest {
             res.srcDirs = ['tests/res']
             java.srcDirs = ['tests/src']
             manifest.srcFile "tests/AndroidManifest-common.xml"
         }
 
-        aosp {
-            java.srcDirs = ['src_flags']
-            manifest.srcFile "AndroidManifest.xml"
+        androidTestDebug {
+            manifest.srcFile "tests/AndroidManifest.xml"
         }
 
-        aospAndroidTest {
-            manifest.srcFile "tests/AndroidManifest.xml"
+        aosp {
+            java.srcDirs = ['src_flags', "src_ui_overrides"]
         }
 
         l3go {
             res.srcDirs = ['go/res']
-            java.srcDirs = ['go/src_flags']
-            // Note: we are using the Launcher3 manifest here because the gradle manifest-merger uses
-            // different attributes than the build system.
-            manifest.srcFile "AndroidManifest.xml"
+            java.srcDirs = ['go/src_flags', "src_ui_overrides"]
+            manifest.srcFile "go/AndroidManifest.xml"
         }
 
-        l3goAndroidTest {
-            manifest.srcFile "tests/AndroidManifest.xml"
+        quickstep {
+            res.srcDirs = ['quickstep/res']
+            java.srcDirs = ['src_flags', 'quickstep/src']
+            manifest.srcFile "quickstep/AndroidManifest.xml"
         }
     }
 }
@@ -86,19 +102,21 @@ repositories {
     jcenter()
 }
 
-final String SUPPORT_LIBS_VERSION = '26.0.0-SNAPSHOT'
+final String SUPPORT_LIBS_VERSION = '27.0.0-SNAPSHOT'
 dependencies {
     compile "com.android.support:support-v4:${SUPPORT_LIBS_VERSION}"
     compile "com.android.support:support-dynamic-animation:${SUPPORT_LIBS_VERSION}"
     compile "com.android.support:recyclerview-v7:${SUPPORT_LIBS_VERSION}"
-    compile "com.android.support:palette-v7:${SUPPORT_LIBS_VERSION}"
     compile 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
+
+    quickstepCompile fileTree(dir: "quickstep/libs", include: 'sysui_shared.jar')
 
     testCompile 'junit:junit:4.12'
     androidTestCompile "org.mockito:mockito-core:1.9.5"
     androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
     androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
-    androidTestCompile 'com.android.support.test:runner:0.5'
+    androidTestCompile 'com.android.support.test:runner:1.0.0'
+    androidTestCompile 'com.android.support.test:rules:1.0.0'
     androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
     androidTestCompile "com.android.support:support-annotations:${SUPPORT_LIBS_VERSION}"
 }

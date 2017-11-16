@@ -44,15 +44,15 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.animation.DecelerateInterpolator;
+
 import com.android.launcher3.BubbleTextView.BubbleTextShadowHandler;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.accessibility.FolderAccessibilityHelper;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.util.CellAndSpan;
@@ -60,6 +60,7 @@ import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.ParcelableSparseArray;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -89,8 +90,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     private int mCountY;
 
     private boolean mDropPending = false;
-    private boolean mIsDragTarget = true;
-    private boolean mJailContent = true;
 
     // These are temporary variables to prevent having to allocate a new object just to
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
@@ -105,8 +104,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     private final ArrayList<PreviewBackground> mFolderBackgrounds = new ArrayList<>();
     final PreviewBackground mFolderLeaveBehind = new PreviewBackground();
-
-    private float mBackgroundAlpha;
 
     private static final int[] BACKGROUND_STATE_ACTIVE = new int[] { android.R.attr.state_active };
     private static final int[] BACKGROUND_STATE_DEFAULT = new int[0];
@@ -223,12 +220,12 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
         mBackground = res.getDrawable(R.drawable.bg_celllayout);
         mBackground.setCallback(this);
-        mBackground.setAlpha((int) (mBackgroundAlpha * 255));
+        mBackground.setAlpha(0);
 
         mReorderPreviewAnimationMagnitude = (REORDER_PREVIEW_MAGNITUDE * grid.iconSizePx);
 
         // Initialize the data structures used for the drag visualization.
-        mEaseOutInterpolator = new DecelerateInterpolator(2.5f); // Quint ease out
+        mEaseOutInterpolator = Interpolators.DEACCEL_2_5; // Quint ease out
         mDragCell[0] = mDragCell[1] = -1;
         for (int i = 0; i < mDragOutlines.length; i++) {
             mDragOutlines[i] = new Rect(-1, -1, -1, -1);
@@ -346,7 +343,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         // the home screen mode, however, once in overview mode stylus button press should be
         // enabled to allow rearranging the different home screens. So check what mode
         // the workspace is in, and only perform stylus button presses while in overview mode.
-        if (mLauncher.mWorkspace.isInOverviewMode()
+        if (mLauncher.isInState(LauncherState.OVERVIEW)
                 && mStylusEventHelper.onMotionEvent(ev)) {
             return true;
         }
@@ -355,10 +352,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     public void enableHardwareLayer(boolean hasLayer) {
         mShortcutsAndWidgets.setLayerType(hasLayer ? LAYER_TYPE_HARDWARE : LAYER_TYPE_NONE, sPaint);
-    }
-
-    public void buildHardwareLayer() {
-        mShortcutsAndWidgets.buildLayer();
     }
 
     public void setCellDimensions(int width, int height) {
@@ -392,24 +385,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     @Override
     public void setPressedIcon(BubbleTextView icon, Bitmap background) {
-        if (icon == null || background == null) {
-            mTouchFeedbackView.setBitmap(null);
-            mTouchFeedbackView.animate().cancel();
-        } else {
-            if (mTouchFeedbackView.setBitmap(background)) {
-                mTouchFeedbackView.alignWithIconView(icon, mShortcutsAndWidgets,
-                        null /* clipAgainstView */);
-                mTouchFeedbackView.animateShadow();
-            }
-        }
-    }
-
-    void disableDragTarget() {
-        mIsDragTarget = false;
-    }
-
-    public boolean isDragTarget() {
-        return mIsDragTarget;
+        mTouchFeedbackView.setPressedIcon(icon, background);
     }
 
     void setIsDragOverlapping(boolean isDragOverlapping) {
@@ -421,26 +397,22 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         }
     }
 
-    public void disableJailContent() {
-        mJailContent = false;
-    }
-
     @Override
     protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
-        if (mJailContent) {
-            ParcelableSparseArray jail = getJailedArray(container);
-            super.dispatchSaveInstanceState(jail);
-            container.put(R.id.cell_layout_jail_id, jail);
-        } else {
-            super.dispatchSaveInstanceState(container);
-        }
+        ParcelableSparseArray jail = getJailedArray(container);
+        super.dispatchSaveInstanceState(jail);
+        container.put(R.id.cell_layout_jail_id, jail);
     }
 
     @Override
     protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
-        super.dispatchRestoreInstanceState(mJailContent ? getJailedArray(container) : container);
+        super.dispatchRestoreInstanceState(getJailedArray(container));
     }
 
+    /**
+     * Wrap the SparseArray in another Parcelable so that the item ids do not conflict with our
+     * our internal resource ids
+     */
     private ParcelableSparseArray getJailedArray(SparseArray<Parcelable> container) {
         final Parcelable parcelable = container.get(R.id.cell_layout_jail_id);
         return parcelable instanceof ParcelableSparseArray ?
@@ -453,16 +425,12 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (!mIsDragTarget) {
-            return;
-        }
-
         // When we're large, we are either drawn in a "hover" state (ie when dragging an item to
         // a neighboring page) or with just a normal background (if backgroundAlpha > 0.0f)
         // When we're small, we are either drawn normally or in the "accepts drops" state (during
         // a drag). However, we also drag the mini hover background *over* one of those two
         // backgrounds
-        if (mBackgroundAlpha > 0.0f) {
+        if (mBackground.getAlpha() > 0) {
             mBackground.draw(canvas);
         }
 
@@ -838,16 +806,10 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        boolean isFullscreen = mShortcutsAndWidgets.getChildCount() > 0 &&
-                ((LayoutParams) mShortcutsAndWidgets.getChildAt(0).getLayoutParams()).isFullscreen;
         int left = getPaddingLeft();
-        if (!isFullscreen) {
-            left += (int) Math.ceil(getUnusedHorizontalSpace() / 2f);
-        }
+        left += (int) Math.ceil(getUnusedHorizontalSpace() / 2f);
         int right = r - l - getPaddingRight();
-        if (!isFullscreen) {
-            right -= (int) Math.ceil(getUnusedHorizontalSpace() / 2f);
-        }
+        right -= (int) Math.ceil(getUnusedHorizontalSpace() / 2f);
 
         int top = getPaddingTop();
         int bottom = b - t - getPaddingBottom();
@@ -875,20 +837,13 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         return getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - (mCountX * mCellWidth);
     }
 
-    public float getBackgroundAlpha() {
-        return mBackgroundAlpha;
-    }
-
-    public void setBackgroundAlpha(float alpha) {
-        if (mBackgroundAlpha != alpha) {
-            mBackgroundAlpha = alpha;
-            mBackground.setAlpha((int) (mBackgroundAlpha * 255));
-        }
+    public Drawable getScrimBackground() {
+        return mBackground;
     }
 
     @Override
     protected boolean verifyDrawable(Drawable who) {
-        return super.verifyDrawable(who) || (mIsDragTarget && who == mBackground);
+        return super.verifyDrawable(who) || (who == mBackground);
     }
 
     public void setShortcutAndWidgetAlpha(float alpha) {
@@ -2652,11 +2607,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
          * or whether these will be computed based on cellX, cellY, cellHSpan and cellVSpan.
          */
         public boolean isLockedToGrid = true;
-
-        /**
-         * Indicates that this item should use the full extents of its parent.
-         */
-        public boolean isFullscreen = false;
 
         /**
          * Indicates whether this item can be reordered. Always true except in the case of the

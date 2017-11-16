@@ -18,7 +18,8 @@ package com.android.launcher3.folder;
 
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.config.FeatureFlags;
+
+import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 
 /**
  * Verifies whether an item in a Folder is displayed in the FolderIcon preview.
@@ -45,9 +46,7 @@ public class FolderIconPreviewVerifier {
                 mMaxGridCountY, mMaxItemsPerPage, mGridSize);
         mGridCountX = mGridSize[0];
 
-        mDisplayingUpperLeftQuadrant = FeatureFlags.LAUNCHER3_NEW_FOLDER_ANIMATION
-                && !FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON
-                && numItemsInFolder > FolderIcon.NUM_ITEMS_IN_PREVIEW;
+        mDisplayingUpperLeftQuadrant = numItemsInFolder > MAX_NUM_ITEMS_IN_PREVIEW;
     }
 
     /**
@@ -70,6 +69,6 @@ public class FolderIconPreviewVerifier {
             int row = rank / mGridCountX;
             return col < 2 && row < 2;
         }
-        return rank < FolderIcon.NUM_ITEMS_IN_PREVIEW;
+        return rank < MAX_NUM_ITEMS_IN_PREVIEW;
     }
 }

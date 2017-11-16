@@ -32,6 +32,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
 
+import com.android.launcher3.AppInfo;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
@@ -48,7 +49,6 @@ import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.LongArrayMap;
-import com.android.launcher3.util.PackageManagerHelper;
 
 import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
@@ -202,7 +202,6 @@ public class LoaderCursor extends CursorWrapper {
         return TextUtils.isEmpty(title) ? "" : Utilities.trim(title);
     }
 
-
     /**
      * Make an ShortcutInfo object for a restored application or shortcut item that points
      * to a package that is not yet installed on the system.
@@ -274,8 +273,8 @@ public class LoaderCursor extends CursorWrapper {
             info.iconBitmap = icon != null ? icon : info.iconBitmap;
         }
 
-        if (lai != null && PackageManagerHelper.isAppSuspended(lai.getApplicationInfo())) {
-            info.isDisabled = ShortcutInfo.FLAG_DISABLED_SUSPENDED;
+        if (lai != null) {
+            AppInfo.updateRuntimeFlagsForActivityTarget(info, lai);
         }
 
         // from the db

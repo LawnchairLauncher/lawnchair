@@ -43,7 +43,6 @@ import android.support.animation.FloatPropertyCompat;
 import android.support.animation.SpringAnimation;
 import android.support.animation.SpringForce;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.ItemInfo;
@@ -54,6 +53,7 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.config.FeatureFlags;
@@ -169,7 +169,7 @@ public class DragView extends View {
             }
         });
 
-        mBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight());
+        mBitmap = bitmap;
         setDragRegion(new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()));
 
         // The point in our scaled bitmap that the touch events are located
@@ -427,6 +427,10 @@ public class DragView extends View {
         return mDragRegion;
     }
 
+    public Bitmap getPreviewBitmap() {
+        return mBitmap;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         mHasDrawn = true;
@@ -468,7 +472,7 @@ public class DragView extends View {
     public void crossFade(int duration) {
         ValueAnimator va = LauncherAnimUtils.ofFloat(0f, 1f);
         va.setDuration(duration);
-        va.setInterpolator(new DecelerateInterpolator(1.5f));
+        va.setInterpolator(Interpolators.DEACCEL_1_5);
         va.addUpdateListener(new AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {

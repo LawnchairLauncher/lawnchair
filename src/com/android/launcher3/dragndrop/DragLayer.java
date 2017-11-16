@@ -24,46 +24,36 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.Region;
-import android.support.v4.graphics.ColorUtils;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DropTargetBar;
-import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppWidgetHostView;
-import com.android.launcher3.PinchToOverviewListener;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsTransitionController;
-import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dynamicui.WallpaperColorInfo;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
-import com.android.launcher3.logging.LoggerUtils;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
-import com.android.launcher3.widget.WidgetsBottomSheet;
 
 import java.util.ArrayList;
 
@@ -81,40 +71,29 @@ public class DragLayer extends InsettableFrameLayout {
 
     private Launcher mLauncher;
 
-    // Variables relating to resizing widgets
-    private final boolean mIsRtl;
-    private AppWidgetResizeFrame mCurrentResizeFrame;
-
     // Variables relating to animation of views after drop
     private ValueAnimator mDropAnim = null;
-    private final TimeInterpolator mCubicEaseOutInterpolator = new DecelerateInterpolator(1.5f);
+    private final TimeInterpolator mCubicEaseOutInterpolator = Interpolators.DEACCEL_1_5;
     @Thunk DragView mDropView = null;
     @Thunk int mAnchorViewInitialScrollX = 0;
     @Thunk View mAnchorView = null;
 
     private boolean mHoverPointClosesFolder = false;
     private final Rect mHitRect = new Rect();
-    private final Rect mHighlightRect = new Rect();
 
     private TouchCompleteListener mTouchCompleteListener;
 
     private int mTopViewIndex;
     private int mChildCountOnLastUpdate = -1;
 
-    // Darkening scrim
-    private float mBackgroundAlpha = 0;
-
     // Related to adjacent page hints
-    private final Rect mScrollChildPosition = new Rect();
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
-    private final WallpaperColorInfo mWallpaperColorInfo;
-
-    // Related to pinch-to-go-to-overview gesture.
-    private PinchToOverviewListener mPinchListener = null;
+    private final PageCutOutScrimDrawable mPageCutOutScrim;
 
     // Handles all apps pull up interaction
     private AllAppsTransitionController mAllAppsController;
 
+    protected TouchController[] mControllers;
     private TouchController mActiveController;
     /**
      * Used to create a new DragLayer from XML.
@@ -129,9 +108,9 @@ public class DragLayer extends InsettableFrameLayout {
         setMotionEventSplittingEnabled(false);
         setChildrenDrawingOrderEnabled(true);
 
-        mIsRtl = Utilities.isRtl(getResources());
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
-        mWallpaperColorInfo = WallpaperColorInfo.getInstance(getContext());
+        mPageCutOutScrim = new PageCutOutScrimDrawable(this);
+        mPageCutOutScrim.setCallback(this);
     }
 
     public void setup(Launcher launcher, DragController dragController,
@@ -139,10 +118,7 @@ public class DragLayer extends InsettableFrameLayout {
         mLauncher = launcher;
         mDragController = dragController;
         mAllAppsController = allAppsTransitionController;
-
-        boolean isAccessibilityEnabled = ((AccessibilityManager) mLauncher.getSystemService(
-                Context.ACCESSIBILITY_SERVICE)).isEnabled();
-        onAccessibilityStateChanged(isAccessibilityEnabled);
+        mControllers = UiFactory.createTouchControllers(mLauncher);
     }
 
     public ViewGroupFocusHelper getFocusIndicatorHelper() {
@@ -154,13 +130,9 @@ public class DragLayer extends InsettableFrameLayout {
         return mDragController.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
     }
 
-    public void onAccessibilityStateChanged(boolean isAccessibilityEnabled) {
-        mPinchListener = FeatureFlags.LAUNCHER3_DISABLE_PINCH_TO_OVERVIEW || isAccessibilityEnabled
-                ? null : new PinchToOverviewListener(mLauncher);
-    }
-
-    public boolean isEventOverPageIndicator(MotionEvent ev) {
-        return isEventOverView(mLauncher.getWorkspace().getPageIndicator(), ev);
+    @Override
+    protected boolean verifyDrawable(Drawable who) {
+        return super.verifyDrawable(who) || who == mPageCutOutScrim;
     }
 
     public boolean isEventOverHotseat(MotionEvent ev) {
@@ -180,36 +152,6 @@ public class DragLayer extends InsettableFrameLayout {
         return mHitRect.contains((int) ev.getX(), (int) ev.getY());
     }
 
-    private boolean handleTouchDown(MotionEvent ev, boolean intercept) {
-        AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mLauncher);
-        if (topView != null && intercept) {
-            ExtendedEditText textView = topView.getActiveTextView();
-            if (textView != null) {
-                if (!isEventOverView(textView, ev)) {
-                    textView.dispatchBackKey();
-                    return true;
-                }
-            } else if (!isEventOverView(topView, ev)) {
-                if (isInAccessibleDrag()) {
-                    // Do not close the container if in drag and drop.
-                    if (!isEventOverDropTargetBar(ev)) {
-                        return true;
-                    }
-                } else {
-                    mLauncher.getUserEventDispatcher().logActionTapOutside(
-                            LoggerUtils.newContainerTarget(topView.getLogContainerType()));
-                    topView.close(true);
-
-                    // We let touches on the original icon go through so that users can launch
-                    // the app with one tap if they don't find a shortcut they want.
-                    View extendedTouch = topView.getExtendedTouchView();
-                    return extendedTouch == null || !isEventOverView(extendedTouch, ev);
-                }
-            }
-        }
-        return false;
-    }
-
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         int action = ev.getAction();
@@ -219,9 +161,6 @@ public class DragLayer extends InsettableFrameLayout {
             // dray layer even if mAllAppsController is NOT the active controller.
             // TODO: handle other input other than touch
             mAllAppsController.cancelDiscoveryAnimation();
-            if (handleTouchDown(ev, true)) {
-                return true;
-            }
         } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
             if (mTouchCompleteListener != null) {
                 mTouchCompleteListener.onTouchComplete();
@@ -230,12 +169,10 @@ public class DragLayer extends InsettableFrameLayout {
         }
         mActiveController = null;
 
-        if (mCurrentResizeFrame != null
-                && mCurrentResizeFrame.onControllerInterceptTouchEvent(ev)) {
-            mActiveController = mCurrentResizeFrame;
+        AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mLauncher);
+        if (topView != null && topView.onControllerInterceptTouchEvent(ev)) {
+            mActiveController = topView;
             return true;
-        } else {
-            clearResizeFrame();
         }
 
         if (mDragController.onControllerInterceptTouchEvent(ev)) {
@@ -243,21 +180,11 @@ public class DragLayer extends InsettableFrameLayout {
             return true;
         }
 
-        if (mAllAppsController.onControllerInterceptTouchEvent(ev)) {
-            mActiveController = mAllAppsController;
-            return true;
-        }
-
-        WidgetsBottomSheet widgetsBottomSheet = WidgetsBottomSheet.getOpen(mLauncher);
-        if (widgetsBottomSheet != null && widgetsBottomSheet.onControllerInterceptTouchEvent(ev)) {
-            mActiveController = widgetsBottomSheet;
-            return true;
-        }
-
-        if (mPinchListener != null && mPinchListener.onControllerInterceptTouchEvent(ev)) {
-            // Stop listening for scrolling etc. (onTouchEvent() handles the rest of the pinch.)
-            mActiveController = mPinchListener;
-            return true;
+        for (TouchController controller : mControllers) {
+            if (controller.onControllerInterceptTouchEvent(ev)) {
+                mActiveController = controller;
+                return true;
+            }
         }
         return false;
     }
@@ -357,12 +284,7 @@ public class DragLayer extends InsettableFrameLayout {
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         int action = ev.getAction();
-
-        if (action == MotionEvent.ACTION_DOWN) {
-            if (handleTouchDown(ev, false)) {
-                return true;
-            }
-        } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
             if (mTouchCompleteListener != null) {
                 mTouchCompleteListener.onTouchComplete();
             }
@@ -542,25 +464,6 @@ public class DragLayer extends InsettableFrameLayout {
         }
     }
 
-    public void clearResizeFrame() {
-        if (mCurrentResizeFrame != null) {
-            removeView(mCurrentResizeFrame);
-            mCurrentResizeFrame = null;
-        }
-    }
-
-    public void addResizeFrame(LauncherAppWidgetHostView widget, CellLayout cellLayout) {
-        clearResizeFrame();
-
-        mCurrentResizeFrame = (AppWidgetResizeFrame) LayoutInflater.from(mLauncher)
-                .inflate(R.layout.app_widget_resize_frame, this, false);
-        mCurrentResizeFrame.setupForWidget(widget, cellLayout, this);
-        ((LayoutParams) mCurrentResizeFrame.getLayoutParams()).customPosition = true;
-
-        addView(mCurrentResizeFrame);
-        mCurrentResizeFrame.snapToWidget(false);
-    }
-
     public void animateViewIntoPosition(DragView dragView, final int[] pos, float alpha,
             float scaleX, float scaleY, int animationEndStyle, Runnable onFinishRunnable,
             int duration) {
@@ -573,13 +476,12 @@ public class DragLayer extends InsettableFrameLayout {
                 onFinishRunnable, animationEndStyle, duration, null);
     }
 
-    public void animateViewIntoPosition(DragView dragView, final View child,
-            final Runnable onFinishAnimationRunnable, View anchorView) {
-        animateViewIntoPosition(dragView, child, -1, onFinishAnimationRunnable, anchorView);
+    public void animateViewIntoPosition(DragView dragView, final View child, View anchorView) {
+        animateViewIntoPosition(dragView, child, -1, anchorView);
     }
 
     public void animateViewIntoPosition(DragView dragView, final View child, int duration,
-            final Runnable onFinishAnimationRunnable, View anchorView) {
+            View anchorView) {
         ShortcutAndWidgetContainer parentChildren = (ShortcutAndWidgetContainer) child.getParent();
         CellLayout.LayoutParams lp =  (CellLayout.LayoutParams) child.getLayoutParams();
         parentChildren.measureChild(child);
@@ -636,9 +538,6 @@ public class DragLayer extends InsettableFrameLayout {
         Runnable onCompleteRunnable = new Runnable() {
             public void run() {
                 child.setVisibility(VISIBLE);
-                if (onFinishAnimationRunnable != null) {
-                    onFinishAnimationRunnable.run();
-                }
             }
         };
         animateViewIntoPosition(dragView, fromX, fromY, toX, toY, 1, 1, 1, toScale, toScale,
@@ -804,13 +703,14 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     @Override
-    public void onChildViewAdded(View parent, View child) {
-        super.onChildViewAdded(parent, child);
+    public void onViewAdded(View child) {
+        super.onViewAdded(child);
         updateChildIndices();
     }
 
     @Override
-    public void onChildViewRemoved(View parent, View child) {
+    public void onViewRemoved(View child) {
+        super.onViewRemoved(child);
         updateChildIndices();
     }
 
@@ -858,46 +758,21 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     public void invalidateScrim() {
-        if (mBackgroundAlpha > 0.0f) {
+        if (mPageCutOutScrim.getAlpha() > 0) {
             invalidate();
         }
+    }
+
+    public Drawable getScrim() {
+        return mPageCutOutScrim;
     }
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
         // Draw the background below children.
-        if (mBackgroundAlpha > 0.0f) {
-            // Update the scroll position first to ensure scrim cutout is in the right place.
-            mLauncher.getWorkspace().computeScrollWithoutInvalidation();
-
-            int alpha = (int) (mBackgroundAlpha * 255);
-            CellLayout currCellLayout = mLauncher.getWorkspace().getCurrentDragOverlappingLayout();
-            canvas.save();
-            if (currCellLayout != null && currCellLayout != mLauncher.getHotseat().getLayout()) {
-                // Cut a hole in the darkening scrim on the page that should be highlighted, if any.
-                getDescendantRectRelativeToSelf(currCellLayout, mHighlightRect);
-                canvas.clipRect(mHighlightRect, Region.Op.DIFFERENCE);
-            }
-            // for super light wallpaper it needs to be darken for contrast to workspace
-            // for dark wallpapers the text is white so darkening works as well
-            int color = ColorUtils.compositeColors(0x66000000, mWallpaperColorInfo.getMainColor());
-            canvas.drawColor(ColorUtils.setAlphaComponent(color, alpha));
-            canvas.restore();
-        }
-
+        mPageCutOutScrim.draw(canvas);
         mFocusIndicatorHelper.draw(canvas);
         super.dispatchDraw(canvas);
-    }
-
-    public void setBackgroundAlpha(float alpha) {
-        if (alpha != mBackgroundAlpha) {
-            mBackgroundAlpha = alpha;
-            invalidate();
-        }
-    }
-
-    public float getBackgroundAlpha() {
-        return mBackgroundAlpha;
     }
 
     @Override

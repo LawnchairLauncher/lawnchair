@@ -147,11 +147,12 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         // Start home and pass the draw request params
         PinItemDragListener listener = new PinItemDragListener(mRequest, bounds,
                 img.getBitmap().getWidth(), img.getWidth());
-        Intent homeIntent = new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_HOME)
-                .setPackage(getPackageName())
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra(PinItemDragListener.EXTRA_PIN_ITEM_DRAG_LISTENER, listener);
+
+        Intent homeIntent = listener.addToIntent(
+                new Intent(Intent.ACTION_MAIN)
+                        .addCategory(Intent.CATEGORY_HOME)
+                        .setPackage(getPackageName())
+                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 
         if (!getResources().getBoolean(R.bool.allow_rotation) &&
                 !Utilities.isAllowRotationPrefEnabled(this) &&

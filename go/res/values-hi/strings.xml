@@ -20,7 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="long_press_widget_to_add" msgid="4001616142797446267">"शॉर्टकट चुनने के लिए छूकर रखें."</string>
-    <string name="long_accessible_way_to_add" msgid="2725225828389948328">"शॉर्टकट चुनने के लिए डबल टैप करके रखें या कस्टम कार्रवाइयों का उपयोग करें."</string>
+    <string name="long_accessible_way_to_add" msgid="2725225828389948328">"शॉर्टकट चुनने के लिए दो बार छूएं और कुछ देर दबाएं रखें या अपने मुताबिक कार्रवाइयों का इस्तेमाल करें."</string>
     <string name="widget_button_text" msgid="4221900832360456858">"शॉर्टकट"</string>
     <string name="widgets_bottom_sheet_title" msgid="3949835990909395998">"<xliff:g id="NAME">%1$s</xliff:g> शॉर्टकट"</string>
 </resources>
