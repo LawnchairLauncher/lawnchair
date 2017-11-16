@@ -44,8 +44,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <LinearLayout
-            android:id="@+id/tab_layout"
+        <com.android.launcher3.views.SlidingTabStrip
+            android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="@dimen/all_apps_header_tab_height"
             android:layout_below="@id/header_content"
@@ -56,6 +56,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="@string/all_apps_personal_tab"
+                android:textColor="@color/all_apps_tab_text"
                 android:background="?android:attr/selectableItemBackground"/>
             <Button
                 android:id="@+id/tab_work"
@@ -63,8 +64,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="@string/all_apps_work_tab"
+                android:textColor="@color/all_apps_tab_text"
                 android:background="?android:attr/selectableItemBackground"/>
-        </LinearLayout>
+        </com.android.launcher3.views.SlidingTabStrip>
 
     </RelativeLayout>
 

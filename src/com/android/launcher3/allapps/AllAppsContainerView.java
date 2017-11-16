@@ -58,8 +58,8 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TransformingTouchDelegate;
+import com.android.launcher3.views.SlidingTabStrip;
 
 import java.util.HashMap;
 import java.util.List;
@@ -471,6 +471,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     }
 
     private void setupWorkProfileTabs() {
+        final SlidingTabStrip tabs = findViewById(R.id.tabs);
         mViewPager.setAdapter(new TabsPagerAdapter());
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
@@ -478,6 +479,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
 
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                tabs.updateIndicatorPosition(position, positionOffset);
                 if (positionOffset == 0 && !mVisible || positionOffset > 0 && mVisible) {
                     mVisible = positionOffset == 0;
                     for (int i = 0; i < mAH.length; i++) {
@@ -490,6 +492,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
 
             @Override
             public void onPageSelected(int pos) {
+                tabs.updateTabTextColor(pos);
                 mFloatingHeaderHandler.setMainActive(pos == 0);
                 applyTouchDelegate();
                 if (mAH[pos].recyclerView != null) {
