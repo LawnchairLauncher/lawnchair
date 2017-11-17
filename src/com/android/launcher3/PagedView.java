@@ -30,7 +30,6 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
@@ -87,6 +86,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     public static final int INVALID_RESTORE_PAGE = -1001;
 
     private boolean mFreeScroll = false;
+    private boolean mSettleOnPageInFreeScroll = false;
 
     protected int mFlingThresholdVelocity;
     protected int mMinFlingVelocity;
@@ -1170,7 +1170,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
      * return true if freescroll has been enabled, false otherwise
      */
     protected void enableFreeScroll() {
+        enableFreeScroll(false);
+    }
+
+    protected void enableFreeScroll(boolean settleOnPageInFreeScroll) {
         setEnableFreeScroll(true);
+        mSettleOnPageInFreeScroll = settleOnPageInFreeScroll;
     }
 
     protected void disableFreeScroll() {
@@ -1414,7 +1419,22 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                     mScroller.setInterpolator(mDefaultInterpolator);
                     mScroller.fling(initialScrollX,
                             getScrollY(), vX, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 0);
-                    mNextPage = getPageNearestToCenterOfScreen((int) (mScroller.getFinalX() / scaleX));
+                    int unscaledScrollX = (int) (mScroller.getFinalX() / scaleX);
+                    mNextPage = getPageNearestToCenterOfScreen(unscaledScrollX);
+                    int firstPageScroll = getScrollForPage(!mIsRtl ? 0 : getPageCount() - 1);
+                    int lastPageScroll = getScrollForPage(!mIsRtl ? getPageCount() - 1 : 0);
+                    if (mSettleOnPageInFreeScroll && unscaledScrollX > firstPageScroll
+                            && unscaledScrollX < lastPageScroll) {
+                        // Make sure we land directly on a page. If flinging past one of the ends,
+                        // don't change the velocity as it will get stopped at the end anyway.
+                        mScroller.setFinalX((int) (getScrollForPage(mNextPage) * getScaleX()));
+                        // Ensure the scroll/snap doesn't happen too fast;
+                        int extraScrollDuration = OVERSCROLL_PAGE_SNAP_ANIMATION_DURATION
+                                - mScroller.getDuration();
+                        if (extraScrollDuration > 0) {
+                            mScroller.extendDuration(extraScrollDuration);
+                        }
+                    }
                     invalidate();
                 }
                 onScrollInteractionEnd();
