@@ -290,7 +290,7 @@
   <string name="dock_pref_summary">Dokk testreszabása</string>
   <string name="app_drawer_pref_summary">Alkalmazásfiók testreszabása</string>
   <string name="pixel_ui_pref_summary">Témázza a különböző elemeket</string>
-  <string name="backup_pref_title">Biztonsági mentés</string>
+  <string name="backup_pref_title">Biztonsági mentés és visszaállítás</string>
   <string name="behavior_pref_summary">A Lawnchair viselkedésének módosítása</string>
   <string name="backup_pref_summary">Adatok és beállítások mentése</string>
   <string name="debug_pref_summary">Újraindítás vagy ikon adatbázis újraépítése</string>
@@ -348,7 +348,13 @@
   <string name="backup_import_title">Visszaállítás</string>
   <string name="backup_export_title">Biztonsági mentés</string>
   <string name="imexport_success">Kész!</string>
+  <string name="settings_export_success">Beállítások biztonsági mentése sikeres</string>
+  <string name="db_export_success">Adatbázis biztonsági mentése sikeres</string>
+  <string name="settings_import_success">Beállítások sikeresen visszaállítva</string>
+  <string name="db_import_success">Adatbázis sikeresen visszaállítva</string>
   <string name="imexport_error">Hiba: Nem sikerült a fájl másolása</string>
+  <string name="export_error">Biztonsági mentés sikertelen</string>
+  <string name="import_error">Visszaállítás sikertelen</string>
   <string name="imexport_no_backup_found">Nem található biztonsági mentés</string>
   <string name="imexport_external_storage_unreadable">A tárhely nem olvasható (engedélyezze a hozzáférést a beállításokban)</string>
   <string name="imexport_external_storage_unwritable">A tárhely nem írható (engedélyezze a hozzáférést a beállításokban)</string>
@@ -410,4 +416,6 @@
   <string name="popup_card_theme_title">Flat stílusú felugró ablakok</string>
   <string name="set_default_launcher">Alapértelmezett kezdőképernyő beállítása</string>
   <string name="enable_spring_pref_title">Rugózás engedélyezése</string>
+  <string name="unauthorized_device">Ez a készülék rendelkezik néhány kalózkodásra alkalmas eszközzel. Távolítsa el őket a folytatáshoz.</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>
