@@ -120,7 +120,7 @@
   <!-- Text for wallpaper change button -->
   <string name="wallpaper_button_text">Ταπετσαρίες</string>
   <!-- Text for settings button -->
-  <string name="settings_button_text">Ρυθμίσεις</string>
+  <string name="settings_button_text">Ρυθμίσεις Αρχικής Σελίδας</string>
   <!-- Message shown when a feature is disabled by the administrator -->
   <string name="msg_disabled_by_admin">Απενεργοποιήθηκε από τον διαχειριστή σας</string>
   <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
@@ -293,7 +293,7 @@
   <string name="pixel_ui_pref_summary">Παραμετροποιήστε διαφορετικά στοιχεία του εκκινητή</string>
   <string name="backup_pref_title">Αντίγραφα Ασφαλείας</string>
   <string name="behavior_pref_summary">Αλλάξτε την συμπεριφορά του Lawnchair</string>
-  <string name="backup_pref_summary">Δημιουργία αντιγράφων ασφαλείας της βάσης δεδομένων και των ρυθμίσεών σας</string>
+  <string name="backup_pref_summary">Δημιουργία αντιγράφων ασφαλείας της βάσης δεδομένων και των ρυθμίσεων</string>
   <string name="debug_pref_summary">Επανεκκίνηση ή αναδόμηση της βάσης δεδομένων των εικονιδίων</string>
   <string name="show_pixel_bar_pref_title">Εμφάνιση επάνω μπάρας γραφικών Pixel</string>
   <string name="use_wide_searchbar_pref_title">Χρήση πλατιάς μπάρας αναζήτησης</string>
@@ -349,7 +349,13 @@
   <string name="backup_import_title">Εισαγωγή</string>
   <string name="backup_export_title">Εξαγωγή</string>
   <string name="imexport_success">Επιτυχής!</string>
+  <string name="settings_export_success">Οι ρυθμίσεις εξήχθησαν επιτυχώς</string>
+  <string name="db_export_success">Η βάση δεδομένων εξήχθη επιτυχώς</string>
+  <string name="settings_import_success">Οι ρυθμίσεις επαναφέρθηκαν επιτυχώς</string>
+  <string name="db_import_success">Η βάση δεδομένων επαναφέρθηκε επιτυχώς</string>
   <string name="imexport_error">Σφάλμα: Απέτυχε η αντιγραφή αρχείου</string>
+  <string name="export_error">Δεν ήταν δυνατή η δημιουργία αντιγράφων ασφαλείας</string>
+  <string name="import_error">Δεν ήταν δυνατή η επαναφορά</string>
   <string name="imexport_no_backup_found">Δεν βρέθηκε κανένα αντίγραφο ασφαλείας</string>
   <string name="imexport_external_storage_unreadable">Η εξωτερική μονάδα αποθήκευσης δεν είναι αναγνώσιμη (χορήγηση άδειας στις ρυθμίσεις)</string>
   <string name="imexport_external_storage_unwritable">Η εξωτερική μονάδα αποθήκευσης δεν είναι εγγράψιμη (χορήγηση άδειας στις ρυθμίσεις)</string>
@@ -411,4 +417,6 @@
   <string name="popup_card_theme_title">Επίπεδο στυλ γρήγορων συντομεύσεων</string>
   <string name="set_default_launcher">Ορισμός προεπιλεγμένου εκτοξευτή</string>
   <string name="enable_spring_pref_title">Ενεργοποίηση εφέ μεταπήδησης</string>
+  <string name="unauthorized_device">Αυτή η συσκευή έχει εγκατεστημένα ορισμένα πειρατικά εργαλεία. Παρακαλώ απεγκαταστήστε τα για να συνεχίσετε.</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>

@@ -347,7 +347,13 @@
   <string name="backup_import_title">가져오기</string>
   <string name="backup_export_title">내보내기</string>
   <string name="imexport_success">성공!</string>
+  <string name="settings_export_success">설정 백업이 완료되었습니다.</string>
+  <string name="db_export_success">데이터베이스 백업이 완료되었습니다.</string>
+  <string name="settings_import_success">설정 복원이 완료되었습니다.</string>
+  <string name="db_import_success">데이터베이스 복원이 완료되었습니다.</string>
   <string name="imexport_error">에러: 파일을 복사할 수 없습니다.</string>
+  <string name="export_error">백업 실패</string>
+  <string name="import_error">복원 실패</string>
   <string name="imexport_no_backup_found">백업 없음</string>
   <string name="imexport_external_storage_unreadable">외부 저장소를 읽을 수 없습니다. (세팅에서 권한을 허용해주세요)</string>
   <string name="imexport_external_storage_unwritable">외부 저장소 쓰기가 금지되어 있습니다. (세팅에서 권한을 허용해주세요)</string>
@@ -409,4 +415,6 @@
   <string name="popup_card_theme_title">플랫 스타일 팝업</string>
   <string name="set_default_launcher">기본 런처 설정</string>
   <string name="enable_spring_pref_title">스프링 효과 사용</string>
+  <string name="unauthorized_device">이 기기에 불법 복제 도구가 설치되어 있습니다. 계속하려면 그것들을 제거해주세요.</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>

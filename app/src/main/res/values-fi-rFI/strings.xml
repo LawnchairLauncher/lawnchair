@@ -410,4 +410,5 @@
   <string name="popup_card_theme_title">Flat tyylinen ponnahdusikkuna</string>
   <string name="set_default_launcher">Aseta oletus käynnistyssovellus</string>
   <string name="enable_spring_pref_title">Ota jousi efekti käyttöön</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>

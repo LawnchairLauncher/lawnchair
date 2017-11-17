@@ -348,7 +348,13 @@
   <string name="backup_import_title">Importar</string>
   <string name="backup_export_title">Exportar</string>
   <string name="imexport_success">Sucesso!</string>
+  <string name="settings_export_success">Backup de configurações realizado com sucesso</string>
+  <string name="db_export_success">Backup de banco de dados realizado com sucesso</string>
+  <string name="settings_import_success">Restauração de configurações realizado com sucesso</string>
+  <string name="db_import_success">Restauração de banco de dados realizado com sucesso</string>
   <string name="imexport_error">Falha ao copiar arquivo</string>
+  <string name="export_error">Não foi possível fazer o backup</string>
+  <string name="import_error">Não foi possível fazer a resutauração</string>
   <string name="imexport_no_backup_found">Nenhum backup encontrado</string>
   <string name="imexport_external_storage_unreadable">Armazenamento externo não é legível (conceder permissão em configurações)</string>
   <string name="imexport_external_storage_unwritable">Armazenamento externo não é gravável (conceder permissão em configurações)</string>
@@ -410,4 +416,6 @@
   <string name="popup_card_theme_title">Pop-up estilo fino</string>
   <string name="set_default_launcher">Definir como Launcher padrão</string>
   <string name="enable_spring_pref_title">Habilitar o efeito mola</string>
+  <string name="unauthorized_device">Este dispositivo possui algumas ferramentas de pirataria instaladas. Por favor, desinstale-as para continuar.</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>

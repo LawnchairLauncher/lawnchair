@@ -347,7 +347,13 @@
   <string name="backup_import_title">匯入</string>
   <string name="backup_export_title">匯出</string>
   <string name="imexport_success">成功!</string>
+  <string name="settings_export_success">設定備份成功</string>
+  <string name="db_export_success">資料庫備份成功</string>
+  <string name="settings_import_success">設定還原成功</string>
+  <string name="db_import_success">資料庫還原成功</string>
   <string name="imexport_error">錯誤：無法複製檔案</string>
+  <string name="export_error">無法備份</string>
+  <string name="import_error">無法還原</string>
   <string name="imexport_no_backup_found">找不到備份</string>
   <string name="imexport_external_storage_unreadable">無法讀取外部儲存空間 (設定中允許權限)</string>
   <string name="imexport_external_storage_unwritable">無法寫入外部儲存空間 (設定中允許權限)</string>
@@ -409,4 +415,6 @@
   <string name="popup_card_theme_title">平面樣式的彈出選單</string>
   <string name="set_default_launcher">設定預設啟動器</string>
   <string name="enable_spring_pref_title">啟用彈簧效果</string>
+  <string name="unauthorized_device">此裝置安裝了一些盜版工具，請解除安裝它們以便繼續。</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>

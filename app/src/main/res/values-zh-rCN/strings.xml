@@ -281,14 +281,14 @@
   <string name="general_pref_title">常规</string>
   <string name="dock_pref_title">Dock</string>
   <string name="app_drawer_pref_title">应用抽屉</string>
-  <string name="pixel_ui_pref_title">Pixel UI</string>
+  <string name="pixel_ui_pref_title">主题</string>
   <string name="behavior_pref_title">行为</string>
   <string name="debug_pref_title">调试</string>
   <string name="import_export_pref_title">导入/导出</string>
   <string name="general_pref_summary">主屏幕，dock 和应用抽屉</string>
   <string name="dock_pref_summary">定制您的 dock</string>
   <string name="app_drawer_pref_summary">定制您的应用抽屉</string>
-  <string name="pixel_ui_pref_summary">启用 Pixel Launcher 独家功能</string>
+  <string name="pixel_ui_pref_summary">为不同元素应用主题</string>
   <string name="backup_pref_title">备份</string>
   <string name="behavior_pref_summary">更改 Lawnchair 行为</string>
   <string name="backup_pref_summary">备份您的数据库和配置</string>
@@ -347,7 +347,13 @@
   <string name="backup_import_title">导入</string>
   <string name="backup_export_title">导出</string>
   <string name="imexport_success">成功 ！</string>
+  <string name="settings_export_success">设置已成功备份</string>
+  <string name="db_export_success">数据已成功备份</string>
+  <string name="settings_import_success">设置已成功恢复</string>
+  <string name="db_import_success">数据已成功恢复</string>
   <string name="imexport_error">错误：无法复制文件</string>
+  <string name="export_error">无法备份</string>
+  <string name="import_error">无法恢复</string>
   <string name="imexport_no_backup_found">未找到备份</string>
   <string name="imexport_external_storage_unreadable">外部存储不可读取（在系统设置中授予权限）</string>
   <string name="imexport_external_storage_unwritable">外部存储不可写入（在系统设置中授予权限）</string>
@@ -409,4 +415,6 @@
   <string name="popup_card_theme_title">扁平风格弹出菜单</string>
   <string name="set_default_launcher">设置默认桌面</string>
   <string name="enable_spring_pref_title">启用回弹特效</string>
+  <string name="unauthorized_device">此设备已经安装了一些盗版工具，请卸载后继续。</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>

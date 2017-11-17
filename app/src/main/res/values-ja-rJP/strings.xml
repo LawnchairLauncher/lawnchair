@@ -289,7 +289,7 @@
   <string name="dock_pref_summary">ドックをカスタマイズします</string>
   <string name="app_drawer_pref_summary">アプリドロワーをカスタマイズします</string>
   <string name="pixel_ui_pref_summary">Pixel Launcherの特徴的な機能を有効にします</string>
-  <string name="backup_pref_title">バックアップ</string>
+  <string name="backup_pref_title">バックアップとリストア</string>
   <string name="behavior_pref_summary">Lawnchairの動作設定を変更します</string>
   <string name="backup_pref_summary">データベースと設定をバックアップ</string>
   <string name="debug_pref_summary">再起動またはアイコンデータベースの再構築</string>
@@ -344,10 +344,16 @@
   <string name="pull_down_apps_search">アプリを検索</string>
   <string name="enable_screen_rotation">画面の回転を有効にする</string>
   <!-- Import/Export Strings -->
-  <string name="backup_import_title">インポート</string>
-  <string name="backup_export_title">エクスポート</string>
+  <string name="backup_import_title">リストア</string>
+  <string name="backup_export_title">バックアップ</string>
   <string name="imexport_success">成功しました！</string>
+  <string name="settings_export_success">設定のバックアップに成功しました</string>
+  <string name="db_export_success">データベースのバックアップに成功しました</string>
+  <string name="settings_import_success">設定のリストアに成功しました</string>
+  <string name="db_import_success">データベースのリストアに成功しました</string>
   <string name="imexport_error">エラー : ファイルをコピーできませんでした</string>
+  <string name="export_error">バックアップすることはできませんでした</string>
+  <string name="import_error">復元することはできませんでした</string>
   <string name="imexport_no_backup_found">バックアップが見つかりません</string>
   <string name="imexport_external_storage_unreadable">外部ストレージを読み取ることができません (設定で権限を許可して下さい)</string>
   <string name="imexport_external_storage_unwritable">外部ストレージに書き込むことができません (設定で権限を許可して下さい)</string>
@@ -409,4 +415,6 @@
   <string name="popup_card_theme_title">フラットなポップアップ</string>
   <string name="set_default_launcher">既定のランチャーにセット</string>
   <string name="enable_spring_pref_title">スプリング効果を有効にする</string>
+  <string name="unauthorized_device">このデバイスにはいくつかの海賊版や著作権侵害を助長するアプリがインストールされています。続行するにはアンインストールを行ってください。</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>

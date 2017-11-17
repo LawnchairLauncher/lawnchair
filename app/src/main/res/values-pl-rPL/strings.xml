@@ -349,7 +349,13 @@
   <string name="backup_import_title">Import</string>
   <string name="backup_export_title">Export</string>
   <string name="imexport_success">Sukces!</string>
+  <string name="settings_export_success">Pomyślnie utworzono kopię zapasową ustawień</string>
+  <string name="db_export_success">Pomyślnie utworzono kopię zapasową bazy danych</string>
+  <string name="settings_import_success">Ustawienia zostały przywrócone pomyślnie</string>
+  <string name="db_import_success">Bazy danych została przywrócona pomyślnie</string>
   <string name="imexport_error">Błąd: Nie można skopiować plików</string>
+  <string name="export_error">Nie można utworzyć kopię zapasową</string>
+  <string name="import_error">Nie można przywrócić kopii zapasowej</string>
   <string name="imexport_no_backup_found">Nie znaleziono kopii zapasowej</string>
   <string name="imexport_external_storage_unreadable">Pamięć zewnętrzna nie jest do odczytu (udziel uprawnień w ustawieniach)</string>
   <string name="imexport_external_storage_unwritable">Pamięć zewnętrzna nie jest zapisywalna (udziel uprawnień w ustawieniach)</string>
@@ -411,4 +417,6 @@
   <string name="popup_card_theme_title">Płaski styl okien popup</string>
   <string name="set_default_launcher">Ustaw domyślny launcher</string>
   <string name="enable_spring_pref_title">Włącz efekt sprężyny</string>
+  <string name="unauthorized_device">To urządzenie ma zainstalowane kilka narzędzia służące piractwu. Proszę odinstalować je aby kontynuować.</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>

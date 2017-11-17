@@ -349,7 +349,13 @@
   <string name="backup_import_title">Import</string>
   <string name="backup_export_title">Export</string>
   <string name="imexport_success">Succes!</string>
+  <string name="settings_export_success">Setările au fost salvate cu succes</string>
+  <string name="db_export_success">Baza de date a fost salvată cu succes</string>
+  <string name="settings_import_success">Setările au fost restabilite cu succes</string>
+  <string name="db_import_success">Baza de date a fost restabilită cu succes</string>
   <string name="imexport_error">Eroare: Nu a reușit copierea fişierului</string>
+  <string name="export_error">Nu s-a putut salva</string>
+  <string name="import_error">Nu s-a putut restabili</string>
   <string name="imexport_no_backup_found">Nicio copie de rezervă găsită</string>
   <string name="imexport_external_storage_unreadable">Spațiul de stocare extern nu poate fi citit (acordă permisiunea în Setări)</string>
   <string name="imexport_external_storage_unwritable">Spațiul de stocare extern nu poate fi scris (acordă permisiunea în Setări)</string>
@@ -411,4 +417,6 @@
   <string name="popup_card_theme_title">Stil popup plat</string>
   <string name="set_default_launcher">Setaţi lansator implicit</string>
   <string name="enable_spring_pref_title">Activați efectul elastic</string>
+  <string name="unauthorized_device">Acest dispozitiv are câteva instrumente de piraterie instalate. Vă rugăm să le dezinstalați pentru a continua.</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>
