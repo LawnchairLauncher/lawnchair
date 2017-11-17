@@ -290,7 +290,7 @@
   <string name="dock_pref_summary">Personalisiere dein Dock</string>
   <string name="app_drawer_pref_summary">Personalisiere deine App-Liste</string>
   <string name="pixel_ui_pref_summary">Passe das Design diverser Elemente an</string>
-  <string name="backup_pref_title">Sicherung</string>
+  <string name="backup_pref_title">Sicherung &amp; Wiederherstellung</string>
   <string name="behavior_pref_summary">Ändere das Verhalten von Lawnchair</string>
   <string name="backup_pref_summary">Sichere deine Datenbank und die Einstellungen</string>
   <string name="debug_pref_summary">Starte oder bilde die Icon-Datenbank neu</string>
@@ -348,7 +348,13 @@
   <string name="backup_import_title">importieren</string>
   <string name="backup_export_title">exportieren</string>
   <string name="imexport_success">Erfolg!</string>
+  <string name="settings_export_success">Einstellungen erfolgreich gesichert</string>
+  <string name="db_export_success">Datenbank erfolgreich gesichert</string>
+  <string name="settings_import_success">Einstellungen wurden erfolgreich wiederhergestellt</string>
+  <string name="db_import_success">Datenbank erfolgreich wiederhergestellt</string>
   <string name="imexport_error">Fehler: Datei konnte nicht kopiert werden</string>
+  <string name="export_error">Konnte nicht sichern</string>
+  <string name="import_error">Konnte nicht wiederherstellen</string>
   <string name="imexport_no_backup_found">Kein Backup gefunden</string>
   <string name="imexport_external_storage_unreadable">Externer Speicher ist nicht lesbar (Berechtigung in den Einstellungen erforderlich)</string>
   <string name="imexport_external_storage_unwritable">Externer Speicher ist nicht beschreibbar (Berechtigung in den Einstellungen erforderlich)</string>
@@ -410,4 +416,6 @@
   <string name="popup_card_theme_title">Flaches Popup-Design</string>
   <string name="set_default_launcher">Standard-Launcher einstellen</string>
   <string name="enable_spring_pref_title">Aktiviere den Spring-Effekt</string>
+  <string name="unauthorized_device">Dieses Gerät hat ein paar Piraterie-Tools installiert. Um fortzufahren bitte deinstalliere diese.</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>
