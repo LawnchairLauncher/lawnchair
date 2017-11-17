@@ -23,6 +23,8 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.util.Log;
 
+import ch.deletescape.lawnchair.Utilities;
+
 /**
  * {@link BroadcastReceiver} which watches configuration changes and
  * restarts the process in case changes which affect the device profile occur.
@@ -47,7 +49,7 @@ public class ConfigMonitor extends BroadcastReceiver {
         if (mFontScale != config.fontScale || mDensity != getDensity(config)) {
             Log.d("ConfigMonitor", "Configuration changed, restarting launcher");
             mContext.unregisterReceiver(this);
-            android.os.Process.killProcess(android.os.Process.myPid());
+            Utilities.restartLauncher(context);
         }
     }
 
