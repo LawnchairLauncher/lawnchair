@@ -409,4 +409,5 @@
   <string name="google_app_not_found">تطبيق غوغل غير مثبت</string>
   <string name="popup_card_theme_title">المنبثقة النمط المسطح</string>
   <string name="set_default_launcher">تعيين كمتصفح البرامج الإفتراضي</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>

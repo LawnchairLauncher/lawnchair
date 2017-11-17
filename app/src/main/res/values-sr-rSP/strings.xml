@@ -349,7 +349,13 @@
   <string name="backup_import_title">Увези</string>
   <string name="backup_export_title">Извези</string>
   <string name="imexport_success">Успешно!</string>
+  <string name="settings_export_success">Подешавања резервне копије је успешно</string>
+  <string name="db_export_success">Подешавања резервне копије је успешно</string>
+  <string name="settings_import_success">Подешавања обновљена успешно</string>
+  <string name="db_import_success">База података успешно обновљена</string>
   <string name="imexport_error">Грешка: Неуспело копирање датотеке</string>
+  <string name="export_error">Није могућа резервна копија</string>
+  <string name="import_error">Није могуће обнављање</string>
   <string name="imexport_no_backup_found">Нема резервне копије</string>
   <string name="imexport_external_storage_unreadable">Спољашње складиште се не може прочитати (омогући дозволе у поставкама)</string>
   <string name="imexport_external_storage_unwritable">У спољашње складиште се не може писати (омогући дозволе у подешавањима)</string>
@@ -411,4 +417,6 @@
   <string name="popup_card_theme_title">Раван стил искачућег прозора</string>
   <string name="set_default_launcher">Постави подразумевани покретач</string>
   <string name="enable_spring_pref_title">Ефекат одскока</string>
+  <string name="unauthorized_device">Овај уређај има инсталиран неколико пиратских алатки. Молим вас, деинсталирајте их да бисте наставили.</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>

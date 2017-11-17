@@ -282,6 +282,7 @@
   <string name="notification_access_pref_summary">Permetti l\'accesso alle notifiche a Lawnchair per abilitare queste funzioni</string>
   <string name="general_pref_title">Schermata home</string>
   <string name="dock_pref_title">Dock</string>
+  <string name="app_drawer_pref_title">Menù delle applicazioni</string>
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Gesti e funzionalità</string>
   <string name="debug_pref_title">Debug</string>
@@ -348,7 +349,13 @@
   <string name="backup_import_title">Importa</string>
   <string name="backup_export_title">Esporta</string>
   <string name="imexport_success">Riuscito!</string>
+  <string name="settings_export_success">Backup delle impostazioni completato</string>
+  <string name="db_export_success">Backup del database completato</string>
+  <string name="settings_import_success">Ripristino delle impostazioni completato</string>
+  <string name="db_import_success">Ripristino del database completato</string>
   <string name="imexport_error">Errore: Fallita copia dei file</string>
+  <string name="export_error">Impossibile eseguire il backup</string>
+  <string name="import_error">Impossibile eseguire il ripristino</string>
   <string name="imexport_no_backup_found">Nessun backup trovato</string>
   <string name="imexport_external_storage_unreadable">La memoria esterna non è leggibile (concedi l\'autorizzazione nelle impostazioni)</string>
   <string name="imexport_external_storage_unwritable">La memoria esterna non è scrivibile (concedi l\'autorizzazione nelle impostazioni)</string>
@@ -410,4 +417,6 @@
   <string name="popup_card_theme_title">Stile popup flat</string>
   <string name="set_default_launcher">Imposta come laumcher predefinito</string>
   <string name="enable_spring_pref_title">Abilita effetto a molla</string>
+  <string name="unauthorized_device">Questo dispositivo dispone di alcuni strumenti per la pirateria. Si prega di disinstallarli per continuare.</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>

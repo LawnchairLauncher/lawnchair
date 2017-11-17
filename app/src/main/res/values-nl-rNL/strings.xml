@@ -281,6 +281,7 @@
   <string name="notification_access_pref_summary">Geef Lawnchair toestemming tot uw notificaties om deze functie in te schakelen</string>
   <string name="general_pref_title">Algemeen</string>
   <string name="dock_pref_title">Dock</string>
+  <string name="app_drawer_pref_title">App overzicht</string>
   <string name="pixel_ui_pref_title">Pixel-UI</string>
   <string name="behavior_pref_title">Gedrag</string>
   <string name="debug_pref_title">Debuggen</string>
@@ -347,7 +348,9 @@
   <string name="backup_import_title">Importeren</string>
   <string name="backup_export_title">Exporteren</string>
   <string name="imexport_success">Succesvol!</string>
+  <string name="settings_export_success">Backup van instellingen succesvol</string>
   <string name="imexport_error">Fout: Bestand kopiëren mislukt</string>
+  <string name="import_error">Herstellen niet gelukt</string>
   <string name="imexport_no_backup_found">Geen back-up gevonden</string>
   <string name="imexport_external_storage_unreadable">Externe opslag is niet leesbaar (machtiging toekennen in instellingen)</string>
   <string name="imexport_external_storage_unwritable">Externe opslag is niet schrijfbaar (machtiging toekennen in instellingen)</string>
@@ -409,4 +412,6 @@
   <string name="popup_card_theme_title">Vlakke stijl pop-up</string>
   <string name="set_default_launcher">Standaard launcher instellen</string>
   <string name="enable_spring_pref_title">Veereffect inschakelen</string>
+  <string name="unauthorized_device">Op dit toestel zijn enkele piraat applicaties geinstalleerd. Gelieve deze te de-installeren om verder te gaan.</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>

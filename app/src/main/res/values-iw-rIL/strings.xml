@@ -350,7 +350,13 @@
   <string name="backup_import_title">ייבוא</string>
   <string name="backup_export_title">ייצוא</string>
   <string name="imexport_success">הצלחה!</string>
+  <string name="settings_export_success">ההגדרות גובו בהצלחה</string>
+  <string name="db_export_success">מסד הנתונים גובה בהצלחה</string>
+  <string name="settings_import_success">ההגדרות שוחזרו בהצלחה</string>
+  <string name="db_import_success">מסד הנתונים שוחזר בהצלחה</string>
   <string name="imexport_error">שגיאה: לא ניתן להעתיק קובץ</string>
+  <string name="export_error">לא ניתן לגבות</string>
+  <string name="import_error">לא ניתן לשחזר</string>
   <string name="imexport_no_backup_found">לא נמצא גיבוי</string>
   <string name="imexport_external_storage_unreadable">אחסון חיצוני אינו קריא (אנא הענק הרשאה בהגדרות)</string>
   <string name="imexport_external_storage_unwritable">אחסון חיצוני אינו ניתן לכתיבה (אנא הענק הרשאה בהגדרות)</string>
@@ -412,4 +418,6 @@
   <string name="popup_card_theme_title">הודעה קופצת בסגנון שטוח</string>
   <string name="set_default_launcher">הגדר כמפעיל אפליקציות ברירת מחדל</string>
   <string name="enable_spring_pref_title">אפשר אפקט קפיץ</string>
+  <string name="unauthorized_device">במכשיר זה מותקנים כלים פיראטיים. אנא הסר אותם כדי להמשיך.</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>

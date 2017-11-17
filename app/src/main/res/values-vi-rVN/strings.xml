@@ -280,7 +280,7 @@
   <string name="notification_access_pref_summary">Cho phép Lawnchair truy cập vào thông báo của bạn để kích hoạt tính năng này</string>
   <string name="general_pref_title">Màn hình chính</string>
   <string name="dock_pref_title">Thanh Dock</string>
-  <string name="app_drawer_pref_title">Ngăn chứa Ứng dụng</string>
+  <string name="app_drawer_pref_title">Ngăn chứa ứng dụng</string>
   <string name="pixel_ui_pref_title">Giao diện</string>
   <string name="behavior_pref_title">Hành vi</string>
   <string name="debug_pref_title">Gỡ lỗi</string>
@@ -347,7 +347,13 @@
   <string name="backup_import_title">Nhập dữ liệu</string>
   <string name="backup_export_title">Xuất dữ liệu</string>
   <string name="imexport_success">Hoàn tất!</string>
+  <string name="settings_export_success">Hoàn tất thiết lập sao lưu</string>
+  <string name="db_export_success">Hoàn tất sao lưu dữ liệu</string>
+  <string name="settings_import_success">Khôi phục cài đặt hoàn tất</string>
+  <string name="db_import_success">Khôi phục dữ liệu hoàn tất</string>
   <string name="imexport_error">Lỗi: Không thể sao chép tệp</string>
+  <string name="export_error">Không thể sao lưu</string>
+  <string name="import_error">Không thể khôi phục</string>
   <string name="imexport_no_backup_found">Không tìm thấy bản sao lưu</string>
   <string name="imexport_external_storage_unreadable">Không thể đọc được bộ nhớ ngoài (cấp phép trong cài đặt)</string>
   <string name="imexport_external_storage_unwritable">Không thể ghi vào bộ nhớ ngoài (cấp phép trong cài đặt)</string>
@@ -370,7 +376,7 @@
   <string name="enable_editing_pref_title">Cho phép chỉnh sửa màn hình chính</string>
   <string name="pref_weather_provider">Dịch vụ cung cấp thông tin thời tiết</string>
   <string name="loading">Đang tải…</string>
-  <string name="icon_shape_override_label">Đổi hình dáng biểu tượng</string>
+  <string name="icon_shape_override_label">Hình dạng biểu tượng</string>
   <string name="icon_shape_system_default">Vui lòng đừng thay đổi</string>
   <string name="icon_shape_none">Không</string>
   <string name="icon_shape_square">Vuông</string>
@@ -409,4 +415,18 @@
   <string name="popup_card_theme_title">Popup phong cách phẳng</string>
   <string name="set_default_launcher">Đặt làm trình khởi chạy mặc định</string>
   <string name="enable_spring_pref_title">Bật hiệu ứng thạch</string>
+  <string name="hide_app">Ẩn ứng dụng</string>
+  <string name="hide_app_sum">Ẩn khỏi ngăn chứa ứng dụng</string>
+  <string name="hide_app_selected">&#160;đã chọn</string>
+  <string name="hidden_app">Ứng dụng được ẩn</string>
+  <string name="hide_selected">Ẩn ứng dụng đã chọn</string>
+  <string name="hide_app_apply">Áp dụng</string>
+  <string name="unauthorized_device">Có một vài công cụ sao chép trái phép được cài đặt trên thiết bị này. Vui lòng gỡ cài đặt chúng để tiếp tục.</string>
+  <string name="hide_app_reset">Khôi phục</string>
+  <!-- Strings for Lawnfeed gesture popup -->
+  <string name="lawnfeed_not_enabled_title">Chưa kích hoạt Lawnfeed</string>
+  <string name="lawnfeed_not_enabled">Dường như bạn đang cố mở Google Now, nhưng bạn chưa bật tùy chọn này trong cài đặt hành vi.\n\nBạn có muốn bật nó bây giờ không?</string>
+  <string name="lawnfeed_not_installed_title">Lawnfeed không được cài đặt (Tải về và cài đặt từ bit.ly/lawnfeed)</string>
+  <string name="lawnfeed_not_installed">Dường như bạn đang cố mở Google Now, nhưng bạn chưa cài đặt ứng dụng Lawnfeed từ trang web của chúng tôi.\n\nBạn có muốn tải xuống ngay bây giờ không?</string>
+  <string name="disable_popup">Không hiển thị lại</string>
 </resources>
