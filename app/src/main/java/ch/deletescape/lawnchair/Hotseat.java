@@ -112,10 +112,11 @@ public class Hotseat extends FrameLayout {
 
     public void refresh() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
+        int rows = Utilities.getNumberOfHotseatRows(mLauncher);
         if (grid.isVerticalBarLayout()) {
-            mContent.setGridSize(1, grid.inv.numHotseatIcons);
+            mContent.setGridSize(rows, grid.inv.numHotseatIcons);
         } else {
-            mContent.setGridSize(grid.inv.numHotseatIcons, 1);
+            mContent.setGridSize(grid.inv.numHotseatIcons, rows);
         }
         mContent.requestLayout();
     }

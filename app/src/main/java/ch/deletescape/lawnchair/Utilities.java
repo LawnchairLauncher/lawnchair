@@ -1151,4 +1151,9 @@ public final class Utilities {
                 .show();
         }
     }
+
+    public static int getNumberOfHotseatRows(Context context){
+        boolean twoLines = PreferenceProvider.INSTANCE.getPreferences(context).getTwoRowDock();
+        return twoLines ? 2 : 1;
+    }
 }

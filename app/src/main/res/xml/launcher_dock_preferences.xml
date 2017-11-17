@@ -44,6 +44,11 @@
             android:summary="%s"
             android:persistent="true" />
 
+        <SwitchPreference
+            android:key="pref_twoRowDock"
+            android:title="@string/two_row_dock"
+            android:defaultValue="false" />
+
         <ch.deletescape.lawnchair.preferences.SeekbarPreference
             android:key="pref_hotseatIconScale"
             android:title="@string/icon_scale_pref_title"

@@ -501,4 +501,6 @@
     <string name="lawnfeed_not_installed_title">Lawnfeed not installed</string>
     <string name="lawnfeed_not_installed">It looks like you\'re trying to open the Google Now page, but you haven\'t installed the Lawnfeed app from our website.\n\nDo you want to download it now?</string>
     <string name="disable_popup">Don\'t show again</string>
+
+    <string name="two_row_dock">Two row dock</string>
 </resources>
