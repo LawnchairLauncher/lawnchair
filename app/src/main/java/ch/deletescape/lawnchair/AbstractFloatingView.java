@@ -24,10 +24,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import ch.deletescape.lawnchair.dragndrop.DragLayer;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import ch.deletescape.lawnchair.dragndrop.DragLayer;
 
 /**
  * Base class for a View which shows a floating UI on top of the launcher UI.

@@ -33,7 +33,6 @@ public class EditIconActivity extends AppCompatActivity implements CustomIconAda
 
     private static final int REQUEST_PICK_ICON = 0;
     private EditableItemInfo mInfo;
-    private IPreferenceProvider mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +42,6 @@ public class EditIconActivity extends AppCompatActivity implements CustomIconAda
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_icon);
-
-        mPrefs = Utilities.getPrefs(getApplicationContext());
 
         mInfo = getIntent().getExtras().getParcelable("itemInfo");
         if (mInfo == null) {
@@ -133,9 +130,9 @@ public class EditIconActivity extends AppCompatActivity implements CustomIconAda
         finish();
     }
 
-    private void updateCache() {
-        //Utilities.updatePackage(this, mInfo.getUser(), mInfo.getComponentName().getPackageName());
-    }
+    /*private void updateCache() {
+        Utilities.updatePackage(this, mInfo.getUser(), mInfo.getComponentName().getPackageName());
+    }*/
 
     @Override
     public void startPicker(IconPackInfo iconPackInfo) {

@@ -62,8 +62,7 @@ public class GLES20Canvas implements GLCanvas {
     private static final String TEXTURE_SAMPLER_UNIFORM = "uTextureSampler";
     private static final String ALPHA_UNIFORM = "uAlpha";
 
-    private static final String TEXTURE_VERTEX_SHADER = ""
-            + "uniform mat4 " + MATRIX_UNIFORM + ";\n"
+    private static final String TEXTURE_VERTEX_SHADER = "uniform mat4 " + MATRIX_UNIFORM + ";\n"
             + "uniform mat4 " + TEXTURE_MATRIX_UNIFORM + ";\n"
             + "attribute vec2 " + POSITION_ATTRIBUTE + ";\n"
             + "varying vec2 vTextureCoord;\n"
@@ -73,8 +72,7 @@ public class GLES20Canvas implements GLCanvas {
             + "  vTextureCoord = (" + TEXTURE_MATRIX_UNIFORM + " * pos).xy;\n"
             + "}\n";
 
-    private static final String TEXTURE_FRAGMENT_SHADER = ""
-            + "precision mediump float;\n"
+    private static final String TEXTURE_FRAGMENT_SHADER = "precision mediump float;\n"
             + "varying vec2 vTextureCoord;\n"
             + "uniform float " + ALPHA_UNIFORM + ";\n"
             + "uniform sampler2D " + TEXTURE_SAMPLER_UNIFORM + ";\n"
@@ -90,7 +88,7 @@ public class GLES20Canvas implements GLCanvas {
     private float[] mMatrices = new float[INITIAL_RESTORE_STATE_SIZE * MATRIX_SIZE];
     private IntArray mSaveFlags = new IntArray();
 
-    private int mCurrentMatrixIndex = 0;
+    private int mCurrentMatrixIndex;
 
     // Projection matrix
     private float[] mProjectionMatrix = new float[MATRIX_SIZE];

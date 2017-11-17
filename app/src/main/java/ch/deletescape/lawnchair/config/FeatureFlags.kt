@@ -18,7 +18,6 @@ package ch.deletescape.lawnchair.config
 
 import android.app.Activity
 import android.content.Context
-import android.support.annotation.IntDef
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import ch.deletescape.lawnchair.R

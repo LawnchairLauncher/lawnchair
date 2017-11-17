@@ -260,7 +260,7 @@ public abstract class ButtonDropTarget extends TextView
     abstract void completeDrop(DragObject d);
 
     @Override
-    public void getHitRectRelativeToDragLayer(android.graphics.Rect outRect) {
+    public void getHitRectRelativeToDragLayer(Rect outRect) {
         super.getHitRect(outRect);
         outRect.bottom += mBottomDragPadding;
 

@@ -3,7 +3,6 @@ package ch.deletescape.lawnchair;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ContextWrapper;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -29,14 +28,12 @@ public class DumbImportExportTask {
     }
 
     public static void exportPrefs(Activity activity) {
-        ApplicationInfo info = activity.getApplicationInfo();
         String dir = new ContextWrapper(activity).getCacheDir().getParent();
         File prefs = new File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml");
         exportFile(prefs, activity);
     }
 
     public static void importPrefs(Activity activity) {
-        ApplicationInfo info = activity.getApplicationInfo();
         String dir = new ContextWrapper(activity).getCacheDir().getParent();
         File prefs = new File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml");
         importFile(prefs, activity);

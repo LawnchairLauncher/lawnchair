@@ -4,7 +4,6 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.Resources
 import android.os.Build
-import android.os.Process
 import android.support.v7.preference.ListPreference
 import android.support.v7.preference.Preference
 import android.text.TextUtils

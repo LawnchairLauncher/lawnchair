@@ -54,10 +54,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import ch.deletescape.lawnchair.LauncherAppState;
-import ch.deletescape.lawnchair.R;
-import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.graphics.IconShapeOverride;
-import ch.deletescape.lawnchair.util.DrawableUtils;
 
 /**
  * <p>This class can also be created via XML inflation using <code>&lt;adaptive-icon></code> tag

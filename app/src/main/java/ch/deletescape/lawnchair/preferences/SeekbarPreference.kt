@@ -4,11 +4,8 @@ import android.content.Context
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
-import android.view.View
-import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
-
 import ch.deletescape.lawnchair.R
 
 class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Preference(context, attrs, defStyleAttr), SeekBar.OnSeekBarChangeListener {
