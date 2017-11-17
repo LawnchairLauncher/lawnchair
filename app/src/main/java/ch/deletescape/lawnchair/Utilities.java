@@ -17,7 +17,9 @@
 package ch.deletescape.lawnchair;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -1150,5 +1152,21 @@ public final class Utilities {
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
         }
+    }
+
+    public static void restartLauncher(Context context) {
+        PackageManager pm = context.getPackageManager();
+        Intent startActivity = pm.getLaunchIntentForPackage(context.getPackageName());
+
+        startActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        // Create a pending intent so the application is restarted after System.exit(0) was called.
+        // We use an AlarmManager to call this intent in 100ms
+        PendingIntent mPendingIntent = PendingIntent.getActivity(context, 0, startActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+
+        // Kill the application
+        System.exit(0);
     }
 }
