@@ -47,7 +47,6 @@
     <color name="all_apps_container_color_blur_dark">#00212121</color>
     <color name="all_apps_container_color_blur_black">#00000000</color>
     <color name="all_apps_empty_search_text_color">#212121</color>
-    <color name="all_apps_empty_search_text_color_dark">@android:color/white</color>
     <color name="all_apps_round_searchbar_bg_color">#10000000</color>
     <color name="all_apps_round_searchbar_bg_color_dark">#10ffffff</color>
     <color name="all_apps_round_searchbar_divider_color">#10111111</color>
@@ -79,12 +78,8 @@
     <color name="popup_header_background_color_dark">#ff101010</color>
     <color name="popup_header_background_color_black">@android:color/black</color>
     <color name="popup_background_color">#ffffffff</color>
-    <color name="popup_background_color_dark">#ff212121</color>
-    <color name="popup_background_color_black">#ff101010</color>
     <color name="notification_icon_default_color">#ff757575</color>
     <color name="notification_color_beneath">#ffe0e0e0</color>
-    <color name="notification_color_beneath_dark">#ff252525</color>
-    <color name="notification_color_beneath_black">#ff101010</color>
     <color name="badge_color">#fff</color>
     <color name="blue_grey_100">#ffcfd8dc</color>
     <color name="search_bar_text_color">#4c4c4c</color>

@@ -267,8 +267,7 @@
   <string name="hide_icon_labels_pref_title">Skryť menovky ikon z domovskej obrazovky</string>
   <string name="hide_all_apps_icon_labels_pref_title">Skryť menovky ikon v ponuke aplikácií</string>
   <string name="workspace_label_color_hue_pref_title">Farba menoviek ikon na domovskej obrazovke</string>
-  <string name="workspace_label_color_variation_pref_title">Farebné variácie menoviek ikon na domovskej obrazovke</string>
-  <string name="all_apps_opacity_pref_title">Priehľadnosť menu aplikácie</string>
+    <string name="all_apps_opacity_pref_title">Priehľadnosť menu aplikácie</string>
   <string name="num_cols_pref_title">Počet stĺpcov</string>
   <string name="num_rows_pref_title">Počet riadkov</string>
   <string name="num_hotseat_icons_pref_title">Počet ikon v doku</string>
@@ -286,8 +285,7 @@
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Správanie</string>
   <string name="debug_pref_title">Ladenie</string>
-  <string name="import_export_pref_title">Import/Export</string>
-  <string name="general_pref_summary">Domovská obrazovka, dok a ponuka aplikácií</string>
+    <string name="general_pref_summary">Domovská obrazovka, dok a ponuka aplikácií</string>
   <string name="dock_pref_summary">Prispôsobiť dok</string>
   <string name="app_drawer_pref_summary">Prispôsobiť ponuku aplikácií</string>
   <string name="pixel_ui_pref_summary">Povoliť exkluzívne funkcie spúšťača Pixel</string>
@@ -330,10 +328,7 @@
   <string name="edit_icon_reset">Resetovať</string>
   <string name="show_top_shadow_title">Zobraziť horný tieň</string>
   <string name="pref_cat_homescreen">Domovská obrazovka</string>
-  <string name="pref_cat_miscellaneous">Rôzne</string>
-  <string name="pref_cat_hotseat">Dok</string>
-  <string name="pref_cat_theme">Téma</string>
-  <string name="theme_pref_title">Téma</string>
+    <string name="theme_pref_title">Téma</string>
   <string name="theme_light">Svetlá</string>
   <string name="theme_dark">Tmavá</string>
   <string name="theme_black">Čierna</string>
@@ -348,13 +343,11 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Importovať</string>
   <string name="backup_export_title">Exportovať</string>
-  <string name="imexport_success">Hotovo!</string>
-  <string name="settings_export_success">Nastavenia boli úspešne zálohované</string>
+    <string name="settings_export_success">Nastavenia boli úspešne zálohované</string>
   <string name="db_export_success">Databáza bola úspešne zálohovaná</string>
   <string name="settings_import_success">Nastavenia boli úspešne obnovené</string>
   <string name="db_import_success">Databáza bola úspešne obnovená</string>
-  <string name="imexport_error">Chyba: Nepodarilo sa skopírovať súbor</string>
-  <string name="export_error">Nie je možné zálohovať</string>
+    <string name="export_error">Nie je možné zálohovať</string>
   <string name="import_error">Nie je možné obnoviť</string>
   <string name="imexport_no_backup_found">Nenašla sa záloha</string>
   <string name="imexport_external_storage_unreadable">Z externého ukladacieho priestoru sa nedá čítať (udeľte povolenie v nastaveniach)</string>
@@ -375,8 +368,7 @@
   <string name="dock_allapps"><![CDATA[Dock & všetky aplikácie]]></string>
   <string name="app_shortcuts">Zástupca aplikácií</string>
   <string name="blur_effect">Efekt rozostrenia</string>
-  <string name="enable_editing_pref_title">Povoliť úpravu domácej obrazovky</string>
-  <string name="pref_weather_provider">Poskytovateľ počasia</string>
+    <string name="pref_weather_provider">Poskytovateľ počasia</string>
   <string name="loading">Načítavanie…</string>
   <string name="icon_shape_override_label">Zmena tvaru ikony</string>
   <string name="icon_shape_system_default">Nemeniť</string>
@@ -395,15 +387,13 @@
   <string name="about_contributors_title">Prispievatelia</string>
   <string name="location_permission_warn">Pri prepnutí na iného poskytovateľa je potrebné udeliť povolenie na zisťovanie polohy!</string>
   <string name="num_cols_drawer_pref_title">Počet stĺpcov v zobrazení ponuky</string>
-  <string name="pref_cat_drawer">Ponuka aplikácií</string>
-  <string name="shortcut_backport_warning">Mohlo by to byť pomalé, používajte na vlastné riziko</string>
+    <string name="shortcut_backport_warning">Mohlo by to byť pomalé, používajte na vlastné riziko</string>
   <string name="pref_backport_shortcuts">Backport odkazy</string>
   <string name="weather_api_key_not_set">API kľúč nie je nastavený</string>
   <string name="pref_weather_api_key_title">API kľúč</string>
   <string name="about_changelog">Zoznam zmien</string>
   <string name="pref_all_apps_custom_label_color">Vybrať vlastné farby menoviek</string>
-  <string name="pref_all_apps_label_color_variation">Farebné variácie menoviek ikon v ponuke aplikácií</string>
-  <string name="pref_all_apps_label_color">Farba menoviek ikon v ponuke</string>
+    <string name="pref_all_apps_label_color">Farba menoviek ikon v ponuke</string>
   <string name="pref_num_rows_drawer">Počet riadkov v zobrazení ponuky</string>
   <string name="center_wallpaper_pref_title">Tapeta na stred, ak je iba jedna strana</string>
   <string name="vertical_drawer_layout_pref_title">Zobraziť ako zvislý zoznam</string>
@@ -414,8 +404,7 @@
   <string name="lock_desktop">Uzamknutie pracovnej plochy</string>
   <string name="lawnfeed_not_found">Lawnfeed nie je nainštalovaný</string>
   <string name="google_app_not_found">Google aplikácie nie sú nainštalované</string>
-  <string name="popup_card_theme_title">Plochý štýl vyskakujúceho okna</string>
-  <string name="set_default_launcher">Nastavenie predvoleného spúšťača</string>
+    <string name="set_default_launcher">Nastavenie predvoleného spúšťača</string>
   <string name="enable_spring_pref_title">Povoliť efekt pružiny</string>
   <string name="unauthorized_device">Toto zariadenie má nainštalované nástroje pre pirátstvo. Odinštalujte ich a pokračujte.</string>
   <!-- Strings for Lawnfeed gesture popup -->

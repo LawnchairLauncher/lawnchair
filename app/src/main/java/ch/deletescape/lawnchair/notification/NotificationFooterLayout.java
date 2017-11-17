@@ -98,7 +98,7 @@ public class NotificationFooterLayout extends FrameLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mOverflowEllipsis = findViewById(R.id.overflow);
-        mIconRow = (LinearLayout) findViewById(R.id.icon_row);
+        mIconRow = findViewById(R.id.icon_row);
         mBackgroundColor = ((ColorDrawable) getBackground()).getColor();
     }
 

@@ -510,12 +510,15 @@ public class AdaptiveIconDrawableCompat extends Drawable implements Drawable.Cal
                 continue;
             }
             String tagName = parser.getName();
-            if (tagName.equals("background")) {
-                childIndex = BACKGROUND_ID;
-            } else if (tagName.equals("foreground")) {
-                childIndex = FOREGROUND_ID;
-            } else {
-                continue;
+            switch (tagName) {
+                case "background":
+                    childIndex = BACKGROUND_ID;
+                    break;
+                case "foreground":
+                    childIndex = FOREGROUND_ID;
+                    break;
+                default:
+                    continue;
             }
 
             final ChildDrawable layer = new ChildDrawable(state.mDensity);

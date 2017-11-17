@@ -28,6 +28,6 @@ public class UnicodeStrippedAppSearchAlgorithm extends DefaultAppSearchAlgorithm
             return false;
         }
 
-        return title.indexOf(strippedQuery) >= 0;
+        return title.contains(strippedQuery);
     }
 }

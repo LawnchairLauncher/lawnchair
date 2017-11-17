@@ -267,8 +267,7 @@
   <string name="hide_icon_labels_pref_title">Skrýt popisky ikon na domovské obrazovce</string>
   <string name="hide_all_apps_icon_labels_pref_title">Skrýt popisky ikon v seznamu aplikací</string>
   <string name="workspace_label_color_hue_pref_title">Barva popisků ikon na domovské obrazovce</string>
-  <string name="workspace_label_color_variation_pref_title">Barevné variace popisků ikon na domovské obrazovce</string>
-  <string name="all_apps_opacity_pref_title">Průhlednost menu aplikací</string>
+    <string name="all_apps_opacity_pref_title">Průhlednost menu aplikací</string>
   <string name="num_cols_pref_title">Počet sloupců</string>
   <string name="num_rows_pref_title">Počet řádků</string>
   <string name="num_hotseat_icons_pref_title">Počet zástupců v doku</string>
@@ -286,8 +285,7 @@
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Chování</string>
   <string name="debug_pref_title">Ladění</string>
-  <string name="import_export_pref_title">Import/Export</string>
-  <string name="general_pref_summary">Domovská obrazovka, dok a nabídka aplikací</string>
+    <string name="general_pref_summary">Domovská obrazovka, dok a nabídka aplikací</string>
   <string name="dock_pref_summary">Přizpůsobit dok</string>
   <string name="app_drawer_pref_summary">Přizpůsobit seznam aplikací</string>
   <string name="pixel_ui_pref_summary">Povolit exkluzivní funkce spouštěče Pixel</string>
@@ -330,10 +328,7 @@
   <string name="edit_icon_reset">Resetovat</string>
   <string name="show_top_shadow_title">Zobrazit horní stíny</string>
   <string name="pref_cat_homescreen">Domovská obrazovka</string>
-  <string name="pref_cat_miscellaneous">Různé</string>
-  <string name="pref_cat_hotseat">Dok</string>
-  <string name="pref_cat_theme">Motiv</string>
-  <string name="theme_pref_title">Motiv</string>
+    <string name="theme_pref_title">Motiv</string>
   <string name="theme_light">Světlý</string>
   <string name="theme_dark">Tmavý</string>
   <string name="theme_black">Černý</string>
@@ -348,13 +343,11 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Importovat</string>
   <string name="backup_export_title">Exportovat</string>
-  <string name="imexport_success">Hotovo!</string>
-  <string name="settings_export_success">Nastavení bylo úspěšně zálohováno</string>
+    <string name="settings_export_success">Nastavení bylo úspěšně zálohováno</string>
   <string name="db_export_success">Databáze byla úspěšně zálohována</string>
   <string name="settings_import_success">Nastavení bylo úspěšně obnoveno</string>
   <string name="db_import_success">Databáze byla úspěšně obnovena</string>
-  <string name="imexport_error">Chyba: Nepodařilo se zkopírovat soubor</string>
-  <string name="export_error">Nelze zálohovat</string>
+    <string name="export_error">Nelze zálohovat</string>
   <string name="import_error">Nelze obnovit</string>
   <string name="imexport_no_backup_found">Nebyla nalezena žádná záloha</string>
   <string name="imexport_external_storage_unreadable">Externí úložiště není ke čtení (udělte oprávnění v nastavení)</string>
@@ -375,8 +368,7 @@
   <string name="dock_allapps"><![CDATA[Dok & všechny aplikace]]></string>
   <string name="app_shortcuts">Zástupce aplikací</string>
   <string name="blur_effect">Efekt rozostření</string>
-  <string name="enable_editing_pref_title">Povolit úpravu domovské obrazovky</string>
-  <string name="pref_weather_provider">Poskytovatel počasí</string>
+    <string name="pref_weather_provider">Poskytovatel počasí</string>
   <string name="loading">Načítání…</string>
   <string name="icon_shape_override_label">Změna tvaru ikony</string>
   <string name="icon_shape_system_default">Neměnit</string>
@@ -395,15 +387,13 @@
   <string name="about_contributors_title">Přispěvatelé</string>
   <string name="location_permission_warn">Při přepnutí na jiného poskytovatele je třeba udělit oprávnění k zjišťování polohy!</string>
   <string name="num_cols_drawer_pref_title">Počet sloupců v zobrazení seznamu aplikací</string>
-  <string name="pref_cat_drawer">Seznam aplikací</string>
-  <string name="shortcut_backport_warning">To by mohlo být pomalé, použijte na vlastní riziko</string>
+    <string name="shortcut_backport_warning">To by mohlo být pomalé, použijte na vlastní riziko</string>
   <string name="pref_backport_shortcuts">Zkratky zpětné kompatibility</string>
   <string name="weather_api_key_not_set">API klíč není nastaven</string>
   <string name="pref_weather_api_key_title">API klíč</string>
   <string name="about_changelog">Seznam změn</string>
   <string name="pref_all_apps_custom_label_color">Použít vlastní barvu</string>
-  <string name="pref_all_apps_label_color_variation">Barevné variace popisků ikon v seznamu aplikací</string>
-  <string name="pref_all_apps_label_color">Barva popisků ikon v seznamu aplikací</string>
+    <string name="pref_all_apps_label_color">Barva popisků ikon v seznamu aplikací</string>
   <string name="pref_num_rows_drawer">Počet sloupců v seznamu aplikací</string>
   <string name="center_wallpaper_pref_title">Tapeta na střed, je-li pouze jedna strana</string>
   <string name="vertical_drawer_layout_pref_title">Zobrazit jako svislý seznam</string>
@@ -414,8 +404,7 @@
   <string name="lock_desktop">Uzamčení pracovní plochy</string>
   <string name="lawnfeed_not_found">Lawnfeed není nainstalován</string>
   <string name="google_app_not_found">Aplikace Google není nainstalována</string>
-  <string name="popup_card_theme_title">Plochý styl vyskakujících oken</string>
-  <string name="set_default_launcher">Nastavit výchozí spouštěč</string>
+    <string name="set_default_launcher">Nastavit výchozí spouštěč</string>
   <string name="enable_spring_pref_title">Povolit efekt pružiny</string>
   <string name="unauthorized_device">Toto zařízení má nainstalovány nástroje pro pirátství. Odinstalujte je a pokračujte.</string>
   <!-- Strings for Lawnfeed gesture popup -->

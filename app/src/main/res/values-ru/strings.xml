@@ -264,7 +264,6 @@
     <string name="white_google_icon_pref_title">Использовать белые иконки в виджете поиска</string>
     <string name="hide_icon_labels_pref_title">Скрыть подписи иконок на рабочем столе</string>
     <string name="workspace_label_color_hue_pref_title">Цвет подписи иконок</string>
-    <string name="workspace_label_color_variation_pref_title">Вариация цвета подписей</string>
     <string name="all_apps_opacity_pref_title">Прозрачность меню приложений</string>
     <string name="num_cols_pref_title">Количество столбцов</string>
     <string name="num_rows_pref_title">Количество строк</string>
@@ -275,11 +274,8 @@
     <string name="full_width_widgets_pref_summary">Разрешить виджетам занимать место без отступов</string>
     <string name="notification_access_pref_title">Значки уведомлений и предварительный просмотр</string>
     <string name="notification_access_pref_summary">Разрешить Lawnchair доступ к вашим уведомлениям для включения этой функции</string>
-    <string name="ui_pref_title">UI</string>
-    <string name="pixel_style_pref_title">Стиль Pixel</string>
     <string name="behavior_pref_title">Поведение</string>
     <string name="debug_pref_title">Отладка</string>
-    <string name="import_export_pref_title">Импорт/Экспорт</string>
     <string name="show_pixel_bar_pref_title">Показать строку поиска</string>
     <string name="use_wide_searchbar_pref_title">Строка поиска как в Android O</string>
     <string name="show_mic_pref_title">Показать кнопку Google Ассистента</string>
