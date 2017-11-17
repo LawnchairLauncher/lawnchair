@@ -348,7 +348,13 @@
   <string name="backup_import_title">İçe aktar</string>
   <string name="backup_export_title">Dışa aktar</string>
   <string name="imexport_success">Başarılı!</string>
+  <string name="settings_export_success">Ayarlar başarıyla yedeklendi</string>
+  <string name="db_export_success">Veritabanı başarıyla yedeklendi</string>
+  <string name="settings_import_success">Ayarlar başarıyla geri yüklendi</string>
+  <string name="db_import_success">Veritabanı başarıyla geri yüklendi</string>
   <string name="imexport_error">Hata: Dosya kopyalanamadı</string>
+  <string name="export_error">Yedeklenemedi</string>
+  <string name="import_error">Geri yüklenemedi</string>
   <string name="imexport_no_backup_found">Yedek bulunamadı</string>
   <string name="imexport_external_storage_unreadable">Harici depolama alanı okunamıyor (ayarlardan izin verin)</string>
   <string name="imexport_external_storage_unwritable">Harici depolama alanına yazılamıyor (ayarlardan izin verin)</string>
@@ -410,4 +416,6 @@
   <string name="popup_card_theme_title">Düz biçimli açılır ileti</string>
   <string name="set_default_launcher">Varsayılan başlatıcı olarak ayarla</string>
   <string name="enable_spring_pref_title">Yay efektini etkinleştir</string>
+  <string name="unauthorized_device">Bu cihazda birkaç korsan yazılım mevcut. Devam etmek için lütfen bunları kaldırın.</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>
