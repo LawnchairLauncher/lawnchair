@@ -94,6 +94,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
 
     private TransformingTouchDelegate mTouchDelegate;
     private boolean mUsingTabs;
+    private boolean mHasPredictions = false;
 
     private final HashMap<ComponentKey, AppInfo> mComponentToAppMap = new HashMap<>();
 
@@ -530,6 +531,11 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             mFloatingHeaderHandler.getContentView().setPredictedApps(apps);
         }
         mAH[AdapterHolder.MAIN].appsList.setPredictedApps(apps);
+        boolean hasPredictions = !apps.isEmpty();
+        if (mHasPredictions != hasPredictions) {
+            mHasPredictions = hasPredictions;
+            setupHeader();
+        }
     }
 
     public AppInfo findApp(ComponentKeyMapper<AppInfo> mapper) {
@@ -553,8 +559,8 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             return;
         }
         mHeader.setVisibility(View.VISIBLE);
-        int contentHeight = mLauncher.getDeviceProfile().allAppsCellHeightPx;
-        if (!mUsingTabs) {
+        int contentHeight = mHasPredictions ? mLauncher.getDeviceProfile().allAppsCellHeightPx : 0;
+        if (mHasPredictions && !mUsingTabs) {
             contentHeight += getResources()
                     .getDimensionPixelSize(R.dimen.all_apps_prediction_row_divider_height);
         }
@@ -565,7 +571,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
                 mComponentToAppMap, mNumPredictedAppsPerRow);
 
         int padding = contentHeight;
-        if (!mUsingTabs) {
+        if (mHasPredictions && !mUsingTabs) {
             padding += mHeader.getPaddingTop() + mHeader.getPaddingBottom();
         }
         for (int i = 0; i < mAH.length; i++) {
