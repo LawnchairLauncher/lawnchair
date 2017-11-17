@@ -106,8 +106,6 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case PreferenceFlags.KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR_VARITATION:
                 case PreferenceFlags.KEY_PREF_DRAWER_VERTICAL_LAYOUT:
                 case PreferenceFlags.KEY_ENABLE_PHYSICS:
-                    mLauncher.scheduleRecreate();
-                    break;
                 case PreferenceFlags.KEY_PREF_ICON_SCALE:
                 case PreferenceFlags.KEY_PREF_HOTSEAT_ICON_SCALE:
                 case PreferenceFlags.KEY_PREF_HOTSEAT_HEIGHT_SCALE:

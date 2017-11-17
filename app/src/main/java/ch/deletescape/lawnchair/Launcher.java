@@ -285,7 +285,6 @@ public class Launcher extends Activity
     private boolean mAttached;
 
     private boolean kill;
-    private boolean recreate;
     private boolean reloadIcons;
     private boolean updateWallpaper = true;
 
@@ -463,10 +462,6 @@ public class Launcher extends Activity
             kill = true;
         else
             Utilities.restartLauncher(getApplicationContext());
-    }
-
-    public void scheduleRecreate() {
-        recreate = true;
     }
 
     public void scheduleUpdateWallpaper() {
@@ -936,13 +931,7 @@ public class Launcher extends Activity
 
         if (kill) {
             kill = false;
-            Log.v("Settings", "Die Motherf*cker!");
             Utilities.restartLauncher(getApplicationContext());
-        }
-
-        if (recreate) {
-            recreate = false;
-            recreate();
         }
 
         if (updateWallpaper) {
