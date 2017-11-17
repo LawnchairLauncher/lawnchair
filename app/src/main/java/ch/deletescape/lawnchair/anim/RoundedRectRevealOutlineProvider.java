@@ -1,7 +1,6 @@
 package ch.deletescape.lawnchair.anim;
 
 import android.graphics.Rect;
-import android.util.Log;
 
 public class RoundedRectRevealOutlineProvider extends RevealOutlineAnimation {
     private final float mEndRadius;

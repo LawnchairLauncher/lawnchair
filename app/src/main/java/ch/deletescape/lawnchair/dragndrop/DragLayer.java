@@ -99,13 +99,13 @@ public class DragLayer extends InsettableFrameLayout {
     private ValueAnimator mDropAnim = null;
     private final TimeInterpolator mCubicEaseOutInterpolator = new DecelerateInterpolator(1.5f);
     @Thunk
-    DragView mDropView = null;
+    DragView mDropView;
     @Thunk
     int mAnchorViewInitialScrollX = 0;
     @Thunk
-    View mAnchorView = null;
+    View mAnchorView;
 
-    private boolean mHoverPointClosesFolder = false;
+    private boolean mHoverPointClosesFolder;
     private final Rect mHitRect = new Rect();
     private final Rect mHighlightRect = new Rect();
 
@@ -428,8 +428,6 @@ public class DragLayer extends InsettableFrameLayout {
         boolean handled = false;
         int action = ev.getAction();
 
-        int x = (int) ev.getX();
-        int y = (int) ev.getY();
 
         if (action == MotionEvent.ACTION_DOWN) {
             if (handleTouchDown(ev, false)) {
@@ -444,6 +442,8 @@ public class DragLayer extends InsettableFrameLayout {
 
         if (mCurrentResizeFrame != null) {
             handled = true;
+            int x = (int) ev.getX();
+            int y = (int) ev.getY();
             switch (action) {
                 case MotionEvent.ACTION_MOVE:
                     mCurrentResizeFrame.visualizeResizeForDelta(x - mXDown, y - mYDown);
@@ -599,7 +599,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     public static class LayoutParams extends InsettableFrameLayout.LayoutParams {
         public int x, y;
-        public boolean customPosition = false;
+        public boolean customPosition;
 
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);
@@ -858,8 +858,8 @@ public class DragLayer extends InsettableFrameLayout {
                 float fromLeft = from.left + (initialScaleX - 1f) * width / 2;
                 float fromTop = from.top + (initialScaleY - 1f) * height / 2;
 
-                int x = (int) (fromLeft + Math.round(((to.left - fromLeft) * motionPercent)));
-                int y = (int) (fromTop + Math.round(((to.top - fromTop) * motionPercent)));
+                int x = (int) (fromLeft + Math.round((to.left - fromLeft) * motionPercent));
+                int y = (int) (fromTop + Math.round((to.top - fromTop) * motionPercent));
 
                 int anchorAdjust = mAnchorView == null ? 0 : (int) (mAnchorView.getScaleX() *
                         (mAnchorViewInitialScrollX - mAnchorView.getScrollX()));

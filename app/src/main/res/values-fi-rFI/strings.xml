@@ -266,8 +266,7 @@
   <string name="hide_icon_labels_pref_title">Piilota kuvakkeiden tekstit aloitusnäytöllä</string>
   <string name="hide_all_apps_icon_labels_pref_title">Piilota kuvakkeiden tekstit sovellusvalikossa</string>
   <string name="workspace_label_color_hue_pref_title">Kuvaketekstien väri aloitusnäytöllä</string>
-  <string name="workspace_label_color_variation_pref_title">Color variation of icon labels on homescreen</string>
-  <string name="all_apps_opacity_pref_title">Sovellusvalikon opasiteetti</string>
+    <string name="all_apps_opacity_pref_title">Sovellusvalikon opasiteetti</string>
   <string name="num_cols_pref_title">Sarakkeiden määrä</string>
   <string name="num_rows_pref_title">Rivien määrä</string>
   <string name="num_hotseat_icons_pref_title">Kuvakkeiden lukumäärä telakassa</string>
@@ -285,8 +284,7 @@
   <string name="pixel_ui_pref_title">Teema</string>
   <string name="behavior_pref_title">Käyttäytyminen</string>
   <string name="debug_pref_title">Debug</string>
-  <string name="import_export_pref_title">Tuo/Vie</string>
-  <string name="general_pref_summary">Muokkaa työpöytääsi</string>
+    <string name="general_pref_summary">Muokkaa työpöytääsi</string>
   <string name="dock_pref_summary">Muokkaa telakkaa</string>
   <string name="app_drawer_pref_summary">Muokkaa sovellusvalikkoa</string>
   <string name="pixel_ui_pref_summary">Eri elementtien teemat</string>
@@ -329,10 +327,7 @@
   <string name="edit_icon_reset">Nollaa</string>
   <string name="show_top_shadow_title">Näytä ylävarjo</string>
   <string name="pref_cat_homescreen">Aloitusnäyttö</string>
-  <string name="pref_cat_miscellaneous">Sekalaista</string>
-  <string name="pref_cat_hotseat">Telakka</string>
-  <string name="pref_cat_theme">Teema</string>
-  <string name="theme_pref_title">Teema</string>
+    <string name="theme_pref_title">Teema</string>
   <string name="theme_light">Vaalea</string>
   <string name="theme_dark">Tumma</string>
   <string name="theme_black">Musta</string>
@@ -347,9 +342,7 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Tuo</string>
   <string name="backup_export_title">Vie</string>
-  <string name="imexport_success">Onnistui!</string>
-  <string name="imexport_error">Virhe: Tiedoston kopiointi epäonnistui</string>
-  <string name="imexport_no_backup_found">Varmuuskopioita ei löytynyt</string>
+    <string name="imexport_no_backup_found">Varmuuskopioita ei löytynyt</string>
   <string name="imexport_external_storage_unreadable">Ulkoinen muisti ei ole luettavissa (anna käyttöoikeus asetuksissa)</string>
   <string name="imexport_external_storage_unwritable">Ulkoinen muisti ei ole kirjoitettavissa (anna käyttöoikeus asetuksissa)</string>
   <string name="units_metric">Metrijärjestelmä</string>
@@ -368,8 +361,7 @@
   <string name="dock_allapps"><![CDATA[Telakka & sovellusvalikko]]></string>
   <string name="app_shortcuts">Sovelluspikakuvakkeet</string>
   <string name="blur_effect">Sumennustehoste</string>
-  <string name="enable_editing_pref_title">Salli aloitusnäytön muokkaus</string>
-  <string name="pref_weather_provider">Säätietojen toimittaja</string>
+    <string name="pref_weather_provider">Säätietojen toimittaja</string>
   <string name="loading">Ladataan…</string>
   <string name="icon_shape_override_label">Vaihda kuvakkeiden muoto</string>
   <string name="icon_shape_system_default">Älä muuta</string>
@@ -388,15 +380,13 @@
   <string name="about_contributors_title">Avustajat</string>
   <string name="location_permission_warn">Sijainnin käyttöoikeus vaaditaan palveluntarjoajan vaihtamiseen!</string>
   <string name="num_cols_drawer_pref_title">Sarakkeiden määrä sovellusvalikossa</string>
-  <string name="pref_cat_drawer">Sovellusvalikko</string>
-  <string name="shortcut_backport_warning">Tämä voi olla hidas, käyttö omalla vastuulla</string>
+    <string name="shortcut_backport_warning">Tämä voi olla hidas, käyttö omalla vastuulla</string>
   <string name="pref_backport_shortcuts">Backporttaa pikakuvakkeet</string>
   <string name="weather_api_key_not_set">API avainta ei ole määritetty</string>
   <string name="pref_weather_api_key_title">API avain</string>
   <string name="about_changelog">Muutosloki</string>
   <string name="pref_all_apps_custom_label_color">Käytä mukautettua kuvaketeksti väriä</string>
-  <string name="pref_all_apps_label_color_variation">Kuvaketekstien värivaihtoehdot sovelluvalikossa</string>
-  <string name="pref_all_apps_label_color">Kuvaketekstien väri sovellusvalikossa</string>
+    <string name="pref_all_apps_label_color">Kuvaketekstien väri sovellusvalikossa</string>
   <string name="pref_num_rows_drawer">Rivien lukumäärä sovellusvalikossa</string>
   <string name="center_wallpaper_pref_title">Keskitä taustakuva kun käytössä on vain yksi sivu</string>
   <string name="vertical_drawer_layout_pref_title">Näytä pystysuuntainen luettelo</string>
@@ -407,8 +397,7 @@
   <string name="lock_desktop">Lukitse työpöytä</string>
   <string name="lawnfeed_not_found">Lawnfeed ei ole asennettu</string>
   <string name="google_app_not_found">Google sovellus ei ole asennettu</string>
-  <string name="popup_card_theme_title">Flat tyylinen ponnahdusikkuna</string>
-  <string name="set_default_launcher">Aseta oletus käynnistyssovellus</string>
+    <string name="set_default_launcher">Aseta oletus käynnistyssovellus</string>
   <string name="enable_spring_pref_title">Ota jousi efekti käyttöön</string>
   <!-- Strings for Lawnfeed gesture popup -->
 </resources>

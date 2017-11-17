@@ -265,8 +265,7 @@
   <string name="hide_icon_labels_pref_title">Hide icon labels on homescreen</string>
   <string name="hide_all_apps_icon_labels_pref_title">Skjul ikon-etiketter i skuff</string>
   <string name="workspace_label_color_hue_pref_title">Farge på ikon-etiketter på hjemskjerm</string>
-  <string name="workspace_label_color_variation_pref_title">Fargevariasjon av ikon-etiketter på hjemskjerm</string>
-  <string name="all_apps_opacity_pref_title">Skuff-gjennomsiktighet</string>
+    <string name="all_apps_opacity_pref_title">Skuff-gjennomsiktighet</string>
   <string name="num_cols_pref_title">Antall kolonner</string>
   <string name="num_rows_pref_title">Antall rader</string>
   <string name="num_hotseat_icons_pref_title">Antall ikoner i dock</string>
@@ -280,8 +279,7 @@
   <string name="notification_access_pref_summary">Gi Lawnchair tilgang til varslingene dine for å aktivere denne funksjonen</string>
   <string name="behavior_pref_title">Oppførsel</string>
   <string name="debug_pref_title">Feilsøk</string>
-  <string name="import_export_pref_title">Importér/eksportér</string>
-  <string name="backup_pref_title">Sikkerhetskopiering</string>
+    <string name="backup_pref_title">Sikkerhetskopiering</string>
   <string name="behavior_pref_summary">Endre Lawnchair</string>
   <string name="backup_pref_summary">Sikkerhetskopiere databasen og innstillinger</string>
   <string name="debug_pref_summary">Hvile eller bygge ikonet database</string>
@@ -320,10 +318,7 @@
   <string name="edit_icon_reset">Tilbakestill</string>
   <string name="show_top_shadow_title">Vis topp-skygge</string>
   <string name="pref_cat_homescreen">Hjemskjerm</string>
-  <string name="pref_cat_miscellaneous">Diverse</string>
-  <string name="pref_cat_hotseat">Dock</string>
-  <string name="pref_cat_theme">Tema</string>
-  <string name="theme_pref_title">Tema</string>
+    <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Lyst</string>
   <string name="theme_dark">Mørkt</string>
   <string name="theme_black">Svart</string>
@@ -338,9 +333,7 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Import</string>
   <string name="backup_export_title">Eksporter</string>
-  <string name="imexport_success">Suksess!</string>
-  <string name="imexport_error">Feil: kunne ikke kopiere fil</string>
-  <string name="imexport_no_backup_found">Ingen sikkerhetskopi funnet</string>
+    <string name="imexport_no_backup_found">Ingen sikkerhetskopi funnet</string>
   <string name="imexport_external_storage_unreadable">Ekstern lagring er ikke lesbar (gi tillatelse i innstillinger)</string>
   <string name="imexport_external_storage_unwritable">Ekstern lagring er ikke skrivbar (gi tillatelse i innstillinger)</string>
   <string name="units_metric">Metrisk</string>
@@ -359,8 +352,7 @@
   <string name="dock_allapps"><![CDATA[Dock & alle apper]]></string>
   <string name="app_shortcuts">App-snarveier</string>
   <string name="blur_effect">Uskarphetseffekt</string>
-  <string name="enable_editing_pref_title">Aktiver redigering av arbeidsområde</string>
-  <string name="pref_weather_provider">Værleverandør</string>
+    <string name="pref_weather_provider">Værleverandør</string>
   <string name="loading">Laster inn …</string>
   <string name="icon_shape_override_label">Endre ikon-form</string>
   <string name="icon_shape_system_default">Ikke endre</string>
@@ -379,15 +371,13 @@
   <string name="about_contributors_title">Bidragsytere</string>
   <string name="location_permission_warn">Posisjonstillatelse er nødvendig for å kunne bytte til en annen leverandør!</string>
   <string name="num_cols_drawer_pref_title">Antall kolonner i skuff</string>
-  <string name="pref_cat_drawer">Skuff</string>
-  <string name="shortcut_backport_warning">Dette kan gå tregt, bruk på eget ansvar</string>
+    <string name="shortcut_backport_warning">Dette kan gå tregt, bruk på eget ansvar</string>
   <string name="pref_backport_shortcuts">Backport-snarveier</string>
   <string name="weather_api_key_not_set">API-nøkkel ikke satt</string>
   <string name="pref_weather_api_key_title">API-nøkkel</string>
   <string name="about_changelog">Endringslogg</string>
   <string name="pref_all_apps_custom_label_color">Bruk egendefinert etikettfarge</string>
-  <string name="pref_all_apps_label_color_variation">Fargevariasjon på ikon-etiketter i skuff</string>
-  <string name="pref_all_apps_label_color">Farge på ikon-etiketter i skuff</string>
+    <string name="pref_all_apps_label_color">Farge på ikon-etiketter i skuff</string>
   <string name="pref_num_rows_drawer">Antall rader i skuff</string>
   <string name="center_wallpaper_pref_title">Sentrer bakgrunn når det bare er én side</string>
   <string name="vertical_drawer_layout_pref_title">Vis som vertikal liste</string>
@@ -398,7 +388,6 @@
   <string name="lock_desktop">Lås skrivebordet</string>
   <string name="lawnfeed_not_found">Lawnfeed ikke installert</string>
   <string name="google_app_not_found">Google app ikke installert</string>
-  <string name="popup_card_theme_title">Flat stil popup</string>
-  <string name="set_default_launcher">Angi standard bærerakett</string>
+    <string name="set_default_launcher">Angi standard bærerakett</string>
   <!-- Strings for Lawnfeed gesture popup -->
 </resources>

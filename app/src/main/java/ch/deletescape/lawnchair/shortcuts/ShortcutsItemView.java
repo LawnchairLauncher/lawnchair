@@ -16,25 +16,24 @@
 
 package ch.deletescape.lawnchair.shortcuts;
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
 import android.content.Context;
 import android.graphics.Point;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import ch.deletescape.lawnchair.AbstractFloatingView;
 import ch.deletescape.lawnchair.BubbleTextView;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
-import ch.deletescape.lawnchair.LauncherAnimUtils;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
-import ch.deletescape.lawnchair.anim.PropertyListBuilder;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.dragndrop.DragView;
@@ -42,10 +41,6 @@ import ch.deletescape.lawnchair.popup.PopupContainerWithArrow;
 import ch.deletescape.lawnchair.popup.PopupItemView;
 import ch.deletescape.lawnchair.popup.PopupPopulator;
 import ch.deletescape.lawnchair.popup.SystemShortcut;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * A {@link PopupItemView} that contains all of the {@link DeepShortcutView}s for an app,

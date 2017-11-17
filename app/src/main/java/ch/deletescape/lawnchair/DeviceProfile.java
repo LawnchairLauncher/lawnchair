@@ -36,10 +36,6 @@ import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 
 public class DeviceProfile {
 
-    public interface LauncherLayoutChangeListener {
-        void onLauncherLayoutChanged();
-    }
-
     public final InvariantDeviceProfile inv;
 
     // Device properties
@@ -689,5 +685,9 @@ public class DeviceProfile {
 
     public final int getHotseatHeight() {
         return (hotseatBarHeightPx - hotseatIconSizePxOriginal) + hotseatIconSizePx * Utilities.getNumberOfHotseatRows(mContext);
+    }
+
+    public interface LauncherLayoutChangeListener {
+        void onLauncherLayoutChanged();
     }
 }

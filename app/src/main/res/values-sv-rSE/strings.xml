@@ -266,8 +266,7 @@
   <string name="hide_icon_labels_pref_title">Dölj ikonetiketter på startskärmen</string>
   <string name="hide_all_apps_icon_labels_pref_title">Göm ikonetiketter i applistan</string>
   <string name="workspace_label_color_hue_pref_title">Ikonetiketters färg på startskärmen</string>
-  <string name="workspace_label_color_variation_pref_title">Färgvariation på ikonetiketter på startskärmen</string>
-  <string name="all_apps_opacity_pref_title">Opacitet på applista</string>
+    <string name="all_apps_opacity_pref_title">Opacitet på applista</string>
   <string name="num_cols_pref_title">Antal kolumner</string>
   <string name="num_rows_pref_title">Antal rader</string>
   <string name="num_hotseat_icons_pref_title">Antalet ikoner i dockan</string>
@@ -285,8 +284,7 @@
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Beteende</string>
   <string name="debug_pref_title">Felsök</string>
-  <string name="import_export_pref_title">Importera/exportera</string>
-  <string name="general_pref_summary">Startskärm, docka och applista</string>
+    <string name="general_pref_summary">Startskärm, docka och applista</string>
   <string name="dock_pref_summary">Anpassa dockan</string>
   <string name="app_drawer_pref_summary">Anpassa applistan</string>
   <string name="pixel_ui_pref_summary">Aktivera exklusiva funktioner från Översikt för Pixel</string>
@@ -329,10 +327,7 @@
   <string name="edit_icon_reset">Återställ</string>
   <string name="show_top_shadow_title">Visa övre skugga</string>
   <string name="pref_cat_homescreen">Startskärm</string>
-  <string name="pref_cat_miscellaneous">Övrigt</string>
-  <string name="pref_cat_hotseat">Docka</string>
-  <string name="pref_cat_theme">Tema</string>
-  <string name="theme_pref_title">Tema</string>
+    <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Ljus</string>
   <string name="theme_dark">Mörk</string>
   <string name="theme_black">Svart</string>
@@ -347,9 +342,7 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Importera</string>
   <string name="backup_export_title">Exportera</string>
-  <string name="imexport_success">Utfört!</string>
-  <string name="imexport_error">Fel: Det gick inte att kopiera filen</string>
-  <string name="imexport_no_backup_found">Ingen säkerhetskopia hittad</string>
+    <string name="imexport_no_backup_found">Ingen säkerhetskopia hittad</string>
   <string name="imexport_external_storage_unreadable">Extern lagring är inte läsbar (bevilja tillstånd i inställningar)</string>
   <string name="imexport_external_storage_unwritable">Extern lagring är inte skrivbar (bevilja tillstånd i inställningar)</string>
   <string name="units_metric">Metrisk</string>
@@ -368,8 +361,7 @@
   <string name="dock_allapps"><![CDATA[Docka och applista]]></string>
   <string name="app_shortcuts">Appgenvägarna</string>
   <string name="blur_effect">Oskärpa</string>
-  <string name="enable_editing_pref_title">Aktivera redigering av startskärm</string>
-  <string name="pref_weather_provider">Väderleverantör</string>
+    <string name="pref_weather_provider">Väderleverantör</string>
   <string name="loading">Laddar…</string>
   <string name="icon_shape_override_label">Ändra form på ikoner</string>
   <string name="icon_shape_system_default">Ändra inte</string>
@@ -388,15 +380,13 @@
   <string name="about_contributors_title">Medverkande</string>
   <string name="location_permission_warn">Positionstillstånd krävs för att byta till en annan leverantör!</string>
   <string name="num_cols_drawer_pref_title">Antal kolumner i applistan</string>
-  <string name="pref_cat_drawer">Applista</string>
-  <string name="shortcut_backport_warning">Detta kan vara långsamt. Använd på egen risk</string>
+    <string name="shortcut_backport_warning">Detta kan vara långsamt. Använd på egen risk</string>
   <string name="pref_backport_shortcuts">Bakåtporta genvägar</string>
   <string name="weather_api_key_not_set">API nyckel inte angiven</string>
   <string name="pref_weather_api_key_title">API nyckel</string>
   <string name="about_changelog">Ändringslogg</string>
   <string name="pref_all_apps_custom_label_color">Använd skräddarsydd etikettfärg</string>
-  <string name="pref_all_apps_label_color_variation">Färgvariation på ikonetiketter i applistan</string>
-  <string name="pref_all_apps_label_color">Färg på ikonetiketter i applistan</string>
+    <string name="pref_all_apps_label_color">Färg på ikonetiketter i applistan</string>
   <string name="pref_num_rows_drawer">Antal rader i applistan</string>
   <string name="center_wallpaper_pref_title">Centrera bakgrund när det endast finns en sida</string>
   <string name="vertical_drawer_layout_pref_title">Visa som vertikal lista</string>
@@ -407,8 +397,7 @@
   <string name="lock_desktop">Lås startskärmen</string>
   <string name="lawnfeed_not_found">Lawnfeed är inte installerad</string>
   <string name="google_app_not_found">Google-appen är inte installerad</string>
-  <string name="popup_card_theme_title">Platt stil på popup</string>
-  <string name="set_default_launcher">Sätt som standard</string>
+    <string name="set_default_launcher">Sätt som standard</string>
   <string name="enable_spring_pref_title">Aktivera fjädereffekt</string>
   <!-- Strings for Lawnfeed gesture popup -->
 </resources>

@@ -265,8 +265,7 @@
   <string name="hide_icon_labels_pref_title">Coultar etiquetas dos ícones no ecrã inicial</string>
   <string name="hide_all_apps_icon_labels_pref_title">Ocultar as etiquetas dos ícones na gaveta de aplicações</string>
   <string name="workspace_label_color_hue_pref_title">Cor das legendas dos ícones do ambiente de trabalho</string>
-  <string name="workspace_label_color_variation_pref_title">Variação de cores dos rótulos dos ícones no homescreen</string>
-  <string name="all_apps_opacity_pref_title">Opacidade do drawer</string>
+    <string name="all_apps_opacity_pref_title">Opacidade do drawer</string>
   <string name="num_cols_pref_title">Número de colunas</string>
   <string name="num_rows_pref_title">Número de linhas</string>
   <string name="num_hotseat_icons_pref_title">Número de ícones da dock</string>
@@ -282,8 +281,7 @@
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Comportamento</string>
   <string name="debug_pref_title">Depuração</string>
-  <string name="import_export_pref_title">Importar/Exportar</string>
-  <string name="general_pref_summary">Ambiente de Trabalho, Doca &amp; Aplicações</string>
+    <string name="general_pref_summary">Ambiente de Trabalho, Doca &amp; Aplicações</string>
   <string name="pixel_ui_pref_summary">Ativar recursos exclusivos do Pixel Launcher</string>
   <string name="backup_pref_title">Cópia de Segurança</string>
   <string name="behavior_pref_summary">Alterar comportamento do Lawnchair</string>
@@ -324,10 +322,7 @@
   <string name="edit_icon_reset">Restaurar</string>
   <string name="show_top_shadow_title">Mostrar sombra superior</string>
   <string name="pref_cat_homescreen">Ecrã Inicial</string>
-  <string name="pref_cat_miscellaneous">Diversos</string>
-  <string name="pref_cat_hotseat">Doca</string>
-  <string name="pref_cat_theme">Tema</string>
-  <string name="theme_pref_title">Tema</string>
+    <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Claro</string>
   <string name="theme_dark">Escuro</string>
   <string name="theme_black">Preto</string>
@@ -342,9 +337,7 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Importar</string>
   <string name="backup_export_title">Exportar</string>
-  <string name="imexport_success">Concluído!</string>
-  <string name="imexport_error">Erro: Falha ao copiar ficheiro</string>
-  <string name="imexport_no_backup_found">Nenhum backup encontrado</string>
+    <string name="imexport_no_backup_found">Nenhum backup encontrado</string>
   <string name="imexport_external_storage_unreadable">Armazenamento Interno não pode ser lido (conceder permissões nas definições)</string>
   <string name="imexport_external_storage_unwritable">Armazenamento Interno não pode ser escrito (conceder permissões nas definições)</string>
   <string name="units_metric">Métrico</string>
@@ -363,8 +356,7 @@
   <string name="dock_allapps"><![CDATA[Doca e gaveta]]></string>
   <string name="app_shortcuts">Atalhos das Aplicações</string>
   <string name="blur_effect">Efeito de desfoque</string>
-  <string name="enable_editing_pref_title">Permitir edição do ambiente de trabalho</string>
-  <string name="pref_weather_provider">Fornecedor de Tempo</string>
+    <string name="pref_weather_provider">Fornecedor de Tempo</string>
   <string name="loading">Carregando…</string>
   <string name="icon_shape_override_label">Mudar formato dos ícones</string>
   <string name="icon_shape_system_default">Não mudar</string>
@@ -383,15 +375,13 @@
   <string name="about_contributors_title">Contribuidores</string>
   <string name="location_permission_warn">Permissão de localização é necessária para mudar o provedor!</string>
   <string name="num_cols_drawer_pref_title">Número de colunas na gaveta</string>
-  <string name="pref_cat_drawer">Gaveta</string>
-  <string name="shortcut_backport_warning">Isto pode ser lento, usar por risco próprio</string>
+    <string name="shortcut_backport_warning">Isto pode ser lento, usar por risco próprio</string>
   <string name="pref_backport_shortcuts">Atalhos de Backport</string>
   <string name="weather_api_key_not_set">Chave de API não definida</string>
   <string name="pref_weather_api_key_title">Chave de API</string>
   <string name="about_changelog">Lista de alterações</string>
   <string name="pref_all_apps_custom_label_color">Usar etiqueta de cor personalizada</string>
-  <string name="pref_all_apps_label_color_variation">Variação da cor dos ícones na gaveta de aplicações</string>
-  <string name="pref_all_apps_label_color">Cor das etiquetas na gaveta</string>
+    <string name="pref_all_apps_label_color">Cor das etiquetas na gaveta</string>
   <string name="pref_num_rows_drawer">Número de filas na gaveta</string>
   <string name="center_wallpaper_pref_title">Centrar papel de parede quando há apenas uma página</string>
   <string name="vertical_drawer_layout_pref_title">Exibir como lista vertical</string>
@@ -402,7 +392,6 @@
   <string name="lock_desktop">Bloquear ambiente de trabalho</string>
   <string name="lawnfeed_not_found">Lawnfeed não instalado</string>
   <string name="google_app_not_found">Aplicação \"Google\" não instalada</string>
-  <string name="popup_card_theme_title">Pop-up de estilo liso</string>
-  <string name="set_default_launcher">Predefinir launcher</string>
+    <string name="set_default_launcher">Predefinir launcher</string>
   <!-- Strings for Lawnfeed gesture popup -->
 </resources>

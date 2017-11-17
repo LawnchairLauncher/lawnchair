@@ -27,6 +27,12 @@ import android.support.annotation.VisibleForTesting;
 import android.view.View;
 import android.widget.ImageView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
@@ -39,12 +45,6 @@ import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutView;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 import ch.deletescape.lawnchair.util.PackageUserKey;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Contains logic relevant to populating a {@link PopupContainerWithArrow}. In particular,

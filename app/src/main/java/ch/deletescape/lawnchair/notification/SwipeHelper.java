@@ -31,9 +31,9 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
 
-import ch.deletescape.lawnchair.R;
-
 import java.util.HashMap;
+
+import ch.deletescape.lawnchair.R;
 
 /**
  * This class was copied from com.android.systemui.

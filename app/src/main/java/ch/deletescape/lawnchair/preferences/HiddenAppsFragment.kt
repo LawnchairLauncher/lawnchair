@@ -1,14 +1,12 @@
 package ch.deletescape.lawnchair.preferences
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.Process
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
-import ch.deletescape.lawnchair.Launcher
 import ch.deletescape.lawnchair.LauncherAppState
 import ch.deletescape.lawnchair.MultiSelectRecyclerViewAdapter
 import ch.deletescape.lawnchair.R

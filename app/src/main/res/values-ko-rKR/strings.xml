@@ -265,8 +265,7 @@
   <string name="hide_icon_labels_pref_title">홈 화면 아이콘 이름 숨기기</string>
   <string name="hide_all_apps_icon_labels_pref_title">앱 서랍의 아이콘 이름 숨기기</string>
   <string name="workspace_label_color_hue_pref_title">홈 화면 아이콘 이름 색상</string>
-  <string name="workspace_label_color_variation_pref_title">홈 화면 아이콘 이름 색상 값</string>
-  <string name="all_apps_opacity_pref_title">앱 서랍 투명도</string>
+    <string name="all_apps_opacity_pref_title">앱 서랍 투명도</string>
   <string name="num_cols_pref_title">열 개수</string>
   <string name="num_rows_pref_title">행 개수</string>
   <string name="num_hotseat_icons_pref_title">독 아이콘 개수</string>
@@ -284,8 +283,7 @@
   <string name="pixel_ui_pref_title">픽셀 UI</string>
   <string name="behavior_pref_title">동작</string>
   <string name="debug_pref_title">디버그</string>
-  <string name="import_export_pref_title">가져오기/내보내기</string>
-  <string name="general_pref_summary">홈 화면, 독, 앱 서랍</string>
+    <string name="general_pref_summary">홈 화면, 독, 앱 서랍</string>
   <string name="dock_pref_summary">독 사용자 지정</string>
   <string name="app_drawer_pref_summary">앱 서랍 사용자 지정</string>
   <string name="pixel_ui_pref_summary">픽셀 런처 전용 기능 설정</string>
@@ -328,10 +326,7 @@
   <string name="edit_icon_reset">다시 설정</string>
   <string name="show_top_shadow_title">그림자 표시</string>
   <string name="pref_cat_homescreen">홈 화면</string>
-  <string name="pref_cat_miscellaneous">기타</string>
-  <string name="pref_cat_hotseat">독</string>
-  <string name="pref_cat_theme">테마</string>
-  <string name="theme_pref_title">테마</string>
+    <string name="theme_pref_title">테마</string>
   <string name="theme_light">밝은 테마</string>
   <string name="theme_dark">어두운 테마</string>
   <string name="theme_black">검은색</string>
@@ -346,13 +341,11 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">가져오기</string>
   <string name="backup_export_title">내보내기</string>
-  <string name="imexport_success">성공!</string>
-  <string name="settings_export_success">설정 백업이 완료되었습니다.</string>
+    <string name="settings_export_success">설정 백업이 완료되었습니다.</string>
   <string name="db_export_success">데이터베이스 백업이 완료되었습니다.</string>
   <string name="settings_import_success">설정 복원이 완료되었습니다.</string>
   <string name="db_import_success">데이터베이스 복원이 완료되었습니다.</string>
-  <string name="imexport_error">에러: 파일을 복사할 수 없습니다.</string>
-  <string name="export_error">백업 실패</string>
+    <string name="export_error">백업 실패</string>
   <string name="import_error">복원 실패</string>
   <string name="imexport_no_backup_found">백업 없음</string>
   <string name="imexport_external_storage_unreadable">외부 저장소를 읽을 수 없습니다. (세팅에서 권한을 허용해주세요)</string>
@@ -373,8 +366,7 @@
   <string name="dock_allapps"><![CDATA[독 & 앱 서랍]]></string>
   <string name="app_shortcuts">앱 바로가기</string>
   <string name="blur_effect">흐림 효과</string>
-  <string name="enable_editing_pref_title">홈 화면 변경 허락하기</string>
-  <string name="pref_weather_provider">날씨 공급자</string>
+    <string name="pref_weather_provider">날씨 공급자</string>
   <string name="loading">로딩 중…</string>
   <string name="icon_shape_override_label">아이콘 변경</string>
   <string name="icon_shape_system_default">변경 안함</string>
@@ -393,15 +385,13 @@
   <string name="about_contributors_title">기여자</string>
   <string name="location_permission_warn">다른 프로바이더로 전환하기 위해 위치 정보 접근 허가가 필요합니다!</string>
   <string name="num_cols_drawer_pref_title">앱 서랍 열 개수</string>
-  <string name="pref_cat_drawer">앱 서랍</string>
-  <string name="shortcut_backport_warning">기기가 느려질 수 있습니다, 주의하세요.</string>
+    <string name="shortcut_backport_warning">기기가 느려질 수 있습니다, 주의하세요.</string>
   <string name="pref_backport_shortcuts">바로가기 불러오기</string>
   <string name="weather_api_key_not_set">API key가 설정되지 않았습니다.</string>
   <string name="pref_weather_api_key_title">API 키</string>
   <string name="about_changelog">변경 내역</string>
   <string name="pref_all_apps_custom_label_color">사용자 지정 이름 색상 사용</string>
-  <string name="pref_all_apps_label_color_variation">앱 서랍 아이콘 이름 색상 값</string>
-  <string name="pref_all_apps_label_color">서랍 아이콘 이름 색상</string>
+    <string name="pref_all_apps_label_color">서랍 아이콘 이름 색상</string>
   <string name="pref_num_rows_drawer">앱 서랍 행 개수</string>
   <string name="center_wallpaper_pref_title">홈 화면이 하나일때 배경화면 가운데 표시</string>
   <string name="vertical_drawer_layout_pref_title">세로 목록으로 표시</string>
@@ -412,8 +402,7 @@
   <string name="lock_desktop">바탕화면 잠금</string>
   <string name="lawnfeed_not_found">Lawnfeed가 설치 되지 않았습니다.</string>
   <string name="google_app_not_found">Google 앱이 설치 되지 않았습니다.</string>
-  <string name="popup_card_theme_title">플랫 스타일 팝업</string>
-  <string name="set_default_launcher">기본 런처 설정</string>
+    <string name="set_default_launcher">기본 런처 설정</string>
   <string name="enable_spring_pref_title">스프링 효과 사용</string>
   <string name="unauthorized_device">이 기기에 불법 복제 도구가 설치되어 있습니다. 계속하려면 그것들을 제거해주세요.</string>
   <!-- Strings for Lawnfeed gesture popup -->

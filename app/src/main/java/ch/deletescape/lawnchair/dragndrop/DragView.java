@@ -401,7 +401,7 @@ public class DragView extends FrameLayout {
 
     public void remove() {
         if (getParent() != null) {
-            mDragLayer.removeView(DragView.this);
+            mDragLayer.removeView(this);
         }
     }
 

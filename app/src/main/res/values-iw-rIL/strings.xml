@@ -268,8 +268,7 @@
   <string name="hide_icon_labels_pref_title">הסתר כיתוב סמלים על מסך הבית</string>
   <string name="hide_all_apps_icon_labels_pref_title">הסתר כיתוב סמלים במגירת היישומים</string>
   <string name="workspace_label_color_hue_pref_title">צבע כיתוב סמלים על מסך הבית</string>
-  <string name="workspace_label_color_variation_pref_title">שינוי צבע כיתוב של סמלים על מסך הבית</string>
-  <string name="all_apps_opacity_pref_title">שקיפות מגירת היישומים</string>
+    <string name="all_apps_opacity_pref_title">שקיפות מגירת היישומים</string>
   <string name="num_cols_pref_title">מספר עמודות</string>
   <string name="num_rows_pref_title">מספר שורות</string>
   <string name="num_hotseat_icons_pref_title">מספר האייקונים בשורת העגינה</string>
@@ -287,8 +286,7 @@
   <string name="pixel_ui_pref_title">ממשק Pixel</string>
   <string name="behavior_pref_title">התנהגות</string>
   <string name="debug_pref_title">תיקון שגיאות</string>
-  <string name="import_export_pref_title">ייבוא/ייצוא</string>
-  <string name="general_pref_summary">מסך בית, Dock, ומגירת יישומים</string>
+    <string name="general_pref_summary">מסך בית, Dock, ומגירת יישומים</string>
   <string name="dock_pref_summary">התאם אישית את ה-Dock</string>
   <string name="app_drawer_pref_summary">התאמה אישית של מגירת היישומים</string>
   <string name="pixel_ui_pref_summary">אפשר תכונות ייחודיות של מפעיל Pixel</string>
@@ -331,10 +329,7 @@
   <string name="edit_icon_reset">איפוס</string>
   <string name="show_top_shadow_title">הצג צל עליון</string>
   <string name="pref_cat_homescreen">מסך בית</string>
-  <string name="pref_cat_miscellaneous">שונות</string>
-  <string name="pref_cat_hotseat">Dock</string>
-  <string name="pref_cat_theme">ערכת נושא</string>
-  <string name="theme_pref_title">ערכת נושא</string>
+    <string name="theme_pref_title">ערכת נושא</string>
   <string name="theme_light">בהיר</string>
   <string name="theme_dark">כהה</string>
   <string name="theme_black">שחור</string>
@@ -349,13 +344,11 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">ייבוא</string>
   <string name="backup_export_title">ייצוא</string>
-  <string name="imexport_success">הצלחה!</string>
-  <string name="settings_export_success">ההגדרות גובו בהצלחה</string>
+    <string name="settings_export_success">ההגדרות גובו בהצלחה</string>
   <string name="db_export_success">מסד הנתונים גובה בהצלחה</string>
   <string name="settings_import_success">ההגדרות שוחזרו בהצלחה</string>
   <string name="db_import_success">מסד הנתונים שוחזר בהצלחה</string>
-  <string name="imexport_error">שגיאה: לא ניתן להעתיק קובץ</string>
-  <string name="export_error">לא ניתן לגבות</string>
+    <string name="export_error">לא ניתן לגבות</string>
   <string name="import_error">לא ניתן לשחזר</string>
   <string name="imexport_no_backup_found">לא נמצא גיבוי</string>
   <string name="imexport_external_storage_unreadable">אחסון חיצוני אינו קריא (אנא הענק הרשאה בהגדרות)</string>
@@ -376,8 +369,7 @@
   <string name="dock_allapps"><![CDATA[Dock ומגירת אפליקציות]]></string>
   <string name="app_shortcuts">קיצורי דרך של אפליקציות</string>
   <string name="blur_effect">אפקט טשטוש</string>
-  <string name="enable_editing_pref_title">אפשר עריכת מסך בית</string>
-  <string name="pref_weather_provider">ספק מזג אוויר</string>
+    <string name="pref_weather_provider">ספק מזג אוויר</string>
   <string name="loading">טוען…</string>
   <string name="icon_shape_override_label">שנה צורת סמל</string>
   <string name="icon_shape_system_default">ללא שינוי</string>
@@ -396,15 +388,13 @@
   <string name="about_contributors_title">תורמים</string>
   <string name="location_permission_warn">הרשאת המיקום נדרשת על מנת להחליף מקור נתונים!</string>
   <string name="num_cols_drawer_pref_title">מספר העמודות במגירת היישומים</string>
-  <string name="pref_cat_drawer">מגירת היישומים</string>
-  <string name="shortcut_backport_warning">זו יכולה להיות פעולה איטית, השימוש על אחריותכם בלבד</string>
+    <string name="shortcut_backport_warning">זו יכולה להיות פעולה איטית, השימוש על אחריותכם בלבד</string>
   <string name="pref_backport_shortcuts">קיצורי דרך Backport</string>
   <string name="weather_api_key_not_set">מפתח API לא מוגדר</string>
   <string name="pref_weather_api_key_title">מפתח API</string>
   <string name="about_changelog">יומן שינויים</string>
   <string name="pref_all_apps_custom_label_color">השתמש בצבע כיתוב מותאם אישית</string>
-  <string name="pref_all_apps_label_color_variation">שינוי צבע כיתוב הסמלים במגירת היישומים</string>
-  <string name="pref_all_apps_label_color">צבע כיתוב הסמלים במגירת היישומים</string>
+    <string name="pref_all_apps_label_color">צבע כיתוב הסמלים במגירת היישומים</string>
   <string name="pref_num_rows_drawer">מספר השורות במגירת היישומים</string>
   <string name="center_wallpaper_pref_title">מרכז את הטפט כאשר ישנו רק מסך אחד</string>
   <string name="vertical_drawer_layout_pref_title">הצג כרשימה אנכית</string>
@@ -415,8 +405,7 @@
   <string name="lock_desktop">נעל את מסך הבית</string>
   <string name="lawnfeed_not_found">Lawnfeed אינו מותקן</string>
   <string name="google_app_not_found">היישום של Google אינו מותקן</string>
-  <string name="popup_card_theme_title">הודעה קופצת בסגנון שטוח</string>
-  <string name="set_default_launcher">הגדר כמפעיל אפליקציות ברירת מחדל</string>
+    <string name="set_default_launcher">הגדר כמפעיל אפליקציות ברירת מחדל</string>
   <string name="enable_spring_pref_title">אפשר אפקט קפיץ</string>
   <string name="unauthorized_device">במכשיר זה מותקנים כלים פיראטיים. אנא הסר אותם כדי להמשיך.</string>
   <!-- Strings for Lawnfeed gesture popup -->

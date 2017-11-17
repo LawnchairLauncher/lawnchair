@@ -21,6 +21,14 @@ import android.service.notification.StatusBarNotification;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.Utilities;
@@ -32,14 +40,6 @@ import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.util.ComponentKey;
 import ch.deletescape.lawnchair.util.MultiHashMap;
 import ch.deletescape.lawnchair.util.PackageUserKey;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Provides data for the popup menu that appears after long-clicking on apps.

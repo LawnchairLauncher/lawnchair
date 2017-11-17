@@ -40,7 +40,7 @@ abstract class SelectableAdapter<VH extends RecyclerView.ViewHolder> extends Rec
         }
         notifyItemChanged(position);
         if (!mSelections.isEmpty()) {
-            return String.valueOf(mSelections.size()) + mContext.getString(R.string.hide_app_selected);
+            return mSelections.size() + mContext.getString(R.string.hide_app_selected);
         } else {
             return mContext.getString(R.string.hidden_app);
         }

@@ -25,7 +25,6 @@ import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.CornerPathEffect;
 import android.graphics.Outline;
 import android.graphics.Paint;
@@ -83,7 +82,6 @@ import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutView;
 import ch.deletescape.lawnchair.shortcuts.ShortcutsItemView;
 import ch.deletescape.lawnchair.util.PackageUserKey;
-import ch.deletescape.lawnchair.util.Themes;
 
 /**
  * A container for shortcuts to deep links within apps.
