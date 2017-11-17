@@ -3,12 +3,12 @@ package ch.deletescape.lawnchair.weather
 import android.content.Context
 import ch.deletescape.lawnchair.Utilities
 import com.kwabenaberko.openweathermaplib.implementation.OpenWeatherMapHelper
-import com.kwabenaberko.openweathermaplib.models.CurrentWeather
+import com.kwabenaberko.openweathermaplib.models.currentweather.CurrentWeather
 
 class OWMWeatherAPI(context: Context) : WeatherAPI(), OpenWeatherMapHelper.CurrentWeatherCallback {
 
     private val apiKey = Utilities.getPrefs(context).weatherApiKey
-    private val helper = OpenWeatherMapHelper().apply { setAppId(apiKey) }
+    private val helper = OpenWeatherMapHelper().apply { setApiKey(apiKey) }
 
     override var city: String = ""
     override var units: Units = Units.METRIC

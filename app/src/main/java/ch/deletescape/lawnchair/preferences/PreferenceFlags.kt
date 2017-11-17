@@ -105,6 +105,7 @@ object PreferenceFlags {
     const val KEY_USER_CREATION_TIME_KEY_PREFIX = "user_creation_time_"
     const val KEY_HIDDEN_APPS_SET = "hidden-app-set"
     const val KEY_HIDDEN_APPS = "hidden-app"
+    const val KEY_TWO_ROW_DOCK = "pref_twoRowDock"
 
     const val EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED"
 

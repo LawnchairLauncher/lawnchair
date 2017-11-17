@@ -1154,6 +1154,7 @@ public final class Utilities {
         }
     }
 
+
     public static void restartLauncher(Context context) {
         PackageManager pm = context.getPackageManager();
         Intent startActivity = pm.getLaunchIntentForPackage(context.getPackageName());
@@ -1168,5 +1169,10 @@ public final class Utilities {
 
         // Kill the application
         System.exit(0);
+
+    public static int getNumberOfHotseatRows(Context context){
+        boolean twoLines = PreferenceProvider.INSTANCE.getPreferences(context).getTwoRowDock();
+        return twoLines ? 2 : 1;
+
     }
 }
