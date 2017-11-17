@@ -349,7 +349,13 @@
   <string name="backup_import_title">Importovat</string>
   <string name="backup_export_title">Exportovat</string>
   <string name="imexport_success">Hotovo!</string>
+  <string name="settings_export_success">Nastavení bylo úspěšně zálohováno</string>
+  <string name="db_export_success">Databáze byla úspěšně zálohována</string>
+  <string name="settings_import_success">Nastavení bylo úspěšně obnoveno</string>
+  <string name="db_import_success">Databáze byla úspěšně obnovena</string>
   <string name="imexport_error">Chyba: Nepodařilo se zkopírovat soubor</string>
+  <string name="export_error">Nelze zálohovat</string>
+  <string name="import_error">Nelze obnovit</string>
   <string name="imexport_no_backup_found">Nebyla nalezena žádná záloha</string>
   <string name="imexport_external_storage_unreadable">Externí úložiště není ke čtení (udělte oprávnění v nastavení)</string>
   <string name="imexport_external_storage_unwritable">Externí úložiště není zapisovatelné (udělte oprávnění v nastavení)</string>
@@ -411,4 +417,6 @@
   <string name="popup_card_theme_title">Plochý styl vyskakujících oken</string>
   <string name="set_default_launcher">Nastavit výchozí spouštěč</string>
   <string name="enable_spring_pref_title">Povolit efekt pružiny</string>
+  <string name="unauthorized_device">Toto zařízení má nainstalovány nástroje pro pirátství. Odinstalujte je a pokračujte.</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>
