@@ -348,7 +348,13 @@
   <string name="backup_import_title">Importer</string>
   <string name="backup_export_title">Exporter</string>
   <string name="imexport_success">Réussi !</string>
+  <string name="settings_export_success">Paramètres sauvegardés avec succès</string>
+  <string name="db_export_success">Base de données sauvegardée avec succès</string>
+  <string name="settings_import_success">Les paramètres ont été restaurés avec succès</string>
+  <string name="db_import_success">La base de données a été restaurée avec succès</string>
   <string name="imexport_error">Erreur : Impossible de copier le fichier</string>
+  <string name="export_error">Sauvegarde impossible</string>
+  <string name="import_error">Restauration impossible</string>
   <string name="imexport_no_backup_found">Aucune sauvegarde trouvée</string>
   <string name="imexport_external_storage_unreadable">Le stockage externe n\'est pas lisible (activer la permission dans les paramètres)</string>
   <string name="imexport_external_storage_unwritable">Le stockage externe n\'est pas modifiable (activer la permission dans les paramètres)</string>
@@ -410,4 +416,6 @@
   <string name="popup_card_theme_title">Pop-up en flat design </string>
   <string name="set_default_launcher">Définir le launcher par défaut</string>
   <string name="enable_spring_pref_title">Activer l\'effet ressort</string>
+  <string name="unauthorized_device">Cet appareil possède des outils de piratage installés. Veuillez les désinstaller pour continuer.</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>
