@@ -59,4 +59,6 @@ abstract class BaseFlags {
     // Features to control Launcher3Go behavior
     public static final boolean GO_DISABLE_WIDGETS = false;
 
+    // When enabled shows a work profile tab in all apps
+    public static final boolean ALL_APPS_TABS_ENABLED = false;
 }

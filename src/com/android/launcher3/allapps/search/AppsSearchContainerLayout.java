@@ -31,19 +31,19 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsGridAdapter;
-import com.android.launcher3.allapps.AllAppsRecyclerView;
+import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.SearchUiManager;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.discovery.AppDiscoveryItem;
 import com.android.launcher3.discovery.AppDiscoveryUpdateState;
 import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.util.ComponentKey;
+
 import java.util.ArrayList;
 
 /**
@@ -60,11 +60,9 @@ public class AppsSearchContainerLayout extends FrameLayout
 
     private ExtendedEditText mSearchInput;
     private AlphabeticalAppsList mApps;
-    private AllAppsRecyclerView mAppsRecyclerView;
-    private AllAppsGridAdapter mAdapter;
     private View mDivider;
     private HeaderElevationController mElevationController;
-
+    private AllAppsContainerView mAppsView;
     private SpringAnimation mSpring;
 
     public AppsSearchContainerLayout(Context context) {
@@ -124,14 +122,12 @@ public class AppsSearchContainerLayout extends FrameLayout
 
 
     @Override
-    public void initialize(
-            AlphabeticalAppsList appsList, AllAppsRecyclerView recyclerView) {
-        mApps = appsList;
-        mAppsRecyclerView = recyclerView;
-        mAppsRecyclerView.addOnScrollListener(mElevationController);
-        mAdapter = (AllAppsGridAdapter) mAppsRecyclerView.getAdapter();
+    public void initialize(AllAppsContainerView appsView) {
+        mApps = appsView.getApps();
+        mAppsView = appsView;
+        appsView.addElevationController(mElevationController);
         mSearchBarController.initialize(
-                new DefaultAppSearchAlgorithm(appsList.getApps()), mSearchInput, mLauncher, this);
+                new DefaultAppSearchAlgorithm(mApps.getApps()), mSearchInput, mLauncher, this);
     }
 
     @Override
@@ -174,7 +170,7 @@ public class AppsSearchContainerLayout extends FrameLayout
         if (apps != null) {
             mApps.setOrderedFilter(apps);
             notifyResultChanged();
-            mAdapter.setLastSearchQuery(query);
+            mAppsView.setLastSearchQuery(query);
         }
     }
 
@@ -201,7 +197,7 @@ public class AppsSearchContainerLayout extends FrameLayout
 
     private void notifyResultChanged() {
         mElevationController.reset();
-        mAppsRecyclerView.onSearchResultsChanged();
+        mAppsView.onSearchResultsChanged();
     }
 
     @Override

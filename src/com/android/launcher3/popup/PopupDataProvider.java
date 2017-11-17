@@ -148,9 +148,9 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     }
 
     private void trimNotifications(Map<PackageUserKey, BadgeInfo> updatedBadges) {
-        BaseActionPopup openContainer = BaseActionPopup.getOpen(mLauncher);
-        if (openContainer instanceof PopupContainerWithArrow) {
-            ((PopupContainerWithArrow) openContainer).trimNotifications(updatedBadges);
+        PopupContainerWithArrow openContainer = PopupContainerWithArrow.getOpen(mLauncher);
+        if (openContainer != null) {
+            openContainer.trimNotifications(updatedBadges);
         }
     }
 

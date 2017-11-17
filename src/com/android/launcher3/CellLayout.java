@@ -385,16 +385,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     @Override
     public void setPressedIcon(BubbleTextView icon, Bitmap background) {
-        if (icon == null || background == null) {
-            mTouchFeedbackView.setBitmap(null);
-            mTouchFeedbackView.animate().cancel();
-        } else {
-            if (mTouchFeedbackView.setBitmap(background)) {
-                mTouchFeedbackView.alignWithIconView(icon, mShortcutsAndWidgets,
-                        null /* clipAgainstView */);
-                mTouchFeedbackView.animateShadow();
-            }
-        }
+        mTouchFeedbackView.setPressedIcon(icon, background);
     }
 
     void setIsDragOverlapping(boolean isDragOverlapping) {

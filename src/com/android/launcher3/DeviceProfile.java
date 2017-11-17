@@ -27,11 +27,11 @@ import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.CellLayout.ContainerType;
+import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.badge.BadgeRenderer;
 
 import java.util.ArrayList;
@@ -669,10 +669,9 @@ public class DeviceProfile {
         }
 
         // Layout the AllAppsRecyclerView
-        View view = launcher.findViewById(R.id.apps_list_view);
+        AllAppsContainerView appsView = launcher.findViewById(R.id.apps_view);
         int paddingLeftRight = desiredWorkspaceLeftRightMarginPx + cellLayoutPaddingLeftRightPx;
-        view.setPadding(paddingLeftRight, view.getPaddingTop(), paddingLeftRight,
-                view.getPaddingBottom());
+        appsView.setRecyclerViewSidePadding(paddingLeftRight, paddingLeftRight);
 
         if (notifyListeners) {
             for (int i = mListeners.size() - 1; i >= 0; i--) {
@@ -681,13 +680,13 @@ public class DeviceProfile {
         }
     }
 
-    private int getCurrentWidth() {
+    public int getCurrentWidth() {
         return isLandscape
                 ? Math.max(widthPx, heightPx)
                 : Math.min(widthPx, heightPx);
     }
 
-    private int getCurrentHeight() {
+    public int getCurrentHeight() {
         return isLandscape
                 ? Math.min(widthPx, heightPx)
                 : Math.max(widthPx, heightPx);

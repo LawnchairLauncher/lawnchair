@@ -16,22 +16,25 @@
 
 package com.android.launcher3.dragndrop;
 
+import static com.android.launcher3.LauncherState.NORMAL;
+
 import android.content.ClipDescription;
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Parcel;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.widget.PendingItemDragHelper;
 
 import java.util.UUID;
@@ -39,7 +42,7 @@ import java.util.UUID;
 /**
  * {@link DragSource} for handling drop from a different window.
  */
-public abstract class BaseItemDragListener implements
+public abstract class BaseItemDragListener extends InternalStateHandler implements
         View.OnDragListener, DragSource, DragOptions.PreDragCondition {
 
     private static final String TAG = "BaseItemDragListener";
@@ -67,25 +70,16 @@ public abstract class BaseItemDragListener implements
         mId = UUID.randomUUID().toString();
     }
 
-    protected BaseItemDragListener(Parcel parcel) {
-        mPreviewRect = Rect.CREATOR.createFromParcel(parcel);
-        mPreviewBitmapWidth = parcel.readInt();
-        mPreviewViewWidth = parcel.readInt();
-        mId = parcel.readString();
-    }
-
-    protected void writeToParcel(Parcel parcel, int i) {
-        mPreviewRect.writeToParcel(parcel, i);
-        parcel.writeInt(mPreviewBitmapWidth);
-        parcel.writeInt(mPreviewViewWidth);
-        parcel.writeString(mId);
-    }
-
     public String getMimeType() {
         return MIME_TYPE_PREFIX + mId;
     }
 
-    public void setLauncher(Launcher launcher) {
+    @Override
+    public void init(Launcher launcher, boolean alreadyOnHome) {
+        AbstractFloatingView.closeAllOpenViews(launcher, alreadyOnHome);
+        launcher.getStateManager().goToState(NORMAL, alreadyOnHome /* animated */);
+        launcher.getDragLayer().setOnDragListener(this);
+
         mLauncher = launcher;
         mDragController = launcher.getDragController();
     }
@@ -182,4 +176,7 @@ public abstract class BaseItemDragListener implements
             mLauncher.getDragLayer().setOnDragListener(null);
         }
     }
+
+    @Override
+    public void onLauncherResume() { }
 }

@@ -61,9 +61,13 @@ public abstract class BaseRecyclerView extends RecyclerView
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        ViewGroup parent = (ViewGroup) getParent();
+        bindFastScrollbar();
+    }
+
+    public void bindFastScrollbar() {
+        ViewGroup parent = (ViewGroup) getParent().getParent();
         mScrollbar = parent.findViewById(R.id.fast_scroller);
-        mScrollbar.setRecyclerView(this, (TextView) parent.findViewById(R.id.fast_scroller_popup));
+        mScrollbar.setRecyclerView(this, parent.findViewById(R.id.fast_scroller_popup));
     }
 
     /**

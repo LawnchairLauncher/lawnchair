@@ -36,9 +36,8 @@ public class LauncherState {
 
     protected static final int FLAG_SHOW_SCRIM = 1 << 0;
     protected static final int FLAG_MULTI_PAGE = 1 << 1;
-    protected static final int FLAG_HIDE_HOTSEAT = 1 << 2;
-    protected static final int FLAG_DISABLE_ACCESSIBILITY = 1 << 3;
-    protected static final int FLAG_DO_NOT_RESTORE = 1 << 4;
+    protected static final int FLAG_DISABLE_ACCESSIBILITY = 1 << 2;
+    protected static final int FLAG_DO_NOT_RESTORE = 1 << 3;
 
     private static final LauncherState[] sAllStates = new LauncherState[4];
 
@@ -80,7 +79,6 @@ public class LauncherState {
      * @see WorkspaceStateTransitionAnimation
      */
     public final boolean hasScrim;
-    public final boolean hideHotseat;
     public final int transitionDuration;
 
     /**
@@ -97,7 +95,6 @@ public class LauncherState {
 
         this.hasScrim = (flags & FLAG_SHOW_SCRIM) != 0;
         this.hasMultipleVisiblePages = (flags & FLAG_MULTI_PAGE) != 0;
-        this.hideHotseat = (flags & FLAG_HIDE_HOTSEAT) != 0;
         this.workspaceAccessibilityFlag = (flags & FLAG_DISABLE_ACCESSIBILITY) != 0
                 ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                 : IMPORTANT_FOR_ACCESSIBILITY_AUTO;
