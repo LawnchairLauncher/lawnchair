@@ -462,7 +462,7 @@ public class Launcher extends Activity
         if (mPaused)
             kill = true;
         else
-            android.os.Process.killProcess(android.os.Process.myPid());
+            Utilities.restartLauncher(getApplicationContext());
     }
 
     public void scheduleRecreate() {
@@ -937,7 +937,7 @@ public class Launcher extends Activity
         if (kill) {
             kill = false;
             Log.v("Settings", "Die Motherf*cker!");
-            Process.killProcess(Process.myPid());
+            Utilities.restartLauncher(getApplicationContext());
         }
 
         if (recreate) {
@@ -956,7 +956,7 @@ public class Launcher extends Activity
     private void reloadIcons() {
         mIconCache.pip.updateIconPack();
         mIconCache.clear();
-        Process.killProcess(Process.myPid());
+        Utilities.restartLauncher(getApplicationContext());
     }
 
     @Override
