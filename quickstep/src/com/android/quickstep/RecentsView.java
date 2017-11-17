@@ -16,10 +16,12 @@
 
 package com.android.quickstep;
 
+import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -40,6 +42,12 @@ import java.util.ArrayList;
  * A list of recent tasks.
  */
 public class RecentsView extends PagedView {
+
+    /** Designates how "curvy" the carousel is from 0 to 1, where 0 is a straight line. */
+    private static final float CURVE_FACTOR = 0.25f;
+    /** A circular curve of x from 0 to 1, where 0 is the center of the screen and 1 is the edge. */
+    private static final TimeInterpolator CURVE_INTERPOLATOR
+        = x -> (float) (1 - Math.sqrt(1 - Math.pow(x, 2)));
 
     private boolean mOverviewStateEnabled;
     private boolean mTaskStackListenerRegistered;
@@ -69,6 +77,7 @@ public class RecentsView extends PagedView {
         super(context, attrs, defStyleAttr);
         setWillNotDraw(false);
         setPageSpacing((int) getResources().getDimension(R.dimen.recents_page_spacing));
+        enableFreeScroll(true);
     }
 
     @Override
@@ -169,5 +178,40 @@ public class RecentsView extends PagedView {
         float overviewWidth = taskWidth * overviewHeight / taskHeight;
         padding.left = padding.right = (int) ((profile.availableWidthPx - overviewWidth) / 2);
         return padding;
+    }
+
+    @Override
+    public void scrollTo(int x, int y) {
+        super.scrollTo(x, y);
+        updateCurveProperties();
+    }
+
+    /**
+     * Scales and adjusts translation of adjacent pages as if on a curved carousel.
+     */
+    private void updateCurveProperties() {
+        if (getPageCount() == 0 || getPageAt(0).getMeasuredWidth() == 0) {
+            return;
+        }
+        final int halfScreenWidth = getMeasuredWidth() / 2;
+        final int screenCenter = halfScreenWidth + getScrollX();
+        final int pageSpacing = getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
+        final int pageCount = getPageCount();
+        for (int i = 0; i < pageCount; i++) {
+            View page = getPageAt(i);
+            int pageWidth = page.getMeasuredWidth();
+            int halfPageWidth = pageWidth / 2;
+            int pageCenter = page.getLeft() + halfPageWidth;
+            float distanceFromScreenCenter = Math.abs(pageCenter - screenCenter);
+            float distanceToReachEdge = halfScreenWidth + halfPageWidth + pageSpacing;
+            float linearInterpolation = Math.min(1, distanceFromScreenCenter / distanceToReachEdge);
+            float curveInterpolation = CURVE_INTERPOLATOR.getInterpolation(linearInterpolation);
+            float scale = 1 - curveInterpolation * CURVE_FACTOR;
+            page.setScaleX(scale);
+            page.setScaleY(scale);
+            // Make sure the biggest card (i.e. the one in front) shows on top of the adjacent ones.
+            page.setTranslationZ(scale);
+            page.setTranslationX((screenCenter - pageCenter) * curveInterpolation * CURVE_FACTOR);
+        }
     }
 }
