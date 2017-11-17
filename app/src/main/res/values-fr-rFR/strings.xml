@@ -416,6 +416,18 @@
   <string name="popup_card_theme_title">Pop-up en flat design </string>
   <string name="set_default_launcher">Définir le launcher par défaut</string>
   <string name="enable_spring_pref_title">Activer l\'effet ressort</string>
+  <string name="hide_app">Masquer app</string>
+  <string name="hide_app_sum">Masquer l\'application de la liste des applications</string>
+  <string name="hide_app_selected">&#160;sélectionné(es)</string>
+  <string name="hidden_app">Application masquée</string>
+  <string name="hide_selected">Masquer l\'application sélectionnée</string>
+  <string name="hide_app_apply">Appliquer</string>
   <string name="unauthorized_device">Cet appareil possède des outils de piratage installés. Veuillez les désinstaller pour continuer.</string>
+  <string name="hide_app_reset">Réinitialiser</string>
   <!-- Strings for Lawnfeed gesture popup -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed non activé</string>
+  <string name="lawnfeed_not_enabled">On dirait que vous essayez d’ouvrir la page Google Now, mais vous n’avez pas activé l’option dans les paramètres.\n\nSouhaitez-vous l’activer maintenant ?</string>
+  <string name="lawnfeed_not_installed_title">Lawnfeed non installé</string>
+  <string name="lawnfeed_not_installed">On dirait que vous essayez d’ouvrir la page Google Now, mais vous n’avez pas installé l\'application Lawnfeed depuis notre website.\n\nVoulez-vous le télécharger maintenant ?</string>
+  <string name="disable_popup">Ne plus l\'afficher</string>
 </resources>
