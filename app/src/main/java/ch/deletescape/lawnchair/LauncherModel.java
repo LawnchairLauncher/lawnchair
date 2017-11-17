@@ -1665,27 +1665,27 @@ public class LauncherModel extends BroadcastReceiver
                 final GridOccupancy hotseatOccupancy =
                         occupied.get((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT);
 
-                if (item.screenId >= profile.numHotseatIcons) {
+                /*if (item.screenId >= profile.numHotseatIcons) {
                     Log.e(TAG, "Error loading shortcut " + item
                             + " into hotseat position " + item.screenId
                             + ", position out of bounds: (0 to " + (profile.numHotseatIcons - 1)
                             + ")");
                     return false;
-                }
+                }*/
 
                 if (hotseatOccupancy != null) {
-                    if (hotseatOccupancy.cells[(int) item.screenId][0]) {
+                    if (hotseatOccupancy.cells[(int) item.screenId][item.cellY]) {
                         Log.e(TAG, "Error loading shortcut into hotseat " + item
                                 + " into position (" + item.screenId + ":" + item.cellX + ","
                                 + item.cellY + ") already occupied");
                         return false;
                     } else {
-                        hotseatOccupancy.cells[(int) item.screenId][0] = true;
+                        hotseatOccupancy.cells[(int) item.screenId][item.cellY] = true;
                         return true;
                     }
                 } else {
-                    final GridOccupancy occupancy = new GridOccupancy(profile.numHotseatIcons, 1);
-                    occupancy.cells[(int) item.screenId][0] = true;
+                    final GridOccupancy occupancy = new GridOccupancy(profile.numHotseatIcons, Utilities.getNumberOfHotseatRows(mContext));
+                    occupancy.cells[(int) item.screenId][item.cellY] = true;
                     occupied.put((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT, occupancy);
                     return true;
                 }

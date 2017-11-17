@@ -590,7 +590,8 @@ public class GridSizeMigrationTask {
                         Favorites._ID,                  // 0
                         Favorites.ITEM_TYPE,            // 1
                         Favorites.INTENT,               // 2
-                        Favorites.SCREEN},              // 3
+                        Favorites.SCREEN,               // 3
+                        Favorites.CELLY},               // 4
                 Favorites.CONTAINER + " = " + Favorites.CONTAINER_HOTSEAT, null, null, null);
 
         final int indexId = c.getColumnIndexOrThrow(Favorites._ID);
@@ -598,12 +599,15 @@ public class GridSizeMigrationTask {
         final int indexIntent = c.getColumnIndexOrThrow(Favorites.INTENT);
         final int indexScreen = c.getColumnIndexOrThrow(Favorites.SCREEN);
 
+        final int indexCellY = c.getColumnIndexOrThrow(Favorites.CELLY);
+
         ArrayList<DbEntry> entries = new ArrayList<>();
         while (c.moveToNext()) {
             DbEntry entry = new DbEntry();
             entry.id = c.getLong(indexId);
             entry.itemType = c.getInt(indexItemType);
             entry.screenId = c.getLong(indexScreen);
+            entry.cellY = c.getInt(indexCellY);
 
             if (entry.screenId >= mSrcHotseatSize) {
                 mEntryToRemove.add(entry.id);
@@ -615,6 +619,7 @@ public class GridSizeMigrationTask {
                 switch (entry.itemType) {
                     case Favorites.ITEM_TYPE_SHORTCUT:
                     case Favorites.ITEM_TYPE_DEEP_SHORTCUT:
+                    case Favorites.ITEM_TYPE_APPWIDGET:
                     case Favorites.ITEM_TYPE_APPLICATION: {
                         verifyIntent(c.getString(indexIntent));
                         entry.weight = entry.itemType == Favorites.ITEM_TYPE_APPLICATION ?
