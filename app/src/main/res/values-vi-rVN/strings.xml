@@ -347,7 +347,13 @@
   <string name="backup_import_title">Nhập dữ liệu</string>
   <string name="backup_export_title">Xuất dữ liệu</string>
   <string name="imexport_success">Hoàn tất!</string>
+  <string name="settings_export_success">Hoàn tất thiết lập sao lưu</string>
+  <string name="db_export_success">Hoàn tất sao lưu dữ liệu</string>
+  <string name="settings_import_success">Khôi phục cài đặt hoàn tất</string>
+  <string name="db_import_success">Khôi phục dữ liệu hoàn tất</string>
   <string name="imexport_error">Lỗi: Không thể sao chép tệp</string>
+  <string name="export_error">Không thể sao lưu</string>
+  <string name="import_error">Không thể khôi phục</string>
   <string name="imexport_no_backup_found">Không tìm thấy bản sao lưu</string>
   <string name="imexport_external_storage_unreadable">Không thể đọc được bộ nhớ ngoài (cấp phép trong cài đặt)</string>
   <string name="imexport_external_storage_unwritable">Không thể ghi vào bộ nhớ ngoài (cấp phép trong cài đặt)</string>
@@ -409,4 +415,6 @@
   <string name="popup_card_theme_title">Popup phong cách phẳng</string>
   <string name="set_default_launcher">Đặt làm trình khởi chạy mặc định</string>
   <string name="enable_spring_pref_title">Bật hiệu ứng thạch</string>
+  <string name="unauthorized_device">Có một vài công cụ sao chép trái phép được cài đặt trên thiết bị này. Vui lòng gỡ cài đặt chúng để tiếp tục.</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>
