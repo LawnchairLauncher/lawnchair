@@ -406,4 +406,5 @@
   <string name="google_app_not_found">கூகுள் பயன்பாடு நிறுவப்படவில்லை</string>
   <string name="popup_card_theme_title">பிளாட் உடை விழிதிரை</string>
   <string name="set_default_launcher">முன்னிருந்த ஏவி</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>
