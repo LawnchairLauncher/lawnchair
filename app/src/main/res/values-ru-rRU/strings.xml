@@ -349,7 +349,13 @@
   <string name="backup_import_title">Импорт</string>
   <string name="backup_export_title">Экспорт</string>
   <string name="imexport_success">Готово!</string>
+  <string name="settings_export_success">Резервное копирование настроек выполнено успешно</string>
+  <string name="db_export_success">Резервное копирование базы данных выполнено успешно</string>
+  <string name="settings_import_success">Настройки успешно восстановлены</string>
+  <string name="db_import_success">База данных успешно восстановлена</string>
   <string name="imexport_error">Ошибка: Не удалось скопировать файл</string>
+  <string name="export_error">Не удалось создать резервную копию</string>
+  <string name="import_error">Не удалось восстановить резервную копию</string>
   <string name="imexport_no_backup_found">Файлы резервных копий не найдены</string>
   <string name="imexport_external_storage_unreadable">Внешнее хранилище недоступно для чтения (предоставить разрешения можно в настройках)</string>
   <string name="imexport_external_storage_unwritable">Внешнее хранилище недоступно для записи (предоставить разрешения можно в настройках)</string>
@@ -410,5 +416,7 @@
   <string name="google_app_not_found">Приложение Google не установлено</string>
   <string name="popup_card_theme_title">Плоский стиль всплывающих окон</string>
   <string name="set_default_launcher">Установить лаунчер по умолчанию</string>
-  <string name="enable_spring_pref_title">Включить эффект отскока</string>
+  <string name="enable_spring_pref_title">Включить эффект пружины</string>
+  <string name="unauthorized_device">На этом устройстве установлены пиратские утилиты. Пожалуйста, удалите их для продолжения.</string>
+  <!-- Strings for Lawnfeed gesture popup -->
 </resources>
