@@ -15,36 +15,52 @@
  */
 package com.android.launcher3.allapps;
 
+import android.animation.ValueAnimator;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.android.launcher3.R;
 
-public class FloatingHeaderHandler extends RecyclerView.OnScrollListener {
+public class FloatingHeaderHandler extends RecyclerView.OnScrollListener
+        implements ValueAnimator.AnimatorUpdateListener {
 
-    private final int mMaxTranslation;
     private final View mHeaderView;
-    private final PredictionRowView mContentView;
-    private final RecyclerView mMainRV;
-    private final RecyclerView mWorkRV;
+    private final PredictionRowView mPredictionRow;
+    private final ViewGroup mTabLayout;
+    private final View mDivider;
     private final Rect mClip = new Rect(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
+    private final ValueAnimator mAnimator = ValueAnimator.ofInt(0, 0);
 
+    private RecyclerView mMainRV;
+    private RecyclerView mWorkRV;
+    private boolean mTopOnlyMode;
     private boolean mHeaderHidden;
+    private int mMaxTranslation;
     private int mSnappedScrolledY;
     private int mTranslationY;
     private int mMainScrolledY;
     private int mWorkScrolledY;
     private boolean mMainRVActive;
 
-    public FloatingHeaderHandler(@NonNull View header, @NonNull RecyclerView personalRV,
-            @Nullable RecyclerView workRV, int contentHeight) {
+    public FloatingHeaderHandler(@NonNull ViewGroup header) {
         mHeaderView = header;
-        mContentView = mHeaderView.findViewById(R.id.header_content);
-        mContentView.getLayoutParams().height = contentHeight;
-        mMaxTranslation = contentHeight;
+        mTabLayout = header.findViewById(R.id.tabs);
+        mDivider = header.findViewById(R.id.divider);
+        mPredictionRow = header.findViewById(R.id.header_content);
+    }
+
+    public void setup(@NonNull RecyclerView personalRV, @Nullable RecyclerView workRV,
+        int predictionRowHeight) {
+        mTopOnlyMode = workRV == null;
+        mTabLayout.setVisibility(mTopOnlyMode ? View.GONE : View.VISIBLE);
+        mPredictionRow.getLayoutParams().height = predictionRowHeight;
+        mMaxTranslation = predictionRowHeight;
         mMainRV = personalRV;
         mMainRV.addOnScrollListener(this);
         mWorkRV = workRV;
@@ -52,6 +68,18 @@ public class FloatingHeaderHandler extends RecyclerView.OnScrollListener {
             workRV.addOnScrollListener(this);
         }
         setMainActive(true);
+        setupDivider();
+    }
+
+    private void setupDivider() {
+        Resources res = mHeaderView.getResources();
+        int verticalGap = res.getDimensionPixelSize(R.dimen.all_apps_divider_margin_vertical);
+        int sideGap = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
+        mDivider.setPadding(sideGap, verticalGap,sideGap, mTopOnlyMode ? verticalGap : 0);
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mDivider.getLayoutParams();
+        lp.removeRule(RelativeLayout.ALIGN_BOTTOM);
+        lp.addRule(RelativeLayout.ALIGN_BOTTOM, mTopOnlyMode ? R.id.header_content : R.id.tabs);
+        mDivider.setLayoutParams(lp);
     }
 
     public void setMainActive(boolean active) {
@@ -65,7 +93,15 @@ public class FloatingHeaderHandler extends RecyclerView.OnScrollListener {
     }
 
     public PredictionRowView getContentView() {
-        return mContentView;
+        return mPredictionRow;
+    }
+
+    public ViewGroup getTabLayout() {
+        return mTabLayout;
+    }
+
+    public View getDivider() {
+        return mDivider;
     }
 
     @Override
@@ -75,27 +111,39 @@ public class FloatingHeaderHandler extends RecyclerView.OnScrollListener {
             return;
         }
 
+        if (mAnimator.isStarted()) {
+            mAnimator.cancel();
+        }
+
         int current = isMainRV
                 ? (mMainScrolledY -= dy)
                 : (mWorkScrolledY -= dy);
 
-        if (dy == 0) {
-            setExpanded(true);
-        } else {
-            moved(current);
-            apply();
-        }
+        moved(current);
+        apply();
+    }
+
+    public void reset() {
+        mMainScrolledY = 0;
+        mWorkScrolledY = 0;
+        setExpanded(true);
+    }
+
+    private boolean canSnapAt(int currentScrollY) {
+        return !mTopOnlyMode || Math.abs(currentScrollY) <= mPredictionRow.getHeight();
     }
 
     private void moved(final int currentScrollY) {
         if (mHeaderHidden) {
             if (currentScrollY <= mSnappedScrolledY) {
-                mSnappedScrolledY = currentScrollY;
+                if (canSnapAt(currentScrollY)) {
+                    mSnappedScrolledY = currentScrollY;
+                }
             } else {
                 mHeaderHidden = false;
             }
             mTranslationY = currentScrollY;
-        } else {
+        } else if (!mHeaderHidden) {
             mTranslationY = currentScrollY - mSnappedScrolledY - mMaxTranslation;
 
             // update state vars
@@ -110,20 +158,36 @@ public class FloatingHeaderHandler extends RecyclerView.OnScrollListener {
     }
 
     private void apply() {
+        int uncappedTranslationY = mTranslationY;
         mTranslationY = Math.max(mTranslationY, -mMaxTranslation);
-        mHeaderView.setTranslationY(mTranslationY);
+        mPredictionRow.setTranslationY(uncappedTranslationY);
+        mTabLayout.setTranslationY(mTranslationY);
+        mDivider.setTranslationY(mTopOnlyMode ? uncappedTranslationY : mTranslationY);
         mClip.top = mMaxTranslation + mTranslationY;
+        // clipping on a draw might cause additional redraw
         mMainRV.setClipBounds(mClip);
         if (mWorkRV != null) {
             mWorkRV.setClipBounds(mClip);
         }
     }
 
+    @Override
+    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+        if (!mTopOnlyMode && newState == RecyclerView.SCROLL_STATE_IDLE
+                && mTranslationY != -mMaxTranslation && mTranslationY != 0) {
+            float scroll = Math.abs(getCurrentScroll());
+            boolean expand =  scroll > mMaxTranslation
+                    ? Math.abs(mTranslationY) < mMaxTranslation / 2 : true;
+            setExpanded(expand);
+        }
+    }
+
     private void setExpanded(boolean expand) {
         int translateTo = expand ? 0 : -mMaxTranslation;
-        mTranslationY = translateTo;
-        apply();
-
+        mAnimator.setIntValues(mTranslationY, translateTo);
+        mAnimator.addUpdateListener(this);
+        mAnimator.setDuration(150);
+        mAnimator.start();
         mHeaderHidden = !expand;
         mSnappedScrolledY = expand ? getCurrentScroll() - mMaxTranslation : getCurrentScroll();
     }
@@ -134,6 +198,12 @@ public class FloatingHeaderHandler extends RecyclerView.OnScrollListener {
 
     private int getCurrentScroll() {
         return mMainRVActive ? mMainScrolledY : mWorkScrolledY;
+    }
+
+    @Override
+    public void onAnimationUpdate(ValueAnimator animation) {
+        mTranslationY = (Integer) animation.getAnimatedValue();
+        apply();
     }
 
 }

@@ -25,7 +25,7 @@
     android:clipChildren="false"
     android:clipToPadding="false"
     android:descendantFocusability="afterDescendants"
-    android:paddingTop="30dp">
+    android:paddingTop="@dimen/all_apps_header_top_padding">
 
     <include layout="@layout/all_apps_rv_layout" />
 

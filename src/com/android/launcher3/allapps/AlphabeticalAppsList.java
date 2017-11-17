@@ -460,7 +460,7 @@ public class AlphabeticalAppsList {
         mFastScrollerSections.clear();
         mAdapterItems.clear();
 
-        if (!FeatureFlags.ALL_APPS_TABS_ENABLED) {
+        if (!FeatureFlags.ALL_APPS_PREDICTION_ROW_VIEW) {
             if (DEBUG_PREDICTIONS) {
                 if (mPredictedAppComponents.isEmpty() && !mApps.isEmpty()) {
                     mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
