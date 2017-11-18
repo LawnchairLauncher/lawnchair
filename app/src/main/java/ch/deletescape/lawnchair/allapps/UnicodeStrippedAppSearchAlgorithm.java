@@ -22,11 +22,6 @@ public class UnicodeStrippedAppSearchAlgorithm extends DefaultAppSearchAlgorithm
 
         String title = UnicodeFilter.filter(info.title.toString().toLowerCase());
         String strippedQuery = UnicodeFilter.filter(query.trim());
-        int queryLength = strippedQuery.length();
-
-        if (title.length() < queryLength || queryLength <= 0) {
-            return false;
-        }
 
         return super.matches(title, strippedQuery);
     }
