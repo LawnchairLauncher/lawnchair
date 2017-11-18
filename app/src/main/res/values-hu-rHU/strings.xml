@@ -266,8 +266,7 @@
   <string name="hide_icon_labels_pref_title">Ikonok címkéinek elrejtése</string>
   <string name="hide_all_apps_icon_labels_pref_title">Ikoncímkék elrejtése az alkalmazásfiókban</string>
   <string name="workspace_label_color_hue_pref_title">Ikoncímkék színe a kezdőképernyőn</string>
-  <string name="workspace_label_color_variation_pref_title">Ikoncímkék színvariációja a kezdőképernyőn</string>
-  <string name="all_apps_opacity_pref_title">Alkalmazásfiók áttetszősége</string>
+    <string name="all_apps_opacity_pref_title">Alkalmazásfiók áttetszősége</string>
   <string name="num_cols_pref_title">Oszlopok száma</string>
   <string name="num_rows_pref_title">Sorok száma</string>
   <string name="num_hotseat_icons_pref_title">Dokk ikonok száma</string>
@@ -285,8 +284,7 @@
   <string name="pixel_ui_pref_title">Téma</string>
   <string name="behavior_pref_title">Viselkedés</string>
   <string name="debug_pref_title">Hibakeresés</string>
-  <string name="import_export_pref_title">Mentés/visszaállítás</string>
-  <string name="general_pref_summary">Szabja testre az asztalt</string>
+    <string name="general_pref_summary">Szabja testre az asztalt</string>
   <string name="dock_pref_summary">Dokk testreszabása</string>
   <string name="app_drawer_pref_summary">Alkalmazásfiók testreszabása</string>
   <string name="pixel_ui_pref_summary">Témázza a különböző elemeket</string>
@@ -329,10 +327,7 @@
   <string name="edit_icon_reset">Alaphelyzetbe állítás</string>
   <string name="show_top_shadow_title">Felső árnyék megjelenítése</string>
   <string name="pref_cat_homescreen">Kezdőképernyő</string>
-  <string name="pref_cat_miscellaneous">Egyéb</string>
-  <string name="pref_cat_hotseat">Dokk</string>
-  <string name="pref_cat_theme">Téma</string>
-  <string name="theme_pref_title">Téma</string>
+    <string name="theme_pref_title">Téma</string>
   <string name="theme_light">Világos</string>
   <string name="theme_dark">Sötét</string>
   <string name="theme_black">Fekete</string>
@@ -347,13 +342,11 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Visszaállítás</string>
   <string name="backup_export_title">Biztonsági mentés</string>
-  <string name="imexport_success">Kész!</string>
-  <string name="settings_export_success">Beállítások biztonsági mentése sikeres</string>
+    <string name="settings_export_success">Beállítások biztonsági mentése sikeres</string>
   <string name="db_export_success">Adatbázis biztonsági mentése sikeres</string>
   <string name="settings_import_success">Beállítások sikeresen visszaállítva</string>
   <string name="db_import_success">Adatbázis sikeresen visszaállítva</string>
-  <string name="imexport_error">Hiba: Nem sikerült a fájl másolása</string>
-  <string name="export_error">Biztonsági mentés sikertelen</string>
+    <string name="export_error">Biztonsági mentés sikertelen</string>
   <string name="import_error">Visszaállítás sikertelen</string>
   <string name="imexport_no_backup_found">Nem található biztonsági mentés</string>
   <string name="imexport_external_storage_unreadable">A tárhely nem olvasható (engedélyezze a hozzáférést a beállításokban)</string>
@@ -374,8 +367,7 @@
   <string name="dock_allapps"><![CDATA[Dokk és alkalmazásfiók]]></string>
   <string name="app_shortcuts">Alkalmazás parancsikonok</string>
   <string name="blur_effect">Homályosítás effekt</string>
-  <string name="enable_editing_pref_title">Kezdőképernyő szerkesztése</string>
-  <string name="pref_weather_provider">Időjárás szolgáltató</string>
+    <string name="pref_weather_provider">Időjárás szolgáltató</string>
   <string name="loading">Betöltés…</string>
   <string name="icon_shape_override_label">Ikonok formájának módosítása</string>
   <string name="icon_shape_system_default">Alapértelmezett használata</string>
@@ -394,15 +386,13 @@
   <string name="about_contributors_title">Közreműködők</string>
   <string name="location_permission_warn">Tartózkodási hely hozzáférés szükséges másik kiszolgálóra váltáshoz!</string>
   <string name="num_cols_drawer_pref_title">Oszlopok száma az alkalmazásfiókban</string>
-  <string name="pref_cat_drawer">Alkalmazásfiók</string>
-  <string name="shortcut_backport_warning">Ez lassú lehet, csak saját felelősségére használja</string>
+    <string name="shortcut_backport_warning">Ez lassú lehet, csak saját felelősségére használja</string>
   <string name="pref_backport_shortcuts">Alkalmazás parancsikonok</string>
   <string name="weather_api_key_not_set">API kulcs nincs beállítva</string>
   <string name="pref_weather_api_key_title">API kulcs</string>
   <string name="about_changelog">Változások</string>
   <string name="pref_all_apps_custom_label_color">Egyéni címkeszín</string>
-  <string name="pref_all_apps_label_color_variation">Ikoncímkék színvariációja az alkalmazásfiókban</string>
-  <string name="pref_all_apps_label_color">Ikoncímkék színe az alkalmazásfiókban</string>
+    <string name="pref_all_apps_label_color">Ikoncímkék színe az alkalmazásfiókban</string>
   <string name="pref_num_rows_drawer">Sorok száma az alkalmazásfiókban</string>
   <string name="center_wallpaper_pref_title">Háttérkép középre igazítása, ha csak egy lap van</string>
   <string name="vertical_drawer_layout_pref_title">Megjelenítés függőleges listaként</string>
@@ -413,8 +403,7 @@
   <string name="lock_desktop">Asztal zárolása</string>
   <string name="lawnfeed_not_found">Lawnfeed nincs telepítve</string>
   <string name="google_app_not_found">Google alkalmazás nincs telepítve</string>
-  <string name="popup_card_theme_title">Flat stílusú felugró ablakok</string>
-  <string name="set_default_launcher">Alapértelmezett kezdőképernyő beállítása</string>
+    <string name="set_default_launcher">Alapértelmezett kezdőképernyő beállítása</string>
   <string name="enable_spring_pref_title">Rugózás engedélyezése</string>
   <string name="unauthorized_device">Ez a készülék rendelkezik néhány kalózkodásra alkalmas eszközzel. Távolítsa el őket a folytatáshoz.</string>
   <!-- Strings for Lawnfeed gesture popup -->

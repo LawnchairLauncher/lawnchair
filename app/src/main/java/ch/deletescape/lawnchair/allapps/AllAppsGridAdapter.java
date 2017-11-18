@@ -25,7 +25,6 @@ import android.support.animation.SpringAnimation;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -116,10 +115,10 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         }
 
         private int getAppPosition(int i, int i2, int i3) {
-            int i4 = 0;
             if (i < i2) {
                 return i;
             }
+            int i4 = 0;
             if (i2 != 0) {
                 i4 = 1;
             }

@@ -266,7 +266,6 @@
     <string name="white_google_icon_pref_title">Use white Google icon</string>
     <string name="hide_icon_labels_pref_title">Hide icon labels on homescreen</string>
     <string name="workspace_label_color_hue_pref_title">Color of icon labels on homescreen</string>
-    <string name="workspace_label_color_variation_pref_title">Color variation of icon labels on homescreen</string>
     <string name="all_apps_opacity_pref_title">Drawer opacity</string>
     <string name="num_cols_pref_title">Number of columns</string>
     <string name="num_rows_pref_title">Number of rows</string>
@@ -277,11 +276,8 @@
     <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
     <string name="notification_access_pref_title">Notification badges and preview</string>
     <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
-    <string name="ui_pref_title">UI</string>
-    <string name="pixel_style_pref_title">Pixel style</string>
     <string name="behavior_pref_title">Behavior</string>
     <string name="debug_pref_title">Debug</string>
-    <string name="import_export_pref_title">Import/Export</string>
     <string name="show_pixel_bar_pref_title">Show Pixel top bar</string>
     <string name="use_wide_searchbar_pref_title">Use wide searchbar</string>
     <string name="show_mic_pref_title">Show Google Assistant button</string>

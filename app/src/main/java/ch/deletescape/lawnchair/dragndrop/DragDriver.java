@@ -106,9 +106,9 @@ class SystemDragDriver extends DragDriver {
     private final DragObject mDragObject;
     private final Context mContext;
 
-    boolean mReceivedDropEvent = false;
-    float mLastX = 0;
-    float mLastY = 0;
+    boolean mReceivedDropEvent;
+    float mLastX;
+    float mLastY;
 
     public SystemDragDriver(DragController dragController, Context context, DragObject dragObject) {
         super(dragController);

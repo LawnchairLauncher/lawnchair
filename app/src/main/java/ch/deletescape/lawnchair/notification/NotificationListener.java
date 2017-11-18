@@ -28,10 +28,6 @@ import android.support.v4.util.Pair;
 import android.text.TextUtils;
 import android.util.Log;
 
-import ch.deletescape.lawnchair.LauncherModel;
-import ch.deletescape.lawnchair.config.FeatureFlags;
-import ch.deletescape.lawnchair.util.PackageUserKey;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,7 +35,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import ch.deletescape.lawnchair.LauncherModel;
 import ch.deletescape.lawnchair.Utilities;
+import ch.deletescape.lawnchair.util.PackageUserKey;
 
 /**
  * A {@link NotificationListenerService} that sends updates to its

@@ -157,7 +157,7 @@ public class IconPackProvider {
 
     public static class IconInfo {
 
-        public String drawable = null;
-        public String prefix = null;
+        public String drawable;
+        public String prefix;
     }
 }

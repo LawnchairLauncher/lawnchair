@@ -31,6 +31,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAnimUtils;
 import ch.deletescape.lawnchair.R;
@@ -38,10 +42,6 @@ import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.anim.PropertyListBuilder;
 import ch.deletescape.lawnchair.anim.PropertyResetListener;
 import ch.deletescape.lawnchair.popup.PopupContainerWithArrow;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * A {@link FrameLayout} that contains only icons of notifications.
@@ -98,7 +98,7 @@ public class NotificationFooterLayout extends FrameLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mOverflowEllipsis = findViewById(R.id.overflow);
-        mIconRow = (LinearLayout) findViewById(R.id.icon_row);
+        mIconRow = findViewById(R.id.icon_row);
         mBackgroundColor = ((ColorDrawable) getBackground()).getColor();
     }
 

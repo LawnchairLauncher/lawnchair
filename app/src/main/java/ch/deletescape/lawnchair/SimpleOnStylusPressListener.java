@@ -1,6 +1,7 @@
 package ch.deletescape.lawnchair;
 
 import android.view.View;
+
 import ch.deletescape.lawnchair.StylusEventHelper.StylusButtonListener;
 
 /**

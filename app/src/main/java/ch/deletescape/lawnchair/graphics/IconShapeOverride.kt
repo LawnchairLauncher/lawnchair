@@ -4,7 +4,6 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.Resources
 import android.os.Build
-import android.os.Process
 import android.support.v7.preference.ListPreference
 import android.support.v7.preference.Preference
 import android.text.TextUtils
@@ -25,7 +24,7 @@ class IconShapeOverride {
             if (getAppliedValue(context).savedPref != str) {
                 prefs(context).blockingEdit { overrideIconShape = str }
                 LauncherAppState.getInstance().iconCache.clear()
-                Process.killProcess(Process.myPid())
+                Utilities.restartLauncher(context)
             }
             return true
         }

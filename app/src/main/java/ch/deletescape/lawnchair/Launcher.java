@@ -53,7 +53,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Process;
 import android.os.StrictMode;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
@@ -285,7 +284,6 @@ public class Launcher extends Activity
     private boolean mAttached;
 
     private boolean kill;
-    private boolean recreate;
     private boolean reloadIcons;
     private boolean updateWallpaper = true;
 
@@ -462,11 +460,7 @@ public class Launcher extends Activity
         if (mPaused)
             kill = true;
         else
-            android.os.Process.killProcess(android.os.Process.myPid());
-    }
-
-    public void scheduleRecreate() {
-        recreate = true;
+            Utilities.restartLauncher(getApplicationContext());
     }
 
     public void scheduleUpdateWallpaper() {
@@ -936,13 +930,7 @@ public class Launcher extends Activity
 
         if (kill) {
             kill = false;
-            Log.v("Settings", "Die Motherf*cker!");
-            Process.killProcess(Process.myPid());
-        }
-
-        if (recreate) {
-            recreate = false;
-            recreate();
+            Utilities.restartLauncher(getApplicationContext());
         }
 
         if (updateWallpaper) {
@@ -956,7 +944,7 @@ public class Launcher extends Activity
     private void reloadIcons() {
         mIconCache.pip.updateIconPack();
         mIconCache.clear();
-        Process.killProcess(Process.myPid());
+        Utilities.restartLauncher(getApplicationContext());
     }
 
     @Override

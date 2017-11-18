@@ -54,10 +54,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import ch.deletescape.lawnchair.LauncherAppState;
-import ch.deletescape.lawnchair.R;
-import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.graphics.IconShapeOverride;
-import ch.deletescape.lawnchair.util.DrawableUtils;
 
 /**
  * <p>This class can also be created via XML inflation using <code>&lt;adaptive-icon></code> tag
@@ -513,12 +510,15 @@ public class AdaptiveIconDrawableCompat extends Drawable implements Drawable.Cal
                 continue;
             }
             String tagName = parser.getName();
-            if (tagName.equals("background")) {
-                childIndex = BACKGROUND_ID;
-            } else if (tagName.equals("foreground")) {
-                childIndex = FOREGROUND_ID;
-            } else {
-                continue;
+            switch (tagName) {
+                case "background":
+                    childIndex = BACKGROUND_ID;
+                    break;
+                case "foreground":
+                    childIndex = FOREGROUND_ID;
+                    break;
+                default:
+                    continue;
             }
 
             final ChildDrawable layer = new ChildDrawable(state.mDensity);

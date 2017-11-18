@@ -1,9 +1,7 @@
 package ch.deletescape.lawnchair.notification;
 
-import android.app.ActivityOptions;
 import android.app.Notification;
 import android.app.PendingIntent;
-import android.app.PendingIntent.CanceledException;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;

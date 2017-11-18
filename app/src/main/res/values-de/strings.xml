@@ -263,7 +263,6 @@
     <string name="white_google_icon_pref_title">Weiße Google Icons verwenden</string>
     <string name="hide_icon_labels_pref_title">Icon Beschriftungen auf dem Startbildschirm verstecken</string>
     <string name="workspace_label_color_hue_pref_title">Farbe der Icon Beschriftungen auf dem Startbildschirm</string>
-    <string name="workspace_label_color_variation_pref_title">Farbvariation der Icon Beschriftungen auf dem Startbildschirm</string>
     <string name="all_apps_opacity_pref_title">Transparenz der App-Liste</string>
     <string name="num_cols_pref_title">Anzahl der Spalten</string>
     <string name="num_rows_pref_title">Anzahl der Zeilen</string>
@@ -274,11 +273,8 @@
     <string name="full_width_widgets_pref_summary">Widgets erlauben auf die volle Breite vergrößert zu werden</string>
     <string name="notification_access_pref_title">Benachrichtigungsanzeige und -vorschau</string>
     <string name="notification_access_pref_summary">Für diese Funktion benötigt Lawnchair Zugriff auf Benachrichtigungen</string>
-    <string name="ui_pref_title">Benutzeroberfläche</string>
-    <string name="pixel_style_pref_title">Pixel Stil</string>
     <string name="behavior_pref_title">Verhalten</string>
     <string name="debug_pref_title">Entwickleroptionen</string>
-    <string name="import_export_pref_title">Import/Export</string>
     <string name="show_pixel_bar_pref_title">Pixel Top Bar anzeigen</string>
     <string name="use_wide_searchbar_pref_title">Breite Suchleiste verwenden</string>
     <string name="show_mic_pref_title">Google Assistant Button anzeigen</string>

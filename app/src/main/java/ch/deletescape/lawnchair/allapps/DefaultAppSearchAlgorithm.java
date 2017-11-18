@@ -71,7 +71,7 @@ public class DefaultAppSearchAlgorithm {
         return matches(info.title.toString().toLowerCase(), query);
     }
 
-    boolean matches(String haystack, String needle) {
+    protected boolean matches(String haystack, String needle) {
         // Assumes both haystack and needle are lowercase
         int queryLength = needle.length();
         int titleLength = haystack.length();
@@ -83,7 +83,8 @@ public class DefaultAppSearchAlgorithm {
         // This algorithms works by iterating over the "haystack" string,
         // and the "needle" query is searched character by character on it
         // without going back. For instance, "ffox" would match in "firefox".
-        int hi, ni = 0;
+        int hi;
+        int ni = 0;
         for (hi = 0; hi < titleLength; hi++) {
             if (haystack.charAt(hi) == needle.charAt(ni)) {
                 ni++;

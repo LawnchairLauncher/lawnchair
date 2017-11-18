@@ -267,8 +267,7 @@
   <string name="hide_icon_labels_pref_title">Сакриј називе икона на почетном екрану</string>
   <string name="hide_all_apps_icon_labels_pref_title">Сакриј етикете икона у drawer-у</string>
   <string name="workspace_label_color_hue_pref_title">Боја назива икона на почетном екрану</string>
-  <string name="workspace_label_color_variation_pref_title">Варијација боје назива икона на почетном екрану</string>
-  <string name="all_apps_opacity_pref_title">Провидност Drawerа</string>
+    <string name="all_apps_opacity_pref_title">Провидност Drawerа</string>
   <string name="num_cols_pref_title">Број колона</string>
   <string name="num_rows_pref_title">Број редова</string>
   <string name="num_hotseat_icons_pref_title">Број икона на Доку</string>
@@ -286,8 +285,7 @@
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Понашање</string>
   <string name="debug_pref_title">Отклањање грешака</string>
-  <string name="import_export_pref_title">Увоз / Извоз</string>
-  <string name="general_pref_summary">Почетни екран, док и фиока апликација</string>
+    <string name="general_pref_summary">Почетни екран, док и фиока апликација</string>
   <string name="dock_pref_summary">Прилагоди твој Док</string>
   <string name="app_drawer_pref_summary">Прилагоди твоје апликације drawer-а</string>
   <string name="pixel_ui_pref_summary">Омогућите ексклузивне функције Pixel Launcher-а</string>
@@ -330,10 +328,7 @@
   <string name="edit_icon_reset">Поништи</string>
   <string name="show_top_shadow_title">Прикажи сенку на врху</string>
   <string name="pref_cat_homescreen">Почетни екран</string>
-  <string name="pref_cat_miscellaneous">Разно</string>
-  <string name="pref_cat_hotseat">Док</string>
-  <string name="pref_cat_theme">Тема</string>
-  <string name="theme_pref_title">Тема</string>
+    <string name="theme_pref_title">Тема</string>
   <string name="theme_light">Светло</string>
   <string name="theme_dark">Тамно</string>
   <string name="theme_black">Црно</string>
@@ -348,13 +343,11 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Увези</string>
   <string name="backup_export_title">Извези</string>
-  <string name="imexport_success">Успешно!</string>
-  <string name="settings_export_success">Подешавања резервне копије је успешно</string>
+    <string name="settings_export_success">Подешавања резервне копије је успешно</string>
   <string name="db_export_success">Подешавања резервне копије је успешно</string>
   <string name="settings_import_success">Подешавања обновљена успешно</string>
   <string name="db_import_success">База података успешно обновљена</string>
-  <string name="imexport_error">Грешка: Неуспело копирање датотеке</string>
-  <string name="export_error">Није могућа резервна копија</string>
+    <string name="export_error">Није могућа резервна копија</string>
   <string name="import_error">Није могуће обнављање</string>
   <string name="imexport_no_backup_found">Нема резервне копије</string>
   <string name="imexport_external_storage_unreadable">Спољашње складиште се не може прочитати (омогући дозволе у поставкама)</string>
@@ -375,8 +368,7 @@
   <string name="dock_allapps"><![CDATA[Док и Drawer]]></string>
   <string name="app_shortcuts">Пречица апликације</string>
   <string name="blur_effect">Ефекат замућења</string>
-  <string name="enable_editing_pref_title">Омогући уређивање почетног екрана</string>
-  <string name="pref_weather_provider">Пружалац услуга временских прилика</string>
+    <string name="pref_weather_provider">Пружалац услуга временских прилика</string>
   <string name="loading">Учитавање…</string>
   <string name="icon_shape_override_label">Промени облик иконе</string>
   <string name="icon_shape_system_default">Не мењај</string>
@@ -395,15 +387,13 @@
   <string name="about_contributors_title">Сарадници</string>
   <string name="location_permission_warn">Дозвола за локацију је неопходна за пребацивање на другог провајдера!</string>
   <string name="num_cols_drawer_pref_title">Број колона у drawer-у</string>
-  <string name="pref_cat_drawer">Drawer - Фиока</string>
-  <string name="shortcut_backport_warning">Ово би могло бити споро, користити на сопствени ризик</string>
+    <string name="shortcut_backport_warning">Ово би могло бити споро, користити на сопствени ризик</string>
   <string name="pref_backport_shortcuts">Backport пречица</string>
   <string name="weather_api_key_not_set">API кључеви нису подешени</string>
   <string name="pref_weather_api_key_title">API кључ</string>
   <string name="about_changelog">Историја измена</string>
   <string name="pref_all_apps_custom_label_color">Боја по избору</string>
-  <string name="pref_all_apps_label_color_variation">Варијација боје назива икона на drawer-у</string>
-  <string name="pref_all_apps_label_color">Боја ознака икона</string>
+    <string name="pref_all_apps_label_color">Боја ознака икона</string>
   <string name="pref_num_rows_drawer">Број редова</string>
   <string name="center_wallpaper_pref_title">Центрирај позадину ако има само један екран</string>
   <string name="vertical_drawer_layout_pref_title">Вертикална листа</string>
@@ -414,8 +404,7 @@
   <string name="lock_desktop">Закључај радну површину</string>
   <string name="lawnfeed_not_found">Lawnfeed није инсталиран</string>
   <string name="google_app_not_found">Апликација Google није инсталирана</string>
-  <string name="popup_card_theme_title">Раван стил искачућег прозора</string>
-  <string name="set_default_launcher">Постави подразумевани покретач</string>
+    <string name="set_default_launcher">Постави подразумевани покретач</string>
   <string name="enable_spring_pref_title">Ефекат одскока</string>
   <string name="unauthorized_device">Овај уређај има инсталиран неколико пиратских алатки. Молим вас, деинсталирајте их да бисте наставили.</string>
   <!-- Strings for Lawnfeed gesture popup -->

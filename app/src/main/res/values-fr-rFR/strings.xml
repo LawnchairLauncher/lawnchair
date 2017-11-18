@@ -266,8 +266,7 @@
   <string name="hide_icon_labels_pref_title">Masquer le nom des icônes sur l\'écran d\'accueil</string>
   <string name="hide_all_apps_icon_labels_pref_title">Masquer le nom des icônes dans le tiroir des applications</string>
   <string name="workspace_label_color_hue_pref_title">Couleur des libellés des icônes sur l\'écran d\'accueil</string>
-  <string name="workspace_label_color_variation_pref_title">Variation de la couleur des libellés des icônes de l\'écran d\'accueil</string>
-  <string name="all_apps_opacity_pref_title">Opacité du tiroir des applications</string>
+    <string name="all_apps_opacity_pref_title">Opacité du tiroir des applications</string>
   <string name="num_cols_pref_title">Nombre de colonnes</string>
   <string name="num_rows_pref_title">Nombre de lignes</string>
   <string name="num_hotseat_icons_pref_title">Nombre d\'icônes dans le dock</string>
@@ -285,8 +284,7 @@
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Comportement</string>
   <string name="debug_pref_title">Debug</string>
-  <string name="import_export_pref_title">Importer/Exporter</string>
-  <string name="general_pref_summary">Écran d\'accueil, dock et tiroir d\'application</string>
+    <string name="general_pref_summary">Écran d\'accueil, dock et tiroir d\'application</string>
   <string name="dock_pref_summary">Personnalisez votre dock</string>
   <string name="app_drawer_pref_summary">Personnaliser votre tiroir d\'applications</string>
   <string name="pixel_ui_pref_summary">Activer les fonctionnalités du launcher Pixel</string>
@@ -329,10 +327,7 @@
   <string name="edit_icon_reset">Réinitialiser</string>
   <string name="show_top_shadow_title">Afficher l\'ombre du haut</string>
   <string name="pref_cat_homescreen">Écran d\'accueil</string>
-  <string name="pref_cat_miscellaneous">Divers</string>
-  <string name="pref_cat_hotseat">Dock</string>
-  <string name="pref_cat_theme">Thème</string>
-  <string name="theme_pref_title">Thème</string>
+    <string name="theme_pref_title">Thème</string>
   <string name="theme_light">Clair</string>
   <string name="theme_dark">Sombre</string>
   <string name="theme_black">Noir</string>
@@ -347,13 +342,11 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Importer</string>
   <string name="backup_export_title">Exporter</string>
-  <string name="imexport_success">Réussi !</string>
-  <string name="settings_export_success">Paramètres sauvegardés avec succès</string>
+    <string name="settings_export_success">Paramètres sauvegardés avec succès</string>
   <string name="db_export_success">Base de données sauvegardée avec succès</string>
   <string name="settings_import_success">Les paramètres ont été restaurés avec succès</string>
   <string name="db_import_success">La base de données a été restaurée avec succès</string>
-  <string name="imexport_error">Erreur : Impossible de copier le fichier</string>
-  <string name="export_error">Sauvegarde impossible</string>
+    <string name="export_error">Sauvegarde impossible</string>
   <string name="import_error">Restauration impossible</string>
   <string name="imexport_no_backup_found">Aucune sauvegarde trouvée</string>
   <string name="imexport_external_storage_unreadable">Le stockage externe n\'est pas lisible (activer la permission dans les paramètres)</string>
@@ -374,8 +367,7 @@
   <string name="dock_allapps"><![CDATA[Dock & tiroir d'applications]]></string>
   <string name="app_shortcuts">Raccourcis d\'application</string>
   <string name="blur_effect">Effet de flou</string>
-  <string name="enable_editing_pref_title">Activer l\'édition de l\'espace de travail</string>
-  <string name="pref_weather_provider">Fournisseur météo</string>
+    <string name="pref_weather_provider">Fournisseur météo</string>
   <string name="loading">Chargement…</string>
   <string name="icon_shape_override_label">Changer la forme des icônes</string>
   <string name="icon_shape_system_default">Ne pas changer</string>
@@ -394,15 +386,13 @@
   <string name="about_contributors_title">Donateurs</string>
   <string name="location_permission_warn">L\'autorisation d\'utiliser la localisation est requise pour passer à un autre fournisseur !</string>
   <string name="num_cols_drawer_pref_title">Nombre de colonnes dans le tiroir des applications</string>
-  <string name="pref_cat_drawer">Tiroir des applications</string>
-  <string name="shortcut_backport_warning">Cela pourrait être lent, utilisez à vos risques et périls</string>
+    <string name="shortcut_backport_warning">Cela pourrait être lent, utilisez à vos risques et périls</string>
   <string name="pref_backport_shortcuts">Rétro-porter les raccourcis</string>
   <string name="weather_api_key_not_set">Clé API non définie</string>
   <string name="pref_weather_api_key_title">Clé API</string>
   <string name="about_changelog">Journal des modifications</string>
   <string name="pref_all_apps_custom_label_color">Utiliser une couleur de libellé personnalisée</string>
-  <string name="pref_all_apps_label_color_variation">Variation de couleur des libellés des icônes dans le tiroir des applications</string>
-  <string name="pref_all_apps_label_color">Couleur des libellés des icônes dans le tiroir des applications</string>
+    <string name="pref_all_apps_label_color">Couleur des libellés des icônes dans le tiroir des applications</string>
   <string name="pref_num_rows_drawer">Nombre de lignes dans le tiroir des applications</string>
   <string name="center_wallpaper_pref_title">Centrer le fond d\'écran quand il n\'y a qu\'une page</string>
   <string name="vertical_drawer_layout_pref_title">Affichage en liste verticale</string>
@@ -413,15 +403,13 @@
   <string name="lock_desktop">Verrouiller l\'écran d\'accueil</string>
   <string name="lawnfeed_not_found">Lawnfeed non installé</string>
   <string name="google_app_not_found">Application Google non installée</string>
-  <string name="popup_card_theme_title">Pop-up en flat design </string>
-  <string name="set_default_launcher">Définir le launcher par défaut</string>
+    <string name="set_default_launcher">Définir le launcher par défaut</string>
   <string name="enable_spring_pref_title">Activer l\'effet ressort</string>
   <string name="hide_app">Masquer app</string>
   <string name="hide_app_sum">Masquer l\'application de la liste des applications</string>
   <string name="hide_app_selected">&#160;sélectionné(es)</string>
   <string name="hidden_app">Application masquée</string>
-  <string name="hide_selected">Masquer l\'application sélectionnée</string>
-  <string name="hide_app_apply">Appliquer</string>
+    <string name="hide_app_apply">Appliquer</string>
   <string name="unauthorized_device">Cet appareil possède des outils de piratage installés. Veuillez les désinstaller pour continuer.</string>
   <string name="hide_app_reset">Réinitialiser</string>
   <!-- Strings for Lawnfeed gesture popup -->

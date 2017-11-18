@@ -539,7 +539,6 @@ public class FolderPagedView extends PagedView {
      */
     public void realTimeReorder(int empty, int target) {
         completePendingPageChanges();
-        int delay = 0;
         float delayAmount = START_VIEW_REORDER_DELAY;
 
         // Animation only happens on the current page.
@@ -644,6 +643,8 @@ public class FolderPagedView extends PagedView {
             return;
         }
 
+
+        int delay = 0;
         CellLayout page = getPageAt(pageToAnimate);
         for (int i = startPos; i != endPos; i += direction) {
             int nextPos = i + direction;

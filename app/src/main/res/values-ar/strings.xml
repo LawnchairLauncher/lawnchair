@@ -267,7 +267,6 @@
     <string name="white_google_icon_pref_title">استخدم رمز جوجل باللون الأبيض</string>
     <string name="hide_icon_labels_pref_title">إخفاء تسميات الرموز في الشاشة الرئيسية</string>
     <string name="workspace_label_color_hue_pref_title">لون تسميات الرموز على الشاشة الرئيسية</string>
-    <string name="workspace_label_color_variation_pref_title">تباين الألوان لتسميات الرموز على الشاشة الرئيسية</string>
     <string name="all_apps_opacity_pref_title">درجة وضوح قائمة التطبيقات</string>
     <string name="num_cols_pref_title">عدد الأعمدة</string>
     <string name="num_rows_pref_title">عدد الصفوف</string>
@@ -278,11 +277,8 @@
     <string name="full_width_widgets_pref_summary">السماح للمربعات الجانبية بالتمدد على كامل عرض الشاشة من غير حشو</string>
     <string name="notification_access_pref_title">علامات الإشعارات و معاينتها</string>
     <string name="notification_access_pref_summary">السماح ل Lawnchair بالوصول إلى الإشعارات الخاصة بك لتفعيل هذه الميزات</string>
-    <string name="ui_pref_title">واجهة المستخدم</string>
-    <string name="pixel_style_pref_title">نمط بكسل</string>
     <string name="behavior_pref_title">الشكل العام</string>
     <string name="debug_pref_title">تنقيح</string>
-    <string name="import_export_pref_title">إستيراد/تصدير</string>
     <string name="show_pixel_bar_pref_title">اظهار الشريط العلوي لبكسل</string>
     <string name="use_wide_searchbar_pref_title">استخدام شريط بحث عريض</string>
     <string name="show_mic_pref_title">أظهار زر مساعد غوغل</string>
