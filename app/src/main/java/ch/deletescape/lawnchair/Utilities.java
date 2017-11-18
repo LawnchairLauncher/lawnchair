@@ -161,6 +161,7 @@ public final class Utilities {
     private static final String[] BLACKLISTED_APPLICATIONS = {"com.android.vending.billing.InAppBillingService.LOCK",
             "com.android.vending.billing.InAppBillingService.LACK",
             "cc.madkite.freedom",
+            "p.jasi2169.al3",                                                        
             "zone.jasi2169.uretpatcher",
             "uret.jasi2169.patcher",
             "com.dimonvideo.luckypatcher",
