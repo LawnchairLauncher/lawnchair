@@ -52,6 +52,7 @@ public abstract class SystemShortcut {
             return new OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    launcher.closeFolder();
                     AbstractFloatingView.closeAllOpenViews(launcher);
                     ((WidgetsBottomSheet) launcher.getLayoutInflater().inflate(R.layout.widgets_bottom_sheet, launcher.getDragLayer(), false)).populateAndShow(itemInfo);
                 }
