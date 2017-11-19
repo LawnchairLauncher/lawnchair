@@ -68,8 +68,14 @@ public class UpdateReceiver extends BroadcastReceiver {
 
                     File file = new File(outputDir, filename);
 
+                    // Call onDownloadDone if file already exists (not installed due to security settings, etc.)
+                    if (file.exists()) {
+                        receiver.onDownloadDone(Uri.parse(file.getAbsolutePath()));
+                        return;
+                    }
+
                     // Start downloading
-                    Toast.makeText(context, context.getString(R.string.downloading_toast, filename), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, R.string.downloading_toast, Toast.LENGTH_LONG).show();
                     DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
 
                     if (link != null) {
