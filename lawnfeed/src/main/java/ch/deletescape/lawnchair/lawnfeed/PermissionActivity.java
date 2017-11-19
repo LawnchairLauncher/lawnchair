@@ -85,7 +85,7 @@ public class PermissionActivity extends Activity {
         intent.putExtra("requestCode", requestCode);
         intent.putExtra("permissions", permissions);
         intent.putExtra("resultReceiver", receiver);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 
         // Start our activity and wait
         context.startActivity(intent);
