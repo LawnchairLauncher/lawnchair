@@ -34,9 +34,9 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 public class OverviewState extends LauncherState {
 
     // The percent to shrink the workspace during overview mode
-    public static final float SCALE_FACTOR = 0.7f;
+    private static final float SCALE_FACTOR = 0.7f;
 
-    private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE | FLAG_HIDE_HOTSEAT;
+    private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE;
 
     public OverviewState(int id) {
         super(id, ContainerType.WORKSPACE, OVERVIEW_TRANSITION_MS, 1f, STATE_FLAGS);

@@ -605,29 +605,32 @@ public class DragController implements DragDriver.EventListener, TouchController
     }
 
     private DropTarget findDropTarget(int x, int y, int[] dropCoordinates) {
-        final Rect r = mRectTemp;
+        mDragObject.x = x;
+        mDragObject.y = y;
 
+        final Rect r = mRectTemp;
         final ArrayList<DropTarget> dropTargets = mDropTargets;
         final int count = dropTargets.size();
-        for (int i=count-1; i>=0; i--) {
+        for (int i = count - 1; i >= 0; i--) {
             DropTarget target = dropTargets.get(i);
             if (!target.isDropEnabled())
                 continue;
 
             target.getHitRectRelativeToDragLayer(r);
-
-            mDragObject.x = x;
-            mDragObject.y = y;
             if (r.contains(x, y)) {
-
                 dropCoordinates[0] = x;
                 dropCoordinates[1] = y;
                 mLauncher.getDragLayer().mapCoordInSelfToDescendant((View) target, dropCoordinates);
-
                 return target;
             }
         }
-        return null;
+        // Pass all unhandled drag to workspace. Workspace finds the correct
+        // cell layout to drop to in the existing drag/drop logic.
+        dropCoordinates[0] = x;
+        dropCoordinates[1] = y;
+        mLauncher.getDragLayer().mapCoordInSelfToDescendant(mLauncher.getWorkspace(),
+                dropCoordinates);
+        return mLauncher.getWorkspace();
     }
 
     public void setWindowToken(IBinder token) {

@@ -16,16 +16,11 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
-import static com.android.launcher3.Utilities.isAccessibilityEnabled;
 
-import android.graphics.Rect;
 import android.view.View;
-import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.RecentsView;
 
@@ -34,10 +29,7 @@ import com.android.quickstep.RecentsView;
  */
 public class OverviewState extends LauncherState {
 
-    // The percent to shrink the workspace during overview mode
-    public static final float SCALE_FACTOR = 0.7f;
-
-    private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE | FLAG_HIDE_HOTSEAT;
+    private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE;
 
     public OverviewState(int id) {
         super(id, ContainerType.WORKSPACE, OVERVIEW_TRANSITION_MS, 1f, STATE_FLAGS);
@@ -46,17 +38,19 @@ public class OverviewState extends LauncherState {
     @Override
     public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
         // TODO: Find a better transition
-        return new float[] {SCALE_FACTOR, 0};
+        return new float[] {0f, 0};
     }
 
     @Override
     public void onStateEnabled(Launcher launcher) {
-        ((RecentsView) launcher.getOverviewPanel()).setViewVisible(true);
+        RecentsView rv = launcher.getOverviewPanel();
+        rv.setOverviewStateEnabled(true);
     }
 
     @Override
     public void onStateDisabled(Launcher launcher) {
-        ((RecentsView) launcher.getOverviewPanel()).setViewVisible(false);
+        RecentsView rv = launcher.getOverviewPanel();
+        rv.setOverviewStateEnabled(false);
     }
 
     @Override

@@ -45,7 +45,6 @@ public interface LauncherCallbacks {
     void onPause();
     void onDestroy();
     void onSaveInstanceState(Bundle outState);
-    void onNewIntent(Intent intent);
     void onActivityResult(int requestCode, int resultCode, Intent data);
     void onRequestPermissionsResult(int requestCode, String[] permissions,
             int[] grantResults);

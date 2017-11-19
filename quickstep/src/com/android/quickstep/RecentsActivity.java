@@ -22,6 +22,7 @@ import android.support.annotation.Nullable;
 import android.widget.ArrayAdapter;
 
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
+import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan.PreloadOptions;
 import com.android.systemui.shared.recents.model.RecentsTaskLoader;
 import com.android.systemui.shared.recents.model.Task;
 
@@ -37,10 +38,11 @@ public class RecentsActivity extends ListActivity {
         super.onCreate(savedInstanceState);
 
         RecentsTaskLoadPlan plan = new RecentsTaskLoadPlan(this);
-        plan.preloadPlan(new RecentsTaskLoader(this, 1, 1, 0), -1, UserHandle.myUserId());
+        plan.preloadPlan(new PreloadOptions(), new RecentsTaskLoader(this, 1, 1, 0), -1,
+                UserHandle.myUserId());
 
         mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-        mAdapter.addAll(plan.getTaskStack().getStackTasks());
+        mAdapter.addAll(plan.getTaskStack().getTasks());
         setListAdapter(mAdapter);
     }
 }

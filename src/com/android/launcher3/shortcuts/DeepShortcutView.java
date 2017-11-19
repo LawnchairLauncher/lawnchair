@@ -29,6 +29,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.popup.PopupContainerWithArrow;
 
 /**
  * A {@link android.widget.FrameLayout} that contains a {@link DeepShortcutView}.
@@ -42,6 +43,7 @@ public class DeepShortcutView extends FrameLayout {
 
     private BubbleTextView mBubbleText;
     private View mIconView;
+    private View mDivider;
 
     private ShortcutInfo mInfo;
     private ShortcutInfoCompat mDetail;
@@ -65,6 +67,11 @@ public class DeepShortcutView extends FrameLayout {
         super.onFinishInflate();
         mBubbleText = findViewById(R.id.bubble_text);
         mIconView = findViewById(R.id.icon);
+        mDivider = findViewById(R.id.divider);
+    }
+
+    public void setDividerVisibility(int visibility) {
+        mDivider.setVisibility(visibility);
     }
 
     public BubbleTextView getBubbleText() {
@@ -98,7 +105,7 @@ public class DeepShortcutView extends FrameLayout {
 
     /** package private **/
     public void applyShortcutInfo(ShortcutInfo info, ShortcutInfoCompat detail,
-            ShortcutsItemView container) {
+            PopupContainerWithArrow container) {
         mInfo = info;
         mDetail = detail;
         mBubbleText.applyFromShortcutInfo(info);

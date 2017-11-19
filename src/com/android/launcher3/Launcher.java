@@ -60,6 +60,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -107,7 +108,6 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
-import com.android.launcher3.dragndrop.PinItemDragListener;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
@@ -118,11 +118,12 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.pageindicators.PageIndicator;
-import com.android.launcher3.popup.BaseActionPopup;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.states.AllAppsState;
+import com.android.launcher3.states.InternalStateHandler;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -222,15 +223,12 @@ public class Launcher extends BaseActivity
     @Thunk DragLayer mDragLayer;
     private DragController mDragController;
 
-    public View mWeightWatcher;
-
     private AppWidgetManagerCompat mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
 
     private final int[] mTmpAddItemCellCoordinates = new int[2];
 
     @Thunk Hotseat mHotseat;
-    private ViewGroup mOverviewPanel;
 
     private View mAllAppsButton;
 
@@ -239,6 +237,9 @@ public class Launcher extends BaseActivity
     // Main container view for the all apps screen.
     @Thunk AllAppsContainerView mAppsView;
     AllAppsTransitionController mAllAppsController;
+
+    // UI and state for the overview panel
+    private ViewGroup mOverviewPanel;
 
     // We need to store the orientation Launcher was created with, due to a bug (b/64916689)
     // that results in widgets being inflated in the wrong orientation.
@@ -339,7 +340,7 @@ public class Launcher extends BaseActivity
 
         mDragController = new DragController(this);
         mAllAppsController = new AllAppsTransitionController(this);
-        mStateManager = new LauncherStateManager(this, mAllAppsController);
+        mStateManager = new LauncherStateManager(this);
 
         mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
 
@@ -358,6 +359,26 @@ public class Launcher extends BaseActivity
 
         mPopupDataProvider = new PopupDataProvider(this);
 
+        mRotationEnabled = getResources().getBoolean(R.bool.allow_rotation);
+        // In case we are on a device with locked rotation, we should look at preferences to check
+        // if the user has specifically allowed rotation.
+        if (!mRotationEnabled) {
+            mRotationEnabled = Utilities.isAllowRotationPrefEnabled(getApplicationContext());
+            mRotationPrefChangeHandler = new RotationPrefChangeHandler();
+            mSharedPrefs.registerOnSharedPreferenceChangeListener(mRotationPrefChangeHandler);
+        }
+
+        boolean internalStateHandled = InternalStateHandler.handleCreate(this, getIntent());
+        if (internalStateHandled) {
+            // Temporarily enable the rotation
+            mRotationEnabled = true;
+
+            if (savedInstanceState != null) {
+                // InternalStateHandler has already set the appropriate state.
+                // We dont need to do anything.
+                savedInstanceState.remove(RUNTIME_STATE);
+            }
+        }
         restoreState(savedInstanceState);
 
         // We only load the page synchronously if the user rotates (or triggers a
@@ -366,10 +387,13 @@ public class Launcher extends BaseActivity
         if (savedInstanceState != null) {
             currentScreen = savedInstanceState.getInt(RUNTIME_STATE_CURRENT_SCREEN, currentScreen);
         }
+
         if (!mModel.startLoader(currentScreen)) {
-            // If we are not binding synchronously, show a fade in animation when
-            // the first page bind completes.
-            mDragLayer.setAlpha(0);
+            if (!internalStateHandled) {
+                // If we are not binding synchronously, show a fade in animation when
+                // the first page bind completes.
+                mDragLayer.setAlpha(0);
+            }
         } else {
             // Pages bound synchronously.
             mWorkspace.setCurrentPage(currentScreen);
@@ -380,20 +404,6 @@ public class Launcher extends BaseActivity
         // For handling default keys
         mDefaultKeySsb = new SpannableStringBuilder();
         Selection.setSelection(mDefaultKeySsb, 0);
-
-        mRotationEnabled = getResources().getBoolean(R.bool.allow_rotation);
-        // In case we are on a device with locked rotation, we should look at preferences to check
-        // if the user has specifically allowed rotation.
-        if (!mRotationEnabled) {
-            mRotationEnabled = Utilities.isAllowRotationPrefEnabled(getApplicationContext());
-            mRotationPrefChangeHandler = new RotationPrefChangeHandler();
-            mSharedPrefs.registerOnSharedPreferenceChangeListener(mRotationPrefChangeHandler);
-        }
-
-        if (PinItemDragListener.handleDragRequest(this, getIntent())) {
-            // Temporarily enable the rotation
-            mRotationEnabled = true;
-        }
 
         // On large interfaces, or on devices that a user has specifically enabled screen rotation,
         // we want the screen to auto-rotate based on the current orientation
@@ -764,10 +774,7 @@ public class Launcher extends BaseActivity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onStop();
         }
-
-        if (Utilities.ATLEAST_NOUGAT_MR1) {
-            mAppWidgetHost.stopListening();
-        }
+        mAppWidgetHost.setListenIfResumed(false);
 
         if (!mAppLaunchSuccess) {
             getUserEventDispatcher().logActionCommand(Action.Command.STOP,
@@ -784,10 +791,7 @@ public class Launcher extends BaseActivity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onStart();
         }
-
-        if (Utilities.ATLEAST_NOUGAT_MR1) {
-            mAppWidgetHost.startListening();
-        }
+        mAppWidgetHost.setListenIfResumed(true);
 
         if (!isWorkspaceLoading()) {
             NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
@@ -1062,7 +1066,6 @@ public class Launcher extends BaseActivity
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         mDragController.setMoveTarget(mWorkspace);
-        mDragController.addDropTarget(mWorkspace);
         mDropTargetBar.setup(mDragController);
 
         mAllAppsController.setupViews(mAppsView, mHotseat, mWorkspace);
@@ -1257,9 +1260,9 @@ public class Launcher extends BaseActivity
                 mWorkspace.updateIconBadges(updatedBadges);
                 mAppsView.updateIconBadges(updatedBadges);
 
-                BaseActionPopup popup = BaseActionPopup.getOpen(Launcher.this);
-                if (popup instanceof PopupContainerWithArrow) {
-                    ((PopupContainerWithArrow) popup).updateNotificationHeader(updatedBadges);
+                PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(Launcher.this);
+                if (popup != null) {
+                    popup.updateNotificationHeader(updatedBadges);
                 }
             }
         };
@@ -1287,6 +1290,10 @@ public class Launcher extends BaseActivity
         }
     }
 
+    public AllAppsTransitionController getAllAppsController() {
+        return mAllAppsController;
+    }
+
     public DragLayer getDragLayer() {
         return mDragLayer;
     }
@@ -1303,8 +1310,8 @@ public class Launcher extends BaseActivity
         return mHotseat;
     }
 
-    public ViewGroup getOverviewPanel() {
-        return mOverviewPanel;
+    public <T extends ViewGroup> T getOverviewPanel() {
+        return (T) mOverviewPanel;
     }
 
     public DropTargetBar getDropTargetBar() {
@@ -1341,64 +1348,46 @@ public class Launcher extends BaseActivity
         // Check this condition before handling isActionMain, as this will get reset.
         boolean shouldMoveToDefaultScreen = alreadyOnHome && isInState(NORMAL)
                 && AbstractFloatingView.getTopOpenView(this) == null;
-
         boolean isActionMain = Intent.ACTION_MAIN.equals(intent.getAction());
+        boolean internalStateHandled = InternalStateHandler
+                .handleNewIntent(this, intent, alreadyOnHome);
+
         if (isActionMain) {
-            if (mWorkspace == null) {
-                // Can be cases where mWorkspace is null, this prevents a NPE
-                return;
-            }
+            if (!internalStateHandled) {
+                // Note: There should be at most one log per method call. This is enforced
+                // implicitly by using if-else statements.
+                UserEventDispatcher ued = getUserEventDispatcher();
+                AbstractFloatingView topOpenView = AbstractFloatingView.getTopOpenView(this);
+                if (topOpenView != null) {
+                    topOpenView.logActionCommand(Action.Command.HOME_INTENT);
+                } else if (alreadyOnHome) {
+                    Target target = newContainerTarget(mStateManager.getState().containerType);
+                    target.pageIndex = mWorkspace.getCurrentPage();
+                    ued.logActionCommand(Action.Command.HOME_INTENT, target);
+                }
 
-            // Note: There should be at most one log per method call. This is enforced implicitly
-            // by using if-else statements.
-            UserEventDispatcher ued = getUserEventDispatcher();
-            AbstractFloatingView topOpenView = AbstractFloatingView.getTopOpenView(this);
-            if (topOpenView != null) {
-                topOpenView.logActionCommand(Action.Command.HOME_INTENT);
-            } else if (alreadyOnHome) {
-                Target target = newContainerTarget(mStateManager.getState().containerType);
-                target.pageIndex = mWorkspace.getCurrentPage();
-                ued.logActionCommand(Action.Command.HOME_INTENT, target);
-            }
+                // In all these cases, only animate if we're already on home
+                AbstractFloatingView.closeAllOpenViews(this, alreadyOnHome);
 
-            // In all these cases, only animate if we're already on home
-            AbstractFloatingView.closeAllOpenViews(this, alreadyOnHome);
-            mStateManager.goToState(NORMAL, alreadyOnHome /* animated */);
+                mStateManager.goToState(NORMAL, alreadyOnHome /* animated */);
+
+                // Reset the apps view
+                if (!alreadyOnHome && mAppsView != null) {
+                    mAppsView.reset();
+                }
+
+                if (shouldMoveToDefaultScreen && !mWorkspace.isTouchActive()) {
+                    mWorkspace.post(mWorkspace::moveToDefaultScreen);
+                }
+            }
 
             final View v = getWindow().peekDecorView();
             if (v != null && v.getWindowToken() != null) {
                 UiThreadHelper.hideKeyboardAsync(this, v.getWindowToken());
             }
 
-            // Reset the apps view
-            if (!alreadyOnHome && mAppsView != null) {
-                mAppsView.reset();
-            }
-
             if (mLauncherCallbacks != null) {
                 mLauncherCallbacks.onHomeIntent();
-            }
-        }
-        PinItemDragListener.handleDragRequest(this, intent);
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onNewIntent(intent);
-        }
-
-        // Defer moving to the default screen until after we callback to the LauncherCallbacks
-        // as slow logic in the callbacks eat into the time the scroller expects for the snapToPage
-        // animation.
-        if (isActionMain) {
-            if (shouldMoveToDefaultScreen && !mWorkspace.isTouchActive()) {
-
-                mWorkspace.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mWorkspace != null) {
-                            mWorkspace.moveToDefaultScreen();
-                        }
-                    }
-                });
             }
         }
 
@@ -2074,11 +2063,16 @@ public class Launcher extends BaseActivity
             intent.setPackage(pickerPackage);
         }
 
-        intent.setSourceBounds(getViewBounds(v));
+        final Bundle launchOptions;
+        if (v != null) {
+            intent.setSourceBounds(getViewBounds(v));
+            // If there is no target package, use the default intent chooser animation
+            launchOptions = hasTargetPackage ? getActivityLaunchOptions(v) : null;
+        } else {
+            launchOptions = null;
+        }
         try {
-            startActivityForResult(intent, REQUEST_PICK_WALLPAPER,
-                    // If there is no target package, use the default intent chooser animation
-                    hasTargetPackage ? getActivityLaunchOptions(v) : null);
+            startActivityForResult(intent, REQUEST_PICK_WALLPAPER, launchOptions);
         } catch (ActivityNotFoundException e) {
             setWaitingForResult(null);
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
@@ -2234,7 +2228,7 @@ public class Launcher extends BaseActivity
                     getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
                             Action.Direction.NONE, ContainerType.WORKSPACE,
                             mWorkspace.getCurrentPage());
-                    getStateManager().goToState(OVERVIEW);
+                    UiFactory.onWorkspaceLongPress(this);
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                     return true;
@@ -2271,7 +2265,7 @@ public class Launcher extends BaseActivity
                     getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
                             Action.Direction.NONE, ContainerType.WORKSPACE,
                             mWorkspace.getCurrentPage());
-                    getStateManager().goToState(OVERVIEW);
+                    UiFactory.onWorkspaceLongPress(this);
                 }
                 mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
@@ -3174,7 +3168,7 @@ public class Launcher extends BaseActivity
                             && mAccessibilityDelegate.performAction(focusedView,
                                     (ItemInfo) focusedView.getTag(),
                                     LauncherAccessibilityDelegate.DEEP_SHORTCUTS)) {
-                        BaseActionPopup.getOpen(this).requestFocus();
+                        PopupContainerWithArrow.getOpen(this).requestFocus();
                         return true;
                     }
                     break;

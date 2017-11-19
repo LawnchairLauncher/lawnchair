@@ -19,30 +19,7 @@
     android:theme="@style/HomeScreenElementTheme"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center_horizontal|bottom"
-    android:gravity="top">
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <View
-            android:layout_width="300dp"
-            android:layout_height="match_parent"
-            android:background="#44FF0000"
-            android:layout_marginEnd="10dp"/>
-
-        <View
-            android:layout_width="300dp"
-            android:layout_height="match_parent"
-            android:background="#4400FF00"
-            android:layout_marginEnd="10dp"/>
-
-        <View
-            android:layout_width="300dp"
-            android:layout_height="match_parent"
-            android:background="#440000FF" />
-    </LinearLayout>
-
-</com.android.quickstep.RecentsView>
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:alpha="0.0"
+    android:visibility="invisible" />

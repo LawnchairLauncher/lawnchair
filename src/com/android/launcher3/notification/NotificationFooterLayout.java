@@ -23,22 +23,18 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.anim.PropertyResetListener;
-import com.android.launcher3.popup.BaseActionPopup;
-import com.android.launcher3.popup.PopupContainerWithArrow;
+import com.android.launcher3.util.Themes;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -61,11 +57,12 @@ public class NotificationFooterLayout extends FrameLayout {
     private final List<NotificationInfo> mNotifications = new ArrayList<>();
     private final List<NotificationInfo> mOverflowNotifications = new ArrayList<>();
     private final boolean mRtl;
+    private final int mBackgroundColor;
 
     FrameLayout.LayoutParams mIconLayoutParams;
     private View mOverflowEllipsis;
     private LinearLayout mIconRow;
-    private int mBackgroundColor;
+    private NotificationItemView mContainer;
 
     public NotificationFooterLayout(Context context) {
         this(context, null, 0);
@@ -93,14 +90,19 @@ public class NotificationFooterLayout extends FrameLayout {
         int availableIconRowSpace = footerWidth - paddingEnd - ellipsisSpace
                 - iconSize * MAX_FOOTER_NOTIFICATIONS;
         mIconLayoutParams.setMarginStart(availableIconRowSpace / MAX_FOOTER_NOTIFICATIONS);
+
+        mBackgroundColor = Themes.getAttrColor(context, R.attr.popupColorPrimary);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         mOverflowEllipsis = findViewById(R.id.overflow);
-        mIconRow = (LinearLayout) findViewById(R.id.icon_row);
-        mBackgroundColor = ((ColorDrawable) getBackground()).getColor();
+        mIconRow = findViewById(R.id.icon_row);
+    }
+
+    void setContainer(NotificationItemView container) {
+        mContainer = container;
     }
 
     /**
@@ -198,25 +200,8 @@ public class NotificationFooterLayout extends FrameLayout {
         updateOverflowEllipsisVisibility();
         if (mIconRow.getChildCount() == 0) {
             // There are no more icons in the footer, so hide it.
-            BaseActionPopup popup = BaseActionPopup.getOpen(
-                    Launcher.getLauncher(getContext()));
-            if (popup instanceof PopupContainerWithArrow) {
-                final int newHeight = getResources().getDimensionPixelSize(
-                        R.dimen.notification_empty_footer_height);
-                Animator collapseFooter = ((PopupContainerWithArrow) popup)
-                        .reduceNotificationViewHeight(getHeight() - newHeight,
-                        getResources().getInteger(R.integer.config_removeNotificationViewDuration));
-                collapseFooter.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        ((ViewGroup) getParent()).findViewById(R.id.divider).setVisibility(GONE);
-                        // Keep view around because gutter is aligned to it, but remove height to
-                        // both hide the view and keep calculations correct for last dismissal.
-                        getLayoutParams().height = newHeight;
-                        requestLayout();
-                    }
-                });
-                collapseFooter.start();
+            if (mContainer != null) {
+                mContainer.removeFooter();
             }
         }
     }

@@ -98,6 +98,7 @@ public class RecyclerViewFastScroller extends View {
     private String mPopupSectionName;
 
     protected BaseRecyclerView mRv;
+    private RecyclerView.OnScrollListener mOnScrollListener;
 
     private int mDownX;
     private int mDownY;
@@ -141,7 +142,10 @@ public class RecyclerViewFastScroller extends View {
 
     public void setRecyclerView(BaseRecyclerView rv, TextView popupView) {
         mRv = rv;
-        mRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        if (mOnScrollListener != null) {
+            mRv.removeOnScrollListener(mOnScrollListener);
+        }
+        mRv.addOnScrollListener(mOnScrollListener = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 mDy = dy;

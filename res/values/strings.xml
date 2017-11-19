@@ -318,4 +318,10 @@
     <!-- Accessibility confirmation for notification being dismissed. -->
     <string name="notification_dismissed">Notification dismissed</string>
 
+    <!-- Label of tab to indicate personal apps -->
+    <string name="all_apps_personal_tab">Personal</string>
+
+    <!-- Label of tab to indicate work apps -->
+    <string name="all_apps_work_tab">Work</string>
+
 </resources>

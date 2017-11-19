@@ -80,7 +80,6 @@ import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
-import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -105,7 +104,7 @@ import java.util.Set;
 public class Workspace extends PagedView
         implements DropTarget, DragSource, View.OnTouchListener,
         DragController.DragListener, ViewGroup.OnHierarchyChangeListener,
-        Insettable {
+        Insettable, LauncherStateManager.StateHandler {
     private static final String TAG = "Launcher.Workspace";
 
     /** The value that {@link #mTransitionProgress} must be greater than for
@@ -296,7 +295,6 @@ public class Workspace extends PagedView
 
         mLauncher = Launcher.getLauncher(context);
         mStateTransitionAnimation = new WorkspaceStateTransitionAnimation(mLauncher, this);
-        final Resources res = getResources();
         DeviceProfile grid = mLauncher.getDeviceProfile();
         mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
         mWallpaperManager = WallpaperManager.getInstance(context);
@@ -441,10 +439,7 @@ public class Workspace extends PagedView
         setClipChildren(false);
         setClipToPadding(false);
 
-        // TODO: Remove this
-        setMinScale(OverviewState.SCALE_FACTOR);
         setupLayoutTransition();
-
         mMaxDistanceForFolderCreation = (0.55f * grid.iconSizePx);
 
         // Set the wallpaper dimensions when Launcher starts up
@@ -1558,6 +1553,7 @@ public class Workspace extends PagedView
     /**
      * Sets the current workspace {@link LauncherState} and updates the UI without any animations
      */
+    @Override
     public void setState(LauncherState toState) {
         onStartStateTransition(toState);
         mStateTransitionAnimation.setState(toState);
@@ -1567,6 +1563,7 @@ public class Workspace extends PagedView
     /**
      * Sets the current workspace {@link LauncherState}, then animates the UI
      */
+    @Override
     public void setStateWithAnimation(LauncherState toState, AnimationLayerSet layerViews,
             AnimatorSet anim, AnimationConfig config) {
         StateTransitionListener listener = new StateTransitionListener(toState);

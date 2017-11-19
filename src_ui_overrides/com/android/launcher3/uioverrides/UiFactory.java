@@ -16,9 +16,12 @@
 
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.LauncherState.OVERVIEW;
+
 import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.VerticalSwipeController;
 import com.android.launcher3.util.TouchController;
 
@@ -31,5 +34,15 @@ public class UiFactory {
 
     public static AccessibilityDelegate newPageIndicatorAccessibilityDelegate() {
         return new OverviewAccessibilityDelegate();
+    }
+
+    public static StateHandler[] getStateHandler(Launcher launcher) {
+        return new StateHandler[] {
+                (OverviewPanel) launcher.getOverviewPanel(),
+                launcher.getAllAppsController(), launcher.getWorkspace() };
+    }
+
+    public static void onWorkspaceLongPress(Launcher launcher) {
+        launcher.getStateManager().goToState(OVERVIEW);
     }
 }

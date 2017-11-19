@@ -25,6 +25,7 @@ import android.content.IntentFilter;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInstaller;
 import android.graphics.Bitmap;
+import android.graphics.drawable.AdaptiveIconDrawable;
 import android.os.Handler;
 import android.os.Process;
 import android.os.UserHandle;
@@ -35,6 +36,7 @@ import android.util.MutableInt;
 
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.ClickShadowView;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.InstallShortcutReceiver;
@@ -52,6 +54,7 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIconPreviewVerifier;
+import com.android.launcher3.graphics.IconNormalizer;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.provider.ImportDataTask;
@@ -145,7 +148,9 @@ public class LoaderTask implements Runnable {
 
         TraceHelper.beginSection(TAG);
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
-            TraceHelper.partitionSection(TAG, "step 1.1: loading workspace");
+            TraceHelper.partitionSection(TAG, "step 1.1: loading UI resources");
+            loadUiResources();
+            TraceHelper.partitionSection(TAG, "step 1.2: loading workspace");
             loadWorkspace();
 
             verifyNotStopped();
@@ -206,6 +211,14 @@ public class LoaderTask implements Runnable {
     public synchronized void stopLocked() {
         mStopped = true;
         this.notify();
+    }
+
+    public void loadUiResources() {
+        if (Utilities.ATLEAST_OREO) {
+            ClickShadowView.setAdaptiveIconScaleFactor(
+                    IconNormalizer.getInstance(mApp.getContext()).getScale(
+                            new AdaptiveIconDrawable(null, null), null, null, null));
+        }
     }
 
     private void loadWorkspace() {
