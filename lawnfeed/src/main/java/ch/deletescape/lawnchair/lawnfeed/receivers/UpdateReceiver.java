@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
@@ -26,14 +27,23 @@ public class UpdateReceiver extends BroadcastReceiver {
         final DownloadReceiver receiver = new DownloadReceiver() {
             @Override
             public void onDownloadDone(Uri uri) {
-                // Open package installer and install downloaded apk file
-                Intent install = new Intent(Intent.ACTION_INSTALL_PACKAGE);
-                install.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                // Seems like Android has changed the way to open package manager on Nougat and higher
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    // Open package installer and install downloaded apk file
+                    Intent install = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+                    install.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                // Pass downloaded file uri to our install intent
-                Uri content = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", new File(uri.getPath()));
-                install.setData(content);
-                context.startActivity(install);
+                    // Pass downloaded file uri to our install intent
+                    Uri content = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", new File(uri.getPath()));
+                    install.setData(content);
+                    context.startActivity(install);
+                } else {
+                    // The old way before Nougat
+                    Intent install = new Intent(Intent.ACTION_VIEW);
+                    install.setDataAndType(uri, "application/vnd.android.package-archive");
+                    install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(install);
+                }
             }
         };
 
