@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ch.deletescape.lawnchair.lawnfeed">
 
+    <!-- Let's break some rules... -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -13,6 +19,8 @@
             android:name=".LauncherClientProxyService"
             android:enabled="true"
             android:exported="true" />
+        <receiver
+            android:name=".receivers.UpdateReceiver" />
     </application>
 
 </manifest>
