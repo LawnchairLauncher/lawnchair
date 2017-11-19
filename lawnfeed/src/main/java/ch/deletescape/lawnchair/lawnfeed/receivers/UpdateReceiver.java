@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -19,13 +20,20 @@ import ch.deletescape.lawnchair.lawnfeed.R;
 
 public class UpdateReceiver extends BroadcastReceiver {
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         // Get our download link and setup receiver to install apk after download
         String link = intent.getStringExtra("downloadLink");
         DownloadReceiver receiver = new DownloadReceiver() {
             @Override
             public void onDownloadDone(Uri uri) {
-                Log.e("UPDATER", "File DOWNLOADED");
+                // Open package installer and install downloaded apk file
+                Intent install = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+                install.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                // Pass downloaded file uri to our install intent
+                Uri content = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", new File(uri.getPath()));
+                install.setData(content);
+                context.startActivity(install);
             }
         };
 
