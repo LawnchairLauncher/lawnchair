@@ -97,6 +97,7 @@ import ch.deletescape.lawnchair.overlay.ILauncherClient;
 import ch.deletescape.lawnchair.pixelify.AdaptiveIconDrawableCompat;
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.preferences.PreferenceFlags;
+import ch.deletescape.lawnchair.preferences.PreferenceImpl;
 import ch.deletescape.lawnchair.preferences.PreferenceProvider;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
@@ -1175,6 +1176,45 @@ public final class Utilities {
     public static int getNumberOfHotseatRows(Context context){
         boolean twoLines = PreferenceProvider.INSTANCE.getPreferences(context).getTwoRowDock();
         return twoLines ? 2 : 1;
+    }
 
+    public static void showResetAlternativeIcons(final Context context, final List<String> appsList) {
+        if (appsList.size() <= 0) {
+            return;
+        }
+
+        new AlertDialog.Builder(context)
+            .setTitle(R.string.reset_alternative_icons_title)
+            .setMessage(String.format(context.getString(R.string.reset_alternative_icons), appsList.size()))
+            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    IPreferenceProvider prefs = Utilities.getPrefs(context);
+                    Launcher launcher = LauncherAppState.getInstanceNoCreate().getLauncher();
+
+                    for (String app : appsList) {
+                        prefs.removeAlternateIcon(app);
+                    }
+
+                    // Ensure those icons get updated
+                    launcher.scheduleReloadIcons();
+                }
+            })
+            .setNegativeButton(android.R.string.no, null)
+            .show();
+    }
+
+    public static List<String> getAlternativeIconList(Context context) {
+        List<String> apps = new ArrayList<>();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        for (String key : prefs.getAll().keySet()) {
+            if (key.startsWith(PreferenceFlags.KEY_ALTERNATE_ICON_PREFIX)) {
+                String regex = "^" + PreferenceFlags.KEY_ALTERNATE_ICON_PREFIX;
+                apps.add(key.replaceFirst(regex, ""));
+            }
+        }
+
+        return apps;
     }
 }

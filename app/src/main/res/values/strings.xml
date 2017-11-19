@@ -491,4 +491,6 @@
     <string name="disable_popup">Don\'t show again</string>
 
     <string name="two_row_dock">Two row dock</string>
+    <string name="reset_alternative_icons_title">Reset alternative app icons?</string>
+    <string name="reset_alternative_icons">You have %1$d apps with alternative icons, do you want to reset them?</string>
 </resources>
