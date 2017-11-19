@@ -26,8 +26,7 @@
         <activity android:name=".PermissionActivity"
             android:theme="@style/Theme.Transparent"
             android:launchMode="singleTask"
-            android:alwaysRetainTaskState="false"
-            android:noHistory="true">
+            android:alwaysRetainTaskState="false">
         </activity>
         <provider
             android:name="android.support.v4.content.FileProvider"

@@ -75,7 +75,6 @@ public class PermissionActivity extends Activity {
                 String[] permissions = resultData.getStringArray("permissions");
 
                 // Call the callback with the result
-                PermissionResponse response = new PermissionResponse(permissions, grantResult, resultCode);
                 callback.onComplete(new PermissionResponse(permissions, grantResult, resultCode));
             }
         };
@@ -104,11 +103,7 @@ public class PermissionActivity extends Activity {
         }
 
         public boolean isGranted() {
-            if (grantResult != null && grantResult.length > 0 && grantResult[0] == PackageManager.PERMISSION_GRANTED) {
-                return true;
-            }
-
-            return false;
+            return (grantResult != null && grantResult.length > 0 && grantResult[0] == PackageManager.PERMISSION_GRANTED);
         }
 
         public String[] getPermissions() {
