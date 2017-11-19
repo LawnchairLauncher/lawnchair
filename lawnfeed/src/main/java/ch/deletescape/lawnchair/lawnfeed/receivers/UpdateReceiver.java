@@ -6,23 +6,24 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
 
+import ch.deletescape.lawnchair.lawnfeed.PermissionActivity;
+import ch.deletescape.lawnchair.lawnfeed.PermissionActivity.*;
 import ch.deletescape.lawnchair.lawnfeed.R;
 
 public class UpdateReceiver extends BroadcastReceiver {
     @Override
-    public void onReceive(final Context context, Intent intent) {
+    public void onReceive(final Context context, final Intent intent) {
         // Get our download link and setup receiver to install apk after download
-        String link = intent.getStringExtra("downloadLink");
-        DownloadReceiver receiver = new DownloadReceiver() {
+        final String link = intent.getStringExtra("downloadLink");
+        final DownloadReceiver receiver = new DownloadReceiver() {
             @Override
             public void onDownloadDone(Uri uri) {
                 // Open package installer and install downloaded apk file
@@ -36,34 +37,42 @@ public class UpdateReceiver extends BroadcastReceiver {
             }
         };
 
-        // Before doing anything, we need to check if we have write permissions!
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Find a way...
-            return;
-        }
+        // Request permissions and run asynchronously
+        PermissionActivity.callAsync(context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PermissionActivity.REQUEST_CODE,
+            new PermissionResultCallback() {
+                @Override
+                public void onComplete(PermissionResponse response) {
+                    // Don't continue if permissing aren't granted
+                    if (!response.isGranted()) {
+                        Log.e("Updater", "No permissions granted!");
+                        return;
+                    }
 
-        String filename = intent.getStringExtra("filename");
+                    String filename = intent.getStringExtra("filename");
 
-        // Check if our dir exists (theoretically it should, but you never know)
-        File outputDir = new File(Environment.getExternalStorageDirectory(), "Download");
-        if (!outputDir.exists()) {
-            outputDir.mkdir();
-        }
+                    // Check if our dir exists (theoretically it should, but you never know)
+                    File outputDir = new File(Environment.getExternalStorageDirectory(), "Download");
+                    if (!outputDir.exists()) {
+                        outputDir.mkdir();
+                    }
 
-        File file = new File(outputDir, filename);
+                    File file = new File(outputDir, filename);
 
-        // Start downloading
-        Toast.makeText(context, context.getString(R.string.downloading_toast, filename), Toast.LENGTH_LONG).show();
-        DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+                    // Start downloading
+                    Toast.makeText(context, context.getString(R.string.downloading_toast, filename), Toast.LENGTH_LONG).show();
+                    DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
 
-        if (link != null) {
-            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(link));
-            request.setDestinationUri(Uri.fromFile(file));
-            receiver.setDownloadId(downloadManager.enqueue(request));
-        }
+                    if (link != null) {
+                        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(link));
+                        request.setDestinationUri(Uri.fromFile(file));
+                        receiver.setDownloadId(downloadManager.enqueue(request));
+                    }
 
-        // Register our download receiver
-        receiver.setFilename(filename);
-        context.getApplicationContext().registerReceiver(receiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+                    // Register our download receiver
+                    receiver.setFilename(filename);
+                    context.getApplicationContext().registerReceiver(receiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+                }
+            }
+        );
     }
 }
