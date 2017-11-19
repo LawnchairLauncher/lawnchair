@@ -6,7 +6,7 @@ def getChangelog = { ->
     if (commitRange) {
         if (System.getenv("TRAVIS_TAG")) {
             def tag = System.getenv("TRAVIS_TAG")
-            commitRange = ('git describe --abbrev=0 --tags ' +  tag + '^').execute().text.trim() + '...' + tag
+            commitRange = ('git describe --abbrev=0 --tags ' +  tag + '^').execute().text.trim() + '..' + tag
         }
 
         def stdout = new ByteArrayOutputStream()
