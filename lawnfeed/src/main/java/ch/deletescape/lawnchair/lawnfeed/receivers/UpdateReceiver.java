@@ -1,7 +1,6 @@
 package ch.deletescape.lawnchair.lawnfeed.receivers;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -33,6 +32,7 @@ public class UpdateReceiver extends BroadcastReceiver {
         // Before doing anything, we need to check if we have write permissions!
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Find a way...
+            return;
         }
 
         String filename = intent.getStringExtra("filename");

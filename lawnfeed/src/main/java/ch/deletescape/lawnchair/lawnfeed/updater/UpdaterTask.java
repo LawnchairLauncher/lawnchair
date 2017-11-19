@@ -2,7 +2,6 @@ package ch.deletescape.lawnchair.lawnfeed.updater;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

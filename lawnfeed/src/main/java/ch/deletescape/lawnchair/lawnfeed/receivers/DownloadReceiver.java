@@ -12,7 +12,7 @@ import ch.deletescape.lawnchair.lawnfeed.R;
 
 public abstract class DownloadReceiver extends BroadcastReceiver {
     public String mFilename;
-    long downloadId;
+    private long downloadId;
 
     @Override
     public void onReceive(Context context, Intent intent) {
