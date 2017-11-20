@@ -268,7 +268,7 @@
   <string name="hide_icon_labels_pref_title">முகப்பு திரையில் சின்னங்களின் பெயர்களை மறை</string>
   <string name="hide_all_apps_icon_labels_pref_title">தட்டு படவுருவை சிட்டைகளை மறை</string>
   <string name="workspace_label_color_hue_pref_title">Color of icon labels on homescreen</string>
-    <string name="all_apps_opacity_pref_title">அலமாரியில் ஒளிபுகா நிலை</string>
+  <string name="all_apps_opacity_pref_title">அலமாரியில் ஒளிபுகா நிலை</string>
   <string name="num_cols_pref_title">பத்திகள் எண்ணிக்கை</string>
   <string name="num_rows_pref_title">வரிசைகளின் எண்ணிக்கை</string>
   <string name="num_hotseat_icons_pref_title">அடிப்பாகத்தில் உள்ள சின்னங்களின் எண்ணிக்கை</string>
@@ -284,7 +284,7 @@
   <string name="pixel_ui_pref_title">பிக்சல் UI</string>
   <string name="behavior_pref_title">நடத்தை</string>
   <string name="debug_pref_title">பிழைநீக்கு</string>
-    <string name="pixel_ui_pref_summary">பிக்சல் ஏவி பிரத்யேக அம்சங்களை செயல்படுத்து</string>
+  <string name="pixel_ui_pref_summary">பிக்சல் ஏவி பிரத்யேக அம்சங்களை செயல்படுத்து</string>
   <string name="backup_pref_title">பத்திரப்படுத்து</string>
   <string name="behavior_pref_summary">Lawnchair நடத்தை மாற்ற</string>
   <string name="backup_pref_summary">டேட்டாபேஸ் மற்றும் அமைப்புகளை மறுபிரதி</string>
@@ -324,7 +324,7 @@
   <string name="edit_icon_reset">மீட்டமை</string>
   <string name="show_top_shadow_title">மேல் நிழலை</string>
   <string name="pref_cat_homescreen">முகப்புத்திரை</string>
-    <string name="theme_pref_title">தீம்</string>
+  <string name="theme_pref_title">தீம்</string>
   <string name="theme_light">ஒளி</string>
   <string name="theme_dark">இருண்ட</string>
   <string name="theme_black">கறுப்பு</string>
@@ -339,7 +339,7 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">இறக்குமதி</string>
   <string name="backup_export_title">ஏற்றுமதி</string>
-    <string name="imexport_no_backup_found">மறுபிரதி காணவில்லை</string>
+  <string name="imexport_no_backup_found">மறுபிரதி காணவில்லை</string>
   <string name="imexport_external_storage_unreadable">வெளிப்புற சேமிப்பகம் படிக்க அல்ல (அமைப்புகள் அனுமதி அளித்தல்)</string>
   <string name="imexport_external_storage_unwritable">வெளிப்புற சேமிப்பகம் எழுதக்கூடிய அல்ல (அமைப்புகள் அனுமதி அளித்தல்)</string>
   <string name="units_metric">மெட்ரிக்</string>
@@ -358,7 +358,7 @@
   <string name="dock_allapps"><![CDATA[டாக் & தட்டு]]></string>
   <string name="app_shortcuts">பயன்பாட்டு குறுக்குவழிகள்</string>
   <string name="blur_effect">மங்கும் விளைவு</string>
-    <string name="pref_weather_provider">வானிலை வழங்குநர்</string>
+  <string name="pref_weather_provider">வானிலை வழங்குநர்</string>
   <string name="loading">ஏற்றுகிறது...</string>
   <string name="icon_shape_override_label">சின்னத்தின் வடிவத்தை மாற்று</string>
   <string name="icon_shape_system_default">மாற்ற வேண்டாம்</string>
@@ -377,13 +377,13 @@
   <string name="about_contributors_title">பங்களிப்பாளர்கள்</string>
   <string name="location_permission_warn">மற்றொரு வழங்குநருக்கு மாற இடம் அனுமதி தேவை!</string>
   <string name="num_cols_drawer_pref_title">அலமாரியில் பத்திகள் எண்ணிக்கை</string>
-    <string name="shortcut_backport_warning">இது மெதுவாக இருக்கும், உங்கள் சொந்த பொறுப்பில் பயன்படுத்த முடியும்</string>
+  <string name="shortcut_backport_warning">இது மெதுவாக இருக்கும், உங்கள் சொந்த பொறுப்பில் பயன்படுத்த முடியும்</string>
   <string name="pref_backport_shortcuts">Backport குறுக்குவழிகள்</string>
   <string name="weather_api_key_not_set">API திறவுச்சொல் அமை</string>
   <string name="pref_weather_api_key_title">API திறவுச்சொல்</string>
   <string name="about_changelog">மாற்றங்கள்</string>
   <string name="pref_all_apps_custom_label_color">தனிப்பயன் லேபல் வண்ணத்தை உபயோகி</string>
-    <string name="pref_all_apps_label_color">தட்டு படவுருவை சிட்டையின் வண்ணம்</string>
+  <string name="pref_all_apps_label_color">தட்டு படவுருவை சிட்டையின் வண்ணம்</string>
   <string name="pref_num_rows_drawer">அலமாரியில் வரிசைகளின் எண்ணிக்கை</string>
   <string name="center_wallpaper_pref_title">ஒரே ஒரு பக்கம் இருக்கும்போது மையம் வால்பேப்பர்</string>
   <string name="vertical_drawer_layout_pref_title">செங்குத்து பட்டியலைக் காட்டவும்.</string>
@@ -394,6 +394,6 @@
   <string name="lock_desktop">பூட்டு டெஸ்க்டாப்</string>
   <string name="lawnfeed_not_found">Lawnfeed நிறுவப்படவில்லை</string>
   <string name="google_app_not_found">கூகுள் பயன்பாடு நிறுவப்படவில்லை</string>
-    <string name="set_default_launcher">முன்னிருந்த ஏவி</string>
+  <string name="set_default_launcher">முன்னிருந்த ஏவி</string>
   <!-- Strings for Lawnfeed gesture popup -->
 </resources>
