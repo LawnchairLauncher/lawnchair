@@ -267,7 +267,7 @@
   <string name="hide_icon_labels_pref_title">Скрыть подписи значков на главном экране</string>
   <string name="hide_all_apps_icon_labels_pref_title">Скрыть подписи значков в меню приложений</string>
   <string name="workspace_label_color_hue_pref_title">Цвет подписи значков</string>
-    <string name="all_apps_opacity_pref_title">Прозрачность меню приложений</string>
+  <string name="all_apps_opacity_pref_title">Прозрачность меню приложений</string>
   <string name="num_cols_pref_title">Количество столбцов</string>
   <string name="num_rows_pref_title">Количество строк</string>
   <string name="num_hotseat_icons_pref_title">Количество значков в док-баре</string>
@@ -285,7 +285,7 @@
   <string name="pixel_ui_pref_title">Интерфейс Pixel</string>
   <string name="behavior_pref_title">Поведение</string>
   <string name="debug_pref_title">Отладка</string>
-    <string name="general_pref_summary">Главный экран, док-бар и меню приложений</string>
+  <string name="general_pref_summary">Главный экран, док-бар и меню приложений</string>
   <string name="dock_pref_summary">Настройте Ваш док-бар</string>
   <string name="app_drawer_pref_summary">Настройте Ваше меню приложений</string>
   <string name="pixel_ui_pref_summary">Включить функции, эксклюзивные для Pixel Launcher</string>
@@ -328,7 +328,7 @@
   <string name="edit_icon_reset">Сбросить</string>
   <string name="show_top_shadow_title">Показать тень сверху</string>
   <string name="pref_cat_homescreen">Главный экран</string>
-    <string name="theme_pref_title">Тема</string>
+  <string name="theme_pref_title">Тема</string>
   <string name="theme_light">Светлая</string>
   <string name="theme_dark">Тёмная</string>
   <string name="theme_black">Чёрная</string>
@@ -343,11 +343,11 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Импорт</string>
   <string name="backup_export_title">Экспорт</string>
-    <string name="settings_export_success">Резервное копирование настроек выполнено успешно</string>
+  <string name="settings_export_success">Резервное копирование настроек выполнено успешно</string>
   <string name="db_export_success">Резервное копирование базы данных выполнено успешно</string>
   <string name="settings_import_success">Настройки успешно восстановлены</string>
   <string name="db_import_success">База данных успешно восстановлена</string>
-    <string name="export_error">Не удалось создать резервную копию</string>
+  <string name="export_error">Не удалось создать резервную копию</string>
   <string name="import_error">Не удалось восстановить резервную копию</string>
   <string name="imexport_no_backup_found">Файлы резервных копий не найдены</string>
   <string name="imexport_external_storage_unreadable">Внешнее хранилище недоступно для чтения (предоставить разрешения можно в настройках)</string>
@@ -368,7 +368,7 @@
   <string name="dock_allapps"><![CDATA[Док-бар и меню приложений]]></string>
   <string name="app_shortcuts">Ярлыки приложений</string>
   <string name="blur_effect">Эффект размытия</string>
-    <string name="pref_weather_provider">Поставщик погоды</string>
+  <string name="pref_weather_provider">Поставщик погоды</string>
   <string name="loading">Загрузка…</string>
   <string name="icon_shape_override_label">Изменить форму значка</string>
   <string name="icon_shape_system_default">Не изменять</string>
@@ -387,32 +387,35 @@
   <string name="about_contributors_title">Участники</string>
   <string name="location_permission_warn">Предоставьте доступ к местоположению, чтобы переключиться на другого поставщика!</string>
   <string name="num_cols_drawer_pref_title">Количество столбцов в меню приложений</string>
-    <string name="shortcut_backport_warning">Это может привести к медленной работе приложения, используйте на свой страх и риск</string>
+  <string name="shortcut_backport_warning">Это может привести к медленной работе приложения, используйте на свой страх и риск</string>
   <string name="pref_backport_shortcuts">Адаптировать ярлыки</string>
   <string name="weather_api_key_not_set">API ключ не установлен</string>
   <string name="pref_weather_api_key_title">API ключ</string>
   <string name="about_changelog">Список изменений</string>
   <string name="pref_all_apps_custom_label_color">Использовать свой цвет подписи</string>
-    <string name="pref_all_apps_label_color">Цвет подписи значков в меню приложений</string>
+  <string name="pref_all_apps_label_color">Цвет подписи значков в меню приложений</string>
   <string name="pref_num_rows_drawer">Количество строк в меню приложений</string>
   <string name="center_wallpaper_pref_title">Центрировать обои, если имеется только один экран</string>
   <string name="vertical_drawer_layout_pref_title">Отображать в виде вертикального списка</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
-  <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
+  <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
   <string name="about_translators">Переводчики</string>
   <string name="lock_desktop">Заблокировать рабочий стол</string>
   <string name="lawnfeed_not_found">Lawnfeed не установлен</string>
   <string name="google_app_not_found">Приложение Google не установлено</string>
-    <string name="set_default_launcher">Установить лаунчер по умолчанию</string>
+  <string name="set_default_launcher">Установить лаунчер по умолчанию</string>
   <string name="enable_spring_pref_title">Включить эффект пружины</string>
   <string name="hide_app">Скрыть приложение</string>
   <string name="hide_app_sum">Скрыть приложение из меню</string>
+  <string name="hide_app_selected">&#160;выбрано</string>
   <string name="hidden_app">Скрытое приложение</string>
-    <string name="hide_app_apply">Применить</string>
+  <string name="hide_app_apply">Применить</string>
   <string name="unauthorized_device">На этом устройстве установлены пиратские утилиты. Пожалуйста, удалите их для продолжения.</string>
   <string name="hide_app_reset">Сброс</string>
   <!-- Strings for Lawnfeed gesture popup -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed не включен</string>
+  <string name="lawnfeed_not_enabled">Похоже, вы пытаетесь открыть страницу Google Now, но не включили её в настройках.\n\nХотите включить её прямо сейчас?</string>
   <string name="lawnfeed_not_installed_title">Lawnfeed не установлен</string>
   <string name="lawnfeed_not_installed">Похоже, вы пытаетесь открыть страницу Google Now, но вы еще не установили приложение Lawnfeed с нашего вебсайта.\n\nВы хотите скачать его сейчас?</string>
   <string name="disable_popup">Не показывать больше</string>
