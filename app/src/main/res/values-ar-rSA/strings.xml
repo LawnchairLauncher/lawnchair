@@ -270,7 +270,7 @@
   <string name="hide_icon_labels_pref_title">إخفاء تسميات الأيقونات في الشاشة الرئيسية</string>
   <string name="hide_all_apps_icon_labels_pref_title">إخفاء تسميات الأيقونات في قائمة التطبيقات</string>
   <string name="workspace_label_color_hue_pref_title">لون تسميات الايقونات على الشاشة الرئيسية</string>
-    <string name="all_apps_opacity_pref_title">شفافية قائمة التطبيقات</string>
+  <string name="all_apps_opacity_pref_title">شفافية قائمة التطبيقات</string>
   <string name="num_cols_pref_title">عدد الأعمدة</string>
   <string name="num_rows_pref_title">عدد الصفوف</string>
   <string name="num_hotseat_icons_pref_title">عدد الايقونات في منصة التطبيقات</string>
@@ -286,7 +286,7 @@
   <string name="pixel_ui_pref_title">واجهة مستخدم بكسل</string>
   <string name="behavior_pref_title">الشكل العام</string>
   <string name="debug_pref_title">التصحيح</string>
-    <string name="general_pref_summary">الشاشة الرئيسية، الشاشة السفلية، ودرج التطبيقات</string>
+  <string name="general_pref_summary">الشاشة الرئيسية، الشاشة السفلية، ودرج التطبيقات</string>
   <string name="pixel_ui_pref_summary">تفعيل ميزات واجهة بكسل الخاصة</string>
   <string name="backup_pref_title">نسخ احتياطي</string>
   <string name="behavior_pref_summary">تغيير سلوك Lawnchair</string>
@@ -327,7 +327,7 @@
   <string name="edit_icon_reset">إعادة ضبط</string>
   <string name="show_top_shadow_title">إظهار الظل العلوي</string>
   <string name="pref_cat_homescreen">الشاشة الرئيسية</string>
-    <string name="theme_pref_title">السمة</string>
+  <string name="theme_pref_title">السمة</string>
   <string name="theme_light">فاتح</string>
   <string name="theme_dark">داكن</string>
   <string name="theme_black">أسود</string>
@@ -342,7 +342,7 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">استيراد</string>
   <string name="backup_export_title">استخراج</string>
-    <string name="imexport_no_backup_found">لم يتم العثور على نسخة احتياطية</string>
+  <string name="imexport_no_backup_found">لم يتم العثور على نسخة احتياطية</string>
   <string name="imexport_external_storage_unreadable">التخزين الخارجي غير قابل للقراءة (امنح الإذن في الإعدادات)</string>
   <string name="imexport_external_storage_unwritable">التخزين الخارجي غير قابل للكتابة (امنح الإذن في الإعدادات)</string>
   <string name="units_metric">متري</string>
@@ -361,7 +361,7 @@
   <string name="dock_allapps"><![CDATA[منصة وقائمة التطبيقات]]></string>
   <string name="app_shortcuts">اختصارات التطبيق</string>
   <string name="blur_effect">التمويه</string>
-    <string name="pref_weather_provider">مزود الطقس</string>
+  <string name="pref_weather_provider">مزود الطقس</string>
   <string name="loading">تحميل…</string>
   <string name="icon_shape_override_label">تغيير شكل الأيقونة</string>
   <string name="icon_shape_system_default">لا تقم بالتغيير</string>
@@ -380,13 +380,13 @@
   <string name="about_contributors_title">المساهمون</string>
   <string name="location_permission_warn">إذن الموقع مطلوب للتبديل إلى مزود آخر!</string>
   <string name="num_cols_drawer_pref_title">عدد أعمدة قائمة التطبيقات</string>
-    <string name="shortcut_backport_warning">يمكن أن تكون العملية بطيئة. استخدمها على مسؤوليتك الخاصة</string>
+  <string name="shortcut_backport_warning">يمكن أن تكون العملية بطيئة. استخدمها على مسؤوليتك الخاصة</string>
   <string name="pref_backport_shortcuts">اختصارات المنقولات العكسية</string>
   <string name="weather_api_key_not_set">لم يتم تعيين مفتاح API</string>
   <string name="pref_weather_api_key_title">مفتاح API</string>
   <string name="about_changelog">سِجل التغييرات</string>
   <string name="pref_all_apps_custom_label_color">استخدام لون مخصص للتسمية</string>
-    <string name="pref_all_apps_label_color">لون التسميات في قائمة التطبيقات</string>
+  <string name="pref_all_apps_label_color">لون التسميات في قائمة التطبيقات</string>
   <string name="pref_num_rows_drawer">عدد صفوف قائمة التطبيقات</string>
   <string name="center_wallpaper_pref_title">محاذاة الخلفيات في المركز عندما تكون هناك صفحة واحدة فقط</string>
   <string name="vertical_drawer_layout_pref_title">عرض كقائمة عمودية</string>
@@ -397,6 +397,6 @@
   <string name="lock_desktop">قفل سطح المكتب</string>
   <string name="lawnfeed_not_found">لاونفيد غير مثبت</string>
   <string name="google_app_not_found">تطبيق غوغل غير مثبت</string>
-    <string name="set_default_launcher">تعيين كمتصفح البرامج الإفتراضي</string>
+  <string name="set_default_launcher">تعيين كمتصفح البرامج الإفتراضي</string>
   <!-- Strings for Lawnfeed gesture popup -->
 </resources>
