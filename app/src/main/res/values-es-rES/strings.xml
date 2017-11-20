@@ -266,7 +266,7 @@
   <string name="hide_icon_labels_pref_title">Ocultar las etiquetas de aplicaciones en la pantalla de inicio</string>
   <string name="hide_all_apps_icon_labels_pref_title">Ocultar las etiquetas de aplicaciones en el cajón de aplicaciones</string>
   <string name="workspace_label_color_hue_pref_title">Color de las etiquetas de aplicaciones de la pantalla de inicio</string>
-    <string name="all_apps_opacity_pref_title">Opacidad del cajón de aplicaciones</string>
+  <string name="all_apps_opacity_pref_title">Opacidad del cajón de aplicaciones</string>
   <string name="num_cols_pref_title">Número de columnas</string>
   <string name="num_rows_pref_title">Número de filas</string>
   <string name="num_hotseat_icons_pref_title">Número de iconos en el dock</string>
@@ -284,7 +284,7 @@
   <string name="pixel_ui_pref_title">Píxeles interfaz de usuario</string>
   <string name="behavior_pref_title">Comportamiento</string>
   <string name="debug_pref_title">Opciones de depuración</string>
-    <string name="general_pref_summary">Pantalla de inicio, dock y cajón de aplicaciones</string>
+  <string name="general_pref_summary">Pantalla de inicio, dock y cajón de aplicaciones</string>
   <string name="dock_pref_summary">Personalizar el dock</string>
   <string name="app_drawer_pref_summary">Personaliza tu cajón de aplicaciones</string>
   <string name="pixel_ui_pref_summary">Habilitar características exclusivas de lanzador de Pixel</string>
@@ -327,7 +327,7 @@
   <string name="edit_icon_reset">Reiniciar</string>
   <string name="show_top_shadow_title">Mostrar una sombra en la barra superior</string>
   <string name="pref_cat_homescreen">Pantalla de inicio</string>
-    <string name="theme_pref_title">Temas</string>
+  <string name="theme_pref_title">Temas</string>
   <string name="theme_light">Claro</string>
   <string name="theme_dark">Oscuro</string>
   <string name="theme_black">Negro</string>
@@ -342,11 +342,11 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Importar</string>
   <string name="backup_export_title">Exportar</string>
-    <string name="settings_export_success">Configuraciones respaldadas exitosamente</string>
+  <string name="settings_export_success">Configuraciones respaldadas exitosamente</string>
   <string name="db_export_success">Respaldo de la base de datos</string>
   <string name="settings_import_success">Configuraciones restauradas con éxito</string>
   <string name="db_import_success">Base de datos restaurada con éxito</string>
-    <string name="export_error">No se pudo hacer la copia</string>
+  <string name="export_error">No se pudo hacer la copia</string>
   <string name="import_error">No se pudo restaurar</string>
   <string name="imexport_no_backup_found">No se ha encontrado una copia de seguridad</string>
   <string name="imexport_external_storage_unreadable">No se pueden leer los datos del almacenamiento externo (Concede los permisos en Ajustes)</string>
@@ -367,7 +367,7 @@
   <string name="dock_allapps"><![CDATA[Dock y cajón de aplicaciones]]></string>
   <string name="app_shortcuts">Accesos directos</string>
   <string name="blur_effect">Efecto de desenfoque</string>
-    <string name="pref_weather_provider">Proveedor de información climática</string>
+  <string name="pref_weather_provider">Proveedor de información climática</string>
   <string name="loading">Cargando…</string>
   <string name="icon_shape_override_label">Cambiar el aspecto de los iconos</string>
   <string name="icon_shape_system_default">No aplicar cambios</string>
@@ -386,13 +386,13 @@
   <string name="about_contributors_title">Colaboradores</string>
   <string name="location_permission_warn">¡Se necesitan permisos de ubicación para cambiar a otro proveedor!</string>
   <string name="num_cols_drawer_pref_title">Número de columnas en el cajón de aplicaciones</string>
-    <string name="shortcut_backport_warning">Esto podría causar ralentización, usar bajo su propio riesgo</string>
+  <string name="shortcut_backport_warning">Esto podría causar ralentización, usar bajo su propio riesgo</string>
   <string name="pref_backport_shortcuts">Adaptación retroactiva de accesos rápidos</string>
   <string name="weather_api_key_not_set">Clave API no configurada</string>
   <string name="pref_weather_api_key_title">Clave API</string>
   <string name="about_changelog">Registro de cambios</string>
   <string name="pref_all_apps_custom_label_color">Usar color de etiqueta personalizado</string>
-    <string name="pref_all_apps_label_color">Color de las etiquetas de los iconos en el cajón de aplicaciones</string>
+  <string name="pref_all_apps_label_color">Color de las etiquetas de los iconos en el cajón de aplicaciones</string>
   <string name="pref_num_rows_drawer">Número de filas en el cajón</string>
   <string name="center_wallpaper_pref_title">Centrar el fondo de pantalla cuando sólo hay una página</string>
   <string name="vertical_drawer_layout_pref_title">Mostrar como una lista vertical</string>
@@ -403,8 +403,19 @@
   <string name="lock_desktop">Bloquear escritorio</string>
   <string name="lawnfeed_not_found">Lawnfeed no instalado</string>
   <string name="google_app_not_found">Aplicación de Google no instalada</string>
-    <string name="set_default_launcher">Establecer launcher por defecto</string>
+  <string name="set_default_launcher">Establecer launcher por defecto</string>
   <string name="enable_spring_pref_title">Habilitar efecto de rebote</string>
+  <string name="hide_app">Ocultar aplicación</string>
+  <string name="hide_app_sum">Ocultar aplicación del cajón de aplicaciones</string>
+  <string name="hide_app_selected">&#160; seleccionado</string>
+  <string name="hidden_app">Aplicaciones ocultas</string>
+  <string name="hide_app_apply">Aplicar</string>
   <string name="unauthorized_device">Este dispositivo tiene algunas herramientas de piratería instaladas. Por favor, desinstálalos para continuar.</string>
+  <string name="hide_app_reset">Restablecer</string>
   <!-- Strings for Lawnfeed gesture popup -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed no está instalado</string>
+  <string name="lawnfeed_not_enabled">Parece que estás intentando abrir la página de Google Now, pero no has activado la opción en ajustes.\n\n ¿Quieres activarla ahora?</string>
+  <string name="lawnfeed_not_installed_title">Lawnfeed no instalado</string>
+  <string name="lawnfeed_not_installed">Parece que estás intentando abrir la página de Google Now, pero no has instalado Lawnfeed desde nuestra web. \n\n¿Quieres descargarla ahora?</string>
+  <string name="disable_popup">No volver a mostrar</string>
 </resources>
