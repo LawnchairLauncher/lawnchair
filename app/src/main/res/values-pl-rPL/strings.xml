@@ -267,7 +267,7 @@
   <string name="hide_icon_labels_pref_title">Ukryj etykiety ikon na ekranie głównym</string>
   <string name="hide_all_apps_icon_labels_pref_title">Ukryj etykiety ikon w szufladzie</string>
   <string name="workspace_label_color_hue_pref_title">Kolor etykiet na pulpicie</string>
-    <string name="all_apps_opacity_pref_title">Przezroczystość szuflady</string>
+  <string name="all_apps_opacity_pref_title">Przezroczystość szuflady</string>
   <string name="num_cols_pref_title">Liczba kolumn</string>
   <string name="num_rows_pref_title">Liczba wierszy</string>
   <string name="num_hotseat_icons_pref_title">Liczba ikon w docku</string>
@@ -285,7 +285,7 @@
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Zachowanie</string>
   <string name="debug_pref_title">Opcje debugujące</string>
-    <string name="general_pref_summary">Ekran główny, panel dolny, lista aplikacji</string>
+  <string name="general_pref_summary">Ekran główny, panel dolny, lista aplikacji</string>
   <string name="dock_pref_summary">Spersonalizuj dock</string>
   <string name="app_drawer_pref_summary">Spersonalizuj szufladę aplikacji</string>
   <string name="pixel_ui_pref_summary">Włącz funkcje specjalne Pixel Launcher</string>
@@ -328,7 +328,7 @@
   <string name="edit_icon_reset">Resetuj</string>
   <string name="show_top_shadow_title">Pokaż górny cień</string>
   <string name="pref_cat_homescreen">Ekran główny</string>
-    <string name="theme_pref_title">Motyw</string>
+  <string name="theme_pref_title">Motyw</string>
   <string name="theme_light">Jasny</string>
   <string name="theme_dark">Ciemny</string>
   <string name="theme_black">Czarny</string>
@@ -343,11 +343,11 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Import</string>
   <string name="backup_export_title">Export</string>
-    <string name="settings_export_success">Pomyślnie utworzono kopię zapasową ustawień</string>
+  <string name="settings_export_success">Pomyślnie utworzono kopię zapasową ustawień</string>
   <string name="db_export_success">Pomyślnie utworzono kopię zapasową bazy danych</string>
   <string name="settings_import_success">Ustawienia zostały przywrócone pomyślnie</string>
   <string name="db_import_success">Bazy danych została przywrócona pomyślnie</string>
-    <string name="export_error">Nie można utworzyć kopię zapasową</string>
+  <string name="export_error">Nie można utworzyć kopię zapasową</string>
   <string name="import_error">Nie można przywrócić kopii zapasowej</string>
   <string name="imexport_no_backup_found">Nie znaleziono kopii zapasowej</string>
   <string name="imexport_external_storage_unreadable">Pamięć zewnętrzna nie jest do odczytu (udziel uprawnień w ustawieniach)</string>
@@ -368,7 +368,7 @@
   <string name="dock_allapps"><![CDATA[Dock i szuflada aplikacji]]></string>
   <string name="app_shortcuts">Skróty aplikacji</string>
   <string name="blur_effect">Efekt rozmycia</string>
-    <string name="pref_weather_provider">Dostawca pogody</string>
+  <string name="pref_weather_provider">Dostawca pogody</string>
   <string name="loading">Ładowanie…</string>
   <string name="icon_shape_override_label">Zmień kształt ikony</string>
   <string name="icon_shape_system_default">Nie zmieniaj</string>
@@ -387,13 +387,13 @@
   <string name="about_contributors_title">Współtwórcy</string>
   <string name="location_permission_warn">Aby zmienić dostawcę pogodowego wymagane jest uprawienie do lokalizacji!</string>
   <string name="num_cols_drawer_pref_title">Liczba kolumn w szufladzie</string>
-    <string name="shortcut_backport_warning">To może spowolnić urządzenie, używaj na własne ryzyko</string>
+  <string name="shortcut_backport_warning">To może spowolnić urządzenie, używaj na własne ryzyko</string>
   <string name="pref_backport_shortcuts">Skróty</string>
   <string name="weather_api_key_not_set">Nie ustawiony klucz API</string>
   <string name="pref_weather_api_key_title">Klucz API</string>
   <string name="about_changelog">Dziennik zmian</string>
   <string name="pref_all_apps_custom_label_color">Użyj niestandardowego koloru etykiety</string>
-    <string name="pref_all_apps_label_color">Kolor etykiet ikon w szufladzie</string>
+  <string name="pref_all_apps_label_color">Kolor etykiet ikon w szufladzie</string>
   <string name="pref_num_rows_drawer">Liczba wierszy w szufladzie</string>
   <string name="center_wallpaper_pref_title">Wyśrodkowana tapeta gdy jest tylko jedna strona</string>
   <string name="vertical_drawer_layout_pref_title">Wyświetl jako pionową listę</string>
@@ -404,8 +404,19 @@
   <string name="lock_desktop">Blokada pulpitu</string>
   <string name="lawnfeed_not_found">Lawnfeed nie jest zainstalowany</string>
   <string name="google_app_not_found">Aplikacja Google nie jest zainstalowana</string>
-    <string name="set_default_launcher">Ustaw domyślny launcher</string>
+  <string name="set_default_launcher">Ustaw domyślny launcher</string>
   <string name="enable_spring_pref_title">Włącz efekt sprężyny</string>
+  <string name="hide_app">Ukryj aplikacje</string>
+  <string name="hide_app_sum">Ukryj aplikacje z szuflady</string>
+  <string name="hide_app_selected">&#160;wybrane</string>
+  <string name="hidden_app">Ukryta aplikacja</string>
+  <string name="hide_app_apply">Zastosuj</string>
   <string name="unauthorized_device">To urządzenie ma zainstalowane kilka narzędzia służące piractwu. Proszę odinstalować je aby kontynuować.</string>
+  <string name="hide_app_reset">Resetuj</string>
   <!-- Strings for Lawnfeed gesture popup -->
+  <string name="lawnfeed_not_enabled_title">Nie aktywowano Lawnfeed</string>
+  <string name="lawnfeed_not_enabled">Wygląda, że próbujesz otworzyć stronę Google Now, ale nie włączono opcji w ustawieniach zachowania.\n\nCzy włączyć teraz?</string>
+  <string name="lawnfeed_not_installed_title">Lawnfeed nie jest zainstalowany</string>
+  <string name="lawnfeed_not_installed">Wygląda, że próbujesz otworzyć stronę Google Now, ale nie zainstalowano aplikacji Lawnfeed z naszej strony.\n\n Czy pobrać teraz?</string>
+  <string name="disable_popup">Nie pokazuj ponownie</string>
 </resources>
