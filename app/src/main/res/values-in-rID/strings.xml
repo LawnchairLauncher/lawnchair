@@ -93,7 +93,7 @@
   <!-- Text to inform the user that they can't uninstall a system application -->
   <string name="uninstall_system_app_text">Ini adalah aplikasi sistem dan tidak dapat dihapus.</string>
   <!-- Default folder title -->
-  <string name="folder_hint_text">Folder tanpa nama</string>
+  <string name="folder_hint_text">Folder Tanpa Nama</string>
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
   <string name="disabled_app_label"><xliff:g example="Messenger" id="app_name">%1$s</xliff:g> dinonaktifkan</string>
@@ -270,7 +270,7 @@
   <string name="hide_icon_labels_pref_title">Sembunyikan label ikon pada layar beranda</string>
   <string name="hide_all_apps_icon_labels_pref_title">Sembunyikan label ikon di laci</string>
   <string name="workspace_label_color_hue_pref_title">Warna label ikon di layar beranda</string>
-    <string name="all_apps_opacity_pref_title">Transparansi laci</string>
+  <string name="all_apps_opacity_pref_title">Transparansi laci</string>
   <string name="num_cols_pref_title">Jumlah kolom</string>
   <string name="num_rows_pref_title">Jumlah baris</string>
   <string name="num_hotseat_icons_pref_title">Jumlah ikon di dock</string>
@@ -288,7 +288,7 @@
   <string name="pixel_ui_pref_title">Tema</string>
   <string name="behavior_pref_title">Tindakan</string>
   <string name="debug_pref_title">Pengembanagan</string>
-    <string name="general_pref_summary">Sesuaikan desktop anda</string>
+  <string name="general_pref_summary">Sesuaikan desktop anda</string>
   <string name="dock_pref_summary">Sesuaikan dock anda</string>
   <string name="app_drawer_pref_summary">Sesuaikan laci aplikasi anda</string>
   <string name="pixel_ui_pref_summary">Elemen tema yang berbeda</string>
@@ -331,7 +331,7 @@
   <string name="edit_icon_reset">Setel ulang</string>
   <string name="show_top_shadow_title">Tampilkan bayangan atas</string>
   <string name="pref_cat_homescreen">Layar beranda</string>
-    <string name="theme_pref_title">Tema</string>
+  <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Terang</string>
   <string name="theme_dark">Gelap</string>
   <string name="theme_black">Hitam</string>
@@ -346,11 +346,11 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Memulihkan</string>
   <string name="backup_export_title">Mencadangkan</string>
-    <string name="settings_export_success">Setelan berhasil dicadangkan</string>
+  <string name="settings_export_success">Setelan berhasil dicadangkan</string>
   <string name="db_export_success">Database berhasil dicadangkan</string>
   <string name="settings_import_success">Setelan berhasil dipulihkan</string>
   <string name="db_import_success">Database berhasil dipulihkan</string>
-    <string name="export_error">Tidak dapat mencadangkan</string>
+  <string name="export_error">Tidak dapat mencadangkan</string>
   <string name="import_error">Tidak dapat memulihkan</string>
   <string name="imexport_no_backup_found">Tidak ada cadangan ditemukan</string>
   <string name="imexport_external_storage_unreadable">Buat penyimpanan eksternal dapat dilihat di Setelan</string>
@@ -371,7 +371,7 @@
   <string name="dock_allapps"><![CDATA[Dock & laci]]></string>
   <string name="app_shortcuts">Pintasan aplikasi</string>
   <string name="blur_effect">Efek blur</string>
-    <string name="pref_weather_provider">Penyedia layanan cuaca</string>
+  <string name="pref_weather_provider">Penyedia layanan cuaca</string>
   <string name="loading">Memuat…</string>
   <string name="icon_shape_override_label">Ubah bentuk ikon</string>
   <string name="icon_shape_system_default">Jangan berubah</string>
@@ -390,13 +390,13 @@
   <string name="about_contributors_title">Kontributor</string>
   <string name="location_permission_warn">Izin lokasi dibutuhkan untuk beralih ke penyedia lain!</string>
   <string name="num_cols_drawer_pref_title">Jumlah kolom pada laci</string>
-    <string name="shortcut_backport_warning">Ini bisa membuat lambat, gunakan dengan resiko anda sendiri</string>
+  <string name="shortcut_backport_warning">Ini bisa membuat lambat, gunakan dengan resiko anda sendiri</string>
   <string name="pref_backport_shortcuts">Implementasi pintasan baru</string>
   <string name="weather_api_key_not_set">Kunci API belum disetel</string>
   <string name="pref_weather_api_key_title">Kunci API</string>
   <string name="about_changelog">Daftar perubahan</string>
   <string name="pref_all_apps_custom_label_color">Gunakan warna label khusus</string>
-    <string name="pref_all_apps_label_color">Warna label ikon di laci</string>
+  <string name="pref_all_apps_label_color">Warna label ikon di laci</string>
   <string name="pref_num_rows_drawer">Jumlah baris pada laci</string>
   <string name="center_wallpaper_pref_title">Pusatkan wallpaper ketika hanya ada satu halaman</string>
   <string name="vertical_drawer_layout_pref_title">Tampilkan sebagai daftar vertikal</string>
@@ -407,8 +407,19 @@
   <string name="lock_desktop">Kunci desktop</string>
   <string name="lawnfeed_not_found">Lawnfeed tidak terpasang</string>
   <string name="google_app_not_found">Aplikasi Google tidak terpasang</string>
-    <string name="set_default_launcher">Setel sebagai peluncur bawaan</string>
+  <string name="set_default_launcher">Setel sebagai peluncur bawaan</string>
   <string name="enable_spring_pref_title">Aktifkan efek memantul</string>
+  <string name="hide_app">Sembunyikan aplikasi</string>
+  <string name="hide_app_sum">Menyembunyikan aplikasi dari laci</string>
+  <string name="hide_app_selected">&#160;dipilih</string>
+  <string name="hidden_app">Aplikasi tersembunyi</string>
+  <string name="hide_app_apply">Terapkan</string>
   <string name="unauthorized_device">Perangkat ini memiliki beberapa alat pembajakan yang diinstal. Silakan uninstall mereka untuk melanjutkan</string>
+  <string name="hide_app_reset">Setel ulang</string>
   <!-- Strings for Lawnfeed gesture popup -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed belum diaktifkan</string>
+  <string name="lawnfeed_not_enabled">Sepertinya anda mencoba membuka laman Google Now, namun anda belum mengaktifkan pilihan tersebut di setelan tindakan.\n\nApakah anda ingin mengaktifkannya sekarang?</string>
+  <string name="lawnfeed_not_installed_title">Lawnfeed tidak terpasang</string>
+  <string name="lawnfeed_not_installed">Sepertinya anda mencoba membuka laman Google Now, namun anda belum memasang aplikasi Lawnfeed dari situs web kami.\n\nApakah anda ingin mengunduhnya sekarang?</string>
+  <string name="disable_popup">Jangan tampilkan lagi</string>
 </resources>
