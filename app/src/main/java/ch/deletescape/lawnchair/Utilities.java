@@ -233,7 +233,7 @@ public final class Utilities {
     /**
      * Returns a bitmap which is of the appropriate size to be displayed as an icon
      */
-    static Bitmap createIconBitmap(Bitmap icon, Context context) {
+    public static Bitmap createIconBitmap(Bitmap icon, Context context) {
         final int iconBitmapSize = getIconBitmapSize();
         if (iconBitmapSize == icon.getWidth() && iconBitmapSize == icon.getHeight()) {
             return icon;
@@ -245,7 +245,7 @@ public final class Utilities {
      * Returns a bitmap suitable for the all apps view. The icon is badged for {@param user}.
      * The bitmap is also visually normalized with other icons.
      */
-    static Bitmap createBadgedIconBitmap(
+    public static Bitmap createBadgedIconBitmap(
             Drawable icon, UserHandle user, Context context) {
         float scale = IconNormalizer.getInstance().getScale(icon, null);
         Bitmap bitmap = createIconBitmap(icon, context, scale);
@@ -257,7 +257,7 @@ public final class Utilities {
     /**
      * Badges the provided icon with the user badge if required.
      */
-    static Bitmap badgeIconForUser(Bitmap icon, UserHandle user, Context context) {
+    public static Bitmap badgeIconForUser(Bitmap icon, UserHandle user, Context context) {
         if (user != null && !Utilities.myUserHandle().equals(user)) {
             BitmapDrawable drawable = new FixedSizeBitmapDrawable(icon);
             Drawable badged = context.getPackageManager().getUserBadgedIcon(
@@ -276,7 +276,7 @@ public final class Utilities {
      * Creates a normalized bitmap suitable for the all apps view. The bitmap is also visually
      * normalized with other icons and has enough spacing to add shadow.
      */
-    static Bitmap createScaledBitmapWithoutShadow(Drawable icon, Context context) {
+    public static Bitmap createScaledBitmapWithoutShadow(Drawable icon, Context context) {
         RectF iconBounds = new RectF();
         float scale = IconNormalizer.getInstance().getScale(icon, iconBounds);
         scale = Math.min(scale, ShadowGenerator.getScaleForBounds(iconBounds));
@@ -287,7 +287,7 @@ public final class Utilities {
      * Adds a shadow to the provided icon. It assumes that the icon has already been scaled using
      * {@link #createScaledBitmapWithoutShadow(Drawable, Context)}
      */
-    static Bitmap addShadowToIcon(Bitmap icon) {
+    public static Bitmap addShadowToIcon(Bitmap icon) {
         return ShadowGenerator.getInstance().recreateIcon(icon);
     }
 
@@ -302,7 +302,7 @@ public final class Utilities {
     /**
      * Adds the {@param badge} on top of {@param srcTgt} using the badge dimensions.
      */
-    static Bitmap badgeWithBitmap(Bitmap srcTgt, Bitmap badge, Context context) {
+    public static Bitmap badgeWithBitmap(Bitmap srcTgt, Bitmap badge, Context context) {
         int badgeSize = context.getResources().getDimensionPixelSize(R.dimen.profile_badge_size);
         synchronized (sCanvas) {
             sCanvas.setBitmap(srcTgt);
@@ -318,7 +318,7 @@ public final class Utilities {
     /**
      * Returns a bitmap suitable for the all apps view.
      */
-    static Bitmap createIconBitmap(Drawable icon, Context context) {
+    public static Bitmap createIconBitmap(Drawable icon, Context context) {
         return createIconBitmap(icon, context, 1.0f /* scale */);
     }
 
@@ -472,7 +472,7 @@ public final class Utilities {
                 localY < (v.getHeight() + slop);
     }
 
-    static int[] getCenterDeltaInScreenSpace(View v0, View v1, int[] delta) {
+    public static int[] getCenterDeltaInScreenSpace(View v0, View v1, int[] delta) {
         v0.getLocationInWindow(sLoc0);
         v1.getLocationInWindow(sLoc1);
 
@@ -491,7 +491,7 @@ public final class Utilities {
         return delta;
     }
 
-    static void scaleRectAboutCenter(Rect r, float scale) {
+    public static void scaleRectAboutCenter(Rect r, float scale) {
         if (scale != 1.0f) {
             int cx = r.centerX();
             int cy = r.centerY();
@@ -506,7 +506,7 @@ public final class Utilities {
         }
     }
 
-    static void startActivityForResultSafely(
+    public static void startActivityForResultSafely(
             Activity activity, Intent intent, int requestCode) {
         try {
             activity.startActivityForResult(intent, requestCode);
@@ -520,7 +520,7 @@ public final class Utilities {
         }
     }
 
-    static boolean isSystemApp(Context context, Intent intent) {
+    public static boolean isSystemApp(Context context, Intent intent) {
         PackageManager pm = context.getPackageManager();
         ComponentName cn = intent.getComponent();
         String packageName = null;
@@ -551,7 +551,7 @@ public final class Utilities {
      * @param bitmap  The bitmap to scan
      * @param samples The approximate max number of samples to use.
      */
-    static int findDominantColorByHue(Bitmap bitmap, int samples) {
+    public static int findDominantColorByHue(Bitmap bitmap, int samples) {
         final int height = bitmap.getHeight();
         final int width = bitmap.getWidth();
         int sampleStride = (int) Math.sqrt((height * width) / samples);
@@ -630,7 +630,7 @@ public final class Utilities {
      * @param action intent action used to find the apk
      * @return a pair of apk package name and the resources.
      */
-    static Pair<String, Resources> findSystemApk(String action, PackageManager pm) {
+    public static Pair<String, Resources> findSystemApk(String action, PackageManager pm) {
         final Intent intent = new Intent(action);
         for (ResolveInfo info : pm.queryBroadcastReceivers(intent, 0)) {
             if (info.activityInfo != null &&
@@ -650,7 +650,7 @@ public final class Utilities {
     /**
      * Compresses the bitmap to a byte array for serialization.
      */
-    static byte[] flattenBitmap(Bitmap bitmap) {
+    public static byte[] flattenBitmap(Bitmap bitmap) {
         // Try go guesstimate how much space the icon will take when serialized
         // to avoid unnecessary allocations/copies during the write.
         int size = bitmap.getWidth() * bitmap.getHeight() * 4;
@@ -683,7 +683,7 @@ public final class Utilities {
     /**
      * Calculates the height of a given string at a specific text size.
      */
-    static int calculateTextHeight(float textSizePx, boolean twoLines) {
+    public static int calculateTextHeight(float textSizePx, boolean twoLines) {
         Paint p = new Paint();
         p.setTextSize(textSizePx);
         Paint.FontMetrics fm = p.getFontMetrics();
@@ -702,7 +702,7 @@ public final class Utilities {
      *
      * @param launchIntent The intent that will be launched when the shortcut is clicked.
      */
-    static boolean isLauncherAppTarget(Intent launchIntent) {
+    public static boolean isLauncherAppTarget(Intent launchIntent) {
         if (launchIntent != null
                 && Intent.ACTION_MAIN.equals(launchIntent.getAction())
                 && launchIntent.getComponent() != null
@@ -722,7 +722,7 @@ public final class Utilities {
         return false;
     }
 
-    static float dpiFromPx(int size, DisplayMetrics metrics) {
+    public static float dpiFromPx(int size, DisplayMetrics metrics) {
         float densityRatio = (float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT;
         return (size / densityRatio);
     }
@@ -732,7 +732,7 @@ public final class Utilities {
                 size, metrics));
     }
 
-    static int pxFromSp(float size, DisplayMetrics metrics) {
+    public static int pxFromSp(float size, DisplayMetrics metrics) {
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                 size, metrics));
     }
@@ -751,7 +751,7 @@ public final class Utilities {
         return String.format(Locale.ENGLISH, "%s IN (%s)", columnName, TextUtils.join(", ", values));
     }
 
-    static boolean isBootCompleted() {
+    public static boolean isBootCompleted() {
         return "1".equals(getProp("sys.boot_completed", "1"));
     }
 
@@ -820,7 +820,7 @@ public final class Utilities {
         return ThemeProvider.INSTANCE.getThemer();
     }
 
-    static boolean isPowerSaverOn(Context context) {
+    public static boolean isPowerSaverOn(Context context) {
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         return powerManager != null && powerManager.isPowerSaveMode();
     }
@@ -837,7 +837,7 @@ public final class Utilities {
         return true;
     }
 
-    static void closeSilently(Closeable c) {
+    public static void closeSilently(Closeable c) {
         if (c != null) {
             try {
                 c.close();
@@ -927,7 +927,7 @@ public final class Utilities {
         return hashSet;
     }
 
-    static void setAppVisibility(Context context, String key, boolean visible) {
+    public static void setAppVisibility(Context context, String key, boolean visible) {
         Set<String> hiddenApps = getPrefs(context).getHiddenAppsSet();
         if (visible)
             hiddenApps.remove(key);
@@ -936,7 +936,7 @@ public final class Utilities {
         getPrefs(context).setHiddenAppsSet(hiddenApps);
     }
 
-    static boolean isAppHidden(Context context, String key) {
+    public static boolean isAppHidden(Context context, String key) {
         return getPrefs(context).getHiddenAppsSet().contains(key);
     }
 
@@ -965,7 +965,7 @@ public final class Utilities {
         prefs.setPreviousBuildNumber(buildNumber);
     }
 
-    static void showChangelog(Context context) {
+    public static void showChangelog(Context context) {
         if (!BuildConfig.TRAVIS || BuildConfig.TAGGED_BUILD || !BuildConfig.DEBUG) return;
         final IPreferenceProvider prefs = getPrefs(context);
         if (BuildConfig.TRAVIS_BUILD_NUMBER != getPreviousBuildNumber(prefs)) {
@@ -1087,7 +1087,7 @@ public final class Utilities {
         return false;
     }
 
-    static void showLawnfeedPopup(final Context context) {
+    public static void showLawnfeedPopup(final Context context) {
         if (!BuildConfig.ENABLE_LAWNFEED) return;
         final IPreferenceProvider prefs = getPrefs(context);
 
@@ -1154,7 +1154,7 @@ public final class Utilities {
         }
     }
 
-    static void showOutdatedLawnfeedPopup(final Context context) {
+    public static void showOutdatedLawnfeedPopup(final Context context) {
         if (!BuildConfig.ENABLE_LAWNFEED || ILauncherClient.Companion.getEnabledState(context) != ILauncherClient.DISABLED_CLIENT_OUTDATED) return;
         new AlertDialog.Builder(context)
             .setTitle(R.string.lawnfeed_outdated_title)
@@ -1203,7 +1203,7 @@ public final class Utilities {
         System.exit(0);
     }
 
-    static int getNumberOfHotseatRows(Context context){
+    public static int getNumberOfHotseatRows(Context context){
         boolean twoLines = PreferenceProvider.INSTANCE.getPreferences(context).getTwoRowDock();
         return twoLines ? 2 : 1;
     }
