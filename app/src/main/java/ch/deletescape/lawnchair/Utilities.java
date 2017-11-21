@@ -16,6 +16,7 @@
 
 package ch.deletescape.lawnchair;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -72,10 +73,11 @@ import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
-import java.lang.reflect.Method;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -320,7 +322,7 @@ public final class Utilities {
         return createIconBitmap(icon, context, 1.0f /* scale */);
     }
 
-    public static Bitmap createIconBitmap(Drawable icon, Context context, float scale) {
+    private static Bitmap createIconBitmap(Drawable icon, Context context, float scale) {
         synchronized (sCanvas) {
             final int iconBitmapSize = getIconBitmapSize();
             int width = iconBitmapSize;
@@ -351,16 +353,14 @@ public final class Utilities {
                 }
             }
             // no intrinsic size --> use default size
-            int textureWidth = iconBitmapSize;
-            int textureHeight = iconBitmapSize;
 
-            Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
+            Bitmap bitmap = Bitmap.createBitmap(iconBitmapSize, iconBitmapSize,
                     Bitmap.Config.ARGB_8888);
             final Canvas canvas = sCanvas;
             canvas.setBitmap(bitmap);
 
-            final int left = (textureWidth-width) / 2;
-            final int top = (textureHeight-height) / 2;
+            final int left = (iconBitmapSize -width) / 2;
+            final int top = (iconBitmapSize -height) / 2;
 
             sOldBounds.set(icon.getBounds());
             if (Utilities.isAdaptive(icon)) {
@@ -372,7 +372,7 @@ public final class Utilities {
                 icon.setBounds(left, top, left+width, top+height);
             }
             canvas.save(Canvas.MATRIX_SAVE_FLAG);
-            canvas.scale(scale, scale, textureWidth / 2, textureHeight / 2);
+            canvas.scale(scale, scale, iconBitmapSize / 2, iconBitmapSize / 2);
             icon.draw(canvas);
             canvas.restore();
             icon.setBounds(sOldBounds);
@@ -520,7 +520,7 @@ public final class Utilities {
         }
     }
 
-    static boolean isSystemApp(Context context, Intent intent) {
+    public static boolean isSystemApp(Context context, Intent intent) {
         PackageManager pm = context.getPackageManager();
         ComponentName cn = intent.getComponent();
         String packageName = null;
@@ -551,7 +551,7 @@ public final class Utilities {
      * @param bitmap  The bitmap to scan
      * @param samples The approximate max number of samples to use.
      */
-    static int findDominantColorByHue(Bitmap bitmap, int samples) {
+    public static int findDominantColorByHue(Bitmap bitmap, int samples) {
         final int height = bitmap.getHeight();
         final int width = bitmap.getWidth();
         int sampleStride = (int) Math.sqrt((height * width) / samples);
@@ -630,7 +630,7 @@ public final class Utilities {
      * @param action intent action used to find the apk
      * @return a pair of apk package name and the resources.
      */
-    static Pair<String, Resources> findSystemApk(String action, PackageManager pm) {
+    public static Pair<String, Resources> findSystemApk(String action, PackageManager pm) {
         final Intent intent = new Intent(action);
         for (ResolveInfo info : pm.queryBroadcastReceivers(intent, 0)) {
             if (info.activityInfo != null &&
@@ -752,21 +752,32 @@ public final class Utilities {
     }
 
     public static boolean isBootCompleted() {
-        return "1".equals(getSystemProperty("sys.boot_completed", "1"));
+        return "1".equals(getProp("sys.boot_completed", "1"));
     }
 
-    public static String getSystemProperty(String property, String defaultValue) {
+    private static String getProp(String propName, String defaultValue) {
+        Process p = null;
+        String result = defaultValue;
         try {
-            Class clazz = Class.forName("android.os.SystemProperties");
-            Method getter = clazz.getDeclaredMethod("get", String.class);
-            String value = (String) getter.invoke(null, property);
-            if (!TextUtils.isEmpty(value)) {
-                return value;
+            p = new ProcessBuilder("/system/bin/getprop", propName)
+                    .redirectErrorStream(true).start();
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream())
+            )) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    result = line;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            Log.d(TAG, "Unable to read system properties");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (p != null) {
+                p.destroy();
+            }
         }
-        return defaultValue;
+        return result;
     }
 
     /**
@@ -811,15 +822,15 @@ public final class Utilities {
 
     public static boolean isPowerSaverOn(Context context) {
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        return powerManager.isPowerSaveMode();
+        return powerManager != null && powerManager.isPowerSaveMode();
     }
 
     public static boolean isWallapaperAllowed(Context context) {
         if (ATLEAST_NOUGAT) {
             try {
                 WallpaperManager wm = context.getSystemService(WallpaperManager.class);
-                return (Boolean) wm.getClass().getDeclaredMethod("isSetWallpaperAllowed")
-                        .invoke(wm);
+                return (Boolean) (wm != null ? wm.getClass().getDeclaredMethod("isSetWallpaperAllowed")
+                        .invoke(wm) : false);
             } catch (Exception ignored) {
             }
         }
@@ -840,10 +851,6 @@ public final class Utilities {
      */
     public static boolean isEmpty(Collection c) {
         return c == null || c.isEmpty();
-    }
-
-    public static void stackTrace() {
-        (new Throwable()).printStackTrace();
     }
 
     public static void setDefaultLauncher(@NotNull Context context) {
@@ -871,7 +878,7 @@ public final class Utilities {
      */
     private static class FixedSizeBitmapDrawable extends BitmapDrawable {
 
-        public FixedSizeBitmapDrawable(Bitmap bitmap) {
+        FixedSizeBitmapDrawable(Bitmap bitmap) {
             super(null, bitmap);
         }
 
@@ -902,7 +909,7 @@ public final class Utilities {
     public static void sendCustomAccessibilityEvent(View target, int type, String text) {
         AccessibilityManager accessibilityManager = (AccessibilityManager)
                 target.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-        if (accessibilityManager.isEnabled()) {
+        if (accessibilityManager != null && accessibilityManager.isEnabled()) {
             AccessibilityEvent event = AccessibilityEvent.obtain(type);
             target.onInitializeAccessibilityEvent(event);
             event.getText().add(text);
@@ -959,13 +966,9 @@ public final class Utilities {
     }
 
     public static void showChangelog(Context context) {
-        showChangelog(context, false);
-    }
-
-    public static void showChangelog(Context context, boolean force) {
         if (!BuildConfig.TRAVIS || BuildConfig.TAGGED_BUILD || !BuildConfig.DEBUG) return;
         final IPreferenceProvider prefs = getPrefs(context);
-        if (force || BuildConfig.TRAVIS_BUILD_NUMBER != getPreviousBuildNumber(prefs)) {
+        if (BuildConfig.TRAVIS_BUILD_NUMBER != getPreviousBuildNumber(prefs)) {
             new AlertDialog.Builder(context)
                     .setTitle(String.format(context.getString(R.string.changelog_title), BuildConfig.TRAVIS_BUILD_NUMBER))
                     .setMessage(getChangelog().trim())
@@ -1016,7 +1019,7 @@ public final class Utilities {
         return PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS.equals(prefs.getWeatherProvider());
     }
 
-    public static boolean isComponentClock(ComponentName componentName, boolean stockAppOnly) {
+    private static boolean isComponentClock(ComponentName componentName, boolean stockAppOnly) {
         if (componentName == null) {
             return false;
         }
@@ -1107,6 +1110,7 @@ public final class Utilities {
                 .setTitle(R.string.lawnfeed_not_enabled_title)
                 .setMessage(R.string.lawnfeed_not_enabled)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @SuppressLint("ApplySharedPref")
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         // Enable Google Now page setting
@@ -1158,9 +1162,14 @@ public final class Utilities {
             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    // Open website with download link for Lawnfeed
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://lawnchair.info/getlawnfeed.html"));
-                    context.startActivity(intent);
+                    try {
+                        // Open website with download link for Lawnfeed
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://lawnchair.info/getlawnfeed.html"));
+                        context.startActivity(intent);
+                    } catch (ActivityNotFoundException exc) {
+                        // Believe me, this actually happens.
+                        Toast.makeText(context, R.string.error_no_browser, Toast.LENGTH_SHORT).show();
+                    }
                 }
             })
             .setNegativeButton(android.R.string.no, null)
@@ -1173,7 +1182,7 @@ public final class Utilities {
             if (info != null && info.versionCode == 1 && !info.versionName.equals("dev")) {
                 return true;
             }
-        } catch (PackageManager.NameNotFoundException e) {}
+        } catch (PackageManager.NameNotFoundException ignored) {}
 
         return false;
     }
