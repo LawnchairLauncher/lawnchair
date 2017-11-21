@@ -414,7 +414,7 @@
     <string name="settings_import_success">Settings restored successfully</string>
     <string name="db_import_success">Database restored successfully</string>
     <string name="export_error">Couldn\'t backup</string>
-    <string name="import_error">Couldn'\'t restore</string>
+    <string name="import_error">Couldn\'t restore</string>
     <string name="imexport_no_backup_found">No backup file found</string>
     <string name="imexport_external_storage_unreadable">Make external storage readable in Settings</string>
     <string name="imexport_external_storage_unwritable">Make external storage writable in Settings</string>
