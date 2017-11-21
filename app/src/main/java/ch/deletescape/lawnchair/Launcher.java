@@ -113,6 +113,7 @@ import ch.deletescape.lawnchair.keyboard.ViewGroupFocusHelper;
 import ch.deletescape.lawnchair.model.WidgetsModel;
 import ch.deletescape.lawnchair.notification.NotificationListener;
 import ch.deletescape.lawnchair.overlay.ILauncherClient;
+import ch.deletescape.lawnchair.overlay.LawnfeedClient;
 import ch.deletescape.lawnchair.popup.PopupContainerWithArrow;
 import ch.deletescape.lawnchair.popup.PopupDataProvider;
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
@@ -430,6 +431,7 @@ public class Launcher extends Activity
         registerReceiver(mUiBroadcastReceiver, filter);
 
         mLauncherTab = new LauncherTab(this);
+        Utilities.showOutdatedLawnfeedPopup(this);
 
         Window window = getWindow();
         WindowManager.LayoutParams attributes = window.getAttributes();

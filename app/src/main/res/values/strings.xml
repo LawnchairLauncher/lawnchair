@@ -473,6 +473,7 @@
     <string name="lock_desktop">Lock desktop</string>
     <string name="lawnfeed_not_found">Lawnfeed not installed</string>
     <string name="google_app_not_found">Google app not installed</string>
+    <string name="lawnfeed_incompatible">Incompatible Lawnfeed version installed</string>
     <string name="set_default_launcher">Set default launcher</string>
     <string name="enable_spring_pref_title">Enable spring effect</string>
     <string name="hide_app">Hide app</string>
@@ -488,6 +489,8 @@
     <string name="lawnfeed_not_enabled">It looks like you\'re trying to open the Google Now page, but you haven\'t enabled the option in the behavior settings.\n\nDo you want to enable it now?</string>
     <string name="lawnfeed_not_installed_title">Lawnfeed not installed</string>
     <string name="lawnfeed_not_installed">It looks like you\'re trying to open the Google Now page, but you haven\'t installed the Lawnfeed app from our website.\n\nDo you want to download it now?</string>
+    <string name="lawnfeed_outdated_title">Lawnfeed update required</string>
+    <string name="lawnfeed_outdated">A newer version of Lawnfeed is required in order to work with this version of Lawnchair.\n\nBefore installing the update you will probably need to uninstall the current version of Lawnfeed.\n\nDo you want to download it now?</string>
     <string name="disable_popup">Don\'t show again</string>
 
     <string name="two_row_dock">Two row dock</string>

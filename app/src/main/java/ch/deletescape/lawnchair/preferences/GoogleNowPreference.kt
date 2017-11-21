@@ -17,6 +17,8 @@ class GoogleNowPreference(context: Context, attrs: AttributeSet) : SwitchPrefere
                 setSummary(R.string.lawnfeed_not_found)
             if (enabledState and ILauncherClient.DISABLED_NO_GOOGLE_APP != 0)
                 setSummary(R.string.google_app_not_found)
+            if (enabledState and ILauncherClient.DISABLED_CLIENT_OUTDATED != 0)
+                setSummary(R.string.lawnfeed_incompatible)
         }
     }
 }
