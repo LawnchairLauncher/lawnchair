@@ -42,7 +42,7 @@ class LawnfeedClient(private val launcher: Launcher) : ILauncherClient {
     }
 
     private fun connectProxy() {
-        if (Utilities.checkOutdatedLawnfeed(launcher) || !Utilities.getPrefs(launcher).showGoogleNowTab) {
+        if (Utilities.checkOutdatedLawnfeed(launcher)) {
             return
         }
 
@@ -229,9 +229,11 @@ class LawnfeedClient(private val launcher: Launcher) : ILauncherClient {
     }
 
     fun onQsbClick(intent: Intent, receiver: QsbReceiver) {
-        ifConnected {
-            proxy?.onQsbClick(intent)
-            qsbReceiver = receiver
+        if (isConnected) {
+            try {
+                proxy?.onQsbClick(intent)
+                qsbReceiver = receiver
+            } catch (ignored: RemoteException) {}
         }
     }
 
