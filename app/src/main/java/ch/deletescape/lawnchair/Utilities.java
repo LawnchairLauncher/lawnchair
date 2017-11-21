@@ -94,6 +94,7 @@ import ch.deletescape.lawnchair.config.ThemeProvider;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.graphics.ShadowGenerator;
 import ch.deletescape.lawnchair.overlay.ILauncherClient;
+import ch.deletescape.lawnchair.overlay.LawnfeedClient;
 import ch.deletescape.lawnchair.pixelify.AdaptiveIconDrawableCompat;
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.preferences.PreferenceFlags;
@@ -1156,6 +1157,33 @@ public final class Utilities {
         }
     }
 
+    public static void showOutdatedLawnfeedPopup(final Context context) {
+        if (!BuildConfig.ENABLE_LAWNFEED || ILauncherClient.Companion.getEnabledState(context) != ILauncherClient.DISABLED_CLIENT_OUTDATED) return;
+        new AlertDialog.Builder(context)
+            .setTitle(R.string.lawnfeed_outdated_title)
+            .setMessage(R.string.lawnfeed_outdated)
+            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    // Open website with download link for Lawnfeed
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://lawnchair.info/getlawnfeed.html"));
+                    context.startActivity(intent);
+                }
+            })
+            .setNegativeButton(android.R.string.no, null)
+            .show();
+    }
+
+    public static boolean checkOutdatedLawnfeed(Context context) {
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo(LawnfeedClient.PROXY_PACKAGE, 0);
+            if (info != null && info.versionCode == 1 && !info.versionName.equals("dev")) {
+                return true;
+            }
+        } catch (PackageManager.NameNotFoundException e) {}
+
+        return false;
+    }
 
     public static void restartLauncher(Context context) {
         PackageManager pm = context.getPackageManager();

@@ -430,6 +430,7 @@ public class Launcher extends Activity
         registerReceiver(mUiBroadcastReceiver, filter);
 
         mLauncherTab = new LauncherTab(this);
+        Utilities.showOutdatedLawnfeedPopup(this);
 
         Window window = getWindow();
         WindowManager.LayoutParams attributes = window.getAttributes();
