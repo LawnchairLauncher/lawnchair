@@ -73,9 +73,11 @@ import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -751,21 +753,32 @@ public final class Utilities {
     }
 
     static boolean isBootCompleted() {
-        return "1".equals(getSystemProperty("sys.boot_completed", "1"));
+        return "1".equals(getProp("sys.boot_completed", "1"));
     }
 
-    private static String getSystemProperty(String property, String defaultValue) {
+    private static String getProp(String propName, String defaultValue) {
+        Process p = null;
+        String result = defaultValue;
         try {
-            Class clazz = Class.forName("android.os.SystemProperties");
-            Method getter = clazz.getDeclaredMethod("get", String.class);
-            String value = (String) getter.invoke(null, property);
-            if (!TextUtils.isEmpty(value)) {
-                return value;
+            p = new ProcessBuilder("/system/bin/getprop", propName)
+                    .redirectErrorStream(true).start();
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream())
+            )) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    result = line;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            Log.d(TAG, "Unable to read system properties");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (p != null) {
+                p.destroy();
+            }
         }
-        return defaultValue;
+        return result;
     }
 
     /**
