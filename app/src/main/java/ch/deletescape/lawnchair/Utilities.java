@@ -98,12 +98,13 @@ import ch.deletescape.lawnchair.overlay.LawnfeedClient;
 import ch.deletescape.lawnchair.pixelify.AdaptiveIconDrawableCompat;
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.preferences.PreferenceFlags;
-import ch.deletescape.lawnchair.preferences.PreferenceImpl;
 import ch.deletescape.lawnchair.preferences.PreferenceProvider;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 import ch.deletescape.lawnchair.util.IconNormalizer;
 import ch.deletescape.lawnchair.util.PackageManagerHelper;
+
+import static ch.deletescape.lawnchair.util.PackageManagerHelper.isAppEnabled;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -1077,16 +1078,9 @@ public final class Utilities {
 
     public static boolean isBlacklistedAppInstalled(Context context) {
         PackageManager pm = context.getPackageManager();
-        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
-
-        for (ApplicationInfo packageInfo : packages) {
-            for (String blacklistedApp : BLACKLISTED_APPLICATIONS) {
-                if (packageInfo.packageName.startsWith(blacklistedApp)) {
-                    return true;
-                }
-            }
+        for (String packageName : BLACKLISTED_APPLICATIONS) {
+            if (isAppEnabled(pm, packageName, 0)) return true;
         }
-
         return false;
     }
 
