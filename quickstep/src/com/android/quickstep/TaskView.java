@@ -62,6 +62,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks {
 
     @Override
     protected void onFinishInflate() {
+        super.onFinishInflate();
         mSnapshotView = findViewById(R.id.snapshot);
         mIconView = findViewById(R.id.icon);
     }
