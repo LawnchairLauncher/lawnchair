@@ -70,6 +70,10 @@
             </intent-filter>
 
             <meta-data
+                android:name="android.max_aspect"
+                android:value="2.1" />
+
+            <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
