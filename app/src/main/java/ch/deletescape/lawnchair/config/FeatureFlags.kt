@@ -51,7 +51,6 @@ object FeatureFlags {
     const val KEY_PREF_DARK_THEME = "pref_enableDarkTheme"
     const val KEY_PREF_ROUND_SEARCH_BAR = "pref_useRoundSearchBar"
     const val KEY_PREF_ENABLE_BACKPORT_SHORTCUTS = "pref_enableBackportShortcuts"
-    const val KEY_PREF_SHOW_TOP_SHADOW = "pref_showTopShadow"
     const val KEY_PREF_THEME = "pref_theme"
     const val KEY_PREF_THEME_MODE = "pref_themeMode"
     const val KEY_PREF_HIDE_HOTSEAT = "pref_hideHotseat"

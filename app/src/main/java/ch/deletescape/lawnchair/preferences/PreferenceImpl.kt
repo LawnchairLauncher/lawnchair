@@ -191,7 +191,6 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
         get() = true
     override val useRoundSearchBar by BooleanPref(FeatureFlags.KEY_PREF_ROUND_SEARCH_BAR, false)
     override val enableBackportShortcuts by BooleanPref(FeatureFlags.KEY_PREF_ENABLE_BACKPORT_SHORTCUTS, false)
-    override val showTopShadow by BooleanPref(FeatureFlags.KEY_PREF_SHOW_TOP_SHADOW, true)
     override val hideHotseat by BooleanPref(FeatureFlags.KEY_PREF_HIDE_HOTSEAT, false)
     override val enablePlanes by BooleanPref(FeatureFlags.KEY_PREF_PLANE, false)
     override val showWeather by BooleanPref(FeatureFlags.KEY_PREF_WEATHER, false)

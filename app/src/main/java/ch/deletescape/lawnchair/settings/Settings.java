@@ -138,9 +138,6 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                     } else {
                         mLauncher.scheduleKill();
                     }
-                case PreferenceFlags.KEY_PREF_SHOW_TOP_SHADOW:
-                    mLauncher.getDragLayer().updateTopShadow();
-                    break;
                 case PreferenceFlags.KEY_CENTER_WALLPAPER:
                     mLauncher.getWorkspace().getWallpaperOffset().updateCenterWallpaper();
                 default:

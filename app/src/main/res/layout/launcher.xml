@@ -27,7 +27,6 @@
         android:clipChildren="false"
         android:importantForAccessibility="no"
         android:clipToPadding="false"
-        android:background="@drawable/workspace_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
