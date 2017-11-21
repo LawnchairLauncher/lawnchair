@@ -16,6 +16,7 @@
 
 package ch.deletescape.lawnchair;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -231,7 +232,7 @@ public final class Utilities {
     /**
      * Returns a bitmap which is of the appropriate size to be displayed as an icon
      */
-    public static Bitmap createIconBitmap(Bitmap icon, Context context) {
+    static Bitmap createIconBitmap(Bitmap icon, Context context) {
         final int iconBitmapSize = getIconBitmapSize();
         if (iconBitmapSize == icon.getWidth() && iconBitmapSize == icon.getHeight()) {
             return icon;
@@ -243,7 +244,7 @@ public final class Utilities {
      * Returns a bitmap suitable for the all apps view. The icon is badged for {@param user}.
      * The bitmap is also visually normalized with other icons.
      */
-    public static Bitmap createBadgedIconBitmap(
+    static Bitmap createBadgedIconBitmap(
             Drawable icon, UserHandle user, Context context) {
         float scale = IconNormalizer.getInstance().getScale(icon, null);
         Bitmap bitmap = createIconBitmap(icon, context, scale);
@@ -255,7 +256,7 @@ public final class Utilities {
     /**
      * Badges the provided icon with the user badge if required.
      */
-    public static Bitmap badgeIconForUser(Bitmap icon, UserHandle user, Context context) {
+    static Bitmap badgeIconForUser(Bitmap icon, UserHandle user, Context context) {
         if (user != null && !Utilities.myUserHandle().equals(user)) {
             BitmapDrawable drawable = new FixedSizeBitmapDrawable(icon);
             Drawable badged = context.getPackageManager().getUserBadgedIcon(
@@ -274,7 +275,7 @@ public final class Utilities {
      * Creates a normalized bitmap suitable for the all apps view. The bitmap is also visually
      * normalized with other icons and has enough spacing to add shadow.
      */
-    public static Bitmap createScaledBitmapWithoutShadow(Drawable icon, Context context) {
+    static Bitmap createScaledBitmapWithoutShadow(Drawable icon, Context context) {
         RectF iconBounds = new RectF();
         float scale = IconNormalizer.getInstance().getScale(icon, iconBounds);
         scale = Math.min(scale, ShadowGenerator.getScaleForBounds(iconBounds));
@@ -285,7 +286,7 @@ public final class Utilities {
      * Adds a shadow to the provided icon. It assumes that the icon has already been scaled using
      * {@link #createScaledBitmapWithoutShadow(Drawable, Context)}
      */
-    public static Bitmap addShadowToIcon(Bitmap icon) {
+    static Bitmap addShadowToIcon(Bitmap icon) {
         return ShadowGenerator.getInstance().recreateIcon(icon);
     }
 
@@ -300,7 +301,7 @@ public final class Utilities {
     /**
      * Adds the {@param badge} on top of {@param srcTgt} using the badge dimensions.
      */
-    public static Bitmap badgeWithBitmap(Bitmap srcTgt, Bitmap badge, Context context) {
+    static Bitmap badgeWithBitmap(Bitmap srcTgt, Bitmap badge, Context context) {
         int badgeSize = context.getResources().getDimensionPixelSize(R.dimen.profile_badge_size);
         synchronized (sCanvas) {
             sCanvas.setBitmap(srcTgt);
@@ -316,11 +317,11 @@ public final class Utilities {
     /**
      * Returns a bitmap suitable for the all apps view.
      */
-    public static Bitmap createIconBitmap(Drawable icon, Context context) {
+    static Bitmap createIconBitmap(Drawable icon, Context context) {
         return createIconBitmap(icon, context, 1.0f /* scale */);
     }
 
-    public static Bitmap createIconBitmap(Drawable icon, Context context, float scale) {
+    private static Bitmap createIconBitmap(Drawable icon, Context context, float scale) {
         synchronized (sCanvas) {
             final int iconBitmapSize = getIconBitmapSize();
             int width = iconBitmapSize;
@@ -351,16 +352,14 @@ public final class Utilities {
                 }
             }
             // no intrinsic size --> use default size
-            int textureWidth = iconBitmapSize;
-            int textureHeight = iconBitmapSize;
 
-            Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
+            Bitmap bitmap = Bitmap.createBitmap(iconBitmapSize, iconBitmapSize,
                     Bitmap.Config.ARGB_8888);
             final Canvas canvas = sCanvas;
             canvas.setBitmap(bitmap);
 
-            final int left = (textureWidth-width) / 2;
-            final int top = (textureHeight-height) / 2;
+            final int left = (iconBitmapSize -width) / 2;
+            final int top = (iconBitmapSize -height) / 2;
 
             sOldBounds.set(icon.getBounds());
             if (Utilities.isAdaptive(icon)) {
@@ -372,7 +371,7 @@ public final class Utilities {
                 icon.setBounds(left, top, left+width, top+height);
             }
             canvas.save(Canvas.MATRIX_SAVE_FLAG);
-            canvas.scale(scale, scale, textureWidth / 2, textureHeight / 2);
+            canvas.scale(scale, scale, iconBitmapSize / 2, iconBitmapSize / 2);
             icon.draw(canvas);
             canvas.restore();
             icon.setBounds(sOldBounds);
@@ -472,7 +471,7 @@ public final class Utilities {
                 localY < (v.getHeight() + slop);
     }
 
-    public static int[] getCenterDeltaInScreenSpace(View v0, View v1, int[] delta) {
+    static int[] getCenterDeltaInScreenSpace(View v0, View v1, int[] delta) {
         v0.getLocationInWindow(sLoc0);
         v1.getLocationInWindow(sLoc1);
 
@@ -491,7 +490,7 @@ public final class Utilities {
         return delta;
     }
 
-    public static void scaleRectAboutCenter(Rect r, float scale) {
+    static void scaleRectAboutCenter(Rect r, float scale) {
         if (scale != 1.0f) {
             int cx = r.centerX();
             int cy = r.centerY();
@@ -506,7 +505,7 @@ public final class Utilities {
         }
     }
 
-    public static void startActivityForResultSafely(
+    static void startActivityForResultSafely(
             Activity activity, Intent intent, int requestCode) {
         try {
             activity.startActivityForResult(intent, requestCode);
@@ -650,7 +649,7 @@ public final class Utilities {
     /**
      * Compresses the bitmap to a byte array for serialization.
      */
-    public static byte[] flattenBitmap(Bitmap bitmap) {
+    static byte[] flattenBitmap(Bitmap bitmap) {
         // Try go guesstimate how much space the icon will take when serialized
         // to avoid unnecessary allocations/copies during the write.
         int size = bitmap.getWidth() * bitmap.getHeight() * 4;
@@ -683,7 +682,7 @@ public final class Utilities {
     /**
      * Calculates the height of a given string at a specific text size.
      */
-    public static int calculateTextHeight(float textSizePx, boolean twoLines) {
+    static int calculateTextHeight(float textSizePx, boolean twoLines) {
         Paint p = new Paint();
         p.setTextSize(textSizePx);
         Paint.FontMetrics fm = p.getFontMetrics();
@@ -702,7 +701,7 @@ public final class Utilities {
      *
      * @param launchIntent The intent that will be launched when the shortcut is clicked.
      */
-    public static boolean isLauncherAppTarget(Intent launchIntent) {
+    static boolean isLauncherAppTarget(Intent launchIntent) {
         if (launchIntent != null
                 && Intent.ACTION_MAIN.equals(launchIntent.getAction())
                 && launchIntent.getComponent() != null
@@ -722,7 +721,7 @@ public final class Utilities {
         return false;
     }
 
-    public static float dpiFromPx(int size, DisplayMetrics metrics) {
+    static float dpiFromPx(int size, DisplayMetrics metrics) {
         float densityRatio = (float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT;
         return (size / densityRatio);
     }
@@ -732,7 +731,7 @@ public final class Utilities {
                 size, metrics));
     }
 
-    public static int pxFromSp(float size, DisplayMetrics metrics) {
+    static int pxFromSp(float size, DisplayMetrics metrics) {
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                 size, metrics));
     }
@@ -751,11 +750,11 @@ public final class Utilities {
         return String.format(Locale.ENGLISH, "%s IN (%s)", columnName, TextUtils.join(", ", values));
     }
 
-    public static boolean isBootCompleted() {
+    static boolean isBootCompleted() {
         return "1".equals(getSystemProperty("sys.boot_completed", "1"));
     }
 
-    public static String getSystemProperty(String property, String defaultValue) {
+    private static String getSystemProperty(String property, String defaultValue) {
         try {
             Class clazz = Class.forName("android.os.SystemProperties");
             Method getter = clazz.getDeclaredMethod("get", String.class);
@@ -809,24 +808,24 @@ public final class Utilities {
         return ThemeProvider.INSTANCE.getThemer();
     }
 
-    public static boolean isPowerSaverOn(Context context) {
+    static boolean isPowerSaverOn(Context context) {
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        return powerManager.isPowerSaveMode();
+        return powerManager != null && powerManager.isPowerSaveMode();
     }
 
     public static boolean isWallapaperAllowed(Context context) {
         if (ATLEAST_NOUGAT) {
             try {
                 WallpaperManager wm = context.getSystemService(WallpaperManager.class);
-                return (Boolean) wm.getClass().getDeclaredMethod("isSetWallpaperAllowed")
-                        .invoke(wm);
+                return (Boolean) (wm != null ? wm.getClass().getDeclaredMethod("isSetWallpaperAllowed")
+                        .invoke(wm) : false);
             } catch (Exception ignored) {
             }
         }
         return true;
     }
 
-    public static void closeSilently(Closeable c) {
+    static void closeSilently(Closeable c) {
         if (c != null) {
             try {
                 c.close();
@@ -840,10 +839,6 @@ public final class Utilities {
      */
     public static boolean isEmpty(Collection c) {
         return c == null || c.isEmpty();
-    }
-
-    public static void stackTrace() {
-        (new Throwable()).printStackTrace();
     }
 
     public static void setDefaultLauncher(@NotNull Context context) {
@@ -871,7 +866,7 @@ public final class Utilities {
      */
     private static class FixedSizeBitmapDrawable extends BitmapDrawable {
 
-        public FixedSizeBitmapDrawable(Bitmap bitmap) {
+        FixedSizeBitmapDrawable(Bitmap bitmap) {
             super(null, bitmap);
         }
 
@@ -902,7 +897,7 @@ public final class Utilities {
     public static void sendCustomAccessibilityEvent(View target, int type, String text) {
         AccessibilityManager accessibilityManager = (AccessibilityManager)
                 target.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-        if (accessibilityManager.isEnabled()) {
+        if (accessibilityManager != null && accessibilityManager.isEnabled()) {
             AccessibilityEvent event = AccessibilityEvent.obtain(type);
             target.onInitializeAccessibilityEvent(event);
             event.getText().add(text);
@@ -920,7 +915,7 @@ public final class Utilities {
         return hashSet;
     }
 
-    public static void setAppVisibility(Context context, String key, boolean visible) {
+    static void setAppVisibility(Context context, String key, boolean visible) {
         Set<String> hiddenApps = getPrefs(context).getHiddenAppsSet();
         if (visible)
             hiddenApps.remove(key);
@@ -929,7 +924,7 @@ public final class Utilities {
         getPrefs(context).setHiddenAppsSet(hiddenApps);
     }
 
-    public static boolean isAppHidden(Context context, String key) {
+    static boolean isAppHidden(Context context, String key) {
         return getPrefs(context).getHiddenAppsSet().contains(key);
     }
 
@@ -958,14 +953,10 @@ public final class Utilities {
         prefs.setPreviousBuildNumber(buildNumber);
     }
 
-    public static void showChangelog(Context context) {
-        showChangelog(context, false);
-    }
-
-    public static void showChangelog(Context context, boolean force) {
+    private static void showChangelog(Context context) {
         if (!BuildConfig.TRAVIS || BuildConfig.TAGGED_BUILD || !BuildConfig.DEBUG) return;
         final IPreferenceProvider prefs = getPrefs(context);
-        if (force || BuildConfig.TRAVIS_BUILD_NUMBER != getPreviousBuildNumber(prefs)) {
+        if (BuildConfig.TRAVIS_BUILD_NUMBER != getPreviousBuildNumber(prefs)) {
             new AlertDialog.Builder(context)
                     .setTitle(String.format(context.getString(R.string.changelog_title), BuildConfig.TRAVIS_BUILD_NUMBER))
                     .setMessage(getChangelog().trim())
@@ -1016,7 +1007,7 @@ public final class Utilities {
         return PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS.equals(prefs.getWeatherProvider());
     }
 
-    public static boolean isComponentClock(ComponentName componentName, boolean stockAppOnly) {
+    private static boolean isComponentClock(ComponentName componentName, boolean stockAppOnly) {
         if (componentName == null) {
             return false;
         }
@@ -1084,7 +1075,7 @@ public final class Utilities {
         return false;
     }
 
-    public static void showLawnfeedPopup(final Context context) {
+    static void showLawnfeedPopup(final Context context) {
         if (!BuildConfig.ENABLE_LAWNFEED) return;
         final IPreferenceProvider prefs = getPrefs(context);
 
@@ -1107,6 +1098,7 @@ public final class Utilities {
                 .setTitle(R.string.lawnfeed_not_enabled_title)
                 .setMessage(R.string.lawnfeed_not_enabled)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @SuppressLint("ApplySharedPref")
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         // Enable Google Now page setting
@@ -1150,7 +1142,7 @@ public final class Utilities {
         }
     }
 
-    public static void showOutdatedLawnfeedPopup(final Context context) {
+    static void showOutdatedLawnfeedPopup(final Context context) {
         if (!BuildConfig.ENABLE_LAWNFEED || ILauncherClient.Companion.getEnabledState(context) != ILauncherClient.DISABLED_CLIENT_OUTDATED) return;
         new AlertDialog.Builder(context)
             .setTitle(R.string.lawnfeed_outdated_title)
@@ -1158,9 +1150,14 @@ public final class Utilities {
             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    // Open website with download link for Lawnfeed
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://lawnchair.info/getlawnfeed.html"));
-                    context.startActivity(intent);
+                    try {
+                        // Open website with download link for Lawnfeed
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://lawnchair.info/getlawnfeed.html"));
+                        context.startActivity(intent);
+                    } catch (ActivityNotFoundException exc) {
+                        // Believe me, this actually happens.
+                        Toast.makeText(context, R.string.error_no_browser, Toast.LENGTH_SHORT).show();
+                    }
                 }
             })
             .setNegativeButton(android.R.string.no, null)
@@ -1173,7 +1170,7 @@ public final class Utilities {
             if (info != null && info.versionCode == 1 && !info.versionName.equals("dev")) {
                 return true;
             }
-        } catch (PackageManager.NameNotFoundException e) {}
+        } catch (PackageManager.NameNotFoundException ignored) {}
 
         return false;
     }
@@ -1194,7 +1191,7 @@ public final class Utilities {
         System.exit(0);
     }
 
-    public static int getNumberOfHotseatRows(Context context){
+    static int getNumberOfHotseatRows(Context context){
         boolean twoLines = PreferenceProvider.INSTANCE.getPreferences(context).getTwoRowDock();
         return twoLines ? 2 : 1;
     }
