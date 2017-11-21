@@ -965,7 +965,7 @@ public final class Utilities {
         prefs.setPreviousBuildNumber(buildNumber);
     }
 
-    private static void showChangelog(Context context) {
+    static void showChangelog(Context context) {
         if (!BuildConfig.TRAVIS || BuildConfig.TAGGED_BUILD || !BuildConfig.DEBUG) return;
         final IPreferenceProvider prefs = getPrefs(context);
         if (BuildConfig.TRAVIS_BUILD_NUMBER != getPreviousBuildNumber(prefs)) {
