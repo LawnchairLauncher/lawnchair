@@ -1674,13 +1674,16 @@ public class LauncherModel extends BroadcastReceiver
                 }*/
 
                 if (hotseatOccupancy != null) {
-                    if (hotseatOccupancy.cells[(int) item.screenId][item.cellY]) {
+                    int hotseatSize = hotseatOccupancy.cells.length;
+                    int hotseatX = (int) (item.screenId % hotseatSize);
+                    int hotseatY = (int) (item.screenId / hotseatSize);
+                    if (hotseatOccupancy.cells[hotseatX][hotseatY]) {
                         Log.e(TAG, "Error loading shortcut into hotseat " + item
                                 + " into position (" + item.screenId + ":" + item.cellX + ","
                                 + item.cellY + ") already occupied");
                         return false;
                     } else {
-                        hotseatOccupancy.cells[(int) item.screenId][item.cellY] = true;
+                        hotseatOccupancy.cells[hotseatX][hotseatY] = true;
                         return true;
                     }
                 } else {

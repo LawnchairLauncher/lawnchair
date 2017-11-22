@@ -88,16 +88,20 @@ public class Hotseat extends FrameLayout {
 
     /* Get the orientation invariant order of the item in the hotseat for persistence. */
     int getOrderInHotseat(int x, int y) {
-        return mHasVerticalHotseat ? (mContent.getCountY() - y - 1) : x;
+        int xOrder = mHasVerticalHotseat ? (mContent.getCountY() - y - 1) : x;
+        int yOrder = mHasVerticalHotseat ? x * mContent.getCountY() : y * mContent.getCountX();
+        return xOrder + yOrder;
     }
 
     /* Get the orientation specific coordinates given an invariant order in the hotseat. */
     int getCellXFromOrder(int rank) {
-        return mHasVerticalHotseat ? 0 : rank;
+        int size = mHasVerticalHotseat ? mContent.getCountY() : mContent.getCountX();
+        return mHasVerticalHotseat ? rank / size : rank % size;
     }
 
     int getCellYFromOrder(int rank) {
-        return mHasVerticalHotseat ? (mContent.getCountY() - (rank + 1)) : 0;
+        int size = mHasVerticalHotseat ? mContent.getCountY() : mContent.getCountX();
+        return mHasVerticalHotseat ? (mContent.getCountY() - ((rank % size) + 1)) : rank / size;
     }
 
     @Override
