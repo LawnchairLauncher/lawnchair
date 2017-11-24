@@ -140,9 +140,9 @@ public class AlphabeticalAppsList {
             return item;
         }
 
-        public static AdapterItem asMarketDivider(int pos) {
+        public static AdapterItem asAllAppsDivider(int pos) {
             AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER;
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_ALL_APPS_DIVIDER;
             item.position = pos;
             return item;
         }
@@ -157,6 +157,13 @@ public class AlphabeticalAppsList {
         public static AdapterItem asMarketSearch(int pos) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET;
+            item.position = pos;
+            return item;
+        }
+
+        public static AdapterItem asWorkTabFooter(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_WORK_TAB_FOOTER;
             item.position = pos;
             return item;
         }
@@ -179,6 +186,8 @@ public class AlphabeticalAppsList {
     // The set of predicted apps resolved from the component names and the current set of apps
     private final List<AppInfo> mPredictedApps = new ArrayList<>();
     private final List<AppDiscoveryAppInfo> mDiscoveredApps = new ArrayList<>();
+    // Is it the work profile app list.
+    private final boolean mIsWork;
 
     // The of ordered component names as a result of a search query
     private ArrayList<ComponentKey> mSearchResults;
@@ -191,11 +200,16 @@ public class AlphabeticalAppsList {
     private int mNumAppRowsInAdapter;
     private ItemInfoMatcher mItemFilter;
 
-    public AlphabeticalAppsList(Context context, HashMap<ComponentKey, AppInfo> componentToAppMap) {
+    public AlphabeticalAppsList(
+            Context context,
+            HashMap<ComponentKey,
+            AppInfo> componentToAppMap,
+            boolean isWork) {
         mComponentToAppMap = componentToAppMap;
         mLauncher = Launcher.getLauncher(context);
         mIndexer = new AlphabeticIndexCompat(context);
         mAppNameComparator = new AppInfoComparator(context);
+        mIsWork = isWork;
     }
 
     public void updateItemFilter(ItemInfoMatcher itemFilter) {
@@ -545,7 +559,7 @@ public class AlphabeticalAppsList {
                 if (hasNoFilteredResults()) {
                     mAdapterItems.add(AdapterItem.asEmptySearch(position++));
                 } else {
-                    mAdapterItems.add(AdapterItem.asMarketDivider(position++));
+                    mAdapterItems.add(AdapterItem.asAllAppsDivider(position++));
                 }
                 mAdapterItems.add(AdapterItem.asMarketSearch(position++));
             }
@@ -603,6 +617,12 @@ public class AlphabeticalAppsList {
                     }
                     break;
             }
+        }
+
+        // Add the work profile footer if required.
+        if (mIsWork) {
+            mAdapterItems.add(AdapterItem.asAllAppsDivider(position++));
+            mAdapterItems.add(AdapterItem.asWorkTabFooter(position++));
         }
     }
 

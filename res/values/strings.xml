@@ -324,4 +324,7 @@
     <!-- Label of tab to indicate work apps -->
     <string name="all_apps_work_tab">Work</string>
 
+    <!-- Label of the work mode toggle -->
+    <string name="work_profile_toggle_label">Work profile</string>
+
 </resources>
