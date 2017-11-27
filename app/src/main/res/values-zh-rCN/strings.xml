@@ -22,7 +22,7 @@
   <!-- Application name -->
   <!-- Default folder name -->
   <!-- Work folder name -->
-  <string name="work_folder_name">工作文件夹</string>
+  <string name="work_folder_name">工作</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
   <string name="activity_not_found">未安装该应用。</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
@@ -53,7 +53,7 @@
   <string name="all_apps_search_market_message">搜索更多应用</string>
   <!-- Drag and drop -->
   <!-- Error message when user has filled a page -->
-  <string name="out_of_space">No more room on this Home screen.</string>
+  <string name="out_of_space">此页面上已没有空间。</string>
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">收藏栏已满</string>
   <!-- All applications label -->
@@ -77,14 +77,14 @@
   <!-- Permission description -->
   <string name="permdesc_read_settings">允许应用读取主屏幕中的设置和快捷方式。</string>
   <!-- Permission short label -->
-  <string name="permlab_write_settings">write Home settings and shortcuts</string>
+  <string name="permlab_write_settings">写入主屏幕设置和快捷方式。</string>
   <!-- Permission description -->
   <string name="permdesc_write_settings">允许应用更改主屏幕中的设置和快捷方式。</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission">不允许使用“<xliff:g id="APP_NAME">%1$s</xliff:g>”拨打电话</string>
   <!-- Widgets: -->
   <!-- Text to show user in place of a gadget when we can't display it properly -->
-  <string name="gadget_error_text">加载小部件时出现问题</string>
+  <string name="gadget_error_text">加载微件时出现问题</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
   <string name="gadget_setup_text">设置</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
@@ -115,7 +115,7 @@
   <string name="folder_name_format">文件夹：<xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Strings for the customization mode -->
   <!-- Text for widget add button -->
-  <string name="widget_button_text">小部件</string>
+  <string name="widget_button_text">微件</string>
   <!-- Text for wallpaper change button -->
   <string name="wallpaper_button_text">壁纸</string>
   <!-- Text for settings button -->
@@ -161,7 +161,7 @@
   <!-- Accessibility description to move item to the hotseat. -->
   <string name="move_to_hotseat_position">移至收藏夹第 <xliff:g id="NUMBER">%1$s</xliff:g> 个位置</string>
   <!-- Accessibility confirmation for item move. -->
-  <string name="item_moved">已移动项目</string>
+  <string name="item_moved">项目已移动</string>
   <!-- Accessibility description to move item into an existing folder. -->
   <string name="add_to_folder">添加到“<xliff:g id="NAME">%1$s</xliff:g>”文件夹</string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
@@ -198,7 +198,7 @@
   <string name="shortcuts_menu_description"><xliff:g id="APP_NAME">%2$s</xliff:g>有 <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> 个快捷方式</string>
   <string name="edit_drop_target_label">编辑</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
-  <string name="wallpaper_instructions">设置壁纸</string>
+  <string name="wallpaper_instructions">设为壁纸</string>
   <!-- Error message when an image is selected as a wallpaper,
          but the wallpaper picker cannot load it -->
   <string name="image_load_fail">无法加载图片</string>
@@ -234,7 +234,7 @@
   <!-- Option for setting the wallpaper only on the lock screen. -->
   <string name="which_wallpaper_option_lock_screen">锁屏界面</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
-  <string name="which_wallpaper_option_home_screen_and_lock_screen">主屏幕与锁定屏幕</string>
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">主屏幕与锁屏界面</string>
   <string name="title_show_google_app">显示 %1$s</string>
   <string name="title_show_google_app_default">显示 Google 应用</string>
   <string name="label_search">搜索</string>
@@ -254,7 +254,7 @@
   <string name="hotseat_show_arrow">显示箭头标识</string>
   <string name="hotseat_show_page_indicator">显示页面指示器</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Dock 栏将使用壁纸中的某种颜色</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">Dock 栏将会变成灰色，但会根据壁纸亮度作适当调整</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">Dock 栏将会变成灰色，但会根据壁纸明暗作适当调整</string>
   <string name="transparent_hotseat_pref_title">透明化 Dock 栏</string>
   <string name="dynamic_ui_pref_title">主色调从壁纸取色</string>
   <string name="blur_pref_title">开启模糊</string>
@@ -272,24 +272,24 @@
   <string name="icon_scale_pref_title">图标大小</string>
   <string name="hotseat_height_scale">高度</string>
   <string name="icon_text_scale_pref_title">图标标签大小</string>
-  <string name="icon_text_padding_scale_pref_title">行间距大小</string>
+  <string name="icon_text_padding_scale_pref_title">图标间距大小</string>
   <string name="full_width_width_widgets_pref_title">全宽微件</string>
   <string name="full_width_widgets_pref_summary">允许微件填充整个桌面宽度</string>
   <string name="notification_access_pref_title">通知角标与预览</string>
   <string name="notification_access_pref_summary">允许 Lawnchair 访问您的通知以启用此功能</string>
-  <string name="general_pref_title">常规</string>
+  <string name="general_pref_title">桌面</string>
   <string name="dock_pref_title">Dock</string>
   <string name="app_drawer_pref_title">应用抽屉</string>
   <string name="pixel_ui_pref_title">主题</string>
   <string name="behavior_pref_title">行为</string>
   <string name="debug_pref_title">调试</string>
-  <string name="general_pref_summary">主屏幕，dock 和应用抽屉</string>
+  <string name="general_pref_summary">自定义您的桌面</string>
   <string name="dock_pref_summary">定制您的 dock</string>
   <string name="app_drawer_pref_summary">定制您的应用抽屉</string>
   <string name="pixel_ui_pref_summary">为不同元素应用主题</string>
-  <string name="backup_pref_title">备份</string>
+  <string name="backup_pref_title">备份 &amp; 恢复</string>
   <string name="behavior_pref_summary">更改 Lawnchair 行为</string>
-  <string name="backup_pref_summary">备份您的数据库和配置</string>
+  <string name="backup_pref_summary">备份 / 还原您的数据库和配置</string>
   <string name="debug_pref_summary">重启或重建图标缓存</string>
   <string name="show_pixel_bar_pref_title">显示 Pixel 顶栏</string>
   <string name="use_wide_searchbar_pref_title">使用宽搜索栏</string>
@@ -339,7 +339,7 @@
   <string name="pull_down_apps_search">查找应用</string>
   <string name="enable_screen_rotation">启用屏幕旋转</string>
   <!-- Import/Export Strings -->
-  <string name="backup_import_title">导入</string>
+  <string name="backup_import_title">恢复</string>
   <string name="backup_export_title">导出</string>
   <string name="settings_export_success">设置已成功备份</string>
   <string name="db_export_success">数据已成功备份</string>
@@ -348,8 +348,8 @@
   <string name="export_error">无法备份</string>
   <string name="import_error">无法恢复</string>
   <string name="imexport_no_backup_found">未找到备份</string>
-  <string name="imexport_external_storage_unreadable">外部存储不可读取（在系统设置中授予权限）</string>
-  <string name="imexport_external_storage_unwritable">外部存储不可写入（在系统设置中授予权限）</string>
+  <string name="imexport_external_storage_unreadable">在系统设置中授予外部存储读取权限</string>
+  <string name="imexport_external_storage_unwritable">在系统设置中授予外部存储读取权限</string>
   <string name="units_metric">公制</string>
   <string name="units_imperial">英制</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
@@ -363,7 +363,7 @@
   <string name="pref_applyBlur">应用模糊效果</string>
   <string name="search_bar">搜索栏</string>
   <string name="folder">文件夹</string>
-  <string name="dock_allapps"><![CDATA[Dock 栏与所有应用]]></string>
+  <string name="dock_allapps"><![CDATA[Dock 栏与应用抽屉]]></string>
   <string name="app_shortcuts">应用快捷方式</string>
   <string name="blur_effect">模糊效果</string>
   <string name="pref_weather_provider">天气提供商</string>
@@ -377,7 +377,7 @@
   <string name="icon_shape_circle">圆形</string>
   <string name="icon_shape_teardrop">泪珠形</string>
   <string name="animated_clock_icon_title">动态时钟图标</string>
-  <string name="animated_clock_icon_alternative_clock_apps_title">动态显示其他时钟应用</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">为其他时钟应用显示动态图标</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">当谷歌时钟并非你的默认时钟应用时启用此选项</string>
   <string name="about_summary_title">概述</string>
   <string name="about_version">版本</string>
@@ -386,7 +386,7 @@
   <string name="location_permission_warn">切换到另一个提供商需要获得位置权限 ！😇</string>
   <string name="num_cols_drawer_pref_title">抽屉中的网格列数</string>
   <string name="shortcut_backport_warning">该功能可能引起桌面性能下降，请自行承担后果</string>
-  <string name="pref_backport_shortcuts">向下支持应用快捷方式</string>
+  <string name="pref_backport_shortcuts">向低版本 Android 启用应用快捷方式</string>
   <string name="weather_api_key_not_set">API 密钥未设置</string>
   <string name="pref_weather_api_key_title">API 密钥</string>
   <string name="about_changelog">更新日志​​​​​</string>
@@ -417,4 +417,7 @@
   <string name="lawnfeed_not_installed_title">Lawnfeed 未安装</string>
   <string name="lawnfeed_not_installed">看起来您正在尝试打开 Google Now 页面，但是您还没有从我们的网站安装 Lawnfeed 应用。\n\n您想现在下载吗？</string>
   <string name="disable_popup">不再提示</string>
+  <string name="two_row_dock">两行应用 Dock 栏</string>
+  <string name="reset_alternative_icons_title">重置备选应用图标</string>
+  <string name="reset_alternative_icons">您有 %1$d 具有备用图标，您想重置它们吗？</string>
 </resources>
