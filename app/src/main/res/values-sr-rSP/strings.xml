@@ -419,4 +419,7 @@
   <string name="lawnfeed_not_installed_title">Lawnfeed није инсталиран</string>
   <string name="lawnfeed_not_installed">Изгледа да покушавате да отворите страницу Google Now, али нисте инсталирали апликацију Lawnfeed са нашег website.\n\nДа ли желите да преузмете то сада?</string>
   <string name="disable_popup">Не приказуј поново</string>
+  <string name="two_row_dock">Два реда dock</string>
+  <string name="reset_alternative_icons_title">Поништи алтернативне апликације икона?</string>
+  <string name="reset_alternative_icons">Имате %1$d апликација са алтернативним иконама, желите ли да поништите их?</string>
 </resources>
