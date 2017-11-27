@@ -418,4 +418,7 @@
   <string name="lawnfeed_not_installed_title">Lawnfeed não instalado</string>
   <string name="lawnfeed_not_installed">Parece que você está tentando abrir a página do Google Now, mas você não instalou o aplicativo Lawnfeed do nosso site\n\nVocê quer fazer o download agora?</string>
   <string name="disable_popup">Lembrar minha escolha</string>
+  <string name="two_row_dock">Barra de ícones com 2 linhas</string>
+  <string name="reset_alternative_icons_title">Redefinir os ícones do app alternativo?</string>
+  <string name="reset_alternative_icons">Você tem %1$d apps com ícones alternativos, quer restaurá-los?</string>
 </resources>
