@@ -31,7 +31,7 @@
   <string name="safemode_shortcut_error">Στην Ασφαλή λειτουργία,
 απενεργοποιούνται οι εφαρμογές που εσείς έχετε εγκαταστήσει</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">Τα γραφικά στοιχεία απενεργοποιήθηκαν στην ασφαλή λειτουργία</string>
+  <string name="safemode_widget_error">Τα γραφικά στοιχεία απενεργοποιούνται στην ασφαλή λειτουργία</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">Η συντόμευση δεν είναι διαθέσιμη</string>
   <!-- Widgets -->
@@ -419,4 +419,7 @@
   <string name="lawnfeed_not_installed_title">Το Lawnfeed δεν είναι εγκατεστημένο</string>
   <string name="lawnfeed_not_installed">Μοιάζει με προσπαθείτε να ανοίξετε το πλαϊνό πάνελ Google Now, αλλά δεν έχετε εγκαταστήσει την εφαρμογή Lawnfeed από την ιστοσελίδα μας.\n\nΘέλετε να την κατεβάσετε τώρα;</string>
   <string name="disable_popup">Να μην εμφανιστεί ξανά</string>
+  <string name="two_row_dock">Μπάρα εφαρμογών με δύο σειρές</string>
+  <string name="reset_alternative_icons_title">Επαναφορά τροποποιημένων εικονιδίων εφαρμογών;</string>
+  <string name="reset_alternative_icons">Έχετε %1$d εφαρμογή/ες με τροποποιημένα εικονίδια, είστε βέβαιοι ότι θέλετε να τα επαναφέρετε στην αρχική τους μορφή;</string>
 </resources>
