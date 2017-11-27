@@ -492,19 +492,9 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         mViewPager.setAdapter(mTabsPagerAdapter = new TabsPagerAdapter());
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
-            boolean mVisible = true;
-
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 tabs.updateIndicatorPosition(position, positionOffset);
-                if (positionOffset == 0 && !mVisible || positionOffset > 0 && mVisible) {
-                    mVisible = positionOffset == 0;
-                    for (int i = 0; i < mAH.length; i++) {
-                        if (mAH[i].recyclerView != null) {
-                            mAH[i].recyclerView.getScrollbar().setAlpha(mVisible ? 1 : 0);
-                        }
-                    }
-                }
             }
 
             @Override
@@ -521,6 +511,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             public void onPageScrollStateChanged(int state) {
             }
         });
+        mAH[AdapterHolder.MAIN].recyclerView.bindFastScrollbar();
 
         findViewById(R.id.tab_personal)
                 .setOnClickListener((View view) -> mViewPager.setCurrentItem(0));
@@ -568,8 +559,8 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             contentHeight += getResources()
                     .getDimensionPixelSize(R.dimen.all_apps_prediction_row_divider_height);
         }
-        RecyclerView mainRV = mAH[AdapterHolder.MAIN].recyclerView;
-        RecyclerView workRV = mAH[AdapterHolder.WORK].recyclerView;
+        AllAppsRecyclerView mainRV = mAH[AdapterHolder.MAIN].recyclerView;
+        AllAppsRecyclerView workRV = mAH[AdapterHolder.WORK].recyclerView;
         mFloatingHeaderHandler.setup(mainRV, workRV, contentHeight);
         mFloatingHeaderHandler.getContentView().setup(mAH[AdapterHolder.MAIN].adapter,
                 mComponentToAppMap, mNumPredictedAppsPerRow);
