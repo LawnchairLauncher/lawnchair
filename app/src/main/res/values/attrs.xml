@@ -132,6 +132,10 @@
         <attr name="longClickContent" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="RecyclerViewFastScroller">
+        <attr name="canThumbDetach" format="boolean" />
+    </declare-styleable>
+
     <attr name="materialPanelBgColor" format="color" />
     <attr name="popupColorPrimary" format="color" />
     <attr name="popupColorSecondary" format="color" />

@@ -76,7 +76,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     public AllAppsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         addOnItemTouchListener(this);
-        mScrollbar.setDetachThumbOnFastScroll();
+        //mScrollbar.setDetachThumbOnFastScroll();
         addOnItemTouchListener(this);
         mOverScrollHelper = new OverScrollHelper();
         mPullDetector = new VerticalPullDetector(getContext());
@@ -196,9 +196,9 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         // Clip to ensure that we don't draw the overscroll effect beyond the background bounds
-        canvas.clipRect(mBackgroundPadding.left, mBackgroundPadding.top,
+        /*canvas.clipRect(mBackgroundPadding.left, mBackgroundPadding.top,
                 getWidth() - mBackgroundPadding.right,
-                getHeight() - mBackgroundPadding.bottom);
+                getHeight() - mBackgroundPadding.bottom);*/
         super.dispatchDraw(canvas);
     }
 
@@ -268,74 +268,48 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
      * Updates the bounds for the scrollbar.
      */
     @Override
-    public void onUpdateScrollbar(int dy) {
-        List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
-
-        // Skip early if there are no items or we haven't been measured
-        if (items.isEmpty() || mNumAppsPerRow == 0) {
-            mScrollbar.setThumbOffset(-1, -1);
+    public void onUpdateScrollbar(int i) {
+        if (this.mApps.getAdapterItems().isEmpty() || this.mNumAppsPerRow == 0) {
+            this.mScrollbar.setThumbOffsetY(-1);
             return;
         }
-
-        // Skip early if, there no child laid out in the container.
-        int scrollY = getCurrentScrollY();
-        if (scrollY < 0) {
-            mScrollbar.setThumbOffset(-1, -1);
+        int currentScrollY = getCurrentScrollY();
+        if (currentScrollY < 0) {
+            this.mScrollbar.setThumbOffsetY(-1);
             return;
         }
-
-        // Only show the scrollbar if there is height to be scrolled
+        int availableScrollBarHeight = getAvailableScrollBarHeight();
         int availableScrollHeight = getAvailableScrollHeight();
         if (availableScrollHeight <= 0) {
-            mScrollbar.setThumbOffset(-1, -1);
+            this.mScrollbar.setThumbOffsetY(-1);
             return;
         }
-
-        if (mScrollbar.isThumbDetached()) {
-            if (!mScrollbar.isDraggingThumb()) {
-                // Calculate the current scroll position, the scrollY of the recycler view accounts
-                // for the view padding, while the scrollBarY is drawn right up to the background
-                // padding (ignoring padding)
-                int availableScrollBarHeight = getAvailableScrollBarHeight();
-                int scrollBarX = getScrollBarX();
-                int scrollBarY = mBackgroundPadding.top +
-                        (int) (((float) scrollY / availableScrollHeight) * availableScrollBarHeight);
-
-                int thumbScrollY = mScrollbar.getThumbOffset().y;
-                int diffScrollY = scrollBarY - thumbScrollY;
-                if (diffScrollY * dy > 0f) {
-                    // User is scrolling in the same direction the thumb needs to catch up to the
-                    // current scroll position.  We do this by mapping the difference in movement
-                    // from the original scroll bar position to the difference in movement necessary
-                    // in the detached thumb position to ensure that both speed towards the same
-                    // position at either end of the list.
-                    if (dy < 0) {
-                        int offset = (int) ((dy * thumbScrollY) / (float) scrollBarY);
-                        thumbScrollY += Math.max(offset, diffScrollY);
-                    } else {
-                        int offset = (int) ((dy * (availableScrollBarHeight - thumbScrollY)) /
-                                (float) (availableScrollBarHeight - scrollBarY));
-                        thumbScrollY += Math.min(offset, diffScrollY);
-                    }
-                    thumbScrollY = Math.max(0, Math.min(availableScrollBarHeight, thumbScrollY));
-                    mScrollbar.setThumbOffset(scrollBarX, thumbScrollY);
-                    if (scrollBarY == thumbScrollY) {
-                        mScrollbar.reattachThumbToScroll();
-                    }
+        if (!this.mScrollbar.isThumbDetached()) {
+            synchronizeScrollBarThumbOffsetToViewScroll(currentScrollY, availableScrollHeight);
+        } else if (!this.mScrollbar.isDraggingThumb()) {
+            availableScrollHeight = (int) ((((float) currentScrollY) / ((float) availableScrollHeight)) * ((float) availableScrollBarHeight));
+            currentScrollY = this.mScrollbar.getThumbOffsetY();
+            int i2 = availableScrollHeight - currentScrollY;
+            if (((float) (i2 * i)) > 0.0f) {
+                if (i < 0) {
+                    currentScrollY += Math.max((int) (((float) (i * currentScrollY)) / ((float) availableScrollHeight)), i2);
                 } else {
-                    // User is scrolling in an opposite direction to the direction that the thumb
-                    // needs to catch up to the scroll position.  Do nothing except for updating
-                    // the scroll bar x to match the thumb width.
-                    mScrollbar.setThumbOffset(scrollBarX, thumbScrollY);
+                    currentScrollY += Math.min((int) (((float) ((availableScrollBarHeight - currentScrollY) * i)) / ((float) (availableScrollBarHeight - availableScrollHeight))), i2);
                 }
+                currentScrollY = Math.max(0, Math.min(availableScrollBarHeight, currentScrollY));
+                this.mScrollbar.setThumbOffsetY(currentScrollY);
+                if (availableScrollHeight == currentScrollY) {
+                    this.mScrollbar.reattachThumbToScroll();
+                }
+            } else {
+                this.mScrollbar.setThumbOffsetY(currentScrollY);
             }
-        } else {
-            synchronizeScrollBarThumbOffsetToViewScroll(scrollY, availableScrollHeight);
         }
     }
 
+
     @Override
-    protected boolean supportsFastScrolling() {
+    public boolean supportsFastScrolling() {
         // Only allow fast scrolling when the user is not searching, since the results are not
         // grouped in a meaningful order
         return !mApps.hasFilter();
@@ -389,22 +363,20 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         return getPaddingTop() + y - offset;
     }
 
-    @Override
+    /*@Override
     protected int getVisibleHeight() {
         return super.getVisibleHeight()
                 - Launcher.getLauncher(getContext()).getDragLayer().getInsets().bottom;
-    }
+    }*/
 
     /**
      * Returns the available scroll height:
      * AvailableScrollHeight = Total height of the all items - last page height
      */
-    @Override
     protected int getAvailableScrollHeight() {
-        int paddedHeight = getCurrentScrollY(mApps.getAdapterItems().size(), 0);
-        int totalHeight = paddedHeight + getPaddingBottom();
-        return totalHeight - getVisibleHeight();
+        return ((getPaddingTop() + getCurrentScrollY(this.mApps.getAdapterItems().size(), 0)) - getHeight()) + getPaddingBottom();
     }
+
 
     class OverScrollHelper implements VerticalPullDetector.Listener {
         private boolean mAlreadyScrollingUp;

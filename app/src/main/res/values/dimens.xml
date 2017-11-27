@@ -218,4 +218,16 @@
     <dimen name="all_apps_vertical_icon_size">48.0dip</dimen>
     <dimen name="qsb_connector_gradient_end_padding">20.0dip</dimen>
     <dimen name="popup_elevation">9dp</dimen>
+    <dimen name="fastscroll_track_min_width">6.0dip</dimen>
+    <dimen name="fastscroll_track_max_width">8.0dip</dimen>
+    <dimen name="fastscroll_thumb_padding">1.0dip</dimen>
+    <dimen name="fastscroll_thumb_height">52.0dip</dimen>
+    <dimen name="fastscroll_thumb_touch_inset">-24.0dip</dimen>
+    <dimen name="fastscroll_popup_width">75.0dip</dimen>
+    <dimen name="fastscroll_popup_height">62.0dip</dimen>
+    <dimen name="fastscroll_popup_padding">13.0dip</dimen>
+    <dimen name="fastscroll_popup_text_size">32.0dip</dimen>
+    <dimen name="fastscroll_popup_margin">19.0dip</dimen>
+    <dimen name="fastscroll_width">58.0dip</dimen>
+    <dimen name="fastscroll_end_margin">-26.0dip</dimen>
 </resources>

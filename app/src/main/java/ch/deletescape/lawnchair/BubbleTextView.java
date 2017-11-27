@@ -59,8 +59,7 @@ import ch.deletescape.lawnchair.pixelify.ClockIconDrawable;
  * because we want to make the bubble taller than the text and TextView's clip is
  * too aggressive.
  */
-public class BubbleTextView extends TextView
-        implements BaseRecyclerViewFastScrollBar.FastScrollFocusableView {
+public class BubbleTextView extends TextView {
 
     private static final Property BADGE_SCALE_PROPERTY = new C02921(Float.TYPE, "badgeScale");
     private boolean mHideText;
@@ -768,7 +767,7 @@ public class BubbleTextView extends TextView
         }
     }
 
-    @Override
+    /*@Override
     public void setFastScrollFocusState(final FastBitmapDrawable.State focusState, boolean animated) {
         // We can only set the fast scroll focus state on a FastBitmapDrawable
         if (!(mIcon instanceof FastBitmapDrawable)) {
@@ -794,7 +793,7 @@ public class BubbleTextView extends TextView
                 setScaleY(focusState.viewScale);
             }
         }
-    }
+    }*/
 
     /**
      * Returns the start delay when animating between certain {@link FastBitmapDrawable} states.
