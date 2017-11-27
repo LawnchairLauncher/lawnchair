@@ -347,7 +347,6 @@
   <string name="settings_import_success">Inställningar återställd framgångsrikt</string>
   <string name="db_import_success">Databas återställd framgångsrikt</string>
   <string name="export_error">Kunde inte säkerhetskopiera</string>
-  <string name="import_error">Kunde inte återställa</string>
   <string name="imexport_no_backup_found">Ingen säkerhetskopia hittad</string>
   <string name="imexport_external_storage_unreadable">Extern lagring är inte läsbar (bevilja tillstånd i inställningar)</string>
   <string name="imexport_external_storage_unwritable">Extern lagring är inte skrivbar (bevilja tillstånd i inställningar)</string>
@@ -418,4 +417,7 @@
   <string name="lawnfeed_not_installed_title">Lawnfeed är inte installerad</string>
   <string name="lawnfeed_not_installed">Det ser ut som du försöker öppna sidan Google Nu, men du inte har installerat appen Lawnfeed från vår hemsida.\n\nVill ladda ner den nu?</string>
   <string name="disable_popup">Visa inte igen</string>
+  <string name="two_row_dock">Tvåradig docka</string>
+  <string name="reset_alternative_icons_title">Återställ alternativa appikoner?</string>
+  <string name="reset_alternative_icons">Du har %1$d appar med alternativa ikoner, vill du återställa dem?</string>
 </resources>
