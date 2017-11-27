@@ -418,4 +418,7 @@
   <string name="lawnfeed_not_installed_title">Lawnfeed nincs telepítve</string>
   <string name="lawnfeed_not_installed">Úgy tűnik, a Google Now oldalat próbálja megnyitni, de még nem töltötte le a Lawnfeed alkalmazást a weboldalunkról.\n\nLetölti most?</string>
   <string name="disable_popup">Ne jelenjen meg többször</string>
+  <string name="two_row_dock">Két soros dokk</string>
+  <string name="reset_alternative_icons_title">Alternatív ikonok visszaállítása?</string>
+  <string name="reset_alternative_icons">%1$d alkalmazásnak van alternatív ikon beállítva. Visszaállítja az eredetit?</string>
 </resources>
