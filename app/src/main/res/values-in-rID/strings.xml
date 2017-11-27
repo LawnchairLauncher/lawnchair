@@ -274,10 +274,10 @@
   <string name="num_cols_pref_title">Jumlah kolom</string>
   <string name="num_rows_pref_title">Jumlah baris</string>
   <string name="num_hotseat_icons_pref_title">Jumlah ikon di dock</string>
-  <string name="icon_scale_pref_title">Skala ikon</string>
+  <string name="icon_scale_pref_title">Pensekalaan ikon</string>
   <string name="hotseat_height_scale">Pensekalaan tinggi</string>
   <string name="icon_text_scale_pref_title">Pensekalaan teks ikon</string>
-  <string name="icon_text_padding_scale_pref_title">Pensekalaan antar ikon</string>
+  <string name="icon_text_padding_scale_pref_title">Pensekalaan batas antar ikon</string>
   <string name="full_width_width_widgets_pref_title">Widget lebar penuh</string>
   <string name="full_width_widgets_pref_summary">Izinkan widget untuk menjangkau seluruh lebar tanpa bantalan</string>
   <string name="notification_access_pref_title">Pratinjau dan lencana pemberitahuan</string>
@@ -422,4 +422,7 @@
   <string name="lawnfeed_not_installed_title">Lawnfeed tidak terpasang</string>
   <string name="lawnfeed_not_installed">Sepertinya anda mencoba membuka laman Google Now, namun anda belum memasang aplikasi Lawnfeed dari situs web kami.\n\nApakah anda ingin mengunduhnya sekarang?</string>
   <string name="disable_popup">Jangan tampilkan lagi</string>
+  <string name="two_row_dock">Dock dua baris</string>
+  <string name="reset_alternative_icons_title">Reset ikon aplikasi alternatif?</string>
+  <string name="reset_alternative_icons">Anda memiliki aplikasi %1$d dengan ikon alternatif, apakah anda ingin meresetnya?</string>
 </resources>
