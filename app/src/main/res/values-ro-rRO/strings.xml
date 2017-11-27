@@ -252,13 +252,13 @@
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Set de pictograme</string>
   <string name="icon_pack_preference_summary">Selectaţi un set de pictograme</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Dock foloseste culori din fundal</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Doc foloseste culori de la fundal</string>
   <string name="hotseat_show_arrow">Afişare săgeată</string>
   <string name="hotseat_show_page_indicator">Afișare indicator de pagină</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">Dock va fi colorat cu o culoare extrasă din fundal</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">Dock va fi de culorat gri, dar ajustat de luminozitatea fundalului</string>
-  <string name="transparent_hotseat_pref_title">Dock Translate</string>
-  <string name="dynamic_ui_pref_title">Extractă accentul de culoare de la tapet</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">Docul va fi colorat cu o culoare extrasă din fundal</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">Docul va fi de culorat gri, dar ajustat de luminozitatea fundalului</string>
+  <string name="transparent_hotseat_pref_title">Doc transparent</string>
+  <string name="dynamic_ui_pref_title">Extragere accent de culoare de la tapet</string>
   <string name="blur_pref_title">Activează blur</string>
   <string name="blur_pref_summary">Efectul de blur se aplică pe părţile interfaței\nNu e compatibil cu imagini de fundal live</string>
   <string name="blur_radius_pref_title">Rază blur</string>
@@ -267,10 +267,10 @@
   <string name="hide_icon_labels_pref_title">Ascunde textul pictogramelor pe ecranul principal</string>
   <string name="hide_all_apps_icon_labels_pref_title">Ascunde textul pictogramelor în lista de aplicații</string>
   <string name="workspace_label_color_hue_pref_title">Ascunde textul pictogramelor pe ecranul principal</string>
-    <string name="all_apps_opacity_pref_title">Opacitatea listei de aplicații</string>
+  <string name="all_apps_opacity_pref_title">Opacitatea listei de aplicații</string>
   <string name="num_cols_pref_title">Numărul de coloane</string>
   <string name="num_rows_pref_title">Numărul de rânduri</string>
-  <string name="num_hotseat_icons_pref_title">Numărul de pictograme în dock</string>
+  <string name="num_hotseat_icons_pref_title">Numărul de pictograme în doc</string>
   <string name="icon_scale_pref_title">Scală iconițe</string>
   <string name="hotseat_height_scale">Scară înălţime</string>
   <string name="icon_text_scale_pref_title">Culoare textului de la pictogramă</string>
@@ -285,7 +285,7 @@
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Comportament</string>
   <string name="debug_pref_title">Depanare</string>
-    <string name="general_pref_summary">Ecran de pornire, doc și listă de aplicații</string>
+  <string name="general_pref_summary">Ecran de pornire, doc și listă de aplicații</string>
   <string name="dock_pref_summary">Personalizați docul</string>
   <string name="app_drawer_pref_summary">Personalizați lista aplicațiilor</string>
   <string name="pixel_ui_pref_summary">Activați caracteristicile exclusive ale lansatorului Pixel</string>
@@ -328,7 +328,7 @@
   <string name="edit_icon_reset">Resetare</string>
   <string name="show_top_shadow_title">Afişare umbră de sus</string>
   <string name="pref_cat_homescreen">Ecranul de pornire</string>
-    <string name="theme_pref_title">Temă</string>
+  <string name="theme_pref_title">Temă</string>
   <string name="theme_light">Luminoasă</string>
   <string name="theme_dark">Întunecată</string>
   <string name="theme_black">Neagră</string>
@@ -343,11 +343,11 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Import</string>
   <string name="backup_export_title">Export</string>
-    <string name="settings_export_success">Setările au fost salvate cu succes</string>
+  <string name="settings_export_success">Setările au fost salvate cu succes</string>
   <string name="db_export_success">Baza de date a fost salvată cu succes</string>
   <string name="settings_import_success">Setările au fost restabilite cu succes</string>
   <string name="db_import_success">Baza de date a fost restabilită cu succes</string>
-    <string name="export_error">Nu s-a putut salva</string>
+  <string name="export_error">Nu s-a putut salva</string>
   <string name="import_error">Nu s-a putut restabili</string>
   <string name="imexport_no_backup_found">Nicio copie de rezervă găsită</string>
   <string name="imexport_external_storage_unreadable">Spațiul de stocare extern nu poate fi citit (acordă permisiunea în Setări)</string>
@@ -365,10 +365,10 @@
   <string name="pref_applyBlur">Aplică blur pe</string>
   <string name="search_bar">Bara de căutare</string>
   <string name="folder">Dosar</string>
-  <string name="dock_allapps"><![CDATA[Dock & sertar]]></string>
+  <string name="dock_allapps"><![CDATA[Doc şi sertar]]></string>
   <string name="app_shortcuts">Scurtături aplicații</string>
   <string name="blur_effect">Efect de blur</string>
-    <string name="pref_weather_provider">Furnizor vreme</string>
+  <string name="pref_weather_provider">Furnizor vreme</string>
   <string name="loading">Se încarcă…</string>
   <string name="icon_shape_override_label">Schimbă forma pictogramei</string>
   <string name="icon_shape_system_default">Nu schimba</string>
@@ -387,13 +387,13 @@
   <string name="about_contributors_title">Contribuitori</string>
   <string name="location_permission_warn">Este necesară permisiunea de locație pentru a comuta la alt furnizor!</string>
   <string name="num_cols_drawer_pref_title">Numărul de coloane în lista aplicațiilor</string>
-    <string name="shortcut_backport_warning">Acest lucru ar putea fi lent, utilizați pe propriul risc</string>
+  <string name="shortcut_backport_warning">Acest lucru ar putea fi lent, utilizați pe propriul risc</string>
   <string name="pref_backport_shortcuts">Adaptare comenzi rapide</string>
   <string name="weather_api_key_not_set">Cheia API nu este setată</string>
   <string name="pref_weather_api_key_title">Cheie API</string>
   <string name="about_changelog">Istoric modificări</string>
   <string name="pref_all_apps_custom_label_color">Utilizați culoarea etichetei personalizate</string>
-    <string name="pref_all_apps_label_color">Culoarea etichetelor pictogramelor în sertarul de aplicații</string>
+  <string name="pref_all_apps_label_color">Culoarea etichetelor pictogramelor în sertarul de aplicații</string>
   <string name="pref_num_rows_drawer">Numărul de rânduri în sertarul de aplicații</string>
   <string name="center_wallpaper_pref_title">Centrează fundalul când este o singură pagină</string>
   <string name="vertical_drawer_layout_pref_title">Afişare ca listă verticală</string>
@@ -404,8 +404,22 @@
   <string name="lock_desktop">Blocare desktop</string>
   <string name="lawnfeed_not_found">Lawnfeed neinstalat</string>
   <string name="google_app_not_found">Aplicația Google nu este instalată</string>
-    <string name="set_default_launcher">Setaţi lansator implicit</string>
+  <string name="set_default_launcher">Setaţi lansator implicit</string>
   <string name="enable_spring_pref_title">Activați efectul elastic</string>
+  <string name="hide_app">Ascundere aplicaţie</string>
+  <string name="hide_app_sum">Ascunde aplicații în lista aplicaţiilor</string>
+  <string name="hide_app_selected">&#160;selectate</string>
+  <string name="hidden_app">Aplicații ascunse</string>
+  <string name="hide_app_apply">Aplicare</string>
   <string name="unauthorized_device">Acest dispozitiv are câteva instrumente de piraterie instalate. Vă rugăm să le dezinstalați pentru a continua.</string>
+  <string name="hide_app_reset">Resetare</string>
   <!-- Strings for Lawnfeed gesture popup -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed nu este activat</string>
+  <string name="lawnfeed_not_enabled">Se pare că încercați să deschideți pagina Google Now, dar nu ați activat opțiunea din setările de comportament.\n\nDoriți să o activați acum?</string>
+  <string name="lawnfeed_not_installed_title">Lawnfeed neinstalat</string>
+  <string name="lawnfeed_not_installed">Se pare că încercați să deschideți pagina Google Now, dar nu ați instalat aplicația Lawnfeed de pe site-ul nostru.\n\nDoriți să o descărcaţi acum?</string>
+  <string name="disable_popup">Nu se mai afișează</string>
+  <string name="two_row_dock">Doc în două rânduri</string>
+  <string name="reset_alternative_icons_title">Resetați pictogramele alternative ale aplicațiilor?</string>
+  <string name="reset_alternative_icons">Aveți %1$d aplicații cu pictograme alternative, doriți să le resetați?</string>
 </resources>

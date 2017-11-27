@@ -266,7 +266,7 @@
   <string name="hide_icon_labels_pref_title">Icon-Beschriftungen auf dem Startbildschirm verstecken</string>
   <string name="hide_all_apps_icon_labels_pref_title">Icon-Beschriftungen in der App-Übersicht ausblenden</string>
   <string name="workspace_label_color_hue_pref_title">Farbe der Icon-Beschriftung auf dem Startbildschirm</string>
-    <string name="all_apps_opacity_pref_title">Transparenz der App-Liste</string>
+  <string name="all_apps_opacity_pref_title">Transparenz der App-Liste</string>
   <string name="num_cols_pref_title">Anzahl der Spalten</string>
   <string name="num_rows_pref_title">Anzahl der Zeilen</string>
   <string name="num_hotseat_icons_pref_title">Anzahl der Icons im Dock</string>
@@ -284,7 +284,7 @@
   <string name="pixel_ui_pref_title">Design</string>
   <string name="behavior_pref_title">Verhalten</string>
   <string name="debug_pref_title">Entwickleroptionen</string>
-    <string name="general_pref_summary">Personalisiere deinen Startbildschirm</string>
+  <string name="general_pref_summary">Personalisiere deinen Startbildschirm</string>
   <string name="dock_pref_summary">Personalisiere dein Dock</string>
   <string name="app_drawer_pref_summary">Personalisiere deine App-Liste</string>
   <string name="pixel_ui_pref_summary">Passe das Design diverser Elemente an</string>
@@ -327,7 +327,7 @@
   <string name="edit_icon_reset">Zurücksetzen</string>
   <string name="show_top_shadow_title">Schatten oben anzeigen</string>
   <string name="pref_cat_homescreen">Startbildschirm</string>
-    <string name="theme_pref_title">Design</string>
+  <string name="theme_pref_title">Design</string>
   <string name="theme_light">Hell</string>
   <string name="theme_dark">Dunkel</string>
   <string name="theme_black">Schwarz</string>
@@ -342,11 +342,11 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">importieren</string>
   <string name="backup_export_title">exportieren</string>
-    <string name="settings_export_success">Einstellungen erfolgreich gesichert</string>
+  <string name="settings_export_success">Einstellungen erfolgreich gesichert</string>
   <string name="db_export_success">Datenbank erfolgreich gesichert</string>
   <string name="settings_import_success">Einstellungen wurden erfolgreich wiederhergestellt</string>
   <string name="db_import_success">Datenbank erfolgreich wiederhergestellt</string>
-    <string name="export_error">Konnte nicht sichern</string>
+  <string name="export_error">Konnte nicht sichern</string>
   <string name="import_error">Konnte nicht wiederherstellen</string>
   <string name="imexport_no_backup_found">Kein Backup gefunden</string>
   <string name="imexport_external_storage_unreadable">Externer Speicher ist nicht lesbar (Berechtigung in den Einstellungen erforderlich)</string>
@@ -367,7 +367,7 @@
   <string name="dock_allapps"><![CDATA[Dock & App-Liste]]></string>
   <string name="app_shortcuts">App-Verknüpfungen</string>
   <string name="blur_effect">Unschärfeeffekt</string>
-    <string name="pref_weather_provider">Wetter-Anbieter</string>
+  <string name="pref_weather_provider">Wetter-Anbieter</string>
   <string name="loading">Wird geladen…</string>
   <string name="icon_shape_override_label">Icon-Form ändern</string>
   <string name="icon_shape_system_default">Nicht ändern</string>
@@ -386,13 +386,13 @@
   <string name="about_contributors_title">Mitwirkende</string>
   <string name="location_permission_warn">Standort-Berechtigung wird benötigt, um zu einem anderen Anbieter zu wechseln!</string>
   <string name="num_cols_drawer_pref_title">Spalten-Anzahl in der App-Übersicht</string>
-    <string name="shortcut_backport_warning">Dies könnte langsam sein, daher vorsichtig damit</string>
+  <string name="shortcut_backport_warning">Dies könnte langsam sein, daher vorsichtig damit</string>
   <string name="pref_backport_shortcuts">Backport App-Verknüpfungen</string>
   <string name="weather_api_key_not_set">API-Schlüssel nicht festgelegt</string>
   <string name="pref_weather_api_key_title">API-Schlüssel</string>
   <string name="about_changelog">Änderungsprotokoll</string>
   <string name="pref_all_apps_custom_label_color">Verwende benutzerdefinierte Label-Farbe</string>
-    <string name="pref_all_apps_label_color">Farbe der Icon-Labels in der App-Liste</string>
+  <string name="pref_all_apps_label_color">Farbe der Icon-Labels in der App-Liste</string>
   <string name="pref_num_rows_drawer">Anzahl der Reihen in der App-Übersicht</string>
   <string name="center_wallpaper_pref_title">Hintergrund zentrieren, wenn nur eine Seite vorhanden ist</string>
   <string name="vertical_drawer_layout_pref_title">Als vertikale Liste darstellen</string>
@@ -403,8 +403,22 @@
   <string name="lock_desktop">Desktop sperren</string>
   <string name="lawnfeed_not_found">LawnFeed nicht installiert</string>
   <string name="google_app_not_found">Google-App nicht installiert</string>
-    <string name="set_default_launcher">Standard-Launcher einstellen</string>
+  <string name="set_default_launcher">Standard-Launcher einstellen</string>
   <string name="enable_spring_pref_title">Aktiviere den Spring-Effekt</string>
+  <string name="hide_app">App ausblenden</string>
+  <string name="hide_app_sum">App in der App-Übersicht ausblenden</string>
+  <string name="hide_app_selected">&#160;ausgewählt</string>
+  <string name="hidden_app">Ausgeblendete App</string>
+  <string name="hide_app_apply">Anwenden</string>
   <string name="unauthorized_device">Dieses Gerät hat ein paar Piraterie-Tools installiert. Um fortzufahren bitte deinstalliere diese.</string>
+  <string name="hide_app_reset">Zurücksetzen</string>
   <!-- Strings for Lawnfeed gesture popup -->
+  <string name="lawnfeed_not_enabled_title">LawnFeed nicht aktiviert</string>
+  <string name="lawnfeed_not_enabled">Es sieht aus, als würdest du versuchen die Google Now-Seite zu öffnen, aber du hast die Option nicht in den Verhaltens-Optionen aktiviert.\n\nMöchtest du sie jetzt aktivieren?</string>
+  <string name="lawnfeed_not_installed_title">LawnFeed nicht installiert</string>
+  <string name="lawnfeed_not_installed">Es sieht aus, als würdest du versuchen die Google Now-Seite zu öffnen, aber du hast die Lawnfeed-App von unserer Webseite nicht installiert.\n\nMöchtest du sie jetzt herunterladen?</string>
+  <string name="disable_popup">Nicht mehr anzeigen</string>
+  <string name="two_row_dock">Zwei-Reihen Dock</string>
+  <string name="reset_alternative_icons_title">Alternative App-Icons zurücksetzen?</string>
+  <string name="reset_alternative_icons">Du hast %1$d Apps mit alternativen Icons, möchtest du sie zurücksetzen?</string>
 </resources>

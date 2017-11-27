@@ -266,7 +266,7 @@
   <string name="hide_icon_labels_pref_title">Verberg pictogram labels op startscherm</string>
   <string name="hide_all_apps_icon_labels_pref_title">Pictogram labels verbergen in lade</string>
   <string name="workspace_label_color_hue_pref_title">Kleur van pictogram labels op startscherm</string>
-    <string name="all_apps_opacity_pref_title">Zichtbaarheid applicatielade</string>
+  <string name="all_apps_opacity_pref_title">Zichtbaarheid applicatielade</string>
   <string name="num_cols_pref_title">Aantal kolommen</string>
   <string name="num_rows_pref_title">Aantal rijen</string>
   <string name="num_hotseat_icons_pref_title">Aantal pictogrammen in favorietenbalk</string>
@@ -284,7 +284,7 @@
   <string name="pixel_ui_pref_title">Pixel-UI</string>
   <string name="behavior_pref_title">Gedrag</string>
   <string name="debug_pref_title">Debuggen</string>
-    <string name="general_pref_summary">Thuisscherm, dock en applicatielade</string>
+  <string name="general_pref_summary">Thuisscherm, dock en applicatielade</string>
   <string name="dock_pref_summary">Pas je dock aan</string>
   <string name="app_drawer_pref_summary">Pas je app drawer aan</string>
   <string name="pixel_ui_pref_summary">Pixel Launcher exclusieve functies inschakelen</string>
@@ -327,7 +327,7 @@
   <string name="edit_icon_reset">Reset</string>
   <string name="show_top_shadow_title">Schaduw weergeven</string>
   <string name="pref_cat_homescreen">Startscherm</string>
-    <string name="theme_pref_title">Thema</string>
+  <string name="theme_pref_title">Thema</string>
   <string name="theme_light">Licht</string>
   <string name="theme_dark">Donker</string>
   <string name="theme_black">Zwart</string>
@@ -342,8 +342,8 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Importeren</string>
   <string name="backup_export_title">Exporteren</string>
-    <string name="settings_export_success">Backup van instellingen succesvol</string>
-    <string name="import_error">Herstellen niet gelukt</string>
+  <string name="settings_export_success">Backup van instellingen succesvol</string>
+  <string name="import_error">Herstellen niet gelukt</string>
   <string name="imexport_no_backup_found">Geen back-up gevonden</string>
   <string name="imexport_external_storage_unreadable">Externe opslag is niet leesbaar (machtiging toekennen in instellingen)</string>
   <string name="imexport_external_storage_unwritable">Externe opslag is niet schrijfbaar (machtiging toekennen in instellingen)</string>
@@ -363,7 +363,7 @@
   <string name="dock_allapps"><![CDATA[Dock & app-lade]]></string>
   <string name="app_shortcuts">App snelkoppelingen</string>
   <string name="blur_effect">Blur effect</string>
-    <string name="pref_weather_provider">Weer dienstverlener</string>
+  <string name="pref_weather_provider">Weer dienstverlener</string>
   <string name="loading">Laden…</string>
   <string name="icon_shape_override_label">Wijzig pictogram vorm</string>
   <string name="icon_shape_system_default">Niet wijzigen</string>
@@ -382,13 +382,13 @@
   <string name="about_contributors_title">Bijdragers</string>
   <string name="location_permission_warn">Locatietoestemming is vereist om te wijzigen van dienstverlener!</string>
   <string name="num_cols_drawer_pref_title">Aantal kolommen in de app-lade</string>
-    <string name="shortcut_backport_warning">Dit kan traag zijn, gebruiken op eigen risico</string>
+  <string name="shortcut_backport_warning">Dit kan traag zijn, gebruiken op eigen risico</string>
   <string name="pref_backport_shortcuts">Backport snelkoppelingen</string>
   <string name="weather_api_key_not_set">API-sleutel niet ingesteld</string>
   <string name="pref_weather_api_key_title">API-sleutel</string>
   <string name="about_changelog">Changelog</string>
   <string name="pref_all_apps_custom_label_color">Aangepaste labelkleur gebruiken</string>
-    <string name="pref_all_apps_label_color">Kleur van pictogram labels in applicatiescherm</string>
+  <string name="pref_all_apps_label_color">Kleur van pictogram labels in applicatiescherm</string>
   <string name="pref_num_rows_drawer">Aantal rijen in lade</string>
   <string name="center_wallpaper_pref_title">Gecentreerde achtergrond bij slechts één pagina</string>
   <string name="vertical_drawer_layout_pref_title">Weergeven als verticale lijst</string>
@@ -399,7 +399,7 @@
   <string name="lock_desktop">Bureaublad vergrendelen</string>
   <string name="lawnfeed_not_found">Lawnfeed niet geïnstalleerd</string>
   <string name="google_app_not_found">Google app niet geïnstalleerd</string>
-    <string name="set_default_launcher">Standaard launcher instellen</string>
+  <string name="set_default_launcher">Standaard launcher instellen</string>
   <string name="enable_spring_pref_title">Veereffect inschakelen</string>
   <string name="unauthorized_device">Op dit toestel zijn enkele piraat applicaties geinstalleerd. Gelieve deze te de-installeren om verder te gaan.</string>
   <!-- Strings for Lawnfeed gesture popup -->

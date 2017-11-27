@@ -44,7 +44,7 @@
   <string name="widget_accessible_dims_format">Ширина – %1$d, висота – %2$d</string>
   <!-- All Apps -->
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
-  <string name="all_apps_search_bar_hint">Пошук додатков</string>
+  <string name="all_apps_search_bar_hint">Пошук додатків</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
   <string name="all_apps_loading_message">Завантаження додатків&#8230;</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
@@ -257,7 +257,7 @@
   <string name="full_width_width_widgets_pref_title">Широкоформатні віджети</string>
   <string name="behavior_pref_title">Поведінка</string>
   <string name="debug_pref_title">Відладка</string>
-    <string name="show_mic_pref_title">Відображати кнопку Google Асистента</string>
+  <string name="show_mic_pref_title">Відображати кнопку Google Асистента</string>
   <string name="pixel_style_icons_pref_title">Використовивати значки Pixel</string>
   <string name="show_google_now_tab_pref_title">Показувати сторінку Google Now</string>
   <string name="restart_lawnchair_pref_title">Перезапустіть Lawnchair</string>
@@ -272,7 +272,7 @@
   <string name="default_text">За замовчанням</string>
   <string name="edit_icon_reset">Скинути</string>
   <string name="pref_cat_homescreen">Головний екран</string>
-    <string name="theme_pref_title">Тема оформлення</string>
+  <string name="theme_pref_title">Тема оформлення</string>
   <string name="theme_light">Світла</string>
   <string name="theme_dark">Темна</string>
   <string name="theme_black">Чорна</string>
@@ -284,7 +284,7 @@
   <string name="pull_down_apps_search">Пошук додатків</string>
   <string name="enable_screen_rotation">Увімкнути обертання екрана</string>
   <!-- Import/Export Strings -->
-    <string name="imexport_no_backup_found">Резервну копію не знайдено</string>
+  <string name="imexport_no_backup_found">Резервну копію не знайдено</string>
   <string name="imexport_external_storage_unreadable">Зовнішне сховище недоступно до читання (надати дозвіл в налаштуваннях)</string>
   <string name="units_metric">Метрична</string>
   <string name="units_imperial">Англійська (Імперьска) система</string>
@@ -301,7 +301,7 @@
   <string name="dock_allapps"><![CDATA[Док-панель та меню додатків]]></string>
   <string name="app_shortcuts">Ярлики додатків</string>
   <string name="blur_effect">Ефект розмиття</string>
-    <string name="pref_weather_provider">Постачальник погоди</string>
+  <string name="pref_weather_provider">Постачальник погоди</string>
   <string name="icon_shape_override_label">Змінити форму значка</string>
   <string name="icon_shape_system_default">Не змінюйте</string>
   <string name="icon_shape_square">Квадратний</string>
@@ -316,7 +316,7 @@
   <string name="about_contributors_title">Учасники</string>
   <string name="location_permission_warn">Потрібно дозвіл на розатшування, щоби переключитися на іншого постачальника!</string>
   <string name="num_cols_drawer_pref_title">Кількість колонок у меню додатків</string>
-    <string name="weather_api_key_not_set">API ключ не встановлено</string>
+  <string name="weather_api_key_not_set">API ключ не встановлено</string>
   <string name="pref_weather_api_key_title">API ключ</string>
   <string name="about_changelog">Перелік змін</string>
   <string name="pref_all_apps_custom_label_color">Використовувати свій колір</string>

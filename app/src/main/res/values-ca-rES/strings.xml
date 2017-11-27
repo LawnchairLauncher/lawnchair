@@ -267,7 +267,7 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <string name="hide_icon_labels_pref_title">Amaga les etiquetes de les icones de la pantalla d\'inici</string>
   <string name="hide_all_apps_icon_labels_pref_title">Amaga les etiquetes de les icones al calaix</string>
   <string name="workspace_label_color_hue_pref_title">Color de les etiquetes de les icones a la pantalla d\'inici</string>
-    <string name="all_apps_opacity_pref_title">Opacitat del calaix</string>
+  <string name="all_apps_opacity_pref_title">Opacitat del calaix</string>
   <string name="num_cols_pref_title">Nombre de columnes</string>
   <string name="num_rows_pref_title">Nombre de files</string>
   <string name="num_hotseat_icons_pref_title">Nombre d\'icones a la barra d\'aplicacions</string>
@@ -285,7 +285,7 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Comportament</string>
   <string name="debug_pref_title">Depuració</string>
-    <string name="general_pref_summary">Pantalla d\'inici, dock i llistat d\'aplicacions</string>
+  <string name="general_pref_summary">Pantalla d\'inici, dock i llistat d\'aplicacions</string>
   <string name="dock_pref_summary">Personalize sua barra de aplicativos</string>
   <string name="app_drawer_pref_summary">Personalize sua página de aplicativos</string>
   <string name="pixel_ui_pref_summary">Habilita característiques exclusives de Pixel Launcher</string>
@@ -328,7 +328,7 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <string name="edit_icon_reset">Reiniciar</string>
   <string name="show_top_shadow_title">Mostra les ombres superiors</string>
   <string name="pref_cat_homescreen">Pantalla d\'inici</string>
-    <string name="theme_pref_title">Tema</string>
+  <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Clar</string>
   <string name="theme_dark">Fosc</string>
   <string name="theme_black">Negre</string>
@@ -343,11 +343,11 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Importar</string>
   <string name="backup_export_title">Exportar</string>
-    <string name="settings_export_success">Configuració recolzada amb èxit</string>
+  <string name="settings_export_success">Configuració recolzada amb èxit</string>
   <string name="db_export_success">Base de dades recolzada amb èxit</string>
   <string name="settings_import_success">Configuració restaurada amb èxit</string>
   <string name="db_import_success">Base de dades restaurada amb èxit</string>
-    <string name="export_error">No s\'ha pogut recolçar</string>
+  <string name="export_error">No s\'ha pogut recolçar</string>
   <string name="import_error">No s\'ha pogut restaurar</string>
   <string name="imexport_no_backup_found">No s\'ha trobat cap còpia de seguretat</string>
   <string name="imexport_external_storage_unreadable">No es pot llegir l\'emmagatzematge extern (doneu permís de lectura a la configuració)</string>
@@ -368,7 +368,7 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <string name="dock_allapps"><![CDATA[Barra d'aplicacions i calaix]]></string>
   <string name="app_shortcuts">Draceres d\'aplicació</string>
   <string name="blur_effect">Efecte difuminat</string>
-    <string name="pref_weather_provider">Proveïdor del temps</string>
+  <string name="pref_weather_provider">Proveïdor del temps</string>
   <string name="loading">S\'està carregant…</string>
   <string name="icon_shape_override_label">Canvia la forma de les icones</string>
   <string name="icon_shape_system_default">No canvieu</string>
@@ -387,13 +387,13 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <string name="about_contributors_title">Col·laboradors</string>
   <string name="location_permission_warn">Permís de localització necessari per canviar a un altre proveïdor!</string>
   <string name="num_cols_drawer_pref_title">Nombre de columnes en el calaix</string>
-    <string name="shortcut_backport_warning">Això podria ser lent, utilitza-ho sota el teu propi risc</string>
+  <string name="shortcut_backport_warning">Això podria ser lent, utilitza-ho sota el teu propi risc</string>
   <string name="pref_backport_shortcuts">Adaptació retroactiva d\'accesos rapids</string>
   <string name="weather_api_key_not_set">Clau d\'API no establerta</string>
   <string name="pref_weather_api_key_title">Clau d\'API</string>
   <string name="about_changelog">Registre de canvis</string>
   <string name="pref_all_apps_custom_label_color">Utilitza els colors personalitzats</string>
-    <string name="pref_all_apps_label_color">Color de les etiquetes de les aplicacions al llistat</string>
+  <string name="pref_all_apps_label_color">Color de les etiquetes de les aplicacions al llistat</string>
   <string name="pref_num_rows_drawer">Nombre de files del llistat d\'aplicacions</string>
   <string name="center_wallpaper_pref_title">Centra el fons de pantalla quan només hi ha una pàgina</string>
   <string name="vertical_drawer_layout_pref_title">Mostrar com a llista vertical</string>
@@ -404,8 +404,22 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <string name="lock_desktop">Bloqueja l\'escriptori</string>
   <string name="lawnfeed_not_found">No s\'han instal·lat els paquets</string>
   <string name="google_app_not_found">Aplicació de google no instal·lada</string>
-    <string name="set_default_launcher">Estableix llançador predeterminat</string>
+  <string name="set_default_launcher">Estableix llançador predeterminat</string>
   <string name="enable_spring_pref_title">Ativar efeito de mola</string>
+  <string name="hide_app">Amaga l\'aplicació</string>
+  <string name="hide_app_sum">Amaga l\'aplicació del calaix</string>
+  <string name="hide_app_selected">&#160;seleccionada</string>
+  <string name="hidden_app">Aplicacions amagades</string>
+  <string name="hide_app_apply">Aplica</string>
   <string name="unauthorized_device">Aquest dispositiu té instal·lades algunes eines de pirateria. Desinstal·leu-les per continuar.</string>
+  <string name="hide_app_reset">Reinicia</string>
   <!-- Strings for Lawnfeed gesture popup -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed no està activat</string>
+  <string name="lawnfeed_not_enabled">Sembla que esteu intentant obrir la pàgina de Google Now, però no heu activat l\'opció en la configuració del comportament.\n\n Voleu activar-la ara?</string>
+  <string name="lawnfeed_not_installed_title">Lawnfeed no està instal·lat</string>
+  <string name="lawnfeed_not_installed">Sembla que esteu intentant obrir la pàgina de Google Now, però no heu instal·lat l\'aplicació Lawnfeed del nostre lloc web.\n\nVoleu baixar-la ara?</string>
+  <string name="disable_popup">No tornis a mostrar-ho</string>
+  <string name="two_row_dock">Barra d\'aplicacions de dues files</string>
+  <string name="reset_alternative_icons_title">Voleu restablir les icones d\'aplicacions alternatives?</string>
+  <string name="reset_alternative_icons">Teniu %1$d aplicacions amb icones alternatives, voleu reiniciar-les?</string>
 </resources>

@@ -267,7 +267,7 @@
   <string name="hide_icon_labels_pref_title">Nascondi nome icone sull\' home screen</string>
   <string name="hide_all_apps_icon_labels_pref_title">Nascondi nome icone nel menù delle applicazioni</string>
   <string name="workspace_label_color_hue_pref_title">Colore delle etichette delle icone nella schermata home</string>
-    <string name="all_apps_opacity_pref_title">Opacità menù delle applicazioni</string>
+  <string name="all_apps_opacity_pref_title">Opacità menù delle applicazioni</string>
   <string name="num_cols_pref_title">Numero di colonne</string>
   <string name="num_rows_pref_title">Numero di righe</string>
   <string name="num_hotseat_icons_pref_title">Numero di icone nella dock</string>
@@ -285,7 +285,7 @@
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Gesti e funzionalità</string>
   <string name="debug_pref_title">Debug</string>
-    <string name="general_pref_summary">Personalizza la tua homescreen</string>
+  <string name="general_pref_summary">Personalizza la tua homescreen</string>
   <string name="dock_pref_summary">Personalizza la tua dock</string>
   <string name="app_drawer_pref_summary">Personalizza il menù delle applicazioni</string>
   <string name="pixel_ui_pref_summary">Imposta le caratteristiche del Pixel Laucher</string>
@@ -325,10 +325,10 @@
   <string name="test_title">Test</string>
   <string name="visibility">Visibilità</string>
   <string name="default_text">Predefinito</string>
-  <string name="edit_icon_reset">Reset</string>
+  <string name="edit_icon_reset">Ripristina</string>
   <string name="show_top_shadow_title">Mostra l\' ombra superiore</string>
   <string name="pref_cat_homescreen">Schermata home</string>
-    <string name="theme_pref_title">Tema</string>
+  <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Chiaro</string>
   <string name="theme_dark">Scuro</string>
   <string name="theme_black">Nero</string>
@@ -343,11 +343,11 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Importa</string>
   <string name="backup_export_title">Esporta</string>
-    <string name="settings_export_success">Backup delle impostazioni completato</string>
+  <string name="settings_export_success">Backup delle impostazioni completato</string>
   <string name="db_export_success">Backup del database completato</string>
   <string name="settings_import_success">Ripristino delle impostazioni completato</string>
   <string name="db_import_success">Ripristino del database completato</string>
-    <string name="export_error">Impossibile eseguire il backup</string>
+  <string name="export_error">Impossibile eseguire il backup</string>
   <string name="import_error">Impossibile eseguire il ripristino</string>
   <string name="imexport_no_backup_found">Nessun backup trovato</string>
   <string name="imexport_external_storage_unreadable">La memoria esterna non è leggibile (concedi l\'autorizzazione nelle impostazioni)</string>
@@ -368,9 +368,9 @@
   <string name="dock_allapps"><![CDATA[Dock & menù delle applicazioni]]></string>
   <string name="app_shortcuts">Scorciatoie app</string>
   <string name="blur_effect">Effetto sfocatura</string>
-    <string name="pref_weather_provider">Provider meteo</string>
+  <string name="pref_weather_provider">Provider meteo</string>
   <string name="loading">Caricamento…</string>
-  <string name="icon_shape_override_label">Cambia tema dell\' icona</string>
+  <string name="icon_shape_override_label">Cambia la forma delle icone</string>
   <string name="icon_shape_system_default">Non cambiare</string>
   <string name="icon_shape_none">Nessuno</string>
   <string name="icon_shape_square">Quadrato</string>
@@ -387,13 +387,13 @@
   <string name="about_contributors_title">Collaboratori</string>
   <string name="location_permission_warn">È richiesta la posizione per passare ad un altro provider!</string>
   <string name="num_cols_drawer_pref_title">Numero di colonne nel menù delle applicazioni</string>
-    <string name="shortcut_backport_warning">Potrebbe essere lento, utilizzalo a tuo rischio</string>
+  <string name="shortcut_backport_warning">Potrebbe essere lento, utilizzalo a tuo rischio</string>
   <string name="pref_backport_shortcuts">Backport shortcuts</string>
   <string name="weather_api_key_not_set">Poi key non settata</string>
   <string name="pref_weather_api_key_title">API key</string>
   <string name="about_changelog">Changelog</string>
   <string name="pref_all_apps_custom_label_color">Utilizzare un colore personalizzato</string>
-    <string name="pref_all_apps_label_color">Colore delle icone nel menù delle applicazioni</string>
+  <string name="pref_all_apps_label_color">Colore delle icone nel menù delle applicazioni</string>
   <string name="pref_num_rows_drawer">Numero di righe nel menù delle applicazioni</string>
   <string name="center_wallpaper_pref_title">Centra lo sfondo quando c\'è solo una pagina</string>
   <string name="vertical_drawer_layout_pref_title">Visualizza come lista verticale</string>
@@ -404,8 +404,22 @@
   <string name="lock_desktop">Blocca la schermata home</string>
   <string name="lawnfeed_not_found">Lawnfeed non installato</string>
   <string name="google_app_not_found">App Google non installata</string>
-    <string name="set_default_launcher">Imposta come laumcher predefinito</string>
+  <string name="set_default_launcher">Imposta come laumcher predefinito</string>
   <string name="enable_spring_pref_title">Abilita effetto a molla</string>
+  <string name="hide_app">Nascondi app</string>
+  <string name="hide_app_sum">Nascondi app dal menù delle applicazioni</string>
+  <string name="hide_app_selected">&#160;selezionato</string>
+  <string name="hidden_app">App nascoste</string>
+  <string name="hide_app_apply">Applica</string>
   <string name="unauthorized_device">Questo dispositivo dispone di alcuni strumenti per la pirateria. Si prega di disinstallarli per continuare.</string>
+  <string name="hide_app_reset">Ripristina</string>
   <!-- Strings for Lawnfeed gesture popup -->
+  <string name="lawnfeed_not_enabled_title">Lawnfeed non attivato</string>
+  <string name="lawnfeed_not_enabled">Sembra che tu stia cercando di aprire la pagina di Google Now, ma non hai attivato l\'opzione dalle impostazioni.\n\nVuoi attivarla ora?</string>
+  <string name="lawnfeed_not_installed_title">Lawnfeed non installato</string>
+  <string name="lawnfeed_not_installed">Sembra che tu stia cercando di aprire la pagina di Google Now, ma non hai installato la nostra app Lawnfeed dal nostro sito.\n\nVuoi scaricarla ora?</string>
+  <string name="disable_popup">Non visualizzare di nuovo</string>
+  <string name="two_row_dock">Dock su due righe</string>
+  <string name="reset_alternative_icons_title">Ripristinare le app con icone alternative?</string>
+  <string name="reset_alternative_icons">Hai %1$d app con icone alternative, vuoi ripristinarle?</string>
 </resources>

@@ -169,7 +169,7 @@
   <string name="blur_pref_title">فعالسازی بلور</string>
   <string name="pref_iconLabelsInTwoLines">نمایش برچسب آیکن‌ها در دو خط</string>
   <string name="white_google_icon_pref_title">استفاده از آیکن گوگل سفید</string>
-    <string name="all_apps_opacity_pref_title">شفافیت منوی اپلیکیشن‌ها</string>
+  <string name="all_apps_opacity_pref_title">شفافیت منوی اپلیکیشن‌ها</string>
   <!-- Import/Export Strings -->
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <!-- Time format for Weather Widget -->

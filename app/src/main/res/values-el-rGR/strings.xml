@@ -31,7 +31,7 @@
   <string name="safemode_shortcut_error">Στην Ασφαλή λειτουργία,
 απενεργοποιούνται οι εφαρμογές που εσείς έχετε εγκαταστήσει</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">Τα γραφικά στοιχεία απενεργοποιήθηκαν στην ασφαλή λειτουργία</string>
+  <string name="safemode_widget_error">Τα γραφικά στοιχεία απενεργοποιούνται στην ασφαλή λειτουργία</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">Η συντόμευση δεν είναι διαθέσιμη</string>
   <!-- Widgets -->
@@ -267,7 +267,7 @@
   <string name="hide_icon_labels_pref_title">Απόκρυψη ετικετών εικονιδίων στην αρχική οθόνη</string>
   <string name="hide_all_apps_icon_labels_pref_title">Απόκρυψη ετικετών εικονιδίων στο συρτάρι εφαρμογών</string>
   <string name="workspace_label_color_hue_pref_title">Χρώμα ετικετών εικονιδίων στην αρχική οθόνη</string>
-    <string name="all_apps_opacity_pref_title">Αδιαφάνεια συρταριού εφαρμογών</string>
+  <string name="all_apps_opacity_pref_title">Αδιαφάνεια συρταριού εφαρμογών</string>
   <string name="num_cols_pref_title">Αριθμός στηλών αρχικής οθόνης</string>
   <string name="num_rows_pref_title">Αριθμός γραμμών αρχικής οθόνης</string>
   <string name="num_hotseat_icons_pref_title">Αριθμός εικονιδίων στην μπάρα εφαρμογών</string>
@@ -285,12 +285,12 @@
   <string name="pixel_ui_pref_title">Θέματα</string>
   <string name="behavior_pref_title">Συμπεριφορά</string>
   <string name="debug_pref_title">Αντιμετώπιση Σφαλμάτων</string>
-    <string name="general_pref_summary">Διαμορφώστε την επιφάνεια εργασίας σας</string>
-  <string name="dock_pref_summary">Διαμορφώστε την μπάρα εφαρμογών σας</string>
-  <string name="app_drawer_pref_summary">Διαμορφώστε το συρτάρι εφαρμογών σας</string>
-  <string name="pixel_ui_pref_summary">Παραμετροποιήστε διαφορετικά στοιχεία του εκκινητή</string>
+  <string name="general_pref_summary">Διαμόρφωση της επιφάνειας εργασίας</string>
+  <string name="dock_pref_summary">Διαμόρφωση της μπάρας εφαρμογών</string>
+  <string name="app_drawer_pref_summary">Διαμόρφωση του συρταριού εφαρμογών</string>
+  <string name="pixel_ui_pref_summary">Παραμετροποίηση διαφόρων στοιχείων του εκκινητή</string>
   <string name="backup_pref_title">Αντίγραφα Ασφαλείας</string>
-  <string name="behavior_pref_summary">Αλλάξτε την συμπεριφορά του Lawnchair</string>
+  <string name="behavior_pref_summary">Αλλαγή της συμπεριφοράς του Lawnchair</string>
   <string name="backup_pref_summary">Δημιουργία αντιγράφων ασφαλείας της βάσης δεδομένων και των ρυθμίσεων</string>
   <string name="debug_pref_summary">Επανεκκίνηση ή αναδόμηση της βάσης δεδομένων των εικονιδίων</string>
   <string name="show_pixel_bar_pref_title">Εμφάνιση επάνω μπάρας γραφικών Pixel</string>
@@ -328,7 +328,7 @@
   <string name="edit_icon_reset">Επαναφορά</string>
   <string name="show_top_shadow_title">Εμφάνιση σκιάς στην κορυφή της αρχικής οθόνης</string>
   <string name="pref_cat_homescreen">Αρχική οθόνη</string>
-    <string name="theme_pref_title">Θέμα</string>
+  <string name="theme_pref_title">Θέμα</string>
   <string name="theme_light">Φωτεινό</string>
   <string name="theme_dark">Σκοτεινό</string>
   <string name="theme_black">Μαύρο</string>
@@ -343,11 +343,11 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Εισαγωγή</string>
   <string name="backup_export_title">Εξαγωγή</string>
-    <string name="settings_export_success">Οι ρυθμίσεις εξήχθησαν επιτυχώς</string>
+  <string name="settings_export_success">Οι ρυθμίσεις εξήχθησαν επιτυχώς</string>
   <string name="db_export_success">Η βάση δεδομένων εξήχθη επιτυχώς</string>
   <string name="settings_import_success">Οι ρυθμίσεις επαναφέρθηκαν επιτυχώς</string>
   <string name="db_import_success">Η βάση δεδομένων επαναφέρθηκε επιτυχώς</string>
-    <string name="export_error">Δεν ήταν δυνατή η δημιουργία αντιγράφων ασφαλείας</string>
+  <string name="export_error">Δεν ήταν δυνατή η δημιουργία αντιγράφων ασφαλείας</string>
   <string name="import_error">Δεν ήταν δυνατή η επαναφορά</string>
   <string name="imexport_no_backup_found">Δεν βρέθηκε κανένα αντίγραφο ασφαλείας</string>
   <string name="imexport_external_storage_unreadable">Η εξωτερική μονάδα αποθήκευσης δεν είναι αναγνώσιμη (χορήγηση άδειας στις ρυθμίσεις)</string>
@@ -368,9 +368,9 @@
   <string name="dock_allapps"><![CDATA[Μπάρα εφαρμογών & συρτάρι εφαρμογών]]></string>
   <string name="app_shortcuts">Συντομεύσεις εφαρμογών</string>
   <string name="blur_effect">Εφέ θολώματος</string>
-    <string name="pref_weather_provider">Πάροχος καιρού</string>
+  <string name="pref_weather_provider">Πάροχος καιρού</string>
   <string name="loading">Φόρτωση…</string>
-  <string name="icon_shape_override_label">Αλλαγή σχήματος εικονιδίου</string>
+  <string name="icon_shape_override_label">Σχήμα εικονιδίων</string>
   <string name="icon_shape_system_default">Χωρίς αλλαγή</string>
   <string name="icon_shape_none">Κανένα</string>
   <string name="icon_shape_square">Τετράγωνο</string>
@@ -387,13 +387,13 @@
   <string name="about_contributors_title">Συντελεστές</string>
   <string name="location_permission_warn">Απαιτείται η παραχώρηση άδειας ανάγνωσης τοποθεσίας για αλλαγή παρόχου καιρού!</string>
   <string name="num_cols_drawer_pref_title">Αριθμός στηλών στο συρτάρι εφαρμογών</string>
-    <string name="shortcut_backport_warning">Αυτό μπορεί να είναι αργό, να χρησιμοποιηθεί με δική σας ευθύνη</string>
+  <string name="shortcut_backport_warning">Αυτό μπορεί να είναι αργό, να χρησιμοποιηθεί με δική σας ευθύνη</string>
   <string name="pref_backport_shortcuts">Ενεργοποίηση συντομεύσεων εφαρμογών</string>
   <string name="weather_api_key_not_set">Δεν έχει οριστεί κλειδί API</string>
   <string name="pref_weather_api_key_title">Κλειδί API</string>
   <string name="about_changelog">Αρχείο καταγραφής αλλαγών</string>
   <string name="pref_all_apps_custom_label_color">Χρήση προσαρμοσμένου χρώματος ετικέτας εικονιδίων</string>
-    <string name="pref_all_apps_label_color">Χρώμα των ετικετών εικονιδίων στο συρτάρι εφαρμογών</string>
+  <string name="pref_all_apps_label_color">Χρώμα των ετικετών εικονιδίων στο συρτάρι εφαρμογών</string>
   <string name="pref_num_rows_drawer">Αριθμός γραμμών στο συρτάρι εφαρμογών</string>
   <string name="center_wallpaper_pref_title">Κεντράρισμα ταπετσαρίας όταν υπάρχει μόνο μία αρχική οθόνη</string>
   <string name="vertical_drawer_layout_pref_title">Εμφάνιση ως κάθετη λίστα εφαρμογών</string>
@@ -404,8 +404,22 @@
   <string name="lock_desktop">Κλείδωμα αρχικής οθόνης</string>
   <string name="lawnfeed_not_found">Το lawnfeed δεν είναι εγκατεστημένο</string>
   <string name="google_app_not_found">Η εφαρμογή Goggle δεν είναι εγκατεστημένη</string>
-    <string name="set_default_launcher">Ορισμός προεπιλεγμένου εκτοξευτή</string>
+  <string name="set_default_launcher">Ορισμός προεπιλεγμένου εκτοξευτή</string>
   <string name="enable_spring_pref_title">Ενεργοποίηση εφέ μεταπήδησης</string>
+  <string name="hide_app">Απόκρυψη εφαρμογών</string>
+  <string name="hide_app_sum">Απόκρυψη εφαρμογών στο συρτάρι εφαρμογών</string>
+  <string name="hide_app_selected">&#160;επιλεγμένη/ες εφαρμογές</string>
+  <string name="hidden_app">Κρυφές εφαρμογές</string>
+  <string name="hide_app_apply">Εφαρμογή</string>
   <string name="unauthorized_device">Αυτή η συσκευή έχει εγκατεστημένα ορισμένα πειρατικά εργαλεία. Παρακαλώ απεγκαταστήστε τα για να συνεχίσετε.</string>
+  <string name="hide_app_reset">Επαναφορά</string>
   <!-- Strings for Lawnfeed gesture popup -->
+  <string name="lawnfeed_not_enabled_title">Το Lawnfeed δεν είναι ενεργοποιημένο</string>
+  <string name="lawnfeed_not_enabled">Μοιάζει με προσπαθείτε να ανοίξετε το πλαϊνό πάνελ Google Now, αλλά δεν έχετε ενεργοποιήσει την επιλογή στις ρυθμίσεις.\n\nΘέλετε να την ενεργοποιήσετε τώρα;</string>
+  <string name="lawnfeed_not_installed_title">Το Lawnfeed δεν είναι εγκατεστημένο</string>
+  <string name="lawnfeed_not_installed">Μοιάζει με προσπαθείτε να ανοίξετε το πλαϊνό πάνελ Google Now, αλλά δεν έχετε εγκαταστήσει την εφαρμογή Lawnfeed από την ιστοσελίδα μας.\n\nΘέλετε να την κατεβάσετε τώρα;</string>
+  <string name="disable_popup">Να μην εμφανιστεί ξανά</string>
+  <string name="two_row_dock">Μπάρα εφαρμογών με δύο σειρές</string>
+  <string name="reset_alternative_icons_title">Επαναφορά τροποποιημένων εικονιδίων εφαρμογών;</string>
+  <string name="reset_alternative_icons">Έχετε %1$d εφαρμογή/ες με τροποποιημένα εικονίδια, είστε βέβαιοι ότι θέλετε να τα επαναφέρετε στην αρχική τους μορφή;</string>
 </resources>
