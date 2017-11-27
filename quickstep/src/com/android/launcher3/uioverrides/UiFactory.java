@@ -45,7 +45,9 @@ public class UiFactory {
     }
 
     public static void onWorkspaceLongPress(Launcher launcher) {
-        PopupMenu menu = new PopupMenu(launcher, launcher.getWorkspace().getPageIndicator());
+        PopupMenu menu = new PopupMenu(launcher.getApplicationContext(),
+                launcher.getWorkspace().getPageIndicator());
+
         menu.getMenu().add(R.string.wallpaper_button_text).setOnMenuItemClickListener((i) -> {
             launcher.onClickWallpaperPicker(null);
             return true;
