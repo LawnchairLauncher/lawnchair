@@ -419,4 +419,7 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <string name="lawnfeed_not_installed_title">Lawnfeed no està instal·lat</string>
   <string name="lawnfeed_not_installed">Sembla que esteu intentant obrir la pàgina de Google Now, però no heu instal·lat l\'aplicació Lawnfeed del nostre lloc web.\n\nVoleu baixar-la ara?</string>
   <string name="disable_popup">No tornis a mostrar-ho</string>
+  <string name="two_row_dock">Barra d\'aplicacions de dues files</string>
+  <string name="reset_alternative_icons_title">Voleu restablir les icones d\'aplicacions alternatives?</string>
+  <string name="reset_alternative_icons">Teniu %1$d aplicacions amb icones alternatives, voleu reiniciar-les?</string>
 </resources>
