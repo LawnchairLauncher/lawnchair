@@ -392,7 +392,7 @@
   <string name="vertical_drawer_layout_pref_title">عرض كقائمة عمودية</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
-  <string name="full_wday_month_day_no_year">الأسبوع, الشهر, اليوم</string>
+  <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
   <string name="about_translators">المترجمون</string>
   <string name="lock_desktop">قفل سطح المكتب</string>
   <string name="lawnfeed_not_found">لاونفيد غير مثبت</string>
