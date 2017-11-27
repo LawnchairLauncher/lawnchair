@@ -44,7 +44,7 @@
   <string name="widget_accessible_dims_format">Ширина – %1$d, висота – %2$d</string>
   <!-- All Apps -->
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
-  <string name="all_apps_search_bar_hint">Пошук додатков</string>
+  <string name="all_apps_search_bar_hint">Пошук додатків</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
   <string name="all_apps_loading_message">Завантаження додатків&#8230;</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
