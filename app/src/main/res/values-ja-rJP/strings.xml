@@ -417,4 +417,7 @@
   <string name="lawnfeed_not_installed_title">Lawnfeed はインストールされていません</string>
   <string name="lawnfeed_not_installed">Google Now ページを開こうとしましたが、ウェブサイトから Lawnfeed アプリをインストールしていないようです。\n\n今すぐダウンロードしますか？</string>
   <string name="disable_popup">今後表示しない</string>
+  <string name="two_row_dock">ドックを2行表示にする</string>
+  <string name="reset_alternative_icons_title">別のアプリアイコンをリセットしますか？</string>
+  <string name="reset_alternative_icons">アイコンが変更されているアプリが %1$d 個有ります。リセットしますか？</string>
 </resources>
