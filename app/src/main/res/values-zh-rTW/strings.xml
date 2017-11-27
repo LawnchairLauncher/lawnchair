@@ -28,7 +28,7 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">應用程式目前無法使用</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">在安全模式中無法使用「已下載的應用程式」功能</string>
+  <string name="safemode_shortcut_error">安全模式中已下載應用程式功能會被停用</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">在安全模式下無法使用小工具</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
@@ -417,4 +417,7 @@
   <string name="lawnfeed_not_installed_title">未安裝 Lawnfeed</string>
   <string name="lawnfeed_not_installed">您好像正在嘗試開啟 Google 即時頁面，但您尚未從我們的網站安裝 Lawnfeed 應用程式。\n\n您想現在下載嗎？</string>
   <string name="disable_popup">不再提示</string>
+  <string name="two_row_dock">兩行Rock欄</string>
+  <string name="reset_alternative_icons_title">重置替代應用程式的圖示？</string>
+  <string name="reset_alternative_icons">您有 %1$d 個替代圖示的應用程式，您想重置它們？</string>
 </resources>
