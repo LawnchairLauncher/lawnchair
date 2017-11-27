@@ -417,4 +417,7 @@
   <string name="lawnfeed_not_installed_title">Chưa cài đặt Lawnfeed</string>
   <string name="lawnfeed_not_installed">Dường như bạn đang cố mở Google Now, nhưng bạn chưa cài đặt ứng dụng Lawnfeed từ trang web của chúng tôi.\n\nBạn có muốn tải xuống ngay bây giờ không?</string>
   <string name="disable_popup">Không hiển thị lại</string>
+  <string name="two_row_dock">Hai hàng dock</string>
+  <string name="reset_alternative_icons_title">Đặt lại những biểu tượng ứng dụng bị thay đổi?</string>
+  <string name="reset_alternative_icons">Bạn có %1$d biểu tượng ứng dụng bị thay đổi, bạn có muốn đặt lại chúng không?</string>
 </resources>
