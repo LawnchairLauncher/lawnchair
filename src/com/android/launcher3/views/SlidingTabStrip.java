@@ -34,7 +34,7 @@ public class SlidingTabStrip extends LinearLayout {
     private int mSelectedIndicatorHeight;
     private int mIndicatorLeft = -1;
     private int mIndicatorRight = -1;
-    private int mSelectedPosition = -1;
+    private int mSelectedPosition = 0;
     private float mSelectionOffset;
 
     public SlidingTabStrip(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -63,8 +63,8 @@ public class SlidingTabStrip extends LinearLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        updateTabTextColor(0);
-        updateIndicatorPosition(0, 0);
+        updateTabTextColor(mSelectedPosition);
+        updateIndicatorPosition(mSelectedPosition, 0);
     }
 
     private void updateIndicatorPosition() {
