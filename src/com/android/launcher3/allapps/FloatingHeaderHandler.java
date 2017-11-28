@@ -160,7 +160,13 @@ public class FloatingHeaderHandler extends RecyclerView.OnScrollListener
     private void apply() {
         int uncappedTranslationY = mTranslationY;
         mTranslationY = Math.max(mTranslationY, -mMaxTranslation);
-        mPredictionRow.setTranslationY(uncappedTranslationY);
+        if (mTranslationY != uncappedTranslationY) {
+            // we hide it completely if already capped (for opening search anim)
+            mPredictionRow.setVisibility(View.INVISIBLE);
+        } else {
+            mPredictionRow.setVisibility(View.VISIBLE);
+            mPredictionRow.setTranslationY(uncappedTranslationY);
+        }
         mTabLayout.setTranslationY(mTranslationY);
         mDivider.setTranslationY(mTopOnlyMode ? uncappedTranslationY : mTranslationY);
         mClip.top = mMaxTranslation + mTranslationY;
