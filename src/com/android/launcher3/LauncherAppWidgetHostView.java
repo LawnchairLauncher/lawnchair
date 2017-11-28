@@ -92,7 +92,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         setAccessibilityDelegate(Launcher.getLauncher(context).getAccessibilityDelegate());
         setBackgroundResource(R.drawable.widget_internal_focus_bg);
 
-        if (Utilities.isAtLeastO()) {
+        if (Utilities.ATLEAST_OREO) {
             setExecutor(Utilities.THREAD_POOL_EXECUTOR);
         }
     }
@@ -142,9 +142,8 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         return false;
     }
 
-    public boolean isReinflateRequired() {
+    public boolean isReinflateRequired(int orientation) {
         // Re-inflate is required if the orientation has changed since last inflated.
-        int orientation = mContext.getResources().getConfiguration().orientation;
         if (mPreviousOrientation != orientation) {
            return true;
        }

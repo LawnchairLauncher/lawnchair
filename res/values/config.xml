@@ -1,7 +1,7 @@
 <resources>
 <!-- Dynamic Grid -->
     <!-- Out of 100, the percent of space the overview bar should try and take vertically. -->
-    <integer name="config_dynamic_grid_overview_icon_zone_percentage">20</integer>
+    <integer name="config_dynamic_grid_overview_icon_zone_percentage">22</integer>
 
 <!-- Miscellaneous -->
     <bool name="config_largeHeap">false</bool>
@@ -9,7 +9,7 @@
     <bool name="is_large_tablet">false</bool>
     <bool name="allow_rotation">false</bool>
 
-    <integer name="extracted_color_gradient_alpha">191</integer>
+    <integer name="extracted_color_gradient_alpha">153</integer>
 
     <!-- A string pointer to the original app name string. This allows derived projects to
      easily override the app name without providing all translations -->
@@ -18,6 +18,9 @@
     <!-- String representing the intent for search on the apps market. To specify a query, add
     q=<query> to the data to the intent -->
     <string name="market_search_intent" translatable="false">market://search?c=apps</string>
+
+    <!-- String representing the intent to delete a package.-->
+    <string name="delete_package_intent" translatable="false">#Intent;action=android.intent.action.DELETE;launchFlags=0x10800000;end</string>
 
     <!-- Values for icon shape overrides. These should correspond to entries defined
      in icon_shape_override_paths_names -->
@@ -112,6 +115,9 @@
 
     <!-- Name of a color extraction implementation class. -->
     <string name="color_extraction_impl_class" translatable="false"></string>
+
+    <!-- Name of a subclass of com.android.launcher3.util.InstantAppResolver. Can be empty. -->
+    <string name="instant_app_resolver_class" translatable="false"></string>
 
     <!-- Package name of the default wallpaper picker. -->
     <string name="wallpaper_picker_package" translatable="false"></string>

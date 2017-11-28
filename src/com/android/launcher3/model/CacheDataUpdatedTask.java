@@ -88,7 +88,7 @@ public class CacheDataUpdatedTask extends BaseModelUpdateTask {
             case OP_CACHE_UPDATE:
                 return true;
             case OP_SESSION_UPDATE:
-                return si.isPromise();
+                return si.hasPromiseIconUi();
             default:
                 return false;
         }

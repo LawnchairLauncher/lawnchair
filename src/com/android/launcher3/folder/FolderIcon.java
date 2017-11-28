@@ -61,6 +61,7 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.badge.BadgeRenderer;
 import com.android.launcher3.badge.FolderBadgeInfo;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.dragndrop.BaseItemDragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.graphics.IconPalette;
@@ -375,6 +376,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         if (d.dragInfo instanceof AppInfo) {
             // Came from all apps -- make a copy
             item = ((AppInfo) d.dragInfo).makeShortcut();
+        } else if (d.dragSource instanceof BaseItemDragListener){
+            // Came from a different window -- make a copy
+            item = new ShortcutInfo((ShortcutInfo) d.dragInfo);
         } else {
             item = (ShortcutInfo) d.dragInfo;
         }

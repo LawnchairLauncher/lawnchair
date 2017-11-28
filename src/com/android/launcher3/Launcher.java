@@ -91,6 +91,7 @@ import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.LauncherAppsCompatVO;
+import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -113,7 +114,6 @@ import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -121,6 +121,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.RunnableWithId;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -136,6 +137,7 @@ import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetsContainerView;
+
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -251,6 +253,10 @@ public class Launcher extends BaseActivity
     // Main container view and the model for the widget tray screen.
     @Thunk WidgetsContainerView mWidgetsView;
 
+    // We need to store the orientation Launcher was created with, due to a bug (b/64916689)
+    // that results in widgets being inflated in the wrong orientation.
+    private int mOrientation;
+
     // We set the state in both onCreate and then onNewIntent in some cases, which causes both
     // scroll issues (because the workspace may not have been measured yet) and extra work.
     // Instead, just save the state that we need to restore Launcher to, and commit it in onResume.
@@ -272,15 +278,12 @@ public class Launcher extends BaseActivity
     private IconCache mIconCache;
     private LauncherAccessibilityDelegate mAccessibilityDelegate;
     private final Handler mHandler = new Handler();
-    private boolean mIsResumeFromActionScreenOff;
     private boolean mHasFocus = false;
 
     private ObjectAnimator mScrimAnimator;
     private boolean mShouldFadeInScrim;
 
     private PopupDataProvider mPopupDataProvider;
-
-    private View.OnTouchListener mHapticFeedbackTouchListener;
 
     // Determines how long to wait after a rotation before restoring the screen orientation to
     // match the sensor state.
@@ -386,6 +389,7 @@ public class Launcher extends BaseActivity
             mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
         }
 
+        mOrientation = getResources().getConfiguration().orientation;
         mSharedPrefs = Utilities.getPrefs(this);
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
         mModel = app.setLauncher(this);
@@ -1046,7 +1050,6 @@ public class Launcher extends BaseActivity
         if (shouldShowDiscoveryBounce()) {
             mAllAppsController.showDiscoveryBounce();
         }
-        mIsResumeFromActionScreenOff = false;
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onResume();
         }
@@ -1134,7 +1137,7 @@ public class Launcher extends BaseActivity
             // On O and above we there is always some setting present settings (add icon to
             // home screen or icon badging). On earlier APIs we will have the allow rotation
             // setting, on devices with a locked orientation,
-            return Utilities.isAtLeastO() || !getResources().getBoolean(R.bool.allow_rotation);
+            return Utilities.ATLEAST_OREO || !getResources().getBoolean(R.bool.allow_rotation);
         }
     }
 
@@ -1328,7 +1331,6 @@ public class Launcher extends BaseActivity
                 onClickWallpaperPicker(view);
             }
         }.attachTo(wallpaperButton);
-        wallpaperButton.setOnTouchListener(getHapticFeedbackTouchListener());
 
         // Bind widget button actions
         mWidgetsButton = findViewById(R.id.widget_button);
@@ -1338,7 +1340,6 @@ public class Launcher extends BaseActivity
                 onClickAddWidgetButton(view);
             }
         }.attachTo(mWidgetsButton);
-        mWidgetsButton.setOnTouchListener(getHapticFeedbackTouchListener());
 
         // Bind settings actions
         View settingsButton = findViewById(R.id.settings_button);
@@ -1350,7 +1351,6 @@ public class Launcher extends BaseActivity
                     onClickSettingsButton(view);
                 }
             }.attachTo(settingsButton);
-            settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());
         } else {
             settingsButton.setVisibility(View.GONE);
         }
@@ -1416,7 +1416,7 @@ public class Launcher extends BaseActivity
         CellLayout layout = getCellLayout(container, screenId);
 
         ShortcutInfo info = null;
-        if (Utilities.isAtLeastO()) {
+        if (Utilities.ATLEAST_OREO) {
             info = LauncherAppsCompatVO.createShortcutInfoFromPinItemRequest(
                     this, LauncherAppsCompatVO.getPinItemRequest(data), 0);
         }
@@ -1548,7 +1548,6 @@ public class Launcher extends BaseActivity
                         mAppsView.reset();
                     }
                 }
-                mIsResumeFromActionScreenOff = true;
                 mShouldFadeInScrim = true;
             } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
                 // ACTION_USER_PRESENT is sent after onStart/onResume. This covers the case where
@@ -1676,6 +1675,8 @@ public class Launcher extends BaseActivity
     public SharedPreferences getSharedPrefs() {
         return mSharedPrefs;
     }
+
+    public int getOrientation() { return mOrientation; }
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -2424,7 +2425,7 @@ public class Launcher extends BaseActivity
         }
 
         // Check for abandoned promise
-        if ((v instanceof BubbleTextView) && shortcut.isPromise()) {
+        if ((v instanceof BubbleTextView) && shortcut.hasPromiseIconUi()) {
             String packageName = shortcut.intent.getComponent() != null ?
                     shortcut.intent.getComponent().getPackageName() : shortcut.intent.getPackage();
             if (!TextUtils.isEmpty(packageName)) {
@@ -2534,22 +2535,6 @@ public class Launcher extends BaseActivity
         intent.setSourceBounds(getViewBounds(v));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent, getActivityLaunchOptions(v));
-    }
-
-    public View.OnTouchListener getHapticFeedbackTouchListener() {
-        if (mHapticFeedbackTouchListener == null) {
-            mHapticFeedbackTouchListener = new View.OnTouchListener() {
-                @SuppressLint("ClickableViewAccessibility")
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN) {
-                        v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
-                    }
-                    return false;
-                }
-            };
-        }
-        return mHapticFeedbackTouchListener;
     }
 
     @Override
@@ -3068,7 +3053,7 @@ public class Launcher extends BaseActivity
      */
     public void tryAndUpdatePredictedApps() {
         if (mLauncherCallbacks != null) {
-            List<ComponentKey> apps = mLauncherCallbacks.getPredictedApps();
+            List<ComponentKeyMapper<AppInfo>> apps = mLauncherCallbacks.getPredictedApps();
             if (apps != null) {
                 mAppsView.setPredictedApps(apps);
             }
@@ -3910,16 +3895,8 @@ public class Launcher extends BaseActivity
     }
 
     private boolean shouldShowDiscoveryBounce() {
-        if (mState != State.WORKSPACE) {
-            return false;
-        }
-        if (mLauncherCallbacks != null && mLauncherCallbacks.shouldShowDiscoveryBounce()) {
-            return true;
-        }
-        if (!mIsResumeFromActionScreenOff) {
-            return false;
-        }
-        return !mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false);
+        UserManagerCompat um = UserManagerCompat.getInstance(this);
+        return mState == State.WORKSPACE && !mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false) && !um.isDemoUser();
     }
 
     protected void moveWorkspaceToDefaultScreen() {

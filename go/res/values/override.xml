@@ -17,13 +17,6 @@
 */
 -->
 <resources>
-    <!-- Theme for the widget container. -->
-    <style name="WidgetContainerTheme" parent="@android:style/Theme.DeviceDefault.Settings">
-        <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
-    </style>
-    <style name="WidgetContainerTheme.Dark" parent="LauncherThemeDark">
-        <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
-        <item name="android:colorPrimaryDark">#616161</item> <!-- Gray 700 -->
-    </style>
-
+    <!-- String representing the intent to delete a package. -->
+    <string name="delete_package_intent" translatable="false">#Intent;action=android.intent.action.DELETE;launchFlags=0x10800000;B.android.intent.extra.RETURN_RESULT=true;end</string>
 </resources>

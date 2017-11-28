@@ -90,9 +90,19 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
         return mMainView;
     }
 
+    /**
+     * This method is used to calculate the height to remove when dismissing the last notification.
+     * We subtract the height of the footer in this case since the footer should be gone or in the
+     * process of being removed.
+     * @return The height of the entire notification item, minus the footer if it still exists.
+     */
     public int getHeightMinusFooter() {
-        int footerHeight = mFooter.getParent() == null ? 0 : mFooter.getHeight();
-        return getHeight() - footerHeight;
+        if (mFooter.getParent() == null) {
+            return getHeight();
+        }
+        int excessFooterHeight = mFooter.getHeight() - getResources().getDimensionPixelSize(
+                R.dimen.notification_empty_footer_height);
+        return getHeight() - excessFooterHeight;
     }
 
     public Animator animateHeightRemoval(int heightToRemove, boolean shouldRemoveFromTop) {

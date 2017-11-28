@@ -75,7 +75,7 @@ public class InfoDropTarget extends UninstallDropTarget {
         if (info instanceof AppInfo) {
             componentName = ((AppInfo) info).componentName;
         } else if (info instanceof ShortcutInfo) {
-            componentName = ((ShortcutInfo) info).intent.getComponent();
+            componentName = info.getTargetComponent();
         } else if (info instanceof PendingAddItemInfo) {
             componentName = ((PendingAddItemInfo) info).componentName;
         } else if (info instanceof LauncherAppWidgetInfo) {

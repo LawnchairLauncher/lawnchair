@@ -11,6 +11,7 @@ import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherCallbacks;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.ComponentKeyMapper;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -197,7 +198,7 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
-        public List<ComponentKey> getPredictedApps() {
+        public List<ComponentKeyMapper<AppInfo>> getPredictedApps() {
             // To debug app predictions, enable AlphabeticalAppsList#DEBUG_PREDICTIONS
             return new ArrayList<>();
         }
@@ -213,11 +214,6 @@ public class LauncherExtension extends Launcher {
 
         @Override
         public void onDetachedFromWindow() {
-        }
-
-        @Override
-        public boolean shouldShowDiscoveryBounce() {
-            return false;
         }
     }
 }

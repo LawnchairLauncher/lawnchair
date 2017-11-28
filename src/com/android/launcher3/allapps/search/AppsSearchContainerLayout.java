@@ -17,6 +17,9 @@ package com.android.launcher3.allapps.search;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.support.animation.FloatValueHolder;
+import android.support.animation.SpringAnimation;
+import android.support.animation.SpringForce;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Selection;
@@ -62,6 +65,8 @@ public class AppsSearchContainerLayout extends FrameLayout
     private View mDivider;
     private HeaderElevationController mElevationController;
 
+    private SpringAnimation mSpring;
+
     public AppsSearchContainerLayout(Context context) {
         this(context, null);
     }
@@ -81,6 +86,9 @@ public class AppsSearchContainerLayout extends FrameLayout
 
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
+
+        // Note: This spring does nothing.
+        mSpring = new SpringAnimation(new FloatValueHolder()).setSpring(new SpringForce(0));
     }
 
     @Override
@@ -124,6 +132,11 @@ public class AppsSearchContainerLayout extends FrameLayout
         mAdapter = (AllAppsGridAdapter) mAppsRecyclerView.getAdapter();
         mSearchBarController.initialize(
                 new DefaultAppSearchAlgorithm(appsList.getApps()), mSearchInput, mLauncher, this);
+    }
+
+    @Override
+    public @NonNull SpringAnimation getSpringForFling() {
+        return mSpring;
     }
 
     @Override

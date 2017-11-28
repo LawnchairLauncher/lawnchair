@@ -20,6 +20,7 @@
 
     <!-- Attributes used for launcher theme -->
     <attr name="allAppsScrimColor" format="color" />
+    <attr name="allAppsNavBarScrimColor" format="color" />
     <attr name="popupColorPrimary" format="color" />
     <attr name="popupColorSecondary" format="color" />
     <attr name="popupColorTertiary" format="color" />
@@ -122,6 +123,7 @@
         <attr name="iconTextSize" format="float" />
 
         <attr name="defaultLayoutId" format="reference" />
+        <attr name="demoModeLayoutId" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="CellLayout">
