@@ -27,6 +27,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -95,6 +96,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     private TransformingTouchDelegate mTouchDelegate;
     private boolean mUsingTabs;
     private boolean mHasPredictions = false;
+    private boolean mSearchModeWhileUsingTabs = false;
 
     private final HashMap<ComponentKey, AppInfo> mComponentToAppMap = new HashMap<>();
 
@@ -559,8 +561,10 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             return;
         }
         mHeader.setVisibility(View.VISIBLE);
-        int contentHeight = mHasPredictions ? mLauncher.getDeviceProfile().allAppsCellHeightPx : 0;
-        if (mHasPredictions && !mUsingTabs) {
+
+        boolean usePredictionRow = mHasPredictions && !mSearchModeWhileUsingTabs;
+        int contentHeight = usePredictionRow ? mLauncher.getDeviceProfile().allAppsCellHeightPx : 0;;
+        if (usePredictionRow && !mUsingTabs) {
             contentHeight += getResources()
                     .getDimensionPixelSize(R.dimen.all_apps_prediction_row_divider_height);
         }
@@ -583,6 +587,14 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     public void setLastSearchQuery(String query) {
         for (int i = 0; i < mAH.length; i++) {
             mAH[i].adapter.setLastSearchQuery(query);
+        }
+        boolean hasQuery = !TextUtils.isEmpty(query);
+        if (mFloatingHeaderHandler != null && mUsingTabs && hasQuery) {
+            mSearchModeWhileUsingTabs = true;
+            rebindAdapters(false); // hide tabs
+        } else if (mSearchModeWhileUsingTabs && !hasQuery) {
+            mSearchModeWhileUsingTabs = false;
+            rebindAdapters(true); // show tabs
         }
     }
 

@@ -301,7 +301,7 @@ public class AlphabeticalAppsList {
         if (mSearchResults != f) {
             boolean same = mSearchResults != null && mSearchResults.equals(f);
             mSearchResults = f;
-            updateAdapterItems();
+            onAppsUpdated();
             return !same;
         }
         return false;
@@ -403,7 +403,7 @@ public class AlphabeticalAppsList {
         mApps.clear();
 
         for (AppInfo app : mComponentToAppMap.values()) {
-            if (mItemFilter == null || mItemFilter.matches(app, null)) {
+            if (mItemFilter == null || mItemFilter.matches(app, null) || hasFilter()) {
                 mApps.add(app);
             }
         }
