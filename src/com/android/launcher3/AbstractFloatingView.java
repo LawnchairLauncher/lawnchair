@@ -42,7 +42,8 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             TYPE_WIDGETS_BOTTOM_SHEET,
             TYPE_WIDGET_RESIZE_FRAME,
             TYPE_WIDGETS_FULL_SHEET,
-            TYPE_QUICKSTEP_PREVIEW
+            TYPE_QUICKSTEP_PREVIEW,
+            TYPE_ON_BOARD_POPUP
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface FloatingViewType {}
@@ -52,10 +53,11 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_WIDGET_RESIZE_FRAME = 1 << 3;
     public static final int TYPE_WIDGETS_FULL_SHEET = 1 << 4;
     public static final int TYPE_QUICKSTEP_PREVIEW = 1 << 5;
+    public static final int TYPE_ON_BOARD_POPUP = 1 << 6;
 
     public static final int TYPE_ALL = TYPE_FOLDER | TYPE_ACTION_POPUP
             | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_WIDGETS_FULL_SHEET
-            | TYPE_QUICKSTEP_PREVIEW;
+            | TYPE_QUICKSTEP_PREVIEW | TYPE_ON_BOARD_POPUP;
 
     protected boolean mIsOpen;
 

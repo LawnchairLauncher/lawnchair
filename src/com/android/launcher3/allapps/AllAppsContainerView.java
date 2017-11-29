@@ -60,6 +60,7 @@ import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.TransformingTouchDelegate;
+import com.android.launcher3.views.BottomUserEducationView;
 import com.android.launcher3.views.SlidingTabStrip;
 
 import java.util.HashMap;
@@ -514,6 +515,9 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
                 applyTouchDelegate();
                 if (mAH[pos].recyclerView != null) {
                     mAH[pos].recyclerView.bindFastScrollbar();
+                }
+                if (pos == AdapterHolder.WORK) {
+                    BottomUserEducationView.showIfNeeded(mLauncher);
                 }
             }
 

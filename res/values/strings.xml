@@ -326,5 +326,9 @@
 
     <!-- Label of the work mode toggle -->
     <string name="work_profile_toggle_label">Work profile</string>
+    <!-- Title in bottom user education view in work tab -->
+    <string name="bottom_work_tab_user_education_title">Find work apps here</string>
+    <!-- Body text in bottom user education view in work tab -->
+    <string name="bottom_work_tab_user_education_body">Each work app has an orange badge, which means it\'s kept secure by your organization. Work apps can be moved to your Home Screen for easier access.</string>
 
 </resources>
