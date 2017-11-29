@@ -120,8 +120,8 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         addView(mTouchFeedbackView, size, size);
 
         mAH = new AdapterHolder[2];
-        mAH[AdapterHolder.MAIN] = new AdapterHolder();
-        mAH[AdapterHolder.WORK] = new AdapterHolder();
+        mAH[AdapterHolder.MAIN] = new AdapterHolder(false /* isWork */);
+        mAH[AdapterHolder.WORK] = new AdapterHolder(true /* isWork */);
     }
 
     @Override
@@ -627,8 +627,8 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         AllAppsRecyclerView recyclerView;
         boolean verticalFadingEdge;
 
-        AdapterHolder() {
-            appsList = new AlphabeticalAppsList(mLauncher, mComponentToAppMap);
+        AdapterHolder(boolean isWork) {
+            appsList = new AlphabeticalAppsList(mLauncher, mComponentToAppMap, isWork);
             adapter = new AllAppsGridAdapter(mLauncher, appsList, mLauncher,
                     AllAppsContainerView.this, true);
             appsList.setAdapter(adapter);

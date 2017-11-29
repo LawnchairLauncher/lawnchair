@@ -143,7 +143,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         RecyclerView.RecycledViewPool pool = getRecycledViewPool();
         int approxRows = (int) Math.ceil(grid.availableHeightPx / grid.allAppsIconSizePx);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH, 1);
-        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER, 1);
+        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ALL_APPS_DIVIDER, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ICON, approxRows * mNumAppsPerRow);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON, mNumAppsPerRow);
@@ -167,7 +167,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
 
         putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
                 AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER,
-                AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER);
+                AllAppsGridAdapter.VIEW_TYPE_ALL_APPS_DIVIDER);
         putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
                 AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET);
         putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
