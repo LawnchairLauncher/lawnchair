@@ -38,11 +38,6 @@ deploy:
       branch: alpha
   - provider: script
     skip_cleanup: true
-    script: scripts/deploy-telegram.sh
-    on:
-      tags: true
-  - provider: script
-    skip_cleanup: true
     script: scripts/deploy-s3.sh
     on:
       branch: beta
