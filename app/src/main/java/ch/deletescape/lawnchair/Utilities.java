@@ -1179,7 +1179,8 @@ public final class Utilities {
     public static boolean checkOutdatedLawnfeed(Context context) {
         try {
             PackageInfo info = context.getPackageManager().getPackageInfo(LawnfeedClient.PROXY_PACKAGE, 0);
-            if (info != null && info.versionCode == 1 && !info.versionName.equals("dev")) {
+            // All Lawnfeed builds below version code 1655 aren't signed properly!
+            if (info != null && info.versionCode <= 1655 && !info.versionName.equals("dev")) {
                 return true;
             }
         } catch (PackageManager.NameNotFoundException ignored) {}
