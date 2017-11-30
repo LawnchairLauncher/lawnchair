@@ -543,6 +543,9 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     }
 
     private void setupHeader() {
+        if (mFloatingHeaderHandler == null) {
+            return;
+        }
         mHeader.setVisibility(View.VISIBLE);
         int contentHeight = mLauncher.getDeviceProfile().allAppsCellHeightPx;
         if (!mUsingTabs) {

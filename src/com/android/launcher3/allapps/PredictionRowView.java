@@ -68,7 +68,10 @@ public class PredictionRowView extends LinearLayout {
      * Sets the number of apps per row.
      */
     public void setNumAppsPerRow(int numPredictedAppsPerRow) {
-        mNumPredictedAppsPerRow = numPredictedAppsPerRow;
+        if (mNumPredictedAppsPerRow != numPredictedAppsPerRow) {
+            mNumPredictedAppsPerRow = numPredictedAppsPerRow;
+            onAppsUpdated();
+        }
     }
 
     /**
