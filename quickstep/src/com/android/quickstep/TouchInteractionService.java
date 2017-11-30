@@ -87,6 +87,7 @@ public class TouchInteractionService extends Service {
     private int mActivePointerId = INVALID_POINTER_ID;
     private VelocityTracker mVelocityTracker;
     private int mTouchSlop;
+    private float mStartDisplacement;
     private NavBarSwipeInteractionHandler mInteractionHandler;
 
     private ISystemUiProxy mISystemUiProxy;
@@ -184,11 +185,12 @@ public class TouchInteractionService extends Service {
                 float displacement = ev.getY(pointerIndex) - mDownPos.y;
                 if (mInteractionHandler == null) {
                     if (Math.abs(displacement) >= mTouchSlop) {
+                        mStartDisplacement = Math.signum(displacement) * mTouchSlop;
                         startTouchTracking();
                     }
                 } else {
                     // Move
-                    mInteractionHandler.updateDisplacement(displacement);
+                    mInteractionHandler.updateDisplacement(displacement - mStartDisplacement);
                 }
                 break;
             }

@@ -62,7 +62,8 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
 
     private static final long RECENTS_VIEW_VISIBILITY_DELAY = 120;
     private static final long RECENTS_VIEW_VISIBILITY_DURATION = 150;
-    private static final long DEFAULT_SWIPE_DURATION = 200;
+    private static final long MAX_SWIPE_DURATION = 200;
+    private static final long MIN_SWIPE_DURATION = 80;
 
     // Ideal velocity for a smooth transition
     private static final float PIXEL_PER_MS = 2f;
@@ -128,8 +129,8 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
         new Handler().postDelayed(() -> mStateCallback.setState(STATE_RECENTS_DELAY_COMPLETE),
                 RECENTS_VIEW_VISIBILITY_DELAY);
 
-        long duration = Math.min(DEFAULT_SWIPE_DURATION,
-                Math.max((long) (-mCurrentDisplacement / PIXEL_PER_MS), 0));
+        long duration = Math.min(MAX_SWIPE_DURATION,
+                Math.max((long) (-mCurrentDisplacement / PIXEL_PER_MS), MIN_SWIPE_DURATION));
         if (mCurrentShift.getCurrentAnimation() != null) {
             ObjectAnimator anim = mCurrentShift.getCurrentAnimation();
             long theirDuration = anim.getDuration() - anim.getCurrentPlayTime();
@@ -264,7 +265,7 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
         float flingThreshold = res.getDimension(R.dimen.quickstep_fling_threshold_velocity);
         boolean isFling = Math.abs(endVelocity) > flingThreshold;
 
-        long duration = DEFAULT_SWIPE_DURATION;
+        long duration = MAX_SWIPE_DURATION;
         final float endShift;
         if (!isFling) {
             endShift = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW ? 1 : 0;
