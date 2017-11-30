@@ -85,6 +85,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     private InterceptingViewPager mViewPager;
     private ViewGroup mHeader;
     private FloatingHeaderHandler mFloatingHeaderHandler;
+    private TabsPagerAdapter mTabsPagerAdapter;
 
     private SpannableStringBuilder mSearchQueryBuilder = null;
 
@@ -436,7 +437,9 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             setupWorkProfileTabs();
             setupHeader();
         } else {
+            mTabsPagerAdapter = null;
             mAH[AdapterHolder.MAIN].setup(findViewById(R.id.apps_list_view), null);
+            mAH[AdapterHolder.WORK].recyclerView = null;
             if (FeatureFlags.ALL_APPS_PREDICTION_ROW_VIEW) {
                 setupHeader();
             } else {
@@ -479,8 +482,11 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     }
 
     private void setupWorkProfileTabs() {
+        if (mTabsPagerAdapter != null) {
+            return;
+        }
         final SlidingTabStrip tabs = findViewById(R.id.tabs);
-        mViewPager.setAdapter(new TabsPagerAdapter());
+        mViewPager.setAdapter(mTabsPagerAdapter = new TabsPagerAdapter());
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             boolean mVisible = true;
