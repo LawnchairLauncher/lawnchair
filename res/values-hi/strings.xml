@@ -72,7 +72,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"शॉर्टकट"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"वॉलपेपर"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"होम पेज की सेटिंग"</string>
-    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपके व्यवस्थापक द्वारा अक्षम"</string>
+    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपके एडमिन ने बंद किया हुआ है"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"खास जानकारी"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"होमस्क्रीन घुमाने की अनुमति दें"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फ़ोन घुुमाए जाने पर"</string>
@@ -131,4 +131,5 @@
     <string name="notification_dismissed" msgid="6002233469409822874">"सूचना को खारिज किया गया"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"निजी ऐप"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"काम से जुड़े ऐप"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"कार्य प्रोफ़ाइल"</string>
 </resources>

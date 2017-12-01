@@ -28,9 +28,9 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"ابزارک‌ها در حالت ایمن غیرفعال هستند"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"میان‌بر دردسترس نیست"</string>
     <string name="home_screen" msgid="806512411299847073">"صفحه اصلی"</string>
-    <string name="custom_actions" msgid="3747508247759093328">"عملکردهای سفارشی"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"کنش‌های سفارشی"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"برای انتخاب ابزارک لمس کنید و نگه دارید."</string>
-    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"برای انتخاب یک ابزارک، دو ضربه سریع بزنید و نگه‌دارید یا از اقدامات سفارشی استفاده کنید."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"برای انتخاب یک ابزارک، دو ضربه سریع بزنید و نگه‌دارید یا از کنش‌های سفارشی استفاده کنید."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"‏%1$d عرض در %2$d طول"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"برای قرار دادن به‌صورت دستی لمس کنید و بکشید"</string>
@@ -129,4 +129,8 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> میان‌بر و <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> اعلان برای <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"رد کردن"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"اعلان رد شد"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"شخصی"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"محل کار"</string>
+    <!-- no translation found for work_profile_toggle_label (3081029915775481146) -->
+    <skip />
 </resources>

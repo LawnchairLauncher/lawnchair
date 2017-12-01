@@ -129,4 +129,7 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"Prečice (<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>) i obaveštenja (<xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g>) za <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Odbaci"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Obaveštenje je odbačeno"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Lične"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"Poslovne"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profil za Work"</string>
 </resources>
