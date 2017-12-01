@@ -60,7 +60,7 @@ abstract class BaseFlags {
     public static final boolean GO_DISABLE_WIDGETS = false;
 
     // When enabled shows a work profile tab in all apps
-    public static final boolean ALL_APPS_TABS_ENABLED = false;
+    public static final boolean ALL_APPS_TABS_ENABLED = true;
     // When enabled prediction row is rendered as it's own custom view
-    public static final boolean ALL_APPS_PREDICTION_ROW_VIEW = false;
+    public static final boolean ALL_APPS_PREDICTION_ROW_VIEW = true;
 }
