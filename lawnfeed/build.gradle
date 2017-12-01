@@ -30,17 +30,14 @@ android {
     }
     buildTypes {
         debug {
-            if (System.getenv("TRAVIS") == "true") {
-                minifyEnabled false
-                if (System.getenv("TRAVIS_EVENT_TYPE") != "pull_request") {
-                    signingConfig signingConfigs.travis
-                }
-            } else {
-                minifyEnabled false
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (System.getenv("TRAVIS_EVENT_TYPE") != "pull_request") {
+                signingConfig signingConfigs.travis
             }
         }
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
