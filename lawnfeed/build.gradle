@@ -31,7 +31,7 @@ android {
     buildTypes {
         debug {
             if (System.getenv("TRAVIS") == "true") {
-                minifyEnabled true
+                minifyEnabled false
                 if (System.getenv("TRAVIS_EVENT_TYPE") != "pull_request") {
                     signingConfig signingConfigs.travis
                 }
