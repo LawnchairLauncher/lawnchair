@@ -1969,7 +1969,8 @@ public class Launcher extends BaseActivity
         final ShortcutInfo shortcut = (ShortcutInfo) tag;
 
         if (shortcut.isDisabled()) {
-            if ((shortcut.runtimeStatusFlags &
+            final int disabledFlags = shortcut.runtimeStatusFlags & ShortcutInfo.FLAG_DISABLED_MASK;
+            if ((disabledFlags &
                     ~FLAG_DISABLED_SUSPENDED &
                     ~FLAG_DISABLED_QUIET_USER) == 0) {
                 // If the app is only disabled because of the above flags, launch activity anyway.
