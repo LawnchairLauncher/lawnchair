@@ -404,6 +404,7 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <string name="lock_desktop">Bloqueja l\'escriptori</string>
   <string name="lawnfeed_not_found">No s\'han instal·lat els paquets</string>
   <string name="google_app_not_found">Aplicació de google no instal·lada</string>
+  <string name="lawnfeed_incompatible">S\'ha instal·lat una versió de Lawnfeed incompatible</string>
   <string name="set_default_launcher">Estableix llançador predeterminat</string>
   <string name="enable_spring_pref_title">Ativar efeito de mola</string>
   <string name="hide_app">Amaga l\'aplicació</string>
@@ -418,8 +419,11 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <string name="lawnfeed_not_enabled">Sembla que esteu intentant obrir la pàgina de Google Now, però no heu activat l\'opció en la configuració del comportament.\n\n Voleu activar-la ara?</string>
   <string name="lawnfeed_not_installed_title">Lawnfeed no està instal·lat</string>
   <string name="lawnfeed_not_installed">Sembla que esteu intentant obrir la pàgina de Google Now, però no heu instal·lat l\'aplicació Lawnfeed del nostre lloc web.\n\nVoleu baixar-la ara?</string>
+  <string name="lawnfeed_outdated_title">Cal actualitzar Lawnfeed</string>
+  <string name="lawnfeed_outdated">Es necessita una versió més nova de Lawnfeed per funcionar amb aquesta versió de Lawnchair.\n\nAbans d\'instal·lar l\'actualització, probablement haureu de desinstal·lar la versió actual de Lawnfeed.\n\nVoleu baixar-la ara?</string>
   <string name="disable_popup">No tornis a mostrar-ho</string>
   <string name="two_row_dock">Barra d\'aplicacions de dues files</string>
   <string name="reset_alternative_icons_title">Voleu restablir les icones d\'aplicacions alternatives?</string>
   <string name="reset_alternative_icons">Teniu %1$d aplicacions amb icones alternatives, voleu reiniciar-les?</string>
+  <string name="error_no_browser">No s\'ha trobat cap activitat per manegar l\'URL</string>
 </resources>
