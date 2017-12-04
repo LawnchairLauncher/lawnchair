@@ -404,6 +404,7 @@
   <string name="lock_desktop">Blocare desktop</string>
   <string name="lawnfeed_not_found">Lawnfeed neinstalat</string>
   <string name="google_app_not_found">Aplicația Google nu este instalată</string>
+  <string name="lawnfeed_incompatible">Versiune incompatibilă de Lawnfeed instalată</string>
   <string name="set_default_launcher">Setaţi lansator implicit</string>
   <string name="enable_spring_pref_title">Activați efectul elastic</string>
   <string name="hide_app">Ascundere aplicaţie</string>
@@ -418,8 +419,11 @@
   <string name="lawnfeed_not_enabled">Se pare că încercați să deschideți pagina Google Now, dar nu ați activat opțiunea din setările de comportament.\n\nDoriți să o activați acum?</string>
   <string name="lawnfeed_not_installed_title">Lawnfeed neinstalat</string>
   <string name="lawnfeed_not_installed">Se pare că încercați să deschideți pagina Google Now, dar nu ați instalat aplicația Lawnfeed de pe site-ul nostru.\n\nDoriți să o descărcaţi acum?</string>
+  <string name="lawnfeed_outdated_title">Lawnfeed necesită actualizare</string>
+  <string name="lawnfeed_outdated">O versiune mai nouă a programului Lawnfeed este necesară pentru a funcţiona cu această versiune de Lawnchair.\n\nÎnainte de a instala actualizarea, probabil va trebui să dezinstalați versiunea curentă Lawnfeed.\n\nDoriți să o descărcați acum?</string>
   <string name="disable_popup">Nu se mai afișează</string>
   <string name="two_row_dock">Doc în două rânduri</string>
   <string name="reset_alternative_icons_title">Resetați pictogramele alternative ale aplicațiilor?</string>
   <string name="reset_alternative_icons">Aveți %1$d aplicații cu pictograme alternative, doriți să le resetați?</string>
+  <string name="error_no_browser">Nu s-a găsit nicio activitate pentru gestionarea adreselor URL</string>
 </resources>
