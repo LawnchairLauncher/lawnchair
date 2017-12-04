@@ -48,6 +48,11 @@ public class RecentsView extends PagedView {
     /** A circular curve of x from 0 to 1, where 0 is the center of the screen and 1 is the edge. */
     private static final TimeInterpolator CURVE_INTERPOLATOR
         = x -> (float) (1 - Math.sqrt(1 - Math.pow(x, 2)));
+    /**
+     * The alpha of a black scrim on a page in the carousel as it leaves the screen.
+     * In the resting position of the carousel, the adjacent pages have about half this scrim.
+     */
+    private static final float MAX_PAGE_SCRIM_ALPHA = 0.8f;
 
     private boolean mOverviewStateEnabled;
     private boolean mTaskStackListenerRegistered;
@@ -181,8 +186,8 @@ public class RecentsView extends PagedView {
     }
 
     @Override
-    public void scrollTo(int x, int y) {
-        super.scrollTo(x, y);
+    public void computeScroll() {
+        super.computeScroll();
         updateCurveProperties();
     }
 
@@ -212,6 +217,10 @@ public class RecentsView extends PagedView {
             // Make sure the biggest card (i.e. the one in front) shows on top of the adjacent ones.
             page.setTranslationZ(scale);
             page.setTranslationX((screenCenter - pageCenter) * curveInterpolation * CURVE_FACTOR);
+            if (page instanceof TaskView) {
+                TaskThumbnailView thumbnail = ((TaskView) page).getThumbnail();
+                thumbnail.setDimAlpha(1 - curveInterpolation * MAX_PAGE_SCRIM_ALPHA);
+            }
         }
     }
 }
