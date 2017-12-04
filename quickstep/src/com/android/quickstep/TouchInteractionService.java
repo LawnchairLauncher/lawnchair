@@ -15,8 +15,15 @@
  */
 package com.android.quickstep;
 
+import static android.view.MotionEvent.ACTION_CANCEL;
+import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_MOVE;
+import static android.view.MotionEvent.ACTION_POINTER_DOWN;
+import static android.view.MotionEvent.ACTION_POINTER_UP;
+import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
+import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
 import android.app.Service;
@@ -29,6 +36,7 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.UserHandle;
@@ -37,9 +45,12 @@ import android.view.Choreographer;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
+import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.util.TraceHelper;
@@ -51,9 +62,12 @@ import com.android.systemui.shared.recents.model.RecentsTaskLoader;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.BackgroundExecutor;
 
+import java.util.function.Consumer;
+
 /**
  * Service connected by system-UI for handling touch interaction.
  */
+@TargetApi(Build.VERSION_CODES.O)
 public class TouchInteractionService extends Service {
 
     private static final String TAG = "TouchInteractionService";
@@ -73,6 +87,10 @@ public class TouchInteractionService extends Service {
         }
     };
 
+    private final Consumer<MotionEvent> mOtherActivityTouchConsumer
+            = this::handleTouchDownOnOtherActivity;
+    private final Consumer<MotionEvent> mNoOpTouchConsumer = (ev) -> {};
+
     private ActivityManagerWrapper mAM;
     private RunningTaskInfo mRunningTask;
     private Intent mHomeIntent;
@@ -80,8 +98,6 @@ public class TouchInteractionService extends Service {
     private MotionEventQueue mEventQueue;
     private MainThreadExecutor mMainThreadExecutor;
 
-    private int mDisplayRotation;
-    private final Point mDisplaySize = new Point();
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
     private int mActivePointerId = INVALID_POINTER_ID;
@@ -91,6 +107,7 @@ public class TouchInteractionService extends Service {
     private NavBarSwipeInteractionHandler mInteractionHandler;
 
     private ISystemUiProxy mISystemUiProxy;
+    private Consumer<MotionEvent> mCurrentConsumer = mNoOpTouchConsumer;
 
     @Override
     public void onCreate() {
@@ -128,25 +145,31 @@ public class TouchInteractionService extends Service {
     }
 
     private void handleMotionEvent(MotionEvent ev) {
-        if (ev.getActionMasked() != MotionEvent.ACTION_DOWN && mVelocityTracker == null) {
+        if (ev.getActionMasked() == ACTION_DOWN) {
+            mRunningTask = mAM.getRunningTask();
+
+            if (mRunningTask == null) {
+                mCurrentConsumer = mNoOpTouchConsumer;
+            } else if (mRunningTask.topActivity.equals(mLauncher)) {
+                mCurrentConsumer = getLauncherConsumer();
+            } else {
+                mCurrentConsumer = mOtherActivityTouchConsumer;
+            }
+        }
+        mCurrentConsumer.accept(ev);
+    }
+
+    private void handleTouchDownOnOtherActivity(MotionEvent ev) {
+        if (ev.getActionMasked() != ACTION_DOWN && mVelocityTracker == null) {
             return;
         }
         switch (ev.getActionMasked()) {
-            case MotionEvent.ACTION_DOWN: {
+            case ACTION_DOWN: {
                 TraceHelper.beginSection("TouchInt");
                 mActivePointerId = ev.getPointerId(0);
                 mDownPos.set(ev.getX(), ev.getY());
                 mLastPos.set(mDownPos);
                 mTouchSlop = ViewConfiguration.get(this).getScaledTouchSlop();
-                Display display = getSystemService(WindowManager.class).getDefaultDisplay();
-                display.getRealSize(mDisplaySize);
-                mDisplayRotation = display.getRotation();
-
-                mRunningTask = mAM.getRunningTask();
-                if (mRunningTask == null || mRunningTask.topActivity.equals(mLauncher)) {
-                    // TODO: We could drive all-apps in this case. For now just ignore swipe.
-                    break;
-                }
 
                 if (mVelocityTracker == null) {
                     mVelocityTracker = VelocityTracker.obtain();
@@ -160,7 +183,7 @@ public class TouchInteractionService extends Service {
                 }
                 break;
             }
-            case MotionEvent.ACTION_POINTER_UP: {
+            case ACTION_POINTER_UP: {
                 int ptrIdx = ev.getActionIndex();
                 int ptrId = ev.getPointerId(ptrIdx);
                 if (ptrId == mActivePointerId) {
@@ -174,7 +197,7 @@ public class TouchInteractionService extends Service {
                 }
                 break;
             }
-            case MotionEvent.ACTION_MOVE: {
+            case ACTION_MOVE: {
                 int pointerIndex = ev.findPointerIndex(mActivePointerId);
                 if (pointerIndex == INVALID_POINTER_ID) {
                     break;
@@ -194,16 +217,18 @@ public class TouchInteractionService extends Service {
                 }
                 break;
             }
-            case MotionEvent.ACTION_CANCEL:
+            case ACTION_CANCEL:
                 // TODO: Should be different than ACTION_UP
-            case MotionEvent.ACTION_UP: {
+            case ACTION_UP: {
                 TraceHelper.endSection("TouchInt");
 
                 endInteraction();
+                mCurrentConsumer = mNoOpTouchConsumer;
                 break;
             }
         }
     }
+
 
     private void startTouchTracking() {
         // Create the shared handler
@@ -262,14 +287,89 @@ public class TouchInteractionService extends Service {
 
         TraceHelper.beginSection("TaskSnapshot");
         // TODO: We are using some hardcoded layers for now, to best approximate the activity layers
+        Point displaySize = new Point();
+        Display display = getSystemService(WindowManager.class).getDefaultDisplay();
+        display.getRealSize(displaySize);
         try {
-            return mISystemUiProxy.screenshot(new Rect(), mDisplaySize.x, mDisplaySize.y, 0, 100000,
-                    false, mDisplayRotation).toBitmap();
+            return mISystemUiProxy.screenshot(new Rect(), displaySize.x, displaySize.y, 0, 100000,
+                    false, display.getRotation()).toBitmap();
         } catch (RemoteException e) {
             Log.e(TAG, "Error capturing snapshot", e);
             return null;
         } finally {
             TraceHelper.endSection("TaskSnapshot");
+        }
+    }
+
+    private Consumer<MotionEvent> getLauncherConsumer() {
+
+        Launcher launcher = (Launcher) LauncherAppState.getInstance(this).getModel().getCallback();
+        if (launcher == null) {
+            return mNoOpTouchConsumer;
+        }
+
+        View target = launcher.getDragLayer();
+        if (!target.getWindowId().isFocused()) {
+            return mNoOpTouchConsumer;
+        }
+        return new LauncherTouchConsumer(target);
+    }
+
+    private class LauncherTouchConsumer implements Consumer<MotionEvent> {
+
+        private final View mTarget;
+        private final int[] mLocationOnScreen = new int[2];
+
+        private boolean mTrackingStarted = false;
+
+        LauncherTouchConsumer(View target) {
+            mTarget = target;
+        }
+
+        @Override
+        public void accept(MotionEvent ev) {
+            int action = ev.getActionMasked();
+            if (action == ACTION_DOWN) {
+                mTrackingStarted = false;
+                mDownPos.set(ev.getX(), ev.getY());
+                mTouchSlop = ViewConfiguration.get(mTarget.getContext()).getScaledTouchSlop();
+            } else if (!mTrackingStarted) {
+                switch (action) {
+                    case ACTION_POINTER_UP:
+                    case ACTION_POINTER_DOWN:
+                        if (!mTrackingStarted) {
+                            mCurrentConsumer = mNoOpTouchConsumer;
+                        }
+                        break;
+                    case ACTION_MOVE: {
+                        float displacement = ev.getY() - mDownPos.y;
+                        if (Math.abs(displacement) >= mTouchSlop) {
+                            mTrackingStarted = true;
+                            mTarget.getLocationOnScreen(mLocationOnScreen);
+
+                            // Send a down event only when mTouchSlop is crossed.
+                            MotionEvent down = MotionEvent.obtain(ev);
+                            down.setAction(ACTION_DOWN);
+                            sendEvent(down);
+                            down.recycle();
+                        }
+                    }
+                }
+            }
+
+            if (mTrackingStarted) {
+                sendEvent(ev);
+            }
+
+            if (action == ACTION_UP || action == ACTION_CANCEL) {
+                mCurrentConsumer = mNoOpTouchConsumer;
+            }
+        }
+
+        private void sendEvent(MotionEvent ev) {
+            ev.offsetLocation(-mLocationOnScreen[0], -mLocationOnScreen[1]);
+            mTarget.dispatchTouchEvent(ev);
+            ev.offsetLocation(mLocationOnScreen[0], mLocationOnScreen[1]);
         }
     }
 }
