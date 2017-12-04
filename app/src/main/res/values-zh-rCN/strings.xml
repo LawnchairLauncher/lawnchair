@@ -106,7 +106,7 @@
   <!-- Instruction that clicking outside will close folder -->
   <string name="folder_tap_to_close">点按可关闭文件夹</string>
   <!-- Instruction that clicking outside will commit folder rename -->
-  <string name="folder_tap_to_rename">点按可保存新名称</string>
+  <string name="folder_tap_to_rename">点按可完成重命名</string>
   <!-- Indication that folder closed -->
   <string name="folder_closed">文件夹已关闭</string>
   <!-- Folder renamed format -->
@@ -253,17 +253,17 @@
   <string name="hotseat_uses_extracted_colors_pref_title">Dock 栏从壁纸取色</string>
   <string name="hotseat_show_arrow">显示箭头标识</string>
   <string name="hotseat_show_page_indicator">显示页面指示器</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">Dock 栏将使用壁纸中的某种颜色</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">Dock 栏将使用壁纸中的提取的颜色</string>
   <string name="hotseat_uses_extracted_colors_pref_off">Dock 栏将会变成灰色，但会根据壁纸明暗作适当调整</string>
   <string name="transparent_hotseat_pref_title">透明化 Dock 栏</string>
   <string name="dynamic_ui_pref_title">主色调从壁纸取色</string>
   <string name="blur_pref_title">开启模糊</string>
   <string name="blur_pref_summary">为界面开启模糊效果\n不兼容动态壁纸</string>
   <string name="blur_radius_pref_title">模糊程度</string>
-  <string name="pref_iconLabelsInTwoLines">两行显示图标标签</string>
+  <string name="pref_iconLabelsInTwoLines">分两行显示图标标签</string>
   <string name="white_google_icon_pref_title">使用白色的 Google 图标</string>
   <string name="hide_icon_labels_pref_title">在主屏幕上隐藏图标标签</string>
-  <string name="hide_all_apps_icon_labels_pref_title">在抽屉里隐藏图标标签</string>
+  <string name="hide_all_apps_icon_labels_pref_title">在应用抽屉里隐藏图标标签</string>
   <string name="workspace_label_color_hue_pref_title">主屏幕应用标签颜色</string>
   <string name="all_apps_opacity_pref_title">抽屉背景不透明度</string>
   <string name="num_cols_pref_title">列数</string>
@@ -271,20 +271,20 @@
   <string name="num_hotseat_icons_pref_title">Dock 栏图标数</string>
   <string name="icon_scale_pref_title">图标大小</string>
   <string name="hotseat_height_scale">高度</string>
-  <string name="icon_text_scale_pref_title">图标标签大小</string>
+  <string name="icon_text_scale_pref_title">图标文本大小</string>
   <string name="icon_text_padding_scale_pref_title">图标间距大小</string>
   <string name="full_width_width_widgets_pref_title">全宽微件</string>
   <string name="full_width_widgets_pref_summary">允许微件填充整个桌面宽度</string>
-  <string name="notification_access_pref_title">通知角标与预览</string>
+  <string name="notification_access_pref_title">通知点与预览</string>
   <string name="notification_access_pref_summary">允许 Lawnchair 访问您的通知以启用此功能</string>
   <string name="general_pref_title">桌面</string>
-  <string name="dock_pref_title">Dock</string>
+  <string name="dock_pref_title">Dock 栏</string>
   <string name="app_drawer_pref_title">应用抽屉</string>
   <string name="pixel_ui_pref_title">主题</string>
   <string name="behavior_pref_title">行为</string>
   <string name="debug_pref_title">调试</string>
   <string name="general_pref_summary">自定义您的桌面</string>
-  <string name="dock_pref_summary">定制您的 dock</string>
+  <string name="dock_pref_summary">定制您的 Dock 栏</string>
   <string name="app_drawer_pref_summary">定制您的应用抽屉</string>
   <string name="pixel_ui_pref_summary">为不同元素应用主题</string>
   <string name="backup_pref_title">备份 &amp; 恢复</string>
@@ -296,10 +296,10 @@
   <string name="show_mic_pref_title">显示 Google Assistant 按钮</string>
   <string name="use_round_searhbar">使用圆角应用搜索栏</string>
   <string name="pixel_style_icons_pref_title">使用 Pixel 图标</string>
-  <string name="pixel_style_icons_pref_summary">该项启用时会优先选择圆形图标</string>
+  <string name="pixel_style_icons_pref_summary">该项启用时会优先使用圆形图标</string>
   <string name="show_google_now_tab_pref_title">显示 Google Now 页面</string>
   <string name="restart_lawnchair_pref_title">重启 Lawnchair</string>
-  <string name="restart_lawnchair_pref_summary">当设置出错时可能会有用</string>
+  <string name="restart_lawnchair_pref_summary">当一些设置没有正确应用时可能会有用</string>
   <string name="rebuild_icondb_pref_title">重建图标缓存</string>
   <string name="pinch_to_overview_pref_title">双指捏合打开概览页面</string>
   <string name="pinch_to_overview_pref_summary">在主屏幕双指捏合以显示概览</string>
@@ -308,9 +308,9 @@
   <string name="light_statusbar_pref_off">状态栏将始终显示亮色图标</string>
   <string name="haptic_feedback_pref_title">启用震动</string>
   <string name="keep_scroll_state_pref_title">记住滚动位置</string>
-  <string name="keep_scroll_state_pref_summary">记住抽屉中滚动到了哪个位置</string>
-  <string name="home_opens_drawer_pref_title">Home 键打开应用抽屉</string>
-  <string name="home_opens_drawer_pref_summary">在主屏幕按主页面键将打开应用抽屉</string>
+  <string name="keep_scroll_state_pref_summary">记住在应用抽屉中滚动到了哪个位置</string>
+  <string name="home_opens_drawer_pref_title">按 Home 键打开应用抽屉</string>
+  <string name="home_opens_drawer_pref_summary">在主屏幕按 Home 键将打开应用抽屉</string>
   <string name="show_hidden_pref_title">显示隐藏的应用</string>
   <string name="show_hidden_pref_on">更改可见性设置以显示隐藏应用</string>
   <string name="show_hidden_pref_off">隐藏的应用将不可见</string>
@@ -318,7 +318,7 @@
   <string name="import_db_title">导入数据库</string>
   <string name="export_prefs_title">导出配置</string>
   <string name="import_prefs_title">导入配置</string>
-  <string name="notification_listener_label">Lawnchair - 通知角标</string>
+  <string name="notification_listener_label">Lawnchair - 通知点</string>
   <string name="color_extraction_label">Lawnchair - 提取颜色</string>
   <string name="test_title">测试</string>
   <string name="visibility">可见性</string>
@@ -335,19 +335,19 @@
   <string name="pull_down_action_pref_title">下拉行为</string>
   <string name="pull_down_do_nothing">无操作</string>
   <string name="pull_down_notis">展开通知栏</string>
-  <string name="pull_down_search">打开搜索</string>
+  <string name="pull_down_search">展开搜索</string>
   <string name="pull_down_apps_search">查找应用</string>
   <string name="enable_screen_rotation">启用屏幕旋转</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">恢复</string>
-  <string name="backup_export_title">导出</string>
+  <string name="backup_export_title">备份</string>
   <string name="settings_export_success">设置已成功备份</string>
-  <string name="db_export_success">数据已成功备份</string>
+  <string name="db_export_success">数据库已成功备份</string>
   <string name="settings_import_success">设置已成功恢复</string>
   <string name="db_import_success">数据已成功恢复</string>
   <string name="export_error">无法备份</string>
   <string name="import_error">无法恢复</string>
-  <string name="imexport_no_backup_found">未找到备份</string>
+  <string name="imexport_no_backup_found">未找到备份文件</string>
   <string name="imexport_external_storage_unreadable">在系统设置中授予外部存储读取权限</string>
   <string name="imexport_external_storage_unwritable">在系统设置中授予外部存储读取权限</string>
   <string name="units_metric">公制</string>
@@ -356,7 +356,7 @@
   <string name="pref_cat_weather">天气</string>
   <string name="pref_weather_title">启用天气</string>
   <string name="pref_weather_units">天气单位</string>
-  <string name="pref_weather_city_summary">为了获得最佳结果，请输入国家/地区代码</string>
+  <string name="pref_weather_city_summary">为了获得最佳结果，请输入国家 / 地区代码</string>
   <string name="pref_weather_city_title">城市</string>
   <string name="none">无</string>
   <string name="pref_applyTheme">应用主题至</string>
@@ -383,7 +383,7 @@
   <string name="about_version">版本</string>
   <string name="about_icon_designer">图标设计者</string>
   <string name="about_contributors_title">贡献者</string>
-  <string name="location_permission_warn">切换到另一个提供商需要获得位置权限 ！😇</string>
+  <string name="location_permission_warn">切换到另一个提供商需要获得位置权限 ！</string>
   <string name="num_cols_drawer_pref_title">抽屉中的网格列数</string>
   <string name="shortcut_backport_warning">该功能可能引起桌面性能下降，请自行承担后果</string>
   <string name="pref_backport_shortcuts">向低版本 Android 启用应用快捷方式</string>
@@ -393,15 +393,16 @@
   <string name="pref_all_apps_custom_label_color">使用自定义标签颜色</string>
   <string name="pref_all_apps_label_color">抽屉应用标签颜色</string>
   <string name="pref_num_rows_drawer">抽屉网格行数</string>
-  <string name="center_wallpaper_pref_title">当桌面只有一页时，居中壁纸</string>
+  <string name="center_wallpaper_pref_title">当桌面只有一页时居中壁纸</string>
   <string name="vertical_drawer_layout_pref_title">垂直列表布局</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">M月dd日EEEE</string>
-  <string name="about_translators">译者</string>
+  <string name="about_translators">翻译人员</string>
   <string name="lock_desktop">锁定桌面</string>
   <string name="lawnfeed_not_found">未安装 Lawnfeed</string>
   <string name="google_app_not_found">未安装 Google 应用</string>
+  <string name="lawnfeed_incompatible">已安装的 Lawnfeed 版本不兼容</string>
   <string name="set_default_launcher">设置默认桌面</string>
   <string name="enable_spring_pref_title">启用回弹特效</string>
   <string name="hide_app">隐藏应用</string>
@@ -413,11 +414,14 @@
   <string name="hide_app_reset">重置</string>
   <!-- Strings for Lawnfeed gesture popup -->
   <string name="lawnfeed_not_enabled_title">Lawnfeed 未启用</string>
-  <string name="lawnfeed_not_enabled">看起来您正在尝试打开 Google Now 页面，但是您还没有在行为设置中打开这个选项。\n\n您想现在开启吗？</string>
+  <string name="lawnfeed_not_enabled">看起来您正在尝试打开 Google Now 页面，但是您还没有在行为设置中打开这个选项。\n\n您想现在启用吗？</string>
   <string name="lawnfeed_not_installed_title">Lawnfeed 未安装</string>
   <string name="lawnfeed_not_installed">看起来您正在尝试打开 Google Now 页面，但是您还没有从我们的网站安装 Lawnfeed 应用。\n\n您想现在下载吗？</string>
+  <string name="lawnfeed_outdated_title">需要更新 Lawnfeed</string>
+  <string name="lawnfeed_outdated">当前版本的 Lawnchair 需要安装新版本的 Lawnfeed 来使用，\n\n安装更新前您可能需要卸载当前版本的 Lawnfeed。\n\n需要现在下载吗？</string>
   <string name="disable_popup">不再提示</string>
-  <string name="two_row_dock">两行应用 Dock 栏</string>
+  <string name="two_row_dock">双行 Dock 栏</string>
   <string name="reset_alternative_icons_title">重置备选应用图标</string>
-  <string name="reset_alternative_icons">您有 %1$d 具有备用图标，您想重置它们吗？</string>
+  <string name="reset_alternative_icons">您有 %1$d 个应用具有备用图标，您想重置它们吗？</string>
+  <string name="error_no_browser">没有找到处理此 URL 的 Activity</string>
 </resources>
