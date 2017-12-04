@@ -249,6 +249,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
   <string name="about_title">இதைப்பற்றி</string>
+  <string name="about_pref_summary">லான்சேர் குழு பற்றி அறிந்து கொள்ள</string>
   <string name="changelog_title">இந்த கட்டமைப்பில் உள்ள மாற்றங்கள் #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">செயலியின் சின்னங்கள்</string>
@@ -281,9 +282,14 @@
   <string name="notification_access_pref_title">அறிவிக்கை பேட்ஜ்கள் மற்றும் முன்னோட்டம்</string>
   <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
   <string name="general_pref_title">பொது</string>
+  <string name="dock_pref_title">அடிப்பாகம்</string>
+  <string name="app_drawer_pref_title">ஆப்ஸ் திரை</string>
   <string name="pixel_ui_pref_title">பிக்சல் UI</string>
   <string name="behavior_pref_title">நடத்தை</string>
   <string name="debug_pref_title">பிழைநீக்கு</string>
+  <string name="general_pref_summary">உங்கள் திரைப்பலகத்தை தனிப்பயனாக்கு</string>
+  <string name="dock_pref_summary">உங்கள் கீழ்ப்பகுதி மாற்ற</string>
+  <string name="app_drawer_pref_summary">உங்கள் பயன்பாடு தட்டு தனிப்பயனாக்கு</string>
   <string name="pixel_ui_pref_summary">பிக்சல் ஏவி பிரத்யேக அம்சங்களை செயல்படுத்து</string>
   <string name="backup_pref_title">பத்திரப்படுத்து</string>
   <string name="behavior_pref_summary">Lawnchair நடத்தை மாற்ற</string>
