@@ -1463,7 +1463,6 @@ public class Launcher extends BaseActivity
         } catch (NullPointerException ex) {
             Log.w(TAG, "problem while stopping AppWidgetHost during Launcher destruction", ex);
         }
-        mAppWidgetHost = null;
 
         TextKeyListener.getInstance().release();
         WallpaperColorInfo.getInstance(this).setOnThemeChangeListener(null);
