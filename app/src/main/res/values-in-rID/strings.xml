@@ -407,6 +407,7 @@
   <string name="lock_desktop">Kunci desktop</string>
   <string name="lawnfeed_not_found">Lawnfeed tidak terpasang</string>
   <string name="google_app_not_found">Aplikasi Google tidak terpasang</string>
+  <string name="lawnfeed_incompatible">Versi Lawnfeed tidak kompatibel</string>
   <string name="set_default_launcher">Setel sebagai peluncur bawaan</string>
   <string name="enable_spring_pref_title">Aktifkan efek memantul</string>
   <string name="hide_app">Sembunyikan aplikasi</string>
@@ -421,8 +422,11 @@
   <string name="lawnfeed_not_enabled">Sepertinya anda mencoba membuka laman Google Now, namun anda belum mengaktifkan pilihan tersebut di setelan tindakan.\n\nApakah anda ingin mengaktifkannya sekarang?</string>
   <string name="lawnfeed_not_installed_title">Lawnfeed tidak terpasang</string>
   <string name="lawnfeed_not_installed">Sepertinya anda mencoba membuka laman Google Now, namun anda belum memasang aplikasi Lawnfeed dari situs web kami.\n\nApakah anda ingin mengunduhnya sekarang?</string>
+  <string name="lawnfeed_outdated_title">Lawfeed membutuhkan pembarun</string>
+  <string name="lawnfeed_outdated">Versi baru dari Lawnfeed dibutuhkan agar dapat berjalan dengan Lawnchair versi ini.\n\nSebelum memasang pembaruan anda harus mencopot Lawnfeed versi saat ini.\n\nApakah anda ingin mengunduhnya sekarang?</string>
   <string name="disable_popup">Jangan tampilkan lagi</string>
   <string name="two_row_dock">Dock dua baris</string>
   <string name="reset_alternative_icons_title">Reset ikon aplikasi alternatif?</string>
   <string name="reset_alternative_icons">Anda memiliki aplikasi %1$d dengan ikon alternatif, apakah anda ingin meresetnya?</string>
+  <string name="error_no_browser">Tidak ada aktivitas yang ditemukan untuk menangani URL</string>
 </resources>
