@@ -404,6 +404,7 @@
   <string name="lock_desktop">Uzamknutie pracovnej plochy</string>
   <string name="lawnfeed_not_found">Lawnfeed nie je nainštalovaný</string>
   <string name="google_app_not_found">Google aplikácie nie sú nainštalované</string>
+  <string name="lawnfeed_incompatible">Nainštalovaná nekompatibilná verzia Lawnfeed</string>
   <string name="set_default_launcher">Nastavenie predvoleného spúšťača</string>
   <string name="enable_spring_pref_title">Povoliť efekt pružiny</string>
   <string name="hide_app">Skryť aplikáciu</string>
@@ -418,8 +419,11 @@
   <string name="lawnfeed_not_enabled">Zdá sa, že sa pokúšate otvoriť stránku Google Now, avšak v nastaveniach správania ste túto možnosť nepovolili.\n\nChcete túto možnosť povoliť teraz?</string>
   <string name="lawnfeed_not_installed_title">Lawnfeed nie je nainštalovaný</string>
   <string name="lawnfeed_not_installed">Zdá sa, že sa pokúšate otvoriť stránku Google Now, ale nenainštalovali ste Lawnfeed z našich webových stránok.\n\nChcete ho teraz stiahnuť?</string>
+  <string name="lawnfeed_outdated_title">Vyžaduje sa aktualizácia Lawnfeed</string>
+  <string name="lawnfeed_outdated">Pre prácu s touto verziou Lawnchair je potrebná novšia verzia programu Lawnfeed.\n\nPred nainštalovaním tejto aktualizácie pravdepodobne budete musieť odinštalovať aktuálnu verziu programu Lawnfeed.\n\nChcete ju teraz stiahnuť?</string>
   <string name="disable_popup">Už nezobrazovať</string>
   <string name="two_row_dock">Dok v dvoch riadkoch</string>
   <string name="reset_alternative_icons_title">Obnoviť alternatívne ikony aplikácií?</string>
   <string name="reset_alternative_icons">Máte %1$d aplikácií s alternativnymi ikonami, chcete ich obnoviž?</string>
+  <string name="error_no_browser">Nepodarilo sa zistiť žiadnu aktivitu na spracovanie URL adries</string>
 </resources>

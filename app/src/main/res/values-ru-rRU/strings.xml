@@ -35,9 +35,9 @@
   <string name="shortcut_not_available">Ярлык недоступен</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">Чтобы выбрать виджет, нажмите на значок и удерживайте его.</string>
+  <string name="long_press_widget_to_add">Нажмите и удерживайте виджет, чтобы выбрать его.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-  <string name="long_accessible_way_to_add">Двойное нажатие и удержание для выбора виджета и настройки пользовательских действий.</string>
+  <string name="long_accessible_way_to_add">Нажмите дважды и удерживайте, для выбора виджета и настроек пользовательских действий.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
@@ -279,22 +279,22 @@
   <string name="full_width_widgets_pref_summary">Разрешить виджетам занимать место без отступов</string>
   <string name="notification_access_pref_title">Значки уведомлений и предварительный просмотр</string>
   <string name="notification_access_pref_summary">Разрешить Lawnchair доступ к вашим уведомлениям для включения этой функции</string>
-  <string name="general_pref_title">Основные</string>
+  <string name="general_pref_title">Рабочий стол</string>
   <string name="dock_pref_title">Док-бар</string>
   <string name="app_drawer_pref_title">Меню приложений</string>
-  <string name="pixel_ui_pref_title">Интерфейс Pixel</string>
+  <string name="pixel_ui_pref_title">Тема</string>
   <string name="behavior_pref_title">Поведение</string>
   <string name="debug_pref_title">Отладка</string>
-  <string name="general_pref_summary">Главный экран, док-бар и меню приложений</string>
-  <string name="dock_pref_summary">Настройте Ваш док-бар</string>
-  <string name="app_drawer_pref_summary">Настройте Ваше меню приложений</string>
-  <string name="pixel_ui_pref_summary">Включить функции, эксклюзивные для Pixel Launcher</string>
+  <string name="general_pref_summary">Настроить рабочий стол</string>
+  <string name="dock_pref_summary">Настроить док-бар</string>
+  <string name="app_drawer_pref_summary">Настроить меню приложений</string>
+  <string name="pixel_ui_pref_summary">Настройка элементов темы</string>
   <string name="backup_pref_title">Резервное копирование</string>
   <string name="behavior_pref_summary">Изменить поведение Lawnchair</string>
   <string name="backup_pref_summary">Резервное копирование базы данных и настроек</string>
   <string name="debug_pref_summary">Перезапустить или создать заново базу данных иконок</string>
   <string name="show_pixel_bar_pref_title">Показать строку поиска Pixel</string>
-  <string name="use_wide_searchbar_pref_title">Строка поиска как в Android O</string>
+  <string name="use_wide_searchbar_pref_title">Использовать широкую строку поиска</string>
   <string name="show_mic_pref_title">Показать кнопку Google Ассистента</string>
   <string name="use_round_searhbar">Использовать круглую строку поиска</string>
   <string name="pixel_style_icons_pref_title">Использовать значки Pixel</string>
@@ -404,6 +404,7 @@
   <string name="lock_desktop">Заблокировать рабочий стол</string>
   <string name="lawnfeed_not_found">Lawnfeed не установлен</string>
   <string name="google_app_not_found">Приложение Google не установлено</string>
+  <string name="lawnfeed_incompatible">Установленная версия Lawnfeed несовместима</string>
   <string name="set_default_launcher">Установить лаунчер по умолчанию</string>
   <string name="enable_spring_pref_title">Включить эффект пружины</string>
   <string name="hide_app">Скрыть приложение</string>
@@ -418,8 +419,11 @@
   <string name="lawnfeed_not_enabled">Похоже, вы пытаетесь открыть страницу Google Now, но не включили её в настройках.\n\nХотите включить её прямо сейчас?</string>
   <string name="lawnfeed_not_installed_title">Lawnfeed не установлен</string>
   <string name="lawnfeed_not_installed">Похоже, вы пытаетесь открыть страницу Google Now, но вы еще не установили приложение Lawnfeed с нашего вебсайта.\n\nВы хотите скачать его сейчас?</string>
-  <string name="disable_popup">Не показывать больше</string>
+  <string name="lawnfeed_outdated_title">Требуется обновить Lawnfeed</string>
+  <string name="lawnfeed_outdated">Для работы с этой версией Lawnchair, требуется новая версия Lawnfeed.\n\nПеред установкой обновления, вам вероятно будет нужно удалить текущую версию Lawnfeed.\n\nХотите скачать обновление сейчас?</string>
+  <string name="disable_popup">Не показывать снова</string>
   <string name="two_row_dock">Двухстрочный док-бар</string>
   <string name="reset_alternative_icons_title">Сбросить альтернативные значки приложения?</string>
   <string name="reset_alternative_icons">У вас %1$d приложений с альтернативными значками, хотите сбросить их?</string>
+  <string name="error_no_browser">Не найдено приложение для обработки URL-адресов</string>
 </resources>

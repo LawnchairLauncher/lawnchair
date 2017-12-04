@@ -403,6 +403,7 @@
   <string name="lock_desktop">Bloquear escritorio</string>
   <string name="lawnfeed_not_found">Lawnfeed no instalado</string>
   <string name="google_app_not_found">Aplicación de Google no instalada</string>
+  <string name="lawnfeed_incompatible">Versión incompatible de Lawnfeed instalada</string>
   <string name="set_default_launcher">Establecer launcher por defecto</string>
   <string name="enable_spring_pref_title">Habilitar efecto de rebote</string>
   <string name="hide_app">Ocultar aplicación</string>
@@ -417,5 +418,6 @@
   <string name="lawnfeed_not_enabled">Parece que estás intentando abrir la página de Google Now, pero no has activado la opción en ajustes.\n\n ¿Quieres activarla ahora?</string>
   <string name="lawnfeed_not_installed_title">Lawnfeed no instalado</string>
   <string name="lawnfeed_not_installed">Parece que estás intentando abrir la página de Google Now, pero no has instalado Lawnfeed desde nuestra web. \n\n¿Quieres descargarla ahora?</string>
+  <string name="lawnfeed_outdated">Una nueva versión de Lawnfeed es necesaria para funcionar con esta versión de Lawnchair.\n\nAntes instalar la actualización, probablemente necesitará desinstalar la versión actual de Lawnfeed.\n\n¿Desea descargarla ahora?</string>
   <string name="disable_popup">No volver a mostrar</string>
 </resources>

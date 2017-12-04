@@ -79,7 +79,7 @@
   <!-- Permission short label -->
   <string name="permlab_write_settings">寫入主螢幕設定和捷徑</string>
   <!-- Permission description -->
-  <string name="permdesc_write_settings">允許應用程式變更主螢幕中的設定和捷徑。</string>
+  <string name="permdesc_write_settings">允許應用程式變更主螢幕中的設定和快捷方式。</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
   <string name="msg_no_phone_permission"><xliff:g example="Launcher3" id="app_name">%1$s</xliff:g> 無法撥打電話</string>
   <!-- Widgets: -->
@@ -123,7 +123,7 @@
   <!-- Message shown when a feature is disabled by the administrator -->
   <string name="msg_disabled_by_admin">已由您的管理員停用</string>
   <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
-  <string name="accessibility_action_overview">總覽</string>
+  <string name="accessibility_action_overview">概覽</string>
   <!-- Strings for settings -->
   <!-- Title for Allow Rotation setting. [CHAR LIMIT=50] -->
   <!-- Text explaining when the home screen will get rotated. [CHAR LIMIT=100] -->
@@ -402,6 +402,7 @@
   <string name="lock_desktop">鎖定桌面</string>
   <string name="lawnfeed_not_found">未安裝 Lawnfeed</string>
   <string name="google_app_not_found">未安裝 Google 應用</string>
+  <string name="lawnfeed_incompatible">安裝了不相容的 Lawnfeed 版本</string>
   <string name="set_default_launcher">設定預設啟動器</string>
   <string name="enable_spring_pref_title">啟用彈簧效果</string>
   <string name="hide_app">隱藏應用程式</string>
@@ -416,8 +417,11 @@
   <string name="lawnfeed_not_enabled">您好像正在嘗試開啟 Google 即時頁面，但您尚未在功能設定中啟用該選項。\n\n您想現在開啟嗎？</string>
   <string name="lawnfeed_not_installed_title">未安裝 Lawnfeed</string>
   <string name="lawnfeed_not_installed">您好像正在嘗試開啟 Google 即時頁面，但您尚未從我們的網站安裝 Lawnfeed 應用程式。\n\n您想現在下載嗎？</string>
+  <string name="lawnfeed_outdated_title">需要更新 Lawnfeed</string>
+  <string name="lawnfeed_outdated">需要更新版本的Lawnfeed才能使用此版本的Lawnchair。\n\n在安裝更新之前，您可能需要解除安裝當前版本的Lawnfeed。\n\n您想現在下載嗎？</string>
   <string name="disable_popup">不再提示</string>
   <string name="two_row_dock">兩行Rock欄</string>
   <string name="reset_alternative_icons_title">重置替代應用程式的圖示？</string>
   <string name="reset_alternative_icons">您有 %1$d 個替代圖示的應用程式，您想重置它們？</string>
+  <string name="error_no_browser">找不到處理網址的應用程式活動</string>
 </resources>

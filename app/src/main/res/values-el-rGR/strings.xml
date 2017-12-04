@@ -247,7 +247,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Ο Lawnchair είναι μια εφαρμογή εκκίνησης που δημιουργήθηκε από τον Till Kottmann (γνωστός και ως deletescape). Βασίζεται στον εκκινητή Launcher3 του ανοιχτού κώδικα λειτουργικού συστήματος Android (AOSP).</string>
   <string name="about_title">Σχετικά με</string>
-  <string name="about_pref_summary">Ενημερωθείτε σχετικά με την ομάδα του Lawnchair</string>
+  <string name="about_pref_summary">Ενημέρωση σχετικά με την ομάδα του Lawnchair</string>
   <string name="changelog_title">Αρχείο καταγραφής αλλαγών της έκδοσης #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Πακέτο εικονιδίων</string>
@@ -404,10 +404,11 @@
   <string name="lock_desktop">Κλείδωμα αρχικής οθόνης</string>
   <string name="lawnfeed_not_found">Το lawnfeed δεν είναι εγκατεστημένο</string>
   <string name="google_app_not_found">Η εφαρμογή Goggle δεν είναι εγκατεστημένη</string>
+  <string name="lawnfeed_incompatible">Εγκατεστημένη ασύμβατη έκδοση Lawnfeed</string>
   <string name="set_default_launcher">Ορισμός προεπιλεγμένου εκτοξευτή</string>
   <string name="enable_spring_pref_title">Ενεργοποίηση εφέ μεταπήδησης</string>
   <string name="hide_app">Απόκρυψη εφαρμογών</string>
-  <string name="hide_app_sum">Απόκρυψη εφαρμογών στο συρτάρι εφαρμογών</string>
+  <string name="hide_app_sum">Απόκρυψη εφαρμογών από το συρτάρι εφαρμογών</string>
   <string name="hide_app_selected">&#160;επιλεγμένη/ες εφαρμογές</string>
   <string name="hidden_app">Κρυφές εφαρμογές</string>
   <string name="hide_app_apply">Εφαρμογή</string>
@@ -418,8 +419,11 @@
   <string name="lawnfeed_not_enabled">Μοιάζει με προσπαθείτε να ανοίξετε το πλαϊνό πάνελ Google Now, αλλά δεν έχετε ενεργοποιήσει την επιλογή στις ρυθμίσεις.\n\nΘέλετε να την ενεργοποιήσετε τώρα;</string>
   <string name="lawnfeed_not_installed_title">Το Lawnfeed δεν είναι εγκατεστημένο</string>
   <string name="lawnfeed_not_installed">Μοιάζει με προσπαθείτε να ανοίξετε το πλαϊνό πάνελ Google Now, αλλά δεν έχετε εγκαταστήσει την εφαρμογή Lawnfeed από την ιστοσελίδα μας.\n\nΘέλετε να την κατεβάσετε τώρα;</string>
+  <string name="lawnfeed_outdated_title">Απαιτείται ενημέρωση του Lawnfeed</string>
+  <string name="lawnfeed_outdated">Μια νεότερη έκδοση του Lawnfeed που απαιτείται προκειμένου να λειτουργήσει με αυτήν την έκδοση των Lawnchair.\n\nΠριν την εγκατάσταση της ενημέρωσης θα πρέπει πιθανώς να απεγκαταστήσετε την τρέχουσα έκδοση του Lawnfeed.\n\nΘέλετε να κατεβάσετε την ενημέρωση τώρα;</string>
   <string name="disable_popup">Να μην εμφανιστεί ξανά</string>
   <string name="two_row_dock">Μπάρα εφαρμογών με δύο σειρές</string>
   <string name="reset_alternative_icons_title">Επαναφορά τροποποιημένων εικονιδίων εφαρμογών;</string>
   <string name="reset_alternative_icons">Έχετε %1$d εφαρμογή/ες με τροποποιημένα εικονίδια, είστε βέβαιοι ότι θέλετε να τα επαναφέρετε στην αρχική τους μορφή;</string>
+  <string name="error_no_browser">Δεν βρέθηκε καμία δραστηριότητα για να διαχειριστεί τις διευθύνσεις URL</string>
 </resources>

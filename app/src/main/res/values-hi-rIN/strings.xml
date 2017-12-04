@@ -403,6 +403,7 @@
   <string name="lock_desktop">डेस्कटॉप बंद करे</string>
   <string name="lawnfeed_not_found">Lawnfeed स्थापित नहीं</string>
   <string name="google_app_not_found">Google app स्थापित नहीं</string>
+  <string name="lawnfeed_incompatible">स्थापित Lawnfeed संस्करण असंगत है</string>
   <string name="set_default_launcher">डिफ़ॉल्ट लांचर सेट करें</string>
   <string name="enable_spring_pref_title">स्प्रिंग प्रभाव सक्षम करें</string>
   <string name="hide_app">एप्लिकेशन छुपाएँ</string>
@@ -417,8 +418,11 @@
   <string name="lawnfeed_not_enabled">ऐसा लगता है कि आप Google Now पृष्ठ को खोलने का प्रयास कर रहे हैं, लेकिन आपने व्यवहार सेटिंग में विकल्प सक्षम नहीं किया है.\n\nआप इसे अभी सक्षम करना चाहते हैं?</string>
   <string name="lawnfeed_not_installed_title">Lawnfeed स्थापित नहीं</string>
   <string name="lawnfeed_not_installed">ऐसा लगता है कि आप Google now पृष्ठ खोलने की कोशिश कर रहे हैं, लेकिन आपने हमारी वेबसाइट से Lawnfeed ऐप इंस्टॉल नहीं किया है.\n\nआप इसे अभी डाउनलोड करना चाहते हैं?</string>
+  <string name="lawnfeed_outdated_title">Lawnfeed अपडेट की आवश्यकता है</string>
+  <string name="lawnfeed_outdated">Lawnchair के इस संस्करण के साथ काम करने के लिए Lawnfeed का नया संस्करण आवश्यक है।\n\n अपडेट को स्थापित करने से पहले आपको Lawnfeed के वर्तमान संस्करण को अनइंस्टॉल करने की आवश्यकता होगी ।\n\n क्या आप इसे अभी डाउनलोड करना चाहते हैं?</string>
   <string name="disable_popup">फिर से न दिखाएँ</string>
   <string name="two_row_dock">दो पंक्ति डॉक</string>
   <string name="reset_alternative_icons_title">वैकल्पिक एप्लिकेशन आइकन रीसेट करें?</string>
   <string name="reset_alternative_icons">आपके पास वैकल्पिक आइकन के साथ%1$d ऐप्स हैं, क्या आप उन्हें रीसेट करना चाहते हैं?</string>
+  <string name="error_no_browser">URL को संभालने के लिए कोई गतिविधि नहीं मिली</string>
 </resources>

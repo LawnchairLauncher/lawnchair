@@ -404,6 +404,7 @@
   <string name="lock_desktop">Blocca la schermata home</string>
   <string name="lawnfeed_not_found">Lawnfeed non installato</string>
   <string name="google_app_not_found">App Google non installata</string>
+  <string name="lawnfeed_incompatible">Versione Lawnfeed installata incompatibile</string>
   <string name="set_default_launcher">Imposta come laumcher predefinito</string>
   <string name="enable_spring_pref_title">Abilita effetto a molla</string>
   <string name="hide_app">Nascondi app</string>
@@ -418,8 +419,11 @@
   <string name="lawnfeed_not_enabled">Sembra che tu stia cercando di aprire la pagina di Google Now, ma non hai attivato l\'opzione dalle impostazioni.\n\nVuoi attivarla ora?</string>
   <string name="lawnfeed_not_installed_title">Lawnfeed non installato</string>
   <string name="lawnfeed_not_installed">Sembra che tu stia cercando di aprire la pagina di Google Now, ma non hai installato la nostra app Lawnfeed dal nostro sito.\n\nVuoi scaricarla ora?</string>
+  <string name="lawnfeed_outdated_title">Richiesto aggiornamento di Lawnfeed</string>
+  <string name="lawnfeed_outdated">Una versione più recente di Lawnfeed è necessaria per poter funzionare con questa versione di Lawnchair.\n\n Prima dell\'installazione dell\'aggiornamento, sarà necessario disinstallare la versione corrente di Lawnfeed.\n\n Si desidera scaricarlo adesso?</string>
   <string name="disable_popup">Non visualizzare di nuovo</string>
   <string name="two_row_dock">Dock su due righe</string>
   <string name="reset_alternative_icons_title">Ripristinare le app con icone alternative?</string>
   <string name="reset_alternative_icons">Hai %1$d app con icone alternative, vuoi ripristinarle?</string>
+  <string name="error_no_browser">Nessuna attività trovata per gestire gli URL</string>
 </resources>
