@@ -483,16 +483,6 @@
     <string name="hide_app_apply">Apply</string>
     <string name="unauthorized_device">This device has a few piracy tools installed. Please uninstall them to continue.</string>
     <string name="hide_app_reset">Reset</string>
-
-    <!-- Strings for Lawnfeed gesture popup -->
-    <string name="lawnfeed_not_enabled_title">Lawnfeed not enabled</string>
-    <string name="lawnfeed_not_enabled">It looks like you\'re trying to open the Google Now page, but you haven\'t enabled the option in the behavior settings.\n\nDo you want to enable it now?</string>
-    <string name="lawnfeed_not_installed_title">Lawnfeed not installed</string>
-    <string name="lawnfeed_not_installed">It looks like you\'re trying to open the Google Now page, but you haven\'t installed the Lawnfeed app from our website.\n\nDo you want to download it now?</string>
-    <string name="lawnfeed_outdated_title">Lawnfeed update required</string>
-    <string name="lawnfeed_outdated">A newer version of Lawnfeed is required in order to work with this version of Lawnchair.\n\nBefore installing the update you will probably need to uninstall the current version of Lawnfeed.\n\nDo you want to download it now?</string>
-    <string name="disable_popup">Don\'t show again</string>
-
     <string name="two_row_dock">Two row dock</string>
     <string name="reset_alternative_icons_title">Reset alternative app icons?</string>
     <string name="reset_alternative_icons">You have %1$d apps with alternative icons, do you want to reset them?</string>

@@ -55,6 +55,7 @@ import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.graphics.IconShapeOverride;
+import ch.deletescape.lawnchair.overlay.ILauncherClient;
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.preferences.PreferenceFlags;
 
@@ -225,6 +226,12 @@ public class SettingsActivity extends AppCompatActivity implements
             } else if (getContent() == R.xml.launcher_behavior_preferences) {
                 if (Utilities.ATLEAST_NOUGAT_MR1 && BuildConfig.TRAVIS) {
                     getPreferenceScreen().removePreference(findPreference(FeatureFlags.KEY_PREF_ENABLE_BACKPORT_SHORTCUTS));
+                }
+
+                // Remove Google Now tab option when Lawnfeed is not installed
+                int enabledState = ILauncherClient.Companion.getEnabledState(getContext());
+                if (BuildConfig.ENABLE_LAWNFEED && enabledState == ILauncherClient.Companion.DISABLED_NO_PROXY_APP) {
+                    getPreferenceScreen().removePreference(findPreference(FeatureFlags.KEY_PREF_SHOW_NOW_TAB));
                 }
             }
         }
