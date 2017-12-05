@@ -1110,6 +1110,9 @@ public final class Utilities {
     }
 
     public static boolean checkOutdatedLawnfeed(Context context) {
+        // Don't check Lawnfeed version on CI builds, should fix disabled setting option
+        if (!BuildConfig.ENABLE_LAWNFEED) return false;
+
         try {
             PackageInfo info = context.getPackageManager().getPackageInfo(LawnfeedClient.PROXY_PACKAGE, 0);
             // All Lawnfeed builds below version code 1655 aren't signed properly!
