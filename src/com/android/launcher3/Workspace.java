@@ -1407,7 +1407,7 @@ public class Workspace extends PagedView
 
     /** Returns whether a drag should be allowed to be started from the current workspace state. */
     public boolean workspaceIconsCanBeDragged() {
-        return mLauncher.isInState(NORMAL) || mLauncher.isInState(SPRING_LOADED);
+        return mLauncher.getStateManager().getState().workspaceIconsCanBeDragged;
     }
 
     private void updateChildrenLayersEnabled() {

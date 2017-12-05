@@ -38,11 +38,12 @@ public class LauncherState {
     protected static final int FLAG_MULTI_PAGE = 1 << 1;
     protected static final int FLAG_DISABLE_ACCESSIBILITY = 1 << 2;
     protected static final int FLAG_DO_NOT_RESTORE = 1 << 3;
+    protected static final int FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED = 1 << 4;
 
     private static final LauncherState[] sAllStates = new LauncherState[4];
 
     public static final LauncherState NORMAL = new LauncherState(0, ContainerType.WORKSPACE,
-            0, 1f, FLAG_DO_NOT_RESTORE);
+            0, 1f, FLAG_DO_NOT_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED);
 
     public static final LauncherState ALL_APPS = new AllAppsState(1);
 
@@ -88,6 +89,11 @@ public class LauncherState {
      */
     public final float verticalProgress;
 
+    /**
+     * True if the state allows workspace icons to be dragged.
+     */
+    public final boolean workspaceIconsCanBeDragged;
+
     public LauncherState(int id, int containerType, int transitionDuration, float verticalProgress,
             int flags) {
         this.containerType = containerType;
@@ -99,6 +105,7 @@ public class LauncherState {
                 ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                 : IMPORTANT_FOR_ACCESSIBILITY_AUTO;
         this.doNotRestore = (flags & FLAG_DO_NOT_RESTORE) != 0;
+        this.workspaceIconsCanBeDragged = (flags & FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED) != 0;
 
         this.verticalProgress = verticalProgress;
 
