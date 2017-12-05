@@ -45,7 +45,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
@@ -90,9 +89,6 @@ public class DragLayer extends InsettableFrameLayout {
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
     private final PageCutOutScrimDrawable mPageCutOutScrim;
 
-    // Handles all apps pull up interaction
-    private AllAppsTransitionController mAllAppsController;
-
     protected TouchController[] mControllers;
     private TouchController mActiveController;
     /**
@@ -113,11 +109,9 @@ public class DragLayer extends InsettableFrameLayout {
         mPageCutOutScrim.setCallback(this);
     }
 
-    public void setup(Launcher launcher, DragController dragController,
-            AllAppsTransitionController allAppsTransitionController) {
+    public void setup(Launcher launcher, DragController dragController) {
         mLauncher = launcher;
         mDragController = dragController;
-        mAllAppsController = allAppsTransitionController;
         mControllers = UiFactory.createTouchControllers(mLauncher);
     }
 
@@ -156,12 +150,7 @@ public class DragLayer extends InsettableFrameLayout {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         int action = ev.getAction();
 
-        if (action == MotionEvent.ACTION_DOWN) {
-            // Cancel discovery bounce animation when a user start interacting on anywhere on
-            // dray layer even if mAllAppsController is NOT the active controller.
-            // TODO: handle other input other than touch
-            mAllAppsController.cancelDiscoveryAnimation();
-        } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
             if (mTouchCompleteListener != null) {
                 mTouchCompleteListener.onTouchComplete();
             }
@@ -800,6 +789,6 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     public interface TouchCompleteListener {
-        public void onTouchComplete();
+        void onTouchComplete();
     }
 }
