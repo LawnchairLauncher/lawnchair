@@ -131,6 +131,10 @@ public class LauncherState {
         return new float[] {1, 0};
     }
 
+    public float getHoseatAlpha(Launcher launcher) {
+        return 1f;
+    }
+
     public void onStateEnabled(Launcher launcher) {
         dispatchWindowStateChanged(launcher);
     }

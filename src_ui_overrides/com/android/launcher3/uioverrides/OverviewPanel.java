@@ -173,13 +173,8 @@ public class OverviewPanel extends LinearLayout implements Insettable, View.OnCl
     }
 
     private void setState(LauncherState state, PropertySetter setter) {
-        boolean isOverview = state == LauncherState.OVERVIEW;
-        float finalHotseatAlpha = isOverview ? 0 : 1;
-
-        setter.setViewAlpha(null, this, isOverview ? 1 : 0);
-        setter.setViewAlpha(
-                mLauncher.getWorkspace().createHotseatAlphaAnimator(finalHotseatAlpha),
-                mLauncher.getHotseat(), finalHotseatAlpha);
+        float hotseatAlpha = state.getHoseatAlpha(mLauncher);
+        setter.setViewAlpha(null, this, 1f - hotseatAlpha);
     }
 
     public static int getButtonBarHeight(Launcher launcher) {

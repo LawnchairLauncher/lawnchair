@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.Partner.TAG;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 
 import android.animation.Animator;
@@ -25,6 +26,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
+import android.util.Log;
 import android.util.Property;
 import android.view.View;
 
@@ -138,6 +140,10 @@ public class WorkspaceStateTransitionAnimation {
         propertySetter.setFloat(mWorkspace, View.TRANSLATION_Y,
                 finalWorkspaceTranslationY, Interpolators.ZOOM_IN);
 
+        float hotseatAlpha = state.getHoseatAlpha(mLauncher);
+        propertySetter.setViewAlpha(mWorkspace.createHotseatAlphaAnimator(hotseatAlpha),
+                mLauncher.getHotseat(), hotseatAlpha);
+
         // Set scrim
         propertySetter.setInt(mLauncher.getDragLayer().getScrim(), DRAWABLE_ALPHA,
                 state.hasScrim ? mWorkspaceScrimAlpha : 0, Interpolators.DEACCEL_1_5);
@@ -159,6 +165,7 @@ public class WorkspaceStateTransitionAnimation {
     public static class PropertySetter {
 
         public void setViewAlpha(Animator anim, View view, float alpha) {
+            Log.d(TAG, "setViewAlpha: " + anim + " " + alpha);
             if (anim != null) {
                 anim.end();
                 return;

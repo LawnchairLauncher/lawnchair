@@ -57,6 +57,11 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
+    public float getHoseatAlpha(Launcher launcher) {
+        return launcher.getDeviceProfile().isVerticalBarLayout() ? 0 : 1;
+    }
+
+    @Override
     public void onStateEnabled(Launcher launcher) {
         RecentsView rv = launcher.getOverviewPanel();
         rv.setOverviewStateEnabled(true);
