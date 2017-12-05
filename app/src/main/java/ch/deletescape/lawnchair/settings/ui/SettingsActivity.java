@@ -22,7 +22,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -228,8 +227,10 @@ public class SettingsActivity extends AppCompatActivity implements
                 if (Utilities.ATLEAST_NOUGAT_MR1 && BuildConfig.TRAVIS) {
                     getPreferenceScreen().removePreference(findPreference(FeatureFlags.KEY_PREF_ENABLE_BACKPORT_SHORTCUTS));
                 }
-                if (BuildConfig.ENABLE_LAWNFEED &&
-                        ILauncherClient.Companion.getEnabledState(getContext()) == ILauncherClient.Companion.DISABLED_NO_PROXY_APP) {
+
+                // Remove Google Now tab option when Lawnfeed is not installed
+                int enabledState = ILauncherClient.Companion.getEnabledState(getContext());
+                if (BuildConfig.ENABLE_LAWNFEED && enabledState == ILauncherClient.Companion.DISABLED_NO_PROXY_APP) {
                     getPreferenceScreen().removePreference(findPreference(FeatureFlags.KEY_PREF_SHOW_NOW_TAB));
                 }
             }
