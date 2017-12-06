@@ -31,7 +31,7 @@
 
     <include layout="@layout/all_apps_fast_scroller" />
 
-    <RelativeLayout
+    <com.android.launcher3.allapps.FloatingHeaderView
         android:id="@+id/all_apps_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
                 android:textColor="@color/all_apps_tab_text"
                 android:background="?android:attr/selectableItemBackground"/>
         </com.android.launcher3.views.SlidingTabStrip>
-    </RelativeLayout>
+    </com.android.launcher3.allapps.FloatingHeaderView>
 
     <!-- Note: we are reusing/repurposing a system attribute for search layout, because of a
      platform bug, which prevents using custom attributes in <include> tag -->
