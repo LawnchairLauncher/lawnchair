@@ -19,11 +19,13 @@ package com.android.launcher3.allapps;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -37,6 +39,7 @@ public class FloatingHeaderView extends RelativeLayout implements
 
     private final Rect mClip = new Rect(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
     private final ValueAnimator mAnimator = ValueAnimator.ofInt(0, 0);
+    private final Point mTempOffset = new Point();
     private final RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -76,6 +79,7 @@ public class FloatingHeaderView extends RelativeLayout implements
     private View mDivider;
     private AllAppsRecyclerView mMainRV;
     private AllAppsRecyclerView mWorkRV;
+    private ViewGroup mParent;
     private boolean mTopOnlyMode;
     private boolean mHeaderHidden;
     private int mMaxTranslation;
@@ -83,7 +87,8 @@ public class FloatingHeaderView extends RelativeLayout implements
     private int mTranslationY;
     private int mMainScrolledY;
     private int mWorkScrolledY;
-    private boolean mMainRVActive;
+    private boolean mMainRVActive = true;
+    private boolean mForwardToRecyclerView;
 
     public FloatingHeaderView(@NonNull Context context) {
         this(context, null);
@@ -109,6 +114,7 @@ public class FloatingHeaderView extends RelativeLayout implements
         mMaxTranslation = predictionRowHeight;
         mMainRV = setupRV(mMainRV, personalRV);
         mWorkRV = setupRV(mWorkRV, workRV);
+        mParent = (ViewGroup) getRV().getParent();
         setMainActive(true);
         setupDivider();
     }
@@ -226,6 +232,40 @@ public class FloatingHeaderView extends RelativeLayout implements
     public void onAnimationUpdate(ValueAnimator animation) {
         mTranslationY = (Integer) animation.getAnimatedValue();
         apply();
+    }
+
+    private AllAppsRecyclerView getRV() {
+        return mMainRVActive ? mMainRV : mWorkRV;
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        calcOffset(mTempOffset);
+        ev.offsetLocation(mTempOffset.x, mTempOffset.y);
+        mForwardToRecyclerView = getRV().onInterceptTouchEvent(ev);
+        ev.offsetLocation(-mTempOffset.x, -mTempOffset.y);
+        return mForwardToRecyclerView || super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (mForwardToRecyclerView) {
+            // take this view's and parent view's (view pager) location into account
+            calcOffset(mTempOffset);
+            event.offsetLocation(mTempOffset.x, mTempOffset.y);
+            try {
+                return getRV().onTouchEvent(event);
+            } finally {
+                event.offsetLocation(-mTempOffset.x, -mTempOffset.y);
+            }
+        } else {
+            return super.onTouchEvent(event);
+        }
+    }
+
+    private void calcOffset(Point p) {
+        p.x = getLeft() - getRV().getLeft() - mParent.getLeft();
+        p.y = getTop() - getRV().getTop() - mParent.getTop();
     }
 
 }

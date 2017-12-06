@@ -48,12 +48,16 @@
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/all_apps_tabs_side_padding"
+            android:layout_marginRight="@dimen/all_apps_tabs_side_padding"
             android:layout_alignBottom="@+id/tabs" />
 
         <com.android.launcher3.views.SlidingTabStrip
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="@dimen/all_apps_header_tab_height"
+            android:layout_marginLeft="@dimen/all_apps_tabs_side_padding"
+            android:layout_marginRight="@dimen/all_apps_tabs_side_padding"
             android:layout_below="@id/header_content"
             android:orientation="horizontal" >
             <Button
