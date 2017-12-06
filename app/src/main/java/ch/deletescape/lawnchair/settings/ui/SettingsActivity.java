@@ -34,7 +34,6 @@ import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceCategory;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,7 +56,6 @@ import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.graphics.IconShapeOverride;
 import ch.deletescape.lawnchair.overlay.ILauncherClient;
-import ch.deletescape.lawnchair.pixelify.Util;
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.preferences.PreferenceFlags;
 
@@ -205,6 +203,7 @@ public class SettingsActivity extends AppCompatActivity implements
                 switch (preference.getKey()) {
                     case FeatureFlags.KEY_PREF_SNOWFALL:
                         findPreference(FeatureFlags.KEY_PREF_SNOWFALL).setSummary((boolean) newValue ? R.string.snowfall_enabled : R.string.snowfall_summary);
+                        break;
                 }
                 return true;
             }
