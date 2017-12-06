@@ -487,4 +487,8 @@
     <string name="reset_alternative_icons_title">Reset alternative app icons?</string>
     <string name="reset_alternative_icons">You have %1$d apps with alternative icons, do you want to reset them?</string>
     <string name="error_no_browser">No activity found to handle URLs</string>
+    <string name="pref_cat_special">Special settings</string>
+    <string name="snowfall_title">Enable Snowfall on home screen</string>
+    <string name="snowfall_summary">Can cause performance issues.</string>
+    <string name="snowfall_enabled">\"Let it snow, let it snow, let it snow!\"</string>
 </resources>
