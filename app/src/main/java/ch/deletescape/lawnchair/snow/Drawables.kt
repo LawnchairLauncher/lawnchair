@@ -18,19 +18,19 @@ import ch.deletescape.lawnchair.util.Randomizer
  */
 
 @SuppressLint("NewApi")
-internal fun Drawable.toBitmap(): Bitmap {
+internal fun Drawable.toBitmap(rotation: Float): Bitmap {
     return when (this) {
         is BitmapDrawable -> bitmap
-        is VectorDrawable -> toBitmap()
+        is VectorDrawable -> toBitmap(rotation)
         else -> throw IllegalArgumentException("Unsupported drawable type")
     }
 }
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-internal fun VectorDrawable.toBitmap(): Bitmap {
+internal fun VectorDrawable.toBitmap(rotation: Float): Bitmap {
     val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
-    canvas.rotate(45.0f, intrinsicWidth / 2f, intrinsicHeight / 2f);
+    canvas.rotate(rotation, intrinsicWidth / 2f, intrinsicHeight / 2f);
     setBounds(0, 0, canvas.width, canvas.height)
     setTint(Color.WHITE)
     draw(canvas)

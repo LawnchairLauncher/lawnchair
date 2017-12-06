@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import android.view.View
 
 import ch.deletescape.lawnchair.R
+import java.util.*
 
 /**
  * Copyright (C) 2016 JetRadar, licensed under Apache License 2.0
@@ -41,12 +42,15 @@ class SnowfallView(context: Context, attrs: AttributeSet) : View(context, attrs)
     private val updateSnowflakesThread: UpdateSnowflakesThread
     private var snowflakes: Array<Snowflake>? = null
 
+    private var rotationAngles = floatArrayOf(45f, 135f, 225f, 315f)
+
     init {
         val attrs = context.obtainStyledAttributes(attrs, R.styleable.SnowfallView)
+        val rotation = rotationAngles[Random().nextInt(4)]
 
         try {
             snowflakesNum = attrs.getInt(R.styleable.SnowfallView_snowflakesNum, DEFAULT_SNOWFLAKES_NUM)
-            snowflakeImage = attrs.getDrawable(R.styleable.SnowfallView_snowflakeImage)?.toBitmap()
+            snowflakeImage = attrs.getDrawable(R.styleable.SnowfallView_snowflakeImage)?.toBitmap(rotation)
             snowflakeAlphaMin = attrs.getInt(R.styleable.SnowfallView_snowflakeAlphaMin, DEFAULT_SNOWFLAKE_ALPHA_MIN)
             snowflakeAlphaMax = attrs.getInt(R.styleable.SnowfallView_snowflakeAlphaMax, DEFAULT_SNOWFLAKE_ALPHA_MAX)
             snowflakeAngleMax = attrs.getInt(R.styleable.SnowfallView_snowflakeAngleMax, DEFAULT_SNOWFLAKE_ANGLE_MAX)
