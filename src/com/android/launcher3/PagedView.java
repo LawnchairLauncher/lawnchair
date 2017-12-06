@@ -593,6 +593,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 - mInsets.top - mInsets.bottom;
     }
 
+    public int getNormalChildWidth() {
+        return  getViewportWidth() - getPaddingLeft() - getPaddingRight()
+                - mInsets.left - mInsets.right;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (getChildCount() == 0) {

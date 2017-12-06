@@ -53,10 +53,9 @@ public class AllAppsTransitionController
         }
     };
 
-    private final Interpolator mWorkspaceAccelnterpolator = Interpolators.ACCEL_2;
     private final Interpolator mHotseatAccelInterpolator = Interpolators.ACCEL_1_5;
 
-    private static final float PARALLAX_COEFFICIENT = .125f;
+    public static final float PARALLAX_COEFFICIENT = .125f;
 
     private AllAppsContainerView mAppsView;
     private Workspace mWorkspace;
@@ -131,7 +130,6 @@ public class AllAppsTransitionController
 
         float workspaceHotseatAlpha = Utilities.boundToRange(progress, 0f, 1f);
         float alpha = 1 - workspaceHotseatAlpha;
-        float workspaceAlpha = mWorkspaceAccelnterpolator.getInterpolation(workspaceHotseatAlpha);
         float hotseatAlpha = mHotseatAccelInterpolator.getInterpolation(workspaceHotseatAlpha);
 
         updateAllAppsBg(alpha);
@@ -146,8 +144,6 @@ public class AllAppsTransitionController
                     PARALLAX_COEFFICIENT * (-mShiftRange + shiftCurrent),
                     hotseatAlpha);
         }
-        mWorkspace.setWorkspaceYTranslationAndAlpha(
-                PARALLAX_COEFFICIENT * (-mShiftRange + shiftCurrent), workspaceAlpha);
 
         updateLightStatusBar(shiftCurrent);
     }

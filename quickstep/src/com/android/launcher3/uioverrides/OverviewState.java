@@ -17,10 +17,12 @@ package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 
+import android.graphics.Rect;
 import android.view.View;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.RecentsView;
 
@@ -29,7 +31,7 @@ import com.android.quickstep.RecentsView;
  */
 public class OverviewState extends LauncherState {
 
-    private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE
+    private static final int STATE_FLAGS = FLAG_SHOW_SCRIM
             | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED;
 
     public OverviewState(int id) {
@@ -38,8 +40,20 @@ public class OverviewState extends LauncherState {
 
     @Override
     public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
-        // TODO: Find a better transition
-        return new float[] {0f, 0};
+        Rect pageRect = new Rect();
+        RecentsView.getPageRect(launcher, pageRect);
+        Workspace ws = launcher.getWorkspace();
+        float childWidth = ws.getNormalChildWidth();
+        if (childWidth <= 0 || pageRect.isEmpty()) {
+            return super.getWorkspaceScaleAndTranslation(launcher);
+        }
+
+        Rect insets = launcher.getDragLayer().getInsets();
+        float scale = pageRect.width() / childWidth;
+
+        float halfHeight = ws.getHeight() / 2;
+        float childTop = halfHeight - scale * (halfHeight - ws.getPaddingTop() - insets.top);
+        return new float[] {scale, pageRect.top - childTop};
     }
 
     @Override

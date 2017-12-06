@@ -193,10 +193,6 @@ public class Workspace extends PagedView
     private static final int HOTSEAT_STATE_ALPHA_INDEX = 2;
 
     /**
-     * These values correspond to {@link Direction#X} & {@link Direction#Y}
-     */
-    private final float[] mPageAlpha = new float[] {1, 1};
-    /**
      * Hotseat alpha can be changed when moving horizontally, vertically, changing states.
      * The values correspond to {@link Direction#X}, {@link Direction#Y} &
      * {@link #HOTSEAT_STATE_ALPHA_INDEX} respectively.
@@ -436,7 +432,6 @@ public class Workspace extends PagedView
         mCurrentPage = DEFAULT_PAGE;
         DeviceProfile grid = mLauncher.getDeviceProfile();
         setWillNotDraw(false);
-        setClipChildren(false);
         setClipToPadding(false);
 
         setupLayoutTransition();
@@ -1191,33 +1186,21 @@ public class Workspace extends PagedView
         // TODO(adamcohen): figure out a final effect here. We may need to recommend
         // different effects based on device performance. On at least one relatively high-end
         // device I've tried, translating the launcher causes things to get quite laggy.
-        setWorkspaceTranslationAndAlpha(Direction.X, transX, alpha);
+        setWorkspaceTranslationAndAlpha(transX, alpha);
         setHotseatTranslationAndAlpha(Direction.X, transX, alpha);
     }
 
     /**
-     * Moves the workspace UI in the Y direction.
-     * @param translation the amount of shift.
-     * @param alpha the alpha for the workspace page
-     */
-    public void setWorkspaceYTranslationAndAlpha(float translation, float alpha) {
-        setWorkspaceTranslationAndAlpha(Direction.Y, translation, alpha);
-    }
-
-    /**
      * Moves the workspace UI in the provided direction.
-     * @param direction the direction to move the workspace
-     * @param translation the amount of shift.
+     * @param translation the amount of horizontal shift.
      * @param alpha the alpha for the workspace page
      */
-    private void setWorkspaceTranslationAndAlpha(Direction direction, float translation, float alpha) {
-        Property<View, Float> property = direction.viewProperty;
-        mPageAlpha[direction.ordinal()] = alpha;
-        float finalAlpha = mPageAlpha[0] * mPageAlpha[1];
+    private void setWorkspaceTranslationAndAlpha(float translation, float alpha) {
+        float finalAlpha = alpha;
 
         View currentChild = getChildAt(getCurrentPage());
         if (currentChild != null) {
-            property.set(currentChild, translation);
+            currentChild.setTranslationX(translation);
             currentChild.setAlpha(finalAlpha);
         }
 
@@ -1225,7 +1208,7 @@ public class Workspace extends PagedView
         if (Float.compare(translation, 0) == 0) {
             for (int i = getChildCount() - 1; i >= 0; i--) {
                 View child = getChildAt(i);
-                property.set(child, translation);
+                child.setTranslationX(0);
                 child.setAlpha(finalAlpha);
             }
         }

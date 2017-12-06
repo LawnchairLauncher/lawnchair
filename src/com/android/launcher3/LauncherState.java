@@ -21,7 +21,7 @@ import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CH
 
 import android.view.View;
 
-import com.android.launcher3.states.AllAppsState;
+import com.android.launcher3.uioverrides.AllAppsState;
 import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -37,13 +37,16 @@ public class LauncherState {
     protected static final int FLAG_SHOW_SCRIM = 1 << 0;
     protected static final int FLAG_MULTI_PAGE = 1 << 1;
     protected static final int FLAG_DISABLE_ACCESSIBILITY = 1 << 2;
-    protected static final int FLAG_DO_NOT_RESTORE = 1 << 3;
+    protected static final int FLAG_DISABLE_RESTORE = 1 << 3;
     protected static final int FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED = 1 << 4;
+    protected static final int FLAG_DISABLE_PAGE_CLIPPING = 1 << 5;
+
+    protected static final PageAlphaProvider DEFAULT_ALPHA_PROVIDER = (i) -> 1f;
 
     private static final LauncherState[] sAllStates = new LauncherState[4];
 
     public static final LauncherState NORMAL = new LauncherState(0, ContainerType.WORKSPACE,
-            0, 1f, FLAG_DO_NOT_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED);
+            0, 1f, FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED);
 
     public static final LauncherState ALL_APPS = new AllAppsState(1);
 
@@ -61,7 +64,7 @@ public class LauncherState {
     /**
      * True if the state can be persisted across activity restarts.
      */
-    public final boolean doNotRestore;
+    public final boolean disableRestore;
 
     /**
      * True if workspace has multiple pages visible.
@@ -94,6 +97,12 @@ public class LauncherState {
      */
     public final boolean workspaceIconsCanBeDragged;
 
+    /**
+     * True if the workspace pages should not be clipped relative to the workspace bounds
+     * for this state.
+     */
+    public final boolean disablePageClipping;
+
     public LauncherState(int id, int containerType, int transitionDuration, float verticalProgress,
             int flags) {
         this.containerType = containerType;
@@ -104,8 +113,9 @@ public class LauncherState {
         this.workspaceAccessibilityFlag = (flags & FLAG_DISABLE_ACCESSIBILITY) != 0
                 ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                 : IMPORTANT_FOR_ACCESSIBILITY_AUTO;
-        this.doNotRestore = (flags & FLAG_DO_NOT_RESTORE) != 0;
+        this.disableRestore = (flags & FLAG_DISABLE_RESTORE) != 0;
         this.workspaceIconsCanBeDragged = (flags & FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED) != 0;
+        this.disablePageClipping = (flags & FLAG_DISABLE_PAGE_CLIPPING) != 0;
 
         this.verticalProgress = verticalProgress;
 
@@ -135,7 +145,20 @@ public class LauncherState {
         return launcher.getWorkspace().getCurrentPageDescription();
     }
 
+    public PageAlphaProvider getWorkspacePageAlphaProvider(Launcher launcher) {
+        if (this != NORMAL || !launcher.getDeviceProfile().shouldFadeAdjacentWorkspaceScreens()) {
+            return DEFAULT_ALPHA_PROVIDER;
+        }
+        int centerPage = launcher.getWorkspace().getPageNearestToCenterOfScreen();
+        return (childIndex) ->  childIndex != centerPage ? 0 : 1f;
+    }
+
     protected static void dispatchWindowStateChanged(Launcher launcher) {
         launcher.getWindow().getDecorView().sendAccessibilityEvent(TYPE_WINDOW_STATE_CHANGED);
+    }
+
+    public interface PageAlphaProvider {
+
+        float getPageAlpha(int pageIndex);
     }
 }

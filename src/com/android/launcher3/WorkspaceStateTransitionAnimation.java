@@ -26,11 +26,11 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.Resources;
 import android.util.Property;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 
+import com.android.launcher3.LauncherState.PageAlphaProvider;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.anim.Interpolators;
@@ -97,18 +97,13 @@ public class WorkspaceStateTransitionAnimation {
     private final Launcher mLauncher;
     private final Workspace mWorkspace;
 
-    private final boolean mWorkspaceFadeInAdjacentScreens;
-
     private float mNewScale;
 
     public WorkspaceStateTransitionAnimation(Launcher launcher, Workspace workspace) {
         mLauncher = launcher;
         mWorkspace = workspace;
-
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        Resources res = launcher.getResources();
-        mWorkspaceScrimAlpha = res.getInteger(R.integer.config_workspaceScrimAlpha);
-        mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
+        mWorkspaceScrimAlpha = launcher.getResources()
+                .getInteger(R.integer.config_workspaceScrimAlpha);
     }
 
     public void setState(LauncherState toState) {
@@ -134,10 +129,10 @@ public class WorkspaceStateTransitionAnimation {
         mNewScale = scaleAndTranslationY[0];
         final float finalWorkspaceTranslationY = scaleAndTranslationY[1];
 
-        int toPage = mWorkspace.getPageNearestToCenterOfScreen();
+        PageAlphaProvider pageAlphaProvider = state.getWorkspacePageAlphaProvider(mLauncher);
         final int childCount = mWorkspace.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            applyChildState(state, (CellLayout) mWorkspace.getChildAt(i), i, toPage,
+            applyChildState(state, (CellLayout) mWorkspace.getChildAt(i), i, pageAlphaProvider,
                     propertySetter);
         }
 
@@ -151,21 +146,16 @@ public class WorkspaceStateTransitionAnimation {
     }
 
     public void applyChildState(LauncherState state, CellLayout cl, int childIndex) {
-        applyChildState(state, cl, childIndex, mWorkspace.getPageNearestToCenterOfScreen(),
+        applyChildState(state, cl, childIndex, state.getWorkspacePageAlphaProvider(mLauncher),
                 NO_ANIM_PROPERTY_SETTER);
     }
 
     private void applyChildState(LauncherState state, CellLayout cl, int childIndex,
-            int centerPage, PropertySetter propertySetter) {
+            PageAlphaProvider pageAlphaProvider, PropertySetter propertySetter) {
         propertySetter.setInt(cl.getScrimBackground(),
                 DRAWABLE_ALPHA, state.hasScrim ? 255 : 0, Interpolators.ZOOM_IN);
-
-        // Only animate the page alpha when we actually fade pages
-        if (mWorkspaceFadeInAdjacentScreens) {
-            float finalAlpha = state == LauncherState.NORMAL && childIndex != centerPage ? 0 : 1f;
-            propertySetter.setFloat(cl.getShortcutsAndWidgets(), View.ALPHA,
-                    finalAlpha, Interpolators.ZOOM_IN);
-        }
+        propertySetter.setFloat(cl.getShortcutsAndWidgets(), View.ALPHA,
+                pageAlphaProvider.getPageAlpha(childIndex), Interpolators.DEACCEL_2);
     }
 
     public static class PropertySetter {

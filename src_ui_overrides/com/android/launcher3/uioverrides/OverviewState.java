@@ -36,7 +36,8 @@ public class OverviewState extends LauncherState {
     // The percent to shrink the workspace during overview mode
     private static final float SCALE_FACTOR = 0.7f;
 
-    private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE;
+    private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE |
+            FLAG_DISABLE_PAGE_CLIPPING;
 
     public OverviewState(int id) {
         super(id, ContainerType.WORKSPACE, OVERVIEW_TRANSITION_MS, 1f, STATE_FLAGS);

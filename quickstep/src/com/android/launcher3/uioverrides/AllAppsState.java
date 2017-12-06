@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.states;
+package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherAnimUtils.ALL_APPS_TRANSITION_MS;
+import static com.android.launcher3.allapps.DiscoveryBounce.APPS_VIEW_SHOWN;
 
 import android.view.View;
 
@@ -29,8 +30,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
  * Definition for AllApps state
  */
 public class AllAppsState extends LauncherState {
-
-    public static final String APPS_VIEW_SHOWN = "launcher.apps_view_shown";
 
     private static final int STATE_FLAGS = FLAG_DISABLE_ACCESSIBILITY;
 
@@ -56,5 +55,16 @@ public class AllAppsState extends LauncherState {
     @Override
     public View getFinalFocus(Launcher launcher) {
         return launcher.getAppsView();
+    }
+
+    @Override
+    public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
+        // TODO: interpolate
+        return LauncherState.OVERVIEW.getWorkspaceScaleAndTranslation(launcher);
+    }
+
+    @Override
+    public PageAlphaProvider getWorkspacePageAlphaProvider(Launcher launcher) {
+        return (i) -> 0;
     }
 }

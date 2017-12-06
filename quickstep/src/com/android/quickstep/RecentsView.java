@@ -27,6 +27,8 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
+import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 import com.android.systemui.shared.recents.model.RecentsTaskLoader;
 import com.android.systemui.shared.recents.model.Task;
@@ -70,6 +72,8 @@ public class RecentsView extends PagedView {
         }
     };
 
+    private RecentsViewStateController mStateController;
+
     public RecentsView(Context context) {
         this(context, null);
     }
@@ -109,6 +113,14 @@ public class RecentsView extends PagedView {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         updateTaskStackListenerState();
+    }
+
+    public void setStateController(RecentsViewStateController stateController) {
+        mStateController = stateController;
+    }
+
+    public RecentsViewStateController getStateController() {
+        return mStateController;
     }
 
     public void setOverviewStateEnabled(boolean enabled) {
@@ -171,7 +183,7 @@ public class RecentsView extends PagedView {
         }
     }
 
-    public static Rect getPadding(Launcher launcher) {
+    private static Rect getPadding(Launcher launcher) {
         DeviceProfile profile = launcher.getDeviceProfile();
         Rect stableInsets = new Rect();
         WindowManagerWrapper.getInstance().getStableInsets(stableInsets);
@@ -183,6 +195,19 @@ public class RecentsView extends PagedView {
         float overviewWidth = taskWidth * overviewHeight / taskHeight;
         padding.left = padding.right = (int) ((profile.availableWidthPx - overviewWidth) / 2);
         return padding;
+    }
+
+    public static void getPageRect(Launcher launcher, Rect outRect) {
+        DragLayer dl = launcher.getDragLayer();
+        Rect targetPadding = getPadding(launcher);
+        Rect insets = dl.getInsets();
+        outRect.set(
+                targetPadding.left + insets.left,
+                targetPadding.top + insets.top,
+                dl.getWidth() - targetPadding.right - insets.right,
+                dl.getHeight() - targetPadding.bottom - insets.bottom);
+        outRect.top += launcher.getResources()
+                .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
     }
 
     @Override

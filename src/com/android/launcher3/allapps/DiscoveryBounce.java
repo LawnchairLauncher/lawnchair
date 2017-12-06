@@ -27,12 +27,13 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.states.AllAppsState;
 
 /**
  * Floating view responsible for showing discovery bounce animation
  */
 public class DiscoveryBounce extends AbstractFloatingView {
+
+    public static final String APPS_VIEW_SHOWN = "launcher.apps_view_shown";
 
     private final Launcher mLauncher;
     private final Animator mDiscoBounceAnimation;
@@ -95,7 +96,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
 
     public static void showIfNeeded(Launcher launcher) {
         if (!launcher.isInState(NORMAL)
-                || launcher.getSharedPrefs().getBoolean(AllAppsState.APPS_VIEW_SHOWN, false)
+                || launcher.getSharedPrefs().getBoolean(APPS_VIEW_SHOWN, false)
                 || AbstractFloatingView.getTopOpenView(launcher) != null
                 || UserManagerCompat.getInstance(launcher).isDemoUser()) {
             return;

@@ -158,14 +158,14 @@ public class LauncherStateManager {
         mConfig.reset();
 
         if (!animated) {
-            setState(state);
+            onStateTransitionStart(state);
             for (StateHandler handler : getStateHandlers()) {
                 handler.setState(state);
             }
             if (mStateListener != null) {
                 mStateListener.onStateSetImmediately(state);
             }
-            mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
+            onStateTransitionEnd(state);
 
             // Run any queued runnable
             if (onCompleteRunnable != null) {
@@ -217,7 +217,7 @@ public class LauncherStateManager {
             @Override
             public void onAnimationStart(Animator animation) {
                 // Change the internal state only when the transition actually starts
-                setState(state);
+                onStateTransitionStart(state);
                 if (mStateListener != null) {
                     mStateListener.onStateTransitionStart(state);
                 }
@@ -237,19 +237,28 @@ public class LauncherStateManager {
                 if (onCompleteRunnable != null) {
                     onCompleteRunnable.run();
                 }
-
-                mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
+                onStateTransitionEnd(state);
             }
         });
         mConfig.setAnimation(animation);
         return mConfig.mCurrentAnimation;
     }
 
-    private void setState(LauncherState state) {
+    private void onStateTransitionStart(LauncherState state) {
         mState.onStateDisabled(mLauncher);
         mState = state;
         mState.onStateEnabled(mLauncher);
         mLauncher.getAppWidgetHost().setResumed(state == LauncherState.NORMAL);
+
+        if (state.disablePageClipping) {
+            // Only disable clipping if needed, otherwise leave it as previous value.
+            mLauncher.getWorkspace().setClipChildren(false);
+        }
+    }
+
+    private void onStateTransitionEnd(LauncherState state) {
+        mLauncher.getWorkspace().setClipChildren(!state.disablePageClipping);
+        mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
     }
 
     /**

@@ -1003,7 +1003,7 @@ public class Launcher extends BaseActivity
         int stateOrdinal = savedState.getInt(RUNTIME_STATE, NORMAL.ordinal);
         LauncherState[] stateValues = LauncherState.values();
         LauncherState state = stateValues[stateOrdinal];
-        if (!state.doNotRestore) {
+        if (!state.disableRestore) {
             mStateManager.goToState(state, false /* animated */);
         }
 
