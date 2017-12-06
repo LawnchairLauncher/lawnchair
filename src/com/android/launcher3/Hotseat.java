@@ -16,6 +16,9 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.NORMAL;
+
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -29,7 +32,9 @@ import android.widget.TextView;
 
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
 public class Hotseat extends FrameLayout
@@ -127,8 +132,13 @@ public class Hotseat extends FrameLayout
             allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
             allAppsButton.setOnKeyListener(new HotseatIconKeyEventListener());
             if (mLauncher != null) {
-                mLauncher.setAllAppsButton(allAppsButton);
-                allAppsButton.setOnClickListener(mLauncher);
+                allAppsButton.setOnClickListener((v) -> {
+                    if (!mLauncher.isInState(ALL_APPS)) {
+                        mLauncher.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
+                                ControlType.ALL_APPS_BUTTON);
+                        mLauncher.getStateManager().goToState(ALL_APPS);
+                    }
+                });
                 allAppsButton.setOnFocusChangeListener(mLauncher.mFocusHandler);
             }
 

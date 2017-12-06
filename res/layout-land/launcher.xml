@@ -47,13 +47,8 @@
             android:theme="@style/HomeScreenElementTheme"
             android:layout_width="@dimen/dynamic_grid_min_page_indicator_size"
             android:layout_height="@dimen/dynamic_grid_min_page_indicator_size"
-            android:layout_gravity="bottom|left">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/all_apps_handle_landscape"
-                android:layout_gravity="center" />
-        </com.android.launcher3.pageindicators.PageIndicatorLandscape>
+            android:layout_gravity="bottom|left"
+            android:background="@drawable/all_apps_handle_landscape" />
 
         <include layout="@layout/gradient_bg" />
 

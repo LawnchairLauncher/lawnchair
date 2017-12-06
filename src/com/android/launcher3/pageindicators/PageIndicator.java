@@ -17,18 +17,17 @@ package com.android.launcher3.pageindicators;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.FrameLayout;
+import android.view.View;
 
 /**
  * Base class for a page indicator.
  */
-public abstract class PageIndicator extends FrameLayout {
+public abstract class PageIndicator extends View {
 
     protected int mNumPages = 1;
 
     public PageIndicator(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setWillNotDraw(false);
     }
 
     public void setScroll(int currentScroll, int totalScroll) {}

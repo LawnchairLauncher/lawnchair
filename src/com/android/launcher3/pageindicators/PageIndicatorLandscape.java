@@ -15,17 +15,23 @@
  */
 package com.android.launcher3.pageindicators;
 
+import static com.android.launcher3.LauncherState.ALL_APPS;
+
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
+import android.view.View.OnClickListener;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 
 /**
  * Simply draws the caret drawable bottom-right aligned in the view. This ensures that we can have
  * a view with as large an area as we want (for touching) while maintaining a caret of size
  * all_apps_caret_size.  Used only for the landscape layout.
  */
-public class PageIndicatorLandscape extends PageIndicator {
+public class PageIndicatorLandscape extends PageIndicator implements OnClickListener {
     // all apps pull up handle drawable.
 
     public PageIndicatorLandscape(Context context) {
@@ -38,8 +44,17 @@ public class PageIndicatorLandscape extends PageIndicator {
 
     public PageIndicatorLandscape(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        Launcher l = Launcher.getLauncher(context);
-        setOnClickListener(l);
-        setOnFocusChangeListener(l.mFocusHandler);
+        setOnClickListener(this);
+        setOnFocusChangeListener(Launcher.getLauncher(context).mFocusHandler);
+    }
+
+    @Override
+    public void onClick(View view) {
+        Launcher l = Launcher.getLauncher(getContext());
+        if (!l.isInState(ALL_APPS)) {
+            l.getUserEventDispatcher().logActionOnControl(
+                    Action.Touch.TAP, ControlType.ALL_APPS_BUTTON);
+            l.getStateManager().goToState(ALL_APPS);
+        }
     }
 }

@@ -14,7 +14,6 @@ import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.ViewConfiguration;
-import android.widget.ImageView;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -54,7 +53,6 @@ public class PageIndicatorLine extends PageIndicator {
     private Paint mLinePaint;
     private Launcher mLauncher;
     private final int mLineHeight;
-    private ImageView mAllAppsHandle;
 
     private static final Property<PageIndicatorLine, Integer> PAINT_ALPHA
             = new Property<PageIndicatorLine, Integer>(Integer.class, "paint_alpha") {
@@ -98,12 +96,7 @@ public class PageIndicatorLine extends PageIndicator {
         }
     };
 
-    private Runnable mHideLineRunnable = new Runnable() {
-        @Override
-        public void run() {
-            animateLineToAlpha(0);
-        }
-    };
+    private Runnable mHideLineRunnable = () -> animateLineToAlpha(0);
 
     public PageIndicatorLine(Context context) {
         this(context, null);
@@ -129,20 +122,6 @@ public class PageIndicatorLine extends PageIndicator {
     }
 
     @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        mAllAppsHandle = findViewById(R.id.all_apps_handle);
-        mAllAppsHandle.setOnClickListener(mLauncher);
-        mAllAppsHandle.setOnFocusChangeListener(mLauncher.mFocusHandler);
-        mLauncher.setAllAppsButton(mAllAppsHandle);
-    }
-
-    @Override
-    public void setAccessibilityDelegate(AccessibilityDelegate delegate) {
-        mAllAppsHandle.setAccessibilityDelegate(delegate);
-    }
-
-    @Override
     protected void onDraw(Canvas canvas) {
         if (mTotalScroll == 0 || mNumPagesFloat == 0) {
             return;
@@ -156,11 +135,6 @@ public class PageIndicatorLine extends PageIndicator {
         int lineRight = lineLeft + lineWidth;
         canvas.drawRect(lineLeft, canvas.getHeight() - mLineHeight, lineRight, canvas.getHeight(),
                 mLinePaint);
-    }
-
-    @Override
-    public void setContentDescription(CharSequence contentDescription) {
-        mAllAppsHandle.setContentDescription(contentDescription);
     }
 
     @Override

@@ -60,7 +60,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -117,7 +116,6 @@ import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.notification.NotificationListener;
-import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
@@ -127,7 +125,6 @@ import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ComponentKey;
@@ -229,8 +226,6 @@ public class Launcher extends BaseActivity
     private final int[] mTmpAddItemCellCoordinates = new int[2];
 
     @Thunk Hotseat mHotseat;
-
-    private View mAllAppsButton;
 
     private DropTargetBar mDropTargetBar;
 
@@ -1072,14 +1067,6 @@ public class Launcher extends BaseActivity
     }
 
     /**
-     * Sets the all apps button. This method is called from {@link Hotseat}.
-     * TODO: Get rid of this.
-     */
-    public void setAllAppsButton(View allAppsButton) {
-        mAllAppsButton = allAppsButton;
-    }
-
-    /**
      * Creates a view representing a shortcut.
      *
      * @param info The data structure describing the shortcut.
@@ -1852,9 +1839,6 @@ public class Launcher extends BaseActivity
             if (v instanceof FolderIcon) {
                 onClickFolderIcon(v);
             }
-        } else if ((v instanceof PageIndicator) ||
-            (v == mAllAppsButton && mAllAppsButton != null)) {
-            onClickAllAppsButton(v);
         } else if (tag instanceof AppInfo) {
             startAppShortcutOrInfoActivity(v);
         } else if (tag instanceof LauncherAppWidgetInfo) {
@@ -1900,24 +1884,6 @@ public class Launcher extends BaseActivity
         } else {
             final String packageName = info.providerName.getPackageName();
             onClickPendingAppItem(v, packageName, info.installProgress >= 0);
-        }
-    }
-
-    /**
-     * Event handler for the "grid" button or "caret" that appears on the home screen, which
-     * enters all apps mode. In verticalBarLayout the caret can be seen when all apps is open, and
-     * so in that case reverses the action.
-     *
-     * @param v The view that was clicked.
-     */
-    protected void onClickAllAppsButton(View v) {
-        if (LOGD) Log.d(TAG, "onClickAllAppsButton");
-        if (!isInState(ALL_APPS)) {
-            getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
-                    ControlType.ALL_APPS_BUTTON);
-            mStateManager.goToState(ALL_APPS);
-        } else {
-            mStateManager.goToState(NORMAL);
         }
     }
 
