@@ -31,7 +31,6 @@ import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
@@ -53,7 +52,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     private AlphabeticalAppsList mApps;
     private AllAppsFastScrollHelper mFastScrollHelper;
     private int mNumAppsPerRow;
-    private int mUserProfileTabContentHeight;
 
     // The specific view heights that we use to calculate scroll
     private SparseIntArray mViewHeights = new SparseIntArray();
@@ -127,8 +125,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     public void setApps(AlphabeticalAppsList apps, boolean usingTabs) {
         mApps = apps;
         mFastScrollHelper = new AllAppsFastScrollHelper(this, apps);
-        mUserProfileTabContentHeight = usingTabs
-                ? Launcher.getLauncher(getContext()).getDeviceProfile().allAppsCellHeightPx : 0;;
     }
 
     public AlphabeticalAppsList getApps() {
@@ -362,6 +358,9 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
      */
     @Override
     public void onUpdateScrollbar(int dy) {
+        if (mApps == null) {
+            return;
+        }
         List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
 
         // Skip early if there are no items or we haven't been measured
@@ -488,18 +487,11 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     @Override
     protected int getAvailableScrollHeight() {
         return getPaddingTop() + getCurrentScrollY(getAdapter().getItemCount(), 0)
-                - getHeight() + getPaddingBottom() + mUserProfileTabContentHeight;
+                - getHeight() + getPaddingBottom();
     }
 
     public int getScrollBarTop() {
-        return super.getScrollBarTop() + mUserProfileTabContentHeight;
-    }
-
-    /**
-     * Returns the height of the fast scroll bar
-     */
-    public int getScrollbarTrackHeight() {
-        return super.getScrollbarTrackHeight() + mUserProfileTabContentHeight;
+        return getResources().getDimensionPixelOffset(R.dimen.all_apps_header_top_padding);
     }
 
     public RecyclerViewFastScroller getScrollbar() {

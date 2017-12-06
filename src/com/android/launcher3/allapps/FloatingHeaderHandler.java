@@ -30,6 +30,8 @@ import com.android.launcher3.R;
 public class FloatingHeaderHandler extends RecyclerView.OnScrollListener
         implements ValueAnimator.AnimatorUpdateListener {
 
+    private static final boolean SHOW_PREDICTIONS_ONLY_ON_TOP = true;
+
     private final View mHeaderView;
     private final PredictionRowView mPredictionRow;
     private final ViewGroup mTabLayout;
@@ -37,8 +39,8 @@ public class FloatingHeaderHandler extends RecyclerView.OnScrollListener
     private final Rect mClip = new Rect(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
     private final ValueAnimator mAnimator = ValueAnimator.ofInt(0, 0);
 
-    private RecyclerView mMainRV;
-    private RecyclerView mWorkRV;
+    private AllAppsRecyclerView mMainRV;
+    private AllAppsRecyclerView mWorkRV;
     private boolean mTopOnlyMode;
     private boolean mHeaderHidden;
     private int mMaxTranslation;
@@ -55,20 +57,23 @@ public class FloatingHeaderHandler extends RecyclerView.OnScrollListener
         mPredictionRow = header.findViewById(R.id.header_content);
     }
 
-    public void setup(@NonNull RecyclerView personalRV, @Nullable RecyclerView workRV,
+    public void setup(@NonNull AllAppsRecyclerView personalRV, @Nullable AllAppsRecyclerView workRV,
         int predictionRowHeight) {
         mTopOnlyMode = workRV == null;
         mTabLayout.setVisibility(mTopOnlyMode ? View.GONE : View.VISIBLE);
         mPredictionRow.getLayoutParams().height = predictionRowHeight;
         mMaxTranslation = predictionRowHeight;
-        mMainRV = personalRV;
-        mMainRV.addOnScrollListener(this);
-        mWorkRV = workRV;
-        if (workRV != null) {
-            workRV.addOnScrollListener(this);
-        }
+        mMainRV = setupRV(mMainRV, personalRV);
+        mWorkRV = setupRV(mWorkRV, workRV);
         setMainActive(true);
         setupDivider();
+    }
+
+    private AllAppsRecyclerView setupRV(AllAppsRecyclerView old, AllAppsRecyclerView updated) {
+        if (old != updated && updated != null ) {
+            updated.addOnScrollListener(this);
+        }
+        return updated;
     }
 
     private void setupDivider() {
@@ -115,10 +120,9 @@ public class FloatingHeaderHandler extends RecyclerView.OnScrollListener
             mAnimator.cancel();
         }
 
-        int current = isMainRV
-                ? (mMainScrolledY -= dy)
-                : (mWorkScrolledY -= dy);
-
+        int current = - (isMainRV
+                ? mMainRV.getCurrentScrollY()
+                : mWorkRV.getCurrentScrollY());
         moved(current);
         apply();
     }
@@ -130,7 +134,8 @@ public class FloatingHeaderHandler extends RecyclerView.OnScrollListener
     }
 
     private boolean canSnapAt(int currentScrollY) {
-        return !mTopOnlyMode || Math.abs(currentScrollY) <= mPredictionRow.getHeight();
+        boolean snapOnlyOnTop = SHOW_PREDICTIONS_ONLY_ON_TOP || mTopOnlyMode;
+        return !snapOnlyOnTop || Math.abs(currentScrollY) <= mPredictionRow.getHeight();
     }
 
     private void moved(final int currentScrollY) {
@@ -179,6 +184,9 @@ public class FloatingHeaderHandler extends RecyclerView.OnScrollListener
 
     @Override
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+        if (SHOW_PREDICTIONS_ONLY_ON_TOP) {
+            return;
+        }
         if (!mTopOnlyMode && newState == RecyclerView.SCROLL_STATE_IDLE
                 && mTranslationY != -mMaxTranslation && mTranslationY != 0) {
             float scroll = Math.abs(getCurrentScroll());

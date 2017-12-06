@@ -68,6 +68,7 @@ public abstract class BaseRecyclerView extends RecyclerView
         ViewGroup parent = (ViewGroup) getParent().getParent();
         mScrollbar = parent.findViewById(R.id.fast_scroller);
         mScrollbar.setRecyclerView(this, parent.findViewById(R.id.fast_scroller_popup));
+        onUpdateScrollbar(0);
     }
 
     /**
@@ -112,7 +113,7 @@ public abstract class BaseRecyclerView extends RecyclerView
      * Returns the height of the fast scroll bar
      */
     public int getScrollbarTrackHeight() {
-        return getHeight() - getScrollBarTop() - getPaddingBottom();
+        return mScrollbar.getHeight() - getScrollBarTop() - getPaddingBottom();
     }
 
     /**
@@ -128,12 +129,6 @@ public abstract class BaseRecyclerView extends RecyclerView
     protected int getAvailableScrollBarHeight() {
         int availableScrollBarHeight = getScrollbarTrackHeight() - mScrollbar.getThumbHeight();
         return availableScrollBarHeight;
-    }
-
-    @Override
-    protected void dispatchDraw(Canvas canvas) {
-        onUpdateScrollbar(0);
-        super.dispatchDraw(canvas);
     }
 
     /**

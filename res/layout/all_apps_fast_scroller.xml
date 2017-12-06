@@ -21,7 +21,7 @@
         android:id="@+id/fast_scroller_popup"
         style="@style/FastScrollerPopup"
         android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/apps_list_view"
+        android:layout_below="@+id/search_container_all_apps"
         android:layout_marginEnd="@dimen/fastscroll_popup_margin" />
 
     <com.android.launcher3.views.RecyclerViewFastScroller
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/apps_list_view"
+        android:layout_below="@+id/search_container_all_apps"
         android:layout_marginEnd="@dimen/fastscroll_end_margin"
         launcher:canThumbDetach="true" />
 
