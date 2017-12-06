@@ -200,12 +200,18 @@ public class NotificationFooterLayout extends FrameLayout {
             PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(
                     Launcher.getLauncher(getContext()));
             if (popup != null) {
-                Animator collapseFooter = popup.reduceNotificationViewHeight(getHeight(),
+                final int newHeight = getResources().getDimensionPixelSize(
+                        R.dimen.notification_empty_footer_height);
+                Animator collapseFooter = popup.reduceNotificationViewHeight(getHeight() - newHeight,
                         getResources().getInteger(R.integer.config_removeNotificationViewDuration));
                 collapseFooter.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        ((ViewGroup) getParent()).removeView(NotificationFooterLayout.this);
+                        ((ViewGroup) getParent()).findViewById(R.id.divider).setVisibility(GONE);
+                        // Keep view around because gutter is aligned to it, but remove height to
+                        // both hide the view and keep calculations correct for last dismissal.
+                        getLayoutParams().height = newHeight;
+                        requestLayout();
                     }
                 });
                 collapseFooter.start();

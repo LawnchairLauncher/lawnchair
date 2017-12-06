@@ -184,8 +184,12 @@ public class LoaderCursor extends CursorWrapper {
                 icon = LauncherIcons.createIconBitmap(
                         BitmapFactory.decodeByteArray(data, 0, data.length), mContext);
             } catch (Exception e) {
+                Log.e(TAG, "Failed to load icon for info " + info, e);
                 return null;
             }
+        }
+        if (icon == null) {
+            Log.e(TAG, "Failed to load icon for info " + info);
         }
         return icon;
     }
@@ -219,7 +223,7 @@ public class LoaderCursor extends CursorWrapper {
             if (!TextUtils.isEmpty(title)) {
                 info.title = Utilities.trim(title);
             }
-        } else if  (hasRestoreFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
+        } else if  (hasRestoreFlag(ShortcutInfo.FLAG_AUTOINSTALL_ICON)) {
             if (TextUtils.isEmpty(info.title)) {
                 info.title = getTitle();
             }

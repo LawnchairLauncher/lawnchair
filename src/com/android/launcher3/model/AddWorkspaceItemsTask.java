@@ -17,10 +17,12 @@ package com.android.launcher3.model;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.LauncherActivityInfo;
+import android.os.Process;
 import android.os.UserHandle;
+import android.util.ArrayMap;
 import android.util.LongSparseArray;
 import android.util.Pair;
-
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
@@ -33,29 +35,30 @@ import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.GridOccupancy;
+import com.android.launcher3.util.ManagedProfileHeuristic.UserFolderInfo;
 import com.android.launcher3.util.Provider;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Task to add auto-created workspace items.
  */
-public class AddWorkspaceItemsTask extends ExtendedModelTask {
+public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
 
-    private final Provider<List<ItemInfo>> mAppsProvider;
+    private final Provider<List<Pair<ItemInfo, Object>>> mAppsProvider;
 
     /**
      * @param appsProvider items to add on the workspace
      */
-    public AddWorkspaceItemsTask(Provider<List<ItemInfo>> appsProvider) {
+    public AddWorkspaceItemsTask(Provider<List<Pair<ItemInfo, Object>>> appsProvider) {
         mAppsProvider = appsProvider;
     }
 
     @Override
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
-        List<ItemInfo> workspaceApps = mAppsProvider.get();
+        List<Pair<ItemInfo, Object>> workspaceApps = mAppsProvider.get();
         if (workspaceApps.isEmpty()) {
             return;
         }
@@ -63,13 +66,17 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
 
         final ArrayList<ItemInfo> addedItemsFinal = new ArrayList<>();
         final ArrayList<Long> addedWorkspaceScreensFinal = new ArrayList<>();
+        ArrayMap<UserHandle, UserFolderInfo> userFolderMap = new ArrayMap<>();
 
         // Get the list of workspace screens.  We need to append to this list and
         // can not use sBgWorkspaceScreens because loadWorkspace() may not have been
         // called.
         ArrayList<Long> workspaceScreens = LauncherModel.loadWorkspaceScreensDb(context);
         synchronized(dataModel) {
-            for (ItemInfo item : workspaceApps) {
+
+            List<ItemInfo> filteredItems = new ArrayList<>();
+            for (Pair<ItemInfo, Object> entry : workspaceApps) {
+                ItemInfo item = entry.first;
                 if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                         item.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
                     // Short-circuit this logic if the icon exists somewhere on the workspace
@@ -78,6 +85,32 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
                     }
                 }
 
+                if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                    if (item instanceof AppInfo) {
+                        item = ((AppInfo) item).makeShortcut();
+                    }
+
+                    if (!Process.myUserHandle().equals(item.user)) {
+                        // Check if this belongs to a work folder.
+                        if (!(entry.second instanceof LauncherActivityInfo)) {
+                            continue;
+                        }
+
+                        UserFolderInfo userFolderInfo = userFolderMap.get(item.user);
+                        if (userFolderInfo == null) {
+                            userFolderInfo = new UserFolderInfo(context, item.user, dataModel);
+                            userFolderMap.put(item.user, userFolderInfo);
+                        }
+                        item = userFolderInfo.convertToWorkspaceItem(
+                                (ShortcutInfo) item, (LauncherActivityInfo) entry.second);
+                    }
+                }
+                if (item != null) {
+                    filteredItems.add(item);
+                }
+            }
+
+            for (ItemInfo item : filteredItems) {
                 // Find appropriate space for the item.
                 Pair<Long, int[]> coords = findSpaceForItem(app, dataModel, workspaceScreens,
                         addedWorkspaceScreensFinal, item.spanX, item.spanY);
@@ -111,8 +144,8 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
             scheduleCallbackTask(new CallbackTask() {
                 @Override
                 public void execute(Callbacks callbacks) {
-                    final ArrayList<ItemInfo> addAnimated = new ArrayList<ItemInfo>();
-                    final ArrayList<ItemInfo> addNotAnimated = new ArrayList<ItemInfo>();
+                    final ArrayList<ItemInfo> addAnimated = new ArrayList<>();
+                    final ArrayList<ItemInfo> addNotAnimated = new ArrayList<>();
                     if (!addedItemsFinal.isEmpty()) {
                         ItemInfo info = addedItemsFinal.get(addedItemsFinal.size() - 1);
                         long lastScreenId = info.screenId;
@@ -125,9 +158,13 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
                         }
                     }
                     callbacks.bindAppsAdded(addedWorkspaceScreensFinal,
-                            addNotAnimated, addAnimated, null);
+                            addNotAnimated, addAnimated);
                 }
             });
+        }
+
+        for (UserFolderInfo userFolderInfo : userFolderMap.values()) {
+            userFolderInfo.applyPendingState(getModelWriter());
         }
     }
 
@@ -140,7 +177,7 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
      * the workspace has been loaded. We identify a shortcut by its intent.
      */
     protected boolean shortcutExists(BgDataModel dataModel, Intent intent, UserHandle user) {
-        final String intentWithPkg, intentWithoutPkg;
+        final String compPkgName, intentWithPkg, intentWithoutPkg;
         if (intent == null) {
             // Skip items with null intents
             return true;
@@ -148,19 +185,21 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
         if (intent.getComponent() != null) {
             // If component is not null, an intent with null package will produce
             // the same result and should also be a match.
-            String packageName = intent.getComponent().getPackageName();
+            compPkgName = intent.getComponent().getPackageName();
             if (intent.getPackage() != null) {
                 intentWithPkg = intent.toUri(0);
                 intentWithoutPkg = new Intent(intent).setPackage(null).toUri(0);
             } else {
-                intentWithPkg = new Intent(intent).setPackage(packageName).toUri(0);
+                intentWithPkg = new Intent(intent).setPackage(compPkgName).toUri(0);
                 intentWithoutPkg = intent.toUri(0);
             }
         } else {
+            compPkgName = null;
             intentWithPkg = intent.toUri(0);
             intentWithoutPkg = intent.toUri(0);
         }
 
+        boolean isLauncherAppTarget = Utilities.isLauncherAppTarget(intent);
         synchronized (dataModel) {
             for (ItemInfo item : dataModel.itemsIdMap) {
                 if (item instanceof ShortcutInfo) {
@@ -170,6 +209,16 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
                         copyIntent.setSourceBounds(intent.getSourceBounds());
                         String s = copyIntent.toUri(0);
                         if (intentWithPkg.equals(s) || intentWithoutPkg.equals(s)) {
+                            return true;
+                        }
+
+                        // checking for existing promise icon with same package name
+                        if (isLauncherAppTarget
+                                && info.isPromise()
+                                && info.hasStatusFlag(ShortcutInfo.FLAG_AUTOINSTALL_ICON)
+                                && info.getTargetComponent() != null
+                                && compPkgName != null
+                                && compPkgName.equals(info.getTargetComponent().getPackageName())) {
                             return true;
                         }
                     }
@@ -263,4 +312,5 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
         }
         return occupied.findVacantCell(xy, spanX, spanY);
     }
+
 }

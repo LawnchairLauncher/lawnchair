@@ -20,7 +20,9 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
@@ -29,16 +31,15 @@ import com.android.launcher3.DropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.LauncherEvent;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LogConfig;
 
-import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import static com.android.launcher3.logging.LoggerUtils.newCommandAction;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
@@ -60,14 +61,22 @@ public class UserEventDispatcher {
 
     private static final String TAG = "UserEvent";
     private static final boolean IS_VERBOSE =
-            ProviderConfig.IS_DOGFOOD_BUILD && Utilities.isPropertyEnabled(LogConfig.USEREVENT);
+            FeatureFlags.IS_DOGFOOD_BUILD && Utilities.isPropertyEnabled(LogConfig.USEREVENT);
+    private static final String UUID_STORAGE = "uuid";
 
     public static UserEventDispatcher newInstance(Context context, boolean isInLandscapeMode,
             boolean isInMultiWindowMode) {
+        SharedPreferences sharedPrefs = Utilities.getDevicePrefs(context);
+        String uuidStr = sharedPrefs.getString(UUID_STORAGE, null);
+        if (uuidStr == null) {
+            uuidStr = UUID.randomUUID().toString();
+            sharedPrefs.edit().putString(UUID_STORAGE, uuidStr).apply();
+        }
         UserEventDispatcher ued = Utilities.getOverrideObject(UserEventDispatcher.class,
                 context.getApplicationContext(), R.string.user_event_dispatcher_class);
         ued.mIsInLandscapeMode = isInLandscapeMode;
         ued.mIsInMultiWindowMode = isInMultiWindowMode;
+        ued.mUuidStr = uuidStr;
         return ued;
     }
 
@@ -90,7 +99,7 @@ public class UserEventDispatcher {
     /**
      * Recursively finds the parent of the given child which implements IconLogInfoProvider
      */
-    public static LogContainerProvider getLaunchProviderRecursive(View v) {
+    public static LogContainerProvider getLaunchProviderRecursive(@Nullable View v) {
         ViewParent parent;
         if (v != null) {
             parent = v.getParent();
@@ -115,9 +124,7 @@ public class UserEventDispatcher {
     private long mActionDurationMillis;
     private boolean mIsInMultiWindowMode;
     private boolean mIsInLandscapeMode;
-
-    // Used for filling in predictedRank on {@link Target}s.
-    private List<ComponentKey> mPredictedApps;
+    private String mUuidStr;
 
     //                      APP_ICON    SHORTCUT    WIDGET
     // --------------------------------------------------------------
@@ -126,28 +133,11 @@ public class UserEventDispatcher {
     // intentHash                       required
     // --------------------------------------------------------------
 
-    protected LauncherEvent createLauncherEvent(View v, int intentHashCode, ComponentName cn) {
-        LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
-                newItemTarget(v), newTarget(Target.Type.CONTAINER));
-
-        // TODO: make idx percolate up the view hierarchy if needed.
-        int idx = 0;
-        if (fillInLogContainerData(event, v)) {
-            ItemInfo itemInfo = (ItemInfo) v.getTag();
-            event.srcTarget[idx].intentHash = intentHashCode;
-            if (cn != null) {
-                event.srcTarget[idx].packageNameHash = cn.getPackageName().hashCode();
-                event.srcTarget[idx].componentHash = cn.hashCode();
-                if (mPredictedApps != null) {
-                    event.srcTarget[idx].predictedRank = mPredictedApps.indexOf(
-                            new ComponentKey(cn, itemInfo.user));
-                }
-            }
-        }
-        return event;
-    }
-
-    public boolean fillInLogContainerData(LauncherEvent event, View v) {
+    /**
+     * Fills in the container data on the given event if the given view is not null.
+     * @return whether container data was added.
+     */
+    protected boolean fillInLogContainerData(LauncherEvent event, @Nullable View v) {
         // Fill in grid(x,y), pageIndex of the child and container type of the parent
         LogContainerProvider provider = getLaunchProviderRecursive(v);
         if (v == null || !(v.getTag() instanceof ItemInfo) || provider == null) {
@@ -159,20 +149,31 @@ public class UserEventDispatcher {
     }
 
     public void logAppLaunch(View v, Intent intent) {
-        LauncherEvent ev = createLauncherEvent(v, intent.hashCode(), intent.getComponent());
-        if (ev == null) {
-            return;
+        LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
+                newItemTarget(v), newTarget(Target.Type.CONTAINER));
+
+        if (fillInLogContainerData(event, v)) {
+            fillIntentInfo(event.srcTarget[0], intent);
         }
-        dispatchUserEvent(ev, intent);
+        dispatchUserEvent(event, intent);
+    }
+
+    protected void fillIntentInfo(Target target, Intent intent) {
+        target.intentHash = intent.hashCode();
+        ComponentName cn = intent.getComponent();
+        if (cn != null) {
+            target.packageNameHash = (mUuidStr + cn.getPackageName()).hashCode();
+            target.componentHash = (mUuidStr + cn.flattenToString()).hashCode();
+        }
     }
 
     public void logNotificationLaunch(View v, PendingIntent intent) {
-        ComponentName dummyComponent = new ComponentName(intent.getCreatorPackage(), "--dummy--");
-        LauncherEvent ev = createLauncherEvent(v, intent.hashCode(), dummyComponent);
-        if (ev == null) {
-            return;
+        LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
+                newItemTarget(v), newTarget(Target.Type.CONTAINER));
+        if (fillInLogContainerData(event, v)) {
+            event.srcTarget[0].packageNameHash = (mUuidStr + intent.getCreatorPackage()).hashCode();
         }
-        dispatchUserEvent(ev, null);
+        dispatchUserEvent(event, null);
     }
 
     public void logActionCommand(int command, int containerType) {
@@ -203,9 +204,16 @@ public class UserEventDispatcher {
     }
 
     public void logActionOnControl(int action, int controlType) {
-        LauncherEvent event = newLauncherEvent(
-                newTouchAction(action), newTarget(Target.Type.CONTROL));
+        logActionOnControl(action, controlType, null);
+    }
+
+    public void logActionOnControl(int action, int controlType, @Nullable View controlInContainer) {
+        final LauncherEvent event = controlInContainer == null
+                ? newLauncherEvent(newTouchAction(action), newTarget(Target.Type.CONTROL))
+                : newLauncherEvent(newTouchAction(action), newTarget(Target.Type.CONTROL),
+                        newTarget(Target.Type.CONTAINER));
         event.srcTarget[0].controlType = controlType;
+        fillInLogContainerData(event, controlInContainer);
         dispatchUserEvent(event, null);
     }
 
@@ -248,10 +256,6 @@ public class UserEventDispatcher {
         dispatchUserEvent(event, null);
 
         resetElapsedContainerMillis();
-    }
-
-    public void setPredictedApps(List<ComponentKey> predictedApps) {
-        mPredictedApps = predictedApps;
     }
 
     /* Currently we are only interested in whether this event happens or not and don't
@@ -325,7 +329,10 @@ public class UserEventDispatcher {
     }
 
     private static String getTargetsStr(Target[] targets) {
-        return "child:" + LoggerUtils.getTargetStr(targets[0]) +
-                (targets.length > 1 ? "\tparent:" + LoggerUtils.getTargetStr(targets[1]) : "");
+        String result = "child:" + LoggerUtils.getTargetStr(targets[0]);
+        for (int i = 1; i < targets.length; i++) {
+            result += "\tparent:" + LoggerUtils.getTargetStr(targets[i]);
+        }
+        return result;
     }
 }

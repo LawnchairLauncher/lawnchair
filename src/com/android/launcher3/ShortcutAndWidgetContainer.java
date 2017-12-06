@@ -101,7 +101,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         mInvertIfRtl = invert;
     }
 
-    int getCellContentHeight() {
+    public int getCellContentHeight() {
         return Math.min(getMeasuredHeight(),
                 mLauncher.getDeviceProfile().getCellHeight(mContainerType));
     }
@@ -120,7 +120,9 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
                 // Center the icon/folder
                 int cHeight = getCellContentHeight();
                 int cellPaddingY = (int) Math.max(0, ((lp.height - cHeight) / 2f));
-                int cellPaddingX = (int) (profile.edgeMarginPx / 2f);
+                int cellPaddingX = mContainerType == CellLayout.WORKSPACE
+                        ? profile.workspaceCellPaddingXPx
+                        : (int) (profile.edgeMarginPx / 2f);
                 child.setPadding(cellPaddingX, cellPaddingY, cellPaddingX, 0);
             }
         } else {

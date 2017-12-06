@@ -15,13 +15,14 @@
  */
 package com.android.launcher3.graphics;
 
+import static com.android.launcher3.Utilities.getDevicePrefs;
+
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.SystemClock;
@@ -34,11 +35,10 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.util.LooperExecuter;
+import com.android.launcher3.util.LooperExecutor;
 
 import java.lang.reflect.Field;
 
@@ -59,7 +59,7 @@ public class IconShapeOverride {
     private static final int RESTART_REQUEST_CODE = 42; // the answer to everything
 
     public static boolean isSupported(Context context) {
-        if (!Utilities.isAtLeastO()) {
+        if (!Utilities.ATLEAST_OREO) {
             return false;
         }
         // Only supported when developer settings is enabled
@@ -82,7 +82,7 @@ public class IconShapeOverride {
     }
 
     public static void apply(Context context) {
-        if (!Utilities.isAtLeastO()) {
+        if (!Utilities.ATLEAST_OREO) {
             return;
         }
         String path = getAppliedValue(context);
@@ -101,7 +101,7 @@ public class IconShapeOverride {
         } catch (Exception e) {
             Log.e(TAG, "Unable to override icon shape", e);
             // revert value.
-            prefs(context).edit().remove(KEY_PREFERENCE).apply();
+            getDevicePrefs(context).edit().remove(KEY_PREFERENCE).apply();
         }
     }
 
@@ -116,11 +116,7 @@ public class IconShapeOverride {
     }
 
     private static String getAppliedValue(Context context) {
-        return prefs(context).getString(KEY_PREFERENCE, "");
-    }
-
-    private static SharedPreferences prefs(Context context) {
-        return context.getSharedPreferences(LauncherFiles.DEVICE_PREFERENCES_KEY, 0);
+        return getDevicePrefs(context).getString(KEY_PREFERENCE, "");
     }
 
     public static void handlePreferenceUi(ListPreference preference) {
@@ -169,7 +165,7 @@ public class IconShapeOverride {
                         mContext.getString(R.string.icon_shape_override_progress),
                         true /* indeterminate */,
                         false /* cancelable */);
-                new LooperExecuter(LauncherModel.getWorkerLooper()).execute(
+                new LooperExecutor(LauncherModel.getWorkerLooper()).execute(
                         new OverrideApplyHandler(mContext, newValue));
             }
             return false;
@@ -189,7 +185,7 @@ public class IconShapeOverride {
         @Override
         public void run() {
             // Synchronously write the preference.
-            prefs(mContext).edit().putString(KEY_PREFERENCE, mValue).commit();
+            getDevicePrefs(mContext).edit().putString(KEY_PREFERENCE, mValue).commit();
             // Clear the icon cache.
             LauncherAppState.getInstance(mContext).getIconCache().clear();
 

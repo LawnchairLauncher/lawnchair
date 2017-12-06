@@ -25,16 +25,9 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
-
-import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel;
-import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
-import com.android.launcher3.util.LooperExecuter;
 import com.android.launcher3.util.PackageUserKey;
-
 import java.util.List;
 
 public abstract class LauncherAppsCompat {
@@ -55,12 +48,12 @@ public abstract class LauncherAppsCompat {
     }
 
     private static LauncherAppsCompat sInstance;
-    private static Object sInstanceLock = new Object();
+    private static final Object sInstanceLock = new Object();
 
     public static LauncherAppsCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                if (Utilities.isAtLeastO()) {
+                if (Utilities.ATLEAST_OREO) {
                     sInstance = new LauncherAppsCompatVO(context.getApplicationContext());
                 } else {
                     sInstance = new LauncherAppsCompatVL(context.getApplicationContext());
@@ -87,62 +80,6 @@ public abstract class LauncherAppsCompat {
             UserHandle user);
     public abstract List<ShortcutConfigActivityInfo> getCustomShortcutActivityList(
             @Nullable PackageUserKey packageUser);
-
-    /**
-     * request.accept() will initiate the following flow:
-     *      -> go-to-system-process for actual processing (a)
-     *      -> callback-to-launcher on UI thread (b)
-     *      -> post callback on the worker thread (c)
-     *      -> Update model and unpin (in system) any shortcut not in out model. (d)
-     *
-     * Note that (b) will take at-least one frame as it involves posting callback from binder
-     * thread to UI thread.
-     * If (d) happens before we add this shortcut to our model, we will end up unpinning
-     * the shortcut in the system.
-     * Here its the caller's responsibility to add the newly created ShortcutInfo immediately
-     * to the model (which may involves a single post-to-worker-thread). That will guarantee
-     * that (d) happens after model is updated.
-     */
-    @Nullable
-    public static ShortcutInfo createShortcutInfoFromPinItemRequest(
-            Context context, final PinItemRequestCompat request, final long acceptDelay) {
-        if (request != null &&
-                request.getRequestType() == PinItemRequestCompat.REQUEST_TYPE_SHORTCUT &&
-                request.isValid()) {
-
-            if (acceptDelay <= 0) {
-                if (!request.accept()) {
-                    return null;
-                }
-            } else {
-                // Block the worker thread until the accept() is called.
-                new LooperExecuter(LauncherModel.getWorkerLooper()).execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(acceptDelay);
-                        } catch (InterruptedException e) {
-                            // Ignore
-                        }
-                        if (request.isValid()) {
-                            request.accept();
-                        }
-                    }
-                });
-            }
-
-            ShortcutInfoCompat compat = new ShortcutInfoCompat(request.getShortcutInfo());
-            ShortcutInfo info = new ShortcutInfo(compat, context);
-            // Apply the unbadged icon and fetch the actual icon asynchronously.
-            info.iconBitmap = LauncherIcons
-                    .createShortcutIcon(compat, context, false /* badged */);
-            LauncherAppState.getInstance(context).getModel()
-                    .updateAndBindShortcutInfo(info, compat);
-            return info;
-        } else {
-            return null;
-        }
-    }
 
     public void showAppDetailsForProfile(ComponentName component, UserHandle user) {
         showAppDetailsForProfile(component, user, null, null);

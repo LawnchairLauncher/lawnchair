@@ -18,7 +18,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
-import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
@@ -38,36 +38,26 @@ public class WidgetsModel {
     private static final boolean DEBUG = false;
 
     /* Map of widgets and shortcuts that are tracked per package. */
-    private final MultiHashMap<PackageItemInfo, WidgetItem> mWidgetsList;
+    private final MultiHashMap<PackageItemInfo, WidgetItem> mWidgetsList = new MultiHashMap<>();
 
-    private final IconCache mIconCache;
-    private final AppFilter mAppFilter;
+    private AppFilter mAppFilter;
 
-    public WidgetsModel(IconCache iconCache, AppFilter appFilter) {
-        mIconCache = iconCache;
-        mAppFilter = appFilter;
-        mWidgetsList = new MultiHashMap<>();
-    }
-
-    public MultiHashMap<PackageItemInfo, WidgetItem> getWidgetsMap() {
-        return mWidgetsList;
-    }
-
-    public boolean isEmpty() {
-        return mWidgetsList.isEmpty();
+    public synchronized MultiHashMap<PackageItemInfo, WidgetItem> getWidgetsMap() {
+        return mWidgetsList.clone();
     }
 
     /**
      * @param packageUser If null, all widgets and shortcuts are updated and returned, otherwise
      *                    only widgets and shortcuts associated with the package/user are.
      */
-    public ArrayList<WidgetItem> update(Context context, @Nullable PackageUserKey packageUser) {
+    public void update(LauncherAppState app, @Nullable PackageUserKey packageUser) {
         Preconditions.assertWorkerThread();
 
+        Context context = app.getContext();
         final ArrayList<WidgetItem> widgetsAndShortcuts = new ArrayList<>();
         try {
             PackageManager pm = context.getPackageManager();
-            InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
+            InvariantDeviceProfile idp = app.getInvariantDeviceProfile();
 
             // Widgets
             AppWidgetManagerCompat widgetManager = AppWidgetManagerCompat.getInstance(context);
@@ -81,9 +71,9 @@ public class WidgetsModel {
                     .getCustomShortcutActivityList(packageUser)) {
                 widgetsAndShortcuts.add(new WidgetItem(info));
             }
-            setWidgetsAndShortcuts(widgetsAndShortcuts, context, packageUser);
+            setWidgetsAndShortcuts(widgetsAndShortcuts, app, packageUser);
         } catch (Exception e) {
-            if (!ProviderConfig.IS_DOGFOOD_BUILD && Utilities.isBinderSizeError(e)) {
+            if (!FeatureFlags.IS_DOGFOOD_BUILD && Utilities.isBinderSizeError(e)) {
                 // the returned value may be incomplete and will not be refreshed until the next
                 // time Launcher starts.
                 // TODO: after figuring out a repro step, introduce a dirty bit to check when
@@ -92,11 +82,12 @@ public class WidgetsModel {
                 throw e;
             }
         }
-        return widgetsAndShortcuts;
+
+        app.getWidgetCache().removeObsoletePreviews(widgetsAndShortcuts, packageUser);
     }
 
-    private void setWidgetsAndShortcuts(ArrayList<WidgetItem> rawWidgetsShortcuts,
-            Context context, @Nullable PackageUserKey packageUser) {
+    private synchronized void setWidgetsAndShortcuts(ArrayList<WidgetItem> rawWidgetsShortcuts,
+            LauncherAppState app, @Nullable PackageUserKey packageUser) {
         if (DEBUG) {
             Log.d(TAG, "addWidgetsAndShortcuts, widgetsShortcuts#=" + rawWidgetsShortcuts.size());
         }
@@ -133,7 +124,7 @@ public class WidgetsModel {
             }
         }
 
-        InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
+        InvariantDeviceProfile idp = app.getInvariantDeviceProfile();
         UserHandle myUser = Process.myUserHandle();
 
         // add and update.
@@ -152,6 +143,9 @@ public class WidgetsModel {
                 }
             }
 
+            if (mAppFilter == null) {
+                mAppFilter = AppFilter.newInstance(app.getContext());
+            }
             if (!mAppFilter.shouldShowApp(item.componentName)) {
                 if (DEBUG) {
                     Log.d(TAG, String.format("%s is filtered and not added to the widget tray.",
@@ -174,8 +168,9 @@ public class WidgetsModel {
         }
 
         // Update each package entry
+        IconCache iconCache = app.getIconCache();
         for (PackageItemInfo p : tmpPackageItemInfos.values()) {
-            mIconCache.getTitleAndIconForApp(p, true /* userLowResIcon */);
+            iconCache.getTitleAndIconForApp(p, true /* userLowResIcon */);
         }
     }
 }

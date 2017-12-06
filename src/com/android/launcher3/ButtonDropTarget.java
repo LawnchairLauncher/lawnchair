@@ -29,6 +29,7 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -69,6 +70,7 @@ public abstract class ButtonDropTarget extends TextView
     /** The paint applied to the drag view on hover */
     protected int mHoverColor = 0;
 
+    protected CharSequence mText;
     protected ColorStateList mOriginalTextColor;
     protected Drawable mDrawable;
 
@@ -96,14 +98,15 @@ public abstract class ButtonDropTarget extends TextView
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mText = getText();
         mOriginalTextColor = getTextColors();
     }
 
     protected void setDrawable(int resId) {
         // We do not set the drawable in the xml as that inflates two drawables corresponding to
         // drawableLeft and drawableStart.
-        mDrawable = getResources().getDrawable(resId);
-        setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null);
+        setCompoundDrawablesRelativeWithIntrinsicBounds(resId, 0, 0, 0);
+        mDrawable = getCompoundDrawablesRelative()[0];
     }
 
     public void setDropTargetBar(DropTargetBar dropTargetBar) {
@@ -296,5 +299,31 @@ public abstract class ButtonDropTarget extends TextView
 
     public int getTextColor() {
         return getTextColors().getDefaultColor();
+    }
+
+    /**
+     * Returns True if any update was made.
+     */
+    public boolean updateText(boolean hide) {
+        if ((hide && getText().toString().isEmpty()) || (!hide && mText.equals(getText()))) {
+            return false;
+        }
+
+        setText(hide ? "" : mText);
+        return true;
+    }
+
+    public boolean isTextTruncated() {
+        int availableWidth = getMeasuredWidth();
+        if (mHideParentOnDisable) {
+            ViewGroup parent = (ViewGroup) getParent();
+            availableWidth = parent.getMeasuredWidth() - parent.getPaddingLeft()
+                    - parent.getPaddingRight();
+        }
+        availableWidth -= (getPaddingLeft() + getPaddingRight() + mDrawable.getIntrinsicWidth()
+                + getCompoundDrawablePadding());
+        CharSequence displayedText = TextUtils.ellipsize(mText, getPaint(), availableWidth,
+                TextUtils.TruncateAt.END);
+        return !mText.equals(displayedText);
     }
 }

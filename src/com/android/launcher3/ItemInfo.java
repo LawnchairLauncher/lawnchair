@@ -39,8 +39,10 @@ public class ItemInfo {
     /**
      * One of {@link LauncherSettings.Favorites#ITEM_TYPE_APPLICATION},
      * {@link LauncherSettings.Favorites#ITEM_TYPE_SHORTCUT},
-     * {@link LauncherSettings.Favorites#ITEM_TYPE_FOLDER}, or
-     * {@link LauncherSettings.Favorites#ITEM_TYPE_APPWIDGET}.
+     * {@link LauncherSettings.Favorites#ITEM_TYPE_DEEP_SHORTCUT}
+     * {@link LauncherSettings.Favorites#ITEM_TYPE_FOLDER},
+     * {@link LauncherSettings.Favorites#ITEM_TYPE_APPWIDGET} or
+     * {@link LauncherSettings.Favorites#ITEM_TYPE_CUSTOM_APPWIDGET}.
      */
     public int itemType;
 
@@ -53,7 +55,9 @@ public class ItemInfo {
     public long container = NO_ID;
 
     /**
-     * Indicates the screen in which the shortcut appears.
+     * Indicates the screen in which the shortcut appears if the container types is
+     * {@link LauncherSettings.Favorites#CONTAINER_DESKTOP}. (i.e., ignore if the container type is
+     * {@link LauncherSettings.Favorites#CONTAINER_HOTSEAT})
      */
     public long screenId = -1;
 
@@ -133,7 +137,12 @@ public class ItemInfo {
     }
 
     public ComponentName getTargetComponent() {
-        return getIntent() == null ? null : getIntent().getComponent();
+        Intent intent = getIntent();
+        if (intent != null) {
+            return intent.getComponent();
+        } else {
+            return null;
+        }
     }
 
     public void writeToValues(ContentWriter writer) {
@@ -178,15 +187,12 @@ public class ItemInfo {
 
     protected String dumpProperties() {
         return "id=" + id
-                + " type=" + itemType
-                + " container=" + container
+                + " type=" + LauncherSettings.Favorites.itemTypeToString(itemType)
+                + " container=" + LauncherSettings.Favorites.containerToString((int)container)
                 + " screen=" + screenId
-                + " cellX=" + cellX
-                + " cellY=" + cellY
-                + " spanX=" + spanX
-                + " spanY=" + spanY
-                + " minSpanX=" + minSpanX
-                + " minSpanY=" + minSpanY
+                + " cell(" + cellX + "," + cellY + ")"
+                + " span(" + spanX + "," + spanY + ")"
+                + " minSpan(" + minSpanX + "," + minSpanY + ")"
                 + " rank=" + rank
                 + " user=" + user
                 + " title=" + title;

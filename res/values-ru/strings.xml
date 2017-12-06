@@ -28,16 +28,16 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"Виджеты отключены в безопасном режиме"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Ярлык недоступен"</string>
     <string name="home_screen" msgid="806512411299847073">"Главный экран"</string>
-    <string name="custom_actions" msgid="3747508247759093328">"Пользовательские действия"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"Специальные действия"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Чтобы выбрать виджет, нажмите на значок и удерживайте его."</string>
-    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Чтобы выбрать виджет, нажмите на него дважды и не отпускайте или выполните предложенные действия."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Чтобы выбрать виджет или использовать специальные действия, нажмите на него дважды и не отпускайте."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d x %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Ширина %1$d, высота %2$d"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Нажмите и удерживайте, чтобы добавить вручную"</string>
     <string name="place_automatically" msgid="8064208734425456485">"Добавить автоматически"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Поиск приложений"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"Загрузка…"</string>
-    <string name="all_apps_no_search_results" msgid="6332185285860416787">"По запросу \"<xliff:g id="QUERY">%1$s</xliff:g>\" ничего не найдено"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Поиск приложений"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"Загрузка приложений…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"По запросу \"<xliff:g id="QUERY">%1$s</xliff:g>\" ничего не найдено"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Искать другие приложения"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Уведомления"</string>
     <string name="out_of_space" msgid="4691004494942118364">"На этом экране все занято"</string>
@@ -70,22 +70,27 @@
     <string name="folder_name_format" msgid="6629239338071103179">"Папка: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Виджеты"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Обои"</string>
-    <string name="settings_button_text" msgid="8119458837558863227">"Настройки"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Настройки главного экрана"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Функция отключена администратором"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"Обзор"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Разрешить поворачивать главный экран"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Когда телефон повернут"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"В настройках отключен поворот экрана"</string>
-    <string name="icon_badging_title" msgid="4418239350706629417">"Уведомления на значке приложения"</string>
-    <string name="icon_badging_desc_on" msgid="6022379097717134764">"Включено для всех приложений"</string>
-    <string name="icon_badging_desc_off" msgid="1574640601251590211">"Отключено для всех приложений"</string>
+    <string name="icon_badging_title" msgid="874121399231955394">"Значки уведомлений"</string>
+    <string name="icon_badging_desc_on" msgid="2627952638544674079">"ВКЛ"</string>
+    <string name="icon_badging_desc_off" msgid="5503319969924580241">"ВЫКЛ"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"Нет доступа к уведомлениям"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Чтобы показывать значки уведомлений, включите уведомления в приложении \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"Изменить настройки"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Добавлять значки"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Добавлять значки установленных приложений на главный экран."</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"Изменить форму значков"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Использовать системные настройки по умолчанию"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_square" msgid="633575066111622774">"Квадрат"</string>
+    <string name="icon_shape_squircle" msgid="5658049910802669495">"Квадрат с закругленными краями"</string>
+    <string name="icon_shape_circle" msgid="6550072265930144217">"Круг"</string>
+    <string name="icon_shape_teardrop" msgid="4525869388200835463">"Капля"</string>
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Применение изменений…"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Неизвестно"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Удалить"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Найти"</string>

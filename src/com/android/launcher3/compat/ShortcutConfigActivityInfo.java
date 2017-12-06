@@ -37,8 +37,6 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 
-import java.lang.reflect.Method;
-
 /**
  * Wrapper class for representing a shortcut configure activity.
  */
@@ -127,7 +125,7 @@ public abstract class ShortcutConfigActivityInfo {
     }
 
     @TargetApi(26)
-    static class ShortcutConfigActivityInfoVO extends ShortcutConfigActivityInfo {
+    public static class ShortcutConfigActivityInfoVO extends ShortcutConfigActivityInfo {
 
         private final LauncherActivityInfo mInfo;
 
@@ -151,15 +149,13 @@ public abstract class ShortcutConfigActivityInfo {
             if (getUser().equals(Process.myUserHandle())) {
                 return super.startConfigActivity(activity, requestCode);
             }
+            IntentSender is = activity.getSystemService(LauncherApps.class)
+                    .getShortcutConfigActivityIntent(mInfo);
             try {
-                Method m = LauncherApps.class.getDeclaredMethod(
-                        "getShortcutConfigActivityIntent", LauncherActivityInfo.class);
-                IntentSender is = (IntentSender) m.invoke(
-                        activity.getSystemService(LauncherApps.class), mInfo);
                 activity.startIntentSenderForResult(is, requestCode, null, 0, 0, 0);
                 return true;
-            } catch (Exception e) {
-                Log.e(TAG, "Error calling new API", e);
+            } catch (IntentSender.SendIntentException e) {
+                Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
                 return false;
             }
         }

@@ -35,9 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Ені: %1$d, биіктігі: %2$d"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Қолмен қою үшін басып тұрыңыз"</string>
     <string name="place_automatically" msgid="8064208734425456485">"Автоматты енгізу"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Қолданбаларды іздеу"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"Қолданбалар жүктелуде…"</string>
-    <string name="all_apps_no_search_results" msgid="6332185285860416787">"«<xliff:g id="QUERY">%1$s</xliff:g>» сұрауына сәйкес келетін қолданбалар жоқ"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Қолданбаларды іздеу"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"Қолданбалар жүктелуде…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" сұрауына сәйкес келетін қолданбалар жоқ"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Қосымша қолданбалар іздеу"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Хабарландырулар"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Бұл Негізгі экранда орын қалмады."</string>
@@ -70,22 +70,27 @@
     <string name="folder_name_format" msgid="6629239338071103179">"Қалта: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Виджеттер"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Тұсқағаздар"</string>
-    <string name="settings_button_text" msgid="8119458837558863227">"Параметрлер"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Негізгі экран параметрлері"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Әкімші өшірді"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"Шолу"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Негізгі экранның бұрылуына рұқсат ету"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Телефон бұрылғанда"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Экранның ағымдағы параметрі айналуға рұқсат бермейді"</string>
-    <string name="icon_badging_title" msgid="4418239350706629417">"Белгілеу"</string>
-    <string name="icon_badging_desc_on" msgid="6022379097717134764">"Барлық қолданбалар үшін қосулы"</string>
-    <string name="icon_badging_desc_off" msgid="1574640601251590211">"Барлық қолданбалар үшін өшірулі"</string>
+    <string name="icon_badging_title" msgid="874121399231955394">"Хабарландыру белгілері"</string>
+    <string name="icon_badging_desc_on" msgid="2627952638544674079">"Қосулы"</string>
+    <string name="icon_badging_desc_off" msgid="5503319969924580241">"Өшірулі"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"Хабарландыруға кіру рұқсаты қажет"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Хабарландыру белгілерін көрсету үшін <xliff:g id="NAME">%1$s</xliff:g> қолданбасының қолданба хабарландыруларын қосыңыз"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"Параметрлерді өзгерту"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Негізгі экранға белгіше енгізу"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Жаңа қолданбаларға арналған"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"Белгіше пішінін өзгерту"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Жүйенің әдепкі параметрін пайдалану"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_square" msgid="633575066111622774">"Шаршы"</string>
+    <string name="icon_shape_squircle" msgid="5658049910802669495">"Жұмыр төртбұрыш"</string>
+    <string name="icon_shape_circle" msgid="6550072265930144217">"Шеңбер"</string>
+    <string name="icon_shape_teardrop" msgid="4525869388200835463">"Тамшы"</string>
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Белгіше пішіні өзгерістері күшіне енуде"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Белгісіз"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Алып тастау"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Іздеу"</string>

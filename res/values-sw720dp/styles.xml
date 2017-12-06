@@ -26,13 +26,13 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionModeOverlay">true</item>
         <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
+        <item name="android:keyboardLayout">@layout/search_container_all_apps</item>
     </style>
 
     <!-- Workspace -->
     <style name="DropTargetButton" parent="DropTargetButtonBase">
         <item name="android:paddingLeft">60dp</item>
         <item name="android:paddingRight">60dp</item>
-        <item name="android:shadowColor">#393939</item>
         <item name="android:shadowDx">0.0</item>
         <item name="android:shadowDy">0.0</item>
         <item name="android:shadowRadius">2.0</item>

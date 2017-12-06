@@ -1,7 +1,7 @@
 <resources>
 <!-- Dynamic Grid -->
     <!-- Out of 100, the percent of space the overview bar should try and take vertically. -->
-    <integer name="config_dynamic_grid_overview_icon_zone_percentage">20</integer>
+    <integer name="config_dynamic_grid_overview_icon_zone_percentage">22</integer>
 
 <!-- Miscellaneous -->
     <bool name="config_largeHeap">false</bool>
@@ -9,9 +9,18 @@
     <bool name="is_large_tablet">false</bool>
     <bool name="allow_rotation">false</bool>
 
+    <integer name="extracted_color_gradient_alpha">153</integer>
+
     <!-- A string pointer to the original app name string. This allows derived projects to
      easily override the app name without providing all translations -->
     <string name="derived_app_name" translatable="false">@string/app_name</string>
+
+    <!-- String representing the intent for search on the apps market. To specify a query, add
+    q=<query> to the data to the intent -->
+    <string name="market_search_intent" translatable="false">market://search?c=apps</string>
+
+    <!-- String representing the intent to delete a package.-->
+    <string name="delete_package_intent" translatable="false">#Intent;action=android.intent.action.DELETE;launchFlags=0x10800000;end</string>
 
     <!-- Values for icon shape overrides. These should correspond to entries defined
      in icon_shape_override_paths_names -->
@@ -26,11 +35,12 @@
     <string-array translatable="false" name="icon_shape_override_paths_names">
         <!-- Option to not change the icon shape on home screen. [CHAR LIMIT=50] -->
         <item>@string/icon_shape_system_default</item>
-        <item>Square</item>
-        <item>Squircle</item>
-        <item>Circle</item>
-        <item>Teardrop</item>
+        <item>@string/icon_shape_square</item>
+        <item>@string/icon_shape_squircle</item>
+        <item>@string/icon_shape_circle</item>
+        <item>@string/icon_shape_teardrop</item>
     </string-array>
+
 <!-- DragController -->
     <item type="id" name="drag_event_parity" />
 
@@ -59,6 +69,9 @@
     <!-- The duration of the animation from search hint to text entry -->
     <integer name="config_searchHintAnimationDuration">50</integer>
 
+    <!-- View tag key used to store SpringAnimation data. -->
+    <item type="id" name="spring_animation_tag" />
+
 <!-- Workspace -->
     <!-- The duration (in ms) of the fade animation on the object outlines, used when
          we are dragging objects around on the home screen. -->
@@ -76,6 +89,7 @@
     <integer name="config_folderExpandDuration">120</integer>
     <integer name="config_materialFolderExpandDuration">200</integer>
     <integer name="config_materialFolderExpandStagger">60</integer>
+    <integer name="config_folderDelay">30</integer>
 
     <!-- The distance at which the animation should take the max duration -->
     <integer name="config_dropAnimMaxDist">800</integer>
@@ -99,14 +113,17 @@
     <!-- Name of a user event dispatcher class. -->
     <string name="user_event_dispatcher_class" translatable="false"></string>
 
+    <!-- Name of a color extraction implementation class. -->
+    <string name="color_extraction_impl_class" translatable="false"></string>
+
+    <!-- Name of a subclass of com.android.launcher3.util.InstantAppResolver. Can be empty. -->
+    <string name="instant_app_resolver_class" translatable="false"></string>
+
     <!-- Package name of the default wallpaper picker. -->
     <string name="wallpaper_picker_package" translatable="false"></string>
 
     <!-- View ID to use for QSB widget -->
     <item type="id" name="qsb_widget" />
-
-    <!-- View ID to use for blocked area on the first screen -->
-    <item type="id" name="workspace_blocked_row" />
 
     <!-- View ID used by cell layout to jail its content -->
     <item type="id" name="cell_layout_jail_id" />
@@ -115,11 +132,8 @@
     <item type="id" name="preview_image_id" />
 
 <!-- Popup items -->
-    <integer name="config_deepShortcutOpenDuration">220</integer>
-    <integer name="config_deepShortcutArrowOpenDuration">80</integer>
-    <integer name="config_deepShortcutOpenStagger">40</integer>
-    <integer name="config_deepShortcutCloseDuration">150</integer>
-    <integer name="config_deepShortcutCloseStagger">20</integer>
+    <integer name="config_popupOpenCloseDuration">150</integer>
+    <integer name="config_popupArrowOpenDuration">80</integer>
     <integer name="config_removeNotificationViewDuration">300</integer>
 
 <!-- Accessibility actions -->
@@ -134,4 +148,10 @@
     <item type="id" name="action_resize" />
     <item type="id" name="action_deep_shortcuts" />
     <item type="id" name="action_dismiss_notification" />
+
+<!-- QSB IDs. DO not change -->
+    <item type="id" name="search_container_workspace" />
+    <item type="id" name="search_container_hotseat" />
+    <item type="id" name="search_container_all_apps" />
+
 </resources>

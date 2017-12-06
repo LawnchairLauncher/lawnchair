@@ -23,13 +23,12 @@ import android.graphics.Rect;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
 import android.view.View;
-import android.widget.TextView;
 
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetHostView;
 import com.android.launcher3.R;
-import com.android.launcher3.Workspace;
-import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
 
 /**
@@ -57,8 +56,8 @@ public class DragPreviewProvider {
         blurSizeOutline =
                 context.getResources().getDimensionPixelSize(R.dimen.blur_size_medium_outline);
 
-        if (mView instanceof TextView) {
-            Drawable d = Workspace.getTextViewIcon((TextView) mView);
+        if (mView instanceof BubbleTextView) {
+            Drawable d = ((BubbleTextView) mView).getIcon();
             Rect bounds = getDrawableBounds(d);
             previewPadding = blurSizeOutline - bounds.left - bounds.top;
         } else {
@@ -71,8 +70,8 @@ public class DragPreviewProvider {
      */
     private void drawDragView(Canvas destCanvas) {
         destCanvas.save();
-        if (mView instanceof TextView) {
-            Drawable d = Workspace.getTextViewIcon((TextView) mView);
+        if (mView instanceof BubbleTextView) {
+            Drawable d = ((BubbleTextView) mView).getIcon();
             Rect bounds = getDrawableBounds(d);
             destCanvas.translate(blurSizeOutline / 2 - bounds.left,
                     blurSizeOutline / 2 - bounds.top);
@@ -112,8 +111,8 @@ public class DragPreviewProvider {
         int width = mView.getWidth();
         int height = mView.getHeight();
 
-        if (mView instanceof TextView) {
-            Drawable d = Workspace.getTextViewIcon((TextView) mView);
+        if (mView instanceof BubbleTextView) {
+            Drawable d = ((BubbleTextView) mView).getIcon();
             Rect bounds = getDrawableBounds(d);
             width = bounds.width();
             height = bounds.height();
@@ -138,7 +137,7 @@ public class DragPreviewProvider {
     }
 
     public final void generateDragOutline(Canvas canvas) {
-        if (ProviderConfig.IS_DOGFOOD_BUILD && generatedDragOutline != null) {
+        if (FeatureFlags.IS_DOGFOOD_BUILD && generatedDragOutline != null) {
             throw new RuntimeException("Drag outline generated twice");
         }
 

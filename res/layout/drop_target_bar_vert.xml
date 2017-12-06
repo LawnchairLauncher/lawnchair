@@ -15,11 +15,13 @@
      limitations under the License.
 -->
 <com.android.launcher3.DropTargetBar
+    android:theme="@style/HomeScreenElementTheme"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/dynamic_grid_drop_target_size"
     android:orientation="vertical"
     android:layout_height="match_parent"
     android:layout_gravity="left"
+    android:visibility="invisible"
     android:focusable="false"
     android:paddingTop="@dimen/vert_drop_target_vertical_gap" >
 
@@ -30,8 +32,7 @@
         android:gravity="center"
         android:paddingLeft="@dimen/vert_drop_target_horizontal_gap"
         android:paddingRight="@dimen/vert_drop_target_horizontal_gap"
-        android:id="@+id/delete_target_text"
-        android:textColor="@android:color/white" />
+        android:id="@+id/delete_target_text" />
 
     <!-- Uninstall target -->
     <com.android.launcher3.UninstallDropTarget
@@ -41,7 +42,6 @@
         android:paddingLeft="@dimen/vert_drop_target_horizontal_gap"
         android:paddingRight="@dimen/vert_drop_target_horizontal_gap"
         android:id="@+id/uninstall_target_text"
-        android:textColor="@android:color/white"
         android:layout_marginTop="@dimen/vert_drop_target_vertical_gap"/>
 
     <Space
@@ -57,7 +57,6 @@
         android:paddingLeft="@dimen/vert_drop_target_horizontal_gap"
         android:paddingRight="@dimen/vert_drop_target_horizontal_gap"
         android:id="@+id/info_target_text"
-        android:textColor="@android:color/white"
         android:layout_marginBottom="64dp"/>
 
 </com.android.launcher3.DropTargetBar>
