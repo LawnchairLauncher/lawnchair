@@ -25,7 +25,6 @@ import android.graphics.Color;
 import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.util.AttributeSet;
@@ -154,17 +153,15 @@ public class TaskThumbnailView extends FrameLayout {
                 final Configuration configuration =
                         getContext().getApplicationContext().getResources().getConfiguration();
                 final DeviceProfile profile = Launcher.getLauncher(getContext()).getDeviceProfile();
-                if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    if (mThumbnailData.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                        // If we are in the same orientation as the screenshot, just scale it to the
-                        // width of the task view
-                        mThumbnailScale = (float) getMeasuredWidth() / mThumbnailRect.width();
-                    } else {
-                        // Scale the landscape thumbnail up to app size, then scale that to the task
-                        // view size to match other portrait screenshots
-                        mThumbnailScale = invThumbnailScale *
-                                ((float) getMeasuredWidth() / profile.getCurrentWidth());
-                    }
+                if (configuration.orientation == mThumbnailData.orientation) {
+                    // If we are in the same orientation as the screenshot, just scale it to the
+                    // width of the task view
+                    mThumbnailScale = (float) getMeasuredWidth() / mThumbnailRect.width();
+                } else if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    // Scale the landscape thumbnail up to app size, then scale that to the task
+                    // view size to match other portrait screenshots
+                    mThumbnailScale = invThumbnailScale *
+                            ((float) getMeasuredWidth() / profile.getCurrentWidth());
                 } else {
                     // Otherwise, scale the screenshot to fit 1:1 in the current orientation
                     mThumbnailScale = invThumbnailScale;
