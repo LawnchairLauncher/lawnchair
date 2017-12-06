@@ -165,12 +165,18 @@ public class SettingsActivity extends AppCompatActivity implements
     /**
      * This fragment shows the launcher preferences.
      */
-    public static class LauncherSettingsFragment extends BaseFragment {
+    public static class LauncherSettingsFragment extends BaseFragment implements Preference.OnPreferenceChangeListener {
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
+
+            Preference prefSnowfallEnabled = findPreference(FeatureFlags.KEY_PREF_SNOWFALL);
+            prefSnowfallEnabled.setOnPreferenceChangeListener(this);
+            if (Utilities.getPrefs(getActivity()).getEnableSnowfall()) {
+                prefSnowfallEnabled.setSummary(R.string.snowfall_enabled);
+            }
         }
 
         @Override
@@ -189,6 +195,19 @@ public class SettingsActivity extends AppCompatActivity implements
         public void onResume() {
             super.onResume();
             getActivity().setTitle(R.string.settings_button_text);
+        }
+
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
+            if (preference.getKey() != null) {
+                switch (preference.getKey()) {
+                    case FeatureFlags.KEY_PREF_SNOWFALL:
+                        findPreference(FeatureFlags.KEY_PREF_SNOWFALL).setSummary((boolean) newValue ? R.string.snowfall_enabled : R.string.snowfall_summary);
+                        break;
+                }
+                return true;
+            }
+            return false;
         }
     }
 

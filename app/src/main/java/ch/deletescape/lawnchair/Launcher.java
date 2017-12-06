@@ -265,6 +265,7 @@ public class Launcher extends Activity
 
     private boolean mPaused = true;
     private boolean mOnResumeNeedsLoad;
+    private boolean mSnowfallEnabled;
     private boolean mPlanesEnabled;
     private ObjectAnimator mPlanesAnimator;
 
@@ -400,6 +401,7 @@ public class Launcher extends Activity
 
         setContentView(R.layout.launcher);
 
+        mSnowfallEnabled = Utilities.getPrefs(this).getEnableSnowfall();
         mPlanesEnabled = Utilities.getPrefs(this).getEnablePlanes();
         setupViews();
         mDeviceProfile.layout(this, false /* notifyListeners */);
@@ -1125,6 +1127,11 @@ public class Launcher extends Activity
         mWorkspace = mDragLayer.findViewById(R.id.workspace);
         mQsbContainer = mDragLayer.findViewById(R.id.qsb_container);
         mWorkspace.initParentViews(mDragLayer);
+
+        if (mSnowfallEnabled) {
+            Log.d(TAG, "inflating snowfall");
+            getLayoutInflater().inflate(mPlanesEnabled ? R.layout.snowfall_planes : R.layout.snowfall, (ViewGroup) findViewById(R.id.launcher_background), true);
+        }
 
         if (mPlanesEnabled) {
             Log.d(TAG, "inflating planes");
