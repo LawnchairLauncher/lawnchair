@@ -40,7 +40,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         // Get the hover color
         mHoverColor = getResources().getColor(R.color.delete_target_hover_tint);
 
-        setDrawable(R.drawable.ic_remove_launcher);
+        setDrawable(R.drawable.ic_remove_shadow);
     }
 
     @Override
@@ -65,9 +65,11 @@ public class DeleteDropTarget extends ButtonDropTarget {
      * Set the drop target's text to either "Remove" or "Cancel" depending on the drag source.
      */
     public void setTextBasedOnDragSource(DragSource dragSource) {
-        if (!TextUtils.isEmpty(getText())) {
-            setText(dragSource.supportsDeleteDropTarget() ? R.string.remove_drop_target_label
+        if (!TextUtils.isEmpty(mText)) {
+            mText = getResources().getString(dragSource.supportsDeleteDropTarget()
+                    ? R.string.remove_drop_target_label
                     : android.R.string.cancel);
+            requestLayout();
         }
     }
 

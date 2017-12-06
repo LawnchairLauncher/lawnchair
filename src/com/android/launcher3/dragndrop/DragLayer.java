@@ -27,6 +27,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Region;
+import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -54,10 +55,12 @@ import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.LoggerUtils;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.widget.WidgetsBottomSheet;
@@ -71,9 +74,6 @@ public class DragLayer extends InsettableFrameLayout {
 
     public static final int ANIMATION_END_DISAPPEAR = 0;
     public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
-
-    // Scrim color without any alpha component.
-    private static final int SCRIM_COLOR = Color.BLACK & 0x00FFFFFF;
 
     private final int[] mTmpXY = new int[2];
 
@@ -107,6 +107,7 @@ public class DragLayer extends InsettableFrameLayout {
     // Related to adjacent page hints
     private final Rect mScrollChildPosition = new Rect();
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
+    private final WallpaperColorInfo mWallpaperColorInfo;
 
     // Related to pinch-to-go-to-overview gesture.
     private PinchToOverviewListener mPinchListener = null;
@@ -130,6 +131,7 @@ public class DragLayer extends InsettableFrameLayout {
 
         mIsRtl = Utilities.isRtl(getResources());
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
+        mWallpaperColorInfo = WallpaperColorInfo.getInstance(getContext());
     }
 
     public void setup(Launcher launcher, DragController dragController,
@@ -241,7 +243,7 @@ public class DragLayer extends InsettableFrameLayout {
             return true;
         }
 
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && mAllAppsController.onControllerInterceptTouchEvent(ev)) {
+        if (mAllAppsController.onControllerInterceptTouchEvent(ev)) {
             mActiveController = mAllAppsController;
             return true;
         }
@@ -451,7 +453,8 @@ public class DragLayer extends InsettableFrameLayout {
     @Override
     public void setInsets(Rect insets) {
         super.setInsets(insets);
-        setBackgroundResource(insets.top == 0 ? 0 : R.drawable.workspace_bg);
+        setBackground(insets.top == 0 ? null
+                : Themes.getAttrDrawable(getContext(), R.attr.workspaceStatusBarScrim));
     }
 
     @Override
@@ -541,7 +544,6 @@ public class DragLayer extends InsettableFrameLayout {
 
     public void clearResizeFrame() {
         if (mCurrentResizeFrame != null) {
-            mCurrentResizeFrame.commitResize();
             removeView(mCurrentResizeFrame);
             mCurrentResizeFrame = null;
         }
@@ -876,7 +878,10 @@ public class DragLayer extends InsettableFrameLayout {
                 getDescendantRectRelativeToSelf(currCellLayout, mHighlightRect);
                 canvas.clipRect(mHighlightRect, Region.Op.DIFFERENCE);
             }
-            canvas.drawColor((alpha << 24) | SCRIM_COLOR);
+            // for super light wallpaper it needs to be darken for contrast to workspace
+            // for dark wallpapers the text is white so darkening works as well
+            int color = ColorUtils.compositeColors(0x66000000, mWallpaperColorInfo.getMainColor());
+            canvas.drawColor(ColorUtils.setAlphaComponent(color, alpha));
             canvas.restore();
         }
 

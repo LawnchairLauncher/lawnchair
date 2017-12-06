@@ -11,11 +11,17 @@ import android.os.Bundle;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
 
+import java.net.URISyntaxException;
+
 public class UninstallDropTarget extends ButtonDropTarget {
+
+    private static final String TAG = "UninstallDropTarget";
+    private static Boolean sUninstallDisabled;
 
     public UninstallDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -28,10 +34,13 @@ public class UninstallDropTarget extends ButtonDropTarget {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        setupUi();
+    }
+
+    protected void setupUi() {
         // Get the hover color
         mHoverColor = getResources().getColor(R.color.uninstall_target_hover_tint);
-
-        setDrawable(R.drawable.ic_uninstall_launcher);
+        setDrawable(R.drawable.ic_uninstall_shadow);
     }
 
     @Override
@@ -39,35 +48,36 @@ public class UninstallDropTarget extends ButtonDropTarget {
         return supportsDrop(getContext(), info);
     }
 
-    public static boolean supportsDrop(Context context, Object info) {
-        UserManager userManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
-        Bundle restrictions = userManager.getUserRestrictions();
-        if (restrictions.getBoolean(UserManager.DISALLOW_APPS_CONTROL, false)
-                || restrictions.getBoolean(UserManager.DISALLOW_UNINSTALL_APPS, false)) {
+    public static boolean supportsDrop(Context context, ItemInfo info) {
+        if (sUninstallDisabled == null) {
+            UserManager userManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
+            Bundle restrictions = userManager.getUserRestrictions();
+            sUninstallDisabled = restrictions.getBoolean(UserManager.DISALLOW_APPS_CONTROL, false)
+                    || restrictions.getBoolean(UserManager.DISALLOW_UNINSTALL_APPS, false);
+        }
+        if (sUninstallDisabled) {
             return false;
         }
 
+        if (info instanceof AppInfo) {
+            AppInfo appInfo = (AppInfo) info;
+            if (appInfo.isSystemApp != AppInfo.FLAG_SYSTEM_UNKNOWN) {
+                return (appInfo.isSystemApp & AppInfo.FLAG_SYSTEM_NO) != 0;
+            }
+        }
         return getUninstallTarget(context, info) != null;
     }
 
     /**
      * @return the component name that should be uninstalled or null.
      */
-    private static ComponentName getUninstallTarget(Context context, Object item) {
+    private static ComponentName getUninstallTarget(Context context, ItemInfo item) {
         Intent intent = null;
         UserHandle user = null;
-        if (item instanceof AppInfo) {
-            AppInfo info = (AppInfo) item;
-            intent = info.intent;
-            user = info.user;
-        } else if (item instanceof ShortcutInfo) {
-            ShortcutInfo info = (ShortcutInfo) item;
-            if (info.itemType == LauncherSettings.BaseLauncherColumns.ITEM_TYPE_APPLICATION) {
-                // Do not use restore/target intent here as we cannot uninstall an app which is
-                // being installed/restored.
-                intent = info.intent;
-                user = info.user;
-            }
+        if (item != null &&
+                item.itemType == LauncherSettings.BaseLauncherColumns.ITEM_TYPE_APPLICATION) {
+            intent = item.getIntent();
+            user = item.user;
         }
         if (intent != null) {
             LauncherActivityInfo info = LauncherAppsCompat.getInstance(context)
@@ -104,25 +114,28 @@ public class UninstallDropTarget extends ButtonDropTarget {
             final Launcher launcher, ItemInfo info, DropTargetResultCallback callback) {
         final ComponentName cn = getUninstallTarget(launcher, info);
 
-        final boolean isUninstallable;
+        boolean canUninstall;
         if (cn == null) {
             // System applications cannot be installed. For now, show a toast explaining that.
             // We may give them the option of disabling apps this way.
             Toast.makeText(launcher, R.string.uninstall_system_app_text, Toast.LENGTH_SHORT).show();
-            isUninstallable = false;
+            canUninstall = false;
         } else {
-            Intent intent = new Intent(Intent.ACTION_DELETE,
-                    Uri.fromParts("package", cn.getPackageName(), cn.getClassName()))
-                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                            | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-            intent.putExtra(Intent.EXTRA_USER, info.user);
-            launcher.startActivity(intent);
-            isUninstallable = true;
+            try {
+                Intent i = Intent.parseUri(launcher.getString(R.string.delete_package_intent), 0)
+                        .setData(Uri.fromParts("package", cn.getPackageName(), cn.getClassName()))
+                        .putExtra(Intent.EXTRA_USER, info.user);
+                launcher.startActivity(i);
+                canUninstall = true;
+            } catch (URISyntaxException e) {
+                Log.e(TAG, "Failed to parse intent to start uninstall activity for item=" + info);
+                canUninstall = false;
+            }
         }
         if (callback != null) {
-            sendUninstallResult(launcher, isUninstallable, cn, info.user, callback);
+            sendUninstallResult(launcher, canUninstall, cn, info.user, callback);
         }
-        return isUninstallable;
+        return canUninstall;
     }
 
     /**

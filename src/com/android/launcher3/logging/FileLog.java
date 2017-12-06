@@ -6,9 +6,8 @@ import android.os.Message;
 import android.util.Log;
 import android.util.Pair;
 
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.config.FeatureFlags;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,6 +29,8 @@ import java.util.concurrent.TimeUnit;
  */
 public final class FileLog {
 
+    protected static final boolean ENABLED =
+            FeatureFlags.IS_DOGFOOD_BUILD || Utilities.IS_DEBUG_DEVICE;
     private static final String FILE_NAME_PREFIX = "log-";
     private static final DateFormat DATE_FORMAT =
             DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
@@ -40,7 +41,7 @@ public final class FileLog {
     private static File sLogsDirectory = null;
 
     public static void setDir(File logsDir) {
-        if (ProviderConfig.IS_DOGFOOD_BUILD || Utilities.IS_DEBUG_DEVICE) {
+        if (ENABLED) {
             synchronized (DATE_FORMAT) {
                 // If the target directory changes, stop any active thread.
                 if (sHandler != null && !logsDir.equals(sLogsDirectory)) {
@@ -77,7 +78,7 @@ public final class FileLog {
     }
 
     public static void print(String tag, String msg, Exception e) {
-        if (!ProviderConfig.IS_DOGFOOD_BUILD) {
+        if (!ENABLED) {
             return;
         }
         String out = String.format("%s %s %s", DATE_FORMAT.format(new Date()), tag, msg);
@@ -103,7 +104,7 @@ public final class FileLog {
      * @param out if not null, all the persisted logs are copied to the writer.
      */
     public static void flushAll(PrintWriter out) throws InterruptedException {
-        if (!ProviderConfig.IS_DOGFOOD_BUILD) {
+        if (!ENABLED) {
             return;
         }
         CountDownLatch latch = new CountDownLatch(1);
@@ -136,7 +137,7 @@ public final class FileLog {
 
         @Override
         public boolean handleMessage(Message msg) {
-            if (sLogsDirectory == null || !ProviderConfig.IS_DOGFOOD_BUILD) {
+            if (sLogsDirectory == null || !ENABLED) {
                 return true;
             }
             switch (msg.what) {

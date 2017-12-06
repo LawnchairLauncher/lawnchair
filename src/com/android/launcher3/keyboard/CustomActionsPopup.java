@@ -24,10 +24,10 @@ import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 
-import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
+import com.android.launcher3.popup.PopupContainerWithArrow;
 
 import java.util.ArrayList;
 import java.util.Collections;

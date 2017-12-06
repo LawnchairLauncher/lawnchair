@@ -28,16 +28,17 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center_vertical"
-        android:background="@color/popup_background_color"
+        android:background="?attr/popupColorPrimary"
         android:paddingStart="@dimen/notification_padding_start"
-        android:paddingEnd="@dimen/notification_main_text_padding_end">
+        android:paddingEnd="@dimen/notification_main_text_padding_end"
+        android:paddingBottom="14dp">
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="viewStart"
             android:fontFamily="sans-serif"
-            android:textSize="@dimen/notification_main_text_size"
+            android:textSize="@dimen/notification_main_title_size"
             android:textColor="?android:attr/textColorPrimary"
             android:lines="1"
             android:ellipsize="end" />
@@ -58,6 +59,7 @@
         android:layout_width="@dimen/notification_icon_size"
         android:layout_height="@dimen/notification_icon_size"
         android:layout_marginEnd="@dimen/notification_padding_end"
+        android:layout_marginBottom="7dp"
         android:layout_gravity="center_vertical|end" />
 
 </com.android.launcher3.notification.NotificationMainView>

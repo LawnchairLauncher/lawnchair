@@ -14,8 +14,10 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:launcher="http://schemas.android.com/apk/res-auto"
+      android:theme="@style/HomeScreenElementTheme"
       launcher:layout_ignoreInsets="true"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -30,12 +32,13 @@
         android:layout_weight="1"
         android:drawablePadding="4dp"
         android:drawableTop="@drawable/ic_wallpaper"
+        android:drawableTint="?attr/workspaceTextColor"
         android:fontFamily="sans-serif-condensed"
         android:gravity="center_horizontal"
         android:stateListAnimator="@animator/overview_button_anim"
         android:text="@string/wallpaper_button_text"
         android:textAllCaps="true"
-        android:textColor="@android:color/white"
+        android:textColor="?attr/workspaceTextColor"
         android:textSize="12sp" />
 
     <TextView
@@ -45,12 +48,13 @@
         android:layout_weight="1"
         android:drawablePadding="4dp"
         android:drawableTop="@drawable/ic_widget"
+        android:drawableTint="?attr/workspaceTextColor"
         android:fontFamily="sans-serif-condensed"
         android:gravity="center_horizontal"
         android:stateListAnimator="@animator/overview_button_anim"
         android:text="@string/widget_button_text"
         android:textAllCaps="true"
-        android:textColor="@android:color/white"
+        android:textColor="?attr/workspaceTextColor"
         android:textSize="12sp" />
 
     <TextView
@@ -60,12 +64,13 @@
         android:layout_weight="1"
         android:drawablePadding="4dp"
         android:drawableTop="@drawable/ic_setting"
+        android:drawableTint="?attr/workspaceTextColor"
         android:fontFamily="sans-serif-condensed"
         android:gravity="center_horizontal"
         android:stateListAnimator="@animator/overview_button_anim"
         android:text="@string/settings_button_text"
         android:textAllCaps="true"
-        android:textColor="@android:color/white"
+        android:textColor="?attr/workspaceTextColor"
         android:textSize="12sp" />
 
 </LinearLayout>

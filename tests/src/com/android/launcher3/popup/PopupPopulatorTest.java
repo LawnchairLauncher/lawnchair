@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.android.launcher3.popup.PopupPopulator.MAX_ITEMS;
+import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS;
 import static com.android.launcher3.popup.PopupPopulator.NUM_DYNAMIC;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -44,18 +44,18 @@ public class PopupPopulatorTest {
     public void testSortAndFilterShortcuts() {
         filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(3, 0), 3, 0);
         filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(0, 3), 0, 3);
-        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(5, 0), MAX_ITEMS, 0);
-        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(0, 5), 0, MAX_ITEMS);
+        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(5, 0), MAX_SHORTCUTS, 0);
+        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(0, 5), 0, MAX_SHORTCUTS);
         filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(3, 3),
-                MAX_ITEMS - NUM_DYNAMIC, NUM_DYNAMIC);
+                MAX_SHORTCUTS - NUM_DYNAMIC, NUM_DYNAMIC);
         filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(5, 5),
-                MAX_ITEMS - NUM_DYNAMIC, NUM_DYNAMIC);
-        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(5, 1), MAX_ITEMS - 1, 1);
-        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(1, 5), 1, MAX_ITEMS - 1);
+                MAX_SHORTCUTS - NUM_DYNAMIC, NUM_DYNAMIC);
+        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(5, 1), MAX_SHORTCUTS - 1, 1);
+        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(1, 5), 1, MAX_SHORTCUTS - 1);
         filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(5, 3),
-                MAX_ITEMS - NUM_DYNAMIC, NUM_DYNAMIC);
+                MAX_SHORTCUTS - NUM_DYNAMIC, NUM_DYNAMIC);
         filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(3, 5),
-                MAX_ITEMS - NUM_DYNAMIC, NUM_DYNAMIC);
+                MAX_SHORTCUTS - NUM_DYNAMIC, NUM_DYNAMIC);
     }
 
     @Test

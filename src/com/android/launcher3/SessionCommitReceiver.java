@@ -59,7 +59,7 @@ public class SessionCommitReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (!isEnabled(context) || !Utilities.isAtLeastO()) {
+        if (!isEnabled(context) || !Utilities.ATLEAST_OREO) {
             // User has decided to not add icons on homescreen.
             return;
         }
@@ -67,18 +67,19 @@ public class SessionCommitReceiver extends BroadcastReceiver {
         SessionInfo info = intent.getParcelableExtra(PackageInstaller.EXTRA_SESSION);
         UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
 
-        if (TextUtils.isEmpty(info.getAppPackageName()) ||
-                info.getInstallReason() != PackageManager.INSTALL_REASON_USER) {
-            return;
+        if (Process.myUserHandle().equals(user)) {
+            if (TextUtils.isEmpty(info.getAppPackageName()) ||
+                    info.getInstallReason() != PackageManager.INSTALL_REASON_USER) {
+                return;
+            }
         }
 
-        if (!Process.myUserHandle().equals(user)) {
-            // Managed profile is handled using ManagedProfileHeuristic
-            return;
-        }
+        queueAppIconAddition(context, info.getAppPackageName(), user);
+    }
 
+    public static void queueAppIconAddition(Context context, String packageName, UserHandle user) {
         List<LauncherActivityInfo> activities = LauncherAppsCompat.getInstance(context)
-                .getActivityList(info.getAppPackageName(), user);
+                .getActivityList(packageName, user);
         if (activities == null || activities.isEmpty()) {
             // no activity found
             return;
@@ -91,7 +92,7 @@ public class SessionCommitReceiver extends BroadcastReceiver {
     }
 
     public static void applyDefaultUserPrefs(final Context context) {
-        if (!Utilities.isAtLeastO()) {
+        if (!Utilities.ATLEAST_OREO) {
             return;
         }
         SharedPreferences prefs = Utilities.getPrefs(context);

@@ -23,7 +23,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -40,17 +39,13 @@ import android.widget.RemoteViews;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragLayer.TouchCompleteListener;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.concurrent.Executor;
 
 /**
  * {@inheritDoc}
  */
 public class LauncherAppWidgetHostView extends AppWidgetHostView
         implements TouchCompleteListener, View.OnLongClickListener {
-
-    private static final String TAG = "LauncherWidgetHostView";
 
     // Related to the auto-advancing of widgets
     private static final long ADVANCE_INTERVAL = 20000;
@@ -97,14 +92,8 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         setAccessibilityDelegate(Launcher.getLauncher(context).getAccessibilityDelegate());
         setBackgroundResource(R.drawable.widget_internal_focus_bg);
 
-        if (Utilities.isAtLeastO()) {
-            try {
-                Method asyncMethod = AppWidgetHostView.class
-                        .getMethod("setExecutor", Executor.class);
-                asyncMethod.invoke(this, Utilities.THREAD_POOL_EXECUTOR);
-            } catch (Exception e) {
-                Log.e(TAG, "Unable to set async executor", e);
-            }
+        if (Utilities.ATLEAST_OREO) {
+            setExecutor(Utilities.THREAD_POOL_EXECUTOR);
         }
     }
 
@@ -153,9 +142,8 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         return false;
     }
 
-    public boolean isReinflateRequired() {
+    public boolean isReinflateRequired(int orientation) {
         // Re-inflate is required if the orientation has changed since last inflated.
-        int orientation = mContext.getResources().getConfiguration().orientation;
         if (mPreviousOrientation != orientation) {
            return true;
        }

@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.logging;
 
-import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.SparseArray;
 import android.view.View;
@@ -26,6 +25,7 @@ import com.android.launcher3.InfoDropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.UninstallDropTarget;
+import com.android.launcher3.userevent.nano.LauncherLogExtensions.TargetExtension;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
@@ -67,8 +67,14 @@ public class LoggerUtils {
     }
 
     public static String getActionStr(Action action) {
+        String str = "";
         switch (action.type) {
-            case Action.Type.TOUCH: return getFieldName(action.touch, Action.Touch.class);
+            case Action.Type.TOUCH:
+                str += getFieldName(action.touch, Action.Touch.class);
+                if (action.touch == Action.Touch.SWIPE) {
+                    str += " direction=" + getFieldName(action.dir, Action.Direction.class);
+                }
+                return str;
             case Action.Type.COMMAND: return getFieldName(action.command, Action.Command.class);
             default: return UNKNOWN;
         }
@@ -99,13 +105,13 @@ public class LoggerUtils {
     private static String getItemStr(Target t) {
         String typeStr = getFieldName(t.itemType, ItemType.class);
         if (t.packageNameHash != 0) {
-            typeStr += ", packageHash=" + t.packageNameHash;
+            typeStr += ", packageHash=" + t.packageNameHash + ", predictiveRank=" + t.predictedRank;
         }
         if (t.componentHash != 0) {
-            typeStr += ", componentHash=" + t.componentHash;
+            typeStr += ", componentHash=" + t.componentHash + ", predictiveRank=" + t.predictedRank;
         }
         if (t.intentHash != 0) {
-            typeStr += ", intentHash=" + t.intentHash;
+            typeStr += ", intentHash=" + t.intentHash + ", predictiveRank=" + t.predictedRank;
         }
         return typeStr + ", grid(" + t.gridX + "," + t.gridY + "), span(" + t.spanX + "," + t.spanY
                 + "), pageIdx=" + t.pageIndex;
@@ -119,9 +125,11 @@ public class LoggerUtils {
 
     public static Target newItemTarget(ItemInfo info) {
         Target t = newTarget(Target.Type.ITEM);
+
         switch (info.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 t.itemType = ItemType.APP_ICON;
+                t.predictedRank = -100; // Never assigned
                 break;
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                 t.itemType = ItemType.SHORTCUT;
@@ -151,6 +159,13 @@ public class LoggerUtils {
         } else if (v instanceof DeleteDropTarget) {
             t.controlType = ControlType.REMOVE_TARGET;
         }
+        return t;
+    }
+
+    public static Target newTarget(int targetType, TargetExtension extension) {
+        Target t = new Target();
+        t.type = targetType;
+        t.extension = extension;
         return t;
     }
 

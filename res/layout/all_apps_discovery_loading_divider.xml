@@ -16,8 +16,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="6dp"
-    android:paddingLeft="@dimen/container_fastscroll_thumb_max_width"
-    android:paddingRight="@dimen/container_fastscroll_thumb_max_width">
+    android:paddingLeft="@dimen/dynamic_grid_edge_margin"
+    android:paddingRight="@dimen/dynamic_grid_edge_margin">
 
     <ProgressBar
         android:id="@+id/loadingProgressBar"

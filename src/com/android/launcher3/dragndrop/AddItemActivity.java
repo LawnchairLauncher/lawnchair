@@ -16,18 +16,13 @@
 
 package com.android.launcher3.dragndrop;
 
-import static com.android.launcher3.logging.LoggerUtils.newCommandAction;
-import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
-import static com.android.launcher3.logging.LoggerUtils.newItemTarget;
-import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
-
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
-import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Intent;
+import android.content.pm.LauncherApps.PinItemRequest;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -44,13 +39,13 @@ import android.view.View.OnTouchListener;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherAppWidgetHost;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.compat.PinItemRequestCompat;
+import com.android.launcher3.compat.LauncherAppsCompatVO;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
@@ -60,7 +55,12 @@ import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetImageView;
 
-@TargetApi(Build.VERSION_CODES.N_MR1)
+import static com.android.launcher3.logging.LoggerUtils.newCommandAction;
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+import static com.android.launcher3.logging.LoggerUtils.newItemTarget;
+import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
+
+@TargetApi(Build.VERSION_CODES.O)
 public class AddItemActivity extends BaseActivity implements OnLongClickListener, OnTouchListener {
 
     private static final int SHADOW_SIZE = 10;
@@ -70,24 +70,26 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
 
     private final PointF mLastTouchPos = new PointF();
 
-    private PinItemRequestCompat mRequest;
+    private PinItemRequest mRequest;
     private LauncherAppState mApp;
     private InvariantDeviceProfile mIdp;
 
     private LivePreviewWidgetCell mWidgetCell;
 
     // Widget request specific options.
-    private AppWidgetHost mAppWidgetHost;
+    private LauncherAppWidgetHost mAppWidgetHost;
     private AppWidgetManagerCompat mAppWidgetManager;
     private PendingAddWidgetInfo mPendingWidgetInfo;
     private int mPendingBindWidgetId;
     private Bundle mWidgetOptions;
 
+    private boolean mFinishOnPause = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mRequest = PinItemRequestCompat.getPinItemRequest(getIntent());
+        mRequest = LauncherAppsCompatVO.getPinItemRequest(getIntent());
         if (mRequest == null) {
             finish();
             return;
@@ -101,9 +103,9 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         mDeviceProfile = mIdp.getDeviceProfile(getApplicationContext());
 
         setContentView(R.layout.add_item_confirmation_activity);
-        mWidgetCell = (LivePreviewWidgetCell) findViewById(R.id.widget_cell);
+        mWidgetCell = findViewById(R.id.widget_cell);
 
-        if (mRequest.getRequestType() == PinItemRequestCompat.REQUEST_TYPE_SHORTCUT) {
+        if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
             setupShortcut();
         } else {
             if (!setupWidget()) {
@@ -162,6 +164,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
 
         startActivity(homeIntent,
                 ActivityOptions.makeCustomAnimation(this, 0, android.R.anim.fade_out).toBundle());
+        mFinishOnPause = true;
 
         // Start a system drag and drop. We use a transparent bitmap as preview for system drag
         // as the preview is handled internally by launcher.
@@ -179,6 +182,14 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
             }
         }, null, View.DRAG_FLAG_GLOBAL);
         return false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mFinishOnPause) {
+            finish();
+        }
     }
 
     private void setupShortcut() {
@@ -200,7 +211,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         mWidgetCell.setPreview(PinItemDragListener.getPreview(mRequest));
 
         mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
-        mAppWidgetHost = new AppWidgetHost(this, Launcher.APPWIDGET_HOST_ID);
+        mAppWidgetHost = new LauncherAppWidgetHost(this);
 
         mPendingWidgetInfo = new PendingAddWidgetInfo(widgetInfo);
         mPendingWidgetInfo.spanX = Math.min(mIdp.numColumns, widgetInfo.spanX);
@@ -226,7 +237,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
      * Called when place-automatically button is clicked.
      */
     public void onPlaceAutomaticallyClick(View v) {
-        if (mRequest.getRequestType() == PinItemRequestCompat.REQUEST_TYPE_SHORTCUT) {
+        if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
             InstallShortcutReceiver.queueShortcut(
                     new ShortcutInfoCompat(mRequest.getShortcutInfo()), this);
             logCommand(Action.Command.CONFIRM);
@@ -244,13 +255,8 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         }
 
         // request bind widget
-        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mPendingBindWidgetId);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER,
-                mPendingWidgetInfo.componentName);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE,
-                mRequest.getAppWidgetProviderInfo(this).getProfile());
-        startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
+        mAppWidgetHost.startBindFlow(this, mPendingBindWidgetId,
+                mRequest.getAppWidgetProviderInfo(this), REQUEST_BIND_APPWIDGET);
     }
 
     private void acceptWidget(int widgetId) {
@@ -268,7 +274,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_BIND_APPWIDGET) {
             int widgetId = data != null
                     ? data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mPendingBindWidgetId)

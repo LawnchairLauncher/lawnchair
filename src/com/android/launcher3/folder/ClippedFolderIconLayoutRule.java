@@ -1,22 +1,18 @@
 package com.android.launcher3.folder;
 
-import android.view.View;
-
-import com.android.launcher3.config.FeatureFlags;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
 
     static final int MAX_NUM_ITEMS_IN_PREVIEW = 4;
     private static final int MIN_NUM_ITEMS_IN_PREVIEW = 2;
-    private static final int MAX_NUM_ITEMS_PER_ROW = 2;
 
-    final float MIN_SCALE = 0.48f;
-    final float MAX_SCALE = 0.58f;
-    final float MAX_RADIUS_DILATION = 0.15f;
-    final float ITEM_RADIUS_SCALE_FACTOR = 1.33f;
+    private static final float MIN_SCALE = 0.48f;
+    private static final float MAX_SCALE = 0.58f;
+    private static final float MAX_RADIUS_DILATION = 0.15f;
+    private static final float ITEM_RADIUS_SCALE_FACTOR = 1.33f;
+
+    private static final int EXIT_INDEX = -2;
+    private static final int ENTER_INDEX = -3;
 
     private float[] mTmpPoint = new float[2];
 
@@ -27,7 +23,7 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
     private float mBaselineIconScale;
 
     @Override
-    public void init(int availableSpace, int intrinsicIconSize, boolean rtl) {
+    public void init(int availableSpace, float intrinsicIconSize, boolean rtl) {
         mAvailableSpace = availableSpace;
         mRadius = ITEM_RADIUS_SCALE_FACTOR * availableSpace / 2f;
         mIconSize = intrinsicIconSize;
@@ -36,30 +32,59 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
     }
 
     @Override
-    public FolderIcon.PreviewItemDrawingParams computePreviewItemDrawingParams(int index,
-            int curNumItems, FolderIcon.PreviewItemDrawingParams params) {
-
+    public PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
+            PreviewItemDrawingParams params) {
         float totalScale = scaleForItem(index, curNumItems);
         float transX;
         float transY;
         float overlayAlpha = 0;
 
-        // Items beyond those displayed in the preview are animated to the center
-        if (index >= MAX_NUM_ITEMS_IN_PREVIEW) {
-            transX = transY = mAvailableSpace / 2 - (mIconSize * totalScale) / 2;
+        if (index == getExitIndex()) {
+            // 0 1 * <-- Exit position (row 0, col 2)
+            // 2 3
+            getGridPosition(0, 2, mTmpPoint);
+        } else if (index == getEnterIndex()) {
+            // 0 1
+            // 2 3 * <-- Enter position (row 1, col 2)
+            getGridPosition(1, 2, mTmpPoint);
+        } else if (index >= MAX_NUM_ITEMS_IN_PREVIEW) {
+            // Items beyond those displayed in the preview are animated to the center
+            mTmpPoint[0] = mTmpPoint[1] = mAvailableSpace / 2 - (mIconSize * totalScale) / 2;
         } else {
             getPosition(index, curNumItems, mTmpPoint);
-            transX = mTmpPoint[0];
-            transY = mTmpPoint[1];
         }
 
+        transX = mTmpPoint[0];
+        transY = mTmpPoint[1];
+
         if (params == null) {
-            params = new FolderIcon.PreviewItemDrawingParams(transX, transY, totalScale, overlayAlpha);
+            params = new PreviewItemDrawingParams(transX, transY, totalScale, overlayAlpha);
         } else {
             params.update(transX, transY, totalScale);
             params.overlayAlpha = overlayAlpha;
         }
         return params;
+    }
+
+    /**
+     * Builds a grid based on the positioning of the items when there are
+     * {@link #MAX_NUM_ITEMS_IN_PREVIEW} in the preview.
+     *
+     * Positions in the grid: 0 1  // 0 is row 0, col 1
+     *                        2 3  // 3 is row 1, col 1
+     */
+    private void getGridPosition(int row, int col, float[] result) {
+        // We use position 0 and 3 to calculate the x and y distances between items.
+        getPosition(0, 4, result);
+        float left = result[0];
+        float top = result[1];
+
+        getPosition(3, 4, result);
+        float dx = result[0] - left;
+        float dy = result[1] - top;
+
+        result[0] = left + (col * dx);
+        result[1] = top + (row * dy);
     }
 
     private void getPosition(int index, int curNumItems, float[] result) {
@@ -121,6 +146,11 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
     }
 
     @Override
+    public float getIconSize() {
+        return mIconSize;
+    }
+
+    @Override
     public int maxNumItems() {
         return MAX_NUM_ITEMS_IN_PREVIEW;
     }
@@ -131,22 +161,17 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
     }
 
     @Override
-    public List<View> getItemsToDisplay(Folder folder) {
-        List<View> items = new ArrayList<>(folder.getItemsInReadingOrder());
-        int numItems = items.size();
-        if (FeatureFlags.LAUNCHER3_NEW_FOLDER_ANIMATION && numItems > MAX_NUM_ITEMS_IN_PREVIEW) {
-            // We match the icons in the preview with the layout of the opened folder (b/27944225),
-            // but we still need to figure out how we want to handle updating the preview when the
-            // upper left quadrant changes.
-            int appsPerRow = folder.mContent.getPageAt(0).getCountX();
-            int appsToDelete = appsPerRow - MAX_NUM_ITEMS_PER_ROW;
+    public boolean hasEnterExitIndices() {
+        return true;
+    }
 
-            // We only display the upper left quadrant.
-            while (appsToDelete > 0) {
-                items.remove(MAX_NUM_ITEMS_PER_ROW);
-                appsToDelete--;
-            }
-        }
-        return items.subList(0, Math.min(numItems, MAX_NUM_ITEMS_IN_PREVIEW));
+    @Override
+    public int getExitIndex() {
+        return EXIT_INDEX;
+    }
+
+    @Override
+    public int getEnterIndex() {
+        return ENTER_INDEX;
     }
 }

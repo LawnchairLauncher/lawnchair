@@ -35,9 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"寬度為 %1$d，高度為 %2$d"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"按住即可手動放置"</string>
     <string name="place_automatically" msgid="8064208734425456485">"自動新增"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"搜尋應用程式"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"正在載入應用程式…"</string>
-    <string name="all_apps_no_search_results" msgid="6332185285860416787">"找不到符合「<xliff:g id="QUERY">%1$s</xliff:g>」的應用程式"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"搜尋應用程式"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"正在載入應用程式…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"找不到與「<xliff:g id="QUERY">%1$s</xliff:g>」相符的應用程式"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"搜尋更多應用程式"</string>
     <string name="notifications_header" msgid="1404149926117359025">"通知"</string>
     <string name="out_of_space" msgid="4691004494942118364">"這個主螢幕已無空間。"</string>
@@ -70,22 +70,27 @@
     <string name="folder_name_format" msgid="6629239338071103179">"資料夾：<xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"小工具"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"桌布"</string>
-    <string name="settings_button_text" msgid="8119458837558863227">"設定"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Home 設定"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"已由你的管理員停用"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"總覽"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"允許旋轉主螢幕"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"當手機旋轉時"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"目前的顯示設定不允許旋轉畫面"</string>
-    <string name="icon_badging_title" msgid="4418239350706629417">"在圖示上顯示標記"</string>
-    <string name="icon_badging_desc_on" msgid="6022379097717134764">"為所有應用程式開啟這項設定"</string>
-    <string name="icon_badging_desc_off" msgid="1574640601251590211">"為所有應用程式關閉這項設定"</string>
+    <string name="icon_badging_title" msgid="874121399231955394">"通知圓點"</string>
+    <string name="icon_badging_desc_on" msgid="2627952638544674079">"已啟用"</string>
+    <string name="icon_badging_desc_off" msgid="5503319969924580241">"已停用"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"需要取得通知存取權"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"如要顯示通知圓點，請開啟「<xliff:g id="NAME">%1$s</xliff:g>」的應用程式通知功能"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"變更設定"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"將圖示加到主螢幕"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"適用於新安裝的應用程式"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"變更圖示形狀"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"使用系統預設值"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_square" msgid="633575066111622774">"正方形"</string>
+    <string name="icon_shape_squircle" msgid="5658049910802669495">"方圓形"</string>
+    <string name="icon_shape_circle" msgid="6550072265930144217">"圓形"</string>
+    <string name="icon_shape_teardrop" msgid="4525869388200835463">"淚珠形"</string>
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"正在套用圖示形狀變更"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"不明"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"移除"</string>
     <string name="abandoned_search" msgid="891119232568284442">"搜尋"</string>

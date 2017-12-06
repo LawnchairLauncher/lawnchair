@@ -15,12 +15,14 @@
  */
 package com.android.launcher3.allapps;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Property;
 import android.util.SparseIntArray;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,18 +30,23 @@ import android.view.View;
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Launcher;
+import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.DrawableFactory;
+import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
+import com.android.launcher3.touch.OverScroll;
+import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
 import java.util.List;
 
 /**
  * A RecyclerView with custom fast scroll support for the all apps view.
  */
-public class AllAppsRecyclerView extends BaseRecyclerView {
+public class AllAppsRecyclerView extends BaseRecyclerView implements LogContainerProvider {
 
     private AlphabeticalAppsList mApps;
     private AllAppsFastScrollHelper mFastScrollHelper;
@@ -53,7 +60,23 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     private AllAppsBackgroundDrawable mEmptySearchBackground;
     private int mEmptySearchBackgroundTopOffset;
 
-    private HeaderElevationController mElevationController;
+    private SpringAnimationHandler mSpringAnimationHandler;
+    private OverScrollHelper mOverScrollHelper;
+    private SwipeDetector mPullDetector;
+
+    private float mContentTranslationY = 0;
+    public static final Property<AllAppsRecyclerView, Float> CONTENT_TRANS_Y =
+            new Property<AllAppsRecyclerView, Float>(Float.class, "appsRecyclerViewContentTransY") {
+                @Override
+                public Float get(AllAppsRecyclerView allAppsRecyclerView) {
+                    return allAppsRecyclerView.getContentTranslationY();
+                }
+
+                @Override
+                public void set(AllAppsRecyclerView allAppsRecyclerView, Float y) {
+                    allAppsRecyclerView.setContentTranslationY(y);
+                }
+            };
 
     public AllAppsRecyclerView(Context context) {
         this(context, null);
@@ -72,9 +95,28 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         super(context, attrs, defStyleAttr);
         Resources res = getResources();
         addOnItemTouchListener(this);
-        mScrollbar.setDetachThumbOnFastScroll();
         mEmptySearchBackgroundTopOffset = res.getDimensionPixelSize(
                 R.dimen.all_apps_empty_search_bg_top_offset);
+
+        mOverScrollHelper = new OverScrollHelper();
+        mPullDetector = new SwipeDetector(getContext(), mOverScrollHelper, SwipeDetector.VERTICAL);
+        mPullDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_BOTH, true);
+    }
+
+    public void setSpringAnimationHandler(SpringAnimationHandler springAnimationHandler) {
+        if (FeatureFlags.LAUNCHER3_PHYSICS) {
+            mSpringAnimationHandler = springAnimationHandler;
+            addOnScrollListener(new SpringMotionOnScrollListener());
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent e) {
+        mPullDetector.onTouchEvent(e);
+        if (FeatureFlags.LAUNCHER3_PHYSICS && mSpringAnimationHandler != null) {
+            mSpringAnimationHandler.addMovement(e);
+        }
+        return super.onTouchEvent(e);
     }
 
     /**
@@ -85,8 +127,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         mFastScrollHelper = new AllAppsFastScrollHelper(this, apps);
     }
 
-    public void setElevationController(HeaderElevationController elevationController) {
-        mElevationController = elevationController;
+    public AlphabeticalAppsList getApps() {
+        return mApps;
     }
 
     /**
@@ -98,7 +140,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         RecyclerView.RecycledViewPool pool = getRecycledViewPool();
         int approxRows = (int) Math.ceil(grid.availableHeightPx / grid.allAppsIconSizePx);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH, 1);
-        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ICON, approxRows * mNumAppsPerRow);
@@ -125,8 +166,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                 AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER,
                 AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER);
         putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
-                AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER);
-        putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
                 AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET);
         putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
                 AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH);
@@ -152,13 +191,10 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
      */
     public void scrollToTop() {
         // Ensure we reattach the scrollbar if it was previously detached while fast-scrolling
-        if (mScrollbar.isThumbDetached()) {
+        if (mScrollbar != null) {
             mScrollbar.reattachThumbToScroll();
         }
         scrollToPosition(0);
-        if (mElevationController != null) {
-            mElevationController.reset();
-        }
     }
 
     @Override
@@ -172,6 +208,26 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     }
 
     @Override
+    protected void dispatchDraw(Canvas canvas) {
+        canvas.translate(0, mContentTranslationY);
+        super.dispatchDraw(canvas);
+        canvas.translate(0, -mContentTranslationY);
+    }
+
+    public float getContentTranslationY() {
+        return mContentTranslationY;
+    }
+
+    /**
+     * Use this method instead of calling {@link #setTranslationY(float)}} directly to avoid drawing
+     * on top of other Views.
+     */
+    public void setContentTranslationY(float y) {
+        mContentTranslationY = y;
+        invalidate();
+    }
+
+    @Override
     protected boolean verifyDrawable(Drawable who) {
         return who == mEmptySearchBackground || super.verifyDrawable(who);
     }
@@ -181,9 +237,10 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         updateEmptySearchBackgroundBounds();
     }
 
-    public int getContainerType(View v) {
+    @Override
+    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
         if (mApps.hasFilter()) {
-            return ContainerType.SEARCHRESULT;
+            targetParent.containerType = ContainerType.SEARCHRESULT;
         } else {
             if (v instanceof BubbleTextView) {
                 BubbleTextView icon = (BubbleTextView) v;
@@ -192,11 +249,13 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                     List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
                     AlphabeticalAppsList.AdapterItem item = items.get(position);
                     if (item.viewType == AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON) {
-                        return ContainerType.PREDICTION;
+                        targetParent.containerType = ContainerType.PREDICTION;
+                        target.predictedRank = item.rowAppIndex;
+                        return;
                     }
                 }
             }
-            return ContainerType.ALLAPPS;
+            targetParent.containerType = ContainerType.ALLAPPS;
         }
     }
 
@@ -222,7 +281,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent e) {
-        boolean result = super.onInterceptTouchEvent(e);
+        mPullDetector.onTouchEvent(e);
+        boolean result = super.onInterceptTouchEvent(e) || mOverScrollHelper.isInOverScroll();
         if (!result && e.getAction() == MotionEvent.ACTION_DOWN
                 && mEmptySearchBackground != null && mEmptySearchBackground.getAlpha() > 0) {
             mEmptySearchBackground.setHotspot(e.getX(), e.getY());
@@ -277,6 +337,22 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
             }
         });
         mFastScrollHelper.onSetAdapter((AllAppsGridAdapter) adapter);
+    }
+
+    @Override
+    protected float getBottomFadingEdgeStrength() {
+        // No bottom fading edge.
+        return 0;
+    }
+
+    @Override
+    protected boolean isPaddingOffsetRequired() {
+        return true;
+    }
+
+    @Override
+    protected int getTopPaddingOffset() {
+        return -getPaddingTop();
     }
 
     /**
@@ -349,7 +425,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     }
 
     @Override
-    protected boolean supportsFastScrolling() {
+    public boolean supportsFastScrolling() {
         // Only allow fast scrolling when the user is not searching, since the results are not
         // grouped in a meaningful order
         return !mApps.hasFilter();
@@ -369,7 +445,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         if (position == NO_POSITION) {
             return -1;
         }
-        return getCurrentScrollY(position, getLayoutManager().getDecoratedTop(child));
+        return getPaddingTop() +
+                getCurrentScrollY(position, getLayoutManager().getDecoratedTop(child));
     }
 
     public int getCurrentScrollY(int position, int offset) {
@@ -399,14 +476,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
             }
             mCachedScrollPositions.put(position, y);
         }
-
-        return getPaddingTop() + y - offset;
-    }
-
-    @Override
-    protected int getScrollbarTrackHeight() {
-        return super.getScrollbarTrackHeight()
-                - Launcher.getLauncher(getContext()).getDragLayer().getInsets().bottom;
+        return y - offset;
     }
 
     /**
@@ -415,9 +485,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
      */
     @Override
     protected int getAvailableScrollHeight() {
-        int paddedHeight = getCurrentScrollY(mApps.getAdapterItems().size(), 0);
-        int totalHeight = paddedHeight + getPaddingBottom();
-        return totalHeight - getScrollbarTrackHeight();
+        return getPaddingTop() + getCurrentScrollY(mApps.getAdapterItems().size(), 0)
+                - getHeight() + getPaddingBottom();
     }
 
     /**
@@ -436,4 +505,113 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                 y + mEmptySearchBackground.getIntrinsicHeight());
     }
 
+    private class SpringMotionOnScrollListener extends RecyclerView.OnScrollListener {
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            if (mOverScrollHelper.isInOverScroll()) {
+                // OverScroll will handle animating the springs.
+                return;
+            }
+
+            // We only start the spring animation when we hit the top/bottom, to ensure
+            // that all of the animations start at the same time.
+            if (dy < 0 && !canScrollVertically(-1)) {
+                mSpringAnimationHandler.animateToFinalPosition(0, 1);
+            } else if (dy > 0 && !canScrollVertically(1)) {
+                mSpringAnimationHandler.animateToFinalPosition(0, -1);
+            }
+        }
+    }
+
+    private class OverScrollHelper implements SwipeDetector.Listener {
+
+        private static final float MAX_RELEASE_VELOCITY = 5000; // px / s
+        private static final float MAX_OVERSCROLL_PERCENTAGE = 0.07f;
+
+        private boolean mIsInOverScroll;
+
+        // We use this value to calculate the actual amount the user has overscrolled.
+        private float mFirstDisplacement = 0;
+
+        private boolean mAlreadyScrollingUp;
+        private int mFirstScrollYOnScrollUp;
+
+        @Override
+        public void onDragStart(boolean start) {
+        }
+
+        @Override
+        public boolean onDrag(float displacement, float velocity) {
+            boolean isScrollingUp = displacement > 0;
+            if (isScrollingUp) {
+                if (!mAlreadyScrollingUp) {
+                    mFirstScrollYOnScrollUp = getCurrentScrollY();
+                    mAlreadyScrollingUp = true;
+                }
+            } else {
+                mAlreadyScrollingUp = false;
+            }
+
+            // Only enter overscroll if the user is interacting with the RecyclerView directly
+            // and if one of the following criteria are met:
+            // - User scrolls down when they're already at the bottom.
+            // - User starts scrolling up, hits the top, and continues scrolling up.
+            boolean wasInOverScroll = mIsInOverScroll;
+            mIsInOverScroll = !mScrollbar.isDraggingThumb() &&
+                    ((!canScrollVertically(1) && displacement < 0) ||
+                    (!canScrollVertically(-1) && isScrollingUp && mFirstScrollYOnScrollUp != 0));
+
+            if (wasInOverScroll && !mIsInOverScroll) {
+                // Exit overscroll. This can happen when the user is in overscroll and then
+                // scrolls the opposite way.
+                reset(false /* shouldSpring */);
+            } else if (mIsInOverScroll) {
+                if (Float.compare(mFirstDisplacement, 0) == 0) {
+                    // Because users can scroll before entering overscroll, we need to
+                    // subtract the amount where the user was not in overscroll.
+                    mFirstDisplacement = displacement;
+                }
+                float overscrollY = displacement - mFirstDisplacement;
+                setContentTranslationY(getDampedOverScroll(overscrollY));
+            }
+
+            return mIsInOverScroll;
+        }
+
+        @Override
+        public void onDragEnd(float velocity, boolean fling) {
+           reset(mIsInOverScroll  /* shouldSpring */);
+        }
+
+        private void reset(boolean shouldSpring) {
+            float y = getContentTranslationY();
+            if (Float.compare(y, 0) != 0) {
+                if (FeatureFlags.LAUNCHER3_PHYSICS && shouldSpring) {
+                    // We calculate our own velocity to give the springs the desired effect.
+                    float velocity = y / getDampedOverScroll(getHeight()) * MAX_RELEASE_VELOCITY;
+                    // We want to negate the velocity because we are moving to 0 from -1 due to the
+                    // downward motion. (y-axis -1 is above 0).
+                    mSpringAnimationHandler.animateToPositionWithVelocity(0, -1, -velocity);
+                }
+
+                ObjectAnimator.ofFloat(AllAppsRecyclerView.this,
+                        AllAppsRecyclerView.CONTENT_TRANS_Y, 0)
+                        .setDuration(100)
+                        .start();
+            }
+            mIsInOverScroll = false;
+            mFirstDisplacement = 0;
+            mFirstScrollYOnScrollUp = 0;
+            mAlreadyScrollingUp = false;
+        }
+
+        public boolean isInOverScroll() {
+            return mIsInOverScroll;
+        }
+
+        private float getDampedOverScroll(float y) {
+            return OverScroll.dampedScroll(y, getHeight());
+        }
+    }
 }

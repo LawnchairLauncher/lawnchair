@@ -26,7 +26,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.ShortcutInfo;
 
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ import java.util.HashSet;
 /**
  * Handles changes due to cache updates.
  */
-public class CacheDataUpdatedTask extends ExtendedModelTask {
+public class CacheDataUpdatedTask extends BaseModelUpdateTask {
 
     public static final int OP_CACHE_UPDATE = 1;
     public static final int OP_SESSION_UPDATE = 2;
@@ -78,7 +77,7 @@ public class CacheDataUpdatedTask extends ExtendedModelTask {
             scheduleCallbackTask(new CallbackTask() {
                 @Override
                 public void execute(Callbacks callbacks) {
-                    callbacks.bindAppsUpdated(updatedApps);
+                    callbacks.bindAppsAddedOrUpdated(updatedApps);
                 }
             });
         }
@@ -89,7 +88,7 @@ public class CacheDataUpdatedTask extends ExtendedModelTask {
             case OP_CACHE_UPDATE:
                 return true;
             case OP_SESSION_UPDATE:
-                return si.isPromise();
+                return si.hasPromiseIconUi();
             default:
                 return false;
         }

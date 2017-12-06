@@ -4,9 +4,9 @@
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
      You may obtain a copy of the License at
-  
+
           http://www.apache.org/licenses/LICENSE-2.0
-  
+
      Unless required by applicable law or agreed to in writing, software
      distributed under the License is distributed on an "AS IS" BASIS,
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,6 +15,39 @@
 -->
 
 <resources>
-<!-- Container -->
-     <item name="container_margin" format="fraction" type="fraction">12%</item>
+    <!-- Container -->
+    <item name="container_margin" format="fraction" type="fraction">12%</item>
+
+    <!-- Fast scroll -->
+    <dimen name="fastscroll_popup_width">58dp</dimen>
+    <dimen name="fastscroll_popup_height">48dp</dimen>
+    <dimen name="fastscroll_popup_padding">10dp</dimen>
+    <dimen name="fastscroll_popup_text_size">24dp</dimen>
+
+    <!-- Dynamic grid -->
+    <dimen name="dynamic_grid_overview_bar_item_width">120dp</dimen>
+    <dimen name="dynamic_grid_min_page_indicator_size">48dp</dimen>
+    <dimen name="dynamic_grid_icon_drawable_padding">4dp</dimen>
+
+    <dimen name="dynamic_grid_cell_layout_padding">0dp</dimen>
+    <dimen name="dynamic_grid_cell_layout_bottom_padding">5.5dp</dimen>
+
+    <!-- Folders -->
+    <dimen name="folder_preview_padding">2dp</dimen>
+
+    <!-- Page indicator -->
+    <dimen name="dynamic_grid_page_indicator_land_left_nav_bar_gutter_width">50dp</dimen>
+    <dimen name="dynamic_grid_page_indicator_land_right_nav_bar_gutter_width">74dp</dimen>
+
+    <!-- Hotseat -->
+    <!-- Will be set to equal the hotseat icon size. -->
+    <dimen name="dynamic_grid_hotseat_size">0dp</dimen>
+
+    <dimen name="dynamic_grid_hotseat_land_left_nav_bar_gutter_width">50dp</dimen>
+    <dimen name="dynamic_grid_hotseat_land_left_nav_bar_left_padding">44dp</dimen>
+    <dimen name="dynamic_grid_hotseat_land_left_nav_bar_right_padding">18dp</dimen>
+
+    <dimen name="dynamic_grid_hotseat_land_right_nav_bar_gutter_width">56dp</dimen>
+    <dimen name="dynamic_grid_hotseat_land_right_nav_bar_left_padding">32dp</dimen>
+    <dimen name="dynamic_grid_hotseat_land_right_nav_bar_right_padding">6dp</dimen>
 </resources>

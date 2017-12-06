@@ -18,7 +18,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:layout_width="@dimen/bg_popup_item_width"
-    android:layout_height="@dimen/bg_popup_item_height" >
+    android:layout_height="@dimen/bg_popup_item_height"
+    android:theme="@style/PopupItem" >
 
     <com.android.launcher3.shortcuts.DeepShortcutTextView
         style="@style/BaseIcon"
@@ -50,6 +51,6 @@
         android:layout_height="@dimen/popup_item_divider_height"
         android:layout_gravity="end|bottom"
         android:visibility="gone"
-        android:background="?android:attr/listDivider" />
+        android:background="?attr/popupColorTertiary" />
 
 </com.android.launcher3.shortcuts.DeepShortcutView>
