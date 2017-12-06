@@ -1130,7 +1130,7 @@ public class Launcher extends Activity
 
         if (mSnowfallEnabled) {
             Log.d(TAG, "inflating snowfall");
-            getLayoutInflater().inflate(R.layout.snowfall, (ViewGroup) findViewById(R.id.launcher_background), true);
+            getLayoutInflater().inflate(mPlanesEnabled ? R.layout.snowfall_planes : R.layout.snowfall, (ViewGroup) findViewById(R.id.launcher_background), true);
         }
 
         if (mPlanesEnabled) {

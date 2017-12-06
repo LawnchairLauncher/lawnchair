@@ -4,10 +4,13 @@ import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.VectorDrawable
 import android.os.Build
+
+import ch.deletescape.lawnchair.util.Randomizer
 
 /**
  * Copyright (C) 2016 JetRadar, licensed under Apache License 2.0
@@ -27,7 +30,9 @@ internal fun Drawable.toBitmap(): Bitmap {
 internal fun VectorDrawable.toBitmap(): Bitmap {
     val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
+    canvas.rotate(45.0f, intrinsicWidth / 2f, intrinsicHeight / 2f);
     setBounds(0, 0, canvas.width, canvas.height)
+    setTint(Color.WHITE)
     draw(canvas)
     return bitmap
 }
