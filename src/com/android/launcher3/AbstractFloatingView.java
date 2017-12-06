@@ -59,6 +59,10 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_WIDGETS_FULL_SHEET
             | TYPE_QUICKSTEP_PREVIEW | TYPE_ON_BOARD_POPUP;
 
+    // Type of popups which should be kept open during launcher rebind
+    public static final int TYPE_REBIND_SAFE = TYPE_WIDGETS_FULL_SHEET
+            | TYPE_QUICKSTEP_PREVIEW | TYPE_ON_BOARD_POPUP;
+
     protected boolean mIsOpen;
 
     public AbstractFloatingView(Context context, AttributeSet attrs) {

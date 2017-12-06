@@ -60,7 +60,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -99,10 +98,10 @@ import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
+import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.LauncherAppsCompatVO;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -121,7 +120,6 @@ import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.states.AllAppsState;
 import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -848,9 +846,7 @@ public class Launcher extends BaseActivity
         // Refresh shortcuts if the permission changed.
         mModel.refreshShortcutsIfRequired();
 
-        if (shouldShowDiscoveryBounce()) {
-            mAllAppsController.showDiscoveryBounce();
-        }
+        DiscoveryBounce.showIfNeeded(this);
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onResume();
         }
@@ -1040,7 +1036,7 @@ public class Launcher extends BaseActivity
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
         // Setup the drag layer
-        mDragLayer.setup(this, mDragController, mAllAppsController);
+        mDragLayer.setup(this, mDragController);
 
         // Setup the hotseat
         mHotseat = (Hotseat) findViewById(R.id.hotseat);
@@ -2429,7 +2425,7 @@ public class Launcher extends BaseActivity
         // we are starting a fresh bind, close all such panels as all the icons are about
         // to go away.
         AbstractFloatingView.closeOpenViews(this, true,
-                AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_WIDGETS_FULL_SHEET);
+                AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
 
         setWorkspaceLoading(true);
 
@@ -3068,12 +3064,6 @@ public class Launcher extends BaseActivity
 
     public boolean isRotationEnabled () {
         return mRotationEnabled;
-    }
-
-    private boolean shouldShowDiscoveryBounce() {
-        return isInState(NORMAL)
-                && !mSharedPrefs.getBoolean(AllAppsState.APPS_VIEW_SHOWN, false)
-                && !UserManagerCompat.getInstance(this).isDemoUser();
     }
 
     /**

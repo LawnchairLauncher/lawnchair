@@ -4,7 +4,6 @@ import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import android.animation.Animator;
-import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -77,8 +76,6 @@ public class AllAppsTransitionController
 
     private static final float DEFAULT_SHIFT_RANGE = 10;
 
-    private boolean mIsTranslateWithoutWorkspace = false;
-    private Animator mDiscoBounceAnimation;
     private GradientView mGradientView;
 
     public AllAppsTransitionController(Launcher l) {
@@ -149,10 +146,6 @@ public class AllAppsTransitionController
                     PARALLAX_COEFFICIENT * (-mShiftRange + shiftCurrent),
                     hotseatAlpha);
         }
-
-        if (mIsTranslateWithoutWorkspace) {
-            return;
-        }
         mWorkspace.setWorkspaceYTranslationAndAlpha(
                 PARALLAX_COEFFICIENT * (-mShiftRange + shiftCurrent), workspaceAlpha);
 
@@ -191,7 +184,13 @@ public class AllAppsTransitionController
                 this, PROGRESS, mProgress, toState.verticalProgress);
         anim.setDuration(config.duration);
         anim.setInterpolator(interpolator);
-        anim.addListener(new AnimationSuccessListener() {
+        anim.addListener(getProgressAnimatorListener());
+
+        animationOut.play(anim);
+    }
+
+    public AnimatorListenerAdapter getProgressAnimatorListener() {
+        return new AnimationSuccessListener() {
             @Override
             public void onAnimationSuccess(Animator animator) {
                 onProgressAnimationEnd();
@@ -201,50 +200,7 @@ public class AllAppsTransitionController
             public void onAnimationStart(Animator animation) {
                 onProgressAnimationStart();
             }
-        });
-
-        animationOut.play(anim);
-    }
-
-    public void showDiscoveryBounce() {
-        // cancel existing animation in case user locked and unlocked at a super human speed.
-        cancelDiscoveryAnimation();
-
-        // assumption is that this variable is always null
-        mDiscoBounceAnimation = AnimatorInflater.loadAnimator(mLauncher,
-                R.animator.discovery_bounce);
-        mDiscoBounceAnimation.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animator) {
-                mIsTranslateWithoutWorkspace = true;
-                onProgressAnimationStart();
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                onProgressAnimationEnd();
-                mDiscoBounceAnimation = null;
-                mIsTranslateWithoutWorkspace = false;
-            }
-        });
-        mDiscoBounceAnimation.setTarget(this);
-        mAppsView.post(new Runnable() {
-            @Override
-            public void run() {
-                if (mDiscoBounceAnimation == null) {
-                    return;
-                }
-                mDiscoBounceAnimation.start();
-            }
-        });
-    }
-
-    public void cancelDiscoveryAnimation() {
-        if (mDiscoBounceAnimation == null) {
-            return;
-        }
-        mDiscoBounceAnimation.cancel();
-        mDiscoBounceAnimation = null;
+        };
     }
 
     public void setupViews(AllAppsContainerView appsView, Hotseat hotseat, Workspace workspace) {
