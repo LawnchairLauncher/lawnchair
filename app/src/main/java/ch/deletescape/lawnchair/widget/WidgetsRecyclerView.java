@@ -29,10 +29,10 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
-    @Override
+    /*@Override
     public int getFastScrollerTrackColor(int i) {
         return -1;
-    }
+    }*/
 
     @Override
     public void setAdapter(Adapter c0280q) {
@@ -79,7 +79,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         return (childPosition + getPaddingTop()) - getLayoutManager().getDecoratedTop(childAt);
     }
 
-    @Override
+
     protected int getAvailableScrollHeight() {
         return (((getChildAt(0).getMeasuredHeight() * this.mAdapter.getItemCount()) + getPaddingTop()) + getPaddingBottom()) - getHeight();
     }

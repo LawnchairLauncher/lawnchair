@@ -30,14 +30,22 @@
             android:layout_height="fill_parent" />
 
         <TextView
+            android:id="@id/fast_scroller_popup"
             style="@style/FastScrollerPopup"
             android:layout_gravity="end|center|top"
-            android:layout_marginEnd="@dimen/container_fastscroll_popup_margin" />
+            android:layout_marginEnd="@dimen/fastscroll_popup_margin" />
 
         <ProgressBar
             android:id="@+id/loader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center" />
+
+        <ch.deletescape.lawnchair.views.RecyclerViewFastScroller
+            android:id="@+id/fast_scroller"
+            android:layout_width="@dimen/fastscroll_width"
+            android:layout_height="fill_parent"
+            android:layout_gravity="end"
+            android:layout_marginEnd="@dimen/fastscroll_end_margin" />
     </FrameLayout>
 </ch.deletescape.lawnchair.widget.WidgetsContainerView>

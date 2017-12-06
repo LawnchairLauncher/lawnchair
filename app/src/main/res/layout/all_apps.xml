@@ -16,50 +16,51 @@
      will bake the left/right padding into that view's background itself. -->
 <ch.deletescape.lawnchair.allapps.AllAppsContainerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/apps_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:id="@id/apps_view"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical"
-    launcher:revealBackground="@drawable/quantum_panel_shape">
+    launcher:revealBackground="@drawable/round_rect_primary">
 
     <ch.deletescape.lawnchair.allapps.AllAppsBackground
         android:id="@+id/reveal_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_gravity="center"
         android:focusable="false"
         android:visibility="invisible" />
 
     <ch.deletescape.lawnchair.allapps.AllAppsRecyclerViewContainerView
-        android:id="@+id/main_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@id/main_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_gravity="center"
+        android:clipChildren="true"
+        android:clipToPadding="false"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:saveEnabled="false"
         android:visibility="gone">
 
-        <!-- DO NOT CHANGE THE ID -->
         <ch.deletescape.lawnchair.allapps.AllAppsRecyclerView
             android:id="@+id/apps_list_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal|top"
-            android:layout_marginTop="@dimen/all_apps_search_bar_height"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center|top"
             android:clipToPadding="false"
             android:descendantFocusability="afterDescendants"
             android:focusable="true"
-            android:theme="@style/CustomOverscroll.Light" />
+            android:overScrollMode="never" />
 
+        <include layout="@layout/all_apps_fast_scroller" />
     </ch.deletescape.lawnchair.allapps.AllAppsRecyclerViewContainerView>
 
     <View
         android:id="@+id/nav_bar_bg"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        style="@style/AllAppsNavBarProtection"
+        android:layout_width="fill_parent"
+        android:layout_height="0.0dip"
         android:layout_gravity="bottom"
         android:focusable="false"
-        android:visibility="invisible"
-        style="@style/AllAppsNavBarProtection" />
+        android:visibility="invisible" />
 </ch.deletescape.lawnchair.allapps.AllAppsContainerView>

@@ -205,32 +205,15 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     /**
      * Returns whether the view itself will handle the touch event or not.
      */
-    public boolean shouldContainerScroll(MotionEvent ev) {
-        int[] point = new int[2];
-        point[0] = (int) ev.getX();
-        point[1] = (int) ev.getY();
-        Utilities.mapCoordInSelfToDescendent(mAppsRecyclerView, this, point);
-
-        // IF the MotionEvent is inside the search box, and the container keeps on receiving
-        // touch input, container should move down.
-        if (mLauncher.getDragLayer().isEventOverView(mSearchContainer, ev)) {
+    public boolean shouldContainerScroll(MotionEvent motionEvent) {
+        if (this.mLauncher.getDragLayer().isEventOverView(this.mSearchContainer, motionEvent)) {
             return true;
         }
-
-        // IF the MotionEvent is inside the thumb, container should not be pulled down.
-        if (mAppsRecyclerView.getScrollBar().isNearThumb(point[0], point[1])) {
-            return false;
-        }
-
-        // IF a shortcuts container is open, container should not be pulled down.
-        if (mLauncher.getOpenShortcutsContainer() != null) {
-            return false;
-        }
-
-        // IF scroller is at the very top OR there is no scroll bar because there is probably not
-        // enough items to scroll, THEN it's okay for the container to be pulled down.
-        return mAppsRecyclerView.getScrollBar().getThumbOffset().y <= 0;
+        int[] iArr = new int[]{(int) motionEvent.getX(), (int) motionEvent.getY()};
+        Utilities.mapCoordInSelfToDescendent(this.mAppsRecyclerView.getScrollBar(), this.mLauncher.getDragLayer(), iArr);
+        return !this.mAppsRecyclerView.getScrollBar().shouldBlockIntercept(iArr[0], iArr[1]) && this.mAppsRecyclerView.getCurrentScrollY() == 0;
     }
+
 
     /**
      * Focuses the search field and begins an app search.
@@ -359,12 +342,12 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         Rect bgPadding = new Rect();
         getRevealView().getBackground().getPadding(bgPadding);
 
-        mAppsRecyclerView.updateBackgroundPadding(bgPadding);
+        //mAppsRecyclerView.updateBackgroundPadding(bgPadding);
         mAdapter.updateBackgroundPadding(bgPadding);
 
         // Pad the recycler view by the background padding plus the start margin (for the section
         // names)
-        int maxScrollBarWidth = mAppsRecyclerView.getMaxScrollbarWidth();
+        int maxScrollBarWidth = mAppsRecyclerView.getScrollBar().getWidth();
         int startInset = Math.max(mSectionNamesMargin, maxScrollBarWidth);
         if (Utilities.isRtl(getResources())) {
             mAppsRecyclerView.setPadding(bgPadding.left + maxScrollBarWidth, 0, bgPadding.right
