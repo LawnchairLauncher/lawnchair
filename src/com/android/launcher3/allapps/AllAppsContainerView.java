@@ -85,8 +85,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     private SearchUiManager mSearchUiManager;
     private View mSearchContainer;
     private InterceptingViewPager mViewPager;
-    private ViewGroup mHeader;
-    private FloatingHeaderHandler mFloatingHeaderHandler;
+    private FloatingHeaderView mHeader;
     private TabsPagerAdapter mTabsPagerAdapter;
 
     private SpannableStringBuilder mSearchQueryBuilder = null;
@@ -234,8 +233,8 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         for (int i = 0; i < mAH.length; i++) {
             updatePromiseAppProgress(app, mAH[i].recyclerView);
         }
-        if (mFloatingHeaderHandler != null) {
-            updatePromiseAppProgress(app, mFloatingHeaderHandler.getContentView());
+        if (isHeaderVisible()) {
+            updatePromiseAppProgress(app, mHeader.getPredictionRow());
         }
     }
 
@@ -286,8 +285,8 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
                 mAH[i].recyclerView.scrollToTop();
             }
         }
-        if (mFloatingHeaderHandler != null) {
-            mFloatingHeaderHandler.reset();
+        if (isHeaderVisible()) {
+            mHeader.reset();
         }
         // Reset the search bar and base recycler view after transitioning home
         mSearchUiManager.reset();
@@ -309,7 +308,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         });
 
         mHeader = findViewById(R.id.all_apps_header);
-        mFloatingHeaderHandler = new FloatingHeaderHandler(mHeader);
         rebindAdapters(mUsingTabs);
 
         mSearchContainer = findViewById(R.id.search_container_all_apps);
@@ -447,7 +445,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             if (FeatureFlags.ALL_APPS_PREDICTION_ROW_VIEW) {
                 setupHeader();
             } else {
-                mFloatingHeaderHandler = null;
                 mHeader.setVisibility(View.GONE);
             }
         }
@@ -501,7 +498,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             @Override
             public void onPageSelected(int pos) {
                 tabs.updateTabTextColor(pos);
-                mFloatingHeaderHandler.setMainActive(pos == 0);
+                mHeader.setMainActive(pos == 0);
                 applyTouchDelegate();
                 if (mAH[pos].recyclerView != null) {
                     mAH[pos].recyclerView.bindFastScrollbar();
@@ -524,14 +521,16 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     }
 
     public void setPredictedApps(List<ComponentKeyMapper<AppInfo>> apps) {
-        if (mFloatingHeaderHandler != null) {
-            mFloatingHeaderHandler.getContentView().setPredictedApps(apps);
+        if (isHeaderVisible()) {
+            mHeader.getPredictionRow().setPredictedApps(apps);
         }
         mAH[AdapterHolder.MAIN].appsList.setPredictedApps(apps);
         boolean hasPredictions = !apps.isEmpty();
         if (mHasPredictions != hasPredictions) {
             mHasPredictions = hasPredictions;
-            setupHeader();
+            if (FeatureFlags.ALL_APPS_PREDICTION_ROW_VIEW) {
+                setupHeader();
+            }
         }
     }
 
@@ -547,12 +546,12 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         return mUsingTabs;
     }
 
-    public FloatingHeaderHandler getFloatingHeaderHandler() {
-        return mFloatingHeaderHandler;
+    public FloatingHeaderView getFloatingHeaderView() {
+        return mHeader;
     }
 
     private void setupHeader() {
-        if (mFloatingHeaderHandler == null) {
+        if (mHeader == null) {
             return;
         }
         mHeader.setVisibility(View.VISIBLE);
@@ -565,8 +564,8 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         }
         AllAppsRecyclerView mainRV = mAH[AdapterHolder.MAIN].recyclerView;
         AllAppsRecyclerView workRV = mAH[AdapterHolder.WORK].recyclerView;
-        mFloatingHeaderHandler.setup(mainRV, workRV, contentHeight);
-        mFloatingHeaderHandler.getContentView().setup(mAH[AdapterHolder.MAIN].adapter,
+        mHeader.setup(mainRV, workRV, contentHeight);
+        mHeader.getPredictionRow().setup(mAH[AdapterHolder.MAIN].adapter,
                 mComponentToAppMap, mNumPredictedAppsPerRow);
 
         int padding = contentHeight;
@@ -584,7 +583,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             mAH[i].adapter.setLastSearchQuery(query);
         }
         boolean hasQuery = !TextUtils.isEmpty(query);
-        if (mFloatingHeaderHandler != null && mUsingTabs && hasQuery) {
+        if (mUsingTabs && hasQuery) {
             mSearchModeWhileUsingTabs = true;
             rebindAdapters(false); // hide tabs
         } else if (mSearchModeWhileUsingTabs && !hasQuery) {
@@ -630,10 +629,14 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
 
     public List<AppInfo> getPredictedApps() {
         if (mUsingTabs) {
-            return mFloatingHeaderHandler.getContentView().getPredictedApps();
+            return mHeader.getPredictionRow().getPredictedApps();
         } else {
             return mAH[AdapterHolder.MAIN].appsList.getPredictedApps();
         }
+    }
+
+    private boolean isHeaderVisible() {
+        return mHeader != null && mHeader.getVisibility() == View.VISIBLE;
     }
 
     public class AdapterHolder {
@@ -685,8 +688,8 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
                         ? paddingTopForTabs : padding.top;
                 recyclerView.setPadding(padding.left, paddingTop, padding.right, padding.bottom);
             }
-            if (mFloatingHeaderHandler != null) {
-                mFloatingHeaderHandler.getContentView()
+            if (isHeaderVisible()) {
+                mHeader.getPredictionRow()
                         .setPadding(padding.left, 0 , padding.right, 0);
             }
         }
@@ -698,8 +701,8 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
                 }
                 adapter.setNumAppsPerRow(mNumAppsPerRow);
                 appsList.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow);
-                if (mFloatingHeaderHandler != null) {
-                    mFloatingHeaderHandler.getContentView()
+                if (isHeaderVisible()) {
+                    mHeader.getPredictionRow()
                             .setNumAppsPerRow(mNumPredictedAppsPerRow);
                 }
             }
