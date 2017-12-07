@@ -417,14 +417,6 @@
   <string name="hide_app_apply">Terapkan</string>
   <string name="unauthorized_device">Perangkat ini memiliki beberapa alat pembajakan yang diinstal. Silakan uninstall mereka untuk melanjutkan</string>
   <string name="hide_app_reset">Setel ulang</string>
-  <!-- Strings for Lawnfeed gesture popup -->
-  <string name="lawnfeed_not_enabled_title">Lawnfeed belum diaktifkan</string>
-  <string name="lawnfeed_not_enabled">Sepertinya anda mencoba membuka laman Google Now, namun anda belum mengaktifkan pilihan tersebut di setelan tindakan.\n\nApakah anda ingin mengaktifkannya sekarang?</string>
-  <string name="lawnfeed_not_installed_title">Lawnfeed tidak terpasang</string>
-  <string name="lawnfeed_not_installed">Sepertinya anda mencoba membuka laman Google Now, namun anda belum memasang aplikasi Lawnfeed dari situs web kami.\n\nApakah anda ingin mengunduhnya sekarang?</string>
-  <string name="lawnfeed_outdated_title">Lawfeed membutuhkan pembarun</string>
-  <string name="lawnfeed_outdated">Versi baru dari Lawnfeed dibutuhkan agar dapat berjalan dengan Lawnchair versi ini.\n\nSebelum memasang pembaruan anda harus mencopot Lawnfeed versi saat ini.\n\nApakah anda ingin mengunduhnya sekarang?</string>
-  <string name="disable_popup">Jangan tampilkan lagi</string>
   <string name="two_row_dock">Dock dua baris</string>
   <string name="reset_alternative_icons_title">Reset ikon aplikasi alternatif?</string>
   <string name="reset_alternative_icons">Anda memiliki aplikasi %1$d dengan ikon alternatif, apakah anda ingin meresetnya?</string>
