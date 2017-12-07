@@ -411,12 +411,6 @@
   <string name="hide_app_apply">적용</string>
   <string name="unauthorized_device">이 기기에 불법 복제 도구가 설치되어 있습니다. 계속하려면 그것들을 제거해주세요.</string>
   <string name="hide_app_reset">다시 설정</string>
-  <!-- Strings for Lawnfeed gesture popup -->
-  <string name="lawnfeed_not_enabled_title">Lawnfeed가 활성화 되지 않았습니다.</string>
-  <string name="lawnfeed_not_enabled">Google Now 페이지를 열려고하지만 설정에서 해당 옵션을 사용하도록 설정하지 않은 것 같습니다.\n\n지금 사용 하시겠습니까?</string>
-  <string name="lawnfeed_not_installed_title">Lawnfeed가 설치 되지 않았습니다.</string>
-  <string name="lawnfeed_not_installed">Google Now 페이지를 열려고했지만 Lawnfeed 앱을 설치하지 않은 것 같습니다.\n\n지금 다운로드 하시겠습니까?</string>
-  <string name="disable_popup">다시 표시하지 않음</string>
   <string name="two_row_dock">두행 독 사용</string>
   <string name="reset_alternative_icons_title">대체 아이콘을 재설정 하겠습니까?</string>
   <string name="reset_alternative_icons">대체 아이콘으로 설정 된 %1$d개의 앱을 재 설정 하 시겠습니까?</string>
