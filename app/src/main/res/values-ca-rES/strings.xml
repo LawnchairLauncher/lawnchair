@@ -104,9 +104,9 @@
   <!-- The format string for when a folder is opened, speaks the dimensions -->
   <string name="folder_opened">Carpeta oberta, <xliff:g id="WIDTH">%1$d</xliff:g> per <xliff:g id="HEIGHT">%2$d</xliff:g></string>
   <!-- Instruction that clicking outside will close folder -->
-  <string name="folder_tap_to_close">Tocar per tancar la carpeta</string>
+  <string name="folder_tap_to_close">Toqueu per tancar la carpeta</string>
   <!-- Instruction that clicking outside will commit folder rename -->
-  <string name="folder_tap_to_rename">Toca per desar el canvi de nom</string>
+  <string name="folder_tap_to_rename">Toqueu per desar el canvi de nom</string>
   <!-- Indication that folder closed -->
   <string name="folder_closed">Carpeta tancada</string>
   <!-- Folder renamed format -->
@@ -121,7 +121,7 @@
   <!-- Text for settings button -->
   <string name="settings_button_text">Configuració</string>
   <!-- Message shown when a feature is disabled by the administrator -->
-  <string name="msg_disabled_by_admin">Desactivada per l\'administrador</string>
+  <string name="msg_disabled_by_admin">Desactivat per l\'administrador</string>
   <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
   <string name="accessibility_action_overview">Visió general</string>
   <!-- Strings for settings -->
@@ -131,7 +131,7 @@
   <!-- Label on an icon that references an uninstalled package, for which we have no information about when it might be installed. [CHAR_LIMIT=15] -->
   <string name="package_state_unknown">Desconegut</string>
   <!-- Button for abandoned promises dialog, to removes this abandoned promise icon. -->
-  <string name="abandoned_clean_this">Eliminar</string>
+  <string name="abandoned_clean_this">Elimina</string>
   <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->
   <string name="abandoned_search">Cercar</string>
   <!-- Title for abandoned promise dialog. -->
@@ -139,7 +139,7 @@
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
   <string name="abandoned_promise_explanation">L\'aplicació d\'aquesta icona no està instal·lada. 
-Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string>
+Podeu suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string>
   <!-- Title for an app which is being downloaded. -->
   <string name="app_downloading_title"><xliff:g example="Missatger" id="name">%1$s</xliff:g> baixant, <xliff:g example="30%" id="progress">%2$s</xliff:g> acabada</string>
   <!-- Title for an app whose download has been started. -->
@@ -176,23 +176,23 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
   <string name="action_move_to_workspace">Desplaça a la pantalla d\'inici</string>
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
-  <string name="action_move_screen_left">Desplaça pantalla a l\'esquerra</string>
+  <string name="action_move_screen_left">Desplaça la pantalla cap a l\'esquerra</string>
   <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
-  <string name="action_move_screen_right">Desplaça pantalla a la dreta</string>
+  <string name="action_move_screen_right">Desplaça la pantalla cap a la dreta</string>
   <!-- Accessibility confirmation when a screen was moved. -->
   <string name="screen_moved">S\'ha desplaçat la pantalla</string>
   <!-- Accessibility action to resize a widget. [CHAR_LIMIT=30] -->
-  <string name="action_resize">Redimensionar</string>
+  <string name="action_resize">Canvia la mida</string>
   <!-- Accessibility action to increase width of a widget. [CHAR_LIMIT=30] -->
   <string name="action_increase_width">Augmenta l\'amplada</string>
   <!-- Accessibility action to increase height of a widget. [CHAR_LIMIT=30] -->
-  <string name="action_increase_height">Aumentar la altura</string>
+  <string name="action_increase_height">Augmenta l\'alçada</string>
   <!-- Accessibility action to decrease width of a widget. [CHAR_LIMIT=30] -->
   <string name="action_decrease_width">Redueix l\'amplada</string>
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
   <string name="action_decrease_height">Redueix l\'alçada</string>
   <!-- Accessibility confirmation for widget resize. -->
-  <string name="widget_resized">S\'ha canviat la mida del widget a l\'amplada <xliff:g id="NUMBER_0">%1$s</xliff:g> i l\'alçada <xliff:g id="NUMBER_1">%2$s</xliff:g></string>
+  <string name="widget_resized">S\'ha canviat la mida del giny a l\'amplada <xliff:g example="2" id="number">%1$d</xliff:g> i alçada <xliff:g example="1" id="number">%2$d</xliff:g></string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
   <string name="action_deep_shortcut">Dreceres</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
@@ -222,9 +222,9 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
          e.g. "Wallpaper 3 of 10" -->
   <string name="wallpaper_accessibility_name">Fons de pantalla %1$d de %2$d</string>
   <!-- Accessibility string used to announce that a wallpaper has been selected. -->
-  <string name="announce_selection">S\'ha seleccionat <xliff:g id="LABEL">%1$s</xliff:g>.</string>
+  <string name="announce_selection">S\'ha seleccionat <xliff:g example="Wallpaper 3 of 10" id="label">%1$s</xliff:g></string>
   <!-- Label on button to delete wallpaper(s) -->
-  <string name="wallpaper_delete">Eliminar</string>
+  <string name="wallpaper_delete">Elimina</string>
   <!-- Label on button in Wallpaper Picker to pick an image -->
   <string name="pick_image">Les meves fotos</string>
   <!-- Option in "Select wallpaper from" dialog box -->
@@ -245,10 +245,10 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <string name="notifications_header">Notificacions</string>
   <string name="widgets_bottom_sheet_title">%1$s ginys</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair és un app launcher creada per fins a Kottmann (àlies deletescape). Es basa en Launcher3 de AOSP.</string>
+  <string name="about_text">Lawnchair és una aplicació llançador creada per Kottmann (àlies deletescape). Es basa en Launcher3 d\'AOSP.</string>
   <string name="about_title">Quant a</string>
   <string name="about_pref_summary">Coneixeu l\'equip de Lawnchair</string>
-  <string name="changelog_title">Registre de canvis per al muntatge #%d</string>
+  <string name="changelog_title">Registre de canvis per a la compilació #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Paquet d\'icones</string>
   <string name="icon_pack_preference_summary">Seleccioneu un paquet d\'icones</string>
@@ -258,111 +258,111 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <string name="hotseat_uses_extracted_colors_pref_on">La barra d\'aplicacions es tintarà a partir del fons de pantalla</string>
   <string name="hotseat_uses_extracted_colors_pref_off">La barra d\'aplicacions es tintarà en gris, però en funció de la brillantor del fons de pantalla</string>
   <string name="transparent_hotseat_pref_title">Barra d\'aplicacions transparent</string>
-  <string name="dynamic_ui_pref_title">Extreure el color d\'èmfasi de paper d\'empaperar</string>
-  <string name="blur_pref_title">Habilitar el difuminat</string>
-  <string name="blur_pref_summary">Aplicar l\'efecte borrós a parts de la interface\nNot compatible amb empapera en directe</string>
-  <string name="blur_radius_pref_title">Difuminar el radi</string>
+  <string name="dynamic_ui_pref_title">Extreu el color d\'èmfasi de paper d\'empaperar</string>
+  <string name="blur_pref_title">Activa el difuminat</string>
+  <string name="blur_pref_summary">Aplica l\'efecte borrós a parts de la interfície\nNo compatible amb fons de pantalla en moviment</string>
+  <string name="blur_radius_pref_title">Difumina el radi</string>
   <string name="pref_iconLabelsInTwoLines">Etiquetes d\'icona en dues línies</string>
   <string name="white_google_icon_pref_title">Utilitza la icona blanca de Google</string>
   <string name="hide_icon_labels_pref_title">Amaga les etiquetes de les icones de la pantalla d\'inici</string>
   <string name="hide_all_apps_icon_labels_pref_title">Amaga les etiquetes de les icones al calaix</string>
   <string name="workspace_label_color_hue_pref_title">Color de les etiquetes de les icones a la pantalla d\'inici</string>
   <string name="all_apps_opacity_pref_title">Opacitat del calaix</string>
-  <string name="num_cols_pref_title">Nombre de columnes</string>
-  <string name="num_rows_pref_title">Nombre de files</string>
-  <string name="num_hotseat_icons_pref_title">Nombre d\'icones a la barra d\'aplicacions</string>
+  <string name="num_cols_pref_title">Número de columnes</string>
+  <string name="num_rows_pref_title">Número de files</string>
+  <string name="num_hotseat_icons_pref_title">Número d\'icones a la barra d\'aplicacions</string>
   <string name="icon_scale_pref_title">Escala d\'icona</string>
   <string name="hotseat_height_scale">Escala d\'alçada</string>
   <string name="icon_text_scale_pref_title">Color del text de la icona</string>
   <string name="icon_text_padding_scale_pref_title">Escala de farciment d\'icona</string>
-  <string name="full_width_width_widgets_pref_title">Widgets d\'amplada completa</string>
-  <string name="full_width_widgets_pref_summary">Permet que els widgets apareguin ocupant tota l\'amplada</string>
+  <string name="full_width_width_widgets_pref_title">Ginys d\'amplada completa</string>
+  <string name="full_width_widgets_pref_summary">Permet que els ginys apareguin ocupant tota l\'amplada</string>
   <string name="notification_access_pref_title">Distintius de notificació i previsualització</string>
-  <string name="notification_access_pref_summary">Permet a Lawnchair accedir a les teves notificacions per habilitar aquesta característica</string>
+  <string name="notification_access_pref_summary">Permet a Lawnchair accedir a les vostres notificacions per activar aquesta característica</string>
   <string name="general_pref_title">General</string>
-  <string name="dock_pref_title">Barra de aplicação</string>
-  <string name="app_drawer_pref_title">Gaveta de aplicativos</string>
-  <string name="pixel_ui_pref_title">Pixel UI</string>
+  <string name="dock_pref_title">Barra d\'aplicacions</string>
+  <string name="app_drawer_pref_title">Calaix d\'aplicacions</string>
+  <string name="pixel_ui_pref_title">Tema</string>
   <string name="behavior_pref_title">Comportament</string>
   <string name="debug_pref_title">Depuració</string>
-  <string name="general_pref_summary">Pantalla d\'inici, dock i llistat d\'aplicacions</string>
-  <string name="dock_pref_summary">Personalize sua barra de aplicativos</string>
-  <string name="app_drawer_pref_summary">Personalize sua página de aplicativos</string>
-  <string name="pixel_ui_pref_summary">Habilita característiques exclusives de Pixel Launcher</string>
-  <string name="backup_pref_title">Còpia de seguretat</string>
-  <string name="behavior_pref_summary">Canvia el comportament de Lawnchair</string>
-  <string name="backup_pref_summary">Fer una còpia de la base de dades i la configuració</string>
-  <string name="debug_pref_summary">Reiniciar o reconstruïr la base de dades d\'icones</string>
+  <string name="general_pref_summary">Personalitzeu l\'escriptori</string>
+  <string name="dock_pref_summary">Personalitzeu la barra d\'aplicacions</string>
+  <string name="app_drawer_pref_summary">Personalitzeu el calaix de d\'aplicacions</string>
+  <string name="pixel_ui_pref_summary">Personalitza diferents elements</string>
+  <string name="backup_pref_title">Còpia de seguretat i restauració</string>
+  <string name="behavior_pref_summary">Canvia el comportament del Lawnchair</string>
+  <string name="backup_pref_summary">Còpia de seguretat/restauració de la configuració i la base de dades</string>
+  <string name="debug_pref_summary">Reinicia o reconstrueix la base de dades d\'icones</string>
   <string name="show_pixel_bar_pref_title">Mostra la barra superior de Pixel</string>
   <string name="use_wide_searchbar_pref_title">Utilitza la barra de cerca àmplia</string>
   <string name="show_mic_pref_title">Mostra el botó de cerca del Google Assistant</string>
   <string name="use_round_searhbar">Utilitza la barra de cerca d\'aplicacions circular</string>
-  <string name="pixel_style_icons_pref_title">Utilitzar icones de Pixel</string>
-  <string name="pixel_style_icons_pref_summary">Quan les icones circulars estiguin activades seran utilitzades on sigui possible</string>
-  <string name="show_google_now_tab_pref_title">Mostrar pàgina de Google Now</string>
-  <string name="restart_lawnchair_pref_title">Reiniciar Lawnchair</string>
-  <string name="restart_lawnchair_pref_summary">Pot ser útil si algunes opcions no estan ben aplicades</string>
-  <string name="rebuild_icondb_pref_title">Reconstruïr base de dades d\'icones</string>
+  <string name="pixel_style_icons_pref_title">Utilitza icones Pixel</string>
+  <string name="pixel_style_icons_pref_summary">Quan s\'activin les icones circulars, es faran servir quan sigui possible</string>
+  <string name="show_google_now_tab_pref_title">Mostrar la pàgina de Google Now</string>
+  <string name="restart_lawnchair_pref_title">Reinicia el Lawnchair</string>
+  <string name="restart_lawnchair_pref_summary">Pot ser útil si algunes configuracions no s\'apliquen correctament</string>
+  <string name="rebuild_icondb_pref_title">Reconstrueix la base de dades d\'icones</string>
   <string name="pinch_to_overview_pref_title">Prem per previsualitzar</string>
-  <string name="pinch_to_overview_pref_summary">Fes clic a la pàgina d\'inici per obrir la vista general</string>
+  <string name="pinch_to_overview_pref_summary">Premeu a la pàgina d\'inici per obrir la vista general</string>
   <string name="light_statusbar_pref_title">Barra d\'estat clara</string>
   <string name="light_statusbar_pref_force">La barra d\'estat mostrarà icones fosques</string>
-  <string name="light_statusbar_pref_off">La barra d\'estat mostrarà icones lluminoses</string>
-  <string name="haptic_feedback_pref_title">Activar vibració</string>
-  <string name="keep_scroll_state_pref_title">Guardeu la posició de desplaçament actual</string>
+  <string name="light_statusbar_pref_off">La barra d\'estat mostrarà icones clares</string>
+  <string name="haptic_feedback_pref_title">Activa la vibració</string>
+  <string name="keep_scroll_state_pref_title">Desa la posició del desplaçament</string>
   <string name="keep_scroll_state_pref_summary">Desa la posició de desplaçament al calaix</string>
-  <string name="home_opens_drawer_pref_title">Botó central obre la llista d\'aplicacions</string>
-  <string name="home_opens_drawer_pref_summary">Prémer el botó central en la pantalla d\'inici obrirà el llistat d\'aplicacions</string>
-  <string name="show_hidden_pref_title">Mostra apps amagades</string>
-  <string name="show_hidden_pref_on">Les aplicacions amagades es mostraran per canviar els ajustaments de visibilitat</string>
-  <string name="show_hidden_pref_off">Les aplicacions amagades no seran visibles</string>
+  <string name="home_opens_drawer_pref_title">El botó Inici obre el calaix d\'aplicacions</string>
+  <string name="home_opens_drawer_pref_summary">Prémer el botó d\'inici en la pantalla d\'inici obrirà el calaix d\'aplicacions</string>
+  <string name="show_hidden_pref_title">Mostra aplicacions ocultes</string>
+  <string name="show_hidden_pref_on">Les aplicacions amagades es mostraran per canviar la configuració de visibilitat</string>
+  <string name="show_hidden_pref_off">Les aplicacions ocultes no seran visibles</string>
   <string name="export_db_title">Base de dades</string>
   <string name="import_db_title">Base de dades</string>
   <string name="export_prefs_title">Configuració</string>
   <string name="import_prefs_title">Configuració</string>
-  <string name="notification_listener_label">Lawnchair - Medalles de notificació</string>
+  <string name="notification_listener_label">Lawnchair - Insígnies de notificació</string>
   <string name="color_extraction_label">Lawnchair - Extracció de color</string>
   <string name="test_title">Prova</string>
   <string name="visibility">Visibilitat</string>
   <string name="default_text">Per defecte</string>
-  <string name="edit_icon_reset">Reiniciar</string>
+  <string name="edit_icon_reset">Reinicia</string>
   <string name="show_top_shadow_title">Mostra les ombres superiors</string>
   <string name="pref_cat_homescreen">Pantalla d\'inici</string>
   <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Clar</string>
   <string name="theme_dark">Fosc</string>
   <string name="theme_black">Negre</string>
-  <string name="hide_hotseat_pref_title">Amaga la barra d\'aplicacions</string>
+  <string name="hide_hotseat_pref_title">Oculta la barra d\'aplicacions</string>
   <string name="all_icons">Totes les icones</string>
-  <string name="pull_down_action_pref_title">Arrosegar cap abaix</string>
+  <string name="pull_down_action_pref_title">Arrossega cap abaix</string>
   <string name="pull_down_do_nothing">No facis res</string>
   <string name="pull_down_notis">Mostra les notificacions</string>
   <string name="pull_down_search">Obre la cerca</string>
   <string name="pull_down_apps_search">Cerca aplicacions</string>
-  <string name="enable_screen_rotation">Habilita la rotació de pantalla</string>
+  <string name="enable_screen_rotation">Activa la rotació de pantalla</string>
   <!-- Import/Export Strings -->
-  <string name="backup_import_title">Importar</string>
-  <string name="backup_export_title">Exportar</string>
-  <string name="settings_export_success">Configuració recolzada amb èxit</string>
-  <string name="db_export_success">Base de dades recolzada amb èxit</string>
-  <string name="settings_import_success">Configuració restaurada amb èxit</string>
-  <string name="db_import_success">Base de dades restaurada amb èxit</string>
-  <string name="export_error">No s\'ha pogut recolçar</string>
+  <string name="backup_import_title">Restaura</string>
+  <string name="backup_export_title">Còpia de seguretat</string>
+  <string name="settings_export_success">La còpia de la configuració s\'ha realitzat amb èxit</string>
+  <string name="db_export_success">La còpia de la base de dades s\'ha realitzat amb èxit</string>
+  <string name="settings_import_success">La configuració s\'ha restaurat amb èxit</string>
+  <string name="db_import_success">La base de dades s\'ha restaurat amb èxit</string>
+  <string name="export_error">No s\'ha pogut fer la còpia de seguretat</string>
   <string name="import_error">No s\'ha pogut restaurar</string>
   <string name="imexport_no_backup_found">No s\'ha trobat cap còpia de seguretat</string>
-  <string name="imexport_external_storage_unreadable">No es pot llegir l\'emmagatzematge extern (doneu permís de lectura a la configuració)</string>
-  <string name="imexport_external_storage_unwritable">No es pot escriure a l\'emmagatzematge extern (doneu permís d\'escriptura a la configuració)</string>
-  <string name="units_metric">Mètrica</string>
+  <string name="imexport_external_storage_unreadable">Feu que l\'emmagatzematge extern es pugui llegir a la Configuració</string>
+  <string name="imexport_external_storage_unwritable">Feu que l\'emmagatzematge extern es pugui escriure a la Configuració</string>
+  <string name="units_metric">Mètric</string>
   <string name="units_imperial">Imperial</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
-  <string name="pref_cat_weather">Temps</string>
-  <string name="pref_weather_title">Habilita el temps</string>
-  <string name="pref_weather_units">Unitats de temperatura</string>
+  <string name="pref_cat_weather">El temps</string>
+  <string name="pref_weather_title">Activa el temps</string>
+  <string name="pref_weather_units">Unitats meteorològiques</string>
   <string name="pref_weather_city_summary">Per a millors resultats introduïu el codi del país</string>
-  <string name="pref_weather_city_title">Localitat</string>
+  <string name="pref_weather_city_title">Ciutat</string>
   <string name="none">Cap</string>
   <string name="pref_applyTheme">Aplica el tema</string>
-  <string name="pref_applyBlur">Aplica difuminat</string>
+  <string name="pref_applyBlur">Aplica el difuminat a</string>
   <string name="search_bar">Barra de cerca</string>
   <string name="folder">Carpeta</string>
   <string name="dock_allapps"><![CDATA[Barra d'aplicacions i calaix]]></string>
@@ -370,43 +370,43 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <string name="blur_effect">Efecte difuminat</string>
   <string name="pref_weather_provider">Proveïdor del temps</string>
   <string name="loading">S\'està carregant…</string>
-  <string name="icon_shape_override_label">Canvia la forma de les icones</string>
-  <string name="icon_shape_system_default">No canvieu</string>
+  <string name="icon_shape_override_label">Forma de la icona</string>
+  <string name="icon_shape_system_default">No canviis</string>
   <string name="icon_shape_none">Cap</string>
   <string name="icon_shape_square">Quadrat</string>
   <string name="icon_shape_rounded_square">Quadrat arrodonit</string>
-  <string name="icon_shape_squircle">Squircle</string>
+  <string name="icon_shape_squircle">Vores arrodonides</string>
   <string name="icon_shape_circle">Cercle</string>
   <string name="icon_shape_teardrop">Llàgrima</string>
   <string name="animated_clock_icon_title">Icona del rellotge animada</string>
-  <string name="animated_clock_icon_alternative_clock_apps_title">Animar rellotge alternativa apps</string>
-  <string name="animated_clock_icon_alternative_clock_apps_summary">Permetre això si no utilitzes Google rellotge com el seu app de rellotge d\'omissió</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Anima les aplicacions de rellotge alternatives</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Activeu-ho si no feu servir Rellotge de Google com l\'aplicació de rellotge predeterminada</string>
   <string name="about_summary_title">Resum</string>
   <string name="about_version">Versió</string>
   <string name="about_icon_designer">Dissenyador/a de la icona de l\'aplicació</string>
   <string name="about_contributors_title">Col·laboradors</string>
-  <string name="location_permission_warn">Permís de localització necessari per canviar a un altre proveïdor!</string>
-  <string name="num_cols_drawer_pref_title">Nombre de columnes en el calaix</string>
-  <string name="shortcut_backport_warning">Això podria ser lent, utilitza-ho sota el teu propi risc</string>
-  <string name="pref_backport_shortcuts">Adaptació retroactiva d\'accesos rapids</string>
+  <string name="location_permission_warn">El permís d\'ubicació és obligatori per canviar a un altre proveïdor!</string>
+  <string name="num_cols_drawer_pref_title">Número de columnes en el calaix</string>
+  <string name="shortcut_backport_warning">Això podria ser lent, utilitzeu-ho sota el vostre propi risc</string>
+  <string name="pref_backport_shortcuts">Adaptació retroactiva de dreceres</string>
   <string name="weather_api_key_not_set">Clau d\'API no establerta</string>
   <string name="pref_weather_api_key_title">Clau d\'API</string>
   <string name="about_changelog">Registre de canvis</string>
   <string name="pref_all_apps_custom_label_color">Utilitza els colors personalitzats</string>
   <string name="pref_all_apps_label_color">Color de les etiquetes de les aplicacions al llistat</string>
-  <string name="pref_num_rows_drawer">Nombre de files del llistat d\'aplicacions</string>
+  <string name="pref_num_rows_drawer">Número de files del llistat d\'aplicacions</string>
   <string name="center_wallpaper_pref_title">Centra el fons de pantalla quan només hi ha una pàgina</string>
-  <string name="vertical_drawer_layout_pref_title">Mostrar com a llista vertical</string>
+  <string name="vertical_drawer_layout_pref_title">Mostra com a llista vertical</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
-  <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
+  <string name="full_wday_month_day_no_year">EEEE, d MMMM</string>
   <string name="about_translators">Traductors</string>
   <string name="lock_desktop">Bloqueja l\'escriptori</string>
   <string name="lawnfeed_not_found">No s\'han instal·lat els paquets</string>
-  <string name="google_app_not_found">Aplicació de google no instal·lada</string>
+  <string name="google_app_not_found">Aplicació de Google no instal·lada</string>
   <string name="lawnfeed_incompatible">S\'ha instal·lat una versió de Lawnfeed incompatible</string>
-  <string name="set_default_launcher">Estableix llançador predeterminat</string>
-  <string name="enable_spring_pref_title">Ativar efeito de mola</string>
+  <string name="set_default_launcher">Estableix el llançador predeterminat</string>
+  <string name="enable_spring_pref_title">Activa l\'efecte primavera</string>
   <string name="hide_app">Amaga l\'aplicació</string>
   <string name="hide_app_sum">Amaga l\'aplicació del calaix</string>
   <string name="hide_app_selected">&#160;seleccionada</string>
@@ -414,14 +414,6 @@ Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment.    </string
   <string name="hide_app_apply">Aplica</string>
   <string name="unauthorized_device">Aquest dispositiu té instal·lades algunes eines de pirateria. Desinstal·leu-les per continuar.</string>
   <string name="hide_app_reset">Reinicia</string>
-  <!-- Strings for Lawnfeed gesture popup -->
-  <string name="lawnfeed_not_enabled_title">Lawnfeed no està activat</string>
-  <string name="lawnfeed_not_enabled">Sembla que esteu intentant obrir la pàgina de Google Now, però no heu activat l\'opció en la configuració del comportament.\n\n Voleu activar-la ara?</string>
-  <string name="lawnfeed_not_installed_title">Lawnfeed no està instal·lat</string>
-  <string name="lawnfeed_not_installed">Sembla que esteu intentant obrir la pàgina de Google Now, però no heu instal·lat l\'aplicació Lawnfeed del nostre lloc web.\n\nVoleu baixar-la ara?</string>
-  <string name="lawnfeed_outdated_title">Cal actualitzar Lawnfeed</string>
-  <string name="lawnfeed_outdated">Es necessita una versió més nova de Lawnfeed per funcionar amb aquesta versió de Lawnchair.\n\nAbans d\'instal·lar l\'actualització, probablement haureu de desinstal·lar la versió actual de Lawnfeed.\n\nVoleu baixar-la ara?</string>
-  <string name="disable_popup">No tornis a mostrar-ho</string>
   <string name="two_row_dock">Barra d\'aplicacions de dues files</string>
   <string name="reset_alternative_icons_title">Voleu restablir les icones d\'aplicacions alternatives?</string>
   <string name="reset_alternative_icons">Teniu %1$d aplicacions amb icones alternatives, voleu reiniciar-les?</string>
