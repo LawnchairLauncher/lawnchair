@@ -398,5 +398,4 @@
   <string name="lawnfeed_not_found">لاونفيد غير مثبت</string>
   <string name="google_app_not_found">تطبيق غوغل غير مثبت</string>
   <string name="set_default_launcher">تعيين كمتصفح البرامج الإفتراضي</string>
-  <!-- Strings for Lawnfeed gesture popup -->
 </resources>
