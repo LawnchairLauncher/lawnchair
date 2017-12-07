@@ -21,7 +21,6 @@ import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
@@ -32,7 +31,6 @@ import android.view.accessibility.AccessibilityManager;
 
 import com.android.launcher3.LauncherState.PageAlphaProvider;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
-import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 
@@ -112,9 +110,9 @@ public class WorkspaceStateTransitionAnimation {
     }
 
     public void setStateWithAnimation(LauncherState toState, AnimatorSetBuilder builder,
-            AnimationLayerSet layerViews, AnimationConfig config) {
+            AnimationConfig config) {
         AnimatedPropertySetter propertySetter =
-                new AnimatedPropertySetter(config.duration, layerViews, builder);
+                new AnimatedPropertySetter(config.duration, builder);
         setWorkspaceProperty(toState, propertySetter);
     }
 
@@ -190,13 +188,10 @@ public class WorkspaceStateTransitionAnimation {
     public static class AnimatedPropertySetter extends PropertySetter {
 
         private final long mDuration;
-        private final AnimationLayerSet mLayerViews;
         private final AnimatorSetBuilder mStateAnimator;
 
-        public AnimatedPropertySetter(
-                long duration, AnimationLayerSet layerView, AnimatorSetBuilder builder) {
+        public AnimatedPropertySetter(long duration, AnimatorSetBuilder builder) {
             mDuration = duration;
-            mLayerViews = layerView;
             mStateAnimator = builder;
         }
 
@@ -211,7 +206,6 @@ public class WorkspaceStateTransitionAnimation {
             }
 
             anim.setDuration(mDuration).setInterpolator(getFadeInterpolator(alpha));
-            mLayerViews.addView(view);
             mStateAnimator.play(anim);
         }
 

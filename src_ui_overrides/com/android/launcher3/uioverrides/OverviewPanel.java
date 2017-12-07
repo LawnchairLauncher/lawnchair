@@ -36,7 +36,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceStateTransitionAnimation.AnimatedPropertySetter;
 import com.android.launcher3.WorkspaceStateTransitionAnimation.PropertySetter;
-import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
@@ -168,9 +167,9 @@ public class OverviewPanel extends LinearLayout implements Insettable, View.OnCl
     }
 
     @Override
-    public void setStateWithAnimation(LauncherState toState, AnimationLayerSet layerViews,
+    public void setStateWithAnimation(LauncherState toState,
             AnimatorSetBuilder builder, AnimationConfig config) {
-        setState(toState, new AnimatedPropertySetter(config.duration, layerViews, builder));
+        setState(toState, new AnimatedPropertySetter(config.duration, builder));
     }
 
     private void setState(LauncherState state, PropertySetter setter) {

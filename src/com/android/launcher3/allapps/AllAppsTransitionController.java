@@ -18,7 +18,6 @@ import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
@@ -122,7 +121,7 @@ public class AllAppsTransitionController
      * @param progress value between 0 and 1, 0 shows all apps and 1 shows workspace
      *
      * @see #setState(LauncherState)
-     * @see #setStateWithAnimation(LauncherState, AnimationLayerSet, AnimatorSetBuilder, AnimationConfig)
+     * @see #setStateWithAnimation(LauncherState, AnimatorSetBuilder, AnimationConfig)
      */
     public void setProgress(float progress) {
         mProgress = progress;
@@ -167,7 +166,7 @@ public class AllAppsTransitionController
      * dependent UI using various animation events
      */
     @Override
-    public void setStateWithAnimation(LauncherState toState, AnimationLayerSet layerViews,
+    public void setStateWithAnimation(LauncherState toState,
             AnimatorSetBuilder builder, AnimationConfig config) {
         if (Float.compare(mProgress, toState.verticalProgress) == 0) {
             // Fail fast

@@ -24,7 +24,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.LauncherStateManager.StateHandler;
-import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
@@ -54,7 +53,7 @@ public class RecentsViewStateController implements StateHandler {
     }
 
     @Override
-    public void setStateWithAnimation(LauncherState toState, AnimationLayerSet layerViews,
+    public void setStateWithAnimation(LauncherState toState,
             AnimatorSetBuilder builder, AnimationConfig config) {
         ObjectAnimator progressAnim =
                 mTransitionProgress.animateToValue(toState == LauncherState.OVERVIEW ? 1 : 0);

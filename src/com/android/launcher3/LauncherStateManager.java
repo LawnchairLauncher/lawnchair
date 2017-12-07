@@ -25,7 +25,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 
-import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
@@ -212,15 +211,12 @@ public class LauncherStateManager {
 
     protected AnimatorSet createAnimationToNewWorkspaceInternal(final LauncherState state,
             AnimatorSetBuilder builder, final Runnable onCompleteRunnable) {
-        final AnimationLayerSet layerViews = new AnimationLayerSet();
-
         for (StateHandler handler : getStateHandlers()) {
             builder.startTag(handler);
-            handler.setStateWithAnimation(state, layerViews, builder, mConfig);
+            handler.setStateWithAnimation(state, builder, mConfig);
         }
 
         final AnimatorSet animation = builder.build();
-        animation.addListener(layerViews);
         animation.addListener(new AnimationSuccessListener() {
 
             @Override
@@ -339,7 +335,7 @@ public class LauncherStateManager {
         /**
          * Sets the UI to {@param state} by animating any changes.
          */
-        void setStateWithAnimation(LauncherState toState, AnimationLayerSet layerViews,
+        void setStateWithAnimation(LauncherState toState,
                 AnimatorSetBuilder builder, AnimationConfig config);
     }
 
