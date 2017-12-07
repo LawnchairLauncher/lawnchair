@@ -1130,7 +1130,11 @@ public class Launcher extends Activity
 
         if (mSnowfallEnabled) {
             Log.d(TAG, "inflating snowfall");
-            getLayoutInflater().inflate(mPlanesEnabled ? R.layout.snowfall_planes : R.layout.snowfall, (ViewGroup) findViewById(R.id.launcher_background), true);
+            if (!Utilities.isBlacklistedAppInstalled(this)) {
+                getLayoutInflater().inflate(mPlanesEnabled ? R.layout.snowfall_planes : R.layout.snowfall, (ViewGroup) findViewById(R.id.launcher_background), true);
+            } else {
+                getLayoutInflater().inflate(R.layout.snowfall_smiles, (ViewGroup) findViewById(R.id.launcher_background), true);
+            }
         }
 
         if (mPlanesEnabled) {
