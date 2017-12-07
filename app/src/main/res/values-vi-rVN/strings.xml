@@ -412,14 +412,6 @@
   <string name="hide_app_apply">Áp dụng</string>
   <string name="unauthorized_device">Có một vài công cụ sao chép trái phép được cài đặt trên thiết bị này. Vui lòng gỡ cài đặt chúng để tiếp tục.</string>
   <string name="hide_app_reset">Khôi phục</string>
-  <!-- Strings for Lawnfeed gesture popup -->
-  <string name="lawnfeed_not_enabled_title">Chưa kích hoạt Lawnfeed</string>
-  <string name="lawnfeed_not_enabled">Dường như bạn đang cố mở Google Now, nhưng bạn chưa bật tùy chọn này trong cài đặt hành vi.\n\nBạn có muốn bật nó bây giờ không?</string>
-  <string name="lawnfeed_not_installed_title">Chưa cài đặt Lawnfeed</string>
-  <string name="lawnfeed_not_installed">Dường như bạn đang cố mở Google Now, nhưng bạn chưa cài đặt ứng dụng Lawnfeed từ trang web của chúng tôi.\n\nBạn có muốn tải xuống ngay bây giờ không?</string>
-  <string name="lawnfeed_outdated_title">Cần cập nhật Lawnfeed</string>
-  <string name="lawnfeed_outdated">Bạn cần một phiên bản mới hơn của Lawnfeed để làm việc với phiên bản này của Lawnchair.\n\nTrước khi cài đặt bản cập nhật, bạn có thể cần phải gỡ bỏ cài đặt phiên bản Lawnfeed hiện tại.\n\nBạn có muốn tải xuống bây giờ không?</string>
-  <string name="disable_popup">Không hiển thị lại</string>
   <string name="two_row_dock">Hai hàng dock</string>
   <string name="reset_alternative_icons_title">Đặt lại những biểu tượng ứng dụng bị thay đổi?</string>
   <string name="reset_alternative_icons">Bạn có %1$d biểu tượng ứng dụng bị thay đổi, bạn có muốn đặt lại chúng không?</string>
