@@ -410,10 +410,6 @@
   <string name="hidden_app">Piilotettu sovellus</string>
   <string name="hide_app_apply">Käytä</string>
   <string name="hide_app_reset">Nollaa</string>
-  <!-- Strings for Lawnfeed gesture popup -->
-  <string name="lawnfeed_not_enabled_title">Lawnfeed ei ole käytössä</string>
-  <string name="lawnfeed_not_installed_title">Lawnfeed ei ole asennettu</string>
-  <string name="disable_popup">Älä Näytä uudelleen</string>
   <string name="two_row_dock">Kahden rivin telakka</string>
   <string name="reset_alternative_icons_title">Nollaa vaihtoehtoiset sovelluskuvakkeet?</string>
 </resources>
