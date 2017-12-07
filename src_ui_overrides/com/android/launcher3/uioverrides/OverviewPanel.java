@@ -17,7 +17,6 @@ package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.WorkspaceStateTransitionAnimation.NO_ANIM_PROPERTY_SETTER;
 
-import android.animation.AnimatorSet;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -38,6 +37,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceStateTransitionAnimation.AnimatedPropertySetter;
 import com.android.launcher3.WorkspaceStateTransitionAnimation.PropertySetter;
 import com.android.launcher3.anim.AnimationLayerSet;
+import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.widget.WidgetsFullSheet;
@@ -169,8 +169,8 @@ public class OverviewPanel extends LinearLayout implements Insettable, View.OnCl
 
     @Override
     public void setStateWithAnimation(LauncherState toState, AnimationLayerSet layerViews,
-            AnimatorSet anim, AnimationConfig config) {
-        setState(toState, new AnimatedPropertySetter(config.duration, layerViews, anim));
+            AnimatorSetBuilder builder, AnimationConfig config) {
+        setState(toState, new AnimatedPropertySetter(config.duration, layerViews, builder));
     }
 
     private void setState(LauncherState state, PropertySetter setter) {
