@@ -487,11 +487,12 @@
     <string name="reset_alternative_icons_title">Reset alternative app icons?</string>
     <string name="reset_alternative_icons">You have %1$d apps with alternative icons, do you want to reset them?</string>
     <string name="error_no_browser">No activity found to handle URLs</string>
-    <string name="pref_cat_special">Special settings</string>
-    <string name="snowfall_title">Enable Snowfall on home screen</string>
-    <string name="snowfall_summary">Can cause performance issues.</string>
+    <string name="snowfall_title">Snowfall</string>
+    <string name="snowfall_pref_summary">IT\'S WINTER MY DUDES</string>
+    <string name="enable_snowfall_title">Enable Snowfall on home screen</string>
+    <string name="enable_snowfall_summary">Can cause performance issues.</string>
     <string name="snowfall_enabled">\"Let it snow, let it snow, let it snow!\"</string>
-	
+
 	<string name="lawnfeed_outdated_title">Lawnfeed update required</string>
     <string name="lawnfeed_outdated">A newer version of Lawnfeed is required in order to work with this version of Lawnchair.\n\nBefore installing the update you will probably need to uninstall the current version of Lawnfeed.\n\nDo you want to download it now?</string>
 </resources>
