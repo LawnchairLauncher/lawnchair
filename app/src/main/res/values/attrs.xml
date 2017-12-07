@@ -155,13 +155,11 @@
 
     <!-- SnowfallView snowflake attributes -->
     <declare-styleable name="SnowfallView">
-        <attr name="snowflakesNum" format="integer"/>
         <attr name="snowflakeAlphaMin" format="integer"/>
         <attr name="snowflakeAlphaMax" format="integer"/>
         <attr name="snowflakeAngleMax" format="integer"/>
         <attr name="snowflakeSizeMin" format="dimension"/>
         <attr name="snowflakeSizeMax" format="dimension"/>
-        <attr name="snowflakeSizeScale" format="float" />
         <attr name="snowflakeSpeedMin" format="integer"/>
         <attr name="snowflakeSpeedMax" format="integer"/>
         <attr name="snowflakeRotation" format="float" />

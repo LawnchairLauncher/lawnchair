@@ -160,5 +160,13 @@
         <item>M50,0A50,50,0,0 1 100,50 L100,85 A15,15,0,0 1 85,100 L50,100 A50,50,0,0 1 50,0z</item>
     </array>
 
+    <string-array name="snowflakesNumValues">
+        <item>100</item>
+        <item>150</item>
+        <item>200</item>
+        <item>250</item>
+        <item>300</item>
+    </string-array>
+
     <string name="generalDefault" translatable="false">default</string>
 </resources>

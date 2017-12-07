@@ -29,9 +29,11 @@ object PreferenceFlags {
     const val KEY_PREF_ALL_APPS_ICON_SCALE = "pref_allAppsIconScale"
     const val KEY_PREF_ALL_APPS_ICON_TEXT_SCALE = "pref_allAppsIconTextScale"
     const val KEY_PREF_ALL_APPS_ICON_PADDING_SCALE = "pref_allAppsIconPaddingScale"
+    const val KEY_PREF_SNOWFLAKE_SIZE_SCALE = "pref_snowflakeSizeScale"
 
     //Ints
     const val KEY_BLUR_MODE = "pref_blurMode"
+    const val KEY_PREF_SNOWFLAKES_NUM = "pref_snowflakesNum"
 
     // Boolean
     const val KEY_SHOW_HIDDEN = "pref_showHidden"

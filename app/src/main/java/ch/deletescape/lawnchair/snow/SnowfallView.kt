@@ -9,20 +9,18 @@ import android.util.AttributeSet
 import android.view.View
 
 import ch.deletescape.lawnchair.R
-import java.util.*
+import ch.deletescape.lawnchair.Utilities
 
 /**
  * Copyright (C) 2016 JetRadar, licensed under Apache License 2.0
  * https://github.com/JetradarMobile/android-snowfall/
  */
 class SnowfallView(context: Context, attrs: AttributeSet) : View(context, attrs) {
-    private val DEFAULT_SNOWFLAKES_NUM = 200
     private val DEFAULT_SNOWFLAKE_ALPHA_MIN = 150
     private val DEFAULT_SNOWFLAKE_ALPHA_MAX = 250
     private val DEFAULT_SNOWFLAKE_ANGLE_MAX = 10
     private val DEFAULT_SNOWFLAKE_SIZE_MIN_IN_DP = 2
     private val DEFAULT_SNOWFLAKE_SIZE_MAX_IN_DP = 8
-    private val DEFAULT_SNOWFLAKE_SIZE_SCALE = 1f
     private val DEFAULT_SNOWFLAKE_SPEED_MIN = 2
     private val DEFAULT_SNOWFLAKE_SPEED_MAX = 8
     private val DEFAULT_SNOWFLAKE_ROTATION = 45f
@@ -50,13 +48,13 @@ class SnowfallView(context: Context, attrs: AttributeSet) : View(context, attrs)
         val attrs = context.obtainStyledAttributes(attrs, R.styleable.SnowfallView)
 
         try {
-            snowflakesNum = attrs.getInt(R.styleable.SnowfallView_snowflakesNum, DEFAULT_SNOWFLAKES_NUM)
+            snowflakesNum = Utilities.getPrefs(context).snowflakesNum.toInt()
             snowflakeAlphaMin = attrs.getInt(R.styleable.SnowfallView_snowflakeAlphaMin, DEFAULT_SNOWFLAKE_ALPHA_MIN)
             snowflakeAlphaMax = attrs.getInt(R.styleable.SnowfallView_snowflakeAlphaMax, DEFAULT_SNOWFLAKE_ALPHA_MAX)
             snowflakeAngleMax = attrs.getInt(R.styleable.SnowfallView_snowflakeAngleMax, DEFAULT_SNOWFLAKE_ANGLE_MAX)
             snowflakeSizeMinInPx = attrs.getDimensionPixelSize(R.styleable.SnowfallView_snowflakeSizeMin, dpToPx(DEFAULT_SNOWFLAKE_SIZE_MIN_IN_DP))
             snowflakeSizeMaxInPx = attrs.getDimensionPixelSize(R.styleable.SnowfallView_snowflakeSizeMax, dpToPx(DEFAULT_SNOWFLAKE_SIZE_MAX_IN_DP))
-            snowflakeSizeScale = attrs.getFloat(R.styleable.SnowfallView_snowflakeSizeScale, DEFAULT_SNOWFLAKE_SIZE_SCALE)
+            snowflakeSizeScale = Utilities.getPrefs(context).snowflakeSizeScale
             snowflakeSpeedMin = attrs.getInt(R.styleable.SnowfallView_snowflakeSpeedMin, DEFAULT_SNOWFLAKE_SPEED_MIN)
             snowflakeSpeedMax = attrs.getInt(R.styleable.SnowfallView_snowflakeSpeedMax, DEFAULT_SNOWFLAKE_SPEED_MAX)
             snowflakeRotation = attrs.getFloat(R.styleable.SnowfallView_snowflakeRotation, DEFAULT_SNOWFLAKE_ROTATION)
@@ -104,8 +102,8 @@ class SnowfallView(context: Context, attrs: AttributeSet) : View(context, attrs)
                 alphaMin = snowflakeAlphaMin,
                 alphaMax = snowflakeAlphaMax,
                 angleMax = snowflakeAngleMax,
-                sizeMinInPx = Math.round(snowflakeSizeMinInPx * snowflakeSizeScale),
-                sizeMaxInPx = Math.round(snowflakeSizeMaxInPx * snowflakeSizeScale),
+                sizeMinInPx = (snowflakeSizeMinInPx * snowflakeSizeScale).toInt(),
+                sizeMaxInPx = (snowflakeSizeMaxInPx * snowflakeSizeScale).toInt(),
                 speedMin = snowflakeSpeedMin,
                 speedMax = snowflakeSpeedMax,
                 fadingEnabled = snowflakesFadingEnabled,
