@@ -411,12 +411,6 @@
   <string name="hide_app_apply">Verkställ</string>
   <string name="unauthorized_device">Enheten har piratkopieringsverktyg installerat. Vänligen avinstallera dem att fortsätta.</string>
   <string name="hide_app_reset">Återställ</string>
-  <!-- Strings for Lawnfeed gesture popup -->
-  <string name="lawnfeed_not_enabled_title">Lawnfeed är inte aktiverad</string>
-  <string name="lawnfeed_not_enabled">Det ser ut som du försöker öppna sidan Google Nu, men du inte har aktiverat alternativet i beteende inställningar.\n\nVill aktivera det nu?</string>
-  <string name="lawnfeed_not_installed_title">Lawnfeed är inte installerad</string>
-  <string name="lawnfeed_not_installed">Det ser ut som du försöker öppna sidan Google Nu, men du inte har installerat appen Lawnfeed från vår hemsida.\n\nVill ladda ner den nu?</string>
-  <string name="disable_popup">Visa inte igen</string>
   <string name="two_row_dock">Tvåradig docka</string>
   <string name="reset_alternative_icons_title">Återställ alternativa appikoner?</string>
   <string name="reset_alternative_icons">Du har %1$d appar med alternativa ikoner, vill du återställa dem?</string>
