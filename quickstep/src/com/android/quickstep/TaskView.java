@@ -16,15 +16,25 @@
 
 package com.android.quickstep;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Property;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.android.launcher3.R;
-import com.android.launcher3.uioverrides.OverviewState;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.touch.SwipeDetector;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskCallbacks;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -39,11 +49,38 @@ import java.util.List;
 /**
  * A task in the Recents view.
  */
-public class TaskView extends FrameLayout implements TaskCallbacks {
+public class TaskView extends FrameLayout implements TaskCallbacks, SwipeDetector.Listener {
+
+    private static final int SWIPE_DIRECTIONS = SwipeDetector.DIRECTION_POSITIVE;
+
+    /**
+     * The task will appear fully dismissed when the distance swiped
+     * reaches this percentage of the card height.
+     */
+    private static final float SWIPE_DISTANCE_HEIGHT_PERCENTAGE = 0.38f;
+
+    private static final Property<TaskView, Float> PROPERTY_SWIPE_PROGRESS =
+            new Property<TaskView, Float>(Float.class, "swipe_progress") {
+
+                @Override
+                public Float get(TaskView taskView) {
+                    return taskView.mSwipeProgress;
+                }
+
+                @Override
+                public void set(TaskView taskView, Float progress) {
+                    taskView.setSwipeProgress(progress);
+                }
+            };
 
     private Task mTask;
     private TaskThumbnailView mSnapshotView;
     private ImageView mIconView;
+    private SwipeDetector mSwipeDetector;
+    private float mSwipeDistance;
+    private float mSwipeProgress;
+    private Interpolator mAlphaInterpolator;
+    private Interpolator mSwipeAnimInterpolator;
 
     public TaskView(Context context) {
         this(context, null);
@@ -58,6 +95,11 @@ public class TaskView extends FrameLayout implements TaskCallbacks {
         setOnClickListener((view) -> {
             launchTask(true /* animate */);
         });
+
+        mSwipeDetector = new SwipeDetector(getContext(), this, SwipeDetector.VERTICAL);
+        mSwipeDetector.setDetectableScrollConditions(SWIPE_DIRECTIONS, false);
+        mAlphaInterpolator = Interpolators.ACCEL_1_5;
+        mSwipeAnimInterpolator = Interpolators.SCROLL_CUBIC;
     }
 
     @Override
@@ -65,6 +107,15 @@ public class TaskView extends FrameLayout implements TaskCallbacks {
         super.onFinishInflate();
         mSnapshotView = findViewById(R.id.snapshot);
         mIconView = findViewById(R.id.icon);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        View p = (View) getParent();
+        mSwipeDistance = (getMeasuredHeight() - p.getPaddingTop() - p.getPaddingBottom())
+                * SWIPE_DISTANCE_HEIGHT_PERCENTAGE;
     }
 
     /**
@@ -133,5 +184,79 @@ public class TaskView extends FrameLayout implements TaskCallbacks {
     @Override
     public void onTaskWindowingModeChanged() {
         // Do nothing
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        mSwipeDetector.onTouchEvent(ev);
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        mSwipeDetector.onTouchEvent(event);
+        return mSwipeDetector.isDraggingOrSettling() || super.onTouchEvent(event);
+    }
+
+    // Swipe detector methods
+
+    @Override
+    public void onDragStart(boolean start) {
+        getParent().requestDisallowInterceptTouchEvent(true);
+    }
+
+    @Override
+    public boolean onDrag(float displacement, float velocity) {
+        setSwipeProgress(Utilities.boundToRange(displacement / mSwipeDistance,
+                allowsSwipeUp() ? -1 : 0, allowsSwipeDown() ? 1 : 0));
+        return true;
+    }
+
+    /**
+     * Indicates the page is being removed.
+     * @param progress Ranges from -1 (fading upwards) to 1 (fading downwards).
+     */
+    private void setSwipeProgress(float progress) {
+        mSwipeProgress = progress;
+        float translationY = mSwipeProgress * mSwipeDistance;
+        float alpha = 1f - mAlphaInterpolator.getInterpolation(Math.abs(mSwipeProgress));
+        // Only change children to avoid changing our properties while dragging.
+        mIconView.setTranslationY(translationY);
+        mSnapshotView.setTranslationY(translationY);
+        mIconView.setAlpha(alpha);
+        mSnapshotView.setAlpha(alpha);
+    }
+
+    private boolean allowsSwipeUp() {
+        return (SWIPE_DIRECTIONS & SwipeDetector.DIRECTION_POSITIVE) != 0;
+    }
+
+    private boolean allowsSwipeDown() {
+        return (SWIPE_DIRECTIONS & SwipeDetector.DIRECTION_NEGATIVE) != 0;
+    }
+
+    @Override
+    public void onDragEnd(float velocity, boolean fling) {
+        boolean movingAwayFromCenter = velocity < 0 == mSwipeProgress < 0;
+        boolean flingAway = fling && movingAwayFromCenter
+                && (allowsSwipeUp() && velocity < 0 || allowsSwipeDown() && velocity > 0);
+        final boolean shouldRemove = flingAway || (!fling && Math.abs(mSwipeProgress) > 0.5f);
+        float fromProgress = mSwipeProgress;
+        float toProgress = !shouldRemove ? 0f : mSwipeProgress < 0 ? -1f : 1f;
+        ValueAnimator swipeAnimator = ObjectAnimator.ofFloat(this, PROPERTY_SWIPE_PROGRESS,
+                fromProgress, toProgress);
+        swipeAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (shouldRemove) {
+                    ((RecentsView) getParent()).onTaskDismissed(TaskView.this);
+                }
+                mSwipeDetector.finishedScrolling();
+            }
+        });
+        swipeAnimator.setDuration(SwipeDetector.calculateDuration(velocity,
+                Math.abs(toProgress - fromProgress)));
+        swipeAnimator.setInterpolator(mSwipeAnimInterpolator);
+        swipeAnimator.start();
     }
 }
