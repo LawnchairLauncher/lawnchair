@@ -413,14 +413,6 @@
   <string name="hide_app_apply">Uygula</string>
   <string name="unauthorized_device">Bu cihazda birkaç korsan yazılım mevcut. Devam etmek için lütfen bunları kaldırın.</string>
   <string name="hide_app_reset">Sıfırla</string>
-  <!-- Strings for Lawnfeed gesture popup -->
-  <string name="lawnfeed_not_enabled_title">Lawnfeed etkin değil</string>
-  <string name="lawnfeed_not_enabled">Google Now sayfasını açmaya çalışıyorsunuz gibi gözüküyor, fakat davranış ayarlarındaki seçeneği etkinleştirmemişsiniz.\n\nEtkinleştirmek ister misiniz?</string>
-  <string name="lawnfeed_not_installed_title">Lawnfeed yüklü değil</string>
-  <string name="lawnfeed_not_installed">Google Now sayfasını açmaya çalışıyorsunuz gibi gözüküyor, fakat sitemizden Lawnfeed uygulamasını indirmemişsiniz.\n\nİndirmek ister misiniz?</string>
-  <string name="lawnfeed_outdated_title">Lawnfeed güncellemesi gerekli</string>
-  <string name="lawnfeed_outdated">Lawnchair\'in bu sürümüyle çalışabilmesi için Lawnfeed\'in daha yeni bir sürümü gerekiyor.\n\nGüncellemeyi yüklemeden önce muhtemelen Lawnfeed\'in mevcut sürümünü kaldırmanız gerekecektir.\n\nŞimdi indirmek istiyor musunuz?</string>
-  <string name="disable_popup">Tekrar gösterme</string>
   <string name="two_row_dock">İki satır alt panel</string>
   <string name="reset_alternative_icons_title">Alternatif ikonlar sıfırlansın mı?</string>
   <string name="reset_alternative_icons">Alternatif ikona sahip %1$d uygulamanız var, onları sıfırlamak ister misiniz?</string>
