@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.views;
+package com.android.launcher3.allapps;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -26,25 +26,39 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Themes;
 
-public class SlidingTabStrip extends LinearLayout {
+/**
+ * Supports two indicator colors, dedicated for personal and work tabs.
+ */
+public class PersonalWorkSlidingTabStrip extends LinearLayout {
+    private final Paint mPersonalTabIndicatorPaint;
+    private final Paint mWorkTabIndicatorPaint;
 
-    private final Paint mSelectedIndicatorPaint;
     private int mSelectedIndicatorHeight;
     private int mIndicatorLeft = -1;
     private int mIndicatorRight = -1;
     private int mSelectedPosition = 0;
     private float mSelectionOffset;
+    private boolean mIsRtl;
 
-    public SlidingTabStrip(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public PersonalWorkSlidingTabStrip(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setOrientation(HORIZONTAL);
         setWillNotDraw(false);
-        mSelectedIndicatorPaint = new Paint();
-        mSelectedIndicatorPaint.setColor(Themes.getAttrColor(context, android.R.attr.colorAccent));
-        mSelectedIndicatorHeight = getResources()
-                .getDimensionPixelSize(R.dimen.all_apps_tabs_indicator_height);
+
+        mSelectedIndicatorHeight =
+                getResources().getDimensionPixelSize(R.dimen.all_apps_tabs_indicator_height);
+
+        mPersonalTabIndicatorPaint = new Paint();
+        mPersonalTabIndicatorPaint.setColor(
+                Themes.getAttrColor(context, android.R.attr.colorAccent));
+
+        mWorkTabIndicatorPaint = new Paint();
+        mWorkTabIndicatorPaint.setColor(getResources().getColor(R.color.work_profile_color));
+
+        mIsRtl = Utilities.isRtl(getResources());
     }
 
     public void updateIndicatorPosition(int position, float positionOffset) {
@@ -54,7 +68,7 @@ public class SlidingTabStrip extends LinearLayout {
     }
 
     public void updateTabTextColor(int pos) {
-        for (int i=0; i < getChildCount(); i++) {
+        for (int i = 0; i < getChildCount(); i++) {
             Button tab = (Button) getChildAt(i);
             tab.setSelected(i == pos);
         }
@@ -101,7 +115,20 @@ public class SlidingTabStrip extends LinearLayout {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawRect(mIndicatorLeft, getHeight() - mSelectedIndicatorHeight,
-                mIndicatorRight, getHeight(), mSelectedIndicatorPaint);
+
+        final float middleX = getWidth() / 2.0f;
+        if (mIndicatorLeft <= middleX) {
+            canvas.drawRect(mIndicatorLeft, getHeight() - mSelectedIndicatorHeight,
+                    middleX, getHeight(), getPaint(true /* firstHalf */));
+        }
+        if (mIndicatorRight > middleX) {
+            canvas.drawRect(middleX, getHeight() - mSelectedIndicatorHeight,
+                    mIndicatorRight, getHeight(), getPaint(false /* firstHalf */));
+        }
+    }
+
+    private Paint getPaint(boolean firstHalf) {
+        boolean isPersonal = mIsRtl ^ firstHalf;
+        return isPersonal ? mPersonalTabIndicatorPaint : mWorkTabIndicatorPaint;
     }
 }
