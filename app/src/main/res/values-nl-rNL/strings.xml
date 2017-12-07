@@ -402,5 +402,4 @@
   <string name="set_default_launcher">Standaard launcher instellen</string>
   <string name="enable_spring_pref_title">Veereffect inschakelen</string>
   <string name="unauthorized_device">Op dit toestel zijn enkele piraat applicaties geinstalleerd. Gelieve deze te de-installeren om verder te gaan.</string>
-  <!-- Strings for Lawnfeed gesture popup -->
 </resources>
