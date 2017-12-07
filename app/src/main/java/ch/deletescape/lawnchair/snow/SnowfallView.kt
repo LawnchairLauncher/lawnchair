@@ -24,11 +24,11 @@ class SnowfallView(context: Context, attrs: AttributeSet) : View(context, attrs)
     private val DEFAULT_SNOWFLAKE_SIZE_MAX_IN_DP = 8
     private val DEFAULT_SNOWFLAKE_SPEED_MIN = 2
     private val DEFAULT_SNOWFLAKE_SPEED_MAX = 8
+    private val DEFAULT_SNOWFLAKE_ROTATION = 45f
     private val DEFAULT_SNOWFLAKES_FADING_ENABLED = false
     private val DEFAULT_SNOWFLAKES_ALREADY_FALLING = false
 
     private val snowflakesNum: Int
-    private val snowflakeImage: Bitmap?
     private val snowflakeAlphaMin: Int
     private val snowflakeAlphaMax: Int
     private val snowflakeAngleMax: Int
@@ -36,21 +36,19 @@ class SnowfallView(context: Context, attrs: AttributeSet) : View(context, attrs)
     private val snowflakeSizeMaxInPx: Int
     private val snowflakeSpeedMin: Int
     private val snowflakeSpeedMax: Int
+    private val snowflakeRotation: Float
+    private val snowflakeImage: Bitmap?
     private val snowflakesFadingEnabled: Boolean
     private val snowflakesAlreadyFalling: Boolean
 
     private val updateSnowflakesThread: UpdateSnowflakesThread
     private var snowflakes: Array<Snowflake>? = null
 
-    private var rotationAngles = floatArrayOf(45f, 135f, 225f, 315f)
-
     init {
         val attrs = context.obtainStyledAttributes(attrs, R.styleable.SnowfallView)
-        val rotation = rotationAngles[Random().nextInt(4)]
 
         try {
             snowflakesNum = attrs.getInt(R.styleable.SnowfallView_snowflakesNum, DEFAULT_SNOWFLAKES_NUM)
-            snowflakeImage = attrs.getDrawable(R.styleable.SnowfallView_snowflakeImage)?.toBitmap(rotation)
             snowflakeAlphaMin = attrs.getInt(R.styleable.SnowfallView_snowflakeAlphaMin, DEFAULT_SNOWFLAKE_ALPHA_MIN)
             snowflakeAlphaMax = attrs.getInt(R.styleable.SnowfallView_snowflakeAlphaMax, DEFAULT_SNOWFLAKE_ALPHA_MAX)
             snowflakeAngleMax = attrs.getInt(R.styleable.SnowfallView_snowflakeAngleMax, DEFAULT_SNOWFLAKE_ANGLE_MAX)
@@ -58,6 +56,8 @@ class SnowfallView(context: Context, attrs: AttributeSet) : View(context, attrs)
             snowflakeSizeMaxInPx = attrs.getDimensionPixelSize(R.styleable.SnowfallView_snowflakeSizeMax, dpToPx(DEFAULT_SNOWFLAKE_SIZE_MAX_IN_DP))
             snowflakeSpeedMin = attrs.getInt(R.styleable.SnowfallView_snowflakeSpeedMin, DEFAULT_SNOWFLAKE_SPEED_MIN)
             snowflakeSpeedMax = attrs.getInt(R.styleable.SnowfallView_snowflakeSpeedMax, DEFAULT_SNOWFLAKE_SPEED_MAX)
+            snowflakeRotation = attrs.getFloat(R.styleable.SnowfallView_snowflakeRotation, DEFAULT_SNOWFLAKE_ROTATION)
+            snowflakeImage = attrs.getDrawable(R.styleable.SnowfallView_snowflakeImage)?.toBitmap(snowflakeRotation)
             snowflakesFadingEnabled = attrs.getBoolean(R.styleable.SnowfallView_snowflakesFadingEnabled, DEFAULT_SNOWFLAKES_FADING_ENABLED)
             snowflakesAlreadyFalling = attrs.getBoolean(R.styleable.SnowfallView_snowflakesAlreadyFalling, DEFAULT_SNOWFLAKES_ALREADY_FALLING)
         } finally {

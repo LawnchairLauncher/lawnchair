@@ -30,7 +30,10 @@ internal fun Drawable.toBitmap(rotation: Float): Bitmap {
 internal fun VectorDrawable.toBitmap(rotation: Float): Bitmap {
     val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
-    canvas.rotate(rotation, intrinsicWidth / 2f, intrinsicHeight / 2f);
+    if (rotation != 0f) {
+        canvas.rotate(rotation, intrinsicWidth / 2f, intrinsicHeight / 2f);
+    }
+
     setBounds(0, 0, canvas.width, canvas.height)
     setTint(Color.WHITE)
     draw(canvas)

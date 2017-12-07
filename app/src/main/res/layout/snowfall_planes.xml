@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:snowflakeImage="@drawable/plane"
+    app:snowflakeRotation="135.0"
     app:snowflakeSizeMin="16dp"
     app:snowflakeSizeMax="24dp"
     app:snowflakesNum="150" />
