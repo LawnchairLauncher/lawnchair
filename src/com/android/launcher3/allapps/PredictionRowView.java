@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ComponentKeyMapper;
@@ -57,11 +58,28 @@ public class PredictionRowView extends LinearLayout {
         setOrientation(LinearLayout.HORIZONTAL);
     }
 
-    public void setup(AllAppsGridAdapter adapter,
-            HashMap<ComponentKey, AppInfo> componentToAppMap, int numPredictedAppsPerRow) {
+    public void setup(AllAppsGridAdapter adapter, HashMap<ComponentKey, AppInfo> componentToAppMap,
+                      int numPredictedAppsPerRow) {
         mAdapter = adapter;
         mComponentToAppMap = componentToAppMap;
         mNumPredictedAppsPerRow = numPredictedAppsPerRow;
+        setVisibility(mPredictedAppComponents.isEmpty() ? View.GONE : View.VISIBLE);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(getExpectedHeight(),
+                MeasureSpec.EXACTLY));
+    }
+
+    public int getExpectedHeight() {
+        int height = 0;
+        if (!mPredictedAppComponents.isEmpty()) {
+            height += Launcher.getLauncher(getContext())
+                    .getDeviceProfile().allAppsCellHeightPx;
+            height += getPaddingTop() + getPaddingBottom();
+        }
+        return height;
     }
 
     /**
