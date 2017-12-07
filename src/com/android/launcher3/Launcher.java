@@ -42,13 +42,11 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
-import android.app.SearchManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentCallbacks2;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
@@ -70,8 +68,6 @@ import android.os.Process;
 import android.os.StrictMode;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
-import android.text.Selection;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
@@ -89,7 +85,6 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.android.launcher3.DropTarget.DragObject;
@@ -243,8 +238,6 @@ public class Launcher extends BaseActivity
     // that results in widgets being inflated in the wrong orientation.
     private int mOrientation;
 
-    private SpannableStringBuilder mDefaultKeySsb = null;
-
     @Thunk boolean mWorkspaceLoading = true;
 
     private boolean mPaused = true;
@@ -259,14 +252,13 @@ public class Launcher extends BaseActivity
     private ModelWriter mModelWriter;
     private IconCache mIconCache;
     private LauncherAccessibilityDelegate mAccessibilityDelegate;
-    private boolean mHasFocus = false;
 
     private ObjectAnimator mScrimAnimator;
     private boolean mShouldFadeInScrim;
 
     private PopupDataProvider mPopupDataProvider;
 
-    private final ArrayList<Integer> mSynchronouslyBoundPages = new ArrayList<>();
+    private int mSynchronouslyBoundPage = PagedView.INVALID_PAGE;
 
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
@@ -400,8 +392,7 @@ public class Launcher extends BaseActivity
         }
 
         // For handling default keys
-        mDefaultKeySsb = new SpannableStringBuilder();
-        Selection.setSelection(mDefaultKeySsb, 0);
+        setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 
         // On large interfaces, or on devices that a user has specifically enabled screen rotation,
         // we want the screen to auto-rotate based on the current orientation
@@ -851,8 +842,6 @@ public class Launcher extends BaseActivity
             mLauncherCallbacks.onResume();
         }
 
-        clearTypedText();
-
         TraceHelper.endSection("ON_RESUME");
     }
 
@@ -918,72 +907,6 @@ public class Launcher extends BaseActivity
             // setting, on devices with a locked orientation,
             return Utilities.ATLEAST_OREO || !getResources().getBoolean(R.bool.allow_rotation);
         }
-    }
-
-    @Override
-    public Object onRetainNonConfigurationInstance() {
-        // Flag the loader to stop early before switching
-        if (mModel.isCurrentCallbacks(this)) {
-            mModel.stopLoader();
-        }
-        //TODO(hyunyoungs): stop the widgets loader when there is a rotation.
-
-        return Boolean.TRUE;
-    }
-
-    // We can't hide the IME if it was forced open.  So don't bother
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        mHasFocus = hasFocus;
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onWindowFocusChanged(hasFocus);
-        }
-    }
-
-    private boolean acceptFilter() {
-        final InputMethodManager inputManager = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
-        return !inputManager.isFullscreenMode();
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        final int uniChar = event.getUnicodeChar();
-        final boolean handled = super.onKeyDown(keyCode, event);
-        final boolean isKeyNotWhitespace = uniChar > 0 && !Character.isWhitespace(uniChar);
-        if (!handled && acceptFilter() && isKeyNotWhitespace) {
-            boolean gotKey = TextKeyListener.getInstance().onKeyDown(mWorkspace, mDefaultKeySsb,
-                    keyCode, event);
-            if (gotKey && mDefaultKeySsb != null && mDefaultKeySsb.length() > 0) {
-                // something usable has been typed - start a search
-                // the typed text will be retrieved and cleared by
-                // showSearchDialog()
-                // If there are multiple keystrokes before the search dialog takes focus,
-                // onSearchRequested() will be called for every keystroke,
-                // but it is idempotent, so it's fine.
-                return onSearchRequested();
-            }
-        }
-
-        // Eat the long press event so the keyboard doesn't come up.
-        if (keyCode == KeyEvent.KEYCODE_MENU && event.isLongPress()) {
-            return true;
-        }
-
-        return handled;
-    }
-
-    private String getTypedText() {
-        return mDefaultKeySsb.toString();
-    }
-
-    @Override
-    public void clearTypedText() {
-        mDefaultKeySsb.clear();
-        mDefaultKeySsb.clearSpans();
-        Selection.setSelection(mDefaultKeySsb, 0);
     }
 
     public boolean isInState(LauncherState state) {
@@ -1337,7 +1260,7 @@ public class Launcher extends BaseActivity
         TraceHelper.beginSection("NEW_INTENT");
         super.onNewIntent(intent);
 
-        boolean alreadyOnHome = mHasFocus && ((intent.getFlags() &
+        boolean alreadyOnHome = hasWindowFocus() && ((intent.getFlags() &
                 Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                 != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 
@@ -1393,9 +1316,7 @@ public class Launcher extends BaseActivity
     @Override
     public void onRestoreInstanceState(Bundle state) {
         super.onRestoreInstanceState(state);
-        for (int page: mSynchronouslyBoundPages) {
-            mWorkspace.restoreInstanceStateForChild(page);
-        }
+        mWorkspace.restoreInstanceStateForChild(mSynchronouslyBoundPage);
     }
 
     @Override
@@ -1504,11 +1425,6 @@ public class Launcher extends BaseActivity
     @Override
     public void startSearch(String initialQuery, boolean selectInitialQuery,
             Bundle appSearchData, boolean globalSearch) {
-
-        if (initialQuery == null) {
-            // Use any text typed in the launcher as the initial query
-            initialQuery = getTypedText();
-        }
         if (appSearchData == null) {
             appSearchData = new Bundle();
             appSearchData.putString("source", "launcher-search");
@@ -1517,67 +1433,11 @@ public class Launcher extends BaseActivity
         if (mLauncherCallbacks == null ||
                 !mLauncherCallbacks.startSearch(initialQuery, selectInitialQuery, appSearchData)) {
             // Starting search from the callbacks failed. Start the default global search.
-            startGlobalSearch(initialQuery, selectInitialQuery, appSearchData, null);
+            super.startSearch(initialQuery, selectInitialQuery, appSearchData, true);
         }
 
         // We need to show the workspace after starting the search
         mStateManager.goToState(NORMAL);
-    }
-
-    /**
-     * Starts the global search activity. This code is a copied from SearchManager
-     */
-    public void startGlobalSearch(String initialQuery,
-            boolean selectInitialQuery, Bundle appSearchData, Rect sourceBounds) {
-        final SearchManager searchManager =
-            (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        ComponentName globalSearchActivity = searchManager.getGlobalSearchActivity();
-        if (globalSearchActivity == null) {
-            Log.w(TAG, "No global search activity found.");
-            return;
-        }
-        Intent intent = new Intent(SearchManager.INTENT_ACTION_GLOBAL_SEARCH);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setComponent(globalSearchActivity);
-        // Make sure that we have a Bundle to put source in
-        if (appSearchData == null) {
-            appSearchData = new Bundle();
-        } else {
-            appSearchData = new Bundle(appSearchData);
-        }
-        // Set source to package name of app that starts global search if not set already.
-        if (!appSearchData.containsKey("source")) {
-            appSearchData.putString("source", getPackageName());
-        }
-        intent.putExtra(SearchManager.APP_DATA, appSearchData);
-        if (!TextUtils.isEmpty(initialQuery)) {
-            intent.putExtra(SearchManager.QUERY, initialQuery);
-        }
-        if (selectInitialQuery) {
-            intent.putExtra(SearchManager.EXTRA_SELECT_QUERY, selectInitialQuery);
-        }
-        intent.setSourceBounds(sourceBounds);
-        try {
-            startActivity(intent);
-        } catch (ActivityNotFoundException ex) {
-            Log.e(TAG, "Global search activity not found: " + globalSearchActivity);
-        }
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        if (mLauncherCallbacks != null) {
-            return mLauncherCallbacks.onPrepareOptionsMenu(menu);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean onSearchRequested() {
-        startSearch(null, false, null, true);
-        // Use a custom animation for launching search
-        return true;
     }
 
     public boolean isWorkspaceLocked() {
@@ -2767,7 +2627,7 @@ public class Launcher extends BaseActivity
     }
 
     public void onPageBoundSynchronously(int page) {
-        mSynchronouslyBoundPages.add(page);
+        mSynchronouslyBoundPage = page;
     }
 
     @Override
@@ -2817,11 +2677,7 @@ public class Launcher extends BaseActivity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void finishBindingItems() {
-        Runnable r = new Runnable() {
-            public void run() {
-                finishBindingItems();
-            }
-        };
+        Runnable r = this::finishBindingItems;
         if (waitUntilResume(r)) {
             return;
         }
