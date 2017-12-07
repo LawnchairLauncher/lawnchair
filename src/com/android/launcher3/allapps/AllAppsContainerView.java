@@ -261,9 +261,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         if (mLauncher.getDragLayer().isEventOverView(mSearchContainer, ev)) {
             return true;
         }
-        if (mUsingTabs && mLauncher.getDragLayer().isEventOverView(mHeader, ev)) {
-            return true;
-        }
         AllAppsRecyclerView rv = getActiveRecyclerView();
         return rv == null || rv.shouldContainerScroll(ev, mLauncher.getDragLayer());
     }

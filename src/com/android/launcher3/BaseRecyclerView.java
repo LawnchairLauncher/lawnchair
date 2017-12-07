@@ -17,13 +17,11 @@
 package com.android.launcher3;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
@@ -91,8 +89,10 @@ public abstract class BaseRecyclerView extends RecyclerView
      */
     private boolean handleTouchEvent(MotionEvent ev) {
         // Move to mScrollbar's coordinate system.
-        int left = getLeft() - mScrollbar.getLeft();
-        int top = getTop() - mScrollbar.getTop();
+        // We need to take parent into account (view pager's location)
+        ViewGroup parent = (ViewGroup) getParent();
+        int left = parent.getLeft() + getLeft() - mScrollbar.getLeft();
+        int top = parent.getTop() + getTop() - mScrollbar.getTop() - getScrollBarTop();
         ev.offsetLocation(left, top);
         try {
             return mScrollbar.handleTouchEvent(ev);
