@@ -48,10 +48,8 @@ public interface LauncherCallbacks {
     void onActivityResult(int requestCode, int resultCode, Intent data);
     void onRequestPermissionsResult(int requestCode, String[] permissions,
             int[] grantResults);
-    void onWindowFocusChanged(boolean hasFocus);
     void onAttachedToWindow();
     void onDetachedFromWindow();
-    boolean onPrepareOptionsMenu(Menu menu);
     void dump(String prefix, FileDescriptor fd, PrintWriter w, String[] args);
     void onHomeIntent();
     boolean handleBackPressed();
