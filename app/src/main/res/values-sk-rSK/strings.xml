@@ -414,14 +414,6 @@
   <string name="hide_app_apply">Použiť</string>
   <string name="unauthorized_device">Toto zariadenie má nainštalované nástroje pre pirátstvo. Odinštalujte ich a pokračujte.</string>
   <string name="hide_app_reset">Resetovať</string>
-  <!-- Strings for Lawnfeed gesture popup -->
-  <string name="lawnfeed_not_enabled_title">Lawnfeed nie je povolený</string>
-  <string name="lawnfeed_not_enabled">Zdá sa, že sa pokúšate otvoriť stránku Google Now, avšak v nastaveniach správania ste túto možnosť nepovolili.\n\nChcete túto možnosť povoliť teraz?</string>
-  <string name="lawnfeed_not_installed_title">Lawnfeed nie je nainštalovaný</string>
-  <string name="lawnfeed_not_installed">Zdá sa, že sa pokúšate otvoriť stránku Google Now, ale nenainštalovali ste Lawnfeed z našich webových stránok.\n\nChcete ho teraz stiahnuť?</string>
-  <string name="lawnfeed_outdated_title">Vyžaduje sa aktualizácia Lawnfeed</string>
-  <string name="lawnfeed_outdated">Pre prácu s touto verziou Lawnchair je potrebná novšia verzia programu Lawnfeed.\n\nPred nainštalovaním tejto aktualizácie pravdepodobne budete musieť odinštalovať aktuálnu verziu programu Lawnfeed.\n\nChcete ju teraz stiahnuť?</string>
-  <string name="disable_popup">Už nezobrazovať</string>
   <string name="two_row_dock">Dok v dvoch riadkoch</string>
   <string name="reset_alternative_icons_title">Obnoviť alternatívne ikony aplikácií?</string>
   <string name="reset_alternative_icons">Máte %1$d aplikácií s alternativnymi ikonami, chcete ich obnoviž?</string>
