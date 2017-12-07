@@ -30,12 +30,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.android.launcher3.AppInfo;
 import com.android.launcher3.R;
+import com.android.launcher3.util.ComponentKey;
+
+import java.util.HashMap;
 
 public class FloatingHeaderView extends RelativeLayout implements
         ValueAnimator.AnimatorUpdateListener {
 
-    private static final boolean SHOW_PREDICTIONS_ONLY_ON_TOP = true;
 
     private final Rect mClip = new Rect(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
     private final ValueAnimator mAnimator = ValueAnimator.ofInt(0, 0);
@@ -43,22 +46,11 @@ public class FloatingHeaderView extends RelativeLayout implements
     private final RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            if (SHOW_PREDICTIONS_ONLY_ON_TOP) {
-                return;
-            }
-            if (!mTopOnlyMode && newState == RecyclerView.SCROLL_STATE_IDLE
-                    && mTranslationY != -mMaxTranslation && mTranslationY != 0) {
-                float scroll = Math.abs(getCurrentScroll());
-                boolean expand =  scroll > mMaxTranslation
-                        ? Math.abs(mTranslationY) < mMaxTranslation / 2 : true;
-                setExpanded(expand);
-            }
         }
 
         @Override
         public void onScrolled(RecyclerView rv, int dx, int dy) {
-            boolean isMainRV = rv == mMainRV;
-            if (isMainRV != mMainRVActive) {
+            if (rv != mCurrentRV) {
                 return;
             }
 
@@ -66,9 +58,7 @@ public class FloatingHeaderView extends RelativeLayout implements
                 mAnimator.cancel();
             }
 
-            int current = - (isMainRV
-                    ? mMainRV.getCurrentScrollY()
-                    : mWorkRV.getCurrentScrollY());
+            int current = -mCurrentRV.getCurrentScrollY();
             moved(current);
             apply();
         }
@@ -79,15 +69,13 @@ public class FloatingHeaderView extends RelativeLayout implements
     private View mDivider;
     private AllAppsRecyclerView mMainRV;
     private AllAppsRecyclerView mWorkRV;
+    private AllAppsRecyclerView mCurrentRV;
     private ViewGroup mParent;
-    private boolean mTopOnlyMode;
-    private boolean mHeaderHidden;
+    private boolean mTabsHidden;
+    private boolean mHeaderCollapsed;
     private int mMaxTranslation;
     private int mSnappedScrolledY;
     private int mTranslationY;
-    private int mMainScrolledY;
-    private int mWorkScrolledY;
-    private boolean mMainRVActive = true;
     private boolean mForwardToRecyclerView;
 
     public FloatingHeaderView(@NonNull Context context) {
@@ -106,15 +94,18 @@ public class FloatingHeaderView extends RelativeLayout implements
         mPredictionRow = findViewById(R.id.header_content);
     }
 
-    public void setup(@NonNull AllAppsRecyclerView personalRV, @Nullable AllAppsRecyclerView workRV,
-                      int predictionRowHeight) {
-        mTopOnlyMode = workRV == null;
-        mTabLayout.setVisibility(mTopOnlyMode ? View.GONE : View.VISIBLE);
-        mPredictionRow.getLayoutParams().height = predictionRowHeight;
-        mMaxTranslation = predictionRowHeight;
-        mMainRV = setupRV(mMainRV, personalRV);
-        mWorkRV = setupRV(mWorkRV, workRV);
-        mParent = (ViewGroup) getRV().getParent();
+    public void setup(AllAppsContainerView.AdapterHolder[] mAH,
+            HashMap<ComponentKey, AppInfo> componentToAppMap, int numPredictedAppsPerRow) {
+        mTabsHidden = mAH[AllAppsContainerView.AdapterHolder.WORK].recyclerView == null;
+        mTabLayout.setVisibility(mTabsHidden ? View.GONE : View.VISIBLE);
+        mPredictionRow.setPadding(0, 0, 0, mTabsHidden ? getResources()
+                .getDimensionPixelSize(R.dimen.all_apps_prediction_row_divider_height) : 0);
+        mPredictionRow.setup(mAH[AllAppsContainerView.AdapterHolder.MAIN].adapter,
+                componentToAppMap, numPredictedAppsPerRow);
+        mMaxTranslation = mPredictionRow.getExpectedHeight();
+        mMainRV = setupRV(mMainRV, mAH[AllAppsContainerView.AdapterHolder.MAIN].recyclerView);
+        mWorkRV = setupRV(mWorkRV, mAH[AllAppsContainerView.AdapterHolder.WORK].recyclerView);
+        mParent = (ViewGroup) mMainRV.getParent();
         setMainActive(true);
         setupDivider();
     }
@@ -130,16 +121,16 @@ public class FloatingHeaderView extends RelativeLayout implements
         Resources res = getResources();
         int verticalGap = res.getDimensionPixelSize(R.dimen.all_apps_divider_margin_vertical);
         int sideGap = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
-        mDivider.setPadding(sideGap, verticalGap,sideGap, mTopOnlyMode ? verticalGap : 0);
+        mDivider.setPadding(sideGap, verticalGap,sideGap, mTabsHidden ? verticalGap : 0);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mDivider.getLayoutParams();
         lp.removeRule(RelativeLayout.ALIGN_BOTTOM);
-        lp.addRule(RelativeLayout.ALIGN_BOTTOM, mTopOnlyMode ? R.id.header_content : R.id.tabs);
+        lp.addRule(RelativeLayout.ALIGN_BOTTOM, mTabsHidden ? R.id.header_content : R.id.tabs);
         mDivider.setLayoutParams(lp);
     }
 
     public void setMainActive(boolean active) {
-        mMainRVActive = active;
-        mSnappedScrolledY = getCurrentScroll() - mMaxTranslation;
+        mCurrentRV = active ? mMainRV : mWorkRV;
+        mSnappedScrolledY = mCurrentRV.getCurrentScrollY() - mMaxTranslation;
         setExpanded(true);
     }
 
@@ -147,36 +138,29 @@ public class FloatingHeaderView extends RelativeLayout implements
         return mPredictionRow;
     }
 
-    public ViewGroup getTabLayout() {
-        return mTabLayout;
-    }
-
     public View getDivider() {
         return mDivider;
     }
 
     public void reset() {
-        mMainScrolledY = 0;
-        mWorkScrolledY = 0;
         setExpanded(true);
     }
 
     private boolean canSnapAt(int currentScrollY) {
-        boolean snapOnlyOnTop = SHOW_PREDICTIONS_ONLY_ON_TOP || mTopOnlyMode;
-        return !snapOnlyOnTop || Math.abs(currentScrollY) <= mPredictionRow.getHeight();
+        return Math.abs(currentScrollY) <= mPredictionRow.getHeight();
     }
 
     private void moved(final int currentScrollY) {
-        if (mHeaderHidden) {
+        if (mHeaderCollapsed) {
             if (currentScrollY <= mSnappedScrolledY) {
                 if (canSnapAt(currentScrollY)) {
                     mSnappedScrolledY = currentScrollY;
                 }
             } else {
-                mHeaderHidden = false;
+                mHeaderCollapsed = false;
             }
             mTranslationY = currentScrollY;
-        } else if (!mHeaderHidden) {
+        } else if (!mHeaderCollapsed) {
             mTranslationY = currentScrollY - mSnappedScrolledY - mMaxTranslation;
 
             // update state vars
@@ -184,7 +168,7 @@ public class FloatingHeaderView extends RelativeLayout implements
                 mTranslationY = 0;
                 mSnappedScrolledY = currentScrollY - mMaxTranslation;
             } else if (mTranslationY <= -mMaxTranslation) { // hide or stay hidden
-                mHeaderHidden = true;
+                mHeaderCollapsed = true;
                 mSnappedScrolledY = currentScrollY;
             }
         }
@@ -201,7 +185,7 @@ public class FloatingHeaderView extends RelativeLayout implements
             mPredictionRow.setTranslationY(uncappedTranslationY);
         }
         mTabLayout.setTranslationY(mTranslationY);
-        mDivider.setTranslationY(mTopOnlyMode ? uncappedTranslationY : mTranslationY);
+        mDivider.setTranslationY(mTabsHidden ? uncappedTranslationY : mTranslationY);
         mClip.top = mMaxTranslation + mTranslationY;
         // clipping on a draw might cause additional redraw
         mMainRV.setClipBounds(mClip);
@@ -216,16 +200,14 @@ public class FloatingHeaderView extends RelativeLayout implements
         mAnimator.addUpdateListener(this);
         mAnimator.setDuration(150);
         mAnimator.start();
-        mHeaderHidden = !expand;
-        mSnappedScrolledY = expand ? getCurrentScroll() - mMaxTranslation : getCurrentScroll();
+        mHeaderCollapsed = !expand;
+        mSnappedScrolledY = expand
+                ? mCurrentRV.getCurrentScrollY() - mMaxTranslation
+                : mCurrentRV.getCurrentScrollY();
     }
 
     public boolean isExpanded() {
-        return !mHeaderHidden;
-    }
-
-    private int getCurrentScroll() {
-        return mMainRVActive ? mMainScrolledY : mWorkScrolledY;
+        return !mHeaderCollapsed;
     }
 
     @Override
@@ -234,15 +216,11 @@ public class FloatingHeaderView extends RelativeLayout implements
         apply();
     }
 
-    private AllAppsRecyclerView getRV() {
-        return mMainRVActive ? mMainRV : mWorkRV;
-    }
-
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         calcOffset(mTempOffset);
         ev.offsetLocation(mTempOffset.x, mTempOffset.y);
-        mForwardToRecyclerView = getRV().onInterceptTouchEvent(ev);
+        mForwardToRecyclerView = mCurrentRV.onInterceptTouchEvent(ev);
         ev.offsetLocation(-mTempOffset.x, -mTempOffset.y);
         return mForwardToRecyclerView || super.onInterceptTouchEvent(ev);
     }
@@ -254,7 +232,7 @@ public class FloatingHeaderView extends RelativeLayout implements
             calcOffset(mTempOffset);
             event.offsetLocation(mTempOffset.x, mTempOffset.y);
             try {
-                return getRV().onTouchEvent(event);
+                return mCurrentRV.onTouchEvent(event);
             } finally {
                 event.offsetLocation(-mTempOffset.x, -mTempOffset.y);
             }
@@ -264,8 +242,8 @@ public class FloatingHeaderView extends RelativeLayout implements
     }
 
     private void calcOffset(Point p) {
-        p.x = getLeft() - getRV().getLeft() - mParent.getLeft();
-        p.y = getTop() - getRV().getTop() - mParent.getTop();
+        p.x = getLeft() - mCurrentRV.getLeft() - mParent.getLeft();
+        p.y = getTop() - mCurrentRV.getTop() - mParent.getTop();
     }
 
 }

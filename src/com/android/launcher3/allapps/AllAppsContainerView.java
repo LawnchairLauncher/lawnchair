@@ -552,20 +552,9 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             return;
         }
         mHeader.setVisibility(View.VISIBLE);
+        mHeader.setup(mAH, mComponentToAppMap, mNumPredictedAppsPerRow);
 
-        boolean usePredictionRow = mHasPredictions && !mSearchModeWhileUsingTabs;
-        int contentHeight = usePredictionRow ? mLauncher.getDeviceProfile().allAppsCellHeightPx : 0;;
-        if (usePredictionRow && !mUsingTabs) {
-            contentHeight += getResources()
-                    .getDimensionPixelSize(R.dimen.all_apps_prediction_row_divider_height);
-        }
-        AllAppsRecyclerView mainRV = mAH[AdapterHolder.MAIN].recyclerView;
-        AllAppsRecyclerView workRV = mAH[AdapterHolder.WORK].recyclerView;
-        mHeader.setup(mainRV, workRV, contentHeight);
-        mHeader.getPredictionRow().setup(mAH[AdapterHolder.MAIN].adapter,
-                mComponentToAppMap, mNumPredictedAppsPerRow);
-
-        int padding = contentHeight;
+        int padding = mHeader.getPredictionRow().getExpectedHeight();
         if (mHasPredictions && !mUsingTabs) {
             padding += mHeader.getPaddingTop() + mHeader.getPaddingBottom();
         }
