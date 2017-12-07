@@ -415,14 +415,6 @@
   <string name="hide_app_apply">החל</string>
   <string name="unauthorized_device">במכשיר זה מותקנים כלים פיראטיים. אנא הסר אותם כדי להמשיך.</string>
   <string name="hide_app_reset">איפוס</string>
-  <!-- Strings for Lawnfeed gesture popup -->
-  <string name="lawnfeed_not_enabled_title">Lawnfeed אינו מופעל</string>
-  <string name="lawnfeed_not_enabled">נראה שאתה מנסה לפתוח את הדף של Google Now, אך לא הפעלת את האפשרות בהגדרות.\n\nהאם ברצונך להפעיל אותה עכשיו?</string>
-  <string name="lawnfeed_not_installed_title">Lawnfeed אינו מותקן</string>
-  <string name="lawnfeed_not_installed">נראה שאתה מנסה לפתוח את הדף של Google Now, אך לא התקנת את האפליקציה Lawnfeed מהאתר שלנו.\n\nהאם ברצונך להוריד אותה עכשיו?</string>
-  <string name="lawnfeed_outdated_title">עדכון ל-Lawnfeed נדרש</string>
-  <string name="lawnfeed_outdated">גרסה חדשה יותר של Lawnfeed נדרשת כדי לעבוד עם גרסה זו של Lawnchair.\n\nלפני שתוכל להתקין את העדכון, כנראה שתצטרך להסיר את הגרסה הקודמת של Lawnfeed.\n\nהאם ברצונך להוריד אותה עכשיו?</string>
-  <string name="disable_popup">אל תציג שוב</string>
   <string name="two_row_dock">שורת עגינה כפולה</string>
   <string name="reset_alternative_icons_title">האם לאפס את סמלי האפליקציות החלופיים?</string>
   <string name="reset_alternative_icons">קיימים %1$d אפליקציות עם סמלים חלופיים, האם ברצונך לאפס אותם?</string>
