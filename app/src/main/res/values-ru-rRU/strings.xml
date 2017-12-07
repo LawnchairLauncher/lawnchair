@@ -414,14 +414,6 @@
   <string name="hide_app_apply">Применить</string>
   <string name="unauthorized_device">На этом устройстве установлены пиратские утилиты. Пожалуйста, удалите их для продолжения.</string>
   <string name="hide_app_reset">Сброс</string>
-  <!-- Strings for Lawnfeed gesture popup -->
-  <string name="lawnfeed_not_enabled_title">Lawnfeed не включен</string>
-  <string name="lawnfeed_not_enabled">Похоже, вы пытаетесь открыть страницу Google Now, но не включили её в настройках.\n\nХотите включить её прямо сейчас?</string>
-  <string name="lawnfeed_not_installed_title">Lawnfeed не установлен</string>
-  <string name="lawnfeed_not_installed">Похоже, вы пытаетесь открыть страницу Google Now, но вы еще не установили приложение Lawnfeed с нашего вебсайта.\n\nВы хотите скачать его сейчас?</string>
-  <string name="lawnfeed_outdated_title">Требуется обновить Lawnfeed</string>
-  <string name="lawnfeed_outdated">Для работы с этой версией Lawnchair, требуется новая версия Lawnfeed.\n\nПеред установкой обновления, вам вероятно будет нужно удалить текущую версию Lawnfeed.\n\nХотите скачать обновление сейчас?</string>
-  <string name="disable_popup">Не показывать снова</string>
   <string name="two_row_dock">Двухстрочный док-бар</string>
   <string name="reset_alternative_icons_title">Сбросить альтернативные значки приложения?</string>
   <string name="reset_alternative_icons">У вас %1$d приложений с альтернативными значками, хотите сбросить их?</string>
