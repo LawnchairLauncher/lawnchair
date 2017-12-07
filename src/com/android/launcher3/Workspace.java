@@ -3502,17 +3502,17 @@ public class Workspace extends PagedView
 
             mRefreshPending = false;
 
-            mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
-                @Override
-                public boolean evaluate(ItemInfo info, View view) {
-                    if (view instanceof PendingAppWidgetHostView && mInfos.contains(info)) {
-                        mLauncher.removeItem(view, info, false /* deleteFromDb */);
-                        mLauncher.bindAppWidget((LauncherAppWidgetInfo) info);
-                    }
-                    // process all the shortcuts
-                    return false;
+            ArrayList<PendingAppWidgetHostView> views = new ArrayList<>(mInfos.size());
+            mapOverItems(MAP_NO_RECURSE, (info, view) -> {
+                if (view instanceof PendingAppWidgetHostView && mInfos.contains(info)) {
+                    views.add((PendingAppWidgetHostView) view);
                 }
+                // process all children
+                return false;
             });
+            for (PendingAppWidgetHostView view : views) {
+                view.reinflate();
+            }
         }
 
         @Override
