@@ -10,6 +10,7 @@ object PreferenceFlags {
     const val KEY_NUM_COLS_DRAWER = "pref_numColsDrawer"
     const val KEY_HOTSEAT_ICONS = "pref_numHotseatIcons"
     const val KEY_PREF_NUM_ROWS_DRAWER = "pref_numRowsDrawer"
+    const val KEY_PREF_SNOWFLAKES_NUM = "pref_snowflakesNum"
 
     // Strings
     const val KEY_WEATHER_PROVIDER = "pref_weatherProvider"
@@ -33,7 +34,6 @@ object PreferenceFlags {
 
     //Ints
     const val KEY_BLUR_MODE = "pref_blurMode"
-    const val KEY_PREF_SNOWFLAKES_NUM = "pref_snowflakesNum"
 
     // Boolean
     const val KEY_SHOW_HIDDEN = "pref_showHidden"
