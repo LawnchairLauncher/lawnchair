@@ -323,5 +323,4 @@
   <string name="pref_all_apps_label_color">Колір значків у меню додатків</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
-  <!-- Strings for Lawnfeed gesture popup -->
 </resources>
