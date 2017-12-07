@@ -22,6 +22,7 @@ class SnowfallView(context: Context, attrs: AttributeSet) : View(context, attrs)
     private val DEFAULT_SNOWFLAKE_ANGLE_MAX = 10
     private val DEFAULT_SNOWFLAKE_SIZE_MIN_IN_DP = 2
     private val DEFAULT_SNOWFLAKE_SIZE_MAX_IN_DP = 8
+    private val DEFAULT_SNOWFLAKE_SIZE_SCALE = 1f
     private val DEFAULT_SNOWFLAKE_SPEED_MIN = 2
     private val DEFAULT_SNOWFLAKE_SPEED_MAX = 8
     private val DEFAULT_SNOWFLAKE_ROTATION = 45f
@@ -34,6 +35,7 @@ class SnowfallView(context: Context, attrs: AttributeSet) : View(context, attrs)
     private val snowflakeAngleMax: Int
     private val snowflakeSizeMinInPx: Int
     private val snowflakeSizeMaxInPx: Int
+    private val snowflakeSizeScale: Float
     private val snowflakeSpeedMin: Int
     private val snowflakeSpeedMax: Int
     private val snowflakeRotation: Float
@@ -54,6 +56,7 @@ class SnowfallView(context: Context, attrs: AttributeSet) : View(context, attrs)
             snowflakeAngleMax = attrs.getInt(R.styleable.SnowfallView_snowflakeAngleMax, DEFAULT_SNOWFLAKE_ANGLE_MAX)
             snowflakeSizeMinInPx = attrs.getDimensionPixelSize(R.styleable.SnowfallView_snowflakeSizeMin, dpToPx(DEFAULT_SNOWFLAKE_SIZE_MIN_IN_DP))
             snowflakeSizeMaxInPx = attrs.getDimensionPixelSize(R.styleable.SnowfallView_snowflakeSizeMax, dpToPx(DEFAULT_SNOWFLAKE_SIZE_MAX_IN_DP))
+            snowflakeSizeScale = attrs.getFloat(R.styleable.SnowfallView_snowflakeSizeScale, DEFAULT_SNOWFLAKE_SIZE_SCALE)
             snowflakeSpeedMin = attrs.getInt(R.styleable.SnowfallView_snowflakeSpeedMin, DEFAULT_SNOWFLAKE_SPEED_MIN)
             snowflakeSpeedMax = attrs.getInt(R.styleable.SnowfallView_snowflakeSpeedMax, DEFAULT_SNOWFLAKE_SPEED_MAX)
             snowflakeRotation = attrs.getFloat(R.styleable.SnowfallView_snowflakeRotation, DEFAULT_SNOWFLAKE_ROTATION)
@@ -101,8 +104,8 @@ class SnowfallView(context: Context, attrs: AttributeSet) : View(context, attrs)
                 alphaMin = snowflakeAlphaMin,
                 alphaMax = snowflakeAlphaMax,
                 angleMax = snowflakeAngleMax,
-                sizeMinInPx = snowflakeSizeMinInPx,
-                sizeMaxInPx = snowflakeSizeMaxInPx,
+                sizeMinInPx = Math.round(snowflakeSizeMinInPx * snowflakeSizeScale),
+                sizeMaxInPx = Math.round(snowflakeSizeMaxInPx * snowflakeSizeScale),
                 speedMin = snowflakeSpeedMin,
                 speedMax = snowflakeSpeedMax,
                 fadingEnabled = snowflakesFadingEnabled,
