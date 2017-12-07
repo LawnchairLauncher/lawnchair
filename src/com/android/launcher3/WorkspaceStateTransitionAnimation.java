@@ -33,6 +33,7 @@ import android.view.accessibility.AccessibilityManager;
 import com.android.launcher3.LauncherState.PageAlphaProvider;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.anim.AnimationLayerSet;
+import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 
 /**
@@ -110,10 +111,10 @@ public class WorkspaceStateTransitionAnimation {
         setWorkspaceProperty(toState, NO_ANIM_PROPERTY_SETTER);
     }
 
-    public void setStateWithAnimation(LauncherState toState, AnimatorSet anim,
+    public void setStateWithAnimation(LauncherState toState, AnimatorSetBuilder builder,
             AnimationLayerSet layerViews, AnimationConfig config) {
         AnimatedPropertySetter propertySetter =
-                new AnimatedPropertySetter(config.duration, layerViews, anim);
+                new AnimatedPropertySetter(config.duration, layerViews, builder);
         setWorkspaceProperty(toState, propertySetter);
     }
 
@@ -190,13 +191,13 @@ public class WorkspaceStateTransitionAnimation {
 
         private final long mDuration;
         private final AnimationLayerSet mLayerViews;
-        private final AnimatorSet mStateAnimator;
+        private final AnimatorSetBuilder mStateAnimator;
 
         public AnimatedPropertySetter(
-                long duration, AnimationLayerSet layerView, AnimatorSet anim) {
+                long duration, AnimationLayerSet layerView, AnimatorSetBuilder builder) {
             mDuration = duration;
             mLayerViews = layerView;
-            mStateAnimator = anim;
+            mStateAnimator = builder;
         }
 
         @Override

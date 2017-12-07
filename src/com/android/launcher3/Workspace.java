@@ -26,7 +26,6 @@ import static com.android.launcher3.Utilities.isAccessibilityEnabled;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -64,6 +63,7 @@ import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.AnimationLayerSet;
+import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.badge.FolderBadgeInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
@@ -1548,9 +1548,9 @@ public class Workspace extends PagedView
      */
     @Override
     public void setStateWithAnimation(LauncherState toState, AnimationLayerSet layerViews,
-            AnimatorSet anim, AnimationConfig config) {
+            AnimatorSetBuilder builder, AnimationConfig config) {
         StateTransitionListener listener = new StateTransitionListener(toState);
-        mStateTransitionAnimation.setStateWithAnimation(toState, anim, layerViews, config);
+        mStateTransitionAnimation.setStateWithAnimation(toState, builder, layerViews, config);
 
         // Invalidate the pages now, so that we have the visible pages before the
         // animation is started
@@ -1562,8 +1562,8 @@ public class Workspace extends PagedView
         ValueAnimator stepAnimator = ValueAnimator.ofFloat(0, 1);
         stepAnimator.addUpdateListener(listener);
         stepAnimator.setDuration(config.duration);
-        anim.play(stepAnimator);
-        anim.addListener(listener);
+        stepAnimator.addListener(listener);
+        builder.play(stepAnimator);
     }
 
     public void updateAccessibilityFlags() {

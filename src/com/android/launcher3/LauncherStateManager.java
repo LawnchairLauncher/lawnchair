@@ -28,6 +28,7 @@ import android.view.View;
 import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.uioverrides.UiFactory;
 
 /**
@@ -178,7 +179,8 @@ public class LauncherStateManager {
         // transition plays in reverse and use the same duration as previous state.
         mConfig.duration = state == NORMAL ? mState.transitionDuration : state.transitionDuration;
 
-        AnimatorSet animation = createAnimationToNewWorkspaceInternal(state, onCompleteRunnable);
+        AnimatorSet animation = createAnimationToNewWorkspaceInternal(
+                state, new AnimatorSetBuilder(), onCompleteRunnable);
         Runnable runnable = new StartAnimRunnable(animation, state.getFinalFocus(mLauncher));
         if (delay > 0) {
             mUiHandler.postDelayed(runnable, delay);
@@ -196,21 +198,28 @@ public class LauncherStateManager {
      */
     public AnimatorPlaybackController createAnimationToNewWorkspace(
             LauncherState state, long duration) {
+        return createAnimationToNewWorkspace(state, new AnimatorSetBuilder(), duration);
+    }
+
+    public AnimatorPlaybackController createAnimationToNewWorkspace(
+            LauncherState state, AnimatorSetBuilder builder, long duration) {
         mConfig.reset();
         mConfig.userControlled = true;
         mConfig.duration = duration;
         return AnimatorPlaybackController.wrap(
-                createAnimationToNewWorkspaceInternal(state, null), duration);
+                createAnimationToNewWorkspaceInternal(state, builder, null), duration);
     }
 
     protected AnimatorSet createAnimationToNewWorkspaceInternal(final LauncherState state,
-            final Runnable onCompleteRunnable) {
-        final AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
+            AnimatorSetBuilder builder, final Runnable onCompleteRunnable) {
         final AnimationLayerSet layerViews = new AnimationLayerSet();
 
         for (StateHandler handler : getStateHandlers()) {
-            handler.setStateWithAnimation(state, layerViews, animation, mConfig);
+            builder.startTag(handler);
+            handler.setStateWithAnimation(state, layerViews, builder, mConfig);
         }
+
+        final AnimatorSet animation = builder.build();
         animation.addListener(layerViews);
         animation.addListener(new AnimationSuccessListener() {
 
@@ -331,7 +340,7 @@ public class LauncherStateManager {
          * Sets the UI to {@param state} by animating any changes.
          */
         void setStateWithAnimation(LauncherState toState, AnimationLayerSet layerViews,
-                AnimatorSet anim, AnimationConfig config);
+                AnimatorSetBuilder builder, AnimationConfig config);
     }
 
     public interface StateListener {

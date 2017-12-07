@@ -17,7 +17,6 @@ package com.android.launcher3.uioverrides;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.view.View;
 
@@ -27,6 +26,7 @@ import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsView;
@@ -55,17 +55,17 @@ public class RecentsViewStateController implements StateHandler {
 
     @Override
     public void setStateWithAnimation(LauncherState toState, AnimationLayerSet layerViews,
-            AnimatorSet anim, AnimationConfig config) {
+            AnimatorSetBuilder builder, AnimationConfig config) {
         ObjectAnimator progressAnim =
                 mTransitionProgress.animateToValue(toState == LauncherState.OVERVIEW ? 1 : 0);
         progressAnim.setDuration(config.duration);
         progressAnim.setInterpolator(Interpolators.LINEAR);
-        anim.play(progressAnim);
+        builder.play(progressAnim);
 
         ObjectAnimator visibilityAnim = animateVisibility(toState == LauncherState.OVERVIEW);
         visibilityAnim.setDuration(config.duration);
         visibilityAnim.setInterpolator(Interpolators.LINEAR);
-        anim.play(visibilityAnim);
+        builder.play(visibilityAnim);
     }
 
     public void setVisibility(boolean isVisible) {

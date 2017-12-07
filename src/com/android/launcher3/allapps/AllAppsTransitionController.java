@@ -5,7 +5,6 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.util.Property;
 import android.view.View;
@@ -21,6 +20,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.graphics.GradientView;
 import com.android.launcher3.util.SystemUiController;
@@ -122,7 +122,7 @@ public class AllAppsTransitionController
      * @param progress value between 0 and 1, 0 shows all apps and 1 shows workspace
      *
      * @see #setState(LauncherState)
-     * @see #setStateWithAnimation(LauncherState, AnimationLayerSet, AnimatorSet, AnimationConfig)
+     * @see #setStateWithAnimation(LauncherState, AnimationLayerSet, AnimatorSetBuilder, AnimationConfig)
      */
     public void setProgress(float progress) {
         mProgress = progress;
@@ -168,7 +168,7 @@ public class AllAppsTransitionController
      */
     @Override
     public void setStateWithAnimation(LauncherState toState, AnimationLayerSet layerViews,
-            AnimatorSet animationOut, AnimationConfig config) {
+            AnimatorSetBuilder builder, AnimationConfig config) {
         if (Float.compare(mProgress, toState.verticalProgress) == 0) {
             // Fail fast
             onProgressAnimationEnd();
@@ -182,7 +182,7 @@ public class AllAppsTransitionController
         anim.setInterpolator(interpolator);
         anim.addListener(getProgressAnimatorListener());
 
-        animationOut.play(anim);
+        builder.play(anim);
     }
 
     public AnimatorListenerAdapter getProgressAnimatorListener() {
