@@ -414,14 +414,6 @@
   <string name="hide_app_apply">Примени</string>
   <string name="unauthorized_device">Овај уређај има инсталиран неколико пиратских алатки. Молим вас, деинсталирајте их да бисте наставили.</string>
   <string name="hide_app_reset">Ресетуј</string>
-  <!-- Strings for Lawnfeed gesture popup -->
-  <string name="lawnfeed_not_enabled_title">Lawnfeed није омогућен</string>
-  <string name="lawnfeed_not_enabled">Изгледа да покушавате да отворите страницу Google Now, али нисте омогућили опцију у понашање подешавање.\n\nДа ли желите да омогућите то сада?</string>
-  <string name="lawnfeed_not_installed_title">Lawnfeed није инсталиран</string>
-  <string name="lawnfeed_not_installed">Изгледа да покушавате да отворите страницу Google Now, али нисте инсталирали апликацију Lawnfeed са нашег website.\n\nДа ли желите да преузмете то сада?</string>
-  <string name="lawnfeed_outdated_title">Потребно је ажурирање Lawnfeed</string>
-  <string name="lawnfeed_outdated">За рад са овом верзијом Lawnfeed-а неопходна је нова верзија Lawnfeed-а.\n\nПре него што инсталирате исправку, вероватно ћете морати да деинсталирате тренутну верзију Lawnfeed-а.\n\nЖелите ли да је преузмете сада?</string>
-  <string name="disable_popup">Не приказуј поново</string>
   <string name="two_row_dock">Два реда dock</string>
   <string name="reset_alternative_icons_title">Поништи алтернативне апликације икона?</string>
   <string name="reset_alternative_icons">Имате %1$d апликација са алтернативним иконама, желите ли да поништите их?</string>
