@@ -412,14 +412,6 @@
   <string name="hide_app_apply">应用</string>
   <string name="unauthorized_device">此设备已经安装了一些盗版工具，请卸载后继续。</string>
   <string name="hide_app_reset">重置</string>
-  <!-- Strings for Lawnfeed gesture popup -->
-  <string name="lawnfeed_not_enabled_title">Lawnfeed 未启用</string>
-  <string name="lawnfeed_not_enabled">看起来您正在尝试打开 Google Now 页面，但是您还没有在行为设置中打开这个选项。\n\n您想现在启用吗？</string>
-  <string name="lawnfeed_not_installed_title">Lawnfeed 未安装</string>
-  <string name="lawnfeed_not_installed">看起来您正在尝试打开 Google Now 页面，但是您还没有从我们的网站安装 Lawnfeed 应用。\n\n您想现在下载吗？</string>
-  <string name="lawnfeed_outdated_title">需要更新 Lawnfeed</string>
-  <string name="lawnfeed_outdated">当前版本的 Lawnchair 需要安装新版本的 Lawnfeed 来使用，\n\n安装更新前您可能需要卸载当前版本的 Lawnfeed。\n\n需要现在下载吗？</string>
-  <string name="disable_popup">不再提示</string>
   <string name="two_row_dock">双行 Dock 栏</string>
   <string name="reset_alternative_icons_title">重置备选应用图标</string>
   <string name="reset_alternative_icons">您有 %1$d 个应用具有备用图标，您想重置它们吗？</string>
