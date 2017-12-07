@@ -417,4 +417,6 @@
   <string name="reset_alternative_icons_title">Redefinir os ícones do app alternativo?</string>
   <string name="reset_alternative_icons">Você tem %1$d apps com ícones alternativos, quer restaurá-los?</string>
   <string name="error_no_browser">Nenhum navegador encontrado para manipular URLs</string>
+  <string name="lawnfeed_outdated_title">Atualização do Lawnfeed necessária</string>
+  <string name="lawnfeed_outdated">Uma nova versão do Lawnfeed é necessária nesta versão do Lawnchair.\n\nAntes de instalar a atualização, você provavelmente precisará desinstalar a versão atual do Lawnfeed.\n\nVocê deseja baixá-la agora?</string>
 </resources>
