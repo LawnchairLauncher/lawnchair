@@ -16,6 +16,7 @@
 
 package com.android.quickstep;
 
+import android.animation.LayoutTransition;
 import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.graphics.Rect;
@@ -25,6 +26,7 @@ import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -58,6 +60,7 @@ public class RecentsView extends PagedView {
 
     private boolean mOverviewStateEnabled;
     private boolean mTaskStackListenerRegistered;
+    private LayoutTransition mLayoutTransition;
 
     private TaskStackChangeListener mTaskStackListener = new TaskStackChangeListener() {
         @Override
@@ -87,6 +90,18 @@ public class RecentsView extends PagedView {
         setWillNotDraw(false);
         setPageSpacing((int) getResources().getDimension(R.dimen.recents_page_spacing));
         enableFreeScroll(true);
+        setupLayoutTransition();
+    }
+
+    private void setupLayoutTransition() {
+        // We want to show layout transitions when pages are deleted, to close the gap.
+        mLayoutTransition = new LayoutTransition();
+        mLayoutTransition.enableTransitionType(LayoutTransition.DISAPPEARING);
+        mLayoutTransition.enableTransitionType(LayoutTransition.CHANGE_DISAPPEARING);
+
+        mLayoutTransition.disableTransitionType(LayoutTransition.APPEARING);
+        mLayoutTransition.disableTransitionType(LayoutTransition.CHANGE_APPEARING);
+        setLayoutTransition(mLayoutTransition);
     }
 
     @Override
@@ -141,6 +156,7 @@ public class RecentsView extends PagedView {
         // necessary)
         final LayoutInflater inflater = LayoutInflater.from(getContext());
         final ArrayList<Task> tasks = stack.getTasks();
+        setLayoutTransition(null);
         for (int i = getChildCount(); i < tasks.size(); i++) {
             final TaskView taskView = (TaskView) inflater.inflate(R.layout.task, this, false);
             addView(taskView);
@@ -150,6 +166,7 @@ public class RecentsView extends PagedView {
             removeView(taskView);
             loader.unloadTaskData(taskView.getTask());
         }
+        setLayoutTransition(mLayoutTransition);
 
         // Rebind all task views
         for (int i = tasks.size() - 1; i >= 0; i--) {
@@ -246,6 +263,14 @@ public class RecentsView extends PagedView {
                 TaskThumbnailView thumbnail = ((TaskView) page).getThumbnail();
                 thumbnail.setDimAlpha(1 - curveInterpolation * MAX_PAGE_SCRIM_ALPHA);
             }
+        }
+    }
+
+    public void onTaskDismissed(TaskView taskView) {
+        ActivityManagerWrapper.getInstance().removeTask(taskView.getTask().key.id);
+        removeView(taskView);
+        if (getChildCount() == 0) {
+            Launcher.getLauncher(getContext()).getStateManager().goToState(LauncherState.NORMAL);
         }
     }
 }
