@@ -18,6 +18,7 @@ package com.android.launcher3.folder;
 
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -346,7 +347,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
 
         mFolderName.setHint(sDefaultFolderName.contentEquals(newTitle) ? sHintText : null);
 
-        Utilities.sendCustomAccessibilityEvent(
+        sendCustomAccessibilityEvent(
                 this, AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
                 getContext().getString(R.string.folder_renamed, newTitle));
 
@@ -540,7 +541,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
                 mFolderIcon.setBackgroundVisible(false);
                 mFolderIcon.drawLeaveBehindIfExists();
 
-                Utilities.sendCustomAccessibilityEvent(
+                sendCustomAccessibilityEvent(
                         Folder.this,
                         AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
                         mContent.getAccessibilityDescription());
@@ -654,7 +655,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             }
             @Override
             public void onAnimationStart(Animator animation) {
-                Utilities.sendCustomAccessibilityEvent(
+                sendCustomAccessibilityEvent(
                         Folder.this,
                         AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
                         getContext().getString(R.string.folder_closed));

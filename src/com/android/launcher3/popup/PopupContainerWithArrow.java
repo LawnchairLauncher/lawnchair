@@ -85,6 +85,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 import static com.android.launcher3.notification.NotificationMainView.NOTIFICATION_ITEM_INFO;
 import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS;
 import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS_IF_NOTIFICATIONS;
@@ -573,7 +574,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             @Override
             public void onAnimationEnd(Animator animation) {
                 mOpenCloseAnimator = null;
-                Utilities.sendCustomAccessibilityEvent(
+                sendCustomAccessibilityEvent(
                         PopupContainerWithArrow.this,
                         AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
                         getContext().getString(R.string.action_deep_shortcut));

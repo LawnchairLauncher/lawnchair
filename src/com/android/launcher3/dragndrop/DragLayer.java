@@ -16,6 +16,8 @@
 
 package com.android.launcher3.dragndrop;
 
+import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
@@ -222,7 +224,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     private void sendTapOutsideFolderAccessibilityEvent(boolean isEditingName) {
         int stringId = isEditingName ? R.string.folder_tap_to_rename : R.string.folder_tap_to_close;
-        Utilities.sendCustomAccessibilityEvent(
+        sendCustomAccessibilityEvent(
                 this, AccessibilityEvent.TYPE_VIEW_FOCUSED, getContext().getString(stringId));
     }
 
