@@ -61,7 +61,6 @@ import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.launcher3.views.BottomUserEducationView;
-import com.android.launcher3.views.SlidingTabStrip;
 
 import java.util.HashMap;
 import java.util.List;
@@ -483,7 +482,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         if (mTabsPagerAdapter != null) {
             return;
         }
-        final SlidingTabStrip tabs = findViewById(R.id.tabs);
+        final PersonalWorkSlidingTabStrip tabs = findViewById(R.id.tabs);
         mViewPager.setAdapter(mTabsPagerAdapter = new TabsPagerAdapter());
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
