@@ -336,7 +336,7 @@ public class SwipeDetector {
     /**
      * Returns the linear interpolation between two values
      */
-    private static float interpolate(float from, float to, float alpha) {
+    public static float interpolate(float from, float to, float alpha) {
         return (1.0f - alpha) * from + alpha * to;
     }
 

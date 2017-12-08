@@ -93,7 +93,7 @@ public class LauncherStateManager {
         return mState;
     }
 
-    private StateHandler[] getStateHandlers() {
+    public StateHandler[] getStateHandlers() {
         if (mStateHandlers == null) {
             mStateHandlers = UiFactory.getStateHandler(mLauncher);
         }
