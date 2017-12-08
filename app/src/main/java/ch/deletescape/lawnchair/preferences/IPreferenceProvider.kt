@@ -131,6 +131,8 @@ interface IPreferenceProvider {
     val hotseatIconScale: Float
     val hotseatHeightScale: Float
     val enablePhysics: Boolean
+    val snowflakeSizeScale: Float
+    val snowflakesNum: String
 
     // -----------------
     // GENERAL - BITS

@@ -1,5 +1,6 @@
 language: android
-dist: precise
+dist: trusty
+group: edge
 jdk: oraclejdk8
 branches:
    except:
@@ -10,10 +11,11 @@ android:
   components:
     - tools
     - platform-tools
-    - build-tools-27.0.1
+    - build-tools-27.0.2
     - android-27
     - extra-google-m2repository
-before_install: 
+before_install:
+  - yes | sdkmanager "platforms;android-27"
   - chmod a+x ./scripts/deploy-*.sh
   - chmod a+x ./scripts/changelog.sh
   - chmod a+x ./scripts/s3-upload.sh
