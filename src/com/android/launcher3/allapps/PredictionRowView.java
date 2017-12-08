@@ -111,6 +111,7 @@ public class PredictionRowView extends LinearLayout {
     public void setPredictedApps(List<ComponentKeyMapper<AppInfo>> apps) {
         mPredictedAppComponents.clear();
         mPredictedAppComponents.addAll(apps);
+        mPredictedApps.clear();
         mPredictedApps.addAll(processPredictedAppComponents(mPredictedAppComponents));
         onAppsUpdated();
     }
