@@ -24,14 +24,13 @@ import android.widget.Toast;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.R;
-import com.android.launcher3.VerticalSwipeController;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.widget.WidgetsFullSheet;
 
 public class UiFactory {
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
-        return new TouchController[] {new VerticalSwipeController(launcher)};
+        return new TouchController[] {new TwoStepSwipeController(launcher)};
     }
 
     public static AccessibilityDelegate newPageIndicatorAccessibilityDelegate() {

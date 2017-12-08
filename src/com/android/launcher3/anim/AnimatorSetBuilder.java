@@ -29,6 +29,9 @@ public class AnimatorSetBuilder {
 
     protected final ArrayList<Animator> mAnims = new ArrayList<>();
 
+    /**
+     * Associates a tag with all the animations added after this call.
+     */
     public void startTag(Object obj) { }
 
     public void play(Animator anim) {
