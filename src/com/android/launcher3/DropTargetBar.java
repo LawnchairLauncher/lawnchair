@@ -17,7 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.AlphaUpdateListener.updateVisibility;
-import static com.android.launcher3.Utilities.isAccessibilityEnabled;
+import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 
 import android.animation.TimeInterpolator;
 import android.content.Context;

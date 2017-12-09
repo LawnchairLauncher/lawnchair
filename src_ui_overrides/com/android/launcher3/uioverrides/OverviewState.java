@@ -16,7 +16,7 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
-import static com.android.launcher3.Utilities.isAccessibilityEnabled;
+import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 
 import android.graphics.Rect;
 import android.view.View;

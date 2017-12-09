@@ -16,6 +16,9 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
+import static com.android.launcher3.compat.AccessibilityManagerCompat.isObservedEventType;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.LayoutTransition;
@@ -41,7 +44,6 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Interpolator;
 
@@ -521,9 +523,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     private void sendScrollAccessibilityEvent() {
-        AccessibilityManager am =
-                (AccessibilityManager) getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-        if (am.isEnabled()) {
+        if (isObservedEventType(getContext(), AccessibilityEvent.TYPE_VIEW_SCROLLED)) {
             if (mCurrentPage != getNextPage()) {
                 AccessibilityEvent ev =
                         AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_SCROLLED);
@@ -572,9 +572,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             }
 
             onPostReorderingAnimationCompleted();
-            AccessibilityManager am = (AccessibilityManager)
-                    getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-            if (am.isEnabled()) {
+            if (isAccessibilityEnabled(getContext())) {
                 // Notify the user when the page changes
                 announceForAccessibility(getCurrentPageDescription());
             }

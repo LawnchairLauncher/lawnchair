@@ -47,8 +47,6 @@ import android.util.Pair;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityManager;
 
 import com.android.launcher3.config.FeatureFlags;
 
@@ -612,23 +610,6 @@ public final class Utilities {
     /** Returns whether the collection is null or empty. */
     public static boolean isEmpty(Collection c) {
         return c == null || c.isEmpty();
-    }
-
-    public static boolean isAccessibilityEnabled(Context context) {
-        AccessibilityManager accessibilityManager = (AccessibilityManager)
-                context.getSystemService(Context.ACCESSIBILITY_SERVICE);
-        return accessibilityManager.isEnabled();
-    }
-
-    public static void sendCustomAccessibilityEvent(View target, int type, String text) {
-        AccessibilityManager accessibilityManager = (AccessibilityManager)
-                target.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-        if (accessibilityManager.isEnabled()) {
-            AccessibilityEvent event = AccessibilityEvent.obtain(type);
-            target.onInitializeAccessibilityEvent(event);
-            event.getText().add(text);
-            accessibilityManager.sendAccessibilityEvent(event);
-        }
     }
 
     public static boolean isBinderSizeError(Exception e) {

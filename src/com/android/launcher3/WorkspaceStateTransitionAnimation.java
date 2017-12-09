@@ -18,16 +18,15 @@ package com.android.launcher3;
 
 import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
-import android.content.Context;
 import android.util.Property;
 import android.view.View;
-import android.view.accessibility.AccessibilityManager;
 
 import com.android.launcher3.LauncherState.PageAlphaProvider;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
@@ -165,7 +164,7 @@ public class WorkspaceStateTransitionAnimation {
                 return;
             }
             view.setAlpha(alpha);
-            AlphaUpdateListener.updateVisibility(view, isAccessibilityEnabled(view));
+            AlphaUpdateListener.updateVisibility(view, isAccessibilityEnabled(view.getContext()));
         }
 
         public <T> void setFloat(T target, Property<T, Float> property, float value,
@@ -176,12 +175,6 @@ public class WorkspaceStateTransitionAnimation {
         public <T> void setInt(T target, Property<T, Integer> property, int value,
                 TimeInterpolator interpolator) {
             property.set(target, value);
-        }
-
-        protected boolean isAccessibilityEnabled(View v) {
-            AccessibilityManager am = (AccessibilityManager)
-                    v.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-            return am.isEnabled();
         }
     }
 
@@ -202,7 +195,8 @@ public class WorkspaceStateTransitionAnimation {
                     return;
                 }
                 anim = ObjectAnimator.ofFloat(view, View.ALPHA, alpha);
-                anim.addListener(new AlphaUpdateListener(view, isAccessibilityEnabled(view)));
+                anim.addListener(new AlphaUpdateListener(view,
+                        isAccessibilityEnabled(view.getContext())));
             }
 
             anim.setDuration(mDuration).setInterpolator(getFadeInterpolator(alpha));

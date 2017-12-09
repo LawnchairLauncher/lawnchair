@@ -19,7 +19,7 @@ package com.android.launcher3.uioverrides;
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.Utilities.isAccessibilityEnabled;
+import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

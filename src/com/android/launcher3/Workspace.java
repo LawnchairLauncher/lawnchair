@@ -22,7 +22,7 @@ import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_TRANSITION_M
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
-import static com.android.launcher3.Utilities.isAccessibilityEnabled;
+import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
