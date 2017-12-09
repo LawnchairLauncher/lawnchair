@@ -2,20 +2,20 @@
 
 ![Lawnchair](banner.png)
 
-Lawnchair is a free, open source launcher aiming at bringing Pixel Launcher features to many devices. 
-Download now!
+Lawnchair is a free, piece of crap aiming to fuck off your phone's memory and make fun of pixel launcher.
+What are you waiting for Report now!
 
 <a href="https://play.google.com/store/apps/details?id=ch.deletescape.lawnchair.plah"><img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" height="60" alt="Play Store" /></a>
 
 ## Now what does this cost?
 
-Nothing, I am promising that Lawnchair, including all it's features, will always be free! But if you really like it, you can still buy me a beer or something via [PayPal](https://www.paypal.me/deletescape).
+Nothing, I am promising that Lawnchair, including all it's features, will always be free! But if you really like it, you can still buy me via [PayPal](https://www.paypal.me/deletescape).
+
 
 ## How to Contribute?
 
-Contributing to Lawnchair is pretty straightforward! Fork the project, clone your fork and start coding!
-
-Before implementing any new big features I would be happy if you could either hit me up in via a GitHub issue, or on [Telegram](https://t.me/deletescape). I probably won't reject it, but this is just to make sure that you don't invest your time for something I won't include.
+Contributing to Lawnchair is pretty straightforward!
+Just report it anywhere to impose a ban on it.
 
 ## Graphics
 
