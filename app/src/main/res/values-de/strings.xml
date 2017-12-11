@@ -417,4 +417,7 @@
   <string name="reset_alternative_icons_title">Alternative App-Icons zurücksetzen?</string>
   <string name="reset_alternative_icons">Du hast %1$d Apps mit alternativen Icons, möchtest du sie zurücksetzen?</string>
   <string name="error_no_browser">Keine Aktivität gefunden, um URLs zu behandeln</string>
+  <string name="snowfall_enabled">\"Lass es schneien, lass es schneien, lass es schneien!\"</string>
+  <string name="lawnfeed_outdated_title">Lawnfeed-Update erforderlich</string>
+  <string name="lawnfeed_outdated">Eine neuere Version von Lawnfeed ist erforderlich, um mit dieser Version von Lawnchair zu funktionieren.\n\nVor der Installation des Updates müssen Sie wahrscheinlich die aktuelle Version von Lawnfeed deinstallieren.\n\nMöchten sie es jetzt herunterladen?</string>
 </resources>
