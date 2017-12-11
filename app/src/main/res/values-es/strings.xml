@@ -413,4 +413,11 @@
   <string name="hide_app_apply">Aplicar</string>
   <string name="unauthorized_device">Este dispositivo tiene algunas herramientas de piratería instaladas. Por favor, desinstálalos para continuar.</string>
   <string name="hide_app_reset">Restablecer</string>
+  <string name="two_row_dock">Barra de aplicaciones de dos filas</string>
+  <string name="reset_alternative_icons_title">Restablecer íconos de aplicaciones alternativas?</string>
+  <string name="reset_alternative_icons">Tienes %1$d aplicaciones con iconos alternativos, ¿quieres restablecerlas?</string>
+  <string name="error_no_browser">No se encontró ninguna actividad para manejar las URL</string>
+  <string name="snowfall_enabled">\"¡Deja que nieve, deja que nieve, deja que nieve!\"</string>
+  <string name="lawnfeed_outdated_title">Se requiere actualizar Lawnfeed</string>
+  <string name="lawnfeed_outdated">Una nueva versión de Lawnfeed es necesaria para funcionar con esta versión de Lawnchair.\n\nAntes instalar la actualización, probablemente necesitará desinstalar la versión actual de Lawnfeed.\n\n¿Desea descargarla ahora?</string>
 </resources>
