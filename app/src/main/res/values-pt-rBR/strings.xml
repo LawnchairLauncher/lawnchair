@@ -244,13 +244,13 @@
   <string name="notifications_header">Notificações</string>
   <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
+  <string name="about_text">Lawnchair é um Launcher criado por Kottmann (aka deletescape). Baseia-se no Launcher3 da AOSP.</string>
   <string name="about_title">Sobre</string>
   <string name="about_pref_summary">Conheça a equipe da Lawnchair</string>
   <string name="changelog_title">Alterações para a versão #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Pacote de Ícones</string>
-  <string name="icon_pack_preference_summary">Select an icon Pack</string>
+  <string name="icon_pack_preference_summary">Selecione um pacote de ícones</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Usar cores do papel de parede no dock</string>
   <string name="hotseat_show_arrow">Mostrar indicador de exibição</string>
   <string name="hotseat_show_page_indicator">Mostrar indicador de página</string>
@@ -263,7 +263,7 @@
   <string name="blur_radius_pref_title">Raio de desfoque</string>
   <string name="pref_iconLabelsInTwoLines">Etiquetas de ícones em duas linhas</string>
   <string name="white_google_icon_pref_title">Usar o ícone branco da Google</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on homescreen</string>
+  <string name="hide_icon_labels_pref_title">Ocultar rótulos dos ícones na tela inicial</string>
   <string name="hide_all_apps_icon_labels_pref_title">Esconder texto dos ícones na gaveta de apps</string>
   <string name="workspace_label_color_hue_pref_title">Color of icon labels on homescreen</string>
   <string name="all_apps_opacity_pref_title">Opacidade da gaveta</string>
@@ -277,7 +277,7 @@
   <string name="full_width_width_widgets_pref_title">Preencher widgets na horizontal</string>
   <string name="full_width_widgets_pref_summary">Permitir que os widgets abranger a largura inteira sem preenchimento</string>
   <string name="notification_access_pref_title">Visualização e emblemas de notificação</string>
-  <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
+  <string name="notification_access_pref_summary">Permitir que o Lawnchair acessar suas notificações para ativar esse recurso</string>
   <string name="general_pref_title">Geral</string>
   <string name="dock_pref_title">Barra de aplicativos</string>
   <string name="app_drawer_pref_title">Gaveta de aplicativos</string>
@@ -288,7 +288,7 @@
   <string name="dock_pref_summary">Personalize seu Dock</string>
   <string name="app_drawer_pref_summary">Personalizar sua gaveta de aplicativos</string>
   <string name="pixel_ui_pref_summary">Habilitar funções exclusivas do Pixel Launcher</string>
-  <string name="backup_pref_title">Backup</string>
+  <string name="backup_pref_title">Backup &amp; restauração</string>
   <string name="behavior_pref_summary">Mudar o comportamento do Lawnchair</string>
   <string name="backup_pref_summary">Fazer backup dos seus dados e configurações</string>
   <string name="debug_pref_summary">Reiniciar ou refazer dados dos ícones</string>
@@ -306,19 +306,19 @@
   <string name="pinch_to_overview_pref_summary">Pinch on the homescreen to open the overview</string>
   <string name="light_statusbar_pref_title">Ícones da barra de status brancos</string>
   <string name="light_statusbar_pref_force">A barra de status sempre mostrará ícones escuros</string>
-  <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
+  <string name="light_statusbar_pref_off">A barra de status sempre mostrará ícones claros</string>
   <string name="haptic_feedback_pref_title">Habilitar vibração tátil</string>
   <string name="keep_scroll_state_pref_title">Salvar a posição da rolagem</string>
   <string name="keep_scroll_state_pref_summary">Salvar a posição da rolagem da gaveta de apps</string>
   <string name="home_opens_drawer_pref_title">Botão da tela inicial abre a gaveta de apps</string>
-  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the homescreen will open the app drawer</string>
+  <string name="home_opens_drawer_pref_summary">Pressionar o botão de início na tela inicial mostrará a gaveta de apps</string>
   <string name="show_hidden_pref_title">Mostrar apps ocultos</string>
   <string name="show_hidden_pref_on">Apps ocultos serão mostrados para alterar as configurações de visibilidade</string>
   <string name="show_hidden_pref_off">Apps ocultos não serão mostrados</string>
-  <string name="export_db_title">Export database</string>
-  <string name="import_db_title">Import database</string>
-  <string name="export_prefs_title">Export settings</string>
-  <string name="import_prefs_title">Import settings</string>
+  <string name="export_db_title">Exportar banco de dados</string>
+  <string name="import_db_title">Importar banco de dados</string>
+  <string name="export_prefs_title">Exportar configurações</string>
+  <string name="import_prefs_title">Importar configurações</string>
   <string name="notification_listener_label">Lawnchair - Notificações dinâmicas</string>
   <string name="color_extraction_label">Lawnchair - Extração de cor</string>
   <string name="test_title">Teste</string>
@@ -347,7 +347,7 @@
   <string name="settings_import_success">Restauração de configurações realizado com sucesso</string>
   <string name="db_import_success">Restauração de banco de dados realizado com sucesso</string>
   <string name="export_error">Não foi possível fazer o backup</string>
-  <string name="import_error">Não foi possível fazer a resutauração</string>
+  <string name="import_error">Não foi possível fazer a restauração</string>
   <string name="imexport_no_backup_found">Nenhum backup encontrado</string>
   <string name="imexport_external_storage_unreadable">Armazenamento externo não é legível (conceder permissão em configurações)</string>
   <string name="imexport_external_storage_unwritable">Armazenamento externo não é gravável (conceder permissão em configurações)</string>
@@ -417,6 +417,7 @@
   <string name="reset_alternative_icons_title">Redefinir os ícones do app alternativo?</string>
   <string name="reset_alternative_icons">Você tem %1$d apps com ícones alternativos, quer restaurá-los?</string>
   <string name="error_no_browser">Nenhum navegador encontrado para manipular URLs</string>
+  <string name="snowfall_enabled">\"Deixe nevar, deixe nevar, deixe nevar!\"</string>
   <string name="lawnfeed_outdated_title">Atualização do Lawnfeed necessária</string>
   <string name="lawnfeed_outdated">Uma nova versão do Lawnfeed é necessária nesta versão do Lawnchair.\n\nAntes de instalar a atualização, você provavelmente precisará desinstalar a versão atual do Lawnfeed.\n\nVocê deseja baixá-la agora?</string>
 </resources>
