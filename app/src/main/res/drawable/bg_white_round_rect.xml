@@ -2,5 +2,4 @@
 <shape android:shape="rectangle"
   xmlns:android="http://schemas.android.com/apk/res/android">
     <solid android:color="?attr/popupColorSecondary" />
-    <corners android:radius="@dimen/bg_round_rect_radius" />
 </shape>

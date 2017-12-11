@@ -17,6 +17,8 @@
 package ch.deletescape.lawnchair.notification;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Notification;
 import android.content.Context;
 import android.graphics.Rect;
@@ -29,9 +31,12 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import ch.deletescape.lawnchair.LauncherAnimUtils;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.anim.PillHeightRevealOutlineProvider;
+import ch.deletescape.lawnchair.anim.PropertyResetListener;
+import ch.deletescape.lawnchair.anim.RoundedRectRevealOutlineProvider;
 import ch.deletescape.lawnchair.graphics.IconPalette;
 import ch.deletescape.lawnchair.popup.PopupItemView;
 
@@ -85,15 +90,38 @@ public class NotificationItemView extends PopupItemView {
     }
 
     public int getHeightMinusFooter() {
-        int footerHeight = mFooter.getParent() == null ? 0 : mFooter.getHeight();
-        return getHeight() - footerHeight;
+        if (mFooter.getParent() == null) {
+            return getHeight();
+        }
+        return getHeight() - (mFooter.getHeight() - getResources().getDimensionPixelSize(R.dimen.notification_empty_footer_height));
+
     }
 
     public Animator animateHeightRemoval(int heightToRemove) {
         final int newHeight = getHeight() - heightToRemove;
         return new PillHeightRevealOutlineProvider(mPillRect,
-                getBackgroundRadius(), newHeight).createRevealAnimator(this, true /* isReversed */);
+                0, newHeight).createRevealAnimator(this, true /* isReversed */);
     }
+
+    public Animator animateHeightRemoval(int heightToRemove, boolean z) {
+        AnimatorSet animations = LauncherAnimUtils.createAnimatorSet();
+        Rect rect = new Rect(mPillRect);
+        Rect rect2 = new Rect(mPillRect);
+        if (z) {
+            rect2.top += heightToRemove;
+        } else {
+            rect2.bottom -= heightToRemove;
+        }
+        animations.play(new RoundedRectRevealOutlineProvider(getBackgroundRadius(), getBackgroundRadius(), rect, rect2, mCorners).createRevealAnimator(this, false));
+        View findViewById = findViewById(R.id.gutter_bottom);
+        if (findViewById != null && findViewById.getVisibility() == VISIBLE) {
+            Animator ofFloat = ObjectAnimator.ofFloat(findViewById, TRANSLATION_Y, -heightToRemove);
+            ofFloat.addListener(new PropertyResetListener<>(TRANSLATION_Y, 0.0f));
+            animations.play(ofFloat);
+        }
+        return animations;
+    }
+
 
     public void updateHeader(int notificationCount, @Nullable IconPalette palette) {
         mHeaderCount.setText(notificationCount <= 1 ? "" : String.valueOf(notificationCount));
@@ -135,7 +163,7 @@ public class NotificationItemView extends PopupItemView {
         NotificationInfo mainNotification = notificationInfos.get(0);
         mMainView.applyNotificationInfo(mainNotification, mIconView);
 
-        mDivider.setVisibility(notificationInfos.size() > 1 ? VISIBLE : INVISIBLE);
+        mDivider.setVisibility(notificationInfos.size() > 1 ? VISIBLE : GONE);
         for (int i = 1; i < notificationInfos.size(); i++) {
             mFooter.addNotificationInfo(notificationInfos.get(i));
         }
@@ -165,11 +193,6 @@ public class NotificationItemView extends PopupItemView {
         } else {
             mFooter.trimNotifications(notificationKeys);
         }
-    }
-
-    public void showSectionDivider(boolean isAboveIcon) {
-        mHeaderView.getLayoutParams().height = getResources().getDimensionPixelSize(R.dimen.system_shortcut_header_height);
-        findViewById(isAboveIcon ? R.id.top_divider : R.id.bottom_divider).setVisibility(VISIBLE);
     }
 
     @Override

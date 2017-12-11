@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class StringSetAppFilter extends PreferenceAppFilter {
-
     private Set<ComponentName> mHiddenComponents = new HashSet<>();
 
     StringSetAppFilter() {

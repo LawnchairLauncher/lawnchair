@@ -31,6 +31,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAnimUtils;
 import ch.deletescape.lawnchair.R;
@@ -38,10 +42,6 @@ import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.anim.PropertyListBuilder;
 import ch.deletescape.lawnchair.anim.PropertyResetListener;
 import ch.deletescape.lawnchair.popup.PopupContainerWithArrow;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * A {@link FrameLayout} that contains only icons of notifications.
@@ -98,7 +98,7 @@ public class NotificationFooterLayout extends FrameLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mOverflowEllipsis = findViewById(R.id.overflow);
-        mIconRow = (LinearLayout) findViewById(R.id.icon_row);
+        mIconRow = findViewById(R.id.icon_row);
         mBackgroundColor = ((ColorDrawable) getBackground()).getColor();
     }
 
@@ -193,19 +193,23 @@ public class NotificationFooterLayout extends FrameLayout {
 
     private void removeViewFromIconRow(View child) {
         mIconRow.removeView(child);
-        mNotifications.remove((NotificationInfo) child.getTag());
+        mNotifications.remove(child.getTag());
         updateOverflowEllipsisVisibility();
         if (mIconRow.getChildCount() == 0) {
             // There are no more icons in the footer, so hide it.
             PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(
                     Launcher.getLauncher(getContext()));
             if (popup != null) {
-                Animator collapseFooter = popup.reduceNotificationViewHeight(getHeight(),
+                final int emptyHeight = getResources().getDimensionPixelSize(R.dimen.notification_empty_footer_height);
+                Animator collapseFooter = popup.reduceNotificationViewHeight(getHeight() - emptyHeight,
                         getResources().getInteger(R.integer.config_removeNotificationViewDuration));
                 collapseFooter.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        ((ViewGroup) getParent()).removeView(NotificationFooterLayout.this);
+                        ((ViewGroup) getParent()).findViewById(R.id.divider).setVisibility(GONE);
+                        getLayoutParams().height = emptyHeight;
+                        requestLayout();
+
                     }
                 });
                 collapseFooter.start();

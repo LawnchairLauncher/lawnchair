@@ -16,25 +16,24 @@
 
 package ch.deletescape.lawnchair.shortcuts;
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
 import android.content.Context;
 import android.graphics.Point;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import ch.deletescape.lawnchair.AbstractFloatingView;
 import ch.deletescape.lawnchair.BubbleTextView;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
-import ch.deletescape.lawnchair.LauncherAnimUtils;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
-import ch.deletescape.lawnchair.anim.PropertyListBuilder;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.dragndrop.DragView;
@@ -42,10 +41,6 @@ import ch.deletescape.lawnchair.popup.PopupContainerWithArrow;
 import ch.deletescape.lawnchair.popup.PopupItemView;
 import ch.deletescape.lawnchair.popup.PopupPopulator;
 import ch.deletescape.lawnchair.popup.SystemShortcut;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * A {@link PopupItemView} that contains all of the {@link DeepShortcutView}s for an app,
@@ -115,7 +110,7 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
                 getContainer(), sv.getFinalInfo(),
                 new ShortcutDragPreviewProvider(sv.getIconView(), mIconShift), new DragOptions());
         dv.animateShift(-mIconShift.x, -mIconShift.y);
-
+        mLauncher.closeFolder(true);
         // TODO: support dragging from within folder without having to close it
         AbstractFloatingView.closeOpenContainer(mLauncher, AbstractFloatingView.TYPE_FOLDER);
         return false;
@@ -209,43 +204,6 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
                 PopupContainerWithArrow.showForIcon(originalIcon);
             }
         }
-    }
-
-    @Override
-    public Animator createOpenAnimation(boolean isContainerAboveIcon, boolean pivotLeft) {
-        AnimatorSet openAnimation = LauncherAnimUtils.createAnimatorSet();
-        openAnimation.play(super.createOpenAnimation(isContainerAboveIcon, pivotLeft));
-        for (int i = 0; i < mShortcutsLayout.getChildCount(); i++) {
-            if (!(mShortcutsLayout.getChildAt(i) instanceof DeepShortcutView)) {
-                continue;
-            }
-            DeepShortcutView shortcutView = ((DeepShortcutView) mShortcutsLayout.getChildAt(i));
-            View deepShortcutIcon = shortcutView.getIconView();
-            deepShortcutIcon.setScaleX(0);
-            deepShortcutIcon.setScaleY(0);
-            openAnimation.play(LauncherAnimUtils.ofPropertyValuesHolder(
-                    deepShortcutIcon, new PropertyListBuilder().scale(1).build()));
-        }
-        return openAnimation;
-    }
-
-    @Override
-    public Animator createCloseAnimation(boolean isContainerAboveIcon, boolean pivotLeft,
-                                         long duration) {
-        AnimatorSet closeAnimation = LauncherAnimUtils.createAnimatorSet();
-        closeAnimation.play(super.createCloseAnimation(isContainerAboveIcon, pivotLeft, duration));
-        for (int i = 0; i < mShortcutsLayout.getChildCount(); i++) {
-            if (!(mShortcutsLayout.getChildAt(i) instanceof DeepShortcutView)) {
-                continue;
-            }
-            DeepShortcutView shortcutView = ((DeepShortcutView) mShortcutsLayout.getChildAt(i));
-            View deepShortcutIcon = shortcutView.getIconView();
-            deepShortcutIcon.setScaleX(1);
-            deepShortcutIcon.setScaleY(1);
-            closeAnimation.play(LauncherAnimUtils.ofPropertyValuesHolder(
-                    deepShortcutIcon, new PropertyListBuilder().scale(0).build()));
-        }
-        return closeAnimation;
     }
 
     @Override

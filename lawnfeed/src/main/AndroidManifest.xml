@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ch.deletescape.lawnchair.lawnfeed">
 
+    <!-- Let's break some rules... -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -13,6 +19,24 @@
             android:name=".LauncherClientProxyService"
             android:enabled="true"
             android:exported="true" />
+
+        <!-- Required for Lawnfeed updater -->
+        <receiver
+            android:name=".receivers.UpdateReceiver" />
+        <activity android:name=".PermissionActivity"
+            android:theme="@style/Theme.Transparent"
+            android:launchMode="singleTask"
+            android:alwaysRetainTaskState="false">
+        </activity>
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="ch.deletescape.lawnchair.lawnfeed.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

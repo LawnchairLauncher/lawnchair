@@ -16,14 +16,18 @@
 
 package ch.deletescape.lawnchair;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -46,10 +50,12 @@ import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.UserHandle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -67,10 +73,11 @@ import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
-import java.lang.reflect.Method;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -88,6 +95,8 @@ import ch.deletescape.lawnchair.config.IThemer;
 import ch.deletescape.lawnchair.config.ThemeProvider;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.graphics.ShadowGenerator;
+import ch.deletescape.lawnchair.overlay.ILauncherClient;
+import ch.deletescape.lawnchair.overlay.LawnfeedClient;
 import ch.deletescape.lawnchair.pixelify.AdaptiveIconDrawableCompat;
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.preferences.PreferenceFlags;
@@ -96,6 +105,8 @@ import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 import ch.deletescape.lawnchair.util.IconNormalizer;
 import ch.deletescape.lawnchair.util.PackageManagerHelper;
+
+import static ch.deletescape.lawnchair.util.PackageManagerHelper.isAppEnabled;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -141,12 +152,44 @@ public final class Utilities {
     private static final int CORE_POOL_SIZE = CPU_COUNT + 1;
     private static final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;
     private static final int KEEP_ALIVE = 1;
+
     /**
      * An {@link Executor} to be used with async task with no limit on the queue size.
      */
     public static final Executor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(
             CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
             TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+
+    // Blacklisted APKs which will be hidden, these include simple regex formatting, without
+    // full regex formatting (e.g. com.android. will block everything that starts with com.android.)
+    // Taken from: https://github.com/substratum/template/blob/kt-n/app/src/main/kotlin/substratum/theme/template/Constants.kt
+    private static final String[] BLACKLISTED_APPLICATIONS = {"com.android.vending.billing.InAppBillingService.LOCK",
+            "com.android.vending.billing.InAppBillingService.LACK",
+            "cc.madkite.freedom",
+            "p.jasi2169.al3",
+            "zone.jasi2169.uretpatcher",
+            "uret.jasi2169.patcher",
+            "com.dimonvideo.luckypatcher",
+            "com.chelpus.lackypatch",
+            "com.forpda.lp",
+            "com.android.vending.billing.InAppBillingService.LUCK",
+            "com.android.vending.billing.InAppBillingService.CLON",
+            "com.android.vendinc",
+            "com.appcake",
+            "ac.market.store",
+            "org.sbtools.gamehack",
+            "com.zune.gamekiller",
+            "com.aag.killer",
+            "com.killerapp.gamekiller",
+            "cn.lm.sq",
+            "net.schwarzis.game_cih",
+            "org.creeplays.hack",
+            "com.baseappfull.fwd",
+            "com.zmapp",
+            "com.dv.marketmod.installer",
+            "org.mobilism.android",
+            "com.blackmartalpha",
+            "org.blackmart.market"};
 
     public static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
@@ -279,7 +322,7 @@ public final class Utilities {
         return createIconBitmap(icon, context, 1.0f /* scale */);
     }
 
-    public static Bitmap createIconBitmap(Drawable icon, Context context, float scale) {
+    private static Bitmap createIconBitmap(Drawable icon, Context context, float scale) {
         synchronized (sCanvas) {
             final int iconBitmapSize = getIconBitmapSize();
             int width = iconBitmapSize;
@@ -310,16 +353,14 @@ public final class Utilities {
                 }
             }
             // no intrinsic size --> use default size
-            int textureWidth = iconBitmapSize;
-            int textureHeight = iconBitmapSize;
 
-            Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
+            Bitmap bitmap = Bitmap.createBitmap(iconBitmapSize, iconBitmapSize,
                     Bitmap.Config.ARGB_8888);
             final Canvas canvas = sCanvas;
             canvas.setBitmap(bitmap);
 
-            final int left = (textureWidth-width) / 2;
-            final int top = (textureHeight-height) / 2;
+            final int left = (iconBitmapSize -width) / 2;
+            final int top = (iconBitmapSize -height) / 2;
 
             sOldBounds.set(icon.getBounds());
             if (Utilities.isAdaptive(icon)) {
@@ -331,7 +372,7 @@ public final class Utilities {
                 icon.setBounds(left, top, left+width, top+height);
             }
             canvas.save(Canvas.MATRIX_SAVE_FLAG);
-            canvas.scale(scale, scale, textureWidth / 2, textureHeight / 2);
+            canvas.scale(scale, scale, iconBitmapSize / 2, iconBitmapSize / 2);
             icon.draw(canvas);
             canvas.restore();
             icon.setBounds(sOldBounds);
@@ -479,7 +520,7 @@ public final class Utilities {
         }
     }
 
-    static boolean isSystemApp(Context context, Intent intent) {
+    public static boolean isSystemApp(Context context, Intent intent) {
         PackageManager pm = context.getPackageManager();
         ComponentName cn = intent.getComponent();
         String packageName = null;
@@ -510,7 +551,7 @@ public final class Utilities {
      * @param bitmap  The bitmap to scan
      * @param samples The approximate max number of samples to use.
      */
-    static int findDominantColorByHue(Bitmap bitmap, int samples) {
+    public static int findDominantColorByHue(Bitmap bitmap, int samples) {
         final int height = bitmap.getHeight();
         final int width = bitmap.getWidth();
         int sampleStride = (int) Math.sqrt((height * width) / samples);
@@ -589,7 +630,7 @@ public final class Utilities {
      * @param action intent action used to find the apk
      * @return a pair of apk package name and the resources.
      */
-    static Pair<String, Resources> findSystemApk(String action, PackageManager pm) {
+    public static Pair<String, Resources> findSystemApk(String action, PackageManager pm) {
         final Intent intent = new Intent(action);
         for (ResolveInfo info : pm.queryBroadcastReceivers(intent, 0)) {
             if (info.activityInfo != null &&
@@ -711,21 +752,32 @@ public final class Utilities {
     }
 
     public static boolean isBootCompleted() {
-        return "1".equals(getSystemProperty("sys.boot_completed", "1"));
+        return "1".equals(getProp("sys.boot_completed", "1"));
     }
 
-    public static String getSystemProperty(String property, String defaultValue) {
+    private static String getProp(String propName, String defaultValue) {
+        Process p = null;
+        String result = defaultValue;
         try {
-            Class clazz = Class.forName("android.os.SystemProperties");
-            Method getter = clazz.getDeclaredMethod("get", String.class);
-            String value = (String) getter.invoke(null, property);
-            if (!TextUtils.isEmpty(value)) {
-                return value;
+            p = new ProcessBuilder("/system/bin/getprop", propName)
+                    .redirectErrorStream(true).start();
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream())
+            )) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    result = line;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            Log.d(TAG, "Unable to read system properties");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (p != null) {
+                p.destroy();
+            }
         }
-        return defaultValue;
+        return result;
     }
 
     /**
@@ -770,15 +822,15 @@ public final class Utilities {
 
     public static boolean isPowerSaverOn(Context context) {
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        return powerManager.isPowerSaveMode();
+        return powerManager != null && powerManager.isPowerSaveMode();
     }
 
     public static boolean isWallapaperAllowed(Context context) {
         if (ATLEAST_NOUGAT) {
             try {
                 WallpaperManager wm = context.getSystemService(WallpaperManager.class);
-                return (Boolean) wm.getClass().getDeclaredMethod("isSetWallpaperAllowed")
-                        .invoke(wm);
+                return (Boolean) (wm != null ? wm.getClass().getDeclaredMethod("isSetWallpaperAllowed")
+                        .invoke(wm) : false);
             } catch (Exception ignored) {
             }
         }
@@ -799,10 +851,6 @@ public final class Utilities {
      */
     public static boolean isEmpty(Collection c) {
         return c == null || c.isEmpty();
-    }
-
-    public static void stackTrace() {
-        (new Throwable()).printStackTrace();
     }
 
     public static void setDefaultLauncher(@NotNull Context context) {
@@ -830,7 +878,7 @@ public final class Utilities {
      */
     private static class FixedSizeBitmapDrawable extends BitmapDrawable {
 
-        public FixedSizeBitmapDrawable(Bitmap bitmap) {
+        FixedSizeBitmapDrawable(Bitmap bitmap) {
             super(null, bitmap);
         }
 
@@ -861,7 +909,7 @@ public final class Utilities {
     public static void sendCustomAccessibilityEvent(View target, int type, String text) {
         AccessibilityManager accessibilityManager = (AccessibilityManager)
                 target.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-        if (accessibilityManager.isEnabled()) {
+        if (accessibilityManager != null && accessibilityManager.isEnabled()) {
             AccessibilityEvent event = AccessibilityEvent.obtain(type);
             target.onInitializeAccessibilityEvent(event);
             event.getText().add(text);
@@ -880,11 +928,16 @@ public final class Utilities {
     }
 
     public static void setAppVisibility(Context context, String key, boolean visible) {
-        getPrefs(context).appVisibility(context, key, visible, false);
+        Set<String> hiddenApps = getPrefs(context).getHiddenAppsSet();
+        if (visible)
+            hiddenApps.remove(key);
+        else
+            hiddenApps.add(key);
+        getPrefs(context).setHiddenAppsSet(hiddenApps);
     }
 
     public static boolean isAppHidden(Context context, String key) {
-        return !getPrefs(context).appVisibility(context, key);
+        return getPrefs(context).getHiddenAppsSet().contains(key);
     }
 
     public static int getDynamicAccent(Context context) {
@@ -913,13 +966,9 @@ public final class Utilities {
     }
 
     public static void showChangelog(Context context) {
-        showChangelog(context, false);
-    }
-
-    public static void showChangelog(Context context, boolean force) {
         if (!BuildConfig.TRAVIS || BuildConfig.TAGGED_BUILD || !BuildConfig.DEBUG) return;
         final IPreferenceProvider prefs = getPrefs(context);
-        if (force || BuildConfig.TRAVIS_BUILD_NUMBER != getPreviousBuildNumber(prefs)) {
+        if (BuildConfig.TRAVIS_BUILD_NUMBER != getPreviousBuildNumber(prefs)) {
             new AlertDialog.Builder(context)
                     .setTitle(String.format(context.getString(R.string.changelog_title), BuildConfig.TRAVIS_BUILD_NUMBER))
                     .setMessage(getChangelog().trim())
@@ -970,7 +1019,7 @@ public final class Utilities {
         return PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS.equals(prefs.getWeatherProvider());
     }
 
-    public static boolean isComponentClock(ComponentName componentName, boolean stockAppOnly) {
+    private static boolean isComponentClock(ComponentName componentName, boolean stockAppOnly) {
         if (componentName == null) {
             return false;
         }
@@ -982,7 +1031,7 @@ public final class Utilities {
         // TODO: Maybe we can add all apps that end with .clockpackage/.DeskClock/.clock/???
         // Or that contain .clock./.deskclock or end with those?
         ArrayList<String> clockApps = new ArrayList<>();
-        clockApps.add("com.google.android.deskclock/com.android.deskclock.DeskClock"); // Stock
+        clockApps.add("com.android.deskclock/com.android.deskclock.DeskClock"); // Stock
         clockApps.add("com.sec.android.app.clockpackage/com.sec.android.app.clockpackage.ClockPackage"); // Samsung
         clockApps.add("com.android.deskclock/com.android.deskclock.DeskClockTabActivity"); // MIUI
 
@@ -1030,4 +1079,109 @@ public final class Utilities {
                 Utilities.isComponentClock(componentName, !Utilities.getPrefs(context).getAnimatedClockIconAlternativeClockApps());
     }
 
+    public static boolean isBlacklistedAppInstalled(Context context) {
+        PackageManager pm = context.getPackageManager();
+        for (String packageName : BLACKLISTED_APPLICATIONS) {
+            if (isAppEnabled(pm, packageName, 0)) return true;
+        }
+        return false;
+    }
+
+    public static void showOutdatedLawnfeedPopup(final Context context) {
+        if (!BuildConfig.ENABLE_LAWNFEED || ILauncherClient.Companion.getEnabledState(context) != ILauncherClient.DISABLED_CLIENT_OUTDATED) return;
+        new AlertDialog.Builder(context)
+            .setTitle(R.string.lawnfeed_outdated_title)
+            .setMessage(R.string.lawnfeed_outdated)
+            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    try {
+                        // Open website with download link for Lawnfeed
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://lawnchair.info/getlawnfeed.html"));
+                        context.startActivity(intent);
+                    } catch (ActivityNotFoundException exc) {
+                        // Believe me, this actually happens.
+                        Toast.makeText(context, R.string.error_no_browser, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            })
+            .setNegativeButton(android.R.string.no, null)
+            .show();
+    }
+
+    public static boolean checkOutdatedLawnfeed(Context context) {
+        // Don't check Lawnfeed version on CI builds, should fix disabled setting option
+        if (!BuildConfig.ENABLE_LAWNFEED) return false;
+
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo(LawnfeedClient.PROXY_PACKAGE, 0);
+            // All Lawnfeed builds below version code 1655 aren't signed properly!
+            if (info != null && info.versionCode <= 1655 && !info.versionName.equals("dev")) {
+                return true;
+            }
+        } catch (PackageManager.NameNotFoundException ignored) {}
+
+        return false;
+    }
+
+    public static void restartLauncher(Context context) {
+        PackageManager pm = context.getPackageManager();
+        Intent startActivity = pm.getLaunchIntentForPackage(context.getPackageName());
+
+        startActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        // Create a pending intent so the application is restarted after System.exit(0) was called.
+        // We use an AlarmManager to call this intent in 100ms
+        PendingIntent mPendingIntent = PendingIntent.getActivity(context, 0, startActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+
+        // Kill the application
+        System.exit(0);
+    }
+
+    public static int getNumberOfHotseatRows(Context context){
+        boolean twoLines = PreferenceProvider.INSTANCE.getPreferences(context).getTwoRowDock();
+        return twoLines ? 2 : 1;
+    }
+
+    public static void showResetAlternativeIcons(final Context context, final List<String> appsList) {
+        if (appsList.size() <= 0) {
+            return;
+        }
+
+        new AlertDialog.Builder(context)
+            .setTitle(R.string.reset_alternative_icons_title)
+            .setMessage(String.format(context.getString(R.string.reset_alternative_icons), appsList.size()))
+            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    IPreferenceProvider prefs = Utilities.getPrefs(context);
+                    Launcher launcher = LauncherAppState.getInstanceNoCreate().getLauncher();
+
+                    for (String app : appsList) {
+                        prefs.removeAlternateIcon(app);
+                    }
+
+                    // Ensure those icons get updated
+                    launcher.scheduleReloadIcons();
+                }
+            })
+            .setNegativeButton(android.R.string.no, null)
+            .show();
+    }
+
+    public static List<String> getAlternativeIconList(Context context) {
+        List<String> apps = new ArrayList<>();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        for (String key : prefs.getAll().keySet()) {
+            if (key.startsWith(PreferenceFlags.KEY_ALTERNATE_ICON_PREFIX)) {
+                String regex = "^" + PreferenceFlags.KEY_ALTERNATE_ICON_PREFIX;
+                apps.add(key.replaceFirst(regex, ""));
+            }
+        }
+
+        return apps;
+    }
 }

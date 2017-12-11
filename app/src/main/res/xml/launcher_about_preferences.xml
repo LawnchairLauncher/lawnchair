@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ch.deletescape.lawnchair.settings.ui.AboutPreference
         android:title="@string/about_summary_title"
@@ -25,4 +25,4 @@
     <Preference
         android:title="@string/about_icon_designer"
         android:summary="Josh Baldassarre" />
-</PreferenceScreen>
+</android.support.v7.preference.PreferenceScreen>

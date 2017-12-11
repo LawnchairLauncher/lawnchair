@@ -150,7 +150,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     private boolean mDragging = false;
 
-    private TimeInterpolator mEaseOutInterpolator;
     private ShortcutAndWidgetContainer mShortcutsAndWidgets;
 
     private boolean mIsHotseat = false;
@@ -230,7 +229,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 grid.iconSizePx);
 
         // Initialize the data structures used for the drag visualization.
-        mEaseOutInterpolator = new DecelerateInterpolator(2.5f); // Quint ease out
+        TimeInterpolator easeOutInterpolator = new DecelerateInterpolator(2.5f);
         mDragCell[0] = mDragCell[1] = -1;
         for (int i = 0; i < mDragOutlines.length; i++) {
             mDragOutlines[i] = new Rect(-1, -1, -1, -1);
@@ -250,7 +249,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         for (int i = 0; i < mDragOutlineAnims.length; i++) {
             final InterruptibleInOutAnimator anim =
                     new InterruptibleInOutAnimator(duration, fromAlphaValue, toAlphaValue);
-            anim.getAnimator().setInterpolator(mEaseOutInterpolator);
+            anim.getAnimator().setInterpolator(easeOutInterpolator);
             final int thisIndex = i;
             anim.getAnimator().addUpdateListener(new AnimatorUpdateListener() {
                 @Override

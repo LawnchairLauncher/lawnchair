@@ -419,7 +419,7 @@ public class WorkspaceStateTransitionAnimation {
             mStateAnimator.play(hotseatAlpha);
             mStateAnimator.play(qsbAlphaAnimation);
             mStateAnimator.addListener(new AnimatorListenerAdapter() {
-                boolean canceled = false;
+                boolean canceled;
 
                 @Override
                 public void onAnimationCancel(Animator animation) {

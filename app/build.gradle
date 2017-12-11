@@ -6,7 +6,7 @@ def getChangelog = { ->
     if (commitRange) {
         if (System.getenv("TRAVIS_TAG")) {
             def tag = System.getenv("TRAVIS_TAG")
-            commitRange = ('git describe --abbrev=0 --tags ' +  tag + '^').execute().text.trim() + '...' + tag
+            commitRange = ('git describe --abbrev=0 --tags ' +  tag + '^').execute().text.trim() + '..' + tag
         }
 
         def stdout = new ByteArrayOutputStream()
@@ -27,8 +27,8 @@ if (localPropsFile.exists()) {
 }
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.2'
 
     signingConfigs {
         travis {
@@ -40,7 +40,7 @@ android {
     }
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 26
+        targetSdkVersion 27
         applicationId "ch.deletescape.lawnchair"
 
         buildConfigField "boolean", "TRAVIS", System.getenv("TRAVIS") ?: "false"
@@ -103,7 +103,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    def supportLibVersion = '26.1.0'
+    def supportLibVersion = '27.0.2'
     implementation "com.android.support:support-v4:${supportLibVersion}"
     implementation "com.android.support:recyclerview-v7:${supportLibVersion}"
     implementation "com.android.support:palette-v7:${supportLibVersion}"
@@ -111,8 +111,8 @@ dependencies {
     implementation "com.android.support:preference-v14:${supportLibVersion}"
     implementation "com.android.support:design:${supportLibVersion}"
     implementation "com.android.support:support-dynamic-animation:${supportLibVersion}"
-    implementation 'com.github.KwabenBerko:OpenWeatherMap-Android-Library:v1.0.0'
-    playImplementation 'com.google.android.gms:play-services-awareness:11.4.2'
+    implementation 'com.github.KwabenBerko:OpenWeatherMap-Android-Library:v1.1.1'
+    playImplementation 'com.google.android.gms:play-services-awareness:11.6.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation 'com.pavelsikun:vintage-chroma:1.5'
     implementation project(':launcherclient')

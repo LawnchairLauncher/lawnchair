@@ -96,8 +96,9 @@ interface IPreferenceProvider {
     val animatedClockIcon: Boolean
     val animatedClockIconAlternativeClockApps: Boolean
     val iconLabelsInTwoLines: Boolean
-
+    val twoRowDock: Boolean
     val pulldownAction: String
+    val enableSnowfall: Boolean
 
     // -----------------
     // PREFERENCES
@@ -110,8 +111,7 @@ interface IPreferenceProvider {
     fun alternateIcon(key: String): String?
     fun alternateIcon(key: String, alternateIcon: String, commit: Boolean = false)
     fun removeAlternateIcon(key: String)
-    fun appVisibility(context: Context, key: String, visible: Boolean, commit: Boolean = false)
-    fun appVisibility(context: Context, key: String): Boolean
+    var hiddenAppsSet : Set<String>
     var previousBuildNumber : Int
     var overrideIconShape: String
     val backportAdaptiveIcons: Boolean
@@ -131,6 +131,8 @@ interface IPreferenceProvider {
     val hotseatIconScale: Float
     val hotseatHeightScale: Float
     val enablePhysics: Boolean
+    val snowflakeSizeScale: Float
+    val snowflakesNum: String
 
     // -----------------
     // GENERAL - BITS

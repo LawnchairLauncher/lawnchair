@@ -69,7 +69,6 @@ import ch.deletescape.lawnchair.accessibility.WorkspaceAccessibilityHelper;
 import ch.deletescape.lawnchair.badge.FolderBadgeInfo;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragController;
 import ch.deletescape.lawnchair.dragndrop.DragLayer;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
@@ -88,7 +87,6 @@ import ch.deletescape.lawnchair.util.LongArrayMap;
 import ch.deletescape.lawnchair.util.MultiStateAlphaController;
 import ch.deletescape.lawnchair.util.PackageUserKey;
 import ch.deletescape.lawnchair.util.Thunk;
-import ch.deletescape.lawnchair.util.VerticalFlingDetector;
 import ch.deletescape.lawnchair.util.WallpaperOffsetInterpolator;
 import ch.deletescape.lawnchair.widget.PendingAddShortcutInfo;
 import ch.deletescape.lawnchair.widget.PendingAddWidgetInfo;
@@ -2440,8 +2438,7 @@ public class Workspace extends PagedView
                     lp.cellVSpan = item.spanY;
                     lp.isLockedToGrid = true;
 
-                    if (container != LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
-                            cell instanceof LauncherAppWidgetHostView) {
+                    if (cell instanceof LauncherAppWidgetHostView) {
                         final CellLayout cellLayout = dropTargetLayout;
                         // We post this call so that the widget has a chance to be placed
                         // in its final location
@@ -2890,7 +2887,7 @@ public class Workspace extends PagedView
     private boolean setDropLayoutForDragObject(DragObject d) {
         CellLayout layout = null;
         // Test to see if we are over the hotseat first
-        if (mLauncher.getHotseat() != null && !isDragWidget(d)) {
+        if (mLauncher.getHotseat() != null) {
             if (isPointInSelfOverHotseat(d.x, d.y)) {
                 layout = mLauncher.getHotseat().getLayout();
             }

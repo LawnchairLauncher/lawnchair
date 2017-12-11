@@ -7,16 +7,11 @@ import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.graphics.drawable.Drawable
 import android.support.v7.preference.Preference
-import android.support.v7.preference.PreferenceManager
-import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.ImageView
-import android.widget.RadioButton
-import android.widget.TextView
+import android.widget.*
 import ch.deletescape.lawnchair.R
 import ch.deletescape.lawnchair.Utilities
 import java.util.*
@@ -59,6 +54,13 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
 
     override fun onClick() {
         super.onClick()
+
+        // TODO: Add some 'Arr!' flavor to it
+        if (Utilities.isBlacklistedAppInstalled(context)) {
+            Toast.makeText(context, R.string.unauthorized_device, Toast.LENGTH_SHORT).show()
+            return
+        }
+
         showDialog()
     }
 
@@ -75,6 +77,11 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
                 summary = packInfo.label
             } else {
                 setNone()
+            }
+
+            val alternativeIcons = Utilities.getAlternativeIconList(context);
+            if (alternativeIcons.size > 0) {
+                Utilities.showResetAlternativeIcons(context, alternativeIcons)
             }
         }
         builder.show()

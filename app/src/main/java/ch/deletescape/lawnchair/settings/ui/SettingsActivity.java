@@ -18,7 +18,7 @@
 package ch.deletescape.lawnchair.settings.ui;
 
 import android.Manifest;
-import android.app.Dialog;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -40,6 +40,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -53,9 +55,9 @@ import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.graphics.IconShapeOverride;
+import ch.deletescape.lawnchair.overlay.ILauncherClient;
 import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 import ch.deletescape.lawnchair.preferences.PreferenceFlags;
-import ch.deletescape.lawnchair.util.SharedPreferenceDataStore;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
@@ -82,6 +84,7 @@ public class SettingsActivity extends AppCompatActivity implements
             // Display the fragment as the main content.
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content, new LauncherSettingsFragment())
+
                     .commit();
         }
 
@@ -92,8 +95,13 @@ public class SettingsActivity extends AppCompatActivity implements
 
     @Override
     public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref) {
+        Fragment fragment;
         if (pref instanceof SubPreference) {
-            Fragment fragment = SubSettingsFragment.newInstance(((SubPreference) pref));
+            fragment = SubSettingsFragment.newInstance(((SubPreference) pref));
+        } else {
+            fragment = Fragment.instantiate(this, pref.getFragment());
+        }
+        if (fragment != null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             setTitle(pref.getTitle());
             transaction.setCustomAnimations(R.animator.fly_in, R.animator.fade_out, R.animator.fade_in, R.animator.fly_out);
@@ -219,6 +227,18 @@ public class SettingsActivity extends AppCompatActivity implements
                 if (Utilities.ATLEAST_NOUGAT_MR1 && BuildConfig.TRAVIS) {
                     getPreferenceScreen().removePreference(findPreference(FeatureFlags.KEY_PREF_ENABLE_BACKPORT_SHORTCUTS));
                 }
+
+                // Remove Google Now tab option when Lawnfeed is not installed
+                int enabledState = ILauncherClient.Companion.getEnabledState(getContext());
+                if (BuildConfig.ENABLE_LAWNFEED && enabledState == ILauncherClient.Companion.DISABLED_NO_PROXY_APP) {
+                    getPreferenceScreen().removePreference(findPreference(FeatureFlags.KEY_PREF_SHOW_NOW_TAB));
+                }
+            } else if (getContent() == R.xml.launcher_snowfall_preferences) {
+                Preference prefSnowfallEnabled = findPreference(FeatureFlags.KEY_PREF_SNOWFALL);
+                prefSnowfallEnabled.setOnPreferenceChangeListener(this);
+                if (Utilities.getPrefs(getActivity()).getEnableSnowfall()) {
+                    prefSnowfallEnabled.setSummary(R.string.snowfall_enabled);
+                }
             }
         }
 
@@ -235,6 +255,11 @@ public class SettingsActivity extends AppCompatActivity implements
             prefWeatherApiKey.setEnabled(!awarenessApiEnabled);
         }
 
+        private void updateSnowfallSummary(boolean enabled) {
+            Preference prefEnableSnowfall = findPreference(FeatureFlags.KEY_PREF_SNOWFALL);
+            prefEnableSnowfall.setSummary(enabled ? R.string.snowfall_enabled : R.string.enable_snowfall_summary);
+        }
+
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             if (preference.getKey() != null) {
@@ -247,6 +272,9 @@ public class SettingsActivity extends AppCompatActivity implements
                         if (Utilities.getPrefs(context).getShowWeather() && Utilities.isAwarenessApiEnabled(context)) {
                             checkPermission(Manifest.permission.ACCESS_FINE_LOCATION);
                         }
+                        break;
+                    case FeatureFlags.KEY_PREF_SNOWFALL:
+                        updateSnowfallSummary((boolean) newValue);
                         break;
                 }
                 return true;
@@ -281,6 +309,7 @@ public class SettingsActivity extends AppCompatActivity implements
                     case "import_prefs":
                         if (checkStoragePermission()) {
                             DumbImportExportTask.importPrefs(getActivity());
+                            LauncherAppState.getInstance().getLauncher().scheduleReloadIcons();
                             LauncherAppState.getInstance().getLauncher().scheduleKill();
                         }
                         break;
@@ -290,17 +319,25 @@ public class SettingsActivity extends AppCompatActivity implements
                         }
                         break;
                     case "about_translators":
-                        Dialog dialog = new Dialog(getActivity());
-                        dialog.setTitle(R.string.about_translators);
-                        dialog.setContentView(R.layout.dialog_translators);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(R.string.about_translators);
+                        builder.setView(R.layout.dialog_translators);
+                        builder.setNeutralButton("OK", null);
+                        AlertDialog dialog = builder.create();
                         dialog.show();
+
+                        // Custom LayoutParams for neutral button of AlertDialog
+                        final Button neutralButton = dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+                        LinearLayout.LayoutParams neutralButtonLL = (LinearLayout.LayoutParams) neutralButton.getLayoutParams();
+                        neutralButtonLL.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                        neutralButton.setLayoutParams(neutralButtonLL);
                         break;
                     default:
-                        return false;
+                        return super.onPreferenceTreeClick(preference);
                 }
                 return true;
             }
-            return false;
+            return super.onPreferenceTreeClick(preference);
         }
 
         private boolean checkStoragePermission() {

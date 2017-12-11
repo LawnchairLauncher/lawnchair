@@ -331,7 +331,6 @@
     <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
     <string name="hide_all_apps_icon_labels_pref_title">Hide icon labels in drawer</string>
     <string name="workspace_label_color_hue_pref_title">Color of icon labels on home screen</string>
-    <string name="workspace_label_color_variation_pref_title">Color variation of icon labels on home screen</string>
     <string name="all_apps_opacity_pref_title">Drawer opacity</string>
     <string name="num_cols_pref_title">Number of columns</string>
     <string name="num_rows_pref_title">Number of rows</string>
@@ -346,18 +345,17 @@
     <string name="notification_access_pref_summary">Allow Lawnchair to access your notifications to enable this feature</string>
     <string name="general_pref_title">Desktop</string>
     <string name="dock_pref_title">Dock</string>
-    <string name="app_drawer_pref_title">App Drawer</string>
+    <string name="app_drawer_pref_title">App drawer</string>
     <string name="pixel_ui_pref_title">Theme</string>
     <string name="behavior_pref_title">Behavior</string>
     <string name="debug_pref_title">Debug</string>
-    <string name="import_export_pref_title">Import/Export</string>
     <string name="general_pref_summary">Customize your desktop</string>
     <string name="dock_pref_summary">Customize your dock</string>
     <string name="app_drawer_pref_summary">Customize your app drawer</string>
     <string name="pixel_ui_pref_summary">Theme different elements</string>
-    <string name="backup_pref_title">Backup</string>
+    <string name="backup_pref_title">Backup &amp; restore</string>
     <string name="behavior_pref_summary">Change the behavior of Lawnchair</string>
-    <string name="backup_pref_summary">Backup your database and settings</string>
+    <string name="backup_pref_summary">Backup\/restore your settings and database</string>
     <string name="debug_pref_summary">Restart or rebuild icon database</string>
     <string name="show_pixel_bar_pref_title">Show Pixel top bar</string>
     <string name="use_wide_searchbar_pref_title">Use wide searchbar</string>
@@ -395,9 +393,6 @@
     <string name="edit_icon_reset">Reset</string>
     <string name="show_top_shadow_title">Show top shadow</string>
     <string name="pref_cat_homescreen">Home screen</string>
-    <string name="pref_cat_miscellaneous">Miscellaneous</string>
-    <string name="pref_cat_hotseat">Dock</string>
-    <string name="pref_cat_theme">Theme</string>
     <string name="theme_pref_title">Theme</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
@@ -412,13 +407,17 @@
     <string name="enable_screen_rotation">Enable screen rotation</string>
 
     <!-- Import/Export Strings -->
-     <string name="backup_import_title">Import</string>
-    <string name="backup_export_title">Export</string>
-    <string name="imexport_success">Success!</string>
-    <string name="imexport_error">Error: Failed to copy file</string>
-    <string name="imexport_no_backup_found">No backup found</string>
-    <string name="imexport_external_storage_unreadable">External storage is not readable (grant permission in settings)</string>
-    <string name="imexport_external_storage_unwritable">External storage is not writable (grant permission in settings)</string>
+    <string name="backup_import_title">Restore</string>
+    <string name="backup_export_title">Backup</string>
+    <string name="settings_export_success">Settings backed up successfully</string>
+    <string name="db_export_success">Database backed up successfully</string>
+    <string name="settings_import_success">Settings restored successfully</string>
+    <string name="db_import_success">Database restored successfully</string>
+    <string name="export_error">Couldn\'t backup</string>
+    <string name="import_error">Couldn\'t restore</string>
+    <string name="imexport_no_backup_found">No backup file found</string>
+    <string name="imexport_external_storage_unreadable">Make external storage readable in Settings</string>
+    <string name="imexport_external_storage_unwritable">Make external storage writable in Settings</string>
 
     <string name="units_metric">Metric</string>
     <string name="units_imperial">Imperial</string>
@@ -437,10 +436,9 @@
     <string name="dock_allapps"><![CDATA[Dock & drawer]]></string>
     <string name="app_shortcuts">App shortcuts</string>
     <string name="blur_effect">Blur effect</string>
-    <string name="enable_editing_pref_title">Enable editing homescreen</string>
     <string name="pref_weather_provider">Weather provider</string>
     <string name="loading">Loading…</string>
-    <string name="icon_shape_override_label">Change icon shape</string>
+    <string name="icon_shape_override_label">Icon shape</string>
     <string name="icon_shape_system_default">Do not change</string>
     <string name="icon_shape_none">None</string>
     <string name="icon_shape_square">Square</string>
@@ -457,14 +455,12 @@
     <string name="about_contributors_title">Contributors</string>
     <string name="location_permission_warn">Location permission is required to switch to another provider!</string>
     <string name="num_cols_drawer_pref_title">Number of columns in drawer</string>
-    <string name="pref_cat_drawer">Drawer</string>
     <string name="shortcut_backport_warning">This could be slow, use at your own risk</string>
     <string name="pref_backport_shortcuts">Backport shortcuts</string>
     <string name="weather_api_key_not_set">API key not set</string>
     <string name="pref_weather_api_key_title">API key</string>
     <string name="about_changelog">Changelog</string>
     <string name="pref_all_apps_custom_label_color">Use custom label color</string>
-    <string name="pref_all_apps_label_color_variation">Color variation of icon labels in app drawer</string>
     <string name="pref_all_apps_label_color">Color of icon labels in drawer</string>
     <string name="pref_num_rows_drawer">Number of rows in drawer</string>
     <string name="center_wallpaper_pref_title">Center wallpaper when there is only one page</string>
@@ -477,7 +473,28 @@
     <string name="lock_desktop">Lock desktop</string>
     <string name="lawnfeed_not_found">Lawnfeed not installed</string>
     <string name="google_app_not_found">Google app not installed</string>
-    <string name="popup_card_theme_title">Flat style popup</string>
+    <string name="lawnfeed_incompatible">Incompatible Lawnfeed version installed</string>
     <string name="set_default_launcher">Set default launcher</string>
     <string name="enable_spring_pref_title">Enable spring effect</string>
+    <string name="hide_app">Hide app</string>
+    <string name="hide_app_sum">Hide app from the app drawer</string>
+    <string name="hide_app_selected">&#160;selected</string>
+    <string name="hidden_app">Hidden app</string>
+    <string name="hide_app_apply">Apply</string>
+    <string name="unauthorized_device">This device has a few piracy tools installed. Please uninstall them to continue.</string>
+    <string name="hide_app_reset">Reset</string>
+    <string name="two_row_dock">Two row dock</string>
+    <string name="reset_alternative_icons_title">Reset alternative app icons?</string>
+    <string name="reset_alternative_icons">You have %1$d apps with alternative icons, do you want to reset them?</string>
+    <string name="error_no_browser">No activity found to handle URLs</string>
+    <string name="snowfall_title">Snowfall</string>
+    <string name="snowfall_pref_summary" translatable="false">IT\'S WINTER MY DUDES</string>
+    <string name="enable_snowfall_title">Enable Snowfall on home screen</string>
+    <string name="enable_snowfall_summary">Can cause performance issues.</string>
+    <string name="snowfall_enabled">\"Let it snow, let it snow, let it snow!\"</string>
+    <string name="snowflake_size_scale">Snowflake size scale</string>
+    <string name="snowflakes_num">Max number of snowflakes</string>
+
+	<string name="lawnfeed_outdated_title">Lawnfeed update required</string>
+    <string name="lawnfeed_outdated">A newer version of Lawnfeed is required in order to work with this version of Lawnchair.\n\nBefore installing the update you will probably need to uninstall the current version of Lawnfeed.\n\nDo you want to download it now?</string>
 </resources>

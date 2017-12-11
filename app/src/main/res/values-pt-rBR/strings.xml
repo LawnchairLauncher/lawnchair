@@ -266,7 +266,6 @@
   <string name="hide_icon_labels_pref_title">Hide icon labels on homescreen</string>
   <string name="hide_all_apps_icon_labels_pref_title">Esconder texto dos ícones na gaveta de apps</string>
   <string name="workspace_label_color_hue_pref_title">Color of icon labels on homescreen</string>
-  <string name="workspace_label_color_variation_pref_title">Color variation of icon labels on homescreen</string>
   <string name="all_apps_opacity_pref_title">Opacidade da gaveta</string>
   <string name="num_cols_pref_title">Número de colunas</string>
   <string name="num_rows_pref_title">Número de linhas</string>
@@ -285,7 +284,6 @@
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Comportamento</string>
   <string name="debug_pref_title">Depuração</string>
-  <string name="import_export_pref_title">Importar/exportar</string>
   <string name="general_pref_summary">Tela inicial, dock e gaveta de aplicativos</string>
   <string name="dock_pref_summary">Personalize seu Dock</string>
   <string name="app_drawer_pref_summary">Personalizar sua gaveta de aplicativos</string>
@@ -329,9 +327,6 @@
   <string name="edit_icon_reset">Redefinir</string>
   <string name="show_top_shadow_title">Mostrar sombra sobre</string>
   <string name="pref_cat_homescreen">Tela inicial</string>
-  <string name="pref_cat_miscellaneous">Diversos</string>
-  <string name="pref_cat_hotseat">Dock</string>
-  <string name="pref_cat_theme">Tema</string>
   <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Claro</string>
   <string name="theme_dark">Escuro</string>
@@ -347,8 +342,12 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Importar</string>
   <string name="backup_export_title">Exportar</string>
-  <string name="imexport_success">Sucesso!</string>
-  <string name="imexport_error">Falha ao copiar arquivo</string>
+  <string name="settings_export_success">Backup de configurações realizado com sucesso</string>
+  <string name="db_export_success">Backup de banco de dados realizado com sucesso</string>
+  <string name="settings_import_success">Restauração de configurações realizado com sucesso</string>
+  <string name="db_import_success">Restauração de banco de dados realizado com sucesso</string>
+  <string name="export_error">Não foi possível fazer o backup</string>
+  <string name="import_error">Não foi possível fazer a resutauração</string>
   <string name="imexport_no_backup_found">Nenhum backup encontrado</string>
   <string name="imexport_external_storage_unreadable">Armazenamento externo não é legível (conceder permissão em configurações)</string>
   <string name="imexport_external_storage_unwritable">Armazenamento externo não é gravável (conceder permissão em configurações)</string>
@@ -368,7 +367,6 @@
   <string name="dock_allapps"><![CDATA[Dock & todos os apps]]></string>
   <string name="app_shortcuts">Atalhos do App</string>
   <string name="blur_effect">Efeito de desfoque</string>
-  <string name="enable_editing_pref_title">Habilitar edição de espaço de trabalho</string>
   <string name="pref_weather_provider">Provedor de previsão do tempo</string>
   <string name="loading">Carregando…</string>
   <string name="icon_shape_override_label">Alterar o formato dos Icones</string>
@@ -388,14 +386,12 @@
   <string name="about_contributors_title">Colaboradores</string>
   <string name="location_permission_warn">Permissão de localização necessária para mudar de provedor!</string>
   <string name="num_cols_drawer_pref_title">Número de colunas na exibição em grade de aplicativos</string>
-  <string name="pref_cat_drawer">Gaveta de apps</string>
   <string name="shortcut_backport_warning">Isto pode ser lento, use a seu próprio risco</string>
   <string name="pref_backport_shortcuts">Retro-compatibilidade de atalhos</string>
   <string name="weather_api_key_not_set">Chave da API não definida</string>
   <string name="pref_weather_api_key_title">Chave da API</string>
   <string name="about_changelog">Histórico de mudanças</string>
   <string name="pref_all_apps_custom_label_color">Usar a cor da etiqueta personalizada</string>
-  <string name="pref_all_apps_label_color_variation">Variação de cor do texto dos ícones na gaveta de apps</string>
   <string name="pref_all_apps_label_color">Cor do texto dos ícones na gaveta de apps</string>
   <string name="pref_num_rows_drawer">Número de linhas na gaveta de apps</string>
   <string name="center_wallpaper_pref_title">Centralizar papel de parede quando houver apenas uma página</string>
@@ -407,7 +403,20 @@
   <string name="lock_desktop">Bloquear área de trabalho</string>
   <string name="lawnfeed_not_found">Lawnfeed não instalado</string>
   <string name="google_app_not_found">Aplicativo Google não instalado</string>
-  <string name="popup_card_theme_title">Pop-up estilo fino</string>
+  <string name="lawnfeed_incompatible">Versão incompatível do Lawnfeed instalado</string>
   <string name="set_default_launcher">Definir como Launcher padrão</string>
   <string name="enable_spring_pref_title">Habilitar o efeito mola</string>
+  <string name="hide_app">Ocultar app</string>
+  <string name="hide_app_sum">Ocultar aplicativos da gaveta de aplicativos</string>
+  <string name="hide_app_selected">&#160;selecionado</string>
+  <string name="hidden_app">Aplicativos ocultos</string>
+  <string name="hide_app_apply">Aplicar</string>
+  <string name="unauthorized_device">Este dispositivo possui algumas ferramentas de pirataria instaladas. Por favor, desinstale-as para continuar.</string>
+  <string name="hide_app_reset">Redefinir</string>
+  <string name="two_row_dock">Barra de ícones com 2 linhas</string>
+  <string name="reset_alternative_icons_title">Redefinir os ícones do app alternativo?</string>
+  <string name="reset_alternative_icons">Você tem %1$d apps com ícones alternativos, quer restaurá-los?</string>
+  <string name="error_no_browser">Nenhum navegador encontrado para manipular URLs</string>
+  <string name="lawnfeed_outdated_title">Atualização do Lawnfeed necessária</string>
+  <string name="lawnfeed_outdated">Uma nova versão do Lawnfeed é necessária nesta versão do Lawnchair.\n\nAntes de instalar a atualização, você provavelmente precisará desinstalar a versão atual do Lawnfeed.\n\nVocê deseja baixá-la agora?</string>
 </resources>

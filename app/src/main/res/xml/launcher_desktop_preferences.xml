@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <SwitchPreference
@@ -38,6 +38,7 @@
     <com.pavelsikun.vintagechroma.ChromaPreferenceCompat
         android:key="pref_workspaceLabelColor"
         android:title="@string/workspace_label_color_hue_pref_title"
+        android:dependency="pref_hideAppLabels"
         app:chromaColorMode="ARGB"
         app:chromaIndicatorMode="HEX"
         app:chromaInitialColor="@android:color/white" />
@@ -75,6 +76,7 @@
         android:key="pref_iconTextScaleSB"
         android:persistent="true"
         android:title="@string/icon_text_scale_pref_title"
+        android:dependency="pref_hideAppLabels"
         app:defaultSeekbarValue="1.0"
         app:maxValue="1.5"
         app:minValue="0.3"
@@ -101,4 +103,4 @@
         android:title="@string/notification_access_pref_title">
         <intent android:action="android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS" />
     </Preference>
-</PreferenceScreen>
+</android.support.v7.preference.PreferenceScreen>

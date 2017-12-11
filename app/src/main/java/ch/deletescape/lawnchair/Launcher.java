@@ -53,7 +53,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Process;
 import android.os.StrictMode;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
@@ -266,6 +265,7 @@ public class Launcher extends Activity
 
     private boolean mPaused = true;
     private boolean mOnResumeNeedsLoad;
+    private boolean mSnowfallEnabled;
     private boolean mPlanesEnabled;
     private ObjectAnimator mPlanesAnimator;
 
@@ -285,7 +285,6 @@ public class Launcher extends Activity
     private boolean mAttached;
 
     private boolean kill;
-    private boolean recreate;
     private boolean reloadIcons;
     private boolean updateWallpaper = true;
 
@@ -402,6 +401,7 @@ public class Launcher extends Activity
 
         setContentView(R.layout.launcher);
 
+        mSnowfallEnabled = Utilities.getPrefs(this).getEnableSnowfall();
         mPlanesEnabled = Utilities.getPrefs(this).getEnablePlanes();
         setupViews();
         mDeviceProfile.layout(this, false /* notifyListeners */);
@@ -432,6 +432,7 @@ public class Launcher extends Activity
         registerReceiver(mUiBroadcastReceiver, filter);
 
         mLauncherTab = new LauncherTab(this);
+        Utilities.showOutdatedLawnfeedPopup(this);
 
         Window window = getWindow();
         WindowManager.LayoutParams attributes = window.getAttributes();
@@ -462,11 +463,7 @@ public class Launcher extends Activity
         if (mPaused)
             kill = true;
         else
-            android.os.Process.killProcess(android.os.Process.myPid());
-    }
-
-    public void scheduleRecreate() {
-        recreate = true;
+            Utilities.restartLauncher(getApplicationContext());
     }
 
     public void scheduleUpdateWallpaper() {
@@ -936,13 +933,7 @@ public class Launcher extends Activity
 
         if (kill) {
             kill = false;
-            Log.v("Settings", "Die Motherf*cker!");
-            Process.killProcess(Process.myPid());
-        }
-
-        if (recreate) {
-            recreate = false;
-            recreate();
+            Utilities.restartLauncher(getApplicationContext());
         }
 
         if (updateWallpaper) {
@@ -956,7 +947,7 @@ public class Launcher extends Activity
     private void reloadIcons() {
         mIconCache.pip.updateIconPack();
         mIconCache.clear();
-        Process.killProcess(Process.myPid());
+        Utilities.restartLauncher(getApplicationContext());
     }
 
     @Override
@@ -1136,6 +1127,15 @@ public class Launcher extends Activity
         mWorkspace = mDragLayer.findViewById(R.id.workspace);
         mQsbContainer = mDragLayer.findViewById(R.id.qsb_container);
         mWorkspace.initParentViews(mDragLayer);
+
+        if (mSnowfallEnabled) {
+            Log.d(TAG, "inflating snowfall");
+            if (!Utilities.isBlacklistedAppInstalled(this)) {
+                getLayoutInflater().inflate(mPlanesEnabled ? R.layout.snowfall_planes : R.layout.snowfall, (ViewGroup) findViewById(R.id.launcher_background), true);
+            } else {
+                getLayoutInflater().inflate(R.layout.snowfall_smiles, (ViewGroup) findViewById(R.id.launcher_background), true);
+            }
+        }
 
         if (mPlanesEnabled) {
             Log.d(TAG, "inflating planes");

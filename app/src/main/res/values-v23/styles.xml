@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="SettingsTheme" parent="@style/Theme.AppCompat.Light">
-        <item name="android:colorPrimaryDark">#e0e0e0</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark_settings_v23</item>
+        <item name="colorPrimary">@color/color_primary_settings</item>
         <item name="android:colorAccent">@color/accent_material_light</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="blurTintColor">#45ffffff</item>
+        <item name="android:navigationBarColor">@color/color_navigationbar_settings</item>
     </style>
 </resources>

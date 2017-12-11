@@ -36,10 +36,6 @@ import ch.deletescape.lawnchair.preferences.IPreferenceProvider;
 
 public class DeviceProfile {
 
-    public interface LauncherLayoutChangeListener {
-        void onLauncherLayoutChanged();
-    }
-
     public final InvariantDeviceProfile inv;
 
     // Device properties
@@ -432,7 +428,7 @@ public class DeviceProfile {
                         getHotseatHeight() + hotseatLandGutterPx, 2 * edgeMarginPx);
             }
         } else {
-            int paddingBottom = (Utilities.getPrefs(mContext).getTransparentHotseat() && Utilities.getPrefs(mContext).getHideHotseat() ? 0 : hotseatBarHeightPx) + pageIndicatorHeightPx;
+            int paddingBottom = (Utilities.getPrefs(mContext).getTransparentHotseat() && Utilities.getPrefs(mContext).getHideHotseat() ? 0 : getHotseatHeight()) + pageIndicatorHeightPx;
             if (Utilities.getPrefs(mContext).getAllowFullWidthWidgets()) {
                 padding.set(0, 0, 0, paddingBottom);
             } else if (isTablet) {
@@ -688,6 +684,10 @@ public class DeviceProfile {
     }
 
     public final int getHotseatHeight() {
-        return (hotseatBarHeightPx - hotseatIconSizePxOriginal) + hotseatIconSizePx;
+        return (hotseatBarHeightPx - hotseatIconSizePxOriginal) + hotseatIconSizePx * Utilities.getNumberOfHotseatRows(mContext);
+    }
+
+    public interface LauncherLayoutChangeListener {
+        void onLauncherLayoutChanged();
     }
 }

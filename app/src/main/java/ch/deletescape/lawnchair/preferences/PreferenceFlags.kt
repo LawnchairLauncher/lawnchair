@@ -10,6 +10,7 @@ object PreferenceFlags {
     const val KEY_NUM_COLS_DRAWER = "pref_numColsDrawer"
     const val KEY_HOTSEAT_ICONS = "pref_numHotseatIcons"
     const val KEY_PREF_NUM_ROWS_DRAWER = "pref_numRowsDrawer"
+    const val KEY_PREF_SNOWFLAKES_NUM = "pref_snowflakesNum"
 
     // Strings
     const val KEY_WEATHER_PROVIDER = "pref_weatherProvider"
@@ -29,6 +30,7 @@ object PreferenceFlags {
     const val KEY_PREF_ALL_APPS_ICON_SCALE = "pref_allAppsIconScale"
     const val KEY_PREF_ALL_APPS_ICON_TEXT_SCALE = "pref_allAppsIconTextScale"
     const val KEY_PREF_ALL_APPS_ICON_PADDING_SCALE = "pref_allAppsIconPaddingScale"
+    const val KEY_PREF_SNOWFLAKE_SIZE_SCALE = "pref_snowflakeSizeScale"
 
     //Ints
     const val KEY_BLUR_MODE = "pref_blurMode"
@@ -95,6 +97,7 @@ object PreferenceFlags {
     const val KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR_HUE = "pref_allAppsCustomLabelColorHue"
     const val KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR_VARITATION = "pref_allAppsCustomLabelColorVariation"
     const val KEY_PREF_DRAWER_VERTICAL_LAYOUT = "pref_verticalDrawerLayout"
+    const val KEY_PREF_SNOWFALL = "pref_snowfall"
 
     const val KEY_APP_VISIBILITY_PREFIX = "visibility_"
     const val KEY_PREVIOUS_BUILD_NUMBER = "previousBuildNumber"
@@ -102,6 +105,9 @@ object PreferenceFlags {
     const val KEY_ALTERNATE_ICON_PREFIX = "alternateIcon_"
     const val KEY_ITEM_ALIAS_PREFIX = "alias_"
     const val KEY_USER_CREATION_TIME_KEY_PREFIX = "user_creation_time_"
+    const val KEY_HIDDEN_APPS_SET = "hidden-app-set"
+    const val KEY_HIDDEN_APPS = "hidden-app"
+    const val KEY_TWO_ROW_DOCK = "pref_twoRowDock"
 
     const val EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED"
 

@@ -83,3 +83,7 @@
 -keep class ch.deletescape.lawnchair.compat.** {
   *;
 }
+
+-keep class ch.deletescape.lawnchair.preferences.HiddenAppsFragment {
+  *;
+}

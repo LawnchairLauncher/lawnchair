@@ -42,6 +42,10 @@ class LawnfeedClient(private val launcher: Launcher) : ILauncherClient {
     }
 
     private fun connectProxy() {
+        if (Utilities.checkOutdatedLawnfeed(launcher) || !Utilities.getPrefs(launcher).showGoogleNowTab) {
+            return
+        }
+
         sProxyConnection = ProxyServiceConnection(PROXY_PACKAGE)
         connectSafely(launcher.applicationContext, sProxyConnection!!)
     }
@@ -64,9 +68,7 @@ class LawnfeedClient(private val launcher: Launcher) : ILauncherClient {
                 onOverlayConnected()
             }
         } else {
-            if (Utilities.getPrefs(launcher).showGoogleNowTab) {
-                connectProxy()
-            }
+            connectProxy()
         }
     }
 

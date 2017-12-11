@@ -23,8 +23,6 @@ class ClockIconDrawable(val context: Context, val adaptive: Boolean) : Drawable(
     var background: Bitmap? = null
     var scale = 1f
 
-    private val TAG = "ClockIconDrawable"
-
     private fun updateLayers() {
         calendar.timeInMillis = System.currentTimeMillis()
         val second = calendar[Calendar.SECOND]

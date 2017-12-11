@@ -18,7 +18,6 @@ package ch.deletescape.lawnchair.config
 
 import android.app.Activity
 import android.content.Context
-import android.support.annotation.IntDef
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import ch.deletescape.lawnchair.R
@@ -61,6 +60,7 @@ object FeatureFlags {
     const val KEY_PREF_PULLDOWN_ACTION = "pref_pulldownAction"
     const val KEY_PREF_LOCK_DESKTOP = "pref_lockDesktop"
     const val KEY_PREF_ANIMATED_CLOCK_ICON = "pref_animatedClockIcon"
+    const val KEY_PREF_SNOWFALL = "pref_snowfall"
     private var darkThemeFlag: Int = 0
 
     const val DARK_QSB = 1
