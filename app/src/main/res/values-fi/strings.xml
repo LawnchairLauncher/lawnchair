@@ -347,6 +347,7 @@
   <string name="settings_import_success">Asetukset palautettu onnistuneesti</string>
   <string name="db_import_success">Tietokanta palautettu onnistuneesti</string>
   <string name="export_error">Varmuuskopiointi epäonnistui</string>
+  <string name="import_error">Palautus epäonnistui</string>
   <string name="imexport_no_backup_found">Varmuuskopioita ei löytynyt</string>
   <string name="imexport_external_storage_unreadable">Ulkoinen muisti ei ole luettavissa (anna käyttöoikeus asetuksissa)</string>
   <string name="imexport_external_storage_unwritable">Ulkoinen muisti ei ole kirjoitettavissa (anna käyttöoikeus asetuksissa)</string>
@@ -402,6 +403,7 @@
   <string name="lock_desktop">Lukitse työpöytä</string>
   <string name="lawnfeed_not_found">Lawnfeed ei ole asennettu</string>
   <string name="google_app_not_found">Google sovellus ei ole asennettu</string>
+  <string name="lawnfeed_incompatible">Asennettu Lawnfeed-versio ei ole yhteensopiva</string>
   <string name="set_default_launcher">Aseta oletus käynnistyssovellus</string>
   <string name="enable_spring_pref_title">Ota jousi efekti käyttöön</string>
   <string name="hide_app">Piilota sovellus</string>
@@ -412,4 +414,6 @@
   <string name="hide_app_reset">Nollaa</string>
   <string name="two_row_dock">Kahden rivin telakka</string>
   <string name="reset_alternative_icons_title">Nollaa vaihtoehtoiset sovelluskuvakkeet?</string>
+  <string name="snowfall_enabled">\"Lunta saa, lunta saa tuiskuttaa!\"</string>
+  <string name="lawnfeed_outdated_title">Lawnfeed päivitys vaaditaan</string>
 </resources>
