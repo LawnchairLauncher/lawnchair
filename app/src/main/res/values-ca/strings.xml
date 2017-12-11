@@ -417,4 +417,7 @@
   <string name="reset_alternative_icons_title">Voleu restablir les icones d\'aplicacions alternatives?</string>
   <string name="reset_alternative_icons">Teniu %1$d aplicacions amb icones alternatives, voleu reiniciar-les?</string>
   <string name="error_no_browser">No s\'ha trobat cap activitat per manegar l\'URL</string>
+  <string name="snowfall_enabled">\"Deixa nevar, deixa nevar, deixa nevar!\"</string>
+  <string name="lawnfeed_outdated_title">Cal actualitzar Lawnfeed</string>
+  <string name="lawnfeed_outdated">Cal una versió més actual de Lawnfeed per funcionar amb aquesta versió de Lawnchair.\n\nAbans d\'instal·lar l\'actualització, probablement haureu de desinstal·lar la versió actual de Lawnfeed.\n\nVoleu baixar-la ara?</string>
 </resources>
