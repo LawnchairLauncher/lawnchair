@@ -416,4 +416,7 @@
   <string name="reset_alternative_icons_title">重置备选应用图标</string>
   <string name="reset_alternative_icons">您有 %1$d 个应用具有备用图标，您想重置它们吗？</string>
   <string name="error_no_browser">没有找到处理此 URL 的 Activity</string>
+  <string name="snowfall_enabled">“今天的风儿真喧嚣，不如来点儿雪花飘！”</string>
+  <string name="lawnfeed_outdated_title">需要更新 Lawnfeed</string>
+  <string name="lawnfeed_outdated">当前版本的 Lawnchair 需要安装新版本的 Lawnfeed 来使用，\n\n安装更新前您可能需要卸载当前版本的 Lawnfeed。\n\n需要现在下载吗？</string>
 </resources>
