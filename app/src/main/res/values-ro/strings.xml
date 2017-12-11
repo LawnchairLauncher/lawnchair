@@ -418,4 +418,7 @@
   <string name="reset_alternative_icons_title">Resetați pictogramele alternative ale aplicațiilor?</string>
   <string name="reset_alternative_icons">Aveți %1$d aplicații cu pictograme alternative, doriți să le resetați?</string>
   <string name="error_no_browser">Nu s-a găsit nicio activitate pentru gestionarea adreselor URL</string>
+  <string name="snowfall_enabled">\"Să ningă, să ningă, să ningă!\"</string>
+  <string name="lawnfeed_outdated_title">Lawnfeed necesită actualizare</string>
+  <string name="lawnfeed_outdated">O versiune mai nouă a programului Lawnfeed este necesară pentru a funcţiona cu această versiune de Lawnchair.\n\nÎnainte de a instala actualizarea, probabil va trebui să dezinstalați versiunea curentă Lawnfeed.\n\nDoriți să o descărcați acum?</string>
 </resources>
