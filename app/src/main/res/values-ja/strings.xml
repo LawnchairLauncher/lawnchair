@@ -104,7 +104,7 @@
   <!-- The format string for when a folder is opened, speaks the dimensions -->
   <string name="folder_opened">フォルダが開いています。<xliff:g id="WIDTH">%1$d</xliff:g>x<xliff:g id="HEIGHT">%2$d</xliff:g>の大きさです</string>
   <!-- Instruction that clicking outside will close folder -->
-  <string name="folder_tap_to_close">タップしてフォルダを閉じます</string>
+  <string name="folder_tap_to_close">タップしてフォルダーを閉じる</string>
   <!-- Instruction that clicking outside will commit folder rename -->
   <string name="folder_tap_to_rename">タップして変更後の名前を保存します</string>
   <!-- Indication that folder closed -->
@@ -402,6 +402,7 @@
   <string name="lock_desktop">デスクトップをロック</string>
   <string name="lawnfeed_not_found">Lawnfeed はインストールされていません</string>
   <string name="google_app_not_found">Google アプリはインストールされていません</string>
+  <string name="lawnfeed_incompatible">互換性がないバージョンのLawnfeedがインストールされています</string>
   <string name="set_default_launcher">既定のランチャーにセット</string>
   <string name="enable_spring_pref_title">スプリング効果を有効にする</string>
   <string name="hide_app">アプリを隠す</string>
@@ -414,4 +415,8 @@
   <string name="two_row_dock">ドックを2行表示にする</string>
   <string name="reset_alternative_icons_title">別のアプリアイコンをリセットしますか？</string>
   <string name="reset_alternative_icons">アイコンが変更されているアプリが %1$d 個有ります。リセットしますか？</string>
+  <string name="error_no_browser">URLを処理するアクティビティが見つかりません</string>
+  <string name="snowfall_enabled">雪よ降れ降れ、もっと降れ！</string>
+  <string name="lawnfeed_outdated_title">Lawnfeedの更新が必要です</string>
+  <string name="lawnfeed_outdated">このバージョンのLawnchairを使用するには、新しいバージョンのLawnfeedが必要です。\n\nアップデートをインストールする前に、現在のバージョンのLawnfeedをアンインストールする必要があります。\n\n今すぐダウンロードしますか？</string>
 </resources>
