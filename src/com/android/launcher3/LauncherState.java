@@ -19,7 +19,10 @@ import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
 import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
+import static com.android.launcher3.anim.Interpolators.ACCEL_2;
+
 import android.view.View;
+import android.view.animation.Interpolator;
 
 import com.android.launcher3.uioverrides.AllAppsState;
 import com.android.launcher3.states.SpringLoadedState;
@@ -41,7 +44,13 @@ public class LauncherState {
     protected static final int FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED = 1 << 4;
     protected static final int FLAG_DISABLE_PAGE_CLIPPING = 1 << 5;
 
-    protected static final PageAlphaProvider DEFAULT_ALPHA_PROVIDER = (i) -> 1f;
+    protected static final PageAlphaProvider DEFAULT_ALPHA_PROVIDER =
+            new PageAlphaProvider(ACCEL_2) {
+                @Override
+                public float getPageAlpha(int pageIndex) {
+                    return 1;
+                }
+            };
 
     private static final LauncherState[] sAllStates = new LauncherState[4];
 
@@ -149,16 +158,27 @@ public class LauncherState {
         if (this != NORMAL || !launcher.getDeviceProfile().shouldFadeAdjacentWorkspaceScreens()) {
             return DEFAULT_ALPHA_PROVIDER;
         }
-        int centerPage = launcher.getWorkspace().getPageNearestToCenterOfScreen();
-        return (childIndex) ->  childIndex != centerPage ? 0 : 1f;
+        final int centerPage = launcher.getWorkspace().getPageNearestToCenterOfScreen();
+        return new PageAlphaProvider(ACCEL_2) {
+            @Override
+            public float getPageAlpha(int pageIndex) {
+                return  pageIndex != centerPage ? 0 : 1f;
+            }
+        };
     }
 
     protected static void dispatchWindowStateChanged(Launcher launcher) {
         launcher.getWindow().getDecorView().sendAccessibilityEvent(TYPE_WINDOW_STATE_CHANGED);
     }
 
-    public interface PageAlphaProvider {
+    public static abstract class PageAlphaProvider {
 
-        float getPageAlpha(int pageIndex);
+        public final Interpolator interpolator;
+
+        public PageAlphaProvider(Interpolator interpolator) {
+            this.interpolator = interpolator;
+        }
+
+        public abstract float getPageAlpha(int pageIndex);
     }
 }

@@ -30,7 +30,15 @@ import com.android.launcher3.widget.WidgetsFullSheet;
 public class UiFactory {
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
-        return new TouchController[] {new TwoStepSwipeController(launcher)};
+
+        if (launcher.getDeviceProfile().isVerticalBarLayout()) {
+            // TODO: Allow swipe up from overview in transposed layout
+            return new TouchController[] {new TwoStepSwipeController(launcher)};
+        } else {
+            return new TouchController[] {
+                    new TwoStepSwipeController(launcher),
+                    new OverviewSwipeUpController(launcher)};
+        }
     }
 
     public static AccessibilityDelegate newPageIndicatorAccessibilityDelegate() {

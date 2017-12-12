@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.util;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
-import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.anim.SpringAnimationHandler.Y_DIRECTION;
 
@@ -28,21 +27,22 @@ import android.support.animation.SpringAnimation;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.touch.SwipeDetector;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-import com.android.launcher3.util.TouchController;
 
 import java.util.ArrayList;
 
 /**
- * Handles vertical touch gesture on the DragLayer
+ * Handles vertical touch gesture on the DragLayer allowing transitioning from
+ * {@link #mBaseState} to {@link LauncherState#ALL_APPS} and vice-versa.
  */
-public class VerticalSwipeController extends AnimatorListenerAdapter
+public abstract class VerticalSwipeController extends AnimatorListenerAdapter
         implements TouchController, SwipeDetector.Listener {
 
     private static final String TAG = "VerticalSwipeController";
@@ -53,11 +53,11 @@ public class VerticalSwipeController extends AnimatorListenerAdapter
     // Progress after which the transition is assumed to be a success in case user does not fling
     private static final float SUCCESS_TRANSITION_PROGRESS = 0.5f;
 
-    private final Launcher mLauncher;
+    protected final Launcher mLauncher;
     private final SwipeDetector mDetector;
+    private final LauncherState mBaseState;
 
     private boolean mNoIntercept;
-    private int mStartContainerType;
 
     private AnimatorPlaybackController mCurrentAnimation;
     private LauncherState mToState;
@@ -68,29 +68,24 @@ public class VerticalSwipeController extends AnimatorListenerAdapter
 
     private SpringAnimationHandler[] mSpringHandlers;
 
-    public VerticalSwipeController(Launcher l) {
+    public VerticalSwipeController(Launcher l, LauncherState baseState) {
         mLauncher = l;
         mDetector = new SwipeDetector(l, this, SwipeDetector.VERTICAL);
+        mBaseState = baseState;
     }
 
     private boolean canInterceptTouch(MotionEvent ev) {
-        if (!mLauncher.isInState(NORMAL) && !mLauncher.isInState(ALL_APPS)) {
-            // Don't listen for the swipe gesture if we are already in some other state.
-            return false;
-        }
         if (mCurrentAnimation != null) {
             // If we are already animating from a previous state, we can intercept.
             return true;
         }
-        if (mLauncher.isInState(ALL_APPS) && !mLauncher.getAppsView().shouldContainerScroll(ev)) {
-            return false;
-        }
         if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
             return false;
         }
-
-        return true;
+        return shouldInterceptTouch(ev);
     }
+
+    protected abstract boolean shouldInterceptTouch(MotionEvent ev);
 
     @Override
     public void onAnimationCancel(Animator animation) {
@@ -147,14 +142,7 @@ public class VerticalSwipeController extends AnimatorListenerAdapter
                     ignoreSlopWhenSettling = true;
                 }
             } else {
-                if (mLauncher.isInState(ALL_APPS)) {
-                    directionsToDetectScroll = SwipeDetector.DIRECTION_NEGATIVE;
-                    mStartContainerType = ContainerType.ALLAPPS;
-                } else {
-                    directionsToDetectScroll = SwipeDetector.DIRECTION_POSITIVE;
-                    mStartContainerType = mLauncher.getDragLayer().isEventOverHotseat(ev) ?
-                            ContainerType.HOTSEAT : ContainerType.WORKSPACE;
-                }
+                directionsToDetectScroll = getSwipeDirection(ev);
             }
 
             mDetector.setDetectableScrollConditions(
@@ -173,6 +161,8 @@ public class VerticalSwipeController extends AnimatorListenerAdapter
         return mDetector.isDraggingOrSettling();
     }
 
+    protected abstract int getSwipeDirection(MotionEvent ev);
+
     @Override
     public boolean onControllerTouchEvent(MotionEvent ev) {
         for (SpringAnimationHandler h : mSpringHandlers) {
@@ -188,7 +178,7 @@ public class VerticalSwipeController extends AnimatorListenerAdapter
             long maxAccuracy = (long) (2 * range);
 
             // Build current animation
-            mToState = mLauncher.isInState(ALL_APPS) ? NORMAL : ALL_APPS;
+            mToState = mLauncher.isInState(ALL_APPS) ? mBaseState : ALL_APPS;
             mCurrentAnimation = mLauncher.getStateManager()
                     .createAnimationToNewWorkspace(mToState, maxAccuracy);
             mCurrentAnimation.getTarget().addListener(this);
@@ -206,7 +196,7 @@ public class VerticalSwipeController extends AnimatorListenerAdapter
     }
 
     private float getShiftRange() {
-        return mLauncher.mAllAppsController.getShiftRange();
+        return mLauncher.getAllAppsController().getShiftRange();
     }
 
     @Override
@@ -219,29 +209,26 @@ public class VerticalSwipeController extends AnimatorListenerAdapter
     @Override
     public void onDragEnd(float velocity, boolean fling) {
         final long animationDuration;
-        final int logAction;
         final LauncherState targetState;
         final float progress = mCurrentAnimation.getProgressFraction();
 
         if (fling) {
-            logAction = Touch.FLING;
             if (velocity < 0) {
                 targetState = ALL_APPS;
                 animationDuration = SwipeDetector.calculateDuration(velocity,
                         mToState == ALL_APPS ? (1 - progress) : progress);
             } else {
-                targetState = NORMAL;
+                targetState = mBaseState;
                 animationDuration = SwipeDetector.calculateDuration(velocity,
                         mToState == ALL_APPS ? progress : (1 - progress));
             }
             // snap to top or bottom using the release velocity
         } else {
-            logAction = Touch.SWIPE;
             if (progress > SUCCESS_TRANSITION_PROGRESS) {
                 targetState = mToState;
                 animationDuration = SwipeDetector.calculateDuration(velocity, 1 - progress);
             } else {
-                targetState = mToState == ALL_APPS ? NORMAL : ALL_APPS;
+                targetState = mToState == ALL_APPS ? mBaseState : ALL_APPS;
                 animationDuration = SwipeDetector.calculateDuration(velocity, progress);
             }
         }
@@ -253,21 +240,11 @@ public class VerticalSwipeController extends AnimatorListenerAdapter
             }
         }
 
-        mCurrentAnimation.setEndAction(new Runnable() {
-            @Override
-            public void run() {
-                if (targetState == mToState) {
-                    // Transition complete. log the action
-                    mLauncher.getUserEventDispatcher().logActionOnContainer(logAction,
-                            mToState == ALL_APPS ? Direction.UP : Direction.DOWN,
-                            mStartContainerType, mLauncher.getWorkspace().getCurrentPage());
-                } else {
-                    mLauncher.getStateManager().goToState(
-                            mToState == ALL_APPS ? NORMAL : ALL_APPS, false);
-                }
-                mDetector.finishedScrolling();
-                mCurrentAnimation = null;
-            }
+        mCurrentAnimation.setEndAction(() -> {
+            mLauncher.getStateManager().goToState(targetState, false);
+            onTransitionComplete(fling, targetState == mToState);
+            mDetector.finishedScrolling();
+            mCurrentAnimation = null;
         });
 
         float nextFrameProgress = Utilities.boundToRange(
@@ -279,4 +256,6 @@ public class VerticalSwipeController extends AnimatorListenerAdapter
         anim.setInterpolator(scrollInterpolatorForVelocity(velocity));
         anim.start();
     }
+
+    protected abstract void onTransitionComplete(boolean wasFling, boolean stateChanged);
 }

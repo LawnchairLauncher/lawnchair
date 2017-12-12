@@ -17,6 +17,7 @@ package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherAnimUtils.ALL_APPS_TRANSITION_MS;
 import static com.android.launcher3.allapps.DiscoveryBounce.APPS_VIEW_SHOWN;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 
 import android.view.View;
 
@@ -32,6 +33,13 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 public class AllAppsState extends LauncherState {
 
     private static final int STATE_FLAGS = FLAG_DISABLE_ACCESSIBILITY;
+
+    private static final PageAlphaProvider PAGE_ALPHA_PROVIDER = new PageAlphaProvider(DEACCEL_2) {
+        @Override
+        public float getPageAlpha(int pageIndex) {
+            return 0;
+        }
+    };
 
     public AllAppsState(int id) {
         super(id, ContainerType.ALLAPPS, ALL_APPS_TRANSITION_MS, 0f, STATE_FLAGS);
@@ -65,6 +73,6 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public PageAlphaProvider getWorkspacePageAlphaProvider(Launcher launcher) {
-        return (i) -> 0;
+        return PAGE_ALPHA_PROVIDER;
     }
 }

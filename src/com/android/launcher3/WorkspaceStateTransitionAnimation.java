@@ -153,7 +153,7 @@ public class WorkspaceStateTransitionAnimation {
         propertySetter.setInt(cl.getScrimBackground(),
                 DRAWABLE_ALPHA, state.hasScrim ? 255 : 0, Interpolators.ZOOM_IN);
         propertySetter.setFloat(cl.getShortcutsAndWidgets(), View.ALPHA,
-                pageAlphaProvider.getPageAlpha(childIndex), Interpolators.DEACCEL_2);
+                pageAlphaProvider.getPageAlpha(childIndex), pageAlphaProvider.interpolator);
     }
 
     public static class PropertySetter {
