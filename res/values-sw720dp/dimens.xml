@@ -15,10 +15,15 @@
 -->
 
 <resources>
-<!-- All Apps -->
+    <!-- All Apps -->
     <dimen name="all_apps_button_scale_down">8dp</dimen>
-    <dimen name="all_apps_search_bar_height">54dp</dimen>
     <dimen name="all_apps_empty_search_message_top_offset">64dp</dimen>
     <dimen name="all_apps_empty_search_bg_top_offset">180dp</dimen>
+
+    <!-- Fast scroll -->
+    <dimen name="fastscroll_popup_width">75dp</dimen>
+    <dimen name="fastscroll_popup_height">62dp</dimen>
+    <dimen name="fastscroll_popup_padding">13dp</dimen>
+    <dimen name="fastscroll_popup_text_size">32dp</dimen>
 
 </resources>

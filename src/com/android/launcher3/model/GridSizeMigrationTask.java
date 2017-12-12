@@ -13,7 +13,6 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
-
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
@@ -29,10 +28,8 @@ import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.LongArrayMap;
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 
@@ -61,7 +58,6 @@ public class GridSizeMigrationTask {
     private final Context mContext;
     private final InvariantDeviceProfile mIdp;
 
-    private final HashMap<String, Point> mWidgetMinSize = new HashMap<>();
     private final ContentValues mTempValues = new ContentValues();
     protected final ArrayList<Long> mEntryToRemove = new ArrayList<>();
     private final ArrayList<ContentProviderOperation> mUpdateOperations = new ArrayList<>();
@@ -728,8 +724,10 @@ public class GridSizeMigrationTask {
                         int widgetId = c.getInt(indexAppWidgetId);
                         LauncherAppWidgetProviderInfo pInfo = AppWidgetManagerCompat.getInstance(
                                 mContext).getLauncherAppWidgetInfo(widgetId);
-                        Point spans = pInfo == null ?
-                                mWidgetMinSize.get(provider) : pInfo.getMinSpans(mIdp, mContext);
+                        Point spans = null;
+                        if (pInfo != null) {
+                            spans = pInfo.getMinSpans(mIdp, mContext);
+                        }
                         if (spans != null) {
                             entry.minSpanX = spans.x > 0 ? spans.x : entry.spanX;
                             entry.minSpanY = spans.y > 0 ? spans.y : entry.spanY;
@@ -865,7 +863,7 @@ public class GridSizeMigrationTask {
     }
 
     private static ArrayList<DbEntry> deepCopy(ArrayList<DbEntry> src) {
-        ArrayList<DbEntry> dup = new ArrayList<DbEntry>(src.size());
+        ArrayList<DbEntry> dup = new ArrayList<>(src.size());
         for (DbEntry e : src) {
             dup.add(e.copy());
         }
@@ -909,7 +907,7 @@ public class GridSizeMigrationTask {
         try {
             boolean dbChanged = false;
 
-            HashSet validPackages = getValidPackages(context);
+            HashSet<String> validPackages = getValidPackages(context);
             // Hotseat
             int srcHotseatCount = prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, idp.numHotseatIcons);
             if (srcHotseatCount != idp.numHotseatIcons) {
@@ -962,7 +960,7 @@ public class GridSizeMigrationTask {
         // this set is removed.
         // Since the loader removes such items anyway, removing these items here doesn't cause
         // any extra data loss and gives us more free space on the grid for better migration.
-        HashSet validPackages = new HashSet<>();
+        HashSet<String> validPackages = new HashSet<>();
         for (PackageInfo info : context.getPackageManager()
                 .getInstalledPackages(PackageManager.GET_UNINSTALLED_PACKAGES)) {
             validPackages.add(info.packageName);

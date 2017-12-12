@@ -28,19 +28,22 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:importantForAccessibility="no"
-        android:background="@drawable/workspace_bg"
+        android:background="?attr/workspaceStatusBarScrim"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <!-- The workspace contains 5 screens of cells -->
         <!-- DO NOT CHANGE THE ID -->
         <com.android.launcher3.Workspace
+            android:theme="@style/HomeScreenElementTheme"
             android:layout_gravity="center"
             android:id="@+id/workspace"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             launcher:pageIndicator="@id/page_indicator">
         </com.android.launcher3.Workspace>
+
+        <include layout="@layout/gradient_bg" />
 
         <!-- DO NOT CHANGE THE ID -->
         <include layout="@layout/hotseat"
@@ -61,10 +64,6 @@
              we go into AllApps -->
         <include layout="@layout/page_indicator"
                  android:id="@+id/page_indicator" />
-
-        <include
-            layout="@layout/qsb_container"
-            android:id="@+id/qsb_container" />
 
         <include layout="@layout/widgets_view"
             android:id="@+id/widgets_view"

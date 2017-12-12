@@ -16,9 +16,7 @@
 package com.android.launcher3.pageindicators;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 
@@ -50,9 +48,7 @@ public class PageIndicatorCaretLandscape extends PageIndicator {
         setCaretDrawable(caretDrawable);
 
         Launcher l = Launcher.getLauncher(context);
-        setOnTouchListener(l.getHapticFeedbackTouchListener());
         setOnClickListener(l);
-        setOnLongClickListener(l);
         setOnFocusChangeListener(l.mFocusHandler);
     }
 
@@ -60,7 +56,7 @@ public class PageIndicatorCaretLandscape extends PageIndicator {
     protected void onDraw(Canvas canvas) {
         Rect drawableBounds = getCaretDrawable().getBounds();
         int count = canvas.save();
-        canvas.translate(getWidth() - drawableBounds.width(),
+        canvas.translate((getWidth() - drawableBounds.width()) / 2,
                 getHeight() - drawableBounds.height());
         getCaretDrawable().draw(canvas);
         canvas.restoreToCount(count);

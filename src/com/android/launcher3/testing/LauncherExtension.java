@@ -2,7 +2,6 @@ package com.android.launcher3.testing;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -11,9 +10,8 @@ import android.widget.FrameLayout;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherCallbacks;
-import com.android.launcher3.allapps.AllAppsSearchBarController;
-import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.ComponentKeyMapper;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -200,12 +198,7 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
-        public AllAppsSearchBarController getAllAppsSearchBarController() {
-            return null;
-        }
-
-        @Override
-        public List<ComponentKey> getPredictedApps() {
+        public List<ComponentKeyMapper<AppInfo>> getPredictedApps() {
             // To debug app predictions, enable AlphabeticalAppsList#DEBUG_PREDICTIONS
             return new ArrayList<>();
         }
@@ -216,21 +209,11 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
-        public void setLauncherSearchCallback(Object callbacks) {
-            // Do nothing
-        }
-
-        @Override
         public void onAttachedToWindow() {
         }
 
         @Override
         public void onDetachedFromWindow() {
-        }
-
-        @Override
-        public boolean shouldShowDiscoveryBounce() {
-            return false;
         }
     }
 }

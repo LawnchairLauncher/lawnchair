@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.view.View;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.graphics.IconPalette;
@@ -93,6 +94,9 @@ public class NotificationInfo implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
+        if (intent == null) {
+            return;
+        }
         final Launcher launcher = Launcher.getLauncher(view.getContext());
         Bundle activityOptions = ActivityOptions.makeClipRevealAnimation(
                 view, 0, 0, view.getWidth(), view.getHeight()).toBundle();
@@ -105,7 +109,8 @@ public class NotificationInfo implements View.OnClickListener {
         if (autoCancel) {
             launcher.getPopupDataProvider().cancelNotification(notificationKey);
         }
-        PopupContainerWithArrow.getOpen(launcher).close(true);
+        AbstractFloatingView.closeOpenContainer(launcher, AbstractFloatingView
+                .TYPE_POPUP_CONTAINER_WITH_ARROW);
     }
 
     public Drawable getIconForBackground(Context context, int background) {

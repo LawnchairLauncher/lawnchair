@@ -17,18 +17,25 @@
 package com.android.launcher3;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.content.ComponentName;
 import android.content.ContentResolver;
-import android.database.ContentObserver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.provider.Settings;
-import android.provider.Settings.System;
-import android.support.v4.os.BuildCompat;
 
 import com.android.launcher3.graphics.IconShapeOverride;
+import com.android.launcher3.notification.NotificationListener;
+import com.android.launcher3.util.SettingsObserver;
+import com.android.launcher3.views.ButtonPreference;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
@@ -36,17 +43,21 @@ import com.android.launcher3.graphics.IconShapeOverride;
 public class SettingsActivity extends Activity {
 
     private static final String ICON_BADGING_PREFERENCE_KEY = "pref_icon_badging";
-    // TODO: use Settings.Secure.NOTIFICATION_BADGING
-    private static final String NOTIFICATION_BADGING = "notification_badging";
+    /** Hidden field Settings.Secure.NOTIFICATION_BADGING */
+    public static final String NOTIFICATION_BADGING = "notification_badging";
+    /** Hidden field Settings.Secure.ENABLED_NOTIFICATION_LISTENERS */
+    private static final String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Display the fragment as the main content.
-        getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new LauncherSettingsFragment())
-                .commit();
+        if (savedInstanceState == null) {
+            // Display the fragment as the main content.
+            getFragmentManager().beginTransaction()
+                    .replace(android.R.id.content, new LauncherSettingsFragment())
+                    .commit();
+        }
     }
 
     /**
@@ -75,27 +86,25 @@ public class SettingsActivity extends Activity {
 
                 // Register a content observer to listen for system setting changes while
                 // this UI is active.
-                resolver.registerContentObserver(
-                        Settings.System.getUriFor(System.ACCELEROMETER_ROTATION),
-                        false, mRotationLockObserver);
+                mRotationLockObserver.register(Settings.System.ACCELEROMETER_ROTATION);
 
                 // Initialize the UI once
-                mRotationLockObserver.onChange(true);
                 rotationPref.setDefaultValue(Utilities.getAllowRotationDefaultValue(getActivity()));
             }
 
-            Preference iconBadgingPref = findPreference(ICON_BADGING_PREFERENCE_KEY);
-            if (!BuildCompat.isAtLeastO()) {
+            ButtonPreference iconBadgingPref =
+                    (ButtonPreference) findPreference(ICON_BADGING_PREFERENCE_KEY);
+            if (!Utilities.ATLEAST_OREO) {
                 getPreferenceScreen().removePreference(
                         findPreference(SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY));
                 getPreferenceScreen().removePreference(iconBadgingPref);
+            } else if (!getResources().getBoolean(R.bool.notification_badging_enabled)) {
+                getPreferenceScreen().removePreference(iconBadgingPref);
             } else {
                 // Listen to system notification badge settings while this UI is active.
-                mIconBadgingObserver = new IconBadgingObserver(iconBadgingPref, resolver);
-                resolver.registerContentObserver(
-                        Settings.Secure.getUriFor(NOTIFICATION_BADGING),
-                        false, mIconBadgingObserver);
-                mIconBadgingObserver.onChange(true);
+                mIconBadgingObserver = new IconBadgingObserver(
+                        iconBadgingPref, resolver, getFragmentManager());
+                mIconBadgingObserver.register(NOTIFICATION_BADGING, NOTIFICATION_ENABLED_LISTENERS);
             }
 
             Preference iconShapeOverride = findPreference(IconShapeOverride.KEY_PREFERENCE);
@@ -111,11 +120,11 @@ public class SettingsActivity extends Activity {
         @Override
         public void onDestroy() {
             if (mRotationLockObserver != null) {
-                getActivity().getContentResolver().unregisterContentObserver(mRotationLockObserver);
+                mRotationLockObserver.unregister();
                 mRotationLockObserver = null;
             }
             if (mIconBadgingObserver != null) {
-                getActivity().getContentResolver().unregisterContentObserver(mIconBadgingObserver);
+                mIconBadgingObserver.unregister();
                 mIconBadgingObserver = null;
             }
             super.onDestroy();
@@ -126,22 +135,18 @@ public class SettingsActivity extends Activity {
      * Content observer which listens for system auto-rotate setting changes, and enables/disables
      * the launcher rotation setting accordingly.
      */
-    private static class SystemDisplayRotationLockObserver extends ContentObserver {
+    private static class SystemDisplayRotationLockObserver extends SettingsObserver.System {
 
         private final Preference mRotationPref;
-        private final ContentResolver mResolver;
 
         public SystemDisplayRotationLockObserver(
                 Preference rotationPref, ContentResolver resolver) {
-            super(new Handler());
+            super(resolver);
             mRotationPref = rotationPref;
-            mResolver = resolver;
         }
 
         @Override
-        public void onChange(boolean selfChange) {
-            boolean enabled = Settings.System.getInt(mResolver,
-                    Settings.System.ACCELEROMETER_ROTATION, 1) == 1;
+        public void onSettingChanged(boolean enabled) {
             mRotationPref.setEnabled(enabled);
             mRotationPref.setSummary(enabled
                     ? R.string.allow_rotation_desc : R.string.allow_rotation_blocked_desc);
@@ -152,24 +157,75 @@ public class SettingsActivity extends Activity {
      * Content observer which listens for system badging setting changes,
      * and updates the launcher badging setting subtext accordingly.
      */
-    private static class IconBadgingObserver extends ContentObserver {
+    private static class IconBadgingObserver extends SettingsObserver.Secure
+            implements Preference.OnPreferenceClickListener {
 
-        private final Preference mBadgingPref;
+        private final ButtonPreference mBadgingPref;
         private final ContentResolver mResolver;
+        private final FragmentManager mFragmentManager;
 
-        public IconBadgingObserver(Preference badgingPref, ContentResolver resolver) {
-            super(new Handler());
+        public IconBadgingObserver(ButtonPreference badgingPref, ContentResolver resolver,
+                FragmentManager fragmentManager) {
+            super(resolver);
             mBadgingPref = badgingPref;
             mResolver = resolver;
+            mFragmentManager = fragmentManager;
         }
 
         @Override
-        public void onChange(boolean selfChange) {
-            boolean enabled = Settings.Secure.getInt(mResolver, NOTIFICATION_BADGING, 1) == 1;
-            mBadgingPref.setSummary(enabled
-                    ? R.string.icon_badging_desc_on
-                    : R.string.icon_badging_desc_off);
+        public void onSettingChanged(boolean enabled) {
+            int summary = enabled ? R.string.icon_badging_desc_on : R.string.icon_badging_desc_off;
+
+            boolean serviceEnabled = true;
+            if (enabled) {
+                // Check if the listener is enabled or not.
+                String enabledListeners =
+                        Settings.Secure.getString(mResolver, NOTIFICATION_ENABLED_LISTENERS);
+                ComponentName myListener =
+                        new ComponentName(mBadgingPref.getContext(), NotificationListener.class);
+                serviceEnabled = enabledListeners != null &&
+                        (enabledListeners.contains(myListener.flattenToString()) ||
+                                enabledListeners.contains(myListener.flattenToShortString()));
+                if (!serviceEnabled) {
+                    summary = R.string.title_missing_notification_access;
+                }
+            }
+            mBadgingPref.setWidgetFrameVisible(!serviceEnabled);
+            mBadgingPref.setOnPreferenceClickListener(serviceEnabled ? null : this);
+            mBadgingPref.setSummary(summary);
+
+        }
+
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            new NotificationAccessConfirmation().show(mFragmentManager, "notification_access");
+            return true;
         }
     }
 
+    public static class NotificationAccessConfirmation
+            extends DialogFragment implements DialogInterface.OnClickListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final Context context = getActivity();
+            String msg = context.getString(R.string.msg_missing_notification_access,
+                    context.getString(R.string.derived_app_name));
+            return new AlertDialog.Builder(context)
+                    .setTitle(R.string.title_missing_notification_access)
+                    .setMessage(msg)
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .setPositiveButton(R.string.title_change_settings, this)
+                    .create();
+        }
+
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            ComponentName cn = new ComponentName(getActivity(), NotificationListener.class);
+            Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    .putExtra(":settings:fragment_args_key", cn.flattenToString());
+            getActivity().startActivity(intent);
+        }
+    }
 }

@@ -13,10 +13,12 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.PackageUserKey;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.widget.WidgetsBottomSheet;
 
 import java.util.List;
+
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 
 /**
  * Represents a system shortcut for a given app. The shortcut should have a static label and
@@ -24,7 +26,7 @@ import java.util.List;
  *
  * Example system shortcuts, defined as inner classes, include Widgets and AppInfo.
  */
-public abstract class SystemShortcut {
+public abstract class SystemShortcut extends ItemInfo {
     private final int mIconResId;
     private final int mLabelResId;
 
@@ -33,10 +35,8 @@ public abstract class SystemShortcut {
         mLabelResId = labelResId;
     }
 
-    public Drawable getIcon(Context context, int colorAttr) {
-        Drawable icon = context.getResources().getDrawable(mIconResId, context.getTheme()).mutate();
-        icon.setTint(Themes.getAttrColor(context, colorAttr));
-        return icon;
+    public Drawable getIcon(Context context) {
+        return context.getResources().getDrawable(mIconResId, context.getTheme());
     }
 
     public String getLabel(Context context) {
@@ -68,6 +68,8 @@ public abstract class SystemShortcut {
                             (WidgetsBottomSheet) launcher.getLayoutInflater().inflate(
                                     R.layout.widgets_bottom_sheet, launcher.getDragLayer(), false);
                     widgetsBottomSheet.populateAndShow(itemInfo);
+                    launcher.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
+                            ControlType.WIDGETS_BUTTON, view);
                 }
             };
         }
@@ -87,6 +89,8 @@ public abstract class SystemShortcut {
                     Rect sourceBounds = launcher.getViewBounds(view);
                     Bundle opts = launcher.getActivityLaunchOptions(view);
                     InfoDropTarget.startDetailsActivityForInfo(itemInfo, launcher, null, sourceBounds, opts);
+                    launcher.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
+                            ControlType.APPINFO_TARGET, view);
                 }
             };
         }

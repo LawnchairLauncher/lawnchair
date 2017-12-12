@@ -27,7 +27,6 @@ import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
-import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
 
@@ -112,7 +111,7 @@ public class WidgetPreviewLoader {
      * sizes (landscape vs portrait).
      */
     private static class CacheDb extends SQLiteCacheHelper {
-        private static final int DB_VERSION = 6;
+        private static final int DB_VERSION = 9;
 
         private static final String TABLE_NAME = "shortcut_and_widget_previews";
         private static final String COLUMN_COMPONENT = "componentName";
@@ -388,10 +387,10 @@ public class WidgetPreviewLoader {
             drawable.setBounds(x, 0, x + previewWidth, previewHeight);
             drawable.draw(c);
         } else {
-            final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
-            RectF boxRect = drawBoxWithShadow(c, p, previewWidth, previewHeight);
+            RectF boxRect = drawBoxWithShadow(c, previewWidth, previewHeight);
 
             // Draw horizontal and vertical lines to represent individual columns.
+            final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
             p.setStyle(Paint.Style.STROKE);
             p.setStrokeWidth(mContext.getResources()
                     .getDimension(R.dimen.widget_preview_cell_divider_width));
@@ -431,28 +430,19 @@ public class WidgetPreviewLoader {
         return preview;
     }
 
-    private RectF drawBoxWithShadow(Canvas c, Paint p, int width, int height) {
+    private RectF drawBoxWithShadow(Canvas c, int width, int height) {
         Resources res = mContext.getResources();
-        float shadowBlur = res.getDimension(R.dimen.widget_preview_shadow_blur);
-        float keyShadowDistance = res.getDimension(R.dimen.widget_preview_key_shadow_distance);
-        float corner = res.getDimension(R.dimen.widget_preview_corner_radius);
 
-        RectF bounds = new RectF(shadowBlur, shadowBlur,
-                width - shadowBlur, height - shadowBlur - keyShadowDistance);
-        p.setColor(Color.WHITE);
+        ShadowGenerator.Builder builder = new ShadowGenerator.Builder(Color.WHITE);
+        builder.shadowBlur = res.getDimension(R.dimen.widget_preview_shadow_blur);
+        builder.radius = res.getDimension(R.dimen.widget_preview_corner_radius);
+        builder.keyShadowDistance = res.getDimension(R.dimen.widget_preview_key_shadow_distance);
 
-        // Key shadow
-        p.setShadowLayer(shadowBlur, 0, keyShadowDistance,
-                ShadowGenerator.KEY_SHADOW_ALPHA << 24);
-        c.drawRoundRect(bounds, corner, corner, p);
-
-        // Ambient shadow
-        p.setShadowLayer(shadowBlur, 0, 0,
-                ColorUtils.setAlphaComponent(Color.BLACK, ShadowGenerator.AMBIENT_SHADOW_ALPHA));
-        c.drawRoundRect(bounds, corner, corner, p);
-
-        p.clearShadowLayer();
-        return bounds;
+        builder.bounds.set(builder.shadowBlur, builder.shadowBlur,
+                width - builder.shadowBlur,
+                height - builder.shadowBlur - builder.keyShadowDistance);
+        builder.drawShadow(c);
+        return builder.bounds;
     }
 
     private Bitmap generateShortcutPreview(BaseActivity launcher, ShortcutConfigActivityInfo info,
@@ -478,16 +468,16 @@ public class WidgetPreviewLoader {
             c.setBitmap(preview);
             c.drawColor(0, PorterDuff.Mode.CLEAR);
         }
-        Paint p = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-        RectF boxRect = drawBoxWithShadow(c, p, size, size);
+        RectF boxRect = drawBoxWithShadow(c, size, size);
 
         Bitmap icon = LauncherIcons.createScaledBitmapWithoutShadow(
-                mutateOnMainThread(info.getFullResIcon(mIconCache)), mContext, Build.VERSION_CODES.O);
+                mutateOnMainThread(info.getFullResIcon(mIconCache)), mContext, 0);
         Rect src = new Rect(0, 0, icon.getWidth(), icon.getHeight());
 
         boxRect.set(0, 0, iconSize, iconSize);
         boxRect.offset(padding, padding);
-        c.drawBitmap(icon, src, boxRect, p);
+        c.drawBitmap(icon, src, boxRect,
+                new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG));
         c.setBitmap(null);
         return preview;
     }

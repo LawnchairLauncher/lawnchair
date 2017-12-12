@@ -16,15 +16,14 @@ import android.test.ProviderTestCase2;
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppFilter;
 import com.android.launcher3.AppInfo;
-import com.android.launcher3.DeferredHandler;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.LauncherModel.BaseModelUpdateTask;
+import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherModel.Callbacks;
-import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.TestLauncherProvider;
@@ -36,6 +35,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.atLeast;
@@ -64,7 +64,7 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
     public Callbacks callbacks;
 
     public BaseModelUpdateTaskTestCase() {
-        super(TestLauncherProvider.class, ProviderConfig.AUTHORITY);
+        super(TestLauncherProvider.class, LauncherProvider.AUTHORITY);
     }
 
     @Override
@@ -75,8 +75,10 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
         appState = mock(LauncherAppState.class);
         model = mock(LauncherModel.class);
         modelWriter = mock(ModelWriter.class);
+
         when(appState.getModel()).thenReturn(model);
         when(model.getWriter(anyBoolean())).thenReturn(modelWriter);
+        when(model.getCallback()).thenReturn(callbacks);
 
         myUser = Process.myUserHandle();
 
@@ -94,22 +96,15 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
     /**
      * Synchronously executes the task and returns all the UI callbacks posted.
      */
-    public List<Runnable> executeTaskForTest(BaseModelUpdateTask task) throws Exception {
-        LauncherModel mockModel = mock(LauncherModel.class);
-        when(mockModel.getCallback()).thenReturn(callbacks);
+    public List<Runnable> executeTaskForTest(ModelUpdateTask task) throws Exception {
+        when(model.isModelLoaded()).thenReturn(true);
 
-        Field f = BaseModelUpdateTask.class.getDeclaredField("mModel");
-        f.setAccessible(true);
-        f.set(task, mockModel);
+        Executor mockExecutor = mock(Executor.class);
 
-        DeferredHandler mockHandler = mock(DeferredHandler.class);
-        f = BaseModelUpdateTask.class.getDeclaredField("mUiHandler");
-        f.setAccessible(true);
-        f.set(task, mockHandler);
-
-        task.execute(appState, bgDataModel, allAppsList);
+        task.init(appState, model, bgDataModel, allAppsList, mockExecutor);
+        task.run();
         ArgumentCaptor<Runnable> captor = ArgumentCaptor.forClass(Runnable.class);
-        verify(mockHandler, atLeast(0)).post(captor.capture());
+        verify(mockExecutor, atLeast(0)).execute(captor.capture());
 
         return captor.getAllValues();
     }

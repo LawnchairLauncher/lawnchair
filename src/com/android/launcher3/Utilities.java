@@ -37,7 +37,6 @@ import android.os.Bundle;
 import android.os.DeadObjectException;
 import android.os.PowerManager;
 import android.os.TransactionTooLargeException;
-import android.support.v4.os.BuildCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -51,7 +50,7 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 
-import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.config.FeatureFlags;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -84,15 +83,17 @@ public final class Utilities {
     private static final Matrix sMatrix = new Matrix();
     private static final Matrix sInverseMatrix = new Matrix();
 
-    public static boolean isAtLeastO() {
-        return BuildCompat.isAtLeastO();
-    }
+    public static final boolean ATLEAST_OREO_MR1 =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1;
+
+    public static final boolean ATLEAST_OREO =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
 
     public static final boolean ATLEAST_NOUGAT_MR1 =
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1;
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1;
 
     public static final boolean ATLEAST_NOUGAT =
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
 
     public static final boolean ATLEAST_MARSHMALLOW =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
@@ -110,6 +111,7 @@ public final class Utilities {
     public static final String EXTRA_WALLPAPER_OFFSET = "com.android.launcher3.WALLPAPER_OFFSET";
 
     public static final int COLOR_EXTRACTION_JOB_ID = 1;
+    public static final int WALLPAPER_COMPAT_JOB_ID = 2;
 
     // These values are same as that in {@link AsyncTask}.
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
@@ -260,7 +262,7 @@ public final class Utilities {
         return scale;
     }
 
-    static boolean isSystemApp(Context context, Intent intent) {
+    public static boolean isSystemApp(Context context, Intent intent) {
         PackageManager pm = context.getPackageManager();
         ComponentName cn = intent.getComponent();
         String packageName = null;
@@ -550,6 +552,11 @@ public final class Utilities {
                 LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
+    public static SharedPreferences getDevicePrefs(Context context) {
+        return context.getSharedPreferences(
+                LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
+    }
+
     public static boolean isPowerSaverOn(Context context) {
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         return powerManager.isPowerSaveMode();
@@ -571,7 +578,7 @@ public final class Utilities {
             try {
                 c.close();
             } catch (IOException e) {
-                if (ProviderConfig.IS_DOGFOOD_BUILD) {
+                if (FeatureFlags.IS_DOGFOOD_BUILD) {
                     Log.d(TAG, "Error closing", e);
                 }
             }
@@ -647,4 +654,5 @@ public final class Utilities {
         hashSet.add(elem);
         return hashSet;
     }
+
 }

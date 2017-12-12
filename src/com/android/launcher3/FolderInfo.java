@@ -65,9 +65,17 @@ public class FolderInfo extends ItemInfo {
      * @param item
      */
     public void add(ShortcutInfo item, boolean animate) {
-        contents.add(item);
+        add(item, contents.size(), animate);
+    }
+
+    /**
+     * Add an app or shortcut for a specified rank.
+     */
+    public void add(ShortcutInfo item, int rank, boolean animate) {
+        rank = Utilities.boundToRange(rank, 0, contents.size());
+        contents.add(rank, item);
         for (int i = 0; i < listeners.size(); i++) {
-            listeners.get(i).onAdd(item);
+            listeners.get(i).onAdd(item, rank);
         }
         itemsChanged(animate);
     }
@@ -121,7 +129,7 @@ public class FolderInfo extends ItemInfo {
     }
 
     public interface FolderListener {
-        public void onAdd(ShortcutInfo item);
+        public void onAdd(ShortcutInfo item, int rank);
         public void onRemove(ShortcutInfo item);
         public void onTitleChanged(CharSequence title);
         public void onItemsChanged(boolean animate);

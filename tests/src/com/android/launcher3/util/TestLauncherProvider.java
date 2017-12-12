@@ -1,6 +1,7 @@
 package com.android.launcher3.util;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.android.launcher3.LauncherProvider;
@@ -43,5 +44,8 @@ public class TestLauncherProvider extends LauncherProvider {
 
         @Override
         protected void onEmptyDbCreated() { }
+
+        @Override
+        protected void handleOneTimeDataUpgrade(SQLiteDatabase db) { }
     }
 }

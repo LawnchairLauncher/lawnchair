@@ -24,11 +24,12 @@ import android.util.Log;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
-import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.discovery.AppDiscoveryAppInfo;
 import com.android.launcher3.discovery.AppDiscoveryItem;
 import com.android.launcher3.discovery.AppDiscoveryUpdateState;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.LabelComparator;
 
 import java.util.ArrayList;
@@ -138,13 +139,6 @@ public class AlphabeticalAppsList {
             return item;
         }
 
-        public static AdapterItem asSearchDivider(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER;
-            item.position = pos;
-            return item;
-        }
-
         public static AdapterItem asMarketDivider(int pos) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER;
@@ -180,7 +174,7 @@ public class AlphabeticalAppsList {
     // The set of sections that we allow fast-scrolling to (includes non-merged sections)
     private final List<FastScrollSectionInfo> mFastScrollerSections = new ArrayList<>();
     // The set of predicted app component names
-    private final List<ComponentKey> mPredictedAppComponents = new ArrayList<>();
+    private final List<ComponentKeyMapper<AppInfo>> mPredictedAppComponents = new ArrayList<>();
     // The set of predicted apps resolved from the component names and the current set of apps
     private final List<AppInfo> mPredictedApps = new ArrayList<>();
     private final List<AppDiscoveryAppInfo> mDiscoveredApps = new ArrayList<>();
@@ -223,6 +217,13 @@ public class AlphabeticalAppsList {
      */
     public List<AppInfo> getApps() {
         return mApps;
+    }
+
+    /**
+     * Returns the predicted apps.
+     */
+    public List<AppInfo> getPredictedApps() {
+        return mPredictedApps;
     }
 
     /**
@@ -298,14 +299,75 @@ public class AlphabeticalAppsList {
         updateAdapterItems();
     }
 
+    private List<AppInfo> processPredictedAppComponents(List<ComponentKeyMapper<AppInfo>> components) {
+        if (mComponentToAppMap.isEmpty()) {
+            // Apps have not been bound yet.
+            return Collections.emptyList();
+        }
+
+        List<AppInfo> predictedApps = new ArrayList<>();
+        for (ComponentKeyMapper<AppInfo> mapper : components) {
+            AppInfo info = mapper.getItem(mComponentToAppMap);
+            if (info != null) {
+                predictedApps.add(info);
+            } else {
+                if (FeatureFlags.IS_DOGFOOD_BUILD) {
+                    Log.e(TAG, "Predicted app not found: " + mapper);
+                }
+            }
+            // Stop at the number of predicted apps
+            if (predictedApps.size() == mNumPredictedAppsPerRow) {
+                break;
+            }
+        }
+        return predictedApps;
+    }
+
     /**
-     * Sets the current set of predicted apps.  Since this can be called before we get the full set
-     * of applications, we should merge the results only in onAppsUpdated() which is idempotent.
+     * Sets the current set of predicted apps.
+     *
+     * This can be called before we get the full set of applications, we should merge the results
+     * only in onAppsUpdated() which is idempotent.
+     *
+     * If the number of predicted apps is the same as the previous list of predicted apps,
+     * we can optimize by swapping them in place.
      */
-    public void setPredictedApps(List<ComponentKey> apps) {
+    public void setPredictedApps(List<ComponentKeyMapper<AppInfo>> apps) {
         mPredictedAppComponents.clear();
         mPredictedAppComponents.addAll(apps);
-        onAppsUpdated();
+
+        List<AppInfo> newPredictedApps = processPredictedAppComponents(apps);
+        // We only need to do work if any of the visible predicted apps have changed.
+        if (!newPredictedApps.equals(mPredictedApps)) {
+            if (newPredictedApps.size() == mPredictedApps.size()) {
+                swapInNewPredictedApps(newPredictedApps);
+            } else {
+                // We need to update the appIndex of all the items.
+                onAppsUpdated();
+            }
+        }
+    }
+
+    /**
+     * Swaps out the old predicted apps with the new predicted apps, in place. This optimization
+     * allows us to skip an entire relayout that would otherwise be called by notifyDataSetChanged.
+     *
+     * Note: This should only be called if the # of predicted apps is the same.
+     *       This method assumes that predicted apps are the first items in the adapter.
+     */
+    private void swapInNewPredictedApps(List<AppInfo> apps) {
+        mPredictedApps.clear();
+        mPredictedApps.addAll(apps);
+
+        int size = apps.size();
+        for (int i = 0; i < size; ++i) {
+            AppInfo info = apps.get(i);
+            AdapterItem appItem = AdapterItem.asPredictedApp(i, "", info, i);
+            appItem.rowAppIndex = i;
+            mAdapterItems.set(i, appItem);
+            mFilteredApps.set(i, info);
+            mAdapter.notifyItemChanged(i);
+        }
     }
 
     /**
@@ -313,20 +375,13 @@ public class AlphabeticalAppsList {
      */
     public void setApps(List<AppInfo> apps) {
         mComponentToAppMap.clear();
-        addApps(apps);
+        addOrUpdateApps(apps);
     }
 
     /**
-     * Adds new apps to the list.
+     * Adds or updates existing apps in the list
      */
-    public void addApps(List<AppInfo> apps) {
-        updateApps(apps);
-    }
-
-    /**
-     * Updates existing apps in the list
-     */
-    public void updateApps(List<AppInfo> apps) {
+    public void addOrUpdateApps(List<AppInfo> apps) {
         for (AppInfo app : apps) {
             mComponentToAppMap.put(app.toComponentKey(), app);
         }
@@ -418,37 +473,21 @@ public class AlphabeticalAppsList {
 
         if (DEBUG_PREDICTIONS) {
             if (mPredictedAppComponents.isEmpty() && !mApps.isEmpty()) {
-                mPredictedAppComponents.add(new ComponentKey(mApps.get(0).componentName,
-                        Process.myUserHandle()));
-                mPredictedAppComponents.add(new ComponentKey(mApps.get(0).componentName,
-                        Process.myUserHandle()));
-                mPredictedAppComponents.add(new ComponentKey(mApps.get(0).componentName,
-                        Process.myUserHandle()));
-                mPredictedAppComponents.add(new ComponentKey(mApps.get(0).componentName,
-                        Process.myUserHandle()));
+                mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
+                        Process.myUserHandle())));
+                mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
+                        Process.myUserHandle())));
+                mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
+                        Process.myUserHandle())));
+                mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
+                        Process.myUserHandle())));
             }
         }
-
-        // Add the search divider
-        mAdapterItems.add(AdapterItem.asSearchDivider(position++));
 
         // Process the predicted app components
         mPredictedApps.clear();
         if (mPredictedAppComponents != null && !mPredictedAppComponents.isEmpty() && !hasFilter()) {
-            for (ComponentKey ck : mPredictedAppComponents) {
-                AppInfo info = mComponentToAppMap.get(ck);
-                if (info != null) {
-                    mPredictedApps.add(info);
-                } else {
-                    if (ProviderConfig.IS_DOGFOOD_BUILD) {
-                        Log.e(TAG, "Predicted app not found: " + ck);
-                    }
-                }
-                // Stop at the number of predicted apps
-                if (mPredictedApps.size() == mNumPredictedAppsPerRow) {
-                    break;
-                }
-            }
+            mPredictedApps.addAll(processPredictedAppComponents(mPredictedAppComponents));
 
             if (!mPredictedApps.isEmpty()) {
                 // Add a section for the predictions
@@ -604,6 +643,10 @@ public class AlphabeticalAppsList {
             Collections.sort(result, mAppNameComparator);
         }
         return result;
+    }
+
+    public AppInfo findApp(ComponentKeyMapper<AppInfo> mapper) {
+        return mapper.getItem(mComponentToAppMap);
     }
 
     /**

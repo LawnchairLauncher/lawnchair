@@ -19,7 +19,6 @@ package com.android.launcher3.dragndrop;
 import android.content.Context;
 import android.view.DragEvent;
 import android.view.MotionEvent;
-
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Utilities;
 
@@ -97,16 +96,11 @@ public abstract class DragDriver {
  */
 class SystemDragDriver extends DragDriver {
 
-    private final DragObject mDragObject;
-    private final Context mContext;
-
     float mLastX = 0;
     float mLastY = 0;
 
-    public SystemDragDriver(DragController dragController, Context context, DragObject dragObject) {
+    SystemDragDriver(DragController dragController, Context context, DragObject dragObject) {
         super(dragController);
-        mDragObject = dragObject;
-        mContext = context;
     }
 
     @Override
@@ -162,10 +156,10 @@ class SystemDragDriver extends DragDriver {
  * Class for driving an internal (i.e. not using framework) drag/drop operation.
  */
 class InternalDragDriver extends DragDriver {
-    public InternalDragDriver(DragController dragController) {
+    InternalDragDriver(DragController dragController) {
         super(dragController);
     }
 
     @Override
     public boolean onDragEvent (DragEvent event) { return false; }
-};
+}
