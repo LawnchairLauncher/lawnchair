@@ -63,6 +63,11 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
+    public float getHoseatAlpha(Launcher launcher) {
+        return 0;
+    }
+
+    @Override
     public void onStateEnabled(Launcher launcher) {
         launcher.getWorkspace().setPageRearrangeEnabled(true);
 
