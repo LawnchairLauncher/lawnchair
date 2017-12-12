@@ -48,6 +48,7 @@ import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.util.FloatRange;
 import com.android.launcher3.util.TouchController;
 
 import java.util.ArrayList;
@@ -78,6 +79,14 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
      */
     private static final int OTHER_HANDLERS_START_INDEX = SWIPE_HANDLER_INDEX + 1;
 
+    // Swipe progress range (when starting from NORMAL state) where OVERVIEW state is allowed
+    private static final float MIN_PROGRESS_TO_OVERVIEW = 0.1f;
+    private static final float MAX_PROGRESS_TO_OVERVIEW = 0.4f;
+
+    private static final int FLAG_OVERVIEW_DISABLED_OUT_OF_RANGE = 1 << 0;
+    private static final int FLAG_OVERVIEW_DISABLED_FLING = 1 << 1;
+    private static final int FLAG_OVERVIEW_DISABLED_CANCEL_STATE = 1 << 2;
+
     private final Launcher mLauncher;
     private final SwipeDetector mDetector;
 
@@ -85,6 +94,7 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
     private int mStartContainerType;
 
     private DragPauseDetector mDragPauseDetector;
+    private FloatRange mOverviewProgressRange;
     private TaggedAnimatorSetBuilder mTaggedAnimatorSetBuilder;
     private AnimatorSet mQuickOverviewAnimation;
     private boolean mAnimatingToOverview;
@@ -221,10 +231,17 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
             long maxAccuracy = (long) (2 * range);
 
             mDragPauseDetector = new DragPauseDetector(this::onDragPauseDetected);
-            mTaggedAnimatorSetBuilder = new TaggedAnimatorSetBuilder();
+            mDragPauseDetector.addDisabledFlags(FLAG_OVERVIEW_DISABLED_OUT_OF_RANGE);
+            mOverviewProgressRange = new FloatRange();
+            mOverviewProgressRange.start = mLauncher.isInState(NORMAL)
+                    ? MIN_PROGRESS_TO_OVERVIEW
+                    : 1 - MAX_PROGRESS_TO_OVERVIEW;
+            mOverviewProgressRange.end = mOverviewProgressRange.start
+                    + MAX_PROGRESS_TO_OVERVIEW - MIN_PROGRESS_TO_OVERVIEW;
 
             // Build current animation
             mToState = mLauncher.isInState(ALL_APPS) ? NORMAL : ALL_APPS;
+            mTaggedAnimatorSetBuilder = new TaggedAnimatorSetBuilder();
             mCurrentAnimation = mLauncher.getStateManager().createAnimationToNewWorkspace(
                     mToState, mTaggedAnimatorSetBuilder, maxAccuracy);
 
@@ -235,6 +252,9 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
         } else {
             mCurrentAnimation.pause();
             mStartProgress = mCurrentAnimation.getProgressFraction();
+
+            mDragPauseDetector.clearDisabledFlags(FLAG_OVERVIEW_DISABLED_FLING);
+            updatePauseDetectorRangeFlag();
         }
 
         for (SpringAnimationHandler h : mSpringHandlers) {
@@ -248,11 +268,21 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
 
     @Override
     public boolean onDrag(float displacement, float velocity) {
-        mDragPauseDetector.onDrag(displacement, velocity);
-
         float deltaProgress = mProgressMultiplier * displacement;
         mCurrentAnimation.setPlayFraction(deltaProgress + mStartProgress);
+
+        updatePauseDetectorRangeFlag();
+        mDragPauseDetector.onDrag(velocity);
+
         return true;
+    }
+
+    private void updatePauseDetectorRangeFlag() {
+        if (mOverviewProgressRange.contains(mCurrentAnimation.getProgressFraction())) {
+            mDragPauseDetector.clearDisabledFlags(FLAG_OVERVIEW_DISABLED_OUT_OF_RANGE);
+        } else {
+            mDragPauseDetector.addDisabledFlags(FLAG_OVERVIEW_DISABLED_OUT_OF_RANGE);
+        }
     }
 
     @Override
@@ -261,6 +291,8 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
             snapToOverview(velocity);
             return;
         }
+
+        mDragPauseDetector.addDisabledFlags(FLAG_OVERVIEW_DISABLED_FLING);
 
         final long animationDuration;
         final int logAction;
@@ -306,9 +338,6 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
         anim.setDuration(animationDuration);
         anim.setInterpolator(scrollInterpolatorForVelocity(velocity));
         anim.start();
-
-        // TODO: Re-enable later
-        mDragPauseDetector.setEnabled(false);
     }
 
     private void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
@@ -413,7 +442,7 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
         mCurrentAnimation = null;
         mTaggedAnimatorSetBuilder = null;
         if (mDragPauseDetector != null) {
-            mDragPauseDetector.setEnabled(false);
+            mDragPauseDetector.addDisabledFlags(FLAG_OVERVIEW_DISABLED_CANCEL_STATE);
         }
         mDragPauseDetector = null;
 
