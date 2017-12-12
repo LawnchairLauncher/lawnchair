@@ -23,9 +23,12 @@ import android.graphics.ColorFilter;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 
+import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
+import com.android.launcher3.util.Themes;
 
 /**
  * This is a custom composite drawable that has a fixed virtual size and dynamically lays out its
@@ -35,7 +38,7 @@ import com.android.launcher3.R;
 public class AllAppsBackgroundDrawable extends Drawable {
 
     /**
-     * A helper class to positon and orient a drawable to be drawn.
+     * A helper class to position and orient a drawable to be drawn.
      */
     protected static class TransformedImageDrawable {
         private Drawable mImage;
@@ -48,9 +51,9 @@ public class AllAppsBackgroundDrawable extends Drawable {
          * @param gravity If one of the Gravity center values, the x and y offset will take the width
          *                and height of the image into account to center the image to the offset.
          */
-        public TransformedImageDrawable(Resources res, int resourceId, float xPct, float yPct,
+        public TransformedImageDrawable(Context context, int resourceId, float xPct, float yPct,
                 int gravity) {
-            mImage = res.getDrawable(resourceId);
+            mImage = context.getDrawable(resourceId);
             mXPercent = xPct;
             mYPercent = yPct;
             mGravity = gravity;
@@ -97,19 +100,24 @@ public class AllAppsBackgroundDrawable extends Drawable {
 
     public AllAppsBackgroundDrawable(Context context) {
         Resources res = context.getResources();
-        mHand = new TransformedImageDrawable(res, R.drawable.ic_all_apps_bg_hand,
-                0.575f, 0.f, Gravity.CENTER_HORIZONTAL);
-        mIcons = new TransformedImageDrawable[4];
-        mIcons[0] = new TransformedImageDrawable(res, R.drawable.ic_all_apps_bg_icon_1,
-                0.375f, 0, Gravity.CENTER_HORIZONTAL);
-        mIcons[1] = new TransformedImageDrawable(res, R.drawable.ic_all_apps_bg_icon_2,
-                0.3125f, 0.2f, Gravity.CENTER_HORIZONTAL);
-        mIcons[2] = new TransformedImageDrawable(res, R.drawable.ic_all_apps_bg_icon_3,
-                0.475f, 0.26f, Gravity.CENTER_HORIZONTAL);
-        mIcons[3] = new TransformedImageDrawable(res, R.drawable.ic_all_apps_bg_icon_4,
-                0.7f, 0.125f, Gravity.CENTER_HORIZONTAL);
         mWidth = res.getDimensionPixelSize(R.dimen.all_apps_background_canvas_width);
         mHeight = res.getDimensionPixelSize(R.dimen.all_apps_background_canvas_height);
+
+        context = new ContextThemeWrapper(context,
+                Themes.getAttrBoolean(context, R.attr.isMainColorDark)
+                        ? R.style.AllAppsEmptySearchBackground_Dark
+                        : R.style.AllAppsEmptySearchBackground);
+        mHand = new TransformedImageDrawable(context, R.drawable.ic_all_apps_bg_hand,
+                0.575f, 0.f, Gravity.CENTER_HORIZONTAL);
+        mIcons = new TransformedImageDrawable[4];
+        mIcons[0] = new TransformedImageDrawable(context, R.drawable.ic_all_apps_bg_icon_1,
+                0.375f, 0, Gravity.CENTER_HORIZONTAL);
+        mIcons[1] = new TransformedImageDrawable(context, R.drawable.ic_all_apps_bg_icon_2,
+                0.3125f, 0.2f, Gravity.CENTER_HORIZONTAL);
+        mIcons[2] = new TransformedImageDrawable(context, R.drawable.ic_all_apps_bg_icon_3,
+                0.475f, 0.26f, Gravity.CENTER_HORIZONTAL);
+        mIcons[3] = new TransformedImageDrawable(context, R.drawable.ic_all_apps_bg_icon_4,
+                0.7f, 0.125f, Gravity.CENTER_HORIZONTAL);
     }
 
     /**
@@ -119,7 +127,8 @@ public class AllAppsBackgroundDrawable extends Drawable {
         int finalAlphaI = (int) (finalAlpha * 255f);
         if (getAlpha() != finalAlphaI) {
             mBackgroundAnim = cancelAnimator(mBackgroundAnim);
-            mBackgroundAnim = ObjectAnimator.ofInt(this, "alpha", finalAlphaI);
+            mBackgroundAnim = ObjectAnimator.ofInt(this, LauncherAnimUtils.DRAWABLE_ALPHA,
+                    finalAlphaI);
             mBackgroundAnim.setDuration(duration);
             mBackgroundAnim.start();
         }

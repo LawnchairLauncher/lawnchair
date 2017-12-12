@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2017 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<com.android.launcher3.allapps.search.AppsSearchContainerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/search_container_all_apps"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/all_apps_search_bar_height"
+    android:layout_gravity="center|top"
+    android:layout_marginBottom="-8dp"
+    android:gravity="center|bottom"
+    android:paddingLeft="@dimen/dynamic_grid_edge_margin"
+    android:paddingRight="@dimen/dynamic_grid_edge_margin"
+    android:saveEnabled="false" >
+
+    <!--
+      Note: The following relation should always be true so that the shadows are aligned properly
+      search_box_input.layout_marginBottom
+            == search_divider.layout_marginBottom
+            == - (search_container.layout_marginBottom)
+            >= 5dp
+    -->
+    <com.android.launcher3.ExtendedEditText
+        android:id="@+id/search_box_input"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/all_apps_search_bar_field_height"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="8dp"
+        android:background="@android:color/transparent"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:hint="@string/all_apps_search_bar_hint"
+        android:imeOptions="actionSearch|flagNoExtractUi"
+        android:inputType="text|textNoSuggestions|textCapWords"
+        android:maxLines="1"
+        android:saveEnabled="false"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textColorHint="@drawable/all_apps_search_hint"
+        android:textSize="16sp" />
+
+    <!-- This needs to be a container with a view, to simulate a scrolling effect for the header.
+         We translate the header down, and its content up by the same amount, so that it gets
+         clipped by the parent, making it look like the divider was scrolled out of the view. -->
+    <FrameLayout
+        android:id="@+id/search_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="8dp" >
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/all_apps_search_divider"/>
+    </FrameLayout>
+</com.android.launcher3.allapps.search.AppsSearchContainerLayout>

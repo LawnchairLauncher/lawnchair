@@ -27,7 +27,7 @@
         android:id="@+id/drag_layer"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:background="@drawable/workspace_bg"
+        android:background="?attr/workspaceStatusBarScrim"
         android:importantForAccessibility="no"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -35,11 +35,14 @@
         <!-- The workspace contains 5 screens of cells -->
         <!-- DO NOT CHANGE THE ID -->
         <com.android.launcher3.Workspace
+            android:theme="@style/HomeScreenElementTheme"
             android:id="@+id/workspace"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             launcher:pageIndicator="@id/page_indicator" />
+
+        <include layout="@layout/gradient_bg" />
 
         <!-- DO NOT CHANGE THE ID -->
         <include layout="@layout/hotseat"
@@ -57,18 +60,6 @@
             android:id="@+id/overview_panel"
             android:visibility="gone" />
 
-        <com.android.launcher3.pageindicators.PageIndicatorCaretLandscape
-            android:id="@+id/page_indicator"
-            android:layout_width="@dimen/dynamic_grid_page_indicator_height"
-            android:layout_height="@dimen/dynamic_grid_page_indicator_height"
-            android:layout_gravity="bottom|left"/>
-
-        <!-- A place holder view instead of the QSB in transposed layout -->
-        <View
-            android:layout_width="0dp"
-            android:layout_height="10dp"
-            android:id="@+id/workspace_blocked_row" />
-
         <include layout="@layout/widgets_view"
             android:id="@+id/widgets_view"
             android:layout_width="match_parent"
@@ -80,6 +71,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />
+
+        <com.android.launcher3.pageindicators.PageIndicatorCaretLandscape
+            android:id="@+id/page_indicator"
+            android:theme="@style/HomeScreenElementTheme"
+            android:layout_width="@dimen/dynamic_grid_min_page_indicator_size"
+            android:layout_height="@dimen/dynamic_grid_min_page_indicator_size"
+            android:layout_gravity="bottom|left"/>
 
     </com.android.launcher3.dragndrop.DragLayer>
 

@@ -21,11 +21,9 @@
     <style name="WidgetContainerTheme" parent="@android:style/Theme.DeviceDefault.Settings">
         <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
     </style>
-
-    <!-- From O and above, we show a dark nav bar in all-apps -->
-    <style name="AllAppsNavBarProtection">
-        <item name="android:alpha">0.6</item>
-        <item name="android:background">?android:attr/colorPrimary</item>
+    <style name="WidgetContainerTheme.Dark" parent="LauncherThemeDark">
+        <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
+        <item name="android:colorPrimaryDark">#616161</item> <!-- Gray 700 -->
     </style>
 
 </resources>

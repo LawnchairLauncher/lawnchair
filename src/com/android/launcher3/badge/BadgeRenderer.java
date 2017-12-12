@@ -107,7 +107,8 @@ public class BadgeRenderer {
         // Lazily load the background with shadow.
         Bitmap backgroundWithShadow = mBackgroundsWithShadow.get(numChars);
         if (backgroundWithShadow == null) {
-            backgroundWithShadow = ShadowGenerator.createPillWithShadow(Color.WHITE, width, mSize);
+            backgroundWithShadow = new ShadowGenerator.Builder(Color.WHITE)
+                    .setupBlurForSize(mSize).createPill(width, mSize);
             mBackgroundsWithShadow.put(numChars, backgroundWithShadow);
         }
         canvas.save(Canvas.MATRIX_SAVE_FLAG);

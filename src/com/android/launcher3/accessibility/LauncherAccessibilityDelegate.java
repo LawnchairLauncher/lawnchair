@@ -18,7 +18,6 @@ import com.android.launcher3.AppInfo;
 import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
-import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.FolderInfo;
@@ -27,7 +26,6 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetHostView;
 import com.android.launcher3.LauncherAppWidgetInfo;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
@@ -37,6 +35,7 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
+import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.Thunk;
 
@@ -174,7 +173,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
                         ArrayList<ItemInfo> itemList = new ArrayList<>();
                         itemList.add(info);
-                        mLauncher.bindItems(itemList, 0, itemList.size(), true);
+                        mLauncher.bindItems(itemList, true);
                     } else if (item instanceof PendingAddItemInfo) {
                         PendingAddItemInfo info = (PendingAddItemInfo) item;
                         Workspace workspace = mLauncher.getWorkspace();
@@ -206,7 +205,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                 public void run() {
                     ArrayList<ItemInfo> itemList = new ArrayList<>();
                     itemList.add(item);
-                    mLauncher.bindItems(itemList, 0, itemList.size(), true);
+                    mLauncher.bindItems(itemList, true);
                     announceConfirmation(R.string.item_moved);
                 }
             });

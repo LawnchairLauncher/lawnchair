@@ -78,6 +78,58 @@ public class DropTargetBar extends LinearLayout implements DragController.DragLi
         setupButtonDropTarget(this, dragController);
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        boolean hideText = hideTextHelper(false /* shouldUpdateText */, false /* no-op */);
+        if (hideTextHelper(true /* shouldUpdateText */, hideText)) {
+            // Text has changed, so we need to re-measure.
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
+    }
+
+    /**
+     * Helper method that iterates through the children and returns whether any of the visible
+     * {@link ButtonDropTarget} has truncated text.
+     *
+     * @param shouldUpdateText If True, updates the text of all children.
+     * @param hideText If True and {@param shouldUpdateText} is True, clears the text of all
+     *                 children; otherwise it sets the original text value.
+     *
+     *
+     * @return If shouldUpdateText is True, returns whether any of the children updated their text.
+     *         Else, returns whether any of the children have truncated their text.
+     */
+    private boolean hideTextHelper(boolean shouldUpdateText, boolean hideText) {
+        boolean result = false;
+        View visibleView;
+        ButtonDropTarget dropTarget;
+        for (int i = getChildCount() - 1; i >= 0; --i) {
+            if (getChildAt(i) instanceof ButtonDropTarget) {
+                visibleView = dropTarget = (ButtonDropTarget) getChildAt(i);
+            } else if (getChildAt(i) instanceof ViewGroup) {
+                // The Drop Target is wrapped in a FrameLayout.
+                visibleView = getChildAt(i);
+                dropTarget = (ButtonDropTarget) ((ViewGroup) visibleView).getChildAt(0);
+            } else {
+                // Ignore other views.
+                continue;
+            }
+
+            if (visibleView.getVisibility() == View.VISIBLE) {
+                if (shouldUpdateText) {
+                    result |= dropTarget.updateText(hideText);
+                } else if (dropTarget.isTextTruncated()) {
+                    result = true;
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
     private void setupButtonDropTarget(View view, DragController dragController) {
         if (view instanceof ButtonDropTarget) {
             ButtonDropTarget bdt = (ButtonDropTarget) view;

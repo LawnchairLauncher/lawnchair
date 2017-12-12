@@ -35,9 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"šířka %1$d, výška %2$d"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Chcete-li položku umístit ručně, klepněte na ni a podržte ji"</string>
     <string name="place_automatically" msgid="8064208734425456485">"Přidat automaticky"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Hledat aplikace"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"Načítání aplikací…"</string>
-    <string name="all_apps_no_search_results" msgid="6332185285860416787">"Dotazu „<xliff:g id="QUERY">%1$s</xliff:g>“ neodpovídají žádné aplikace"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Hledat v aplikacích"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"Načítání aplikací…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"Dotazu „<xliff:g id="QUERY">%1$s</xliff:g>“ neodpovídají žádné aplikace"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Vyhledat další aplikace"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Oznámení"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Na této ploše již není místo."</string>
@@ -70,22 +70,27 @@
     <string name="folder_name_format" msgid="6629239338071103179">"Složka: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widgety"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Tapety"</string>
-    <string name="settings_button_text" msgid="8119458837558863227">"Nastavení"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Nastavení plochy"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Zakázáno administrátorem"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"Přehled"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Povolit otáčení plochy"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Při otočení telefonu"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Aktuální nastavení displeje neumožňuje otáčení"</string>
-    <string name="icon_badging_title" msgid="4418239350706629417">"Odznaky na ikonách"</string>
-    <string name="icon_badging_desc_on" msgid="6022379097717134764">"Zapnuto pro všechny aplikace"</string>
-    <string name="icon_badging_desc_off" msgid="1574640601251590211">"Vypnuto pro všechny aplikace"</string>
+    <string name="icon_badging_title" msgid="874121399231955394">"Puntíky s oznámením"</string>
+    <string name="icon_badging_desc_on" msgid="2627952638544674079">"Zapnuto"</string>
+    <string name="icon_badging_desc_off" msgid="5503319969924580241">"Vypnuto"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"Je třeba udělit přístup k oznámením"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Chcete-li zobrazovat puntíky s oznámením, zapněte oznámení z aplikace <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"Změnit nastavení"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Přidat ikonu na plochu"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Pro nové aplikace"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"Změnit tvar ikony"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Použít výchozí nastavení systému"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_square" msgid="633575066111622774">"Čtverec"</string>
+    <string name="icon_shape_squircle" msgid="5658049910802669495">"Kruh/čtverec"</string>
+    <string name="icon_shape_circle" msgid="6550072265930144217">"Kruh"</string>
+    <string name="icon_shape_teardrop" msgid="4525869388200835463">"Slza"</string>
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Tvar ikony se mění"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Neznámé"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Odstranit"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Hledat"</string>

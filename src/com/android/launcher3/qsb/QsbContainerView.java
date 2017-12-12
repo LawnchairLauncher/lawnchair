@@ -36,15 +36,18 @@ import android.widget.FrameLayout;
 
 import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 
 /**
  * A frame layout which contains a QSB. This internally uses fragment to bind the view, which
  * allows it to contain the logic for {@link Fragment#startActivityForResult(Intent, int)}.
+ *
+ * Note: AppWidgetManagerCompat can be disabled using FeatureFlags. In QSB, we should use
+ * AppWidgetManager directly, so that it keeps working in that case.
  */
 public class QsbContainerView extends FrameLayout {
 
@@ -77,10 +80,15 @@ public class QsbContainerView extends FrameLayout {
         private AppWidgetProviderInfo mWidgetInfo;
         private QsbWidgetHostView mQsb;
 
+        // We need to store the orientation here, due to a bug (b/64916689) that results in widgets
+        // being inflated in the wrong orientation.
+        private int mOrientation;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             mQsbWidgetHost = new QsbWidgetHost(getActivity());
+            mOrientation = getContext().getResources().getConfiguration().orientation;
         }
 
         private FrameLayout mWrapper;
@@ -106,7 +114,7 @@ public class QsbContainerView extends FrameLayout {
                 return QsbWidgetHostView.getDefaultView(container);
             }
 
-            AppWidgetManagerCompat widgetManager = AppWidgetManagerCompat.getInstance(activity);
+            AppWidgetManager widgetManager = AppWidgetManager.getInstance(activity);
             InvariantDeviceProfile idp = LauncherAppState.getIDP(activity);
 
             Bundle opts = new Bundle();
@@ -129,7 +137,8 @@ public class QsbContainerView extends FrameLayout {
                 }
 
                 widgetId = mQsbWidgetHost.allocateAppWidgetId();
-                isWidgetBound = widgetManager.bindAppWidgetIdIfAllowed(widgetId, mWidgetInfo, opts);
+                isWidgetBound = widgetManager.bindAppWidgetIdIfAllowed(
+                        widgetId, mWidgetInfo.getProfile(), mWidgetInfo.provider, opts);
                 if (!isWidgetBound) {
                     mQsbWidgetHost.deleteAppWidgetId(widgetId);
                     widgetId = -1;
@@ -190,7 +199,7 @@ public class QsbContainerView extends FrameLayout {
         @Override
         public void onResume() {
             super.onResume();
-            if (mQsb != null && mQsb.isReinflateRequired()) {
+            if (mQsb != null && mQsb.isReinflateRequired(mOrientation)) {
                 rebindFragment();
             }
         }

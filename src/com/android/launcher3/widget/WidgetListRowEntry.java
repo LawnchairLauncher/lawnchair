@@ -41,4 +41,8 @@ public class WidgetListRowEntry {
         this.widgets = items;
     }
 
+    @Override
+    public String toString() {
+        return pkgItem.packageName + ":" + widgets.size();
+    }
 }

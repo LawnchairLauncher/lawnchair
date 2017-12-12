@@ -28,15 +28,13 @@ import android.graphics.drawable.Drawable;
 import android.os.Process;
 import android.os.UserHandle;
 import android.support.annotation.UiThread;
+import android.util.ArrayMap;
 import android.util.Log;
-
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsBackgroundDrawable;
-
-import java.util.HashMap;
 
 /**
  * Factory for creating new drawables.
@@ -61,7 +59,7 @@ public class DrawableFactory {
     }
 
     protected final UserHandle mMyUser = Process.myUserHandle();
-    protected final HashMap<UserHandle, Bitmap> mUserBadges = new HashMap<>();
+    protected final ArrayMap<UserHandle, Bitmap> mUserBadges = new ArrayMap<>();
 
     /**
      * Returns a FastBitmapDrawable with the icon.
@@ -82,7 +80,7 @@ public class DrawableFactory {
 
 
     protected Path getPreloadProgressPath(Context context) {
-        if (Utilities.isAtLeastO()) {
+        if (Utilities.ATLEAST_OREO) {
             try {
                 // Try to load the path from Mask Icon
                 Drawable icon = context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper);

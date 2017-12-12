@@ -50,8 +50,7 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
         if ((host.getParent() instanceof DeepShortcutView)) {
             info.addAction(mActions.get(ADD_TO_WORKSPACE));
         } else if (host instanceof NotificationMainView) {
-            NotificationMainView notificationView = (NotificationMainView) host;
-            if (notificationView.canChildBeDismissed(notificationView)) {
+            if (((NotificationMainView) host).canChildBeDismissed()) {
                 info.addAction(mActions.get(DISMISS_NOTIFICATION));
             }
         }
@@ -74,7 +73,7 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
                             screenId, coordinates[0], coordinates[1]);
                     ArrayList<ItemInfo> itemList = new ArrayList<>();
                     itemList.add(info);
-                    mLauncher.bindItems(itemList, 0, itemList.size(), true);
+                    mLauncher.bindItems(itemList, true);
                     AbstractFloatingView.closeAllOpenViews(mLauncher);
                     announceConfirmation(R.string.item_added_to_workspace);
                 }
@@ -88,8 +87,7 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
             if (!(host instanceof NotificationMainView)) {
                 return false;
             }
-            NotificationMainView notificationView = (NotificationMainView) host;
-            notificationView.onChildDismissed(notificationView);
+            ((NotificationMainView) host).onChildDismissed();
             announceConfirmation(R.string.notification_dismissed);
             return true;
         }

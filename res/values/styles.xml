@@ -25,9 +25,62 @@
         <item name="android:windowShowWallpaper">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:colorEdgeEffect">#FF757575</item>
+        <item name="android:keyboardLayout">@layout/search_container_all_apps</item>
     </style>
 
-    <style name="LauncherTheme" parent="@style/BaseLauncherTheme"></style>
+    <style name="BaseLauncherThemeWithCustomAttrs" parent="@style/BaseLauncherTheme">
+        <item name="allAppsScrimColor">#CCFFFFFF</item>
+        <item name="allAppsNavBarScrimColor">#66FFFFFF</item>
+        <item name="popupColorPrimary">#FFF</item>
+        <item name="popupColorSecondary">#F5F5F5</item> <!-- Gray 100 -->
+        <item name="popupColorTertiary">#E0E0E0</item> <!-- Gray 300 -->
+        <item name="isMainColorDark">false</item>
+        <item name="isWorkspaceDarkText">false</item>
+        <item name="workspaceTextColor">@android:color/white</item>
+        <item name="workspaceShadowColor">#B0000000</item>
+        <item name="workspaceAmbientShadowColor">#33000000</item>
+        <item name="workspaceKeyShadowColor">#44000000</item>
+        <item name="workspaceStatusBarScrim">@drawable/workspace_bg</item>
+        <item name="widgetsTheme">@style/WidgetContainerTheme</item>
+    </style>
+
+    <style name="LauncherTheme" parent="@style/BaseLauncherThemeWithCustomAttrs"></style>
+
+    <style name="LauncherThemeDarkText" parent="@style/LauncherTheme">
+        <item name="workspaceTextColor">#FF212121</item>
+        <item name="workspaceShadowColor">@android:color/transparent</item>
+        <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
+        <item name="workspaceKeyShadowColor">@android:color/transparent</item>
+        <item name="isWorkspaceDarkText">true</item>
+        <item name="workspaceStatusBarScrim">@null</item>
+    </style>
+
+    <style name="LauncherThemeDark" parent="@style/LauncherTheme">
+        <item name="android:textColorPrimary">#FFFFFFFF</item>
+        <item name="android:textColorSecondary">#FFFFFFFF</item>
+        <item name="android:textColorTertiary">#CCFFFFFF</item>
+        <item name="android:textColorHint">#A0FFFFFF</item>
+        <item name="android:colorControlHighlight">#A0FFFFFF</item>
+        <item name="android:colorPrimary">#FF333333</item>
+        <item name="allAppsScrimColor">#7A212121</item>
+        <item name="allAppsNavBarScrimColor">#80000000</item>
+        <item name="popupColorPrimary">?android:attr/colorPrimary</item>
+        <item name="popupColorSecondary">#424242</item> <!-- Gray 800 -->
+        <item name="popupColorTertiary">#757575</item> <!-- Gray 600 -->
+        <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
+        <item name="isMainColorDark">true</item>
+    </style>
+
+    <!--
+    Theme overrides to element on homescreen, i.e., which are drawn on top on wallpaper.
+    Various foreground colors are overridden to be workspaceTextColor so that they are properly
+    visible on various wallpapers.
+    -->
+    <style name="HomeScreenElementTheme">
+        <item name="android:colorEdgeEffect">?attr/workspaceTextColor</item>
+        <item name="android:textColorPrimary">?attr/workspaceTextColor</item>
+        <item name="android:textColorSecondary">?attr/workspaceTextColor</item>
+    </style>
 
     <!-- Theme for the widget container. Overridden on API 26. -->
     <style name="WidgetContainerTheme" parent="@android:style/Theme.DeviceDefault.Settings">
@@ -36,24 +89,20 @@
         <item name="android:textColorSecondary">?android:attr/textColorSecondaryInverse</item>
     </style>
 
+    <style name="WidgetContainerTheme.Dark" />
+
     <style name="FastScrollerPopup" >
-        <item name="android:background">@drawable/container_fastscroll_popup_bg</item>
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:minWidth">@dimen/container_fastscroll_popup_size</item>
-        <item name="android:layout_height">@dimen/container_fastscroll_popup_size</item>
-        <item name="android:textSize">@dimen/container_fastscroll_popup_text_size</item>
+        <item name="android:minWidth">@dimen/fastscroll_popup_width</item>
+        <item name="android:layout_height">@dimen/fastscroll_popup_height</item>
+        <item name="android:textSize">@dimen/fastscroll_popup_text_size</item>
+        <item name="android:paddingEnd">@dimen/fastscroll_popup_padding</item>
         <item name="android:gravity">center</item>
         <item name="android:alpha">0</item>
         <item name="android:elevation">3dp</item>
         <item name="android:saveEnabled">false</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:includeFontPadding">false</item>
-    </style>
-
-    <!-- Style for nav bar background in all-apps screen -->
-    <style name="AllAppsNavBarProtection">
-        <item name="android:alpha">?android:attr/spotShadowAlpha</item>
-        <item name="android:background">@color/default_shadow_color_no_alpha</item>
     </style>
 
     <!-- Base theme for BubbleTextView and sub classes -->
@@ -70,15 +119,29 @@
 
         <!-- No shadows in the base theme -->
         <item name="android:shadowRadius">0</item>
-        <item name="customShadows">false</item>
     </style>
 
     <!-- Icon displayed on the worksapce -->
     <style name="BaseIcon.Workspace">
-        <item name="customShadows">true</item>
-        <item name="android:textColor">@color/workspace_icon_text_color</item>
         <item name="android:shadowRadius">2.0</item>
-        <item name="android:shadowColor">#B0000000</item>
+        <item name="android:shadowColor">?attr/workspaceShadowColor</item>
+        <item name="ambientShadowColor">?attr/workspaceAmbientShadowColor</item>
+        <item name="ambientShadowBlur">2.5dp</item>
+        <item name="keyShadowColor">?attr/workspaceKeyShadowColor</item>
+        <item name="keyShadowBlur">1dp</item>
+        <item name="keyShadowOffset">.5dp</item>
+    </style>
+
+    <!-- Theme for the popup container -->
+    <style name="PopupItem">
+        <item name="android:colorControlHighlight">?attr/popupColorTertiary</item>
+    </style>
+    <style name="PopupGutter">
+        <item name="android:backgroundTintMode">multiply</item>
+        <item name="android:backgroundTint">?attr/popupColorSecondary</item>
+        <item name="android:background">@drawable/gutter_horizontal</item>
+        <item name="android:elevation">@dimen/notification_elevation</item>
+        <item name="android:outlineProvider">none</item>
     </style>
 
     <!-- Drop targets -->
@@ -86,15 +149,30 @@
         <item name="android:drawablePadding">7.5dp</item>
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
-        <item name="android:textColor">@color/workspace_icon_text_color</item>
+        <item name="android:textColor">?attr/workspaceTextColor</item>
         <item name="android:textSize">@dimen/drop_target_text_size</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:shadowColor">@color/default_shadow_color_no_alpha</item>
+        <item name="android:shadowColor">?attr/workspaceShadowColor</item>
         <item name="android:shadowDx">0.0</item>
         <item name="android:shadowDy">1.0</item>
         <item name="android:shadowRadius">4.0</item>
     </style>
 
     <style name="DropTargetButton" parent="DropTargetButtonBase" />
+
+    <style name="TextTitle">
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="AllAppsEmptySearchBackground">
+        <item name="android:colorPrimary">#E0E0E0</item>
+        <item name="android:colorControlHighlight">#BDBDBD</item>
+        <item name="android:colorForeground">@color/all_apps_bg_hand_fill</item>
+    </style>
+    <style name="AllAppsEmptySearchBackground.Dark">
+        <item name="android:colorPrimary">#9AA0A6</item>
+        <item name="android:colorControlHighlight">#DFE1E5</item>
+        <item name="android:colorForeground">@color/all_apps_bg_hand_fill_dark</item>
+    </style>
 </resources>

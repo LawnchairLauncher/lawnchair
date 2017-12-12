@@ -35,9 +35,9 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d á breidd og %2$d á hæð"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Haltu inni til að staðsetja handvirkt"</string>
     <string name="place_automatically" msgid="8064208734425456485">"Bæta sjálfkrafa við"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Leita í forritum"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"Hleður forrit…"</string>
-    <string name="all_apps_no_search_results" msgid="6332185285860416787">"Ekki fundust forrit sem samsvara „<xliff:g id="QUERY">%1$s</xliff:g>“"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Leita í forritum"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"Hleður forrit…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"Ekki fundust forrit sem samsvara „<xliff:g id="QUERY">%1$s</xliff:g>“"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Leita að fleiri forritum"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Tilkynningar"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Ekki meira pláss á þessum heimaskjá."</string>
@@ -70,22 +70,27 @@
     <string name="folder_name_format" msgid="6629239338071103179">"Mappa: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Græjur"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Veggfóður"</string>
-    <string name="settings_button_text" msgid="8119458837558863227">"Stillingar"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Heimastillingar"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Gert óvirkt af kerfisstjóra"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"Yfirlit"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Leyfa snúning fyrir heimaskjá"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Þegar símanum er snúið"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Núverandi skjástilling leyfir ekki snúning"</string>
-    <string name="icon_badging_title" msgid="4418239350706629417">"Merking á skjöldum"</string>
-    <string name="icon_badging_desc_on" msgid="6022379097717134764">"Virkt fyrir öll forrit"</string>
-    <string name="icon_badging_desc_off" msgid="1574640601251590211">"Slökkt fyrir öll forrit"</string>
+    <string name="icon_badging_title" msgid="874121399231955394">"Tilkynningapunktar"</string>
+    <string name="icon_badging_desc_on" msgid="2627952638544674079">"Kveikt"</string>
+    <string name="icon_badging_desc_off" msgid="5503319969924580241">"Slökkt"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"Aðgangs að tilkynningum er krafist"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Til að sýna tilkynningarpunkta skaltu kveikja á forritstilkynningum fyrir <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"Breyta stillingum"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Bæta tákni á heimaskjáinn"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Fyrir ný forrit"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"Breyta formi tákns"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Nota sjálfgildi kerfis"</string>
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_square" msgid="633575066111622774">"Ferningur"</string>
+    <string name="icon_shape_squircle" msgid="5658049910802669495">"Ferhringur"</string>
+    <string name="icon_shape_circle" msgid="6550072265930144217">"Hringur"</string>
+    <string name="icon_shape_teardrop" msgid="4525869388200835463">"Dropi"</string>
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Breytir formi tákns"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Óþekkt"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Fjarlægja"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Leita"</string>

@@ -21,7 +21,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
-import android.util.Log;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -31,7 +30,6 @@ import com.android.launcher3.model.GridSizeMigrationTask;
 import com.android.launcher3.util.LongArrayMap;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * An extension of {@link GridSizeMigrationTask} which migrates only one screen and

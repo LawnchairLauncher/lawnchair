@@ -16,11 +16,7 @@
 package com.android.launcher3.allapps;
 
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
-import com.android.launcher3.BaseRecyclerViewFastScrollBar;
-import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.util.Thunk;
 
 import java.util.HashSet;
@@ -210,7 +206,9 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
         for (RecyclerView.ViewHolder viewHolder : mTrackedFastScrollViews) {
             int pos = viewHolder.getAdapterPosition();
             boolean isActive = false;
-            if (mCurrentFastScrollSection != null && pos > -1) {
+            if (mCurrentFastScrollSection != null
+                    && pos > RecyclerView.NO_POSITION
+                    && pos < mApps.getAdapterItems().size()) {
                 AlphabeticalAppsList.AdapterItem item = mApps.getAdapterItems().get(pos);
                 isActive = item != null &&
                         mCurrentFastScrollSection.equals(item.sectionName) &&

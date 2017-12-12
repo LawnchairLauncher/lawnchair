@@ -86,6 +86,12 @@
             android:permission="android.permission.BIND_JOB_SERVICE">
         </service>
 
+        <service
+            android:name="com.android.launcher3.compat.WallpaperManagerCompatVL$ColorExtractionService"
+            android:exported="false"
+            android:process=":wallpaper_chooser"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
         <service android:name="com.android.launcher3.notification.NotificationListener"
                  android:enabled="@bool/notification_badging_enabled"
                  android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">

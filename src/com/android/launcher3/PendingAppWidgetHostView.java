@@ -80,10 +80,13 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         updateAppWidget(null);
         setOnClickListener(mLauncher);
 
-        // Load icon
-        PackageItemInfo item = new PackageItemInfo(info.providerName.getPackageName());
-        item.user = info.user;
-        cache.updateIconInBackground(this, item);
+        if (info.pendingItemInfo == null) {
+            info.pendingItemInfo = new PackageItemInfo(info.providerName.getPackageName());
+            info.pendingItemInfo.user = info.user;
+            cache.updateIconInBackground(this, info.pendingItemInfo);
+        } else {
+            reapplyItemInfo(info.pendingItemInfo);
+        }
     }
 
     @Override
@@ -108,7 +111,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     }
 
     @Override
-    public boolean isReinflateRequired() {
+    public boolean isReinflateRequired(int orientation) {
         // Re inflate is required any time the widget restore status changes
         return mStartState != mInfo.restoreStatus;
     }

@@ -30,23 +30,20 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.util.Pair;
 import android.util.Patterns;
-
 import com.android.launcher3.LauncherProvider.SqlArguments;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.util.Thunk;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Locale;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Layout parsing code for auto installs layout
@@ -83,7 +80,7 @@ public class AutoInstallsLayout {
 
         // Try with grid size and hotseat count
         String layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES_WITH_HOSTEAT,
-                (int) grid.numColumns, (int) grid.numRows, (int) grid.numHotseatIcons);
+            grid.numColumns, grid.numRows, grid.numHotseatIcons);
         int layoutId = targetRes.getIdentifier(layoutName, "xml", pkg);
 
         // Try with only grid size
@@ -91,7 +88,7 @@ public class AutoInstallsLayout {
             Log.d(TAG, "Formatted layout: " + layoutName
                     + " not found. Trying layout without hosteat");
             layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES,
-                    (int) grid.numColumns, (int) grid.numRows);
+                grid.numColumns, grid.numRows);
             layoutId = targetRes.getIdentifier(layoutName, "xml", pkg);
         }
 
@@ -209,7 +206,7 @@ public class AutoInstallsLayout {
         beginDocument(parser, mRootTag);
         final int depth = parser.getDepth();
         int type;
-        HashMap<String, TagParser> tagParserMap = getLayoutElementsMap();
+        ArrayMap<String, TagParser> tagParserMap = getLayoutElementsMap();
         int count = 0;
 
         while (((type = parser.next()) != XmlPullParser.END_TAG ||
@@ -243,10 +240,10 @@ public class AutoInstallsLayout {
      * Parses the current node and returns the number of elements added.
      */
     protected int parseAndAddNode(
-            XmlResourceParser parser,
-            HashMap<String, TagParser> tagParserMap,
-            ArrayList<Long> screenIds)
-                    throws XmlPullParserException, IOException {
+        XmlResourceParser parser,
+        ArrayMap<String, TagParser> tagParserMap,
+        ArrayList<Long> screenIds)
+        throws XmlPullParserException, IOException {
 
         if (TAG_INCLUDE.equals(parser.getName())) {
             final int resId = getAttributeResourceValue(parser, ATTR_WORKSPACE, 0);
@@ -303,16 +300,16 @@ public class AutoInstallsLayout {
         }
     }
 
-    protected HashMap<String, TagParser> getFolderElementsMap() {
-        HashMap<String, TagParser> parsers = new HashMap<String, TagParser>();
+    protected ArrayMap<String, TagParser> getFolderElementsMap() {
+        ArrayMap<String, TagParser> parsers = new ArrayMap<>();
         parsers.put(TAG_APP_ICON, new AppShortcutParser());
         parsers.put(TAG_AUTO_INSTALL, new AutoInstallParser());
         parsers.put(TAG_SHORTCUT, new ShortcutParser(mSourceRes));
         return parsers;
     }
 
-    protected HashMap<String, TagParser> getLayoutElementsMap() {
-        HashMap<String, TagParser> parsers = new HashMap<String, TagParser>();
+    protected ArrayMap<String, TagParser> getLayoutElementsMap() {
+        ArrayMap<String, TagParser> parsers = new ArrayMap<>();
         parsers.put(TAG_APP_ICON, new AppShortcutParser());
         parsers.put(TAG_AUTO_INSTALL, new AutoInstallParser());
         parsers.put(TAG_FOLDER, new FolderParser());
@@ -393,7 +390,7 @@ public class AutoInstallsLayout {
                 return -1;
             }
 
-            mValues.put(Favorites.RESTORED, ShortcutInfo.FLAG_AUTOINTALL_ICON);
+            mValues.put(Favorites.RESTORED, ShortcutInfo.FLAG_AUTOINSTALL_ICON);
             final Intent intent = new Intent(Intent.ACTION_MAIN, null)
                 .addCategory(Intent.CATEGORY_LAUNCHER)
                 .setComponent(new ComponentName(packageName, className))
@@ -528,13 +525,13 @@ public class AutoInstallsLayout {
     }
 
     protected class FolderParser implements TagParser {
-        private final HashMap<String, TagParser> mFolderElements;
+        private final ArrayMap<String, TagParser> mFolderElements;
 
         public FolderParser() {
             this(getFolderElementsMap());
         }
 
-        public FolderParser(HashMap<String, TagParser> elements) {
+        public FolderParser(ArrayMap<String, TagParser> elements) {
             mFolderElements = elements;
         }
 
@@ -561,7 +558,7 @@ public class AutoInstallsLayout {
             }
 
             final ContentValues myValues = new ContentValues(mValues);
-            ArrayList<Long> folderItems = new ArrayList<Long>();
+            ArrayList<Long> folderItems = new ArrayList<>();
 
             int type;
             int folderDepth = parser.getDepth();
@@ -617,7 +614,7 @@ public class AutoInstallsLayout {
         }
     }
 
-    protected static final void beginDocument(XmlPullParser parser, String firstElementName)
+    protected static void beginDocument(XmlPullParser parser, String firstElementName)
             throws XmlPullParserException, IOException {
         int type;
         while ((type = parser.next()) != XmlPullParser.START_TAG
@@ -671,7 +668,7 @@ public class AutoInstallsLayout {
         return value;
     }
 
-    public static interface LayoutParserCallback {
+    public interface LayoutParserCallback {
         long generateNewItemId();
 
         long insertAndCheck(SQLiteDatabase db, ContentValues values);

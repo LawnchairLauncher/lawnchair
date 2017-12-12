@@ -27,6 +27,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.util.LogConfig;
 
 import java.io.InvalidObjectException;
@@ -47,16 +48,13 @@ public class RestoreDbTask {
 
     public static boolean performRestore(DatabaseHelper helper) {
         SQLiteDatabase db = helper.getWritableDatabase();
-        db.beginTransaction();
-        try {
+        try (SQLiteTransaction t = new SQLiteTransaction(db)) {
             new RestoreDbTask().sanitizeDB(helper, db);
-            db.setTransactionSuccessful();
+            t.commit();
             return true;
         } catch (Exception e) {
             FileLog.e(TAG, "Failed to verify db", e);
             return false;
-        } finally {
-            db.endTransaction();
         }
     }
 
@@ -136,7 +134,7 @@ public class RestoreDbTask {
     }
 
     public static void setPending(Context context, boolean isPending) {
-        FileLog.d(TAG, "Restore data received through full backup");
+        FileLog.d(TAG, "Restore data received through full backup " + isPending);
         Utilities.getPrefs(context).edit().putBoolean(RESTORE_TASK_PENDING, isPending).commit();
     }
 }

@@ -15,75 +15,75 @@
  */
 package com.android.launcher3.ui.widget;
 
-import android.app.Activity;
-import android.app.Application;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
+import android.support.test.filters.LargeTest;
+import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.UiObject2;
-import android.test.suitebuilder.annotation.LargeTest;
 import android.view.View;
 
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.testcomponent.WidgetConfigActivity;
-import com.android.launcher3.ui.LauncherInstrumentationTestCase;
+import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.util.Condition;
-import com.android.launcher3.util.SimpleActivityMonitor;
 import com.android.launcher3.util.Wait;
+import com.android.launcher3.util.rule.LauncherActivityRule;
+import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.widget.WidgetCell;
 
-import java.util.concurrent.Callable;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test to verify widget configuration is properly shown.
  */
 @LargeTest
-public class AddConfigWidgetTest extends LauncherInstrumentationTestCase {
+@RunWith(AndroidJUnit4.class)
+public class AddConfigWidgetTest extends AbstractLauncherUiTest {
+
+    @Rule public LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
+    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grandWidgetBind();
 
     private LauncherAppWidgetProviderInfo mWidgetInfo;
-    private SimpleActivityMonitor mActivityMonitor;
-    private MainThreadExecutor mMainThreadExecutor;
     private AppWidgetManager mAppWidgetManager;
 
     private int mWidgetId;
 
     @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         mWidgetInfo = findWidgetProvider(true /* hasConfigureScreen */);
-        mActivityMonitor = new SimpleActivityMonitor();
-        ((Application) getInstrumentation().getTargetContext().getApplicationContext())
-                .registerActivityLifecycleCallbacks(mActivityMonitor);
-        mMainThreadExecutor = new MainThreadExecutor();
         mAppWidgetManager = AppWidgetManager.getInstance(mTargetContext);
-
-        grantWidgetPermission();
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        ((Application) getInstrumentation().getTargetContext().getApplicationContext())
-                .unregisterActivityLifecycleCallbacks(mActivityMonitor);
-        super.tearDown();
-    }
-
+    @Test
     public void testWidgetConfig() throws Throwable {
         runTest(false, true);
     }
 
+    @Test
     public void testWidgetConfig_rotate() throws Throwable {
         runTest(true, true);
     }
 
+    @Test
     public void testConfigCancelled() throws Throwable {
         runTest(false, false);
     }
 
+    @Test
     public void testConfigCancelled_rotate() throws Throwable {
         runTest(true, false);
     }
@@ -96,7 +96,7 @@ public class AddConfigWidgetTest extends LauncherInstrumentationTestCase {
         lockRotation(true);
 
         clearHomescreen();
-        startLauncher();
+        mActivityMonitor.startLauncher();
 
         // Open widget tray and wait for load complete.
         final UiObject2 widgetContainer = openWidgetsTray();
@@ -146,11 +146,11 @@ public class AddConfigWidgetTest extends LauncherInstrumentationTestCase {
      * Condition for searching widget id
      */
     private class WidgetSearchCondition extends Condition
-            implements Callable<Boolean>, Workspace.ItemOperator {
+            implements Workspace.ItemOperator {
 
         @Override
         public boolean isTrue() throws Throwable {
-            return mMainThreadExecutor.submit(this).get();
+            return mMainThreadExecutor.submit(mActivityMonitor.itemExists(this)).get();
         }
 
         @Override
@@ -158,21 +158,6 @@ public class AddConfigWidgetTest extends LauncherInstrumentationTestCase {
             return info instanceof LauncherAppWidgetInfo &&
                     ((LauncherAppWidgetInfo) info).providerName.equals(mWidgetInfo.provider) &&
                     ((LauncherAppWidgetInfo) info).appWidgetId == mWidgetId;
-        }
-
-        @Override
-        public Boolean call() throws Exception {
-            // Find the resumed launcher
-            Launcher launcher = null;
-            for (Activity a : mActivityMonitor.resumed) {
-                if (a instanceof Launcher) {
-                    launcher = (Launcher) a;
-                }
-            }
-            if (launcher == null) {
-                return false;
-            }
-            return launcher.getWorkspace().getFirstMatch(this) != null;
         }
     }
 

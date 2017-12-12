@@ -62,7 +62,7 @@ public abstract class BaseContainerView extends FrameLayout
     public BaseContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && this instanceof AllAppsContainerView) {
+        if (this instanceof AllAppsContainerView) {
             mBaseDrawable = new ColorDrawable();
         } else {
             TypedArray a = context.obtainStyledAttributes(attrs,
@@ -113,20 +113,18 @@ public abstract class BaseContainerView extends FrameLayout
      * Calculate the background padding as it can change due to insets/content padding change.
      */
     private void updatePaddings() {
-        Context context = getContext();
-        int paddingLeft;
-        int paddingRight;
-        int paddingTop;
-        int paddingBottom;
-
-        DeviceProfile grid = Launcher.getLauncher(context).getDeviceProfile();
+        DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
         int[] padding = grid.getContainerPadding();
-        paddingLeft = padding[0] + grid.edgeMarginPx;
-        paddingRight = padding[1] + grid.edgeMarginPx;
+
+        int paddingLeft = padding[0];
+        int paddingRight = padding[1];
+        int paddingTop = 0;
+        int paddingBottom = 0;
+
         if (!grid.isVerticalBarLayout()) {
+            paddingLeft += grid.edgeMarginPx;
+            paddingRight += grid.edgeMarginPx;
             paddingTop = paddingBottom = grid.edgeMarginPx;
-        } else {
-            paddingTop = paddingBottom = 0;
         }
         updateBackground(paddingLeft, paddingTop, paddingRight, paddingBottom);
     }

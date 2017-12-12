@@ -16,12 +16,6 @@
 
 package com.android.launcher3.folder;
 
-import android.view.View;
-
-import com.android.launcher3.folder.FolderIcon.PreviewItemDrawingParams;
-
-import java.util.List;
-
 public class StackFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
 
     static final int MAX_NUM_ITEMS_IN_PREVIEW = 3;
@@ -39,7 +33,7 @@ public class StackFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
     private float mMaxPerspectiveShift;
 
     @Override
-    public void init(int availableSpace, int intrinsicIconSize, boolean rtl) {
+    public void init(int availableSpace, float intrinsicIconSize, boolean rtl) {
         mAvailableSpaceInPreview = availableSpace;
 
         // cos(45) = 0.707  + ~= 0.1) = 0.8f
@@ -87,6 +81,11 @@ public class StackFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
     }
 
     @Override
+    public float getIconSize() {
+        return mBaselineIconSize;
+    }
+
+    @Override
     public float scaleForItem(int index, int numItems) {
         // Scale is determined by the position of the icon in the preview.
         index = MAX_NUM_ITEMS_IN_PREVIEW - index - 1;
@@ -100,8 +99,17 @@ public class StackFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
     }
 
     @Override
-    public List<View> getItemsToDisplay(Folder folder) {
-        List<View> items = folder.getItemsInReadingOrder();
-        return items.subList(0, Math.min(items.size(), MAX_NUM_ITEMS_IN_PREVIEW));
+    public boolean hasEnterExitIndices() {
+        return false;
+    }
+
+    @Override
+    public int getExitIndex() {
+        throw new RuntimeException("hasEnterExitIndices not supported");
+    }
+
+    @Override
+    public int getEnterIndex() {
+        throw new RuntimeException("hasEnterExitIndices not supported");
     }
 }

@@ -16,7 +16,22 @@
 */
 -->
 
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Attributes used for launcher theme -->
+    <attr name="allAppsScrimColor" format="color" />
+    <attr name="allAppsNavBarScrimColor" format="color" />
+    <attr name="popupColorPrimary" format="color" />
+    <attr name="popupColorSecondary" format="color" />
+    <attr name="popupColorTertiary" format="color" />
+    <attr name="isMainColorDark" format="boolean" />
+    <attr name="isWorkspaceDarkText" format="boolean" />
+    <attr name="workspaceTextColor" format="color" />
+    <attr name="workspaceShadowColor" format="color" />
+    <attr name="workspaceAmbientShadowColor" format="color"/>
+    <attr name="workspaceKeyShadowColor" format="color" />
+    <attr name="workspaceStatusBarScrim" format="reference" />
+    <attr name="widgetsTheme" format="reference" />
 
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="BubbleTextView">
@@ -30,8 +45,15 @@
             <enum name="shortcut_popup" value="4" />
         </attr>
         <attr name="deferShadowGeneration" format="boolean" />
-        <attr name="customShadows" format="boolean" />
         <attr name="centerVertically" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="ShadowInfo">
+        <attr name="ambientShadowColor" format="color" />
+        <attr name="ambientShadowBlur" format="dimension" />
+        <attr name="keyShadowColor" format="color" />
+        <attr name="keyShadowBlur" format="dimension" />
+        <attr name="keyShadowOffset" format="dimension" />
     </declare-styleable>
 
     <!-- PagedView specific attributes. These attributes are used to customize
@@ -96,11 +118,12 @@
         <attr name="numHotseatIcons" format="integer" />
 
         <attr name="iconSize" format="float" />
+        <!-- landscapeIconSize defaults to iconSize, if not specified -->
+        <attr name="landscapeIconSize" format="float" />
         <attr name="iconTextSize" format="float" />
-        <!-- hotseatIconSize defaults to iconSize, if not specified -->
-        <attr name="hotseatIconSize" format="float" />
 
         <attr name="defaultLayoutId" format="reference" />
+        <attr name="demoModeLayoutId" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="CellLayout">
@@ -111,4 +134,14 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="ShadowDrawable">
+        <attr name="android:src" />
+        <attr name="android:shadowColor" />
+        <attr name="android:elevation" />
+        <attr name="darkTintColor" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="RecyclerViewFastScroller">
+        <attr name="canThumbDetach" format="boolean" />
+    </declare-styleable>
 </resources>
