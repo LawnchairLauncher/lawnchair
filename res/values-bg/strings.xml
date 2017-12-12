@@ -129,4 +129,9 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> преки пътища и <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> известия за <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Отхвърляне"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Известието е отхвърлено"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Лични"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"Служебни"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Служебен потребителски профил"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Тук можете да намерите служебните приложения"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"Всяко служебно приложение има оранжева значка. Тя означава, че организацията ви се грижи за сигурността му. За по-лесен достъп до служебните приложения можете да ги преместите на началния екран."</string>
 </resources>

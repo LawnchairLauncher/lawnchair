@@ -131,6 +131,7 @@
     <string name="notification_dismissed" msgid="6002233469409822874">"اعلان رد شد"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"شخصی"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"محل کار"</string>
-    <!-- no translation found for work_profile_toggle_label (3081029915775481146) -->
-    <skip />
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"نمایه کاری"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"اینجا برنامه‌های کاری را پیدا کنید"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"همه برنامه‌های کاری نشان نارنجی‌رنگی دارند؛ به این معنی که برنامه توسط سازمان شما امن نگه داشته می‌شود. برنامه‌های کاری می‌توانند برای دسترسی آسان‌تر به صفحه اصلی شما منتقل شوند."</string>
 </resources>

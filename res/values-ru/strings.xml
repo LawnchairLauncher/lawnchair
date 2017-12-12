@@ -129,4 +129,9 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"Количество ярлыков для приложения \"<xliff:g id="APP_NAME">%3$s</xliff:g>\": <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>. Количество уведомлений: <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g>."</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Закрыть"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Уведомление закрыто"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Личные"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"Рабочие"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Рабочий профиль"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Приложения для работы"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"Рабочие приложения отмечены оранжевым значком, который подтверждает, что ваша организация гарантирует их безопасность. Для удобства вы можете перенести эти приложения на главный экран."</string>
 </resources>

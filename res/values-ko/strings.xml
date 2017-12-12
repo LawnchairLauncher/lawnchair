@@ -129,4 +129,9 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"바로가기 <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>개 및 <xliff:g id="APP_NAME">%3$s</xliff:g> 알림 <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g>개"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"닫기"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"알림이 해제되었습니다."</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"개인"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"직장"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"직장 프로필"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"여기에서 업무용 앱 찾기"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"각 업무용 앱에는 주황색 배지가 있으며 이는 조직에서 안전하게 보호함을 의미합니다. 업무용 앱은 홈 화면으로 이동하여 더 간편하게 사용할 수 있습니다."</string>
 </resources>

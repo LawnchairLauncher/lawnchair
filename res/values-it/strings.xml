@@ -132,4 +132,6 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personali"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Lavoro"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profilo di lavoro"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Qui puoi trovare le tue app di lavoro"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"Ogni app di lavoro è contrassegnata da un badge arancione, che indica che è protetta dalla tua organizzazione. Le app di lavoro possono essere spostate sulla schermata Home per accedervi più facilmente."</string>
 </resources>

@@ -129,4 +129,9 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> కోసం <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> సత్వరమార్గాలు మరియు <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> నోటిఫికేషన్‌లు"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"తీసివేయి"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"నోటిఫికేషన్ తీసివేయబడింది"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"వ్యక్తిగతం"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"కార్యాలయం"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"కార్యాలయ ప్రొఫైల్"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"కార్యాలయ యాప్‌లను ఇక్కడ కనుగొనండి"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"ప్రతి కార్యాలయ యాప్‌కు నారింజ బ్యాడ్జ్‌ ఉంది, అంటే ఇది మీ సంస్థ ద్వారా సురక్షితంగా ఉంచబడుతుంది. సులభ యాక్సెస్ కోసం కార్యాలయ యాప్‌లు, మీ హోమ్ స్క్రీన్‌కి తరలించబడవచ్చు."</string>
 </resources>
