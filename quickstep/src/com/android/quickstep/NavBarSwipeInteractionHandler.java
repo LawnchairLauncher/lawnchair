@@ -320,5 +320,9 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
 
     private void onAnimationToLauncherComplete() {
         mDragView.close(false);
+        View currentRecentsPage = mRecentsView.getPageAt(mRecentsView.getCurrentPage());
+        if (currentRecentsPage instanceof TaskView) {
+            ((TaskView) currentRecentsPage).animateIconToScale(1f);
+        }
     }
 }
