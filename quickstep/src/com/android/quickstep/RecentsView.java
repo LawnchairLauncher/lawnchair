@@ -146,6 +146,9 @@ public class RecentsView extends PagedView {
     public void update(RecentsTaskLoadPlan loadPlan) {
         final RecentsTaskLoader loader = TouchInteractionService.getRecentsTaskLoader();
         setCurrentPage(0);
+        if (getPageAt(mCurrentPage) instanceof TaskView) {
+            ((TaskView) getPageAt(mCurrentPage)).setIconScale(0);
+        }
         TaskStack stack = loadPlan != null ? loadPlan.getTaskStack() : null;
         if (stack == null) {
             removeAllViews();

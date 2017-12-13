@@ -59,6 +59,8 @@ public class TaskView extends FrameLayout implements TaskCallbacks, SwipeDetecto
      */
     private static final float SWIPE_DISTANCE_HEIGHT_PERCENTAGE = 0.38f;
 
+    private static final long SCALE_ICON_DURATION = 120;
+
     private static final Property<TaskView, Float> PROPERTY_SWIPE_PROGRESS =
             new Property<TaskView, Float>(Float.class, "swipe_progress") {
 
@@ -73,6 +75,19 @@ public class TaskView extends FrameLayout implements TaskCallbacks, SwipeDetecto
                 }
             };
 
+    private static final Property<TaskView, Float> SCALE_ICON_PROPERTY =
+            new Property<TaskView, Float>(Float.TYPE, "scale_icon") {
+                @Override
+                public Float get(TaskView taskView) {
+                    return taskView.mIconScale;
+                }
+
+                @Override
+                public void set(TaskView taskView, Float iconScale) {
+                    taskView.setIconScale(iconScale);
+                }
+            };
+
     private Task mTask;
     private TaskThumbnailView mSnapshotView;
     private ImageView mIconView;
@@ -81,6 +96,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, SwipeDetecto
     private float mSwipeProgress;
     private Interpolator mAlphaInterpolator;
     private Interpolator mSwipeAnimInterpolator;
+    private float mIconScale = 1f;
 
     public TaskView(Context context) {
         this(context, null);
@@ -258,5 +274,18 @@ public class TaskView extends FrameLayout implements TaskCallbacks, SwipeDetecto
                 Math.abs(toProgress - fromProgress)));
         swipeAnimator.setInterpolator(mSwipeAnimInterpolator);
         swipeAnimator.start();
+    }
+
+    public void animateIconToScale(float scale) {
+        ObjectAnimator.ofFloat(this, SCALE_ICON_PROPERTY, scale)
+                .setDuration(SCALE_ICON_DURATION).start();
+    }
+
+    protected void setIconScale(float iconScale) {
+        mIconScale = iconScale;
+        if (mIconView != null) {
+            mIconView.setScaleX(mIconScale);
+            mIconView.setScaleY(mIconScale);
+        }
     }
 }
