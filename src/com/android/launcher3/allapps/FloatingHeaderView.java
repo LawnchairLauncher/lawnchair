@@ -107,6 +107,7 @@ public class FloatingHeaderView extends RelativeLayout implements
         mWorkRV = setupRV(mWorkRV, mAH[AllAppsContainerView.AdapterHolder.WORK].recyclerView);
         mParent = (ViewGroup) mMainRV.getParent();
         setMainActive(true);
+        reset();
         setupDivider();
     }
 
@@ -130,8 +131,6 @@ public class FloatingHeaderView extends RelativeLayout implements
 
     public void setMainActive(boolean active) {
         mCurrentRV = active ? mMainRV : mWorkRV;
-        mSnappedScrolledY = mCurrentRV.getCurrentScrollY() - mMaxTranslation;
-        setExpanded(true);
     }
 
     public PredictionRowView getPredictionRow() {
@@ -140,10 +139,6 @@ public class FloatingHeaderView extends RelativeLayout implements
 
     public View getDivider() {
         return mDivider;
-    }
-
-    public void reset() {
-        setExpanded(true);
     }
 
     private boolean canSnapAt(int currentScrollY) {
@@ -194,16 +189,14 @@ public class FloatingHeaderView extends RelativeLayout implements
         }
     }
 
-    private void setExpanded(boolean expand) {
-        int translateTo = expand ? 0 : -mMaxTranslation;
+    public void reset() {
+        int translateTo = 0;
         mAnimator.setIntValues(mTranslationY, translateTo);
         mAnimator.addUpdateListener(this);
         mAnimator.setDuration(150);
         mAnimator.start();
-        mHeaderCollapsed = !expand;
-        mSnappedScrolledY = expand
-                ? mCurrentRV.getCurrentScrollY() - mMaxTranslation
-                : mCurrentRV.getCurrentScrollY();
+        mHeaderCollapsed = false;
+        mSnappedScrolledY = -mMaxTranslation;
     }
 
     public boolean isExpanded() {

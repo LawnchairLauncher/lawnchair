@@ -495,6 +495,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             public void onPageSelected(int pos) {
                 tabs.updateTabTextColor(pos);
                 mHeader.setMainActive(pos == 0);
+                reset();
                 applyTouchDelegate();
                 if (mAH[pos].recyclerView != null) {
                     mAH[pos].recyclerView.bindFastScrollbar();
