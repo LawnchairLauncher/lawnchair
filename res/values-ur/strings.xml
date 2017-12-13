@@ -131,4 +131,7 @@
     <string name="notification_dismissed" msgid="6002233469409822874">"اطلاع مسترد ہو گئی"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ذاتی"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"دفتری"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"دفتری پروفائل"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"یہاں دفتری ایپس تلاش کریں"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"ہر دفتری ایپ میں نارنجی بَیج ہوتا ہے، جس کا مطلب ہے کہ آپ کے ادارے نے اسے محفوظ کر رکھا ہے۔ دفتری ایپس کو آسان تر رسائی کے لیے آپ کے ہوم اسکرین میں منتقل کیا جا سکتا ہے۔"</string>
 </resources>

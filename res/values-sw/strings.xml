@@ -134,4 +134,6 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Binafsi"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Kazini"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Wasifu wa kazini"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Pata programu za kazi hapa"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"Kila programu ya kazi ina beji ya rangi ya machungwa, ambayo inamaanisha kuwa imehifadhiwa salama na shirika lako. Programu za kazi zinaweza kuwekwa kwenye skrini yako ya mwanzo ili uzifikie kwa urahisi."</string>
 </resources>

@@ -129,4 +129,9 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> için <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> kısayol ve <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> bildirim"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Kapat"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Bildirim kapatıldı"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Kişisel"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"İş"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"İş profili"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"İş uygulamalarını burada bulabilirsiniz"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"Her iş uygulamasında turuncu bir rozet bulunur. Bu rozet, uygulamanın güvenliğinin kuruluşunuz tarafından sağlandığını gösterir. İş uygulamaları daha kolay erişim için Ana Ekranınıza taşınabilir."</string>
 </resources>

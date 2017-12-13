@@ -132,4 +132,6 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Προσωπικές"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Εργασίας"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Προφίλ εργασίας"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Βρείτε όλες τις εφαρμογές εργασίας εδώ"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"Κάθε εφαρμογή εργασίας φέρει ένα πορτοκαλί σήμα, το οποίο σημαίνει ότι διατηρείται ασφαλής από τον οργανισμό σας. Οι εφαρμογές εργασίας μπορούν να μετακινηθούν στην Αρχική οθόνη, για να έχετε πιο εύκολη πρόσβαση."</string>
 </resources>

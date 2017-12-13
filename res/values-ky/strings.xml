@@ -132,4 +132,6 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Жеке колдонмолор"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Жумуш колдонмолору"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Жумуш профили"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Жумуш колдонмолорун бул жерден таап алыңыз"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"Ар бир жумуш колдонмосунун кызгылт сары бейджиги бар, ал уюмуңуз тарабынан коопсуздалганын билдирет. Жумуш колдонмолоруна тез өтүү үчүн аларды Башкы экранга кошуп алсаңыз болот."</string>
 </resources>

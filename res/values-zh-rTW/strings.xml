@@ -129,4 +129,9 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> 個捷徑和 <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> 則「<xliff:g id="APP_NAME">%3$s</xliff:g>」通知"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"關閉"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"已關閉通知"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"個人"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"公司"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Work 設定檔"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"在這裡尋找辦公應用程式"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"每個辦公應用程式都有橘色徽章，表示該應用程式由貴機構負責管理，並確保其安全。你可以將辦公應用程式移至主螢幕以便輕鬆存取。"</string>
 </resources>
