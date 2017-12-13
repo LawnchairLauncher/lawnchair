@@ -29,8 +29,8 @@ public class DragPauseDetector implements OnAlarmListener {
     private final Alarm mAlarm;
     private final Runnable mOnPauseCallback;
 
-    private boolean mEnabled = true;
     private boolean mTriggered = false;
+    private int mDisabledFlags = 0;
 
     public DragPauseDetector(Runnable onPauseCallback) {
         mOnPauseCallback = onPauseCallback;
@@ -40,8 +40,8 @@ public class DragPauseDetector implements OnAlarmListener {
         mAlarm.setAlarm(PAUSE_DURATION);
     }
 
-    public void onDrag(float displacement, float velocity) {
-        if (mTriggered || !mEnabled) {
+    public void onDrag(float velocity) {
+        if (mTriggered || !isEnabled()) {
             return;
         }
 
@@ -53,7 +53,7 @@ public class DragPauseDetector implements OnAlarmListener {
 
     @Override
     public void onAlarm(Alarm alarm) {
-        if (!mTriggered && mEnabled) {
+        if (!mTriggered && isEnabled()) {
             mTriggered = true;
             mOnPauseCallback.run();
         }
@@ -64,17 +64,29 @@ public class DragPauseDetector implements OnAlarmListener {
     }
 
     public boolean isEnabled() {
-        return mEnabled;
+        return mDisabledFlags == 0;
     }
 
-    public void setEnabled(boolean isEnabled) {
-        if (mEnabled != isEnabled) {
-            mEnabled = isEnabled;
-            if (isEnabled && !mTriggered) {
-                mAlarm.setAlarm(PAUSE_DURATION);
-            } else if (!isEnabled) {
-                mAlarm.cancelAlarm();
-            }
+    public void addDisabledFlags(int flags) {
+        boolean wasEnabled = isEnabled();
+        mDisabledFlags |= flags;
+        resetAlarm(wasEnabled);
+    }
+
+    public void clearDisabledFlags(int flags) {
+        boolean wasEnabled = isEnabled();
+        mDisabledFlags  &= ~flags;
+        resetAlarm(wasEnabled);
+    }
+
+    private void resetAlarm(boolean wasEnabled) {
+        boolean isEnabled = isEnabled();
+        if (wasEnabled == isEnabled) {
+          // Nothing has changed
+        } if (isEnabled && !mTriggered) {
+            mAlarm.setAlarm(PAUSE_DURATION);
+        } else if (!isEnabled) {
+            mAlarm.cancelAlarm();
         }
     }
 }
