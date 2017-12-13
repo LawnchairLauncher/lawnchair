@@ -199,9 +199,9 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
     private void executeFrameUpdate() {
         if (mLauncherReady) {
             final float displacement = -mCurrentDisplacement;
-            int hotseatHeight = mHotseat.getHeight();
-            float translation = Utilities.boundToRange(displacement, 0, hotseatHeight);
-            float shift = hotseatHeight == 0 ? 0 : translation / hotseatHeight;
+            int hotseatSize = getHotseatSize();
+            float translation = Utilities.boundToRange(displacement, 0, hotseatSize);
+            float shift = hotseatSize == 0 ? 0 : translation / hotseatSize;
             mCurrentShift.updateValue(shift);
         }
     }
@@ -215,13 +215,14 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
         if (mTargetRect.isEmpty()) {
             RecentsView.getPageRect(mLauncher, mTargetRect);
             DragLayer dl = mLauncher.getDragLayer();
-            mSourceRect.set(0, 0, dl.getWidth(), dl.getHeight());
+            mSourceRect.set(0, 0, dl.getWidth() - mStableInsets.left - mStableInsets.right,
+                    dl.getHeight() - mStableInsets.top - mStableInsets.bottom);
         }
 
         float shift = mCurrentShift.value * mActivityMultiplier.value;
-        int hotseatHeight = mHotseat.getHeight();
+        int hotseatSize = getHotseatSize();
 
-        mHotseat.setTranslationY((1 - shift) * hotseatHeight);
+        mHotseat.setTranslationY((1 - shift) * hotseatSize);
 
         mRectEvaluator.evaluate(shift, mSourceRect, mTargetRect);
 
@@ -230,8 +231,15 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
         mDragView.setTranslationY(mCurrentRect.top - mStableInsets.top * scale * shift);
         mDragView.setScaleX(scale);
         mDragView.setScaleY(scale);
+        //  TODO: mDragView.getViewBounds().setClipLeft((int) (mStableInsets.left * shift));
         mDragView.getViewBounds().setClipTop((int) (mStableInsets.top * shift));
+        // TODO: mDragView.getViewBounds().setClipRight((int) (mStableInsets.right * shift));
         mDragView.getViewBounds().setClipBottom((int) (mStableInsets.bottom * shift));
+    }
+
+    private int getHotseatSize() {
+        return mLauncher.getDeviceProfile().isVerticalBarLayout()
+                ? mHotseat.getWidth() : mHotseat.getHeight();
     }
 
     @UiThread
@@ -272,7 +280,7 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
             endShift = endVelocity < 0 ? 1 : 0;
             float minFlingVelocity = res.getDimension(R.dimen.quickstep_fling_min_velocity);
             if (Math.abs(endVelocity) > minFlingVelocity && mLauncherReady) {
-                float distanceToTravel = (endShift - mCurrentShift.value) * mHotseat.getHeight();
+                float distanceToTravel = (endShift - mCurrentShift.value) * getHotseatSize();
 
                 // we want the page's snap velocity to approximately match the velocity at
                 // which the user flings, so we scale the duration by a value near to the

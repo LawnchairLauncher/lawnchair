@@ -367,7 +367,7 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
         mCurrentAnimation.setEndAction(() -> {
             // TODO: Add logging
             clearState();
-            mLauncher.getStateManager().goToState(OVERVIEW, false /* animated */);
+            mLauncher.getStateManager().goToState(OVERVIEW, true /* animated */);
         });
 
         if (mTwoStateAnimationController != null) {

@@ -44,6 +44,7 @@ import android.util.Log;
 import android.view.Choreographer;
 import android.view.Display;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -61,6 +62,7 @@ import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan.PreloadOpti
 import com.android.systemui.shared.recents.model.RecentsTaskLoader;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.BackgroundExecutor;
+import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.function.Consumer;
 
@@ -105,6 +107,8 @@ public class TouchInteractionService extends Service {
     private int mTouchSlop;
     private float mStartDisplacement;
     private NavBarSwipeInteractionHandler mInteractionHandler;
+    private int mDisplayRotation;
+    private Rect mStableInsets = new Rect();
 
     private ISystemUiProxy mISystemUiProxy;
     private Consumer<MotionEvent> mCurrentConsumer = mNoOpTouchConsumer;
@@ -181,6 +185,10 @@ public class TouchInteractionService extends Service {
                     mInteractionHandler.endTouch(0);
                     mInteractionHandler = null;
                 }
+
+                Display display = getSystemService(WindowManager.class).getDefaultDisplay();
+                mDisplayRotation = display.getRotation();
+                WindowManagerWrapper.getInstance().getStableInsets(mStableInsets);
                 break;
             }
             case ACTION_POINTER_UP: {
@@ -206,6 +214,11 @@ public class TouchInteractionService extends Service {
                 mLastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex));
 
                 float displacement = ev.getY(pointerIndex) - mDownPos.y;
+                if (isNavBarOnRight()) {
+                    displacement = ev.getX(pointerIndex) - mDownPos.x;
+                } else if (isNavBarOnLeft()) {
+                    displacement = mDownPos.x - ev.getX(pointerIndex);
+                }
                 if (mInteractionHandler == null) {
                     if (Math.abs(displacement) >= mTouchSlop) {
                         mStartDisplacement = Math.signum(displacement) * mTouchSlop;
@@ -229,6 +242,13 @@ public class TouchInteractionService extends Service {
         }
     }
 
+    private boolean isNavBarOnRight() {
+        return mDisplayRotation == Surface.ROTATION_90 && mStableInsets.right > 0;
+    }
+
+    private boolean isNavBarOnLeft() {
+        return mDisplayRotation == Surface.ROTATION_270 && mStableInsets.left > 0;
+    }
 
     private void startTouchTracking() {
         // Create the shared handler
@@ -272,7 +292,10 @@ public class TouchInteractionService extends Service {
             mVelocityTracker.computeCurrentVelocity(1000,
                     ViewConfiguration.get(this).getScaledMaximumFlingVelocity());
 
-            mInteractionHandler.endTouch(mVelocityTracker.getYVelocity(mActivePointerId));
+            float velocity = isNavBarOnRight() ? mVelocityTracker.getXVelocity(mActivePointerId)
+                    : isNavBarOnLeft() ? -mVelocityTracker.getXVelocity(mActivePointerId)
+                    : mVelocityTracker.getYVelocity(mActivePointerId);
+            mInteractionHandler.endTouch(velocity);
             mInteractionHandler = null;
         }
         mVelocityTracker.recycle();
@@ -290,9 +313,16 @@ public class TouchInteractionService extends Service {
         Point displaySize = new Point();
         Display display = getSystemService(WindowManager.class).getDefaultDisplay();
         display.getRealSize(displaySize);
+        int rotation = display.getRotation();
+        // The rotation is backwards in landscape, so flip it.
+        if (rotation == Surface.ROTATION_270) {
+            rotation = Surface.ROTATION_90;
+        } else if (rotation == Surface.ROTATION_90) {
+            rotation = Surface.ROTATION_270;
+        }
         try {
             return mISystemUiProxy.screenshot(new Rect(), displaySize.x, displaySize.y, 0, 100000,
-                    false, display.getRotation()).toBitmap();
+                    false, rotation).toBitmap();
         } catch (RemoteException e) {
             Log.e(TAG, "Error capturing snapshot", e);
             return null;
