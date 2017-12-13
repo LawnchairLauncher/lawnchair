@@ -674,8 +674,9 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
                 recyclerView.setPadding(padding.left, paddingTop, padding.right, padding.bottom);
             }
             if (isHeaderVisible()) {
-                mHeader.getPredictionRow()
-                        .setPadding(padding.left, 0 , padding.right, 0);
+                PredictionRowView prv = mHeader.getPredictionRow();
+                prv.setPadding(padding.left, prv.getPaddingTop() , padding.right,
+                        prv.getPaddingBottom());
             }
         }
 
