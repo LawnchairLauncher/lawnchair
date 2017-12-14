@@ -50,6 +50,10 @@
     <dimen name="dynamic_grid_hotseat_land_left_nav_bar_left_padding">0dp</dimen>
     <dimen name="dynamic_grid_hotseat_land_right_nav_bar_left_padding">0dp</dimen>
 
+    <!-- Hotseat/all-apps scrim -->
+    <dimen name="all_apps_scrim_radius">10dp</dimen>
+    <dimen name="all_apps_scrim_margin">10dp</dimen>
+    <dimen name="all_apps_scrim_blur">5dp</dimen>
 
 <!-- Drop target bar -->
     <dimen name="dynamic_grid_drop_target_size">48dp</dimen>
