@@ -422,6 +422,7 @@
   <string name="snowfall_title">שלג</string>
   <string name="enable_snowfall_title">אפשר שלג על מסך הבית</string>
   <string name="enable_snowfall_summary">עלול לגרום לבעיות ביצועים.</string>
+  <string name="snowfall_enabled">\"תן לשלג לרדת, תן לשלג לרדת, תן לשלג לרדת!\"</string>
   <string name="snowflake_size_scale">גודל פתיתי השלג</string>
   <string name="snowflakes_num">מספר מרבי של פתיתי שלג</string>
   <string name="lawnfeed_outdated_title">עדכון ל-Lawnfeed נדרש</string>
