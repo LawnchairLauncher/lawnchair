@@ -17,6 +17,8 @@
 package com.android.launcher3.allapps;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -27,9 +29,11 @@ import android.widget.LinearLayout;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ComponentKeyMapper;
+import com.android.launcher3.util.Themes;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,8 +50,10 @@ public class PredictionRowView extends LinearLayout {
     private final List<ComponentKeyMapper<AppInfo>> mPredictedAppComponents = new ArrayList<>();
     // The set of predicted apps resolved from the component names and the current set of apps
     private final List<AppInfo> mPredictedApps = new ArrayList<>();
+    private final Paint mPaint;
     // This adapter is only used to create an identical item w/ same behavior as in the all apps RV
     private AllAppsGridAdapter mAdapter;
+    private boolean mShowDivider;
 
     public PredictionRowView(@NonNull Context context) {
         this(context, null);
@@ -56,6 +62,10 @@ public class PredictionRowView extends LinearLayout {
     public PredictionRowView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setOrientation(LinearLayout.HORIZONTAL);
+        setWillNotDraw(false);
+        mPaint = new Paint();
+        mPaint.setColor(Themes.getAttrColor(context, android.R.attr.colorControlHighlight));
+        mPaint.setStrokeWidth(getResources().getDimensionPixelSize(R.dimen.all_apps_divider_height));
     }
 
     public void setup(AllAppsGridAdapter adapter, HashMap<ComponentKey, AppInfo> componentToAppMap,
@@ -80,6 +90,13 @@ public class PredictionRowView extends LinearLayout {
             height += getPaddingTop() + getPaddingBottom();
         }
         return height;
+    }
+
+    public void setShowDivider(boolean showDivider) {
+        mShowDivider = showDivider;
+        int paddingBottom = showDivider ? getResources()
+                .getDimensionPixelSize(R.dimen.all_apps_prediction_row_divider_height) : 0;
+        setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), paddingBottom);
     }
 
     /**
@@ -168,5 +185,18 @@ public class PredictionRowView extends LinearLayout {
             }
         }
         return predictedApps;
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        if (mShowDivider) {
+            int side = getResources().getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
+            int y = getHeight() - (getPaddingBottom() / 2);
+            int x1 = getPaddingLeft() + side;
+            int x2 = getWidth() - getPaddingRight() - side;
+            canvas.drawLine(x1, y, x2, y, mPaint);
+        }
     }
 }
