@@ -28,7 +28,7 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">L\'application n\'est pas disponible</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">L\'application téléchargée est désactivée en mode sans échec</string>
+  <string name="safemode_shortcut_error">Les applications téléchargées sont désactivées en mode sans échec</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">Les widgets sont désactivés en mode sans échec</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
