@@ -246,6 +246,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair er en startside-app laget av Till Kottmann (aka deletescape). Den er basert på Launcher3 fra AOSP.</string>
   <string name="about_title">Om</string>
+  <string name="about_pref_summary">Få vite om de Lawnchair</string>
   <string name="changelog_title">Endringslogg for versjon #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Ikon-pakke</string>
@@ -277,8 +278,16 @@
   <string name="full_width_widgets_pref_summary">Tillat moduler å spenne hele bredden uten padding</string>
   <string name="notification_access_pref_title">Varsling-merker og forhåndsvisning</string>
   <string name="notification_access_pref_summary">Gi Lawnchair tilgang til varslingene dine for å aktivere denne funksjonen</string>
+  <string name="general_pref_title">Skrivebord</string>
+  <string name="dock_pref_title">Dock</string>
+  <string name="app_drawer_pref_title">App drawer</string>
+  <string name="pixel_ui_pref_title">Tema</string>
   <string name="behavior_pref_title">Oppførsel</string>
   <string name="debug_pref_title">Feilsøk</string>
+  <string name="general_pref_summary">Tilpass nettbutikken</string>
+  <string name="dock_pref_summary">Tilpass siden din</string>
+  <string name="app_drawer_pref_summary">Tilpasse ditt app skuff</string>
+  <string name="pixel_ui_pref_summary">Forskjellige temaelementer</string>
   <string name="backup_pref_title">Sikkerhetskopiering</string>
   <string name="behavior_pref_summary">Endre Lawnchair</string>
   <string name="backup_pref_summary">Sikkerhetskopiere databasen og innstillinger</string>
