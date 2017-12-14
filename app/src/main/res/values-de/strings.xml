@@ -340,8 +340,8 @@
   <string name="pull_down_apps_search">App-Suche</string>
   <string name="enable_screen_rotation">Bildschirmrotation aktivieren</string>
   <!-- Import/Export Strings -->
-  <string name="backup_import_title">importieren</string>
-  <string name="backup_export_title">exportieren</string>
+  <string name="backup_import_title">Wiederherstellung</string>
+  <string name="backup_export_title">Sicherung</string>
   <string name="settings_export_success">Einstellungen erfolgreich gesichert</string>
   <string name="db_export_success">Datenbank erfolgreich gesichert</string>
   <string name="settings_import_success">Einstellungen wurden erfolgreich wiederhergestellt</string>
@@ -369,7 +369,7 @@
   <string name="blur_effect">Unschärfeeffekt</string>
   <string name="pref_weather_provider">Wetter-Anbieter</string>
   <string name="loading">Wird geladen…</string>
-  <string name="icon_shape_override_label">Icon-Form ändern</string>
+  <string name="icon_shape_override_label">Icon-Form</string>
   <string name="icon_shape_system_default">Nicht ändern</string>
   <string name="icon_shape_none">Keine</string>
   <string name="icon_shape_square">Quadrat</string>
@@ -422,7 +422,7 @@
   <string name="enable_snowfall_summary">Kann Leistungsprobleme verursachen.</string>
   <string name="snowfall_enabled">\"Lass es schneien, lass es schneien, lass es schneien!\"</string>
   <string name="snowflake_size_scale">Schneeflocken Größe</string>
-  <string name="snowflakes_num">Maximale Anzahl Schneeflocken</string>
+  <string name="snowflakes_num">Maximale Anzahl an Schneeflocken</string>
   <string name="lawnfeed_outdated_title">Lawnfeed-Update erforderlich</string>
   <string name="lawnfeed_outdated">Eine neuere Version von Lawnfeed ist erforderlich, um mit dieser Version von Lawnchair zu funktionieren.\n\nVor der Installation des Updates müssen Sie wahrscheinlich die aktuelle Version von Lawnfeed deinstallieren.\n\nMöchten sie es jetzt herunterladen?</string>
 </resources>
