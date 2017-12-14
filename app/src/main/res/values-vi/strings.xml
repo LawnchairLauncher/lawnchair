@@ -284,10 +284,10 @@
   <string name="behavior_pref_title">Hành vi</string>
   <string name="debug_pref_title">Gỡ lỗi</string>
   <string name="general_pref_summary">Tùy chỉnh màn hình chính của bạn</string>
-  <string name="dock_pref_summary">Tùy chỉnh thanh dock của bạn</string>
-  <string name="app_drawer_pref_summary">Tùy chỉnh ngăn chứa ứng dụng của bạn</string>
+  <string name="dock_pref_summary">Tùy chỉnh thanh dock</string>
+  <string name="app_drawer_pref_summary">Tùy chỉnh ngăn chứa ứng dụng</string>
   <string name="pixel_ui_pref_summary">Các yếu tố khác của chủ đề</string>
-  <string name="backup_pref_title">Sao lưu</string>
+  <string name="backup_pref_title">Sao lưu &amp; khôi phục</string>
   <string name="behavior_pref_summary">Thay đổi hành vi của Lawnchair</string>
   <string name="backup_pref_summary">Sao lưu dữ liệu cài đặt</string>
   <string name="debug_pref_summary">Khởi động lại hoặc xây dựng lại dữ liệu biểu tượng</string>
@@ -339,8 +339,8 @@
   <string name="pull_down_apps_search">Tìm kiếm ứng dụng</string>
   <string name="enable_screen_rotation">Cho phép xoay màn hình</string>
   <!-- Import/Export Strings -->
-  <string name="backup_import_title">Nhập dữ liệu</string>
-  <string name="backup_export_title">Xuất dữ liệu</string>
+  <string name="backup_import_title">Khôi phục</string>
+  <string name="backup_export_title">Sao lưu</string>
   <string name="settings_export_success">Hoàn tất thiết lập sao lưu</string>
   <string name="db_export_success">Hoàn tất sao lưu dữ liệu</string>
   <string name="settings_import_success">Khôi phục cài đặt hoàn tất</string>
