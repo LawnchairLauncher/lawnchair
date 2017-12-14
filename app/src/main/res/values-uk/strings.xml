@@ -244,13 +244,20 @@
   <string name="notifications_header">Сповіщення</string>
   <string name="widgets_bottom_sheet_title">%1$s віджетів</string>
   <!-- About Lawnchair -->
+  <string name="about_text">Lawnchair - це лаунчер створений Till Kotmann (aka deletescape). Він оснований на Launcher3 з AOSP</string>
   <string name="about_title">Про додаток</string>
+  <string name="about_pref_summary">Дізнатися про команду Lawnchair</string>
   <string name="changelog_title">Зміни в додатку #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Набір значків</string>
   <string name="icon_pack_preference_summary">Вибрати комплект значков</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Док-панель використовуе кольори фонових малюнків</string>
+  <string name="hotseat_show_arrow">Показувати стрілку</string>
+  <string name="hotseat_show_page_indicator">Показувати індикатор сторінки</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">Док-бар використовує колір шпалер</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">Док-бар буде сірим, але матиме яскравість шпалери</string>
   <string name="transparent_hotseat_pref_title">Прозорий док-бар</string>
+  <string name="dynamic_ui_pref_title">Взяти колір акценту із шпалери</string>
   <string name="blur_pref_title">Увімкнути розмиття</string>
   <string name="blur_radius_pref_title">Радіус розмиття</string>
   <string name="white_google_icon_pref_title">Використовувати білий значок Google</string>
@@ -260,6 +267,9 @@
   <string name="icon_scale_pref_title">Масштаб значков</string>
   <string name="icon_text_scale_pref_title">Масштаб найменування значков</string>
   <string name="full_width_width_widgets_pref_title">Широкоформатні віджети</string>
+  <string name="dock_pref_title">Док</string>
+  <string name="app_drawer_pref_title">Список програм</string>
+  <string name="pixel_ui_pref_title">Тема</string>
   <string name="behavior_pref_title">Поведінка</string>
   <string name="debug_pref_title">Відладка</string>
   <string name="show_mic_pref_title">Відображати кнопку Google Асистента</string>
