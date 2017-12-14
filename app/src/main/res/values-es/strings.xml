@@ -285,12 +285,12 @@
   <string name="behavior_pref_title">Comportamiento</string>
   <string name="debug_pref_title">Opciones de depuración</string>
   <string name="general_pref_summary">Pantalla de inicio, dock y cajón de aplicaciones</string>
-  <string name="dock_pref_summary">Personalizar el dock</string>
+  <string name="dock_pref_summary">Personaliza tú dock</string>
   <string name="app_drawer_pref_summary">Personaliza tu cajón de aplicaciones</string>
   <string name="pixel_ui_pref_summary">Colocar tema a diferentes elementos</string>
   <string name="backup_pref_title">Copia de seguridad</string>
   <string name="behavior_pref_summary">Cambiar el comportamiento de Lawnchair</string>
-  <string name="backup_pref_summary">Copia de seguridad de su base de datos y ajustes</string>
+  <string name="backup_pref_summary">Copia de seguridad de tu base de datos y ajustes</string>
   <string name="debug_pref_summary">Reiniciar o reconstruir la base de datos de iconos</string>
   <string name="show_pixel_bar_pref_title">Mostrar la barra superior al estilo Pixel</string>
   <string name="use_wide_searchbar_pref_title">Usar barra de búsqueda ancha</string>
@@ -340,13 +340,13 @@
   <string name="pull_down_apps_search">Buscar aplicaciones</string>
   <string name="enable_screen_rotation">Habilitar la rotación de la pantalla</string>
   <!-- Import/Export Strings -->
-  <string name="backup_import_title">Importar</string>
+  <string name="backup_import_title">Restaurar</string>
   <string name="backup_export_title">Exportar</string>
   <string name="settings_export_success">Configuraciones respaldadas exitosamente</string>
-  <string name="db_export_success">Éxito realizando una copia de seguridad de la base de datos</string>
+  <string name="db_export_success">Base de datos respaldada exitosamente</string>
   <string name="settings_import_success">Configuraciones restauradas con éxito</string>
   <string name="db_import_success">Base de datos restaurada con éxito</string>
-  <string name="export_error">No se pudo hacer la copia de seguridad</string>
+  <string name="export_error">No se pudo realizar la copia de seguridad</string>
   <string name="import_error">No se pudo restaurar</string>
   <string name="imexport_no_backup_found">No se ha encontrado una copia de seguridad</string>
   <string name="imexport_external_storage_unreadable">No se pueden leer los datos del almacenamiento externo (Concede los permisos en Ajustes)</string>
@@ -411,7 +411,7 @@
   <string name="hide_app_selected">&#160;seleccionado</string>
   <string name="hidden_app">Aplicación oculta</string>
   <string name="hide_app_apply">Aplicar</string>
-  <string name="unauthorized_device">Este dispositivo tiene algunas herramientas de piratería instaladas. Por favor, desinstálalos para continuar.</string>
+  <string name="unauthorized_device">Este dispositivo tiene algunas herramientas de piratería instaladas. Por favor, desinstálalas para continuar.</string>
   <string name="hide_app_reset">Restablecer</string>
   <string name="two_row_dock">Barra de aplicaciones de dos filas</string>
   <string name="reset_alternative_icons_title">¿Restablecer íconos alternativos?</string>
