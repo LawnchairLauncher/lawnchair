@@ -418,6 +418,9 @@
   <string name="unauthorized_device">هذا الجهاز يحتوي على برامج للقرصنة. من فضلك قم بإزالتهم لتستطيع الإستمرار.</string>
   <string name="hide_app_reset">إعادة ضبط</string>
   <string name="two_row_dock">قائمة مختصرة من صفّين</string>
+  <string name="reset_alternative_icons_title">إعادة تعيين أيقونات التطبيقات البديلة؟</string>
+  <string name="reset_alternative_icons">لديك %1$d برموز بديلة, هل تريد إعادة تعيينها؟</string>
+  <string name="error_no_browser">لم يتم العثور علي اي أنشطة للتعامل مع عناوين URL</string>
   <string name="snowfall_title">تساقط الثلوج</string>
   <string name="enable_snowfall_title">تفعيل تساقط الثلوج على الشاشة الرئيسية</string>
   <string name="enable_snowfall_summary">قد يسبب مشاكل في الأداء.</string>
@@ -425,4 +428,5 @@
   <string name="snowflake_size_scale">مقياس حجم حبة الثلج</string>
   <string name="snowflakes_num">أقصى عدد لحبيبات الثلج</string>
   <string name="lawnfeed_outdated_title">مطلوب تحديث Lawnfeed</string>
+  <string name="lawnfeed_outdated">اصدار اعلي من Lawnfeed مطلوب للعمل مع هذه الاصدار.\n\n قبل تثبيت هذا التحديث عليك ازاله النسخه الحاليه من Lawnfeed. هل تريد الغاء تثبيته الأن؟</string>
 </resources>
