@@ -417,4 +417,5 @@
   <string name="reset_alternative_icons_title">वैकल्पिक एप्लिकेशन आइकन रीसेट करें?</string>
   <string name="reset_alternative_icons">आपके पास वैकल्पिक आइकन के साथ%1$d ऐप्स हैं, क्या आप उन्हें रीसेट करना चाहते हैं?</string>
   <string name="error_no_browser">URL को संभालने के लिए कोई गतिविधि नहीं मिली</string>
+  <string name="snowfall_title">बर्फबारी</string>
 </resources>
