@@ -347,6 +347,7 @@
   <string name="settings_import_success">Asetukset palautettu onnistuneesti</string>
   <string name="db_import_success">Tietokanta palautettu onnistuneesti</string>
   <string name="export_error">Varmuuskopiointi epäonnistui</string>
+  <string name="import_error">Palautus epäonnistui</string>
   <string name="imexport_no_backup_found">Varmuuskopioita ei löytynyt</string>
   <string name="imexport_external_storage_unreadable">Ulkoinen muisti ei ole luettavissa (anna käyttöoikeus asetuksissa)</string>
   <string name="imexport_external_storage_unwritable">Ulkoinen muisti ei ole kirjoitettavissa (anna käyttöoikeus asetuksissa)</string>
@@ -402,6 +403,7 @@
   <string name="lock_desktop">Lukitse työpöytä</string>
   <string name="lawnfeed_not_found">Lawnfeed ei ole asennettu</string>
   <string name="google_app_not_found">Google sovellus ei ole asennettu</string>
+  <string name="lawnfeed_incompatible">Asennettu Lawnfeed-versio ei ole yhteensopiva</string>
   <string name="set_default_launcher">Aseta oletus käynnistyssovellus</string>
   <string name="enable_spring_pref_title">Ota jousi efekti käyttöön</string>
   <string name="hide_app">Piilota sovellus</string>
@@ -409,7 +411,18 @@
   <string name="hide_app_selected">&#160;valittu</string>
   <string name="hidden_app">Piilotettu sovellus</string>
   <string name="hide_app_apply">Käytä</string>
+  <string name="unauthorized_device">Tähän laitteeseen on asennettu piraattityökaluja. Poista ne jatkaaksesi.</string>
   <string name="hide_app_reset">Nollaa</string>
   <string name="two_row_dock">Kahden rivin telakka</string>
   <string name="reset_alternative_icons_title">Nollaa vaihtoehtoiset sovelluskuvakkeet?</string>
+  <string name="reset_alternative_icons">Sinulla on %1$d sovellusta, joilla on vaihtoehtoiset kuvakkeet. Haluatko nollata ne?</string>
+  <string name="error_no_browser">Ei löydetty toimintaa URL:ien käsittelemiseen</string>
+  <string name="snowfall_title">Snowfall</string>
+  <string name="enable_snowfall_title">Ota Snowfall käyttöön aloitusnäytöllä</string>
+  <string name="enable_snowfall_summary">Voi aiheuttaa suoritushäiriöitä.</string>
+  <string name="snowfall_enabled">\"Lunta saa, lunta saa tuiskuttaa!\"</string>
+  <string name="snowflake_size_scale">Lumihiutaleen mittakaava</string>
+  <string name="snowflakes_num">Lumihiutaleiden maksimimäärä</string>
+  <string name="lawnfeed_outdated_title">Lawnfeed päivitys vaaditaan</string>
+  <string name="lawnfeed_outdated">Työskennelläksesi tällä Lawnchairin versiolla tarvitset uudemman version Lawnfeedistä.\n\nEnnen päivityksen asentamista voit joutua poistamaan Lawnfeedin nykyisen version asennuksen.\n\nHaluatko ladata sen nyt?</string>
 </resources>
