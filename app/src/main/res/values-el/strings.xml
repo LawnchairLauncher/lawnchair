@@ -418,4 +418,12 @@
   <string name="reset_alternative_icons_title">Επαναφορά τροποποιημένων εικονιδίων εφαρμογών;</string>
   <string name="reset_alternative_icons">Έχετε %1$d εφαρμογή/ες με τροποποιημένα εικονίδια, είστε βέβαιοι ότι θέλετε να τα επαναφέρετε στην αρχική τους μορφή;</string>
   <string name="error_no_browser">Δεν βρέθηκε καμία δραστηριότητα για να διαχειριστεί τις διευθύνσεις URL</string>
+  <string name="snowfall_title">Χιονόπτωση</string>
+  <string name="enable_snowfall_title">Ενεργοποίηση Χιονόπτωσης στην αρχική οθόνη</string>
+  <string name="enable_snowfall_summary">Μπορεί να προκαλέσει προβλήματα επιδόσεων.</string>
+  <string name="snowfall_enabled">\"Ας χιονίσει, ας χιονίσει, ας χιονίσει!\"</string>
+  <string name="snowflake_size_scale">Κλίμακα μεγέθους νιφάδας χιονιού</string>
+  <string name="snowflakes_num">Μέγιστος αριθμός νιφάδων χιονιού</string>
+  <string name="lawnfeed_outdated_title">Απαιτείται ενημέρωση του Lawnfeed</string>
+  <string name="lawnfeed_outdated">Απαιτείται μια νεότερη έκδοση του Lawnfeed προκειμένου να λειτουργήσει με αυτήν την έκδοση των Lawnchair.\n\nΠριν την εγκατάσταση της ενημέρωσης θα πρέπει πιθανώς να γίνει απεγκατάσταση της τρέχουσας έκδοσης του Lawnfeed.\n\nΘέλετε να κατεβάσετε την ενημέρωση τώρα;</string>
 </resources>

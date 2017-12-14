@@ -418,4 +418,12 @@
   <string name="reset_alternative_icons_title">Zresetować ikony alternatywnych aplikacji?</string>
   <string name="reset_alternative_icons">Masz %1$d aplikacji z alternatywnymi ikonami, czy chcesz je zresetować?</string>
   <string name="error_no_browser">Nie znaleziono żadnej aktywności obsługującej adresy URL</string>
+  <string name="snowfall_title">Opad śniegu</string>
+  <string name="enable_snowfall_title">Włącz padający śnieg na ekranie głównym</string>
+  <string name="enable_snowfall_summary">Może powodować problemy z wydajnością.</string>
+  <string name="snowfall_enabled">\"Niech pada śnieg, niech pada śnieg!\"</string>
+  <string name="snowflake_size_scale">Skala płatka śniegu</string>
+  <string name="snowflakes_num">Maks. ilość płatków śniegu</string>
+  <string name="lawnfeed_outdated_title">Wymagana aktualizacja Lawnfeed</string>
+  <string name="lawnfeed_outdated">Nowsza wersja Lawnfeed jest wymagana do pracy z aktualną wersją Lawnchair.\n\nPrzed aktualizacją prawdopodobnie będzie wymagane usunięcie obecnej wersji Lawnfeed.\n\nCzy pobrać ją teraz?</string>
 </resources>

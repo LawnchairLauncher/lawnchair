@@ -417,4 +417,12 @@
   <string name="reset_alternative_icons_title">Alternatif ikonlar sıfırlansın mı?</string>
   <string name="reset_alternative_icons">Alternatif ikona sahip %1$d uygulamanız var, onları sıfırlamak ister misiniz?</string>
   <string name="error_no_browser">URL\'leri işleyecek etkinlik bulunamadı</string>
+  <string name="snowfall_title">Kar Yağışı</string>
+  <string name="enable_snowfall_title">Ana ekranda Kar yağışını etkinleştir</string>
+  <string name="enable_snowfall_summary">Performans sorunlarına neden olabilir.</string>
+  <string name="snowfall_enabled">\"Kar yağsın, kar yağsın, kar yağsın!\"</string>
+  <string name="snowflake_size_scale">Kar tanesi boyut ölçeği</string>
+  <string name="snowflakes_num">Maksimum kar tanesi sayısı</string>
+  <string name="lawnfeed_outdated_title">Lawnfeed güncellemesi gerekli</string>
+  <string name="lawnfeed_outdated">Lawnchair\'in bu sürümüyle çalışabilmesi için Lawnfeed\'in daha yeni bir sürümü gerekiyor.\n\nGüncellemeyi yüklemeden önce muhtemelen Lawnfeed\'in mevcut sürümünü kaldırmanız gerekecektir.\n\nŞimdi indirmek istiyor musunuz?</string>
 </resources>

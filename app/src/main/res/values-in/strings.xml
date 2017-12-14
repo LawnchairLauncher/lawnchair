@@ -420,4 +420,12 @@
   <string name="reset_alternative_icons_title">Reset ikon aplikasi alternatif?</string>
   <string name="reset_alternative_icons">Anda memiliki aplikasi %1$d dengan ikon alternatif, apakah anda ingin meresetnya?</string>
   <string name="error_no_browser">Tidak ada aktivitas yang ditemukan untuk menangani URL</string>
+  <string name="snowfall_title">Hujan salju</string>
+  <string name="enable_snowfall_title">Aktifkan salju di beranda</string>
+  <string name="enable_snowfall_summary">Dapat mempengaruhi masalah kinerja.</string>
+  <string name="snowfall_enabled">\"Bersalju lah, bersalju lah, bersalju lah!\"</string>
+  <string name="snowflake_size_scale">Skala ukuran kepingan salju</string>
+  <string name="snowflakes_num">Jumlah maksimal kepingan salju</string>
+  <string name="lawnfeed_outdated_title">Pembaharuan Lawfeed dibutuhkan</string>
+  <string name="lawnfeed_outdated">Versi baru dari Lawnfeed dibutuhkan agar dapat berjalan dengan Lawnchair versi ini.\n\nSebelum memasang pembaruan anda harus mencopot Lawnfeed versi saat ini.\n\nApakah anda ingin mengunduhnya sekarang?</string>
 </resources>

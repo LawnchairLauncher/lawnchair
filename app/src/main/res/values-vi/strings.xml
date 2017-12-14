@@ -416,4 +416,12 @@
   <string name="reset_alternative_icons_title">Đặt lại những biểu tượng ứng dụng bị thay đổi?</string>
   <string name="reset_alternative_icons">Bạn có %1$d biểu tượng ứng dụng bị thay đổi, bạn có muốn đặt lại chúng không?</string>
   <string name="error_no_browser">Không có hành động nào phù hợp để xử lý URL</string>
+  <string name="snowfall_title">Tuyết rơi</string>
+  <string name="enable_snowfall_title">Bật hiệu ứng tuyết rơi trên màn hình chính</string>
+  <string name="enable_snowfall_summary">Có thể ảnh hưởng đến hiệu năng máy.</string>
+  <string name="snowfall_enabled">\'Hãy để tuyết rơi, hãy để tuyết rơi, tuyết hãy rơi\'</string>
+  <string name="snowflake_size_scale">Kích cỡ bông tuyết</string>
+  <string name="snowflakes_num">Số lượng bông tuyết tối đa</string>
+  <string name="lawnfeed_outdated_title">Cần cập nhật Lawnfeed</string>
+  <string name="lawnfeed_outdated">Bạn cần một phiên bản mới hơn của Lawnfeed để làm việc với phiên bản này của Lawnchair.\n\nTrước khi cài đặt bản cập nhật, bạn có thể cần phải gỡ bỏ cài đặt phiên bản Lawnfeed hiện tại.\n\nBạn có muốn tải xuống bây giờ không?</string>
 </resources>

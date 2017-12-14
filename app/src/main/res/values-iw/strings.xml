@@ -419,4 +419,11 @@
   <string name="reset_alternative_icons_title">האם לאפס את סמלי האפליקציות החלופיים?</string>
   <string name="reset_alternative_icons">קיימים %1$d אפליקציות עם סמלים חלופיים, האם ברצונך לאפס אותם?</string>
   <string name="error_no_browser">לא נמצאה פעילות שבה ניתן לפתוח כתובות URL</string>
+  <string name="snowfall_title">שלג</string>
+  <string name="enable_snowfall_title">אפשר שלג על מסך הבית</string>
+  <string name="enable_snowfall_summary">עלול לגרום לבעיות ביצועים.</string>
+  <string name="snowflake_size_scale">גודל פתיתי השלג</string>
+  <string name="snowflakes_num">מספר מרבי של פתיתי שלג</string>
+  <string name="lawnfeed_outdated_title">עדכון ל-Lawnfeed נדרש</string>
+  <string name="lawnfeed_outdated">גרסה חדשה יותר של Lawnfeed נדרשת כדי לעבוד עם גרסה זו של Lawnchair.\n\nלפני שתוכל להתקין את העדכון, כנראה שתצטרך להסיר את הגרסה הקודמת של Lawnfeed.\n\nהאם ברצונך להוריד אותה עכשיו?</string>
 </resources>
