@@ -18,7 +18,6 @@ package com.android.launcher3.allapps;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
@@ -66,7 +65,6 @@ public class FloatingHeaderView extends RelativeLayout implements
 
     private PredictionRowView mPredictionRow;
     private ViewGroup mTabLayout;
-    private View mDivider;
     private AllAppsRecyclerView mMainRV;
     private AllAppsRecyclerView mWorkRV;
     private AllAppsRecyclerView mCurrentRV;
@@ -90,7 +88,6 @@ public class FloatingHeaderView extends RelativeLayout implements
     protected void onFinishInflate() {
         super.onFinishInflate();
         mTabLayout = findViewById(R.id.tabs);
-        mDivider = findViewById(R.id.divider);
         mPredictionRow = findViewById(R.id.header_content);
     }
 
@@ -98,17 +95,15 @@ public class FloatingHeaderView extends RelativeLayout implements
             HashMap<ComponentKey, AppInfo> componentToAppMap, int numPredictedAppsPerRow) {
         mTabsHidden = mAH[AllAppsContainerView.AdapterHolder.WORK].recyclerView == null;
         mTabLayout.setVisibility(mTabsHidden ? View.GONE : View.VISIBLE);
-        mPredictionRow.setPadding(0, 0, 0, mTabsHidden ? getResources()
-                .getDimensionPixelSize(R.dimen.all_apps_prediction_row_divider_height) : 0);
         mPredictionRow.setup(mAH[AllAppsContainerView.AdapterHolder.MAIN].adapter,
                 componentToAppMap, numPredictedAppsPerRow);
+        mPredictionRow.setShowDivider(mTabsHidden);
         mMaxTranslation = mPredictionRow.getExpectedHeight();
         mMainRV = setupRV(mMainRV, mAH[AllAppsContainerView.AdapterHolder.MAIN].recyclerView);
         mWorkRV = setupRV(mWorkRV, mAH[AllAppsContainerView.AdapterHolder.WORK].recyclerView);
         mParent = (ViewGroup) mMainRV.getParent();
         setMainActive(true);
         reset();
-        setupDivider();
     }
 
     private AllAppsRecyclerView setupRV(AllAppsRecyclerView old, AllAppsRecyclerView updated) {
@@ -118,27 +113,12 @@ public class FloatingHeaderView extends RelativeLayout implements
         return updated;
     }
 
-    private void setupDivider() {
-        Resources res = getResources();
-        int verticalGap = res.getDimensionPixelSize(R.dimen.all_apps_divider_margin_vertical);
-        int sideGap = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
-        mDivider.setPadding(sideGap, verticalGap,sideGap, mTabsHidden ? verticalGap : 0);
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mDivider.getLayoutParams();
-        lp.removeRule(RelativeLayout.ALIGN_BOTTOM);
-        lp.addRule(RelativeLayout.ALIGN_BOTTOM, mTabsHidden ? R.id.header_content : R.id.tabs);
-        mDivider.setLayoutParams(lp);
-    }
-
     public void setMainActive(boolean active) {
         mCurrentRV = active ? mMainRV : mWorkRV;
     }
 
     public PredictionRowView getPredictionRow() {
         return mPredictionRow;
-    }
-
-    public View getDivider() {
-        return mDivider;
     }
 
     private boolean canSnapAt(int currentScrollY) {
@@ -180,7 +160,6 @@ public class FloatingHeaderView extends RelativeLayout implements
             mPredictionRow.setTranslationY(uncappedTranslationY);
         }
         mTabLayout.setTranslationY(mTranslationY);
-        mDivider.setTranslationY(mTabsHidden ? uncappedTranslationY : mTranslationY);
         mClip.top = mMaxTranslation + mTranslationY;
         // clipping on a draw might cause additional redraw
         mMainRV.setClipBounds(mClip);

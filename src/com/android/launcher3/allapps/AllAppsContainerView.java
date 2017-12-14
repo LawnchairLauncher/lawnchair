@@ -547,7 +547,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         return mHeader;
     }
 
-    private void setupHeader() {
+    public void setupHeader() {
         if (mHeader == null) {
             return;
         }

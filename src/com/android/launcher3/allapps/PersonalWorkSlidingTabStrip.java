@@ -35,6 +35,7 @@ import com.android.launcher3.util.Themes;
 public class PersonalWorkSlidingTabStrip extends LinearLayout {
     private final Paint mPersonalTabIndicatorPaint;
     private final Paint mWorkTabIndicatorPaint;
+    private final Paint mDividerPaint;
 
     private int mSelectedIndicatorHeight;
     private int mIndicatorLeft = -1;
@@ -59,6 +60,10 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout {
         mWorkTabIndicatorPaint.setColor(getResources().getColor(R.color.work_profile_color));
 
         mIsRtl = Utilities.isRtl(getResources());
+
+        mDividerPaint = new Paint();
+        mDividerPaint.setColor(Themes.getAttrColor(context, android.R.attr.colorControlHighlight));
+        mDividerPaint.setStrokeWidth(getResources().getDimensionPixelSize(R.dimen.all_apps_divider_height));
     }
 
     public void updateIndicatorPosition(int position, float positionOffset) {
@@ -115,6 +120,9 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+        float y = getHeight() - mDividerPaint.getStrokeWidth();
+        canvas.drawLine(getPaddingLeft(), y, getWidth() - getPaddingRight(), y, mDividerPaint);
 
         final float middleX = getWidth() / 2.0f;
         if (mIndicatorLeft <= middleX) {

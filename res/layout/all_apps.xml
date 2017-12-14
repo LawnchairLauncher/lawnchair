@@ -41,14 +41,6 @@
 
         <include layout="@layout/predictions_view" android:id="@+id/header_content" />
 
-        <include layout="@layout/all_apps_divider"
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/all_apps_tabs_side_padding"
-            android:layout_marginRight="@dimen/all_apps_tabs_side_padding"
-            android:layout_alignBottom="@+id/tabs" />
-
         <com.android.launcher3.allapps.PersonalWorkSlidingTabStrip
             android:id="@+id/tabs"
             android:layout_width="match_parent"
