@@ -246,6 +246,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair é uma aplicação da tela inicial criada por Till Kottmann (aka deletescape). É baseado no Launcher3 da AOSP.</string>
   <string name="about_title">Sobre</string>
+  <string name="about_pref_summary">Conheça sobre a equipe de Lawnchair</string>
   <string name="changelog_title">Changelog da build #%d</string>
   <string name="week_day_format">%1$s,%2$s</string>
   <string name="icon_pack_preference_title">Pacote de ícones</string>
@@ -278,10 +279,14 @@
   <string name="notification_access_pref_title">Crachás de notificação e pré-visualização</string>
   <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
   <string name="general_pref_title">Geral</string>
+  <string name="dock_pref_title">Dock</string>
+  <string name="app_drawer_pref_title">Gaveta de aplicações</string>
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Comportamento</string>
   <string name="debug_pref_title">Depuração</string>
   <string name="general_pref_summary">Ambiente de Trabalho, Doca &amp; Aplicações</string>
+  <string name="dock_pref_summary">Personalize o seu dock</string>
+  <string name="app_drawer_pref_summary">Personalize a sua gaveta de aplicações</string>
   <string name="pixel_ui_pref_summary">Ativar recursos exclusivos do Pixel Launcher</string>
   <string name="backup_pref_title">Cópia de Segurança</string>
   <string name="behavior_pref_summary">Alterar comportamento do Lawnchair</string>
@@ -337,6 +342,12 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Importar</string>
   <string name="backup_export_title">Exportar</string>
+  <string name="settings_export_success">Backup de configurações com êxito</string>
+  <string name="db_export_success">Banco de dados de backup com êxito</string>
+  <string name="settings_import_success">Definições restauradas com sucesso</string>
+  <string name="db_import_success">Banco de dados restaurado com êxito</string>
+  <string name="export_error">Não consegui fazer backup</string>
+  <string name="import_error">Não é possível restaurar</string>
   <string name="imexport_no_backup_found">Nenhum backup encontrado</string>
   <string name="imexport_external_storage_unreadable">Armazenamento Interno não pode ser lido (conceder permissões nas definições)</string>
   <string name="imexport_external_storage_unwritable">Armazenamento Interno não pode ser escrito (conceder permissões nas definições)</string>
@@ -392,5 +403,26 @@
   <string name="lock_desktop">Bloquear ambiente de trabalho</string>
   <string name="lawnfeed_not_found">Lawnfeed não instalado</string>
   <string name="google_app_not_found">Aplicação \"Google\" não instalada</string>
+  <string name="lawnfeed_incompatible">Versão incompatível do Lawnfeed instalado</string>
   <string name="set_default_launcher">Predefinir launcher</string>
+  <string name="enable_spring_pref_title">Habilitar o efeito primavera</string>
+  <string name="hide_app">Ocultar aplicação</string>
+  <string name="hide_app_sum">Ocultar aplicações da gaveta de aplicações</string>
+  <string name="hide_app_selected">&#160;selecionada</string>
+  <string name="hidden_app">Aplicação ocultada</string>
+  <string name="hide_app_apply">Aplicar</string>
+  <string name="unauthorized_device">Este dispositivo possui algumas ferramentas de pirataria instaladas. Por favor, desinstale-os a continuar.</string>
+  <string name="hide_app_reset">Reinicializar</string>
+  <string name="two_row_dock">Duas linha de dock</string>
+  <string name="reset_alternative_icons_title">Redefinir os ícones do app alternativo?</string>
+  <string name="reset_alternative_icons">Você tem %1$d apps com ícones alternativos, quer para repô-los?</string>
+  <string name="error_no_browser">Nenhuma atividade encontrada para manipular URLs</string>
+  <string name="snowfall_title">Neve</string>
+  <string name="enable_snowfall_title">Permitir a queda de neve na tela inicial</string>
+  <string name="enable_snowfall_summary">Pode causar problemas de desempenho.</string>
+  <string name="snowfall_enabled">\"Deixe nevar, deixe nevar, deixe nevar!\"</string>
+  <string name="snowflake_size_scale">Escala de tamanho do floco de neve</string>
+  <string name="snowflakes_num">Número máximo de flocos de neve</string>
+  <string name="lawnfeed_outdated_title">Lawnfeed atualização necessária</string>
+  <string name="lawnfeed_outdated">Uma nova versão do Lawnfeed é necessário para trabalhar com esta versão do Lawnchair.\n\nAntes de instalar a atualização, você provavelmente precisará desinstalar a versão atual do Lawnfeed.\n\nVocê deseja baixá-lo agora?</string>
 </resources>
