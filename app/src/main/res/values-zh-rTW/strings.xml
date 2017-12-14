@@ -28,7 +28,7 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">應用程式目前無法使用</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">安全模式中已下載應用程式功能會被停用</string>
+  <string name="safemode_shortcut_error">在安全模式中無法使用「已下載的應用程式」功能</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">在安全模式下無法使用小工具</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
@@ -265,7 +265,7 @@
   <string name="hide_icon_labels_pref_title">隱藏主畫面上的文字</string>
   <string name="hide_all_apps_icon_labels_pref_title">隱藏應用程式清單中的文字</string>
   <string name="workspace_label_color_hue_pref_title">主螢幕上的圖示標籤顏色</string>
-  <string name="all_apps_opacity_pref_title">抽屜透明度</string>
+  <string name="all_apps_opacity_pref_title">抽屜不透明度</string>
   <string name="num_cols_pref_title">列數</string>
   <string name="num_rows_pref_title">行數</string>
   <string name="num_hotseat_icons_pref_title">Dock欄上的圖示數量</string>
@@ -278,13 +278,13 @@
   <string name="notification_access_pref_title">未讀計數和預覽</string>
   <string name="notification_access_pref_summary">允許 Lawnchair 訪問您的通知許可權以啟用此功能</string>
   <string name="general_pref_title">一般</string>
-  <string name="dock_pref_title">Dock欄</string>
-  <string name="app_drawer_pref_title">應用程式清單</string>
-  <string name="pixel_ui_pref_title">Pixel 使用者介面</string>
+  <string name="dock_pref_title">Dock 欄</string>
+  <string name="app_drawer_pref_title">應用程式抽屜</string>
+  <string name="pixel_ui_pref_title">主題</string>
   <string name="behavior_pref_title">功能</string>
   <string name="debug_pref_title">除錯模式</string>
   <string name="general_pref_summary">主畫面、Dock 欄及應用程式抽屜</string>
-  <string name="dock_pref_summary">自訂您的Dock欄</string>
+  <string name="dock_pref_summary">自訂您的 Dock 欄</string>
   <string name="app_drawer_pref_summary">自訂您的應用程式抽屜</string>
   <string name="pixel_ui_pref_summary">開啟Pixel 啟動器特殊功能</string>
   <string name="backup_pref_title">備份</string>
@@ -309,7 +309,7 @@
   <string name="haptic_feedback_pref_title">啟用震動</string>
   <string name="keep_scroll_state_pref_title">保持滾動軸位置</string>
   <string name="keep_scroll_state_pref_summary">在抽屜裡保持滾動軸位置</string>
-  <string name="home_opens_drawer_pref_title">Home鍵打開應用抽屜</string>
+  <string name="home_opens_drawer_pref_title">Home 鍵打開應用抽屜</string>
   <string name="home_opens_drawer_pref_summary">Pressing the home button while on the homescreen will open the app drawer</string>
   <string name="show_hidden_pref_title">顯示隱藏的應用程式</string>
   <string name="show_hidden_pref_on">顯示隱藏的應用程式來調整可見性設置</string>
@@ -416,6 +416,12 @@
   <string name="reset_alternative_icons_title">重置替代應用程式的圖示？</string>
   <string name="reset_alternative_icons">您有 %1$d 個替代圖示的應用程式，您想重置它們？</string>
   <string name="error_no_browser">找不到處理網址的應用程式活動</string>
+  <string name="snowfall_title">降雪</string>
+  <string name="enable_snowfall_title">在主畫面上顯示下雪</string>
+  <string name="enable_snowfall_summary">可能會導致性能問題</string>
+  <string name="snowfall_enabled">讓他下!! 讓他下!! 讓他下!!</string>
+  <string name="snowflake_size_scale">雪花的大小</string>
+  <string name="snowflakes_num">最大數量的雪花</string>
   <string name="lawnfeed_outdated_title">需要更新 Lawnfeed</string>
   <string name="lawnfeed_outdated">需要更新版本的Lawnfeed才能使用此版本的Lawnchair。\n\n在安裝更新之前，您可能需要解除安裝當前版本的Lawnfeed。\n\n您想現在下載嗎？</string>
 </resources>
