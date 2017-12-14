@@ -24,9 +24,9 @@
   <!-- Work folder name -->
   <string name="work_folder_name">Робоча папка</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
-  <string name="activity_not_found">Додаток видалено.</string>
+  <string name="activity_not_found">Програму не встановлено.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
-  <string name="activity_not_available">Додаток недоступний</string>
+  <string name="activity_not_available">Програма недоступна</string>
   <!-- SafeMode shortcut error string -->
   <string name="safemode_shortcut_error">Завантажений додаток вимкнено в безпечному режимі</string>
   <!-- SafeMode widget error string -->
@@ -66,10 +66,10 @@
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
   <string name="uninstall_drop_target_label">Видалити</string>
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
-  <string name="app_info_drop_target_label">Про додаток</string>
+  <string name="app_info_drop_target_label">Про програму</string>
   <!-- Permissions: -->
   <!-- Permission short label -->
-  <string name="permlab_install_shortcut">створення ярликів</string>
+  <string name="permlab_install_shortcut">встановити ярлики</string>
   <!-- Permission description -->
   <string name="permdesc_install_shortcut">Дозволяє програмі самостійно додавати ярлики.</string>
   <!-- Permission short label -->
@@ -241,6 +241,7 @@
   <string name="title_show_google_app_default">Показати додатки Google</string>
   <string name="label_search">Пошук</string>
   <string name="label_voice_search">Голосовий пошук</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d ярликів і %2$d сповіщень для %3$s</string>
   <string name="notifications_header">Сповіщення</string>
   <string name="widgets_bottom_sheet_title">%1$s віджетів</string>
   <!-- About Lawnchair -->
@@ -251,41 +252,73 @@
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Набір значків</string>
   <string name="icon_pack_preference_summary">Вибрати комплект значков</string>
-  <string name="hotseat_uses_extracted_colors_pref_title">Док-панель використовуе кольори фонових малюнків</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">Док-панель використовує колір фонових малюнків</string>
   <string name="hotseat_show_arrow">Показувати стрілку</string>
   <string name="hotseat_show_page_indicator">Показувати індикатор сторінки</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Док-бар використовує колір шпалер</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">Док-бар буде сірим, але матиме яскравість шпалери</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">Док-бар буде сірим, але матиме яскравість шпалер</string>
   <string name="transparent_hotseat_pref_title">Прозорий док-бар</string>
   <string name="dynamic_ui_pref_title">Взяти колір акценту із шпалери</string>
   <string name="blur_pref_title">Увімкнути розмиття</string>
+  <string name="blur_pref_summary">Застосувати ефект розмиття до частини інтерфейсу\nНесумісно з живими шпалерами</string>
   <string name="blur_radius_pref_title">Радіус розмиття</string>
+  <string name="pref_iconLabelsInTwoLines">Назви іконок в два рядки</string>
   <string name="white_google_icon_pref_title">Використовувати білий значок Google</string>
+  <string name="hide_icon_labels_pref_title">Не відображати підписи ярликів на домашньому екрані</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Не відображати підписи ярликів в меню програм</string>
+  <string name="workspace_label_color_hue_pref_title">Колір підписів ярликів на домашньому екрані</string>
   <string name="all_apps_opacity_pref_title">Прозорість меню додатків</string>
   <string name="num_cols_pref_title">Кількість стовпчиків</string>
   <string name="num_rows_pref_title">Кількість рядків</string>
   <string name="icon_scale_pref_title">Масштаб значков</string>
   <string name="icon_text_scale_pref_title">Масштаб найменування значков</string>
   <string name="full_width_width_widgets_pref_title">Широкоформатні віджети</string>
-  <string name="dock_pref_title">Док</string>
+  <string name="dock_pref_title">Нижня панель</string>
   <string name="app_drawer_pref_title">Список програм</string>
   <string name="pixel_ui_pref_title">Тема</string>
   <string name="behavior_pref_title">Поведінка</string>
   <string name="debug_pref_title">Відладка</string>
+  <string name="dock_pref_summary">Налаштувати док-бар</string>
+  <string name="app_drawer_pref_summary">Налаштувати меню програм</string>
+  <string name="pixel_ui_pref_summary">Налаштування елементів теми</string>
+  <string name="backup_pref_title">Резервна копія &amp; Відновлення</string>
+  <string name="behavior_pref_summary">Змінити поведінку Lawnchair</string>
+  <string name="backup_pref_summary">Резервне копіювання/відновлення бази даних та налаштувань</string>
+  <string name="debug_pref_summary">Перезавантаження або відновлення бази даних іконок</string>
+  <string name="show_pixel_bar_pref_title">Показати рядок пошуку Pixel</string>
+  <string name="use_wide_searchbar_pref_title">Рядок пошуку як в Android O</string>
   <string name="show_mic_pref_title">Відображати кнопку Google Асистента</string>
+  <string name="use_round_searhbar">Круглий рядок пошуку</string>
   <string name="pixel_style_icons_pref_title">Використовивати значки Pixel</string>
+  <string name="pixel_style_icons_pref_summary">Коли ввімкнуто - круглі іконки використовуватимуться де можливо</string>
   <string name="show_google_now_tab_pref_title">Показувати сторінку Google Now</string>
   <string name="restart_lawnchair_pref_title">Перезапустіть Lawnchair</string>
   <string name="restart_lawnchair_pref_summary">Може бути корисним, якщо деякі параметри не застосовани правильно</string>
   <string name="rebuild_icondb_pref_title">Відновлення бази даних значків</string>
+  <string name="pinch_to_overview_pref_title">Щипніть для огляду</string>
+  <string name="pinch_to_overview_pref_summary">Щипніть на домашньому екрані, щоб відкрити загальний огляд</string>
+  <string name="light_statusbar_pref_title">Світлий рядок стану</string>
+  <string name="light_statusbar_pref_force">У панелі стану використовуватимуться темні іконки</string>
+  <string name="light_statusbar_pref_off">У панелі стану будуть використовуватимуться світлі іконки</string>
   <string name="haptic_feedback_pref_title">Увімкнути вібрацію</string>
   <string name="keep_scroll_state_pref_title">Зберігати позицію смуги прокрутки</string>
+  <string name="keep_scroll_state_pref_summary">Зберігає положення прокручування в списку додатків</string>
+  <string name="home_opens_drawer_pref_title">Кнопка \"Додому\" відкриває список додатків</string>
+  <string name="home_opens_drawer_pref_summary">Натиснувши кнопку \"Додому\" на головному екрані буде відкритий список додатків</string>
   <string name="show_hidden_pref_title">Відобразити приховані додатки</string>
+  <string name="show_hidden_pref_on">Приховані програми буде показано для зміни параметрів видимості</string>
+  <string name="show_hidden_pref_off">Приховані програми не будуть показані</string>
+  <string name="export_db_title">База Даних</string>
+  <string name="import_db_title">База даних</string>
+  <string name="export_prefs_title">Налаштування</string>
+  <string name="import_prefs_title">Налаштування</string>
+  <string name="notification_listener_label">Lawnchair - значки сповіщень</string>
   <string name="color_extraction_label">Lawnchair - вилучення кольору</string>
   <string name="test_title">Тест</string>
   <string name="visibility">Видимість</string>
   <string name="default_text">За замовчанням</string>
   <string name="edit_icon_reset">Скинути</string>
+  <string name="show_top_shadow_title">Показувати тінь зверху</string>
   <string name="pref_cat_homescreen">Головний екран</string>
   <string name="theme_pref_title">Тема оформлення</string>
   <string name="theme_light">Світла</string>
@@ -293,12 +326,15 @@
   <string name="theme_black">Чорна</string>
   <string name="hide_hotseat_pref_title">Сховати панель</string>
   <string name="all_icons">Усі іконки</string>
+  <string name="pull_down_action_pref_title">Дія по свайпу вниз</string>
   <string name="pull_down_do_nothing">Нічого не робити</string>
   <string name="pull_down_notis">Показати сповіщення</string>
   <string name="pull_down_search">Відкрити пошук</string>
   <string name="pull_down_apps_search">Пошук додатків</string>
   <string name="enable_screen_rotation">Увімкнути обертання екрана</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">Імпорт</string>
+  <string name="backup_export_title">Резервне копіювання</string>
   <string name="imexport_no_backup_found">Резервну копію не знайдено</string>
   <string name="imexport_external_storage_unreadable">Зовнішне сховище недоступно до читання (надати дозвіл в налаштуваннях)</string>
   <string name="units_metric">Метрична</string>
