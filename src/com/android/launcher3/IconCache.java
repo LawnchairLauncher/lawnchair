@@ -41,17 +41,20 @@ import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.model.PackageItemInfo;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.SQLiteCacheHelper;
 import com.android.launcher3.util.Thunk;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -102,6 +105,7 @@ public class IconCache {
     @Thunk final Handler mWorkerHandler;
 
     private final BitmapFactory.Options mLowResOptions;
+    private final BitmapFactory.Options mHighResOptions;
 
     public IconCache(Context context, InvariantDeviceProfile inv) {
         mContext = context;
@@ -120,6 +124,13 @@ public class IconCache {
         // Always prefer RGB_565 config for low res. If the bitmap has transparency, it will
         // automatically be loaded as ALPHA_8888.
         mLowResOptions.inPreferredConfig = Bitmap.Config.RGB_565;
+
+        if (UiFactory.USE_HARDWARE_BITMAP) {
+            mHighResOptions = new BitmapFactory.Options();
+            mHighResOptions.inPreferredConfig = Bitmap.Config.HARDWARE;
+        } else {
+            mHighResOptions = null;
+        }
     }
 
     private Drawable getFullResDefaultActivityIcon() {
@@ -625,7 +636,7 @@ public class IconCache {
                     Bitmap icon = LauncherIcons.createBadgedIconBitmap(
                             appInfo.loadIcon(mPackageManager), user, mContext, appInfo.targetSdkVersion);
                     if (mInstantAppResolver.isInstantApp(appInfo)) {
-                        icon = LauncherIcons.badgeWithDrawable(icon,
+                        LauncherIcons.badgeWithDrawable(icon,
                                 mContext.getDrawable(R.drawable.ic_instant_app_badge), mContext);
                     }
                     Bitmap lowResIcon =  generateLowResIcon(icon);
@@ -665,7 +676,7 @@ public class IconCache {
                 new String[]{cacheKey.componentName.flattenToString(),
                         Long.toString(mUserManager.getSerialNumberForUser(cacheKey.user))});
             if (c.moveToNext()) {
-                entry.icon = loadIconNoResize(c, 0, lowRes ? mLowResOptions : null);
+                entry.icon = loadIconNoResize(c, 0, lowRes ? mLowResOptions : mHighResOptions);
                 entry.isLowResIcon = lowRes;
                 entry.title = c.getString(1);
                 if (entry.title == null) {
