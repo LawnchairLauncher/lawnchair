@@ -50,7 +50,11 @@
             android:layout_gravity="bottom|left"
             android:background="@drawable/all_apps_handle_landscape" />
 
-        <include layout="@layout/gradient_bg" />
+        <com.android.launcher3.views.AllAppsScrim
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/all_apps_scrim"
+            launcher:layout_ignoreInsets="true" />
 
         <!-- DO NOT CHANGE THE ID -->
         <include layout="@layout/hotseat"

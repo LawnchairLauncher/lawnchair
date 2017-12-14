@@ -33,6 +33,7 @@ import android.widget.FrameLayout;
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.badge.BadgeRenderer;
+import com.android.launcher3.views.AllAppsScrim;
 
 import java.util.ArrayList;
 
@@ -588,14 +589,16 @@ public class DeviceProfile {
         searchBar.setLayoutParams(lp);
 
         // Layout the workspace
-        PagedView workspace = (PagedView) launcher.findViewById(R.id.workspace);
+        PagedView workspace = launcher.getWorkspace();
         Rect workspacePadding = getWorkspacePadding(null);
         workspace.setPadding(workspacePadding.left, workspacePadding.top, workspacePadding.right,
                 workspacePadding.bottom);
         workspace.setPageSpacing(getWorkspacePageSpacing());
 
+        AllAppsScrim allAppsScrim = launcher.findViewById(R.id.all_apps_scrim);
+
         // Layout the hotseat
-        Hotseat hotseat = (Hotseat) launcher.findViewById(R.id.hotseat);
+        Hotseat hotseat = launcher.getHotseat();
         lp = (FrameLayout.LayoutParams) hotseat.getLayoutParams();
         // We want the edges of the hotseat to line up with the edges of the workspace, but the
         // icons in the hotseat are a different size, and so don't line up perfectly. To account for
@@ -604,6 +607,8 @@ public class DeviceProfile {
         float workspaceCellWidth = (float) getCurrentWidth() / inv.numColumns;
         float hotseatCellWidth = (float) getCurrentWidth() / inv.numHotseatIcons;
         int hotseatAdjustment = Math.round((workspaceCellWidth - hotseatCellWidth) / 2);
+        float scrimMargin = launcher.getResources().getDimension(R.dimen.all_apps_scrim_margin);
+
         if (hasVerticalBarLayout) {
             // Vertical hotseat -- The hotseat is fixed in the layout to be on the right of the
             //                     screen regardless of RTL
@@ -629,6 +634,8 @@ public class DeviceProfile {
             lp.gravity = Gravity.BOTTOM;
             lp.width = LayoutParams.MATCH_PARENT;
             lp.height = hotseatBarSizePx + mInsets.bottom;
+            allAppsScrim.setDrawRegion(lp.height + scrimMargin);
+
             hotseat.getLayout().setPadding(hotseatAdjustment + workspacePadding.left
                             + cellLayoutPaddingLeftRightPx,
                     hotseatBarTopPaddingPx,
@@ -640,6 +647,8 @@ public class DeviceProfile {
             lp.gravity = Gravity.BOTTOM;
             lp.width = LayoutParams.MATCH_PARENT;
             lp.height = hotseatBarSizePx + mInsets.bottom;
+            allAppsScrim.setDrawRegion(lp.height + scrimMargin);
+
             hotseat.getLayout().setPadding(hotseatAdjustment + workspacePadding.left
                             + cellLayoutPaddingLeftRightPx,
                     hotseatBarTopPaddingPx,

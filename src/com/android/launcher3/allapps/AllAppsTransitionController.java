@@ -24,6 +24,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.graphics.GradientView;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.views.AllAppsScrim;
 
 /**
  * Handles AllApps view transition.
@@ -74,7 +75,7 @@ public class AllAppsTransitionController
 
     private static final float DEFAULT_SHIFT_RANGE = 10;
 
-    private GradientView mGradientView;
+    private AllAppsScrim mAllAppsScrim;
 
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
@@ -106,14 +107,6 @@ public class AllAppsTransitionController
         }
     }
 
-    private void updateAllAppsBg(float progress) {
-        // gradient
-        if (mGradientView == null) {
-            mGradientView = mLauncher.findViewById(R.id.gradient_bg);
-        }
-        mGradientView.setProgress(progress);
-    }
-
     /**
      * Note this method should not be called outside this class. This is public because it is used
      * in xml-based animations which also handle updating the appropriate UI.
@@ -131,17 +124,21 @@ public class AllAppsTransitionController
         float alpha = 1 - workspaceHotseatAlpha;
         float hotseatAlpha = mHotseatAccelInterpolator.getInterpolation(workspaceHotseatAlpha);
 
-        updateAllAppsBg(alpha);
         mAppsView.setAlpha(alpha);
         mAppsView.setTranslationY(shiftCurrent);
 
+        if (mAllAppsScrim == null) {
+            mAllAppsScrim = mLauncher.findViewById(R.id.all_apps_scrim);
+        }
+        float hotseatTranslation = -mShiftRange + shiftCurrent;
+        mAllAppsScrim.setProgress(hotseatTranslation, alpha);
+
         if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-            mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y, -mShiftRange + shiftCurrent,
+            mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y, hotseatTranslation,
                     hotseatAlpha);
         } else {
             mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y,
-                    PARALLAX_COEFFICIENT * (-mShiftRange + shiftCurrent),
-                    hotseatAlpha);
+                    PARALLAX_COEFFICIENT * hotseatTranslation, hotseatAlpha);
         }
 
         updateLightStatusBar(shiftCurrent);
