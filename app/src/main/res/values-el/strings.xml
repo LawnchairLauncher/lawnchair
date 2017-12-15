@@ -318,8 +318,8 @@
   <string name="show_hidden_pref_off">Οι κρυφές εφαρμογές δεν θα είναι ορατές</string>
   <string name="export_db_title">Export database</string>
   <string name="import_db_title">Import database</string>
-  <string name="export_prefs_title">Export settings</string>
-  <string name="import_prefs_title">Import settings</string>
+  <string name="export_prefs_title">Ρυθμίσεων</string>
+  <string name="import_prefs_title">Ρυθμίσεων</string>
   <string name="notification_listener_label">Εκκινητής Lawnchair - Εικονίδια ειδοποιήσεων</string>
   <string name="color_extraction_label">Εκκινητής Lawnchair - Εξαγωγή χρώματος</string>
   <string name="test_title">Δοκιμή</string>
