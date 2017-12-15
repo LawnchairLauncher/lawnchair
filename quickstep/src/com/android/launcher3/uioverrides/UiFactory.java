@@ -34,7 +34,7 @@ import com.android.systemui.shared.recents.view.RecentsTransition;
 
 public class UiFactory {
 
-    public static final boolean USE_HARDWARE_BITMAP = FeatureFlags.IS_DOGFOOD_BUILD;
+    public static final boolean USE_HARDWARE_BITMAP = false; // FeatureFlags.IS_DOGFOOD_BUILD;
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
 
