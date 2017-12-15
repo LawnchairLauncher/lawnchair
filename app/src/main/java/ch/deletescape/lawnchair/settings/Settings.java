@@ -54,9 +54,6 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                     mLauncher.getHotseat().updateColor(ec, true);
                     mLauncher.getWorkspace().getPageIndicator().updateColor(ec);
                     break;
-                case PreferenceFlags.KEY_PREF_HAPTIC_FEEDBACK:
-                    mLauncher.getWorkspace().setHapticFeedbackEnabled(prefs.getBoolean(key, false));
-                    break;
                 case PreferenceFlags.KEY_PREF_ALL_APPS_OPACITY:
                     applyAllAppsOpacity(preferences);
                     break;
