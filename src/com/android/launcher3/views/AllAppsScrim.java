@@ -20,8 +20,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -41,7 +39,7 @@ public class AllAppsScrim extends View implements WallpaperColorInfo.OnChangeLis
     private static final int MIN_ALPHA_PORTRAIT = 100;
     private static final int MIN_ALPHA_LANDSCAPE = MAX_ALPHA;
 
-    private final WallpaperColorInfo mWallpaperColorInfo;
+    protected final WallpaperColorInfo mWallpaperColorInfo;
     private final Paint mFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private final float mRadius;

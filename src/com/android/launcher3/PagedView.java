@@ -106,7 +106,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected LauncherScroller mScroller;
     private Interpolator mDefaultInterpolator;
     private VelocityTracker mVelocityTracker;
-    @Thunk int mPageSpacing = 0;
+    protected int mPageSpacing = 0;
 
     private float mParentDownMotionX;
     private float mParentDownMotionY;

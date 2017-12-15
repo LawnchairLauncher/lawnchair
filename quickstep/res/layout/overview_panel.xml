@@ -22,4 +22,36 @@
     android:clipChildren="false"
     android:clipToPadding="false"
     android:alpha="0.0"
-    android:visibility="invisible" />
+    android:visibility="invisible" >
+
+    <com.android.launcher3.uioverrides.WorkspaceCard
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/task_thumbnail_top_margin" >
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/workspace_click_target" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/widget_button"
+            android:background="@drawable/bg_workspace_card_button" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/widget_button_text"
+                android:drawableStart="@drawable/ic_widget"
+                android:textColor="?attr/workspaceTextColor"
+                android:drawableTint="?attr/workspaceTextColor"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:drawablePadding="20dp" />
+        </FrameLayout>
+
+    </com.android.launcher3.uioverrides.WorkspaceCard>
+
+</com.android.quickstep.RecentsView>

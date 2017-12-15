@@ -106,7 +106,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     final PreviewBackground mFolderLeaveBehind = new PreviewBackground();
 
     private static final int[] BACKGROUND_STATE_ACTIVE = new int[] { android.R.attr.state_active };
-    private static final int[] BACKGROUND_STATE_DEFAULT = new int[0];
+    private static final int[] BACKGROUND_STATE_DEFAULT = EMPTY_STATE_SET;
     private final Drawable mBackground;
 
     // These values allow a fixed measurement to be set on the CellLayout.

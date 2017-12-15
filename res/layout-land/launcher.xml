@@ -50,6 +50,10 @@
             android:layout_gravity="bottom|left"
             android:background="@drawable/all_apps_handle_landscape" />
 
+        <include layout="@layout/overview_panel"
+            android:id="@+id/overview_panel"
+            android:visibility="gone" />
+
         <com.android.launcher3.views.AllAppsScrim
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -67,10 +71,6 @@
         <include
             android:id="@+id/drop_target_bar"
             layout="@layout/drop_target_bar_vert" />
-
-        <include layout="@layout/overview_panel"
-            android:id="@+id/overview_panel"
-            android:visibility="gone" />
 
         <include layout="@layout/all_apps"
             android:id="@+id/apps_view"

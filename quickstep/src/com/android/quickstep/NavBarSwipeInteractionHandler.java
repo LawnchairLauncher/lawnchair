@@ -250,6 +250,7 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
 
     private void setTaskPlanToUi() {
         mRecentsView.update(mLoadPlan);
+        mRecentsView.initToPage(mRecentsView.getFirstTaskIndex());
         ObjectAnimator anim = mStateController.animateVisibility(true /* isVisible */)
                 .setDuration(RECENTS_VIEW_VISIBILITY_DURATION);
         anim.addListener(new AnimationSuccessListener() {

@@ -22,6 +22,7 @@ import android.view.View;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.RecentsView;
@@ -31,8 +32,9 @@ import com.android.quickstep.RecentsView;
  */
 public class OverviewState extends LauncherState {
 
-    private static final int STATE_FLAGS = FLAG_SHOW_SCRIM
-            | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED;
+    public static final float WORKSPACE_SCALE_ON_SCROLL = 0.9f;
+
+    private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED;
 
     public OverviewState(int id) {
         super(id, ContainerType.WORKSPACE, OVERVIEW_TRANSITION_MS, 1f, STATE_FLAGS);
@@ -42,18 +44,15 @@ public class OverviewState extends LauncherState {
     public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
         Rect pageRect = new Rect();
         RecentsView.getPageRect(launcher, pageRect);
-        Workspace ws = launcher.getWorkspace();
-        float childWidth = ws.getNormalChildWidth();
-        if (childWidth <= 0 || pageRect.isEmpty()) {
+        if (launcher.getWorkspace().getNormalChildWidth() <= 0 || pageRect.isEmpty()) {
             return super.getWorkspaceScaleAndTranslation(launcher);
         }
 
-        Rect insets = launcher.getDragLayer().getInsets();
-        float scale = pageRect.width() / childWidth;
-
-        float halfHeight = ws.getHeight() / 2;
-        float childTop = halfHeight - scale * (halfHeight - ws.getPaddingTop() - insets.top);
-        return new float[] {scale, pageRect.top - childTop};
+        RecentsView rv = launcher.getOverviewPanel();
+        if (rv.getCurrentPage() >= rv.getFirstTaskIndex()) {
+            Utilities.scaleRectAboutCenter(pageRect, WORKSPACE_SCALE_ON_SCROLL);
+        }
+        return getScaleAndTranslationForPageRect(launcher, pageRect);
     }
 
     @Override
@@ -76,5 +75,17 @@ public class OverviewState extends LauncherState {
     @Override
     public View getFinalFocus(Launcher launcher) {
         return launcher.getOverviewPanel();
+    }
+
+    public static float[] getScaleAndTranslationForPageRect(Launcher launcher, Rect pageRect) {
+        Workspace ws = launcher.getWorkspace();
+        float childWidth = ws.getNormalChildWidth();
+
+        Rect insets = launcher.getDragLayer().getInsets();
+        float scale = pageRect.width() / childWidth;
+
+        float halfHeight = ws.getHeight() / 2;
+        float childTop = halfHeight - scale * (halfHeight - ws.getPaddingTop() - insets.top);
+        return new float[] {scale, pageRect.top - childTop};
     }
 }

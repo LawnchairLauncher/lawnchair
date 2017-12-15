@@ -30,10 +30,13 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsView;
 
+import static com.android.launcher3.LauncherState.OVERVIEW;
+
 public class RecentsViewStateController implements StateHandler {
 
     private final Launcher mLauncher;
     private final RecentsView mRecentsView;
+    private final WorkspaceCard mWorkspaceCard;
 
     private final AnimatedFloat mTransitionProgress = new AnimatedFloat(this::applyProgress);
     // The fraction representing the visibility of the RecentsView. This allows delaying the
@@ -44,24 +47,40 @@ public class RecentsViewStateController implements StateHandler {
         mLauncher = launcher;
         mRecentsView = launcher.getOverviewPanel();
         mRecentsView.setStateController(this);
+
+        mWorkspaceCard = (WorkspaceCard) mRecentsView.getChildAt(0);
+        mWorkspaceCard.setup(launcher);
     }
 
     @Override
     public void setState(LauncherState state) {
-        setVisibility(state == LauncherState.OVERVIEW);
-        setTransitionProgress(state == LauncherState.OVERVIEW ? 1 : 0);
+        mWorkspaceCard.setWorkspaceScrollingEnabled(state == OVERVIEW);
+        setVisibility(state == OVERVIEW);
+        setTransitionProgress(state == OVERVIEW ? 1 : 0);
     }
 
     @Override
-    public void setStateWithAnimation(LauncherState toState,
+    public void setStateWithAnimation(final LauncherState toState,
             AnimatorSetBuilder builder, AnimationConfig config) {
         ObjectAnimator progressAnim =
-                mTransitionProgress.animateToValue(toState == LauncherState.OVERVIEW ? 1 : 0);
+                mTransitionProgress.animateToValue(toState == OVERVIEW ? 1 : 0);
         progressAnim.setDuration(config.duration);
         progressAnim.setInterpolator(Interpolators.LINEAR);
+        progressAnim.addListener(new AnimationSuccessListener() {
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mWorkspaceCard.setWorkspaceScrollingEnabled(false);
+            }
+
+            @Override
+            public void onAnimationSuccess(Animator animator) {
+                mWorkspaceCard.setWorkspaceScrollingEnabled(toState == OVERVIEW);
+            }
+        });
         builder.play(progressAnim);
 
-        ObjectAnimator visibilityAnim = animateVisibility(toState == LauncherState.OVERVIEW);
+        ObjectAnimator visibilityAnim = animateVisibility(toState == OVERVIEW);
         visibilityAnim.setDuration(config.duration);
         visibilityAnim.setInterpolator(Interpolators.LINEAR);
         builder.play(visibilityAnim);

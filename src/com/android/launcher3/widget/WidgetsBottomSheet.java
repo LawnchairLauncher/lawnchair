@@ -57,7 +57,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
         mInsets = new Rect();
 
         mGradientView = (GradientView) mLauncher.getLayoutInflater().inflate(
-                R.layout.gradient_bg, mLauncher.getDragLayer(), false);
+                R.layout.widgets_bottom_sheet_scrim, mLauncher.getDragLayer(), false);
         mGradientView.setProgress(1, false);
         mContent = this;
     }

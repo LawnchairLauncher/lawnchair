@@ -17,7 +17,6 @@
 package com.android.quickstep;
 
 import android.animation.LayoutTransition;
-import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -47,17 +46,11 @@ import java.util.ArrayList;
  */
 public class RecentsView extends PagedView {
 
-    /** Designates how "curvy" the carousel is from 0 to 1, where 0 is a straight line. */
-    private static final float CURVE_FACTOR = 0.25f;
-    /** A circular curve of x from 0 to 1, where 0 is the center of the screen and 1 is the edge. */
-    private static final TimeInterpolator CURVE_INTERPOLATOR
-        = x -> (float) (1 - Math.sqrt(1 - Math.pow(x, 2)));
-    /**
-     * The alpha of a black scrim on a page in the carousel as it leaves the screen.
-     * In the resting position of the carousel, the adjacent pages have about half this scrim.
-     */
-    private static final float MAX_PAGE_SCRIM_ALPHA = 0.8f;
+    public static final int SCROLL_TYPE_NONE = 0;
+    public static final int SCROLL_TYPE_TASK = 1;
+    public static final int SCROLL_TYPE_WORKSPACE = 2;
 
+    private final ScrollState mScrollState = new ScrollState();
     private boolean mOverviewStateEnabled;
     private boolean mTaskStackListenerRegistered;
     private LayoutTransition mLayoutTransition;
@@ -65,7 +58,7 @@ public class RecentsView extends PagedView {
     private TaskStackChangeListener mTaskStackListener = new TaskStackChangeListener() {
         @Override
         public void onTaskSnapshotChanged(int taskId, ThumbnailData snapshot) {
-            for (int i = 0; i < getChildCount(); i++) {
+            for (int i = mFirstTaskIndex; i < getChildCount(); i++) {
                 final TaskView taskView = (TaskView) getChildAt(i);
                 if (taskView.getTask().key.id == taskId) {
                     taskView.getThumbnail().setThumbnail(snapshot);
@@ -76,6 +69,7 @@ public class RecentsView extends PagedView {
     };
 
     private RecentsViewStateController mStateController;
+    private int mFirstTaskIndex;
 
     public RecentsView(Context context) {
         this(context, null);
@@ -87,10 +81,12 @@ public class RecentsView extends PagedView {
 
     public RecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setWillNotDraw(false);
-        setPageSpacing((int) getResources().getDimension(R.dimen.recents_page_spacing));
+        setPageSpacing(getResources().getDimensionPixelSize(R.dimen.recents_page_spacing));
         enableFreeScroll(true);
+        setClipChildren(true);
         setupLayoutTransition();
+
+        mScrollState.isRtl = mIsRtl;
     }
 
     private void setupLayoutTransition() {
@@ -110,6 +106,8 @@ public class RecentsView extends PagedView {
 
         Rect padding = getPadding(Launcher.getLauncher(getContext()));
         setPadding(padding.left, padding.top, padding.right, padding.bottom);
+
+        mFirstTaskIndex = getPageCount();
     }
 
     @Override
@@ -130,6 +128,10 @@ public class RecentsView extends PagedView {
         updateTaskStackListenerState();
     }
 
+    public int getFirstTaskIndex() {
+        return mFirstTaskIndex;
+    }
+
     public void setStateController(RecentsViewStateController stateController) {
         mStateController = stateController;
     }
@@ -145,10 +147,6 @@ public class RecentsView extends PagedView {
 
     public void update(RecentsTaskLoadPlan loadPlan) {
         final RecentsTaskLoader loader = TouchInteractionService.getRecentsTaskLoader();
-        setCurrentPage(0);
-        if (getPageAt(mCurrentPage) instanceof TaskView) {
-            ((TaskView) getPageAt(mCurrentPage)).setIconScale(0);
-        }
         TaskStack stack = loadPlan != null ? loadPlan.getTaskStack() : null;
         if (stack == null) {
             removeAllViews();
@@ -160,11 +158,13 @@ public class RecentsView extends PagedView {
         final LayoutInflater inflater = LayoutInflater.from(getContext());
         final ArrayList<Task> tasks = stack.getTasks();
         setLayoutTransition(null);
-        for (int i = getChildCount(); i < tasks.size(); i++) {
+        int requiredChildCount = tasks.size() + mFirstTaskIndex;
+
+        for (int i = getChildCount(); i < requiredChildCount; i++) {
             final TaskView taskView = (TaskView) inflater.inflate(R.layout.task, this, false);
             addView(taskView);
         }
-        while (getChildCount() > tasks.size()) {
+        while (getChildCount() > requiredChildCount) {
             final TaskView taskView = (TaskView) getChildAt(getChildCount() - 1);
             removeView(taskView);
             loader.unloadTaskData(taskView.getTask());
@@ -174,14 +174,21 @@ public class RecentsView extends PagedView {
         // Rebind all task views
         for (int i = tasks.size() - 1; i >= 0; i--) {
             final Task task = tasks.get(i);
-            final TaskView taskView = (TaskView) getChildAt(tasks.size() - i - 1);
+            final TaskView taskView = (TaskView) getChildAt(tasks.size() - i - 1 + mFirstTaskIndex);
             taskView.bind(task);
             loader.loadTaskData(task);
         }
     }
 
+    public void initToPage(int pageNo) {
+        setCurrentPage(pageNo);
+        if (getPageAt(mCurrentPage) instanceof TaskView) {
+            ((TaskView) getPageAt(mCurrentPage)).setIconScale(0);
+        }
+    }
+
     public void launchTaskWithId(int taskId) {
-        for (int i = 0; i < getChildCount(); i++) {
+        for (int i = mFirstTaskIndex; i < getChildCount(); i++) {
             final TaskView taskView = (TaskView) getChildAt(i);
             if (taskView.getTask().key.id == taskId) {
                 taskView.launchTask(false /* animate */);
@@ -245,35 +252,50 @@ public class RecentsView extends PagedView {
         }
         final int halfScreenWidth = getMeasuredWidth() / 2;
         final int screenCenter = halfScreenWidth + getScrollX();
-        final int pageSpacing = getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
+        final int pageSpacing = mPageSpacing;
+        final int halfPageWidth = mScrollState.halfPageWidth = getNormalChildWidth() / 2;
+        mScrollState.lastScrollType = SCROLL_TYPE_NONE;
+
         final int pageCount = getPageCount();
         for (int i = 0; i < pageCount; i++) {
             View page = getPageAt(i);
-            int pageWidth = page.getMeasuredWidth();
-            int halfPageWidth = pageWidth / 2;
             int pageCenter = page.getLeft() + halfPageWidth;
-            float distanceFromScreenCenter = Math.abs(pageCenter - screenCenter);
+            mScrollState.distanceFromScreenCenter = screenCenter - pageCenter;
             float distanceToReachEdge = halfScreenWidth + halfPageWidth + pageSpacing;
-            float linearInterpolation = Math.min(1, distanceFromScreenCenter / distanceToReachEdge);
-            float curveInterpolation = CURVE_INTERPOLATOR.getInterpolation(linearInterpolation);
-            float scale = 1 - curveInterpolation * CURVE_FACTOR;
-            page.setScaleX(scale);
-            page.setScaleY(scale);
-            // Make sure the biggest card (i.e. the one in front) shows on top of the adjacent ones.
-            page.setTranslationZ(scale);
-            page.setTranslationX((screenCenter - pageCenter) * curveInterpolation * CURVE_FACTOR);
-            if (page instanceof TaskView) {
-                TaskThumbnailView thumbnail = ((TaskView) page).getThumbnail();
-                thumbnail.setDimAlpha(1 - curveInterpolation * MAX_PAGE_SCRIM_ALPHA);
-            }
+            mScrollState.linearInterpolation = Math.min(1,
+                    Math.abs(mScrollState.distanceFromScreenCenter) / distanceToReachEdge);
+            mScrollState.lastScrollType = ((PageCallbacks) page).onPageScroll(mScrollState);
         }
     }
 
     public void onTaskDismissed(TaskView taskView) {
         ActivityManagerWrapper.getInstance().removeTask(taskView.getTask().key.id);
         removeView(taskView);
-        if (getChildCount() == 0) {
+        if (getChildCount() == mFirstTaskIndex) {
             Launcher.getLauncher(getContext()).getStateManager().goToState(LauncherState.NORMAL);
         }
+    }
+
+    public interface PageCallbacks {
+
+        /**
+         * Updates the page UI based on scroll params and returns the type of scroll
+         * effect performed.
+         *
+         * @see #SCROLL_TYPE_NONE
+         * @see #SCROLL_TYPE_TASK
+         * @see #SCROLL_TYPE_WORKSPACE
+         */
+        int onPageScroll(ScrollState scrollState);
+    }
+
+    public static class ScrollState {
+
+        public boolean isRtl;
+        public int lastScrollType;
+
+        public int halfPageWidth;
+        public float distanceFromScreenCenter;
+        public float linearInterpolation;
     }
 }

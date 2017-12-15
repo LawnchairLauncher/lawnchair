@@ -16,9 +16,13 @@
 
 package com.android.quickstep;
 
+import static com.android.quickstep.RecentsView.SCROLL_TYPE_TASK;
+import static com.android.quickstep.RecentsView.SCROLL_TYPE_WORKSPACE;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.app.ActivityOptions;
 import android.content.Context;
@@ -35,6 +39,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.touch.SwipeDetector;
+import com.android.quickstep.RecentsView.PageCallbacks;
+import com.android.quickstep.RecentsView.ScrollState;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskCallbacks;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -49,7 +55,20 @@ import java.util.List;
 /**
  * A task in the Recents view.
  */
-public class TaskView extends FrameLayout implements TaskCallbacks, SwipeDetector.Listener {
+public class TaskView extends FrameLayout implements TaskCallbacks, SwipeDetector.Listener,
+        PageCallbacks {
+
+    /** Designates how "curvy" the carousel is from 0 to 1, where 0 is a straight line. */
+    private static final float CURVE_FACTOR = 0.25f;
+    /** A circular curve of x from 0 to 1, where 0 is the center of the screen and 1 is the edge. */
+    private static final TimeInterpolator CURVE_INTERPOLATOR
+            = x -> (float) (1 - Math.sqrt(1 - Math.pow(x, 2)));
+
+    /**
+     * The alpha of a black scrim on a page in the carousel as it leaves the screen.
+     * In the resting position of the carousel, the adjacent pages have about half this scrim.
+     */
+    private static final float MAX_PAGE_SCRIM_ALPHA = 0.8f;
 
     private static final int SWIPE_DIRECTIONS = SwipeDetector.DIRECTION_POSITIVE;
 
@@ -287,5 +306,36 @@ public class TaskView extends FrameLayout implements TaskCallbacks, SwipeDetecto
             mIconView.setScaleX(mIconScale);
             mIconView.setScaleY(mIconScale);
         }
+    }
+
+    @Override
+    public int onPageScroll(ScrollState scrollState) {
+        float curveInterpolation =
+                CURVE_INTERPOLATOR.getInterpolation(scrollState.linearInterpolation);
+        float scale = 1 - curveInterpolation * CURVE_FACTOR;
+        setScaleX(scale);
+        setScaleY(scale);
+
+        // Make sure the biggest card (i.e. the one in front) shows on top of the adjacent ones.
+        setTranslationZ(scale);
+
+        mSnapshotView.setDimAlpha(1 - curveInterpolation * MAX_PAGE_SCRIM_ALPHA);
+
+        float translation =
+                scrollState.distanceFromScreenCenter * curveInterpolation * CURVE_FACTOR;
+        setTranslationX(translation);
+
+        if (scrollState.lastScrollType == SCROLL_TYPE_WORKSPACE) {
+            // Make sure that the task cards do not overlap with the workspace card
+            float min = scrollState.halfPageWidth * (1 - scale);
+            if (scrollState.isRtl) {
+                setTranslationX(Math.min(translation, min));
+            } else {
+                setTranslationX(Math.max(translation, -min));
+            }
+        } else {
+            setTranslationX(translation);
+        }
+        return SCROLL_TYPE_TASK;
     }
 }

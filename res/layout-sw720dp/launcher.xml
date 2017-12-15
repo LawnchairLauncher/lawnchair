@@ -43,6 +43,10 @@
             launcher:pageIndicator="@id/page_indicator">
         </com.android.launcher3.Workspace>
 
+        <include layout="@layout/overview_panel"
+            android:id="@+id/overview_panel"
+            android:visibility="gone" />
+
         <com.android.launcher3.views.AllAppsScrim
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -59,10 +63,6 @@
         <include
             android:id="@+id/drop_target_bar"
             layout="@layout/drop_target_bar_horz" />
-
-        <include layout="@layout/overview_panel"
-            android:id="@+id/overview_panel"
-            android:visibility="gone" />
 
         <!-- Keep these behind the workspace so that they are not visible when
              we go into AllApps -->
