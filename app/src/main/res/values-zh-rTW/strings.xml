@@ -412,16 +412,16 @@
   <string name="hide_app_apply">套用</string>
   <string name="unauthorized_device">此裝置安裝了一些盜版工具，請解除安裝它們以便繼續。</string>
   <string name="hide_app_reset">重設</string>
-  <string name="two_row_dock">兩行Rock欄</string>
+  <string name="two_row_dock">兩行 Dock 欄</string>
   <string name="reset_alternative_icons_title">重置替代應用程式的圖示？</string>
   <string name="reset_alternative_icons">您有 %1$d 個替代圖示的應用程式，您想重置它們？</string>
   <string name="error_no_browser">找不到處理網址的應用程式活動</string>
   <string name="snowfall_title">降雪</string>
-  <string name="enable_snowfall_title">在主畫面上顯示下雪</string>
+  <string name="enable_snowfall_title">在主畫面上啟用降雪</string>
   <string name="enable_snowfall_summary">可能會導致性能問題</string>
   <string name="snowfall_enabled">讓他下!! 讓他下!! 讓他下!!</string>
   <string name="snowflake_size_scale">雪花的大小</string>
-  <string name="snowflakes_num">最大數量的雪花</string>
+  <string name="snowflakes_num">雪花的最大數量</string>
   <string name="lawnfeed_outdated_title">需要更新 Lawnfeed</string>
   <string name="lawnfeed_outdated">需要更新版本的Lawnfeed才能使用此版本的Lawnchair。\n\n在安裝更新之前，您可能需要解除安裝當前版本的Lawnfeed。\n\n您想現在下載嗎？</string>
 </resources>
