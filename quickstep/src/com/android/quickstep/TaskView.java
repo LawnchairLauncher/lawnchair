@@ -208,12 +208,14 @@ public class TaskView extends FrameLayout implements TaskCallbacks, SwipeDetecto
     public void onTaskDataLoaded(Task task, ThumbnailData thumbnailData) {
         mSnapshotView.setThumbnail(thumbnailData);
         mIconView.setImageDrawable(task.icon);
+        mIconView.setOnLongClickListener(icon -> TaskMenuView.showForTask(this));
     }
 
     @Override
     public void onTaskDataUnloaded() {
         mSnapshotView.setThumbnail(null);
         mIconView.setImageDrawable(null);
+        mIconView.setOnLongClickListener(null);
     }
 
     @Override
