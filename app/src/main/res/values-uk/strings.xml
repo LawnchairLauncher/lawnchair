@@ -390,7 +390,7 @@
   <string name="vertical_drawer_layout_pref_title">Відображення у вигляді вертикального списку</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
-  <string name="full_wday_month_day_no_year">ДДДД, ММММ ч</string>
+  <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
   <string name="lock_desktop">Блокування робочого стола</string>
   <string name="lawnfeed_not_found">Lawnfeed не встановлено</string>
   <string name="google_app_not_found">Додаток Google не встановлено</string>
