@@ -244,12 +244,12 @@
   <string name="notifications_header">Underretninger</string>
   <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
+  <string name="about_text">Lawnchair er en Launcher app skabt af Till Kottmann (aka deletescape). Det er baseret på Launcher3 fra AOSP.</string>
   <string name="about_title">Om</string>
   <string name="changelog_title">Ændringslog for version #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Ikon pakke</string>
-  <string name="icon_pack_preference_summary">Select an icon Pack</string>
+  <string name="icon_pack_preference_summary">Vælg et ikon Pack</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Dock anvender tapetfarver</string>
   <string name="hotseat_show_arrow">Vis pil</string>
   <string name="hotseat_show_page_indicator">Vis sideindikator</string>
@@ -262,7 +262,7 @@
   <string name="blur_radius_pref_title">Slør radius</string>
   <string name="pref_iconLabelsInTwoLines">Ikonetiketter i to linjer</string>
   <string name="white_google_icon_pref_title">Brug hvidt Google ikon</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on homescreen</string>
+  <string name="hide_icon_labels_pref_title">Skjul ikontekster på hjemmeskærmen</string>
   <string name="hide_all_apps_icon_labels_pref_title">Skjul ikontekst i draweren</string>
   <string name="workspace_label_color_hue_pref_title">Color of icon labels on homescreen</string>
   <string name="all_apps_opacity_pref_title">Skuffe gennemsigtighed</string>
@@ -275,7 +275,7 @@
   <string name="full_width_width_widgets_pref_title">Fuld bredde widgets</string>
   <string name="full_width_widgets_pref_summary">Tillad widgets at spænde over hele bredden uden polstring</string>
   <string name="notification_access_pref_title">Notifikations tegn og forhåndsvisning</string>
-  <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
+  <string name="notification_access_pref_summary">Tillad Lawnchair adgang til dine notifikationer for at aktivere denne egenskab</string>
   <string name="general_pref_title">General</string>
   <string name="pixel_ui_pref_title">Pixel brugerflade</string>
   <string name="behavior_pref_title">Adfærd</string>
@@ -294,7 +294,7 @@
   <string name="restart_lawnchair_pref_summary">Kan være nyttigt, hvis nogle indstillinger ikke anvendes korrekt</string>
   <string name="rebuild_icondb_pref_title">Genopret ikon database</string>
   <string name="pinch_to_overview_pref_title">Træk sammen for oversigt</string>
-  <string name="pinch_to_overview_pref_summary">Pinch on the homescreen to open the overview</string>
+  <string name="pinch_to_overview_pref_summary">Træk sammen på hjemmeskærmen for at vise oversigt</string>
   <string name="light_statusbar_pref_title">Lysbar status</string>
   <string name="light_statusbar_pref_force">Statusbaren vil vise mørke ikoner</string>
   <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
@@ -302,14 +302,14 @@
   <string name="keep_scroll_state_pref_title">Gem sidste rulleposition</string>
   <string name="keep_scroll_state_pref_summary">Gem sidste rulleposition i applikationsoversigten</string>
   <string name="home_opens_drawer_pref_title">Hjem-knappen åbner dine appoversigten</string>
-  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the homescreen will open the app drawer</string>
+  <string name="home_opens_drawer_pref_summary">Tryk hjem-knappen på hjemmeskærmen vil åbne appoversigten</string>
   <string name="show_hidden_pref_title">Vis skjulte apps</string>
   <string name="show_hidden_pref_on">Skjulte apps bliver vist til at ændre indstillinger for synlighed</string>
   <string name="show_hidden_pref_off">Skjulte apps vil ikke være synlige</string>
-  <string name="export_db_title">Export database</string>
-  <string name="import_db_title">Import database</string>
-  <string name="export_prefs_title">Export settings</string>
-  <string name="import_prefs_title">Import settings</string>
+  <string name="export_db_title">Database</string>
+  <string name="import_db_title">Database</string>
+  <string name="export_prefs_title">Indstillinger</string>
+  <string name="import_prefs_title">Indstillinger</string>
   <string name="notification_listener_label">Lawnchair - Notifikationsskilte</string>
   <string name="color_extraction_label">Lawnchar - Farveudtræk</string>
   <string name="test_title">Test</string>
