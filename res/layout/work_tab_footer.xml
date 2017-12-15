@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.views.WorkModeToggleContainer
+<com.android.launcher3.views.WorkFooterContainer
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -22,11 +22,23 @@
     android:paddingRight="@dimen/dynamic_grid_cell_padding_x"
     android:paddingTop="@dimen/all_apps_work_profile_tab_footer_top_padding">
 
+    <ImageView
+        android:id="@+id/work_footer_divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:importantForAccessibility="no"
+        android:paddingBottom="@dimen/all_apps_divider_margin_vertical"
+        android:paddingTop="@dimen/all_apps_divider_margin_vertical"
+        android:scaleType="fitXY"
+        android:src="@drawable/all_apps_divider"/>
+
     <Switch
         android:id="@+id/work_mode_toggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+        android:layout_below="@id/work_footer_divider"
         android:theme="@style/WorkModeSwitchTheme"/>
 
     <TextView
@@ -36,7 +48,6 @@
         android:layout_alignBaseline="@id/work_mode_toggle"
         android:layout_alignParentStart="true"
         android:ellipsize="end"
-        android:fontFamily="roboto-regular"
         android:lines="1"
         android:text="@string/work_profile_toggle_label"
         android:textColor="?android:attr/textColorTertiary"
@@ -50,7 +61,6 @@
         android:layout_marginTop="8dp"
         android:src="@drawable/ic_corp"/>
 
-
     <TextView
         android:id="@+id/managed_by_label"
         android:layout_width="wrap_content"
@@ -63,7 +73,8 @@
         android:lines="1"
         android:minHeight="24dp"
         android:paddingStart="12dp"
+        android:text="@string/managed_by_your_organisation"
         android:textColor="?android:attr/textColorHint"
         android:textSize="13sp"/>
 
-</com.android.launcher3.views.WorkModeToggleContainer>
+</com.android.launcher3.views.WorkFooterContainer>

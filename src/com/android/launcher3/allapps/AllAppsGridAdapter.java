@@ -381,10 +381,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_WORK_TAB_FOOTER:
                 Switch workModeToggle = holder.itemView.findViewById(R.id.work_mode_toggle);
                 workModeToggle.setChecked(!isAnyProfileQuietModeEnabled());
-
-                TextView textView = holder.itemView.findViewById(R.id.managed_by_label);
-                // TODO: Configure the textview properly.
-                textView.setText("Managed by your company");
                 break;
         }
         if (mBindViewCallback != null) {

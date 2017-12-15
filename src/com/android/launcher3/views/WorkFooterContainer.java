@@ -21,19 +21,19 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 /**
- * Container to show work mode toggle in all-apps
+ * Container to show work footer in all-apps.
  */
-public class WorkModeToggleContainer extends RelativeLayout {
+public class WorkFooterContainer extends RelativeLayout {
 
-    public WorkModeToggleContainer(Context context) {
+    public WorkFooterContainer(Context context) {
         super(context);
     }
 
-    public WorkModeToggleContainer(Context context, AttributeSet attrs) {
+    public WorkFooterContainer(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public WorkModeToggleContainer(Context context, AttributeSet attrs, int defStyleAttr) {
+    public WorkFooterContainer(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
