@@ -257,8 +257,27 @@
   <string name="pref_iconLabelsInTwoLines">نمایش برچسب آیکن‌ها در دو خط</string>
   <string name="white_google_icon_pref_title">استفاده از آیکن گوگل سفید</string>
   <string name="all_apps_opacity_pref_title">شفافیت منوی اپلیکیشن‌ها</string>
+  <string name="pixel_ui_pref_title">تم</string>
+  <string name="export_db_title">پایگاه داده</string>
+  <string name="import_db_title">پایگاه داده</string>
+  <string name="export_prefs_title">تنظیمات</string>
+  <string name="import_prefs_title">تنظیمات</string>
+  <string name="edit_icon_reset">بازنشانی</string>
+  <string name="theme_pref_title">تم</string>
+  <string name="theme_black">سیاه</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">بازیابی</string>
+  <string name="backup_export_title">پشتیبان</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="none">هیچ‌کدام</string>
+  <string name="folder">پوشه</string>
+  <string name="loading">در حال بارگذاری...</string>
+  <string name="icon_shape_none">هیچ‌کدام</string>
+  <string name="about_version">نسخه</string>
+  <string name="about_contributors_title">شرکاء</string>
+  <string name="about_changelog">تغییرات ایجاد شده</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="hide_app_apply">اعمال‌ کردن</string>
+  <string name="hide_app_reset">بازنشانی</string>
 </resources>
