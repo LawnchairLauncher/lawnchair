@@ -282,13 +282,13 @@
   <string name="general_pref_title">Pulpit</string>
   <string name="dock_pref_title">Dock</string>
   <string name="app_drawer_pref_title">Szuflada aplikacji</string>
-  <string name="pixel_ui_pref_title">Pixel UI</string>
+  <string name="pixel_ui_pref_title">Theme</string>
   <string name="behavior_pref_title">Zachowanie</string>
   <string name="debug_pref_title">Opcje debugujące</string>
-  <string name="general_pref_summary">Ekran główny, panel dolny, lista aplikacji</string>
+  <string name="general_pref_summary">Spersonalizuj swój pulpit</string>
   <string name="dock_pref_summary">Spersonalizuj dock</string>
   <string name="app_drawer_pref_summary">Spersonalizuj szufladę aplikacji</string>
-  <string name="pixel_ui_pref_summary">Włącz funkcje specjalne Pixel Launcher</string>
+  <string name="pixel_ui_pref_summary">Różne elementy tematu</string>
   <string name="backup_pref_title">Kopia zapasowa</string>
   <string name="behavior_pref_summary">Zmień zachowanie Lawnchair</string>
   <string name="backup_pref_summary">Utwórz/Przywróć kopię zapasową ustawień i plików</string>
@@ -316,10 +316,10 @@
   <string name="show_hidden_pref_title">Pokaż ukryte aplikacje</string>
   <string name="show_hidden_pref_on">Ukryte aplikacje będą pokazane by zmienić ustawienia widoczności</string>
   <string name="show_hidden_pref_off">Ukryte aplikacje nie będą widoczne</string>
-  <string name="export_db_title">Eksportuj bazę danych</string>
-  <string name="import_db_title">Importuj bazę danych</string>
-  <string name="export_prefs_title">Eksportuj ustawienia</string>
-  <string name="import_prefs_title">Importuj ustawienia</string>
+  <string name="export_db_title">Bazę danych</string>
+  <string name="import_db_title">Bazę danych</string>
+  <string name="export_prefs_title">Ustawienia</string>
+  <string name="import_prefs_title">Ustawienia</string>
   <string name="notification_listener_label">Lawnchair - Odznaki powiadomień</string>
   <string name="color_extraction_label">Lawnchair - Pobieranie koloru</string>
   <string name="test_title">Test</string>
@@ -341,8 +341,8 @@
   <string name="pull_down_apps_search">Wyszukiwanie aplikacji</string>
   <string name="enable_screen_rotation">Włącz obracanie ekranu</string>
   <!-- Import/Export Strings -->
-  <string name="backup_import_title">Import</string>
-  <string name="backup_export_title">Export</string>
+  <string name="backup_import_title">Przywróć</string>
+  <string name="backup_export_title">Wsparcie</string>
   <string name="settings_export_success">Pomyślnie utworzono kopię zapasową ustawień</string>
   <string name="db_export_success">Pomyślnie utworzono kopię zapasową bazy danych</string>
   <string name="settings_import_success">Ustawienia zostały przywrócone pomyślnie</string>
@@ -418,4 +418,12 @@
   <string name="reset_alternative_icons_title">Zresetować ikony alternatywnych aplikacji?</string>
   <string name="reset_alternative_icons">Masz %1$d aplikacji z alternatywnymi ikonami, czy chcesz je zresetować?</string>
   <string name="error_no_browser">Nie znaleziono żadnej aktywności obsługującej adresy URL</string>
+  <string name="snowfall_title">Opad śniegu</string>
+  <string name="enable_snowfall_title">Włącz padający śnieg na ekranie głównym</string>
+  <string name="enable_snowfall_summary">Może powodować problemy z wydajnością.</string>
+  <string name="snowfall_enabled">\"Niech pada śnieg, niech pada śnieg!\"</string>
+  <string name="snowflake_size_scale">Skala płatka śniegu</string>
+  <string name="snowflakes_num">Maks. ilość płatków śniegu</string>
+  <string name="lawnfeed_outdated_title">Wymagana aktualizacja Lawnfeed</string>
+  <string name="lawnfeed_outdated">Nowsza wersja Lawnfeed jest wymagana do pracy z aktualną wersją Lawnchair.\n\nPrzed aktualizacją prawdopodobnie będzie wymagane usunięcie obecnej wersji Lawnfeed.\n\nCzy pobrać ją teraz?</string>
 </resources>

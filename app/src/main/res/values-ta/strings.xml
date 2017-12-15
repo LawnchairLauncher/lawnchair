@@ -345,6 +345,8 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">இறக்குமதி</string>
   <string name="backup_export_title">ஏற்றுமதி</string>
+  <string name="settings_export_success">அமைப்புகள் மறுபிரதி வெற்றிகரமாக</string>
+  <string name="db_export_success">அமைப்புகள் மறுபிரதி வெற்றிகரமாக</string>
   <string name="imexport_no_backup_found">மறுபிரதி காணவில்லை</string>
   <string name="imexport_external_storage_unreadable">வெளிப்புற சேமிப்பகம் படிக்க அல்ல (அமைப்புகள் அனுமதி அளித்தல்)</string>
   <string name="imexport_external_storage_unwritable">வெளிப்புற சேமிப்பகம் எழுதக்கூடிய அல்ல (அமைப்புகள் அனுமதி அளித்தல்)</string>

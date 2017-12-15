@@ -418,4 +418,12 @@
   <string name="reset_alternative_icons_title">Поништи алтернативне апликације икона?</string>
   <string name="reset_alternative_icons">Имате %1$d апликација са алтернативним иконама, желите ли да поништите их?</string>
   <string name="error_no_browser">Није пронађена никаква активност која би се бавила URL адресама</string>
+  <string name="snowfall_title">Снег</string>
+  <string name="enable_snowfall_title">Омогући снег на основном екрану</string>
+  <string name="enable_snowfall_summary">Може изазвати проблеме са перформансама.</string>
+  <string name="snowfall_enabled">„Нека је снег, нека пусти да пада снег”</string>
+  <string name="snowflake_size_scale">Скала величине пахуљица</string>
+  <string name="snowflakes_num">Максималан број пахуљица</string>
+  <string name="lawnfeed_outdated_title">Потребно је ажурирање Lawnfeed</string>
+  <string name="lawnfeed_outdated">За рад са овом верзијом Lawnfeed-а неопходна је нова верзија Lawnfeed-а.\n\nПре него што инсталирате исправку, вероватно ћете морати да деинсталирате тренутну верзију Lawnfeed-а.\n\nЖелите ли да је преузмете сада?</string>
 </resources>

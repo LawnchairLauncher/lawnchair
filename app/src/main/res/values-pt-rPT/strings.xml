@@ -24,18 +24,18 @@
   <!-- Work folder name -->
   <string name="work_folder_name">Trabalho</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
-  <string name="activity_not_found">A aplicação não está instalada.</string>
+  <string name="activity_not_found">Aplicação não instalada.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
-  <string name="activity_not_available">A aplicação não está disponível</string>
+  <string name="activity_not_available">Aplicação Indisponível</string>
   <!-- SafeMode shortcut error string -->
   <string name="safemode_shortcut_error">Aplicações transferidas estão desactivadas no Modo de segurança</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">Os Widgets estão desativados no Modo de segurança</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
-  <string name="shortcut_not_available">O atalho não está disponível</string>
+  <string name="shortcut_not_available">Atalho Indisponível</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">Prima sem soltar para escolher um widget.</string>
+  <string name="long_press_widget_to_add">Prima sem soltar para adicionar um widget.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
   <string name="long_accessible_way_to_add">Toque duas vezes sem soltar para escolher um widget ou utilize ações personalizadas.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
@@ -53,9 +53,9 @@
   <string name="all_apps_search_market_message">Pesquisar mais aplicações</string>
   <!-- Drag and drop -->
   <!-- Error message when user has filled a page -->
-  <string name="out_of_space">Sem espaço suficiente neste Ecrã principal.</string>
+  <string name="out_of_space">Espaço insuficiente nesta página.</string>
   <!-- Error message when user has filled the hotseat -->
-  <string name="hotseat_out_of_space">Não existe mais espaço no tabuleiro de Favoritos</string>
+  <string name="hotseat_out_of_space">Espaço insuficiente para mais favoritos.</string>
   <!-- All applications label -->
   <string name="all_apps_button_label">Lista de aplicações</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
@@ -73,11 +73,11 @@
   <!-- Permission description -->
   <string name="permdesc_install_shortcut">Permite a uma aplicação adicionar atalhos sem a intervenção do utilizador.</string>
   <!-- Permission short label -->
-  <string name="permlab_read_settings">ler definições e atalhos do Ecrã Principal</string>
+  <string name="permlab_read_settings">Ler definições e atalhos do Ecrã Principal</string>
   <!-- Permission description -->
   <string name="permdesc_read_settings">Permite à aplicação ler as definições e os atalhos no Ecrã Principal.</string>
   <!-- Permission short label -->
-  <string name="permlab_write_settings">escrever definições e atalhos do Ecrã principal</string>
+  <string name="permlab_write_settings">Escrever definições e atalhos do Ecrã principal</string>
   <!-- Permission description -->
   <string name="permdesc_write_settings">Permite à aplicação alterar as definições e os atalhos no Ecrã Principal.</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
@@ -246,6 +246,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair é uma aplicação da tela inicial criada por Till Kottmann (aka deletescape). É baseado no Launcher3 da AOSP.</string>
   <string name="about_title">Sobre</string>
+  <string name="about_pref_summary">Conheça sobre a equipe de Lawnchair</string>
   <string name="changelog_title">Changelog da build #%d</string>
   <string name="week_day_format">%1$s,%2$s</string>
   <string name="icon_pack_preference_title">Pacote de ícones</string>
@@ -278,10 +279,14 @@
   <string name="notification_access_pref_title">Crachás de notificação e pré-visualização</string>
   <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
   <string name="general_pref_title">Geral</string>
+  <string name="dock_pref_title">Dock</string>
+  <string name="app_drawer_pref_title">Gaveta de aplicações</string>
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Comportamento</string>
   <string name="debug_pref_title">Depuração</string>
   <string name="general_pref_summary">Ambiente de Trabalho, Doca &amp; Aplicações</string>
+  <string name="dock_pref_summary">Personalize o seu dock</string>
+  <string name="app_drawer_pref_summary">Personalize a sua gaveta de aplicações</string>
   <string name="pixel_ui_pref_summary">Ativar recursos exclusivos do Pixel Launcher</string>
   <string name="backup_pref_title">Cópia de Segurança</string>
   <string name="behavior_pref_summary">Alterar comportamento do Lawnchair</string>
@@ -337,6 +342,12 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Importar</string>
   <string name="backup_export_title">Exportar</string>
+  <string name="settings_export_success">Backup de configurações com êxito</string>
+  <string name="db_export_success">Banco de dados de backup com êxito</string>
+  <string name="settings_import_success">Definições restauradas com sucesso</string>
+  <string name="db_import_success">Banco de dados restaurado com êxito</string>
+  <string name="export_error">Não consegui fazer backup</string>
+  <string name="import_error">Não é possível restaurar</string>
   <string name="imexport_no_backup_found">Nenhum backup encontrado</string>
   <string name="imexport_external_storage_unreadable">Armazenamento Interno não pode ser lido (conceder permissões nas definições)</string>
   <string name="imexport_external_storage_unwritable">Armazenamento Interno não pode ser escrito (conceder permissões nas definições)</string>
@@ -392,5 +403,26 @@
   <string name="lock_desktop">Bloquear ambiente de trabalho</string>
   <string name="lawnfeed_not_found">Lawnfeed não instalado</string>
   <string name="google_app_not_found">Aplicação \"Google\" não instalada</string>
+  <string name="lawnfeed_incompatible">Versão incompatível do Lawnfeed instalado</string>
   <string name="set_default_launcher">Predefinir launcher</string>
+  <string name="enable_spring_pref_title">Habilitar o efeito primavera</string>
+  <string name="hide_app">Ocultar aplicação</string>
+  <string name="hide_app_sum">Ocultar aplicações da gaveta de aplicações</string>
+  <string name="hide_app_selected">&#160;selecionada</string>
+  <string name="hidden_app">Aplicação ocultada</string>
+  <string name="hide_app_apply">Aplicar</string>
+  <string name="unauthorized_device">Este dispositivo possui algumas ferramentas de pirataria instaladas. Por favor, desinstale-os a continuar.</string>
+  <string name="hide_app_reset">Reinicializar</string>
+  <string name="two_row_dock">Duas linha de dock</string>
+  <string name="reset_alternative_icons_title">Redefinir os ícones do app alternativo?</string>
+  <string name="reset_alternative_icons">Você tem %1$d apps com ícones alternativos, quer para repô-los?</string>
+  <string name="error_no_browser">Nenhuma atividade encontrada para manipular URLs</string>
+  <string name="snowfall_title">Neve</string>
+  <string name="enable_snowfall_title">Permitir a queda de neve na tela inicial</string>
+  <string name="enable_snowfall_summary">Pode causar problemas de desempenho.</string>
+  <string name="snowfall_enabled">\"Deixe nevar, deixe nevar, deixe nevar!\"</string>
+  <string name="snowflake_size_scale">Escala de tamanho do floco de neve</string>
+  <string name="snowflakes_num">Número máximo de flocos de neve</string>
+  <string name="lawnfeed_outdated_title">Lawnfeed atualização necessária</string>
+  <string name="lawnfeed_outdated">Uma nova versão do Lawnfeed é necessário para trabalhar com esta versão do Lawnchair.\n\nAntes de instalar a atualização, você provavelmente precisará desinstalar a versão atual do Lawnfeed.\n\nVocê deseja baixá-lo agora?</string>
 </resources>

@@ -418,4 +418,12 @@
   <string name="reset_alternative_icons_title">Сбросить альтернативные значки приложения?</string>
   <string name="reset_alternative_icons">У вас %1$d приложений с альтернативными значками, хотите сбросить их?</string>
   <string name="error_no_browser">Не найдено приложение для обработки URL-адресов</string>
+  <string name="snowfall_title">Снегопад</string>
+  <string name="enable_snowfall_title">Включить снегопад на главном экране</string>
+  <string name="enable_snowfall_summary">Может вызвать снижение производительности.</string>
+  <string name="snowfall_enabled">Снегопад</string>
+  <string name="snowflake_size_scale">Размер снежинок</string>
+  <string name="snowflakes_num">Максимальное количество снежинок</string>
+  <string name="lawnfeed_outdated_title">Требуется обновление Lawnfeed</string>
+  <string name="lawnfeed_outdated">Для работы с этой версией Lawnchair, требуется новая версия Lawnfeed.\n\nПеред установкой обновления, вам вероятно будет нужно удалить текущую версию Lawnfeed.\n\nХотите скачать обновление сейчас?</string>
 </resources>
