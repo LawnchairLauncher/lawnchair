@@ -621,7 +621,6 @@ public class AlphabeticalAppsList {
 
         // Add the work profile footer if required.
         if (mIsWork) {
-            mAdapterItems.add(AdapterItem.asAllAppsDivider(position++));
             mAdapterItems.add(AdapterItem.asWorkTabFooter(position++));
         }
     }

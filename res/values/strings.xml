@@ -330,5 +330,7 @@
     <string name="bottom_work_tab_user_education_title">Find work apps here</string>
     <!-- Body text in bottom user education view in work tab -->
     <string name="bottom_work_tab_user_education_body">Each work app has an orange badge, which means it\'s kept secure by your organization. Work apps can be moved to your Home Screen for easier access.</string>
+    <!-- Label in work tab to tell users that work profile is managed by their organisation. -->
+    <string name="managed_by_your_organisation">Managed by your organisation</string>
 
 </resources>
