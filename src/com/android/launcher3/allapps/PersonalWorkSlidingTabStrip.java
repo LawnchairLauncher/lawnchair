@@ -40,8 +40,9 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout {
     private int mSelectedIndicatorHeight;
     private int mIndicatorLeft = -1;
     private int mIndicatorRight = -1;
+    private int mIndicatorPosition = 0;
+    private float mIndicatorOffset;
     private int mSelectedPosition = 0;
-    private float mSelectionOffset;
     private boolean mIsRtl;
 
     public PersonalWorkSlidingTabStrip(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -67,12 +68,13 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout {
     }
 
     public void updateIndicatorPosition(int position, float positionOffset) {
-        mSelectedPosition = position;
-        mSelectionOffset = positionOffset;
+        mIndicatorPosition = position;
+        mIndicatorOffset = positionOffset;
         updateIndicatorPosition();
     }
 
     public void updateTabTextColor(int pos) {
+        mSelectedPosition = pos;
         for (int i = 0; i < getChildCount(); i++) {
             Button tab = (Button) getChildAt(i);
             tab.setSelected(i == pos);
@@ -83,24 +85,24 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         updateTabTextColor(mSelectedPosition);
-        updateIndicatorPosition(mSelectedPosition, 0);
+        updateIndicatorPosition(mIndicatorPosition, mIndicatorOffset);
     }
 
     private void updateIndicatorPosition() {
-        final View tab = getChildAt(mSelectedPosition);
+        final View tab = getChildAt(mIndicatorPosition);
         int left, right;
 
         if (tab != null && tab.getWidth() > 0) {
             left = tab.getLeft();
             right = tab.getRight();
 
-            if (mSelectionOffset > 0f && mSelectedPosition < getChildCount() - 1) {
+            if (mIndicatorOffset > 0f && mIndicatorPosition < getChildCount() - 1) {
                 // Draw the selection partway between the tabs
-                View nextTitle = getChildAt(mSelectedPosition + 1);
-                left = (int) (mSelectionOffset * nextTitle.getLeft() +
-                        (1.0f - mSelectionOffset) * left);
-                right = (int) (mSelectionOffset * nextTitle.getRight() +
-                        (1.0f - mSelectionOffset) * right);
+                View nextTitle = getChildAt(mIndicatorPosition + 1);
+                left = (int) (mIndicatorOffset * nextTitle.getLeft() +
+                        (1.0f - mIndicatorOffset) * left);
+                right = (int) (mIndicatorOffset * nextTitle.getRight() +
+                        (1.0f - mIndicatorOffset) * right);
             }
         } else {
             left = right = -1;
