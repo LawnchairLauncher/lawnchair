@@ -244,7 +244,7 @@
   <string name="widgets_bottom_sheet_title">%1$s ウィジェット</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair はTill Kottmann（ deletescape としても知られています）によって作成されたランチャーアプリです。AOSP の Launcher3 に基づいて出来ています。</string>
-  <string name="about_title">Lawnchair について</string>
+  <string name="about_title">About</string>
   <string name="about_pref_summary">Lawnchair チームについてもっと知りましょう</string>
   <string name="changelog_title">ビルド #%d のための変更履歴</string>
   <string name="week_day_format">%1$s, %2$s</string>
@@ -306,7 +306,6 @@
   <string name="light_statusbar_pref_title">明るいステータスバー</string>
   <string name="light_statusbar_pref_force">ステータスバーは常に暗いアイコンで表示されます</string>
   <string name="light_statusbar_pref_off">ステータスバーは常に明るいアイコンで表示されます</string>
-  <string name="haptic_feedback_pref_title">振動を有効にする</string>
   <string name="keep_scroll_state_pref_title">スクロール位置を保存</string>
   <string name="keep_scroll_state_pref_summary">アプリドロワーのスクロール位置を保存します</string>
   <string name="home_opens_drawer_pref_title">ホームボタンでアプリドロワーを開く</string>
@@ -417,7 +416,7 @@
   <string name="reset_alternative_icons">アイコンが変更されているアプリが %1$d 個有ります。リセットしますか？</string>
   <string name="error_no_browser">URLを処理するアクティビティが見つかりません</string>
   <string name="snowfall_title">雪を降らす</string>
-  <string name="enable_snowfall_title">ホームスクリーンに雪を降らす</string>
+  <string name="enable_snowfall_title">ホーム画面に雪を降らす</string>
   <string name="enable_snowfall_summary">パフォーマンスに影響を及ぼす場合も有ります</string>
   <string name="snowfall_enabled">雪よ降れ降れ、もっと降れ！</string>
   <string name="snowflake_size_scale">雪結晶の大きさ</string>
