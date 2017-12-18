@@ -306,7 +306,6 @@
   <string name="light_statusbar_pref_title">亮色状态栏</string>
   <string name="light_statusbar_pref_force">状态栏将始终显示暗色图标</string>
   <string name="light_statusbar_pref_off">状态栏将始终显示亮色图标</string>
-  <string name="haptic_feedback_pref_title">启用震动</string>
   <string name="keep_scroll_state_pref_title">记住滚动位置</string>
   <string name="keep_scroll_state_pref_summary">记住在应用抽屉中滚动到了哪个位置</string>
   <string name="home_opens_drawer_pref_title">按 Home 键打开应用抽屉</string>
