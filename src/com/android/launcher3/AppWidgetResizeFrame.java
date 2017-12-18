@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.FocusLogic;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 public class AppWidgetResizeFrame extends AbstractFloatingView implements View.OnKeyListener {
     private static final int SNAP_DURATION = 150;

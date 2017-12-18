@@ -88,8 +88,10 @@ import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.WallpaperOffsetInterpolator;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
+import com.android.launcher3.widget.PendingAppWidgetHostView;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -3510,7 +3512,7 @@ public class Workspace extends PagedView
                 return false;
             });
             for (PendingAppWidgetHostView view : views) {
-                view.reinflate();
+                view.reInflate();
             }
         }
 

@@ -30,12 +30,12 @@ import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiSelector;
 
 import com.android.launcher3.LauncherAppWidgetHost;
-import com.android.launcher3.LauncherAppWidgetHostView;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.PendingAppWidgetHostView;
+import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;

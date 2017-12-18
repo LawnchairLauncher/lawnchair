@@ -27,6 +27,7 @@ import android.util.Log;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.Preconditions;
@@ -38,6 +39,8 @@ import java.util.concurrent.ExecutionException;
 import static com.android.launcher3.SettingsActivity.NOTIFICATION_BADGING;
 
 public class LauncherAppState {
+
+    public static final String ACTION_FORCE_ROLOAD = "force-reload-launcher";
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     private static LauncherAppState INSTANCE;
@@ -102,6 +105,10 @@ public class LauncherAppState {
         filter.addAction(Intent.ACTION_MANAGED_PROFILE_AVAILABLE);
         filter.addAction(Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE);
         filter.addAction(Intent.ACTION_MANAGED_PROFILE_UNLOCKED);
+
+        if (FeatureFlags.IS_DOGFOOD_BUILD) {
+            filter.addAction(ACTION_FORCE_ROLOAD);
+        }
 
         mContext.registerReceiver(mModel, filter);
         UserManagerCompat.getInstance(mContext).enableAndResetCache();

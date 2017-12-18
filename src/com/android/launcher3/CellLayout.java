@@ -60,6 +60,7 @@ import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.ParcelableSparseArray;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

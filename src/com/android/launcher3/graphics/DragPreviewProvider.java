@@ -31,7 +31,7 @@ import android.view.View;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppWidgetHostView;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
