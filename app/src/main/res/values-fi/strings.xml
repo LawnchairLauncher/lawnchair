@@ -307,7 +307,6 @@
   <string name="light_statusbar_pref_title">Vaalea ilmoituspalkki</string>
   <string name="light_statusbar_pref_force">Ilmoituspalkki näyttää tummat kuvakkeet</string>
   <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
-  <string name="haptic_feedback_pref_title">Käytä värinää</string>
   <string name="keep_scroll_state_pref_title">Muista vierityskohta</string>
   <string name="keep_scroll_state_pref_summary">Muistaa vierityskohdan sovellusvalikossa</string>
   <string name="home_opens_drawer_pref_title">Koti-painike avaa sovellusvalikon</string>
