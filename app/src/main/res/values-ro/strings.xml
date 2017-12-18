@@ -308,7 +308,6 @@
   <string name="light_statusbar_pref_title">Bară de stare deschisă la culoare</string>
   <string name="light_statusbar_pref_force">Bara de stare va avea iconițe închise la culoare</string>
   <string name="light_statusbar_pref_off">Bara de stare va avea iconițe deschise la culoare</string>
-  <string name="haptic_feedback_pref_title">Activare vibrații</string>
   <string name="keep_scroll_state_pref_title">Memorează poziţia de parcurgere</string>
   <string name="keep_scroll_state_pref_summary">Salvează poziţia de parcurgere în sertarul de aplicații</string>
   <string name="home_opens_drawer_pref_title">Butonul Acasă deschide sertarul de aplicații</string>
