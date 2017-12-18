@@ -307,7 +307,6 @@
   <string name="light_statusbar_pref_title">Helle Statusleiste</string>
   <string name="light_statusbar_pref_force">Die Statusleiste zeigt dunkle Symbole</string>
   <string name="light_statusbar_pref_off">Die Statusleiste zeigt immer helle Icons.</string>
-  <string name="haptic_feedback_pref_title">Vibration aktivieren</string>
   <string name="keep_scroll_state_pref_title">Scrollposition speichern</string>
   <string name="keep_scroll_state_pref_summary">Speichert die Scrollposition in der App-Liste</string>
   <string name="home_opens_drawer_pref_title">Homebutton öffnet App-Liste</string>
