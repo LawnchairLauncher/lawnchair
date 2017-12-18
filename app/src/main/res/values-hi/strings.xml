@@ -307,7 +307,6 @@
   <string name="light_statusbar_pref_title">स्टेटसबार को हलके रंग में बदले</string>
   <string name="light_statusbar_pref_force">स्टेटस बार गहरे रंग के आइकोन दिखायेगा</string>
   <string name="light_statusbar_pref_off">स्टेटस बार हल्की रंग के आइकोन दिखायेगा</string>
-  <string name="haptic_feedback_pref_title">कंपन को सक्षम करें</string>
   <string name="keep_scroll_state_pref_title">स्क्रॉल स्थिति सहेजें</string>
   <string name="keep_scroll_state_pref_summary">ड्रोवर में स्क्रॉल स्थिति सहेजें</string>
   <string name="home_opens_drawer_pref_title">होम बटनसे ड्रोवर खोलना</string>
@@ -346,12 +345,12 @@
   <string name="db_export_success">डेटाबेस सफलतापूर्वक बैकअप किया गया</string>
   <string name="settings_import_success">सेटिंग्स सफलतापूर्वक पुनर्स्थापित की गई</string>
   <string name="db_import_success">डेटाबेस सफलतापूर्वक पुनर्स्थापित किया गया</string>
-  <string name="export_error">बैकअप नहीं ले सका</string>
+  <string name="export_error">बैकअप नहीं कर सके</string>
   <string name="import_error">पुनर्स्थापित नहीं किया जा सका</string>
   <string name="imexport_no_backup_found">कोई बैकअप फ़ाइल नहीं मिली</string>
-  <string name="imexport_external_storage_unreadable">बाह्य संग्रह पठनीय नहीं है (सेटिंग्स में अनुमति दें)</string>
-  <string name="imexport_external_storage_unwritable">बाह्य संग्रह लेखन योग्य नहीं है (सेटिंग्स में अनुमति दें)</string>
-  <string name="units_metric">मेट्रिक</string>
+  <string name="imexport_external_storage_unreadable">बाहरी स्टोरेज को पढ़ने योग्य बनाएं सैटिंग्स में</string>
+  <string name="imexport_external_storage_unwritable">सैटिंग्स में बाहरी स्टोरेज को लिखने योग्य बनाएं</string>
+  <string name="units_metric">मीट्रिक</string>
   <string name="units_imperial">इम्पीरियल</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <string name="pref_cat_weather">मौसम</string>
