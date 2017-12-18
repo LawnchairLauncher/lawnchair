@@ -307,7 +307,6 @@
   <string name="light_statusbar_pref_title">Ícones da barra de status brancos</string>
   <string name="light_statusbar_pref_force">A barra de status sempre mostrará ícones escuros</string>
   <string name="light_statusbar_pref_off">A barra de status sempre mostrará ícones claros</string>
-  <string name="haptic_feedback_pref_title">Habilitar vibração tátil</string>
   <string name="keep_scroll_state_pref_title">Salvar a posição da rolagem</string>
   <string name="keep_scroll_state_pref_summary">Salvar a posição da rolagem da gaveta de apps</string>
   <string name="home_opens_drawer_pref_title">Botão da tela inicial abre a gaveta de apps</string>
