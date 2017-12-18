@@ -309,7 +309,6 @@
   <string name="light_statusbar_pref_title">שורת מצב בהירה</string>
   <string name="light_statusbar_pref_force">שורת המצב תציג סמלים כהים</string>
   <string name="light_statusbar_pref_off">שורת המצב תציג סמלים בהירים</string>
-  <string name="haptic_feedback_pref_title">הפעל רטט</string>
   <string name="keep_scroll_state_pref_title">שמירת מיקום הגלילה</string>
   <string name="keep_scroll_state_pref_summary">שומר את מיקום הגלילה במגירת היישומים</string>
   <string name="home_opens_drawer_pref_title">כפתור הבית פותח את מגירת היישומים</string>
