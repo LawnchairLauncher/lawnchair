@@ -310,7 +310,6 @@
   <string name="light_statusbar_pref_title">Statusbar terang</string>
   <string name="light_statusbar_pref_force">Bilah status akan menampilkan ikon gelap</string>
   <string name="light_statusbar_pref_off">Bilah status akan menampilkan ikon terang</string>
-  <string name="haptic_feedback_pref_title">Aktifkan getaran</string>
   <string name="keep_scroll_state_pref_title">Jaga posisi gulir</string>
   <string name="keep_scroll_state_pref_summary">Mengingat posisi gulir di laci</string>
   <string name="home_opens_drawer_pref_title">Tombol beranda membuka laci aplikasi</string>
