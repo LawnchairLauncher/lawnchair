@@ -307,7 +307,6 @@
   <string name="light_statusbar_pref_title">Aydınlık durum çubuğu</string>
   <string name="light_statusbar_pref_force">Durum çubuğu koyu renkli simgeler gösterecektir</string>
   <string name="light_statusbar_pref_off">Durum çubuğu açık renkli simgeler gösterecektir</string>
-  <string name="haptic_feedback_pref_title">Titreşimi etkinleştir</string>
   <string name="keep_scroll_state_pref_title">Kaydırma konumunu kaydet</string>
   <string name="keep_scroll_state_pref_summary">Kaydırma konumunu uygulama çekmecesine kaydeder</string>
   <string name="home_opens_drawer_pref_title">Ana ekran tuşu ile uygulama çekmecesini aç</string>
