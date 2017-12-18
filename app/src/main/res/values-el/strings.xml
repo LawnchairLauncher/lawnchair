@@ -308,7 +308,6 @@
   <string name="light_statusbar_pref_title">Χρωματισμός εικονιδίων μπάρας ειδοποιήσεων</string>
   <string name="light_statusbar_pref_force">Η μπάρα ειδοποιήσεων θα εμφανίζει σκοτεινά εικονίδια</string>
   <string name="light_statusbar_pref_off">Η μπάρα ειδοποιήσεων θα εμφανίζει φωτεινά εικονίδια</string>
-  <string name="haptic_feedback_pref_title">Ενεργοποίηση δόνησης</string>
   <string name="keep_scroll_state_pref_title">Αποθήκευση θέσης κύλισης</string>
   <string name="keep_scroll_state_pref_summary">Αποθήκευση της θέσης κύλισης στο συρτάρι εφαρμογών</string>
   <string name="home_opens_drawer_pref_title">Το κουμπί αρχικής οθόνης θα ανοίγει το συρτάρι εφαρμογών</string>
@@ -317,7 +316,7 @@
   <string name="show_hidden_pref_on">Οι κρυφές εφαρμογές θα επανεμφανίζονται για να αλλάξετε τις ρυθμίσεις ορατότητας</string>
   <string name="show_hidden_pref_off">Οι κρυφές εφαρμογές δεν θα είναι ορατές</string>
   <string name="export_db_title">Βάσης δεδομένων</string>
-  <string name="import_db_title">Import database</string>
+  <string name="import_db_title">Βάσης δεδομένων</string>
   <string name="export_prefs_title">Ρυθμίσεων</string>
   <string name="import_prefs_title">Ρυθμίσεων</string>
   <string name="notification_listener_label">Εκκινητής Lawnchair - Εικονίδια ειδοποιήσεων</string>
