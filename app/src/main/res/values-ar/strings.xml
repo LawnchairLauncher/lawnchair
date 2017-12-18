@@ -311,7 +311,6 @@
   <string name="light_statusbar_pref_title">شريط حالة باهت</string>
   <string name="light_statusbar_pref_force">شريط المعلومات سيظهر أيقونات داكنة</string>
   <string name="light_statusbar_pref_off">شريط المعلومات سيظهر دائماً الأيقونات بلون فاتح.</string>
-  <string name="haptic_feedback_pref_title">تفعيل الإهتزاز</string>
   <string name="keep_scroll_state_pref_title">حفظ موضع التمرير</string>
   <string name="keep_scroll_state_pref_summary">حفظ موضع التمرير في قائمة التطبيقات</string>
   <string name="home_opens_drawer_pref_title">زر الصفحة الرئيسية يفتح قائمة التطبيقات</string>
