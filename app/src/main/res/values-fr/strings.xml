@@ -307,7 +307,6 @@
   <string name="light_statusbar_pref_title">Barre d\'état claire</string>
   <string name="light_statusbar_pref_force">La barre d\'état affichera des icônes sombres</string>
   <string name="light_statusbar_pref_off">La barre d’état affichera toujours des icônes claires</string>
-  <string name="haptic_feedback_pref_title">Activer les vibrations</string>
   <string name="keep_scroll_state_pref_title">Enregistrer la position du défilement</string>
   <string name="keep_scroll_state_pref_summary">Enregistre la position du défilement dans le tiroir des applications</string>
   <string name="home_opens_drawer_pref_title">Le bouton Home ouvre le tiroir des applications</string>
