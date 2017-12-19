@@ -104,3 +104,8 @@
 -keep interface com.android.launcher3.model.nano.LauncherDumpProto.** {
   *;
 }
+
+# BUG(70852369): Surpress additional warnings after changing from Proguard to R8
+-dontwarn android.app.**
+-dontwarn android.view.**
+-dontwarn android.os.**
