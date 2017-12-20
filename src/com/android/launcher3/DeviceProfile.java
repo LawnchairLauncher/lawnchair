@@ -248,7 +248,7 @@ public class DeviceProfile {
         computeAllAppsButtonSize(context);
 
         // This is done last, after iconSizePx is calculated above.
-        mBadgeRenderer = new BadgeRenderer(context, iconSizePx);
+        mBadgeRenderer = new BadgeRenderer(iconSizePx);
     }
 
     DeviceProfile getMultiWindowProfile(Context context, Point mwSize) {

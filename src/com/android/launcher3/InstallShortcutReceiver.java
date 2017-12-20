@@ -40,6 +40,7 @@ import android.util.Pair;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.graphics.BitmapInfo;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
@@ -480,7 +481,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 final LauncherAppState app = LauncherAppState.getInstance(mContext);
                 // Set default values until proper values is loaded.
                 appInfo.title = "";
-                appInfo.iconBitmap = app.getIconCache().getDefaultIcon(user);
+                app.getIconCache().getDefaultIcon(user).applyTo(appInfo);
                 final ShortcutInfo si = appInfo.makeShortcut();
                 if (Looper.myLooper() == LauncherModel.getWorkerLooper()) {
                     app.getIconCache().getTitleAndIcon(si, activityInfo, false /* useLowResIcon */);
@@ -497,7 +498,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 return Pair.create((ItemInfo) si, (Object) activityInfo);
             } else if (shortcutInfo != null) {
                 ShortcutInfo si = new ShortcutInfo(shortcutInfo, mContext);
-                si.iconBitmap = LauncherIcons.createShortcutIcon(shortcutInfo, mContext);
+                LauncherIcons.createShortcutIcon(shortcutInfo, mContext).applyTo(si);
                 return Pair.create((ItemInfo) si, (Object) shortcutInfo);
             } else if (providerInfo != null) {
                 LauncherAppWidgetProviderInfo info = LauncherAppWidgetProviderInfo
@@ -641,18 +642,20 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         // users wouldn't get here without intent forwarding anyway.
         info.user = Process.myUserHandle();
 
+        BitmapInfo iconInfo = null;
         if (bitmap instanceof Bitmap) {
-            info.iconBitmap = LauncherIcons.createIconBitmap((Bitmap) bitmap, app.getContext());
+            iconInfo = LauncherIcons.createIconBitmap((Bitmap) bitmap, app.getContext());
         } else {
             Parcelable extra = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
             if (extra instanceof Intent.ShortcutIconResource) {
                 info.iconResource = (Intent.ShortcutIconResource) extra;
-                info.iconBitmap = LauncherIcons.createIconBitmap(info.iconResource, app.getContext());
+                iconInfo = LauncherIcons.createIconBitmap(info.iconResource, app.getContext());
             }
         }
-        if (info.iconBitmap == null) {
-            info.iconBitmap = app.getIconCache().getDefaultIcon(info.user);
+        if (iconInfo == null) {
+            iconInfo = app.getIconCache().getDefaultIcon(info.user);
         }
+        iconInfo.applyTo(info);
 
         info.title = Utilities.trim(name);
         info.contentDescription = UserManagerCompat.getInstance(app.getContext())

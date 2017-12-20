@@ -32,8 +32,6 @@
 
     <!-- Popup container -->
     <color name="notification_icon_default_color">#757575</color> <!-- Gray 600 -->
-    <color name="badge_color">#1DE9B6</color> <!-- Teal A400 -->
-    <color name="folder_badge_color">#1DE9B6</color> <!-- Teal A400 -->
 
     <color name="icon_background">#E0E0E0</color> <!-- Gray 300 -->
     <color name="legacy_icon_background">#FFFFFF</color>

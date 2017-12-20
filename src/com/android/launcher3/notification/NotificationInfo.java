@@ -83,7 +83,7 @@ public class NotificationInfo implements View.OnClickListener {
         if (mIconDrawable == null) {
             mIconDrawable = new BitmapDrawable(context.getResources(), LauncherAppState
                     .getInstance(context).getIconCache()
-                    .getDefaultIcon(statusBarNotification.getUser()));
+                    .getDefaultIcon(statusBarNotification.getUser()).icon);
             mBadgeIcon = Notification.BADGE_ICON_NONE;
         }
         intent = notification.contentIntent;

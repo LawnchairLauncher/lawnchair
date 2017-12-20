@@ -212,10 +212,6 @@
     <!-- (touch_size - icon_size) / 2 -->
     <dimen name="system_shortcut_header_icon_padding">12dp</dimen>
 
-<!-- Icon badges (with notification counts) -->
-    <dimen name="badge_small_padding">0dp</dimen>
-    <dimen name="badge_large_padding">3dp</dimen>
-
 <!-- Notifications -->
     <dimen name="bg_round_rect_radius">12dp</dimen>
     <dimen name="notification_padding_start">16dp</dimen>

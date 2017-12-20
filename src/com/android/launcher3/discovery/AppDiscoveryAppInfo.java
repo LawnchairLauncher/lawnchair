@@ -18,12 +18,14 @@ package com.android.launcher3.discovery;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.graphics.ColorExtractor;
 
 public class AppDiscoveryAppInfo extends AppInfo {
 
@@ -41,6 +43,8 @@ public class AppDiscoveryAppInfo extends AppInfo {
         this.intent = item.isInstantApp ? item.launchIntent : item.installIntent;
         this.title = item.title;
         this.iconBitmap = item.bitmap;
+        this.iconColor = iconBitmap == null ? Color.TRANSPARENT :
+                ColorExtractor.findDominantColorByHue(item.bitmap);
         this.usingLowResIcon = false;
         this.isInstantApp = item.isInstantApp;
         this.isRecent = item.isRecent;

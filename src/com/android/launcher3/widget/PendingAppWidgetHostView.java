@@ -58,8 +58,6 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     private final int mStartState;
     private final boolean mDisabledForSafeMode;
 
-    private Bitmap mIcon;
-
     private Drawable mCenterDrawable;
     private Drawable mSettingIconDrawable;
 
@@ -129,53 +127,44 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
 
     @Override
     public void reapplyItemInfo(ItemInfoWithIcon info) {
-        Bitmap icon = info.iconBitmap;
-        if (mIcon == icon) {
-            return;
-        }
-        mIcon = icon;
         if (mCenterDrawable != null) {
             mCenterDrawable.setCallback(null);
             mCenterDrawable = null;
         }
-        if (mIcon != null) {
+        if (info.iconBitmap != null) {
             // The view displays three modes,
             //   1) App icon in the center
             //   2) Preload icon in the center
             //   3) Setup icon in the center and app icon in the top right corner.
             DrawableFactory drawableFactory = DrawableFactory.get(getContext());
             if (mDisabledForSafeMode) {
-                FastBitmapDrawable disabledIcon = drawableFactory.newIcon(mIcon, mInfo);
+                FastBitmapDrawable disabledIcon = drawableFactory.newIcon(info);
                 disabledIcon.setIsDisabled(true);
                 mCenterDrawable = disabledIcon;
                 mSettingIconDrawable = null;
             } else if (isReadyForClickSetup()) {
-                mCenterDrawable = drawableFactory.newIcon(mIcon, mInfo);
+                mCenterDrawable = drawableFactory.newIcon(info);
                 mSettingIconDrawable = getResources().getDrawable(R.drawable.ic_setting).mutate();
-
-                updateSettingColor();
+                updateSettingColor(info.iconColor);
             } else {
                 mCenterDrawable = DrawableFactory.get(getContext())
-                        .newPendingIcon(mIcon, getContext());
-                mCenterDrawable.setCallback(this);
+                        .newPendingIcon(info, getContext());
                 mSettingIconDrawable = null;
                 applyState();
             }
+            mCenterDrawable.setCallback(this);
             mDrawableSizeChanged = true;
         }
         invalidate();
     }
 
-    private void updateSettingColor() {
-        int color = Utilities.findDominantColorByHue(mIcon, 20);
+    private void updateSettingColor(int dominantColor) {
         // Make the dominant color bright.
         float[] hsv = new float[3];
-        Color.colorToHSV(color, hsv);
+        Color.colorToHSV(dominantColor, hsv);
         hsv[1] = Math.min(hsv[1], MIN_SATUNATION);
         hsv[2] = 1;
-        color = Color.HSVToColor(hsv);
-
-        mSettingIconDrawable.setColorFilter(color,  PorterDuff.Mode.SRC_IN);
+        mSettingIconDrawable.setColorFilter(Color.HSVToColor(hsv),  PorterDuff.Mode.SRC_IN);
     }
 
     @Override

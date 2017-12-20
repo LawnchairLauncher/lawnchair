@@ -21,7 +21,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -42,6 +41,7 @@ import android.support.annotation.Nullable;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.IconCache;
+import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -51,6 +51,7 @@ import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.Provider;
+import com.android.launcher3.util.Themes;
 
 /**
  * Helper methods for generating various launcher icons
@@ -69,7 +70,7 @@ public class LauncherIcons {
      * Returns a bitmap suitable for the all apps view. If the package or the resource do not
      * exist, it returns null.
      */
-    public static Bitmap createIconBitmap(ShortcutIconResource iconRes, Context context) {
+    public static BitmapInfo createIconBitmap(ShortcutIconResource iconRes, Context context) {
         PackageManager packageManager = context.getPackageManager();
         // the resource
         try {
@@ -92,12 +93,13 @@ public class LauncherIcons {
     /**
      * Returns a bitmap which is of the appropriate size to be displayed as an icon
      */
-    public static Bitmap createIconBitmap(Bitmap icon, Context context) {
+    public static BitmapInfo createIconBitmap(Bitmap icon, Context context) {
         final int iconBitmapSize = LauncherAppState.getIDP(context).iconBitmapSize;
         if (iconBitmapSize == icon.getWidth() && iconBitmapSize == icon.getHeight()) {
-            return icon;
+            return BitmapInfo.fromBitmap(icon);
         }
-        return createIconBitmap(new BitmapDrawable(context.getResources(), icon), context, 1f);
+        return BitmapInfo.fromBitmap(
+                createIconBitmap(new BitmapDrawable(context.getResources(), icon), context, 1f));
     }
 
     /**
@@ -105,7 +107,7 @@ public class LauncherIcons {
      * view or workspace. The icon is badged for {@param user}.
      * The bitmap is also visually normalized with other icons.
      */
-    public static Bitmap createBadgedIconBitmap(
+    public static BitmapInfo createBadgedIconBitmap(
             Drawable icon, UserHandle user, Context context, int iconAppTargetSdk) {
 
         IconNormalizer normalizer;
@@ -141,18 +143,20 @@ public class LauncherIcons {
             }
         }
 
+        final Bitmap result;
         if (user != null && !Process.myUserHandle().equals(user)) {
             BitmapDrawable drawable = new FixedSizeBitmapDrawable(bitmap);
             Drawable badged = context.getPackageManager().getUserBadgedIcon(
                     drawable, user);
             if (badged instanceof BitmapDrawable) {
-                return ((BitmapDrawable) badged).getBitmap();
+                result = ((BitmapDrawable) badged).getBitmap();
             } else {
-                return createIconBitmap(badged, context, 1f);
+                result = createIconBitmap(badged, context, 1f);
             }
         } else {
-            return bitmap;
+            result = bitmap;
         }
+        return BitmapInfo.fromBitmap(result);
     }
 
     /**
@@ -302,29 +306,23 @@ public class LauncherIcons {
         return drawable;
     }
 
-    public static Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfo, Context context) {
+    public static BitmapInfo createShortcutIcon(ShortcutInfoCompat shortcutInfo, Context context) {
         return createShortcutIcon(shortcutInfo, context, true /* badged */);
     }
 
-    public static Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfo, Context context,
+    public static BitmapInfo createShortcutIcon(ShortcutInfoCompat shortcutInfo, Context context,
             boolean badged) {
         return createShortcutIcon(shortcutInfo, context, badged, null);
     }
 
-    public static Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfo, Context context,
-            final Bitmap fallbackIcon) {
-        // If the shortcut is pinned but no longer has an icon in the system,
-        // keep the current icon instead of reverting to the default icon.
-        return createShortcutIcon(shortcutInfo, context, true, Provider.of(fallbackIcon));
-    }
-
-    public static Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfo, Context context,
+    public static BitmapInfo createShortcutIcon(ShortcutInfoCompat shortcutInfo, Context context,
             boolean badged, @Nullable Provider<Bitmap> fallbackIconProvider) {
         LauncherAppState app = LauncherAppState.getInstance(context);
         Drawable unbadgedDrawable = DeepShortcutManager.getInstance(context)
                 .getShortcutIconDrawable(shortcutInfo,
                         app.getInvariantDeviceProfile().fillResIconDpi);
         IconCache cache = app.getIconCache();
+
         Bitmap unbadgedBitmap = null;
         if (unbadgedDrawable != null) {
             unbadgedBitmap = LauncherIcons.createScaledBitmapWithoutShadow(
@@ -334,27 +332,32 @@ public class LauncherIcons {
                 unbadgedBitmap = fallbackIconProvider.get();
             }
             if (unbadgedBitmap == null) {
-                unbadgedBitmap = cache.getDefaultIcon(Process.myUserHandle());
+                unbadgedBitmap = cache.getDefaultIcon(Process.myUserHandle()).icon;
             }
         }
 
+        BitmapInfo result = new BitmapInfo();
         if (!badged) {
-            return unbadgedBitmap;
+            result.color = Themes.getColorAccent(context);
+            result.icon = unbadgedBitmap;
+            return result;
         }
 
         int size = app.getInvariantDeviceProfile().iconBitmapSize;
 
         final Bitmap unbadgedfinal = unbadgedBitmap;
-        final Bitmap badge = getShortcutInfoBadge(shortcutInfo, cache);
+        final ItemInfoWithIcon badge = getShortcutInfoBadge(shortcutInfo, cache);
 
-        return UiFactory.createFromRenderer(size, size, false, (c) -> {
+        result.color = badge.iconColor;
+        result.icon = UiFactory.createFromRenderer(size, size, false, (c) -> {
             ShadowGenerator.getInstance(context).recreateIcon(unbadgedfinal, c);
             badgeWithDrawable(c, new FastBitmapDrawable(badge), context);
         });
+        return result;
     }
 
-    public static Bitmap getShortcutInfoBadge(ShortcutInfoCompat shortcutInfo, IconCache cache) {
-        final Bitmap badgeBitmap;
+    public static ItemInfoWithIcon getShortcutInfoBadge(
+            ShortcutInfoCompat shortcutInfo, IconCache cache) {
         ComponentName cn = shortcutInfo.getActivity();
         if (cn != null) {
             // Get the app info for the source activity.
@@ -365,13 +368,12 @@ public class LauncherIcons {
                     .addCategory(Intent.CATEGORY_LAUNCHER)
                     .setComponent(cn);
             cache.getTitleAndIcon(appInfo, false);
-            badgeBitmap = appInfo.iconBitmap;
+            return appInfo;
         } else {
             PackageItemInfo pkgInfo = new PackageItemInfo(shortcutInfo.getPackage());
             cache.getTitleAndIconForApp(pkgInfo, false);
-            badgeBitmap = pkgInfo.iconBitmap;
+            return pkgInfo;
         }
-        return badgeBitmap;
     }
 
     /**

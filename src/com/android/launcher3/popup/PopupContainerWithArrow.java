@@ -54,6 +54,7 @@ import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherModel;
@@ -742,11 +743,11 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     }
 
     private void updateNotificationHeader() {
-        ItemInfo itemInfo = (ItemInfo) mOriginalIcon.getTag();
+        ItemInfoWithIcon itemInfo = (ItemInfoWithIcon) mOriginalIcon.getTag();
         BadgeInfo badgeInfo = mLauncher.getPopupDataProvider().getBadgeInfoForItem(itemInfo);
         if (mNotificationItemView != null && badgeInfo != null) {
-            IconPalette palette = mOriginalIcon.getBadgePalette();
-            mNotificationItemView.updateHeader(badgeInfo.getNotificationCount(), palette);
+            mNotificationItemView.updateHeader(
+                    badgeInfo.getNotificationCount(), itemInfo.iconColor);
         }
     }
 

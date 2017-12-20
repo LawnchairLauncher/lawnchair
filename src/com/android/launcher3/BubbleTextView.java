@@ -88,7 +88,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     private BadgeInfo mBadgeInfo;
     private BadgeRenderer mBadgeRenderer;
-    private IconPalette mBadgePalette;
+    private int mBadgeColor;
     private float mBadgeScale;
     private boolean mForceHideBadge;
     private Point mTempSpaceForBadgeOffset = new Point();
@@ -183,7 +183,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
      */
     public void reset() {
         mBadgeInfo = null;
-        mBadgePalette = null;
+        mBadgeColor = Color.TRANSPARENT;
         mBadgeScale = 0f;
         mForceHideBadge = false;
     }
@@ -193,7 +193,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info, boolean promiseStateChanged) {
-        applyIconAndLabel(info.iconBitmap, info);
+        applyIconAndLabel(info);
         setTag(info);
         if (promiseStateChanged || (info.hasPromiseIconUi())) {
             applyPromiseState(promiseStateChanged);
@@ -203,7 +203,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     public void applyFromApplicationInfo(AppInfo info) {
-        applyIconAndLabel(info.iconBitmap, info);
+        applyIconAndLabel(info);
 
         // We don't need to check the info since it's not a ShortcutInfo
         super.setTag(info);
@@ -219,7 +219,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     public void applyFromPackageItemInfo(PackageItemInfo info) {
-        applyIconAndLabel(info.iconBitmap, info);
+        applyIconAndLabel(info);
         // We don't need to check the info since it's not a ShortcutInfo
         super.setTag(info);
 
@@ -227,8 +227,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         verifyHighRes();
     }
 
-    private void applyIconAndLabel(Bitmap icon, ItemInfo info) {
-        FastBitmapDrawable iconDrawable = DrawableFactory.get(getContext()).newIcon(icon, info);
+    private void applyIconAndLabel(ItemInfoWithIcon info) {
+        FastBitmapDrawable iconDrawable = DrawableFactory.get(getContext()).newIcon(info);
+        mBadgeColor = IconPalette.getMutedColor(info.iconColor, 0.54f);
+
         iconDrawable.setIsDisabled(info.isDisabled());
         setIcon(iconDrawable);
         setText(info.title);
@@ -401,7 +403,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             final int scrollX = getScrollX();
             final int scrollY = getScrollY();
             canvas.translate(scrollX, scrollY);
-            mBadgeRenderer.draw(canvas, mBadgePalette, mBadgeInfo, mTempIconBounds, mBadgeScale,
+            mBadgeRenderer.draw(canvas, mBadgeColor, mTempIconBounds, mBadgeScale,
                     mTempSpaceForBadgeOffset);
             canvas.translate(-scrollX, -scrollY);
         }
@@ -532,7 +534,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                     preloadDrawable.setLevel(progressLevel);
                 } else {
                     preloadDrawable = DrawableFactory.get(getContext())
-                            .newPendingIcon(info.iconBitmap, getContext());
+                            .newPendingIcon(info, getContext());
                     preloadDrawable.setLevel(progressLevel);
                     setIcon(preloadDrawable);
                 }
@@ -550,10 +552,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             float newBadgeScale = isBadged ? 1f : 0;
             mBadgeRenderer = mLauncher.getDeviceProfile().mBadgeRenderer;
             if (wasBadged || isBadged) {
-                mBadgePalette = IconPalette.getBadgePalette(getResources());
-                if (mBadgePalette == null) {
-                    mBadgePalette = ((FastBitmapDrawable) mIcon).getIconPalette();
-                }
                 // Animate when a badge is first added or when it is removed.
                 if (animate && (wasBadged ^ isBadged) && isShown()) {
                     ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, newBadgeScale).start();
@@ -563,10 +561,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                 }
             }
         }
-    }
-
-    public IconPalette getBadgePalette() {
-        return mBadgePalette;
     }
 
     /**

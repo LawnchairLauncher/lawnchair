@@ -265,7 +265,7 @@ public class DragView extends View {
                             mDrawBitmap = !(dr instanceof FolderAdaptiveIcon);
 
                             if (info.isDisabled()) {
-                                FastBitmapDrawable d = new FastBitmapDrawable(null);
+                                FastBitmapDrawable d = new FastBitmapDrawable((Bitmap) null);
                                 d.setIsDisabled(true);
                                 mBaseFilter = (ColorMatrixColorFilter) d.getColorFilter();
                             }
@@ -367,7 +367,8 @@ public class DragView extends View {
                 return new FixedSizeEmptyDrawable(iconSize);
             }
             ShortcutInfoCompat si = (ShortcutInfoCompat) obj;
-            Bitmap badge = LauncherIcons.getShortcutInfoBadge(si, appState.getIconCache());
+            Bitmap badge = LauncherIcons.getShortcutInfoBadge(si, appState.getIconCache())
+                    .iconBitmap;
 
             float badgeSize = mLauncher.getResources().getDimension(R.dimen.profile_badge_size);
             float insetFraction = (iconSize - badgeSize) / iconSize;

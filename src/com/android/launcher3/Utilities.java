@@ -28,7 +28,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -44,7 +43,6 @@ import android.text.style.TtsSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
-import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -283,89 +281,6 @@ public final class Utilities {
         } else {
             return false;
         }
-    }
-
-    /**
-     * This picks a dominant color, looking for high-saturation, high-value, repeated hues.
-     * @param bitmap The bitmap to scan
-     * @param samples The approximate max number of samples to use.
-     */
-    public static int findDominantColorByHue(Bitmap bitmap, int samples) {
-        final int height = bitmap.getHeight();
-        final int width = bitmap.getWidth();
-        int sampleStride = (int) Math.sqrt((height * width) / samples);
-        if (sampleStride < 1) {
-            sampleStride = 1;
-        }
-
-        // This is an out-param, for getting the hsv values for an rgb
-        float[] hsv = new float[3];
-
-        // First get the best hue, by creating a histogram over 360 hue buckets,
-        // where each pixel contributes a score weighted by saturation, value, and alpha.
-        float[] hueScoreHistogram = new float[360];
-        float highScore = -1;
-        int bestHue = -1;
-
-        int[] pixels = new int[samples];
-        int pixelCount = 0;
-
-        for (int y = 0; y < height; y += sampleStride) {
-            for (int x = 0; x < width; x += sampleStride) {
-                int argb = bitmap.getPixel(x, y);
-                int alpha = 0xFF & (argb >> 24);
-                if (alpha < 0x80) {
-                    // Drop mostly-transparent pixels.
-                    continue;
-                }
-                // Remove the alpha channel.
-                int rgb = argb | 0xFF000000;
-                Color.colorToHSV(rgb, hsv);
-                // Bucket colors by the 360 integer hues.
-                int hue = (int) hsv[0];
-                if (hue < 0 || hue >= hueScoreHistogram.length) {
-                    // Defensively avoid array bounds violations.
-                    continue;
-                }
-                if (pixelCount < samples) {
-                    pixels[pixelCount++] = rgb;
-                }
-                float score = hsv[1] * hsv[2];
-                hueScoreHistogram[hue] += score;
-                if (hueScoreHistogram[hue] > highScore) {
-                    highScore = hueScoreHistogram[hue];
-                    bestHue = hue;
-                }
-            }
-        }
-
-        SparseArray<Float> rgbScores = new SparseArray<>();
-        int bestColor = 0xff000000;
-        highScore = -1;
-        // Go back over the RGB colors that match the winning hue,
-        // creating a histogram of weighted s*v scores, for up to 100*100 [s,v] buckets.
-        // The highest-scoring RGB color wins.
-        for (int i = 0; i < pixelCount; i++) {
-            int rgb = pixels[i];
-            Color.colorToHSV(rgb, hsv);
-            int hue = (int) hsv[0];
-            if (hue == bestHue) {
-                float s = hsv[1];
-                float v = hsv[2];
-                int bucket = (int) (s * 100) + (int) (v * 10000);
-                // Score by cumulative saturation * value.
-                float score = s * v;
-                Float oldTotal = rgbScores.get(bucket);
-                float newTotal = oldTotal == null ? score : oldTotal + score;
-                rgbScores.put(bucket, newTotal);
-                if (newTotal > highScore) {
-                    highScore = newTotal;
-                    // All the colors in the winning bucket are very similar. Last in wins.
-                    bestColor = rgb;
-                }
-            }
-        }
-        return bestColor;
     }
 
     /*

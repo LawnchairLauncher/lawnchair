@@ -472,12 +472,12 @@ public class LoaderTask implements Runnable {
                                         public Bitmap get() {
                                             // If the pinned deep shortcut is no longer published,
                                             // use the last saved icon instead of the default.
-                                            return c.loadIcon(finalInfo);
+                                            return c.loadIcon(finalInfo)
+                                                    ? finalInfo.iconBitmap : null;
                                         }
                                     };
-                                    info.iconBitmap = LauncherIcons
-                                            .createShortcutIcon(pinnedShortcut, context,
-                                                    true /* badged */, fallbackIconProvider);
+                                    LauncherIcons.createShortcutIcon(pinnedShortcut, context,
+                                            true /* badged */, fallbackIconProvider).applyTo(info);
                                     if (pmHelper.isAppSuspended(
                                             pinnedShortcut.getPackage(), info.user)) {
                                         info.runtimeStatusFlags |= FLAG_DISABLED_SUSPENDED;
