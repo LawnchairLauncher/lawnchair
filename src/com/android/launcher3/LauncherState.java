@@ -137,7 +137,7 @@ public class LauncherState {
     }
 
     public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
-        return new float[] {1, 0};
+        return new float[] {1, 0, 0};
     }
 
     public float getHoseatAlpha(Launcher launcher) {

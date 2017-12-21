@@ -39,7 +39,7 @@ import com.android.quickstep.RecentsView.ScrollState;
 public class WorkspaceCard extends FrameLayout implements PageCallbacks, OnClickListener {
 
     private final Rect mTempRect = new Rect();
-    private final float[] mEvaluatedFloats = new float[2];
+    private final float[] mEvaluatedFloats = new float[3];
     private final FloatArrayEvaluator mEvaluator = new FloatArrayEvaluator(mEvaluatedFloats);
 
     // UI related information
@@ -151,21 +151,25 @@ public class WorkspaceCard extends FrameLayout implements PageCallbacks, OnClick
 
     @Override
     public int onPageScroll(ScrollState scrollState) {
-        setTranslationX(scrollState.distanceFromScreenCenter);
-
         float factor = scrollState.linearInterpolation;
         float scale = factor * WORKSPACE_SCALE_ON_SCROLL + (1 - factor);
         setScaleX(scale);
         setScaleY(scale);
 
+        float translateX = scrollState.distanceFromScreenCenter;
         if (mIsWorkspaceScrollingEnabled) {
             initUiData();
 
             mEvaluator.evaluate(factor, mScaleAndTranslatePage0, mScaleAndTranslatePage1);
             mWorkspace.setScaleX(mEvaluatedFloats[0]);
             mWorkspace.setScaleY(mEvaluatedFloats[0]);
-            mWorkspace.setTranslationY(mEvaluatedFloats[1]);
+            mWorkspace.setTranslationX(mEvaluatedFloats[1]);
+            mWorkspace.setTranslationY(mEvaluatedFloats[2]);
+            translateX += mEvaluatedFloats[1];
         }
+
+        setTranslationX(translateX);
+
         return SCROLL_TYPE_WORKSPACE;
     }
 
@@ -174,13 +178,15 @@ public class WorkspaceCard extends FrameLayout implements PageCallbacks, OnClick
             return;
         }
 
+        float overlap = getResources().getDimension(R.dimen.workspace_overview_offset_x);
+
         RecentsView.getPageRect(mLauncher, mTempRect);
         mScaleAndTranslatePage0 = OverviewState
-                .getScaleAndTranslationForPageRect(mLauncher, mTempRect);
+                .getScaleAndTranslationForPageRect(mLauncher, 0, mTempRect);
         Rect scaledDown = new Rect(mTempRect);
         Utilities.scaleRectAboutCenter(scaledDown, WORKSPACE_SCALE_ON_SCROLL);
         mScaleAndTranslatePage1 = OverviewState
-                .getScaleAndTranslationForPageRect(mLauncher, scaledDown);
+                .getScaleAndTranslationForPageRect(mLauncher, overlap, scaledDown);
         mUIDataValid = true;
     }
 }

@@ -123,10 +123,8 @@ public class WorkspaceStateTransitionAnimation {
      * Starts a transition animation for the workspace.
      */
     private void setWorkspaceProperty(LauncherState state, PropertySetter propertySetter) {
-        float[] scaleAndTranslationY = state.getWorkspaceScaleAndTranslation(mLauncher);
-        mNewScale = scaleAndTranslationY[0];
-        final float finalWorkspaceTranslationY = scaleAndTranslationY[1];
-
+        float[] scaleAndTranslation = state.getWorkspaceScaleAndTranslation(mLauncher);
+        mNewScale = scaleAndTranslation[0];
         PageAlphaProvider pageAlphaProvider = state.getWorkspacePageAlphaProvider(mLauncher);
         final int childCount = mWorkspace.getChildCount();
         for (int i = 0; i < childCount; i++) {
@@ -135,8 +133,10 @@ public class WorkspaceStateTransitionAnimation {
         }
 
         propertySetter.setFloat(mWorkspace, SCALE_PROPERTY, mNewScale, Interpolators.ZOOM_IN);
+        propertySetter.setFloat(mWorkspace, View.TRANSLATION_X,
+                scaleAndTranslation[1], Interpolators.ZOOM_IN);
         propertySetter.setFloat(mWorkspace, View.TRANSLATION_Y,
-                finalWorkspaceTranslationY, Interpolators.ZOOM_IN);
+                scaleAndTranslation[2], Interpolators.ZOOM_IN);
 
         float hotseatAlpha = state.getHoseatAlpha(mLauncher);
         propertySetter.setViewAlpha(mWorkspace.createHotseatAlphaAnimator(hotseatAlpha),

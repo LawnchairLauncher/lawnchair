@@ -22,6 +22,7 @@ import android.view.View;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -49,10 +50,12 @@ public class OverviewState extends LauncherState {
         }
 
         RecentsView rv = launcher.getOverviewPanel();
+        float overlap = 0;
         if (rv.getCurrentPage() >= rv.getFirstTaskIndex()) {
             Utilities.scaleRectAboutCenter(pageRect, WORKSPACE_SCALE_ON_SCROLL);
+            overlap = launcher.getResources().getDimension(R.dimen.workspace_overview_offset_x);
         }
-        return getScaleAndTranslationForPageRect(launcher, pageRect);
+        return getScaleAndTranslationForPageRect(launcher, overlap, pageRect);
     }
 
     @Override
@@ -77,15 +80,23 @@ public class OverviewState extends LauncherState {
         return launcher.getOverviewPanel();
     }
 
-    public static float[] getScaleAndTranslationForPageRect(Launcher launcher, Rect pageRect) {
+    public static float[] getScaleAndTranslationForPageRect(Launcher launcher, float offsetX,
+            Rect pageRect) {
         Workspace ws = launcher.getWorkspace();
         float childWidth = ws.getNormalChildWidth();
 
         Rect insets = launcher.getDragLayer().getInsets();
         float scale = pageRect.width() / childWidth;
 
+        float translationX = offsetX / scale;
+        if (Utilities.isRtl(launcher.getResources())) {
+            translationX = -translationX;
+        }
+
         float halfHeight = ws.getHeight() / 2;
         float childTop = halfHeight - scale * (halfHeight - ws.getPaddingTop() - insets.top);
-        return new float[] {scale, pageRect.top - childTop};
+        float translationY = pageRect.top - childTop;
+
+        return new float[] {scale, translationX, translationY};
     }
 }

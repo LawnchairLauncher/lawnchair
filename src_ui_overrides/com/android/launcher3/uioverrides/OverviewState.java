@@ -59,7 +59,7 @@ public class OverviewState extends LauncherState {
         int workspaceOffsetTopEdge =
                 workspaceTop + ((workspaceBottom - workspaceTop) - scaledHeight) / 2;
         int overviewOffsetTopEdge = overviewTop + (overviewBottom - overviewTop - scaledHeight) / 2;
-        return new float[] {SCALE_FACTOR, -workspaceOffsetTopEdge + overviewOffsetTopEdge };
+        return new float[] {SCALE_FACTOR, 0, -workspaceOffsetTopEdge + overviewOffsetTopEdge };
     }
 
     @Override
