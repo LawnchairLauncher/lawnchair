@@ -26,7 +26,7 @@
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
   <string name="activity_not_found">O app não está instalado.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
-  <string name="activity_not_available">O app não está disponível</string>
+  <string name="activity_not_available">O Aplicativo não está disponível</string>
   <!-- SafeMode shortcut error string -->
   <string name="safemode_shortcut_error">Download de aplicativo esta desativado no modo de segurança</string>
   <!-- SafeMode widget error string -->
