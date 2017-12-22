@@ -263,8 +263,8 @@
   <string name="blur_radius_pref_title">Stärke des Unschärfeeffekts</string>
   <string name="pref_iconLabelsInTwoLines">2 Zeilen für Appnamen erlauben</string>
   <string name="white_google_icon_pref_title">Weiße Google-Icons verwenden</string>
-  <string name="hide_icon_labels_pref_title">Icon-Beschriftungen auf dem Startbildschirm verstecken</string>
-  <string name="hide_all_apps_icon_labels_pref_title">Icon-Beschriftungen in der App-Übersicht ausblenden</string>
+  <string name="hide_icon_labels_pref_title">Keine Icon-Beschriftungen auf dem Startbildschirm</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Keine Icon-Beschriftungen in der App-Übersicht</string>
   <string name="workspace_label_color_hue_pref_title">Farbe der Icon-Beschriftung auf dem Startbildschirm</string>
   <string name="all_apps_opacity_pref_title">Transparenz der App-Liste</string>
   <string name="num_cols_pref_title">Anzahl der Spalten</string>
@@ -345,7 +345,7 @@
   <string name="db_export_success">Datenbank erfolgreich gesichert</string>
   <string name="settings_import_success">Einstellungen wurden erfolgreich wiederhergestellt</string>
   <string name="db_import_success">Datenbank erfolgreich wiederhergestellt</string>
-  <string name="export_error">Konnte nicht sichern</string>
+  <string name="export_error">Konnte kein Backup erstellen</string>
   <string name="import_error">Konnte nicht wiederherstellen</string>
   <string name="imexport_no_backup_found">Kein Backup gefunden</string>
   <string name="imexport_external_storage_unreadable">Externer Speicher ist nicht lesbar (Berechtigung in den Einstellungen erforderlich)</string>
