@@ -66,7 +66,7 @@
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
   <string name="uninstall_drop_target_label">הסר התקנה</string>
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
-  <string name="app_info_drop_target_label">פרטי יישום</string>
+  <string name="app_info_drop_target_label">פרטי אפליקציה</string>
   <!-- Permissions: -->
   <!-- Permission short label -->
   <string name="permlab_install_shortcut">התקן קיצורי דרך</string>
