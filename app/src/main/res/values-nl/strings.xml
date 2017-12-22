@@ -254,7 +254,7 @@
   <string name="hotseat_uses_extracted_colors_pref_title">Favorietenbalk gebruikt achtergrondkleuren</string>
   <string name="hotseat_show_arrow">Pijl weergeven</string>
   <string name="hotseat_show_page_indicator">Pagina-indicator weergeven</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">De favorietenbalk zal de kleur van de achtergrond gebruiken</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">De favorietenbalk zal een kleur uit de achtergrond gebruiken</string>
   <string name="hotseat_uses_extracted_colors_pref_off">De favorietenbalk zal grijs zijn, maar aangepast op de helderheid van de achtergrond</string>
   <string name="transparent_hotseat_pref_title">Doorzichtige favorietenbalk</string>
   <string name="dynamic_ui_pref_title">Haal accentkleur uit achtergrond</string>
