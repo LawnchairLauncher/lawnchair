@@ -306,7 +306,6 @@
   <string name="light_statusbar_pref_title">밝은 상단바</string>
   <string name="light_statusbar_pref_force">상단바의 아이콘이 어두운 색으로 바뀝니다.</string>
   <string name="light_statusbar_pref_off">상단바의 아이콘이 밝은 색으로 바뀝니다.</string>
-  <string name="haptic_feedback_pref_title">진동 활성화</string>
   <string name="keep_scroll_state_pref_title">스크롤 위치 기억하기</string>
   <string name="keep_scroll_state_pref_summary">앱 서랍에서 스크롤 위치 기억하기</string>
   <string name="home_opens_drawer_pref_title">홈 버튼으로 앱 서랍 열기</string>

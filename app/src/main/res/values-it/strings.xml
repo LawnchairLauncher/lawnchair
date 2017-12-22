@@ -307,7 +307,6 @@
   <string name="light_statusbar_pref_title">Statusbar chiara</string>
   <string name="light_statusbar_pref_force">La barra di stato mostrerà icone scure</string>
   <string name="light_statusbar_pref_off">La status bar mostrerà sempre icone chiare.</string>
-  <string name="haptic_feedback_pref_title">Abilita vibrazione</string>
   <string name="keep_scroll_state_pref_title">Mantieni la posizione di scorrimento</string>
   <string name="keep_scroll_state_pref_summary">Mantieni la posizione di scorrimento nel menù delle applicazioni</string>
   <string name="home_opens_drawer_pref_title">Il tasto home apre il menù delle applicazioni</string>

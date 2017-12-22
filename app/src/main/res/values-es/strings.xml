@@ -307,7 +307,6 @@
   <string name="light_statusbar_pref_title">Barra de estado clara</string>
   <string name="light_statusbar_pref_force">La barra de estado mostrará iconos oscuros</string>
   <string name="light_statusbar_pref_off">La barra de estado mostrará iconos claros</string>
-  <string name="haptic_feedback_pref_title">Habilitar vibración</string>
   <string name="keep_scroll_state_pref_title">Mantener posición de desplazamiento</string>
   <string name="keep_scroll_state_pref_summary">Recuerda la posición del cajón de aplicaciones</string>
   <string name="home_opens_drawer_pref_title">El botón de inicio abre el cajón de aplicaciones</string>

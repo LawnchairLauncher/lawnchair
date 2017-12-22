@@ -140,9 +140,9 @@
     The second "it" refers to the app. -->
   <string name="abandoned_promise_explanation">इस आइकन का ऐप्स इंस्टॉल नहीं है. आप उसे निकाल सकते हैं या ऐप्स की खोज करके उसे मैन्युअल रूप से इंस्टॉल कर सकते हैं.    </string>
   <!-- Title for an app which is being downloaded. -->
-  <string name="app_downloading_title"><xliff:g id="NAME">%1$s</xliff:g> डाउनलोड हो रहा है, <xliff:g id="PROGRESS">%2$s</xliff:g> पूर्ण</string>
+  <string name="app_downloading_title"><xliff:g id="Name">%1$s</xliff:g> डाउनलोड हो रहा है, <xliff:g id="Progress">%2$s</xliff:g> पूर्ण</string>
   <!-- Title for an app whose download has been started. -->
-  <string name="app_waiting_download_title"><xliff:g id="NAME">%1$s</xliff:g> के इंस्टॉल होने की प्रतीक्षा की जा रही है</string>
+  <string name="app_waiting_download_title"><xliff:g id="NAME">%1$s</xliff:g> इंस्टॉल होने की प्रतीक्षा की जा रही है</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
   <string name="action_add_to_workspace">होम स्‍क्रीन में जोड़ें</string>
@@ -307,7 +307,6 @@
   <string name="light_statusbar_pref_title">स्टेटसबार को हलके रंग में बदले</string>
   <string name="light_statusbar_pref_force">स्टेटस बार गहरे रंग के आइकोन दिखायेगा</string>
   <string name="light_statusbar_pref_off">स्टेटस बार हल्की रंग के आइकोन दिखायेगा</string>
-  <string name="haptic_feedback_pref_title">कंपन को सक्षम करें</string>
   <string name="keep_scroll_state_pref_title">स्क्रॉल स्थिति सहेजें</string>
   <string name="keep_scroll_state_pref_summary">ड्रोवर में स्क्रॉल स्थिति सहेजें</string>
   <string name="home_opens_drawer_pref_title">होम बटनसे ड्रोवर खोलना</string>
@@ -319,8 +318,8 @@
   <string name="import_db_title">डेटाबेस</string>
   <string name="export_prefs_title">सेटिंग्स</string>
   <string name="import_prefs_title">सेटिंग्स</string>
-  <string name="notification_listener_label">लोवन्चैर - अधिसूचना बैज</string>
-  <string name="color_extraction_label">लोवन्चैर - रंग निष्कर्षण</string>
+  <string name="notification_listener_label">लाॅनचेयर - अधिसूचना बैज</string>
+  <string name="color_extraction_label">लाॅनचेयर - रंग निष्कर्षण</string>
   <string name="test_title">परीक्षण</string>
   <string name="visibility">दृश्यता</string>
   <string name="default_text">पूर्व निर्धारित</string>
@@ -330,38 +329,38 @@
   <string name="theme_pref_title">थीम</string>
   <string name="theme_light">हल्का</string>
   <string name="theme_dark">डार्क</string>
-  <string name="theme_black">काली</string>
-  <string name="hide_hotseat_pref_title">डोक छुपाएँ</string>
+  <string name="theme_black">काला</string>
+  <string name="hide_hotseat_pref_title">डोक को छुपाएं</string>
   <string name="all_icons">सभी आइकन्स</string>
   <string name="pull_down_action_pref_title">नीचे खींचना</string>
   <string name="pull_down_do_nothing">कुछ न करें</string>
   <string name="pull_down_notis">अधिसूचना दिखाएं</string>
-  <string name="pull_down_search">खोज करे</string>
+  <string name="pull_down_search">खोज करें</string>
   <string name="pull_down_apps_search">ऐप्स खोजें</string>
   <string name="enable_screen_rotation">स्क्रीन रोटेशन सक्षम करें</string>
   <!-- Import/Export Strings -->
-  <string name="backup_import_title">आयात</string>
+  <string name="backup_import_title">पुनर्स्थापित करें</string>
   <string name="backup_export_title">निर्यात</string>
   <string name="settings_export_success">सेटिंग्स निर्यात सफलता</string>
   <string name="db_export_success">डेटाबेस सफलतापूर्वक बैकअप किया गया</string>
   <string name="settings_import_success">सेटिंग्स सफलतापूर्वक पुनर्स्थापित की गई</string>
   <string name="db_import_success">डेटाबेस सफलतापूर्वक पुनर्स्थापित किया गया</string>
-  <string name="export_error">बैकअप नहीं ले सका</string>
+  <string name="export_error">बैकअप नहीं कर सके</string>
   <string name="import_error">पुनर्स्थापित नहीं किया जा सका</string>
   <string name="imexport_no_backup_found">कोई बैकअप फ़ाइल नहीं मिली</string>
-  <string name="imexport_external_storage_unreadable">बाह्य संग्रह पठनीय नहीं है (सेटिंग्स में अनुमति दें)</string>
-  <string name="imexport_external_storage_unwritable">बाह्य संग्रह लेखन योग्य नहीं है (सेटिंग्स में अनुमति दें)</string>
-  <string name="units_metric">मेट्रिक</string>
+  <string name="imexport_external_storage_unreadable">बाहरी स्टोरेज को पढ़ने योग्य बनाएं सैटिंग्स में</string>
+  <string name="imexport_external_storage_unwritable">सैटिंग्स में बाहरी स्टोरेज को लिखने योग्य बनाएं</string>
+  <string name="units_metric">मीट्रिक</string>
   <string name="units_imperial">इम्पीरियल</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <string name="pref_cat_weather">मौसम</string>
   <string name="pref_weather_title">मौसम को सक्षम करें</string>
-  <string name="pref_weather_units">मौसम इकाइ</string>
-  <string name="pref_weather_city_summary">सर्वोत्तम परिणामों के लिए देश कोड शामिल हैं</string>
+  <string name="pref_weather_units">मौसम‌ इकाईयां</string>
+  <string name="pref_weather_city_summary">बेहतर परिणामों के लिए देश के कोड को शामिल करें</string>
   <string name="pref_weather_city_title">शहर</string>
   <string name="none">कोई नहीं</string>
   <string name="pref_applyTheme">पर थीम लागू करें</string>
-  <string name="pref_applyBlur">पर धुंधली असर लागू करे</string>
+  <string name="pref_applyBlur">पर धुंधला असर लागू करें</string>
   <string name="search_bar">खोज बार</string>
   <string name="folder">फ़ोल्डर</string>
   <string name="dock_allapps"><![CDATA[डॉक और दराज]]></string>
@@ -418,11 +417,11 @@
   <string name="reset_alternative_icons">आपके पास वैकल्पिक आइकन के साथ%1$d ऐप्स हैं, क्या आप उन्हें रीसेट करना चाहते हैं?</string>
   <string name="error_no_browser">URL को संभालने के लिए कोई गतिविधि नहीं मिली</string>
   <string name="snowfall_title">बर्फबारी</string>
-  <string name="enable_snowfall_title">होम स्क्रीन पर बर्फबारी सक्षम</string>
-  <string name="enable_snowfall_summary">प्रदर्शन समस्याएँ पैदा कर सकता है ।</string>
-  <string name="snowfall_enabled">\"बर्फ चलो, बर्फ चलो, बर्फ चलो!\"</string>
-  <string name="snowflake_size_scale">हिमपात का आकार पैमाने</string>
-  <string name="snowflakes_num">हिमपात की अधिकतम संख्या</string>
-  <string name="lawnfeed_outdated_title">लॉनफीड अपडेट की आवश्यकता है</string>
-  <string name="lawnfeed_outdated">लॉनफेड के इस संस्करण के साथ काम करने के लिए लॉनफेड का एक नया संस्करण आवश्यक है। \n\n अद्यतन को स्थापित करने से पहले आपको लॉनफेड के वर्तमान संस्करण की स्थापना रद्द करने की आवश्यकता होगी। \n\n क्या आप इसे अभी डाउनलोड करना चाहते हैं?</string>
+  <string name="enable_snowfall_title">होम स्क्रीन पर बर्फबारी सक्षम करें</string>
+  <string name="enable_snowfall_summary">प्रदर्शन समस्याएं उत्पन्न हो सकती हैं</string>
+  <string name="snowfall_enabled">\"बर्फबारी, बर्फबारी, बर्फबारी!\"</string>
+  <string name="snowflake_size_scale">बर्फ़ के टुकड़े का आकार पैमाने</string>
+  <string name="snowflakes_num">बर्फ़ के टुकड़ों की अधिकतम संख्या</string>
+  <string name="lawnfeed_outdated_title">लॉनफीड के अपडेट की आवश्यकता है</string>
+  <string name="lawnfeed_outdated">लॉनचेयर के इस संस्करण के साथ काम करने के लिए लॉनफीड का एक नया संस्करण आवश्यक है।\n\nअपडेट को स्थापित करने से पहले आपको लॉनफीड के वर्तमान संस्करण को अनइंस्टॉल करने की आवश्यकता होगी।\n\nक्या आप इसे अभी डाउनलोड करना चाहते हैं?</string>
 </resources>

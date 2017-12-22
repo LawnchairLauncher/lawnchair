@@ -307,7 +307,6 @@
   <string name="light_statusbar_pref_title">Ljust statusfält</string>
   <string name="light_statusbar_pref_force">Statusfältet kommer alltid att visa mörka ikoner</string>
   <string name="light_statusbar_pref_off">Statusfältet kommer alltid att visa ljusa ikoner.</string>
-  <string name="haptic_feedback_pref_title">Aktivera vibration</string>
   <string name="keep_scroll_state_pref_title">Spara scrollposition</string>
   <string name="keep_scroll_state_pref_summary">Sparar scrollpositionen i applistan</string>
   <string name="home_opens_drawer_pref_title">Hemknappen öppnar applistan</string>

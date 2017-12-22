@@ -24,9 +24,9 @@
   <!-- Work folder name -->
   <string name="work_folder_name">Trabalho</string>
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
-  <string name="activity_not_found">Aplicação não instalada.</string>
+  <string name="activity_not_found">A aplicação não está instalada.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
-  <string name="activity_not_available">Aplicação Indisponível</string>
+  <string name="activity_not_available">A aplicação não está disponível</string>
   <!-- SafeMode shortcut error string -->
   <string name="safemode_shortcut_error">Aplicações transferidas estão desactivadas no Modo de segurança</string>
   <!-- SafeMode widget error string -->
@@ -307,7 +307,6 @@
   <string name="light_statusbar_pref_title">Ocultar barra de status</string>
   <string name="light_statusbar_pref_force">A barra de status vai mostrar ícones escuros</string>
   <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
-  <string name="haptic_feedback_pref_title">Activar vibração</string>
   <string name="keep_scroll_state_pref_title">Gravar a posição de deslocamento</string>
   <string name="keep_scroll_state_pref_summary">Salvar a posição na gaveta de aplicações</string>
   <string name="home_opens_drawer_pref_title">Botão Home abre a gaveta de aplicações</string>

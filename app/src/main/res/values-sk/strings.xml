@@ -308,7 +308,6 @@
   <string name="light_statusbar_pref_title">Svetlý stavový riadok</string>
   <string name="light_statusbar_pref_force">V stavovom riadku budú zobrazené tmavé ikony</string>
   <string name="light_statusbar_pref_off">V stavovom riadku budú zobrazené svetlé ikony</string>
-  <string name="haptic_feedback_pref_title">Povoliť vibrácie</string>
   <string name="keep_scroll_state_pref_title">Zachovať pozíciu posunu</string>
   <string name="keep_scroll_state_pref_summary">Uloží pozíciu rolovania v menu aplikácie</string>
   <string name="home_opens_drawer_pref_title">Tlačidlom Domov sa otvorí ponuka aplikácií</string>

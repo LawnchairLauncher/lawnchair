@@ -307,7 +307,6 @@
   <string name="light_statusbar_pref_title">Világos állapotsáv</string>
   <string name="light_statusbar_pref_force">Az állapotsor mindig sötét ikonokat fog mutatni</string>
   <string name="light_statusbar_pref_off">Az állapotsor mindig világos ikonokat fog mutatni</string>
-  <string name="haptic_feedback_pref_title">Rezgés engedélyezése</string>
   <string name="keep_scroll_state_pref_title">Görgetési pozíció mentése</string>
   <string name="keep_scroll_state_pref_summary">Görgetési pozíció mentése az alkalmazásfiókban</string>
   <string name="home_opens_drawer_pref_title">Alkalmazásfiók megnyitása home gombbal</string>

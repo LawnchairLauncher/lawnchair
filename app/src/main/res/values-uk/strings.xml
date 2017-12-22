@@ -306,7 +306,6 @@
   <string name="light_statusbar_pref_title">Світлий рядок стану</string>
   <string name="light_statusbar_pref_force">Рядок стану показуватиме темні іконки</string>
   <string name="light_statusbar_pref_off">Рядок стану показуватиме світлі іконки</string>
-  <string name="haptic_feedback_pref_title">Увімкнути вібрацію</string>
   <string name="keep_scroll_state_pref_title">Зберігати позицію смуги прокрутки</string>
   <string name="keep_scroll_state_pref_summary">Зберігає положення прокручування в списку додатків</string>
   <string name="home_opens_drawer_pref_title">Домашня кнопка відкриває список додатків</string>
@@ -341,6 +340,8 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Відновити</string>
   <string name="backup_export_title">Резервна копія</string>
+  <string name="settings_import_success">Налаштування успішно відновлені</string>
+  <string name="db_import_success">Базу даних успішно відновлено</string>
   <string name="imexport_no_backup_found">Резервну копію не знайдено</string>
   <string name="imexport_external_storage_unreadable">Зовнішне сховище недоступно до читання (надати дозвіл в налаштуваннях)</string>
   <string name="units_metric">Метрична</string>
@@ -391,10 +392,18 @@
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
   <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
+  <string name="about_translators">Перекладачі</string>
   <string name="lock_desktop">Блокування робочого стола</string>
   <string name="lawnfeed_not_found">Lawnfeed не встановлено</string>
   <string name="google_app_not_found">Додаток Google не встановлено</string>
   <string name="set_default_launcher">Встановлення лаунчера за замовчуванням</string>
+  <string name="hide_app">Приховати програму</string>
   <string name="hide_app_apply">Застосувати</string>
   <string name="hide_app_reset">Скинути</string>
+  <string name="snowfall_title">Снігопад</string>
+  <string name="enable_snowfall_title">Увімкнути снігопад на домашньому екрані</string>
+  <string name="snowfall_enabled">Хай сніжить</string>
+  <string name="snowflake_size_scale">Розмір сніжинки</string>
+  <string name="snowflakes_num">Максимальна кількість сніжинок</string>
+  <string name="lawnfeed_outdated_title">Необхідне оновлення Lawnfeed</string>
 </resources>

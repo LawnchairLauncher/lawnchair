@@ -307,7 +307,6 @@
   <string name="light_statusbar_pref_title">Lys statuslinje</string>
   <string name="light_statusbar_pref_force">Statuslinjen vil vise mørke ikoner</string>
   <string name="light_statusbar_pref_off">Statuslinjen vil alltid vise lyse ikoner</string>
-  <string name="haptic_feedback_pref_title">Aktiver vibrasjon</string>
   <string name="keep_scroll_state_pref_title">Lagre bla-posisjon</string>
   <string name="keep_scroll_state_pref_summary">Lagrer bla-posisjonen i skuffen</string>
   <string name="home_opens_drawer_pref_title">Hjemknapp åpner skuff</string>

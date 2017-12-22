@@ -307,7 +307,6 @@
   <string name="light_statusbar_pref_title">Barra d\'estat clara</string>
   <string name="light_statusbar_pref_force">La barra d\'estat mostrarà icones fosques</string>
   <string name="light_statusbar_pref_off">La barra d\'estat mostrarà icones clares</string>
-  <string name="haptic_feedback_pref_title">Activa la vibració</string>
   <string name="keep_scroll_state_pref_title">Desa la posició del desplaçament</string>
   <string name="keep_scroll_state_pref_summary">Desa la posició de desplaçament al calaix</string>
   <string name="home_opens_drawer_pref_title">El botó Inici obre el calaix d\'aplicacions</string>
