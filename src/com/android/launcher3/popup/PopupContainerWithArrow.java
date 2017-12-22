@@ -341,15 +341,17 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         updateDividers();
 
         // Add the arrow.
-        final int arrowHorizontalOffset = getResources().getDimensionPixelSize(isAlignedWithStart()
-                ? R.dimen.popup_arrow_horizontal_offset_start
-                : R.dimen.popup_arrow_horizontal_offset_end);
+        final Resources res = getResources();
+        final int arrowCenterOffset = res.getDimensionPixelSize(isAlignedWithStart()
+                ? R.dimen.popup_arrow_horizontal_center_start
+                : R.dimen.popup_arrow_horizontal_center_end);
+        final int halfArrowWidth = res.getDimensionPixelSize(R.dimen.popup_arrow_width) / 2;
         mLauncher.getDragLayer().addView(mArrow);
         DragLayer.LayoutParams arrowLp = (DragLayer.LayoutParams) mArrow.getLayoutParams();
         if (mIsLeftAligned) {
-            mArrow.setX(getX() + arrowHorizontalOffset);
+            mArrow.setX(getX() + arrowCenterOffset - halfArrowWidth);
         } else {
-            mArrow.setX(getX() + getMeasuredWidth() - arrowHorizontalOffset);
+            mArrow.setX(getX() + getMeasuredWidth() - arrowCenterOffset - halfArrowWidth);
         }
 
         if (Gravity.isVertical(mGravity)) {
@@ -435,9 +437,6 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             x = rightAlignedX;
         }
         mIsLeftAligned = x == leftAlignedX;
-        if (mIsRtl) {
-            x -= dragLayer.getWidth() - width;
-        }
 
         // Offset x so that the arrow and shortcut icons are center-aligned with the original icon.
         int iconWidth = mOriginalIcon.getWidth()
@@ -529,8 +528,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
         // enforce contained is within screen
         DragLayer dragLayer = mLauncher.getDragLayer();
-        if (getTranslationX() + l < 0 ||
-                getTranslationX() + r > dragLayer.getWidth()) {
+        if (getTranslationX() + l < 0 || getTranslationX() + r > dragLayer.getWidth()) {
             // If we are still off screen, center horizontally too.
             mGravity |= Gravity.CENTER_HORIZONTAL;
         }
