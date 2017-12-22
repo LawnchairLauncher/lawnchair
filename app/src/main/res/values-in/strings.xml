@@ -273,7 +273,7 @@
   <string name="num_cols_pref_title">Jumlah kolom</string>
   <string name="num_rows_pref_title">Jumlah baris</string>
   <string name="num_hotseat_icons_pref_title">Jumlah ikon di dock</string>
-  <string name="icon_scale_pref_title">Pensekalaan ikon</string>
+  <string name="icon_scale_pref_title">Skala ikon</string>
   <string name="hotseat_height_scale">Pensekalaan tinggi</string>
   <string name="icon_text_scale_pref_title">Pensekalaan teks ikon</string>
   <string name="icon_text_padding_scale_pref_title">Pensekalaan batas antar ikon</string>
