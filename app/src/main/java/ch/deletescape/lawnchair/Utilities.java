@@ -163,17 +163,19 @@ public final class Utilities {
     // Blacklisted APKs which will be hidden, these include simple regex formatting, without
     // full regex formatting (e.g. com.android. will block everything that starts with com.android.)
     // Taken from: https://github.com/substratum/template/blob/kt-n/app/src/main/kotlin/substratum/theme/template/Constants.kt
-    private static final String[] BLACKLISTED_APPLICATIONS = {"com.android.vending.billing.InAppBillingService.LOCK",
-            "com.android.vending.billing.InAppBillingService.LACK",
+    private static final String[] BLACKLISTED_APPLICATIONS = {
             "cc.madkite.freedom",
-            "p.jasi2169.al3",
             "zone.jasi2169.uretpatcher",
             "uret.jasi2169.patcher",
+            "p.jasi2169.al3",
             "com.dimonvideo.luckypatcher",
             "com.chelpus.lackypatch",
             "com.forpda.lp",
             "com.android.vending.billing.InAppBillingService.LUCK",
             "com.android.vending.billing.InAppBillingService.CLON",
+            "com.android.vending.billing.InAppBillingService.LOCK",
+            "com.android.vending.billing.InAppBillingService.CRAC",
+            "com.android.vending.billing.InAppBillingService.LACK",
             "com.android.vendinc",
             "com.appcake",
             "ac.market.store",
@@ -189,7 +191,8 @@ public final class Utilities {
             "com.dv.marketmod.installer",
             "org.mobilism.android",
             "com.blackmartalpha",
-            "org.blackmart.market"};
+            "org.blackmart.market"
+    };
 
     public static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
