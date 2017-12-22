@@ -72,6 +72,7 @@ import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.ActionMode;
 import android.view.Display;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
@@ -198,6 +199,10 @@ public class Launcher extends BaseActivity
     // Type: SparseArray<Parcelable>
     private static final String RUNTIME_STATE_WIDGET_PANEL = "launcher.widget_panel";
 
+    // When starting an action mode, setting this tag will cause the action mode to be cancelled
+    // automatically when user interacts with the launcher.
+    public static final Object AUTO_CANCEL_ACTION_MODE = new Object();
+
     private LauncherStateManager mStateManager;
 
     private boolean mIsSafeModeEnabled;
@@ -275,6 +280,7 @@ public class Launcher extends BaseActivity
     private boolean mAppLaunchSuccess;
 
     private RotationPrefChangeHandler mRotationPrefChangeHandler;
+    private ActionMode mCurrentActionMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1626,6 +1632,9 @@ public class Launcher extends BaseActivity
 
     @Override
     public void onBackPressed() {
+        if (finishAutoCancelActionMode()) {
+            return;
+        }
         if (mLauncherCallbacks != null && mLauncherCallbacks.handleBackPressed()) {
             return;
         }
@@ -3013,6 +3022,26 @@ public class Launcher extends BaseActivity
                 recreate();
             }
         }
+    }
+
+    @Override
+    public void onActionModeStarted(ActionMode mode) {
+        super.onActionModeStarted(mode);
+        mCurrentActionMode = mode;
+    }
+
+    @Override
+    public void onActionModeFinished(ActionMode mode) {
+        super.onActionModeFinished(mode);
+        mCurrentActionMode = null;
+    }
+
+    public boolean finishAutoCancelActionMode() {
+        if (mCurrentActionMode != null && AUTO_CANCEL_ACTION_MODE == mCurrentActionMode.getTag()) {
+            mCurrentActionMode.finish();
+            return true;
+        }
+        return false;
     }
 
     /**
