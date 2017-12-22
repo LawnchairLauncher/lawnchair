@@ -49,7 +49,7 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
 
     private fun setNone() {
         icon = Utilities.getMyIcon(context)
-        summary = "None"
+        summary = context.getString(R.string.none)
     }
 
     override fun onClick() {
@@ -124,7 +124,7 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
         init {
             Collections.sort(this.supportedPackages) { lhs, rhs -> lhs.label.toString().compareTo(rhs.label.toString(), ignoreCase = true) }
 
-            val defaultLabel = "None"
+            val defaultLabel = context.getString(R.string.none)
             val icon = Utilities.getMyIcon(context)
             this.supportedPackages.add(0, IconPackInfo(defaultLabel, icon, ""))
         }

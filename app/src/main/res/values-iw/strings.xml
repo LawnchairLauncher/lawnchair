@@ -66,7 +66,7 @@
   <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
   <string name="uninstall_drop_target_label">הסר התקנה</string>
   <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
-  <string name="app_info_drop_target_label">פרטי יישום</string>
+  <string name="app_info_drop_target_label">פרטי אפליקציה</string>
   <!-- Permissions: -->
   <!-- Permission short label -->
   <string name="permlab_install_shortcut">התקן קיצורי דרך</string>
@@ -309,7 +309,6 @@
   <string name="light_statusbar_pref_title">שורת מצב בהירה</string>
   <string name="light_statusbar_pref_force">שורת המצב תציג סמלים כהים</string>
   <string name="light_statusbar_pref_off">שורת המצב תציג סמלים בהירים</string>
-  <string name="haptic_feedback_pref_title">הפעל רטט</string>
   <string name="keep_scroll_state_pref_title">שמירת מיקום הגלילה</string>
   <string name="keep_scroll_state_pref_summary">שומר את מיקום הגלילה במגירת היישומים</string>
   <string name="home_opens_drawer_pref_title">כפתור הבית פותח את מגירת היישומים</string>
@@ -419,4 +418,12 @@
   <string name="reset_alternative_icons_title">האם לאפס את סמלי האפליקציות החלופיים?</string>
   <string name="reset_alternative_icons">קיימים %1$d אפליקציות עם סמלים חלופיים, האם ברצונך לאפס אותם?</string>
   <string name="error_no_browser">לא נמצאה פעילות שבה ניתן לפתוח כתובות URL</string>
+  <string name="snowfall_title">שלג</string>
+  <string name="enable_snowfall_title">אפשר שלג על מסך הבית</string>
+  <string name="enable_snowfall_summary">עלול לגרום לבעיות ביצועים.</string>
+  <string name="snowfall_enabled">\"תן לשלג לרדת, תן לשלג לרדת, תן לשלג לרדת!\"</string>
+  <string name="snowflake_size_scale">גודל פתיתי השלג</string>
+  <string name="snowflakes_num">מספר מרבי של פתיתי שלג</string>
+  <string name="lawnfeed_outdated_title">עדכון ל-Lawnfeed נדרש</string>
+  <string name="lawnfeed_outdated">גרסה חדשה יותר של Lawnfeed נדרשת כדי לעבוד עם גרסה זו של Lawnchair.\n\nלפני שתוכל להתקין את העדכון, כנראה שתצטרך להסיר את הגרסה הקודמת של Lawnfeed.\n\nהאם ברצונך להוריד אותה עכשיו?</string>
 </resources>

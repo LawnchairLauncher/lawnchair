@@ -28,7 +28,7 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">L\'application n\'est pas disponible</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">L\'application téléchargée est désactivée en mode sans échec</string>
+  <string name="safemode_shortcut_error">Les applications téléchargées sont désactivées en mode sans échec</string>
   <!-- SafeMode widget error string -->
   <string name="safemode_widget_error">Les widgets sont désactivés en mode sans échec</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
@@ -307,7 +307,6 @@
   <string name="light_statusbar_pref_title">Barre d\'état claire</string>
   <string name="light_statusbar_pref_force">La barre d\'état affichera des icônes sombres</string>
   <string name="light_statusbar_pref_off">La barre d’état affichera toujours des icônes claires</string>
-  <string name="haptic_feedback_pref_title">Activer les vibrations</string>
   <string name="keep_scroll_state_pref_title">Enregistrer la position du défilement</string>
   <string name="keep_scroll_state_pref_summary">Enregistre la position du défilement dans le tiroir des applications</string>
   <string name="home_opens_drawer_pref_title">Le bouton Home ouvre le tiroir des applications</string>
@@ -417,4 +416,12 @@
   <string name="reset_alternative_icons_title">Réinitialiser les icônes alternatives d\'applications ?</string>
   <string name="reset_alternative_icons">Vous avez %1$d applications avec des icônes alternatives, souhaitez-vous les réinitialiser ?</string>
   <string name="error_no_browser">Aucune application trouvée pour gérer les URLs</string>
+  <string name="snowfall_title">Chutes de neige</string>
+  <string name="enable_snowfall_title">Activer les chutes de neige sur l’écran d’accueil</string>
+  <string name="enable_snowfall_summary">Peut causer des problèmes de performances.</string>
+  <string name="snowfall_enabled">\"Let it snow, let it snow, let it snow!\"</string>
+  <string name="snowflake_size_scale">Échelle de taille des flocons de neige</string>
+  <string name="snowflakes_num">Nombre max de flocons de neige</string>
+  <string name="lawnfeed_outdated_title">Mise à jour de Lawnfeed requise</string>
+  <string name="lawnfeed_outdated">Une nouvelle version de Lawnfeed est nécessaire pour fonctionner avec cette version de Lawnchair.\n\nAvant l\'installation de la mise à jour, vous aurez probablement besoin de désinstaller la version actuelle de Lawnfeed.\n\nVoulez-vous la télécharger maintenant ?</string>
 </resources>

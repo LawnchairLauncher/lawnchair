@@ -196,6 +196,7 @@
   <string name="action_deep_shortcut">میان‌برها</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
   <string name="shortcuts_menu_description"><xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> میانبر برای <xliff:g id="APP_NAME">%2$s</xliff:g></string>
+  <string name="edit_drop_target_label">ویرایش</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
   <string name="wallpaper_instructions">تنظیم کاغذدیواری</string>
   <!-- Error message when an image is selected as a wallpaper,
@@ -230,16 +231,53 @@
   <!-- Title of activity for cropping wallpapers -->
   <string name="crop_wallpaper">برش کاغذدیواری</string>
   <!-- Option for setting the wallpaper only on the home screen. -->
+  <string name="which_wallpaper_option_home_screen">صفحه اصلی</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
+  <string name="which_wallpaper_option_lock_screen">قفل صفحه</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">صفحه اصلی و صفحه قفل</string>
+  <string name="title_show_google_app">%s را نمایش بده</string>
+  <string name="title_show_google_app_default">برنامه \"گوگل\" را نمایش بده</string>
+  <string name="label_search">جستجو</string>
+  <string name="label_voice_search">جست‌وجوی صوتی</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d میانبر و %2$d اعلان برای %3$s</string>
+  <string name="notifications_header">اعلانات</string>
+  <string name="widgets_bottom_sheet_title">%1$s ابزارک</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair یک لانچر است که توسط Till Kottmann(aka deletescape) و براساس Launcher3 از رام‌های AOSP نوشته شده است.</string>
+  <string name="about_title">درباره</string>
+  <string name="about_pref_summary">درمورد تیم Lawnchair بدانید</string>
+  <string name="changelog_title">تغییرات بیلد #%d</string>
+  <string name="week_day_format">%1$s، %2$s</string>
+  <string name="icon_pack_preference_title">آیکون پک</string>
+  <string name="icon_pack_preference_summary">یک آیکون پک را انتخاب کنید</string>
+  <string name="hotseat_uses_extracted_colors_pref_title">داک رنگ کاغذدیواری را استفاده می کند</string>
+  <string name="hotseat_show_arrow">نشانک را نشان بده</string>
   <string name="blur_pref_title">فعالسازی بلور</string>
   <string name="pref_iconLabelsInTwoLines">نمایش برچسب آیکن‌ها در دو خط</string>
   <string name="white_google_icon_pref_title">استفاده از آیکن گوگل سفید</string>
   <string name="all_apps_opacity_pref_title">شفافیت منوی اپلیکیشن‌ها</string>
+  <string name="pixel_ui_pref_title">تم</string>
+  <string name="export_db_title">پایگاه داده</string>
+  <string name="import_db_title">پایگاه داده</string>
+  <string name="export_prefs_title">تنظیمات</string>
+  <string name="import_prefs_title">تنظیمات</string>
+  <string name="edit_icon_reset">بازنشانی</string>
+  <string name="theme_pref_title">تم</string>
+  <string name="theme_black">سیاه</string>
   <!-- Import/Export Strings -->
+  <string name="backup_import_title">بازیابی</string>
+  <string name="backup_export_title">پشتیبان</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
+  <string name="none">هیچ‌کدام</string>
+  <string name="folder">پوشه</string>
+  <string name="loading">در حال بارگذاری...</string>
+  <string name="icon_shape_none">هیچ‌کدام</string>
+  <string name="about_version">نسخه</string>
+  <string name="about_contributors_title">شرکاء</string>
+  <string name="about_changelog">تغییرات ایجاد شده</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
+  <string name="hide_app_apply">اعمال‌ کردن</string>
+  <string name="hide_app_reset">بازنشانی</string>
 </resources>

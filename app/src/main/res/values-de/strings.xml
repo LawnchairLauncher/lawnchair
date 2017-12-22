@@ -263,8 +263,8 @@
   <string name="blur_radius_pref_title">Stärke des Unschärfeeffekts</string>
   <string name="pref_iconLabelsInTwoLines">2 Zeilen für Appnamen erlauben</string>
   <string name="white_google_icon_pref_title">Weiße Google-Icons verwenden</string>
-  <string name="hide_icon_labels_pref_title">Icon-Beschriftungen auf dem Startbildschirm verstecken</string>
-  <string name="hide_all_apps_icon_labels_pref_title">Icon-Beschriftungen in der App-Übersicht ausblenden</string>
+  <string name="hide_icon_labels_pref_title">Keine Icon-Beschriftungen auf dem Startbildschirm</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Keine Icon-Beschriftungen in der App-Übersicht</string>
   <string name="workspace_label_color_hue_pref_title">Farbe der Icon-Beschriftung auf dem Startbildschirm</string>
   <string name="all_apps_opacity_pref_title">Transparenz der App-Liste</string>
   <string name="num_cols_pref_title">Anzahl der Spalten</string>
@@ -307,7 +307,6 @@
   <string name="light_statusbar_pref_title">Helle Statusleiste</string>
   <string name="light_statusbar_pref_force">Die Statusleiste zeigt dunkle Symbole</string>
   <string name="light_statusbar_pref_off">Die Statusleiste zeigt immer helle Icons.</string>
-  <string name="haptic_feedback_pref_title">Vibration aktivieren</string>
   <string name="keep_scroll_state_pref_title">Scrollposition speichern</string>
   <string name="keep_scroll_state_pref_summary">Speichert die Scrollposition in der App-Liste</string>
   <string name="home_opens_drawer_pref_title">Homebutton öffnet App-Liste</string>
@@ -340,13 +339,13 @@
   <string name="pull_down_apps_search">App-Suche</string>
   <string name="enable_screen_rotation">Bildschirmrotation aktivieren</string>
   <!-- Import/Export Strings -->
-  <string name="backup_import_title">importieren</string>
-  <string name="backup_export_title">exportieren</string>
+  <string name="backup_import_title">Wiederherstellung</string>
+  <string name="backup_export_title">Sicherung</string>
   <string name="settings_export_success">Einstellungen erfolgreich gesichert</string>
   <string name="db_export_success">Datenbank erfolgreich gesichert</string>
   <string name="settings_import_success">Einstellungen wurden erfolgreich wiederhergestellt</string>
   <string name="db_import_success">Datenbank erfolgreich wiederhergestellt</string>
-  <string name="export_error">Konnte nicht sichern</string>
+  <string name="export_error">Konnte kein Backup erstellen</string>
   <string name="import_error">Konnte nicht wiederherstellen</string>
   <string name="imexport_no_backup_found">Kein Backup gefunden</string>
   <string name="imexport_external_storage_unreadable">Externer Speicher ist nicht lesbar (Berechtigung in den Einstellungen erforderlich)</string>
@@ -369,7 +368,7 @@
   <string name="blur_effect">Unschärfeeffekt</string>
   <string name="pref_weather_provider">Wetter-Anbieter</string>
   <string name="loading">Wird geladen…</string>
-  <string name="icon_shape_override_label">Icon-Form ändern</string>
+  <string name="icon_shape_override_label">Icon-Form</string>
   <string name="icon_shape_system_default">Nicht ändern</string>
   <string name="icon_shape_none">Keine</string>
   <string name="icon_shape_square">Quadrat</string>
@@ -417,4 +416,12 @@
   <string name="reset_alternative_icons_title">Alternative App-Icons zurücksetzen?</string>
   <string name="reset_alternative_icons">Du hast %1$d Apps mit alternativen Icons, möchtest du sie zurücksetzen?</string>
   <string name="error_no_browser">Keine Aktivität gefunden, um URLs zu behandeln</string>
+  <string name="snowfall_title">Schnefall</string>
+  <string name="enable_snowfall_title">Schneefall auf Startbildschirm aktivieren</string>
+  <string name="enable_snowfall_summary">Kann Leistungsprobleme verursachen.</string>
+  <string name="snowfall_enabled">\"Lass es schneien, lass es schneien, lass es schneien!\"</string>
+  <string name="snowflake_size_scale">Schneeflocken Größe</string>
+  <string name="snowflakes_num">Maximale Anzahl an Schneeflocken</string>
+  <string name="lawnfeed_outdated_title">Lawnfeed-Update erforderlich</string>
+  <string name="lawnfeed_outdated">Eine neuere Version von Lawnfeed ist erforderlich, um mit dieser Version von Lawnchair zu funktionieren.\n\nVor der Installation des Updates müssen Sie wahrscheinlich die aktuelle Version von Lawnfeed deinstallieren.\n\nMöchten sie es jetzt herunterladen?</string>
 </resources>

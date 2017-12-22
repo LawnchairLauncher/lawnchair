@@ -308,7 +308,6 @@
   <string name="light_statusbar_pref_title">Světlá stavová lišta</string>
   <string name="light_statusbar_pref_force">Ve stavové liště budou zobrazeny tmavé ikony</string>
   <string name="light_statusbar_pref_off">Ve stavové liště budou vždy zobrazeny světlé ikony.</string>
-  <string name="haptic_feedback_pref_title">Povolit vibrace</string>
   <string name="keep_scroll_state_pref_title">Zachovat pozici rolování</string>
   <string name="keep_scroll_state_pref_summary">Uloží pozici rolování v menu aplikace</string>
   <string name="home_opens_drawer_pref_title">Tlačítkem Domů se otevře nabídka aplikací</string>
@@ -418,4 +417,12 @@
   <string name="reset_alternative_icons_title">Resetovat alternativní ikony aplikací?</string>
   <string name="reset_alternative_icons">Máte %1$d aplikací s alternativními ikonami, chcete je obnovit?</string>
   <string name="error_no_browser">Nebyla nalezena žádná aktivita pro práci s adresami URL</string>
+  <string name="snowfall_title">Sněžení</string>
+  <string name="enable_snowfall_title">Povolit sněžení na domovské obrazovce</string>
+  <string name="enable_snowfall_summary">Může způsobit problémy s výkonem.</string>
+  <string name="snowfall_enabled">\"Ať sněží, ať sněží, ať sněží!\"</string>
+  <string name="snowflake_size_scale">Velikost sněhové vločky</string>
+  <string name="snowflakes_num">Maximální počet sněhových vloček</string>
+  <string name="lawnfeed_outdated_title">Vyžadována aktualizace Lawnfeed</string>
+  <string name="lawnfeed_outdated">V této verzi Lawnchair je zapotřebí novější verze Lawnfeed.\n\nPřed instalací této aktualizace budete pravděpodobně muset odinstalovat aktuální verzi Lawnfeed.\n\nChcete ji nyní stáhnout?</string>
 </resources>

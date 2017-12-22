@@ -35,20 +35,20 @@
   <string name="shortcut_not_available">Snelkoppeling is niet beschikbaar</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">Blijf aanraken om een widget toe te voegen.</string>
+  <string name="long_press_widget_to_add">Aanraken &amp; vasthouden om een widget op te pakken.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-  <string name="long_accessible_way_to_add">Dubbeltik en blijf aanraken om een widget toe te voegen of aangepaste acties te gebruiken.</string>
+  <string name="long_accessible_way_to_add">Dubbel-tik &amp; vasthouden om een widget op te pakken, of een aangepaste actie uit te voeren.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
   <!-- There is a special version of this format string for Farsi -->
   <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
-  <string name="widget_accessible_dims_format">%1$d breed en %2$d hoog</string>
+  <string name="widget_accessible_dims_format">%1$d breed bij %2$d hoog</string>
   <!-- All Apps -->
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_bar_hint">Apps zoeken</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
   <string name="all_apps_loading_message">Apps laden&#8230;</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_no_search_results">Er zijn geen apps gevonden die overeenkomen met \'<xliff:g id="QUERY">%1$s</xliff:g>\'</string>
+  <string name="all_apps_no_search_results">Geen apps gevonden die overeenkomen met \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_market_message">Meer apps zoeken</string>
   <!-- Drag and drop -->
@@ -57,7 +57,7 @@
   <!-- Error message when user has filled the hotseat -->
   <string name="hotseat_out_of_space">Geen ruimte meer in het \'favorieten\' vak.</string>
   <!-- All applications label -->
-  <string name="all_apps_button_label">Lijst met apps</string>
+  <string name="all_apps_button_label">App-lijst</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
   <string name="all_apps_home_button_label">Startpagina</string>
@@ -69,9 +69,9 @@
   <string name="app_info_drop_target_label">App-info</string>
   <!-- Permissions: -->
   <!-- Permission short label -->
-  <string name="permlab_install_shortcut">Snelle links instellen</string>
+  <string name="permlab_install_shortcut">snelkoppelingen instellen</string>
   <!-- Permission description -->
-  <string name="permdesc_install_shortcut">Een app toestaan snelkoppelingen toe te voegen zonder tussenkomst van de gebruiker.</string>
+  <string name="permdesc_install_shortcut">App toestaan om snelkoppelingen toe te voegen zonder tussenkomst van de gebruiker.</string>
   <!-- Permission short label -->
   <string name="permlab_read_settings">instellingen en snelkoppelingen op de startpagina lezen</string>
   <!-- Permission description -->
@@ -81,32 +81,32 @@
   <!-- Permission description -->
   <string name="permdesc_write_settings">App toestaan om instellingen en snelkoppelingen op de startpagina te wijzigen.</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
-  <string name="msg_no_phone_permission"><xliff:g id="APP_NAME">%1$s</xliff:g> mag niet bellen</string>
+  <string name="msg_no_phone_permission"><xliff:g example="Launcher3" id="app_name">%1$s</xliff:g> is niet gemachtigd om oproepen te maken</string>
   <!-- Widgets: -->
   <!-- Text to show user in place of a gadget when we can't display it properly -->
-  <string name="gadget_error_text">Probleem bij het laden van widget</string>
+  <string name="gadget_error_text">Probleem bij laden van widget</string>
   <!-- Text to show user in place of a gadget when it is not yet initialized. -->
   <string name="gadget_setup_text">Instellen</string>
   <!-- Text to inform the user that they can't uninstall a system application -->
-  <string name="uninstall_system_app_text">Dit is een systeemapp die niet kan worden verwijderd.</string>
+  <string name="uninstall_system_app_text">Dit is een systeem-app en kan niet worden gedeïnstalleerd.</string>
   <!-- Default folder title -->
   <string name="folder_hint_text">Naamloze map</string>
   <!-- Accessibility -->
   <!-- The format string for when an app is temporarily disabled. -->
-  <string name="disabled_app_label"><xliff:g id="APP_NAME">%1$s</xliff:g> is uitgeschakeld</string>
+  <string name="disabled_app_label"><xliff:g example="Messenger" id="app_name">%1$s</xliff:g> uitgeschakeld</string>
   <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
   <string name="default_scroll_format">Pagina %1$d van %2$d</string>
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">Startscherm %1$d van %2$d</string>
   <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
-  <string name="workspace_new_page">Nieuwe thuispagina</string>
+  <string name="workspace_new_page">Nieuwe startschermpagina</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
-  <string name="folder_opened">Map geopend, <xliff:g id="WIDTH">%1$d</xliff:g> bij <xliff:g id="HEIGHT">%2$d</xliff:g></string>
+  <string name="folder_opened">Map geopend, <xliff:g example="5" id="width">%1$d</xliff:g> bij <xliff:g example="3" id="height">%2$d</xliff:g></string>
   <!-- Instruction that clicking outside will close folder -->
-  <string name="folder_tap_to_close">Tik om de map te sluiten</string>
+  <string name="folder_tap_to_close">Aanraken om map te sluiten</string>
   <!-- Instruction that clicking outside will commit folder rename -->
-  <string name="folder_tap_to_rename">Tik om de gewijzigde naam op te slaan</string>
+  <string name="folder_tap_to_rename">Aanraken om te hernoemen</string>
   <!-- Indication that folder closed -->
   <string name="folder_closed">Map gesloten</string>
   <!-- Folder renamed format -->
@@ -138,14 +138,14 @@
   <string name="abandoned_promises_title">Deze app is niet geïnstalleerd</string>
   <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
     The second "it" refers to the app. -->
-  <string name="abandoned_promise_explanation">De app voor dit pictogram is niet geïnstalleerd. Je kunt het pictogram verwijderen of de app zoeken en handmatig installeren.</string>
+  <string name="abandoned_promise_explanation">De app voor dit pictogram is niet geïnstalleerd. U kunt het pictogram verwijderen of de app zoeken en handmatig installeren.</string>
   <!-- Title for an app which is being downloaded. -->
-  <string name="app_downloading_title"><xliff:g id="NAME">%1$s</xliff:g> wordt gedownload, <xliff:g id="PROGRESS">%2$s</xliff:g> voltooid</string>
+  <string name="app_downloading_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> downloaden, <xliff:g example="30%" id="progress">%2$s</xliff:g> compleet</string>
   <!-- Title for an app whose download has been started. -->
-  <string name="app_waiting_download_title"><xliff:g id="NAME">%1$s</xliff:g> wacht op installatie</string>
+  <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> in afwachting van installatie</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_add_to_workspace">Toevoegen aan startpagina</string>
+  <string name="action_add_to_workspace">Toevoegen aan startscherm</string>
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
   <string name="action_move_here">Item hier naartoe verplaatsen</string>
   <!-- Accessibility confirmation for item added to workspace. -->
@@ -155,25 +155,25 @@
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
   <string name="action_move">Item verplaatsen</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell">Verplaatsen naar rij <xliff:g id="NUMBER_0">%1$s</xliff:g>, kolom <xliff:g id="NUMBER_1">%2$s</xliff:g></string>
+  <string name="move_to_empty_cell">Verplaats naar rij <xliff:g example="1" id="number">%1$d</xliff:g> kolom <xliff:g example="1" id="number">%2$d</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
-  <string name="move_to_position">Verplaatsen naar positie <xliff:g id="NUMBER">%1$s</xliff:g></string>
+  <string name="move_to_position">Verplaats naar positie <xliff:g example="1" id="number">%1$d</xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Verplaatsen naar positie <xliff:g id="NUMBER">%1$s</xliff:g> voor favorieten</string>
+  <string name="move_to_hotseat_position">Verplaats naar favorieten positie <xliff:g example="1" id="number">%1$d</xliff:g></string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">Item verplaatst</string>
   <!-- Accessibility description to move item into an existing folder. -->
-  <string name="add_to_folder">Toevoegen aan map: <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="add_to_folder">Toevoegen aan map: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
-  <string name="add_to_folder_with_app">Toevoegen aan map met <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="add_to_folder_with_app">Toevoegen aan map met <xliff:g example="Messenger" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for item added to folder. -->
   <string name="added_to_folder">Item toegevoegd aan map</string>
   <!-- Accessibility description to create folder with another item. -->
-  <string name="create_folder_with">Map maken met: <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="create_folder_with">Maak map met: <xliff:g example="Game" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
   <string name="folder_created">Map aangemaakt</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
-  <string name="action_move_to_workspace">Verplaatsen naar startscherm</string>
+  <string name="action_move_to_workspace">Naar startscherm verplaatsen</string>
   <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
   <string name="action_move_screen_left">Scherm naar links verplaatsen</string>
   <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
@@ -191,11 +191,11 @@
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
   <string name="action_decrease_height">Hoogte verkleinen</string>
   <!-- Accessibility confirmation for widget resize. -->
-  <string name="widget_resized">Formaat van widget gewijzigd in breedte <xliff:g id="NUMBER_0">%1$s</xliff:g> en hoogte <xliff:g id="NUMBER_1">%2$s</xliff:g></string>
+  <string name="widget_resized">Widget breedte aangepast naar <xliff:g example="2" id="number">%1$d</xliff:g> en hoogte naar <xliff:g example="1" id="number">%2$d</xliff:g></string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
   <string name="action_deep_shortcut">Snelkoppelingen</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
-  <string name="shortcuts_menu_description"><xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> snelkoppelingen voor <xliff:g id="APP_NAME">%2$s</xliff:g></string>
+  <string name="shortcuts_menu_description"><xliff:g example="3" id="number_of_shortcuts">%1$d</xliff:g> snelkoppelingen voor <xliff:g example="Messenger" id="app_name">%2$s</xliff:g></string>
   <string name="edit_drop_target_label">Bewerken</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
   <string name="wallpaper_instructions">Achtergrond instellen</string>
@@ -254,7 +254,7 @@
   <string name="hotseat_uses_extracted_colors_pref_title">Favorietenbalk gebruikt achtergrondkleuren</string>
   <string name="hotseat_show_arrow">Pijl weergeven</string>
   <string name="hotseat_show_page_indicator">Pagina-indicator weergeven</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">De favorietenbalk zal de kleur van de achtergrond gebruiken</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">De favorietenbalk zal een kleur uit de achtergrond gebruiken</string>
   <string name="hotseat_uses_extracted_colors_pref_off">De favorietenbalk zal grijs zijn, maar aangepast op de helderheid van de achtergrond</string>
   <string name="transparent_hotseat_pref_title">Doorzichtige favorietenbalk</string>
   <string name="dynamic_ui_pref_title">Haal accentkleur uit achtergrond</string>
@@ -264,9 +264,9 @@
   <string name="pref_iconLabelsInTwoLines">Pictogram labels op twee regels</string>
   <string name="white_google_icon_pref_title">Gebruik wit Google pictogram</string>
   <string name="hide_icon_labels_pref_title">Verberg pictogram labels op startscherm</string>
-  <string name="hide_all_apps_icon_labels_pref_title">Pictogram labels verbergen in lade</string>
+  <string name="hide_all_apps_icon_labels_pref_title">Pictogram labels verbergen in app-overzicht</string>
   <string name="workspace_label_color_hue_pref_title">Kleur van pictogram labels op startscherm</string>
-  <string name="all_apps_opacity_pref_title">Zichtbaarheid applicatielade</string>
+  <string name="all_apps_opacity_pref_title">Zichtbaarheid app-overzicht</string>
   <string name="num_cols_pref_title">Aantal kolommen</string>
   <string name="num_rows_pref_title">Aantal rijen</string>
   <string name="num_hotseat_icons_pref_title">Aantal pictogrammen in favorietenbalk</string>
@@ -277,20 +277,20 @@
   <string name="full_width_width_widgets_pref_title">Volledige breedte widgets</string>
   <string name="full_width_widgets_pref_summary">Widgets toestaan de volledige breedte te omvatten</string>
   <string name="notification_access_pref_title">Notificatie pictogram en voorvertoning</string>
-  <string name="notification_access_pref_summary">Geef Lawnchair toestemming tot uw notificaties om deze functie in te schakelen</string>
+  <string name="notification_access_pref_summary">Geef Lawnchair toestemming tot je notificaties om deze functie in te schakelen</string>
   <string name="general_pref_title">Algemeen</string>
-  <string name="dock_pref_title">Dock</string>
-  <string name="app_drawer_pref_title">App overzicht</string>
-  <string name="pixel_ui_pref_title">Pixel-UI</string>
+  <string name="dock_pref_title">Favorietenbalk</string>
+  <string name="app_drawer_pref_title">App-overzicht</string>
+  <string name="pixel_ui_pref_title">Thema</string>
   <string name="behavior_pref_title">Gedrag</string>
   <string name="debug_pref_title">Debuggen</string>
-  <string name="general_pref_summary">Thuisscherm, dock en applicatielade</string>
-  <string name="dock_pref_summary">Pas je dock aan</string>
-  <string name="app_drawer_pref_summary">Pas je app drawer aan</string>
-  <string name="pixel_ui_pref_summary">Pixel Launcher exclusieve functies inschakelen</string>
-  <string name="backup_pref_title">Back-up</string>
+  <string name="general_pref_summary">Pas je bureaublad aan</string>
+  <string name="dock_pref_summary">Pas je favorietenbalk aan</string>
+  <string name="app_drawer_pref_summary">Pas je app-overzicht aan</string>
+  <string name="pixel_ui_pref_summary">Verschillende elementen thematiseren</string>
+  <string name="backup_pref_title">Back-up &amp; herstel</string>
   <string name="behavior_pref_summary">Wijzig het gedrag van Lawnchair</string>
-  <string name="backup_pref_summary">Uw data en instellingen back-uppen</string>
+  <string name="backup_pref_summary">Je instellingen back-uppen/herstellen</string>
   <string name="debug_pref_summary">Herstarten of pictogrammendata herbouwen</string>
   <string name="show_pixel_bar_pref_title">Bovenste Pixel balk tonen</string>
   <string name="use_wide_searchbar_pref_title">Gebruik brede zoekbalk</string>
@@ -302,27 +302,26 @@
   <string name="restart_lawnchair_pref_title">Lawnchair herstarten</string>
   <string name="restart_lawnchair_pref_summary">Kan nuttig zijn als sommige instellingen niet goed zijn toegepast</string>
   <string name="rebuild_icondb_pref_title">Pictogram database herbouwen</string>
-  <string name="pinch_to_overview_pref_title">Knijpen om naar overzicht te gaan</string>
+  <string name="pinch_to_overview_pref_title">Knijpen voor overzicht</string>
   <string name="pinch_to_overview_pref_summary">Knijpen op startscherm om het overzicht te openen</string>
   <string name="light_statusbar_pref_title">Lichte statusbalk</string>
   <string name="light_statusbar_pref_force">De statusbalk altijd donkere pictogrammen laten tonen</string>
   <string name="light_statusbar_pref_off">De statusbalk weergeeft altijd lichte pictogrammen</string>
-  <string name="haptic_feedback_pref_title">Trillen activeren</string>
   <string name="keep_scroll_state_pref_title">Scrollpositie onthouden</string>
-  <string name="keep_scroll_state_pref_summary">Scrollpositie onthouden in de applicatielade</string>
-  <string name="home_opens_drawer_pref_title">Thuisknop opent applicatielade</string>
-  <string name="home_opens_drawer_pref_summary">Thuisknop drukken op het startscherm opent de applicatielade</string>
+  <string name="keep_scroll_state_pref_summary">Scrollpositie onthouden in het app-overzicht</string>
+  <string name="home_opens_drawer_pref_title">Thuisknop opent app-overzicht</string>
+  <string name="home_opens_drawer_pref_summary">Thuisknop drukken op het startscherm opent het app-overzicht</string>
   <string name="show_hidden_pref_title">Toon verborgen apps</string>
   <string name="show_hidden_pref_on">Verborgen apps worden getoond om zichtbaarheidsinstellingen te wijzigen</string>
   <string name="show_hidden_pref_off">Verborgen apps worden niet getoond</string>
-  <string name="export_db_title">Exporteer database</string>
-  <string name="import_db_title">Importeer database</string>
-  <string name="export_prefs_title">Instellingen exporteren</string>
-  <string name="import_prefs_title">Instellingen importeren</string>
+  <string name="export_db_title">Database</string>
+  <string name="import_db_title">Database</string>
+  <string name="export_prefs_title">Instellingen</string>
+  <string name="import_prefs_title">Instellingen</string>
   <string name="notification_listener_label">Lawnchair - Notificatiepictogrammen</string>
   <string name="color_extraction_label">Lawnchair - Kleurextractie</string>
   <string name="test_title">Test</string>
-  <string name="visibility">Zichtbaar</string>
+  <string name="visibility">Zichtbaarheid</string>
   <string name="default_text">Standaard</string>
   <string name="edit_icon_reset">Reset</string>
   <string name="show_top_shadow_title">Schaduw weergeven</string>
@@ -331,7 +330,7 @@
   <string name="theme_light">Licht</string>
   <string name="theme_dark">Donker</string>
   <string name="theme_black">Zwart</string>
-  <string name="hide_hotseat_pref_title">Dock verbergen</string>
+  <string name="hide_hotseat_pref_title">Favorietenbalk verbergen</string>
   <string name="all_icons">Alle pictogrammen</string>
   <string name="pull_down_action_pref_title">Actie bij omlaag slepen</string>
   <string name="pull_down_do_nothing">Niets doen</string>
@@ -340,13 +339,17 @@
   <string name="pull_down_apps_search">Apps zoeken</string>
   <string name="enable_screen_rotation">Schermrotatie activeren</string>
   <!-- Import/Export Strings -->
-  <string name="backup_import_title">Importeren</string>
-  <string name="backup_export_title">Exporteren</string>
-  <string name="settings_export_success">Backup van instellingen succesvol</string>
+  <string name="backup_import_title">Herstel</string>
+  <string name="backup_export_title">Back-up</string>
+  <string name="settings_export_success">Instellingen succesvol geback-upt</string>
+  <string name="db_export_success">Database succesvol geback-upt</string>
+  <string name="settings_import_success">Instellingen succesvol hersteld</string>
+  <string name="db_import_success">Database succesvol hersteld</string>
+  <string name="export_error">Back-up niet gelukt</string>
   <string name="import_error">Herstellen niet gelukt</string>
   <string name="imexport_no_backup_found">Geen back-up gevonden</string>
-  <string name="imexport_external_storage_unreadable">Externe opslag is niet leesbaar (machtiging toekennen in instellingen)</string>
-  <string name="imexport_external_storage_unwritable">Externe opslag is niet schrijfbaar (machtiging toekennen in instellingen)</string>
+  <string name="imexport_external_storage_unreadable">Maak externe opslag leesbaar in Instellingen</string>
+  <string name="imexport_external_storage_unwritable">Maak externe opslag schrijfbaar in Instellingen</string>
   <string name="units_metric">Metrisch</string>
   <string name="units_imperial">Imperiaal</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
@@ -360,12 +363,12 @@
   <string name="pref_applyBlur">Blur toepassen op</string>
   <string name="search_bar">Zoekbalk</string>
   <string name="folder">Map</string>
-  <string name="dock_allapps"><![CDATA[Dock & app-lade]]></string>
+  <string name="dock_allapps"><![CDATA[Dock & app-overzicht]]></string>
   <string name="app_shortcuts">App snelkoppelingen</string>
   <string name="blur_effect">Blur effect</string>
   <string name="pref_weather_provider">Weer dienstverlener</string>
   <string name="loading">Laden…</string>
-  <string name="icon_shape_override_label">Wijzig pictogram vorm</string>
+  <string name="icon_shape_override_label">Pictogram vorm</string>
   <string name="icon_shape_system_default">Niet wijzigen</string>
   <string name="icon_shape_none">Geen</string>
   <string name="icon_shape_square">Vierkant</string>
@@ -381,16 +384,16 @@
   <string name="about_icon_designer">App Pictogram Designer</string>
   <string name="about_contributors_title">Bijdragers</string>
   <string name="location_permission_warn">Locatietoestemming is vereist om te wijzigen van dienstverlener!</string>
-  <string name="num_cols_drawer_pref_title">Aantal kolommen in de app-lade</string>
+  <string name="num_cols_drawer_pref_title">Aantal kolommen in het app-overzicht</string>
   <string name="shortcut_backport_warning">Dit kan traag zijn, gebruiken op eigen risico</string>
   <string name="pref_backport_shortcuts">Backport snelkoppelingen</string>
   <string name="weather_api_key_not_set">API-sleutel niet ingesteld</string>
   <string name="pref_weather_api_key_title">API-sleutel</string>
   <string name="about_changelog">Changelog</string>
   <string name="pref_all_apps_custom_label_color">Aangepaste labelkleur gebruiken</string>
-  <string name="pref_all_apps_label_color">Kleur van pictogram labels in applicatiescherm</string>
-  <string name="pref_num_rows_drawer">Aantal rijen in lade</string>
-  <string name="center_wallpaper_pref_title">Gecentreerde achtergrond bij slechts één pagina</string>
+  <string name="pref_all_apps_label_color">Kleur van pictogram labels in app-overzicht</string>
+  <string name="pref_num_rows_drawer">Aantal rijen in app-overzicht</string>
+  <string name="center_wallpaper_pref_title">Centreer achtergrond bij één pagina</string>
   <string name="vertical_drawer_layout_pref_title">Weergeven als verticale lijst</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -399,7 +402,26 @@
   <string name="lock_desktop">Bureaublad vergrendelen</string>
   <string name="lawnfeed_not_found">Lawnfeed niet geïnstalleerd</string>
   <string name="google_app_not_found">Google app niet geïnstalleerd</string>
+  <string name="lawnfeed_incompatible">Incompatibele versie van Lawnfeed geïnstalleerd</string>
   <string name="set_default_launcher">Standaard launcher instellen</string>
   <string name="enable_spring_pref_title">Veereffect inschakelen</string>
-  <string name="unauthorized_device">Op dit toestel zijn enkele piraat applicaties geinstalleerd. Gelieve deze te de-installeren om verder te gaan.</string>
+  <string name="hide_app">App verbergen</string>
+  <string name="hide_app_sum">App verbergen in het app-overzicht</string>
+  <string name="hide_app_selected">&#160;geselecteerd</string>
+  <string name="hidden_app">Verborgen app</string>
+  <string name="hide_app_apply">Toepassen</string>
+  <string name="unauthorized_device">Dit apparaat heeft een aantal piraterij-apps geïnstalleerd. Gelieve deze te deïnstalleren om verder te gaan.</string>
+  <string name="hide_app_reset">Reset</string>
+  <string name="two_row_dock">Twee rijen favorietenbalk</string>
+  <string name="reset_alternative_icons_title">Alternatieve app pictogrammen resetten?</string>
+  <string name="reset_alternative_icons">Je hebt %1$d apps met alternatieve pictogrammen, wil je deze resetten?</string>
+  <string name="error_no_browser">Geen activiteit gevonden om URLs te verwerken</string>
+  <string name="snowfall_title">Sneeuwval</string>
+  <string name="enable_snowfall_title">Sneeuwval inschakelen op startscherm</string>
+  <string name="enable_snowfall_summary">Kan prestatieproblemen veroorzaken.</string>
+  <string name="snowfall_enabled">\"Let it snow, let it snow, let it snow!\"</string>
+  <string name="snowflake_size_scale">Sneeuwvlokgrootte aanpassen</string>
+  <string name="snowflakes_num">Maximum aantal sneeuwvlokken</string>
+  <string name="lawnfeed_outdated_title">Lawnfeed vereist een update</string>
+  <string name="lawnfeed_outdated">Een nieuwe versie van Lawnfeed is vereist om te werken met deze versie van Lawnchair.\n\nVoordat de update van Lawnfeed geïnstalleerd wordt, dien je de huidige versie van Lawnfeed te verwijderen.\n\nWil je de nieuwe versie van Lawnfeed nu downloaden?</string>
 </resources>

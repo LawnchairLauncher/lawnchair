@@ -307,7 +307,6 @@
   <string name="light_statusbar_pref_title">Világos állapotsáv</string>
   <string name="light_statusbar_pref_force">Az állapotsor mindig sötét ikonokat fog mutatni</string>
   <string name="light_statusbar_pref_off">Az állapotsor mindig világos ikonokat fog mutatni</string>
-  <string name="haptic_feedback_pref_title">Rezgés engedélyezése</string>
   <string name="keep_scroll_state_pref_title">Görgetési pozíció mentése</string>
   <string name="keep_scroll_state_pref_summary">Görgetési pozíció mentése az alkalmazásfiókban</string>
   <string name="home_opens_drawer_pref_title">Alkalmazásfiók megnyitása home gombbal</string>
@@ -417,4 +416,12 @@
   <string name="reset_alternative_icons_title">Alternatív ikonok visszaállítása?</string>
   <string name="reset_alternative_icons">%1$d alkalmazásnak van alternatív ikon beállítva. Visszaállítja az eredetit?</string>
   <string name="error_no_browser">Nem található URL-eket kezelni képes alkalmazás</string>
+  <string name="snowfall_title">Havazás</string>
+  <string name="enable_snowfall_title">Havazás engedélyezése a kezdőképernyőn</string>
+  <string name="enable_snowfall_summary">Teljesítménybeli problémákat okozhat.</string>
+  <string name="snowfall_enabled">\"Legyen hó, legyen hó, legyen hó!\"</string>
+  <string name="snowflake_size_scale">Hópehely méretének léptéke</string>
+  <string name="snowflakes_num">Hópelyhek maximális száma</string>
+  <string name="lawnfeed_outdated_title">Lawnfeed-frissítés szükséges</string>
+  <string name="lawnfeed_outdated">A Lawnfeed egy újabb verziója szükséges a Lawnchair ezen verziójával való működéshez.\n\nA frissítés telepítése előtt valószínűleg el kell távolítania a Lawnfeed jelenlegi verzióját.\n\nLetölti most?</string>
 </resources>

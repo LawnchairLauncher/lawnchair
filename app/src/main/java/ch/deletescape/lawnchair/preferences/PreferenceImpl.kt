@@ -217,7 +217,6 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
         setBoolean(PreferenceFlags.KEY_HOTSEAT_SHOULD_USE_EXTRACTED_COLORS_CACHE, value, commit)
     }
 
-    override val enableHapticFeedback by BooleanPref(FeatureFlags.KEY_PREF_HAPTIC_FEEDBACK, false)
     override val keepScrollState by BooleanPref(FeatureFlags.KEY_PREF_KEEP_SCROLL_STATE, false)
     override val useFullWidthSearchBar by BooleanPref(FeatureFlags.KEY_FULL_WIDTH_SEARCHBAR, false)
     override val showVoiceSearchButton by BooleanPref(FeatureFlags.KEY_SHOW_VOICE_SEARCH_BUTTON, false)

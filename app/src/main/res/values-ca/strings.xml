@@ -307,7 +307,6 @@
   <string name="light_statusbar_pref_title">Barra d\'estat clara</string>
   <string name="light_statusbar_pref_force">La barra d\'estat mostrarà icones fosques</string>
   <string name="light_statusbar_pref_off">La barra d\'estat mostrarà icones clares</string>
-  <string name="haptic_feedback_pref_title">Activa la vibració</string>
   <string name="keep_scroll_state_pref_title">Desa la posició del desplaçament</string>
   <string name="keep_scroll_state_pref_summary">Desa la posició de desplaçament al calaix</string>
   <string name="home_opens_drawer_pref_title">El botó Inici obre el calaix d\'aplicacions</string>
@@ -417,4 +416,12 @@
   <string name="reset_alternative_icons_title">Voleu restablir les icones d\'aplicacions alternatives?</string>
   <string name="reset_alternative_icons">Teniu %1$d aplicacions amb icones alternatives, voleu reiniciar-les?</string>
   <string name="error_no_browser">No s\'ha trobat cap activitat per manegar l\'URL</string>
+  <string name="snowfall_title">Neu</string>
+  <string name="enable_snowfall_title">Permet que hi nevi a la pantalla d\'inici</string>
+  <string name="enable_snowfall_summary">Pot provocar problemes de rendiment.</string>
+  <string name="snowfall_enabled">\"Deixa nevar, deixa nevar, deixa nevar!\"</string>
+  <string name="snowflake_size_scale">Escala de mida del floc de neu</string>
+  <string name="snowflakes_num">Número màxim de flocs de neu</string>
+  <string name="lawnfeed_outdated_title">Cal actualitzar Lawnfeed</string>
+  <string name="lawnfeed_outdated">Cal una versió més actual de Lawnfeed per funcionar amb aquesta versió de Lawnchair.\n\nAbans d\'instal·lar l\'actualització, probablement haureu de desinstal·lar la versió actual de Lawnfeed.\n\nVoleu baixar-la ara?</string>
 </resources>

@@ -308,7 +308,6 @@
   <string name="light_statusbar_pref_title">Bară de stare deschisă la culoare</string>
   <string name="light_statusbar_pref_force">Bara de stare va avea iconițe închise la culoare</string>
   <string name="light_statusbar_pref_off">Bara de stare va avea iconițe deschise la culoare</string>
-  <string name="haptic_feedback_pref_title">Activare vibrații</string>
   <string name="keep_scroll_state_pref_title">Memorează poziţia de parcurgere</string>
   <string name="keep_scroll_state_pref_summary">Salvează poziţia de parcurgere în sertarul de aplicații</string>
   <string name="home_opens_drawer_pref_title">Butonul Acasă deschide sertarul de aplicații</string>
@@ -418,4 +417,12 @@
   <string name="reset_alternative_icons_title">Resetați pictogramele alternative ale aplicațiilor?</string>
   <string name="reset_alternative_icons">Aveți %1$d aplicații cu pictograme alternative, doriți să le resetați?</string>
   <string name="error_no_browser">Nu s-a găsit nicio activitate pentru gestionarea adreselor URL</string>
+  <string name="snowfall_title">Ninsoare</string>
+  <string name="enable_snowfall_title">Activare ninsoare pe ecranul de pornire</string>
+  <string name="enable_snowfall_summary">Poate provoca probleme de performanţă.</string>
+  <string name="snowfall_enabled">\"Să ningă, să ningă, să ningă!\"</string>
+  <string name="snowflake_size_scale">Dimensiunea fulgilor de zăpadă</string>
+  <string name="snowflakes_num">Numărul maxim al fulgilor de zăpadă</string>
+  <string name="lawnfeed_outdated_title">Lawnfeed necesită actualizare</string>
+  <string name="lawnfeed_outdated">O versiune mai nouă a programului Lawnfeed este necesară pentru a funcţiona cu această versiune de Lawnchair.\n\nÎnainte de a instala actualizarea, probabil va trebui să dezinstalați versiunea curentă Lawnfeed.\n\nDoriți să o descărcați acum?</string>
 </resources>

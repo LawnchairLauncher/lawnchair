@@ -261,10 +261,10 @@
   <string name="dynamic_ui_pref_title">Извлечь цвет акцента из обоев</string>
   <string name="blur_pref_title">Включить размытие</string>
   <string name="blur_pref_summary">Применить эффект размытия к некоторым частям интерфейса\nНе совместим с живыми обоями</string>
-  <string name="blur_radius_pref_title">Радиус размытия</string>
+  <string name="blur_radius_pref_title">Уровень размытия</string>
   <string name="pref_iconLabelsInTwoLines">Подпись значка в две линии</string>
   <string name="white_google_icon_pref_title">Использовать белый значок Google</string>
-  <string name="hide_icon_labels_pref_title">Скрыть подписи значков на главном экране</string>
+  <string name="hide_icon_labels_pref_title">Скрыть подписи иконок на рабочем столе</string>
   <string name="hide_all_apps_icon_labels_pref_title">Скрыть подписи значков в меню приложений</string>
   <string name="workspace_label_color_hue_pref_title">Цвет подписи значков</string>
   <string name="all_apps_opacity_pref_title">Прозрачность меню приложений</string>
@@ -308,7 +308,6 @@
   <string name="light_statusbar_pref_title">Светлая строка состояния</string>
   <string name="light_statusbar_pref_force">В строке состояния будут отображаться темные значки</string>
   <string name="light_statusbar_pref_off">В строке состояния всегда будут отображаться светлые значки</string>
-  <string name="haptic_feedback_pref_title">Включить вибрацию</string>
   <string name="keep_scroll_state_pref_title">Сохранять позицию прокрутки</string>
   <string name="keep_scroll_state_pref_summary">Сохраняет положение прокрутки в меню приложений</string>
   <string name="home_opens_drawer_pref_title">Кнопка «Домой» открывает меню приложений</string>
@@ -418,4 +417,12 @@
   <string name="reset_alternative_icons_title">Сбросить альтернативные значки приложения?</string>
   <string name="reset_alternative_icons">У вас %1$d приложений с альтернативными значками, хотите сбросить их?</string>
   <string name="error_no_browser">Не найдено приложение для обработки URL-адресов</string>
+  <string name="snowfall_title">Снегопад</string>
+  <string name="enable_snowfall_title">Включить снегопад на главном экране</string>
+  <string name="enable_snowfall_summary">Может вызвать снижение производительности.</string>
+  <string name="snowfall_enabled">Снегопад</string>
+  <string name="snowflake_size_scale">Размер снежинок</string>
+  <string name="snowflakes_num">Максимальное количество снежинок</string>
+  <string name="lawnfeed_outdated_title">Требуется обновление Lawnfeed</string>
+  <string name="lawnfeed_outdated">Для работы с этой версией Lawnchair, требуется новая версия Lawnfeed.\n\nПеред установкой обновления, вам вероятно будет нужно удалить текущую версию Lawnfeed.\n\nХотите скачать обновление сейчас?</string>
 </resources>

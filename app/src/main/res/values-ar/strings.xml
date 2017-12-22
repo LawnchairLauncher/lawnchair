@@ -99,7 +99,7 @@
   <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
   <string name="workspace_scroll_format">‏الشاشة الرئيسية %1$d من %2$d</string>
   <!-- Description for a new page on home screen[CHAR_LIMIT=none] -->
-  <string name="workspace_new_page">صفحة الشاشة الرئيسية الجديدة</string>
+  <string name="workspace_new_page">صفحة رئيسية جديده</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
   <string name="folder_opened">تم فتح المجلد، بمقاس <xliff:g id="WIDTH">%1$d</xliff:g> في <xliff:g id="HEIGHT">%2$d</xliff:g></string>
@@ -237,9 +237,9 @@
   <!-- Option for setting the wallpaper only on the home screen. -->
   <string name="which_wallpaper_option_home_screen">الشاشة الرئيسية</string>
   <!-- Option for setting the wallpaper only on the lock screen. -->
-  <string name="which_wallpaper_option_lock_screen">قفل الشاشة</string>
+  <string name="which_wallpaper_option_lock_screen">شاشة القفل</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
-  <string name="which_wallpaper_option_home_screen_and_lock_screen">الشاشة الرئيسية وقفل الشاشة</string>
+  <string name="which_wallpaper_option_home_screen_and_lock_screen">الشاشة الرئيسية وشاشة القفل</string>
   <string name="title_show_google_app">إظهار %1$s</string>
   <string name="title_show_google_app_default">إظهار تطبيق جوجل</string>
   <string name="label_search">بحث</string>
@@ -250,6 +250,7 @@
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair هو تطبيق واجهة مستخدم تم إنشاؤه بواسطة Till Kottmann الملقب ب deletescape. هذا التطبيق يستند على Launcher3 من AOSP.</string>
   <string name="about_title">حول</string>
+  <string name="about_pref_summary">تعرف عن فريق lawnchair</string>
   <string name="changelog_title">تغييرات البنية #%d</string>
   <string name="week_day_format">%1$s، %2$s</string>
   <string name="icon_pack_preference_title">حزم الإيقونات</string>
@@ -282,15 +283,19 @@
   <string name="notification_access_pref_title">علامات الإشعارات و معاينتها</string>
   <string name="notification_access_pref_summary">السماح ل Lawnchair بالوصول إلى الإشعارات الخاصة بك لتفعيل هذه الميزات</string>
   <string name="general_pref_title">عام</string>
-  <string name="pixel_ui_pref_title">واجهة مستخدم بكسل</string>
+  <string name="dock_pref_title">قائمة البرامج</string>
+  <string name="app_drawer_pref_title">قائمة البرامج</string>
+  <string name="pixel_ui_pref_title">واجهة المستخدم</string>
   <string name="behavior_pref_title">الشكل العام</string>
-  <string name="debug_pref_title">التصحيح</string>
+  <string name="debug_pref_title">تحليل الأخطاء</string>
   <string name="general_pref_summary">الشاشة الرئيسية، الشاشة السفلية، ودرج التطبيقات</string>
+  <string name="dock_pref_summary">تخصيص الاختصارات</string>
+  <string name="app_drawer_pref_summary">تخصيص درج التطبيقات الخاص بك</string>
   <string name="pixel_ui_pref_summary">تفعيل ميزات واجهة بكسل الخاصة</string>
-  <string name="backup_pref_title">نسخ احتياطي</string>
+  <string name="backup_pref_title">النسخ الإحتياطي &amp; والإستعادة</string>
   <string name="behavior_pref_summary">تغيير سلوك Lawnchair</string>
   <string name="backup_pref_summary">النسخ الاحتياطي قاعدة البيانات والإعدادات الخاصة بك</string>
-  <string name="debug_pref_summary">إعادة تشغيل أو إعادة إنشاء رمز قاعدة البيانات</string>
+  <string name="debug_pref_summary">إعادة تشغيل أو إعادة إنشاء قاعدة بيانات الأيقونات</string>
   <string name="show_pixel_bar_pref_title">اظهار الشريط العلوي لبكسل</string>
   <string name="use_wide_searchbar_pref_title">استخدام شريط بحث عريض</string>
   <string name="show_mic_pref_title">أظهار زر مساعد غوغل</string>
@@ -306,7 +311,6 @@
   <string name="light_statusbar_pref_title">شريط حالة باهت</string>
   <string name="light_statusbar_pref_force">شريط المعلومات سيظهر أيقونات داكنة</string>
   <string name="light_statusbar_pref_off">شريط المعلومات سيظهر دائماً الأيقونات بلون فاتح.</string>
-  <string name="haptic_feedback_pref_title">تفعيل الإهتزاز</string>
   <string name="keep_scroll_state_pref_title">حفظ موضع التمرير</string>
   <string name="keep_scroll_state_pref_summary">حفظ موضع التمرير في قائمة التطبيقات</string>
   <string name="home_opens_drawer_pref_title">زر الصفحة الرئيسية يفتح قائمة التطبيقات</string>
@@ -314,7 +318,7 @@
   <string name="show_hidden_pref_title">أظهار التطبيقات المخفية</string>
   <string name="show_hidden_pref_on">التطبيقات المخفية سوف تظهر لتغيير إعدادات الوضوح</string>
   <string name="show_hidden_pref_off">التطبيقات المخفية لن تكون مرئية</string>
-  <string name="export_db_title">تصدير قاعدة البيانات</string>
+  <string name="export_db_title">قاعدة البيانات</string>
   <string name="import_db_title">إستيراد قاعدة البيانات</string>
   <string name="export_prefs_title">تصدير الإعدادات</string>
   <string name="import_prefs_title">إستيراد الإعدادات</string>
@@ -341,6 +345,12 @@
   <!-- Import/Export Strings -->
   <string name="backup_import_title">استيراد</string>
   <string name="backup_export_title">استخراج</string>
+  <string name="settings_export_success">تم النسخ الاحتياطي للإعدادات بنجاح</string>
+  <string name="db_export_success">تم النسخ الإحتياطي لقاعدة البيانات بنجاح</string>
+  <string name="settings_import_success">تمت استعادة الإعدادات بنجاح</string>
+  <string name="db_import_success">تمت استعادة قاعدة البيانات بنجاح</string>
+  <string name="export_error">فشل النسخ الإحتياطي</string>
+  <string name="import_error">فشل الإستعادة</string>
   <string name="imexport_no_backup_found">لم يتم العثور على نسخة احتياطية</string>
   <string name="imexport_external_storage_unreadable">التخزين الخارجي غير قابل للقراءة (امنح الإذن في الإعدادات)</string>
   <string name="imexport_external_storage_unwritable">التخزين الخارجي غير قابل للكتابة (امنح الإذن في الإعدادات)</string>
@@ -394,7 +404,28 @@
   <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
   <string name="about_translators">المترجمون</string>
   <string name="lock_desktop">قفل سطح المكتب</string>
-  <string name="lawnfeed_not_found">لاونفيد غير مثبت</string>
+  <string name="lawnfeed_not_found">تطبيق Lawnfeed غير مثبّت</string>
   <string name="google_app_not_found">تطبيق غوغل غير مثبت</string>
+  <string name="lawnfeed_incompatible">إصدار Lawnfeed المثبّت غير متوافق</string>
   <string name="set_default_launcher">تعيين كمتصفح البرامج الإفتراضي</string>
+  <string name="enable_spring_pref_title">تفعيل تأثير الإهتزاز</string>
+  <string name="hide_app">إخفاء التطبيق</string>
+  <string name="hide_app_sum">إخفاء من قائمة البرامج</string>
+  <string name="hide_app_selected">تم إختياره ;160#&amp;</string>
+  <string name="hidden_app">التطبيقات المخفية</string>
+  <string name="hide_app_apply">تنفيذ</string>
+  <string name="unauthorized_device">هذا الجهاز يحتوي على برامج للقرصنة. من فضلك قم بإزالتهم لتستطيع الإستمرار.</string>
+  <string name="hide_app_reset">إعادة ضبط</string>
+  <string name="two_row_dock">قائمة مختصرة من صفّين</string>
+  <string name="reset_alternative_icons_title">إعادة تعيين أيقونات التطبيقات البديلة؟</string>
+  <string name="reset_alternative_icons">لديك %1$d برموز بديلة, هل تريد إعادة تعيينها؟</string>
+  <string name="error_no_browser">لم يتم العثور علي اي أنشطة للتعامل مع عناوين URL</string>
+  <string name="snowfall_title">تساقط الثلوج</string>
+  <string name="enable_snowfall_title">تفعيل تساقط الثلوج على الشاشة الرئيسية</string>
+  <string name="enable_snowfall_summary">قد يسبب مشاكل في الأداء.</string>
+  <string name="snowfall_enabled">\"فليتساقط الثلج, فليتساقط الثلج, فليتساقط الثلج!\"</string>
+  <string name="snowflake_size_scale">مقياس حجم حبة الثلج</string>
+  <string name="snowflakes_num">أقصى عدد لحبيبات الثلج</string>
+  <string name="lawnfeed_outdated_title">مطلوب تحديث Lawnfeed</string>
+  <string name="lawnfeed_outdated">اصدار اعلي من Lawnfeed مطلوب للعمل مع هذه الاصدار.\n\n قبل تثبيت هذا التحديث عليك ازاله النسخه الحاليه من Lawnfeed. هل تريد الغاء تثبيته الأن؟</string>
 </resources>

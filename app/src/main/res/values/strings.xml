@@ -372,7 +372,6 @@
     <string name="light_statusbar_pref_title">Light statusbar</string>
     <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
     <string name="light_statusbar_pref_off">The status bar will show light icons</string>
-    <string name="haptic_feedback_pref_title">Enable vibration</string>
     <string name="keep_scroll_state_pref_title">Save scroll position</string>
     <string name="keep_scroll_state_pref_summary">Saves the scroll position in the drawer</string>
     <string name="home_opens_drawer_pref_title">Home button opens app drawer</string>

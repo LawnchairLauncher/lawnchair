@@ -306,7 +306,6 @@
   <string name="light_statusbar_pref_title">亮色状态栏</string>
   <string name="light_statusbar_pref_force">状态栏将始终显示暗色图标</string>
   <string name="light_statusbar_pref_off">状态栏将始终显示亮色图标</string>
-  <string name="haptic_feedback_pref_title">启用震动</string>
   <string name="keep_scroll_state_pref_title">记住滚动位置</string>
   <string name="keep_scroll_state_pref_summary">记住在应用抽屉中滚动到了哪个位置</string>
   <string name="home_opens_drawer_pref_title">按 Home 键打开应用抽屉</string>
@@ -416,4 +415,12 @@
   <string name="reset_alternative_icons_title">重置备选应用图标</string>
   <string name="reset_alternative_icons">您有 %1$d 个应用具有备用图标，您想重置它们吗？</string>
   <string name="error_no_browser">没有找到处理此 URL 的 Activity</string>
+  <string name="snowfall_title">降雪</string>
+  <string name="enable_snowfall_title">在主屏幕开启雪花特效</string>
+  <string name="enable_snowfall_summary">这可能会引起性能问题。</string>
+  <string name="snowfall_enabled">“今天的风儿真喧嚣，不如来点儿雪花飘！”</string>
+  <string name="snowflake_size_scale">雪花大小缩放</string>
+  <string name="snowflakes_num">最大雪花数量</string>
+  <string name="lawnfeed_outdated_title">需要更新 Lawnfeed</string>
+  <string name="lawnfeed_outdated">当前版本的 Lawnchair 需要安装新版本的 Lawnfeed 来使用，\n\n安装更新前您可能需要卸载当前版本的 Lawnfeed。\n\n需要现在下载吗？</string>
 </resources>

@@ -106,7 +106,7 @@
   <!-- Instruction that clicking outside will close folder -->
   <string name="folder_tap_to_close">Chạm để đóng thư mục</string>
   <!-- Instruction that clicking outside will commit folder rename -->
-  <string name="folder_tap_to_rename">Nhấn để lưu đổi tên</string>
+  <string name="folder_tap_to_rename">Chạm để lưu tên mới</string>
   <!-- Indication that folder closed -->
   <string name="folder_closed">Thư mục đã đóng</string>
   <!-- Folder renamed format -->
@@ -254,7 +254,7 @@
   <string name="hotseat_show_arrow">Hiển thị mũi tên</string>
   <string name="hotseat_show_page_indicator">Hiển thị chỉ số trang</string>
   <string name="hotseat_uses_extracted_colors_pref_on">Thanh dock sẽ đổi màu theo màu sắc chủ đạo của hình nền</string>
-  <string name="hotseat_uses_extracted_colors_pref_off">Thanh dock sẽ có màu xám, nhưng sẽ điều chỉnh bởi độ sáng hình nền</string>
+  <string name="hotseat_uses_extracted_colors_pref_off">Thanh dock sẽ có màu xám, nhưng sẽ được điều chỉnh theo độ sáng hình nền</string>
   <string name="transparent_hotseat_pref_title">Thanh dock trong suốt</string>
   <string name="dynamic_ui_pref_title">Trích xuất màu sắc chủ đạo từ hình nền</string>
   <string name="blur_pref_title">Bật hiệu ứng mờ phông</string>
@@ -265,7 +265,7 @@
   <string name="hide_icon_labels_pref_title">Ẩn nhãn biểu tượng trên màn hình chính</string>
   <string name="hide_all_apps_icon_labels_pref_title">Ẩn biểu tượng nhãn trong ngăn chứa ứng dụng</string>
   <string name="workspace_label_color_hue_pref_title">Màu sắc của nhãn biểu tượng trên màn hình chính</string>
-  <string name="all_apps_opacity_pref_title">Drawer opacity</string>
+  <string name="all_apps_opacity_pref_title">Độ trong suốt của ngăn chứa ứng dụng</string>
   <string name="num_cols_pref_title">Số cột</string>
   <string name="num_rows_pref_title">Số hàng</string>
   <string name="num_hotseat_icons_pref_title">Số lượng các biểu tượng trong thanh dock</string>
@@ -284,10 +284,10 @@
   <string name="behavior_pref_title">Hành vi</string>
   <string name="debug_pref_title">Gỡ lỗi</string>
   <string name="general_pref_summary">Tùy chỉnh màn hình chính của bạn</string>
-  <string name="dock_pref_summary">Tùy chỉnh thanh dock của bạn</string>
-  <string name="app_drawer_pref_summary">Tùy chỉnh ngăn chứa ứng dụng của bạn</string>
-  <string name="pixel_ui_pref_summary">Các yếu tố khác của chủ đề</string>
-  <string name="backup_pref_title">Sao lưu</string>
+  <string name="dock_pref_summary">Tùy chỉnh thanh dock</string>
+  <string name="app_drawer_pref_summary">Tùy chỉnh ngăn chứa ứng dụng</string>
+  <string name="pixel_ui_pref_summary">Áp dụng chủ đề lên các yếu tố khác</string>
+  <string name="backup_pref_title">Sao lưu &amp; khôi phục</string>
   <string name="behavior_pref_summary">Thay đổi hành vi của Lawnchair</string>
   <string name="backup_pref_summary">Sao lưu dữ liệu cài đặt</string>
   <string name="debug_pref_summary">Khởi động lại hoặc xây dựng lại dữ liệu biểu tượng</string>
@@ -306,7 +306,6 @@
   <string name="light_statusbar_pref_title">Thanh trạng thái màu sáng</string>
   <string name="light_statusbar_pref_force">Hiển thị biểu tượng thanh trạng thái màu tối</string>
   <string name="light_statusbar_pref_off">Hiển thị biểu tượng thanh trạng thái màu sáng</string>
-  <string name="haptic_feedback_pref_title">Rung phản hồi</string>
   <string name="keep_scroll_state_pref_title">Lưu vị trí cuộn</string>
   <string name="keep_scroll_state_pref_summary">Lưu vị trí cuộn trong ngăn chứa ứng dụng</string>
   <string name="home_opens_drawer_pref_title">Bấm nút Home để mở ngăn chứa ứng dụng</string>
@@ -332,16 +331,16 @@
   <string name="theme_black">Đen</string>
   <string name="hide_hotseat_pref_title">Ẩn thanh Dock</string>
   <string name="all_icons">Tất cả các biểu tượng</string>
-  <string name="pull_down_action_pref_title">Hành động vuốt xuống</string>
+  <string name="pull_down_action_pref_title">Hành động khi vuốt xuống</string>
   <string name="pull_down_do_nothing">Không làm gì</string>
   <string name="pull_down_notis">Hiển thị thông báo</string>
   <string name="pull_down_search">Mở tìm kiếm</string>
   <string name="pull_down_apps_search">Tìm kiếm ứng dụng</string>
   <string name="enable_screen_rotation">Cho phép xoay màn hình</string>
   <!-- Import/Export Strings -->
-  <string name="backup_import_title">Nhập dữ liệu</string>
-  <string name="backup_export_title">Xuất dữ liệu</string>
-  <string name="settings_export_success">Hoàn tất thiết lập sao lưu</string>
+  <string name="backup_import_title">Khôi phục</string>
+  <string name="backup_export_title">Sao lưu</string>
+  <string name="settings_export_success">Hoàn tất sao lưu các thiết lập</string>
   <string name="db_export_success">Hoàn tất sao lưu dữ liệu</string>
   <string name="settings_import_success">Khôi phục cài đặt hoàn tất</string>
   <string name="db_import_success">Khôi phục dữ liệu hoàn tất</string>
@@ -349,21 +348,21 @@
   <string name="import_error">Không thể khôi phục</string>
   <string name="imexport_no_backup_found">Không tìm thấy bản sao lưu</string>
   <string name="imexport_external_storage_unreadable">Không thể đọc được bộ nhớ ngoài (cấp phép trong cài đặt)</string>
-  <string name="imexport_external_storage_unwritable">Không thể ghi vào bộ nhớ ngoài (cấp phép trong cài đặt)</string>
-  <string name="units_metric">Đơn vị đo lường</string>
-  <string name="units_imperial">Mẫu Anh</string>
+  <string name="imexport_external_storage_unwritable">Cho phép ghi vào bộ nhớ ngoài trong Cài đặt</string>
+  <string name="units_metric">Đơn vị mét</string>
+  <string name="units_imperial">Đơn vị đo lường của Anh</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <string name="pref_cat_weather">Thời tiết</string>
   <string name="pref_weather_title">Bật thời tiết</string>
   <string name="pref_weather_units">Đơn vị thời tiết</string>
-  <string name="pref_weather_city_summary">Cho kết quả tốt nhất bao gồm mã quốc gia</string>
+  <string name="pref_weather_city_summary">Để có kết quá tốt nhất, hãy thêm mã vùng</string>
   <string name="pref_weather_city_title">Thành phố</string>
   <string name="none">Không</string>
   <string name="pref_applyTheme">Áp dụng chủ đề cho</string>
   <string name="pref_applyBlur">Áp dụng làm mờ cho</string>
   <string name="search_bar">Thanh tìm kiếm</string>
   <string name="folder">Thư mục</string>
-  <string name="dock_allapps"><![CDATA[Thanh dock và menu ứng dụng]]></string>
+  <string name="dock_allapps"><![CDATA[Thanh dock và ngăn chứa ứng dụng]]></string>
   <string name="app_shortcuts">Lối tắt ứng dụng</string>
   <string name="blur_effect">Hiệu ứng trong mờ</string>
   <string name="pref_weather_provider">Dịch vụ cung cấp thông tin thời tiết</string>
@@ -378,7 +377,7 @@
   <string name="icon_shape_teardrop">Giọt nước</string>
   <string name="animated_clock_icon_title">Biểu tượng đồng hồ động</string>
   <string name="animated_clock_icon_alternative_clock_apps_title">Hiệu ứng cho ứng dụng đồng hồ khác</string>
-  <string name="animated_clock_icon_alternative_clock_apps_summary">Kích hoạt nếu bạn không sử dụng ứng dụng đồng hồ của Google làm ứng dụng đồng hồ mặc định</string>
+  <string name="animated_clock_icon_alternative_clock_apps_summary">Kích hoạt nếu bạn không sử dụng Google Clock làm ứng dụng đồng hồ mặc định</string>
   <string name="about_summary_title">Sơ lược</string>
   <string name="about_version">Phiên bản</string>
   <string name="about_icon_designer">Người thiết kế biểu tượng</string>
@@ -402,18 +401,26 @@
   <string name="lock_desktop">Khóa màn hình chính</string>
   <string name="lawnfeed_not_found">Chưa cài đặt Lawnfeed</string>
   <string name="google_app_not_found">Ứng dụng Google không được cài đặt</string>
-  <string name="lawnfeed_incompatible">Bạn đã cài đặt phiên bản Lawnfeed không tương thích</string>
+  <string name="lawnfeed_incompatible">Phiên bản Lawnfeed của bạn không tương thích</string>
   <string name="set_default_launcher">Đặt làm trình khởi chạy mặc định</string>
-  <string name="enable_spring_pref_title">Bật hiệu ứng thạch</string>
+  <string name="enable_spring_pref_title">Bật hiệu ứng nảy lên</string>
   <string name="hide_app">Ẩn ứng dụng</string>
   <string name="hide_app_sum">Ẩn khỏi ngăn chứa ứng dụng</string>
   <string name="hide_app_selected">&#160;đã chọn</string>
   <string name="hidden_app">Ứng dụng được ẩn</string>
   <string name="hide_app_apply">Áp dụng</string>
-  <string name="unauthorized_device">Có một vài công cụ sao chép trái phép được cài đặt trên thiết bị này. Vui lòng gỡ cài đặt chúng để tiếp tục.</string>
+  <string name="unauthorized_device">Có một vài phần mềm lậu trái phép được cài đặt trên thiết bị này. Vui lòng gỡ cài đặt chúng để tiếp tục.</string>
   <string name="hide_app_reset">Khôi phục</string>
-  <string name="two_row_dock">Hai hàng dock</string>
-  <string name="reset_alternative_icons_title">Đặt lại những biểu tượng ứng dụng bị thay đổi?</string>
-  <string name="reset_alternative_icons">Bạn có %1$d biểu tượng ứng dụng bị thay đổi, bạn có muốn đặt lại chúng không?</string>
+  <string name="two_row_dock">Thanh dock hai hàng</string>
+  <string name="reset_alternative_icons_title">Đặt lại biểu tượng ứng dụng thay thế?</string>
+  <string name="reset_alternative_icons">Bạn có %1$d ứng dụng với các biểu tượng khác, bạn có muốn đặt lại chúng?</string>
   <string name="error_no_browser">Không có hành động nào phù hợp để xử lý URL</string>
+  <string name="snowfall_title">Tuyết rơi</string>
+  <string name="enable_snowfall_title">Bật hiệu ứng tuyết rơi trên màn hình chính</string>
+  <string name="enable_snowfall_summary">Có thể ảnh hưởng đến hiệu năng máy.</string>
+  <string name="snowfall_enabled">\'Hãy để tuyết rơi, hãy để tuyết rơi, tuyết ơi hãy rơi!\'</string>
+  <string name="snowflake_size_scale">Kích cỡ bông tuyết</string>
+  <string name="snowflakes_num">Số lượng bông tuyết tối đa</string>
+  <string name="lawnfeed_outdated_title">Cần cập nhật Lawnfeed</string>
+  <string name="lawnfeed_outdated">Bạn cần một phiên bản mới hơn của Lawnfeed để làm việc với phiên bản này của Lawnchair.\n\nTrước khi cài đặt bản cập nhật, bạn có thể cần phải gỡ bỏ cài đặt phiên bản Lawnfeed hiện tại.\n\nBạn có muốn tải xuống bây giờ không?</string>
 </resources>

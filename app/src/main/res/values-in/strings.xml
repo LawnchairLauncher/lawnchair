@@ -273,7 +273,7 @@
   <string name="num_cols_pref_title">Jumlah kolom</string>
   <string name="num_rows_pref_title">Jumlah baris</string>
   <string name="num_hotseat_icons_pref_title">Jumlah ikon di dock</string>
-  <string name="icon_scale_pref_title">Pensekalaan ikon</string>
+  <string name="icon_scale_pref_title">Skala ikon</string>
   <string name="hotseat_height_scale">Pensekalaan tinggi</string>
   <string name="icon_text_scale_pref_title">Pensekalaan teks ikon</string>
   <string name="icon_text_padding_scale_pref_title">Pensekalaan batas antar ikon</string>
@@ -310,7 +310,6 @@
   <string name="light_statusbar_pref_title">Statusbar terang</string>
   <string name="light_statusbar_pref_force">Bilah status akan menampilkan ikon gelap</string>
   <string name="light_statusbar_pref_off">Bilah status akan menampilkan ikon terang</string>
-  <string name="haptic_feedback_pref_title">Aktifkan getaran</string>
   <string name="keep_scroll_state_pref_title">Jaga posisi gulir</string>
   <string name="keep_scroll_state_pref_summary">Mengingat posisi gulir di laci</string>
   <string name="home_opens_drawer_pref_title">Tombol beranda membuka laci aplikasi</string>
@@ -326,10 +325,10 @@
   <string name="color_extraction_label">Lawnchair - Ekstraksi warna</string>
   <string name="test_title">Tes</string>
   <string name="visibility">Visibilitas</string>
-  <string name="default_text">Bawaan</string>
+  <string name="default_text">Standar</string>
   <string name="edit_icon_reset">Setel ulang</string>
   <string name="show_top_shadow_title">Tampilkan bayangan atas</string>
-  <string name="pref_cat_homescreen">Layar beranda</string>
+  <string name="pref_cat_homescreen">Layar Utama</string>
   <string name="theme_pref_title">Tema</string>
   <string name="theme_light">Terang</string>
   <string name="theme_dark">Gelap</string>
@@ -365,7 +364,7 @@
   <string name="none">Tidak ada</string>
   <string name="pref_applyTheme">Terapkan tema pada</string>
   <string name="pref_applyBlur">Terapkan blur pada</string>
-  <string name="search_bar">Bilah penelusuran</string>
+  <string name="search_bar">Kotak pencarian</string>
   <string name="folder">Folder</string>
   <string name="dock_allapps"><![CDATA[Dock & laci]]></string>
   <string name="app_shortcuts">Pintasan aplikasi</string>
@@ -420,4 +419,12 @@
   <string name="reset_alternative_icons_title">Reset ikon aplikasi alternatif?</string>
   <string name="reset_alternative_icons">Anda memiliki aplikasi %1$d dengan ikon alternatif, apakah anda ingin meresetnya?</string>
   <string name="error_no_browser">Tidak ada aktivitas yang ditemukan untuk menangani URL</string>
+  <string name="snowfall_title">Hujan salju</string>
+  <string name="enable_snowfall_title">Aktifkan salju di beranda</string>
+  <string name="enable_snowfall_summary">Dapat mempengaruhi masalah kinerja.</string>
+  <string name="snowfall_enabled">\"Bersalju lah, bersalju lah, bersalju lah!\"</string>
+  <string name="snowflake_size_scale">Skala ukuran kepingan salju</string>
+  <string name="snowflakes_num">Jumlah maksimal kepingan salju</string>
+  <string name="lawnfeed_outdated_title">Pembaharuan Lawfeed dibutuhkan</string>
+  <string name="lawnfeed_outdated">Versi baru dari Lawnfeed dibutuhkan agar dapat berjalan dengan Lawnchair versi ini.\n\nSebelum memasang pembaruan anda harus mencopot Lawnfeed versi saat ini.\n\nApakah anda ingin mengunduhnya sekarang?</string>
 </resources>

@@ -46,7 +46,7 @@
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_bar_hint">Uygulama Ara</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_loading_message">Uygulamalar Yükleniyor…</string>
+  <string name="all_apps_loading_message">Uygulamalar Yükleniyor&#8230;</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
   <string name="all_apps_no_search_results">\"<xliff:g id="QUERY">%1$s</xliff:g>\" ile eşleşen uygulama bulunamadı</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
@@ -140,9 +140,9 @@
     The second "it" refers to the app. -->
   <string name="abandoned_promise_explanation">Bu simgenin uygulaması yüklü değil. Uygulamayı kaldırabilir veya arayıp manuel olarak yükleyebilirsiniz.</string>
   <!-- Title for an app which is being downloaded. -->
-  <string name="app_downloading_title"><xliff:g id="NAME">%1$s</xliff:g> indiriliyor, <xliff:g id="PROGRESS">%2$s</xliff:g> tamamlandı</string>
+  <string name="app_downloading_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> indiriliyor, <xliff:g example="30%" id="progress">%2$s</xliff:g> tamamlandı</string>
   <!-- Title for an app whose download has been started. -->
-  <string name="app_waiting_download_title"><xliff:g id="NAME">%1$s</xliff:g> uygulaması yüklenmek için bekliyor</string>
+  <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> yüklemeyi bekliyor</string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
   <string name="action_add_to_workspace">Ana ekrana ekle</string>
@@ -155,21 +155,21 @@
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
   <string name="action_move">Öğeyi taşı</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell"><xliff:g id="NUMBER_0">%1$s</xliff:g>. satır <xliff:g id="NUMBER_1">%2$s</xliff:g>. sütuna taşı</string>
+  <string name="move_to_empty_cell"><xliff:g example="1" id="number">%1$d</xliff:g>. satır <xliff:g example="1" id="number">%2$d</xliff:g>. sütuna taşı</string>
   <!-- Accessibility description to move item inside a folder. -->
-  <string name="move_to_position"><xliff:g id="NUMBER">%1$s</xliff:g>. sıraya taşı</string>
+  <string name="move_to_position"><xliff:g example="1" id="number">%1$d</xliff:g>. sıraya taşı</string>
   <!-- Accessibility description to move item to the hotseat. -->
-  <string name="move_to_hotseat_position">Favorilerde <xliff:g id="NUMBER">%1$s</xliff:g>. sıraya taşı</string>
+  <string name="move_to_hotseat_position">Favorilerde <xliff:g example="1" id="number">%1$d</xliff:g>. sıraya taşı</string>
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">Öğe taşındı</string>
   <!-- Accessibility description to move item into an existing folder. -->
-  <string name="add_to_folder">Klasöre ekle: <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="add_to_folder">Klasöre ekle: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
-  <string name="add_to_folder_with_app"><xliff:g id="NAME">%1$s</xliff:g> öğesini içeren klasöre ekle</string>
+  <string name="add_to_folder_with_app"><xliff:g example="Messenger" id="name">%1$s</xliff:g> ile klasöre ekle</string>
   <!-- Accessibility confirmation for item added to folder. -->
   <string name="added_to_folder">Öğe, klasöre eklendi</string>
   <!-- Accessibility description to create folder with another item. -->
-  <string name="create_folder_with">Şu öğeyle klasör oluştur: <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="create_folder_with">Şu öğeyle klasör oluştur: <xliff:g example="Game" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
   <string name="folder_created">Klasör oluşturuldu</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
@@ -191,11 +191,11 @@
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
   <string name="action_decrease_height">Yüksekliği azalt</string>
   <!-- Accessibility confirmation for widget resize. -->
-  <string name="widget_resized">Widget, <xliff:g id="NUMBER_0">%1$s</xliff:g> genişlik ve <xliff:g id="NUMBER_1">%2$s</xliff:g> yükseklik değerine yeniden boyutlandırıldı</string>
+  <string name="widget_resized">Widget, <xliff:g example="2" id="number">%1$d</xliff:g> genişlik ve <xliff:g example="1" id="number">%2$d</xliff:g> yükseklik değerine yeniden boyutlandırıldı</string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
   <string name="action_deep_shortcut">Kısayollar</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
-  <string name="shortcuts_menu_description"><xliff:g id="APP_NAME">%2$s</xliff:g> için <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> kısayol</string>
+  <string name="shortcuts_menu_description"><xliff:g example="Messenger" id="app_name">%2$s</xliff:g> için <xliff:g example="3" id="number_of_shortcuts">%1$d</xliff:g> kısayol</string>
   <string name="edit_drop_target_label">Düzenle</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
   <string name="wallpaper_instructions">Duvar kağıdını ayarla</string>
@@ -221,7 +221,7 @@
          e.g. "Wallpaper 3 of 10" -->
   <string name="wallpaper_accessibility_name">%2$d duvar kağıdı arasından duvar kağıdı %1$d</string>
   <!-- Accessibility string used to announce that a wallpaper has been selected. -->
-  <string name="announce_selection"><xliff:g id="LABEL">%1$s</xliff:g> seçildi</string>
+  <string name="announce_selection"><xliff:g example="Wallpaper 3 of 10" id="label">%1$s</xliff:g> seçildi</string>
   <!-- Label on button to delete wallpaper(s) -->
   <string name="wallpaper_delete">Sil</string>
   <!-- Label on button in Wallpaper Picker to pick an image -->
@@ -261,11 +261,11 @@
   <string name="blur_pref_title">Bulanıklığı etkinleştir</string>
   <string name="blur_pref_summary">Arayüzün bazı kısımlarına bulanıklık efekti uygulayın\nCanlı duvar kağıtları ile uyumlu değil</string>
   <string name="blur_radius_pref_title">Bulanıklık yarıçapı</string>
-  <string name="pref_iconLabelsInTwoLines">Simge etiketleri iki satır</string>
+  <string name="pref_iconLabelsInTwoLines">İki satırda simge etiketleri</string>
   <string name="white_google_icon_pref_title">Beyaz Google simgesi kullan</string>
-  <string name="hide_icon_labels_pref_title">Ana ekrandaki simge etiketlerini gizle</string>
+  <string name="hide_icon_labels_pref_title">Ana ekran simge etiketlerini gizle</string>
   <string name="hide_all_apps_icon_labels_pref_title">Çekmecedeki simge etiketlerini gizle</string>
-  <string name="workspace_label_color_hue_pref_title">Ana ekrandaki simge etiketlerinin rengi</string>
+  <string name="workspace_label_color_hue_pref_title">Ana ekran simge etiketleri rengi</string>
   <string name="all_apps_opacity_pref_title">Uygulama çekmecesi şeffaflığı</string>
   <string name="num_cols_pref_title">Sütun sayısı</string>
   <string name="num_rows_pref_title">Satır sayısı</string>
@@ -274,32 +274,32 @@
   <string name="hotseat_height_scale">Yükseklik ölçeği</string>
   <string name="icon_text_scale_pref_title">Simge yazı boyutu</string>
   <string name="icon_text_padding_scale_pref_title">Simge boşluğu ölçeği</string>
-  <string name="full_width_width_widgets_pref_title">Widget\'lere tam genişlik</string>
+  <string name="full_width_width_widgets_pref_title">Widget\'lara tam genişlik</string>
   <string name="full_width_widgets_pref_summary">Widget\'ların dolgu olmadan tüm genişliğe yayılmasına izin ver</string>
   <string name="notification_access_pref_title">Bildirim rozetleri ve önizleme</string>
   <string name="notification_access_pref_summary">Bu özellikleri etkinleştirmek için Lawnchair\'ın bildiriminize erişmesine izin verin</string>
-  <string name="general_pref_title">Masaüstü</string>
+  <string name="general_pref_title">Ana ekran</string>
   <string name="dock_pref_title">Alt Panel</string>
-  <string name="app_drawer_pref_title">Uygulama Çekmecesi</string>
-  <string name="pixel_ui_pref_title">Pixel Kullanıcı Arayüzü</string>
+  <string name="app_drawer_pref_title">Uygulama çekmecesi</string>
+  <string name="pixel_ui_pref_title">Tema</string>
   <string name="behavior_pref_title">Davranış</string>
   <string name="debug_pref_title">Hata ayıklama</string>
-  <string name="general_pref_summary">Ana ekran, alt panel ve uygulama çekmecesi</string>
+  <string name="general_pref_summary">Ana ekranınızı özelleştirin</string>
   <string name="dock_pref_summary">Alt panelinizi özelleştirin</string>
   <string name="app_drawer_pref_summary">Uygulama çekmecenizi özelleştirin</string>
-  <string name="pixel_ui_pref_summary">Farklı parçaları temala</string>
-  <string name="backup_pref_title">Yedekle &amp; geri yükle</string>
-  <string name="behavior_pref_summary">Lawnchair davranışını değiştirme</string>
+  <string name="pixel_ui_pref_summary">Farklı tema öğeleri</string>
+  <string name="backup_pref_title">Yedekle ve geri yükle</string>
+  <string name="behavior_pref_summary">Lawnchair hareketlerini değiştir</string>
   <string name="backup_pref_summary">Veritabanınızı ve ayarlarınızı yedekleyin\/geri yükleyin</string>
   <string name="debug_pref_summary">Simge veritabanını yeniden başlat veya yeniden oluştur</string>
-  <string name="show_pixel_bar_pref_title">Pixel üst barını göster</string>
+  <string name="show_pixel_bar_pref_title">Pixel üst çubuğunu göster</string>
   <string name="use_wide_searchbar_pref_title">Geniş arama çubuğunu kullan</string>
   <string name="show_mic_pref_title">Google Asistan simgesini göster</string>
   <string name="use_round_searhbar">Yuvarlak uygulama arama çubuğunu kullan</string>
   <string name="pixel_style_icons_pref_title">Pixel simgeleri kullan</string>
   <string name="pixel_style_icons_pref_summary">Etkinleştirildiğinde, mümkün olduğunca dairesel simgeler kullanılacaktır</string>
   <string name="show_google_now_tab_pref_title">Google Now sayfasını göster</string>
-  <string name="restart_lawnchair_pref_title">Lawnchair Yeniden Başlat</string>
+  <string name="restart_lawnchair_pref_title">Lawnchair\'ı Yeniden Başlat</string>
   <string name="restart_lawnchair_pref_summary">Bazı ayarlar doğru uygulanmadığında yardımcı olabilir</string>
   <string name="rebuild_icondb_pref_title">Simge Veritabanını Yeniden Oluştur</string>
   <string name="pinch_to_overview_pref_title">Gözden geçirmek için sıkıştır</string>
@@ -307,7 +307,6 @@
   <string name="light_statusbar_pref_title">Aydınlık durum çubuğu</string>
   <string name="light_statusbar_pref_force">Durum çubuğu koyu renkli simgeler gösterecektir</string>
   <string name="light_statusbar_pref_off">Durum çubuğu açık renkli simgeler gösterecektir</string>
-  <string name="haptic_feedback_pref_title">Titreşimi etkinleştir</string>
   <string name="keep_scroll_state_pref_title">Kaydırma konumunu kaydet</string>
   <string name="keep_scroll_state_pref_summary">Kaydırma konumunu uygulama çekmecesine kaydeder</string>
   <string name="home_opens_drawer_pref_title">Ana ekran tuşu ile uygulama çekmecesini aç</string>
@@ -315,10 +314,10 @@
   <string name="show_hidden_pref_title">Gizli uygulamaları göster</string>
   <string name="show_hidden_pref_on">Gizli uygulamalar görünürlük ayarlarını değiştirmek için gösterilir</string>
   <string name="show_hidden_pref_off">Gizli uygulamalar görünmez</string>
-  <string name="export_db_title">Veritabanını dışa aktar</string>
-  <string name="import_db_title">Veritabanını içe aktar</string>
-  <string name="export_prefs_title">Ayarları dışa aktarın</string>
-  <string name="import_prefs_title">Ayarları içe aktarın</string>
+  <string name="export_db_title">Veritabanı</string>
+  <string name="import_db_title">Veritabanı</string>
+  <string name="export_prefs_title">Ayarlar</string>
+  <string name="import_prefs_title">Ayarlar</string>
   <string name="notification_listener_label">Lawnchair - Bildirim rozetleri</string>
   <string name="color_extraction_label">Lawnchair - Renk çıkarma</string>
   <string name="test_title">Test</string>
@@ -334,10 +333,10 @@
   <string name="hide_hotseat_pref_title">Alt Paneli Gizle</string>
   <string name="all_icons">Tüm Simgeler</string>
   <string name="pull_down_action_pref_title">Aşağı çekme eylemi</string>
-  <string name="pull_down_do_nothing">Hiç bir şey yapma</string>
+  <string name="pull_down_do_nothing">Hiçbir şey yapma</string>
   <string name="pull_down_notis">Bildirimleri göster</string>
   <string name="pull_down_search">Aramayı aç</string>
-  <string name="pull_down_apps_search">Uygulama arama</string>
+  <string name="pull_down_apps_search">Uygulama ara</string>
   <string name="enable_screen_rotation">Ekran döndürmeyi etkinleştir</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">Geri yükle</string>
@@ -351,15 +350,15 @@
   <string name="imexport_no_backup_found">Yedek bulunamadı</string>
   <string name="imexport_external_storage_unreadable">Harici depolama alanı okunamıyor (ayarlardan izin verin)</string>
   <string name="imexport_external_storage_unwritable">Harici depolama alanına yazılamıyor (ayarlardan izin verin)</string>
-  <string name="units_metric">Metrik</string>
-  <string name="units_imperial">Emperyal Ölçüm</string>
+  <string name="units_metric">Santigrat</string>
+  <string name="units_imperial">Fahrenayt</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
-  <string name="pref_cat_weather">Hava Durumu</string>
+  <string name="pref_cat_weather">Hava durumu</string>
   <string name="pref_weather_title">Hava durumunu etkinleştir</string>
-  <string name="pref_weather_units">Hava Durumu Birimi</string>
+  <string name="pref_weather_units">Hava durumu birimi</string>
   <string name="pref_weather_city_summary">En iyi sonucu almak için ülke kodunu ekleyin</string>
   <string name="pref_weather_city_title">Şehir</string>
-  <string name="none">Hiç biri</string>
+  <string name="none">Hiçbiri</string>
   <string name="pref_applyTheme">Temayı uygula</string>
   <string name="pref_applyBlur">Bulanıklığı uygula</string>
   <string name="search_bar">Arama çubuğu</string>
@@ -371,30 +370,30 @@
   <string name="loading">Yükleniyor…</string>
   <string name="icon_shape_override_label">Simge şekli</string>
   <string name="icon_shape_system_default">Değiştirme</string>
-  <string name="icon_shape_none">Hiç biri</string>
+  <string name="icon_shape_none">Hiçbiri</string>
   <string name="icon_shape_square">Kare</string>
   <string name="icon_shape_rounded_square">Yuvarlatılmış kare</string>
   <string name="icon_shape_squircle">Köşeli daire</string>
   <string name="icon_shape_circle">Daire</string>
   <string name="icon_shape_teardrop">Gözyaşı</string>
-  <string name="animated_clock_icon_title">Hareketli saat simgesi</string>
-  <string name="animated_clock_icon_alternative_clock_apps_title">Alternatif saat uygulamalarını animasyon ile göster</string>
+  <string name="animated_clock_icon_title">Saat simgesi animasyonu</string>
+  <string name="animated_clock_icon_alternative_clock_apps_title">Alternatif saat uygulamalarında animasyon</string>
   <string name="animated_clock_icon_alternative_clock_apps_summary">Google Saat\'i varsayılan saat uygulaması olarak kullanmıyorsanız bunu etkinleştirin</string>
   <string name="about_summary_title">Özet</string>
   <string name="about_version">Sürüm</string>
   <string name="about_icon_designer">Uygulama Simgesi Tasarımcısı</string>
   <string name="about_contributors_title">Katkıda Bulunanlar</string>
   <string name="location_permission_warn">Başka bir sağlayıcıya geçmek için konum izni gerekiyor!</string>
-  <string name="num_cols_drawer_pref_title">Çekmecedeki sütunların sayısı</string>
+  <string name="num_cols_drawer_pref_title">Uygulama çekmecesi sütun sayısı</string>
   <string name="shortcut_backport_warning">Bu yavaş olabilir, kendi sorumluluğunuzda kullanın</string>
   <string name="pref_backport_shortcuts">Kısayolları geri yükle</string>
   <string name="weather_api_key_not_set">API anahtarı ayarlanmadı</string>
   <string name="pref_weather_api_key_title">API anahtarı</string>
   <string name="about_changelog">Değişiklik günlüğü</string>
   <string name="pref_all_apps_custom_label_color">Özel etiket rengi kullan</string>
-  <string name="pref_all_apps_label_color">Uygulama çekmecesi içindeki simge etiketlerinin rengi</string>
-  <string name="pref_num_rows_drawer">Çekmecedeki satır sayısı</string>
-  <string name="center_wallpaper_pref_title">Yalnızca bir sayfa olduğunda duvar kağıdını ortala</string>
+  <string name="pref_all_apps_label_color">Uygulama çekmecesi simge etiketi rengi</string>
+  <string name="pref_num_rows_drawer">Uygulama çekmecesi satır sayısı</string>
+  <string name="center_wallpaper_pref_title">Tek bir sayfa olduğunda duvar kağıdını ortala</string>
   <string name="vertical_drawer_layout_pref_title">Dikey liste olarak görüntüle</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -414,7 +413,15 @@
   <string name="unauthorized_device">Bu cihazda birkaç korsan yazılım mevcut. Devam etmek için lütfen bunları kaldırın.</string>
   <string name="hide_app_reset">Sıfırla</string>
   <string name="two_row_dock">İki satır alt panel</string>
-  <string name="reset_alternative_icons_title">Alternatif ikonlar sıfırlansın mı?</string>
-  <string name="reset_alternative_icons">Alternatif ikona sahip %1$d uygulamanız var, onları sıfırlamak ister misiniz?</string>
+  <string name="reset_alternative_icons_title">Alternatif uygulama simgeleri sıfırlansın mı?</string>
+  <string name="reset_alternative_icons">Alternatif simgelere sahip 5 uygulamanız var, bunları sıfırlamak istiyor musunuz?</string>
   <string name="error_no_browser">URL\'leri işleyecek etkinlik bulunamadı</string>
+  <string name="snowfall_title">Kar Yağışı</string>
+  <string name="enable_snowfall_title">Ana ekranda Kar yağışını etkinleştir</string>
+  <string name="enable_snowfall_summary">Performans sorunlarına neden olabilir.</string>
+  <string name="snowfall_enabled">\"Kar yağsın, kar yağsın, kar yağsın!\"</string>
+  <string name="snowflake_size_scale">Kar tanesi boyutu ölçeği</string>
+  <string name="snowflakes_num">Maksimum kar tanesi sayısı</string>
+  <string name="lawnfeed_outdated_title">Lawnfeed güncellemesi gerekli</string>
+  <string name="lawnfeed_outdated">Lawnchair\'in bu sürümüyle çalışabilmesi için Lawnfeed\'in daha yeni bir sürümü gerekiyor.\n\nGüncellemeyi yüklemeden önce muhtemelen Lawnfeed\'in mevcut sürümünü kaldırmanız gerekecektir.\n\nŞimdi indirmek istiyor musunuz?</string>
 </resources>

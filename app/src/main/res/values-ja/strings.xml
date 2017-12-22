@@ -104,7 +104,7 @@
   <!-- The format string for when a folder is opened, speaks the dimensions -->
   <string name="folder_opened">フォルダが開いています。<xliff:g id="WIDTH">%1$d</xliff:g>x<xliff:g id="HEIGHT">%2$d</xliff:g>の大きさです</string>
   <!-- Instruction that clicking outside will close folder -->
-  <string name="folder_tap_to_close">タップしてフォルダを閉じます</string>
+  <string name="folder_tap_to_close">タップしてフォルダーを閉じる</string>
   <!-- Instruction that clicking outside will commit folder rename -->
   <string name="folder_tap_to_rename">タップして変更後の名前を保存します</string>
   <!-- Indication that folder closed -->
@@ -244,7 +244,7 @@
   <string name="widgets_bottom_sheet_title">%1$s ウィジェット</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair はTill Kottmann（ deletescape としても知られています）によって作成されたランチャーアプリです。AOSP の Launcher3 に基づいて出来ています。</string>
-  <string name="about_title">Lawnchair について</string>
+  <string name="about_title">About</string>
   <string name="about_pref_summary">Lawnchair チームについてもっと知りましょう</string>
   <string name="changelog_title">ビルド #%d のための変更履歴</string>
   <string name="week_day_format">%1$s, %2$s</string>
@@ -306,7 +306,6 @@
   <string name="light_statusbar_pref_title">明るいステータスバー</string>
   <string name="light_statusbar_pref_force">ステータスバーは常に暗いアイコンで表示されます</string>
   <string name="light_statusbar_pref_off">ステータスバーは常に明るいアイコンで表示されます</string>
-  <string name="haptic_feedback_pref_title">振動を有効にする</string>
   <string name="keep_scroll_state_pref_title">スクロール位置を保存</string>
   <string name="keep_scroll_state_pref_summary">アプリドロワーのスクロール位置を保存します</string>
   <string name="home_opens_drawer_pref_title">ホームボタンでアプリドロワーを開く</string>
@@ -402,6 +401,7 @@
   <string name="lock_desktop">デスクトップをロック</string>
   <string name="lawnfeed_not_found">Lawnfeed はインストールされていません</string>
   <string name="google_app_not_found">Google アプリはインストールされていません</string>
+  <string name="lawnfeed_incompatible">互換性がないバージョンのLawnfeedがインストールされています</string>
   <string name="set_default_launcher">既定のランチャーにセット</string>
   <string name="enable_spring_pref_title">スプリング効果を有効にする</string>
   <string name="hide_app">アプリを隠す</string>
@@ -414,4 +414,13 @@
   <string name="two_row_dock">ドックを2行表示にする</string>
   <string name="reset_alternative_icons_title">別のアプリアイコンをリセットしますか？</string>
   <string name="reset_alternative_icons">アイコンが変更されているアプリが %1$d 個有ります。リセットしますか？</string>
+  <string name="error_no_browser">URLを処理するアクティビティが見つかりません</string>
+  <string name="snowfall_title">雪を降らす</string>
+  <string name="enable_snowfall_title">ホーム画面に雪を降らす</string>
+  <string name="enable_snowfall_summary">パフォーマンスに影響を及ぼす場合も有ります</string>
+  <string name="snowfall_enabled">雪よ降れ降れ、もっと降れ！</string>
+  <string name="snowflake_size_scale">雪結晶の大きさ</string>
+  <string name="snowflakes_num">雪結晶の最大降雪量</string>
+  <string name="lawnfeed_outdated_title">Lawnfeedの更新が必要です</string>
+  <string name="lawnfeed_outdated">このバージョンのLawnchairを使用するには、新しいバージョンのLawnfeedが必要です。\n\nアップデートをインストールする前に、現在のバージョンのLawnfeedをアンインストールする必要があります。\n\n今すぐダウンロードしますか？</string>
 </resources>
