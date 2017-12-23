@@ -37,6 +37,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.annotation.IntDef;
 import android.util.Log;
 import android.view.Choreographer;
 import android.view.Display;
@@ -56,6 +57,8 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.function.Consumer;
 
 /**
@@ -68,6 +71,17 @@ public class TouchInteractionService extends Service {
 
     private static final String TAG = "TouchInteractionService";
 
+    @IntDef(flag = true, value = {
+            INTERACTION_NORMAL,
+            INTERACTION_QUICK_SWITCH,
+            INTERACTION_QUICK_SCRUB
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface InteractionType {}
+    public static final int INTERACTION_NORMAL = 0;
+    public static final int INTERACTION_QUICK_SWITCH = 1;
+    public static final int INTERACTION_QUICK_SCRUB = 2;
+
     private final IBinder mMyBinder = new IOverviewProxy.Stub() {
 
         @Override
@@ -78,6 +92,30 @@ public class TouchInteractionService extends Service {
         @Override
         public void onBind(ISystemUiProxy iSystemUiProxy) throws RemoteException {
             mISystemUiProxy = iSystemUiProxy;
+        }
+
+        @Override
+        public void onQuickSwitch() {
+            startTouchTracking(INTERACTION_QUICK_SWITCH);
+        }
+
+        @Override
+        public void onQuickScrubStart() {
+            startTouchTracking(INTERACTION_QUICK_SCRUB);
+        }
+
+        @Override
+        public void onQuickScrubEnd() {
+            if (mInteractionHandler != null) {
+                mInteractionHandler.onQuickScrubEnd();
+            }
+        }
+
+        @Override
+        public void onQuickScrubProgress(float progress) {
+            if (mInteractionHandler != null) {
+                mInteractionHandler.onQuickScrubProgress(progress);
+            }
         }
     };
 
@@ -216,7 +254,7 @@ public class TouchInteractionService extends Service {
                 if (mInteractionHandler == null) {
                     if (Math.abs(displacement) >= mTouchSlop) {
                         mStartDisplacement = Math.signum(displacement) * mTouchSlop;
-                        startTouchTracking();
+                        startTouchTracking(INTERACTION_NORMAL);
                     }
                 } else {
                     // Move
@@ -244,10 +282,10 @@ public class TouchInteractionService extends Service {
         return mDisplayRotation == Surface.ROTATION_270 && mStableInsets.left > 0;
     }
 
-    private void startTouchTracking() {
+    private void startTouchTracking(@InteractionType int interactionType) {
         // Create the shared handler
         final NavBarSwipeInteractionHandler handler =
-                new NavBarSwipeInteractionHandler(mRunningTask, this);
+                new NavBarSwipeInteractionHandler(mRunningTask, this, interactionType);
 
         TraceHelper.partitionSection("TouchInt", "Thershold crossed ");
 

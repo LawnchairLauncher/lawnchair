@@ -16,6 +16,8 @@
 
 package com.android.quickstep;
 
+import static com.android.launcher3.LauncherState.OVERVIEW;
+
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.graphics.Rect;
@@ -42,8 +44,6 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.ArrayList;
 
-import static com.android.launcher3.LauncherState.OVERVIEW;
-
 /**
  * A list of recent tasks.
  */
@@ -53,6 +53,8 @@ public class RecentsView extends PagedView {
     public static final int SCROLL_TYPE_TASK = 1;
     public static final int SCROLL_TYPE_WORKSPACE = 2;
 
+    private final Launcher mLauncher;
+    private QuickScrubController mQuickScrubController;
     private final ScrollState mScrollState = new ScrollState();
     private boolean mOverviewStateEnabled;
     private boolean mTaskStackListenerRegistered;
@@ -88,6 +90,9 @@ public class RecentsView extends PagedView {
         enableFreeScroll(true);
         setClipChildren(true);
         setupLayoutTransition();
+
+        mLauncher = Launcher.getLauncher(context);
+        mQuickScrubController = new QuickScrubController(mLauncher);
 
         mScrollState.isRtl = mIsRtl;
     }
@@ -298,8 +303,12 @@ public class RecentsView extends PagedView {
         ActivityManagerWrapper.getInstance().removeTask(taskView.getTask().key.id);
         removeView(taskView);
         if (getChildCount() == mFirstTaskIndex) {
-            Launcher.getLauncher(getContext()).getStateManager().goToState(LauncherState.NORMAL);
+            mLauncher.getStateManager().goToState(LauncherState.NORMAL);
         }
+    }
+
+    public QuickScrubController getQuickScrubController() {
+        return mQuickScrubController;
     }
 
     public interface PageCallbacks {

@@ -77,6 +77,7 @@ public class WorkspaceCard extends FrameLayout implements PageCallbacks, OnClick
 
         mWorkspaceClickTarget.setOnClickListener(this);
         mWidgetsButton.setOnClickListener(this);
+        setOnClickListener(this);
     }
 
     @Override
@@ -168,7 +169,7 @@ public class WorkspaceCard extends FrameLayout implements PageCallbacks, OnClick
 
     @Override
     public void onClick(View view) {
-        if (view == mWorkspaceClickTarget) {
+        if (view == mWorkspaceClickTarget || view == this) {
             mLauncher.getStateManager().goToState(NORMAL);
         } else if (view == mWidgetsButton) {
             WidgetsFullSheet.show(mLauncher, true);

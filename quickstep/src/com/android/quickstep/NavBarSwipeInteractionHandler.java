@@ -67,6 +67,7 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
     private static final long RECENTS_VIEW_VISIBILITY_DURATION = 150;
     private static final long MAX_SWIPE_DURATION = 200;
     private static final long MIN_SWIPE_DURATION = 80;
+    private static final int QUICK_SWITCH_SNAP_DURATION = 120;
 
     // Ideal velocity for a smooth transition
     private static final float PIXEL_PER_MS = 2f;
@@ -98,6 +99,7 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
     private SnapshotDragView mDragView;
     private RecentsView mRecentsView;
     private RecentsViewStateController mStateController;
+    private QuickScrubController mQuickScrubController;
     private Hotseat mHotseat;
     private AllAppsScrim mAllAppsScrim;
     private RecentsTaskLoadPlan mLoadPlan;
@@ -105,12 +107,16 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
     private boolean mLauncherReady;
     private boolean mTouchEndHandled;
     private float mCurrentDisplacement;
+    private @TouchInteractionService.InteractionType int mInteractionType;
+    private boolean mStartedQuickScrubFromHome;
 
     private Bitmap mTaskSnapshot;
 
-    NavBarSwipeInteractionHandler(RunningTaskInfo runningTaskInfo, Context context) {
+    NavBarSwipeInteractionHandler(RunningTaskInfo runningTaskInfo, Context context,
+            @TouchInteractionService.InteractionType int interactionType) {
         mRunningTaskId = runningTaskInfo.id;
         mContext = context;
+        mInteractionType = interactionType;
         WindowManagerWrapper.getInstance().getStableInsets(mStableInsets);
 
         DeviceProfile dp = LauncherAppState.getIDP(mContext).getDeviceProfile(mContext);
@@ -191,10 +197,23 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
         mLauncher.getDragLayer().addView(mDragView);
         mDragView.setPivotX(0);
         mDragView.setPivotY(0);
-        mRecentsView = mLauncher.getOverviewPanel();
+        mRecentsView = launcher.getOverviewPanel();
         mStateController = mRecentsView.getStateController();
         mHotseat = mLauncher.getHotseat();
         mAllAppsScrim = mLauncher.findViewById(R.id.all_apps_scrim);
+
+        boolean interactionIsQuick
+                = mInteractionType == TouchInteractionService.INTERACTION_QUICK_SCRUB
+                || mInteractionType == TouchInteractionService.INTERACTION_QUICK_SWITCH;
+        mStartedQuickScrubFromHome = alreadyOnHome && interactionIsQuick;
+        if (interactionIsQuick) {
+            mQuickScrubController = mRecentsView.getQuickScrubController();
+            mQuickScrubController.onQuickScrubStart(mStartedQuickScrubFromHome);
+            animateToProgress(1f, MAX_SWIPE_DURATION);
+            if (mStartedQuickScrubFromHome) {
+                mDragView.setVisibility(View.INVISIBLE);
+            }
+        }
 
         // Optimization
         if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
@@ -224,7 +243,7 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
 
     @UiThread
     private void updateFinalShift() {
-        if (!mLauncherReady) {
+        if (!mLauncherReady || mStartedQuickScrubFromHome) {
             return;
         }
 
@@ -261,7 +280,7 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
 
     private void setTaskPlanToUi() {
         mRecentsView.update(mLoadPlan);
-        mRecentsView.initToPage(mRecentsView.getFirstTaskIndex());
+        mRecentsView.initToPage(mStartedQuickScrubFromHome ? 0 : mRecentsView.getFirstTaskIndex());
         ObjectAnimator anim = mStateController.animateVisibility(true /* isVisible */)
                 .setDuration(RECENTS_VIEW_VISIBILITY_DURATION);
         anim.addListener(new AnimationSuccessListener() {
@@ -301,7 +320,12 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
             }
         }
 
-        ObjectAnimator anim = mCurrentShift.animateToValue(endShift).setDuration(duration);
+        animateToProgress(endShift, duration);
+    }
+
+    /** Animates to the given progress, where 0 is the current app and 1 is overview. */
+    private void animateToProgress(float progress, long duration) {
+        ObjectAnimator anim = mCurrentShift.animateToValue(progress).setDuration(duration);
         anim.setInterpolator(Interpolators.SCROLL);
         anim.addListener(new AnimationSuccessListener() {
             @Override
@@ -344,6 +368,33 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
         View currentRecentsPage = mRecentsView.getPageAt(mRecentsView.getCurrentPage());
         if (currentRecentsPage instanceof TaskView) {
             ((TaskView) currentRecentsPage).animateIconToScale(1f);
+        }
+        if (mInteractionType == TouchInteractionService.INTERACTION_QUICK_SWITCH) {
+            for (int i = mRecentsView.getFirstTaskIndex(); i < mRecentsView.getPageCount(); i++) {
+                TaskView taskView = (TaskView) mRecentsView.getPageAt(i);
+                if (taskView.getTask().key.id != mRunningTaskId) {
+                    mRecentsView.snapToPage(i, QUICK_SWITCH_SNAP_DURATION);
+                    taskView.postDelayed(() -> {taskView.launchTask(true);},
+                            QUICK_SWITCH_SNAP_DURATION);
+                    break;
+                }
+            }
+        } else if (mInteractionType == TouchInteractionService.INTERACTION_QUICK_SCRUB) {
+            if (mQuickScrubController != null) {
+                mQuickScrubController.snapToPageForCurrentQuickScrubSection();
+            }
+        }
+    }
+
+    public void onQuickScrubEnd() {
+        if (mQuickScrubController != null) {
+            mQuickScrubController.onQuickScrubEnd();
+        }
+    }
+
+    public void onQuickScrubProgress(float progress) {
+        if (mQuickScrubController != null) {
+            mQuickScrubController.onQuickScrubProgress(progress);
         }
     }
 }

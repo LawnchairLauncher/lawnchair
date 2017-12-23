@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -30,9 +33,6 @@ import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsView;
-
-import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.OVERVIEW;
 
 public class RecentsViewStateController implements StateHandler {
 
