@@ -69,9 +69,8 @@
   <string name="app_info_drop_target_label">\'bout t\' app</string>
   <!-- Permissions: -->
   <!-- Permission short label -->
-  <string name="permlab_install_shortcut">install shortcuts</string>
   <!-- Permission description -->
-  <string name="permdesc_install_shortcut">Allows a app t\' add shortcuts without user intervention.</string>
+  <string name="permdesc_install_shortcut">Allows a app t\' add shortcuts without sailor intervention.</string>
   <!-- Permission short label -->
   <string name="permlab_read_settings">read settings o\' home and shortcuts</string>
   <!-- Permission description -->
@@ -81,7 +80,7 @@
   <!-- Permission description -->
   <string name="permdesc_write_settings">Allows th\' app t\' change th\' settin\'s \'n shortcuts in galleon.</string>
   <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
-  <string name="msg_no_phone_permission">ain\'t allowed t\' make phone calls</string>
+  <string name="msg_no_phone_permission"><xliff:g id="app_name">%1$s</xliff:g> ain\'t allowed t\' make phone calls</string>
   <!-- Widgets: -->
   <!-- Text to show user in place of a gadget when we can't display it properly -->
   <string name="gadget_error_text">Problems hoisting flags</string>
@@ -121,7 +120,7 @@
   <!-- Text for settings button -->
   <string name="settings_button_text">Pimp my ship</string>
   <!-- Message shown when a feature is disabled by the administrator -->
-  <string name="msg_disabled_by_admin">We dont wan\' ya here. Begone</string>
+  <string name="msg_disabled_by_admin">They dont wan\' ya here. Begone</string>
   <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
   <string name="accessibility_action_overview">O\'erview</string>
   <!-- Strings for settings -->
@@ -169,7 +168,7 @@ Waitin\' t\' install</string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
   <string name="add_to_folder_with_app">Add t\' chest with<xliff:g example="Messenger" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for item added to folder. -->
-  <string name="added_to_folder">Treasures added to</string>
+  <string name="added_to_folder">Treasures added to chest</string>
   <!-- Accessibility description to create folder with another item. -->
   <string name="create_folder_with">Made chest with: <xliff:g example="Game" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
@@ -185,7 +184,7 @@ Waitin\' t\' install</string>
   <!-- Accessibility action to resize a widget. [CHAR_LIMIT=30] -->
   <string name="action_resize">Reship</string>
   <!-- Accessibility action to increase width of a widget. [CHAR_LIMIT=30] -->
-  <string name="action_increase_width">Withdraw cannons</string>
+  <string name="action_increase_width">Draw cannons</string>
   <!-- Accessibility action to increase height of a widget. [CHAR_LIMIT=30] -->
   <string name="action_increase_height">Hoist the mast</string>
   <!-- Accessibility action to decrease width of a widget. [CHAR_LIMIT=30] -->
@@ -193,11 +192,11 @@ Waitin\' t\' install</string>
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
   <string name="action_decrease_height">Lower the sails</string>
   <!-- Accessibility confirmation for widget resize. -->
-  <string name="widget_resized">Widget resized t\' width <xliff:g example="2" id="number">%1$d</xliff:g> height <xliff:g example="1" id="number">%2$d</xliff:g></string>
+  <string name="widget_resized">Flag resized t\' width <xliff:g example="2" id="number">%1$d</xliff:g> height <xliff:g example="1" id="number">%2$d</xliff:g></string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
   <string name="action_deep_shortcut">Swashbuckles</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
-  <string name="shortcuts_menu_description"><xliff:g example="3" id="number_of_shortcuts">%1$d</xliff:g> shortcuts for <xliff:g example="Messenger" id="app_name">%2$s</xliff:g></string>
+  <string name="shortcuts_menu_description"><xliff:g example="3" id="number_of_shortcuts">%1$d</xliff:g> shortcuts fo\' <xliff:g example="Messenger" id="app_name">%2$s</xliff:g></string>
   <string name="edit_drop_target_label">Chop</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
   <string name="wallpaper_instructions">Set treasure map</string>
@@ -216,14 +215,14 @@ Waitin\' t\' install</string>
   <!-- String indicating how many media item(s) is(are) selected
             eg. 1 selected [CHAR LIMIT=30] -->
   <plurals name="number_of_items_selected">
-    <item quantity="one">%1$d selected</item>
-    <item quantity="other">%1$d selected</item>
+    <item quantity="one">%1$d select\'d</item>
+    <item quantity="other">%1$d select\'d</item>
   </plurals>
   <!-- Accessibility string used as a label for a particular wallpaper in the Wallpaper Picker list.
          e.g. "Wallpaper 3 of 10" -->
   <string name="wallpaper_accessibility_name">Treasure Map %1$d of %2$d</string>
   <!-- Accessibility string used to announce that a wallpaper has been selected. -->
-  <string name="announce_selection">Selected <xliff:g example="Wallpaper 3 of 10" id="label">%1$s</xliff:g></string>
+  <string name="announce_selection">Select\'d<xliff:g example="Wallpaper 3 of 10" id="label">%1$s</xliff:g></string>
   <!-- Label on button to delete wallpaper(s) -->
   <string name="wallpaper_delete">Erase him mateys</string>
   <!-- Label on button in Wallpaper Picker to pick an image -->
@@ -238,17 +237,16 @@ Waitin\' t\' install</string>
   <string name="which_wallpaper_option_lock_screen">Main Deck</string>
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
   <string name="which_wallpaper_option_home_screen_and_lock_screen">Home port and Shipwreck Cove</string>
-  <string name="title_show_google_app">Show %1$s</string>
-  <string name="title_show_google_app_default">Show Google app</string>
+  <string name="title_show_google_app_default">Show duckdu... Eh show google app</string>
   <string name="label_search">Navigate</string>
-  <string name="label_voice_search">Voice navigation</string>
+  <string name="label_voice_search">Parrot navigation</string>
   <string name="shortcuts_menu_with_notifications_description">%1$d swashbuckles and %2$d eyepatches for %3$s</string>
   <string name="notifications_header">Ravens</string>
   <string name="widgets_bottom_sheet_title">%1$s flags</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair is madet by th\' captain deletescape. Stolen from AOSPirates.</string>
   <string name="about_title">\'Bout</string>
-  <string name="about_pref_summary">Learn \'bout the crew</string>
+  <string name="about_pref_summary">Explore \'bout th\' crew</string>
   <string name="changelog_title">Log o\' changes for build #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Pack o\' flags</string>
@@ -267,73 +265,67 @@ Waitin\' t\' install</string>
   <string name="white_google_icon_pref_title">Use blanco g</string>
   <string name="hide_icon_labels_pref_title">Send yee port words to Davey Jones\' locker</string>
   <string name="hide_all_apps_icon_labels_pref_title">Send yee island words to Davey Jones\' locker</string>
-  <string name="workspace_label_color_hue_pref_title">Color of icon labels on home screen</string>
-  <string name="all_apps_opacity_pref_title">See through th\' drawr\'</string>
-  <string name="num_cols_pref_title">Number of columns</string>
-  <string name="num_rows_pref_title">Number of rows</string>
-  <string name="num_hotseat_icons_pref_title">Numbr\' of hats in yee deck</string>
+  <string name="workspace_label_color_hue_pref_title">Color o\' treasure labels on main deck</string>
+  <string name="all_apps_opacity_pref_title">See through th\' treasure room</string>
+  <string name="num_cols_pref_title">Number o\' colum\'s</string>
+  <string name="num_rows_pref_title">Number o\' rows</string>
+  <string name="num_hotseat_icons_pref_title">Numbr\' of treasures in yee deck</string>
   <string name="icon_scale_pref_title">Largeness o\' icon</string>
-  <string name="hotseat_height_scale">Height scale</string>
+  <string name="hotseat_height_scale">Mast height</string>
   <string name="icon_text_scale_pref_title">Scale o\' icon text</string>
-  <string name="icon_text_padding_scale_pref_title">Icon paddin\' scale</string>
+  <string name="icon_text_padding_scale_pref_title">Flag paddlin\' scale</string>
   <string name="full_width_width_widgets_pref_title">How wide yee flags be</string>
-  <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
+  <string name="full_width_widgets_pref_summary">Allow flags to span over all th\' ship </string>
   <string name="notification_access_pref_title">Notification bad\'es and preview</string>
   <string name="notification_access_pref_summary">Allow chair o\' l\'old lawn to spy your notification and enable this feature you landlubber</string>
   <string name="general_pref_title">Dekstop</string>
   <string name="dock_pref_title">Deck</string>
-  <string name="app_drawer_pref_title">Island</string>
-  <string name="pixel_ui_pref_title">Theme</string>
+  <string name="app_drawer_pref_title">Treasure room</string>
+  <string name="pixel_ui_pref_title">Paint job</string>
   <string name="behavior_pref_title">Behavior</string>
   <string name="debug_pref_title">Fly Swatter</string>
-  <string name="general_pref_summary">Customize your desktop</string>
-  <string name="dock_pref_summary">Customize your dock</string>
-  <string name="app_drawer_pref_summary">Change th\' storage room</string>
-  <string name="pixel_ui_pref_summary">Theme different elements</string>
+  <string name="general_pref_summary">Decorate th\' main deck</string>
+  <string name="dock_pref_summary">Decorate th\' bow</string>
+  <string name="app_drawer_pref_summary">Change th\' treasure room</string>
   <string name="backup_pref_title">FALLBACK MATES</string>
   <string name="behavior_pref_summary">Chan\'e th\' beha\'ior of Chair o\' l\'old Lawn</string>
-  <string name="backup_pref_summary">Backup\/restore your settings and database</string>
-  <string name="debug_pref_summary">Restart or rebuild icon database</string>
-  <string name="show_pixel_bar_pref_title">Show Pixel top bar</string>
   <string name="use_wide_searchbar_pref_title">Use wide crewnest</string>
   <string name="show_mic_pref_title">Use yer Parrot</string>
-  <string name="use_round_searhbar">Use round apps searchbar</string>
-  <string name="pixel_style_icons_pref_title">Use Pixel icons</string>
+  <string name="use_round_searhbar">Use barr\'l shaped searchbarr</string>
+  <string name="pixel_style_icons_pref_title">Use pixel treasures</string>
   <string name="pixel_style_icons_pref_summary">Round stuff \'nd things</string>
-  <string name="show_google_now_tab_pref_title">Show Google Now page</string>
+  <string name="show_google_now_tab_pref_title">NO DUCKS?</string>
   <string name="restart_lawnchair_pref_title">lets do it again mate
 </string>
   <string name="restart_lawnchair_pref_summary">Use this if yer\' settin\'s aren\'t stickin\'</string>
   <string name="rebuild_icondb_pref_title">Rebuild Database o\' Icon</string>
   <string name="pinch_to_overview_pref_title">Climb the crows nest</string>
   <string name="pinch_to_overview_pref_summary">Pinch yee screen to see the horizon</string>
-  <string name="light_statusbar_pref_title">A status bar that won\'t steal your stuff</string>
-  <string name="light_statusbar_pref_force">The status bar will steal stuff now</string>
-  <string name="light_statusbar_pref_off">The status bar will be innocent now</string>
   <string name="keep_scroll_state_pref_title">Drop anchor</string>
-  <string name="keep_scroll_state_pref_summary">Saves t\' position o\' scroll in t\' drawer</string>
+  <string name="keep_scroll_state_pref_summary">Saves t\' position o\' scroll in t\' treasure room</string>
   <string name="home_opens_drawer_pref_title">Some button will open somethin\'</string>
-  <string name="home_opens_drawer_pref_summary">Pressin\' t\' home butt\'n while on t\' main deck will open t\' app drawer</string>
+  <string name="home_opens_drawer_pref_summary">Pressin\' t\' home butt\'n while on t\' main deck will open th\' treasure room</string>
   <string name="show_hidden_pref_title">Show ye cursed apps</string>
-  <string name="show_hidden_pref_on">Porn apps will be shown to change visibility settings</string>
-  <string name="show_hidden_pref_off">Porn apps won\'t be visible</string>
+  <string name="show_hidden_pref_on">Shit, now everyone can see me yellow Smiley\'s to change visibility settings</string>
+  <string name="show_hidden_pref_off">They won\'t see me yellow smiley\'s</string>
   <string name="export_db_title">Base o\' th\' data</string>
   <string name="import_db_title">Base o\' th\' data</string>
   <string name="export_prefs_title">Changin\' stuff pannel</string>
-  <string name="import_prefs_title">Pimp my ship</string>
+  <string name="import_prefs_title">Changin\' stuff pannel</string>
   <string name="notification_listener_label">Lawnchair - Black spot icons</string>
   <string name="color_extraction_label">Lawnchair - Color plundrin\'</string>
-  <string name="test_title">Tits Kottmann</string>
+  <string name="test_title">Test</string>
   <string name="visibility">How well yee can see</string>
   <string name="default_text">Ye Basics</string>
   <string name="edit_icon_reset">Reconquer</string>
+  <string name="show_top_shadow_title">Dark top thing</string>
   <string name="pref_cat_homescreen">Home port</string>
   <string name="theme_pref_title">Paint job</string>
   <string name="theme_light">It be blindin\'</string>
   <string name="theme_dark">The sun be settin\'</string>
   <string name="theme_black">Rough seas at night</string>
   <string name="hide_hotseat_pref_title">Hide Starboard</string>
-  <string name="all_icons">All o\' \'em Flags</string>
+  <string name="all_icons">All o\' \'em Treasures</string>
   <string name="pull_down_action_pref_title">Leeward action</string>
   <string name="pull_down_do_nothing">Do nothin\'</string>
   <string name="pull_down_notis">Bring me ye Ravens</string>
@@ -342,6 +334,10 @@ Waitin\' t\' install</string>
   <string name="enable_screen_rotation">Yo spin me right round baby right round</string>
   <!-- Import/Export Strings -->
   <string name="backup_export_title">Burry this chest</string>
+  <string name="settings_export_success">Sett\'ngs buried up successfully</string>
+  <string name="db_export_success">Database buried up successfully</string>
+  <string name="settings_import_success">Sett\'ngs digged up successfully</string>
+  <string name="db_import_success">Database digged up successfully</string>
   <string name="export_error">couldn\'t take the loot backup mate</string>
   <string name="import_error">The loot is stolen mate</string>
   <string name="imexport_no_backup_found">Where be yee backup?</string>
@@ -357,7 +353,7 @@ Waitin\' t\' install</string>
   <string name="pref_applyTheme">What yee be theming?</string>
   <string name="pref_applyBlur">Drink rum to</string>
   <string name="search_bar">Compass</string>
-  <string name="folder">Chest</string>
+  <string name="folder">Treasure Chest</string>
   <string name="dock_allapps"><![CDATA[Deck & crew]]></string>
   <string name="blur_effect">Rum effe\'t</string>
   <string name="pref_weather_provider">Th\' weather Gods</string>
@@ -382,7 +378,8 @@ Waitin\' t\' install</string>
   <string name="weather_api_key_not_set">ye to add API key</string>
   <string name="pref_weather_api_key_title">Ye key o\' API</string>
   <string name="about_changelog">Ye Log o\' Changes</string>
-  <string name="pref_num_rows_drawer">Crew member rows</string>
+  <string name="pref_all_apps_label_color">Color of labels o\' treasures in treasure room</string>
+  <string name="pref_num_rows_drawer">They see me rowing</string>
   <string name="center_wallpaper_pref_title">Keep wallpaper straight and true</string>
   <!-- Time format for Weather Widget -->
   <!-- EEEE is the weekday name, MMMM the month name and d the day of the month -->
@@ -394,11 +391,13 @@ Waitin\' t\' install</string>
   <string name="set_default_launcher">Dock yee ship</string>
   <string name="enable_spring_pref_title">Enable effect o\' sprin\'</string>
   <string name="hide_app">Hide flag</string>
-  <string name="hidden_app">Patched app</string>
+  <string name="hide_app_sum">Hide this tresure from th\' treasure room</string>
+  <string name="hidden_app">Hidden flag</string>
   <string name="hide_app_apply">Aye</string>
   <string name="unauthorized_device">This device has a few piracy tools installed. Please uninstall them to continue.</string>
   <string name="hide_app_reset">Reconquer</string>
-  <string name="reset_alternative_icons_title">Reconquer alternative app icons?</string>
+  <string name="two_row_dock">Double deck</string>
+  <string name="reset_alternative_icons_title">Reconquer alternative treasures?</string>
   <string name="reset_alternative_icons">Ye have %1$d apps wit\' alternative flags, d\' ye want t\' reset \'em?</string>
   <string name="snowfall_title">Yee feelin\' cold?</string>
   <string name="enable_snowfall_title">Happy holidays ya\' scurvy dogs</string>
