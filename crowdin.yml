@@ -3,7 +3,6 @@ files:
     translation: /app/src/main/res/values-%android_code%/%original_file_name%
     languages_mapping:
       android_code:
-        af: af
         ar: ar
         ca: ca
         cs: cs
@@ -29,7 +28,6 @@ files:
         sk: sk
         sr: sr
         sv-SE: sv
-        ta: ta
         tr: tr
         uk: uk
         vi: vi
