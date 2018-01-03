@@ -18,7 +18,6 @@ package com.android.launcher3.allapps;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.os.UserHandle;
 import android.support.animation.DynamicAnimation;
 import android.support.animation.SpringAnimation;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
@@ -33,7 +32,6 @@ import android.view.View.OnFocusChangeListener;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.android.launcher3.AppInfo;
@@ -43,7 +41,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
 import com.android.launcher3.anim.SpringAnimationHandler;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.discovery.AppDiscoveryAppInfo;
 import com.android.launcher3.discovery.AppDiscoveryItemView;
@@ -332,7 +329,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                         R.layout.all_apps_divider, parent, false));
             case VIEW_TYPE_WORK_TAB_FOOTER:
                 View footer = mLayoutInflater.inflate(R.layout.work_tab_footer, parent, false);
-                // TODO: Implement the work mode toggle logic here.
                 return new ViewHolder(footer);
             default:
                 throw new RuntimeException("Unexpected view type");
@@ -379,8 +375,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 // nothing to do
                 break;
             case VIEW_TYPE_WORK_TAB_FOOTER:
-                Switch workModeToggle = holder.itemView.findViewById(R.id.work_mode_toggle);
-                workModeToggle.setChecked(!isAnyProfileQuietModeEnabled());
+                WorkModeSwitch workModeToggle = holder.itemView.findViewById(R.id.work_mode_toggle);
+                workModeToggle.refresh();
                 break;
         }
         if (mBindViewCallback != null) {
@@ -548,16 +544,5 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
             return factor;
         }
-    }
-
-    private boolean isAnyProfileQuietModeEnabled() {
-        UserManagerCompat userManager = UserManagerCompat.getInstance(mLauncher);
-        List<UserHandle> userProfiles = userManager.getUserProfiles();
-        for (UserHandle userProfile : userProfiles) {
-            if (userManager.isQuietModeEnabled(userProfile)) {
-                return true;
-            }
-        }
-        return false;
     }
 }
