@@ -18,6 +18,7 @@
 
     <dimen name="task_thumbnail_top_margin">24dp</dimen>
     <dimen name="task_thumbnail_icon_size">48dp</dimen>
+    <dimen name="task_menu_background_radius">12dp</dimen>
 
     <dimen name="quickstep_fling_threshold_velocity">500dp</dimen>
     <dimen name="quickstep_fling_min_velocity">250dp</dimen>
