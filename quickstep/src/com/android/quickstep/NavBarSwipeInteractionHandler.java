@@ -44,6 +44,7 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.launcher3.util.TraceHelper;
+import com.android.launcher3.views.AllAppsScrim;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
@@ -97,6 +98,7 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
     private RecentsView mRecentsView;
     private RecentsViewStateController mStateController;
     private Hotseat mHotseat;
+    private AllAppsScrim mAllAppsScrim;
     private RecentsTaskLoadPlan mLoadPlan;
 
     private boolean mLauncherReady;
@@ -182,6 +184,7 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
         mRecentsView = mLauncher.getOverviewPanel();
         mStateController = mRecentsView.getStateController();
         mHotseat = mLauncher.getHotseat();
+        mAllAppsScrim = mLauncher.findViewById(R.id.all_apps_scrim);
 
         // Optimization
         mLauncher.getAppsView().setVisibility(View.GONE);
@@ -222,7 +225,9 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
         float shift = mCurrentShift.value * mActivityMultiplier.value;
         int hotseatSize = getHotseatSize();
 
-        mHotseat.setTranslationY((1 - shift) * hotseatSize);
+        float hotseatTranslation = (1 - shift) * hotseatSize;
+        mHotseat.setTranslationY(hotseatTranslation);
+        mAllAppsScrim.setTranslationY(hotseatTranslation);
 
         mRectEvaluator.evaluate(shift, mSourceRect, mTargetRect);
 
@@ -324,6 +329,7 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
     private void cleanupLauncher() {
         // TODO: These should be done as part of ActivityOptions#OnAnimationStarted
         mHotseat.setTranslationY(0);
+        mAllAppsScrim.setTranslationY(0);
         mLauncher.setOnResumeCallback(() -> mDragView.close(false));
     }
 

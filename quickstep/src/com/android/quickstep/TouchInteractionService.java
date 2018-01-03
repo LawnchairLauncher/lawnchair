@@ -28,10 +28,8 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
 import android.app.Service;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -39,7 +37,6 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.os.UserHandle;
 import android.util.Log;
 import android.view.Choreographer;
 import android.view.Display;
@@ -52,14 +49,9 @@ import android.view.WindowManager;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.MainThreadExecutor;
-import com.android.launcher3.R;
 import com.android.launcher3.util.TraceHelper;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
-import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
-import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan.PreloadOptions;
-import com.android.systemui.shared.recents.model.RecentsTaskLoader;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.WindowManagerWrapper;
@@ -73,8 +65,6 @@ import java.util.function.Consumer;
 public class TouchInteractionService extends Service {
 
     private static final String TAG = "TouchInteractionService";
-
-    private static RecentsTaskLoader sRecentsTaskLoader;
 
     private final IBinder mMyBinder = new IOverviewProxy.Stub() {
 
@@ -93,12 +83,18 @@ public class TouchInteractionService extends Service {
             = this::handleTouchDownOnOtherActivity;
     private final Consumer<MotionEvent> mNoOpTouchConsumer = (ev) -> {};
 
+    private static boolean sConnected = false;
+
+    public static boolean isConnected() {
+        return sConnected;
+    }
+
     private ActivityManagerWrapper mAM;
     private RunningTaskInfo mRunningTask;
+    private RecentsModel mRecentsModel;
     private Intent mHomeIntent;
     private ComponentName mLauncher;
     private MotionEventQueue mEventQueue;
-    private MainThreadExecutor mMainThreadExecutor;
 
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
@@ -117,6 +113,7 @@ public class TouchInteractionService extends Service {
     public void onCreate() {
         super.onCreate();
         mAM = ActivityManagerWrapper.getInstance();
+        mRecentsModel = RecentsModel.getInstance(this);
 
         mHomeIntent = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_HOME)
@@ -126,26 +123,21 @@ public class TouchInteractionService extends Service {
         mLauncher = new ComponentName(getPackageName(), info.activityInfo.name);
         mHomeIntent.setComponent(mLauncher);
 
-        Resources res = getResources();
-        if (sRecentsTaskLoader == null) {
-            sRecentsTaskLoader = new RecentsTaskLoader(this,
-                    res.getInteger(R.integer.config_recentsMaxThumbnailCacheSize),
-                    res.getInteger(R.integer.config_recentsMaxIconCacheSize), 0);
-            sRecentsTaskLoader.startLoader(this);
-        }
-
-        mMainThreadExecutor = new MainThreadExecutor();
         mEventQueue = new MotionEventQueue(Choreographer.getInstance(), this::handleMotionEvent);
+        mRecentsModel.loadTasks(-1, null);
+        sConnected = true;
+    }
+
+    @Override
+    public void onDestroy() {
+        sConnected = false;
+        super.onDestroy();
     }
 
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "Touch service connected");
         return mMyBinder;
-    }
-
-    public static RecentsTaskLoader getRecentsTaskLoader() {
-        return sRecentsTaskLoader;
     }
 
     private void handleMotionEvent(MotionEvent ev) {
@@ -255,12 +247,9 @@ public class TouchInteractionService extends Service {
         final NavBarSwipeInteractionHandler handler =
                 new NavBarSwipeInteractionHandler(mRunningTask, this);
 
-        // Preload and start the recents activity on a background thread
-        final Context context = this;
-        final RecentsTaskLoadPlan loadPlan = new RecentsTaskLoadPlan(context);
-        final int taskId = mRunningTask.id;
         TraceHelper.partitionSection("TouchInt", "Thershold crossed ");
 
+        // Start the recents activity on a background thread
         BackgroundExecutor.get().submit(() -> {
             // Get the snap shot before
             handler.setTaskSnapshot(getCurrentTaskSnapshot());
@@ -275,15 +264,10 @@ public class TouchInteractionService extends Service {
                     ActivityOptions.makeCustomAnimation(this, 0, 0), UserHandle.myUserId(),
                     null, null);
              */
-
-            // Preload the plan
-            RecentsTaskLoader loader = TouchInteractionService.getRecentsTaskLoader();
-            PreloadOptions opts = new PreloadOptions();
-            opts.loadTitles = false;
-            loadPlan.preloadPlan(opts, loader, taskId, UserHandle.myUserId());
-            // Set the load plan on UI thread
-            mMainThreadExecutor.execute(() -> handler.setRecentsTaskLoadPlan(loadPlan));
         });
+
+        // Preload the plan
+        mRecentsModel.loadTasks(mRunningTask.id, handler::setRecentsTaskLoadPlan);
         mInteractionHandler = handler;
     }
 

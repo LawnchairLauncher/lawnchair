@@ -29,7 +29,6 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.support.animation.SpringAnimation;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.animation.Interpolator;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
@@ -42,7 +41,6 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
@@ -50,6 +48,10 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.FloatRange;
 import com.android.launcher3.util.TouchController;
+import com.android.quickstep.RecentsModel;
+import com.android.quickstep.RecentsView;
+import com.android.quickstep.TouchInteractionService;
+import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 
 import java.util.ArrayList;
 
@@ -86,6 +88,8 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
     private static final int FLAG_OVERVIEW_DISABLED_OUT_OF_RANGE = 1 << 0;
     private static final int FLAG_OVERVIEW_DISABLED_FLING = 1 << 1;
     private static final int FLAG_OVERVIEW_DISABLED_CANCEL_STATE = 1 << 2;
+    private static final int FLAG_RECENTS_PLAN_LOADING = 1 << 3;
+    private static final int FLAG_OVERVIEW_DISABLED = 1 << 4;
 
     private final Launcher mLauncher;
     private final SwipeDetector mDetector;
@@ -98,9 +102,10 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
     private TaggedAnimatorSetBuilder mTaggedAnimatorSetBuilder;
     private AnimatorSet mQuickOverviewAnimation;
     private boolean mAnimatingToOverview;
-    private TwoStateAnimationController mTwoStateAnimationController;
+    private CroppedAnimationController mCroppedAnimationController;
 
     private AnimatorPlaybackController mCurrentAnimation;
+    private LauncherState mFromState;
     private LauncherState mToState;
 
     private float mStartProgress;
@@ -240,10 +245,26 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
                     + MAX_PROGRESS_TO_OVERVIEW - MIN_PROGRESS_TO_OVERVIEW;
 
             // Build current animation
+            mFromState = mLauncher.getStateManager().getState();
             mToState = mLauncher.isInState(ALL_APPS) ? NORMAL : ALL_APPS;
             mTaggedAnimatorSetBuilder = new TaggedAnimatorSetBuilder();
             mCurrentAnimation = mLauncher.getStateManager().createAnimationToNewWorkspace(
                     mToState, mTaggedAnimatorSetBuilder, maxAccuracy);
+
+            if (TouchInteractionService.isConnected()) {
+                // Load recents plan
+                RecentsModel recentsModel = RecentsModel.getInstance(mLauncher);
+                if (recentsModel.getLastLoadPlan() != null) {
+                    onRecentsPlanLoaded(recentsModel.getLastLoadPlan());
+                } else {
+                    mDragPauseDetector.addDisabledFlags(FLAG_RECENTS_PLAN_LOADING);
+                }
+                // Reload again so that we get the latest list
+                // TODO: Use callback instead of polling everytime
+                recentsModel.loadTasks(-1, this::onRecentsPlanLoaded);
+            } else {
+                mDragPauseDetector.addDisabledFlags(FLAG_OVERVIEW_DISABLED);
+            }
 
             mCurrentAnimation.getTarget().addListener(this);
             mStartProgress = 0;
@@ -260,6 +281,14 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
         for (SpringAnimationHandler h : mSpringHandlers) {
             h.skipToEnd();
         }
+    }
+
+    private void onRecentsPlanLoaded(RecentsTaskLoadPlan plan) {
+        RecentsView recentsView = mLauncher.getOverviewPanel();
+        recentsView.update(plan);
+        recentsView.initToPage(0);
+
+        mDragPauseDetector.clearDisabledFlags(FLAG_RECENTS_PLAN_LOADING);
     }
 
     private float getShiftRange() {
@@ -287,16 +316,11 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
 
     @Override
     public void onDragEnd(float velocity, boolean fling) {
-        if (!fling && mDragPauseDetector.isEnabled() && mDragPauseDetector.isTriggered()) {
-            snapToOverview(velocity);
-            return;
-        }
-
         mDragPauseDetector.addDisabledFlags(FLAG_OVERVIEW_DISABLED_FLING);
 
         final long animationDuration;
         final int logAction;
-        final LauncherState targetState;
+        LauncherState targetState;
         final float progress = mCurrentAnimation.getProgressFraction();
 
         if (fling) {
@@ -317,7 +341,7 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
                 targetState = mToState;
                 animationDuration = SwipeDetector.calculateDuration(velocity, 1 - progress);
             } else {
-                targetState = mToState == ALL_APPS ? NORMAL : ALL_APPS;
+                targetState = mFromState;
                 animationDuration = SwipeDetector.calculateDuration(velocity, progress);
             }
         }
@@ -328,7 +352,13 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
                 h.animateToFinalPosition(0 /* pos */, 1 /* startValue */);
             }
         }
-        mCurrentAnimation.setEndAction(() -> onSwipeInteractionCompleted(targetState, logAction));
+        mCurrentAnimation.setEndAction(() -> {
+            LauncherState finalState = targetState;
+            if (mDragPauseDetector.isTriggered() && targetState == NORMAL) {
+                finalState = OVERVIEW;
+            }
+            onSwipeInteractionCompleted(finalState, logAction);
+        });
 
         float nextFrameProgress = Utilities.boundToRange(
                 progress + velocity * SINGLE_FRAME_MS / getShiftRange(), 0f, 1f);
@@ -341,7 +371,7 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
     }
 
     private void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
-        if (targetState == mToState) {
+        if (targetState != mFromState) {
             // Transition complete. log the action
             mLauncher.getUserEventDispatcher().logActionOnContainer(logAction,
                     mToState == ALL_APPS ? Direction.UP : Direction.DOWN,
@@ -352,33 +382,6 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
         // TODO: mQuickOverviewAnimation might still be running in which changing a state instantly
         // may cause a jump. Animate the state change with a short duration in this case?
         mLauncher.getStateManager().goToState(targetState, false /* animated */);
-    }
-
-    private void snapToOverview(float velocity) {
-        mAnimatingToOverview = true;
-
-        final float progress = mCurrentAnimation.getProgressFraction();
-        float endProgress = mToState == NORMAL ? 1f : 0f;
-        long animationDuration = SwipeDetector.calculateDuration(
-                velocity, Math.abs(endProgress - progress));
-        float nextFrameProgress = Utilities.boundToRange(
-                progress + velocity * SINGLE_FRAME_MS / getShiftRange(), 0f, 1f);
-
-        mCurrentAnimation.setEndAction(() -> {
-            // TODO: Add logging
-            clearState();
-            mLauncher.getStateManager().goToState(OVERVIEW, true /* animated */);
-        });
-
-        if (mTwoStateAnimationController != null) {
-            mTwoStateAnimationController.goBackToStart(endProgress);
-        }
-
-        ValueAnimator anim = mCurrentAnimation.getAnimationPlayer();
-        anim.setFloatValues(nextFrameProgress, endProgress);
-        anim.setDuration(animationDuration);
-        anim.setInterpolator(scrollInterpolatorForVelocity(velocity));
-        anim.start();
     }
 
     private void onDragPauseDetected() {
@@ -409,33 +412,29 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
         mQuickOverviewAnimation.start();
     }
 
-    private void onQuickOverviewAnimationComplete(ValueAnimator twoStepAnimator) {
+    private void onQuickOverviewAnimationComplete(ValueAnimator animator) {
         if (mAnimatingToOverview) {
             return;
         }
 
-        // The remaining state handlers are on the OVERVIEW state. Create two animations, one
-        // towards the NORMAL state and one towards ALL_APPS state and control them based on the
-        // swipe progress.
+        // For the remainder to the interaction, the user can either go to the ALL_APPS state or
+        // the OVERVIEW state.
+        // The remaining state handlers are on the OVERVIEW state. Create one animation towards the
+        // ALL_APPS state and only call it when the user moved above the current range.
         AnimationConfig config = new AnimationConfig();
         config.duration = (long) (2 * getShiftRange());
         config.userControlled = true;
 
-        LauncherState fromState = mToState == ALL_APPS ? NORMAL : ALL_APPS;
-        AnimatorSetBuilder builderToTargetState = new AnimatorSetBuilder();
-        AnimatorSetBuilder builderToSourceState = new AnimatorSetBuilder();
-
+        AnimatorSetBuilder builderToAllAppsState = new AnimatorSetBuilder();
         StateHandler[] handlers = mLauncher.getStateManager().getStateHandlers();
         for (int i = OTHER_HANDLERS_START_INDEX; i < handlers.length; i++) {
-            handlers[i].setStateWithAnimation(mToState, builderToTargetState, config);
-            handlers[i].setStateWithAnimation(fromState, builderToSourceState, config);
+            handlers[i].setStateWithAnimation(ALL_APPS, builderToAllAppsState, config);
         }
 
-        mTwoStateAnimationController = new TwoStateAnimationController(
-                AnimatorPlaybackController.wrap(builderToSourceState.build(), config.duration),
-                AnimatorPlaybackController.wrap(builderToTargetState.build(), config.duration),
-                twoStepAnimator.getAnimatedFraction());
-        twoStepAnimator.addUpdateListener(mTwoStateAnimationController);
+        mCroppedAnimationController = new CroppedAnimationController(
+                AnimatorPlaybackController.wrap(builderToAllAppsState.build(), config.duration),
+                new FloatRange(animator.getAnimatedFraction(), mToState == ALL_APPS ? 1 : 0));
+        animator.addUpdateListener(mCroppedAnimationController);
     }
 
     private void clearState() {
@@ -450,69 +449,49 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
             mQuickOverviewAnimation.cancel();
             mQuickOverviewAnimation = null;
         }
-        mTwoStateAnimationController = null;
+        mCroppedAnimationController = null;
         mAnimatingToOverview = false;
 
         mDetector.finishedScrolling();
     }
 
     /**
-     * {@link AnimatorUpdateListener} which interpolates two animations based the progress
+     * {@link AnimatorUpdateListener} which controls another animation for a fraction of range
      */
-    private static class TwoStateAnimationController implements AnimatorUpdateListener {
+    private static class CroppedAnimationController implements AnimatorUpdateListener {
 
-        private final AnimatorPlaybackController mControllerTowardsStart;
-        private final AnimatorPlaybackController mControllerTowardsEnd;
+        private final AnimatorPlaybackController mTarget;
+        private final FloatRange mRange;
 
-        private Interpolator mInterpolator = Interpolators.LINEAR;
-        private float mStartFraction;
-        private float mLastFraction;
-
-        TwoStateAnimationController(AnimatorPlaybackController controllerTowardsStart,
-                AnimatorPlaybackController controllerTowardsEnd, float startFraction) {
-            mControllerTowardsStart = controllerTowardsStart;
-            mControllerTowardsEnd = controllerTowardsEnd;
-            mLastFraction = mStartFraction = startFraction;
+        CroppedAnimationController(AnimatorPlaybackController target, FloatRange range) {
+            mTarget = target;
+            mRange = range;
         }
+
 
         @Override
         public void onAnimationUpdate(ValueAnimator valueAnimator) {
-            mLastFraction = mInterpolator.getInterpolation(valueAnimator.getAnimatedFraction());
-            if (mLastFraction > mStartFraction) {
-                if (mStartFraction >= 1) {
-                    mControllerTowardsEnd.setPlayFraction(0);
-                } else {
-                    mControllerTowardsEnd.setPlayFraction(
-                            (mLastFraction - mStartFraction) / (1 - mStartFraction));
-                }
-            } else {
-                if (mStartFraction <= 0) {
-                    mControllerTowardsStart.setPlayFraction(0);
-                } else {
-                    mControllerTowardsStart.setPlayFraction(
-                            (mStartFraction - mLastFraction) / mStartFraction);
-                }
-            }
-        }
+            float fraction = valueAnimator.getAnimatedFraction();
 
-        /**
-         * Changes the interpolator such that from this point ({@link #mLastFraction}), the
-         * animation run towards {@link #mStartFraction}. This allows us to animate the UI back
-         * to the original point.
-         * @param endFraction expected end point for this animation. Should either be 0 or 1.
-         */
-        public void goBackToStart(float endFraction) {
-            if (mLastFraction == mStartFraction || mLastFraction == endFraction) {
-                mInterpolator = (v) -> mStartFraction;
-            } else if (mLastFraction > mStartFraction && endFraction < mStartFraction) {
-                mInterpolator = (v) -> Math.max(v, mStartFraction);
-            } else if (mLastFraction < mStartFraction && endFraction > mStartFraction) {
-                mInterpolator = (v) -> Math.min(mStartFraction, v);
+            if (mRange.start < mRange.end) {
+                if (fraction <= mRange.start) {
+                    mTarget.setPlayFraction(0);
+                } else if (fraction >= mRange.end) {
+                    mTarget.setPlayFraction(1);
+                } else {
+                    mTarget.setPlayFraction((fraction - mRange.start) / (mRange.end - mRange.start));
+                }
+            } else if (mRange.start > mRange.end) {
+                if (fraction >= mRange.start) {
+                    mTarget.setPlayFraction(0);
+                } else if (fraction <= mRange.end) {
+                    mTarget.setPlayFraction(1);
+                } else {
+                    mTarget.setPlayFraction((fraction - mRange.start) / (mRange.end - mRange.start));
+                }
             } else {
-                final float start = mLastFraction;
-                final float range = endFraction - mLastFraction;
-                mInterpolator = (v) ->
-                        SwipeDetector.interpolate(start, mStartFraction, (v - start) / range);
+                // mRange.start == mRange.end
+                mTarget.setPlayFraction(0);
             }
         }
     }
