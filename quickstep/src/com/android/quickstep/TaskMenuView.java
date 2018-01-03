@@ -25,7 +25,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewOutlineProvider;
@@ -61,6 +60,8 @@ public class TaskMenuView extends AbstractFloatingView {
     private Launcher mLauncher;
     private TextView mTaskIconAndName;
     private AnimatorSet mOpenCloseAnimator;
+    private TaskView mTaskView;
+    private View mWidgetsOptionView;
 
     public TaskMenuView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -130,8 +131,9 @@ public class TaskMenuView extends AbstractFloatingView {
             return false;
         }
         mLauncher.getDragLayer().addView(this);
-        addMenuOptions(taskView.getTask());
-        orientAroundTaskView(taskView);
+        mTaskView = taskView;
+        addMenuOptions(mTaskView.getTask());
+        orientAroundTaskView(mTaskView);
         post(this::animateOpen);
         return true;
     }
@@ -143,17 +145,24 @@ public class TaskMenuView extends AbstractFloatingView {
         mTaskIconAndName.setCompoundDrawables(null, icon, null, null);
         mTaskIconAndName.setText(TaskUtils.getTitle(mLauncher, task));
 
-        LayoutInflater inflater = mLauncher.getLayoutInflater();
         for (TaskSystemShortcut menuOption : MENU_OPTIONS) {
             OnClickListener onClickListener = menuOption.getOnClickListener(mLauncher, task);
             if (onClickListener != null) {
-                DeepShortcutView menuOptionView = (DeepShortcutView) inflater.inflate(
-                        R.layout.system_shortcut, this, false);
-                menuOptionView.getIconView().setBackgroundResource(menuOption.iconResId);
-                menuOptionView.getBubbleText().setText(menuOption.labelResId);
-                menuOptionView.setOnClickListener(onClickListener);
-                addView(menuOptionView);
+                addMenuOption(menuOption, onClickListener);
             }
+        }
+    }
+
+    private void addMenuOption(TaskSystemShortcut menuOption, OnClickListener onClickListener) {
+        DeepShortcutView menuOptionView = (DeepShortcutView) mLauncher.getLayoutInflater().inflate(
+                R.layout.system_shortcut, this, false);
+        menuOptionView.getIconView().setBackgroundResource(menuOption.iconResId);
+        menuOptionView.getBubbleText().setText(menuOption.labelResId);
+        menuOptionView.setOnClickListener(onClickListener);
+        addView(menuOptionView);
+
+        if (menuOption instanceof TaskSystemShortcut.Widgets) {
+            mWidgetsOptionView = menuOptionView;
         }
     }
 
@@ -219,5 +228,20 @@ public class TaskMenuView extends AbstractFloatingView {
                 return true;
             }
         };
+    }
+
+    @Override
+    protected void onWidgetsBound() {
+        TaskSystemShortcut widgetsOption = new TaskSystemShortcut.Widgets();
+        View.OnClickListener onClickListener = widgetsOption.getOnClickListener(
+                mLauncher, mTaskView.getTask());
+
+        if (onClickListener != null && mWidgetsOptionView == null) {
+            // We didn't have any widgets cached but now there are some, so add the option.
+            addMenuOption(widgetsOption, onClickListener);
+        } else if (onClickListener == null && mWidgetsOptionView != null) {
+            // No widgets exist, but we previously added the option so remove it.
+            removeView(mWidgetsOptionView);
+        }
     }
 }
