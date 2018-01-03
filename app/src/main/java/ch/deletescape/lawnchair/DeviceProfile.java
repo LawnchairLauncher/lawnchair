@@ -560,8 +560,7 @@ public class DeviceProfile {
         // this, we pad the left and right of the hotseat with half of the difference of a workspace
         // cell vs a hotseat cell.
         int hotseatAdjustment = getHotseatAdjustment();
-        boolean transparentHotseat = Utilities.getPrefs(mContext).getTransparentHotseat();
-        boolean hideHotseat = transparentHotseat && Utilities.getPrefs(mContext).getHideHotseat();
+        boolean hideHotseat = Utilities.getPrefs(mContext).getTransparentHotseat() && Utilities.getPrefs(mContext).getHideHotseat();
         if (hasVerticalBarLayout) {
             // Vertical hotseat -- The hotseat is fixed in the layout to be on the right of the
             //                     screen regardless of RTL
@@ -574,13 +573,10 @@ public class DeviceProfile {
             // Pad the hotseat with the workspace padding calculated above
             lp.gravity = Gravity.BOTTOM;
             lp.width = LayoutParams.MATCH_PARENT;
-            lp.height = getHotseatHeight() + (transparentHotseat ? 0 : mInsets.bottom);
-            if (transparentHotseat) {
-                lp.bottomMargin = pageIndicatorHeightPx + mInsets.bottom;
-            }
+            lp.height = getHotseatHeight() + mInsets.bottom;
             hotseat.getLayout().setPadding(hotseatAdjustment + workspacePadding.left,
                     hotseatBarTopPaddingPx, hotseatAdjustment + workspacePadding.right,
-                    transparentHotseat ? 0 : mInsets.bottom);
+                    mInsets.bottom);
         } else {
             // For phones, layout the hotseat without any bottom margin
             // to ensure that we have space for the folders
@@ -589,15 +585,13 @@ public class DeviceProfile {
             }
             lp.gravity = Gravity.BOTTOM;
             lp.width = LayoutParams.MATCH_PARENT;
-            lp.height = hideHotseat ? 0 : (getHotseatHeight() + (transparentHotseat ? 0 : mInsets.bottom));
-            if (transparentHotseat) {
-                lp.bottomMargin = mInsets.bottom;
-                if (!hideHotseat)
-                    lp.bottomMargin += pageIndicatorHeightPx;
+            lp.height = hideHotseat ? 0 : (getHotseatHeight() + mInsets.bottom);
+            if (hideHotseat) {
+                lp.bottomMargin += pageIndicatorHeightPx;
             }
             hotseat.getLayout().setPadding(hotseatAdjustment + workspacePadding.left,
                     hotseatBarTopPaddingPx, hotseatAdjustment + workspacePadding.right,
-                    transparentHotseat ? 0 : mInsets.bottom);
+                    mInsets.bottom);
         }
         hotseat.setLayoutParams(lp);
 
@@ -618,7 +612,7 @@ public class DeviceProfile {
                 // Put the page indicators above the hotseat
                 lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
                 lp.height = pageIndicatorHeightPx;
-                lp.bottomMargin = mInsets.bottom + (transparentHotseat ? 0 : getHotseatHeight());
+                lp.bottomMargin = mInsets.bottom + getHotseatHeight();
             }
             pageIndicator.setLayoutParams(lp);
         }

@@ -33,6 +33,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
@@ -1186,5 +1187,18 @@ public final class Utilities {
         }
 
         return apps;
+    }
+
+    public static void setUpPirateLocale(Activity activity){
+        if (!PreferenceProvider.INSTANCE.getPreferences(activity).getAyyMatey()) {
+            return;
+        }
+        // Based on: https://stackoverflow.com/a/9173571
+        Locale locale = new Locale("pir");
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        Resources baseResources = activity.getBaseContext().getResources();
+        baseResources.updateConfiguration(config, baseResources.getDisplayMetrics());
     }
 }

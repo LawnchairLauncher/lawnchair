@@ -45,7 +45,7 @@ interface ILauncherClient {
             if (BuildConfig.ENABLE_LAWNFEED &&
                     !PackageManagerHelper.isAppEnabled(context.packageManager, LawnfeedClient.PROXY_PACKAGE, 0))
                 state = state or DISABLED_NO_PROXY_APP
-            if (BuildConfig.ENABLE_LAWNFEED && Utilities.checkOutdatedLawnfeed(context))
+            else if (BuildConfig.ENABLE_LAWNFEED && Utilities.checkOutdatedLawnfeed(context))
                 state = state or DISABLED_CLIENT_OUTDATED
             return state
         }
