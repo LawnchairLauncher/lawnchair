@@ -1189,7 +1189,7 @@ public final class Utilities {
         return apps;
     }
 
-    public static void setUpPirateLocale(Activity activity){
+    public static void setupPirateLocale(Activity activity){
         if (!PreferenceProvider.INSTANCE.getPreferences(activity).getAyyMatey()) {
             return;
         }

@@ -71,7 +71,7 @@ public class SettingsActivity extends AppCompatActivity implements
         FeatureFlags.INSTANCE.applyDarkTheme(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        Utilities.setUpPirateLocale(this);
+        Utilities.setupPirateLocale(this);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_settings);

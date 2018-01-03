@@ -83,7 +83,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
         mLoaderThread.start();
         mLoaderHandler = new Handler(mLoaderThread.getLooper(), this);
 
-        Utilities.setUpPirateLocale(this);
+        Utilities.setupPirateLocale(this);
         init();
     }
 
