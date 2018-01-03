@@ -36,7 +36,7 @@
   <string name="shortcut_not_available">Η συντόμευση δεν είναι διαθέσιμη</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">Αγγίξτε &amp; παρατεταμένα για να πάρετε ένα γραφικό στοιχείο.</string>
+  <string name="long_press_widget_to_add">Αγγίξτε παρατεταμένα για να πάρετε ένα γραφ.στοιχ.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
   <string name="long_accessible_way_to_add">Πατήστε δύο φορές παρατεταμένα για επιλογή γραφικού στοιχείου ή χρήση προσαρμοσμένων ενεργειών.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
