@@ -397,4 +397,8 @@
   <string name="lawnfeed_not_found">Lawnfeed ikke installert</string>
   <string name="google_app_not_found">Google app ikke installert</string>
   <string name="set_default_launcher">Angi standard bærerakett</string>
+  <string name="hide_app">Skjule app</string>
+  <string name="hidden_app">Skjult app</string>
+  <string name="snowfall_title">Snøfall</string>
+  <string name="snowfall_enabled">\"La det snø, la det snø, la det snø!\"</string>
 </resources>
