@@ -132,6 +132,7 @@ interface IPreferenceProvider {
     val enablePhysics: Boolean
     val snowflakeSizeScale: Float
     val snowflakesNum: String
+    val ayyMatey: Boolean
 
     // -----------------
     // GENERAL - BITS

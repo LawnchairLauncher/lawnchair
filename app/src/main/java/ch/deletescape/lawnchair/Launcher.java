@@ -365,6 +365,7 @@ public class Launcher extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FeatureFlags.INSTANCE.loadThemePreference(this);
+        Utilities.setUpPirateLocale(this);
         super.onCreate(savedInstanceState);
 
         setScreenOrientation();

@@ -109,6 +109,8 @@ object PreferenceFlags {
     const val KEY_TWO_ROW_DOCK = "pref_twoRowDock"
 
     const val EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED"
+    const val KEY_AYY_MATEY = "pref_ayy_matey"
+
 
     // STATES
     // The set of shortcuts that are pending install
