@@ -55,8 +55,6 @@ public class FolderPagedView extends PagedView {
 
     private static final String TAG = "FolderPagedView";
 
-    private static final boolean ALLOW_FOLDER_SCROLL = true;
-
     private static final int REORDER_ANIMATION_DURATION = 230;
     private static final int START_VIEW_REORDER_DELAY = 30;
     private static final float VIEW_REORDER_DELAY_FACTOR = 0.9f;
@@ -183,21 +181,13 @@ public class FolderPagedView extends PagedView {
 
     /**
      * Binds items to the layout.
-     * @return list of items that could not be bound, probably because we hit the max size limit.
      */
-    public ArrayList<ShortcutInfo> bindItems(ArrayList<ShortcutInfo> items) {
+    public void bindItems(ArrayList<ShortcutInfo> items) {
         ArrayList<View> icons = new ArrayList<>();
-        ArrayList<ShortcutInfo> extra = new ArrayList<>();
-
         for (ShortcutInfo item : items) {
-            if (!ALLOW_FOLDER_SCROLL && icons.size() >= mMaxItemsPerPage) {
-                extra.add(item);
-            } else {
-                icons.add(createNewView(item));
-            }
+            icons.add(createNewView(item));
         }
         arrangeChildren(icons, icons.size(), false);
-        return extra;
     }
 
     public void allocateSpaceForRank(int rank) {
@@ -429,10 +419,6 @@ public class FolderPagedView extends PagedView {
         }
         return Math.min(mAllocatedContentSize - 1,
                 pageIndex * mMaxItemsPerPage + sTmpArray[1] * mGridCountX + sTmpArray[0]);
-    }
-
-    public boolean isFull() {
-        return !ALLOW_FOLDER_SCROLL && getItemCount() >= mMaxItemsPerPage;
     }
 
     public View getFirstItem() {
