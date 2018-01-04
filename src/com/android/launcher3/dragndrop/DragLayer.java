@@ -157,6 +157,8 @@ public class DragLayer extends InsettableFrameLayout {
                 mTouchCompleteListener.onTouchComplete();
             }
             mTouchCompleteListener = null;
+        } else if (action == MotionEvent.ACTION_DOWN) {
+            mLauncher.finishAutoCancelActionMode();
         }
         mActiveController = null;
 

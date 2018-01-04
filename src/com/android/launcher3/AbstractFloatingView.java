@@ -155,6 +155,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
 
     public static void closeAllOpenViews(Launcher launcher, boolean animate) {
         closeOpenViews(launcher, animate, TYPE_ALL);
+        launcher.finishAutoCancelActionMode();
     }
 
     public static void closeAllOpenViews(Launcher launcher) {
