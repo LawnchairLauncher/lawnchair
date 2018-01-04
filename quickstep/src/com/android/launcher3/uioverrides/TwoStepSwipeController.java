@@ -318,32 +318,17 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
     public void onDragEnd(float velocity, boolean fling) {
         mDragPauseDetector.addDisabledFlags(FLAG_OVERVIEW_DISABLED_FLING);
 
-        final long animationDuration;
         final int logAction;
         LauncherState targetState;
         final float progress = mCurrentAnimation.getProgressFraction();
 
         if (fling) {
             logAction = Touch.FLING;
-            if (velocity < 0) {
-                targetState = ALL_APPS;
-                animationDuration = SwipeDetector.calculateDuration(velocity,
-                        mToState == ALL_APPS ? (1 - progress) : progress);
-            } else {
-                targetState = NORMAL;
-                animationDuration = SwipeDetector.calculateDuration(velocity,
-                        mToState == ALL_APPS ? progress : (1 - progress));
-            }
+            targetState = velocity < 0 ? ALL_APPS : NORMAL;
             // snap to top or bottom using the release velocity
         } else {
             logAction = Touch.SWIPE;
-            if (progress > SUCCESS_TRANSITION_PROGRESS) {
-                targetState = mToState;
-                animationDuration = SwipeDetector.calculateDuration(velocity, 1 - progress);
-            } else {
-                targetState = mFromState;
-                animationDuration = SwipeDetector.calculateDuration(velocity, progress);
-            }
+            targetState = (progress > SUCCESS_TRANSITION_PROGRESS) ? mToState : mFromState;
         }
 
         if (fling && targetState == ALL_APPS) {
@@ -352,20 +337,32 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
                 h.animateToFinalPosition(0 /* pos */, 1 /* startValue */);
             }
         }
-        mCurrentAnimation.setEndAction(() -> {
-            LauncherState finalState = targetState;
-            if (mDragPauseDetector.isTriggered() && targetState == NORMAL) {
-                finalState = OVERVIEW;
+
+        float endProgress;
+
+        if (mDragPauseDetector.isTriggered() && targetState == NORMAL) {
+            targetState = OVERVIEW;
+            endProgress = OVERVIEW.getVerticalProgress(mLauncher);
+            if (mFromState == NORMAL) {
+                endProgress = 1 - endProgress;
             }
-            onSwipeInteractionCompleted(finalState, logAction);
-        });
+        } else if (targetState == mToState) {
+            endProgress = 1;
+        } else {
+            endProgress = 0;
+        }
+
+        LauncherState targetStateFinal = targetState;
+        mCurrentAnimation.setEndAction(() ->
+                onSwipeInteractionCompleted(targetStateFinal, logAction));
 
         float nextFrameProgress = Utilities.boundToRange(
                 progress + velocity * SINGLE_FRAME_MS / getShiftRange(), 0f, 1f);
 
         ValueAnimator anim = mCurrentAnimation.getAnimationPlayer();
-        anim.setFloatValues(nextFrameProgress, targetState == mToState ? 1f : 0f);
-        anim.setDuration(animationDuration);
+        anim.setFloatValues(nextFrameProgress, endProgress);
+        anim.setDuration(
+                SwipeDetector.calculateDuration(velocity, Math.abs(endProgress - progress)));
         anim.setInterpolator(scrollInterpolatorForVelocity(velocity));
         anim.start();
     }

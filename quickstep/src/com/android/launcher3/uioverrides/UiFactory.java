@@ -37,15 +37,9 @@ public class UiFactory {
     public static final boolean USE_HARDWARE_BITMAP = false; // FeatureFlags.IS_DOGFOOD_BUILD;
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
-
-        if (launcher.getDeviceProfile().isVerticalBarLayout()) {
-            // TODO: Allow swipe up from overview in transposed layout
-            return new TouchController[] {new TwoStepSwipeController(launcher)};
-        } else {
-            return new TouchController[] {
-                    new TwoStepSwipeController(launcher),
-                    new OverviewSwipeUpController(launcher)};
-        }
+        return new TouchController[] {
+                new TwoStepSwipeController(launcher),
+                new OverviewSwipeUpController(launcher)};
     }
 
     public static AccessibilityDelegate newPageIndicatorAccessibilityDelegate() {

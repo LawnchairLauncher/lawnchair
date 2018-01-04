@@ -35,16 +35,43 @@ public class NinePatchDrawHelper {
     private final RectF mDst = new RectF();
     public final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
+    /**
+     * Draws the bitmap split into three parts horizontally, with the middle part having width
+     * as {@link #EXTENSION_PX} in the center of the bitmap.
+     */
     public void draw(Bitmap bitmap, Canvas canvas, float left, float top, float right) {
-        int width = bitmap.getWidth();
         int height = bitmap.getHeight();
 
         mSrc.top = 0;
         mSrc.bottom = height;
-
         mDst.top = top;
         mDst.bottom = top + height;
+        draw3Patch(bitmap, canvas, left, right);
+    }
 
+
+    /**
+     * Draws the bitmap split horizontally into 3 parts (same as {@link #draw}) and split
+     * vertically into two parts, bottom part of size {@link #EXTENSION_PX} / 2 which is
+     * stretched vertically.
+     */
+    public void drawVerticallyStretched(Bitmap bitmap, Canvas canvas, float left, float top,
+            float right, float bottom) {
+        draw(bitmap, canvas, left, top, right);
+
+        // Draw bottom stretched region.
+        int height = bitmap.getHeight();
+        mSrc.top = height - EXTENSION_PX / 4;
+        mSrc.bottom = height;
+        mDst.top = top + height;
+        mDst.bottom = bottom;
+        draw3Patch(bitmap, canvas, left, right);
+    }
+
+
+
+    private void draw3Patch(Bitmap bitmap, Canvas canvas, float left, float right) {
+        int width = bitmap.getWidth();
         int halfWidth = width / 2;
 
         // Draw left edge

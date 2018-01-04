@@ -187,7 +187,10 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
         mAllAppsScrim = mLauncher.findViewById(R.id.all_apps_scrim);
 
         // Optimization
-        mLauncher.getAppsView().setVisibility(View.GONE);
+        if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+            // All-apps search box is visible in vertical bar layout.
+            mLauncher.getAppsView().setVisibility(View.GONE);
+        }
         mStateController.setTransitionProgress(1);
         mStateController.setVisibility(false);
         TraceHelper.partitionSection("TouchInt", "Launcher on new intent");

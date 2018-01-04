@@ -55,7 +55,7 @@ public class LauncherState {
     private static final LauncherState[] sAllStates = new LauncherState[4];
 
     public static final LauncherState NORMAL = new LauncherState(0, ContainerType.WORKSPACE,
-            0, 1f, FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED);
+            0, FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED);
 
     public static final LauncherState ALL_APPS = new AllAppsState(1);
 
@@ -95,13 +95,6 @@ public class LauncherState {
     public final int transitionDuration;
 
     /**
-     * Fraction shift in the vertical translation UI and related properties
-     *
-     * @see com.android.launcher3.allapps.AllAppsTransitionController
-     */
-    public final float verticalProgress;
-
-    /**
      * True if the state allows workspace icons to be dragged.
      */
     public final boolean workspaceIconsCanBeDragged;
@@ -112,8 +105,7 @@ public class LauncherState {
      */
     public final boolean disablePageClipping;
 
-    public LauncherState(int id, int containerType, int transitionDuration, float verticalProgress,
-            int flags) {
+    public LauncherState(int id, int containerType, int transitionDuration, int flags) {
         this.containerType = containerType;
         this.transitionDuration = transitionDuration;
 
@@ -125,8 +117,6 @@ public class LauncherState {
         this.disableRestore = (flags & FLAG_DISABLE_RESTORE) != 0;
         this.workspaceIconsCanBeDragged = (flags & FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED) != 0;
         this.disablePageClipping = (flags & FLAG_DISABLE_PAGE_CLIPPING) != 0;
-
-        this.verticalProgress = verticalProgress;
 
         this.ordinal = id;
         sAllStates[id] = this;
@@ -154,6 +144,15 @@ public class LauncherState {
         return launcher.getWorkspace();
     }
 
+    /**
+     * Fraction shift in the vertical translation UI and related properties
+     *
+     * @see com.android.launcher3.allapps.AllAppsTransitionController
+     */
+    public float getVerticalProgress(Launcher launcher) {
+        return 1f;
+    }
+
     public String getDescription(Launcher launcher) {
         return launcher.getWorkspace().getCurrentPageDescription();
     }
@@ -162,7 +161,7 @@ public class LauncherState {
         if (this != NORMAL || !launcher.getDeviceProfile().shouldFadeAdjacentWorkspaceScreens()) {
             return DEFAULT_ALPHA_PROVIDER;
         }
-        final int centerPage = launcher.getWorkspace().getPageNearestToCenterOfScreen();
+        final int centerPage = launcher.getWorkspace().getNextPage();
         return new PageAlphaProvider(ACCEL_2) {
             @Override
             public float getPageAlpha(int pageIndex) {

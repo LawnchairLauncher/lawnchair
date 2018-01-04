@@ -154,10 +154,13 @@ public class WorkspaceStateTransitionAnimation {
 
     private void applyChildState(LauncherState state, CellLayout cl, int childIndex,
             PageAlphaProvider pageAlphaProvider, PropertySetter propertySetter) {
+        float pageAlpha = pageAlphaProvider.getPageAlpha(childIndex);
+        int drawableAlpha = Math.round(pageAlpha * (state.hasScrim ? 255 : 0));
+
         propertySetter.setInt(cl.getScrimBackground(),
-                DRAWABLE_ALPHA, state.hasScrim ? 255 : 0, Interpolators.ZOOM_IN);
+                DRAWABLE_ALPHA, drawableAlpha, Interpolators.ZOOM_IN);
         propertySetter.setFloat(cl.getShortcutsAndWidgets(), View.ALPHA,
-                pageAlphaProvider.getPageAlpha(childIndex), pageAlphaProvider.interpolator);
+                pageAlpha, pageAlphaProvider.interpolator);
     }
 
     public static class PropertySetter {

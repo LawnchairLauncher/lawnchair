@@ -847,10 +847,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         return super.verifyDrawable(who) || (who == mBackground);
     }
 
-    public void setShortcutAndWidgetAlpha(float alpha) {
-        mShortcutsAndWidgets.setAlpha(alpha);
-    }
-
     public ShortcutAndWidgetContainer getShortcutsAndWidgets() {
         return mShortcutsAndWidgets;
     }

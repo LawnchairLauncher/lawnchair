@@ -43,7 +43,7 @@ public class AllAppsState extends LauncherState {
     };
 
     public AllAppsState(int id) {
-        super(id, ContainerType.ALLAPPS, ALL_APPS_TRANSITION_MS, 0f, STATE_FLAGS);
+        super(id, ContainerType.ALLAPPS, ALL_APPS_TRANSITION_MS, STATE_FLAGS);
     }
 
     @Override
@@ -76,5 +76,10 @@ public class AllAppsState extends LauncherState {
     @Override
     public PageAlphaProvider getWorkspacePageAlphaProvider(Launcher launcher) {
         return PAGE_ALPHA_PROVIDER;
+    }
+
+    @Override
+    public float getVerticalProgress(Launcher launcher) {
+        return 0f;
     }
 }

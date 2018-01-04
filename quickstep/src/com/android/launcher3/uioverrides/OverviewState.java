@@ -16,10 +16,12 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
+import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 
 import android.graphics.Rect;
 import android.view.View;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
@@ -38,7 +40,7 @@ public class OverviewState extends LauncherState {
     private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED;
 
     public OverviewState(int id) {
-        super(id, ContainerType.WORKSPACE, OVERVIEW_TRANSITION_MS, 1f, STATE_FLAGS);
+        super(id, ContainerType.WORKSPACE, OVERVIEW_TRANSITION_MS, STATE_FLAGS);
     }
 
     @Override
@@ -59,11 +61,6 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public float getHoseatAlpha(Launcher launcher) {
-        return launcher.getDeviceProfile().isVerticalBarLayout() ? 0 : 1;
-    }
-
-    @Override
     public void onStateEnabled(Launcher launcher) {
         RecentsView rv = launcher.getOverviewPanel();
         rv.setOverviewStateEnabled(true);
@@ -76,26 +73,55 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
+    public float getVerticalProgress(Launcher launcher) {
+        DeviceProfile grid = launcher.getDeviceProfile();
+        if (!grid.isVerticalBarLayout()) {
+            return 1f;
+        }
+
+        float total = grid.heightPx;
+        float searchHeight = total - grid.availableHeightPx +
+                launcher.getResources().getDimension(R.dimen.all_apps_search_box_full_height);
+        return 1 - (searchHeight / total);
+    }
+
+    @Override
     public View getFinalFocus(Launcher launcher) {
         return launcher.getOverviewPanel();
+    }
+
+    public PageAlphaProvider getWorkspacePageAlphaProvider(Launcher launcher) {
+        final int centerPage = launcher.getWorkspace().getNextPage();
+        return new PageAlphaProvider(ACCEL_2) {
+            @Override
+            public float getPageAlpha(int pageIndex) {
+                return  pageIndex != centerPage ? 0 : 1f;
+            }
+        };
     }
 
     public static float[] getScaleAndTranslationForPageRect(Launcher launcher, float offsetX,
             Rect pageRect) {
         Workspace ws = launcher.getWorkspace();
         float childWidth = ws.getNormalChildWidth();
+        float childHeight = ws.getNormalChildHeight();
 
         Rect insets = launcher.getDragLayer().getInsets();
-        float scale = pageRect.width() / childWidth;
-
-        float translationX = offsetX / scale;
-        if (Utilities.isRtl(launcher.getResources())) {
-            translationX = -translationX;
-        }
+        float scale = Math.min(pageRect.width() / childWidth, pageRect.height() / childHeight);
 
         float halfHeight = ws.getHeight() / 2;
         float childTop = halfHeight - scale * (halfHeight - ws.getPaddingTop() - insets.top);
         float translationY = pageRect.top - childTop;
+
+        float halfWidth = ws.getWidth() / 2;
+        float translationX;
+        if (Utilities.isRtl(launcher.getResources())) {
+            float childRight = halfWidth + scale * (halfWidth - ws.getPaddingRight() - insets.right);
+            translationX = childRight - pageRect.right - offsetX / scale;
+        } else {
+            float childLeft = halfWidth - scale * (halfWidth - ws.getPaddingLeft() - insets.left);
+            translationX = pageRect.left - childLeft + offsetX / scale;
+        }
 
         return new float[] {scale, translationX, translationY};
     }

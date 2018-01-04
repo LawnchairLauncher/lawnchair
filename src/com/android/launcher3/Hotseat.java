@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
-import static com.android.launcher3.LauncherState.NORMAL;
 
 import android.content.Context;
 import android.graphics.Rect;

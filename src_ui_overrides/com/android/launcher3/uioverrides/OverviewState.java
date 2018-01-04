@@ -40,7 +40,7 @@ public class OverviewState extends LauncherState {
             FLAG_DISABLE_PAGE_CLIPPING;
 
     public OverviewState(int id) {
-        super(id, ContainerType.WORKSPACE, OVERVIEW_TRANSITION_MS, 1f, STATE_FLAGS);
+        super(id, ContainerType.WORKSPACE, OVERVIEW_TRANSITION_MS, STATE_FLAGS);
     }
 
     @Override
@@ -53,9 +53,9 @@ public class OverviewState extends LauncherState {
         int scaledHeight = (int) (SCALE_FACTOR * ws.getNormalChildHeight());
         Rect workspacePadding = grid.getWorkspacePadding(null);
         int workspaceTop = insets.top + workspacePadding.top;
-        int workspaceBottom = ws.getViewportHeight() - insets.bottom - workspacePadding.bottom;
+        int workspaceBottom = ws.getHeight() - insets.bottom - workspacePadding.bottom;
         int overviewTop = insets.top;
-        int overviewBottom = ws.getViewportHeight() - insets.bottom - overviewButtonBarHeight;
+        int overviewBottom = ws.getHeight() - insets.bottom - overviewButtonBarHeight;
         int workspaceOffsetTopEdge =
                 workspaceTop + ((workspaceBottom - workspaceTop) - scaledHeight) / 2;
         int overviewOffsetTopEdge = overviewTop + (overviewBottom - overviewTop - scaledHeight) / 2;

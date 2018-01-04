@@ -41,6 +41,8 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.ArrayList;
 
+import static com.android.launcher3.LauncherState.OVERVIEW;
+
 /**
  * A list of recent tasks.
  */
@@ -216,11 +218,30 @@ public class RecentsView extends PagedView {
         Rect stableInsets = new Rect();
         WindowManagerWrapper.getInstance().getStableInsets(stableInsets);
         Rect padding = profile.getWorkspacePadding(null);
-        float taskWidth = profile.getCurrentWidth() - stableInsets.left - stableInsets.right;
-        float taskHeight = profile.getCurrentHeight() - stableInsets.top - stableInsets.bottom;
-        float overviewHeight = profile.availableHeightPx - padding.top - padding.bottom
-                - stableInsets.top;
-        float overviewWidth = taskWidth * overviewHeight / taskHeight;
+
+        float taskWidth = profile.widthPx - stableInsets.left - stableInsets.right;
+        float taskHeight = profile.heightPx - stableInsets.top - stableInsets.bottom;
+
+        float overviewHeight, overviewWidth;
+        if (profile.isVerticalBarLayout()) {
+            // Use the same padding on both sides for symmetry.
+            float availableWidth = taskWidth - 2 * Math.max(padding.left, padding.right);
+            float availableHeight = profile.availableHeightPx - padding.top - padding.bottom
+                    - stableInsets.top
+                    - profile.heightPx * (1 - OVERVIEW.getVerticalProgress(launcher));
+
+            float scaledRatio = Math.min(availableWidth / taskWidth, availableHeight / taskHeight);
+            overviewHeight = taskHeight * scaledRatio;
+            overviewWidth = taskWidth * scaledRatio;
+
+        } else {
+            overviewHeight = profile.availableHeightPx - padding.top - padding.bottom
+                    - stableInsets.top;
+            overviewWidth = taskWidth * overviewHeight / taskHeight;
+        }
+
+        padding.bottom = profile.availableHeightPx - padding.top - stableInsets.top
+                - Math.round(overviewHeight);
         padding.left = padding.right = (int) ((profile.availableWidthPx - overviewWidth) / 2);
         return padding;
     }

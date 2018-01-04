@@ -161,7 +161,7 @@ public class TaskThumbnailView extends FrameLayout {
                     // Scale the landscape thumbnail up to app size, then scale that to the task
                     // view size to match other portrait screenshots
                     mThumbnailScale = invThumbnailScale *
-                            ((float) getMeasuredWidth() / profile.getCurrentWidth());
+                            ((float) getMeasuredWidth() / profile.widthPx);
                 } else {
                     // Otherwise, scale the screenshot to fit 1:1 in the current orientation
                     mThumbnailScale = invThumbnailScale;

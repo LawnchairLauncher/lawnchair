@@ -54,6 +54,8 @@ public class WorkspaceCard extends FrameLayout implements PageCallbacks, OnClick
     private View mWorkspaceClickTarget;
     private View mWidgetsButton;
 
+    private boolean mLayoutHorizontal;
+
     public WorkspaceCard(Context context) {
         super(context);
     }
@@ -97,30 +99,69 @@ public class WorkspaceCard extends FrameLayout implements PageCallbacks, OnClick
             return;
         }
 
-        int childWidthSpec = MeasureSpec.makeMeasureSpec(widthSize, MeasureSpec.EXACTLY);
+        float workspaceWidth = mWorkspace.getNormalChildWidth();
+        float workspaceHeight = mWorkspace.getNormalChildHeight();
 
-        int pageHeight = mWorkspace.getNormalChildHeight() * widthSize /
-                mWorkspace.getNormalChildWidth();
-        mWorkspaceClickTarget.measure(childWidthSpec,
-                MeasureSpec.makeMeasureSpec(pageHeight, MeasureSpec.EXACTLY));
+        int availableWidth = widthSize - getPaddingLeft() - getPaddingRight();
+        float scaleX = availableWidth / workspaceWidth;
 
-        int buttonHeight = heightSize - pageHeight - getPaddingTop() - getPaddingBottom();
-        mWidgetsButton.measure(childWidthSpec,
-                MeasureSpec.makeMeasureSpec(buttonHeight, MeasureSpec.EXACTLY));
+        int availableHeight = heightSize - getPaddingTop() - getPaddingBottom();
+        float scaleY = availableHeight / workspaceHeight;
 
+        if (scaleX < scaleY) {
+            mLayoutHorizontal = false;
+            int childWidthSpec = MeasureSpec.makeMeasureSpec(availableWidth, MeasureSpec.EXACTLY);
+
+            int pageHeight = Math.round(workspaceHeight * scaleX);
+            mWorkspaceClickTarget.measure(childWidthSpec,
+                    MeasureSpec.makeMeasureSpec(pageHeight, MeasureSpec.EXACTLY));
+
+            int buttonHeight = availableHeight - pageHeight;
+            mWidgetsButton.measure(childWidthSpec,
+                    MeasureSpec.makeMeasureSpec(buttonHeight, MeasureSpec.EXACTLY));
+        } else {
+            mLayoutHorizontal = true;
+            int childHeightSpec = MeasureSpec.makeMeasureSpec(availableHeight, MeasureSpec.EXACTLY);
+
+            int pageWidth = Math.round(workspaceWidth * scaleY);
+            mWorkspaceClickTarget.measure(
+                    MeasureSpec.makeMeasureSpec(pageWidth, MeasureSpec.EXACTLY), childHeightSpec);
+
+            int buttonWidth = availableWidth - pageWidth;
+            mWidgetsButton.measure(
+                    MeasureSpec.makeMeasureSpec(buttonWidth, MeasureSpec.EXACTLY), childHeightSpec);
+        }
         setMeasuredDimension(widthSize, heightSize);
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        int y1 = getPaddingTop();
-        int y2 = y1 + mWorkspaceClickTarget.getMeasuredHeight();
+        int x = getPaddingLeft();
+        int y = getPaddingTop();
 
-        mWorkspaceClickTarget.layout(getPaddingLeft(), y1,
-                mWorkspaceClickTarget.getMeasuredWidth(), y2);
-
-        mWidgetsButton.layout(getPaddingLeft(), y2, mWidgetsButton.getMeasuredWidth(),
-                mWidgetsButton.getMeasuredHeight() + y2);
+        if (mLayoutHorizontal) {
+            final View first, second;
+            if (Utilities.isRtl(getResources())) {
+                first = mWidgetsButton;
+                second = mWorkspaceClickTarget;
+            } else {
+                first = mWorkspaceClickTarget;
+                second = mWidgetsButton;
+            }
+            int x2 = x + first.getMeasuredWidth();
+            first.layout(x, y,
+                    x2, y + first.getMeasuredHeight());
+            second.layout(x2, y,
+                    x2 + second.getMeasuredWidth(),
+                    y + second.getMeasuredHeight());
+        } else {
+            int y2 = y + mWorkspaceClickTarget.getMeasuredHeight();
+            mWorkspaceClickTarget.layout(x, y,
+                    x + mWorkspaceClickTarget.getMeasuredWidth(), y2);
+            mWidgetsButton.layout(x, y2,
+                    x + mWidgetsButton.getMeasuredWidth(),
+                    y2 + mWidgetsButton.getMeasuredHeight());
+        }
 
         mUIDataValid = false;
     }
@@ -165,7 +206,7 @@ public class WorkspaceCard extends FrameLayout implements PageCallbacks, OnClick
             mWorkspace.setScaleY(mEvaluatedFloats[0]);
             mWorkspace.setTranslationX(mEvaluatedFloats[1]);
             mWorkspace.setTranslationY(mEvaluatedFloats[2]);
-            translateX += mEvaluatedFloats[1];
+            translateX += mEvaluatedFloats[1] - mScaleAndTranslatePage0[1];
         }
 
         setTranslationX(translateX);

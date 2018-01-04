@@ -38,7 +38,15 @@ public class OverviewSwipeUpController extends VerticalSwipeController {
 
     @Override
     protected boolean shouldInterceptTouch(MotionEvent ev) {
-        return mLauncher.isInState(OVERVIEW) && mLauncher.getDragLayer().isEventOverHotseat(ev);
+        if (!mLauncher.isInState(OVERVIEW)) {
+            return false;
+        }
+        if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+            return ev.getY() >
+                    mLauncher.getDragLayer().getHeight() * OVERVIEW.getVerticalProgress(mLauncher);
+        } else {
+            return mLauncher.getDragLayer().isEventOverHotseat(ev);
+        }
     }
 
     @Override

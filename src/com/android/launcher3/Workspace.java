@@ -1133,7 +1133,7 @@ public class Workspace extends PagedView
                 mLauncherOverlay.onScrollInteractionBegin();
             }
 
-            mLastOverlayScroll = Math.abs(amount / getViewportWidth());
+            mLastOverlayScroll = Math.abs(amount / getMeasuredWidth());
             mLauncherOverlay.onScrollChange(mLastOverlayScroll, mIsRtl);
         } else {
             dampedOverScroll(amount);
@@ -1331,7 +1331,7 @@ public class Workspace extends PagedView
 
     private void updatePageAlphaValues() {
         if (!workspaceInModalState() && !mIsSwitchingState) {
-            int screenCenter = getScrollX() + getViewportWidth() / 2;
+            int screenCenter = getScrollX() + getMeasuredWidth() / 2;
             for (int i = 0; i < getChildCount(); i++) {
                 CellLayout child = (CellLayout) getChildAt(i);
                 if (child != null) {
@@ -1415,8 +1415,8 @@ public class Workspace extends PagedView
         if (mChildrenLayersEnabled) {
             final int screenCount = getChildCount();
 
-            float visibleLeft = getViewportOffsetX();
-            float visibleRight = visibleLeft + getViewportWidth();
+            float visibleLeft = 0;
+            float visibleRight = visibleLeft + getMeasuredWidth();
             float scaleX = getScaleX();
             if (scaleX < 1 && scaleX > 0) {
                 float mid = getMeasuredWidth() / 2;
@@ -2164,7 +2164,7 @@ public class Workspace extends PagedView
         // Use the absolute left instead of the child left, as we want the visible area
         // irrespective of the visible child. Since the view can only scroll horizontally, the
         // top position is not affected.
-        mTempXY[0] = getViewportOffsetX() + getPaddingLeft() + boundingLayout.getLeft();
+        mTempXY[0] = getPaddingLeft() + boundingLayout.getLeft();
         mTempXY[1] = child.getTop() + boundingLayout.getTop();
 
         float scale = mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, mTempXY);

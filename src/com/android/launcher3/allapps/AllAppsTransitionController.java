@@ -21,7 +21,6 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.graphics.GradientView;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.AllAppsScrim;
@@ -63,6 +62,7 @@ public class AllAppsTransitionController
 
     private final Launcher mLauncher;
     private final boolean mIsDarkTheme;
+    private final boolean mIsVerticalLayout;
 
     // Animation in this class is controlled by a single variable {@link mProgress}.
     // Visually, it represents top y coordinate of the all apps container if multiplied with
@@ -83,6 +83,7 @@ public class AllAppsTransitionController
         mProgress = 1f;
 
         mIsDarkTheme = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
+        mIsVerticalLayout = mLauncher.getDeviceProfile().isVerticalBarLayout();
     }
 
     public float getShiftRange() {
@@ -93,18 +94,6 @@ public class AllAppsTransitionController
         // Initialize values that should not change until #onDragEnd
         mHotseat.setVisibility(View.VISIBLE);
         mAppsView.setVisibility(View.VISIBLE);
-    }
-
-    private void updateLightStatusBar(float shift) {
-        // Use a light system UI (dark icons) if all apps is behind at least half of the status bar.
-        boolean forceChange = shift <= mShiftRange / 4;
-        if (forceChange) {
-            mLauncher.getSystemUiController().updateUiState(
-                    SystemUiController.UI_STATE_ALL_APPS, !mIsDarkTheme);
-        } else {
-            mLauncher.getSystemUiController().updateUiState(
-                    SystemUiController.UI_STATE_ALL_APPS, 0);
-        }
     }
 
     /**
@@ -124,24 +113,30 @@ public class AllAppsTransitionController
         float alpha = 1 - workspaceHotseatAlpha;
         float hotseatAlpha = mHotseatAccelInterpolator.getInterpolation(workspaceHotseatAlpha);
 
-        mAppsView.setAlpha(alpha);
         mAppsView.setTranslationY(shiftCurrent);
-
         if (mAllAppsScrim == null) {
             mAllAppsScrim = mLauncher.findViewById(R.id.all_apps_scrim);
         }
         float hotseatTranslation = -mShiftRange + shiftCurrent;
         mAllAppsScrim.setProgress(hotseatTranslation, alpha);
 
-        if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+        if (!mIsVerticalLayout) {
+            mAppsView.setAlpha(alpha);
             mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y, hotseatTranslation,
                     hotseatAlpha);
-        } else {
-            mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y,
-                    PARALLAX_COEFFICIENT * hotseatTranslation, hotseatAlpha);
-        }
 
-        updateLightStatusBar(shiftCurrent);
+            // Use a light system UI (dark icons) if all apps is behind at least half of the
+            // status bar.
+            boolean forceChange = shiftCurrent <= mShiftRange / 4;
+            if (forceChange) {
+                mLauncher.getSystemUiController().updateUiState(
+                        SystemUiController.UI_STATE_ALL_APPS, !mIsDarkTheme);
+            } else {
+                mLauncher.getSystemUiController().updateUiState(
+                        SystemUiController.UI_STATE_ALL_APPS, 0);
+            }
+
+        }
     }
 
     public float getProgress() {
@@ -154,7 +149,7 @@ public class AllAppsTransitionController
      */
     @Override
     public void setState(LauncherState state) {
-        setProgress(state.verticalProgress);
+        setProgress(state.getVerticalProgress(mLauncher));
         onProgressAnimationEnd();
     }
 
@@ -165,15 +160,15 @@ public class AllAppsTransitionController
     @Override
     public void setStateWithAnimation(LauncherState toState,
             AnimatorSetBuilder builder, AnimationConfig config) {
-        if (Float.compare(mProgress, toState.verticalProgress) == 0) {
+        float targetProgress = toState.getVerticalProgress(mLauncher);
+        if (Float.compare(mProgress, targetProgress) == 0) {
             // Fail fast
             onProgressAnimationEnd();
             return;
         }
 
         Interpolator interpolator = config.userControlled ? LINEAR : FAST_OUT_SLOW_IN;
-        ObjectAnimator anim = ObjectAnimator.ofFloat(
-                this, PROGRESS, mProgress, toState.verticalProgress);
+        ObjectAnimator anim = ObjectAnimator.ofFloat(this, PROGRESS, mProgress, targetProgress);
         anim.setDuration(config.duration);
         anim.setInterpolator(interpolator);
         anim.addListener(getProgressAnimatorListener());
@@ -221,6 +216,9 @@ public class AllAppsTransitionController
         } else if (Float.compare(mProgress, 0f) == 0) {
             mHotseat.setVisibility(View.INVISIBLE);
             mAppsView.setVisibility(View.VISIBLE);
+        } else {
+            mAppsView.setVisibility(View.VISIBLE);
+            mHotseat.setVisibility(View.VISIBLE);
         }
     }
 }

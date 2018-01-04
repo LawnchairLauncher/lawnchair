@@ -20,10 +20,13 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
@@ -33,7 +36,8 @@ import com.android.launcher3.util.Themes;
 
 import static com.android.launcher3.graphics.NinePatchDrawHelper.EXTENSION_PX;
 
-public class AllAppsScrim extends View implements WallpaperColorInfo.OnChangeListener {
+public class AllAppsScrim extends View implements WallpaperColorInfo.OnChangeListener, Insettable,
+        DeviceProfile.LauncherLayoutChangeListener {
 
     private static final int MAX_ALPHA = 235;
     private static final int MIN_ALPHA_PORTRAIT = 100;
@@ -42,6 +46,9 @@ public class AllAppsScrim extends View implements WallpaperColorInfo.OnChangeLis
     protected final WallpaperColorInfo mWallpaperColorInfo;
     private final Paint mFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
+    private final Rect mPadding = new Rect();
+    private final Rect mInsets = new Rect();
+    private final DeviceProfile mGrid;
     private final float mRadius;
     private final int mMinAlpha;
     private final int mAlphaRange;
@@ -74,7 +81,8 @@ public class AllAppsScrim extends View implements WallpaperColorInfo.OnChangeLis
         mShadowBlur = getResources().getDimension(R.dimen.all_apps_scrim_blur);
 
         Launcher launcher = Launcher.getLauncher(context);
-        mFillAlpha = mMinAlpha = launcher.getDeviceProfile().isVerticalBarLayout()
+        mGrid = launcher.getDeviceProfile();
+        mFillAlpha = mMinAlpha = mGrid.isVerticalBarLayout()
                 ? MIN_ALPHA_LANDSCAPE : MIN_ALPHA_PORTRAIT;
         mAlphaRange = MAX_ALPHA - mMinAlpha;
         mShadowBitmap = generateShadowBitmap();
@@ -90,11 +98,12 @@ public class AllAppsScrim extends View implements WallpaperColorInfo.OnChangeLis
         builder.shadowBlur = mShadowBlur;
 
         // Create the bitmap such that only the top half is drawn in the bitmap.
-        int bitmapHeight = Math.round(curveBot);
-        int bitmapWidth = bitmapHeight + EXTENSION_PX;
+        int bitmapWidth = 2 * Math.round(curveBot) + EXTENSION_PX;
+        int bitmapHeight = bitmapWidth / 2;
         Bitmap result = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
 
-        builder.bounds.set(0, mShadowBlur, bitmapWidth, 2 * curveBot + EXTENSION_PX);
+        float fullSize = 2 * curveBot + EXTENSION_PX - mShadowBlur;
+        builder.bounds.set(mShadowBlur, mShadowBlur, fullSize, fullSize);
         builder.drawShadow(new Canvas(result));
         return result;
     }
@@ -103,12 +112,15 @@ public class AllAppsScrim extends View implements WallpaperColorInfo.OnChangeLis
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         mWallpaperColorInfo.addOnChangeListener(this);
+        mGrid.addLauncherLayoutChangedListener(this);
+        onLauncherLayoutChanged();
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mWallpaperColorInfo.removeOnChangeListener(this);
+        mGrid.removeLauncherLayoutChangedListener(this);
     }
 
     @Override
@@ -126,10 +138,20 @@ public class AllAppsScrim extends View implements WallpaperColorInfo.OnChangeLis
 
     @Override
     protected void onDraw(Canvas canvas) {
-        float edgeTop = getHeight() + mTranslateY - mDrawHeight;
+        float edgeTop = getHeight() + mTranslateY - mDrawHeight + mPadding.top;
+        float edgeRight = getWidth() - mPadding.right;
 
-        mShadowHelper.draw(mShadowBitmap, canvas, 0, edgeTop - mShadowBlur, getWidth());
-        canvas.drawRoundRect(0, edgeTop, getWidth(),
+        if (mPadding.left > 0 || mPadding.right > 0) {
+            mShadowHelper.drawVerticallyStretched(mShadowBitmap, canvas,
+                    mPadding.left - mShadowBlur,
+                    edgeTop - mShadowBlur,
+                    edgeRight + mShadowBlur,
+                    getHeight());
+        } else {
+            mShadowHelper.draw(mShadowBitmap, canvas, mPadding.left - mShadowBlur,
+                    edgeTop - mShadowBlur, edgeRight + mShadowBlur);
+        }
+        canvas.drawRoundRect(mPadding.left, edgeTop, edgeRight,
                 getHeight() + mRadius, mRadius, mRadius, mFillPaint);
     }
 
@@ -144,5 +166,24 @@ public class AllAppsScrim extends View implements WallpaperColorInfo.OnChangeLis
 
     public void setDrawRegion(float height) {
         mDrawHeight = height;
+    }
+
+    @Override
+    public void setInsets(Rect insets) {
+        mInsets.set(insets);
+        onLauncherLayoutChanged();
+    }
+
+    @Override
+    public void onLauncherLayoutChanged() {
+        if (!mGrid.isVerticalBarLayout()) {
+            return;
+        }
+        mGrid.getWorkspacePadding(mPadding);
+        mPadding.bottom = 0;
+        mPadding.left += mInsets.left;
+        mPadding.top = mInsets.top;
+        mPadding.right += mInsets.right;
+        invalidate();
     }
 }

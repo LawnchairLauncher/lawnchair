@@ -59,7 +59,6 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
-import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.launcher3.views.BottomUserEducationView;
 
 import java.util.HashMap;
@@ -72,8 +71,6 @@ import java.util.Set;
 public class AllAppsContainerView extends RelativeLayout implements DragSource,
         View.OnLongClickListener, Insettable, DeviceProfile.LauncherLayoutChangeListener,
         BubbleTextView.BubbleTextShadowHandler {
-
-    protected final Rect mBasePadding = new Rect();
 
     private final Launcher mLauncher;
     private final AdapterHolder[] mAH;
@@ -92,7 +89,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
 
-    private TransformingTouchDelegate mTouchDelegate;
     private boolean mUsingTabs;
     private boolean mHasPredictions = false;
     private boolean mSearchModeWhileUsingTabs = false;
@@ -133,19 +129,13 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
 
         DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
         grid.addLauncherLayoutChangedListener(this);
+        onLauncherLayoutChanged();
 
         applyTouchDelegate();
     }
 
     private void applyTouchDelegate() {
-        RecyclerView rv = getActiveRecyclerView();
-        mTouchDelegate = new TransformingTouchDelegate(rv);
-        mTouchDelegate.setBounds(
-                rv.getLeft() - mBasePadding.left,
-                rv.getTop() - mBasePadding.top,
-                rv.getRight() + mBasePadding.right,
-                rv.getBottom() + mBasePadding.bottom);
-        setTouchDelegate(mTouchDelegate);
+        // TODO: Reimplement once fast scroller is fixed.
     }
 
     @Override
@@ -166,11 +156,8 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             return;
         }
 
-        int[] padding = grid.getContainerPadding();
-        int paddingLeft = padding[0];
-        int paddingRight = padding[1];
-        mBasePadding.set(paddingLeft, 0, paddingRight, 0);
-        setPadding(paddingLeft, 0, paddingRight, 0);
+        Rect workspacePadding = grid.getWorkspacePadding(null);
+        setPadding(workspacePadding.left, 0, workspacePadding.right, 0);
     }
 
     @Override
@@ -294,12 +281,9 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
 
         // This is a focus listener that proxies focus from a view into the list view.  This is to
         // work around the search box from getting first focus and showing the cursor.
-        setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus && getActiveRecyclerView() != null) {
-                    getActiveRecyclerView().requestFocus();
-                }
+        setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus && getActiveRecyclerView() != null) {
+                getActiveRecyclerView().requestFocus();
             }
         });
 
@@ -309,8 +293,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         mSearchContainer = findViewById(R.id.search_container_all_apps);
         mSearchUiManager = (SearchUiManager) mSearchContainer;
         mSearchUiManager.initialize(this);
-
-        onLauncherLayoutChanged();
     }
 
     public SearchUiManager getSearchUiManager() {

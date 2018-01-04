@@ -43,15 +43,20 @@ public class SpringLoadedState extends LauncherState {
     private static final int RESTORE_SCREEN_ORIENTATION_DELAY = 500;
 
     public SpringLoadedState(int id) {
-        super(id, ContainerType.OVERVIEW, SPRING_LOADED_TRANSITION_MS, 1f, STATE_FLAGS);
+        super(id, ContainerType.OVERVIEW, SPRING_LOADED_TRANSITION_MS, STATE_FLAGS);
     }
 
     @Override
     public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
         DeviceProfile grid = launcher.getDeviceProfile();
         Workspace ws = launcher.getWorkspace();
-        if (grid.isVerticalBarLayout() || ws.getChildCount() == 0) {
+        if (ws.getChildCount() == 0) {
             return super.getWorkspaceScaleAndTranslation(launcher);
+        }
+
+        if (grid.isVerticalBarLayout()) {
+            float scale = grid.workspaceSpringLoadShrinkFactor;
+            return new float[] {scale, 0, 0};
         }
 
         float scale = grid.workspaceSpringLoadShrinkFactor;
@@ -59,7 +64,7 @@ public class SpringLoadedState extends LauncherState {
 
         float scaledHeight = scale * ws.getNormalChildHeight();
         float shrunkTop = insets.top + grid.dropTargetBarSizePx;
-        float shrunkBottom = ws.getViewportHeight() - insets.bottom
+        float shrunkBottom = ws.getMeasuredHeight() - insets.bottom
                 - grid.getWorkspacePadding(null).bottom
                 - grid.workspaceSpringLoadedBottomSpace;
         float totalShrunkSpace = shrunkBottom - shrunkTop;
