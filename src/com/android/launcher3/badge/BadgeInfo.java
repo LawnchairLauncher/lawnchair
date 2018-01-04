@@ -16,8 +16,6 @@
 
 package com.android.launcher3.badge;
 
-import android.support.annotation.Nullable;
-
 import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.util.PackageUserKey;
@@ -46,9 +44,6 @@ public class BadgeInfo {
      * updated whenever a key is added or removed.
      */
     private int mTotalCount;
-
-    /** This will only be initialized if the badge should display the notification icon. */
-    private NotificationInfo mNotificationInfo;
 
     public BadgeInfo(PackageUserKey packageUserKey) {
         mPackageUserKey = packageUserKey;
@@ -98,14 +93,6 @@ public class BadgeInfo {
         return Math.min(mTotalCount, MAX_COUNT);
     }
 
-    public void setNotificationToShow(@Nullable NotificationInfo notificationInfo) {
-        mNotificationInfo = notificationInfo;
-    }
-
-    public boolean hasNotificationToShow() {
-        return mNotificationInfo != null;
-    }
-
     /**
      * Whether newBadge represents the same PackageUserKey as this badge, and icons with
      * this badge should be invalidated. So, for instance, if a badge has 3 notifications
@@ -116,7 +103,6 @@ public class BadgeInfo {
      */
     public boolean shouldBeInvalidated(BadgeInfo newBadge) {
         return mPackageUserKey.equals(newBadge.mPackageUserKey)
-                && (getNotificationCount() != newBadge.getNotificationCount()
-                    || hasNotificationToShow());
+                && (getNotificationCount() != newBadge.getNotificationCount());
     }
 }
