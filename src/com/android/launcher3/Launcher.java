@@ -29,8 +29,6 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
-import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_APPS;
-import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_WIDGETS;
 
 import android.Manifest;
 import android.animation.Animator;
@@ -127,15 +125,16 @@ import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.PendingRequestArgs;
-import com.android.launcher3.util.RunnableWithId;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.ViewOnDrawExecutor;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
+import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetListRowEntry;
@@ -237,9 +236,7 @@ public class Launcher extends BaseActivity
     @Thunk boolean mWorkspaceLoading = true;
 
     private boolean mPaused = true;
-    private boolean mOnResumeNeedsLoad;
 
-    private final ArrayList<Runnable> mBindOnResumeCallbacks = new ArrayList<>();
     private OnResumeCallback mOnResumeCallback;
 
     private ViewOnDrawExecutor mPendingExecutor;
@@ -811,20 +808,6 @@ public class Launcher extends BaseActivity
         mAppLaunchSuccess = false;
         getUserEventDispatcher().resetElapsedSessionMillis();
         mPaused = false;
-        if (mOnResumeNeedsLoad) {
-            setWorkspaceLoading(true);
-            mModel.startLoader(getCurrentWorkspaceScreen());
-            mOnResumeNeedsLoad = false;
-        }
-        if (mBindOnResumeCallbacks.size() > 0) {
-            // We might have postponed some bind calls until onResume (see waitUntilResume) --
-            // execute them here
-            for (int i = 0; i < mBindOnResumeCallbacks.size(); i++) {
-                mBindOnResumeCallbacks.get(i).run();
-            }
-            mBindOnResumeCallbacks.clear();
-        }
-
         setOnResumeCallback(null);
         // Process any items that were added while Launcher was away.
         InstallShortcutReceiver.disableAndFlushInstallQueue(
@@ -1161,20 +1144,12 @@ public class Launcher extends BaseActivity
     };
 
     public void updateIconBadges(final Set<PackageUserKey> updatedBadges) {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                mWorkspace.updateIconBadges(updatedBadges);
-                mAppsView.updateIconBadges(updatedBadges);
+        mWorkspace.updateIconBadges(updatedBadges);
+        mAppsView.updateIconBadges(updatedBadges);
 
-                PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(Launcher.this);
-                if (popup != null) {
-                    popup.updateNotificationHeader(updatedBadges);
-                }
-            }
-        };
-        if (!waitUntilResume(r)) {
-            r.run();
+        PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(Launcher.this);
+        if (popup != null) {
+            popup.updateNotificationHeader(updatedBadges);
         }
     }
 
@@ -2156,63 +2131,11 @@ public class Launcher extends BaseActivity
         return result;
     }
 
-    /**
-     * If the activity is currently paused, signal that we need to run the passed Runnable
-     * in onResume.
-     *
-     * This needs to be called from incoming places where resources might have been loaded
-     * while the activity is paused. That is because the Configuration (e.g., rotation)  might be
-     * wrong when we're not running, and if the activity comes back to what the configuration was
-     * when we were paused, activity is not restarted.
-     *
-     * Implementation of the method from LauncherModel.Callbacks.
-     *
-     * @return {@code true} if we are currently paused. The caller might be able to skip some work
-     */
-    @Thunk boolean waitUntilResume(Runnable run) {
-        if (mPaused) {
-            if (LOGD) Log.d(TAG, "Deferring update until onResume");
-            if (run instanceof RunnableWithId) {
-                // Remove any runnables which have the same id
-                while (mBindOnResumeCallbacks.remove(run)) { }
-            }
-            mBindOnResumeCallbacks.add(run);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public void setOnResumeCallback(OnResumeCallback callback) {
         if (mOnResumeCallback != null) {
             mOnResumeCallback.onLauncherResume();
         }
         mOnResumeCallback = callback;
-    }
-
-    /**
-     * If the activity is currently paused, signal that we need to re-run the loader
-     * in onResume.
-     *
-     * This needs to be called from incoming places where resources might have been loaded
-     * while we are paused.  That is becaues the Configuration might be wrong
-     * when we're not running, and if it comes back to what it was when we
-     * were paused, we are not restarted.
-     *
-     * Implementation of the method from LauncherModel.Callbacks.
-     *
-     * @return true if we are currently paused.  The caller might be able to
-     * skip some work in that case since we will come back again.
-     */
-    @Override
-    public boolean setLoadOnResume() {
-        if (mPaused) {
-            if (LOGD) Log.d(TAG, "setLoadOnResume");
-            mOnResumeNeedsLoad = true;
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /**
@@ -2233,7 +2156,6 @@ public class Launcher extends BaseActivity
      */
     @Override
     public void clearPendingBinds() {
-        mBindOnResumeCallbacks.clear();
         if (mPendingExecutor != null) {
             mPendingExecutor.markCompleted();
             mPendingExecutor = null;
@@ -2297,18 +2219,8 @@ public class Launcher extends BaseActivity
     }
 
     @Override
-    public void bindAppsAdded(final ArrayList<Long> newScreens,
-                              final ArrayList<ItemInfo> addNotAnimated,
-                              final ArrayList<ItemInfo> addAnimated) {
-        Runnable r = new Runnable() {
-            public void run() {
-                bindAppsAdded(newScreens, addNotAnimated, addAnimated);
-            }
-        };
-        if (waitUntilResume(r)) {
-            return;
-        }
-
+    public void bindAppsAdded(ArrayList<Long> newScreens, ArrayList<ItemInfo> addNotAnimated,
+            ArrayList<ItemInfo> addAnimated) {
         // Add the new screens
         if (newScreens != null) {
             bindAddScreens(newScreens);
@@ -2334,15 +2246,6 @@ public class Launcher extends BaseActivity
      */
     @Override
     public void bindItems(final List<ItemInfo> items, final boolean forceAnimateIcons) {
-        Runnable r = new Runnable() {
-            public void run() {
-                bindItems(items, forceAnimateIcons);
-            }
-        };
-        if (waitUntilResume(r)) {
-            return;
-        }
-
         // Get the list of added items and intersect them with the set of items here
         final AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
         final Collection<Animator> bounceAnims = new ArrayList<>();
@@ -2585,7 +2488,7 @@ public class Launcher extends BaseActivity
         }
 
         if (((PendingAppWidgetHostView) view).isReinflateIfNeeded()) {
-            view.reinflate();
+            view.reInflate();
         }
 
         getModelWriter().updateItemInDatabase(info);
@@ -2613,27 +2516,11 @@ public class Launcher extends BaseActivity
 
     @Override
     public void finishFirstPageBind(final ViewOnDrawExecutor executor) {
-        Runnable r = new Runnable() {
-            public void run() {
-                finishFirstPageBind(executor);
-            }
-        };
-        if (waitUntilResume(r)) {
-            return;
-        }
-
-        Runnable onComplete = new Runnable() {
-            @Override
-            public void run() {
-                if (executor != null) {
-                    executor.onLoadAnimationCompleted();
-                }
-            }
-        };
         if (mDragLayer.getAlpha() < 1) {
-            mDragLayer.animate().alpha(1).withEndAction(onComplete).start();
-        } else {
-            onComplete.run();
+            mDragLayer.animate().alpha(1).withEndAction(
+                    executor == null ? null : executor::onLoadAnimationCompleted).start();
+        } else if (executor != null) {
+            executor.onLoadAnimationCompleted();
         }
     }
 
@@ -2643,10 +2530,6 @@ public class Launcher extends BaseActivity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void finishBindingItems() {
-        Runnable r = this::finishBindingItems;
-        if (waitUntilResume(r)) {
-            return;
-        }
         TraceHelper.beginSection("finishBindingItems");
         mWorkspace.restoreInstanceStateForRemainingPages();
 
@@ -2687,21 +2570,12 @@ public class Launcher extends BaseActivity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindAllApplications(final ArrayList<AppInfo> apps) {
-        Runnable r = new RunnableWithId(RUNNABLE_ID_BIND_APPS) {
-            public void run() {
-                bindAllApplications(apps);
-            }
-        };
-        if (waitUntilResume(r)) {
-            return;
-        }
-
+    public void bindAllApplications(ArrayList<AppInfo> apps) {
         if (mAppsView != null) {
             Executor pendingExecutor = getPendingExecutor();
             if (pendingExecutor != null && !isInState(ALL_APPS)) {
                 // Wait until the fade in animation has finished before setting all apps list.
-                pendingExecutor.execute(r);
+                pendingExecutor.execute(() -> bindAllApplications(apps));
                 return;
             }
 
@@ -2734,47 +2608,22 @@ public class Launcher extends BaseActivity
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindAppsAddedOrUpdated(final ArrayList<AppInfo> apps) {
-        Runnable r = new Runnable() {
-            public void run() {
-                bindAppsAddedOrUpdated(apps);
-            }
-        };
-        if (waitUntilResume(r)) {
-            return;
-        }
-
+    @Override
+    public void bindAppsAddedOrUpdated(ArrayList<AppInfo> apps) {
         if (mAppsView != null) {
             mAppsView.addOrUpdateApps(apps);
         }
     }
 
     @Override
-    public void bindPromiseAppProgressUpdated(final PromiseAppInfo app) {
-        Runnable r = new Runnable() {
-            public void run() {
-                bindPromiseAppProgressUpdated(app);
-            }
-        };
-        if (waitUntilResume(r)) {
-            return;
-        }
-
+    public void bindPromiseAppProgressUpdated(PromiseAppInfo app) {
         if (mAppsView != null) {
             mAppsView.updatePromiseAppProgress(app);
         }
     }
 
     @Override
-    public void bindWidgetsRestored(final ArrayList<LauncherAppWidgetInfo> widgets) {
-        Runnable r = new Runnable() {
-            public void run() {
-                bindWidgetsRestored(widgets);
-            }
-        };
-        if (waitUntilResume(r)) {
-            return;
-        }
+    public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets) {
         mWorkspace.widgetsRestored(widgets);
     }
 
@@ -2785,16 +2634,7 @@ public class Launcher extends BaseActivity
      * @param updated list of shortcuts which have changed.
      */
     @Override
-    public void bindShortcutsChanged(final ArrayList<ShortcutInfo> updated, final UserHandle user) {
-        Runnable r = new Runnable() {
-            public void run() {
-                bindShortcutsChanged(updated, user);
-            }
-        };
-        if (waitUntilResume(r)) {
-            return;
-        }
-
+    public void bindShortcutsChanged(ArrayList<ShortcutInfo> updated, final UserHandle user) {
         if (!updated.isEmpty()) {
             mWorkspace.updateShortcuts(updated);
         }
@@ -2806,16 +2646,7 @@ public class Launcher extends BaseActivity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     @Override
-    public void bindRestoreItemsChange(final HashSet<ItemInfo> updates) {
-        Runnable r = new Runnable() {
-            public void run() {
-                bindRestoreItemsChange(updates);
-            }
-        };
-        if (waitUntilResume(r)) {
-            return;
-        }
-
+    public void bindRestoreItemsChange(HashSet<ItemInfo> updates) {
         mWorkspace.updateRestoreItems(updates);
     }
 
@@ -2828,29 +2659,12 @@ public class Launcher extends BaseActivity
      */
     @Override
     public void bindWorkspaceComponentsRemoved(final ItemInfoMatcher matcher) {
-        Runnable r = new Runnable() {
-            public void run() {
-                bindWorkspaceComponentsRemoved(matcher);
-            }
-        };
-        if (waitUntilResume(r)) {
-            return;
-        }
         mWorkspace.removeItemsByMatcher(matcher);
         mDragController.onAppsRemoved(matcher);
     }
 
     @Override
     public void bindAppInfosRemoved(final ArrayList<AppInfo> appInfos) {
-        Runnable r = new Runnable() {
-            public void run() {
-                bindAppInfosRemoved(appInfos);
-            }
-        };
-        if (waitUntilResume(r)) {
-            return;
-        }
-
         // Update AllApps
         if (mAppsView != null) {
             mAppsView.removeApps(appInfos);
@@ -2860,16 +2674,6 @@ public class Launcher extends BaseActivity
     @Override
     public void bindAllWidgets(final ArrayList<WidgetListRowEntry> allWidgets) {
         mPopupDataProvider.setAllWidgets(allWidgets);
-        Runnable r = new RunnableWithId(RUNNABLE_ID_BIND_WIDGETS) {
-            @Override
-            public void run() {
-                bindAllWidgets(allWidgets);
-            }
-        };
-        if (waitUntilResume(r)) {
-            return;
-        }
-
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
         if (topView != null) {
             topView.onWidgetsBound();

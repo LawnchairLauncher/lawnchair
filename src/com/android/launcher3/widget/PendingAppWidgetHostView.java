@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -32,10 +32,19 @@ import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.FastBitmapDrawable;
+import com.android.launcher3.IconCache;
 import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
+import com.android.launcher3.ItemInfoWithIcon;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppWidgetInfo;
+import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         implements OnClickListener, ItemInfoUpdateReceiver {
@@ -48,7 +57,6 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     private final LauncherAppWidgetInfo mInfo;
     private final int mStartState;
     private final boolean mDisabledForSafeMode;
-    private Launcher mLauncher;
 
     private Bitmap mIcon;
 
@@ -64,7 +72,6 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
             IconCache cache, boolean disabledForSafeMode) {
         super(new ContextThemeWrapper(context, R.style.WidgetContainerTheme));
 
-        mLauncher = Launcher.getLauncher(context);
         mInfo = info;
         mStartState = info.restoreStatus;
         mDisabledForSafeMode = disabledForSafeMode;

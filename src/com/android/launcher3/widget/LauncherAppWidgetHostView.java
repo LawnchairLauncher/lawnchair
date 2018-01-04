@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.widget;
 
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
@@ -37,6 +37,15 @@ import android.widget.AdapterView;
 import android.widget.Advanceable;
 import android.widget.RemoteViews;
 
+import com.android.launcher3.CheckLongPressHelper;
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppWidgetInfo;
+import com.android.launcher3.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.R;
+import com.android.launcher3.SimpleOnStylusPressListener;
+import com.android.launcher3.StylusEventHelper;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragLayer.TouchCompleteListener;
 
@@ -59,14 +68,10 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
 
     private final CheckLongPressHelper mLongPressHelper;
     private final StylusEventHelper mStylusEventHelper;
-    private final Launcher mLauncher;
-
-    private static final int DONT_REINFLATE = 0;
-    private static final int REINFLATE_ON_RESUME = 1;
-    private static final int REINFLATE_ON_CONFIG_CHANGE = 2;
+    protected final Launcher mLauncher;
 
     @ViewDebug.ExportedProperty(category = "launcher")
-    private int mReinflateStatus;
+    private boolean mReinflateOnConfigChange;
 
     private float mSlop;
 
@@ -128,12 +133,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         // Consequently, the widgets will be inflated for the orientation of the foreground activity
         // (framework issue). On resuming, we ensure that any widgets are inflated for the current
         // orientation.
-        if (mReinflateStatus == DONT_REINFLATE && !isSameOrientation()) {
-            mReinflateStatus = REINFLATE_ON_RESUME;
-            if (!mLauncher.waitUntilResume(new ReInflateRunnable())) {
-                mReinflateStatus = REINFLATE_ON_CONFIG_CHANGE;
-            }
-        }
+        mReinflateOnConfigChange = !isSameOrientation();
     }
 
     private boolean isSameOrientation() {
@@ -485,40 +485,20 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        if (mReinflateStatus == REINFLATE_ON_CONFIG_CHANGE) {
-            // We are finally in the same orientation
-            reinflateIfNecessary();
+        // Only reinflate when the final configuration is same as the required configuration
+        if (mReinflateOnConfigChange && isSameOrientation()) {
+            mReinflateOnConfigChange = false;
+            if (isAttachedToWindow()) {
+                reInflate();
+            }
         }
     }
 
-    private void reinflateIfNecessary() {
-        if (!isSameOrientation()) {
-            // We cannot reinflate yet, wait until next config change
-            mReinflateStatus = REINFLATE_ON_CONFIG_CHANGE;
-            return;
-        }
-
-        mReinflateStatus = DONT_REINFLATE;
-        if (isAttachedToWindow()) {
-            LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
-            reinflate();
-        }
-    }
-
-    public void reinflate() {
+    public void reInflate() {
         LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
         // Remove and rebind the current widget (which was inflated in the wrong
         // orientation), but don't delete it from the database
         mLauncher.removeItem(this, info, false  /* deleteFromDb */);
         mLauncher.bindAppWidget(info);
-    }
-
-    private class ReInflateRunnable implements Runnable {
-        @Override
-        public void run() {
-            if (mReinflateStatus == REINFLATE_ON_RESUME) {
-                reinflateIfNecessary();
-            }
-        }
     }
 }
