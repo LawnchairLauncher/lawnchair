@@ -240,8 +240,6 @@ public class Launcher extends BaseActivity
 
     @Thunk boolean mWorkspaceLoading = true;
 
-    private boolean mPaused = true;
-
     private OnResumeCallback mOnResumeCallback;
 
     private ViewOnDrawExecutor mPendingExecutor;
@@ -335,11 +333,6 @@ public class Launcher extends BaseActivity
 
         mAppWidgetHost = new LauncherAppWidgetHost(this);
         mAppWidgetHost.startListening();
-
-        // If we are getting an onCreate, we can actually preempt onResume and unset mPaused here,
-        // this also ensures that any synchronous binding below doesn't re-trigger another
-        // LauncherModel load.
-        mPaused = false;
 
         mLauncherView = LayoutInflater.from(this).inflate(R.layout.launcher, null);
 
@@ -780,10 +773,7 @@ public class Launcher extends BaseActivity
             mLauncherCallbacks.onStart();
         }
         mAppWidgetHost.setListenIfResumed(true);
-
-        if (!isWorkspaceLoading()) {
-            NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
-        }
+        NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
 
         if (mShouldFadeInScrim && mDragLayer.getBackground() != null) {
             if (mScrimAnimator != null) {
@@ -813,7 +803,6 @@ public class Launcher extends BaseActivity
 
         mAppLaunchSuccess = false;
         getUserEventDispatcher().resetElapsedSessionMillis();
-        mPaused = false;
         setOnResumeCallback(null);
         // Process any items that were added while Launcher was away.
         InstallShortcutReceiver.disableAndFlushInstallQueue(
@@ -836,7 +825,6 @@ public class Launcher extends BaseActivity
         InstallShortcutReceiver.enableInstallQueue(InstallShortcutReceiver.FLAG_ACTIVITY_PAUSED);
 
         super.onPause();
-        mPaused = true;
         mDragController.cancelDrag();
         mDragController.resetLastGestureUpTime();
 
@@ -2553,7 +2541,6 @@ public class Launcher extends BaseActivity
         InstallShortcutReceiver.disableAndFlushInstallQueue(
                 InstallShortcutReceiver.FLAG_LOADER_RUNNING, this);
 
-        NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
         TraceHelper.endSection("finishBindingItems");
     }
 
