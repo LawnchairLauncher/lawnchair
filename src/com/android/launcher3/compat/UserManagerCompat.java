@@ -33,7 +33,9 @@ public abstract class UserManagerCompat {
     public static UserManagerCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                if (Utilities.ATLEAST_NOUGAT_MR1) {
+                if (Utilities.ATLEAST_P) {
+                    sInstance = new UserManagerCompatVP(context.getApplicationContext());
+                } else if (Utilities.ATLEAST_NOUGAT_MR1) {
                     sInstance = new UserManagerCompatVNMr1(context.getApplicationContext());
                 } else if (Utilities.ATLEAST_NOUGAT) {
                     sInstance = new UserManagerCompatVN(context.getApplicationContext());
@@ -61,4 +63,5 @@ public abstract class UserManagerCompat {
     public abstract boolean isUserUnlocked(UserHandle user);
 
     public abstract boolean isDemoUser();
+    public abstract boolean trySetQuietModeEnabled(boolean enableQuietMode, UserHandle user);
 }

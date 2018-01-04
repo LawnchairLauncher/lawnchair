@@ -83,6 +83,11 @@ public class UserManagerCompatVL extends UserManagerCompat {
     }
 
     @Override
+    public boolean trySetQuietModeEnabled(boolean enableQuietMode, UserHandle user) {
+        return false;
+    }
+
+    @Override
     public void enableAndResetCache() {
         synchronized (this) {
             mUsers = new LongArrayMap<>();

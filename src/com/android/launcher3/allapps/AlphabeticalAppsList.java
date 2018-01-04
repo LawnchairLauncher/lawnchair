@@ -16,6 +16,7 @@
 package com.android.launcher3.allapps;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Process;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,11 +24,13 @@ import android.util.Log;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.discovery.AppDiscoveryAppInfo;
 import com.android.launcher3.discovery.AppDiscoveryItem;
 import com.android.launcher3.discovery.AppDiscoveryUpdateState;
+import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -620,9 +623,16 @@ public class AlphabeticalAppsList {
         }
 
         // Add the work profile footer if required.
-        if (mIsWork) {
+        if (shouldShowWorkFooter()) {
             mAdapterItems.add(AdapterItem.asWorkTabFooter(position++));
         }
+    }
+
+    private boolean shouldShowWorkFooter() {
+        return mIsWork && Utilities.ATLEAST_P &&
+                (DeepShortcutManager.getInstance(mLauncher).hasHostPermission()
+                        || mLauncher.checkSelfPermission("android.permission.MODIFY_QUIET_MODE")
+                        == PackageManager.PERMISSION_GRANTED);
     }
 
     public boolean isAppDiscoveryRunning() {

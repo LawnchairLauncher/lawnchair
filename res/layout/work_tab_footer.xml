@@ -33,7 +33,7 @@
         android:scaleType="fitXY"
         android:src="@drawable/all_apps_divider"/>
 
-    <Switch
+    <com.android.launcher3.allapps.WorkModeSwitch
         android:id="@+id/work_mode_toggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
