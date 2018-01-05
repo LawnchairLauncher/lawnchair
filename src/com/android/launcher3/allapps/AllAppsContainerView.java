@@ -614,14 +614,14 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     }
 
     public List<AppInfo> getPredictedApps() {
-        if (mUsingTabs) {
+        if (isHeaderVisible()) {
             return mHeader.getPredictionRow().getPredictedApps();
         } else {
             return mAH[AdapterHolder.MAIN].appsList.getPredictedApps();
         }
     }
 
-    private boolean isHeaderVisible() {
+    public boolean isHeaderVisible() {
         return mHeader != null && mHeader.getVisibility() == View.VISIBLE;
     }
 
