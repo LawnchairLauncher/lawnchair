@@ -24,12 +24,14 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.LauncherStateManager.StateHandler;
+import com.android.launcher3.PagedView;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsView;
 
+import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 
 public class RecentsViewStateController implements StateHandler {
@@ -62,6 +64,16 @@ public class RecentsViewStateController implements StateHandler {
     @Override
     public void setStateWithAnimation(final LauncherState toState,
             AnimatorSetBuilder builder, AnimationConfig config) {
+        // Scroll to the workspace card before changing to the NORMAL state.
+        int currPage = mRecentsView.getCurrentPage();
+        if (toState == NORMAL && currPage != 0 && !config.userControlled) {
+            int maxSnapDuration = PagedView.SLOW_PAGE_SNAP_ANIMATION_DURATION;
+            int durationPerPage = maxSnapDuration / 10;
+            int snapDuration = Math.min(maxSnapDuration, durationPerPage * currPage);
+            mRecentsView.snapToPage(0, snapDuration);
+            builder.setStartDelay(snapDuration);
+        }
+
         ObjectAnimator progressAnim =
                 mTransitionProgress.animateToValue(toState == OVERVIEW ? 1 : 0);
         progressAnim.setDuration(config.duration);

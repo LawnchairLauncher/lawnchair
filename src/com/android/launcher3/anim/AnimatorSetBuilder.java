@@ -28,6 +28,7 @@ import java.util.ArrayList;
 public class AnimatorSetBuilder {
 
     protected final ArrayList<Animator> mAnims = new ArrayList<>();
+    private long mStartDelay = 0;
 
     /**
      * Associates a tag with all the animations added after this call.
@@ -38,9 +39,14 @@ public class AnimatorSetBuilder {
         mAnims.add(anim);
     }
 
+    public void setStartDelay(long startDelay) {
+        mStartDelay = startDelay;
+    }
+
     public AnimatorSet build() {
         AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
         anim.playTogether(mAnims);
+        anim.setStartDelay(mStartDelay);
         return anim;
     }
 }

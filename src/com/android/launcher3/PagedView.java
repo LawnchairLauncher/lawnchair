@@ -68,7 +68,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private static final int MIN_LENGTH_FOR_FLING = 25;
 
     public static final int PAGE_SNAP_ANIMATION_DURATION = 750;
-    protected static final int SLOW_PAGE_SNAP_ANIMATION_DURATION = 950;
+    public static final int SLOW_PAGE_SNAP_ANIMATION_DURATION = 950;
 
     // OverScroll constants
     private final static int OVERSCROLL_PAGE_SNAP_ANIMATION_DURATION = 270;
@@ -1690,7 +1690,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         snapToPage(whichPage, PAGE_SNAP_ANIMATION_DURATION, true, null);
     }
 
-    protected void snapToPage(int whichPage, int duration) {
+    public void snapToPage(int whichPage, int duration) {
         snapToPage(whichPage, duration, false, null);
     }
 
