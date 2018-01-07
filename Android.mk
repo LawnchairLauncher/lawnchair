@@ -32,7 +32,14 @@ include $(CLEAR_VARS)
 LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
-    android-support-v4 \
+    android-support-annotations
+
+LOCAL_STATIC_ANDROID_LIBRARIES := \
+    android-support-compat \
+    android-support-media-compat \
+    android-support-core-utils \
+    android-support-core-ui \
+    android-support-fragment \
     android-support-v7-recyclerview \
     android-support-dynamic-animation
 
@@ -43,9 +50,8 @@ LOCAL_SRC_FILES := \
     $(call all-proto-files-under, protos) \
     $(call all-proto-files-under, proto_overrides)
 
-LOCAL_RESOURCE_DIR := \
-    $(LOCAL_PATH)/res \
-    prebuilts/sdk/current/support/v7/recyclerview/res \
+
+LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/res
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
@@ -53,9 +59,7 @@ LOCAL_PROTOC_OPTIMIZE_TYPE := nano
 LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/ --proto_path=$(LOCAL_PATH)/proto_overrides/
 LOCAL_PROTO_JAVA_OUTPUT_PARAMS := enum_style=java
 
-LOCAL_AAPT_FLAGS := \
-    --auto-add-overlay \
-    --extra-packages android.support.v7.recyclerview \
+LOCAL_USE_AAPT2 := true
 
 LOCAL_SDK_VERSION := current
 LOCAL_MIN_SDK_VERSION := 21
@@ -77,7 +81,14 @@ include $(CLEAR_VARS)
 LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
-    android-support-v4 \
+    android-support-annotations
+
+LOCAL_STATIC_ANDROID_LIBRARIES := \
+    android-support-compat \
+    android-support-media-compat \
+    android-support-core-utils \
+    android-support-core-ui \
+    android-support-fragment \
     android-support-v7-recyclerview \
     android-support-dynamic-animation
 
@@ -91,7 +102,6 @@ LOCAL_SRC_FILES := \
 LOCAL_RESOURCE_DIR := \
     $(LOCAL_PATH)/go/res \
     $(LOCAL_PATH)/res \
-    prebuilts/sdk/current/support/v7/recyclerview/res \
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
@@ -99,9 +109,7 @@ LOCAL_PROTOC_OPTIMIZE_TYPE := nano
 LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/ --proto_path=$(LOCAL_PATH)/proto_overrides/
 LOCAL_PROTO_JAVA_OUTPUT_PARAMS := enum_style=java
 
-LOCAL_AAPT_FLAGS := \
-    --auto-add-overlay \
-    --extra-packages android.support.v7.recyclerview \
+LOCAL_USE_AAPT2 := true
 
 LOCAL_SDK_VERSION := current
 LOCAL_MIN_SDK_VERSION := 21
@@ -127,10 +135,17 @@ include $(CLEAR_VARS)
 LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
-    android-support-v4 \
-    android-support-v7-recyclerview \
-    android-support-dynamic-animation \
+    android-support-annotations \
     libSharedSystemUI
+
+LOCAL_STATIC_ANDROID_LIBRARIES := \
+    android-support-compat \
+    android-support-media-compat \
+    android-support-core-utils \
+    android-support-core-ui \
+    android-support-fragment \
+    android-support-v7-recyclerview \
+    android-support-dynamic-animation
 
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
@@ -142,7 +157,6 @@ LOCAL_SRC_FILES := \
 LOCAL_RESOURCE_DIR := \
     $(LOCAL_PATH)/quickstep/res \
     $(LOCAL_PATH)/res \
-    prebuilts/sdk/current/support/v7/recyclerview/res \
 
 LOCAL_PROGUARD_ENABLED := disabled
 
@@ -150,9 +164,7 @@ LOCAL_PROTOC_OPTIMIZE_TYPE := nano
 LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/ --proto_path=$(LOCAL_PATH)/proto_overrides/
 LOCAL_PROTO_JAVA_OUTPUT_PARAMS := enum_style=java
 
-LOCAL_AAPT_FLAGS := \
-    --auto-add-overlay \
-    --extra-packages android.support.v7.recyclerview \
+LOCAL_USE_AAPT2 := true
 
 LOCAL_SDK_VERSION := system_current
 LOCAL_MIN_SDK_VERSION := 26
