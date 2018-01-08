@@ -63,9 +63,7 @@
         <include layout="@layout/hotseat"
             android:id="@+id/hotseat"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="right"
-            launcher:layout_ignoreInsets="true" />
+            android:layout_height="match_parent" />
 
         <include
             android:id="@+id/drop_target_bar"

@@ -217,7 +217,7 @@ public class RecentsView extends PagedView {
         DeviceProfile profile = launcher.getDeviceProfile();
         Rect stableInsets = new Rect();
         WindowManagerWrapper.getInstance().getStableInsets(stableInsets);
-        Rect padding = profile.getWorkspacePadding(null);
+        Rect padding = new Rect(profile.workspacePadding);
 
         float taskWidth = profile.widthPx - stableInsets.left - stableInsets.right;
         float taskHeight = profile.heightPx - stableInsets.top - stableInsets.bottom;

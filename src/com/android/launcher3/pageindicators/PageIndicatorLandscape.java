@@ -18,10 +18,16 @@ package com.android.launcher3.pageindicators;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.MarginLayoutParams;
+import android.widget.FrameLayout;
 
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
@@ -31,8 +37,10 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
  * a view with as large an area as we want (for touching) while maintaining a caret of size
  * all_apps_caret_size.  Used only for the landscape layout.
  */
-public class PageIndicatorLandscape extends PageIndicator implements OnClickListener {
+public class PageIndicatorLandscape extends PageIndicator implements OnClickListener, Insettable {
     // all apps pull up handle drawable.
+
+    private final Launcher mLauncher;
 
     public PageIndicatorLandscape(Context context) {
         this(context, null);
@@ -45,7 +53,8 @@ public class PageIndicatorLandscape extends PageIndicator implements OnClickList
     public PageIndicatorLandscape(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         setOnClickListener(this);
-        setOnFocusChangeListener(Launcher.getLauncher(context).mFocusHandler);
+        mLauncher = Launcher.getLauncher(context);
+        setOnFocusChangeListener(mLauncher.mFocusHandler);
     }
 
     @Override
@@ -56,5 +65,22 @@ public class PageIndicatorLandscape extends PageIndicator implements OnClickList
                     Action.Touch.TAP, ControlType.ALL_APPS_BUTTON);
             l.getStateManager().goToState(ALL_APPS);
         }
+    }
+
+    @Override
+    public void setInsets(Rect insets) {
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        if (insets.left > insets.right) {
+            lp.leftMargin = grid.hotseatBarSidePaddingPx;
+            lp.rightMargin = insets.right;
+            lp.gravity =  Gravity.RIGHT | Gravity.BOTTOM;
+        } else {
+            lp.leftMargin = insets.left;
+            lp.rightMargin = grid.hotseatBarSidePaddingPx;
+            lp.gravity = Gravity.LEFT | Gravity.BOTTOM;
+        }
+        lp.bottomMargin = grid.workspacePadding.bottom;
+        setLayoutParams(lp);
     }
 }

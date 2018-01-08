@@ -21,15 +21,19 @@ import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessib
 
 import android.animation.TimeInterpolator;
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragController;
+import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragOptions;
 
 import java.util.ArrayList;
@@ -37,18 +41,14 @@ import java.util.ArrayList;
 /*
  * The top bar containing various drop targets: Delete/App Info/Uninstall.
  */
-public class DropTargetBar extends LinearLayout implements DragController.DragListener {
+public class DropTargetBar extends LinearLayout
+        implements DragListener, Insettable {
 
     protected static final int DEFAULT_DRAG_FADE_DURATION = 175;
     protected static final TimeInterpolator DEFAULT_INTERPOLATOR = Interpolators.ACCEL;
 
-    private final Runnable mFadeAnimationEndRunnable = new Runnable() {
-
-        @Override
-        public void run() {
-            updateVisibility(DropTargetBar.this, isAccessibilityEnabled(getContext()));
-        }
-    };
+    private final Runnable mFadeAnimationEndRunnable =
+            () -> updateVisibility(DropTargetBar.this, isAccessibilityEnabled(getContext()));
 
     @ViewDebug.ExportedProperty(category = "launcher")
     protected boolean mDeferOnDragEnd;
@@ -73,6 +73,40 @@ public class DropTargetBar extends LinearLayout implements DragController.DragLi
 
         // Initialize with hidden state
         setAlpha(0f);
+    }
+
+    @Override
+    public void setInsets(Rect insets) {
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
+        DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
+
+        lp.leftMargin = insets.left;
+        lp.topMargin = insets.top;
+        lp.bottomMargin = insets.bottom;
+        lp.rightMargin = insets.right;
+
+        if (grid.isVerticalBarLayout()) {
+            lp.width = grid.dropTargetBarSizePx;
+            lp.height = grid.availableHeightPx - 2 * grid.edgeMarginPx;
+            lp.gravity = insets.left > insets.right ? Gravity.RIGHT : Gravity.LEFT;
+        } else {
+            int gap;
+            if (grid.isTablet) {
+                // XXX: If the icon size changes across orientations, we will have to take
+                //      that into account here too.
+                gap = ((grid.widthPx - 2 * grid.edgeMarginPx
+                        - (grid.inv.numColumns * grid.cellWidthPx))
+                        / (2 * (grid.inv.numColumns + 1)))
+                        + grid.edgeMarginPx;
+            } else {
+                gap = grid.desiredWorkspaceLeftRightMarginPx - grid.defaultWidgetPadding.right;
+            }
+            lp.width = grid.availableWidthPx - 2 * gap;
+
+            lp.topMargin += grid.edgeMarginPx;
+            lp.height = grid.dropTargetBarSizePx;
+        }
+        setLayoutParams(lp);
     }
 
     public void setup(DragController dragController) {

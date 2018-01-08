@@ -42,8 +42,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private static final long FADE_IN_DURATION = 150;
     private static final float VERTICAL_START_POSITION = 0.3f;
 
-    private static final Rect sTempRect = new Rect();
-
     private final Rect mInsets = new Rect();
 
     private final WidgetsListAdapter mAdapter;
@@ -115,8 +113,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mGradientView.setVisibility(View.INVISIBLE);
             widthUsed = 0;
         } else {
-            mLauncher.getDeviceProfile().getWorkspacePadding(sTempRect);
-            widthUsed = Math.max(sTempRect.left + sTempRect.right,
+            Rect padding = mLauncher.getDeviceProfile().workspacePadding;
+            widthUsed = Math.max(padding.left + padding.right,
                     2 * (mInsets.left + mInsets.right));
         }
 

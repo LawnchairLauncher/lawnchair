@@ -310,6 +310,20 @@ public class Workspace extends PagedView
     @Override
     public void setInsets(Rect insets) {
         mInsets.set(insets);
+
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        Rect padding = grid.workspacePadding;
+        setPadding(padding.left, padding.top, padding.right, padding.bottom);
+
+        if (grid.shouldFadeAdjacentWorkspaceScreens()) {
+            // In landscape mode the page spacing is set to the default.
+            setPageSpacing(grid.defaultPageSpacingPx);
+        } else {
+            // In portrait, we want the pages spaced such that there is no
+            // overhang of the previous / next page into the current page viewport.
+            // We assume symmetrical padding in portrait mode.
+            setPageSpacing(Math.max(grid.defaultPageSpacingPx, padding.left + 1));
+        }
     }
 
     /**

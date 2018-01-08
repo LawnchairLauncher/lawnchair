@@ -44,6 +44,7 @@ import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Insettable;
+import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -69,8 +70,7 @@ import java.util.Set;
  * The all apps view container.
  */
 public class AllAppsContainerView extends RelativeLayout implements DragSource,
-        View.OnLongClickListener, Insettable, DeviceProfile.LauncherLayoutChangeListener,
-        BubbleTextView.BubbleTextShadowHandler {
+        View.OnLongClickListener, Insettable, BubbleTextView.BubbleTextShadowHandler {
 
     private final Launcher mLauncher;
     private final AdapterHolder[] mAH;
@@ -126,38 +126,11 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-
-        DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
-        grid.addLauncherLayoutChangedListener(this);
-        onLauncherLayoutChanged();
-
         applyTouchDelegate();
     }
 
     private void applyTouchDelegate() {
         // TODO: Reimplement once fast scroller is fixed.
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-
-        DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
-        grid.removeLauncherLayoutChangedListener(this);
-    }
-
-    /**
-     * Calculate the background padding as it can change due to insets/content padding change.
-     */
-    @Override
-    public void onLauncherLayoutChanged() {
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        if (!grid.isVerticalBarLayout()) {
-            return;
-        }
-
-        Rect workspacePadding = grid.getWorkspacePadding(null);
-        setPadding(workspacePadding.left, 0, workspacePadding.right, 0);
     }
 
     @Override
@@ -364,8 +337,12 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     @Override
     public void setInsets(Rect insets) {
         DeviceProfile grid = mLauncher.getDeviceProfile();
+        int leftRightPadding = grid.desiredWorkspaceLeftRightMarginPx
+                + grid.cellLayoutPaddingLeftRightPx;
+
         for (int i = 0; i < mAH.length; i++) {
             mAH[i].padding.bottom = insets.bottom;
+            mAH[i].padding.left = mAH[i].padding.right = leftRightPadding;
             mAH[i].applyPadding();
         }
         if (grid.isVerticalBarLayout()) {
@@ -374,12 +351,14 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             mlp.topMargin = insets.top;
             mlp.rightMargin = insets.right;
             setLayoutParams(mlp);
+            setPadding(grid.workspacePadding.left, 0, grid.workspacePadding.right, 0);
         } else {
             View navBarBg = findViewById(R.id.nav_bar_bg);
             ViewGroup.LayoutParams navBarBgLp = navBarBg.getLayoutParams();
             navBarBgLp.height = insets.bottom;
             navBarBg.setLayoutParams(navBarBgLp);
         }
+        InsettableFrameLayout.dispatchInsets(this, insets);
     }
 
     public void updateIconBadges(Set<PackageUserKey> updatedBadges) {
@@ -571,14 +550,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     public void setRecyclerViewPaddingTop(int top) {
         for (int i = 0; i < mAH.length; i++) {
             mAH[i].padding.top = top;
-            mAH[i].applyPadding();
-        }
-    }
-
-    public void setRecyclerViewSidePadding(int left, int right) {
-        for (int i = 0; i < mAH.length; i++) {
-            mAH[i].padding.left = left;
-            mAH[i].padding.right = right;
             mAH[i].applyPadding();
         }
     }

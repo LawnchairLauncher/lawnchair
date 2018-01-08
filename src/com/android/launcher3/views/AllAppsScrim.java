@@ -30,14 +30,14 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
+import com.android.launcher3.dynamicui.WallpaperColorInfo.OnChangeListener;
 import com.android.launcher3.graphics.NinePatchDrawHelper;
 import com.android.launcher3.graphics.ShadowGenerator;
 import com.android.launcher3.util.Themes;
 
 import static com.android.launcher3.graphics.NinePatchDrawHelper.EXTENSION_PX;
 
-public class AllAppsScrim extends View implements WallpaperColorInfo.OnChangeListener, Insettable,
-        DeviceProfile.LauncherLayoutChangeListener {
+public class AllAppsScrim extends View implements OnChangeListener, Insettable {
 
     private static final int MAX_ALPHA = 235;
     private static final int MIN_ALPHA_PORTRAIT = 100;
@@ -112,15 +112,12 @@ public class AllAppsScrim extends View implements WallpaperColorInfo.OnChangeLis
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         mWallpaperColorInfo.addOnChangeListener(this);
-        mGrid.addLauncherLayoutChangedListener(this);
-        onLauncherLayoutChanged();
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mWallpaperColorInfo.removeOnChangeListener(this);
-        mGrid.removeLauncherLayoutChangedListener(this);
     }
 
     @Override
@@ -171,19 +168,16 @@ public class AllAppsScrim extends View implements WallpaperColorInfo.OnChangeLis
     @Override
     public void setInsets(Rect insets) {
         mInsets.set(insets);
-        onLauncherLayoutChanged();
-    }
-
-    @Override
-    public void onLauncherLayoutChanged() {
-        if (!mGrid.isVerticalBarLayout()) {
-            return;
+        if (mGrid.isVerticalBarLayout()) {
+            mPadding.set(mGrid.workspacePadding);
+            mPadding.bottom = 0;
+            mPadding.left += mInsets.left;
+            mPadding.top = mInsets.top;
+            mPadding.right += mInsets.right;
+        } else {
+            float scrimMargin = getResources().getDimension(R.dimen.all_apps_scrim_margin);
+            setDrawRegion(mGrid.hotseatBarSizePx + insets.bottom + scrimMargin);
         }
-        mGrid.getWorkspacePadding(mPadding);
-        mPadding.bottom = 0;
-        mPadding.left += mInsets.left;
-        mPadding.top = mInsets.top;
-        mPadding.right += mInsets.right;
         invalidate();
     }
 }

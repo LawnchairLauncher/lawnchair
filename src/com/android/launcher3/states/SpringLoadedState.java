@@ -65,7 +65,7 @@ public class SpringLoadedState extends LauncherState {
         float scaledHeight = scale * ws.getNormalChildHeight();
         float shrunkTop = insets.top + grid.dropTargetBarSizePx;
         float shrunkBottom = ws.getMeasuredHeight() - insets.bottom
-                - grid.getWorkspacePadding(null).bottom
+                - grid.workspacePadding.bottom
                 - grid.workspaceSpringLoadedBottomSpace;
         float totalShrunkSpace = shrunkBottom - shrunkTop;
 

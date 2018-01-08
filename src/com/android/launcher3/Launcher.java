@@ -337,8 +337,6 @@ public class Launcher extends BaseActivity
         mLauncherView = LayoutInflater.from(this).inflate(R.layout.launcher, null);
 
         setupViews();
-        mDeviceProfile.layout(this, false /* notifyListeners */);
-
         mPopupDataProvider = new PopupDataProvider(this);
 
         mRotationEnabled = getResources().getBoolean(R.bool.allow_rotation);
@@ -392,6 +390,7 @@ public class Launcher extends BaseActivity
                 ? SCREEN_ORIENTATION_UNSPECIFIED : SCREEN_ORIENTATION_NOSENSOR);
 
         setContentView(mLauncherView);
+        ((LauncherRootView) mLauncherView).dispatchInsets();
 
         // Listen for broadcasts
         IntentFilter filter = new IntentFilter();
@@ -440,11 +439,6 @@ public class Launcher extends BaseActivity
     }
 
     private LauncherCallbacks mLauncherCallbacks;
-
-    public void onInsetsChanged(Rect insets) {
-        mDeviceProfile.updateInsets(insets);
-        mDeviceProfile.layout(this, true /* notifyListeners */);
-    }
 
     /**
      * Call this after onCreate to set or clear overlay.
