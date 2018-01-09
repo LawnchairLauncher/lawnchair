@@ -38,27 +38,32 @@ public class BadgeRenderer {
     private static final String TAG = "BadgeRenderer";
 
     // The badge sizes are defined as percentages of the app icon size.
-    private static final float SIZE_PERCENTAGE = 0.23f;
+    private static final float SIZE_PERCENTAGE = 0.38f;
+
+    // Extra scale down of the dot
+    private static final float DOT_SCALE = 0.6f;
+
     // Used to expand the width of the badge for each additional digit.
     private static final float OFFSET_PERCENTAGE = 0.02f;
 
-    private final int mSize;
+    private final float mDotCenterOffset;
     private final int mOffset;
     private final float mCircleRadius;
     private final Paint mCirclePaint = new Paint(ANTI_ALIAS_FLAG | FILTER_BITMAP_FLAG);
 
     private final Bitmap mBackgroundWithShadow;
-    private final int mBitmapOffset;
+    private final float mBitmapOffset;
 
     public BadgeRenderer(int iconSizePx) {
-        mSize = (int) (SIZE_PERCENTAGE * iconSizePx);
+        mDotCenterOffset = SIZE_PERCENTAGE * iconSizePx;
         mOffset = (int) (OFFSET_PERCENTAGE * iconSizePx);
 
+        int size = (int) (DOT_SCALE * mDotCenterOffset);
         ShadowGenerator.Builder builder = new ShadowGenerator.Builder(Color.TRANSPARENT);
-        mBackgroundWithShadow = builder.setupBlurForSize(mSize).createPill(mSize, mSize);
+        mBackgroundWithShadow = builder.setupBlurForSize(size).createPill(size, size);
         mCircleRadius = builder.radius;
 
-        mBitmapOffset = -mBackgroundWithShadow.getHeight() / 2; // Same as width.
+        mBitmapOffset = -mBackgroundWithShadow.getHeight() * 0.5f; // Same as width.
     }
 
     /**
@@ -77,8 +82,8 @@ public class BadgeRenderer {
         }
         canvas.save(Canvas.MATRIX_SAVE_FLAG);
         // We draw the badge relative to its center.
-        int badgeCenterX = iconBounds.right - mSize / 2;
-        int badgeCenterY = iconBounds.top + mSize / 2;
+        float badgeCenterX = iconBounds.right - mDotCenterOffset / 2;
+        float badgeCenterY = iconBounds.top + mDotCenterOffset / 2;
 
         int offsetX = Math.min(mOffset, spaceForOffset.x);
         int offsetY = Math.min(mOffset, spaceForOffset.y);
