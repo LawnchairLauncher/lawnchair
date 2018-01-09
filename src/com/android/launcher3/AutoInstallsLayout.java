@@ -437,9 +437,11 @@ public class AutoInstallsLayout {
             }
 
             // Auto installs should always support the current platform version.
+            LauncherIcons li = LauncherIcons.obtain(mContext);
             mValues.put(LauncherSettings.Favorites.ICON, Utilities.flattenBitmap(
-                    LauncherIcons.createBadgedIconBitmap(
-                            icon, Process.myUserHandle(), mContext, VERSION.SDK_INT).icon));
+                    li.createBadgedIconBitmap(icon, Process.myUserHandle(), VERSION.SDK_INT).icon));
+            li.recycle();
+
             mValues.put(Favorites.ICON_PACKAGE, mIconRes.getResourcePackageName(iconId));
             mValues.put(Favorites.ICON_RESOURCE, mIconRes.getResourceName(iconId));
 

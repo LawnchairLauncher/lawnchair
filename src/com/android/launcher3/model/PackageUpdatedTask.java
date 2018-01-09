@@ -192,8 +192,9 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                         // Update shortcuts which use iconResource.
                         if ((si.iconResource != null)
                                 && packageSet.contains(si.iconResource.packageName)) {
-                            BitmapInfo iconInfo =
-                                    LauncherIcons.createIconBitmap(si.iconResource, context);
+                            LauncherIcons li = LauncherIcons.obtain(context);
+                            BitmapInfo iconInfo = li.createIconBitmap(si.iconResource);
+                            li.recycle();
                             if (iconInfo != null) {
                                 iconInfo.applyTo(si);
                                 infoUpdated = true;

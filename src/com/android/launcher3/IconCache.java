@@ -193,8 +193,10 @@ public class IconCache {
     }
 
     protected BitmapInfo makeDefaultIcon(UserHandle user) {
-        Drawable unbadged = getFullResDefaultActivityIcon();
-        return LauncherIcons.createBadgedIconBitmap(unbadged, user, mContext, VERSION.SDK_INT);
+        try (LauncherIcons li = LauncherIcons.obtain(mContext)) {
+            return li.createBadgedIconBitmap(
+                    getFullResDefaultActivityIcon(), user, VERSION.SDK_INT);
+        }
     }
 
     /**
@@ -378,8 +380,10 @@ public class IconCache {
         }
         if (entry == null) {
             entry = new CacheEntry();
-            LauncherIcons.createBadgedIconBitmap(getFullResIcon(app), app.getUser(),
-                    mContext,  app.getApplicationInfo().targetSdkVersion).applyTo(entry);
+            LauncherIcons li = LauncherIcons.obtain(mContext);
+            li.createBadgedIconBitmap(getFullResIcon(app), app.getUser(),
+                    app.getApplicationInfo().targetSdkVersion).applyTo(entry);
+            li.recycle();
         }
         entry.title = app.getLabel();
         entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, app.getUser());
@@ -535,9 +539,10 @@ public class IconCache {
                 providerFetchedOnce = true;
 
                 if (info != null) {
-                    LauncherIcons.createBadgedIconBitmap(
-                            getFullResIcon(info), info.getUser(), mContext,
+                    LauncherIcons li = LauncherIcons.obtain(mContext);
+                    li.createBadgedIconBitmap(getFullResIcon(info), info.getUser(),
                             info.getApplicationInfo().targetSdkVersion).applyTo(entry);
+                    li.recycle();
                 } else {
                     if (usePackageIcon) {
                         CacheEntry packageEntry = getEntryForPackageLocked(
@@ -596,7 +601,9 @@ public class IconCache {
             entry.title = title;
         }
         if (icon != null) {
-            LauncherIcons.createIconBitmap(icon, mContext).applyTo(entry);
+            LauncherIcons li = LauncherIcons.obtain(mContext);
+            li.createIconBitmap(icon).applyTo(entry);
+            li.recycle();
         }
         if (!TextUtils.isEmpty(title) && entry.icon != null) {
             mCache.put(cacheKey, entry);
@@ -633,14 +640,17 @@ public class IconCache {
                         throw new NameNotFoundException("ApplicationInfo is null");
                     }
 
+                    LauncherIcons li = LauncherIcons.obtain(mContext);
                     // Load the full res icon for the application, but if useLowResIcon is set, then
                     // only keep the low resolution icon instead of the larger full-sized icon
-                    BitmapInfo iconInfo = LauncherIcons.createBadgedIconBitmap(
-                            appInfo.loadIcon(mPackageManager), user, mContext, appInfo.targetSdkVersion);
+                    BitmapInfo iconInfo = li.createBadgedIconBitmap(
+                            appInfo.loadIcon(mPackageManager), user, appInfo.targetSdkVersion);
                     if (mInstantAppResolver.isInstantApp(appInfo)) {
-                        LauncherIcons.badgeWithDrawable(iconInfo.icon,
-                                mContext.getDrawable(R.drawable.ic_instant_app_badge), mContext);
+                        li.badgeWithDrawable(iconInfo.icon,
+                                mContext.getDrawable(R.drawable.ic_instant_app_badge));
                     }
+                    li.recycle();
+
                     Bitmap lowResIcon =  generateLowResIcon(iconInfo.icon);
                     entry.title = appInfo.loadLabel(mPackageManager);
                     entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
@@ -776,10 +786,7 @@ public class IconCache {
     }
 
     private static final class IconDB extends SQLiteCacheHelper {
-        private final static int DB_VERSION = 18;
-
-        private final static int RELEASE_VERSION = DB_VERSION +
-                (FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ? 0 : 1);
+        private final static int RELEASE_VERSION = 20;
 
         private final static String TABLE_NAME = "icons";
         private final static String COLUMN_ROWID = "rowid";

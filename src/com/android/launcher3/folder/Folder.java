@@ -453,9 +453,8 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
      */
     @SuppressLint("InflateParams")
     static Folder fromXml(Launcher launcher) {
-        return (Folder) launcher.getLayoutInflater().inflate(
-                FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION
-                        ? R.layout.user_folder : R.layout.user_folder_icon_normalized, null);
+        return (Folder) launcher.getLayoutInflater()
+                .inflate(R.layout.user_folder_icon_normalized, null);
     }
 
     private void startAnimation(final AnimatorSet a) {

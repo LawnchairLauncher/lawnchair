@@ -498,7 +498,9 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 return Pair.create((ItemInfo) si, (Object) activityInfo);
             } else if (shortcutInfo != null) {
                 ShortcutInfo si = new ShortcutInfo(shortcutInfo, mContext);
-                LauncherIcons.createShortcutIcon(shortcutInfo, mContext).applyTo(si);
+                LauncherIcons li = LauncherIcons.obtain(mContext);
+                li.createShortcutIcon(shortcutInfo).applyTo(si);
+                li.recycle();
                 return Pair.create((ItemInfo) si, (Object) shortcutInfo);
             } else if (providerInfo != null) {
                 LauncherAppWidgetProviderInfo info = LauncherAppWidgetProviderInfo
@@ -643,15 +645,18 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         info.user = Process.myUserHandle();
 
         BitmapInfo iconInfo = null;
+        LauncherIcons li = LauncherIcons.obtain(app.getContext());
         if (bitmap instanceof Bitmap) {
-            iconInfo = LauncherIcons.createIconBitmap((Bitmap) bitmap, app.getContext());
+            iconInfo = li.createIconBitmap((Bitmap) bitmap);
         } else {
             Parcelable extra = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
             if (extra instanceof Intent.ShortcutIconResource) {
                 info.iconResource = (Intent.ShortcutIconResource) extra;
-                iconInfo = LauncherIcons.createIconBitmap(info.iconResource, app.getContext());
+                iconInfo = li.createIconBitmap(info.iconResource);
             }
         }
+        li.recycle();
+
         if (iconInfo == null) {
             iconInfo = app.getIconCache().getDefaultIcon(info.user);
         }

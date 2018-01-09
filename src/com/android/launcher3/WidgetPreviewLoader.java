@@ -469,8 +469,11 @@ public class WidgetPreviewLoader {
         }
         RectF boxRect = drawBoxWithShadow(c, size, size);
 
-        Bitmap icon = LauncherIcons.createScaledBitmapWithoutShadow(
-                mutateOnMainThread(info.getFullResIcon(mIconCache)), mContext, 0);
+        LauncherIcons li = LauncherIcons.obtain(mContext);
+        Bitmap icon = li.createScaledBitmapWithoutShadow(
+                mutateOnMainThread(info.getFullResIcon(mIconCache)), 0);
+        li.recycle();
+
         Rect src = new Rect(0, 0, icon.getWidth(), icon.getHeight());
 
         boxRect.set(0, 0, iconSize, iconSize);
