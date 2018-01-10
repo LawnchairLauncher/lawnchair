@@ -134,4 +134,5 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Arbeitsprofil"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Hier findest du Apps für die Arbeit"</string>
     <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"Jede App für die Arbeit hat ein orangefarbenes Logo, um zu zeigen, dass sich deine Organisation um die Sicherheit der App kümmert. Diese Apps können auf deinen Startbildschirm verschoben werden, damit du leichter auf sie zugreifen kannst."</string>
+    <string name="managed_by_your_organisation" msgid="3989423660315876998">"Wird von deiner Organisation verwaltet"</string>
 </resources>

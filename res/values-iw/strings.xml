@@ -134,4 +134,5 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"פרופיל עבודה"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"ניתן למצוא כאן את אפליקציות העבודה"</string>
     <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"לכל אפליקציית עבודה יש תג כתום, וזה אומר שאבטחתה מטופלת בידי הארגון. ניתן להעביר אפליקציות עבודה אל מסך דף הבית כדי להקל את הגישה אליהן."</string>
+    <string name="managed_by_your_organisation" msgid="3989423660315876998">"מנוהל בידי הארגון שלך"</string>
 </resources>
