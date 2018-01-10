@@ -97,4 +97,14 @@ public class InsettableFrameLayout extends FrameLayout implements Insettable {
         super.onViewAdded(child);
         setFrameLayoutChildInsets(child, mInsets, new Rect());
     }
+
+    public static void dispatchInsets(ViewGroup parent, Rect insets) {
+        final int n = parent.getChildCount();
+        for (int i = 0; i < n; i++) {
+            final View child = parent.getChildAt(i);
+            if (child instanceof Insettable) {
+                ((Insettable) child).setInsets(insets);
+            }
+        }
+    }
 }

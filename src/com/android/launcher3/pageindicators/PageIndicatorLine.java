@@ -9,12 +9,17 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Property;
+import android.view.Gravity;
 import android.view.ViewConfiguration;
+import android.widget.FrameLayout;
 
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -25,7 +30,7 @@ import com.android.launcher3.dynamicui.WallpaperColorInfo;
  *
  * The fraction is 1 / number of pages and the position is based on the progress of the page scroll.
  */
-public class PageIndicatorLine extends PageIndicator {
+public class PageIndicatorLine extends PageIndicator implements Insettable {
 
     private static final int LINE_ANIMATE_DURATION = ViewConfiguration.getScrollBarFadeDuration();
     private static final int LINE_FADE_DELAY = ViewConfiguration.getScrollDefaultDelay();
@@ -39,6 +44,7 @@ public class PageIndicatorLine extends PageIndicator {
     private ValueAnimator[] mAnimators = new ValueAnimator[3];
 
     private final Handler mDelayedLineFadeHandler = new Handler(Looper.getMainLooper());
+    private final Launcher mLauncher;
 
     private boolean mShouldAutoHide = true;
 
@@ -51,7 +57,6 @@ public class PageIndicatorLine extends PageIndicator {
     private int mCurrentScroll;
     private int mTotalScroll;
     private Paint mLinePaint;
-    private Launcher mLauncher;
     private final int mLineHeight;
 
     private static final Property<PageIndicatorLine, Integer> PAINT_ALPHA
@@ -223,5 +228,15 @@ public class PageIndicatorLine extends PageIndicator {
         });
         mAnimators[animatorIndex].setDuration(LINE_ANIMATE_DURATION);
         mAnimators[animatorIndex].start();
+    }
+
+    @Override
+    public void setInsets(Rect insets) {
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
+        lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+        lp.height = grid.pageIndicatorSizePx;
+        lp.bottomMargin = grid.hotseatBarSizePx + insets.bottom;
+        setLayoutParams(lp);
     }
 }

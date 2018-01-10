@@ -47,10 +47,6 @@
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">90</integer>
 
-    <!-- This constant stores the ratio of the all apps button drawable which
-         is used for internal (baked-in) padding -->
-    <integer name="config_allAppsButtonPaddingPercent">17</integer>
-
     <!-- The duration of the animation from search hint to text entry -->
     <integer name="config_searchHintAnimationDuration">50</integer>
 

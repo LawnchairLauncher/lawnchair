@@ -16,6 +16,8 @@ import static com.android.launcher3.util.SystemUiController.UI_STATE_ROOT_VIEW;
 
 public class LauncherRootView extends InsettableFrameLayout {
 
+    private final Launcher mLauncher;
+
     private final Paint mOpaquePaint;
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mDrawSideInsetBar;
@@ -32,6 +34,8 @@ public class LauncherRootView extends InsettableFrameLayout {
         mOpaquePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mOpaquePaint.setColor(Color.BLACK);
         mOpaquePaint.setStyle(Paint.Style.FILL);
+
+        mLauncher = Launcher.getLauncher(context);
     }
 
     @Override
@@ -57,10 +61,11 @@ public class LauncherRootView extends InsettableFrameLayout {
         } else {
             mLeftInsetBarWidth = mRightInsetBarWidth = 0;
         }
-        Launcher.getLauncher(getContext()).getSystemUiController().updateUiState(
+        mLauncher.getSystemUiController().updateUiState(
                 UI_STATE_ROOT_VIEW, mDrawSideInsetBar ? FLAG_DARK_NAV : 0);
 
-        boolean rawInsetsChanged = !mInsets.equals(insets);
+        // Update device profile before notifying th children.
+        mLauncher.getDeviceProfile().updateInsets(insets);
         setInsets(insets);
 
         if (mAlignedView != null) {
@@ -73,13 +78,11 @@ public class LauncherRootView extends InsettableFrameLayout {
             }
         }
 
-        if (rawInsetsChanged) {
-            // Update the grid again
-            Launcher launcher = Launcher.getLauncher(getContext());
-            launcher.onInsetsChanged(insets);
-        }
-
         return true; // I'll take it from here
+    }
+
+    public void dispatchInsets() {
+        fitSystemWindows(mInsets);
     }
 
     @Override
