@@ -18,12 +18,25 @@ package com.android.quickstep;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.Shader;
+import android.graphics.Shader.TileMode;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
@@ -48,7 +61,7 @@ import static com.android.quickstep.TaskView.CURVE_INTERPOLATOR;
 /**
  * A list of recent tasks.
  */
-public class RecentsView extends PagedView {
+public class RecentsView extends PagedView implements Insettable {
 
     private static final Rect sTempStableInsets = new Rect();
 
@@ -87,6 +100,12 @@ public class RecentsView extends PagedView {
 
     private Task mFirstTask;
 
+    private Bitmap mScrim;
+    private Paint mFadePaint;
+    private Shader mFadeShader;
+    private Matrix mFadeMatrix;
+    private boolean mScrimOnLeft;
+
     public RecentsView(Context context) {
         this(context, null);
     }
@@ -99,8 +118,8 @@ public class RecentsView extends PagedView {
         super(context, attrs, defStyleAttr);
         setPageSpacing(getResources().getDimensionPixelSize(R.dimen.recents_page_spacing));
         enableFreeScroll(true);
-        setClipChildren(true);
         setupLayoutTransition();
+        setClipToOutline(true);
 
         mLauncher = Launcher.getLauncher(context);
         mQuickScrubController = new QuickScrubController(mLauncher);
@@ -123,10 +142,6 @@ public class RecentsView extends PagedView {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-
-        Rect padding =
-                getPadding(Launcher.getLauncher(getContext()).getDeviceProfile(), getContext());
-        setPadding(padding.left, padding.top, padding.right, padding.bottom);
         mFirstTaskIndex = getPageCount();
     }
 
@@ -146,6 +161,43 @@ public class RecentsView extends PagedView {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         updateTaskStackListenerState();
+    }
+
+    @Override
+    public void setInsets(Rect insets) {
+        mInsets.set(insets);
+        DeviceProfile dp = Launcher.getLauncher(getContext()).getDeviceProfile();
+        Rect padding = getPadding(dp, getContext());
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
+        lp.bottomMargin = padding.bottom;
+        setLayoutParams(lp);
+
+        setPadding(padding.left, padding.top, padding.right, 0);
+
+        if (dp.isVerticalBarLayout()) {
+            boolean wasScrimOnLeft = mScrimOnLeft;
+            mScrimOnLeft = insets.left > insets.right;
+
+            if (mScrim == null || wasScrimOnLeft != mScrimOnLeft) {
+                Drawable scrim = getContext().getDrawable(mScrimOnLeft
+                        ? R.drawable.recents_horizontal_scrim_left
+                        : R.drawable.recents_horizontal_scrim_right);
+                if (scrim instanceof BitmapDrawable) {
+                    mScrim = ((BitmapDrawable) scrim).getBitmap();
+                    mFadePaint = new Paint();
+                    mFadePaint.setXfermode(new PorterDuffXfermode(Mode.DST_IN));
+                    mFadeShader = new BitmapShader(mScrim, TileMode.CLAMP, TileMode.REPEAT);
+                    mFadeMatrix = new Matrix();
+                } else {
+                    mScrim = null;
+                }
+            }
+        } else {
+            mScrim = null;
+            mFadePaint = null;
+            mFadeShader = null;
+            mFadeMatrix = null;
+        }
     }
 
     public int getFirstTaskIndex() {
@@ -234,10 +286,9 @@ public class RecentsView extends PagedView {
         if (profile.isVerticalBarLayout()) {
             // Use the same padding on both sides for symmetry.
             float availableWidth = taskWidth - 2 * Math.max(padding.left, padding.right);
-            float availableHeight = profile.availableHeightPx - padding.top - padding.bottom
-                    - sTempStableInsets.top
-                    - profile.heightPx * (1 - OverviewState.getVerticalProgress(profile, context));
-
+            float availableHeight = profile.availableHeightPx - padding.top
+                    - sTempStableInsets.top - Math.max(padding.bottom,
+                    profile.heightPx * (1 - OverviewState.getVerticalProgress(profile, context)));
             float scaledRatio = Math.min(availableWidth / taskWidth, availableHeight / taskHeight);
             overviewHeight = taskHeight * scaledRatio;
             overviewWidth = taskWidth * scaledRatio;
@@ -306,11 +357,11 @@ public class RecentsView extends PagedView {
         if (getPageCount() == 0 || getPageAt(0).getMeasuredWidth() == 0) {
             return;
         }
-        final int halfScreenWidth = getMeasuredWidth() / 2;
-        final int screenCenter = halfScreenWidth + getScrollX();
-        final int pageSpacing = mPageSpacing;
         final int halfPageWidth = mScrollState.halfPageWidth = getNormalChildWidth() / 2;
         mScrollState.lastScrollType = SCROLL_TYPE_NONE;
+        final int screenCenter = mInsets.left + getPaddingLeft() + getScrollX() + halfPageWidth;
+        final int halfScreenWidth = getMeasuredWidth() / 2;
+        final int pageSpacing = mPageSpacing;
 
         final int pageCount = getPageCount();
         for (int i = 0; i < pageCount; i++) {
@@ -397,6 +448,35 @@ public class RecentsView extends PagedView {
 
     public QuickScrubController getQuickScrubController() {
         return mQuickScrubController;
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        if (mScrim == null) {
+            super.draw(canvas);
+            return;
+        }
+
+        final int flags = Canvas.HAS_ALPHA_LAYER_SAVE_FLAG;
+
+        int length = mScrim.getWidth();
+        int height = getHeight();
+        int saveCount = canvas.getSaveCount();
+
+        int scrimLeft;
+        if (mScrimOnLeft) {
+            scrimLeft = getScrollX();
+        } else {
+            scrimLeft = getScrollX() + getWidth() - length;
+        }
+        canvas.saveLayer(scrimLeft, 0, scrimLeft + length, height, null, flags);
+        super.draw(canvas);
+
+        mFadeMatrix.setTranslate(scrimLeft, 0);
+        mFadeShader.setLocalMatrix(mFadeMatrix);
+        mFadePaint.setShader(mFadeShader);
+        canvas.drawRect(scrimLeft, 0, scrimLeft + length, height, mFadePaint);
+        canvas.restoreToCount(saveCount);
     }
 
     public interface PageCallbacks {
