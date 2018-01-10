@@ -607,6 +607,12 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         return mHeader != null && mHeader.getVisibility() == View.VISIBLE;
     }
 
+    public void onScrollUpEnd() {
+        if (mUsingTabs) {
+            ((PersonalWorkSlidingTabStrip) findViewById(R.id.tabs)).peekWorkTabIfNecessary();
+        }
+    }
+
     public class AdapterHolder {
         public static final int MAIN = 0;
         public static final int WORK = 1;

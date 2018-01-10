@@ -15,7 +15,9 @@
  */
 package com.android.launcher3.allapps;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
@@ -25,17 +27,27 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.util.Themes;
 
 /**
  * Supports two indicator colors, dedicated for personal and work tabs.
  */
 public class PersonalWorkSlidingTabStrip extends LinearLayout {
+    private static final int POSITION_PERSONAL = 0;
+    private static final int POSITION_WORK = 1;
+    private static final int PEEK_DURATION = 1000;
+    private static final float PEAK_OFFSET = 0.4f;
+
+    private static final String KEY_SHOWED_PEEK_WORK_TAB = "showed_peek_work_tab";
+
     private final Paint mPersonalTabIndicatorPaint;
     private final Paint mWorkTabIndicatorPaint;
     private final Paint mDividerPaint;
+    private final SharedPreferences mSharedPreferences;
 
     private int mSelectedIndicatorHeight;
     private int mIndicatorLeft = -1;
@@ -64,7 +76,10 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout {
 
         mDividerPaint = new Paint();
         mDividerPaint.setColor(Themes.getAttrColor(context, android.R.attr.colorControlHighlight));
-        mDividerPaint.setStrokeWidth(getResources().getDimensionPixelSize(R.dimen.all_apps_divider_height));
+        mDividerPaint.setStrokeWidth(
+                getResources().getDimensionPixelSize(R.dimen.all_apps_divider_height));
+
+        mSharedPreferences = Launcher.getLauncher(getContext()).getSharedPrefs();
     }
 
     public void updateIndicatorPosition(int position, float positionOffset) {
@@ -140,5 +155,27 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout {
     private Paint getPaint(boolean firstHalf) {
         boolean isPersonal = mIsRtl ^ firstHalf;
         return isPersonal ? mPersonalTabIndicatorPaint : mWorkTabIndicatorPaint;
+    }
+
+    public void peekWorkTabIfNecessary() {
+        if (mSharedPreferences.getBoolean(KEY_SHOWED_PEEK_WORK_TAB, false)) {
+            return;
+        }
+        if (mIndicatorPosition != POSITION_PERSONAL) {
+            return;
+        }
+        peekWorkTab();
+        mSharedPreferences.edit().putBoolean(KEY_SHOWED_PEEK_WORK_TAB, true).apply();
+    }
+
+    private void peekWorkTab() {
+        final boolean isRtl = Utilities.isRtl(getResources());
+        ValueAnimator animator = ValueAnimator.ofFloat(0, isRtl ? 1 - PEAK_OFFSET : PEAK_OFFSET, 0);
+        animator.setDuration(PEEK_DURATION);
+        animator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
+        animator.addUpdateListener(
+                animation -> updateIndicatorPosition(mIndicatorPosition,
+                        (float) animation.getAnimatedValue()));
+        animator.start();
     }
 }

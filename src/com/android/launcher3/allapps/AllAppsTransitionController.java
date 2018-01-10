@@ -216,6 +216,7 @@ public class AllAppsTransitionController
         } else if (Float.compare(mProgress, 0f) == 0) {
             mHotseat.setVisibility(View.INVISIBLE);
             mAppsView.setVisibility(View.VISIBLE);
+            mAppsView.onScrollUpEnd();
         } else {
             mAppsView.setVisibility(View.VISIBLE);
             mHotseat.setVisibility(View.VISIBLE);
