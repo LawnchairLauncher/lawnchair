@@ -95,8 +95,10 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
                     shortcutInfo.updateFromDeepShortcutInfo(fullDetails, context);
                     // If the shortcut is pinned but no longer has an icon in the system,
                     // keep the current icon instead of reverting to the default icon.
-                    LauncherIcons.createShortcutIcon(fullDetails, context, true,
-                            Provider.of(shortcutInfo.iconBitmap)).applyTo(shortcutInfo);
+                    LauncherIcons li = LauncherIcons.obtain(context);
+                    li.createShortcutIcon(fullDetails, true, Provider.of(shortcutInfo.iconBitmap))
+                            .applyTo(shortcutInfo);
+                    li.recycle();
                     updatedShortcutInfos.add(shortcutInfo);
                 }
             }

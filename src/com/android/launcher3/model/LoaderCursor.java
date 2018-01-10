@@ -173,7 +173,9 @@ public class LoaderCursor extends CursorWrapper {
                 info.iconResource = new ShortcutIconResource();
                 info.iconResource.packageName = packageName;
                 info.iconResource.resourceName = resourceName;
-                BitmapInfo iconInfo = LauncherIcons.createIconBitmap(info.iconResource, mContext);
+                LauncherIcons li = LauncherIcons.obtain(mContext);
+                BitmapInfo iconInfo = li.createIconBitmap(info.iconResource);
+                li.recycle();
                 if (iconInfo != null) {
                     iconInfo.applyTo(info);
                     return true;
@@ -183,9 +185,8 @@ public class LoaderCursor extends CursorWrapper {
 
         // Failed to load from resource, try loading from DB.
         byte[] data = getBlob(iconIndex);
-        try {
-            LauncherIcons.createIconBitmap(BitmapFactory.decodeByteArray(data, 0, data.length),
-                    mContext).applyTo(info);
+        try (LauncherIcons li = LauncherIcons.obtain(mContext)) {
+            li.createIconBitmap(BitmapFactory.decodeByteArray(data, 0, data.length)).applyTo(info);
             return true;
         } catch (Exception e) {
             Log.e(TAG, "Failed to load icon for info " + info, e);

@@ -215,9 +215,10 @@ public class LoaderTask implements Runnable {
 
     public void loadUiResources() {
         if (Utilities.ATLEAST_OREO) {
-            ClickShadowView.setAdaptiveIconScaleFactor(
-                    IconNormalizer.getInstance(mApp.getContext()).getScale(
-                            new AdaptiveIconDrawable(null, null), null, null, null));
+            LauncherIcons li = LauncherIcons.obtain(mApp.getContext());
+            ClickShadowView.setAdaptiveIconScaleFactor(li.getNormalizer()
+                    .getScale(new AdaptiveIconDrawable(null, null), null, null, null));
+            li.recycle();
         }
     }
 
@@ -476,8 +477,10 @@ public class LoaderTask implements Runnable {
                                                     ? finalInfo.iconBitmap : null;
                                         }
                                     };
-                                    LauncherIcons.createShortcutIcon(pinnedShortcut, context,
+                                    LauncherIcons li = LauncherIcons.obtain(context);
+                                    li.createShortcutIcon(pinnedShortcut,
                                             true /* badged */, fallbackIconProvider).applyTo(info);
+                                    li.recycle();
                                     if (pmHelper.isAppSuspended(
                                             pinnedShortcut.getPackage(), info.user)) {
                                         info.runtimeStatusFlags |= FLAG_DISABLED_SUSPENDED;
