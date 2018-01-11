@@ -29,6 +29,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 import com.android.systemui.shared.recents.model.RecentsTaskLoader;
@@ -106,7 +107,8 @@ public class RecentsView extends PagedView {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        Rect padding = getPadding(Launcher.getLauncher(getContext()));
+        Rect padding =
+                getPadding(Launcher.getLauncher(getContext()).getDeviceProfile(), getContext());
         setPadding(padding.left, padding.top, padding.right, padding.bottom);
 
         mFirstTaskIndex = getPageCount();
@@ -213,8 +215,7 @@ public class RecentsView extends PagedView {
         }
     }
 
-    private static Rect getPadding(Launcher launcher) {
-        DeviceProfile profile = launcher.getDeviceProfile();
+    private static Rect getPadding(DeviceProfile profile, Context context) {
         Rect stableInsets = new Rect();
         WindowManagerWrapper.getInstance().getStableInsets(stableInsets);
         Rect padding = new Rect(profile.workspacePadding);
@@ -228,7 +229,7 @@ public class RecentsView extends PagedView {
             float availableWidth = taskWidth - 2 * Math.max(padding.left, padding.right);
             float availableHeight = profile.availableHeightPx - padding.top - padding.bottom
                     - stableInsets.top
-                    - profile.heightPx * (1 - OVERVIEW.getVerticalProgress(launcher));
+                    - profile.heightPx * (1 - OverviewState.getVerticalProgress(profile, context));
 
             float scaledRatio = Math.min(availableWidth / taskWidth, availableHeight / taskHeight);
             overviewHeight = taskHeight * scaledRatio;
@@ -247,15 +248,18 @@ public class RecentsView extends PagedView {
     }
 
     public static void getPageRect(Launcher launcher, Rect outRect) {
-        DragLayer dl = launcher.getDragLayer();
-        Rect targetPadding = getPadding(launcher);
-        Rect insets = dl.getInsets();
+        getPageRect(launcher.getDeviceProfile(), launcher, outRect);
+    }
+
+    public static void getPageRect(DeviceProfile grid, Context context, Rect outRect) {
+        Rect targetPadding = getPadding(grid, context);
+        Rect insets = grid.getInsets();
         outRect.set(
                 targetPadding.left + insets.left,
                 targetPadding.top + insets.top,
-                dl.getWidth() - targetPadding.right - insets.right,
-                dl.getHeight() - targetPadding.bottom - insets.bottom);
-        outRect.top += launcher.getResources()
+                grid.widthPx - targetPadding.right - insets.right,
+                grid.heightPx - targetPadding.bottom - insets.bottom);
+        outRect.top += context.getResources()
                 .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
     }
 

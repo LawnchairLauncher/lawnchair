@@ -214,6 +214,11 @@ public class DeviceProfile {
         mBadgeRenderer = new BadgeRenderer(iconSizePx);
     }
 
+    public DeviceProfile copy(Context context) {
+        Point size = new Point(availableWidthPx, availableHeightPx);
+        return new DeviceProfile(context, inv, size, size, widthPx, heightPx, isLandscape);
+    }
+
     DeviceProfile getMultiWindowProfile(Context context, Point mwSize) {
         // We take the minimum sizes of this profile and it's multi-window variant to ensure that
         // the system decor is always excluded.
@@ -376,6 +381,10 @@ public class DeviceProfile {
         updateWorkspacePadding();
     }
 
+    public Rect getInsets() {
+        return mInsets;
+    }
+
     public void updateAppsViewNumCols() {
         allAppsNumCols = allAppsNumPredictiveCols = inv.numColumns;
     }
@@ -509,6 +518,5 @@ public class DeviceProfile {
         Configuration context = new Configuration(c.getResources().getConfiguration());
         context.orientation = orientation;
         return c.createConfigurationContext(context);
-
     }
 }

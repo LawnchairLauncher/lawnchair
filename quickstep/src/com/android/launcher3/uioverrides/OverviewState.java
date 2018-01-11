@@ -18,6 +18,7 @@ package com.android.launcher3.uioverrides;
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 
+import android.content.Context;
 import android.graphics.Rect;
 import android.view.View;
 
@@ -74,15 +75,7 @@ public class OverviewState extends LauncherState {
 
     @Override
     public float getVerticalProgress(Launcher launcher) {
-        DeviceProfile grid = launcher.getDeviceProfile();
-        if (!grid.isVerticalBarLayout()) {
-            return 1f;
-        }
-
-        float total = grid.heightPx;
-        float searchHeight = total - grid.availableHeightPx +
-                launcher.getResources().getDimension(R.dimen.all_apps_search_box_full_height);
-        return 1 - (searchHeight / total);
+        return getVerticalProgress(launcher.getDeviceProfile(), launcher);
     }
 
     @Override
@@ -124,5 +117,16 @@ public class OverviewState extends LauncherState {
         }
 
         return new float[] {scale, translationX, translationY};
+    }
+
+    public static float getVerticalProgress(DeviceProfile grid, Context context) {
+        if (!grid.isVerticalBarLayout()) {
+            return 1f;
+        }
+
+        float total = grid.heightPx;
+        float searchHeight = total - grid.availableHeightPx +
+                context.getResources().getDimension(R.dimen.all_apps_search_box_full_height);
+        return 1 - (searchHeight / total);
     }
 }

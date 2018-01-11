@@ -33,14 +33,15 @@ import android.view.View;
 import android.view.ViewTreeObserver.OnPreDrawListener;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.launcher3.util.TraceHelper;
@@ -111,6 +112,15 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
         mRunningTaskId = runningTaskInfo.id;
         mContext = context;
         WindowManagerWrapper.getInstance().getStableInsets(mStableInsets);
+
+        DeviceProfile dp = LauncherAppState.getIDP(mContext).getDeviceProfile(mContext);
+        // TODO: If in multi window mode, dp = dp.getMultiWindowProfile()
+        dp = dp.copy(mContext);
+        // TODO: Use different insets for multi-window mode
+        dp.updateInsets(mStableInsets);
+        RecentsView.getPageRect(dp, mContext, mTargetRect);
+        mSourceRect.set(0, 0, dp.widthPx - mStableInsets.left - mStableInsets.right,
+                dp.heightPx - mStableInsets.top - mStableInsets.bottom);
 
         // Build the state callback
         mStateCallback = new MultiStateCallback();
@@ -216,13 +226,6 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
     private void updateFinalShift() {
         if (!mLauncherReady) {
             return;
-        }
-
-        if (mTargetRect.isEmpty()) {
-            RecentsView.getPageRect(mLauncher, mTargetRect);
-            DragLayer dl = mLauncher.getDragLayer();
-            mSourceRect.set(0, 0, dl.getWidth() - mStableInsets.left - mStableInsets.right,
-                    dl.getHeight() - mStableInsets.top - mStableInsets.bottom);
         }
 
         float shift = mCurrentShift.value * mActivityMultiplier.value;
