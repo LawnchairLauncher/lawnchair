@@ -184,6 +184,7 @@ public class AppsSearchContainerLayout extends FrameLayout
         mSearchQueryBuilder.clear();
         mSearchQueryBuilder.clearSpans();
         Selection.setSelection(mSearchQueryBuilder, 0);
+        mAppsView.onClearSearchResult();
     }
 
     @Override
