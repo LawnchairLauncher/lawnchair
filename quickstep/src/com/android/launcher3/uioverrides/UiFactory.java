@@ -37,9 +37,16 @@ public class UiFactory {
     public static final boolean USE_HARDWARE_BITMAP = false; // FeatureFlags.IS_DOGFOOD_BUILD;
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
-        return new TouchController[] {
-                new TwoStepSwipeController(launcher),
-                new OverviewSwipeUpController(launcher)};
+        if (FeatureFlags.ENABLE_TWO_SWIPE_TARGETS) {
+            return new TouchController[]{
+                    new EdgeSwipeController(launcher),
+                    new TwoStepSwipeController(launcher),
+                    new OverviewSwipeUpController(launcher)};
+        } else {
+            return new TouchController[]{
+                    new TwoStepSwipeController(launcher),
+                    new OverviewSwipeUpController(launcher)};
+        }
     }
 
     public static AccessibilityDelegate newPageIndicatorAccessibilityDelegate() {

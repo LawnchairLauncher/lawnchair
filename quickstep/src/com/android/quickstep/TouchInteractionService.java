@@ -64,6 +64,8 @@ import java.util.function.Consumer;
 @TargetApi(Build.VERSION_CODES.O)
 public class TouchInteractionService extends Service {
 
+    public static final int EDGE_NAV_BAR = 1 << 8;
+
     private static final String TAG = "TouchInteractionService";
 
     private final IBinder mMyBinder = new IOverviewProxy.Stub() {
@@ -381,9 +383,12 @@ public class TouchInteractionService extends Service {
         }
 
         private void sendEvent(MotionEvent ev) {
+            int flags = ev.getEdgeFlags();
+            ev.setEdgeFlags(flags | EDGE_NAV_BAR);
             ev.offsetLocation(-mLocationOnScreen[0], -mLocationOnScreen[1]);
             mTarget.dispatchTouchEvent(ev);
             ev.offsetLocation(mLocationOnScreen[0], mLocationOnScreen[1]);
+            ev.setEdgeFlags(flags);
         }
     }
 }

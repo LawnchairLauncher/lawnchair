@@ -20,6 +20,7 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.anim.SpringAnimationHandler.Y_DIRECTION;
+import static com.android.quickstep.TouchInteractionService.EDGE_NAV_BAR;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -42,6 +43,7 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.SpringAnimationHandler;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -90,6 +92,7 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
     private static final int FLAG_OVERVIEW_DISABLED_CANCEL_STATE = 1 << 2;
     private static final int FLAG_RECENTS_PLAN_LOADING = 1 << 3;
     private static final int FLAG_OVERVIEW_DISABLED = 1 << 4;
+    private static final int FLAG_DISABLED_TWO_TARGETS = 1 << 5;
 
     private final Launcher mLauncher;
     private final SwipeDetector mDetector;
@@ -120,18 +123,25 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
     }
 
     private boolean canInterceptTouch(MotionEvent ev) {
-        if (!mLauncher.isInState(NORMAL) && !mLauncher.isInState(ALL_APPS)) {
-            // Don't listen for the swipe gesture if we are already in some other state.
-            return false;
-        }
-        if (mAnimatingToOverview) {
-            return false;
-        }
         if (mCurrentAnimation != null) {
             // If we are already animating from a previous state, we can intercept.
             return true;
         }
-        if (mLauncher.isInState(ALL_APPS) && !mLauncher.getAppsView().shouldContainerScroll(ev)) {
+        if (mLauncher.isInState(NORMAL)) {
+            if ((ev.getEdgeFlags() & EDGE_NAV_BAR) != 0 &&
+                    !mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+                // On normal swipes ignore edge swipes
+                return false;
+            }
+        } else if (mLauncher.isInState(ALL_APPS)) {
+            if (!mLauncher.getAppsView().shouldContainerScroll(ev)) {
+                return false;
+            }
+        } else {
+            // Don't listen for the swipe gesture if we are already in some other state.
+            return false;
+        }
+        if (mAnimatingToOverview) {
             return false;
         }
         if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
@@ -237,6 +247,10 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
 
             mDragPauseDetector = new DragPauseDetector(this::onDragPauseDetected);
             mDragPauseDetector.addDisabledFlags(FLAG_OVERVIEW_DISABLED_OUT_OF_RANGE);
+            if (FeatureFlags.ENABLE_TWO_SWIPE_TARGETS) {
+                mDragPauseDetector.addDisabledFlags(FLAG_DISABLED_TWO_TARGETS);
+            }
+
             mOverviewProgressRange = new FloatRange();
             mOverviewProgressRange.start = mLauncher.isInState(NORMAL)
                     ? MIN_PROGRESS_TO_OVERVIEW

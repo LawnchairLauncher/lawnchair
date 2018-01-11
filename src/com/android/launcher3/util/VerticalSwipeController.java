@@ -35,6 +35,7 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.touch.SwipeDetector;
+import com.android.launcher3.touch.SwipeDetector.Direction;
 
 import java.util.ArrayList;
 
@@ -56,6 +57,7 @@ public abstract class VerticalSwipeController extends AnimatorListenerAdapter
     protected final Launcher mLauncher;
     private final SwipeDetector mDetector;
     private final LauncherState mBaseState;
+    private final LauncherState mTargetState;
 
     private boolean mNoIntercept;
 
@@ -66,12 +68,18 @@ public abstract class VerticalSwipeController extends AnimatorListenerAdapter
     // Ratio of transition process [0, 1] to drag displacement (px)
     private float mProgressMultiplier;
 
-    private SpringAnimationHandler[] mSpringHandlers;
+    protected SpringAnimationHandler[] mSpringHandlers;
 
     public VerticalSwipeController(Launcher l, LauncherState baseState) {
+        this(l, baseState, ALL_APPS, SwipeDetector.VERTICAL);
+    }
+
+    public VerticalSwipeController(
+            Launcher l, LauncherState baseState, LauncherState targetState, Direction dir) {
         mLauncher = l;
-        mDetector = new SwipeDetector(l, this, SwipeDetector.VERTICAL);
+        mDetector = new SwipeDetector(l, this, dir);
         mBaseState = baseState;
+        mTargetState = targetState;
     }
 
     private boolean canInterceptTouch(MotionEvent ev) {
@@ -96,7 +104,7 @@ public abstract class VerticalSwipeController extends AnimatorListenerAdapter
         }
     }
 
-    private void initSprings() {
+    protected void initSprings() {
         AllAppsContainerView appsView = mLauncher.getAppsView();
 
         SpringAnimationHandler handler = appsView.getSpringAnimationHandler();
@@ -178,12 +186,13 @@ public abstract class VerticalSwipeController extends AnimatorListenerAdapter
             long maxAccuracy = (long) (2 * range);
 
             // Build current animation
-            mToState = mLauncher.isInState(ALL_APPS) ? mBaseState : ALL_APPS;
+            mToState = mLauncher.isInState(mTargetState) ? mBaseState : mTargetState;
             mCurrentAnimation = mLauncher.getStateManager()
                     .createAnimationToNewWorkspace(mToState, maxAccuracy);
             mCurrentAnimation.getTarget().addListener(this);
             mStartProgress = 0;
-            mProgressMultiplier = (mLauncher.isInState(ALL_APPS) ? 1 : -1) / range;
+            mProgressMultiplier =
+                    (mLauncher.isInState(mTargetState) ^ isTransitionFlipped() ? 1 : -1) / range;
             mCurrentAnimation.dispatchOnStart();
         } else {
             mCurrentAnimation.pause();
@@ -195,7 +204,11 @@ public abstract class VerticalSwipeController extends AnimatorListenerAdapter
         }
     }
 
-    private float getShiftRange() {
+    protected boolean isTransitionFlipped() {
+        return false;
+    }
+
+    protected float getShiftRange() {
         return mLauncher.getAllAppsController().getShiftRange();
     }
 
@@ -213,27 +226,25 @@ public abstract class VerticalSwipeController extends AnimatorListenerAdapter
         final float progress = mCurrentAnimation.getProgressFraction();
 
         if (fling) {
-            if (velocity < 0) {
-                targetState = ALL_APPS;
-                animationDuration = SwipeDetector.calculateDuration(velocity,
-                        mToState == ALL_APPS ? (1 - progress) : progress);
+            if (velocity < 0 ^ isTransitionFlipped()) {
+                targetState = mTargetState;
             } else {
                 targetState = mBaseState;
-                animationDuration = SwipeDetector.calculateDuration(velocity,
-                        mToState == ALL_APPS ? progress : (1 - progress));
             }
+            animationDuration = SwipeDetector.calculateDuration(velocity,
+                    mToState == targetState ? (1 - progress) : progress);
             // snap to top or bottom using the release velocity
         } else {
             if (progress > SUCCESS_TRANSITION_PROGRESS) {
                 targetState = mToState;
                 animationDuration = SwipeDetector.calculateDuration(velocity, 1 - progress);
             } else {
-                targetState = mToState == ALL_APPS ? mBaseState : ALL_APPS;
+                targetState = mToState == mTargetState ? mBaseState : mTargetState;
                 animationDuration = SwipeDetector.calculateDuration(velocity, progress);
             }
         }
 
-        if (fling && targetState == ALL_APPS) {
+        if (fling && targetState == mTargetState) {
             for (SpringAnimationHandler h : mSpringHandlers) {
                 // The icons are moving upwards, so we go to 0 from 1. (y-axis 1 is below 0.)
                 h.animateToFinalPosition(0 /* pos */, 1 /* startValue */);
