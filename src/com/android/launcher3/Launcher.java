@@ -915,7 +915,7 @@ public class Launcher extends BaseActivity
      * Finds all the views we need and configure them properly.
      */
     private void setupViews() {
-        mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
+        mDragLayer = findViewById(R.id.drag_layer);
         mFocusHandler = mDragLayer.getFocusIndicatorHelper();
         mWorkspace = mDragLayer.findViewById(R.id.workspace);
         mWorkspace.initParentViews(mDragLayer);
@@ -1237,9 +1237,9 @@ public class Launcher extends BaseActivity
                 }
 
                 // In all these cases, only animate if we're already on home
-                AbstractFloatingView.closeAllOpenViews(this, alreadyOnHome);
+                AbstractFloatingView.closeAllOpenViews(this, isStarted());
 
-                mStateManager.goToState(NORMAL, alreadyOnHome /* animated */);
+                mStateManager.goToState(NORMAL);
 
                 // Reset the apps view
                 if (!alreadyOnHome && mAppsView != null) {

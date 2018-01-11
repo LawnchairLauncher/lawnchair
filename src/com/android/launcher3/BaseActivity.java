@@ -31,6 +31,8 @@ public abstract class BaseActivity extends Activity {
     protected UserEventDispatcher mUserEventDispatcher;
     protected SystemUiController mSystemUiController;
 
+    private boolean mStarted;
+
     public DeviceProfile getDeviceProfile() {
         return mDeviceProfile;
     }
@@ -68,5 +70,21 @@ public abstract class BaseActivity extends Activity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onStart() {
+        mStarted = true;
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        mStarted = false;
+        super.onStop();
+    }
+
+    public boolean isStarted() {
+        return mStarted;
     }
 }
