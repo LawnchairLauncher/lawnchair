@@ -93,6 +93,7 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
     private static final int FLAG_RECENTS_PLAN_LOADING = 1 << 3;
     private static final int FLAG_OVERVIEW_DISABLED = 1 << 4;
     private static final int FLAG_DISABLED_TWO_TARGETS = 1 << 5;
+    private static final int FLAG_DISABLED_BACK_TARGET = 1 << 6;
 
     private final Launcher mLauncher;
     private final SwipeDetector mDetector;
@@ -261,6 +262,12 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
             // Build current animation
             mFromState = mLauncher.getStateManager().getState();
             mToState = mLauncher.isInState(ALL_APPS) ? NORMAL : ALL_APPS;
+
+            if (mToState == NORMAL && mLauncher.getStateManager().getLastState() == OVERVIEW) {
+                mToState = OVERVIEW;
+                mDragPauseDetector.addDisabledFlags(FLAG_DISABLED_BACK_TARGET);
+            }
+
             mTaggedAnimatorSetBuilder = new TaggedAnimatorSetBuilder();
             mCurrentAnimation = mLauncher.getStateManager().createAnimationToNewWorkspace(
                     mToState, mTaggedAnimatorSetBuilder, maxAccuracy);
@@ -336,7 +343,7 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
 
         if (fling) {
             logAction = Touch.FLING;
-            targetState = velocity < 0 ? ALL_APPS : NORMAL;
+            targetState = velocity < 0 ? ALL_APPS : mLauncher.getStateManager().getLastState();
             // snap to top or bottom using the release velocity
         } else {
             logAction = Touch.SWIPE;

@@ -1608,8 +1608,9 @@ public class Launcher extends BaseActivity
         if (topView != null) {
             topView.onBackPressed();
         } else if (!isInState(NORMAL)) {
+            LauncherState lastState = mStateManager.getLastState();
             ued.logActionCommand(Action.Command.BACK, mStateManager.getState().containerType);
-            mStateManager.goToState(NORMAL);
+            mStateManager.goToState(lastState);
         } else {
             // Back button is a no-op here, but give at least some feedback for the button press
             mWorkspace.showOutlinesTemporarily();

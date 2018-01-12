@@ -170,6 +170,11 @@ public class LauncherState {
         };
     }
 
+    public LauncherState getHistoryForState(LauncherState previousState) {
+        // No history is supported
+        return NORMAL;
+    }
+
     protected static void dispatchWindowStateChanged(Launcher launcher) {
         launcher.getWindow().getDecorView().sendAccessibilityEvent(TYPE_WINDOW_STATE_CHANGED);
     }

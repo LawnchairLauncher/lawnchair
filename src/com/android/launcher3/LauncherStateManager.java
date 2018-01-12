@@ -66,7 +66,7 @@ import com.android.launcher3.uioverrides.UiFactory;
  *          - Go back with back key  TODO: make this not go to workspace
  *          - From all apps
  *          - From workspace
- *   - Enter and exit car mode (becuase it causes an extra configuration changed)
+ *   - Enter and exit car mode (becase it causes an extra configuration changed)
  *          - From all apps
  *          - From the center workspace
  *          - From another workspace
@@ -81,6 +81,9 @@ public class LauncherStateManager {
 
     private StateHandler[] mStateHandlers;
     private LauncherState mState = NORMAL;
+
+    private LauncherState mLastStableState = NORMAL;
+    private LauncherState mCurrentStableState = NORMAL;
 
     private StateListener mStateListener;
 
@@ -261,9 +264,19 @@ public class LauncherStateManager {
     }
 
     private void onStateTransitionEnd(LauncherState state) {
+        // Only change the stable states after the transitions have finished
+        if (state != mCurrentStableState) {
+            mLastStableState = state.getHistoryForState(mCurrentStableState);
+            mCurrentStableState = state;
+        }
+
         mLauncher.getWorkspace().setClipChildren(!state.disablePageClipping);
         mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
         mLauncher.finishAutoCancelActionMode();
+    }
+
+    public LauncherState getLastState() {
+        return mLastStableState;
     }
 
     /**
