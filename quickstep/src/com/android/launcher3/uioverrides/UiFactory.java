@@ -41,11 +41,11 @@ public class UiFactory {
             return new TouchController[]{
                     new EdgeSwipeController(launcher),
                     new TwoStepSwipeController(launcher),
-                    new OverviewSwipeUpController(launcher)};
+                    new OverviewSwipeController(launcher)};
         } else {
             return new TouchController[]{
                     new TwoStepSwipeController(launcher),
-                    new OverviewSwipeUpController(launcher)};
+                    new OverviewSwipeController(launcher)};
         }
     }
 
