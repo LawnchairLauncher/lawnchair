@@ -26,29 +26,29 @@ import java.lang.reflect.Method;
 public class UserManagerCompatVP extends UserManagerCompatVNMr1 {
     private static final String TAG = "UserManagerCompatVP";
 
-    private Method mTrySetQuietModeEnabledMethod;
+    private Method mRequestQuietModeEnabled;
 
     UserManagerCompatVP(Context context) {
         super(context);
         // TODO: Replace it with proper API call once SDK is ready.
         try {
-            mTrySetQuietModeEnabledMethod = UserManager.class.getDeclaredMethod(
-                    "trySetQuietModeEnabled", boolean.class, UserHandle.class);
+            mRequestQuietModeEnabled = UserManager.class.getDeclaredMethod(
+                    "requestQuietModeEnabled", boolean.class, UserHandle.class);
         } catch (NoSuchMethodException e) {
-            Log.e(TAG, "trySetQuietModeEnabled is not available", e);
+            Log.e(TAG, "requestQuietModeEnabled is not available", e);
         }
     }
 
     @Override
-    public boolean trySetQuietModeEnabled(boolean enableQuietMode, UserHandle user) {
-        if (mTrySetQuietModeEnabledMethod == null) {
+    public boolean requestQuietModeEnabled(boolean enableQuietMode, UserHandle user) {
+        if (mRequestQuietModeEnabled == null) {
             return false;
         }
         try {
             return (boolean)
-                    mTrySetQuietModeEnabledMethod.invoke(mUserManager, enableQuietMode, user);
+                    mRequestQuietModeEnabled.invoke(mUserManager, enableQuietMode, user);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            Log.e(TAG, "Failed to invoke mTrySetQuietModeEnabledMethod", e);
+            Log.e(TAG, "Failed to invoke mRequestQuietModeEnabled", e);
         }
         return false;
     }

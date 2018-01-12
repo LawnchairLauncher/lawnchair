@@ -83,7 +83,7 @@ public class UserManagerCompatVL extends UserManagerCompat {
     }
 
     @Override
-    public boolean trySetQuietModeEnabled(boolean enableQuietMode, UserHandle user) {
+    public boolean requestQuietModeEnabled(boolean enableQuietMode, UserHandle user) {
         return false;
     }
 

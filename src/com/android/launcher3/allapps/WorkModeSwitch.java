@@ -91,7 +91,7 @@ public class WorkModeSwitch extends Switch {
                     if (Process.myUserHandle().equals(userProfile)) {
                         continue;
                     }
-                    showConfirm |= !userManager.trySetQuietModeEnabled(enabled, userProfile);
+                    showConfirm |= !userManager.requestQuietModeEnabled(enabled, userProfile);
                 }
                 return showConfirm;
             }
