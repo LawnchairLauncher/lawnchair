@@ -356,10 +356,11 @@ public class LauncherIcons implements AutoCloseable {
         return result;
     }
 
-    public static ItemInfoWithIcon getShortcutInfoBadge(
-            ShortcutInfoCompat shortcutInfo, IconCache cache) {
+    public ItemInfoWithIcon getShortcutInfoBadge(ShortcutInfoCompat shortcutInfo, IconCache cache) {
         ComponentName cn = shortcutInfo.getActivity();
-        if (cn != null) {
+        String badgePkg = shortcutInfo.getBadgePackage(mContext);
+        boolean hasBadgePkgSet = !badgePkg.equals(shortcutInfo.getPackage());
+        if (cn != null && !hasBadgePkgSet) {
             // Get the app info for the source activity.
             AppInfo appInfo = new AppInfo();
             appInfo.user = shortcutInfo.getUserHandle();
@@ -370,7 +371,7 @@ public class LauncherIcons implements AutoCloseable {
             cache.getTitleAndIcon(appInfo, false);
             return appInfo;
         } else {
-            PackageItemInfo pkgInfo = new PackageItemInfo(shortcutInfo.getPackage());
+            PackageItemInfo pkgInfo = new PackageItemInfo(badgePkg);
             cache.getTitleAndIconForApp(pkgInfo, false);
             return pkgInfo;
         }

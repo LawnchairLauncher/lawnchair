@@ -101,6 +101,9 @@
     <!-- Package name of the default wallpaper picker. -->
     <string name="wallpaper_picker_package" translatable="false"></string>
 
+    <!-- Whitelisted package to retrieve packagename for badge. Can be empty. -->
+    <string name="shortcutinfocompat_badgepkg_whitelist" translatable="false"></string>
+
     <!-- View ID to use for QSB widget -->
     <item type="id" name="qsb_widget" />
 

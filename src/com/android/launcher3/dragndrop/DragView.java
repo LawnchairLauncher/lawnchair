@@ -369,9 +369,9 @@ public class DragView extends View {
                 return new FixedSizeEmptyDrawable(iconSize);
             }
             ShortcutInfoCompat si = (ShortcutInfoCompat) obj;
-            Bitmap badge = LauncherIcons.getShortcutInfoBadge(si, appState.getIconCache())
-                    .iconBitmap;
-
+            LauncherIcons li = LauncherIcons.obtain(appState.getContext());
+            Bitmap badge = li.getShortcutInfoBadge(si, appState.getIconCache()).iconBitmap;
+            li.recycle();
             float badgeSize = mLauncher.getResources().getDimension(R.dimen.profile_badge_size);
             float insetFraction = (iconSize - badgeSize) / iconSize;
             return new InsetDrawable(new FastBitmapDrawable(badge),

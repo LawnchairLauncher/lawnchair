@@ -18,10 +18,13 @@ package com.android.launcher3.shortcuts;
 
 import android.annotation.TargetApi;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.os.Build;
 import android.os.UserHandle;
+
+import com.android.launcher3.R;
 
 /**
  * Wrapper class for {@link android.content.pm.ShortcutInfo}, representing deep shortcuts into apps.
@@ -31,8 +34,8 @@ import android.os.UserHandle;
 @TargetApi(Build.VERSION_CODES.N)
 public class ShortcutInfoCompat {
     private static final String INTENT_CATEGORY = "com.android.launcher3.DEEP_SHORTCUT";
+    private static final String EXTRA_BADGEPKG = "badge_package";
     public static final String EXTRA_SHORTCUT_ID = "shortcut_id";
-
     private ShortcutInfo mShortcutInfo;
 
     public ShortcutInfoCompat(ShortcutInfo shortcutInfo) {
@@ -55,6 +58,15 @@ public class ShortcutInfoCompat {
 
     public String getPackage() {
         return mShortcutInfo.getPackage();
+    }
+
+    public String getBadgePackage(Context context) {
+        String whitelistedPkg = context.getString(R.string.shortcutinfocompat_badgepkg_whitelist);
+        if (whitelistedPkg.equals(getPackage())
+                && mShortcutInfo.getExtras().containsKey(EXTRA_BADGEPKG)) {
+            return mShortcutInfo.getExtras().getString(EXTRA_BADGEPKG);
+        }
+        return getPackage();
     }
 
     public String getId() {
