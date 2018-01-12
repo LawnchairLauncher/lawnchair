@@ -219,6 +219,9 @@ public class FloatingHeaderView extends RelativeLayout implements
         p.y = getTop() - mCurrentRV.getTop() - mParent.getTop();
     }
 
+    public void onAppsUpdated() {
+        mPredictionRow.onAppsUpdated();
+    }
 }
 
 

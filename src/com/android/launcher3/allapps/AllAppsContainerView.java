@@ -165,6 +165,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         }
         onAppsUpdated();
         mSearchUiManager.refreshSearchResult();
+        mHeader.onAppsUpdated();
     }
 
     /**

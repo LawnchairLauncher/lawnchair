@@ -105,7 +105,7 @@ public class PredictionRowView extends LinearLayout {
     public void setNumAppsPerRow(int numPredictedAppsPerRow) {
         if (mNumPredictedAppsPerRow != numPredictedAppsPerRow) {
             mNumPredictedAppsPerRow = numPredictedAppsPerRow;
-            onAppsUpdated();
+            onPredictionsUpdated();
         }
     }
 
@@ -120,7 +120,7 @@ public class PredictionRowView extends LinearLayout {
      * Sets the current set of predicted apps.
      *
      * This can be called before we get the full set of applications, we should merge the results
-     * only in onAppsUpdated() which is idempotent.
+     * only in onPredictionsUpdated() which is idempotent.
      *
      * If the number of predicted apps is the same as the previous list of predicted apps,
      * we can optimize by swapping them in place.
@@ -130,10 +130,10 @@ public class PredictionRowView extends LinearLayout {
         mPredictedAppComponents.addAll(apps);
         mPredictedApps.clear();
         mPredictedApps.addAll(processPredictedAppComponents(mPredictedAppComponents));
-        onAppsUpdated();
+        onPredictionsUpdated();
     }
 
-    private void onAppsUpdated() {
+    private void onPredictionsUpdated() {
         int childCountBefore = getChildCount();
         if (getChildCount() != mNumPredictedAppsPerRow) {
             while (getChildCount() > mNumPredictedAppsPerRow) {
@@ -167,6 +167,24 @@ public class PredictionRowView extends LinearLayout {
             // setting up header to adjust the height
             // only necessary if childcount switches from/to 0
             Launcher.getLauncher(getContext()).getAppsView().setupHeader();
+        }
+    }
+
+    /**
+     * Refreshes the app icons in the row view, while preserving the same set of predictions.
+     */
+    public void onAppsUpdated() {
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            if (!(child instanceof BubbleTextView)) {
+                continue;
+            }
+            if (i >= mPredictedApps.size()) {
+                break;
+            }
+            BubbleTextView icon = (BubbleTextView) getChildAt(i);
+            icon.reset();
+            icon.applyFromApplicationInfo(mPredictedApps.get(i));
         }
     }
 
