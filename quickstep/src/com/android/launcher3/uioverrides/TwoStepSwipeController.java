@@ -272,10 +272,8 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
                     onRecentsPlanLoaded(recentsModel.getLastLoadPlan());
                 } else {
                     mDragPauseDetector.addDisabledFlags(FLAG_RECENTS_PLAN_LOADING);
+                    recentsModel.loadTasks(-1, this::onRecentsPlanLoaded);
                 }
-                // Reload again so that we get the latest list
-                // TODO: Use callback instead of polling everytime
-                recentsModel.loadTasks(-1, this::onRecentsPlanLoaded);
             } else {
                 mDragPauseDetector.addDisabledFlags(FLAG_OVERVIEW_DISABLED);
             }
