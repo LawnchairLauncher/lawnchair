@@ -176,6 +176,7 @@ public class FloatingHeaderView extends RelativeLayout implements
         mAnimator.start();
         mHeaderCollapsed = false;
         mSnappedScrolledY = -mMaxTranslation;
+        mCurrentRV.scrollToTop();
     }
 
     public boolean isExpanded() {

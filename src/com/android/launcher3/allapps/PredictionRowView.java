@@ -134,6 +134,7 @@ public class PredictionRowView extends LinearLayout {
     }
 
     private void onAppsUpdated() {
+        int childCountBefore = getChildCount();
         if (getChildCount() != mNumPredictedAppsPerRow) {
             while (getChildCount() > mNumPredictedAppsPerRow) {
                 removeViewAt(0);
@@ -159,6 +160,13 @@ public class PredictionRowView extends LinearLayout {
             } else {
                 icon.setVisibility(View.INVISIBLE);
             }
+        }
+
+        if (getChildCount() > 0 && childCountBefore == 0
+                || getChildCount() == 0 && childCountBefore > 0) {
+            // setting up header to adjust the height
+            // only necessary if childcount switches from/to 0
+            Launcher.getLauncher(getContext()).getAppsView().setupHeader();
         }
     }
 
