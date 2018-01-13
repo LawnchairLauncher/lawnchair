@@ -18,6 +18,7 @@ package com.android.launcher3.folder;
 
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 
 import android.animation.Animator;
@@ -929,7 +930,12 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         int centeredTop = centerY - height / 2;
 
         // We need to bound the folder to the currently visible workspace area
-        mLauncher.getWorkspace().getPageAreaRelativeToDragLayer(sTempRect);
+        if (mLauncher.isInState(OVERVIEW)) {
+            mLauncher.getDragLayer().getDescendantRectRelativeToSelf(mLauncher.getOverviewPanel(),
+                    sTempRect);
+        } else {
+            mLauncher.getWorkspace().getPageAreaRelativeToDragLayer(sTempRect);
+        }
         int left = Math.min(Math.max(sTempRect.left, centeredLeft),
                 sTempRect.right- width);
         int top = Math.min(Math.max(sTempRect.top, centeredTop),
