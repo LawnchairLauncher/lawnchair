@@ -73,7 +73,6 @@
         android:lines="1"
         android:minHeight="24dp"
         android:paddingStart="12dp"
-        android:text="@string/managed_by_your_organisation"
         android:textColor="?android:attr/textColorHint"
         android:textSize="13sp"/>
 

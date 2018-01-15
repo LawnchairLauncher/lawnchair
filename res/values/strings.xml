@@ -324,13 +324,16 @@
     <!-- Label of tab to indicate work apps -->
     <string name="all_apps_work_tab">Work</string>
 
-    <!-- Label of the work mode toggle -->
+    <!-- This string is in the work profile tab when a user has All Apps open on their phone. This is a label for a toggle to turn the work profile on and off. "Work profile" means a separate profile on a user's phone that's specifically for their work apps and managed by their company. "Work" is used as an adjective.-->
     <string name="work_profile_toggle_label">Work profile</string>
-    <!-- Title in bottom user education view in work tab -->
+    <!-- Title of an overlay in All Apps. This overlay is letting a user know about their work profile, which is managed by their employer. "Work apps" are apps in a user's work profile.-->
     <string name="bottom_work_tab_user_education_title">Find work apps here</string>
-    <!-- Body text in bottom user education view in work tab -->
-    <string name="bottom_work_tab_user_education_body">Each work app has an orange badge, which means it\'s kept secure by your organization. Work apps can be moved to your Home Screen for easier access.</string>
-    <!-- Label in work tab to tell users that work profile is managed by their organisation. -->
-    <string name="managed_by_your_organisation">Managed by your organisation</string>
+    <!-- Text in an overlay in All Apps. This overlay is letting a user know about their work profile, which is managed by their employer.-->
+    <string name="bottom_work_tab_user_education_body">Each work app has an orange badge and is kept secure by your organization. Move apps to your Home screen for easier access.</string>
+    <!-- This string is in the work profile tab when a user has All Apps open on their phone. It describes the label of a toggle, "Work profile," as being managed by the user's employer.
+    "Organization" is used to represent a variety of businesses, non-profits, and educational institutions).-->
+    <string name="work_mode_on_label">Managed by your organization</string>
+    <!-- This string appears under a the label of a toggle in the work profile tab on a user's phone. It describes the status of the toggle, "Work profile," when it's turned off. "Work profile" means a separate profile on a user's phone that's speficially for their work apps and is managed by their company.-->
+    <string name="work_mode_off_label">Notifications and apps are off</string>
 
 </resources>

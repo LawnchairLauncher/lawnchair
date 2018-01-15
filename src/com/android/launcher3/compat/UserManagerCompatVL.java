@@ -88,6 +88,11 @@ public class UserManagerCompatVL extends UserManagerCompat {
     }
 
     @Override
+    public boolean isAnyProfileQuietModeEnabled() {
+        return false;
+    }
+
+    @Override
     public void enableAndResetCache() {
         synchronized (this) {
             mUsers = new LongArrayMap<>();

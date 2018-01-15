@@ -41,6 +41,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
 import com.android.launcher3.anim.SpringAnimationHandler;
+import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.discovery.AppDiscoveryAppInfo;
 import com.android.launcher3.discovery.AppDiscoveryItemView;
@@ -377,6 +378,11 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_WORK_TAB_FOOTER:
                 WorkModeSwitch workModeToggle = holder.itemView.findViewById(R.id.work_mode_toggle);
                 workModeToggle.refresh();
+                TextView managedByLabel = holder.itemView.findViewById(R.id.managed_by_label);
+                boolean anyProfileQuietModeEnabled = UserManagerCompat.getInstance(
+                        managedByLabel.getContext()).isAnyProfileQuietModeEnabled();
+                managedByLabel.setText(anyProfileQuietModeEnabled
+                        ? R.string.work_mode_off_label : R.string.work_mode_on_label);
                 break;
         }
         if (mBindViewCallback != null) {

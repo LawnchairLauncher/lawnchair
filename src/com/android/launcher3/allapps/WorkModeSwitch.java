@@ -55,22 +55,9 @@ public class WorkModeSwitch extends Switch {
     }
 
     public void refresh() {
-        setCheckedInternal(!isAnyProfileQuietModeEnabled());
-        setEnabled(true);
-    }
-
-    private boolean isAnyProfileQuietModeEnabled() {
         UserManagerCompat userManager = UserManagerCompat.getInstance(getContext());
-        List<UserHandle> userProfiles = userManager.getUserProfiles();
-        for (UserHandle userProfile : userProfiles) {
-            if (Process.myUserHandle().equals(userProfile)) {
-                continue;
-            }
-            if (userManager.isQuietModeEnabled(userProfile)) {
-                return true;
-            }
-        }
-        return false;
+        setCheckedInternal(!userManager.isAnyProfileQuietModeEnabled());
+        setEnabled(true);
     }
 
     private void trySetQuietModeEnabledToAllProfilesAsync(boolean enabled) {
