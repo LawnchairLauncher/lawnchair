@@ -24,6 +24,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
@@ -56,14 +57,10 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
 public class NavBarSwipeInteractionHandler extends InternalStateHandler {
 
     private static final int STATE_LAUNCHER_READY = 1 << 0;
-    private static final int STATE_RECENTS_DELAY_COMPLETE = 1 << 1;
-    private static final int STATE_LOAD_PLAN_READY = 1 << 2;
-    private static final int STATE_RECENTS_FULLY_VISIBLE = 1 << 3;
     private static final int STATE_ACTIVITY_MULTIPLIER_COMPLETE = 1 << 4;
     private static final int STATE_SCALED_SNAPSHOT_RECENTS = 1 << 5;
     private static final int STATE_SCALED_SNAPSHOT_APP = 1 << 6;
 
-    private static final long RECENTS_VIEW_VISIBILITY_DELAY = 120;
     private static final long RECENTS_VIEW_VISIBILITY_DURATION = 150;
     private static final long MAX_SWIPE_DURATION = 200;
     private static final long MIN_SWIPE_DURATION = 80;
@@ -90,7 +87,7 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
     // animated to 1, so allow for a smooth transition.
     private final AnimatedFloat mActivityMultiplier = new AnimatedFloat(this::updateFinalShift);
 
-    private final int mRunningTaskId;
+    private final Task mRunningTask;
     private final Context mContext;
 
     private final MultiStateCallback mStateCallback;
@@ -102,7 +99,6 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
     private QuickScrubController mQuickScrubController;
     private Hotseat mHotseat;
     private AllAppsScrim mAllAppsScrim;
-    private RecentsTaskLoadPlan mLoadPlan;
 
     private boolean mLauncherReady;
     private boolean mTouchEndHandled;
@@ -114,7 +110,11 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
 
     NavBarSwipeInteractionHandler(RunningTaskInfo runningTaskInfo, Context context,
             @TouchInteractionService.InteractionType int interactionType) {
-        mRunningTaskId = runningTaskInfo.id;
+        // TODO: We need a better way for this
+        TaskKey taskKey = new TaskKey(runningTaskInfo.id, 0, null, UserHandle.myUserId(), 0);
+        mRunningTask = new Task(taskKey, null, null, "", "", Color.BLACK, Color.BLACK,
+                true, false, false, false, null, 0, null, false);
+
         mContext = context;
         mInteractionType = interactionType;
         WindowManagerWrapper.getInstance().getStableInsets(mStableInsets);
@@ -131,11 +131,9 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
         // Build the state callback
         mStateCallback = new MultiStateCallback();
         mStateCallback.addCallback(STATE_LAUNCHER_READY, this::onLauncherReady);
-        mStateCallback.addCallback(STATE_LOAD_PLAN_READY | STATE_RECENTS_DELAY_COMPLETE,
-                this::setTaskPlanToUi);
         mStateCallback.addCallback(STATE_SCALED_SNAPSHOT_APP, this::resumeLastTask);
-        mStateCallback.addCallback(STATE_RECENTS_FULLY_VISIBLE | STATE_SCALED_SNAPSHOT_RECENTS
-                | STATE_ACTIVITY_MULTIPLIER_COMPLETE,
+        mStateCallback.addCallback(
+                STATE_SCALED_SNAPSHOT_RECENTS | STATE_ACTIVITY_MULTIPLIER_COMPLETE,
                 this::onAnimationToLauncherComplete);
         mStateCallback.addCallback(STATE_LAUNCHER_READY | STATE_SCALED_SNAPSHOT_APP,
                 this::cleanupLauncher);
@@ -144,10 +142,6 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
     private void onLauncherReady() {
         mLauncherReady = true;
         executeFrameUpdate();
-
-        // Wait for some time before loading recents so that the first frame is fast
-        new Handler().postDelayed(() -> mStateCallback.setState(STATE_RECENTS_DELAY_COMPLETE),
-                RECENTS_VIEW_VISIBILITY_DELAY);
 
         long duration = Math.min(MAX_SWIPE_DURATION,
                 Math.max((long) (-mCurrentDisplacement / PIXEL_PER_MS), MIN_SWIPE_DURATION));
@@ -189,18 +183,20 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
 
     @Override
     protected void init(Launcher launcher, boolean alreadyOnHome) {
-        AbstractFloatingView.closeAllOpenViews(launcher, alreadyOnHome);
-        launcher.getStateManager().goToState(LauncherState.OVERVIEW, alreadyOnHome);
-
         mLauncher = launcher;
+        mRecentsView = launcher.getOverviewPanel();
+        mRecentsView.showTask(mRunningTask);
+        mStateController = mRecentsView.getStateController();
+        mHotseat = mLauncher.getHotseat();
+        mAllAppsScrim = mLauncher.findViewById(R.id.all_apps_scrim);
+
+        AbstractFloatingView.closeAllOpenViews(mLauncher, alreadyOnHome);
+        mLauncher.getStateManager().goToState(LauncherState.OVERVIEW, alreadyOnHome);
+
         mDragView = new SnapshotDragView(mLauncher, mTaskSnapshot);
         mLauncher.getDragLayer().addView(mDragView);
         mDragView.setPivotX(0);
         mDragView.setPivotY(0);
-        mRecentsView = launcher.getOverviewPanel();
-        mStateController = mRecentsView.getStateController();
-        mHotseat = mLauncher.getHotseat();
-        mAllAppsScrim = mLauncher.findViewById(R.id.all_apps_scrim);
 
         boolean interactionIsQuick
                 = mInteractionType == TouchInteractionService.INTERACTION_QUICK_SCRUB
@@ -220,8 +216,6 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
             // All-apps search box is visible in vertical bar layout.
             mLauncher.getAppsView().setVisibility(View.GONE);
         }
-        mStateController.setTransitionProgress(1);
-        mStateController.setVisibility(false);
         TraceHelper.partitionSection("TouchInt", "Launcher on new intent");
     }
 
@@ -273,26 +267,6 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
     }
 
     @UiThread
-    public void setRecentsTaskLoadPlan(RecentsTaskLoadPlan loadPlan) {
-        mLoadPlan = loadPlan;
-        mStateCallback.setState(STATE_LOAD_PLAN_READY);
-    }
-
-    private void setTaskPlanToUi() {
-        mRecentsView.update(mLoadPlan);
-        mRecentsView.initToPage(mStartedQuickScrubFromHome ? 0 : mRecentsView.getFirstTaskIndex());
-        ObjectAnimator anim = mStateController.animateVisibility(true /* isVisible */)
-                .setDuration(RECENTS_VIEW_VISIBILITY_DURATION);
-        anim.addListener(new AnimationSuccessListener() {
-            @Override
-            public void onAnimationSuccess(Animator animator) {
-                mStateCallback.setState(STATE_RECENTS_FULLY_VISIBLE);
-            }
-        });
-        anim.start();
-    }
-
-    @UiThread
     public void endTouch(float endVelocity) {
         if (mTouchEndHandled) {
             return;
@@ -339,17 +313,14 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
 
     @UiThread
     private void resumeLastTask() {
-        TaskKey key = null;
-        if (mLoadPlan != null) {
-            Task task = mLoadPlan.getTaskStack().findTaskWithId(mRunningTaskId);
+        // TODO: We need a better way for this
+        TaskKey key = mRunningTask.key;
+        RecentsTaskLoadPlan loadPlan = RecentsModel.getInstance(mContext).getLastLoadPlan();
+        if (loadPlan != null) {
+            Task task = loadPlan.getTaskStack().findTaskWithId(key.id);
             if (task != null) {
                 key = task.key;
             }
-        }
-
-        if (key == null) {
-            // TODO: We need a better way for this
-            key = new TaskKey(mRunningTaskId, 0, null, UserHandle.myUserId(), 0);
         }
 
         ActivityOptions opts = ActivityOptions.makeCustomAnimation(mContext, 0, 0);
@@ -372,7 +343,8 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
         if (mInteractionType == TouchInteractionService.INTERACTION_QUICK_SWITCH) {
             for (int i = mRecentsView.getFirstTaskIndex(); i < mRecentsView.getPageCount(); i++) {
                 TaskView taskView = (TaskView) mRecentsView.getPageAt(i);
-                if (taskView.getTask().key.id != mRunningTaskId) {
+                // TODO: Match the keys directly
+                if (taskView.getTask().key.id != mRunningTask.key.id) {
                     mRecentsView.snapToPage(i, QUICK_SWITCH_SNAP_DURATION);
                     taskView.postDelayed(() -> {taskView.launchTask(true);},
                             QUICK_SWITCH_SNAP_DURATION);

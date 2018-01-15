@@ -30,6 +30,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.widget.WidgetsFullSheet;
+import com.android.quickstep.RecentsView;
 import com.android.systemui.shared.recents.view.RecentsTransition;
 
 public class UiFactory {
@@ -95,5 +96,10 @@ public class UiFactory {
             renderer.render(new Canvas(result));
             return result;
         }
+    }
+
+    public static void resetOverview(Launcher launcher) {
+        RecentsView recents = launcher.getOverviewPanel();
+        recents.reset();
     }
 }

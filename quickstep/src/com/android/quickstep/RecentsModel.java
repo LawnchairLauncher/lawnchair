@@ -15,8 +15,10 @@
  */
 package com.android.quickstep;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Looper;
 import android.os.UserHandle;
 
@@ -25,7 +27,9 @@ import com.android.launcher3.R;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan.PreloadOptions;
 import com.android.systemui.shared.recents.model.RecentsTaskLoader;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.BackgroundExecutor;
+import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -33,7 +37,8 @@ import java.util.function.Consumer;
 /**
  * Singleton class to load and manage recents model.
  */
-public class RecentsModel {
+@TargetApi(Build.VERSION_CODES.O)
+public class RecentsModel extends TaskStackChangeListener {
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     private static RecentsModel INSTANCE;
@@ -59,6 +64,9 @@ public class RecentsModel {
     private final MainThreadExecutor mMainThreadExecutor;
 
     private RecentsTaskLoadPlan mLastLoadPlan;
+    private int mLastLoadPlanId;
+    private int mTaskChangeId;
+
     private RecentsModel(Context context) {
         mContext = context;
 
@@ -69,6 +77,10 @@ public class RecentsModel {
         mRecentsTaskLoader.startLoader(mContext);
 
         mMainThreadExecutor = new MainThreadExecutor();
+        ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
+
+        mTaskChangeId = 1;
+        loadTasks(-1, null);
     }
 
     public RecentsTaskLoader getRecentsTaskLoader() {
@@ -80,8 +92,20 @@ public class RecentsModel {
      * @param taskId The running task id or -1
      * @param callback The callback to receive the task plan once its complete or null. This is
      *                always called on the UI thread.
+     * @return the request id associated with this call.
      */
-    public void loadTasks(int taskId, Consumer<RecentsTaskLoadPlan> callback) {
+    public int loadTasks(int taskId, Consumer<RecentsTaskLoadPlan> callback) {
+        final int requestId = mTaskChangeId;
+
+        // Fail fast if nothing has changed.
+        if (mLastLoadPlanId == mTaskChangeId) {
+            if (callback != null) {
+                final RecentsTaskLoadPlan plan = mLastLoadPlan;
+                mMainThreadExecutor.execute(() -> callback.accept(plan));
+            }
+            return requestId;
+        }
+
         BackgroundExecutor.get().submit(() -> {
             // Preload the plan
             RecentsTaskLoadPlan loadPlan = new RecentsTaskLoadPlan(mContext);
@@ -91,11 +115,23 @@ public class RecentsModel {
             // Set the load plan on UI thread
             mMainThreadExecutor.execute(() -> {
                 mLastLoadPlan = loadPlan;
+                mLastLoadPlanId = requestId;
+
                 if (callback != null) {
                     callback.accept(loadPlan);
                 }
             });
         });
+        return requestId;
+    }
+
+    @Override
+    public void onTaskStackChanged() {
+        mTaskChangeId++;
+    }
+
+    public boolean isLoadPlanValid(int resultId) {
+        return mTaskChangeId == resultId;
     }
 
     public RecentsTaskLoadPlan getLastLoadPlan() {
