@@ -28,9 +28,12 @@ import android.widget.LinearLayout;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.Themes;
@@ -40,7 +43,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public class PredictionRowView extends LinearLayout {
+public class PredictionRowView extends LinearLayout implements
+        UserEventDispatcher.LogContainerProvider {
 
     private static final String TAG = "PredictionRowView";
 
@@ -49,7 +53,7 @@ public class PredictionRowView extends LinearLayout {
     // The set of predicted app component names
     private final List<ComponentKeyMapper<AppInfo>> mPredictedAppComponents = new ArrayList<>();
     // The set of predicted apps resolved from the component names and the current set of apps
-    private final List<AppInfo> mPredictedApps = new ArrayList<>();
+    private final ArrayList<AppInfo> mPredictedApps = new ArrayList<>();
     private final Paint mPaint;
     // This adapter is only used to create an identical item w/ same behavior as in the all apps RV
     private AllAppsGridAdapter mAdapter;
@@ -205,6 +209,19 @@ public class PredictionRowView extends LinearLayout {
             int x1 = getPaddingLeft() + side;
             int x2 = getWidth() - getPaddingRight() - side;
             canvas.drawLine(x1, y, x2, y, mPaint);
+        }
+    }
+
+    @Override
+    public void fillInLogContainerData(View v, ItemInfo info, LauncherLogProto.Target target,
+            LauncherLogProto.Target targetParent) {
+        for (int i = 0; i < mPredictedApps.size(); i++) {
+            AppInfo appInfo = mPredictedApps.get(i);
+            if (appInfo == info) {
+                targetParent.containerType = LauncherLogProto.ContainerType.PREDICTION;
+                target.predictedRank = i;
+                break;
+            }
         }
     }
 }
