@@ -68,7 +68,6 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
-import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.TriangleShape;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.notification.NotificationInfo;
@@ -650,7 +649,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 // reopen the container to ensure measurements etc. all work out. While this could
                 // be quite janky, in practice the user would typically see a small flicker as the
                 // animation restarts partway through, and this is a very rare edge case anyway.
-                ((PopupContainerWithArrow) getParent()).close(false);
+                close(false);
                 PopupContainerWithArrow.showForIcon(mOriginalIcon);
             }
         } else if (onClickListener == null && widgetsView != null) {
@@ -658,7 +657,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             if (mSystemShortcutContainer != this) {
                 mSystemShortcutContainer.removeView(widgetsView);
             } else {
-                ((PopupContainerWithArrow) getParent()).close(false);
+                close(false);
                 PopupContainerWithArrow.showForIcon(mOriginalIcon);
             }
         }
