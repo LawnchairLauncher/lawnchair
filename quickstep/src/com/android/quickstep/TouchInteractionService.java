@@ -161,7 +161,8 @@ public class TouchInteractionService extends Service {
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         ResolveInfo info = getPackageManager().resolveActivity(mHomeIntent, 0);
         mLauncher = new ComponentName(getPackageName(), info.activityInfo.name);
-        mHomeIntent.setComponent(mLauncher);
+        // Clear the packageName as system can fail to dedupe it b/64108432
+        mHomeIntent.setComponent(mLauncher).setPackage(null);
 
         mEventQueue = new MotionEventQueue(Choreographer.getInstance(), this::handleMotionEvent);
         sConnected = true;
