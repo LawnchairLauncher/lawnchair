@@ -91,7 +91,7 @@ public abstract class BaseRecyclerView extends RecyclerView
         // Move to mScrollbar's coordinate system.
         // We need to take parent into account (view pager's location)
         ViewGroup parent = (ViewGroup) getParent();
-        int left = parent.getLeft() + getLeft() - mScrollbar.getLeft();
+        int left = parent.getLeft() - mScrollbar.getLeft();
         int top = parent.getTop() + getTop() - mScrollbar.getTop() - getScrollBarTop();
         ev.offsetLocation(left, top);
         try {
