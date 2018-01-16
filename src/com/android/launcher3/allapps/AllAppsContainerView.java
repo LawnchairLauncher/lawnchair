@@ -364,18 +364,30 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     public void updateIconBadges(Set<PackageUserKey> updatedBadges) {
         final PackageUserKey packageUserKey = new PackageUserKey(null, null);
         for (int j = 0; j < mAH.length; j++) {
-            if (mAH[j].recyclerView != null) {
-                final int n = mAH[j].recyclerView.getChildCount();
-                for (int i = 0; i < n; i++) {
-                    View child = mAH[j].recyclerView.getChildAt(i);
-                    if (!(child instanceof BubbleTextView) || !(child.getTag() instanceof ItemInfo)) {
-                        continue;
-                    }
-                    ItemInfo info = (ItemInfo) child.getTag();
-                    if (packageUserKey.updateFromItemInfo(info) && updatedBadges.contains(packageUserKey)) {
-                        ((BubbleTextView) child).applyBadgeState(info, true /* animate */);
-                    }
-                }
+            updateIconBadges(updatedBadges, packageUserKey, mAH[j].recyclerView);
+        }
+        if (mHeader != null) {
+            updateIconBadges(updatedBadges, packageUserKey, mHeader.getPredictionRow());
+        }
+    }
+
+    private void updateIconBadges(Set<PackageUserKey> updatedBadges, PackageUserKey packageUserKey,
+            ViewGroup parent) {
+        if (parent == null) {
+            return;
+        }
+        final int n = parent.getChildCount();
+        for (int i = 0; i < n; i++) {
+            View child = parent.getChildAt(i);
+            if (child instanceof PredictionRowView) {
+                updateIconBadges(updatedBadges, packageUserKey, (PredictionRowView) child);
+            }
+            if (!(child instanceof BubbleTextView) || !(child.getTag() instanceof ItemInfo)) {
+                continue;
+            }
+            ItemInfo info = (ItemInfo) child.getTag();
+            if (packageUserKey.updateFromItemInfo(info) && updatedBadges.contains(packageUserKey)) {
+                ((BubbleTextView) child).applyBadgeState(info, true /* animate */);
             }
         }
     }
