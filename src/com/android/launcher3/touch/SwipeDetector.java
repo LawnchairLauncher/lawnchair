@@ -286,6 +286,16 @@ public class SwipeDetector {
         }
     }
 
+    /**
+     * Returns if the start drag was towards the positive direction or negative.
+     *
+     * @see #setDetectableScrollConditions(int, boolean)
+     * @see #DIRECTION_BOTH
+     */
+    public boolean wasInitialTouchPositive() {
+        return mSubtractDisplacement < 0;
+    }
+
     private boolean reportDragging() {
         if (mDisplacement != mLastDisplacement) {
             if (DBG) {

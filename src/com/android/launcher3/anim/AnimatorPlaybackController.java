@@ -33,6 +33,12 @@ import java.util.List;
  */
 public abstract class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateListener {
 
+    /**
+     * Creates an animation controller for the provided animation.
+     * The actual duration does not matter as the animation is manually controlled. It just
+     * needs to be larger than the total number of pixels so that we don't have jittering due
+     * to float (animation-fraction * total duration) to int conversion.
+     */
     public static AnimatorPlaybackController wrap(AnimatorSet anim, long duration) {
 
         /**
