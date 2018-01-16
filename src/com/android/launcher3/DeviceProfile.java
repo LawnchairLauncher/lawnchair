@@ -462,9 +462,9 @@ public class DeviceProfile {
                     mInsets.top + availableHeightPx);
         } else {
             // Folders should only appear below the drop target bar and above the hotseat
-            return new Rect(mInsets.left,
+            return new Rect(mInsets.left + edgeMarginPx,
                     mInsets.top + dropTargetBarSizePx + edgeMarginPx,
-                    mInsets.left + availableWidthPx,
+                    mInsets.left + availableWidthPx - edgeMarginPx,
                     mInsets.top + availableHeightPx - hotseatBarSizePx
                             - pageIndicatorSizePx - edgeMarginPx);
         }
