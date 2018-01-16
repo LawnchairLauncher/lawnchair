@@ -2552,10 +2552,6 @@ public class Launcher extends BaseActivity
         return bounceAnim;
     }
 
-    public boolean useVerticalBarLayout() {
-        return mDeviceProfile.isVerticalBarLayout();
-    }
-
     /**
      * Add the icons for all apps.
      *

@@ -275,8 +275,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        // Update the number of items in the grid before we measure the view
-        grid.updateAppsViewNumCols();
 
         if (mNumAppsPerRow != grid.inv.numColumns ||
                 mNumPredictedAppsPerRow != grid.inv.numColumns) {

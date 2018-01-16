@@ -207,7 +207,7 @@ public class Workspace extends PagedView
     private boolean mStripScreensOnPageStopMoving = false;
 
     private DragPreviewProvider mOutlineProvider = null;
-    private final boolean mWorkspaceFadeInAdjacentScreens;
+    private boolean mWorkspaceFadeInAdjacentScreens;
 
     final WallpaperOffsetInterpolator mWallpaperOffset;
     private boolean mUnlockWallpaperFromDefaultPageOnLayout;
@@ -292,8 +292,6 @@ public class Workspace extends PagedView
 
         mLauncher = Launcher.getLauncher(context);
         mStateTransitionAnimation = new WorkspaceStateTransitionAnimation(mLauncher, this);
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
         mWallpaperManager = WallpaperManager.getInstance(context);
 
         mWallpaperOffset = new WallpaperOffsetInterpolator(this);
@@ -312,6 +310,9 @@ public class Workspace extends PagedView
         mInsets.set(insets);
 
         DeviceProfile grid = mLauncher.getDeviceProfile();
+        mMaxDistanceForFolderCreation = (0.55f * grid.iconSizePx);
+        mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
+
         Rect padding = grid.workspacePadding;
         setPadding(padding.left, padding.top, padding.right, padding.bottom);
 
@@ -323,6 +324,13 @@ public class Workspace extends PagedView
             // overhang of the previous / next page into the current page viewport.
             // We assume symmetrical padding in portrait mode.
             setPageSpacing(Math.max(grid.defaultPageSpacingPx, padding.left + 1));
+        }
+
+        int paddingLeftRight = grid.cellLayoutPaddingLeftRightPx;
+        int paddingBottom = grid.cellLayoutBottomPaddingPx;
+        for (int i = mWorkspaceScreens.size() - 1; i >= 0; i--) {
+            mWorkspaceScreens.valueAt(i)
+                    .setPadding(paddingLeftRight, 0, paddingLeftRight, paddingBottom);
         }
     }
 
@@ -445,12 +453,9 @@ public class Workspace extends PagedView
      */
     protected void initWorkspace() {
         mCurrentPage = DEFAULT_PAGE;
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        setWillNotDraw(false);
         setClipToPadding(false);
 
         setupLayoutTransition();
-        mMaxDistanceForFolderCreation = (0.55f * grid.iconSizePx);
 
         // Set the wallpaper dimensions when Launcher starts up
         setWallpaperDimension();
