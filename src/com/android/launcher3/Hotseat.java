@@ -46,7 +46,7 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
     private CellLayout mContent;
 
     @ViewDebug.ExportedProperty(category = "launcher")
-    private final boolean mHasVerticalHotseat;
+    private boolean mHasVerticalHotseat;
 
     public Hotseat(Context context) {
         this(context, null);
@@ -59,7 +59,6 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
     public Hotseat(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mLauncher = Launcher.getLauncher(context);
-        mHasVerticalHotseat = mLauncher.getDeviceProfile().isVerticalBarLayout();
     }
 
     public CellLayout getLayout() {
@@ -91,13 +90,7 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        mContent = (CellLayout) findViewById(R.id.layout);
-        if (grid.isVerticalBarLayout()) {
-            mContent.setGridSize(1, grid.inv.numHotseatIcons);
-        } else {
-            mContent.setGridSize(grid.inv.numHotseatIcons, 1);
-        }
+        mContent = findViewById(R.id.layout);
 
         resetLayout();
     }
@@ -165,7 +158,11 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
     public void setInsets(Rect insets) {
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
         DeviceProfile grid = mLauncher.getDeviceProfile();
+        mHasVerticalHotseat = mLauncher.getDeviceProfile().isVerticalBarLayout();
+
         if (mHasVerticalHotseat) {
+            mContent.setGridSize(1, grid.inv.numHotseatIcons);
+
             lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
             if (insets.left > insets.right) {
                 lp.gravity = Gravity.LEFT;
@@ -180,6 +177,8 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
                         grid.hotseatBarSidePaddingPx, insets.top, insets.right, insets.bottom);
             }
         } else {
+            mContent.setGridSize(grid.inv.numHotseatIcons, 1);
+
             lp.gravity = Gravity.BOTTOM;
             lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
             lp.height = grid.hotseatBarSizePx + insets.bottom;

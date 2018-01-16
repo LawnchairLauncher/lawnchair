@@ -102,8 +102,6 @@ public class DeviceProfile {
 
     // All apps
     public int allAppsCellHeightPx;
-    public int allAppsNumCols;
-    public int allAppsNumPredictiveCols;
     public int allAppsIconSizePx;
     public int allAppsIconDrawablePaddingPx;
     public float allAppsIconTextSizePx;
@@ -383,10 +381,6 @@ public class DeviceProfile {
 
     public Rect getInsets() {
         return mInsets;
-    }
-
-    public void updateAppsViewNumCols() {
-        allAppsNumCols = allAppsNumPredictiveCols = inv.numColumns;
     }
 
     public Point getCellSize() {
