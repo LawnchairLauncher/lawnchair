@@ -56,4 +56,6 @@ public class UiFactory {
         renderer.render(new Canvas(result));
         return result;
     }
+
+    public static void resetOverview(Launcher launcher) { }
 }

@@ -16,8 +16,6 @@
 
 package com.android.quickstep;
 
-import static com.android.launcher3.LauncherState.OVERVIEW;
-
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.graphics.Rect;
@@ -27,10 +25,8 @@ import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
-import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
@@ -43,6 +39,8 @@ import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.ArrayList;
+
+import static com.android.launcher3.LauncherState.NORMAL;
 
 /**
  * A list of recent tasks.
@@ -60,6 +58,9 @@ public class RecentsView extends PagedView {
     private boolean mTaskStackListenerRegistered;
     private LayoutTransition mLayoutTransition;
 
+    /**
+     * TODO: Call reloadIdNeeded in onTaskStackChanged.
+     */
     private TaskStackChangeListener mTaskStackListener = new TaskStackChangeListener() {
         @Override
         public void onTaskSnapshotChanged(int taskId, ThumbnailData snapshot) {
@@ -75,6 +76,11 @@ public class RecentsView extends PagedView {
 
     private RecentsViewStateController mStateController;
     private int mFirstTaskIndex;
+
+    private final RecentsModel mModel;
+    private int mLoadPlanId = -1;
+
+    private Task mFirstTask;
 
     public RecentsView(Context context) {
         this(context, null);
@@ -93,6 +99,7 @@ public class RecentsView extends PagedView {
 
         mLauncher = Launcher.getLauncher(context);
         mQuickScrubController = new QuickScrubController(mLauncher);
+        mModel = RecentsModel.getInstance(context);
 
         mScrollState.isRtl = mIsRtl;
     }
@@ -115,7 +122,6 @@ public class RecentsView extends PagedView {
         Rect padding =
                 getPadding(Launcher.getLauncher(getContext()).getDeviceProfile(), getContext());
         setPadding(padding.left, padding.top, padding.right, padding.bottom);
-
         mFirstTaskIndex = getPageCount();
     }
 
@@ -154,9 +160,8 @@ public class RecentsView extends PagedView {
         updateTaskStackListenerState();
     }
 
-    public void update(RecentsTaskLoadPlan loadPlan) {
-        final RecentsTaskLoader loader = RecentsModel.getInstance(getContext())
-                .getRecentsTaskLoader();
+    private void applyLoadPlan(RecentsTaskLoadPlan loadPlan) {
+        final RecentsTaskLoader loader = mModel.getRecentsTaskLoader();
         TaskStack stack = loadPlan != null ? loadPlan.getTaskStack() : null;
         if (stack == null) {
             removeAllViews();
@@ -166,10 +171,17 @@ public class RecentsView extends PagedView {
         // Ensure there are as many views as there are tasks in the stack (adding and trimming as
         // necessary)
         final LayoutInflater inflater = LayoutInflater.from(getContext());
-        final ArrayList<Task> tasks = stack.getTasks();
+        final ArrayList<Task> tasks = new ArrayList<>(stack.getTasks());
         setLayoutTransition(null);
-        int requiredChildCount = tasks.size() + mFirstTaskIndex;
 
+        if (mFirstTask != null) {
+            // TODO: Handle this case here once we have a valid implementation for mFirstTask
+            if (tasks.isEmpty() || !keysEquals(tasks.get(tasks.size() - 1), mFirstTask)) {
+                // tasks.add(mFirstTask);
+            }
+        }
+
+        final int requiredChildCount = tasks.size() + mFirstTaskIndex;
         for (int i = getChildCount(); i < requiredChildCount; i++) {
             final TaskView taskView = (TaskView) inflater.inflate(R.layout.task, this, false);
             addView(taskView);
@@ -190,31 +202,17 @@ public class RecentsView extends PagedView {
         }
     }
 
-    public void initToPage(int pageNo) {
-        setCurrentPage(pageNo);
-        if (getPageAt(mCurrentPage) instanceof TaskView) {
-            ((TaskView) getPageAt(mCurrentPage)).setIconScale(0);
-        }
-    }
-
-    public void launchTaskWithId(int taskId) {
-        for (int i = mFirstTaskIndex; i < getChildCount(); i++) {
-            final TaskView taskView = (TaskView) getChildAt(i);
-            if (taskView.getTask().key.id == taskId) {
-                taskView.launchTask(false /* animate */);
-                return;
-            }
-        }
-    }
-
     private void updateTaskStackListenerState() {
         boolean registerStackListener = mOverviewStateEnabled && isAttachedToWindow()
                 && getWindowVisibility() == VISIBLE;
         if (registerStackListener != mTaskStackListenerRegistered) {
             if (registerStackListener) {
-                ActivityManagerWrapper.getInstance().registerTaskStackListener(mTaskStackListener);
+                ActivityManagerWrapper.getInstance()
+                        .registerTaskStackListener(mTaskStackListener);
+                reloadIfNeeded();
             } else {
-                ActivityManagerWrapper.getInstance().unregisterTaskStackListener(mTaskStackListener);
+                ActivityManagerWrapper.getInstance()
+                        .unregisterTaskStackListener(mTaskStackListener);
             }
             mTaskStackListenerRegistered = registerStackListener;
         }
@@ -302,9 +300,72 @@ public class RecentsView extends PagedView {
     public void onTaskDismissed(TaskView taskView) {
         ActivityManagerWrapper.getInstance().removeTask(taskView.getTask().key.id);
         removeView(taskView);
-        if (getChildCount() == mFirstTaskIndex) {
-            mLauncher.getStateManager().goToState(LauncherState.NORMAL);
+        if (getTaskCount() == 0) {
+            mLauncher.getStateManager().goToState(NORMAL);
         }
+    }
+
+    public void reset() {
+        mFirstTask = null;
+        setCurrentPage(0);
+    }
+
+    public int getTaskCount() {
+        return getChildCount() - mFirstTaskIndex;
+    }
+
+    /**
+     * Reloads the view if anything in recents changed.
+     */
+    public void reloadIfNeeded() {
+        if (!mModel.isLoadPlanValid(mLoadPlanId)) {
+            int taskId = -1;
+            if (mFirstTask != null) {
+                taskId = mFirstTask.key.id;
+            }
+            mLoadPlanId = mModel.loadTasks(taskId, this::applyLoadPlan);
+        }
+    }
+
+    /**
+     * Ensures that the first task in the view represents {@param task} and reloads the view
+     * if needed. This allows the swipe-up gesture to assume that the first tile always
+     * corresponds to the correct task.
+     * All subsequent calls to reload will keep the task as the first item until {@link #reset()}
+     * is called.
+     * Also scrolls the view to this task
+     */
+    public void showTask(Task task) {
+        boolean needsReload = false;
+        boolean inflateFirstChild = true;
+        if (getTaskCount() > 0) {
+            TaskView tv = (TaskView) getChildAt(mFirstTaskIndex);
+            inflateFirstChild = !keysEquals(tv.getTask(), task);
+        }
+        if (inflateFirstChild) {
+            needsReload = true;
+            setLayoutTransition(null);
+            // Add an empty view for now
+            final TaskView taskView = (TaskView) LayoutInflater.from(getContext())
+                    .inflate(R.layout.task, this, false);
+            addView(taskView, mFirstTaskIndex);
+            taskView.bind(task);
+            setLayoutTransition(mLayoutTransition);
+        }
+        if (!needsReload) {
+            needsReload = !mModel.isLoadPlanValid(mLoadPlanId);
+        }
+        if (needsReload) {
+            mLoadPlanId = mModel.loadTasks(task.key.id, this::applyLoadPlan);
+        }
+        mFirstTask = task;
+        setCurrentPage(mFirstTaskIndex);
+        ((TaskView) getPageAt(mCurrentPage)).setIconScale(0);
+    }
+
+    private static boolean keysEquals(Task t1, Task t2) {
+        // TODO: Match the keys directly
+        return t1.key.id == t2.key.id;
     }
 
     public QuickScrubController getQuickScrubController() {

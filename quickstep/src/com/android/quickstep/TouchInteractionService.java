@@ -164,7 +164,6 @@ public class TouchInteractionService extends Service {
         mHomeIntent.setComponent(mLauncher);
 
         mEventQueue = new MotionEventQueue(Choreographer.getInstance(), this::handleMotionEvent);
-        mRecentsModel.loadTasks(-1, null);
         sConnected = true;
     }
 
@@ -307,7 +306,7 @@ public class TouchInteractionService extends Service {
         });
 
         // Preload the plan
-        mRecentsModel.loadTasks(mRunningTask.id, handler::setRecentsTaskLoadPlan);
+        mRecentsModel.loadTasks(mRunningTask.id, null);
         mInteractionHandler = handler;
     }
 

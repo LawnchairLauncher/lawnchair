@@ -90,7 +90,6 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
     private static final int FLAG_OVERVIEW_DISABLED_OUT_OF_RANGE = 1 << 0;
     private static final int FLAG_OVERVIEW_DISABLED_FLING = 1 << 1;
     private static final int FLAG_OVERVIEW_DISABLED_CANCEL_STATE = 1 << 2;
-    private static final int FLAG_RECENTS_PLAN_LOADING = 1 << 3;
     private static final int FLAG_OVERVIEW_DISABLED = 1 << 4;
     private static final int FLAG_DISABLED_TWO_TARGETS = 1 << 5;
     private static final int FLAG_DISABLED_BACK_TARGET = 1 << 6;
@@ -272,16 +271,7 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
             mCurrentAnimation = mLauncher.getStateManager().createAnimationToNewWorkspace(
                     mToState, mTaggedAnimatorSetBuilder, maxAccuracy);
 
-            if (TouchInteractionService.isConnected()) {
-                // Load recents plan
-                RecentsModel recentsModel = RecentsModel.getInstance(mLauncher);
-                if (recentsModel.getLastLoadPlan() != null) {
-                    onRecentsPlanLoaded(recentsModel.getLastLoadPlan());
-                } else {
-                    mDragPauseDetector.addDisabledFlags(FLAG_RECENTS_PLAN_LOADING);
-                    recentsModel.loadTasks(-1, this::onRecentsPlanLoaded);
-                }
-            } else {
+            if (!TouchInteractionService.isConnected()) {
                 mDragPauseDetector.addDisabledFlags(FLAG_OVERVIEW_DISABLED);
             }
 
@@ -300,14 +290,6 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
         for (SpringAnimationHandler h : mSpringHandlers) {
             h.skipToEnd();
         }
-    }
-
-    private void onRecentsPlanLoaded(RecentsTaskLoadPlan plan) {
-        RecentsView recentsView = mLauncher.getOverviewPanel();
-        recentsView.update(plan);
-        recentsView.initToPage(0);
-
-        mDragPauseDetector.clearDisabledFlags(FLAG_RECENTS_PLAN_LOADING);
     }
 
     private float getShiftRange() {

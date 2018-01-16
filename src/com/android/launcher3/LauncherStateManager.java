@@ -270,6 +270,7 @@ public class LauncherStateManager {
             mCurrentStableState = state;
         }
 
+        state.onStateTransitionEnd(mLauncher);
         mLauncher.getWorkspace().setClipChildren(!state.disablePageClipping);
         mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
         mLauncher.finishAutoCancelActionMode();

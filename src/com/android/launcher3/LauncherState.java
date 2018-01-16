@@ -27,6 +27,7 @@ import android.view.animation.Interpolator;
 import com.android.launcher3.uioverrides.AllAppsState;
 import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.uioverrides.OverviewState;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 import java.util.Arrays;
@@ -54,6 +55,9 @@ public class LauncherState {
 
     private static final LauncherState[] sAllStates = new LauncherState[4];
 
+    /**
+     * TODO: Create a separate class for NORMAL state.
+     */
     public static final LauncherState NORMAL = new LauncherState(0, ContainerType.WORKSPACE,
             0, FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED);
 
@@ -173,6 +177,15 @@ public class LauncherState {
     public LauncherState getHistoryForState(LauncherState previousState) {
         // No history is supported
         return NORMAL;
+    }
+
+    /**
+     * Called when the start transition ends and the user settles on this particular state.
+     */
+    public void onStateTransitionEnd(Launcher launcher) {
+        if (this == NORMAL) {
+            UiFactory.resetOverview(launcher);
+        }
     }
 
     protected static void dispatchWindowStateChanged(Launcher launcher) {
