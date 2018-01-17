@@ -62,6 +62,7 @@ public class NotificationListener extends NotificationListenerService {
 
     private static NotificationListener sNotificationListenerInstance = null;
     private static NotificationsChangedListener sNotificationsChangedListener;
+    private static StatusBarNotificationsChangedListener sStatusBarNotificationsChangedListener;
     private static boolean sIsConnected;
     private static boolean sIsCreated;
 
@@ -180,8 +181,17 @@ public class NotificationListener extends NotificationListenerService {
         }
     }
 
+    public static void setStatusBarNotificationsChangedListener
+            (StatusBarNotificationsChangedListener listener) {
+        sStatusBarNotificationsChangedListener = listener;
+    }
+
     public static void removeNotificationsChangedListener() {
         sNotificationsChangedListener = null;
+    }
+
+    public static void removeStatusBarNotificationsChangedListener() {
+        sStatusBarNotificationsChangedListener = null;
     }
 
     @Override
@@ -205,7 +215,10 @@ public class NotificationListener extends NotificationListenerService {
     public void onNotificationPosted(final StatusBarNotification sbn) {
         super.onNotificationPosted(sbn);
         mWorkerHandler.obtainMessage(MSG_NOTIFICATION_POSTED, new NotificationPostedMsg(sbn))
-                .sendToTarget();
+            .sendToTarget();
+        if (sStatusBarNotificationsChangedListener != null) {
+            sStatusBarNotificationsChangedListener.onNotificationPosted(sbn);
+        }
     }
 
     /**
@@ -227,10 +240,13 @@ public class NotificationListener extends NotificationListenerService {
     public void onNotificationRemoved(final StatusBarNotification sbn) {
         super.onNotificationRemoved(sbn);
         Pair<PackageUserKey, NotificationKeyData> packageUserKeyAndNotificationKey
-                = new Pair<>(PackageUserKey.fromNotification(sbn),
-                        NotificationKeyData.fromNotification(sbn));
+            = new Pair<>(PackageUserKey.fromNotification(sbn),
+            NotificationKeyData.fromNotification(sbn));
         mWorkerHandler.obtainMessage(MSG_NOTIFICATION_REMOVED, packageUserKeyAndNotificationKey)
-                .sendToTarget();
+            .sendToTarget();
+        if (sStatusBarNotificationsChangedListener != null) {
+            sStatusBarNotificationsChangedListener.onNotificationRemoved(sbn);
+        }
 
         NotificationGroup notificationGroup = mNotificationGroupMap.get(sbn.getGroupKey());
         if (notificationGroup != null) {
@@ -317,5 +333,10 @@ public class NotificationListener extends NotificationListenerService {
         void onNotificationRemoved(PackageUserKey removedPackageUserKey,
                 NotificationKeyData notificationKey);
         void onNotificationFullRefresh(List<StatusBarNotification> activeNotifications);
+    }
+
+    public interface StatusBarNotificationsChangedListener {
+        void onNotificationPosted(StatusBarNotification sbn);
+        void onNotificationRemoved(StatusBarNotification sbn);
     }
 }
