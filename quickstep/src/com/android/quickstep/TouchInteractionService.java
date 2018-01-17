@@ -31,6 +31,8 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -327,11 +329,6 @@ public class TouchInteractionService extends Service {
     }
 
     private Bitmap getCurrentTaskSnapshot() {
-        if (mISystemUiProxy == null) {
-            Log.e(TAG, "Never received systemUIProxy");
-            return null;
-        }
-
         TraceHelper.beginSection("TaskSnapshot");
         // TODO: We are using some hardcoded layers for now, to best approximate the activity layers
         Point displaySize = new Point();
@@ -347,9 +344,13 @@ public class TouchInteractionService extends Service {
         try {
             return mISystemUiProxy.screenshot(new Rect(), displaySize.x, displaySize.y, 0, 100000,
                     false, rotation).toBitmap();
-        } catch (RemoteException e) {
+        } catch (Exception e) {
             Log.e(TAG, "Error capturing snapshot", e);
-            return null;
+
+            // Return a dummy bitmap
+            Bitmap bitmap = Bitmap.createBitmap(displaySize.x, displaySize.y, Config.RGB_565);
+            bitmap.eraseColor(Color.WHITE);
+            return bitmap;
         } finally {
             TraceHelper.endSection("TaskSnapshot");
         }
