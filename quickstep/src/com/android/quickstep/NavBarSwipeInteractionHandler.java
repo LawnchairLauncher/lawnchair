@@ -41,6 +41,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
@@ -48,7 +49,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.TouchInteractionService.InteractionType;
@@ -59,7 +59,8 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 @TargetApi(Build.VERSION_CODES.O)
-public class NavBarSwipeInteractionHandler extends InternalStateHandler {
+public class NavBarSwipeInteractionHandler extends BaseSwipeInteractionHandler implements
+        OnResumeCallback {
 
     private static final int STATE_LAUNCHER_READY = 1 << 0;
     private static final int STATE_ACTIVITY_MULTIPLIER_COMPLETE = 1 << 4;
@@ -187,7 +188,8 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
     }
 
     @Override
-    protected void init(Launcher launcher, boolean alreadyOnHome) {
+    protected boolean init(Launcher launcher, boolean alreadyOnHome) {
+        launcher.setOnResumeCallback(this);
         mLauncher = launcher;
         mRecentsView = launcher.getOverviewPanel();
         mRecentsView.showTask(mRunningTask);
@@ -212,8 +214,8 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
             mLauncher.getAppsView().setVisibility(View.GONE);
         }
         TraceHelper.partitionSection("TouchInt", "Launcher on new intent");
+        return false;
     }
-
 
     public void updateInteractionType(@InteractionType int interactionType) {
         Preconditions.assertUIThread();
@@ -288,8 +290,11 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
                 ? mHotseat.getWidth() : mHotseat.getHeight();
     }
 
+    @Override
+    public void onGestureStarted() { }
+
     @UiThread
-    public void endTouch(float endVelocity) {
+    public void onGestureEnded(float endVelocity) {
         if (mTouchEndHandled) {
             return;
         }
@@ -349,13 +354,24 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
         ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(key, opts, null, null);
     }
 
+    public void reset() {
+        mCurrentShift.cancelAnimation();
+        if (mGestureEndCallback != null) {
+            mGestureEndCallback.run();
+        }
+    }
+
     private void cleanupLauncher() {
+        reset();
+
         // TODO: These should be done as part of ActivityOptions#OnAnimationStarted
         mLauncher.getStateManager().reapplyState();
         mLauncher.setOnResumeCallback(() -> mDragView.close(false));
     }
 
     private void onAnimationToLauncherComplete() {
+        reset();
+
         mDragView.close(false);
         View currentRecentsPage = mRecentsView.getPageAt(mRecentsView.getCurrentPage());
         if (currentRecentsPage instanceof TaskView) {

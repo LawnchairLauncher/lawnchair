@@ -21,7 +21,11 @@ import android.os.Bundle;
 import android.os.IBinder;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.Launcher.OnResumeCallback;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel.Callbacks;
+import com.android.launcher3.util.Preconditions;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Utility class to sending state handling logic to Launcher from within the same process.
@@ -29,17 +33,46 @@ import com.android.launcher3.Launcher.OnResumeCallback;
  * Extending {@link Binder} ensures that the platform maintains a single instance of each object
  * which allows this object to safely navigate the system process.
  */
-public abstract class InternalStateHandler extends Binder implements OnResumeCallback {
+public abstract class InternalStateHandler extends Binder {
 
     public static final String EXTRA_STATE_HANDLER = "launcher.state_handler";
 
-    protected abstract void init(Launcher launcher, boolean alreadyOnHome);
+    private static WeakReference<InternalStateHandler> sPendingHandler = new WeakReference<>(null);
+
+    /**
+     * Initializes the handler when the launcher is ready.
+     * @return true if the handler wants to stay alive.
+     */
+    protected abstract boolean init(Launcher launcher, boolean alreadyOnHome);
 
     public final Intent addToIntent(Intent intent) {
         Bundle extras = new Bundle();
         extras.putBinder(EXTRA_STATE_HANDLER, this);
         intent.putExtras(extras);
         return intent;
+    }
+
+    public final void initWhenReady() {
+        Preconditions.assertUIThread();
+        sPendingHandler = new WeakReference<>(this);
+        LauncherAppState app = LauncherAppState.getInstanceNoCreate();
+        if (app == null) {
+            return;
+        }
+        Callbacks cb = app.getModel().getCallback();
+        if (!(cb instanceof Launcher)) {
+            return;
+        }
+        Launcher launcher = (Launcher) cb;
+        if (!init(launcher, launcher.isStarted())) {
+            sPendingHandler.clear();
+        }
+    }
+
+    public void clearReference() {
+        if (sPendingHandler.get() == this) {
+            sPendingHandler.clear();
+        }
     }
 
     public static boolean handleCreate(Launcher launcher, Intent intent) {
@@ -57,11 +90,20 @@ public abstract class InternalStateHandler extends Binder implements OnResumeCal
             IBinder stateBinder = intent.getExtras().getBinder(EXTRA_STATE_HANDLER);
             if (stateBinder instanceof InternalStateHandler) {
                 InternalStateHandler handler = (InternalStateHandler) stateBinder;
-                launcher.setOnResumeCallback(handler);
-                handler.init(launcher, alreadyOnHome);
+                if (!handler.init(launcher, alreadyOnHome)) {
+                    intent.getExtras().remove(EXTRA_STATE_HANDLER);
+                }
                 result = true;
             }
-            intent.getExtras().remove(EXTRA_STATE_HANDLER);
+        }
+        if (!result) {
+            InternalStateHandler pendingHandler = sPendingHandler.get();
+            if (pendingHandler != null) {
+                if (!pendingHandler.init(launcher, alreadyOnHome)) {
+                    sPendingHandler.clear();
+                }
+                result = true;
+            }
         }
         return result;
     }

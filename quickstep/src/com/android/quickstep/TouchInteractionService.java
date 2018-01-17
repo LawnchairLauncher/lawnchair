@@ -23,6 +23,8 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
+import static com.android.quickstep.RemoteRunnable.executeSafely;
+
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
@@ -37,8 +39,8 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.support.annotation.IntDef;
 import android.util.Log;
 import android.view.Choreographer;
@@ -53,11 +55,16 @@ import android.view.WindowManager;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.MainThreadExecutor;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.TraceHelper;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.AssistDataReceiver;
 import com.android.systemui.shared.system.BackgroundExecutor;
+import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
+import com.android.systemui.shared.system.RecentsAnimationListener;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.lang.annotation.Retention;
@@ -93,19 +100,18 @@ public class TouchInteractionService extends Service {
         }
 
         @Override
-        public void onBind(ISystemUiProxy iSystemUiProxy) throws RemoteException {
+        public void onBind(ISystemUiProxy iSystemUiProxy) {
             mISystemUiProxy = iSystemUiProxy;
         }
 
         @Override
         public void onQuickSwitch() {
-            startTouchTracking(INTERACTION_QUICK_SWITCH);
-            mInteractionHandler = null;
+            updateTouchTracking(INTERACTION_QUICK_SWITCH);
         }
 
         @Override
         public void onQuickScrubStart() {
-            startTouchTracking(INTERACTION_QUICK_SCRUB);
+            updateTouchTracking(INTERACTION_QUICK_SCRUB);
             sQuickScrubEnabled = true;
         }
 
@@ -113,7 +119,6 @@ public class TouchInteractionService extends Service {
         public void onQuickScrubEnd() {
             if (mInteractionHandler != null) {
                 mInteractionHandler.onQuickScrubEnd();
-                mInteractionHandler = null;
             }
             sQuickScrubEnabled = false;
         }
@@ -153,9 +158,10 @@ public class TouchInteractionService extends Service {
     private final PointF mLastPos = new PointF();
     private int mActivePointerId = INVALID_POINTER_ID;
     private VelocityTracker mVelocityTracker;
+    private boolean mTouchThresholdCrossed;
     private int mTouchSlop;
     private float mStartDisplacement;
-    private NavBarSwipeInteractionHandler mInteractionHandler;
+    private BaseSwipeInteractionHandler mInteractionHandler;
     private int mDisplayRotation;
     private Rect mStableInsets = new Rect();
 
@@ -229,9 +235,10 @@ public class TouchInteractionService extends Service {
                 }
                 mVelocityTracker.addMovement(ev);
                 if (mInteractionHandler != null) {
-                    mInteractionHandler.endTouch(0);
+                    mInteractionHandler.reset();
                     mInteractionHandler = null;
                 }
+                mTouchThresholdCrossed = false;
 
                 Display display = getSystemService(WindowManager.class).getDefaultDisplay();
                 mDisplayRotation = display.getRotation();
@@ -266,10 +273,18 @@ public class TouchInteractionService extends Service {
                 } else if (isNavBarOnLeft()) {
                     displacement = mDownPos.x - ev.getX(pointerIndex);
                 }
-                if (mInteractionHandler == null) {
-                    if (Math.abs(displacement) >= mTouchSlop) {
+                if (!mTouchThresholdCrossed) {
+                    mTouchThresholdCrossed = Math.abs(displacement) >= mTouchSlop;
+                    if (mTouchThresholdCrossed) {
                         mStartDisplacement = Math.signum(displacement) * mTouchSlop;
-                        startTouchTracking(INTERACTION_NORMAL);
+
+                        startTouchTracking();
+                        mInteractionHandler.onGestureStarted();
+
+                        // Notify the system that we have started tracking the event
+                        if (mISystemUiProxy != null) {
+                            executeSafely(mISystemUiProxy::onRecentsAnimationStarted);
+                        }
                     }
                 } else {
                     // Move
@@ -282,7 +297,7 @@ public class TouchInteractionService extends Service {
             case ACTION_UP: {
                 TraceHelper.endSection("TouchInt");
 
-                endInteraction();
+                finishTouchTracking();
                 mCurrentConsumer = mNoOpTouchConsumer;
                 break;
             }
@@ -297,55 +312,92 @@ public class TouchInteractionService extends Service {
         return mDisplayRotation == Surface.ROTATION_270 && mStableInsets.left > 0;
     }
 
+    /**
+     * Called when the gesture has started.
+     */
+    private void startTouchTracking() {
+        if (Utilities.getPrefs(this).getBoolean("pref_use_screenshot_animation", true)) {
+            // Create the shared handler
+            final NavBarSwipeInteractionHandler handler =
+                    new NavBarSwipeInteractionHandler(mRunningTask, this, INTERACTION_NORMAL);
 
-    private void startTouchTracking(@InteractionType int interactionType) {
-        if (isInteractionQuick(interactionType)) {
-            // TODO: Send action cancel if its the Launcher consumer
+            TraceHelper.partitionSection("TouchInt", "Thershold crossed ");
+
+            // Start the recents activity on a background thread
+            BackgroundExecutor.get().submit(() -> {
+                // Get the snap shot before
+                handler.setTaskSnapshot(getCurrentTaskSnapshot());
+
+                // Start the launcher activity with our custom handler
+                Intent homeIntent = handler.addToIntent(new Intent(mHomeIntent));
+                startActivity(homeIntent, ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle());
+                TraceHelper.partitionSection("TouchInt", "Home started");
+            });
+
+            // Preload the plan
+            mRecentsModel.loadTasks(mRunningTask.id, null);
+            mInteractionHandler = handler;
+            mInteractionHandler.setGestureEndCallback(() ->  mInteractionHandler = null);
+        } else {
+
+            // Create the shared handler
+            final WindowTransformSwipeHandler handler =
+                    new WindowTransformSwipeHandler(mRunningTask, this);
+
+            BackgroundExecutor.get().submit(() -> {
+                ActivityManagerWrapper.getInstance().startRecentsActivity(mHomeIntent,
+                        new AssistDataReceiver() {
+                            @Override
+                            public void onHandleAssistData(Bundle bundle) {
+                                // Pass to AIAI
+                            }
+                        },
+                        new RecentsAnimationListener() {
+                            public void onAnimationStart(
+                                    RecentsAnimationControllerCompat controller,
+                                    RemoteAnimationTargetCompat[] apps) {
+                                if (mInteractionHandler == handler) {
+                                    handler.setRecentsAnimation(controller, apps);
+
+                                } else {
+                                    controller.finish(false /* toHome */);
+                                }
+                            }
+
+                            public void onAnimationCanceled() {
+                                if (mInteractionHandler == handler) {
+                                    handler.setRecentsAnimation(null, null);
+                                }
+                            }
+                        }, null, null);
+            });
+
+            // Preload the plan
+            mRecentsModel.loadTasks(mRunningTask.id, null);
+            mInteractionHandler = handler;
+            mInteractionHandler.initWhenReady();
+            mInteractionHandler.setGestureEndCallback(() ->  mInteractionHandler = null);
         }
-        if (mInteractionHandler != null) {
-            final NavBarSwipeInteractionHandler handler = mInteractionHandler;
-            mMainThreadExecutor.execute(() -> handler.updateInteractionType(interactionType));
-            return;
-        }
-
-        // Create the shared handler
-        final NavBarSwipeInteractionHandler handler =
-                new NavBarSwipeInteractionHandler(mRunningTask, this, interactionType);
-
-        TraceHelper.partitionSection("TouchInt", "Thershold crossed ");
-
-        // Start the recents activity on a background thread
-        BackgroundExecutor.get().submit(() -> {
-            // Get the snap shot before
-            handler.setTaskSnapshot(getCurrentTaskSnapshot());
-
-            // Start the launcher activity with our custom handler
-            Intent homeIntent = handler.addToIntent(new Intent(mHomeIntent));
-            startActivity(homeIntent, ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle());
-            TraceHelper.partitionSection("TouchInt", "Home started");
-
-            /*
-            ActivityManagerWrapper.getInstance().startRecentsActivity(null, options,
-                    ActivityOptions.makeCustomAnimation(this, 0, 0), UserHandle.myUserId(),
-                    null, null);
-             */
-        });
-
-        // Preload the plan
-        mRecentsModel.loadTasks(mRunningTask.id, null);
-        mInteractionHandler = handler;
     }
 
-    private void endInteraction() {
-        if (mInteractionHandler != null) {
+    private void updateTouchTracking(@InteractionType int interactionType) {
+        final BaseSwipeInteractionHandler handler = mInteractionHandler;
+        mMainThreadExecutor.execute(() -> handler.updateInteractionType(interactionType));
+    }
+
+    /**
+     * Called when the gesture has ended. Does not correlate to the completion of the interaction as
+     * the animation can still be running.
+     */
+    private void finishTouchTracking() {
+        if (mTouchThresholdCrossed) {
             mVelocityTracker.computeCurrentVelocity(1000,
                     ViewConfiguration.get(this).getScaledMaximumFlingVelocity());
 
             float velocity = isNavBarOnRight() ? mVelocityTracker.getXVelocity(mActivePointerId)
                     : isNavBarOnLeft() ? -mVelocityTracker.getXVelocity(mActivePointerId)
                     : mVelocityTracker.getYVelocity(mActivePointerId);
-            mInteractionHandler.endTouch(velocity);
-            mInteractionHandler = null;
+            mInteractionHandler.onGestureEnded(velocity);
         }
         mVelocityTracker.recycle();
         mVelocityTracker = null;

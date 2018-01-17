@@ -128,6 +128,16 @@ public class RecentsView extends PagedView implements Insettable {
         mScrollState.isRtl = mIsRtl;
     }
 
+    public void updateThumbnail(int taskId, ThumbnailData thumbnailData) {
+        for (int i = mFirstTaskIndex; i < getChildCount(); i++) {
+            final TaskView taskView = (TaskView) getChildAt(i);
+            if (taskView.getTask().key.id == taskId) {
+                taskView.onTaskDataLoaded(taskView.getTask(), thumbnailData);
+                return;
+            }
+        }
+    }
+
     private void setupLayoutTransition() {
         // We want to show layout transitions when pages are deleted, to close the gap.
         mLayoutTransition = new LayoutTransition();

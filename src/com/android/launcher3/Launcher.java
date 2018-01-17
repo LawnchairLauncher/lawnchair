@@ -1174,6 +1174,10 @@ public class Launcher extends BaseActivity
         return mAllAppsController;
     }
 
+    public LauncherRootView getRootView() {
+        return (LauncherRootView) mLauncherView;
+    }
+
     public DragLayer getDragLayer() {
         return mDragLayer;
     }
