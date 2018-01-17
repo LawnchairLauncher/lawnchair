@@ -29,9 +29,6 @@ import android.view.MotionEvent;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.VerticalSwipeController;
 import com.android.quickstep.RecentsView;
 
@@ -40,7 +37,7 @@ import com.android.quickstep.RecentsView;
  */
 public class EdgeSwipeController extends VerticalSwipeController {
 
-    private final Rect mTempRect = new Rect();
+    private static final Rect sTempRect = new Rect();
 
     public EdgeSwipeController(Launcher l) {
         super(l, NORMAL, OVERVIEW, l.getDeviceProfile().isVerticalBarLayout()
@@ -78,18 +75,22 @@ public class EdgeSwipeController extends VerticalSwipeController {
 
     @Override
     protected float getShiftRange() {
-        RecentsView.getPageRect(mLauncher, mTempRect);
-        DragLayer dl = mLauncher.getDragLayer();
+        return getShiftRange(mLauncher);
+    }
+
+    public static float getShiftRange(Launcher launcher) {
+        RecentsView.getPageRect(launcher.getDeviceProfile(), launcher, sTempRect);
+        DragLayer dl = launcher.getDragLayer();
         Rect insets = dl.getInsets();
 
-        if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+        if (launcher.getDeviceProfile().isVerticalBarLayout()) {
             if (insets.left > insets.right) {
-                return insets.left + mTempRect.left;
+                return insets.left + sTempRect.left;
             } else {
-                return dl.getWidth() - mTempRect.right + insets.right;
+                return dl.getWidth() - sTempRect.right + insets.right;
             }
         } else {
-            return dl.getHeight() - mTempRect.bottom + insets.bottom;
+            return dl.getHeight() - sTempRect.bottom + insets.bottom;
         }
     }
 }

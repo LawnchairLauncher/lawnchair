@@ -29,7 +29,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.util.TouchController;
@@ -168,7 +167,7 @@ public class OverviewSwipeController extends AnimatorListenerAdapter
         return mDetector.onTouchEvent(ev);
     }
 
-    private void reinitAnimationController(boolean goingUp) {
+    private void reInitAnimationController(boolean goingUp) {
         if (!goingUp && !mSwipeDownEnabled) {
             goingUp = true;
         }
@@ -191,20 +190,7 @@ public class OverviewSwipeController extends AnimatorListenerAdapter
             if (goingUp) {
                 mEndDisplacement = -range;
             } else {
-                View ws = mLauncher.getWorkspace();
-                mTempCords[1] = ws.getHeight() - ws.getPaddingBottom();
-                dl.getDescendantCoordRelativeToSelf(ws, mTempCords);
-
-                float distance = mTempCords[1];
-                if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-                    mTempCords[1] = 0;
-                    dl.getDescendantCoordRelativeToSelf(mLauncher.getHotseat(), mTempCords);
-                    distance = mTempCords[1] - distance;
-                } else {
-                    distance = dl.getHeight() - distance;
-                }
-
-                mEndDisplacement = distance;
+                mEndDisplacement = EdgeSwipeController.getShiftRange(mLauncher);
             }
         } else {
             if (goingUp) {
@@ -240,7 +226,7 @@ public class OverviewSwipeController extends AnimatorListenerAdapter
     @Override
     public void onDragStart(boolean start) {
         if (mCurrentAnimation == null) {
-            reinitAnimationController(mDetector.wasInitialTouchPositive());
+            reInitAnimationController(mDetector.wasInitialTouchPositive());
             mDisplacementShift = 0;
         } else {
             mDisplacementShift = mCurrentAnimation.getProgressFraction() / mProgressMultiplier;
@@ -254,7 +240,7 @@ public class OverviewSwipeController extends AnimatorListenerAdapter
         boolean isGoingUp =
                 totalDisplacement == 0 ? mCurrentAnimationIsGoingUp : totalDisplacement < 0;
         if (isGoingUp != mCurrentAnimationIsGoingUp) {
-            reinitAnimationController(isGoingUp);
+            reInitAnimationController(isGoingUp);
         }
         mCurrentAnimation.setPlayFraction(totalDisplacement * mProgressMultiplier);
         return true;
@@ -276,7 +262,7 @@ public class OverviewSwipeController extends AnimatorListenerAdapter
                     // Not allowed
                     goingToEnd = false;
                 } else {
-                    reinitAnimationController(goingUp);
+                    reInitAnimationController(goingUp);
                     goingToEnd = true;
                 }
             } else {

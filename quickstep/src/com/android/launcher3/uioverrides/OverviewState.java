@@ -36,8 +36,6 @@ import com.android.quickstep.RecentsView;
  */
 public class OverviewState extends LauncherState {
 
-    public static final float WORKSPACE_SCALE_ON_SCROLL = 0.9f;
-
     private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED;
 
     public OverviewState(int id) {
@@ -47,15 +45,15 @@ public class OverviewState extends LauncherState {
     @Override
     public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
         Rect pageRect = new Rect();
-        RecentsView.getPageRect(launcher, pageRect);
+        RecentsView.getScaledDownPageRect(launcher.getDeviceProfile(), launcher, pageRect);
+        RecentsView rv = launcher.getOverviewPanel();
+
         if (launcher.getWorkspace().getNormalChildWidth() <= 0 || pageRect.isEmpty()) {
             return super.getWorkspaceScaleAndTranslation(launcher);
         }
 
-        RecentsView rv = launcher.getOverviewPanel();
         float overlap = 0;
         if (rv.getCurrentPage() >= rv.getFirstTaskIndex()) {
-            Utilities.scaleRectAboutCenter(pageRect, WORKSPACE_SCALE_ON_SCROLL);
             overlap = launcher.getResources().getDimension(R.dimen.workspace_overview_offset_x);
         }
         return getScaleAndTranslationForPageRect(launcher, overlap, pageRect);
@@ -99,21 +97,23 @@ public class OverviewState extends LauncherState {
         float childWidth = ws.getNormalChildWidth();
         float childHeight = ws.getNormalChildHeight();
 
+        float scale = pageRect.height() / childHeight;
         Rect insets = launcher.getDragLayer().getInsets();
-        float scale = Math.min(pageRect.width() / childWidth, pageRect.height() / childHeight);
 
         float halfHeight = ws.getHeight() / 2;
         float childTop = halfHeight - scale * (halfHeight - ws.getPaddingTop() - insets.top);
         float translationY = pageRect.top - childTop;
 
+        // Align the workspace horizontally centered with the task rect
         float halfWidth = ws.getWidth() / 2;
-        float translationX;
+        float childCenter = halfWidth -
+                scale * (halfWidth - ws.getPaddingLeft() - insets.left - childWidth / 2);
+        float translationX = pageRect.exactCenterX() - childCenter;
+
         if (Utilities.isRtl(launcher.getResources())) {
-            float childRight = halfWidth + scale * (halfWidth - ws.getPaddingRight() - insets.right);
-            translationX = childRight - pageRect.right - offsetX / scale;
+            translationX -= offsetX / scale;
         } else {
-            float childLeft = halfWidth - scale * (halfWidth - ws.getPaddingLeft() - insets.left);
-            translationX = pageRect.left - childLeft + offsetX / scale;
+            translationX += offsetX / scale;
         }
 
         return new float[] {scale, translationX, translationY};

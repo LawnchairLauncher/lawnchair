@@ -49,9 +49,9 @@ import static com.android.quickstep.RecentsView.SCROLL_TYPE_WORKSPACE;
 public class TaskView extends FrameLayout implements TaskCallbacks, PageCallbacks {
 
     /** Designates how "curvy" the carousel is from 0 to 1, where 0 is a straight line. */
-    private static final float CURVE_FACTOR = 0.25f;
+    public static final float CURVE_FACTOR = 0.25f;
     /** A circular curve of x from 0 to 1, where 0 is the center of the screen and 1 is the edge. */
-    private static final TimeInterpolator CURVE_INTERPOLATOR
+    public static final TimeInterpolator CURVE_INTERPOLATOR
             = x -> (float) (1 - Math.sqrt(1 - Math.pow(x, 2)));
 
     /**
@@ -206,13 +206,14 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
             // Make sure that the task cards do not overlap with the workspace card
             float min = scrollState.halfPageWidth * (1 - scale);
             if (scrollState.isRtl) {
-                setTranslationX(Math.min(translation, min));
+                setTranslationX(Math.min(translation, min) - scrollState.prevPageExtraWidth);
             } else {
-                setTranslationX(Math.max(translation, -min));
+                setTranslationX(Math.max(translation, -min) + scrollState.prevPageExtraWidth);
             }
         } else {
             setTranslationX(translation);
         }
+        scrollState.prevPageExtraWidth = 0;
         return SCROLL_TYPE_TASK;
     }
 }

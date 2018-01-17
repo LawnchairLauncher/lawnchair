@@ -27,6 +27,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
@@ -41,11 +42,15 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
 import java.util.ArrayList;
 
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.quickstep.TaskView.CURVE_FACTOR;
+import static com.android.quickstep.TaskView.CURVE_INTERPOLATOR;
 
 /**
  * A list of recent tasks.
  */
 public class RecentsView extends PagedView {
+
+    private static final Rect sTempStableInsets = new Rect();
 
     public static final int SCROLL_TYPE_NONE = 0;
     public static final int SCROLL_TYPE_TASK = 1;
@@ -219,19 +224,18 @@ public class RecentsView extends PagedView {
     }
 
     private static Rect getPadding(DeviceProfile profile, Context context) {
-        Rect stableInsets = new Rect();
-        WindowManagerWrapper.getInstance().getStableInsets(stableInsets);
+        WindowManagerWrapper.getInstance().getStableInsets(sTempStableInsets);
         Rect padding = new Rect(profile.workspacePadding);
 
-        float taskWidth = profile.widthPx - stableInsets.left - stableInsets.right;
-        float taskHeight = profile.heightPx - stableInsets.top - stableInsets.bottom;
+        float taskWidth = profile.widthPx - sTempStableInsets.left - sTempStableInsets.right;
+        float taskHeight = profile.heightPx - sTempStableInsets.top - sTempStableInsets.bottom;
 
         float overviewHeight, overviewWidth;
         if (profile.isVerticalBarLayout()) {
             // Use the same padding on both sides for symmetry.
             float availableWidth = taskWidth - 2 * Math.max(padding.left, padding.right);
             float availableHeight = profile.availableHeightPx - padding.top - padding.bottom
-                    - stableInsets.top
+                    - sTempStableInsets.top
                     - profile.heightPx * (1 - OverviewState.getVerticalProgress(profile, context));
 
             float scaledRatio = Math.min(availableWidth / taskWidth, availableHeight / taskHeight);
@@ -240,18 +244,41 @@ public class RecentsView extends PagedView {
 
         } else {
             overviewHeight = profile.availableHeightPx - padding.top - padding.bottom
-                    - stableInsets.top;
+                    - sTempStableInsets.top;
             overviewWidth = taskWidth * overviewHeight / taskHeight;
         }
 
-        padding.bottom = profile.availableHeightPx - padding.top - stableInsets.top
+        padding.bottom = profile.availableHeightPx - padding.top - sTempStableInsets.top
                 - Math.round(overviewHeight);
         padding.left = padding.right = (int) ((profile.availableWidthPx - overviewWidth) / 2);
         return padding;
     }
 
-    public static void getPageRect(Launcher launcher, Rect outRect) {
-        getPageRect(launcher.getDeviceProfile(), launcher, outRect);
+    /**
+     * Sets the {@param outRect} to match the position of the first tile such that it is scaled
+     * down to match the 2nd taskView.
+     * @return returns the factor which determines the scaling factor for the second task.
+     */
+    public static float getScaledDownPageRect(DeviceProfile dp, Context context, Rect outRect) {
+        getPageRect(dp, context, outRect);
+
+        int pageSpacing = context.getResources()
+                .getDimensionPixelSize(R.dimen.recents_page_spacing);
+        float halfScreenWidth = dp.widthPx * 0.5f;
+        float halfPageWidth = outRect.width() * 0.5f;
+        float pageCenter = outRect.right + pageSpacing + halfPageWidth;
+        float distanceFromCenter = Math.abs(halfScreenWidth - pageCenter);
+        float distanceToReachEdge = halfScreenWidth + halfPageWidth + pageSpacing;
+        float linearInterpolation = Math.min(1, distanceFromCenter / distanceToReachEdge);
+
+        float scale = 1 - CURVE_INTERPOLATOR.getInterpolation(linearInterpolation) * CURVE_FACTOR;
+
+        int topMargin = context.getResources()
+                .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
+        outRect.top -= topMargin;
+        Utilities.scaleRectAboutCenter(outRect, scale);
+        outRect.top += (int) (scale * topMargin);
+        return linearInterpolation;
     }
 
     public static void getPageRect(DeviceProfile grid, Context context, Rect outRect) {
@@ -393,5 +420,7 @@ public class RecentsView extends PagedView {
         public int halfPageWidth;
         public float distanceFromScreenCenter;
         public float linearInterpolation;
+
+        public float prevPageExtraWidth;
     }
 }

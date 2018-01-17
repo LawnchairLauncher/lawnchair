@@ -16,170 +16,80 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.uioverrides.OverviewState.WORKSPACE_SCALE_ON_SCROLL;
 import static com.android.quickstep.RecentsView.SCROLL_TYPE_WORKSPACE;
 
-import android.animation.FloatArrayEvaluator;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.FrameLayout;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.widget.WidgetsFullSheet;
 import com.android.quickstep.RecentsView;
 import com.android.quickstep.RecentsView.PageCallbacks;
 import com.android.quickstep.RecentsView.ScrollState;
 
-public class WorkspaceCard extends FrameLayout implements PageCallbacks, OnClickListener {
+public class WorkspaceCard extends View implements PageCallbacks, OnClickListener {
 
     private final Rect mTempRect = new Rect();
-    private final float[] mEvaluatedFloats = new float[3];
-    private final FloatArrayEvaluator mEvaluator = new FloatArrayEvaluator(mEvaluatedFloats);
-
-    // UI related information
-    private float[] mScaleAndTranslatePage0, mScaleAndTranslatePage1;
-    private boolean mUIDataValid = false;
 
     private Launcher mLauncher;
     private Workspace mWorkspace;
 
+    private float mLinearInterpolationForPage2 = 1;
+    private float mTranslateXPage0, mTranslateXPage1;
+    private float mExtraScrollShift;
+
     private boolean mIsWorkspaceScrollingEnabled;
 
-    private View mWorkspaceClickTarget;
-    private View mWidgetsButton;
-
-    private boolean mLayoutHorizontal;
-
     public WorkspaceCard(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public WorkspaceCard(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public WorkspaceCard(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-
-        mWorkspaceClickTarget = findViewById(R.id.workspace_click_target);
-        mWidgetsButton = findViewById(R.id.widget_button);
-
-        mWorkspaceClickTarget.setOnClickListener(this);
-        mWidgetsButton.setOnClickListener(this);
         setOnClickListener(this);
     }
 
+    /**
+     * Draw nothing.
+     */
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        // We measure the dimensions of the PagedView to be larger than the pages so that when we
-        // zoom out (and scale down), the view is still contained in the parent
-        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-
-        if (widthMode == MeasureSpec.UNSPECIFIED || heightMode == MeasureSpec.UNSPECIFIED) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            return;
-        }
-
-        // Return early if we aren't given a proper dimension
-        if (widthSize <= 0 || heightSize <= 0) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            return;
-        }
-
-        float workspaceWidth = mWorkspace.getNormalChildWidth();
-        float workspaceHeight = mWorkspace.getNormalChildHeight();
-
-        int availableWidth = widthSize - getPaddingLeft() - getPaddingRight();
-        float scaleX = availableWidth / workspaceWidth;
-
-        int availableHeight = heightSize - getPaddingTop() - getPaddingBottom();
-        float scaleY = availableHeight / workspaceHeight;
-
-        if (scaleX < scaleY) {
-            mLayoutHorizontal = false;
-            int childWidthSpec = MeasureSpec.makeMeasureSpec(availableWidth, MeasureSpec.EXACTLY);
-
-            int pageHeight = Math.round(workspaceHeight * scaleX);
-            mWorkspaceClickTarget.measure(childWidthSpec,
-                    MeasureSpec.makeMeasureSpec(pageHeight, MeasureSpec.EXACTLY));
-
-            int buttonHeight = availableHeight - pageHeight;
-            mWidgetsButton.measure(childWidthSpec,
-                    MeasureSpec.makeMeasureSpec(buttonHeight, MeasureSpec.EXACTLY));
-        } else {
-            mLayoutHorizontal = true;
-            int childHeightSpec = MeasureSpec.makeMeasureSpec(availableHeight, MeasureSpec.EXACTLY);
-
-            int pageWidth = Math.round(workspaceWidth * scaleY);
-            mWorkspaceClickTarget.measure(
-                    MeasureSpec.makeMeasureSpec(pageWidth, MeasureSpec.EXACTLY), childHeightSpec);
-
-            int buttonWidth = availableWidth - pageWidth;
-            mWidgetsButton.measure(
-                    MeasureSpec.makeMeasureSpec(buttonWidth, MeasureSpec.EXACTLY), childHeightSpec);
-        }
-        setMeasuredDimension(widthSize, heightSize);
-    }
+    public void draw(Canvas canvas) { }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        int x = getPaddingLeft();
-        int y = getPaddingTop();
+        super.onLayout(changed, left, top, right, bottom);
 
-        if (mLayoutHorizontal) {
-            final View first, second;
-            if (Utilities.isRtl(getResources())) {
-                first = mWidgetsButton;
-                second = mWorkspaceClickTarget;
-            } else {
-                first = mWorkspaceClickTarget;
-                second = mWidgetsButton;
-            }
-            int x2 = x + first.getMeasuredWidth();
-            first.layout(x, y,
-                    x2, y + first.getMeasuredHeight());
-            second.layout(x2, y,
-                    x2 + second.getMeasuredWidth(),
-                    y + second.getMeasuredHeight());
-        } else {
-            int y2 = y + mWorkspaceClickTarget.getMeasuredHeight();
-            mWorkspaceClickTarget.layout(x, y,
-                    x + mWorkspaceClickTarget.getMeasuredWidth(), y2);
-            mWidgetsButton.layout(x, y2,
-                    x + mWidgetsButton.getMeasuredWidth(),
-                    y2 + mWidgetsButton.getMeasuredHeight());
+        // Initiate data
+        mLinearInterpolationForPage2 = RecentsView.getScaledDownPageRect(
+                mLauncher.getDeviceProfile(), mLauncher, mTempRect);
+
+        float[] scale = OverviewState.getScaleAndTranslationForPageRect(mLauncher, 0, mTempRect);
+        mTranslateXPage0 = scale[1];
+        mTranslateXPage1 = OverviewState
+                .getScaleAndTranslationForPageRect(mLauncher,
+                        getResources().getDimension(R.dimen.workspace_overview_offset_x),
+                        mTempRect)[1];
+
+        mExtraScrollShift = 0;
+        if (mWorkspace != null && getWidth() > 0) {
+            float workspaceWidth = mWorkspace.getNormalChildWidth() * scale[0];
+            mExtraScrollShift = (workspaceWidth - getWidth()) / 2;
+            setScaleX(workspaceWidth / getWidth());
         }
-
-        mUIDataValid = false;
     }
 
     @Override
     public void onClick(View view) {
-        if (view == mWorkspaceClickTarget || view == this) {
-            mLauncher.getStateManager().goToState(NORMAL);
-        } else if (view == mWidgetsButton) {
-            WidgetsFullSheet.show(mLauncher, true);
-        }
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        mUIDataValid = false;
+        mLauncher.getStateManager().goToState(NORMAL);
     }
 
     public void setup(Launcher launcher) {
@@ -194,41 +104,24 @@ public class WorkspaceCard extends FrameLayout implements PageCallbacks, OnClick
     @Override
     public int onPageScroll(ScrollState scrollState) {
         float factor = scrollState.linearInterpolation;
-        float scale = factor * WORKSPACE_SCALE_ON_SCROLL + (1 - factor);
-        setScaleX(scale);
-        setScaleY(scale);
-
         float translateX = scrollState.distanceFromScreenCenter;
         if (mIsWorkspaceScrollingEnabled) {
-            initUiData();
-
-            mEvaluator.evaluate(factor, mScaleAndTranslatePage0, mScaleAndTranslatePage1);
-            mWorkspace.setScaleX(mEvaluatedFloats[0]);
-            mWorkspace.setScaleY(mEvaluatedFloats[0]);
-            mWorkspace.setTranslationX(mEvaluatedFloats[1]);
-            mWorkspace.setTranslationY(mEvaluatedFloats[2]);
-            translateX += mEvaluatedFloats[1] - mScaleAndTranslatePage0[1];
+            float shift = factor * (mTranslateXPage1 - mTranslateXPage0);
+            mWorkspace.setTranslationX(shift + mTranslateXPage0);
+            translateX += shift;
         }
 
         setTranslationX(translateX);
 
-        return SCROLL_TYPE_WORKSPACE;
-    }
-
-    private void initUiData() {
-        if (mUIDataValid && mScaleAndTranslatePage0 != null) {
-            return;
+        // If the workspace card is still the first page, shift all the other pages.
+        if (scrollState.linearInterpolation > mLinearInterpolationForPage2) {
+            scrollState.prevPageExtraWidth = 0;
+        } else if (mLinearInterpolationForPage2 > 0) {
+            scrollState.prevPageExtraWidth = mExtraScrollShift *
+                    (1 - scrollState.linearInterpolation / mLinearInterpolationForPage2);
+        } else {
+            scrollState.prevPageExtraWidth = mExtraScrollShift;
         }
-
-        float overlap = getResources().getDimension(R.dimen.workspace_overview_offset_x);
-
-        RecentsView.getPageRect(mLauncher, mTempRect);
-        mScaleAndTranslatePage0 = OverviewState
-                .getScaleAndTranslationForPageRect(mLauncher, 0, mTempRect);
-        Rect scaledDown = new Rect(mTempRect);
-        Utilities.scaleRectAboutCenter(scaledDown, WORKSPACE_SCALE_ON_SCROLL);
-        mScaleAndTranslatePage1 = OverviewState
-                .getScaleAndTranslationForPageRect(mLauncher, overlap, scaledDown);
-        mUIDataValid = true;
+        return SCROLL_TYPE_WORKSPACE;
     }
 }
