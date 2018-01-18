@@ -42,6 +42,8 @@ public class Interpolators {
 
     public static final Interpolator FAST_OUT_SLOW_IN = new PathInterpolator(0.4f, 0f, 0.2f, 1f);
 
+    public static final Interpolator AGGRESSIVE_EASE = new PathInterpolator(0.2f, 0f, 0f, 1f);
+
     /**
      * Inversion of zInterpolate, compounded with an ease-out.
      */

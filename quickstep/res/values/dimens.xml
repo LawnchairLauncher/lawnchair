@@ -27,4 +27,7 @@
 
     <!-- TODO: This can be calculated using other resource values -->
     <dimen name="all_apps_search_box_full_height">90dp</dimen>
+
+    <dimen name="drag_layer_trans_y">25dp</dimen>
+
 </resources>

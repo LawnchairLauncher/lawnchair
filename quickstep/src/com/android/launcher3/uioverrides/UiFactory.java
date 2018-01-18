@@ -19,11 +19,14 @@ package com.android.launcher3.uioverrides;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.os.Bundle;
+import android.view.View;
 import android.view.View.AccessibilityDelegate;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppTransitionManager;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
@@ -101,5 +104,9 @@ public class UiFactory {
     public static void resetOverview(Launcher launcher) {
         RecentsView recents = launcher.getOverviewPanel();
         recents.reset();
+    }
+
+    public static Bundle getActivityLaunchOptions(Launcher launcher, View v) {
+        return new LauncherAppTransitionManager(launcher).getActivityLauncherOptions(v);
     }
 }
