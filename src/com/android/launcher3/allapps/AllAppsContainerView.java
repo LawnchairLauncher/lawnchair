@@ -591,7 +591,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
 
     public void onScrollUpEnd() {
         if (mUsingTabs) {
-            ((PersonalWorkSlidingTabStrip) findViewById(R.id.tabs)).peekWorkTabIfNecessary();
+            ((PersonalWorkSlidingTabStrip) findViewById(R.id.tabs)).highlightWorkTabIfNecessary();
         }
     }
 

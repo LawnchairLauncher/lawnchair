@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.allapps;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
@@ -30,7 +29,6 @@ import android.widget.LinearLayout;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.util.Themes;
 
 /**
@@ -39,8 +37,6 @@ import com.android.launcher3.util.Themes;
 public class PersonalWorkSlidingTabStrip extends LinearLayout {
     private static final int POSITION_PERSONAL = 0;
     private static final int POSITION_WORK = 1;
-    private static final int PEEK_DURATION = 1000;
-    private static final float PEAK_OFFSET = 0.4f;
 
     private static final String KEY_SHOWED_PEEK_WORK_TAB = "showed_peek_work_tab";
 
@@ -157,25 +153,22 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout {
         return isPersonal ? mPersonalTabIndicatorPaint : mWorkTabIndicatorPaint;
     }
 
-    public void peekWorkTabIfNecessary() {
+    public void highlightWorkTabIfNecessary() {
         if (mSharedPreferences.getBoolean(KEY_SHOWED_PEEK_WORK_TAB, false)) {
             return;
         }
         if (mIndicatorPosition != POSITION_PERSONAL) {
             return;
         }
-        peekWorkTab();
+        highlightWorkTab();
         mSharedPreferences.edit().putBoolean(KEY_SHOWED_PEEK_WORK_TAB, true).apply();
     }
 
-    private void peekWorkTab() {
-        final boolean isRtl = Utilities.isRtl(getResources());
-        ValueAnimator animator = ValueAnimator.ofFloat(0, isRtl ? 1 - PEAK_OFFSET : PEAK_OFFSET, 0);
-        animator.setDuration(PEEK_DURATION);
-        animator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
-        animator.addUpdateListener(
-                animation -> updateIndicatorPosition(mIndicatorPosition,
-                        (float) animation.getAnimatedValue()));
-        animator.start();
+    private void highlightWorkTab() {
+        View v = getChildAt(POSITION_WORK);
+        v.post(() -> {
+            v.setPressed(true);
+            v.setPressed(false);
+        });
     }
 }
