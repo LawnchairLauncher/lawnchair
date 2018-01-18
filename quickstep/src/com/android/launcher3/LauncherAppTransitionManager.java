@@ -88,7 +88,6 @@ public class LauncherAppTransitionManager {
 
                             mDragLayer.setAlpha(1f);
                             mDragLayer.setTranslationY(0f);
-                            mDragLayer.getBackground().setAlpha(255);
                             finishedCallback.run();
                         }
                     });
@@ -118,12 +117,6 @@ public class LauncherAppTransitionManager {
     private AnimatorSet getHideLauncherAnimator() {
         AnimatorSet hideLauncher = new AnimatorSet();
 
-        // Fade out the scrim fast to avoid the hard line
-        ObjectAnimator scrimAlpha = ObjectAnimator.ofInt(mDragLayer.getBackground(),
-                LauncherAnimUtils.DRAWABLE_ALPHA, 255, 0);
-        scrimAlpha.setDuration(130);
-        scrimAlpha.setInterpolator(Interpolators.AGGRESSIVE_EASE);
-
         // Animate Launcher so that it moves downwards and fades out.
         ObjectAnimator dragLayerAlpha = ObjectAnimator.ofFloat(mDragLayer, View.ALPHA, 1f, 0f);
         dragLayerAlpha.setDuration(217);
@@ -133,7 +126,6 @@ public class LauncherAppTransitionManager {
         dragLayerTransY.setInterpolator(Interpolators.AGGRESSIVE_EASE);
         dragLayerTransY.setDuration(350);
 
-        hideLauncher.play(scrimAlpha);
         hideLauncher.play(dragLayerAlpha);
         hideLauncher.play(dragLayerTransY);
         return hideLauncher;

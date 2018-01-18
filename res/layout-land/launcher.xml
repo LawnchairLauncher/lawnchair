@@ -21,13 +21,13 @@
     android:id="@+id/launcher"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/workspaceStatusBarScrim"
     android:fitsSystemWindows="true">
 
     <com.android.launcher3.dragndrop.DragLayer
         android:id="@+id/drag_layer"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:background="?attr/workspaceStatusBarScrim"
         android:importantForAccessibility="no"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

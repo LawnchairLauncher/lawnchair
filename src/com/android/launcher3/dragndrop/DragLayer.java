@@ -366,13 +366,6 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     @Override
-    public void setInsets(Rect insets) {
-        super.setInsets(insets);
-        setBackground(insets.top == 0 ? null
-                : Themes.getAttrDrawable(getContext(), R.attr.workspaceStatusBarScrim));
-    }
-
-    @Override
     public LayoutParams generateLayoutParams(AttributeSet attrs) {
         return new LayoutParams(getContext(), attrs);
     }

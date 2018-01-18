@@ -769,12 +769,12 @@ public class Launcher extends BaseActivity
         mAppWidgetHost.setListenIfResumed(true);
         NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
 
-        if (mShouldFadeInScrim && mDragLayer.getBackground() != null) {
+        if (mShouldFadeInScrim && mLauncherView.getBackground() != null) {
             if (mScrimAnimator != null) {
                 mScrimAnimator.cancel();
             }
-            mDragLayer.getBackground().setAlpha(0);
-            mScrimAnimator = ObjectAnimator.ofInt(mDragLayer.getBackground(),
+            mLauncherView.getBackground().setAlpha(0);
+            mScrimAnimator = ObjectAnimator.ofInt(mLauncherView.getBackground(),
                     LauncherAnimUtils.DRAWABLE_ALPHA, 0, 255);
             mScrimAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
