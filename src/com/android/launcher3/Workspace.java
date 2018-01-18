@@ -3447,6 +3447,18 @@ public class Workspace extends PagedView
     }
 
     @Override
+    public int getExpectedHeight() {
+        return getMeasuredHeight() <= 0
+                ? mLauncher.getDeviceProfile().heightPx : getMeasuredHeight();
+    }
+
+    @Override
+    public int getExpectedWidth() {
+        return getMeasuredWidth() <= 0
+                ? mLauncher.getDeviceProfile().widthPx : getMeasuredWidth();
+    }
+
+    @Override
     protected String getPageIndicatorDescription() {
         return getResources().getString(R.string.all_apps_button_label);
     }

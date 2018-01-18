@@ -100,12 +100,12 @@ public class OverviewState extends LauncherState {
         float scale = pageRect.height() / childHeight;
         Rect insets = launcher.getDragLayer().getInsets();
 
-        float halfHeight = ws.getHeight() / 2;
+        float halfHeight = ws.getExpectedHeight() / 2;
         float childTop = halfHeight - scale * (halfHeight - ws.getPaddingTop() - insets.top);
         float translationY = pageRect.top - childTop;
 
         // Align the workspace horizontally centered with the task rect
-        float halfWidth = ws.getWidth() / 2;
+        float halfWidth = ws.getExpectedWidth() / 2;
         float childCenter = halfWidth -
                 scale * (halfWidth - ws.getPaddingLeft() - insets.left - childWidth / 2);
         float translationX = pageRect.exactCenterX() - childCenter;
