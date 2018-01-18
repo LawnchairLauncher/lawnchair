@@ -72,7 +72,7 @@ public class LauncherEdgeEffect {
 
     private int mState = STATE_IDLE;
 
-    protected float mPullDistance;
+    private float mPullDistance;
 
     private final Rect mBounds = new Rect();
     private final Paint mPaint = new Paint();

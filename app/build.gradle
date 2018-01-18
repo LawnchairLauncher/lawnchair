@@ -28,7 +28,7 @@ if (localPropsFile.exists()) {
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '27.0.1'
+    buildToolsVersion '27.0.2'
 
     signingConfigs {
         travis {
@@ -94,7 +94,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    def supportLibVersion = '27.0.1'
+    def supportLibVersion = '27.0.2'
     implementation "com.android.support:support-v4:${supportLibVersion}"
     implementation "com.android.support:recyclerview-v7:${supportLibVersion}"
     implementation "com.android.support:palette-v7:${supportLibVersion}"
@@ -103,7 +103,7 @@ dependencies {
     implementation "com.android.support:design:${supportLibVersion}"
     implementation "com.android.support:support-dynamic-animation:${supportLibVersion}"
     implementation 'com.github.KwabenBerko:OpenWeatherMap-Android-Library:v1.1.1'
-    implementation 'com.google.android.gms:play-services-awareness:11.6.0'
+    implementation 'com.google.android.gms:play-services-awareness:11.8.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation 'com.pavelsikun:vintage-chroma:1.5'
     implementation project(':launcherclient')

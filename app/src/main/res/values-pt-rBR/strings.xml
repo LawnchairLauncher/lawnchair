@@ -26,7 +26,7 @@
   <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
   <string name="activity_not_found">O app não está instalado.</string>
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
-  <string name="activity_not_available">O app não está disponível</string>
+  <string name="activity_not_available">O Aplicativo não está disponível</string>
   <!-- SafeMode shortcut error string -->
   <string name="safemode_shortcut_error">Download de aplicativo esta desativado no modo de segurança</string>
   <!-- SafeMode widget error string -->
@@ -140,20 +140,20 @@
     The second "it" refers to the app. -->
   <string name="abandoned_promise_explanation">O aplicativo deste ícone não está instalado. Você pode remover o ícone, ou procurar o aplicativo e instalá-lo manualmente.    </string>
   <!-- Title for an app which is being downloaded. -->
-  <string name="app_downloading_title"><xliff:g example="Menssagen" id="name">%1$s</xliff:g>baixando, <xliff:g example="30%" id="progresso">%2$s</xliff:g>concluido</string>
+  <string name="app_downloading_title">Fazendo download de <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> concluído</string>
   <!-- Title for an app whose download has been started. -->
-  <string name="app_waiting_download_title"><xliff:g example="Menssagen" id="nome">%1$s</xliff:g> aguardando a instalação</string>
+  <string name="app_waiting_download_title">Aguardando instalação de <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Strings for accessibility actions -->
   <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
   <string name="action_add_to_workspace">Adicionar à tela inicial</string>
   <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
   <string name="action_move_here">Mover item para cá</string>
   <!-- Accessibility confirmation for item added to workspace. -->
-  <string name="item_added_to_workspace">Aplicativo adicionado à tela inicial</string>
+  <string name="item_added_to_workspace">Item adicionado à tela inicial</string>
   <!-- Accessibility confirmation for item removed. -->
-  <string name="item_removed">Aplicativo removido</string>
+  <string name="item_removed">Item removido</string>
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
-  <string name="action_move">Mover aplicativo</string>
+  <string name="action_move">Mover item</string>
   <!-- Accessibility description to move item to empty cell. -->
   <string name="move_to_empty_cell">Mover para a linha <xliff:g id="NUMBER_0">%1$s</xliff:g>, coluna <xliff:g id="NUMBER_1">%2$s</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
@@ -161,15 +161,15 @@
   <!-- Accessibility description to move item to the hotseat. -->
   <string name="move_to_hotseat_position">Mover para a posição <xliff:g id="NUMBER">%1$s</xliff:g> dos favoritos</string>
   <!-- Accessibility confirmation for item move. -->
-  <string name="item_moved">Aplicativo movido</string>
+  <string name="item_moved">Item movido</string>
   <!-- Accessibility description to move item into an existing folder. -->
-  <string name="add_to_folder">Adicionar à pasta: <xliff:g example="Jogos" id="nome">%1$s</xliff:g></string>
+  <string name="add_to_folder">Adicionar à pasta: <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
   <string name="add_to_folder_with_app">Adicionar à pasta com <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for item added to folder. -->
-  <string name="added_to_folder">Aplicativo adicionado à pasta</string>
+  <string name="added_to_folder">Item adicionado à pasta</string>
   <!-- Accessibility description to create folder with another item. -->
-  <string name="create_folder_with">Criar pasta com: <xliff:g example="Jogos" id="nome">%1$s</xliff:g></string>
+  <string name="create_folder_with">Criar pasta com: <xliff:g id="NAME">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
   <string name="folder_created">Pasta criada</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
@@ -206,7 +206,7 @@
          but the wallpaper cropper cannot load it. The user will
          usually see this when using another app and trying to set
          an image as the wallpaper -->
-  <string name="wallpaper_load_fail">Não foi possível definir a imagem como plano de fundo</string>
+  <string name="wallpaper_load_fail">Não foi possível carregar a imagem como plano de fundo</string>
   <!-- Error message when an image is selected as a wallpaper,
          but something goes wrong when the user clicks "Set wallpaper" -->
   <string name="wallpaper_set_fail">Não foi possível definir a imagem como plano de fundo</string>
@@ -244,13 +244,13 @@
   <string name="notifications_header">Notificações</string>
   <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
+  <string name="about_text">Lawnchair é um Launcher criado por Kottmann (aka deletescape). Baseia-se no Launcher3 da AOSP.</string>
   <string name="about_title">Sobre</string>
   <string name="about_pref_summary">Conheça a equipe da Lawnchair</string>
   <string name="changelog_title">Alterações para a versão #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>
   <string name="icon_pack_preference_title">Pacote de Ícones</string>
-  <string name="icon_pack_preference_summary">Select an icon Pack</string>
+  <string name="icon_pack_preference_summary">Selecione um pacote de ícones</string>
   <string name="hotseat_uses_extracted_colors_pref_title">Usar cores do papel de parede no dock</string>
   <string name="hotseat_show_arrow">Mostrar indicador de exibição</string>
   <string name="hotseat_show_page_indicator">Mostrar indicador de página</string>
@@ -263,10 +263,10 @@
   <string name="blur_radius_pref_title">Raio de desfoque</string>
   <string name="pref_iconLabelsInTwoLines">Etiquetas de ícones em duas linhas</string>
   <string name="white_google_icon_pref_title">Usar o ícone branco da Google</string>
-  <string name="hide_icon_labels_pref_title">Hide icon labels on homescreen</string>
+  <string name="hide_icon_labels_pref_title">Ocultar rótulos dos ícones na tela inicial</string>
   <string name="hide_all_apps_icon_labels_pref_title">Esconder texto dos ícones na gaveta de apps</string>
-  <string name="workspace_label_color_hue_pref_title">Color of icon labels on homescreen</string>
-  <string name="all_apps_opacity_pref_title">Opacidade da gaveta</string>
+  <string name="workspace_label_color_hue_pref_title">Cor dos rótulos dos ícones na tela inicial</string>
+  <string name="all_apps_opacity_pref_title">Opacidade de gaveta</string>
   <string name="num_cols_pref_title">Número de colunas</string>
   <string name="num_rows_pref_title">Número de linhas</string>
   <string name="num_hotseat_icons_pref_title">Número de ícones no dock</string>
@@ -277,7 +277,7 @@
   <string name="full_width_width_widgets_pref_title">Preencher widgets na horizontal</string>
   <string name="full_width_widgets_pref_summary">Permitir que os widgets abranger a largura inteira sem preenchimento</string>
   <string name="notification_access_pref_title">Visualização e emblemas de notificação</string>
-  <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
+  <string name="notification_access_pref_summary">Permitir o Lawnchair acessar as suas notificações para mostra uma previa delas</string>
   <string name="general_pref_title">Geral</string>
   <string name="dock_pref_title">Barra de aplicativos</string>
   <string name="app_drawer_pref_title">Gaveta de aplicativos</string>
@@ -303,22 +303,21 @@
   <string name="restart_lawnchair_pref_summary">Pode ser útil se algumas configurações não forem aplicadas corretamente</string>
   <string name="rebuild_icondb_pref_title">Reconstruir o banco de dados dos ícones</string>
   <string name="pinch_to_overview_pref_title">Pince para visão geral</string>
-  <string name="pinch_to_overview_pref_summary">Pinch on the homescreen to open the overview</string>
+  <string name="pinch_to_overview_pref_summary">Pinçar na tela inicial para abrir a visão geral</string>
   <string name="light_statusbar_pref_title">Ícones da barra de status brancos</string>
   <string name="light_statusbar_pref_force">A barra de status sempre mostrará ícones escuros</string>
-  <string name="light_statusbar_pref_off">The status bar will always show light icons.</string>
-  <string name="haptic_feedback_pref_title">Habilitar vibração tátil</string>
+  <string name="light_statusbar_pref_off">A barra de status sempre mostrará ícones claros</string>
   <string name="keep_scroll_state_pref_title">Salvar a posição da rolagem</string>
   <string name="keep_scroll_state_pref_summary">Salvar a posição da rolagem da gaveta de apps</string>
   <string name="home_opens_drawer_pref_title">Botão da tela inicial abre a gaveta de apps</string>
-  <string name="home_opens_drawer_pref_summary">Pressing the home button while on the homescreen will open the app drawer</string>
+  <string name="home_opens_drawer_pref_summary">Pressionar o botão de início na tela inicial mostrará a gaveta de apps</string>
   <string name="show_hidden_pref_title">Mostrar apps ocultos</string>
   <string name="show_hidden_pref_on">Apps ocultos serão mostrados para alterar as configurações de visibilidade</string>
   <string name="show_hidden_pref_off">Apps ocultos não serão mostrados</string>
-  <string name="export_db_title">Export database</string>
-  <string name="import_db_title">Import database</string>
-  <string name="export_prefs_title">Export settings</string>
-  <string name="import_prefs_title">Import settings</string>
+  <string name="export_db_title">Exportar banco de dados</string>
+  <string name="import_db_title">Importar banco de dados</string>
+  <string name="export_prefs_title">Exportar configurações</string>
+  <string name="import_prefs_title">Importar configurações</string>
   <string name="notification_listener_label">Lawnchair - Notificações dinâmicas</string>
   <string name="color_extraction_label">Lawnchair - Extração de cor</string>
   <string name="test_title">Teste</string>
@@ -347,7 +346,7 @@
   <string name="settings_import_success">Restauração de configurações realizado com sucesso</string>
   <string name="db_import_success">Restauração de banco de dados realizado com sucesso</string>
   <string name="export_error">Não foi possível fazer o backup</string>
-  <string name="import_error">Não foi possível fazer a resutauração</string>
+  <string name="import_error">Não foi possível restaurar</string>
   <string name="imexport_no_backup_found">Nenhum backup encontrado</string>
   <string name="imexport_external_storage_unreadable">Armazenamento externo não é legível (conceder permissão em configurações)</string>
   <string name="imexport_external_storage_unwritable">Armazenamento externo não é gravável (conceder permissão em configurações)</string>
@@ -403,6 +402,7 @@
   <string name="lock_desktop">Bloquear área de trabalho</string>
   <string name="lawnfeed_not_found">Lawnfeed não instalado</string>
   <string name="google_app_not_found">Aplicativo Google não instalado</string>
+  <string name="lawnfeed_incompatible">Versão incompatível do Lawnfeed instalado</string>
   <string name="set_default_launcher">Definir como Launcher padrão</string>
   <string name="enable_spring_pref_title">Habilitar o efeito mola</string>
   <string name="hide_app">Ocultar app</string>
@@ -412,13 +412,16 @@
   <string name="hide_app_apply">Aplicar</string>
   <string name="unauthorized_device">Este dispositivo possui algumas ferramentas de pirataria instaladas. Por favor, desinstale-as para continuar.</string>
   <string name="hide_app_reset">Redefinir</string>
-  <!-- Strings for Lawnfeed gesture popup -->
-  <string name="lawnfeed_not_enabled_title">Lawnfeed não habilitado</string>
-  <string name="lawnfeed_not_enabled">Parece que você está tentando abrir a página do Google Now, mas você não ativou a opção nas configurações de comportamento.\n\nVocê quer habilitá-lo agora?</string>
-  <string name="lawnfeed_not_installed_title">Lawnfeed não instalado</string>
-  <string name="lawnfeed_not_installed">Parece que você está tentando abrir a página do Google Now, mas você não instalou o aplicativo Lawnfeed do nosso site\n\nVocê quer fazer o download agora?</string>
-  <string name="disable_popup">Lembrar minha escolha</string>
   <string name="two_row_dock">Barra de ícones com 2 linhas</string>
   <string name="reset_alternative_icons_title">Redefinir os ícones do app alternativo?</string>
   <string name="reset_alternative_icons">Você tem %1$d apps com ícones alternativos, quer restaurá-los?</string>
+  <string name="error_no_browser">Nenhum navegador encontrado para manipular URLs</string>
+  <string name="snowfall_title">Nevasca</string>
+  <string name="enable_snowfall_title">Permitir cair neve na tela inicial</string>
+  <string name="enable_snowfall_summary">Pode causar problemas de desempenho.</string>
+  <string name="snowfall_enabled">\"Deixe nevar, deixe nevar, deixe nevar!\"</string>
+  <string name="snowflake_size_scale">Escala de tamanho do floco de neve</string>
+  <string name="snowflakes_num">Número máximo de flocos de neve</string>
+  <string name="lawnfeed_outdated_title">Atualização do Lawnfeed necessária</string>
+  <string name="lawnfeed_outdated">Uma nova versão do Lawnfeed é necessária nesta versão do Lawnchair.\n\nAntes de instalar a atualização, você provavelmente precisará desinstalar a versão atual do Lawnfeed.\n\nVocê deseja baixá-la agora?</string>
 </resources>

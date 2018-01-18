@@ -372,7 +372,6 @@
     <string name="light_statusbar_pref_title">Light statusbar</string>
     <string name="light_statusbar_pref_force">The status bar will show dark icons</string>
     <string name="light_statusbar_pref_off">The status bar will show light icons</string>
-    <string name="haptic_feedback_pref_title">Enable vibration</string>
     <string name="keep_scroll_state_pref_title">Save scroll position</string>
     <string name="keep_scroll_state_pref_summary">Saves the scroll position in the drawer</string>
     <string name="home_opens_drawer_pref_title">Home button opens app drawer</string>
@@ -483,18 +482,18 @@
     <string name="hide_app_apply">Apply</string>
     <string name="unauthorized_device">This device has a few piracy tools installed. Please uninstall them to continue.</string>
     <string name="hide_app_reset">Reset</string>
-
-    <!-- Strings for Lawnfeed gesture popup -->
-    <string name="lawnfeed_not_enabled_title">Lawnfeed not enabled</string>
-    <string name="lawnfeed_not_enabled">It looks like you\'re trying to open the Google Now page, but you haven\'t enabled the option in the behavior settings.\n\nDo you want to enable it now?</string>
-    <string name="lawnfeed_not_installed_title">Lawnfeed not installed</string>
-    <string name="lawnfeed_not_installed">It looks like you\'re trying to open the Google Now page, but you haven\'t installed the Lawnfeed app from our website.\n\nDo you want to download it now?</string>
-    <string name="lawnfeed_outdated_title">Lawnfeed update required</string>
-    <string name="lawnfeed_outdated">A newer version of Lawnfeed is required in order to work with this version of Lawnchair.\n\nBefore installing the update you will probably need to uninstall the current version of Lawnfeed.\n\nDo you want to download it now?</string>
-    <string name="disable_popup">Don\'t show again</string>
-
     <string name="two_row_dock">Two row dock</string>
     <string name="reset_alternative_icons_title">Reset alternative app icons?</string>
     <string name="reset_alternative_icons">You have %1$d apps with alternative icons, do you want to reset them?</string>
     <string name="error_no_browser">No activity found to handle URLs</string>
+    <string name="snowfall_title">Snowfall</string>
+    <string name="snowfall_pref_summary" translatable="false">IT\'S WINTER MY DUDES</string>
+    <string name="enable_snowfall_title">Enable Snowfall on home screen</string>
+    <string name="enable_snowfall_summary">Can cause performance issues.</string>
+    <string name="snowfall_enabled">\"Let it snow, let it snow, let it snow!\"</string>
+    <string name="snowflake_size_scale">Snowflake size scale</string>
+    <string name="snowflakes_num">Max number of snowflakes</string>
+
+	<string name="lawnfeed_outdated_title">Lawnfeed update required</string>
+    <string name="lawnfeed_outdated">A newer version of Lawnfeed is required in order to work with this version of Lawnchair.\n\nBefore installing the update you will probably need to uninstall the current version of Lawnfeed.\n\nDo you want to download it now?</string>
 </resources>

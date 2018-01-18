@@ -47,6 +47,12 @@
         app:longClickContent="@xml/launcher_hidden_preferences" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
+        android:title="@string/snowfall_title"
+        android:summary="@string/snowfall_pref_summary"
+        android:icon="@drawable/ic_snowflake"
+        app:content="@xml/launcher_snowfall_preferences" />
+
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:title="@string/about_title"
         android:summary="@string/about_pref_summary"
         android:icon="@drawable/ic_information"

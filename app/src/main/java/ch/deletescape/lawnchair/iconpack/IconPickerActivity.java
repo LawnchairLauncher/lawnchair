@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 
@@ -25,6 +26,7 @@ public class IconPickerActivity extends AppCompatActivity implements IconGridAda
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FeatureFlags.INSTANCE.applyDarkTheme(this);
+        Utilities.setupPirateLocale(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_icon_picker);

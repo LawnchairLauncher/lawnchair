@@ -69,7 +69,6 @@ interface IPreferenceProvider {
     fun lightStatusBarKeyCache(value: Boolean, commit: Boolean = false)
     val hotseatShowArrow: Boolean
     val hotseatShowPageIndicator: Boolean
-    val enableHapticFeedback: Boolean
     val keepScrollState: Boolean
     val useFullWidthSearchBar: Boolean
     val showVoiceSearchButton: Boolean
@@ -98,6 +97,7 @@ interface IPreferenceProvider {
     val iconLabelsInTwoLines: Boolean
     val twoRowDock: Boolean
     val pulldownAction: String
+    val enableSnowfall: Boolean
 
     // -----------------
     // PREFERENCES
@@ -112,7 +112,6 @@ interface IPreferenceProvider {
     fun removeAlternateIcon(key: String)
     var hiddenAppsSet : Set<String>
     var previousBuildNumber : Int
-    var disableLawnfeedPopup: Boolean
     var overrideIconShape: String
     val backportAdaptiveIcons: Boolean
     fun removeOverrideIconShape()
@@ -131,6 +130,9 @@ interface IPreferenceProvider {
     val hotseatIconScale: Float
     val hotseatHeightScale: Float
     val enablePhysics: Boolean
+    val snowflakeSizeScale: Float
+    val snowflakesNum: String
+    val ayyMatey: Boolean
 
     // -----------------
     // GENERAL - BITS

@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion "27.0.1"
+    buildToolsVersion "27.0.2"
 
     signingConfigs {
         travis {
@@ -29,12 +29,16 @@ android {
 
     }
     buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (System.getenv("TRAVIS") == "true" && System.getenv("TRAVIS_EVENT_TYPE") != "pull_request") {
+                signingConfig signingConfigs.travis
+            }
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            if (System.getenv("TRAVIS_EVENT_TYPE") != "pull_request") {
-                signingConfig signingConfigs.travis
-            }
         }
     }
 }
@@ -42,7 +46,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation "com.android.support:support-v4:27.0.1"
+    implementation "com.android.support:support-v4:27.0.2"
     implementation('com.googlecode.json-simple:json-simple:1.1.1') {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
     }

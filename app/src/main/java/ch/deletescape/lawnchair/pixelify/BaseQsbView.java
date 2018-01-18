@@ -16,6 +16,7 @@ import android.view.View.OnClickListener;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 
+import ch.deletescape.lawnchair.BuildConfig;
 import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
@@ -128,7 +129,7 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     public void onClick(View view) {
         if (view.getId() == R.id.mic_icon) {
             startQsbActivity(VOICE_ASSIST);
-        } else if (mLauncher.getClient() instanceof LawnfeedClient) {
+        } else if (BuildConfig.ENABLE_LAWNFEED && PackageManagerHelper.isAppEnabled(getContext().getPackageManager(), LawnfeedClient.PROXY_PACKAGE, 0)) {
             ((LawnfeedClient) mLauncher.getClient()).onQsbClick(bm("com.google.nexuslauncher.FAST_TEXT_SEARCH"), new Receiver(this));
         } else {
             getContext().sendOrderedBroadcast(bm("com.google.nexuslauncher.FAST_TEXT_SEARCH"), null, new C0287l(this), null, 0, null, null);

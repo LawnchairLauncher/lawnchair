@@ -46,6 +46,8 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val iconLabelsInTwoLines by BooleanPref(PreferenceFlags.KEY_ICON_LABELS_IN_TWO_LINES, false)
     override val animatedClockIconAlternativeClockApps by BooleanPref(PreferenceFlags.KEY_ANIMATED_CLOCK_ICON_ALTERNATIVE_CLOCK_APPS, false)
     override val enablePhysics by BooleanPref(PreferenceFlags.KEY_ENABLE_PHYSICS, true)
+    override val snowflakeSizeScale by FloatPref(PreferenceFlags.KEY_PREF_SNOWFLAKE_SIZE_SCALE, 1f)
+    override val snowflakesNum by StringPref(PreferenceFlags.KEY_PREF_SNOWFLAKES_NUM, "200")
 
     override fun lightStatusBarKeyCache(default: Boolean): Boolean {
         return getBoolean(PreferenceFlags.KEY_LIGHT_STATUS_BAR, default)
@@ -157,7 +159,6 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val backportAdaptiveIcons = Utilities.ATLEAST_NOUGAT
     override val weatherProvider by StringPref(PreferenceFlags.KEY_WEATHER_PROVIDER, PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS)
     override var previousBuildNumber by MutableIntPref(PreferenceFlags.KEY_PREVIOUS_BUILD_NUMBER, 0)
-    override var disableLawnfeedPopup by MutableBooleanPref(PreferenceFlags.KEY_DISABLE_LAWNFEED_POPUP, false)
 
     override var hiddenAppsSet: Set<String>
         get() {
@@ -197,6 +198,7 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val showWeather by BooleanPref(FeatureFlags.KEY_PREF_WEATHER, false)
     override val lockDesktop by BooleanPref(FeatureFlags.KEY_PREF_LOCK_DESKTOP, false)
     override val animatedClockIcon by BooleanPref(FeatureFlags.KEY_PREF_ANIMATED_CLOCK_ICON, false)
+    override val enableSnowfall by BooleanPref(FeatureFlags.KEY_PREF_SNOWFALL, false)
 
     override val pinchToOverview by BooleanPref(FeatureFlags.KEY_PREF_PINCH_TO_OVERVIEW, true)
     override val centerWallpaper by BooleanPref(PreferenceFlags.KEY_CENTER_WALLPAPER, true)
@@ -215,7 +217,6 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
         setBoolean(PreferenceFlags.KEY_HOTSEAT_SHOULD_USE_EXTRACTED_COLORS_CACHE, value, commit)
     }
 
-    override val enableHapticFeedback by BooleanPref(FeatureFlags.KEY_PREF_HAPTIC_FEEDBACK, false)
     override val keepScrollState by BooleanPref(FeatureFlags.KEY_PREF_KEEP_SCROLL_STATE, false)
     override val useFullWidthSearchBar by BooleanPref(FeatureFlags.KEY_FULL_WIDTH_SEARCHBAR, false)
     override val showVoiceSearchButton by BooleanPref(FeatureFlags.KEY_SHOW_VOICE_SEARCH_BUTTON, false)
@@ -231,7 +232,7 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val enableDynamicUi by BooleanPref(FeatureFlags.KEY_PREF_ENABLE_DYNAMIC_UI, false)
     override val enableBlur by BooleanPref(FeatureFlags.KEY_PREF_ENABLE_BLUR, false)
     override val useWhiteGoogleIcon by BooleanPref(FeatureFlags.KEY_PREF_WHITE_GOOGLE_ICON, false)
-
+    override val ayyMatey by BooleanPref(PreferenceFlags.KEY_AYY_MATEY, false)
     override fun migrateThemePref(context: Context) {
         val darkTheme = PreferenceProvider.getPreferences(context).darkTheme
         if (darkTheme) {

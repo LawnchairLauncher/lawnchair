@@ -33,7 +33,6 @@ object FeatureFlags {
     const val KEY_PREF_PINCH_TO_OVERVIEW = "pref_pinchToOverview"
     const val KEY_PREF_PULLDOWN_NOTIS = "pref_pulldownNotis"
     const val KEY_PREF_HOTSEAT_EXTRACTED_COLORS = "pref_hotseatShouldUseExtractedColors"
-    const val KEY_PREF_HAPTIC_FEEDBACK = "pref_enableHapticFeedback"
     const val KEY_PREF_KEEP_SCROLL_STATE = "pref_keepScrollState"
     const val KEY_FULL_WIDTH_SEARCHBAR = "pref_fullWidthSearchbar"
     const val KEY_SHOW_PIXEL_BAR = "pref_showPixelBar"
@@ -60,6 +59,7 @@ object FeatureFlags {
     const val KEY_PREF_PULLDOWN_ACTION = "pref_pulldownAction"
     const val KEY_PREF_LOCK_DESKTOP = "pref_lockDesktop"
     const val KEY_PREF_ANIMATED_CLOCK_ICON = "pref_animatedClockIcon"
+    const val KEY_PREF_SNOWFALL = "pref_snowfall"
     private var darkThemeFlag: Int = 0
 
     const val DARK_QSB = 1

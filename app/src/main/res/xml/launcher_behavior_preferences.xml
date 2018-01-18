@@ -44,12 +44,6 @@
         android:persistent="true" />
 
     <SwitchPreference
-        android:key="pref_enableHapticFeedback"
-        android:title="@string/haptic_feedback_pref_title"
-        android:defaultValue="false"
-        android:persistent="true" />
-
-    <SwitchPreference
         android:key="pref_keepScrollState"
         android:title="@string/keep_scroll_state_pref_title"
         android:summary="@string/keep_scroll_state_pref_summary"
