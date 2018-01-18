@@ -16,13 +16,20 @@
 
 package com.android.quickstep;
 
+import static com.android.quickstep.RecentsView.SCROLL_TYPE_TASK;
+import static com.android.quickstep.RecentsView.SCROLL_TYPE_WORKSPACE;
+
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Outline;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Property;
+import android.view.View;
+import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -39,9 +46,6 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.android.quickstep.RecentsView.SCROLL_TYPE_TASK;
-import static com.android.quickstep.RecentsView.SCROLL_TYPE_WORKSPACE;
 
 /**
  * A task in the Recents view.
@@ -90,9 +94,8 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
 
     public TaskView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setOnClickListener((view) -> {
-            launchTask(true /* animate */);
-        });
+        setOnClickListener((view) -> launchTask(true /* animate */));
+        setOutlineProvider(new TaskOutlineProvider(getResources()));
     }
 
     @Override
@@ -155,14 +158,14 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
 
     @Override
     public void onTaskDataLoaded(Task task, ThumbnailData thumbnailData) {
-        mSnapshotView.setThumbnail(thumbnailData);
+        mSnapshotView.setThumbnail(task, thumbnailData);
         mIconView.setImageDrawable(task.icon);
         mIconView.setOnLongClickListener(icon -> TaskMenuView.showForTask(this));
     }
 
     @Override
     public void onTaskDataUnloaded() {
-        mSnapshotView.setThumbnail(null);
+        mSnapshotView.setThumbnail(null, null);
         mIconView.setImageDrawable(null);
         mIconView.setOnLongClickListener(null);
     }
@@ -215,5 +218,23 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         }
         scrollState.prevPageExtraWidth = 0;
         return SCROLL_TYPE_TASK;
+    }
+
+
+    private static final class TaskOutlineProvider extends ViewOutlineProvider {
+
+        private final int mMarginTop;
+        private final float mRadius;
+
+        TaskOutlineProvider(Resources res) {
+            mMarginTop = res.getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
+            mRadius = res.getDimension(R.dimen.task_corner_radius);
+        }
+
+        @Override
+        public void getOutline(View view, Outline outline) {
+            outline.setRoundRect(0, mMarginTop, view.getWidth(),
+                    view.getHeight(), mRadius);
+        }
     }
 }
