@@ -72,7 +72,7 @@ public class RecentsView extends PagedView {
             for (int i = mFirstTaskIndex; i < getChildCount(); i++) {
                 final TaskView taskView = (TaskView) getChildAt(i);
                 if (taskView.getTask().key.id == taskId) {
-                    taskView.getThumbnail().setThumbnail(snapshot);
+                    taskView.getThumbnail().setThumbnail(taskView.getTask(), snapshot);
                     return;
                 }
             }
