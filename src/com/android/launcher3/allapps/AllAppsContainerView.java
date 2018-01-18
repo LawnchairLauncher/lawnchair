@@ -27,7 +27,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -149,9 +148,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
      */
     public void setApps(List<AppInfo> apps) {
         boolean hasWorkProfileApp = hasWorkProfileApp(apps);
-        if (mUsingTabs != hasWorkProfileApp) {
-            rebindAdapters(hasWorkProfileApp);
-        }
+        rebindAdapters(hasWorkProfileApp);
         mComponentToAppMap.clear();
         addOrUpdateApps(apps);
     }
@@ -262,7 +259,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         });
 
         mHeader = findViewById(R.id.all_apps_header);
-        rebindAdapters(mUsingTabs);
+        rebindAdapters(mUsingTabs, true /* force */);
 
         mSearchContainer = findViewById(R.id.search_container_all_apps);
         mSearchUiManager = (SearchUiManager) mSearchContainer;
@@ -396,9 +393,14 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     }
 
     private void rebindAdapters(boolean showTabs) {
-        if (showTabs != mUsingTabs) {
-            replaceRVContainer(showTabs);
+        rebindAdapters(showTabs, false /* force */);
+    }
+
+    private void rebindAdapters(boolean showTabs, boolean force) {
+        if (showTabs == mUsingTabs && !force) {
+            return;
         }
+        replaceRVContainer(showTabs);
         mUsingTabs = showTabs;
 
         if (mUsingTabs) {
@@ -540,13 +542,16 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         for (int i = 0; i < mAH.length; i++) {
             mAH[i].adapter.setLastSearchQuery(query);
         }
-        boolean hasQuery = !TextUtils.isEmpty(query);
-        if (mUsingTabs && hasQuery) {
+        if (mUsingTabs) {
             mSearchModeWhileUsingTabs = true;
             rebindAdapters(false); // hide tabs
-        } else if (mSearchModeWhileUsingTabs && !hasQuery) {
-            mSearchModeWhileUsingTabs = false;
+        }
+    }
+
+    public void onClearSearchResult() {
+        if (mSearchModeWhileUsingTabs) {
             rebindAdapters(true); // show tabs
+            mSearchModeWhileUsingTabs = false;
         }
     }
 
