@@ -158,7 +158,7 @@ public class OverviewPanel extends LinearLayout implements Insettable, View.OnCl
                 .setPackage(getContext().getPackageName());
         intent.setSourceBounds(mLauncher.getViewBounds(v));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getContext().startActivity(intent, mLauncher.getActivityLaunchOptions(v));
+        getContext().startActivity(intent, mLauncher.getActivityLaunchOptions(v, false));
     }
 
     @Override
