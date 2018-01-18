@@ -146,6 +146,14 @@ public class LauncherStateManager {
         goToState(state, true, delay, null);
     }
 
+    public void reapplyState() {
+        if (mConfig.mCurrentAnimation == null) {
+            for (StateHandler handler : getStateHandlers()) {
+                handler.setState(mState);
+            }
+        }
+    }
+
     private void goToState(LauncherState state, boolean animated, long delay,
             Runnable onCompleteRunnable) {
         if (mLauncher.isInState(state) && mConfig.mCurrentAnimation == null) {

@@ -563,13 +563,21 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         computeScrollHelper();
     }
 
+    public int getExpectedHeight() {
+        return getMeasuredHeight();
+    }
+
     public int getNormalChildHeight() {
-        return  getMeasuredHeight() - getPaddingTop() - getPaddingBottom()
+        return  getExpectedHeight() - getPaddingTop() - getPaddingBottom()
                 - mInsets.top - mInsets.bottom;
     }
 
+    public int getExpectedWidth() {
+        return getMeasuredWidth();
+    }
+
     public int getNormalChildWidth() {
-        return  getMeasuredWidth() - getPaddingLeft() - getPaddingRight()
+        return  getExpectedWidth() - getPaddingLeft() - getPaddingRight()
                 - mInsets.left - mInsets.right;
     }
 

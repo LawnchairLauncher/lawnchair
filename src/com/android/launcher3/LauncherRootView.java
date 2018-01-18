@@ -66,6 +66,7 @@ public class LauncherRootView extends InsettableFrameLayout {
 
         // Update device profile before notifying th children.
         mLauncher.getDeviceProfile().updateInsets(insets);
+        boolean resetState = !insets.equals(mInsets);
         setInsets(insets);
 
         if (mAlignedView != null) {
@@ -76,6 +77,9 @@ public class LauncherRootView extends InsettableFrameLayout {
                 lp.rightMargin = mRightInsetBarWidth;
                 mAlignedView.setLayoutParams(lp);
             }
+        }
+        if (resetState) {
+            mLauncher.getStateManager().reapplyState();
         }
 
         return true; // I'll take it from here
