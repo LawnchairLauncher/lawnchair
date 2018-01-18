@@ -1857,7 +1857,9 @@ public class Launcher extends BaseActivity
         if (v != null) {
             intent.setSourceBounds(getViewBounds(v));
             // If there is no target package, use the default intent chooser animation
-            launchOptions = hasTargetPackage ? getActivityLaunchOptions(v) : null;
+            launchOptions = hasTargetPackage
+                    ? getActivityLaunchOptions(v, isInMultiWindowModeCompat())
+                    : null;
         } else {
             launchOptions = null;
         }
@@ -1911,9 +1913,38 @@ public class Launcher extends BaseActivity
         }
     }
 
+    public Bundle getDefaultActivityLaunchOptions(View v) {
+        if (Utilities.ATLEAST_MARSHMALLOW) {
+            int left = 0, top = 0;
+            int width = v.getMeasuredWidth(), height = v.getMeasuredHeight();
+            if (v instanceof BubbleTextView) {
+                // Launch from center of icon, not entire view
+                Drawable icon = ((BubbleTextView) v).getIcon();
+                if (icon != null) {
+                    Rect bounds = icon.getBounds();
+                    left = (width - bounds.width()) / 2;
+                    top = v.getPaddingTop();
+                    width = bounds.width();
+                    height = bounds.height();
+                }
+            }
+            return ActivityOptions.makeClipRevealAnimation(v, left, top, width, height)
+                    .toBundle();
+        } else if (Utilities.ATLEAST_LOLLIPOP_MR1) {
+            // On L devices, we use the device default slide-up transition.
+            // On L MR1 devices, we use a custom version of the slide-up transition which
+            // doesn't have the delay present in the device default.
+            return ActivityOptions.makeCustomAnimation(
+                    this, R.anim.task_open_enter, R.anim.no_anim).toBundle();
+        }
+        return null;
+    }
+
     @TargetApi(Build.VERSION_CODES.M)
-    public Bundle getActivityLaunchOptions(View v) {
-        return UiFactory.getActivityLaunchOptions(this, v);
+    public Bundle getActivityLaunchOptions(View v, boolean useDefaultLaunchOptions) {
+        return useDefaultLaunchOptions
+                ? getDefaultActivityLaunchOptions(v)
+                : UiFactory.getActivityLaunchOptions(this, v);
     }
 
     public Rect getViewBounds(View v) {
@@ -1928,11 +1959,20 @@ public class Launcher extends BaseActivity
             Toast.makeText(this, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
             return mAppLaunchSuccess;
         }
+
+        boolean isShortcut = Utilities.ATLEAST_MARSHMALLOW
+                && (item instanceof ShortcutInfo)
+                && (item.itemType == Favorites.ITEM_TYPE_SHORTCUT
+                || item.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)
+                && !((ShortcutInfo) item).isPromise();
+
         // Only launch using the new animation if the shortcut has not opted out (this is a
         // private contract between launcher and may be ignored in the future).
         boolean useLaunchAnimation = (v != null) &&
                 !intent.hasExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION);
-        Bundle optsBundle = useLaunchAnimation ? getActivityLaunchOptions(v) : null;
+        Bundle optsBundle = useLaunchAnimation
+                ? getActivityLaunchOptions(v, isShortcut || isInMultiWindowModeCompat())
+                : null;
 
         UserHandle user = item == null ? null : item.user;
 
@@ -1942,11 +1982,7 @@ public class Launcher extends BaseActivity
             intent.setSourceBounds(getViewBounds(v));
         }
         try {
-            if (Utilities.ATLEAST_MARSHMALLOW
-                    && (item instanceof ShortcutInfo)
-                    && (item.itemType == Favorites.ITEM_TYPE_SHORTCUT
-                     || item.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)
-                    && !((ShortcutInfo) item).isPromise()) {
+            if (isShortcut) {
                 // Shortcuts need some special checks due to legacy reasons.
                 startShortcutIntentSafely(intent, optsBundle, item);
             } else if (user == null || user.equals(Process.myUserHandle())) {
