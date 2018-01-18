@@ -11,6 +11,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewDebug;
 
+import com.android.launcher3.util.Themes;
+
 import static com.android.launcher3.util.SystemUiController.FLAG_DARK_NAV;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_ROOT_VIEW;
 
@@ -79,6 +81,13 @@ public class LauncherRootView extends InsettableFrameLayout {
         }
 
         return true; // I'll take it from here
+    }
+
+    @Override
+    public void setInsets(Rect insets) {
+        super.setInsets(insets);
+        setBackground(insets.top == 0 ? null
+                : Themes.getAttrDrawable(getContext(), R.attr.workspaceStatusBarScrim));
     }
 
     public void dispatchInsets() {
