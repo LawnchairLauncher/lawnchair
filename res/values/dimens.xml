@@ -227,6 +227,6 @@
     <dimen name="popup_item_divider_height">0.5dp</dimen>
     <dimen name="swipe_helper_falsing_threshold">70dp</dimen>
 
-<!-- Recents -->
-    <dimen name="recents_page_spacing">10dp</dimen>
+<!-- Overview -->
+    <dimen name="options_menu_icon_size">48dp</dimen>
 </resources>

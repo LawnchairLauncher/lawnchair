@@ -62,6 +62,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.accessibility.ShortcutMenuAccessibilityDelegate;
+import com.android.launcher3.anim.RevealOutlineAnimation;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.dragndrop.DragController;
@@ -810,10 +811,10 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             return;
         }
         mEndRect.setEmpty();
+        if (getOutlineProvider() instanceof RevealOutlineAnimation) {
+            ((RevealOutlineAnimation) getOutlineProvider()).getOutline(mEndRect);
+        }
         if (mOpenCloseAnimator != null) {
-            Outline outline = new Outline();
-            getOutlineProvider().getOutline(this, outline);
-            outline.getRect(mEndRect);
             mOpenCloseAnimator.cancel();
         }
         mIsOpen = false;

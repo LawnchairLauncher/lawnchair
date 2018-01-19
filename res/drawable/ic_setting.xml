@@ -14,8 +14,8 @@ Copyright (C) 2016 The Android Open Source Project
     limitations under the License.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-        android:width="48dp"
-        android:height="48dp"
+        android:width="@dimen/options_menu_icon_size"
+        android:height="@dimen/options_menu_icon_size"
         android:viewportWidth="48.0"
         android:viewportHeight="48.0">
     <path
