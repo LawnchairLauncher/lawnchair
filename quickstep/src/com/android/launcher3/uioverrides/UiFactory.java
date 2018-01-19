@@ -35,6 +35,7 @@ import com.android.launcher3.util.TouchController;
 import com.android.launcher3.widget.WidgetsFullSheet;
 import com.android.quickstep.RecentsView;
 import com.android.systemui.shared.recents.view.RecentsTransition;
+import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 
 public class UiFactory {
 
@@ -107,6 +108,12 @@ public class UiFactory {
     }
 
     public static Bundle getActivityLaunchOptions(Launcher launcher, View v) {
-        return new LauncherAppTransitionManager(launcher).getActivityLauncherOptions(v);
+        try {
+            return new LauncherAppTransitionManager(launcher).getActivityLauncherOptions(v);
+        } catch (NoClassDefFoundError e) {
+            // Gracefully fall back to default launch options if the user's platform doesn't have
+            // the latest changes.
+            return launcher.getDefaultActivityLaunchOptions(v);
+        }
     }
 }
