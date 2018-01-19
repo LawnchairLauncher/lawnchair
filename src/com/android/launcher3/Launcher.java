@@ -56,6 +56,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -268,7 +269,7 @@ public class Launcher extends BaseActivity
      */
     private PendingRequestArgs mPendingRequestArgs;
 
-    private float mLastDispatchTouchEventX = 0.0f;
+    private final PointF mLastDispatchTouchEvent = new PointF();
 
     public ViewGroupFocusHelper mFocusHandler;
     private boolean mRotationEnabled = false;
@@ -2013,7 +2014,7 @@ public class Launcher extends BaseActivity
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        mLastDispatchTouchEventX = ev.getX();
+        mLastDispatchTouchEvent.set(ev.getX(), ev.getY());
         return super.dispatchTouchEvent(ev);
     }
 
@@ -2024,7 +2025,7 @@ public class Launcher extends BaseActivity
         if (!isInState(NORMAL) && !isInState(OVERVIEW)) return false;
 
         boolean ignoreLongPressToOverview =
-                mDeviceProfile.shouldIgnoreLongPressToOverview(mLastDispatchTouchEventX);
+                mDeviceProfile.shouldIgnoreLongPressToOverview(mLastDispatchTouchEvent.x);
 
         if (v instanceof Workspace) {
             if (!isInState(OVERVIEW)) {
@@ -2032,7 +2033,7 @@ public class Launcher extends BaseActivity
                     getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
                             Action.Direction.NONE, ContainerType.WORKSPACE,
                             mWorkspace.getCurrentPage());
-                    UiFactory.onWorkspaceLongPress(this);
+                    UiFactory.onWorkspaceLongPress(this, mLastDispatchTouchEvent);
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                     return true;
@@ -2069,7 +2070,7 @@ public class Launcher extends BaseActivity
                     getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
                             Action.Direction.NONE, ContainerType.WORKSPACE,
                             mWorkspace.getCurrentPage());
-                    UiFactory.onWorkspaceLongPress(this);
+                    UiFactory.onWorkspaceLongPress(this, mLastDispatchTouchEvent);
                 }
                 mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);

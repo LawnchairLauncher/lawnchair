@@ -21,6 +21,7 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import android.app.ActivityOptions;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -54,7 +55,7 @@ public class UiFactory {
                 launcher.getAllAppsController(), launcher.getWorkspace() };
     }
 
-    public static void onWorkspaceLongPress(Launcher launcher) {
+    public static void onWorkspaceLongPress(Launcher launcher, PointF touchPoint) {
         launcher.getStateManager().goToState(OVERVIEW);
     }
 

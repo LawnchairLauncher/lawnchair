@@ -16,11 +16,14 @@
 
 <resources>
 
+    <dimen name="options_menu_icon_size">24dp</dimen>
+
     <dimen name="task_thumbnail_top_margin">24dp</dimen>
     <dimen name="task_thumbnail_icon_size">48dp</dimen>
     <dimen name="task_menu_background_radius">12dp</dimen>
     <dimen name="task_corner_radius">2dp</dimen>
     <dimen name="task_fade_length">20dp</dimen>
+    <dimen name="recents_page_spacing">10dp</dimen>
 
 
     <dimen name="quickstep_fling_threshold_velocity">500dp</dimen>

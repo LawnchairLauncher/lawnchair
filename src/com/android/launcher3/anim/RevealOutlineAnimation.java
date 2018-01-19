@@ -80,4 +80,8 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
     public float getRadius() {
         return mOutlineRadius;
     }
+
+    public void getOutline(Rect out) {
+        out.set(mOutline);
+    }
 }
