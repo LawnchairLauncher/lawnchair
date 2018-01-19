@@ -88,6 +88,11 @@ public class LauncherAppTransitionManager {
 
                             mDragLayer.setAlpha(1f);
                             mDragLayer.setTranslationY(0f);
+
+                            View appsView = mLauncher.getAppsView();
+                            appsView.setAlpha(1f);
+                            appsView.setTranslationY(0f);
+
                             finishedCallback.run();
                         }
                     });
@@ -117,17 +122,31 @@ public class LauncherAppTransitionManager {
     private AnimatorSet getHideLauncherAnimator() {
         AnimatorSet hideLauncher = new AnimatorSet();
 
-        // Animate Launcher so that it moves downwards and fades out.
-        ObjectAnimator dragLayerAlpha = ObjectAnimator.ofFloat(mDragLayer, View.ALPHA, 1f, 0f);
-        dragLayerAlpha.setDuration(217);
-        dragLayerAlpha.setInterpolator(Interpolators.LINEAR);
-        ObjectAnimator dragLayerTransY = ObjectAnimator.ofFloat(mDragLayer, View.TRANSLATION_Y, 0,
-                mDragLayerTransY);
-        dragLayerTransY.setInterpolator(Interpolators.AGGRESSIVE_EASE);
-        dragLayerTransY.setDuration(350);
+        // Animate the background content so that it moves downwards and fades out.
+        if (mLauncher.isInState(LauncherState.ALL_APPS)) {
+            View appsView = mLauncher.getAppsView();
+            ObjectAnimator alpha = ObjectAnimator.ofFloat(appsView, View.ALPHA, 1f, 0f);
+            alpha.setDuration(217);
+            alpha.setInterpolator(Interpolators.LINEAR);
+            ObjectAnimator transY = ObjectAnimator.ofFloat(appsView, View.TRANSLATION_Y, 0,
+                    mDragLayerTransY);
+            transY.setInterpolator(Interpolators.AGGRESSIVE_EASE);
+            transY.setDuration(350);
 
-        hideLauncher.play(dragLayerAlpha);
-        hideLauncher.play(dragLayerTransY);
+            hideLauncher.play(alpha);
+            hideLauncher.play(transY);
+        } else {
+            ObjectAnimator dragLayerAlpha = ObjectAnimator.ofFloat(mDragLayer, View.ALPHA, 1f, 0f);
+            dragLayerAlpha.setDuration(217);
+            dragLayerAlpha.setInterpolator(Interpolators.LINEAR);
+            ObjectAnimator dragLayerTransY = ObjectAnimator.ofFloat(mDragLayer, View.TRANSLATION_Y,
+                    0, mDragLayerTransY);
+            dragLayerTransY.setInterpolator(Interpolators.AGGRESSIVE_EASE);
+            dragLayerTransY.setDuration(350);
+
+            hideLauncher.play(dragLayerAlpha);
+            hideLauncher.play(dragLayerTransY);
+        }
         return hideLauncher;
     }
 
