@@ -83,7 +83,7 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public float getHoseatAlpha(Launcher launcher) {
-        return launcher.getDeviceProfile().isVerticalBarLayout() ? 0 : 1;
+        return 0;
     }
 
     @Override

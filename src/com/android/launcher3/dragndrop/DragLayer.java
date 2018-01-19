@@ -366,6 +366,16 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        ev.offsetLocation(getTranslationX(), 0);
+        try {
+            return super.dispatchTouchEvent(ev);
+        } finally {
+            ev.offsetLocation(-getTranslationX(), 0);
+        }
+    }
+
+    @Override
     public LayoutParams generateLayoutParams(AttributeSet attrs) {
         return new LayoutParams(getContext(), attrs);
     }

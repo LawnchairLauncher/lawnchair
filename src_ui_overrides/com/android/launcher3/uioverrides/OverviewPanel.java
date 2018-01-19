@@ -37,6 +37,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceStateTransitionAnimation.AnimatedPropertySetter;
 import com.android.launcher3.WorkspaceStateTransitionAnimation.PropertySetter;
 import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.widget.WidgetsFullSheet;
@@ -173,8 +174,7 @@ public class OverviewPanel extends LinearLayout implements Insettable, View.OnCl
     }
 
     private void setState(LauncherState state, PropertySetter setter) {
-        float hotseatAlpha = state.getHoseatAlpha(mLauncher);
-        setter.setViewAlpha(null, this, 1f - hotseatAlpha);
+        setter.setViewAlpha(this, 1f - state.getHoseatAlpha(mLauncher), Interpolators.ACCEL);
     }
 
     public static int getButtonBarHeight(Launcher launcher) {

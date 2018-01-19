@@ -20,7 +20,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.AllAppsScrim;
@@ -51,8 +50,6 @@ public class AllAppsTransitionController
             controller.setProgress(progress);
         }
     };
-
-    private final Interpolator mHotseatAccelInterpolator = Interpolators.ACCEL_1_5;
 
     public static final float PARALLAX_COEFFICIENT = .125f;
 
@@ -111,7 +108,6 @@ public class AllAppsTransitionController
 
         float workspaceHotseatAlpha = Utilities.boundToRange(progress, 0f, 1f);
         float alpha = 1 - workspaceHotseatAlpha;
-        float hotseatAlpha = mHotseatAccelInterpolator.getInterpolation(workspaceHotseatAlpha);
 
         mAppsView.setTranslationY(shiftCurrent);
         if (mAllAppsScrim == null) {
@@ -122,8 +118,8 @@ public class AllAppsTransitionController
 
         if (!mIsVerticalLayout) {
             mAppsView.setAlpha(alpha);
-            mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y, hotseatTranslation,
-                    hotseatAlpha);
+            mLauncher.getHotseat().setTranslationY(hotseatTranslation);
+            mLauncher.getWorkspace().getPageIndicator().setTranslationY(hotseatTranslation);
 
             // Use a light system UI (dark icons) if all apps is behind at least half of the
             // status bar.
