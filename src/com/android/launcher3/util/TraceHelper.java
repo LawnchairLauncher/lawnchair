@@ -55,7 +55,7 @@ public class TraceHelper {
     public static void partitionSection(String sectionName, String partition) {
         if (ENABLED) {
             MutableLong time = sUpTimes.get(sectionName);
-            if (time.value >= 0) {
+            if (time != null && time.value >= 0) {
 
                 if (SYSTEM_TRACE) {
                     Trace.endSection();
@@ -78,7 +78,7 @@ public class TraceHelper {
     public static void endSection(String sectionName, String msg) {
         if (ENABLED) {
             MutableLong time = sUpTimes.get(sectionName);
-            if (time.value >= 0) {
+            if (time != null && time.value >= 0) {
                 if (SYSTEM_TRACE) {
                     Trace.endSection();
                 }
