@@ -179,27 +179,6 @@ public class Workspace extends PagedView
 
     private SpringLoadedDragController mSpringLoadedDragController;
 
-    // Direction used for moving the workspace and hotseat UI
-    public enum Direction {
-        X  (TRANSLATION_X),
-        Y  (TRANSLATION_Y);
-
-        private final Property<View, Float> viewProperty;
-
-        Direction(Property<View, Float> viewProperty) {
-            this.viewProperty = viewProperty;
-        }
-    }
-
-    private static final int HOTSEAT_STATE_ALPHA_INDEX = 2;
-
-    /**
-     * Hotseat alpha can be changed when moving horizontally, vertically, changing states.
-     * The values correspond to {@link Direction#X}, {@link Direction#Y} &
-     * {@link #HOTSEAT_STATE_ALPHA_INDEX} respectively.
-     */
-    private final float[] mHotseatAlpha = new float[] {1, 1, 1};
-
     private boolean mIsSwitchingState = false;
 
     boolean mChildrenLayersEnabled = true;
@@ -1206,81 +1185,8 @@ public class Workspace extends PagedView
         // TODO(adamcohen): figure out a final effect here. We may need to recommend
         // different effects based on device performance. On at least one relatively high-end
         // device I've tried, translating the launcher causes things to get quite laggy.
-        setWorkspaceTranslationAndAlpha(transX, alpha);
-        setHotseatTranslationAndAlpha(Direction.X, transX, alpha);
-    }
-
-    /**
-     * Moves the workspace UI in the provided direction.
-     * @param translation the amount of horizontal shift.
-     * @param alpha the alpha for the workspace page
-     */
-    private void setWorkspaceTranslationAndAlpha(float translation, float alpha) {
-        float finalAlpha = alpha;
-
-        View currentChild = getChildAt(getCurrentPage());
-        if (currentChild != null) {
-            currentChild.setTranslationX(translation);
-            currentChild.setAlpha(finalAlpha);
-        }
-
-        // When the animation finishes, reset all pages, just in case we missed a page.
-        if (Float.compare(translation, 0) == 0) {
-            for (int i = getChildCount() - 1; i >= 0; i--) {
-                View child = getChildAt(i);
-                child.setTranslationX(0);
-                child.setAlpha(finalAlpha);
-            }
-        }
-    }
-
-    /**
-     * Moves the Hotseat UI in the provided direction.
-     * @param direction the direction to move the workspace
-     * @param translation the amount of shift.
-     * @param alpha the alpha for the hotseat page
-     */
-    public void setHotseatTranslationAndAlpha(Direction direction, float translation, float alpha) {
-        Property<View, Float> property = direction.viewProperty;
-        // Skip the page indicator movement in the vertical bar layout
-        if (direction != Direction.Y || !mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-            property.set(mPageIndicator, translation);
-        }
-        property.set(mLauncher.getHotseat(), translation);
-        setHotseatAlphaAtIndex(alpha, direction.ordinal());
-    }
-
-    private void setHotseatAlphaAtIndex(float alpha, int index) {
-        mHotseatAlpha[index] = alpha;
-        final float hotseatAlpha = mHotseatAlpha[0] * mHotseatAlpha[1] * mHotseatAlpha[2];
-        final float pageIndicatorAlpha = mHotseatAlpha[0] * mHotseatAlpha[2];
-
-        mLauncher.getHotseat().setAlpha(hotseatAlpha);
-        mPageIndicator.setAlpha(pageIndicatorAlpha);
-    }
-
-    public ValueAnimator createHotseatAlphaAnimator(float finalValue) {
-        if (Float.compare(finalValue, mHotseatAlpha[HOTSEAT_STATE_ALPHA_INDEX]) == 0) {
-            // Return a dummy animator to avoid null checks.
-            return ValueAnimator.ofFloat(0, 0);
-        } else {
-            ValueAnimator animator = ValueAnimator
-                    .ofFloat(mHotseatAlpha[HOTSEAT_STATE_ALPHA_INDEX], finalValue);
-            animator.addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    float value = (Float) valueAnimator.getAnimatedValue();
-                    setHotseatAlphaAtIndex(value, HOTSEAT_STATE_ALPHA_INDEX);
-                }
-            });
-
-            final boolean accessibilityEnabled = isAccessibilityEnabled(mLauncher);
-            animator.addUpdateListener(
-                    new AlphaUpdateListener(mLauncher.getHotseat(), accessibilityEnabled));
-            animator.addUpdateListener(
-                    new AlphaUpdateListener(mPageIndicator, accessibilityEnabled));
-            return animator;
-        }
+        mLauncher.getDragLayer().setTranslationX(transX);
+        mLauncher.getDragLayer().setAlpha(alpha);
     }
 
     @Override

@@ -62,6 +62,11 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
+    public float getHoseatAlpha(Launcher launcher) {
+        return 0;
+    }
+
+    @Override
     public View getFinalFocus(Launcher launcher) {
         return launcher.getAppsView();
     }

@@ -138,9 +138,8 @@ public class WorkspaceStateTransitionAnimation {
         propertySetter.setFloat(mWorkspace, View.TRANSLATION_Y,
                 scaleAndTranslation[2], Interpolators.ZOOM_IN);
 
-        float hotseatAlpha = state.getHoseatAlpha(mLauncher);
-        propertySetter.setViewAlpha(mWorkspace.createHotseatAlphaAnimator(hotseatAlpha),
-                mLauncher.getHotseat(), hotseatAlpha);
+        propertySetter.setViewAlpha(mLauncher.getHotseat(), state.getHoseatAlpha(mLauncher),
+                pageAlphaProvider.interpolator);
 
         // Set scrim
         propertySetter.setInt(mLauncher.getDragLayer().getScrim(), DRAWABLE_ALPHA,
@@ -165,11 +164,7 @@ public class WorkspaceStateTransitionAnimation {
 
     public static class PropertySetter {
 
-        public void setViewAlpha(Animator anim, View view, float alpha) {
-            if (anim != null) {
-                anim.end();
-                return;
-            }
+        public void setViewAlpha(View view, float alpha, TimeInterpolator interpolator) {
             view.setAlpha(alpha);
             AlphaUpdateListener.updateVisibility(view, isAccessibilityEnabled(view.getContext()));
         }
@@ -196,17 +191,14 @@ public class WorkspaceStateTransitionAnimation {
         }
 
         @Override
-        public void setViewAlpha(Animator anim, View view, float alpha) {
-            if (anim == null) {
-                if (view.getAlpha() == alpha) {
-                    return;
-                }
-                anim = ObjectAnimator.ofFloat(view, View.ALPHA, alpha);
-                anim.addListener(new AlphaUpdateListener(view,
-                        isAccessibilityEnabled(view.getContext())));
+        public void setViewAlpha(View view, float alpha, TimeInterpolator interpolator) {
+            if (view.getAlpha() == alpha) {
+                return;
             }
-
-            anim.setDuration(mDuration).setInterpolator(getFadeInterpolator(alpha));
+            ObjectAnimator anim = ObjectAnimator.ofFloat(view, View.ALPHA, alpha);
+            anim.addListener(new AlphaUpdateListener(
+                    view, isAccessibilityEnabled(view.getContext())));
+            anim.setDuration(mDuration).setInterpolator(interpolator);
             mStateAnimator.play(anim);
         }
 
