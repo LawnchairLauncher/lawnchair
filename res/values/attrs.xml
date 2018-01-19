@@ -91,10 +91,6 @@
         <attr name="layout_ignoreInsets" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="ButtonDropTarget">
-        <attr name="hideParentOnDisable" format="boolean" />
-    </declare-styleable>
-
     <declare-styleable name="InvariantDeviceProfile">
         <attr name="name" format="string" />
         <attr name="minWidthDps" format="float" />

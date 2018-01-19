@@ -60,7 +60,7 @@
 
         <include
             android:id="@+id/drop_target_bar"
-            layout="@layout/drop_target_bar_horz" />
+            layout="@layout/drop_target_bar" />
 
         <!-- Keep these behind the workspace so that they are not visible when
              we go into AllApps -->
