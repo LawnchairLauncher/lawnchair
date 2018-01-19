@@ -67,7 +67,7 @@
 
         <include
             android:id="@+id/drop_target_bar"
-            layout="@layout/drop_target_bar_vert" />
+            layout="@layout/drop_target_bar" />
 
         <include layout="@layout/all_apps"
             android:id="@+id/apps_view"

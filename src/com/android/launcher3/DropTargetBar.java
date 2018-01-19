@@ -17,6 +17,9 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.AlphaUpdateListener.updateVisibility;
+import static com.android.launcher3.ButtonDropTarget.TOOLTIP_DEFAULT;
+import static com.android.launcher3.ButtonDropTarget.TOOLTIP_LEFT;
+import static com.android.launcher3.ButtonDropTarget.TOOLTIP_RIGHT;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 
 import android.animation.TimeInterpolator;
@@ -26,22 +29,18 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewDebug;
-import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragOptions;
 
-import java.util.ArrayList;
-
 /*
  * The top bar containing various drop targets: Delete/App Info/Uninstall.
  */
-public class DropTargetBar extends LinearLayout
+public class DropTargetBar extends FrameLayout
         implements DragListener, Insettable {
 
     protected static final int DEFAULT_DRAG_FADE_DURATION = 175;
@@ -59,6 +58,8 @@ public class DropTargetBar extends LinearLayout
     private ButtonDropTarget[] mDropTargets;
     private ViewPropertyAnimator mCurrentAnimation;
 
+    private boolean mIsVertical = true;
+
     public DropTargetBar(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -70,25 +71,30 @@ public class DropTargetBar extends LinearLayout
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-
-        // Initialize with hidden state
-        setAlpha(0f);
+        mDropTargets = new ButtonDropTarget[getChildCount()];
+        for (int i = 0; i < mDropTargets.length; i++) {
+            mDropTargets[i] = (ButtonDropTarget) getChildAt(i);
+            mDropTargets[i].setDropTargetBar(this);
+        }
     }
 
     @Override
     public void setInsets(Rect insets) {
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
         DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
+        mIsVertical = grid.isVerticalBarLayout();
 
         lp.leftMargin = insets.left;
         lp.topMargin = insets.top;
         lp.bottomMargin = insets.bottom;
         lp.rightMargin = insets.right;
+        int tooltipLocation = TOOLTIP_DEFAULT;
 
         if (grid.isVerticalBarLayout()) {
             lp.width = grid.dropTargetBarSizePx;
             lp.height = grid.availableHeightPx - 2 * grid.edgeMarginPx;
             lp.gravity = insets.left > insets.right ? Gravity.RIGHT : Gravity.LEFT;
+            tooltipLocation = insets.left > insets.right ? TOOLTIP_LEFT : TOOLTIP_RIGHT;
         } else {
             int gap;
             if (grid.isTablet) {
@@ -107,83 +113,95 @@ public class DropTargetBar extends LinearLayout
             lp.height = grid.dropTargetBarSizePx;
         }
         setLayoutParams(lp);
+        for (ButtonDropTarget button : mDropTargets) {
+            button.setToolTipLocation(tooltipLocation);
+        }
     }
 
     public void setup(DragController dragController) {
         dragController.addDragListener(this);
-        ArrayList<ButtonDropTarget> outList = new ArrayList<>();
-        findDropTargets(this, outList);
-
-        mDropTargets = new ButtonDropTarget[outList.size()];
         for (int i = 0; i < mDropTargets.length; i++) {
-            mDropTargets[i] = outList.get(i);
-            mDropTargets[i].setDropTargetBar(this);
             dragController.addDragListener(mDropTargets[i]);
             dragController.addDropTarget(mDropTargets[i]);
         }
     }
 
-    private static void findDropTargets(View view, ArrayList<ButtonDropTarget> outTargets) {
-        if (view instanceof ButtonDropTarget) {
-            outTargets.add((ButtonDropTarget) view);
-        } else if (view instanceof ViewGroup) {
-            ViewGroup vg = (ViewGroup) view;
-            for (int i = vg.getChildCount() - 1; i >= 0; i--) {
-                findDropTargets(vg.getChildAt(i), outTargets);
-            }
-        }
-    }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int height = MeasureSpec.getSize(heightMeasureSpec);
 
-        boolean hideText = hideTextHelper(false /* shouldUpdateText */, false /* no-op */);
-        if (hideTextHelper(true /* shouldUpdateText */, hideText)) {
-            // Text has changed, so we need to re-measure.
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        }
-    }
+        if (mIsVertical) {
+            int widthSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY);
+            int heightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.AT_MOST);
 
-    /**
-     * Helper method that iterates through the children and returns whether any of the visible
-     * {@link ButtonDropTarget} has truncated text.
-     *
-     * @param shouldUpdateText If True, updates the text of all children.
-     * @param hideText If True and {@param shouldUpdateText} is True, clears the text of all
-     *                 children; otherwise it sets the original text value.
-     *
-     *
-     * @return If shouldUpdateText is True, returns whether any of the children updated their text.
-     *         Else, returns whether any of the children have truncated their text.
-     */
-    private boolean hideTextHelper(boolean shouldUpdateText, boolean hideText) {
-        boolean result = false;
-        View visibleView;
-        ButtonDropTarget dropTarget;
-        for (int i = getChildCount() - 1; i >= 0; --i) {
-            if (getChildAt(i) instanceof ButtonDropTarget) {
-                visibleView = dropTarget = (ButtonDropTarget) getChildAt(i);
-            } else if (getChildAt(i) instanceof ViewGroup) {
-                // The Drop Target is wrapped in a FrameLayout.
-                visibleView = getChildAt(i);
-                dropTarget = (ButtonDropTarget) ((ViewGroup) visibleView).getChildAt(0);
-            } else {
-                // Ignore other views.
-                continue;
+            for (ButtonDropTarget button : mDropTargets) {
+                if (button.getVisibility() != GONE) {
+                    button.setTextVisible(false);
+                    button.measure(widthSpec, heightSpec);
+                }
+            }
+        } else {
+            int visibleCount = getVisibleButtonsCount();
+            int availableWidth = width / visibleCount;
+            boolean textVisible = true;
+            for (ButtonDropTarget buttons : mDropTargets) {
+                if (buttons.getVisibility() != GONE) {
+                    textVisible = textVisible && !buttons.isTextTruncated(availableWidth);
+                }
             }
 
-            if (visibleView.getVisibility() == View.VISIBLE) {
-                if (shouldUpdateText) {
-                    result |= dropTarget.updateText(hideText);
-                } else if (dropTarget.isTextTruncated()) {
-                    result = true;
-                    break;
+            int widthSpec = MeasureSpec.makeMeasureSpec(availableWidth, MeasureSpec.AT_MOST);
+            int heightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+            for (ButtonDropTarget button : mDropTargets) {
+                if (button.getVisibility() != GONE) {
+                    button.setTextVisible(textVisible);
+                    button.measure(widthSpec, heightSpec);
                 }
             }
         }
+        setMeasuredDimension(width, height);
+    }
 
-        return result;
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        if (mIsVertical) {
+            int gap = getResources().getDimensionPixelSize(R.dimen.drop_target_vertical_gap);
+            int start = gap;
+            int end;
+
+            for (ButtonDropTarget button : mDropTargets) {
+                if (button.getVisibility() != GONE) {
+                    end = start + button.getMeasuredHeight();
+                    button.layout(0, start, button.getMeasuredWidth(), end);
+                    start = end + gap;
+                }
+            }
+        } else {
+            int visibleCount = getVisibleButtonsCount();
+            int frameSize = (right - left) / visibleCount;
+
+            int start = frameSize / 2;
+            int halfWidth;
+            for (ButtonDropTarget button : mDropTargets) {
+                if (button.getVisibility() != GONE) {
+                    halfWidth = button.getMeasuredWidth() / 2;
+                    button.layout(start - halfWidth, 0,
+                            start + halfWidth, button.getMeasuredHeight());
+                    start = start + frameSize;
+                }
+            }
+        }
+    }
+
+    private int getVisibleButtonsCount() {
+        int visibleCount = 0;
+        for (ButtonDropTarget buttons : mDropTargets) {
+            if (buttons.getVisibility() != GONE) {
+                visibleCount++;
+            }
+        }
+        return visibleCount;
     }
 
     private void animateToVisibility(boolean isVisible) {

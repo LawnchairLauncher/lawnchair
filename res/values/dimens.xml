@@ -49,8 +49,7 @@
 
 <!-- Drop target bar -->
     <dimen name="dynamic_grid_drop_target_size">48dp</dimen>
-    <dimen name="vert_drop_target_vertical_gap">20dp</dimen>
-    <dimen name="vert_drop_target_horizontal_gap">14dp</dimen>
+    <dimen name="drop_target_vertical_gap">20dp</dimen>
 
 <!-- App Widget resize frame -->
     <dimen name="widget_handle_margin">13dp</dimen>
