@@ -21,6 +21,8 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.view.MotionEvent;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -98,7 +100,8 @@ public class DiscoveryBounce extends AbstractFloatingView {
         if (!launcher.isInState(NORMAL)
                 || launcher.getSharedPrefs().getBoolean(APPS_VIEW_SHOWN, false)
                 || AbstractFloatingView.getTopOpenView(launcher) != null
-                || UserManagerCompat.getInstance(launcher).isDemoUser()) {
+                || UserManagerCompat.getInstance(launcher).isDemoUser()
+                || ActivityManager.isRunningInTestHarness()) {
             return;
         }
 
