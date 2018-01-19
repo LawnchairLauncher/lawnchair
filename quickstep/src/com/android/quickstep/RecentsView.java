@@ -438,7 +438,9 @@ public class RecentsView extends PagedView implements Insettable {
         }
         mFirstTask = task;
         setCurrentPage(mFirstTaskIndex);
-        ((TaskView) getPageAt(mCurrentPage)).setIconScale(0);
+        if (mCurrentPage >= mFirstTaskIndex) {
+            ((TaskView) getPageAt(mCurrentPage)).setIconScale(0);
+        }
     }
 
     private static boolean keysEquals(Task t1, Task t2) {
