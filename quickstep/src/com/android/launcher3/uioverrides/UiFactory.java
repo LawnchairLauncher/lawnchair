@@ -35,7 +35,6 @@ import com.android.launcher3.util.TouchController;
 import com.android.launcher3.widget.WidgetsFullSheet;
 import com.android.quickstep.RecentsView;
 import com.android.systemui.shared.recents.view.RecentsTransition;
-import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 
 public class UiFactory {
 
@@ -43,12 +42,14 @@ public class UiFactory {
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
         if (FeatureFlags.ENABLE_TWO_SWIPE_TARGETS) {
-            return new TouchController[]{
+            return new TouchController[] {
+                    new IgnoreTouchesInQuickScrub(launcher),
                     new EdgeSwipeController(launcher),
                     new TwoStepSwipeController(launcher),
                     new OverviewSwipeController(launcher)};
         } else {
-            return new TouchController[]{
+            return new TouchController[] {
+                    new IgnoreTouchesInQuickScrub(launcher),
                     new TwoStepSwipeController(launcher),
                     new OverviewSwipeController(launcher)};
         }
