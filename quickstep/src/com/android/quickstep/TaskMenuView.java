@@ -35,6 +35,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -170,7 +171,8 @@ public class TaskMenuView extends AbstractFloatingView {
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         mLauncher.getDragLayer().getDescendantRectRelativeToSelf(taskView, sTempRect);
         Rect insets = mLauncher.getDragLayer().getInsets();
-        setX(sTempRect.left + (sTempRect.width() - getMeasuredWidth()) / 2 - insets.left);
+        int x = sTempRect.left + (sTempRect.width() - getMeasuredWidth()) / 2 - insets.left;
+        setX(Utilities.isRtl(getResources()) ? -x : x);
         setY(sTempRect.top - mTaskIconAndName.getPaddingTop() - insets.top);
     }
 
