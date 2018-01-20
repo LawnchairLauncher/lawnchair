@@ -27,7 +27,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Build;
-import android.os.Handler;
 import android.os.UserHandle;
 import android.support.annotation.UiThread;
 import android.view.View;
@@ -41,12 +40,12 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.launcher3.util.TraceHelper;
-import com.android.launcher3.views.AllAppsScrim;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
@@ -61,7 +60,6 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
     private static final int STATE_SCALED_SNAPSHOT_RECENTS = 1 << 5;
     private static final int STATE_SCALED_SNAPSHOT_APP = 1 << 6;
 
-    private static final long RECENTS_VIEW_VISIBILITY_DURATION = 150;
     private static final long MAX_SWIPE_DURATION = 200;
     private static final long MIN_SWIPE_DURATION = 80;
     private static final int QUICK_SWITCH_SNAP_DURATION = 120;
@@ -98,7 +96,6 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
     private RecentsViewStateController mStateController;
     private QuickScrubController mQuickScrubController;
     private Hotseat mHotseat;
-    private AllAppsScrim mAllAppsScrim;
 
     private boolean mLauncherReady;
     private boolean mTouchEndHandled;
@@ -188,7 +185,6 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
         mRecentsView.showTask(mRunningTask);
         mStateController = mRecentsView.getStateController();
         mHotseat = mLauncher.getHotseat();
-        mAllAppsScrim = mLauncher.findViewById(R.id.all_apps_scrim);
 
         AbstractFloatingView.closeAllOpenViews(mLauncher, alreadyOnHome);
         mLauncher.getStateManager().goToState(LauncherState.OVERVIEW, alreadyOnHome);
@@ -242,11 +238,10 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
         }
 
         float shift = mCurrentShift.value * mActivityMultiplier.value;
-        int hotseatSize = getHotseatSize();
 
-        float hotseatTranslation = (1 - shift) * hotseatSize;
-        mHotseat.setTranslationY(hotseatTranslation);
-        mAllAppsScrim.setTranslationY(hotseatTranslation);
+        AllAppsTransitionController controller = mLauncher.getAllAppsController();
+        float range = getHotseatSize() / controller.getShiftRange();
+        controller.setProgress(1 + (1 - shift) * range);
 
         mRectEvaluator.evaluate(shift, mSourceRect, mTargetRect);
 
@@ -329,8 +324,7 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
 
     private void cleanupLauncher() {
         // TODO: These should be done as part of ActivityOptions#OnAnimationStarted
-        mHotseat.setTranslationY(0);
-        mAllAppsScrim.setTranslationY(0);
+        mLauncher.getStateManager().reapplyState();
         mLauncher.setOnResumeCallback(() -> mDragView.close(false));
     }
 

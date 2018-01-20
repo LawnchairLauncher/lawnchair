@@ -46,6 +46,7 @@ public class AllAppsScrim extends View implements OnChangeListener, Insettable {
     protected final WallpaperColorInfo mWallpaperColorInfo;
     private final Paint mFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
+    private final Rect mDrawRect = new Rect();
     private final Rect mPadding = new Rect();
     private final Rect mInsets = new Rect();
     private final DeviceProfile mGrid;
@@ -62,7 +63,7 @@ public class AllAppsScrim extends View implements OnChangeListener, Insettable {
     private int mFillAlpha;
 
     private float mDrawHeight;
-    private float mTranslateY;
+    private float mDrawOffsetY;
 
     public AllAppsScrim(Context context) {
         this(context, null);
@@ -135,7 +136,7 @@ public class AllAppsScrim extends View implements OnChangeListener, Insettable {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        float edgeTop = getHeight() + mTranslateY - mDrawHeight + mPadding.top;
+        float edgeTop = getHeight() + mDrawOffsetY - mDrawHeight + mPadding.top;
         float edgeRight = getWidth() - mPadding.right;
 
         if (mPadding.left > 0 || mPadding.right > 0) {
@@ -153,12 +154,29 @@ public class AllAppsScrim extends View implements OnChangeListener, Insettable {
     }
 
     public void setProgress(float translateY, float alpha) {
-        mFillAlpha = Math.round(alpha * mAlphaRange + mMinAlpha);
-        mFillPaint.setAlpha(mFillAlpha);
+        float newAlpha = Math.round(alpha * mAlphaRange + mMinAlpha);
+        // Negative translation means the scrim is moving up. For negative translation, we change
+        // draw offset as it requires redraw (since more area of the scrim needs to be shown). For
+        // position translation, we simply translate the scrim down as it avoids invalidate and
+        // hence could be optimized by the platform.
+        float drawOffsetY = Math.min(translateY, 0);
 
-        mTranslateY = translateY;
+        if (newAlpha != mFillAlpha || drawOffsetY != mDrawOffsetY) {
+            invalidateDrawRect();
 
-        invalidate();
+            mFillAlpha = Math.round(alpha * mAlphaRange + mMinAlpha);
+            mFillPaint.setAlpha(mFillAlpha);
+            mDrawOffsetY = drawOffsetY;
+            invalidateDrawRect();
+        }
+
+        setTranslationY(Math.max(translateY, 0));
+    }
+
+    private void invalidateDrawRect() {
+        mDrawRect.top = (int) (getHeight()
+                + mDrawOffsetY - mDrawHeight + mPadding.top - mShadowBlur - 0.5f);
+        invalidate(mDrawRect);
     }
 
     public void setDrawRegion(float height) {
@@ -178,6 +196,24 @@ public class AllAppsScrim extends View implements OnChangeListener, Insettable {
             float scrimMargin = getResources().getDimension(R.dimen.all_apps_scrim_margin);
             setDrawRegion(mGrid.hotseatBarSizePx + insets.bottom + scrimMargin);
         }
+        updateDrawRect();
         invalidate();
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        updateDrawRect();
+    }
+
+    private void updateDrawRect() {
+        mDrawRect.bottom = getHeight();
+        if (mGrid.isVerticalBarLayout()) {
+            mDrawRect.left = (int) (mPadding.left - mShadowBlur - 0.5f);
+            mDrawRect.right = (int) (getWidth() - mPadding.right + 0.5f);
+        } else {
+            mDrawRect.left = 0;
+            mDrawRect.right = getWidth();
+        }
     }
 }
