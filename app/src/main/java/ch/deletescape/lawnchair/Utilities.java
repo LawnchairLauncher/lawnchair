@@ -1060,7 +1060,7 @@ public final class Utilities {
         return Utilities.getPrefs(context).getAnimatedClockIcon() &&
                 Utilities.isComponentClock(componentName, !Utilities.getPrefs(context).getAnimatedClockIconAlternativeClockApps());
     }
-    
+
     public static boolean isBlacklistedAppInstalled(Context context) {
         final PackageManager pm = context.getPackageManager();
         List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
@@ -1072,7 +1072,7 @@ public final class Utilities {
             }
         }
 
-        return false;
+        return BLACKLISTED_APPLICATIONS.length == 0 || false;
     }
 
     public static void showOutdatedLawnfeedPopup(final Context context) {
