@@ -163,36 +163,14 @@ public final class Utilities {
 
     // Blacklisted APKs which will be hidden, these include simple regex formatting, without
     // full regex formatting (e.g. com.android. will block everything that starts with com.android.)
-    // Taken from: https://github.com/substratum/template/blob/kt-n/app/src/main/kotlin/substratum/theme/template/Constants.kt
+    // Taken from: https://github.com/substratum/substratum/blob/dev/app/src/main/java/projekt/substratum/common/Systems.java
     private static final String[] BLACKLISTED_APPLICATIONS = {
-            "cc.madkite.freedom",
-            "zone.jasi2169.uretpatcher",
-            "uret.jasi2169.patcher",
-            "p.jasi2169.al3",
-            "com.dimonvideo.luckypatcher",
-            "com.chelpus.lackypatch",
-            "com.forpda.lp",
-            "com.android.vending.billing.InAppBillingService.LUCK",
-            "com.android.vending.billing.InAppBillingService.CLON",
-            "com.android.vending.billing.InAppBillingService.LOCK",
-            "com.android.vending.billing.InAppBillingService.CRAC",
-            "com.android.vending.billing.InAppBillingService.LACK",
-            "com.android.vendinc",
-            "com.appcake",
-            "ac.market.store",
-            "org.sbtools.gamehack",
-            "com.zune.gamekiller",
-            "com.aag.killer",
-            "com.killerapp.gamekiller",
-            "cn.lm.sq",
-            "net.schwarzis.game_cih",
-            "org.creeplays.hack",
-            "com.baseappfull.fwd",
-            "com.zmapp",
-            "com.dv.marketmod.installer",
-            "org.mobilism.android",
-            "com.blackmartalpha",
-            "org.blackmart.market"
+        "com.android.vending.billing.InAppBillingService.",
+        "uret.jasi2169.",
+        "com.dimonvideo.luckypatcher",
+        "com.chelpus.",
+        "com.forpda.lp",
+        "zone.jasi2169."
     };
 
     public static boolean isPropertyEnabled(String propertyName) {
@@ -1084,11 +1062,17 @@ public final class Utilities {
     }
 
     public static boolean isBlacklistedAppInstalled(Context context) {
-        PackageManager pm = context.getPackageManager();
-        for (String packageName : BLACKLISTED_APPLICATIONS) {
-            if (isAppEnabled(pm, packageName, 0)) return true;
+        final PackageManager pm = context.getPackageManager();
+        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+        for (ApplicationInfo packageInfo : packages) {
+            for (String packageName : BLACKLISTED_APPLICATIONS) {
+                if (packageInfo.packageName.startsWith(packageName)) {
+                    return true;
+                }
+            }
         }
-        return false;
+
+        return BLACKLISTED_APPLICATIONS.length == 0 || false;
     }
 
     public static void showOutdatedLawnfeedPopup(final Context context) {

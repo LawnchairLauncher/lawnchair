@@ -4004,6 +4004,7 @@ public class Launcher extends Activity
         if (context instanceof Launcher) {
             return (Launcher) context;
         }
+
         return LauncherAppState.getInstance().getLauncher();
     }
 
@@ -4015,6 +4016,11 @@ public class Launcher extends Activity
     }
 
     public void startEditIcon(EditableItemInfo info) {
+        if (Utilities.isBlacklistedAppInstalled(this)) {
+            Toast.makeText(this, R.string.unauthorized_device, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         mEditingItem = info;
         setWaitingForResult(new PendingRequestArgs((ItemInfo) mEditingItem));
         Intent intent = new Intent(this, EditIconActivity.class);
