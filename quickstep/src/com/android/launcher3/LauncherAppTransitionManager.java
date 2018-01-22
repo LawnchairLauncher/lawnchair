@@ -156,12 +156,15 @@ public class LauncherAppTransitionManager {
     }
 
     private AnimatorSet getAppIconAnimator(View v) {
-        // Create a copy of the app icon
+        boolean isBubbleTextView = v instanceof BubbleTextView;
         mFloatingView = new ImageView(mLauncher);
-        Bitmap iconBitmap = ((FastBitmapDrawable) ((BubbleTextView) v).getIcon()).getBitmap();
-        mFloatingView.setImageDrawable(new FastBitmapDrawable(iconBitmap));
+        if (isBubbleTextView) {
+            // Create a copy of the app icon
+            Bitmap iconBitmap = ((FastBitmapDrawable) ((BubbleTextView) v).getIcon()).getBitmap();
+            mFloatingView.setImageDrawable(new FastBitmapDrawable(iconBitmap));
+        }
 
-        // Position the copy of the app icon exactly on top of the original
+        // Position the floating view exactly on top of the original
         Rect rect = new Rect();
         mDragLayer.getDescendantRectRelativeToSelf(v, rect);
         int viewLocationStart = mIsRtl
@@ -169,7 +172,9 @@ public class LauncherAppTransitionManager {
                 : rect.left;
         int viewLocationTop = rect.top;
 
-        ((BubbleTextView) v).getIconBounds(rect);
+        if (isBubbleTextView) {
+            ((BubbleTextView) v).getIconBounds(rect);
+        }
         LayoutParams lp = new LayoutParams(rect.width(), rect.height());
         lp.ignoreInsets = true;
         lp.setMarginStart(viewLocationStart + rect.left);
@@ -226,8 +231,12 @@ public class LauncherAppTransitionManager {
     }
 
     private ValueAnimator getAppWindowAnimators(View v, RemoteAnimationTargetCompat[] targets) {
-        Rect iconBounds = new Rect();
-        ((BubbleTextView) v).getIconBounds(iconBounds);
+        Rect bounds = new Rect();
+        if (v instanceof BubbleTextView) {
+            ((BubbleTextView) v).getIconBounds(bounds);
+        } else {
+            mDragLayer.getDescendantRectRelativeToSelf(v, bounds);
+        }
         int[] floatingViewBounds = new int[2];
 
         Rect crop = new Rect();
@@ -251,8 +260,8 @@ public class LauncherAppTransitionManager {
                 final float easePercent = Interpolators.AGGRESSIVE_EASE.getInterpolation(percent);
 
                 // Calculate app icon size.
-                float iconWidth = iconBounds.width() * mFloatingView.getScaleX();
-                float iconHeight = iconBounds.height() * mFloatingView.getScaleY();
+                float iconWidth = bounds.width() * mFloatingView.getScaleX();
+                float iconHeight = bounds.height() * mFloatingView.getScaleY();
 
                 // Scale the app window to match the icon size.
                 float scaleX = iconWidth / mDeviceProfile.widthPx;
