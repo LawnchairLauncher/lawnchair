@@ -1,5 +1,9 @@
 package com.android.launcher3.pageindicators;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+
+import static com.android.launcher3.LauncherState.ALL_APPS;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -15,6 +19,8 @@ import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.Gravity;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 
@@ -24,13 +30,17 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 
 /**
- * A PageIndicator that briefly shows a fraction of a line when moving between pages.
+ * A PageIndicator that briefly shows a fraction of a line when moving between pages in
+ * portrait mode. In Landscape simply draws the caret drawable bottom-corner aligned in
+ * the drag-layer.
  *
  * The fraction is 1 / number of pages and the position is based on the progress of the page scroll.
  */
-public class PageIndicatorLine extends PageIndicator implements Insettable {
+public class WorkspacePageIndicator extends PageIndicator implements Insettable, OnClickListener {
 
     private static final int LINE_ANIMATE_DURATION = ViewConfiguration.getScrollBarFadeDuration();
     private static final int LINE_FADE_DELAY = ViewConfiguration.getScrollDefaultDelay();
@@ -59,59 +69,61 @@ public class PageIndicatorLine extends PageIndicator implements Insettable {
     private Paint mLinePaint;
     private final int mLineHeight;
 
-    private static final Property<PageIndicatorLine, Integer> PAINT_ALPHA
-            = new Property<PageIndicatorLine, Integer>(Integer.class, "paint_alpha") {
+    private boolean mIsLandscapeUi;
+
+    private static final Property<WorkspacePageIndicator, Integer> PAINT_ALPHA
+            = new Property<WorkspacePageIndicator, Integer>(Integer.class, "paint_alpha") {
         @Override
-        public Integer get(PageIndicatorLine obj) {
+        public Integer get(WorkspacePageIndicator obj) {
             return obj.mLinePaint.getAlpha();
         }
 
         @Override
-        public void set(PageIndicatorLine obj, Integer alpha) {
+        public void set(WorkspacePageIndicator obj, Integer alpha) {
             obj.mLinePaint.setAlpha(alpha);
-            obj.invalidate();
+            obj.invalidateIfPortrait();
         }
     };
 
-    private static final Property<PageIndicatorLine, Float> NUM_PAGES
-            = new Property<PageIndicatorLine, Float>(Float.class, "num_pages") {
+    private static final Property<WorkspacePageIndicator, Float> NUM_PAGES
+            = new Property<WorkspacePageIndicator, Float>(Float.class, "num_pages") {
         @Override
-        public Float get(PageIndicatorLine obj) {
+        public Float get(WorkspacePageIndicator obj) {
             return obj.mNumPagesFloat;
         }
 
         @Override
-        public void set(PageIndicatorLine obj, Float numPages) {
+        public void set(WorkspacePageIndicator obj, Float numPages) {
             obj.mNumPagesFloat = numPages;
-            obj.invalidate();
+            obj.invalidateIfPortrait();
         }
     };
 
-    private static final Property<PageIndicatorLine, Integer> TOTAL_SCROLL
-            = new Property<PageIndicatorLine, Integer>(Integer.class, "total_scroll") {
+    private static final Property<WorkspacePageIndicator, Integer> TOTAL_SCROLL
+            = new Property<WorkspacePageIndicator, Integer>(Integer.class, "total_scroll") {
         @Override
-        public Integer get(PageIndicatorLine obj) {
+        public Integer get(WorkspacePageIndicator obj) {
             return obj.mTotalScroll;
         }
 
         @Override
-        public void set(PageIndicatorLine obj, Integer totalScroll) {
+        public void set(WorkspacePageIndicator obj, Integer totalScroll) {
             obj.mTotalScroll = totalScroll;
-            obj.invalidate();
+            obj.invalidateIfPortrait();
         }
     };
 
     private Runnable mHideLineRunnable = () -> animateLineToAlpha(0);
 
-    public PageIndicatorLine(Context context) {
+    public WorkspacePageIndicator(Context context) {
         this(context, null);
     }
 
-    public PageIndicatorLine(Context context, AttributeSet attrs) {
+    public WorkspacePageIndicator(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public PageIndicatorLine(Context context, AttributeSet attrs, int defStyle) {
+    public WorkspacePageIndicator(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         Resources res = context.getResources();
@@ -128,7 +140,7 @@ public class PageIndicatorLine extends PageIndicator implements Insettable {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mTotalScroll == 0 || mNumPagesFloat == 0) {
+        if (mTotalScroll == 0 || mNumPagesFloat == 0 || mIsLandscapeUi) {
             return;
         }
 
@@ -155,7 +167,7 @@ public class PageIndicatorLine extends PageIndicator implements Insettable {
         } else if (mTotalScroll != totalScroll) {
             animateToTotalScroll(totalScroll);
         } else {
-            invalidate();
+            invalidateIfPortrait();
         }
 
         if (mShouldAutoHide) {
@@ -233,10 +245,53 @@ public class PageIndicatorLine extends PageIndicator implements Insettable {
     @Override
     public void setInsets(Rect insets) {
         DeviceProfile grid = mLauncher.getDeviceProfile();
+        mIsLandscapeUi = grid.isVerticalBarLayout();
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
-        lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-        lp.height = grid.pageIndicatorSizePx;
-        lp.bottomMargin = grid.hotseatBarSizePx + insets.bottom;
+
+        if (mIsLandscapeUi) {
+            if (insets.left > insets.right) {
+                lp.leftMargin = grid.hotseatBarSidePaddingPx;
+                lp.rightMargin = insets.right;
+                lp.gravity =  Gravity.RIGHT | Gravity.BOTTOM;
+            } else {
+                lp.leftMargin = insets.left;
+                lp.rightMargin = grid.hotseatBarSidePaddingPx;
+                lp.gravity = Gravity.LEFT | Gravity.BOTTOM;
+            }
+            lp.bottomMargin = grid.workspacePadding.bottom;
+            lp.width = lp.height = getResources()
+                    .getDimensionPixelSize(R.dimen.dynamic_grid_min_page_indicator_size);
+
+            setBackgroundResource(R.drawable.all_apps_handle_landscape);
+            setOnFocusChangeListener(mLauncher.mFocusHandler);
+            setOnClickListener(this);
+
+        } else {
+            lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+            lp.height = grid.pageIndicatorSizePx;
+            lp.bottomMargin = grid.hotseatBarSizePx + insets.bottom;
+            lp.width = MATCH_PARENT;
+
+            setBackgroundResource(0);
+            setOnFocusChangeListener(null);
+            setOnClickListener(null);
+        }
+
         setLayoutParams(lp);
+    }
+
+    private void invalidateIfPortrait() {
+        if (!mIsLandscapeUi) {
+            invalidate();
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (!mLauncher.isInState(ALL_APPS)) {
+            mLauncher.getUserEventDispatcher().logActionOnControl(
+                    Action.Touch.TAP, ControlType.ALL_APPS_BUTTON);
+            mLauncher.getStateManager().goToState(ALL_APPS);
+        }
     }
 }

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2007 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2007 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,8 +12,6 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<!-- Full screen view projects under the status bar and contains the background -->
 <com.android.launcher3.LauncherRootView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
@@ -26,55 +23,57 @@
 
     <com.android.launcher3.dragndrop.DragLayer
         android:id="@+id/drag_layer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:importantForAccessibility="no"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:importantForAccessibility="no">
 
         <!-- The workspace contains 5 screens of cells -->
         <!-- DO NOT CHANGE THE ID -->
         <com.android.launcher3.Workspace
-            android:theme="@style/HomeScreenElementTheme"
             android:id="@+id/workspace"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            launcher:pageIndicator="@id/page_indicator" />
-
-        <com.android.launcher3.pageindicators.PageIndicatorLandscape
-            android:id="@+id/page_indicator"
             android:theme="@style/HomeScreenElementTheme"
-            android:layout_width="@dimen/dynamic_grid_min_page_indicator_size"
-            android:layout_height="@dimen/dynamic_grid_min_page_indicator_size"
-            android:layout_gravity="bottom|left"
-            android:background="@drawable/all_apps_handle_landscape" />
+            launcher:pageIndicator="@+id/page_indicator" />
 
-        <include layout="@layout/overview_panel"
+        <include
             android:id="@+id/overview_panel"
+            layout="@layout/overview_panel"
             android:visibility="gone" />
 
         <com.android.launcher3.views.AllAppsScrim
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/all_apps_scrim" />
-
-        <!-- DO NOT CHANGE THE ID -->
-        <include layout="@layout/hotseat"
-            android:id="@+id/hotseat"
+            android:id="@+id/all_apps_scrim"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <!-- DO NOT CHANGE THE ID -->
+        <include
+            android:id="@+id/hotseat"
+            layout="@layout/hotseat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!-- Keep these behind the workspace so that they are not visible when
+         we go into AllApps -->
+        <com.android.launcher3.pageindicators.WorkspacePageIndicator
+            android:id="@+id/page_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dynamic_grid_min_page_indicator_size"
+            android:theme="@style/HomeScreenElementTheme" />
 
         <include
             android:id="@+id/drop_target_bar"
             layout="@layout/drop_target_bar" />
 
-        <include layout="@layout/all_apps"
+        <include
             android:id="@+id/apps_view"
+            layout="@layout/all_apps"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />
-
     </com.android.launcher3.dragndrop.DragLayer>
 
 </com.android.launcher3.LauncherRootView>
