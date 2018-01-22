@@ -29,6 +29,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,7 @@ import com.android.systemui.shared.system.TransactionCompat;
  */
 public class LauncherAppTransitionManager {
 
+    private static final String TAG = "LauncherTransition";
     private static final int REFRESH_RATE_MS = 16;
 
     private final DragLayer mDragLayer;
@@ -228,6 +230,13 @@ public class LauncherAppTransitionManager {
 
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
+                final Surface surface = getSurface(mFloatingView);
+                final long frameNumber = surface != null ? getNextFrameNumber(surface) : -1;
+                if (frameNumber == -1) {
+                    // Booo, not cool! Our surface got destroyed, so no reason to animate anything.
+                    Log.w(TAG, "Failed to animate, surface got destroyed.");
+                    return;
+                }
                 final float percent = animation.getAnimatedFraction();
                 final float easePercent = Interpolators.AGGRESSIVE_EASE.getInterpolation(percent);
 
@@ -273,9 +282,12 @@ public class LauncherAppTransitionManager {
                 for (RemoteAnimationTargetCompat target : targets) {
                     if (target.mode == RemoteAnimationTargetCompat.MODE_OPENING) {
                         t.setAlpha(target.leash, alpha);
+
+                        // TODO: This isn't correct at the beginning of the animation, but better
+                        // than nothing.
+                        matrix.postTranslate(target.position.x, target.position.y);
                         t.setMatrix(target.leash, matrix);
                         t.setWindowCrop(target.leash, crop);
-                        Surface surface = getSurface(mFloatingView);
                         t.deferTransactionUntil(target.leash, surface, getNextFrameNumber(surface));
                     }
                     if (isFirstFrame) {
