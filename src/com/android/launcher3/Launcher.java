@@ -1739,7 +1739,7 @@ public class Launcher extends BaseActivity
 
     private void startMarketIntentForPackage(View v, String packageName) {
         ItemInfo item = (ItemInfo) v.getTag();
-        Intent intent = PackageManagerHelper.getMarketIntent(packageName);
+        Intent intent = new PackageManagerHelper(v.getContext()).getMarketIntent(packageName);
         startActivitySafely(v, intent, item);
     }
 
@@ -1804,7 +1804,7 @@ public class Launcher extends BaseActivity
         Intent intent;
         if (item instanceof PromiseAppInfo) {
             PromiseAppInfo promiseAppInfo = (PromiseAppInfo) item;
-            intent = promiseAppInfo.getMarketIntent();
+            intent = promiseAppInfo.getMarketIntent(this);
         } else {
             intent = item.getIntent();
         }
