@@ -60,6 +60,7 @@ public class LauncherAppTransitionManager {
     private final float mDragLayerTransY;
 
     private ImageView mFloatingView;
+    private boolean mIsRtl;
 
     public LauncherAppTransitionManager(Launcher launcher) {
         mLauncher = launcher;
@@ -68,6 +69,8 @@ public class LauncherAppTransitionManager {
 
         mDragLayerTransY =
                 launcher.getResources().getDimensionPixelSize(R.dimen.drag_layer_trans_y);
+
+        mIsRtl = Utilities.isRtl(launcher.getResources());
     }
 
     public Bundle getActivityLauncherOptions(View v) {
@@ -161,13 +164,15 @@ public class LauncherAppTransitionManager {
         // Position the copy of the app icon exactly on top of the original
         Rect rect = new Rect();
         mDragLayer.getDescendantRectRelativeToSelf(v, rect);
-        int viewLocationLeft = rect.left;
+        int viewLocationStart = mIsRtl
+                ? mDeviceProfile.widthPx - rect.right
+                : rect.left;
         int viewLocationTop = rect.top;
 
         ((BubbleTextView) v).getIconBounds(rect);
         LayoutParams lp = new LayoutParams(rect.width(), rect.height());
         lp.ignoreInsets = true;
-        lp.leftMargin = viewLocationLeft + rect.left;
+        lp.setMarginStart(viewLocationStart + rect.left);
         lp.topMargin = viewLocationTop + rect.top;
         mFloatingView.setLayoutParams(lp);
 
@@ -179,8 +184,13 @@ public class LauncherAppTransitionManager {
         // Animate the app icon to the center
         float centerX = mDeviceProfile.widthPx / 2;
         float centerY = mDeviceProfile.heightPx / 2;
-        float dX = centerX - lp.leftMargin - (lp.width / 2);
+
+        float xPosition = mIsRtl
+                ? mDeviceProfile.widthPx - lp.getMarginStart() - rect.width()
+                : lp.getMarginStart();
+        float dX = centerX - xPosition - (lp.width / 2);
         float dY = centerY - lp.topMargin - (lp.height / 2);
+
         ObjectAnimator x = ObjectAnimator.ofFloat(mFloatingView, View.TRANSLATION_X, 0f, dX);
         ObjectAnimator y = ObjectAnimator.ofFloat(mFloatingView, View.TRANSLATION_Y, 0f, dY);
 
