@@ -35,6 +35,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Thunk;
@@ -137,9 +138,11 @@ public class DragController implements DragDriver.EventListener, TouchController
             android.os.Debug.startMethodTracing("Launcher");
         }
 
-        // Hide soft keyboard, if visible
-        mLauncher.getSystemService(InputMethodManager.class)
-                .hideSoftInputFromWindow(mWindowToken, 0);
+        if (Utilities.ATLEAST_MARSHMALLOW) {
+            // Hide soft keyboard, if visible
+            mLauncher.getSystemService(InputMethodManager.class)
+                    .hideSoftInputFromWindow(mWindowToken, 0);
+        }
 
         mOptions = options;
         if (mOptions.systemDndStartPoint != null) {
