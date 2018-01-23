@@ -110,7 +110,9 @@ public class SpringAnimationHandler<T> {
         if (animation.canSkipToEnd()) {
             animation.skipToEnd();
         }
-        mAnimations.remove(animation);
+        while (mAnimations.contains(animation)) {
+            mAnimations.remove(animation);
+        }
     }
 
     public void addMovement(MotionEvent event) {
