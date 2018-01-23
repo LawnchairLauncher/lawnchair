@@ -186,10 +186,21 @@
 
     <!-- Pixel -->
     <style name="GoogleSearchLauncherTheme" parent="@style/LauncherTheme">
+        <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
     </style>
     <style name="GoogleSearchLauncherThemeDark" parent="@style/LauncherThemeDark">
+        <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
     </style>
     <style name="GoogleSearchLauncherThemeDarkText" parent="@style/LauncherThemeDarkText">
+        <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
+    </style>
+    <style name="HotseatQsbTheme">
+        <item name="gIcon">@drawable/ic_super_g_shadow</item>
+        <item name="micIcon">@drawable/ic_mic_shadow</item>
+    </style>
+    <style name="HotseatQsbTheme.Colored" parent="@style/HotseatQsbTheme">
+        <item name="gIcon">@drawable/ic_super_g_color</item>
+        <item name="micIcon">@drawable/ic_mic_color</item>
     </style>
     <style name="SettingsTheme" parent="@android:style/Theme.DeviceDefault.Settings">
         <item name="android:colorAccent">@color/colorAccent</item>
