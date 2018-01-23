@@ -21,5 +21,8 @@ package com.android.launcher3.config;
  */
 public final class FeatureFlags extends BaseFlags {
 
+    // When enabled while all-apps open, the soft input will be set to adjust resize .
+    public static final boolean LAUNCHER3_UPDATE_SOFT_INPUT_MODE = true;
+
     private FeatureFlags() {}
 }
