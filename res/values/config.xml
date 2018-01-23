@@ -102,13 +102,13 @@
 
     <!-- Name of a subclass of com.android.launcher3.AppFilter used to
          filter the activities shown in the launcher. Can be empty. -->
-    <string name="app_filter_class" translatable="false">com.google.android.apps.nexuslauncher.NexusAppFilter</string>
+    <string name="app_filter_class" translatable="false">com.google.android.apps.nexuslauncher.CustomAppFilter</string>
 
     <!-- Name of an icon provider class. -->
-    <string name="icon_provider_class" translatable="false">com.google.android.apps.nexuslauncher.DynamicIconProvider</string>
+    <string name="icon_provider_class" translatable="false">com.google.android.apps.nexuslauncher.CustomIconProvider</string>
 
     <!-- Name of a drawable factory class. -->
-    <string name="drawable_factory_class" translatable="false">com.google.android.apps.nexuslauncher.DynamicDrawableFactory</string>
+    <string name="drawable_factory_class" translatable="false">com.google.android.apps.nexuslauncher.CustomDrawableFactory</string>
 
     <!-- Name of a user event dispatcher class. -->
     <string name="user_event_dispatcher_class" translatable="false">com.google.android.apps.nexuslauncher.CustomAppPredictor</string>

@@ -74,6 +74,13 @@
         android:defaultValue=""
         android:persistent="false" />
 
+    <com.google.android.apps.nexuslauncher.CustomIconPreference
+        android:key="pref_icon_pack"
+        android:title="@string/pref_icon_pack"
+        android:summary="%s"
+        android:defaultValue=""
+        android:persistent="true" />
+
     <PreferenceScreen
         android:key="about_screen"
         android:title="@string/about"
