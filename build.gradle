@@ -46,6 +46,7 @@ android {
         main {
             res.srcDirs = ['res']
             java.srcDirs = ['src']
+            assets.srcDirs = ['assets']
             manifest.srcFile 'AndroidManifest-common.xml'
             proto {
                 srcDir 'protos/'
