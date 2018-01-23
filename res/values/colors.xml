@@ -35,7 +35,7 @@
     <color name="badge_color">#1DE9B6</color> <!-- Teal A400 -->
     <color name="folder_badge_color">#1DE9B6</color> <!-- Teal A400 -->
 
-    <color name="icon_background">#E0E0E0</color> <!-- Gray 300 -->
+    <color name="icon_background">#ff4285f4</color> <!-- Pixel Blue -->
     <color name="legacy_icon_background">#FFFFFF</color>
 
     <color name="all_apps_bg_hand_fill">#E5E5E5</color>
