@@ -44,8 +44,6 @@ abstract class BaseFlags {
     public static final boolean QSB_ON_FIRST_SCREEN = true;
     // When enabled the all-apps icon is not added to the hotseat.
     public static final boolean NO_ALL_APPS_ICON = true;
-    // When enabled, app discovery will be enabled if service is implemented
-    public static final boolean DISCOVERY_ENABLED = false;
 
     // When true, custom widgets are loaded using CustomWidgetParser.
     public static final boolean ENABLE_CUSTOM_WIDGETS = false;

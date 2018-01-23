@@ -43,8 +43,6 @@ import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
 import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.discovery.AppDiscoveryAppInfo;
-import com.android.launcher3.discovery.AppDiscoveryItemView;
 import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.List;
@@ -72,17 +70,13 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public static final int VIEW_TYPE_ALL_APPS_DIVIDER = 1 << 5;
     // The divider that separates prediction icons from the app list
     public static final int VIEW_TYPE_PREDICTION_DIVIDER = 1 << 6;
-    public static final int VIEW_TYPE_APPS_LOADING_DIVIDER = 1 << 7;
-    public static final int VIEW_TYPE_DISCOVERY_ITEM = 1 << 8;
-    public static final int VIEW_TYPE_WORK_TAB_FOOTER = 1 << 9;
+    public static final int VIEW_TYPE_WORK_TAB_FOOTER = 1 << 7;
 
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER
             | VIEW_TYPE_PREDICTION_DIVIDER;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON
             | VIEW_TYPE_PREDICTION_ICON;
-    public static final int VIEW_TYPE_MASK_CONTENT = VIEW_TYPE_MASK_ICON
-            | VIEW_TYPE_DISCOVERY_ITEM;
     public static final int VIEW_TYPE_MASK_HAS_SPRINGS = VIEW_TYPE_MASK_ICON
             | VIEW_TYPE_PREDICTION_DIVIDER;
 
@@ -161,7 +155,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             adapterPosition = Math.max(adapterPosition, mApps.getAdapterItems().size() - 1);
             int extraRows = 0;
             for (int i = 0; i <= adapterPosition; i++) {
-                if (!isViewType(items.get(i).viewType, VIEW_TYPE_MASK_CONTENT)) {
+                if (!isViewType(items.get(i).viewType, VIEW_TYPE_MASK_ICON)) {
                     extraRows++;
                 }
             }
@@ -301,12 +295,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 // Ensure the all apps icon height matches the workspace icons in portrait mode.
                 icon.getLayoutParams().height = mLauncher.getDeviceProfile().allAppsCellHeightPx;
                 return new ViewHolder(icon);
-            case VIEW_TYPE_DISCOVERY_ITEM:
-                AppDiscoveryItemView appDiscoveryItemView = (AppDiscoveryItemView) mLayoutInflater
-                        .inflate(R.layout.all_apps_discovery_item, parent, false);
-                appDiscoveryItemView.init(mIconClickListener, mLauncher.getAccessibilityDelegate(),
-                        mIconLongClickListener);
-                return new ViewHolder(appDiscoveryItemView);
             case VIEW_TYPE_EMPTY_SEARCH:
                 return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search,
                         parent, false));
@@ -320,10 +308,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                     }
                 });
                 return new ViewHolder(searchMarketView);
-            case VIEW_TYPE_APPS_LOADING_DIVIDER:
-                View loadingDividerView = mLayoutInflater.inflate(
-                        R.layout.all_apps_discovery_loading_divider, parent, false);
-                return new ViewHolder(loadingDividerView);
             case VIEW_TYPE_PREDICTION_DIVIDER:
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 return new ViewHolder(mLayoutInflater.inflate(
@@ -346,12 +330,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 icon.reset();
                 icon.applyFromApplicationInfo(info);
                 break;
-            case VIEW_TYPE_DISCOVERY_ITEM:
-                AppDiscoveryAppInfo appDiscoveryAppInfo = (AppDiscoveryAppInfo)
-                        mApps.getAdapterItems().get(position).appInfo;
-                AppDiscoveryItemView view = (AppDiscoveryItemView) holder.itemView;
-                view.apply(appDiscoveryAppInfo);
-                break;
             case VIEW_TYPE_EMPTY_SEARCH:
                 TextView emptyViewText = (TextView) holder.itemView;
                 emptyViewText.setText(mEmptySearchMessage);
@@ -365,12 +343,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 } else {
                     searchView.setVisibility(View.GONE);
                 }
-                break;
-            case VIEW_TYPE_APPS_LOADING_DIVIDER:
-                int visLoading = mApps.isAppDiscoveryRunning() ? View.VISIBLE : View.GONE;
-                int visLoaded = !mApps.isAppDiscoveryRunning() ? View.VISIBLE : View.GONE;
-                holder.itemView.findViewById(R.id.loadingProgressBar).setVisibility(visLoading);
-                holder.itemView.findViewById(R.id.loadedDivider).setVisibility(visLoaded);
                 break;
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 // nothing to do
