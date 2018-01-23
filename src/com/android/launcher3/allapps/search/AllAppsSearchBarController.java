@@ -28,8 +28,6 @@ import android.widget.TextView.OnEditorActionListener;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.discovery.AppDiscoveryItem;
-import com.android.launcher3.discovery.AppDiscoveryUpdateState;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
 
@@ -164,18 +162,6 @@ public class AllAppsSearchBarController
          * Called when the search results should be cleared.
          */
         void clearSearchResult();
-
-        /**
-         * Called when the app discovery is providing an update of search, which can either be
-         * START for starting a new discovery,
-         * UPDATE for providing a new search result, can be called multiple times,
-         * END for indicating the end of results.
-         *
-         * @param app result item if UPDATE, else null
-         * @param app the update state, START, UPDATE or END
-         */
-        void onAppDiscoverySearchUpdate(@Nullable AppDiscoveryItem app,
-                @NonNull AppDiscoveryUpdateState state);
     }
 
 }

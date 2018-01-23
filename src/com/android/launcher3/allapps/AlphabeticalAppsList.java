@@ -27,9 +27,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.discovery.AppDiscoveryAppInfo;
-import com.android.launcher3.discovery.AppDiscoveryItem;
-import com.android.launcher3.discovery.AppDiscoveryUpdateState;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ComponentKeyMapper;
@@ -57,8 +54,6 @@ public class AlphabeticalAppsList {
     private static final int FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS = 1;
 
     private final int mFastScrollDistributionMode = FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS;
-
-    private AppDiscoveryUpdateState mAppDiscoveryUpdateState;
 
     /**
      * Info about a fast scroller section, depending if sections are merged, the fast scroller
@@ -118,17 +113,6 @@ public class AlphabeticalAppsList {
             return item;
         }
 
-        public static AdapterItem asDiscoveryItem(int pos, String sectionName, AppInfo appInfo,
-                int appIndex) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_DISCOVERY_ITEM;
-            item.position = pos;
-            item.sectionName = sectionName;
-            item.appInfo = appInfo;
-            item.appIndex = appIndex;
-            return item;
-        }
-
         public static AdapterItem asEmptySearch(int pos) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH;
@@ -146,13 +130,6 @@ public class AlphabeticalAppsList {
         public static AdapterItem asAllAppsDivider(int pos) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_ALL_APPS_DIVIDER;
-            item.position = pos;
-            return item;
-        }
-
-        public static AdapterItem asLoadingDivider(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_APPS_LOADING_DIVIDER;
             item.position = pos;
             return item;
         }
@@ -188,7 +165,6 @@ public class AlphabeticalAppsList {
     private final List<ComponentKeyMapper<AppInfo>> mPredictedAppComponents = new ArrayList<>();
     // The set of predicted apps resolved from the component names and the current set of apps
     private final List<AppInfo> mPredictedApps = new ArrayList<>();
-    private final List<AppDiscoveryAppInfo> mDiscoveredApps = new ArrayList<>();
     // Is it the work profile app list.
     private final boolean mIsWork;
 
@@ -293,10 +269,6 @@ public class AlphabeticalAppsList {
         return (mSearchResults != null) && mFilteredApps.isEmpty();
     }
 
-    boolean shouldShowEmptySearch() {
-        return hasNoFilteredResults() && !isAppDiscoveryRunning() && mDiscoveredApps.isEmpty();
-    }
-
     /**
      * Sets the sorted list of filtered components.
      */
@@ -308,20 +280,6 @@ public class AlphabeticalAppsList {
             return !same;
         }
         return false;
-    }
-
-    public void onAppDiscoverySearchUpdate(@Nullable AppDiscoveryItem app,
-                @NonNull AppDiscoveryUpdateState state) {
-        mAppDiscoveryUpdateState = state;
-        switch (state) {
-            case START:
-                mDiscoveredApps.clear();
-                break;
-            case UPDATE:
-                mDiscoveredApps.add(new AppDiscoveryAppInfo(app));
-                break;
-        }
-        updateAdapterItems();
     }
 
     private List<AppInfo> processPredictedAppComponents(List<ComponentKeyMapper<AppInfo>> components) {
@@ -540,32 +498,13 @@ public class AlphabeticalAppsList {
         }
 
         if (hasFilter()) {
-            if (isAppDiscoveryRunning() || mDiscoveredApps.size() > 0) {
-                mAdapterItems.add(AdapterItem.asLoadingDivider(position++));
-                // Append all app discovery results
-                for (int i = 0; i < mDiscoveredApps.size(); i++) {
-                    AppDiscoveryAppInfo appDiscoveryAppInfo = mDiscoveredApps.get(i);
-                    if (appDiscoveryAppInfo.isRecent) {
-                        // already handled in getFilteredAppInfos()
-                        continue;
-                    }
-                    AdapterItem item = AdapterItem.asDiscoveryItem(position++,
-                            "", appDiscoveryAppInfo, appIndex++);
-                    mAdapterItems.add(item);
-                }
-
-                if (!isAppDiscoveryRunning()) {
-                    mAdapterItems.add(AdapterItem.asMarketSearch(position++));
-                }
+            // Append the search market item
+            if (hasNoFilteredResults()) {
+                mAdapterItems.add(AdapterItem.asEmptySearch(position++));
             } else {
-                // Append the search market item
-                if (hasNoFilteredResults()) {
-                    mAdapterItems.add(AdapterItem.asEmptySearch(position++));
-                } else {
-                    mAdapterItems.add(AdapterItem.asAllAppsDivider(position++));
-                }
-                mAdapterItems.add(AdapterItem.asMarketSearch(position++));
+                mAdapterItems.add(AdapterItem.asAllAppsDivider(position++));
             }
+            mAdapterItems.add(AdapterItem.asMarketSearch(position++));
         }
 
         if (mNumAppsPerRow != 0) {
@@ -635,11 +574,6 @@ public class AlphabeticalAppsList {
                         == PackageManager.PERMISSION_GRANTED);
     }
 
-    public boolean isAppDiscoveryRunning() {
-        return mAppDiscoveryUpdateState == AppDiscoveryUpdateState.START
-                || mAppDiscoveryUpdateState == AppDiscoveryUpdateState.UPDATE;
-    }
-
     private List<AppInfo> getFiltersAppInfos() {
         if (mSearchResults == null) {
             return mApps;
@@ -650,17 +584,6 @@ public class AlphabeticalAppsList {
             if (match != null) {
                 result.add(match);
             }
-        }
-
-        // adding recently used instant apps
-        if (mDiscoveredApps.size() > 0) {
-            for (int i = 0; i < mDiscoveredApps.size(); i++) {
-                AppDiscoveryAppInfo discoveryAppInfo = mDiscoveredApps.get(i);
-                if (discoveryAppInfo.isRecent) {
-                    result.add(discoveryAppInfo);
-                }
-            }
-            Collections.sort(result, mAppNameComparator);
         }
         return result;
     }
