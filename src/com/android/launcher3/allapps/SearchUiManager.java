@@ -35,12 +35,6 @@ public interface SearchUiManager {
     @NonNull SpringAnimation getSpringForFling();
 
     /**
-     * Notifies the search manager that the apps-list has changed and the search UI should be
-     * updated accordingly.
-     */
-    void refreshSearchResult();
-
-    /**
      * Notifies the search manager to close any active search session.
      */
     void reset();

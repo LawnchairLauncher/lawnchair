@@ -55,13 +55,11 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.views.BottomUserEducationView;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -76,6 +74,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     private final ClickShadowView mTouchFeedbackView;
     private final ItemInfoMatcher mPersonalMatcher = ItemInfoMatcher.ofUser(Process.myUserHandle());
     private final ItemInfoMatcher mWorkMatcher = ItemInfoMatcher.not(mPersonalMatcher);
+    private final AllAppsStore mAllAppsStore = new AllAppsStore();
 
     private SearchUiManager mSearchUiManager;
     private View mSearchContainer;
@@ -91,8 +90,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     private boolean mUsingTabs;
     private boolean mHasPredictions = false;
     private boolean mSearchModeWhileUsingTabs = false;
-
-    private final HashMap<ComponentKey, AppInfo> mComponentToAppMap = new HashMap<>();
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -132,6 +129,10 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         // TODO: Reimplement once fast scroller is fixed.
     }
 
+    public AllAppsStore getAppsStore() {
+        return mAllAppsStore;
+    }
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
@@ -149,64 +150,29 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     public void setApps(List<AppInfo> apps) {
         boolean hasWorkProfileApp = hasWorkProfileApp(apps);
         rebindAdapters(hasWorkProfileApp);
-        mComponentToAppMap.clear();
-        addOrUpdateApps(apps);
+        mAllAppsStore.setApps(apps);
     }
 
     /**
      * Adds or updates existing apps in the list
      */
     public void addOrUpdateApps(List<AppInfo> apps) {
-        for (AppInfo app : apps) {
-            mComponentToAppMap.put(app.toComponentKey(), app);
-        }
-        onAppsUpdated();
-        mSearchUiManager.refreshSearchResult();
-        mHeader.onAppsUpdated();
+        mAllAppsStore.addOrUpdateApps(apps);
     }
 
     /**
      * Removes some apps from the list.
      */
     public void removeApps(List<AppInfo> apps) {
-        for (AppInfo app : apps) {
-            mComponentToAppMap.remove(app.toComponentKey());
-        }
-        onAppsUpdated();
-        mSearchUiManager.refreshSearchResult();
-    }
-
-    private void onAppsUpdated() {
-        for (int i = 0; i < getNumOfAdapters(); i++) {
-            mAH[i].appsList.onAppsUpdated();
-        }
-    }
-
-    private int getNumOfAdapters() {
-        return mUsingTabs ? mAH.length : 1;
+        mAllAppsStore.removeApps(apps);
     }
 
     public void updatePromiseAppProgress(PromiseAppInfo app) {
-        for (int i = 0; i < mAH.length; i++) {
-            updatePromiseAppProgress(app, mAH[i].recyclerView);
-        }
-        if (isHeaderVisible()) {
-            updatePromiseAppProgress(app, mHeader.getPredictionRow());
-        }
-    }
-
-    private void updatePromiseAppProgress(PromiseAppInfo app, ViewGroup parent) {
-        if (parent == null) {
-            return;
-        }
-        int childCount = parent.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            View child = parent.getChildAt(i);
-            if (child instanceof BubbleTextView && child.getTag() == app) {
-                BubbleTextView bubbleTextView = (BubbleTextView) child;
-                bubbleTextView.applyProgressLevel(app.level);
+        mAllAppsStore.updateAllIcons((child) -> {
+            if (child.getTag() == app) {
+                child.applyProgressLevel(app.level);
             }
-        }
+        });
     }
 
     /**
@@ -358,34 +324,15 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     }
 
     public void updateIconBadges(Set<PackageUserKey> updatedBadges) {
-        final PackageUserKey packageUserKey = new PackageUserKey(null, null);
-        for (int j = 0; j < mAH.length; j++) {
-            updateIconBadges(updatedBadges, packageUserKey, mAH[j].recyclerView);
-        }
-        if (mHeader != null) {
-            updateIconBadges(updatedBadges, packageUserKey, mHeader.getPredictionRow());
-        }
-    }
-
-    private void updateIconBadges(Set<PackageUserKey> updatedBadges, PackageUserKey packageUserKey,
-            ViewGroup parent) {
-        if (parent == null) {
-            return;
-        }
-        final int n = parent.getChildCount();
-        for (int i = 0; i < n; i++) {
-            View child = parent.getChildAt(i);
-            if (child instanceof PredictionRowView) {
-                updateIconBadges(updatedBadges, packageUserKey, (PredictionRowView) child);
+        PackageUserKey tempKey = new PackageUserKey(null, null);
+        mAllAppsStore.updateAllIcons((child) -> {
+            if (child.getTag() instanceof ItemInfo) {
+                ItemInfo info = (ItemInfo) child.getTag();
+                if (tempKey.updateFromItemInfo(info) && updatedBadges.contains(tempKey)) {
+                    child.applyBadgeState(info, true /* animate */);
+                }
             }
-            if (!(child instanceof BubbleTextView) || !(child.getTag() instanceof ItemInfo)) {
-                continue;
-            }
-            ItemInfo info = (ItemInfo) child.getTag();
-            if (packageUserKey.updateFromItemInfo(info) && updatedBadges.contains(packageUserKey)) {
-                ((BubbleTextView) child).applyBadgeState(info, true /* animate */);
-            }
-        }
+        });
     }
 
     public SpringAnimationHandler getSpringAnimationHandler() {
@@ -403,6 +350,9 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         replaceRVContainer(showTabs);
         mUsingTabs = showTabs;
 
+        mAllAppsStore.unregisterIconContainer(mAH[AdapterHolder.MAIN].recyclerView);
+        mAllAppsStore.unregisterIconContainer(mAH[AdapterHolder.WORK].recyclerView);
+
         if (mUsingTabs) {
             mAH[AdapterHolder.MAIN].setup(mViewPager.getChildAt(0), mPersonalMatcher);
             mAH[AdapterHolder.WORK].setup(mViewPager.getChildAt(1), mWorkMatcher);
@@ -418,6 +368,9 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
                 mHeader.setVisibility(View.GONE);
             }
         }
+
+        mAllAppsStore.registerIconContainer(mAH[AdapterHolder.MAIN].recyclerView);
+        mAllAppsStore.registerIconContainer(mAH[AdapterHolder.WORK].recyclerView);
 
         applyTouchDelegate();
     }
@@ -492,9 +445,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     }
 
     public void setPredictedApps(List<ComponentKeyMapper<AppInfo>> apps) {
-        if (isHeaderVisible()) {
-            mHeader.getPredictionRow().setPredictedApps(apps);
-        }
         mAH[AdapterHolder.MAIN].appsList.setPredictedApps(apps);
         boolean hasPredictions = !apps.isEmpty();
         if (mHasPredictions != hasPredictions) {
@@ -506,7 +456,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     }
 
     public AppInfo findApp(ComponentKeyMapper<AppInfo> mapper) {
-        return mapper.getItem(mComponentToAppMap);
+        return mAllAppsStore.getApp(mapper);
     }
 
     public AlphabeticalAppsList getApps() {
@@ -526,9 +476,9 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             return;
         }
         mHeader.setVisibility(View.VISIBLE);
-        mHeader.setup(mAH, mComponentToAppMap, mNumPredictedAppsPerRow);
+        mHeader.setup(mAH, mAH[AllAppsContainerView.AdapterHolder.WORK].recyclerView == null);
 
-        int padding = mHeader.getPredictionRow().getExpectedHeight();
+        int padding = mHeader.getMaxTranslation();
         if (mHasPredictions && !mUsingTabs) {
             padding += mHeader.getPaddingTop() + mHeader.getPaddingBottom();
         }
@@ -582,14 +532,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         }
     }
 
-    public List<AppInfo> getPredictedApps() {
-        if (isHeaderVisible()) {
-            return mHeader.getPredictionRow().getPredictedApps();
-        } else {
-            return mAH[AdapterHolder.MAIN].appsList.getPredictedApps();
-        }
-    }
-
     public boolean isHeaderVisible() {
         return mHeader != null && mHeader.getVisibility() == View.VISIBLE;
     }
@@ -604,7 +546,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         public static final int MAIN = 0;
         public static final int WORK = 1;
 
-        final AllAppsGridAdapter adapter;
+        public final AllAppsGridAdapter adapter;
         final LinearLayoutManager layoutManager;
         final SpringAnimationHandler animationHandler;
         final AlphabeticalAppsList appsList;
@@ -614,7 +556,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         boolean verticalFadingEdge;
 
         AdapterHolder(boolean isWork) {
-            appsList = new AlphabeticalAppsList(mLauncher, mComponentToAppMap, isWork);
+            appsList = new AlphabeticalAppsList(mLauncher, mAllAppsStore, isWork);
             adapter = new AllAppsGridAdapter(mLauncher, appsList, mLauncher,
                     AllAppsContainerView.this, true);
             appsList.setAdapter(adapter);
@@ -649,11 +591,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
                         ? paddingTopForTabs : padding.top;
                 recyclerView.setPadding(padding.left, paddingTop, padding.right, padding.bottom);
             }
-            if (isHeaderVisible()) {
-                PredictionRowView prv = mHeader.getPredictionRow();
-                prv.setPadding(padding.left, prv.getPaddingTop() , padding.right,
-                        prv.getPaddingBottom());
-            }
         }
 
         void applyNumsPerRow() {
@@ -663,10 +600,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
                 }
                 adapter.setNumAppsPerRow(mNumAppsPerRow);
                 appsList.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow);
-                if (isHeaderVisible()) {
-                    mHeader.getPredictionRow()
-                            .setNumAppsPerRow(mNumPredictedAppsPerRow);
-                }
             }
         }
 

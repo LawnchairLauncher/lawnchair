@@ -44,7 +44,7 @@ import java.util.TreeMap;
 /**
  * The alphabetically sorted list of applications.
  */
-public class AlphabeticalAppsList {
+public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
     public static final String TAG = "AlphabeticalAppsList";
     private static final boolean DEBUG = false;
@@ -153,7 +153,7 @@ public class AlphabeticalAppsList {
 
     // The set of apps from the system not including predictions
     private final List<AppInfo> mApps = new ArrayList<>();
-    private final HashMap<ComponentKey, AppInfo> mComponentToAppMap;
+    private final AllAppsStore mAllAppsStore;
 
     // The set of filtered apps with the current filter
     private final List<AppInfo> mFilteredApps = new ArrayList<>();
@@ -179,16 +179,13 @@ public class AlphabeticalAppsList {
     private int mNumAppRowsInAdapter;
     private ItemInfoMatcher mItemFilter;
 
-    public AlphabeticalAppsList(
-            Context context,
-            HashMap<ComponentKey,
-            AppInfo> componentToAppMap,
-            boolean isWork) {
-        mComponentToAppMap = componentToAppMap;
+    public AlphabeticalAppsList(Context context, AllAppsStore appsStore, boolean isWork) {
+        mAllAppsStore = appsStore;
         mLauncher = Launcher.getLauncher(context);
         mIndexer = new AlphabeticIndexCompat(context);
         mAppNameComparator = new AppInfoComparator(context);
         mIsWork = isWork;
+        mAllAppsStore.addUpdateListener(this);
     }
 
     public void updateItemFilter(ItemInfoMatcher itemFilter) {
@@ -283,14 +280,14 @@ public class AlphabeticalAppsList {
     }
 
     private List<AppInfo> processPredictedAppComponents(List<ComponentKeyMapper<AppInfo>> components) {
-        if (mComponentToAppMap.isEmpty()) {
+        if (mAllAppsStore.getApps().isEmpty()) {
             // Apps have not been bound yet.
             return Collections.emptyList();
         }
 
         List<AppInfo> predictedApps = new ArrayList<>();
         for (ComponentKeyMapper<AppInfo> mapper : components) {
-            AppInfo info = mapper.getItem(mComponentToAppMap);
+            AppInfo info = mAllAppsStore.getApp(mapper);
             if (info != null) {
                 predictedApps.add(info);
             } else {
@@ -359,11 +356,12 @@ public class AlphabeticalAppsList {
     /**
      * Updates internals when the set of apps are updated.
      */
-    void onAppsUpdated() {
+    @Override
+    public void onAppsUpdated() {
         // Sort the list of apps
         mApps.clear();
 
-        for (AppInfo app : mComponentToAppMap.values()) {
+        for (AppInfo app : mAllAppsStore.getApps()) {
             if (mItemFilter == null || mItemFilter.matches(app, null) || hasFilter()) {
                 mApps.add(app);
             }
@@ -580,7 +578,7 @@ public class AlphabeticalAppsList {
         }
         ArrayList<AppInfo> result = new ArrayList<>();
         for (ComponentKey key : mSearchResults) {
-            AppInfo match = mComponentToAppMap.get(key);
+            AppInfo match = mAllAppsStore.getApp(key);
             if (match != null) {
                 result.add(match);
             }

@@ -37,6 +37,7 @@ import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.SearchUiManager;
 import com.android.launcher3.graphics.TintedDrawableSpan;
@@ -48,7 +49,8 @@ import java.util.ArrayList;
  * Layout to contain the All-apps search UI.
  */
 public class AppsSearchContainerLayout extends FrameLayout
-        implements SearchUiManager, AllAppsSearchBarController.Callbacks {
+        implements SearchUiManager, AllAppsSearchBarController.Callbacks,
+        AllAppsStore.OnUpdateListener {
 
     private final Launcher mLauncher;
     private final int mMinHeight;
@@ -111,6 +113,18 @@ public class AppsSearchContainerLayout extends FrameLayout
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mLauncher.getAppsView().getAppsStore().addUpdateListener(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mLauncher.getAppsView().getAppsStore().removeUpdateListener(this);
+    }
+
+    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
             getLayoutParams().height = mLauncher.getDragLayer().getInsets().top + mMinHeight;
@@ -134,7 +148,7 @@ public class AppsSearchContainerLayout extends FrameLayout
     }
 
     @Override
-    public void refreshSearchResult() {
+    public void onAppsUpdated() {
         mSearchBarController.refreshSearchResult();
     }
 
