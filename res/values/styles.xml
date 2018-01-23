@@ -19,7 +19,7 @@
 
 <resources>
     <!-- Launcher theme -->
-    <style name="BaseLauncherTheme" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
+    <style name="BaseLauncherTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowShowWallpaper">true</item>
@@ -42,6 +42,7 @@
         <item name="workspaceKeyShadowColor">#44000000</item>
         <item name="workspaceStatusBarScrim">@drawable/workspace_bg</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="LauncherTheme" parent="@style/BaseLauncherThemeWithCustomAttrs"></style>
@@ -83,10 +84,17 @@
     </style>
 
     <!-- Theme for the widget container. Overridden on API 26. -->
-    <style name="WidgetContainerTheme" parent="@android:style/Theme.DeviceDefault.Settings">
+    <style name="WidgetContainerTheme" parent="@android:style/Theme.Material.Settings">
         <item name="android:colorEdgeEffect">?android:attr/textColorSecondaryInverse</item>
         <item name="android:textColorPrimary">?android:attr/textColorPrimaryInverse</item>
         <item name="android:textColorSecondary">?android:attr/textColorSecondaryInverse</item>
+
+        <!-- Backports -->
+        <item name="android:textColorPrimaryInverse">@color/textColorPrimaryInverse</item>
+        <item name="android:textColorSecondaryInverse">@color/textColorSecondaryInverse</item>
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="WidgetContainerTheme.Dark" />
@@ -182,5 +190,8 @@
     <style name="GoogleSearchLauncherThemeDark" parent="@style/LauncherThemeDark">
     </style>
     <style name="GoogleSearchLauncherThemeDarkText" parent="@style/LauncherThemeDarkText">
+    </style>
+    <style name="SettingsTheme" parent="@android:style/Theme.DeviceDefault.Settings">
+        <item name="android:colorAccent">@color/colorAccent</item>
     </style>
 </resources>

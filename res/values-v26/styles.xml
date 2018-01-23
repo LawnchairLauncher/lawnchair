@@ -18,8 +18,9 @@
 -->
 <resources>
     <!-- Theme for the widget container. -->
-    <style name="WidgetContainerTheme" parent="@android:style/Theme.DeviceDefault.Settings">
+    <style name="WidgetContainerTheme" parent="@android:style/Theme.Material.Settings">
         <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
     </style>
     <style name="WidgetContainerTheme.Dark" parent="LauncherThemeDark">
         <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
