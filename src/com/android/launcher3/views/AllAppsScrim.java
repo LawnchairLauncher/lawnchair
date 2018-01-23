@@ -23,6 +23,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
+import android.util.Property;
 import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
@@ -60,10 +61,24 @@ public class AllAppsScrim extends View implements OnChangeListener, Insettable {
 
     private final NinePatchDrawHelper mShadowHelper = new NinePatchDrawHelper();
 
+    private float mProgress;
     private int mFillAlpha;
 
     private float mDrawHeight;
     private float mDrawOffsetY;
+
+    public static final Property<AllAppsScrim, Float> SCRIM_PROGRESS =
+            new Property<AllAppsScrim, Float>(Float.class, "allAppsScrimProgress") {
+                @Override
+                public Float get(AllAppsScrim allAppsScrim) {
+                    return allAppsScrim.getProgress();
+                }
+
+                @Override
+                public void set(AllAppsScrim allAppsScrim, Float progress) {
+                    allAppsScrim.setProgress(progress);
+                }
+            };
 
     public AllAppsScrim(Context context) {
         this(context, null);
@@ -107,6 +122,10 @@ public class AllAppsScrim extends View implements OnChangeListener, Insettable {
         builder.bounds.set(mShadowBlur, mShadowBlur, fullSize, fullSize);
         builder.drawShadow(new Canvas(result));
         return result;
+    }
+
+    public Bitmap getShadowBitmap() {
+        return mShadowBitmap;
     }
 
     @Override
@@ -154,23 +173,33 @@ public class AllAppsScrim extends View implements OnChangeListener, Insettable {
     }
 
     public void setProgress(float translateY, float alpha) {
-        float newAlpha = Math.round(alpha * mAlphaRange + mMinAlpha);
+        int newAlpha = Math.round(alpha * mAlphaRange + mMinAlpha);
+        if (newAlpha != mFillAlpha) {
+            mFillAlpha = newAlpha;
+            mFillPaint.setAlpha(mFillAlpha);
+            invalidateDrawRect();
+        }
+
+        setProgress(translateY);
+    }
+
+    public void setProgress(float translateY) {
         // Negative translation means the scrim is moving up. For negative translation, we change
         // draw offset as it requires redraw (since more area of the scrim needs to be shown). For
         // position translation, we simply translate the scrim down as it avoids invalidate and
         // hence could be optimized by the platform.
         float drawOffsetY = Math.min(translateY, 0);
 
-        if (newAlpha != mFillAlpha || drawOffsetY != mDrawOffsetY) {
-            invalidateDrawRect();
-
-            mFillAlpha = Math.round(alpha * mAlphaRange + mMinAlpha);
-            mFillPaint.setAlpha(mFillAlpha);
+        if (drawOffsetY != mDrawOffsetY) {
             mDrawOffsetY = drawOffsetY;
             invalidateDrawRect();
         }
 
         setTranslationY(Math.max(translateY, 0));
+    }
+
+    public float getProgress() {
+        return mProgress;
     }
 
     private void invalidateDrawRect() {

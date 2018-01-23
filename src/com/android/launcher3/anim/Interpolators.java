@@ -20,6 +20,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.view.animation.PathInterpolator;
 
 
@@ -43,6 +44,9 @@ public class Interpolators {
     public static final Interpolator FAST_OUT_SLOW_IN = new PathInterpolator(0.4f, 0f, 0.2f, 1f);
 
     public static final Interpolator AGGRESSIVE_EASE = new PathInterpolator(0.2f, 0f, 0f, 1f);
+    public static final Interpolator AGGRESSIVE_EASE_IN_OUT = new PathInterpolator(0.8f,0, 0.4f, 1);
+
+    public static final Interpolator OVERSHOOT_0 = new OvershootInterpolator(0);
 
     /**
      * Inversion of zInterpolate, compounded with an ease-out.

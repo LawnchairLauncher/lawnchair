@@ -18,21 +18,15 @@ package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherState.OVERVIEW;
 
-import android.app.ActivityOptions;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PointF;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.AccessibilityDelegate;
 
-import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherStateManager.StateHandler;
-import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.util.TouchController;
 
@@ -71,4 +65,6 @@ public class UiFactory {
     public static Bundle getActivityLaunchOptions(Launcher launcher, View v) {
         return launcher.getDefaultActivityLaunchOptions(v);
     }
+
+    public static void registerRemoteAnimations(Launcher launcher) { }
 }

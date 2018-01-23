@@ -403,6 +403,10 @@ public class Launcher extends BaseActivity
         getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
                 Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
 
+        if (!isInMultiWindowModeCompat()) {
+            UiFactory.registerRemoteAnimations(this);
+        }
+
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onCreate(savedInstanceState);
         }
