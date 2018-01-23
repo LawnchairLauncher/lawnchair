@@ -32,12 +32,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.Nullable;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v7.graphics.Palette;
 import android.util.Log;
 import android.util.Pair;
@@ -139,6 +141,16 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
 
     private static final int getWallpaperId(Context context) {
         if (!Utilities.ATLEAST_NOUGAT) {
+            Drawable wallpaper = WallpaperManager.getInstance(context).getDrawable();
+            if (wallpaper != null) {
+                Bitmap bm = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+                Canvas cv = new Canvas(bm);
+                wallpaper.setBounds(0, 0, cv.getWidth(), cv.getHeight());
+                wallpaper.draw(cv);
+                int c = bm.getPixel(0, 0);
+                bm.recycle();
+                return c;
+            }
             return -1;
         }
         return context.getSystemService(WallpaperManager.class).getWallpaperId(FLAG_SYSTEM);
@@ -155,12 +167,13 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
             return Pair.create(wallpaperId, null);
         }
 
-        int primary = parts.length > 2 ? Integer.parseInt(parts[2]) : 0;
-        int secondary = parts.length > 3 ? Integer.parseInt(parts[3]) : 0;
-        int tertiary = parts.length > 4 ? Integer.parseInt(parts[4]) : 0;
+        int hints = parts.length > 2 ? Integer.parseInt(parts[2]) : 0;
+        int primary = parts.length > 3 ? Integer.parseInt(parts[3]) : 0;
+        int secondary = parts.length > 4 ? Integer.parseInt(parts[4]) : 0;
+        int tertiary = parts.length > 5 ? Integer.parseInt(parts[5]) : 0;
 
         return Pair.create(wallpaperId, new WallpaperColorsCompat(primary, secondary, tertiary,
-                0 /* hints */));
+                hints));
     }
 
     /**
@@ -168,6 +181,15 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
      */
     public static class ColorExtractionService extends JobService implements Runnable {
         private static final int MAX_WALLPAPER_EXTRACTION_AREA = 112 * 112;
+
+        // Decides when dark theme is optimal for this wallpaper
+        private static final float DARK_THEME_MEAN_LUMINANCE = 0.25f;
+        // Minimum mean luminosity that an image needs to have to support dark text
+        private static final float BRIGHT_IMAGE_MEAN_LUMINANCE = 0.75f;
+        // We also check if the image has dark pixels in it,
+        // to avoid bright images with some dark spots.
+        private static final float DARK_PIXEL_LUMINANCE = 0.45f;
+        private static final float MAX_DARK_AREA = 0.05f;
 
         private HandlerThread mWorkerThread;
         private Handler mWorkerHandler;
@@ -261,6 +283,7 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
 
             if (bitmap != null) {
                 Palette palette = Palette.from(bitmap).generate();
+                int hints = calculateDarkHints(bitmap);
                 bitmap.recycle();
 
                 StringBuilder builder = new StringBuilder(value);
@@ -276,6 +299,7 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
                     }
                 });
 
+                builder.append(',').append(hints);
                 for (int i=0; i < Math.min(3, colorsToOccurrences.size()); i++) {
                     builder.append(',').append(colorsToOccurrences.get(i).first);
                 }
@@ -287,6 +311,47 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
             sendBroadcast(new Intent(ACTION_EXTRACTION_COMPLETE)
                     .setPackage(getPackageName())
                     .putExtra(KEY_COLORS, value));
+        }
+
+        /**
+         * Checks if image is bright and clean enough to support light text.
+         *
+         * @param source What to read.
+         * @return Whether image supports dark text or not.
+         */
+        private static int calculateDarkHints(Bitmap source) {
+            if (source == null) {
+                return 0;
+            }
+            int[] pixels = new int[source.getWidth() * source.getHeight()];
+            double totalLuminance = 0;
+            final int maxDarkPixels = (int) (pixels.length * MAX_DARK_AREA);
+            int darkPixels = 0;
+            source.getPixels(pixels, 0 /* offset */, source.getWidth(), 0 /* x */, 0 /* y */,
+                    source.getWidth(), source.getHeight());
+            // This bitmap was already resized to fit the maximum allowed area.
+            // Let's just loop through the pixels, no sweat!
+            float[] tmpHsl = new float[3];
+            for (int i = 0; i < pixels.length; i++) {
+                ColorUtils.colorToHSL(pixels[i], tmpHsl);
+                final float luminance = tmpHsl[2];
+                final int alpha = Color.alpha(pixels[i]);
+                // Make sure we don't have a dark pixel mass that will
+                // make text illegible.
+                if (luminance < DARK_PIXEL_LUMINANCE && alpha != 0) {
+                    darkPixels++;
+                }
+                totalLuminance += luminance;
+            }
+            int hints = 0;
+            double meanLuminance = totalLuminance / pixels.length;
+            if (meanLuminance > BRIGHT_IMAGE_MEAN_LUMINANCE && darkPixels < maxDarkPixels) {
+                hints |= WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT;
+            }
+            if (meanLuminance < DARK_THEME_MEAN_LUMINANCE) {
+                hints |= WallpaperColorsCompat.HINT_SUPPORTS_DARK_THEME;
+            }
+            return hints;
         }
     }
 }
