@@ -175,4 +175,12 @@
         <item name="android:colorControlHighlight">#DFE1E5</item>
         <item name="android:colorForeground">@color/all_apps_bg_hand_fill_dark</item>
     </style>
+
+    <!-- Pixel -->
+    <style name="GoogleSearchLauncherTheme" parent="@style/LauncherTheme">
+    </style>
+    <style name="GoogleSearchLauncherThemeDark" parent="@style/LauncherThemeDark">
+    </style>
+    <style name="GoogleSearchLauncherThemeDarkText" parent="@style/LauncherThemeDarkText">
+    </style>
 </resources>
