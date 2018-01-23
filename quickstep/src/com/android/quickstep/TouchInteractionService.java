@@ -52,6 +52,7 @@ import android.view.WindowManager;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.util.TraceHelper;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
@@ -99,6 +100,7 @@ public class TouchInteractionService extends Service {
         @Override
         public void onQuickSwitch() {
             startTouchTracking(INTERACTION_QUICK_SWITCH);
+            mInteractionHandler = null;
         }
 
         @Override
@@ -110,6 +112,7 @@ public class TouchInteractionService extends Service {
         public void onQuickScrubEnd() {
             if (mInteractionHandler != null) {
                 mInteractionHandler.onQuickScrubEnd();
+                mInteractionHandler = null;
             }
         }
 
@@ -137,6 +140,7 @@ public class TouchInteractionService extends Service {
     private Intent mHomeIntent;
     private ComponentName mLauncher;
     private MotionEventQueue mEventQueue;
+    private MainThreadExecutor mMainThreadExecutor;
 
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
@@ -156,6 +160,7 @@ public class TouchInteractionService extends Service {
         super.onCreate();
         mAM = ActivityManagerWrapper.getInstance();
         mRecentsModel = RecentsModel.getInstance(this);
+        mMainThreadExecutor = new MainThreadExecutor();
 
         mHomeIntent = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_HOME)
@@ -284,7 +289,17 @@ public class TouchInteractionService extends Service {
         return mDisplayRotation == Surface.ROTATION_270 && mStableInsets.left > 0;
     }
 
+
     private void startTouchTracking(@InteractionType int interactionType) {
+        if (isInteractionQuick(interactionType)) {
+            // TODO: Send action cancel if its the Launcher consumer
+        }
+        if (mInteractionHandler != null) {
+            final NavBarSwipeInteractionHandler handler = mInteractionHandler;
+            mMainThreadExecutor.execute(() -> handler.updateInteractionType(interactionType));
+            return;
+        }
+
         // Create the shared handler
         final NavBarSwipeInteractionHandler handler =
                 new NavBarSwipeInteractionHandler(mRunningTask, this, interactionType);
@@ -429,5 +444,10 @@ public class TouchInteractionService extends Service {
             ev.offsetLocation(mLocationOnScreen[0], mLocationOnScreen[1]);
             ev.setEdgeFlags(flags);
         }
+    }
+
+    public static boolean isInteractionQuick(@InteractionType int interactionType) {
+        return interactionType == INTERACTION_QUICK_SCRUB ||
+                interactionType == INTERACTION_QUICK_SWITCH;
     }
 }

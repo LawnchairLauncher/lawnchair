@@ -15,6 +15,11 @@
  */
 package com.android.quickstep;
 
+import static com.android.quickstep.TouchInteractionService.INTERACTION_NORMAL;
+import static com.android.quickstep.TouchInteractionService.INTERACTION_QUICK_SCRUB;
+import static com.android.quickstep.TouchInteractionService.INTERACTION_QUICK_SWITCH;
+import static com.android.quickstep.TouchInteractionService.isInteractionQuick;
+
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.RectEvaluator;
@@ -44,8 +49,9 @@ import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.states.InternalStateHandler;
-import com.android.launcher3.uioverrides.RecentsViewStateController;
+import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.TraceHelper;
+import com.android.quickstep.TouchInteractionService.InteractionType;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
@@ -93,20 +99,22 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
     private Launcher mLauncher;
     private SnapshotDragView mDragView;
     private RecentsView mRecentsView;
-    private RecentsViewStateController mStateController;
     private QuickScrubController mQuickScrubController;
     private Hotseat mHotseat;
+
+    private boolean mWasLauncherAlreadyVisible;
 
     private boolean mLauncherReady;
     private boolean mTouchEndHandled;
     private float mCurrentDisplacement;
-    private @TouchInteractionService.InteractionType int mInteractionType;
+
+    private @InteractionType int mInteractionType;
     private boolean mStartedQuickScrubFromHome;
 
     private Bitmap mTaskSnapshot;
 
     NavBarSwipeInteractionHandler(RunningTaskInfo runningTaskInfo, Context context,
-            @TouchInteractionService.InteractionType int interactionType) {
+            @InteractionType int interactionType) {
         // TODO: We need a better way for this
         TaskKey taskKey = new TaskKey(runningTaskInfo.id, 0, null, UserHandle.myUserId(), 0);
         mRunningTask = new Task(taskKey, null, null, "", "", Color.BLACK, Color.BLACK,
@@ -183,8 +191,8 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
         mLauncher = launcher;
         mRecentsView = launcher.getOverviewPanel();
         mRecentsView.showTask(mRunningTask);
-        mStateController = mRecentsView.getStateController();
         mHotseat = mLauncher.getHotseat();
+        mWasLauncherAlreadyVisible = alreadyOnHome;
 
         AbstractFloatingView.closeAllOpenViews(mLauncher, alreadyOnHome);
         mLauncher.getStateManager().goToState(LauncherState.OVERVIEW, alreadyOnHome);
@@ -194,17 +202,8 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
         mDragView.setPivotX(0);
         mDragView.setPivotY(0);
 
-        boolean interactionIsQuick
-                = mInteractionType == TouchInteractionService.INTERACTION_QUICK_SCRUB
-                || mInteractionType == TouchInteractionService.INTERACTION_QUICK_SWITCH;
-        mStartedQuickScrubFromHome = alreadyOnHome && interactionIsQuick;
-        if (interactionIsQuick) {
-            mQuickScrubController = mRecentsView.getQuickScrubController();
-            mQuickScrubController.onQuickScrubStart(mStartedQuickScrubFromHome);
-            animateToProgress(1f, MAX_SWIPE_DURATION);
-            if (mStartedQuickScrubFromHome) {
-                mDragView.setVisibility(View.INVISIBLE);
-            }
+        if (isInteractionQuick(mInteractionType)) {
+            updateUiForQuickScrub();
         }
 
         // Optimization
@@ -213,6 +212,34 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
             mLauncher.getAppsView().setVisibility(View.GONE);
         }
         TraceHelper.partitionSection("TouchInt", "Launcher on new intent");
+    }
+
+
+    public void updateInteractionType(@InteractionType int interactionType) {
+        Preconditions.assertUIThread();
+        if (mInteractionType != INTERACTION_NORMAL) {
+            throw new IllegalArgumentException(
+                    "Can't change interaction type from " + mInteractionType);
+        }
+        if (!isInteractionQuick(interactionType)) {
+            throw new IllegalArgumentException(
+                    "Can't change interaction type to " + interactionType);
+        }
+        mInteractionType = interactionType;
+
+        if (mLauncher != null) {
+            updateUiForQuickScrub();
+        }
+    }
+
+    private void updateUiForQuickScrub() {
+        mStartedQuickScrubFromHome = mWasLauncherAlreadyVisible;
+        mQuickScrubController = mRecentsView.getQuickScrubController();
+        mQuickScrubController.onQuickScrubStart(mStartedQuickScrubFromHome);
+        animateToProgress(1f, MAX_SWIPE_DURATION);
+        if (mStartedQuickScrubFromHome) {
+            mDragView.setVisibility(View.INVISIBLE);
+        }
     }
 
     @UiThread
@@ -334,7 +361,7 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
         if (currentRecentsPage instanceof TaskView) {
             ((TaskView) currentRecentsPage).animateIconToScale(1f);
         }
-        if (mInteractionType == TouchInteractionService.INTERACTION_QUICK_SWITCH) {
+        if (mInteractionType == INTERACTION_QUICK_SWITCH) {
             for (int i = mRecentsView.getFirstTaskIndex(); i < mRecentsView.getPageCount(); i++) {
                 TaskView taskView = (TaskView) mRecentsView.getPageAt(i);
                 // TODO: Match the keys directly
@@ -345,7 +372,7 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
                     break;
                 }
             }
-        } else if (mInteractionType == TouchInteractionService.INTERACTION_QUICK_SCRUB) {
+        } else if (mInteractionType == INTERACTION_QUICK_SCRUB) {
             if (mQuickScrubController != null) {
                 mQuickScrubController.snapToPageForCurrentQuickScrubSection();
             }
@@ -355,12 +382,16 @@ public class NavBarSwipeInteractionHandler extends InternalStateHandler {
     public void onQuickScrubEnd() {
         if (mQuickScrubController != null) {
             mQuickScrubController.onQuickScrubEnd();
+        } else {
+            // TODO:
         }
     }
 
     public void onQuickScrubProgress(float progress) {
         if (mQuickScrubController != null) {
             mQuickScrubController.onQuickScrubProgress(progress);
+        } else {
+            // TODO:
         }
     }
 }
