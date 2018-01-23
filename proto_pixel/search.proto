@@ -1,0 +1,42 @@
+syntax = "proto2";
+
+option java_package = "com.google.android.apps.nexuslauncher.search.nano";
+option java_outer_classname = "SearchProto";
+
+package nano;
+
+message a_search {
+    optional int32 ef = 1;
+    optional int32 eg = 2;
+    optional int32 eh = 3;
+    optional int32 ee = 4;
+}
+
+message b_search {
+    optional string label = 1;
+    optional string ek = 2;
+    optional string ej = 3;
+    optional string el = 4;
+}
+
+message c_search {
+    optional int32 em = 1;
+    optional string ep = 2;
+    optional string er = 3;
+    optional a_search en = 4;
+    optional int32 es = 5;
+    repeated b_search eo = 6;
+    optional a_search ev = 7;
+    optional string ey = 8;
+    optional int32 ew = 9;
+    optional int32 ex = 10;
+    optional string eu = 11;
+    optional a_search et = 12;
+    optional bool eA = 13;
+    optional a_search ez = 14;
+    optional bool eq = 15;
+}
+
+message d_search {
+    optional c_search eB = 1;
+}

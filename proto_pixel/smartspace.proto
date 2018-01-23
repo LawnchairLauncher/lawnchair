@@ -1,0 +1,69 @@
+syntax = "proto2";
+
+option java_package = "com.google.android.apps.nexuslauncher.smartspace.nano";
+option java_outer_classname = "SmartspaceProto";
+
+package nano;
+
+message a {
+    repeated b cw = 1;
+}
+
+message b {
+    optional bool cy = 1;
+    optional int32 cJ = 2;
+    optional c cB = 3;
+    optional c cC = 4;
+    optional c cH = 5;
+    optional f cx = 6;
+    optional int32 cA = 7;
+    optional g cG = 8;
+    optional int64 cK = 9;
+    optional int64 cD = 10;
+    optional int64 cE = 11;
+    optional h cF = 12;
+    optional int32 cz = 13;
+}
+
+message c {
+    optional d cL = 1;
+    optional d cM = 2;
+}
+
+message d {
+    optional string cN = 1;
+    optional int32 cP = 2;
+    repeated e cO = 3;
+}
+
+message e {
+    optional string cR = 1;
+    optional int32 cS = 2;
+    optional int32 cQ = 3;
+    optional bool cU = 4;
+}
+
+message f {
+    optional string cV = 1;
+    optional string cW = 2;
+    optional string cX = 3;
+}
+
+message g {
+    optional int32 cY = 1;
+    optional string cZ = 2;
+}
+
+message h {
+    optional int64 da = 1;
+    optional int32 db = 2;
+}
+
+message i {
+    optional bool dc = 6;
+    optional bytes dd = 5;
+    optional b de = 1;
+    optional int64 df = 2;
+    optional int32 dg = 4;
+    optional int64 dh = 3;
+}

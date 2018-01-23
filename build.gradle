@@ -51,6 +51,7 @@ android {
             proto {
                 srcDir 'protos/'
                 srcDir 'proto_overrides/'
+                srcDir 'proto_pixel/'
             }
         }
 
