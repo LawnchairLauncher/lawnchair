@@ -102,7 +102,7 @@
 
     <!-- Name of a subclass of com.android.launcher3.AppFilter used to
          filter the activities shown in the launcher. Can be empty. -->
-    <string name="app_filter_class" translatable="false"></string>
+    <string name="app_filter_class" translatable="false">com.google.android.apps.nexuslauncher.NexusAppFilter</string>
 
     <!-- Name of an icon provider class. -->
     <string name="icon_provider_class" translatable="false">com.google.android.apps.nexuslauncher.DynamicIconProvider</string>
