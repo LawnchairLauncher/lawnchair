@@ -51,7 +51,7 @@ public class Partner {
     public static final String RES_GRID_NUM_COLUMNS = "grid_num_columns";
     public static final String RES_GRID_ICON_SIZE_DP = "grid_icon_size_dp";
 
-    private static boolean sSearched = false;
+    private static boolean sSearched = true;
     private static Partner sPartner;
 
     /**
