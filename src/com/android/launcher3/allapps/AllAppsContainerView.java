@@ -541,7 +541,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             }
             FocusedItemDecorator focusedItemDecorator = new FocusedItemDecorator(recyclerView);
             recyclerView.addItemDecoration(focusedItemDecorator);
-            recyclerView.preMeasureViews(adapter);
             adapter.setIconFocusListener(focusedItemDecorator.getFocusListener());
             applyVerticalFadingEdgeEnabled(verticalFadingEdge);
             applyPadding();
