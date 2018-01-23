@@ -62,11 +62,6 @@ public class IconShapeOverride {
         if (!Utilities.ATLEAST_OREO) {
             return false;
         }
-        // Only supported when developer settings is enabled
-        if (Settings.Global.getInt(context.getContentResolver(),
-                Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) != 1) {
-            return false;
-        }
 
         try {
             if (getSystemResField().get(null) != Resources.getSystem()) {
