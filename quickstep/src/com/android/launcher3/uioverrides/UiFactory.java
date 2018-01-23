@@ -16,6 +16,7 @@
 
 package com.android.launcher3.uioverrides;
 
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PointF;
@@ -33,6 +34,9 @@ import com.android.quickstep.RecentsView;
 import com.android.systemui.shared.recents.view.RecentsTransition;
 
 public class UiFactory {
+
+    private static final String CONTROL_REMOTE_APP_TRANSITION_PERMISSION =
+            "android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS";
 
     public static final boolean USE_HARDWARE_BITMAP = false; // FeatureFlags.IS_DOGFOOD_BUILD;
 
@@ -79,21 +83,30 @@ public class UiFactory {
         recents.reset();
     }
 
+    private static boolean hasControlRemoteAppTransitionPermission(Launcher launcher) {
+        return launcher.checkSelfPermission(CONTROL_REMOTE_APP_TRANSITION_PERMISSION)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
     public static Bundle getActivityLaunchOptions(Launcher launcher, View v) {
-        try {
-            return new LauncherAppTransitionManager(launcher).getActivityLauncherOptions(v);
-        } catch (NoClassDefFoundError e) {
-            // Gracefully fall back to default launch options if the user's platform doesn't have
-            // the latest changes.
-            return launcher.getDefaultActivityLaunchOptions(v);
+        if (hasControlRemoteAppTransitionPermission(launcher)) {
+            try {
+                return new LauncherAppTransitionManager(launcher).getActivityLauncherOptions(v);
+            } catch (NoClassDefFoundError e) {
+                // Gracefully fall back to default launch options if the user's platform doesn't
+                // have the latest changes.
+            }
         }
+        return launcher.getDefaultActivityLaunchOptions(v);
     }
 
     public static void registerRemoteAnimations(Launcher launcher) {
-        try {
-            new LauncherAppTransitionManager(launcher).registerRemoteAnimations();
-        } catch (NoClassDefFoundError e) {
-            // Gracefully fall back if the user's platform doesn't have the latest changes
+        if (hasControlRemoteAppTransitionPermission(launcher)) {
+            try {
+                new LauncherAppTransitionManager(launcher).registerRemoteAnimations();
+            } catch (NoClassDefFoundError e) {
+                // Gracefully fall back if the user's platform doesn't have the latest changes
+            }
         }
     }
 }
