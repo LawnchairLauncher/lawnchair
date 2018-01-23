@@ -115,8 +115,8 @@ public abstract class SystemShortcut extends ItemInfo {
 
         public View.OnClickListener createOnClickListener(Launcher launcher, ItemInfo itemInfo) {
             return view -> {
-                Intent intent = PackageManagerHelper.getMarketIntent(itemInfo
-                        .getTargetComponent().getPackageName());
+                Intent intent = new PackageManagerHelper(view.getContext()).getMarketIntent(
+                        itemInfo.getTargetComponent().getPackageName());
                 launcher.startActivitySafely(view, intent, itemInfo);
                 AbstractFloatingView.closeAllOpenViews(launcher);
             };
