@@ -32,8 +32,8 @@
 
     <!-- Popup container -->
     <color name="notification_icon_default_color">#757575</color> <!-- Gray 600 -->
-    <color name="badge_color">#1DE9B6</color> <!-- Teal A400 -->
-    <color name="folder_badge_color">#1DE9B6</color> <!-- Teal A400 -->
+    <color name="badge_color">@android:color/transparent</color>
+    <color name="folder_badge_color">#FFFFFF</color>
 
     <color name="icon_background">#ff4285f4</color> <!-- Pixel Blue -->
     <color name="legacy_icon_background">#FFFFFF</color>
