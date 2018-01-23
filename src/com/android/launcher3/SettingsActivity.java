@@ -97,8 +97,8 @@ public class SettingsActivity extends Activity {
             if (!Utilities.ATLEAST_OREO) {
                 getPreferenceScreen().removePreference(
                         findPreference(SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY));
-                getPreferenceScreen().removePreference(iconBadgingPref);
-            } else if (!getResources().getBoolean(R.bool.notification_badging_enabled)) {
+            }
+            if (!getResources().getBoolean(R.bool.notification_badging_enabled)) {
                 getPreferenceScreen().removePreference(iconBadgingPref);
             } else {
                 // Listen to system notification badge settings while this UI is active.
@@ -163,6 +163,7 @@ public class SettingsActivity extends Activity {
         private final ButtonPreference mBadgingPref;
         private final ContentResolver mResolver;
         private final FragmentManager mFragmentManager;
+        private boolean serviceEnabled = true;
 
         public IconBadgingObserver(ButtonPreference badgingPref, ContentResolver resolver,
                 FragmentManager fragmentManager) {
@@ -176,7 +177,6 @@ public class SettingsActivity extends Activity {
         public void onSettingChanged(boolean enabled) {
             int summary = enabled ? R.string.icon_badging_desc_on : R.string.icon_badging_desc_off;
 
-            boolean serviceEnabled = true;
             if (enabled) {
                 // Check if the listener is enabled or not.
                 String enabledListeners =
@@ -191,14 +191,22 @@ public class SettingsActivity extends Activity {
                 }
             }
             mBadgingPref.setWidgetFrameVisible(!serviceEnabled);
-            mBadgingPref.setOnPreferenceClickListener(serviceEnabled ? null : this);
+            mBadgingPref.setOnPreferenceClickListener(serviceEnabled && Utilities.ATLEAST_OREO ? null : this);
             mBadgingPref.setSummary(summary);
 
         }
 
         @Override
         public boolean onPreferenceClick(Preference preference) {
-            new NotificationAccessConfirmation().show(mFragmentManager, "notification_access");
+            if (!Utilities.ATLEAST_OREO && serviceEnabled) {
+                ComponentName cn = new ComponentName(preference.getContext(), NotificationListener.class);
+                Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        .putExtra(":settings:fragment_args_key", cn.flattenToString());
+                preference.getContext().startActivity(intent);
+            } else {
+                new NotificationAccessConfirmation().show(mFragmentManager, "notification_access");
+            }
             return true;
         }
     }
