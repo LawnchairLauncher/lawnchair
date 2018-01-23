@@ -31,7 +31,6 @@ import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.RecentsView;
 import com.android.systemui.shared.recents.view.RecentsTransition;
-import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 
 public class UiFactory {
 
@@ -87,6 +86,14 @@ public class UiFactory {
             // Gracefully fall back to default launch options if the user's platform doesn't have
             // the latest changes.
             return launcher.getDefaultActivityLaunchOptions(v);
+        }
+    }
+
+    public static void registerRemoteAnimations(Launcher launcher) {
+        try {
+            new LauncherAppTransitionManager(launcher).registerRemoteAnimations();
+        } catch (NoClassDefFoundError e) {
+            // Gracefully fall back if the user's platform doesn't have the latest changes
         }
     }
 }
