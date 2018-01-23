@@ -125,6 +125,8 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     private final Rect mStartRect = new Rect();
     private final Rect mEndRect = new Rect();
 
+    private boolean mShouldAnimate = false;
+
     public PopupContainerWithArrow(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mLauncher = Launcher.getLauncher(context);
@@ -240,7 +242,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         mArrow.setPivotY(mIsAboveIcon ? 0 : arrowHeight);
 
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
-        animateOpen();
+        mShouldAnimate = true;
 
         mLauncher.getDragController().addDragListener(this);
         mOriginalIcon.forceHideBadge(true);
@@ -366,6 +368,9 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         Point startPoint = computeAnimStartPoint(itemsTotalHeight);
         int top = mIsAboveIcon ? getPaddingTop() : startPoint.y;
         float radius = getItemViewAt(0).getBackgroundRadius();
+        if (Gravity.isHorizontal(mGravity)) {
+            startPoint.x = getMeasuredWidth() / 2;
+        }
         mStartRect.set(startPoint.x, startPoint.y, startPoint.x, startPoint.y);
         mEndRect.set(0, top, getMeasuredWidth(), top + itemsTotalHeight);
         final ValueAnimator revealAnim = new RoundedRectRevealOutlineProvider
@@ -404,6 +409,20 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         enforceContainedWithinScreen(l, r);
+        if (mShouldAnimate) {
+            mShouldAnimate = false;
+            if (Gravity.isHorizontal(mGravity)) {
+                if (Gravity.isVertical(mGravity) || mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+                    mArrow.setVisibility(View.INVISIBLE);
+                } else {
+                    LayoutParams lp = (LayoutParams) mArrow.getLayoutParams();
+                    lp.gravity = Gravity.CENTER_HORIZONTAL;
+                    lp.leftMargin = 0;
+                    lp.rightMargin = 0;
+                }
+            }
+            animateOpen();
+        }
 
     }
 
@@ -885,6 +904,9 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         Point startPoint = computeAnimStartPoint(itemsTotalHeight);
         int top = mIsAboveIcon ? getPaddingTop() : startPoint.y;
         float radius = getItemViewAt(0).getBackgroundRadius();
+        if (Gravity.isHorizontal(mGravity)) {
+            startPoint.x = getMeasuredWidth() / 2;
+        }
         mStartRect.set(startPoint.x, startPoint.y, startPoint.x, startPoint.y);
         if (mEndRect.isEmpty()) {
             mEndRect.set(0, top, getMeasuredWidth(), top + itemsTotalHeight);
