@@ -16,7 +16,7 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.views.AllAppsScrim.SCRIM_PROGRESS;
+import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.systemui.shared.recents.utilities.Utilities.getNextFrameNumber;
 import static com.android.systemui.shared.recents.utilities.Utilities.getSurface;
 import static com.android.systemui.shared.recents.utilities.Utilities.postAtFrontOfQueueAsynchronously;
@@ -40,9 +40,9 @@ import android.view.animation.Interpolator;
 import android.widget.ImageView;
 
 import com.android.launcher3.InsettableFrameLayout.LayoutParams;
+import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.views.AllAppsScrim;
 import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
@@ -62,14 +62,16 @@ public class LauncherAppTransitionManager {
 
     private static final int CLOSING_TRANSITION_DURATION_MS = 350;
 
+    // Progress = 0: All apps is fully pulled up, Progress = 1: All apps is fully pulled down.
+    private static final float ALL_APPS_PROGRESS_START = 1.3059858f;
+    private static final float ALL_APPS_PROGRESS_SLIDE_END = 0.99581414f;
+
     private final DragLayer mDragLayer;
     private final Launcher mLauncher;
     private final DeviceProfile mDeviceProfile;
 
     private final float mContentTransY;
     private final float mWorkspaceTransY;
-    // The smallest y-value the shelf will reach on screen, before overshooting back down to 0.
-    private final float mShelfMinValue;
 
     private ImageView mFloatingView;
     private boolean mIsRtl;
@@ -84,7 +86,6 @@ public class LauncherAppTransitionManager {
         Resources res = launcher.getResources();
         mContentTransY = res.getDimensionPixelSize(R.dimen.content_trans_y);
         mWorkspaceTransY = res.getDimensionPixelSize(R.dimen.workspace_trans_y);
-        mShelfMinValue = res.getDimensionPixelSize(R.dimen.shelf_min_value);
     }
 
     /**
@@ -477,31 +478,29 @@ public class LauncherAppTransitionManager {
             workspaceAnimator.setDuration(333);
             workspaceAnimator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
 
-            // Animate the shelf
-            AllAppsScrim allAppsScrim = mLauncher.findViewById(R.id.all_apps_scrim);
-            View hotseat = mLauncher.getHotseat();
-            final float endY = mShelfMinValue;
-            int startY = hotseat.getMeasuredHeight()
-                    + (allAppsScrim.getShadowBitmap().getHeight() / 2);
-            hotseat.setTranslationY(startY);
-            allAppsScrim.setTranslationY(startY);
+            // Animate the shelf in two parts: slide in, and overeshoot.
+            AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
+            // The shelf will start offscreen
+            final float startY = ALL_APPS_PROGRESS_START;
+            // And will end slightly pulled up, so that there is something to overshoot back to 1f.
+            final float slideEnd = ALL_APPS_PROGRESS_SLIDE_END;
 
-            AnimatorSet hotseatSlideIn = new AnimatorSet();
-            hotseatSlideIn.play(ObjectAnimator.ofFloat(hotseat, View.TRANSLATION_Y, startY, endY));
-            hotseatSlideIn.play(ObjectAnimator.ofFloat(allAppsScrim, SCRIM_PROGRESS, startY, endY));
-            hotseatSlideIn.setStartDelay(150);
-            hotseatSlideIn.setDuration(317);
-            hotseatSlideIn.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
+            allAppsController.setProgress(startY);
 
-            AnimatorSet hotseatOvershoot = new AnimatorSet();
-            hotseatOvershoot.play(ObjectAnimator.ofFloat(hotseat, View.TRANSLATION_Y, endY, 0));
-            hotseatOvershoot.play(ObjectAnimator.ofFloat(allAppsScrim, SCRIM_PROGRESS, endY, 0));
-            hotseatOvershoot.setDuration(153);
-            hotseatOvershoot.setInterpolator(Interpolators.OVERSHOOT_0);
+            Animator allAppsSlideIn =
+                    ObjectAnimator.ofFloat(allAppsController, ALL_APPS_PROGRESS, startY, slideEnd);
+            allAppsSlideIn.setStartDelay(150);
+            allAppsSlideIn.setDuration(317);
+            allAppsSlideIn.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
+
+            Animator allAppsOvershoot =
+                    ObjectAnimator.ofFloat(allAppsController, ALL_APPS_PROGRESS, slideEnd, 1f);
+            allAppsOvershoot.setDuration(153);
+            allAppsOvershoot.setInterpolator(Interpolators.OVERSHOOT_0);
 
             AnimatorSet resumeLauncherAnimation = new AnimatorSet();
             resumeLauncherAnimation.play(workspaceAnimator);
-            resumeLauncherAnimation.playSequentially(hotseatSlideIn, hotseatOvershoot);
+            resumeLauncherAnimation.playSequentially(allAppsSlideIn, allAppsOvershoot);
             return resumeLauncherAnimation;
         }
     }

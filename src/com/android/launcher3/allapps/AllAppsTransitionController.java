@@ -37,8 +37,8 @@ import com.android.launcher3.views.AllAppsScrim;
 public class AllAppsTransitionController
         implements SearchUiManager.OnScrollRangeChangeListener, LauncherStateManager.StateHandler {
 
-    private static final Property<AllAppsTransitionController, Float> PROGRESS =
-            new Property<AllAppsTransitionController, Float>(Float.class, "progress") {
+    public static final Property<AllAppsTransitionController, Float> ALL_APPS_PROGRESS =
+            new Property<AllAppsTransitionController, Float>(Float.class, "allAppsProgress") {
 
         @Override
         public Float get(AllAppsTransitionController controller) {
@@ -164,7 +164,8 @@ public class AllAppsTransitionController
         }
 
         Interpolator interpolator = config.userControlled ? LINEAR : FAST_OUT_SLOW_IN;
-        ObjectAnimator anim = ObjectAnimator.ofFloat(this, PROGRESS, mProgress, targetProgress);
+        ObjectAnimator anim =
+                ObjectAnimator.ofFloat(this, ALL_APPS_PROGRESS, mProgress, targetProgress);
         anim.setDuration(config.duration);
         anim.setInterpolator(interpolator);
         anim.addListener(getProgressAnimatorListener());

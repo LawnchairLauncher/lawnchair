@@ -61,24 +61,10 @@ public class AllAppsScrim extends View implements OnChangeListener, Insettable {
 
     private final NinePatchDrawHelper mShadowHelper = new NinePatchDrawHelper();
 
-    private float mProgress;
     private int mFillAlpha;
 
     private float mDrawHeight;
     private float mDrawOffsetY;
-
-    public static final Property<AllAppsScrim, Float> SCRIM_PROGRESS =
-            new Property<AllAppsScrim, Float>(Float.class, "allAppsScrimProgress") {
-                @Override
-                public Float get(AllAppsScrim allAppsScrim) {
-                    return allAppsScrim.getProgress();
-                }
-
-                @Override
-                public void set(AllAppsScrim allAppsScrim, Float progress) {
-                    allAppsScrim.setProgress(progress);
-                }
-            };
 
     public AllAppsScrim(Context context) {
         this(context, null);
@@ -174,32 +160,22 @@ public class AllAppsScrim extends View implements OnChangeListener, Insettable {
 
     public void setProgress(float translateY, float alpha) {
         int newAlpha = Math.round(alpha * mAlphaRange + mMinAlpha);
-        if (newAlpha != mFillAlpha) {
-            mFillAlpha = newAlpha;
-            mFillPaint.setAlpha(mFillAlpha);
-            invalidateDrawRect();
-        }
-
-        setProgress(translateY);
-    }
-
-    public void setProgress(float translateY) {
         // Negative translation means the scrim is moving up. For negative translation, we change
         // draw offset as it requires redraw (since more area of the scrim needs to be shown). For
         // position translation, we simply translate the scrim down as it avoids invalidate and
         // hence could be optimized by the platform.
         float drawOffsetY = Math.min(translateY, 0);
 
-        if (drawOffsetY != mDrawOffsetY) {
+        if (newAlpha != mFillAlpha || drawOffsetY != mDrawOffsetY) {
+            invalidateDrawRect();
+
+            mFillAlpha = newAlpha;
+            mFillPaint.setAlpha(mFillAlpha);
             mDrawOffsetY = drawOffsetY;
             invalidateDrawRect();
         }
 
         setTranslationY(Math.max(translateY, 0));
-    }
-
-    public float getProgress() {
-        return mProgress;
     }
 
     private void invalidateDrawRect() {
