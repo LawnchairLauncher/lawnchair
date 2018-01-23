@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> har <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> genvägar och <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> aviseringar"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Ignorera"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Aviseringen togs bort"</string>
+    <string name="smartspace_preferences">Inställningar</string>
+    <string name="label_search">Sök</string>
+    <string name="label_voice_search">Röstsökning</string>
+    <string name="pref_icon_pack">Ikonpaket</string>
+    <string name="state_loading">Tillämpar…</string>
+    <string name="smartspace_preferences_in_settings">Snabböversikt</string>
+    <string name="smartspace_preferences_in_settings_desc">Högst upp på startskärmen</string>
+    <string name="title_show_google_app">Visa %1$s</string>
+    <string name="msg_minus_one_on_left">Till vänster om huvudstartskärmen</string>
+    <string name="about">Om</string>
+    <string name="title_google_app">Google-appen</string>
+    <string name="title_app_suggestions">Visa appförslag</string>
+    <string name="summary_app_suggestions">Högst upp i listan Alla appar</string>
+    <string name="about_app_version">Version</string>
+    <string name="app_name_pixel_launcher">Översikt för Pixel</string>
+    <string name="title_disable_suggestions_prompt">Vill du stänga av appförslag?</string>
+    <string name="msg_disable_suggestions_prompt">Förslag visas inte längst upp i applistan och användaruppgifterna som används för att skapa dem raderas permanent.</string>
+    <string name="label_turn_off_suggestions">INAKTIVERA</string>
 </resources>

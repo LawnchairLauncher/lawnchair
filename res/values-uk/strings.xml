@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"Ярлики (<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>) і сповіщення (<xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g>) додатка <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Закрити"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Сповіщення закрито"</string>
+    <string name="smartspace_preferences">Параметри</string>
+    <string name="label_search">Пошук</string>
+    <string name="label_voice_search">Голосовий пошук</string>
+    <string name="pref_icon_pack">Пакет іконок</string>
+    <string name="state_loading">Застосування…</string>
+    <string name="smartspace_preferences_in_settings">Зворотний відлік</string>
+    <string name="smartspace_preferences_in_settings_desc">Угорі головного екрана</string>
+    <string name="title_show_google_app">Показувати %1$s</string>
+    <string name="msg_minus_one_on_left">Ліворуч від основного головного екрана</string>
+    <string name="about">Про додаток</string>
+    <string name="title_google_app">Додаток Google</string>
+    <string name="title_app_suggestions">Показувати пропозиції додатків</string>
+    <string name="summary_app_suggestions">Угорі списку \"Усі додатки\"</string>
+    <string name="about_app_version">Версія</string>
+    <string name="app_name_pixel_launcher">Pixel Launcher</string>
+    <string name="title_disable_suggestions_prompt">Вимкнути пропозиції додатків?</string>
+    <string name="msg_disable_suggestions_prompt">Пропозиції не відображатимуться вгорі списку додатків. Дані, які використовувалися для створення пропозицій, буде стерто назавжди.</string>
+    <string name="label_turn_off_suggestions">ВИМКНУТИ</string>
 </resources>

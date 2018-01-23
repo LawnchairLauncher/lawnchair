@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"ทางลัด <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> รายการและการแจ้งเตือน <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> รายการสำหรับ <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ปิด"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ปิดการแจ้งเตือนแล้ว"</string>
+    <string name="smartspace_preferences">ค่ากำหนด</string>
+    <string name="label_search">ค้นหา</string>
+    <string name="label_voice_search">ค้นหาด้วยเสียง</string>
+    <string name="pref_icon_pack">ชุดไอคอน</string>
+    <string name="state_loading">กำลังปรับใช้…</string>
+    <string name="smartspace_preferences_in_settings">ข้อมูลโดยย่อ</string>
+    <string name="smartspace_preferences_in_settings_desc">ที่ด้านบนของหน้าจอหลัก</string>
+    <string name="title_show_google_app">แสดง %1$s</string>
+    <string name="msg_minus_one_on_left">ที่ด้านซ้ายของหน้าจอหลัก</string>
+    <string name="about">เกี่ยวกับ</string>
+    <string name="title_google_app">แอป Google</string>
+    <string name="title_app_suggestions">แสดงคำแนะนำแอป</string>
+    <string name="summary_app_suggestions">ที่ด้านบนของรายการ \"แอปทั้งหมด\"</string>
+    <string name="about_app_version">เวอร์ชัน</string>
+    <string name="app_name_pixel_launcher">Pixel Launcher</string>
+    <string name="title_disable_suggestions_prompt">ปิดคำแนะนำเกี่ยวกับแอปใช่ไหม</string>
+    <string name="msg_disable_suggestions_prompt">คำแนะนำจะไม่ปรากฏขึ้นที่ด้านบนของรายการแอป และข้อมูลการใช้งานที่ใช้ในการสร้างคำแนะนำจะถูกลบทิ้งถาวร</string>
+    <string name="label_turn_off_suggestions">ปิด</string>
 </resources>

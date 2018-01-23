@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> comenzi rapide și <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> notificări pentru <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Închideți"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Notificare închisă"</string>
+    <string name="smartspace_preferences">Preferințe</string>
+    <string name="label_search">Căutați</string>
+    <string name="label_voice_search">Căutare vocală</string>
+    <string name="pref_icon_pack">Pachet pictograme</string>
+    <string name="state_loading">Se aplică…</string>
+    <string name="smartspace_preferences_in_settings">Pe scurt</string>
+    <string name="smartspace_preferences_in_settings_desc">În partea de sus a ecranului de pornire</string>
+    <string name="title_show_google_app">Afișarea %1$s</string>
+    <string name="msg_minus_one_on_left">În partea stângă a ecranului de pornire principal</string>
+    <string name="about">Despre</string>
+    <string name="title_google_app">Aplicația Google</string>
+    <string name="title_app_suggestions">Afișează sugestiile aplicației</string>
+    <string name="summary_app_suggestions">În partea de sus a listei Toate aplicațiile</string>
+    <string name="about_app_version">Versiune</string>
+    <string name="app_name_pixel_launcher">Lansator Pixel</string>
+    <string name="title_disable_suggestions_prompt">Dezactivați sugestiile de aplicații?</string>
+    <string name="msg_disable_suggestions_prompt">Sugestiile nu vor apărea la începutul listei de aplicații, iar datele despre utilizare folosite pentru a le crea vor fi șterse definitiv.</string>
+    <string name="label_turn_off_suggestions">DEZACTIVAȚI</string>
 </resources>

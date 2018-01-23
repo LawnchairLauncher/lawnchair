@@ -130,4 +130,20 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"Njia <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> za mkato na arifa <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> za <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Ondoa"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Arifa imeondolewa"</string>
+    <string name="smartspace_preferences">Mapendeleo</string>
+    <string name="label_search">Tafuta</string>
+    <string name="label_voice_search">Kutafuta kwa kutamka</string>
+    <string name="smartspace_preferences_in_settings">Kwa Muhtasari</string>
+    <string name="smartspace_preferences_in_settings_desc">Juu ya Skrini ya kwanza</string>
+    <string name="title_show_google_app">Onyesha %1$s</string>
+    <string name="msg_minus_one_on_left">Kushoto mwa Skrini kuu ya kwanza</string>
+    <string name="about">Kuhusu</string>
+    <string name="title_google_app">Programu ya Google</string>
+    <string name="title_app_suggestions">Onyesha mapendekezo ya programu</string>
+    <string name="summary_app_suggestions">Katika sehemu ya juu ya orodha yako ya Programu Zote</string>
+    <string name="about_app_version">Toleo</string>
+    <string name="app_name_pixel_launcher">Kifungua Programu cha Pixel</string>
+    <string name="title_disable_suggestions_prompt">Ungependa kuzima mapendekezo ya programu?</string>
+    <string name="msg_disable_suggestions_prompt">Mapendekezo hayataonekana juu ya orodha ya programu zako, na data ya matumizi iliyotumika kuyaunda itafutwa kabisa.</string>
+    <string name="label_turn_off_suggestions">ZIMA</string>
 </resources>

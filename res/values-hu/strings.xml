@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> parancsikon és <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> értesítés a következő alkalmazásnál: <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Elvetés"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Értesítés elvetve"</string>
+    <string name="smartspace_preferences">Beállítások</string>
+    <string name="label_search">Keresés</string>
+    <string name="label_voice_search">Hangalapú keresés</string>
+    <string name="pref_icon_pack">Ikon csomag</string>
+    <string name="state_loading">Alkalmazás…</string>
+    <string name="smartspace_preferences_in_settings">Áttekintés</string>
+    <string name="smartspace_preferences_in_settings_desc">A kezdőképernyő tetején</string>
+    <string name="title_show_google_app">%1$s megjelenítése</string>
+    <string name="msg_minus_one_on_left">A fő kezdőképernyőtól balra</string>
+    <string name="about">Névjegy</string>
+    <string name="title_google_app">Google alkalmazás</string>
+    <string name="title_app_suggestions">Alkalmazásjavaslatok megjelenítése</string>
+    <string name="summary_app_suggestions">Az összes alkalmazás lista tetején</string>
+    <string name="about_app_version">Verzió</string>
+    <string name="app_name_pixel_launcher">Pixel-indító</string>
+    <string name="title_disable_suggestions_prompt">Kikapcsolja az alkalmazásjavaslatokat?</string>
+    <string name="msg_disable_suggestions_prompt">Nem fognak megjelenni javaslatok az alkalmazáslista tetején, a létrehozásukra felhasznált használati adatok pedig véglegesen törlődnek.</string>
+    <string name="label_turn_off_suggestions">KIKAPCSOLÁS</string>
 </resources>

@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> میان‌بر و <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> اعلان برای <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"رد کردن"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"اعلان رد شد"</string>
+    <string name="smartspace_preferences">تنظیمات برگزیده</string>
+    <string name="label_search">جستجو</string>
+    <string name="label_voice_search">جستجوی گفتاری</string>
+    <string name="pref_icon_pack">بستۀ شمایل</string>
+    <string name="state_loading">در حال اعمال…</string>
+    <string name="smartspace_preferences_in_settings">در یک نگاه</string>
+    <string name="smartspace_preferences_in_settings_desc">در بالای صفحه ‌اصلی‌</string>
+    <string name="title_show_google_app">نمایش %1$s</string>
+    <string name="msg_minus_one_on_left">به سمت راست صفحه اصلی</string>
+    <string name="about">درباره</string>
+    <string name="title_google_app">‏برنامه Google</string>
+    <string name="title_app_suggestions">نمایش پیشنهادهای برنامه</string>
+    <string name="summary_app_suggestions">در بالای فهرست «همه برنامه‌های» شما</string>
+    <string name="about_app_version">نسخه</string>
+    <string name="app_name_pixel_launcher">‏راه‌انداز Pixel</string>
+    <string name="title_disable_suggestions_prompt">پیشنهادات برنامه خاموش شود؟</string>
+    <string name="msg_disable_suggestions_prompt">پیشنهادات در رأس فهرست برنامه‌های شما قرار نمی‌گیرند و داده‌های مصرف استفاده شده برای ایجاد آنها برای همیشه پاک می‌شوند.</string>
+    <string name="label_turn_off_suggestions">خاموش کردن</string>
 </resources>

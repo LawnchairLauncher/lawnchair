@@ -128,4 +128,20 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> преки пътища и <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> известия за <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Отхвърляне"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Известието е отхвърлено"</string>
+    <string name="smartspace_preferences">Предпочитания</string>
+    <string name="label_search">Търсене</string>
+    <string name="label_voice_search">Гласово търсене</string>
+    <string name="smartspace_preferences_in_settings">бърз поглед</string>
+    <string name="smartspace_preferences_in_settings_desc">В горната част на началния ви екран</string>
+    <string name="title_show_google_app">Показване на %1$s</string>
+    <string name="msg_minus_one_on_left">Отляво на основния начален екран</string>
+    <string name="about">Информация</string>
+    <string name="title_google_app">приложението Google</string>
+    <string name="title_app_suggestions">Показване на предложения за приложения</string>
+    <string name="summary_app_suggestions">В горната част на списъка с всички приложения</string>
+    <string name="about_app_version">Версия</string>
+    <string name="app_name_pixel_launcher">Стартов панел Pixel</string>
+    <string name="title_disable_suggestions_prompt">Да се изключат ли предложенията за приложения?</string>
+    <string name="msg_disable_suggestions_prompt">Предложенията няма да се показват в горната част на списъка ви с приложения и използваните за създаването им данни за употребата ще бъдат изтрити завинаги.</string>
+    <string name="label_turn_off_suggestions">ИЗКЛЮЧВАНЕ</string>
 </resources>

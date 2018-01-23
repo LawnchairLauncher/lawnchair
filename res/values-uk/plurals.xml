@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="smartspace_minutes">
+        <item quantity="other">%d хв</item>
+        <item quantity="one">%d хв</item>
+        <item quantity="few">%d хв</item>
+        <item quantity="many">%d хв</item>
+    </plurals>
+    <plurals name="smartspace_hours">
+        <item quantity="other">%d год</item>
+        <item quantity="one">%d год</item>
+        <item quantity="few">%d год</item>
+        <item quantity="many">%d год</item>
+    </plurals>
+</resources>

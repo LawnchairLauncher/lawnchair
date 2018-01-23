@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> ആപ്പിനായുള്ള <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> കുറുക്കുവഴികളും <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> അറിയിപ്പുകളും"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"നിരസിക്കുക"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"അറിയിപ്പ് നിരസിച്ചു"</string>
+    <string name="smartspace_preferences">മുൻഗണനകൾ</string>
+    <string name="label_search">തിരയുക</string>
+    <string name="label_voice_search">ശബ്ദതിരയൽ</string>
+    <string name="pref_icon_pack">ഐക്കണ്‍ പാക്ക്</string>
+    <string name="state_loading">ബാധകമാക്കുന്നു…</string>
+    <string name="smartspace_preferences_in_settings">ഒറ്റനോട്ടത്തിൽ</string>
+    <string name="smartspace_preferences_in_settings_desc">നിങ്ങളുടെ ഹോം സ്‌ക്രീനിന്റെ മുകളിൽ</string>
+    <string name="title_show_google_app">%1$s പ്രദർശിപ്പിക്കുക</string>
+    <string name="msg_minus_one_on_left">പ്രധാന ഹോം സ്‌ക്രീനിന്റെ ഇടതുവശത്ത്</string>
+    <string name="about">ആമുഖം</string>
+    <string name="title_google_app">Google ആപ്പ്</string>
+    <string name="title_app_suggestions">ആപ്പ് നിർദ്ദേശങ്ങൾ പ്രദർശിപ്പിക്കുക</string>
+    <string name="summary_app_suggestions">"നിങ്ങളുടെ 'എല്ലാ ആപ്പുകളും' ലിസ്റ്റിന്റെ മുകളിൽ"</string>
+    <string name="about_app_version">പതിപ്പ്</string>
+    <string name="app_name_pixel_launcher">Pixel ലോഞ്ചർ</string>
+    <string name="title_disable_suggestions_prompt">ആപ്പ് നിർദ്ദേശങ്ങൾ ഓഫാക്കണോ?</string>
+    <string name="msg_disable_suggestions_prompt">നിങ്ങളുടെ ആപ്സ് ലിസ്റ്റിന്റെ മുകളിൽ നിർദ്ദേശങ്ങൾ ദൃശ്യമാകില്ല, അവ സൃഷ്ടിക്കാൻ ഉപയോഗിച്ച ഉപയോഗ ഡാറ്റ ശാശ്വതമായി മായ്ക്കപ്പെടും.</string>
+    <string name="label_turn_off_suggestions">ഓഫാക്കുക</string>
 </resources>

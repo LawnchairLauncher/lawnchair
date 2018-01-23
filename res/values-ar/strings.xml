@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"هناك <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> اختصار و<xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> إشعار عن <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"تجاهل"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"تم تجاهل الإشعار"</string>
+    <string name="smartspace_preferences">التفضيلات</string>
+    <string name="label_search">بحث</string>
+    <string name="label_voice_search">بحث صوتي</string>
+    <string name="pref_icon_pack">حزمة الرموز</string>
+    <string name="state_loading">تطبيق...</string>
+    <string name="smartspace_preferences_in_settings">نظرة سريعة</string>
+    <string name="smartspace_preferences_in_settings_desc">بأعلى شاشتك الرئيسية</string>
+    <string name="title_show_google_app">عرض %1$s</string>
+    <string name="msg_minus_one_on_left">على يمين الشاشة الرئيسية</string>
+    <string name="about">لمحة</string>
+    <string name="title_google_app">‏تطبيق Google</string>
+    <string name="title_app_suggestions">عرض اقتراحات التطبيق</string>
+    <string name="summary_app_suggestions">في صدارة قائمة \"كل التطبيقات\"</string>
+    <string name="about_app_version">الإصدار</string>
+    <string name="app_name_pixel_launcher">Pixel Launcher</string>
+    <string name="title_disable_suggestions_prompt">هل تريد إيقاف تشغيل اقتراحات التطبيقات؟</string>
+    <string name="msg_disable_suggestions_prompt">لن تظهر الاقتراحات في أعلى قائمة التطبيقات، وسيتم محو بيانات الاستخدام المستخدمة لإنشائها نهائيًا.</string>
+    <string name="label_turn_off_suggestions">إيقاف</string>
 </resources>

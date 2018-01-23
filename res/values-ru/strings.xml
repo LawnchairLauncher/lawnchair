@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"Количество ярлыков для приложения \"<xliff:g id="APP_NAME">%3$s</xliff:g>\": <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>. Количество уведомлений: <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g>."</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Закрыть"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Уведомление закрыто"</string>
+    <string name="smartspace_preferences">Настройки</string>
+    <string name="label_search">Поиск</string>
+    <string name="label_voice_search">Голосовой поиск</string>
+    <string name="pref_icon_pack">Пакет значков</string>
+    <string name="state_loading">Применение…</string>
+    <string name="smartspace_preferences_in_settings">Обратный отсчет</string>
+    <string name="smartspace_preferences_in_settings_desc">В верхней части главного экрана</string>
+    <string name="title_show_google_app">Показывать %1$s</string>
+    <string name="msg_minus_one_on_left">Слева от главного экрана</string>
+    <string name="about">О приложении</string>
+    <string name="title_google_app">Приложение Google</string>
+    <string name="title_app_suggestions">Показывать рекомендуемые приложения</string>
+    <string name="summary_app_suggestions">Вверху списка всех приложений</string>
+    <string name="about_app_version">Версия</string>
+    <string name="app_name_pixel_launcher">Pixel Launcher</string>
+    <string name="title_disable_suggestions_prompt">Не показывать рекомендуемые приложения?</string>
+    <string name="msg_disable_suggestions_prompt">Рекомендуемые приложения не будут показываться в начале списка. Данные, связанные с этой функцией, будут удалены.</string>
+    <string name="label_turn_off_suggestions">ОТКЛЮЧИТЬ</string>
 </resources>

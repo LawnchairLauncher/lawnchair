@@ -128,4 +128,20 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> માટે <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> શૉર્ટકટ અને <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> સૂચનાઓ"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"છોડી દો"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"સૂચના છોડી દીધી"</string>
+    <string name="smartspace_preferences">પસંદગીઓ</string>
+    <string name="label_search">શોધો</string>
+    <string name="label_voice_search">વૉઇસ શોધ</string>
+    <string name="smartspace_preferences_in_settings">એક નજરમાં</string>
+    <string name="smartspace_preferences_in_settings_desc">તમારી હોમ સ્ક્રીનની શીર્ષ પર</string>
+    <string name="title_show_google_app">પ્રદર્શન %1$s</string>
+    <string name="msg_minus_one_on_left">મુખ્ય હોમ સ્ક્રીનની ડાબી બાજુએ</string>
+    <string name="about">વિશે</string>
+    <string name="title_google_app">Google ઍપ્લિકેશન</string>
+    <string name="title_app_suggestions">ઍપ સૂચનો બતાવો</string>
+    <string name="summary_app_suggestions">તમારી બધી ઍપ્લિકેશનોની સૂચિમાં ટોચ પર</string>
+    <string name="about_app_version">સંસ્કરણ</string>
+    <string name="app_name_pixel_launcher">Pixel લૉન્ચર</string>
+    <string name="title_disable_suggestions_prompt">ઍપ્લિકેશન સૂચનો બંધ કરીએ?</string>
+    <string name="msg_disable_suggestions_prompt">તમારી ઍપ્લિકેશનોની સૂચિની ટોચ પર સૂચનો દેખાશે નહીં અને તેમને બનાવવા માટે ઉપયોગમાં લેવાયેલ વપરાશ ડેટા કાયમ માટે કાઢી નાખવામાં આવશે.</string>
+    <string name="label_turn_off_suggestions">બંધ કરો</string>
 </resources>

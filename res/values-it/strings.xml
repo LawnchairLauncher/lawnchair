@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> scorciatoie e <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> notifiche relative a <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Ignora"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Notifica ignorata"</string>
+    <string name="smartspace_preferences">Preferenze</string>
+    <string name="label_search">Cerca</string>
+    <string name="label_voice_search">Ricerca vocale</string>
+    <string name="pref_icon_pack">Pacchetto icone</string>
+    <string name="state_loading">Applicazione...</string>
+    <string name="smartspace_preferences_in_settings">Riepilogo</string>
+    <string name="smartspace_preferences_in_settings_desc">Nella parte superiore della tua schermata Home</string>
+    <string name="title_show_google_app">Mostra %1$s</string>
+    <string name="msg_minus_one_on_left">A sinistra della schermata Home principale</string>
+    <string name="about">Informazioni</string>
+    <string name="title_google_app">App Google</string>
+    <string name="title_app_suggestions">Mostra suggerimenti di app</string>
+    <string name="summary_app_suggestions">"In cima all'elenco Tutte le app"</string>
+    <string name="about_app_version">Versione</string>
+    <string name="app_name_pixel_launcher">Pixel Launcher</string>
+    <string name="title_disable_suggestions_prompt">Disattivare i suggerimenti di app?</string>
+    <string name="msg_disable_suggestions_prompt">"I suggerimenti non verranno mostrati in cima all'elenco delle tue app e i dati sull'utilizzo utilizzati per crearli verranno cancellati definitivamente."</string>
+    <string name="label_turn_off_suggestions">DISATTIVA</string>
 </resources>

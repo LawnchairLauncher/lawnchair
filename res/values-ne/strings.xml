@@ -128,4 +128,20 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> का <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> सर्टकट र <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> सूचनाहरू"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"खारेज गर्नुहोस्"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"सूचना खारेज गरियो"</string>
+    <string name="smartspace_preferences">प्राथमिकताहरू</string>
+    <string name="label_search">खोज्नुहोस्</string>
+    <string name="label_voice_search">आवाज मार्फत खोजी</string>
+    <string name="smartspace_preferences_in_settings">एक झलकमा सम्पूर्ण सुविधाबारे जानकारी</string>
+    <string name="smartspace_preferences_in_settings_desc">तपाईंको गृह स्क्रिनको शीर्षमा अवस्थित छ</string>
+    <string name="title_show_google_app">%1$s देखाउनुहोस्</string>
+    <string name="msg_minus_one_on_left">मुख्य गृह स्क्रिनको बायाँतिर</string>
+    <string name="about">बारेमा</string>
+    <string name="title_google_app">Google app</string>
+    <string name="title_app_suggestions">अनुप्रयोगबारे सुझाावहरू देखाउनुहोस्</string>
+    <string name="summary_app_suggestions">तपाईंका सबै अनुप्रयोगहरूको सूचीको शीर्षमा देखाइन्छ</string>
+    <string name="about_app_version">संस्करण</string>
+    <string name="app_name_pixel_launcher">Pixel Launcher</string>
+    <string name="title_disable_suggestions_prompt">अनुप्रयोग बारे सुझावहरूलाई निष्क्रिय पार्ने हो?</string>
+    <string name="msg_disable_suggestions_prompt">तपाईँका अनुप्रयोगहरूको सूचीको शीर्षमा सुझावहरू देखिने छैनन् र तिनीहरूलाई सिर्जना गर्न प्रयोग गरिने प्रयोग सम्बन्धी डेटालाई स्थायी रूपमा मेटाइनेछ।</string>
+    <string name="label_turn_off_suggestions">निष्क्रिय पार्नुहोस्</string>
 </resources>

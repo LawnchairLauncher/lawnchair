@@ -128,4 +128,20 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> üçün <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> qısayol və  <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> bildiriş"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Rədd edin"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Bildiriş rədd edildi"</string>
+    <string name="smartspace_preferences">Seçimlər</string>
+    <string name="label_search">Axtarış</string>
+    <string name="label_voice_search">Səsli axtarış</string>
+    <string name="smartspace_preferences_in_settings">Ötəri Nəzər</string>
+    <string name="smartspace_preferences_in_settings_desc">Əsas ekranın üzərində</string>
+    <string name="title_show_google_app">%1$s adını göstərin</string>
+    <string name="msg_minus_one_on_left">Əsas səhifə ekranından sola</string>
+    <string name="about">Haqqında</string>
+    <string name="title_google_app">Google tətbiqi</string>
+    <string name="title_app_suggestions">Tətbiq təkliflərini göstərin</string>
+    <string name="summary_app_suggestions">Bütün Tətbiqlər siyahısının üstündə</string>
+    <string name="about_app_version">Versiya</string>
+    <string name="app_name_pixel_launcher">Piksel Başladıcısı</string>
+    <string name="title_disable_suggestions_prompt">Tətbiq təklifləri söndürülsün?</string>
+    <string name="msg_disable_suggestions_prompt">Təkliflər tətbiq siyahınızın yuxarı hissəsində görünməyəcək və onları istifadə etmək üçün yaradılan istifadə datası həmişəlik silinəcək.</string>
+    <string name="label_turn_off_suggestions">DEAKTİV EDİN</string>
 </resources>

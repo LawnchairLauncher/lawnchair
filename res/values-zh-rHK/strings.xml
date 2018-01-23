@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"「<xliff:g id="APP_NAME">%3$s</xliff:g>」嘅 <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> 個捷徑同 <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> 個通知"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"關閉"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"關閉咗通知"</string>
+    <string name="smartspace_preferences">偏好設定</string>
+    <string name="label_search">搜尋</string>
+    <string name="label_voice_search">語音搜尋</string>
+    <string name="pref_icon_pack">圖示套件</string>
+    <string name="state_loading">套用中…</string>
+    <string name="smartspace_preferences_in_settings">資訊一覽</string>
+    <string name="smartspace_preferences_in_settings_desc">主畫面頂部</string>
+    <string name="title_show_google_app">顯示 %1$s</string>
+    <string name="msg_minus_one_on_left">位於主畫面左邊</string>
+    <string name="about">關於</string>
+    <string name="title_google_app">Google 應用程式</string>
+    <string name="title_app_suggestions">顯示應用程式建議</string>
+    <string name="summary_app_suggestions">位於「全部應用程式」清單頂部</string>
+    <string name="about_app_version">版本</string>
+    <string name="app_name_pixel_launcher">Pixel 啟動器</string>
+    <string name="title_disable_suggestions_prompt">要關閉應用程式建議嗎？</string>
+    <string name="msg_disable_suggestions_prompt">建議將不會在應用程式清單上方顯示，而用作提供建議的使用資料將會永久清除。</string>
+    <string name="label_turn_off_suggestions">關閉</string>
 </resources>

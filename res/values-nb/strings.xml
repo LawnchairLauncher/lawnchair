@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> snarveier og <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> varsler for <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Avvis"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Varselet ble avvist"</string>
+    <string name="smartspace_preferences">Innstillinger</string>
+    <string name="label_search">Søk</string>
+    <string name="label_voice_search">Talesøk</string>
+    <string name="pref_icon_pack">Ikonpakke</string>
+    <string name="state_loading">Anvender…</string>
+    <string name="smartspace_preferences_in_settings">Kort fortalt</string>
+    <string name="smartspace_preferences_in_settings_desc">Øverst på startskjermen</string>
+    <string name="title_show_google_app">Skjerm %1$s</string>
+    <string name="msg_minus_one_on_left">Til venstre for hovedstartskjermen</string>
+    <string name="about">Info</string>
+    <string name="title_google_app">Google-appen</string>
+    <string name="title_app_suggestions">Vis appforslag</string>
+    <string name="summary_app_suggestions">Øverst på Alle apper-listen</string>
+    <string name="about_app_version">Versjon</string>
+    <string name="app_name_pixel_launcher">Pixel-appoversikt</string>
+    <string name="title_disable_suggestions_prompt">Vil du slå av appanbefalinger?</string>
+    <string name="msg_disable_suggestions_prompt">Du finner ikke lenger anbefalinger øverst på applisten din, og brukerdataene som ble brukt til oppretting, slettes permanent.</string>
+    <string name="label_turn_off_suggestions">SLÅ AV</string>
 </resources>

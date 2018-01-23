@@ -128,4 +128,20 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> колдонмосу үчүн <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> кыска жол жана <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> эскертме бар"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Этибарга албоо"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Эскертме көз жаздымда калтырылды"</string>
+    <string name="smartspace_preferences">Жеке жөндөөлөр</string>
+    <string name="label_search">Издөө</string>
+    <string name="label_voice_search">Үн менен издөө</string>
+    <string name="smartspace_preferences_in_settings">Дароо көрүү</string>
+    <string name="smartspace_preferences_in_settings_desc">Башкы экрандын өйдө жагында</string>
+    <string name="title_show_google_app">%1$s колдонмосун чагылдыруу</string>
+    <string name="msg_minus_one_on_left">Негизги Башкы экрандын сол жагында</string>
+    <string name="about">Колдонмо жөнүндө</string>
+    <string name="title_google_app">Google колдонмосу</string>
+    <string name="title_app_suggestions">Колдонмонун сунуштарын көрсөтүү</string>
+    <string name="summary_app_suggestions">\"Бардык колдонмолор\" тизмесинин башында</string>
+    <string name="about_app_version">Версиясы</string>
+    <string name="app_name_pixel_launcher">Pixel Launcher</string>
+    <string name="title_disable_suggestions_prompt">Колдонмо сунуштары өчүрүлсүнбү?</string>
+    <string name="msg_disable_suggestions_prompt">Колдонмолор тизмесинин башында сунуштар көрсөтүлбөйт жана аларды түзүүгө керектүү дайындар биротоло тазаланат.</string>
+    <string name="label_turn_off_suggestions">ӨЧҮРҮҮ</string>
 </resources>

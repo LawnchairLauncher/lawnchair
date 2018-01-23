@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g>: <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> pikakuvaketta ja <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> ilmoitusta"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Hylkää"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Ilmoitus hylätty"</string>
+    <string name="smartspace_preferences">Asetukset</string>
+    <string name="label_search">Haku</string>
+    <string name="label_voice_search">Puhehaku</string>
+    <string name="pref_icon_pack">Kuvakepaketti</string>
+    <string name="state_loading">Käytetään…</string>
+    <string name="smartspace_preferences_in_settings">Pikanäkymä</string>
+    <string name="smartspace_preferences_in_settings_desc">Aloitusnäytön yläreunassa</string>
+    <string name="title_show_google_app">Näyttö %1$s</string>
+    <string name="msg_minus_one_on_left">Pääaloitusnäytön vasemmalla puolella</string>
+    <string name="about">Tietoja</string>
+    <string name="title_google_app">Google-sovellus</string>
+    <string name="title_app_suggestions">Näytä sovellusehdotukset</string>
+    <string name="summary_app_suggestions">Kaikki sovellukset ‑listan alussa</string>
+    <string name="about_app_version">Versio</string>
+    <string name="app_name_pixel_launcher">Pixel-käynnistysohjelma</string>
+    <string name="title_disable_suggestions_prompt">Poistetaanko sovellusehdotukset käytöstä?</string>
+    <string name="msg_disable_suggestions_prompt">Ehdotuksia ei näytetä sovellusluettelosi yläosassa. Niiden luomiseen käytetyt tiedot poistetaan pysyvästi.</string>
+    <string name="label_turn_off_suggestions">POISTA KÄYTÖSTÄ</string>
 </resources>

@@ -128,4 +128,20 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"„<xliff:g id="APP_NAME">%3$s</xliff:g>“ spartieji klavišai (<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>) ir pranešimai (<xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g>)"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Atsisakyti"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Pranešimo atsisakyta"</string>
+    <string name="smartspace_preferences">Nuostatos</string>
+    <string name="label_search">Ieškoti</string>
+    <string name="label_voice_search">Paieška balsu</string>
+    <string name="smartspace_preferences_in_settings">Apžvalga</string>
+    <string name="smartspace_preferences_in_settings_desc">Pagrindinio ekrano viršuje</string>
+    <string name="title_show_google_app">Pateikti %1$s</string>
+    <string name="msg_minus_one_on_left">Pagrindinio ekrano kairėje</string>
+    <string name="about">Apie</string>
+    <string name="title_google_app">„Google“ programa</string>
+    <string name="title_app_suggestions">Rodyti programų pasiūlymus</string>
+    <string name="summary_app_suggestions">Visų programų sąrašo viršuje</string>
+    <string name="about_app_version">Versija</string>
+    <string name="app_name_pixel_launcher">Pixel Launcher</string>
+    <string name="title_disable_suggestions_prompt">Išjungti programų pasiūlymus?</string>
+    <string name="msg_disable_suggestions_prompt">Pasiūlymai nebus rodomi programų sąrašo viršuje, o naudojimo duomenys, naudoti jiems sukurti, bus visam laikui ištrinti.</string>
+    <string name="label_turn_off_suggestions">IŠJUNGTI</string>
 </resources>

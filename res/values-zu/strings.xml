@@ -128,4 +128,20 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> izinqamuleli nezaziso ezingu-<xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> ze-<xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Cashisa"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Isaziso sicashisiwe"</string>
+    <string name="smartspace_preferences">Okuncamelayo</string>
+    <string name="label_search">Sesha</string>
+    <string name="label_voice_search">Ukusesha ngezwi</string>
+    <string name="smartspace_preferences_in_settings">Ngokubuka nje</string>
+    <string name="smartspace_preferences_in_settings_desc">Ngaphezulu kwesikrini sakho sasekhaya</string>
+    <string name="title_show_google_app">Bonisa i-%1$s</string>
+    <string name="msg_minus_one_on_left">Ngasokunxele sesikrini sasekhaya esiyinhloko</string>
+    <string name="about">Mayelana</string>
+    <string name="title_google_app">Uhlelo lokusebenza le-Google</string>
+    <string name="title_app_suggestions">Bonisa iziphakamiso zohlelo lokusebenza</string>
+    <string name="summary_app_suggestions">Ngaphezulu kohlu lwakho lwazo zonke izinhlelo zokusebenza</string>
+    <string name="about_app_version">Inhlobo</string>
+    <string name="app_name_pixel_launcher">Isiqalisi Sephikseli</string>
+    <string name="title_disable_suggestions_prompt">Vala iziphakamiso zohlelo lokusebenza?</string>
+    <string name="msg_disable_suggestions_prompt">Iziphakamiso ngeke zivele ngaphezulu kohlu lwezinhlelo zakho zokusebenza, futhi idatha yokusetshenziswa esetshenziselwe ukuzidala izosulwa ingunaphakade.</string>
+    <string name="label_turn_off_suggestions">VALA</string>
 </resources>

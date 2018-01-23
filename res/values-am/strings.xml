@@ -128,4 +128,20 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> አቋራጮች እና <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> ማሳወቂያዎች ለ<xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"አሰናብት"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ማሳወቂያ ተሰናብቷል"</string>
+    <string name="smartspace_preferences">ምርጫዎች</string>
+    <string name="label_search">ፈልግ</string>
+    <string name="label_voice_search">የድምፅ ፍለጋ</string>
+    <string name="smartspace_preferences_in_settings">በአፍታ እይታ</string>
+    <string name="smartspace_preferences_in_settings_desc">በመነሻ ማያ ገጽዎ አናት ላይ</string>
+    <string name="title_show_google_app">ማሳያ %1$s</string>
+    <string name="msg_minus_one_on_left">ከዋናው መነሻ ገጽ በስተግራ</string>
+    <string name="about">ስለ</string>
+    <string name="title_google_app">የGoogle መተግበሪያ</string>
+    <string name="title_app_suggestions">የመተግበሪያ አስተያየት ጥቆማዎችን አሳይ</string>
+    <string name="summary_app_suggestions">ከእርስዎ ሁሉም መተግበሪያች ዝርዝር አናት ላይ</string>
+    <string name="about_app_version">ሥሪት</string>
+    <string name="app_name_pixel_launcher">ፒክሴል ማስጀመሪያ</string>
+    <string name="title_disable_suggestions_prompt">የመተግበሪያ አስተያየት ጥቆማዎች ይጥፉ?</string>
+    <string name="msg_disable_suggestions_prompt">የአስተያየት ጥቆማዎች በእርስዎ የመተግበሪያዎች ዝርዝር አናት ላይ አይታዩም፣ እና እነሱን ለመፍጠር ጥቅም ላይ የዋለው የአጠቃቀም ውሂብ በቋሚነት ይደመሰሳል።</string>
+    <string name="label_turn_off_suggestions">አጥፋ</string>
 </resources>

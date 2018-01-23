@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> (na) shortcut at <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> (na) notification para sa <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"I-dismiss"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Na-dismiss ang notification"</string>
+    <string name="smartspace_preferences">Mga Kagustuhan</string>
+    <string name="label_search">Maghanap</string>
+    <string name="label_voice_search">Paghahanap gamit ang boses</string>
+    <string name="pref_icon_pack">Pakete ng icon</string>
+    <string name="state_loading">Ina-aplay…</string>
+    <string name="smartspace_preferences_in_settings">Sa Isang Sulyap</string>
+    <string name="smartspace_preferences_in_settings_desc">Sa itaas ng iyong Home screen</string>
+    <string name="title_show_google_app">Ipakita ang %1$s</string>
+    <string name="msg_minus_one_on_left">Sa kaliwa ng pangunahing Home screen</string>
+    <string name="about">Tungkol Dito</string>
+    <string name="title_google_app">Google app</string>
+    <string name="title_app_suggestions">Ipakita ang mga suhestyon ng app</string>
+    <string name="summary_app_suggestions">Nasa itaas ng iyong listahan ng Lahat ng App</string>
+    <string name="about_app_version">Bersyon</string>
+    <string name="app_name_pixel_launcher">Pixel Launcher</string>
+    <string name="title_disable_suggestions_prompt">I-off ang mga iminumungkahing app?</string>
+    <string name="msg_disable_suggestions_prompt">Hindi makikita ang mga suhestyon sa itaas ng listahan ng iyong mga app at permanenteng mabubura ang data ng paggamit na ginamit upang gawin ang mga ito.</string>
+    <string name="label_turn_off_suggestions">I-OFF</string>
 </resources>

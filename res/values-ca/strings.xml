@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> dreceres i <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> notificacions per a <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Ignora"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"S\'ha ignorat la notificació"</string>
+    <string name="smartspace_preferences">Preferències</string>
+    <string name="label_search">Cerca</string>
+    <string name="label_voice_search">Cerca per veu</string>
+    <string name="pref_icon_pack">"Paquet d'icones"</string>
+    <string name="state_loading">"S'està aplicant…"</string>
+    <string name="smartspace_preferences_in_settings">Recorda</string>
+    <string name="smartspace_preferences_in_settings_desc">"A la part superior de la pantalla d'inici"</string>
+    <string name="title_show_google_app">Mostra %1$s</string>
+    <string name="msg_minus_one_on_left">"A l'esquerra de la pantalla d'inici principal"</string>
+    <string name="about">Informació</string>
+    <string name="title_google_app">Aplicació Google</string>
+    <string name="title_app_suggestions">"Mostra suggeriments d'aplicacions"</string>
+    <string name="summary_app_suggestions">A la part superior de la llista Totes les aplicacions</string>
+    <string name="about_app_version">Versió</string>
+    <string name="app_name_pixel_launcher">Pixel Launcher</string>
+    <string name="title_disable_suggestions_prompt">"Vols desactivar els suggeriments d'aplicacions?"</string>
+    <string name="msg_disable_suggestions_prompt">"Els suggeriments no es mostraran a la part superior de la llista d'aplicacions, i les dades d'ús utilitzades per crear-los s'esborraran permanentment."</string>
+    <string name="label_turn_off_suggestions">DESACTIVA</string>
 </resources>

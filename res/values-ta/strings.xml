@@ -128,4 +128,20 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> பயன்பாட்டிற்கான <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> குறுக்குவழிகளும் <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> அறிவிப்புகளும் உள்ளன"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"நிராகரி"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"அறிவிப்பு நிராகரிக்கப்பட்டது"</string>
+    <string name="smartspace_preferences">விருப்பத்தேர்வுகள்</string>
+    <string name="label_search">தேடு</string>
+    <string name="label_voice_search">குரல் தேடல்</string>
+    <string name="smartspace_preferences_in_settings">முகப்புத் தகவல்</string>
+    <string name="smartspace_preferences_in_settings_desc">முகப்புத் திரையின் மேற்புறம்</string>
+    <string name="title_show_google_app">%1$sஐக் காட்டு</string>
+    <string name="msg_minus_one_on_left">முதன்மை முகப்புத் திரையின் இடப்புறம்</string>
+    <string name="about">அறிமுகம்</string>
+    <string name="title_google_app">Google பயன்பாடு</string>
+    <string name="title_app_suggestions">பயன்பாட்டிற்கான பரிந்துரைகளைக் காட்டு</string>
+    <string name="summary_app_suggestions">எல்லாப் பயன்பாடுகளும் பட்டியலின் மேற்புறம்</string>
+    <string name="about_app_version">பதிப்பு</string>
+    <string name="app_name_pixel_launcher">Pixel துவக்கி</string>
+    <string name="title_disable_suggestions_prompt">பயன்பாட்டுப் பரிந்துரைகளை முடக்கவா?</string>
+    <string name="msg_disable_suggestions_prompt">பயன்பாட்டுப் பட்டியலின் மேலே பரிந்துரைகள் தோன்றாது, மேலும் அவற்றை உருவாக்குவதற்குப் பயன்படுத்தப்படும் உபயோகத் தரவு நிரந்தரமாக அழிக்கப்படும்.</string>
+    <string name="label_turn_off_suggestions">முடக்கு</string>
 </resources>

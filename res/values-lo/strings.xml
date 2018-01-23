@@ -128,4 +128,20 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> ທາງລັດ ແລະ <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> ການແຈ້ງເຕືອນສຳລັບ <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ປິດໄວ້"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ປິດການແຈ້ງເຕືອນແລ້ວ"</string>
+    <string name="smartspace_preferences">ການຕັ້ງຄ່າ</string>
+    <string name="label_search">ຊອກຫາ</string>
+    <string name="label_voice_search">ຊອກຫາດ້ວຍສຽງ</string>
+    <string name="smartspace_preferences_in_settings">ການຕັ້ງຄ່າເບື້ອງຕົ້ນ</string>
+    <string name="smartspace_preferences_in_settings_desc">ຢູ່ເທິງສຸດຂອງໜ້າຈໍຫຼັກຂອງທ່ານ</string>
+    <string name="title_show_google_app">ສະແດງ %1$s</string>
+    <string name="msg_minus_one_on_left">ທາງຊ້າຍຂອງໜ້າຈໍຫຼັກ</string>
+    <string name="about">ກ່ຽວກັບ</string>
+    <string name="title_google_app">ແອັບ Google</string>
+    <string name="title_app_suggestions">ສະແດງການແນະນຳແອັບ</string>
+    <string name="summary_app_suggestions">ຢູ່ເທິງສຸດຂອງລາຍຊື່ແອັບທັງໝົດຂອງທ່ານ</string>
+    <string name="about_app_version">ເວີຊັນ</string>
+    <string name="app_name_pixel_launcher">ຕົວເປີດ Pixel</string>
+    <string name="title_disable_suggestions_prompt">ປິດການແນະນຳແອັບໄວ້ບໍ?</string>
+    <string name="msg_disable_suggestions_prompt">ການແນະນຳຈະບໍ່ປາກົດຢູ່ເທິງສຸດຂອງລາຍຊື່ແອັບຂອງທ່ານ ແລະ ຂໍ້ມູນການນຳໃຊ້ທີ່ໃຊ້ເພື່ອສ້າງພວກມັນຈະຖືກລຶບອອກຖາວອນ.</string>
+    <string name="label_turn_off_suggestions">ປິດໄວ້</string>
 </resources>

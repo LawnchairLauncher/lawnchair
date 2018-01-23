@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="smartspace_minutes">
+        <item quantity="other">%d मिनट</item>
+        <item quantity="one">%d मिनट</item>
+    </plurals>
+    <plurals name="smartspace_hours">
+        <item quantity="other">%d घंटे</item>
+        <item quantity="one">%d घंटे</item>
+    </plurals>
+</resources>

@@ -128,4 +128,20 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> ਲਈ <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> ਸ਼ਾਰਟਕੱਟ ਅਤੇ <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> ਸੂਚਨਾਵਾਂ"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ਖਾਰਜ ਕਰੋ"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ਸੂਚਨਾ ਖਾਰਜ ਕੀਤੀ ਗਈ"</string>
+    <string name="smartspace_preferences">ਤਰਜੀਹਾਂ</string>
+    <string name="label_search">ਖੋਜ</string>
+    <string name="label_voice_search">ਵੌਇਸ ਖੋਜ</string>
+    <string name="smartspace_preferences_in_settings">ਇੱਕ ਨਜ਼ਰ ਵਿੱਚ</string>
+    <string name="smartspace_preferences_in_settings_desc">"ਤੁਹਾਡੀ ਹੋਮ ਸਕ੍ਰੀਨ ਦੇ ਸਿਖਰ 'ਤੇ"</string>
+    <string name="title_show_google_app">%1$s ਪ੍ਰਦਰਸ਼ਿਤ ਕਰੋ</string>
+    <string name="msg_minus_one_on_left">ਮੁੱਖ ਹੋਮ ਸਕ੍ਰੀਨ ਦੇ ਖੱਬੇ ਪਾਸੇ</string>
+    <string name="about">ਇਸ ਬਾਰੇ</string>
+    <string name="title_google_app">Google ਐਪ</string>
+    <string name="title_app_suggestions">ਐਪ ਸੁਝਾਅ ਪ੍ਰਦਰਸ਼ਿਤ ਕਰੋ</string>
+    <string name="summary_app_suggestions">"ਤੁਹਾਡੀਆਂ ਸਾਰੀਆਂ ਐਪਾਂ ਦੀ ਸੂਚੀ ਦੇ ਸਿਖਰ 'ਤੇ"</string>
+    <string name="about_app_version">ਰੂਪ</string>
+    <string name="app_name_pixel_launcher">Pixel ਲਾਂਚਰ</string>
+    <string name="title_disable_suggestions_prompt">ਕੀ ਐਪ ਸੁਝਾਅ ਬੰਦ ਕਰਨੇ ਹਨ?</string>
+    <string name="msg_disable_suggestions_prompt">"ਸੁਝਾਅ ਤੁਹਾਡੀ ਐਪ ਸੂਚੀ ਦੇ ਸਿਖਰ 'ਤੇ ਨਹੀਂ ਵਿਖਾਈ ਦੇਣਗੇ ਅਤੇ ਉਹਨਾਂ ਨੂੰ ਬਣਾਉਣ ਲਈ ਵਰਤੇ ਗਏ ਵਰਤੋਂ  ਡਾਟੇ  ਨੂੰ ਪੱਕੇ ਤੌਰ 'ਤੇ ਮਿਟਾ ਦਿੱਤਾ ਜਾਵੇਗਾ।"</string>
+    <string name="label_turn_off_suggestions">ਬੰਦ ਕਰੋ</string>
 </resources>

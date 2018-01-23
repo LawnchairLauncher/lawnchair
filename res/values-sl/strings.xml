@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"Bližnjice (<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>) in obvestila (<xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g>) aplikacije <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Opusti"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Obvestilo je bilo opuščeno"</string>
+    <string name="smartspace_preferences">Nastavitve</string>
+    <string name="label_search">Iskanje</string>
+    <string name="label_voice_search">Glasovno iskanje</string>
+    <string name="pref_icon_pack">Paket z ikonami</string>
+    <string name="state_loading">Uveljavljanje…</string>
+    <string name="smartspace_preferences_in_settings">Hitri pregled</string>
+    <string name="smartspace_preferences_in_settings_desc">Na vrhu začetnega zaslona</string>
+    <string name="title_show_google_app">Prikaži: %1$s</string>
+    <string name="msg_minus_one_on_left">Levo od glavnega začetnega zaslona</string>
+    <string name="about">Vizitka</string>
+    <string name="title_google_app">Aplikacija Google</string>
+    <string name="title_app_suggestions">Prikaz predlogov za aplikacije</string>
+    <string name="summary_app_suggestions">Na vrhu seznama »Vse aplikacije«</string>
+    <string name="about_app_version">Različica</string>
+    <string name="app_name_pixel_launcher">Zaganjalnik Pixel</string>
+    <string name="title_disable_suggestions_prompt">Želite izklopiti predloge za aplikacije?</string>
+    <string name="msg_disable_suggestions_prompt">Predlogi ne bodo prikazani na vrhu seznama aplikacij, podatki o prenesenih podatkih, uporabljeni pri njihovem ustvarjanju, pa bodo trajno izbrisani.</string>
+    <string name="label_turn_off_suggestions">IZKLOP</string>
 </resources>

@@ -128,4 +128,20 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> raccourcis et <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> notifications pour <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Ignorer"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Notification ignorée"</string>
+    <string name="smartspace_preferences">Préférences</string>
+    <string name="label_search">Rechercher</string>
+    <string name="label_voice_search">Recherche vocale</string>
+    <string name="smartspace_preferences_in_settings">Aperçu</string>
+    <string name="smartspace_preferences_in_settings_desc">"Dans le haut de votre écran d'accueil"</string>
+    <string name="title_show_google_app">Afficher %1$s</string>
+    <string name="msg_minus_one_on_left">"À la gauche de l'écran d'accueil principal"</string>
+    <string name="about">À propos</string>
+    <string name="title_google_app">Appli Google</string>
+    <string name="title_app_suggestions">"Afficher les suggestions d'applications"</string>
+    <string name="summary_app_suggestions">Dans le haut de la liste Toutes les applications</string>
+    <string name="about_app_version">Version</string>
+    <string name="app_name_pixel_launcher">"Lanceur d'applications Pixel"</string>
+    <string name="title_disable_suggestions_prompt">"Désactiver les suggestions d'applications?"</string>
+    <string name="msg_disable_suggestions_prompt">"Les suggestions ne s'afficheront pas en haut de votre liste d'applications, et les données d'utilisation employées pour les créer seront supprimées définitivement."</string>
+    <string name="label_turn_off_suggestions">DÉSACTIVER</string>
 </resources>

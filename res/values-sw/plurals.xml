@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="smartspace_minutes">
+        <item quantity="other">Dakika %d</item>
+        <item quantity="one">Dakika %d</item>
+    </plurals>
+    <plurals name="smartspace_hours">
+        <item quantity="other">Saa %d</item>
+        <item quantity="one">Saa %d</item>
+    </plurals>
+</resources>

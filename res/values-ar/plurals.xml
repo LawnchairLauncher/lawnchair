@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="smartspace_minutes">
+        <item quantity="other">‏%d دقيقة</item>
+        <item quantity="zero">‏%d دقيقة</item>
+        <item quantity="one">‏دقيقة واحدة (%d)</item>
+        <item quantity="two">‏دقيقتان (%d)</item>
+        <item quantity="few">‏%d دقائق</item>
+        <item quantity="many">‏%d دقيقة</item>
+    </plurals>
+    <plurals name="smartspace_hours">
+        <item quantity="other">‏%d ساعة</item>
+        <item quantity="zero">‏%d ساعة</item>
+        <item quantity="one">‏ساعة واحدة (%d)</item>
+        <item quantity="two">‏ساعتان (%d)</item>
+        <item quantity="few">‏%d ساعات</item>
+        <item quantity="many">‏%d ساعة</item>
+    </plurals>
+</resources>

@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> ಗಾಗಿ <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು ಮತ್ತು <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> ಅಧಿಸೂಚನೆಗಳು"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ವಜಾಗೊಳಿಸಿ"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ಅಧಿಸೂಚನೆಯನ್ನು ವಜಾಗೊಳಿಸಲಾಗಿದೆ"</string>
+    <string name="smartspace_preferences">ಪ್ರಾಶಸ್ತ್ಯಗಳು</string>
+    <string name="label_search">ಹುಡುಕಿ</string>
+    <string name="label_voice_search">ಧ್ವನಿ ಹುಡುಕಾಟ</string>
+    <string name="pref_icon_pack">ಐಕಾನ್ ಪ್ಯಾಕ್</string>
+    <string name="state_loading">ಅನ್ವಯಿಸಲಾಗುತ್ತಿದೆ...</string>
+    <string name="smartspace_preferences_in_settings">ಇಣುಕು ನೋಟದಲ್ಲಿ</string>
+    <string name="smartspace_preferences_in_settings_desc">ನಿಮ್ಮ ಮುಖ ಪುಟದ ಪರದೆಯ ಮೇಲ್ಬಾಗದಲ್ಲಿ</string>
+    <string name="title_show_google_app">%1$s ಪ್ರದರ್ಶಿಸಿ</string>
+    <string name="msg_minus_one_on_left">ಮುಖ್ಯ ಮುಖಪುಟ ಪರದೆಯ ಎಡಕ್ಕೆ</string>
+    <string name="about">ಕುರಿತು</string>
+    <string name="title_google_app">Google ಅಪ್ಲಿಕೇಶನ್</string>
+    <string name="title_app_suggestions">ಅಪ್ಲಿಕೇಶನ್ ಸಲಹೆಗಳನ್ನು ಪ್ರದರ್ಶಿಸಿ</string>
+    <string name="summary_app_suggestions">ನಿಮ್ಮ ಎಲ್ಲಾ ಅಪ್ಲಿಕೇಶನ್‌ಗಳ ಪಟ್ಟಿಯ ಮೇಲ್ಭಾಗದಲ್ಲಿ</string>
+    <string name="about_app_version">ಆವೃತ್ತಿ</string>
+    <string name="app_name_pixel_launcher">Pixel ಲಾಂಚರ್</string>
+    <string name="title_disable_suggestions_prompt">ಅಪ್ಲಿಕೇಶನ್ ಸಲಹೆಗಳನ್ನು ಆಫ್‌ ಮಾಡುವುದೇ?</string>
+    <string name="msg_disable_suggestions_prompt">ನಿಮ್ಮ ಅಪ್ಲಿಕೇಶನ್‌ಗಳ ಪಟ್ಟಿಯ ಮೇಲ್ಭಾಗದಲ್ಲಿ ಸಲಹೆಗಳು ಕಾಣಿಸುವುದಿಲ್ಲ. ಹೀಗಾಗಿ ಅವುಗಳ ರಚನೆಗೆ ಬಳಕೆಮಾಡಿರುವ ಬಳಕೆ ಡೇಟಾ ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಿಹೋಗುವುದು.</string>
+    <string name="label_turn_off_suggestions">ಆಫ್</string>
 </resources>

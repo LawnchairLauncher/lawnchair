@@ -128,4 +128,20 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> қолданбасының <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> таңбашасы мен <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> хабарландыруы"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Бас тарту"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Хабарландырудан бас тартылды"</string>
+    <string name="smartspace_preferences">Параметрлер</string>
+    <string name="label_search">Іздеу</string>
+    <string name="label_voice_search">Дауыспен іздеу</string>
+    <string name="smartspace_preferences_in_settings">\"Динамикалық көрсету\" функциясы</string>
+    <string name="smartspace_preferences_in_settings_desc">Негізі экранның жоғарғы жағында</string>
+    <string name="title_show_google_app">%1$s қолданбасын көрсету</string>
+    <string name="msg_minus_one_on_left">Басты негізгі экранның сол жағында</string>
+    <string name="about">Туралы</string>
+    <string name="title_google_app">Google қолданбасы</string>
+    <string name="title_app_suggestions">Қолданба ұсыныстарын көрсету</string>
+    <string name="summary_app_suggestions">\"Барлық бағдарламалар\" тізіміңіздің жоғарғы бөлігінде</string>
+    <string name="about_app_version">Нұсқа</string>
+    <string name="app_name_pixel_launcher">Pixel Launcher</string>
+    <string name="title_disable_suggestions_prompt">Қолданба ұсыныстарын өшіру керек пе?</string>
+    <string name="msg_disable_suggestions_prompt">Ұсыныстар қолданбалар тізімінің жоғарғы жағында көрсетілмейді және оларды жасау үшін пайдаланылған қолданыс деректері мүлдем жойылады.</string>
+    <string name="label_turn_off_suggestions">ӨШІРУ</string>
 </resources>

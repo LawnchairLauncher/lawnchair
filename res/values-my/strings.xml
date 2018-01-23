@@ -128,4 +128,20 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> အတွက် ဖြတ်လမ်းလင့်ခ် <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> နှင့် အကြောင်းကြားချက် <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> ခု"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ပယ်ရန်"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"အသိပေးချက်ကို ဖယ်ထုတ်ပြီးပါပြီ"</string>
+    <string name="smartspace_preferences">ဦးစားပေးမှုများ</string>
+    <string name="label_search">ရှာရန်</string>
+    <string name="label_voice_search">အသံဖြင့် ရှာဖွေရန်</string>
+    <string name="smartspace_preferences_in_settings">တစ်ချက်ကြည့်ရုံမျှဖြင့်</string>
+    <string name="smartspace_preferences_in_settings_desc">သင့်ပင်မစာမျက်နှာ၏ ထိပ်ဘက်တွင်</string>
+    <string name="title_show_google_app">%1$s ကို ပြရန်</string>
+    <string name="msg_minus_one_on_left">အဓိက ပင်မစာမျက်နှာ၏ ဘယ်ဘက်တွင်ရှိသည်</string>
+    <string name="about">အကြောင်း</string>
+    <string name="title_google_app">Google app</string>
+    <string name="title_app_suggestions">အက်ပ်အကြံပြုချက်များကို ပြသပါ</string>
+    <string name="summary_app_suggestions">"သင်၏ 'အက်ပ်အားလုံး' စာရင်း၏ ထိပ်တွင်"</string>
+    <string name="about_app_version">ဗားရှင်း</string>
+    <string name="app_name_pixel_launcher">Pixel Launcher</string>
+    <string name="title_disable_suggestions_prompt">အက်ပ်အကြံပြုမှုများကို ပိတ်မလား။</string>
+    <string name="msg_disable_suggestions_prompt">အကြံပြုချက်များသည် သင့်အက်ပ်စာရင်း၏ ထိပ်ဆုံးတွင် ပေါ်လာမည်မဟုတ်ပါ။ ထို့အပြင် ၎င်းတို့ကို ရေးသားပေးပို့ရာတွင် အသုံးပြုခဲ့သည့် အသုံးပြုမှုဒေတာများကို အပြီးအပိုင်ဖျက်လိုက်ပါမည်။</string>
+    <string name="label_turn_off_suggestions">ပိတ်ပါ</string>
 </resources>

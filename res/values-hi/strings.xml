@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> के लिए <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> शॉर्टकट और <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> नोटिफ़िकेशन हैं"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"खारिज करें"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"नोटिफ़िकेशन को खारिज किया गया"</string>
+    <string name="smartspace_preferences">प्राथमिकताएं</string>
+    <string name="label_search">खोजें</string>
+    <string name="label_voice_search">बोलकर खोजें</string>
+    <string name="pref_icon_pack">आइकन पैक</string>
+    <string name="state_loading">लागू कर रहा...</string>
+    <string name="smartspace_preferences_in_settings">एक नज़र में</string>
+    <string name="smartspace_preferences_in_settings_desc">आपकी होम स्क्रीन में सबसे ऊपर</string>
+    <string name="title_show_google_app">%1$s प्रदर्शित करें</string>
+    <string name="msg_minus_one_on_left">मुख्य होम स्क्रीन के बाईं ओर</string>
+    <string name="about">संक्षिप्त विवरण</string>
+    <string name="title_google_app">Google ऐप्लिकेशन</string>
+    <string name="title_app_suggestions">ऐप्लिकेशन सुझाव दिखाएं</string>
+    <string name="summary_app_suggestions">आपकी सभी ऐप्लिकेशन सूची के शीर्ष पर</string>
+    <string name="about_app_version">वर्शन</string>
+    <string name="app_name_pixel_launcher">Pixel लॉन्चर</string>
+    <string name="title_disable_suggestions_prompt">ऐप्लिकेशन सुझाव बंद करें?</string>
+    <string name="msg_disable_suggestions_prompt">सुझाव आपकी ऐप्लिकेशन सूची के शीर्ष पर नहीं दिखाई देंगे और उन्हें बनाने के लिए उपयोग किया गया उपयोग डेटा स्थायी रूप से मिटा दिया जाएगा.</string>
+    <string name="label_turn_off_suggestions">बंद करें</string>
 </resources>

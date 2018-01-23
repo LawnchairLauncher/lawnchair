@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"Skróty (<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>) i powiadomienia (<xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g>) aplikacji <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Odrzuć"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Powiadomienie odrzucone"</string>
+    <string name="smartspace_preferences">Ustawienia</string>
+    <string name="label_search">Wyszukiwanie</string>
+    <string name="label_voice_search">Wyszukiwanie głosowe</string>
+    <string name="pref_icon_pack">Pakiet ikon</string>
+    <string name="state_loading">Stosowanie…</string>
+    <string name="smartspace_preferences_in_settings">W skrócie</string>
+    <string name="smartspace_preferences_in_settings_desc">U góry ekranu głównego</string>
+    <string name="title_show_google_app">Wyświetl: %1$s</string>
+    <string name="msg_minus_one_on_left">Po lewej stronie ekranu głównego</string>
+    <string name="about">Informacje</string>
+    <string name="title_google_app">Aplikacja Google</string>
+    <string name="title_app_suggestions">Wyświetl sugerowane aplikacje</string>
+    <string name="summary_app_suggestions">U góry listy Wszystkie aplikacje</string>
+    <string name="about_app_version">Wersja</string>
+    <string name="app_name_pixel_launcher">Pixel Launcher</string>
+    <string name="title_disable_suggestions_prompt">Wyłączyć sugerowane aplikacje?</string>
+    <string name="msg_disable_suggestions_prompt">Sugestie nie będą pojawiać się u góry listy Twoich aplikacji, a dane o użytkowaniu służące do ich utworzenia zostaną trwale usunięte.</string>
+    <string name="label_turn_off_suggestions">WYŁĄCZ</string>
 </resources>

@@ -128,4 +128,20 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> pintasan dan <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> notifikasi untuk <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Tutup"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Notifikasi ditutup"</string>
+    <string name="smartspace_preferences">Preferensi</string>
+    <string name="label_search">Telusuri</string>
+    <string name="label_voice_search">Penelusuran suara</string>
+    <string name="smartspace_preferences_in_settings">At A Glance</string>
+    <string name="smartspace_preferences_in_settings_desc">Di bagian atas Layar utama</string>
+    <string name="title_show_google_app">Tampilkan %1$s</string>
+    <string name="msg_minus_one_on_left">Di sebelah kiri layar Utama</string>
+    <string name="about">Tentang</string>
+    <string name="title_google_app">Google app</string>
+    <string name="title_app_suggestions">Tampilkan saran aplikasi</string>
+    <string name="summary_app_suggestions">Di bagian atas daftar Semua Aplikasi</string>
+    <string name="about_app_version">Versi</string>
+    <string name="app_name_pixel_launcher">Peluncur Pixel</string>
+    <string name="title_disable_suggestions_prompt">Nonaktifkan saran aplikasi?</string>
+    <string name="msg_disable_suggestions_prompt">Saran tidak akan muncul di bagian atas daftar aplikasi Anda, dan data penggunaan yang digunakan untuk membuatnya akan dihapus secara permanen.</string>
+    <string name="label_turn_off_suggestions">NONAKTIFKAN</string>
 </resources>

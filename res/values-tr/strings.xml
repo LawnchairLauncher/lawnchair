@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> için <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> kısayol ve <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> bildirim"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Kapat"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Bildirim kapatıldı"</string>
+    <string name="smartspace_preferences">Tercihler</string>
+    <string name="label_search">Ara</string>
+    <string name="label_voice_search">Sesli arama</string>
+    <string name="pref_icon_pack">Simge paketi</string>
+    <string name="state_loading">Uygulanıyor…</string>
+    <string name="smartspace_preferences_in_settings">Bir Bakışta</string>
+    <string name="smartspace_preferences_in_settings_desc">Ana ekranınızın üst bölümünde</string>
+    <string name="title_show_google_app">Şunu göster: %1$s</string>
+    <string name="msg_minus_one_on_left">Birincil Ana ekranın soluna</string>
+    <string name="about">Hakkında</string>
+    <string name="title_google_app">Google uygulaması</string>
+    <string name="title_app_suggestions">Uygulama önerileri görüntüle</string>
+    <string name="summary_app_suggestions">Tüm Uygulamalar listenizin en üstünde</string>
+    <string name="about_app_version">Sürüm</string>
+    <string name="app_name_pixel_launcher">Pixel Launcher</string>
+    <string name="title_disable_suggestions_prompt">Uygulama önerileri kapatılsın mı?</string>
+    <string name="msg_disable_suggestions_prompt">Öneriler, uygulama listenizin üst kısmında görünmeyecek ve bunları oluşturmak için kullanılan kullanım verileri kalıcı olarak silinecek.</string>
+    <string name="label_turn_off_suggestions">KAPAT</string>
 </resources>

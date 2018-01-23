@@ -128,4 +128,20 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> ilovasi uchun <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> ta yorliq va <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> ta bildirishnoma"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Yopish"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Bildirishnoma yopildi"</string>
+    <string name="smartspace_preferences">Sozlamalar</string>
+    <string name="label_search">Qidirish</string>
+    <string name="label_voice_search">Ovozli qidiruv</string>
+    <string name="smartspace_preferences_in_settings">Nigoh</string>
+    <string name="smartspace_preferences_in_settings_desc">Bosh ekranning yuqori qismida</string>
+    <string name="title_show_google_app">%1$s ko‘rsatilsin</string>
+    <string name="msg_minus_one_on_left">Bosh ekranning chap tomonida</string>
+    <string name="about">Ilova haqida</string>
+    <string name="title_google_app">Google ilovasi</string>
+    <string name="title_app_suggestions">Ilova takliflarini ko‘rsatish</string>
+    <string name="summary_app_suggestions">Barcha ilovalar ro‘yxatining boshida</string>
+    <string name="about_app_version">Versiyasi</string>
+    <string name="app_name_pixel_launcher">Pixel Launcher</string>
+    <string name="title_disable_suggestions_prompt">Ilova takliflari o‘chirib qo‘yilsinmi?</string>
+    <string name="msg_disable_suggestions_prompt">Ilovalaringiz ro‘yxati tepasida endi takliflar ko‘rsatilmaydi hamda ularni yaratish uchun ishlatilgan foydalanish statistikasi butunlay o‘chirib tashlanadi.</string>
+    <string name="label_turn_off_suggestions">HA</string>
 </resources>

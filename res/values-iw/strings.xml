@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> קיצורי דרך ו-<xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> הודעות של <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"סגור"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ההודעה נסגרה"</string>
+    <string name="smartspace_preferences">העדפות</string>
+    <string name="label_search">חיפוש</string>
+    <string name="label_voice_search">חיפוש קולי</string>
+    <string name="pref_icon_pack">ערכת סמלים</string>
+    <string name="state_loading">מחיל...</string>
+    <string name="smartspace_preferences_in_settings">בקצרה</string>
+    <string name="smartspace_preferences_in_settings_desc">בחלק העליון של מסך דף הבית</string>
+    <string name="title_show_google_app">הצגה של %1$s</string>
+    <string name="msg_minus_one_on_left">משמאל למסך דף הבית הראשי</string>
+    <string name="about">מידע כללי</string>
+    <string name="title_google_app">Google App</string>
+    <string name="title_app_suggestions">הצגת הצעות לאפליקציות</string>
+    <string name="summary_app_suggestions">בראש רשימת האפליקציות</string>
+    <string name="about_app_version">גרסה</string>
+    <string name="app_name_pixel_launcher">‏מפעיל האפליקציות של Pixel</string>
+    <string name="title_disable_suggestions_prompt">האם לכבות הצעות לאפליקציות?</string>
+    <string name="msg_disable_suggestions_prompt">הצעות לא יופיעו בחלק העליון של רשימת האפליקציות, ונתוני השימוש שבעזרתם יוצרים אותן יימחקו לתמיד.</string>
+    <string name="label_turn_off_suggestions">כבה</string>
 </resources>

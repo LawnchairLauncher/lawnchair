@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"바로가기 <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>개 및 <xliff:g id="APP_NAME">%3$s</xliff:g> 알림 <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g>개"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"닫기"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"알림이 해제되었습니다."</string>
+    <string name="smartspace_preferences">환경설정</string>
+    <string name="label_search">검색</string>
+    <string name="label_voice_search">음성 검색</string>
+    <string name="pref_icon_pack">아이콘 팩</string>
+    <string name="state_loading">적용 중...</string>
+    <string name="smartspace_preferences_in_settings">한눈에 보기</string>
+    <string name="smartspace_preferences_in_settings_desc">홈 화면 상단</string>
+    <string name="title_show_google_app">%1$s 표시</string>
+    <string name="msg_minus_one_on_left">기본 홈 화면의 왼쪽으로</string>
+    <string name="about">정보</string>
+    <string name="title_google_app">Google 앱</string>
+    <string name="title_app_suggestions">앱 추천 표시</string>
+    <string name="summary_app_suggestions">모든 앱 목록 상단</string>
+    <string name="about_app_version">버전</string>
+    <string name="app_name_pixel_launcher">Pixel Launcher</string>
+    <string name="title_disable_suggestions_prompt">앱 추천을 사용 중지할까요?</string>
+    <string name="msg_disable_suggestions_prompt">추천사항이 앱 목록 상단에 표시되지 않으며 추천에 반영된 사용 데이터는 영구 삭제됩니다.</string>
+    <string name="label_turn_off_suggestions">사용 중지</string>
 </resources>

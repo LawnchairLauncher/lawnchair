@@ -128,4 +128,20 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> кратенки и <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> известувања за <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Отфрли"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Известувањето е отфрлено"</string>
+    <string name="smartspace_preferences">Поставки</string>
+    <string name="label_search">Пребарај</string>
+    <string name="label_voice_search">Гласовно пребарување</string>
+    <string name="smartspace_preferences_in_settings">На прв поглед</string>
+    <string name="smartspace_preferences_in_settings_desc">Најгоре на почетниот екран</string>
+    <string name="title_show_google_app">Приказ на %1$s</string>
+    <string name="msg_minus_one_on_left">Налево од главниот Почетен екран</string>
+    <string name="about">За</string>
+    <string name="title_google_app">Апликација на Google</string>
+    <string name="title_app_suggestions">Прикажувај предлози за апликации</string>
+    <string name="summary_app_suggestions">На врвот од списокот „Сите апликации“</string>
+    <string name="about_app_version">Верзија</string>
+    <string name="app_name_pixel_launcher">Стартер на Pixel</string>
+    <string name="title_disable_suggestions_prompt">Да се исклучат предлозите за апликации?</string>
+    <string name="msg_disable_suggestions_prompt">Предлозите нема да се појавуваат најгоре на списокот со апликации и трајно ќе се избришат податоците за користењето што се употребуваа за нивно создавање.</string>
+    <string name="label_turn_off_suggestions">ИСКЛУЧИ</string>
 </resources>

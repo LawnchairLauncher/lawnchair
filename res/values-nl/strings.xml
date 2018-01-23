@@ -128,4 +128,22 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> snelkoppelingen en <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> meldingen voor <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Sluiten"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Melding gesloten"</string>
+    <string name="smartspace_preferences">Voorkeuren</string>
+    <string name="label_search">Zoeken</string>
+    <string name="label_voice_search">Gesproken zoekopdrachten</string>
+    <string name="pref_icon_pack">Pictogrampakket</string>
+    <string name="state_loading">Toepassen…</string>
+    <string name="smartspace_preferences_in_settings">Snel overzicht</string>
+    <string name="smartspace_preferences_in_settings_desc">Bovenaan het startscherm</string>
+    <string name="title_show_google_app">%1$s weergeven</string>
+    <string name="msg_minus_one_on_left">Links van het centrale startscherm</string>
+    <string name="about">Over</string>
+    <string name="title_google_app">Google-app</string>
+    <string name="title_app_suggestions">App-suggesties weergeven</string>
+    <string name="summary_app_suggestions">"Bovenaan je lijst 'Alle apps'"</string>
+    <string name="about_app_version">Versie</string>
+    <string name="app_name_pixel_launcher">Pixel Launcher</string>
+    <string name="title_disable_suggestions_prompt">App-suggesties uitschakelen?</string>
+    <string name="msg_disable_suggestions_prompt">Er worden geen suggesties weergegeven boven aan je lijst met apps en de gebruiksgegevens op basis waarvan ze worden gemaakt, worden definitief verwijderd.</string>
+    <string name="label_turn_off_suggestions">UITSCHAKELEN</string>
 </resources>
