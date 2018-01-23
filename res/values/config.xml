@@ -120,7 +120,7 @@
     <string name="instant_app_resolver_class" translatable="false"></string>
 
     <!-- Package name of the default wallpaper picker. -->
-    <string name="wallpaper_picker_package" translatable="false"></string>
+    <string name="wallpaper_picker_package" translatable="false">com.google.android.apps.wallpaper</string>
 
     <!-- View ID to use for QSB widget -->
     <item type="id" name="qsb_widget" />
