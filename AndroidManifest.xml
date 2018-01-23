@@ -115,6 +115,15 @@
             android:writePermission="com.google.android.apps.nexuslauncher.permission.WRITE_SETTINGS"
             android:readPermission="com.google.android.apps.nexuslauncher.permission.READ_SETTINGS" />
 
+        <!--
+        Pixel
+        -->
+        <receiver android:name="com.google.android.apps.nexuslauncher.smartspace.SmartspaceBroadcastReceiver">
+            <intent-filter>
+                <action android:name="com.google.android.apps.nexuslauncher.UPDATE_SMARTSPACE" />
+            </intent-filter>
+        </receiver>
+
         <!-- ENABLE_FOR_TESTING
 
         <activity

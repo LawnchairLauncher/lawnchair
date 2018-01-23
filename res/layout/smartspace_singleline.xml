@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2018 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/smartspace_content"
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center"
+    android:animateLayoutChanges="true"
+    android:orientation="horizontal">
+
+    <com.google.android.apps.nexuslauncher.graphics.IcuDateTextView
+        android:id="@+id/clock"
+        style="@style/TextTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:layout_weight="1.0"
+        android:background="@drawable/bg_smartspace"
+        android:clickable="true"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textColor="?workspaceTextColor"
+        android:textSize="@dimen/smartspace_title_size"
+        launcher:ambientShadowBlur="3dp"
+        launcher:ambientShadowColor="?workspaceAmbientShadowColor"
+        launcher:keyShadowBlur="2dp"
+        launcher:keyShadowColor="?workspaceKeyShadowColor"
+        launcher:keyShadowOffset="0.5dip" />
+
+    <View
+        android:id="@+id/title_sep"
+        android:layout_width="1dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center_vertical"
+        android:background="?workspaceTextColor"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/title_weather_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0.0"
+        android:background="@drawable/bg_smartspace"
+        android:clickable="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/title_weather_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="4dp"
+            android:scaleType="fitXY" />
+
+        <com.google.android.apps.nexuslauncher.graphics.DoubleShadowTextView
+            android:id="@+id/title_weather_text"
+            style="@style/TextTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawablePadding="6dp"
+            android:textColor="?workspaceTextColor"
+            android:textSize="@dimen/smartspace_title_size"
+            launcher:ambientShadowBlur="3dp"
+            launcher:ambientShadowColor="?workspaceAmbientShadowColor"
+            launcher:keyShadowBlur="2dp"
+            launcher:keyShadowColor="?workspaceKeyShadowColor"
+            launcher:keyShadowOffset="0.5dip" />
+    </LinearLayout>
+</LinearLayout>

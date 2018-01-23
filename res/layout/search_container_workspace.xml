@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2016 The Android Open Source Project
+     Copyright (C) 2018 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,17 +14,23 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.qsb.QsbContainerView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:id="@id/search_container_workspace"
-        android:padding="0dp" >
 
-    <fragment
-        android:name="com.android.launcher3.qsb.QsbContainerView$QsbFragment"
-        android:layout_width="match_parent"
-        android:tag="qsb_view"
-        android:layout_height="match_parent"/>
-</com.android.launcher3.qsb.QsbContainerView>
+<com.google.android.apps.nexuslauncher.smartspace.SmartspaceView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/search_container_workspace"
+    android:background="?android:selectableItemBackground"
+    android:clickable="true"
+    android:layout_width="fill_parent"
+    android:layout_height="0dp"
+    android:animateLayoutChanges="true">
+
+    <com.android.launcher3.BubbleTextView
+        android:layout_gravity="center"
+        android:id="@+id/dummyBubbleTextView"
+        android:visibility="invisible"
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+        android:contentDescription="" />
+
+    <include layout="@layout/smartspace_singleline" />
+</com.google.android.apps.nexuslauncher.smartspace.SmartspaceView>
