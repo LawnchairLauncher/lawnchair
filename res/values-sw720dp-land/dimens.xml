@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="qsb_overlap_margin">-50.0dip</dimen>
+</resources>

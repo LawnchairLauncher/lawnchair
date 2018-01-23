@@ -40,4 +40,18 @@
 
     <color name="all_apps_bg_hand_fill">#E5E5E5</color>
     <color name="all_apps_bg_hand_fill_dark">#9AA0A6</color>
+
+    <!-- Backports -->
+    <color name="textColorPrimaryInverse">#de000000</color>
+    <color name="textColorSecondaryInverse">#8a000000</color>
+
+    <color name="colorPrimary">#fff5f5f5</color>
+    <color name="colorPrimaryDark">#ffe0e0e0</color>
+    <color name="colorSecondary">#ffeeeeee</color>
+
+    <!-- Pixel -->
+    <color name="colorAccent">#ff4285f4</color>
+
+    <color name="qsb_icon_shadow_color">#20000000</color>
+    <color name="qsb_dark_icon_tint">#ff757575</color>
 </resources>

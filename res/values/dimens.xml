@@ -36,9 +36,9 @@
     <dimen name="dynamic_grid_cell_padding_x">8dp</dimen>
 
     <!-- Hotseat -->
-    <dimen name="dynamic_grid_hotseat_top_padding">8dp</dimen>
-    <dimen name="dynamic_grid_hotseat_bottom_padding">2dp</dimen>
-    <dimen name="dynamic_grid_hotseat_size">80dp</dimen>
+    <dimen name="dynamic_grid_hotseat_top_padding">0dp</dimen>
+    <dimen name="dynamic_grid_hotseat_bottom_padding">50dp</dimen>
+    <dimen name="dynamic_grid_hotseat_size">70dp</dimen>
 
     <dimen name="dynamic_grid_hotseat_land_left_nav_bar_right_padding">0dp</dimen>
     <dimen name="dynamic_grid_hotseat_land_right_nav_bar_right_padding">0dp</dimen>
@@ -237,4 +237,15 @@
 <!-- Other -->
     <!-- Approximates the system status bar height. Not guaranteed to be always be correct. -->
     <dimen name="status_bar_height">24dp</dimen>
+
+<!-- Pixel -->
+    <dimen name="smartspace_title_size">24dp</dimen>
+    <dimen name="smartspace_horizontal_padding">56dp</dimen>
+    <dimen name="qsb_shadow_margin">6dp</dimen>
+    <dimen name="qsb_widget_height">56dp</dimen>
+    <dimen name="qsb_hotseat_bottom_margin">-4dp</dimen>
+    <dimen name="qsb_hotseat_bottom_margin_hw">12dp</dimen>
+    <dimen name="hotseat_qsb_scroll_shadow_blur_radius">1.5dp</dimen>
+    <dimen name="hotseat_qsb_scroll_key_shadow_offset">2dp</dimen>
+    <dimen name="all_apps_extra_search_padding">8dp</dimen>
 </resources>

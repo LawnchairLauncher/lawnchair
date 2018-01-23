@@ -36,8 +36,8 @@
     <dimen name="folder_preview_padding">2dp</dimen>
 
     <!-- Page indicator -->
-    <dimen name="dynamic_grid_page_indicator_land_left_nav_bar_gutter_width">50dp</dimen>
-    <dimen name="dynamic_grid_page_indicator_land_right_nav_bar_gutter_width">74dp</dimen>
+    <dimen name="dynamic_grid_page_indicator_land_left_nav_bar_gutter_width">114dp</dimen>
+    <dimen name="dynamic_grid_page_indicator_land_right_nav_bar_gutter_width">91dp</dimen>
 
     <!-- Hotseat -->
     <!-- Will be set to equal the hotseat icon size. -->
