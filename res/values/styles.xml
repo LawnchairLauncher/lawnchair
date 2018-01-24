@@ -202,7 +202,15 @@
         <item name="gIcon">@drawable/ic_super_g_color</item>
         <item name="micIcon">@drawable/ic_mic_color</item>
     </style>
-    <style name="SettingsTheme" parent="@android:style/Theme.DeviceDefault.Settings">
+    <style name="SettingsTheme" parent="@android:style/Theme.Material.Settings">
+        <item name="android:actionBarTheme">@style/SettingsTheme.ActionBar</item>
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="android:statusBarColor">@color/lollipopStatusBar</item>
+    </style>
+    <style name="SettingsTheme.ActionBar">
+        <item name="android:textColorPrimary">@color/colorAccent</item>
+        <item name="android:colorControlNormal">@color/colorAccent</item>
     </style>
 </resources>

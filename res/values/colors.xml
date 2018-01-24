@@ -49,6 +49,8 @@
     <color name="colorPrimaryDark">#ffe0e0e0</color>
     <color name="colorSecondary">#ffeeeeee</color>
 
+    <color name="lollipopStatusBar">#ff9e9e9e</color>
+
     <!-- Pixel -->
     <color name="colorAccent">#ff4285f4</color>
 
