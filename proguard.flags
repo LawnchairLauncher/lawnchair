@@ -97,6 +97,11 @@
 # support jar.
 -keep class android.support.v7.widget.RecyclerView { *; }
 
+# LauncherAppTransitionManager
+-keep class com.android.launcher3.LauncherAppTransitionManagerImpl {
+    public <init>(...);
+}
+
 -keep interface com.android.launcher3.userevent.nano.LauncherLogProto.** {
   *;
 }

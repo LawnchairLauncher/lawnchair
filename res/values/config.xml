@@ -92,6 +92,9 @@
     <!-- Name of a user event dispatcher class. -->
     <string name="user_event_dispatcher_class" translatable="false"></string>
 
+    <!-- Name of an app transition manager class. -->
+    <string name="app_transition_manager_class" translatable="false"></string>
+
     <!-- Name of a color extraction implementation class. -->
     <string name="color_extraction_impl_class" translatable="false"></string>
 
