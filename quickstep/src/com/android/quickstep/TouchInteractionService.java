@@ -185,6 +185,7 @@ public class TouchInteractionService extends Service {
     @Override
     public void onDestroy() {
         sConnected = false;
+        sQuickScrubEnabled = false;
         super.onDestroy();
     }
 
