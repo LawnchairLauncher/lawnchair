@@ -18,20 +18,15 @@ package com.android.launcher3.uioverrides;
 
 import android.view.MotionEvent;
 
-import com.android.launcher3.Launcher;
 import com.android.launcher3.util.TouchController;
-import com.android.quickstep.QuickScrubController;
-import com.android.quickstep.RecentsView;
+import com.android.quickstep.TouchInteractionService;
 
 /**
  * Consumes touches when quick scrub is enabled.
  */
 public class IgnoreTouchesInQuickScrub implements TouchController {
 
-    private QuickScrubController mQuickScrubController;
-
-    public IgnoreTouchesInQuickScrub(Launcher l) {
-        mQuickScrubController = ((RecentsView) l.getOverviewPanel()).getQuickScrubController();
+    public IgnoreTouchesInQuickScrub() {
     }
 
     @Override
@@ -41,6 +36,6 @@ public class IgnoreTouchesInQuickScrub implements TouchController {
 
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-        return mQuickScrubController.isQuickScrubEnabled();
+        return TouchInteractionService.isQuickScrubEnabled();
     }
 }
