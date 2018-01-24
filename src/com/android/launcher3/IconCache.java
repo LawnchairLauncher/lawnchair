@@ -118,8 +118,7 @@ public class IconCache {
         mIconDpi = inv.fillResIconDpi;
         mIconDb = new IconDB(context, inv.iconBitmapSize);
 
-        mIconProvider = Utilities.getOverrideObject(
-                IconProvider.class, context, R.string.icon_provider_class);
+        mIconProvider = IconProvider.newInstance(context);
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
 
         mLowResOptions = new BitmapFactory.Options();
@@ -254,7 +253,7 @@ public class IconCache {
         // Remove all active icon update tasks.
         mWorkerHandler.removeCallbacksAndMessages(ICON_UPDATE_TOKEN);
 
-        mIconProvider.updateSystemStateString();
+        mIconProvider.updateSystemStateString(mContext);
         for (UserHandle user : mUserManager.getUserProfiles()) {
             // Query for the set of apps
             final List<LauncherActivityInfo> apps = mLauncherApps.getActivityList(null, user);
