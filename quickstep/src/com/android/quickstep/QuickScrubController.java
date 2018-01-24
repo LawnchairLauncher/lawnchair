@@ -40,7 +40,6 @@ public class QuickScrubController implements OnAlarmListener {
 
     private int mQuickScrubSection;
     private int mStartPage;
-    private boolean mQuickScrubEnabled;
 
     public QuickScrubController(Launcher launcher) {
         mLauncher = launcher;
@@ -52,13 +51,11 @@ public class QuickScrubController implements OnAlarmListener {
         mRecentsView = mLauncher.getOverviewPanel();
         mStartPage = startingFromHome ? 0 : mRecentsView.getFirstTaskIndex();
         mQuickScrubSection = 0;
-        mQuickScrubEnabled = true;
     }
 
     public void onQuickScrubEnd() {
         mAutoAdvanceAlarm.cancelAlarm();
         if (mRecentsView == null) {
-            mQuickScrubEnabled = false;
         } else {
             int page = mRecentsView.getNextPage();
             // Settle on the page then launch it.
@@ -71,13 +68,8 @@ public class QuickScrubController implements OnAlarmListener {
                 } else {
                     ((TaskView) mRecentsView.getPageAt(page)).launchTask(true);
                 }
-                mQuickScrubEnabled = false;
             }, snapDuration);
         }
-    }
-
-    public boolean isQuickScrubEnabled() {
-        return mQuickScrubEnabled;
     }
 
     public void onQuickScrubProgress(float progress) {

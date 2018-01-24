@@ -106,6 +106,7 @@ public class TouchInteractionService extends Service {
         @Override
         public void onQuickScrubStart() {
             startTouchTracking(INTERACTION_QUICK_SCRUB);
+            sQuickScrubEnabled = true;
         }
 
         @Override
@@ -114,6 +115,7 @@ public class TouchInteractionService extends Service {
                 mInteractionHandler.onQuickScrubEnd();
                 mInteractionHandler = null;
             }
+            sQuickScrubEnabled = false;
         }
 
         @Override
@@ -129,9 +131,14 @@ public class TouchInteractionService extends Service {
     private final Consumer<MotionEvent> mNoOpTouchConsumer = (ev) -> {};
 
     private static boolean sConnected = false;
+    private static boolean sQuickScrubEnabled = false;
 
     public static boolean isConnected() {
         return sConnected;
+    }
+
+    public static boolean isQuickScrubEnabled() {
+        return sQuickScrubEnabled;
     }
 
     private ActivityManagerWrapper mAM;
