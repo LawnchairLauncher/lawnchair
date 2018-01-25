@@ -28,7 +28,6 @@ import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
-import android.graphics.Rect;
 import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
@@ -36,6 +35,7 @@ import android.view.View;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
@@ -49,6 +49,7 @@ public class TaskThumbnailView extends View {
     private final float mCornerRadius;
     private final float mFadeLength;
 
+    private final TaskOverlay mOverlay;
     private final Paint mPaint = new Paint();
 
     private final Matrix mMatrix = new Matrix();
@@ -70,6 +71,11 @@ public class TaskThumbnailView extends View {
         super(context, attrs, defStyleAttr);
         mCornerRadius = getResources().getDimension(R.dimen.task_corner_radius);
         mFadeLength = getResources().getDimension(R.dimen.task_fade_length);
+        mOverlay = TaskOverlayFactory.get(context).createOverlay(this);
+    }
+
+    public void bind() {
+        mOverlay.reset();
     }
 
     /**
@@ -89,6 +95,7 @@ public class TaskThumbnailView extends View {
             mBitmapShader = null;
             mThumbnailData = null;
             mPaint.setShader(null);
+            mOverlay.reset();
         }
         updateThumbnailPaintFilter();
     }
@@ -173,6 +180,8 @@ public class TaskThumbnailView extends View {
             }
             mPaint.setShader(shader);
         }
+
+        mOverlay.setTaskInfo(mThumbnailData, mMatrix);
         invalidate();
     }
 

@@ -36,6 +36,7 @@ import android.widget.ImageView;
 import com.android.launcher3.R;
 import com.android.quickstep.RecentsView.PageCallbacks;
 import com.android.quickstep.RecentsView.ScrollState;
+import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskCallbacks;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -113,6 +114,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
             mTask.removeCallback(this);
         }
         mTask = task;
+        mSnapshotView.bind();
         task.addCallback(this);
     }
 
