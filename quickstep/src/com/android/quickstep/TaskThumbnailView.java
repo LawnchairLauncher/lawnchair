@@ -52,12 +52,10 @@ public class TaskThumbnailView extends View {
     private final Paint mPaint = new Paint();
 
     private final Matrix mMatrix = new Matrix();
-    private final Rect mThumbnailRect = new Rect();
 
     private ThumbnailData mThumbnailData;
     protected BitmapShader mBitmapShader;
 
-    private float mThumbnailScale;
     private float mDimAlpha = 1f;
 
     public TaskThumbnailView(Context context) {
@@ -83,19 +81,14 @@ public class TaskThumbnailView extends View {
         if (thumbnailData != null && thumbnailData.thumbnail != null) {
             Bitmap bm = thumbnailData.thumbnail;
             bm.prepareToDraw();
-            mThumbnailScale = thumbnailData.scale;
             mBitmapShader = new BitmapShader(bm, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
             mPaint.setShader(mBitmapShader);
-            mThumbnailRect.set(0, 0,
-                    bm.getWidth() - thumbnailData.insets.left - thumbnailData.insets.right,
-                    bm.getHeight() - thumbnailData.insets.top - thumbnailData.insets.bottom);
             mThumbnailData = thumbnailData;
             updateThumbnailMatrix();
         } else {
             mBitmapShader = null;
             mThumbnailData = null;
             mPaint.setShader(null);
-            mThumbnailRect.setEmpty();
         }
         updateThumbnailPaintFilter();
     }
@@ -126,36 +119,41 @@ public class TaskThumbnailView extends View {
     }
 
     private void updateThumbnailMatrix() {
-        mThumbnailScale = 1f;
         if (mBitmapShader != null && mThumbnailData != null) {
+            float scale = mThumbnailData.scale;
+            float thumbnailWidth = mThumbnailData.thumbnail.getWidth() -
+                    (mThumbnailData.insets.left + mThumbnailData.insets.right) * scale;
+            float thumbnailHeight = mThumbnailData.thumbnail.getHeight() -
+                    (mThumbnailData.insets.top + mThumbnailData.insets.bottom) * scale;
+            final float thumbnailScale;
+
             if (getMeasuredWidth() == 0) {
                 // If we haven't measured , skip the thumbnail drawing and only draw the background
                 // color
-                mThumbnailScale = 0f;
+                thumbnailScale = 0f;
             } else {
-                float invThumbnailScale = 1f / mThumbnailScale;
                 final Configuration configuration =
                         getContext().getApplicationContext().getResources().getConfiguration();
                 final DeviceProfile profile = Launcher.getLauncher(getContext()).getDeviceProfile();
                 if (configuration.orientation == mThumbnailData.orientation) {
                     // If we are in the same orientation as the screenshot, just scale it to the
                     // width of the task view
-                    mThumbnailScale = (float) getMeasuredWidth() / mThumbnailRect.width();
+                    thumbnailScale = getMeasuredWidth() / thumbnailWidth;
                 } else if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                     // Scale the landscape thumbnail up to app size, then scale that to the task
                     // view size to match other portrait screenshots
-                    mThumbnailScale = invThumbnailScale *
-                            ((float) getMeasuredWidth() / profile.widthPx);
+                    thumbnailScale = ((float) getMeasuredWidth() / profile.widthPx);
                 } else {
                     // Otherwise, scale the screenshot to fit 1:1 in the current orientation
-                    mThumbnailScale = invThumbnailScale;
+                    thumbnailScale = 1;
                 }
             }
-            mMatrix.setTranslate(-mThumbnailData.insets.left, -mThumbnailData.insets.top);
-            mMatrix.postScale(mThumbnailScale, mThumbnailScale);
+            mMatrix.setTranslate(-mThumbnailData.insets.left * scale,
+                    -mThumbnailData.insets.top * scale);
+            mMatrix.postScale(thumbnailScale, thumbnailScale);
             mBitmapShader.setLocalMatrix(mMatrix);
 
-            float bitmapHeight = Math.max(mThumbnailRect.height() * mThumbnailScale, 0);
+            float bitmapHeight = Math.max(thumbnailHeight * thumbnailScale, 0);
             Shader shader = mBitmapShader;
             if (bitmapHeight < getMeasuredHeight()) {
                 int color = mPaint.getColor();
@@ -165,7 +163,7 @@ public class TaskThumbnailView extends View {
                 shader = new ComposeShader(fade, shader, Mode.DST_OVER);
             }
 
-            float bitmapWidth = Math.max(mThumbnailRect.width() * mThumbnailScale, 0);
+            float bitmapWidth = Math.max(thumbnailWidth * thumbnailScale, 0);
             if (bitmapWidth < getMeasuredWidth()) {
                 int color = mPaint.getColor();
                 LinearGradient fade = new LinearGradient(
