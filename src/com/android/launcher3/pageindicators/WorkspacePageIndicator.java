@@ -22,6 +22,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.DeviceProfile;
@@ -55,6 +56,7 @@ public class WorkspacePageIndicator extends PageIndicator implements Insettable,
 
     private final Handler mDelayedLineFadeHandler = new Handler(Looper.getMainLooper());
     private final Launcher mLauncher;
+    private final AccessibilityManager mAccessibilityManager;
 
     private boolean mShouldAutoHide = true;
 
@@ -136,6 +138,8 @@ public class WorkspacePageIndicator extends PageIndicator implements Insettable,
         boolean darkText = WallpaperColorInfo.getInstance(context).supportsDarkText();
         mActiveAlpha = darkText ? BLACK_ALPHA : WHITE_ALPHA;
         mLinePaint.setColor(darkText ? Color.BLACK : Color.WHITE);
+        mAccessibilityManager = (AccessibilityManager)
+                getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
     }
 
     @Override
@@ -274,7 +278,7 @@ public class WorkspacePageIndicator extends PageIndicator implements Insettable,
 
             setBackgroundResource(0);
             setOnFocusChangeListener(null);
-            setOnClickListener(null);
+            setOnClickListener(mAccessibilityManager.isTouchExplorationEnabled() ? this : null);
         }
 
         setLayoutParams(lp);
