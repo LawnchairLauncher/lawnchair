@@ -25,7 +25,6 @@ import android.view.View;
 import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppTransitionManager;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.BitmapRenderer;
@@ -83,32 +82,5 @@ public class UiFactory {
     public static void resetOverview(Launcher launcher) {
         RecentsView recents = launcher.getOverviewPanel();
         recents.reset();
-    }
-
-    private static boolean hasControlRemoteAppTransitionPermission(Launcher launcher) {
-        return launcher.checkSelfPermission(CONTROL_REMOTE_APP_TRANSITION_PERMISSION)
-                == PackageManager.PERMISSION_GRANTED;
-    }
-
-    public static Bundle getActivityLaunchOptions(Launcher launcher, View v) {
-        if (hasControlRemoteAppTransitionPermission(launcher)) {
-            try {
-                return new LauncherAppTransitionManager(launcher).getActivityLauncherOptions(v);
-            } catch (NoClassDefFoundError e) {
-                // Gracefully fall back to default launch options if the user's platform doesn't
-                // have the latest changes.
-            }
-        }
-        return launcher.getDefaultActivityLaunchOptions(v);
-    }
-
-    public static void registerRemoteAnimations(Launcher launcher) {
-        if (hasControlRemoteAppTransitionPermission(launcher)) {
-            try {
-                new LauncherAppTransitionManager(launcher).registerRemoteAnimations();
-            } catch (NoClassDefFoundError e) {
-                // Gracefully fall back if the user's platform doesn't have the latest changes
-            }
-        }
     }
 }

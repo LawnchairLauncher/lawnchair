@@ -26,6 +26,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -55,11 +57,15 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
 /**
  * Manages the opening and closing app transitions from Launcher.
  */
-public class LauncherAppTransitionManager {
+public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManager {
 
     private static final String TAG = "LauncherTransition";
     private static final int REFRESH_RATE_MS = 16;
 
+    private static final String CONTROL_REMOTE_APP_TRANSITION_PERMISSION =
+            "android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS";
+
+    private static final int LAUNCHER_RESUME_START_DELAY = 150;
     private static final int CLOSING_TRANSITION_DURATION_MS = 350;
 
     // Progress = 0: All apps is fully pulled up, Progress = 1: All apps is fully pulled down.
@@ -76,60 +82,79 @@ public class LauncherAppTransitionManager {
     private ImageView mFloatingView;
     private boolean mIsRtl;
 
-    public LauncherAppTransitionManager(Launcher launcher) {
-        mLauncher = launcher;
-        mDragLayer = launcher.getDragLayer();
-        mDeviceProfile = launcher.getDeviceProfile();
+    private Animator mCurrentAnimator;
 
-        mIsRtl = Utilities.isRtl(launcher.getResources());
+    public LauncherAppTransitionManagerImpl(Context context) {
+        mLauncher = Launcher.getLauncher(context);
+        mDragLayer = mLauncher.getDragLayer();
+        mDeviceProfile = mLauncher.getDeviceProfile();
 
-        Resources res = launcher.getResources();
+        mIsRtl = Utilities.isRtl(mLauncher.getResources());
+
+        Resources res = mLauncher.getResources();
         mContentTransY = res.getDimensionPixelSize(R.dimen.content_trans_y);
         mWorkspaceTransY = res.getDimensionPixelSize(R.dimen.workspace_trans_y);
+    }
+
+    private void setCurrentAnimator(Animator animator) {
+        if (mCurrentAnimator != null && mCurrentAnimator.isRunning()) {
+            mCurrentAnimator.cancel();
+        }
+        mCurrentAnimator = animator;
     }
 
     /**
      * @return A Bundle with remote animations that controls how the window of the opening
      *         targets are displayed.
      */
-    public Bundle getActivityLauncherOptions(View v) {
-        RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(mLauncher) {
-            @Override
-            public void onAnimationStart(RemoteAnimationTargetCompat[] targets,
-                    Runnable finishedCallback) {
-                // Post at front of queue ignoring sync barriers to make sure it gets processed
-                // before the next frame.
-                postAtFrontOfQueueAsynchronously(v.getHandler(), () -> {
-                    mAnimator = new AnimatorSet();
-                    mAnimator.play(getLauncherAnimators(v));
-                    mAnimator.play(getWindowAnimators(v, targets));
-                    mAnimator.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            // Reset launcher to normal state
-                            v.setVisibility(View.VISIBLE);
-                            ((ViewGroup) mDragLayer.getParent()).removeView(mFloatingView);
+    @Override
+    public Bundle getActivityLaunchOptions(Launcher launcher, View v) {
+        if (hasControlRemoteAppTransitionPermission()) {
+            try {
+                RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(mLauncher) {
+                    @Override
+                    public void onAnimationStart(RemoteAnimationTargetCompat[] targets,
+                                                 Runnable finishedCallback) {
+                        // Post at front of queue ignoring sync barriers to make sure it gets
+                        // processed before the next frame.
+                        postAtFrontOfQueueAsynchronously(v.getHandler(), () -> {
+                            mAnimator = new AnimatorSet();
+                            setCurrentAnimator(mAnimator);
+                            mAnimator.play(getLauncherAnimators(v));
+                            mAnimator.play(getWindowAnimators(v, targets));
+                            mAnimator.addListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    // Reset launcher to normal state
+                                    v.setVisibility(View.VISIBLE);
+                                    ((ViewGroup) mDragLayer.getParent()).removeView(mFloatingView);
 
-                            mDragLayer.setAlpha(1f);
-                            mDragLayer.setTranslationY(0f);
+                                    mDragLayer.setAlpha(1f);
+                                    mDragLayer.setTranslationY(0f);
 
-                            View appsView = mLauncher.getAppsView();
-                            appsView.setAlpha(1f);
-                            appsView.setTranslationY(0f);
+                                    View appsView = mLauncher.getAppsView();
+                                    appsView.setAlpha(1f);
+                                    appsView.setTranslationY(0f);
 
-                            finishedCallback.run();
-                        }
-                    });
-                    mAnimator.start();
-                    // Because t=0 has the app icon in its original spot, we can skip the first
-                    // frame and have the same movement one frame earlier.
-                    mAnimator.setCurrentPlayTime(REFRESH_RATE_MS);
-                });
+                                    finishedCallback.run();
+                                }
+                            });
+                            mAnimator.start();
+                            // Because t=0 has the app icon in its original spot, we can skip the
+                            // first frame and have the same movement one frame earlier.
+                            mAnimator.setCurrentPlayTime(REFRESH_RATE_MS);
+                        });
+                    }
+                };
+
+                return ActivityOptionsCompat.makeRemoteAnimation(
+                        new RemoteAnimationAdapterCompat(runner, 500, 380)).toBundle();
+            } catch (NoClassDefFoundError e) {
+                // Gracefully fall back to default launch options if the user's platform doesn't
+                // have the latest changes.
             }
-        };
-
-        return ActivityOptionsCompat.makeRemoteAnimation(
-                new RemoteAnimationAdapterCompat(runner, 500, 380)).toBundle();
+        }
+        return getDefaultActivityLaunchOptions(launcher, v);
     }
 
     /**
@@ -149,7 +174,7 @@ public class LauncherAppTransitionManager {
      *             Else: Animate the content so that it moves downwards and fades out.
      */
     private AnimatorSet getLauncherContentAnimator(boolean show) {
-        AnimatorSet hideLauncher = new AnimatorSet();
+        AnimatorSet launcherAnimator = new AnimatorSet();
 
         float[] alphas = show
                 ? new float[] {0, 1}
@@ -161,6 +186,9 @@ public class LauncherAppTransitionManager {
         if (mLauncher.isInState(LauncherState.ALL_APPS) && !mDeviceProfile.isVerticalBarLayout()) {
             // All Apps in portrait mode is full screen, so we only animate AllAppsContainerView.
             View appsView = mLauncher.getAppsView();
+            appsView.setAlpha(alphas[0]);
+            appsView.setTranslationY(trans[0]);
+
             ObjectAnimator alpha = ObjectAnimator.ofFloat(appsView, View.ALPHA, alphas);
             alpha.setDuration(217);
             alpha.setInterpolator(Interpolators.LINEAR);
@@ -168,9 +196,12 @@ public class LauncherAppTransitionManager {
             transY.setInterpolator(Interpolators.AGGRESSIVE_EASE);
             transY.setDuration(350);
 
-            hideLauncher.play(alpha);
-            hideLauncher.play(transY);
+            launcherAnimator.play(alpha);
+            launcherAnimator.play(transY);
         } else {
+            mDragLayer.setAlpha(alphas[0]);
+            mDragLayer.setTranslationY(trans[0]);
+
             ObjectAnimator dragLayerAlpha = ObjectAnimator.ofFloat(mDragLayer, View.ALPHA, alphas);
             dragLayerAlpha.setDuration(217);
             dragLayerAlpha.setInterpolator(Interpolators.LINEAR);
@@ -179,10 +210,10 @@ public class LauncherAppTransitionManager {
             dragLayerTransY.setInterpolator(Interpolators.AGGRESSIVE_EASE);
             dragLayerTransY.setDuration(350);
 
-            hideLauncher.play(dragLayerAlpha);
-            hideLauncher.play(dragLayerTransY);
+            launcherAnimator.play(dragLayerAlpha);
+            launcherAnimator.play(dragLayerTransY);
         }
-        return hideLauncher;
+        return launcherAnimator;
     }
 
     /**
@@ -361,15 +392,22 @@ public class LauncherAppTransitionManager {
     /**
      * Registers remote animations used when closing apps to home screen.
      */
+    @Override
     public void registerRemoteAnimations() {
-        RemoteAnimationDefinitionCompat definition = new RemoteAnimationDefinitionCompat();
-        definition.addRemoteAnimation(WindowManagerWrapper.TRANSIT_WALLPAPER_OPEN,
-                new RemoteAnimationAdapterCompat(getWallpaperOpenRunner(), 0,
-                        CLOSING_TRANSITION_DURATION_MS));
+        if (hasControlRemoteAppTransitionPermission()) {
+            try {
+                RemoteAnimationDefinitionCompat definition = new RemoteAnimationDefinitionCompat();
+                definition.addRemoteAnimation(WindowManagerWrapper.TRANSIT_WALLPAPER_OPEN,
+                        new RemoteAnimationAdapterCompat(getWallpaperOpenRunner(), 0,
+                                CLOSING_TRANSITION_DURATION_MS));
 
 //      TODO: App controlled transition for unlock to home TRANSIT_KEYGUARD_GOING_AWAY_ON_WALLPAPER
 
-        new ActivityCompat(mLauncher).registerRemoteAnimations(definition);
+                new ActivityCompat(mLauncher).registerRemoteAnimations(definition);
+            } catch (NoClassDefFoundError e) {
+                // Gracefully fall back if the user's platform doesn't have the latest changes
+            }
+        }
     }
 
     /**
@@ -385,11 +423,13 @@ public class LauncherAppTransitionManager {
                 postAtFrontOfQueueAsynchronously(handler, () -> {
                     // We use a separate transition for Overview mode.
                     if (mLauncher.isInState(LauncherState.OVERVIEW)) {
+                        setCurrentAnimator(null);
                         finishedCallback.run();
                         return;
                     }
 
                     mAnimator = new AnimatorSet();
+                    setCurrentAnimator(mAnimator);
                     mAnimator.addListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
@@ -465,7 +505,9 @@ public class LauncherAppTransitionManager {
     private AnimatorSet getLauncherResumeAnimation() {
         if (mLauncher.isInState(LauncherState.ALL_APPS)
                 || mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-            return getLauncherContentAnimator(true /* show */);
+            AnimatorSet contentAnimator = getLauncherContentAnimator(true /* show */);
+            contentAnimator.setStartDelay(LAUNCHER_RESUME_START_DELAY);
+            return contentAnimator;
         } else {
             AnimatorSet workspaceAnimator = new AnimatorSet();
             mLauncher.getWorkspace().setTranslationY(mWorkspaceTransY);
@@ -474,7 +516,7 @@ public class LauncherAppTransitionManager {
                     View.TRANSLATION_Y, mWorkspaceTransY, 0));
             workspaceAnimator.play(ObjectAnimator.ofFloat(mLauncher.getWorkspace(), View.ALPHA,
                     0, 1f));
-            workspaceAnimator.setStartDelay(150);
+            workspaceAnimator.setStartDelay(LAUNCHER_RESUME_START_DELAY);
             workspaceAnimator.setDuration(333);
             workspaceAnimator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
 
@@ -489,7 +531,7 @@ public class LauncherAppTransitionManager {
 
             Animator allAppsSlideIn =
                     ObjectAnimator.ofFloat(allAppsController, ALL_APPS_PROGRESS, startY, slideEnd);
-            allAppsSlideIn.setStartDelay(150);
+            allAppsSlideIn.setStartDelay(LAUNCHER_RESUME_START_DELAY);
             allAppsSlideIn.setDuration(317);
             allAppsSlideIn.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
 
@@ -503,6 +545,11 @@ public class LauncherAppTransitionManager {
             resumeLauncherAnimation.playSequentially(allAppsSlideIn, allAppsOvershoot);
             return resumeLauncherAnimation;
         }
+    }
+
+    private boolean hasControlRemoteAppTransitionPermission() {
+        return mLauncher.checkSelfPermission(CONTROL_REMOTE_APP_TRANSITION_PERMISSION)
+                == PackageManager.PERMISSION_GRANTED;
     }
 
     /**

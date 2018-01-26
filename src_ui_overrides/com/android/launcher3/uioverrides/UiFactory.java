@@ -61,10 +61,4 @@ public class UiFactory {
     }
 
     public static void resetOverview(Launcher launcher) { }
-
-    public static Bundle getActivityLaunchOptions(Launcher launcher, View v) {
-        return launcher.getDefaultActivityLaunchOptions(v);
-    }
-
-    public static void registerRemoteAnimations(Launcher launcher) { }
 }
