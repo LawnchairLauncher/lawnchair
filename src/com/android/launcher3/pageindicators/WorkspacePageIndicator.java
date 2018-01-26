@@ -253,7 +253,7 @@ public class WorkspacePageIndicator extends PageIndicator implements Insettable,
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
 
         if (mIsLandscapeUi) {
-            if (insets.left > insets.right) {
+            if (grid.isSeascape()) {
                 lp.leftMargin = grid.hotseatBarSidePaddingPx;
                 lp.rightMargin = insets.right;
                 lp.gravity =  Gravity.RIGHT | Gravity.BOTTOM;

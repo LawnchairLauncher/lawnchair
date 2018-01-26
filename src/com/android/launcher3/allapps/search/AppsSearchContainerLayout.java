@@ -21,7 +21,6 @@ import android.support.animation.FloatValueHolder;
 import android.support.animation.SpringAnimation;
 import android.support.animation.SpringForce;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.Selection;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -126,8 +125,9 @@ public class AppsSearchContainerLayout extends FrameLayout
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-            getLayoutParams().height = mLauncher.getDragLayer().getInsets().top + mMinHeight;
+        DeviceProfile dp = mLauncher.getDeviceProfile();
+        if (!dp.isVerticalBarLayout()) {
+            getLayoutParams().height = dp.getInsets().top + mMinHeight;
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
@@ -212,7 +212,7 @@ public class AppsSearchContainerLayout extends FrameLayout
                     int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 DeviceProfile dp = mLauncher.getDeviceProfile();
                 if (!dp.isVerticalBarLayout()) {
-                    Rect insets = mLauncher.getDragLayer().getInsets();
+                    Rect insets = dp.getInsets();
                     int hotseatBottom = bottom - dp.hotseatBarBottomPaddingPx - insets.bottom;
                     int searchTopMargin = insets.top + (mMinHeight - mSearchBoxHeight)
                             + ((MarginLayoutParams) getLayoutParams()).bottomMargin;

@@ -412,7 +412,7 @@ public class DeviceProfile {
             padding.bottom = edgeMarginPx;
             padding.left = hotseatBarSidePaddingPx;
             padding.right = hotseatBarSidePaddingPx;
-            if (mInsets.left > mInsets.right) {
+            if (isSeascape()) {
                 padding.left += hotseatBarSizePx;
                 padding.right += pageIndicatorSizePx;
             } else {
@@ -478,6 +478,11 @@ public class DeviceProfile {
      */
     public boolean isVerticalBarLayout() {
         return isLandscape && transposeLayoutWithOrientation;
+    }
+
+    public boolean isSeascape() {
+        // TODO: This might not hold true for multi window mode, use configuration insead.
+        return isVerticalBarLayout() && mInsets.left > mInsets.right;
     }
 
     public boolean shouldFadeAdjacentWorkspaceScreens() {

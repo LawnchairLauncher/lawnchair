@@ -93,8 +93,8 @@ public class DropTargetBar extends FrameLayout
         if (grid.isVerticalBarLayout()) {
             lp.width = grid.dropTargetBarSizePx;
             lp.height = grid.availableHeightPx - 2 * grid.edgeMarginPx;
-            lp.gravity = insets.left > insets.right ? Gravity.RIGHT : Gravity.LEFT;
-            tooltipLocation = insets.left > insets.right ? TOOLTIP_LEFT : TOOLTIP_RIGHT;
+            lp.gravity = grid.isSeascape() ? Gravity.RIGHT : Gravity.LEFT;
+            tooltipLocation = grid.isSeascape() ? TOOLTIP_LEFT : TOOLTIP_RIGHT;
         } else {
             int gap;
             if (grid.isTablet) {

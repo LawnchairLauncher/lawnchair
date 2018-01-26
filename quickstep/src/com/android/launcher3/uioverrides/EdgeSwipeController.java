@@ -26,6 +26,7 @@ import static com.android.quickstep.TouchInteractionService.EDGE_NAV_BAR;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -56,11 +57,7 @@ public class EdgeSwipeController extends VerticalSwipeController {
 
     @Override
     protected boolean isTransitionFlipped() {
-        if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-            Rect insets = mLauncher.getDragLayer().getInsets();
-            return insets.left > insets.right;
-        }
-        return false;
+        return mLauncher.getDeviceProfile().isSeascape();
     }
 
     @Override
@@ -82,9 +79,10 @@ public class EdgeSwipeController extends VerticalSwipeController {
         RecentsView.getPageRect(launcher.getDeviceProfile(), launcher, sTempRect);
         DragLayer dl = launcher.getDragLayer();
         Rect insets = dl.getInsets();
+        DeviceProfile dp = launcher.getDeviceProfile();
 
-        if (launcher.getDeviceProfile().isVerticalBarLayout()) {
-            if (insets.left > insets.right) {
+        if (dp.isVerticalBarLayout()) {
+            if (dp.isSeascape()) {
                 return insets.left + sTempRect.left;
             } else {
                 return dl.getWidth() - sTempRect.right + insets.right;

@@ -176,7 +176,7 @@ public class RecentsView extends PagedView implements Insettable {
 
         if (dp.isVerticalBarLayout()) {
             boolean wasScrimOnLeft = mScrimOnLeft;
-            mScrimOnLeft = insets.left > insets.right;
+            mScrimOnLeft = dp.isSeascape();
 
             if (mScrim == null || wasScrimOnLeft != mScrimOnLeft) {
                 Drawable scrim = getContext().getDrawable(mScrimOnLeft

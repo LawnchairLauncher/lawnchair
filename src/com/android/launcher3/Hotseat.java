@@ -164,7 +164,7 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
             mContent.setGridSize(1, grid.inv.numHotseatIcons);
 
             lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            if (insets.left > insets.right) {
+            if (grid.isSeascape()) {
                 lp.gravity = Gravity.LEFT;
                 lp.width = grid.hotseatBarSizePx + insets.left + grid.hotseatBarSidePaddingPx;
                 getLayout().setPadding(
