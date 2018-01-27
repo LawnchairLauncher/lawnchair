@@ -30,7 +30,7 @@
 
     <style name="BaseLauncherThemeWithCustomAttrs" parent="@style/BaseLauncherTheme">
         <item name="allAppsScrimColor">#CCFFFFFF</item>
-        <item name="allAppsNavBarScrimColor">#66FFFFFF</item>
+        <item name="allAppsNavBarScrimColor">@color/all_apps_navbar_color</item>
         <item name="popupColorPrimary">#FFF</item>
         <item name="popupColorSecondary">#F5F5F5</item> <!-- Gray 100 -->
         <item name="popupColorTertiary">#E0E0E0</item> <!-- Gray 300 -->
