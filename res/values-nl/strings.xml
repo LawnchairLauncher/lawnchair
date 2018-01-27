@@ -100,7 +100,7 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> wordt gedownload, <xliff:g id="PROGRESS">%2$s</xliff:g> voltooid"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> wacht op installatie"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g>-widgets"</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"Toevoegen aan homepage"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"Toevoegen aan startscherm"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Item hier naartoe verplaatsen"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Item toegevoegd aan startscherm"</string>
     <string name="item_removed" msgid="851119963877842327">"Item verwijderd"</string>
@@ -129,4 +129,11 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> snelkoppelingen en <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> meldingen voor <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Sluiten"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Melding gesloten"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Privé"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"Werk"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Werkprofiel"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Zoek hier naar werk-apps"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Elke werk-app heeft een oranje badge en wordt beveiligd door je organisatie. Verplaats apps naar je startscherm om gemakkelijker toegang te krijgen."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Beheerd door je organisatie"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Meldingen en apps zijn uitgeschakeld"</string>
 </resources>

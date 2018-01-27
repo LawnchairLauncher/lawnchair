@@ -133,5 +133,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Pracovní"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Pracovní profil"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Zde naleznete pracovní aplikace"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"Každý pracovní profil má oranžový odznak, který označuje, že je profil zabezpečen vaší organizací. Pracovní aplikace si můžete pro jednoduchost přesunout na plochu."</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Každý pracovní profil má oranžový odznak a je zabezpečen vaší organizací. Aplikace si můžete pro jednoduchost přesunout na plochu."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Spravováno vaší organizací"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Oznámení a aplikace jsou vypnuty"</string>
 </resources>

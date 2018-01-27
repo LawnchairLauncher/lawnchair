@@ -133,6 +133,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"काम से जुड़े ऐप"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"कार्य प्रोफ़ाइल"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"काम से जुड़े सभी ऐप्लिकेशन यहां पाएं"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"काम से जुड़े हर ऐप्लिकेशन पर एक नारंगी बैज होता है. इसका मतलब यह है कि यह ऐप्लिकेशन आपके संगठन की ओर से सुरक्षित किया जाता है. आसानी से इस्तेमाल के लिए, काम से जुड़े ऐप्लिकेशन होम स्क्रीन पर ले जाए जा सकते हैं."</string>
-    <string name="managed_by_your_organisation" msgid="3989423660315876998">"आपके संगठन की ओर से प्रबंधित किया गया"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"काम से जुड़े हर ऐप्लिकेशन पर एक नारंगी रंग का बैज (निशान) होता है जिसकी सुरक्षा आपका संगठन करता है. आसानी से इस्तेमाल करने के लिए ऐप्लिकेशन को अपनी होम स्क्रीन पर ले जाएं."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"आपका संगठन प्रबंधित कर रहा है"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"सूचनाएं और ऐप्लिकेशन बंद हैं"</string>
 </resources>

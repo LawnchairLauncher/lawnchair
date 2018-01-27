@@ -133,5 +133,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Feina"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil professional"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Cerca aplicacions per a la feina aquí"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"Totes les aplicacions per a la feina tenen una insígnia taronja que indica que estan protegides per la teva organització. Pots col·locar-les a la pantalla d\'inici per poder-hi accedir més fàcilment."</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Totes les aplicacions per a la feina tenen una insígnia taronja que indica que estan protegides per la teva organització. Mou les aplicacions a la pantalla d\'inici per poder-hi accedir més fàcilment."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Gestionat per la teva organització"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Les notificacions i les aplicacions estan desactivades"</string>
 </resources>

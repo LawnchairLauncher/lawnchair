@@ -133,5 +133,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Poslovne"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Radni profil"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Pronađite poslovne aplikacije ovdje"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"Svaka poslovna aplikacija ima narandžastu značku, što znači da je vaša organizacija osigurava. Radi lakšeg pristupa, poslovne aplikacije mogu se premjestiti na vaš Početni ekran."</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Svaka poslovna aplikacija ima narandžastu značku i osigurava je vaša organizacija. Premjestite aplikacije na Početni ekran, radi lakšeg pristupa."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Upravlja vaša organizacija"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Notifikacije i aplikacije su isključene"</string>
 </resources>

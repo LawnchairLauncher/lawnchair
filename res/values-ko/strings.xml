@@ -133,5 +133,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"직장"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"직장 프로필"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"여기에서 업무용 앱 찾기"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"각 업무용 앱에는 주황색 배지가 있으며 이는 조직에서 안전하게 보호함을 의미합니다. 업무용 앱은 홈 화면으로 이동하여 더 간편하게 사용할 수 있습니다."</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"각 업무용 앱에는 주황색 배지가 있으며 업무용 앱은 조직에서 안전하게 보호됩니다. 앱을 홈 화면으로 이동하여 더 간편하게 사용하세요."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"조직에서 관리"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"알림 및 앱 사용 중지됨"</string>
 </resources>

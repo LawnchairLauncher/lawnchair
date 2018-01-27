@@ -133,5 +133,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Ажил"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Ажлын профайл"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Ажлын аппыг эндээс олно уу"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"Ажлын апп тус бүр танай байгууллагаас аюулгүй хадгалж буйг илтгэх улбар шар тэмдэгтэй байна. Ажлын аппад илүү хялбараар хандахын тулд үүнийг Үндсэн Нүүрэнд зөөх боломжтой."</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Ажлын апп тус бүр улбар шар тэмдэгтэй ба эдгээрийг танай байгууллагаас аюулгүй байлгадаг. Аппуудад хялбараар хандахын тулд тэдгээрийг Үндсэн Нүүрэнд зөөнө үү."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Танай байгууллагаас удирддаг"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Мэдэгдэл, апп унтраалттай байна"</string>
 </resources>

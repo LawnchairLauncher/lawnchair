@@ -133,5 +133,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ಕೆಲಸ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ಕೆಲಸದ ಪ್ರೊಫೈಲ್"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"ಕೆಲಸದ ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ಇಲ್ಲಿ ಹುಡುಕಿ"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"ಕೆಲಸದ ಪ್ರತಿ ಅಪ್ಲಿಕೇಶನ್‌ ಕಿತ್ತಳೆ ಬ್ಯಾಡ್ಜ್ ಹೊಂದಿದೆ, ಅಂದರೆ ಇದು ನಿಮ್ಮ ಸಂಸ್ಥೆಯಿಂದ ಸುರಕ್ಷಿತವಾಗಿದೆ ಎಂದರ್ಥ. ಕೆಲಸದ ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ಸುಲಭ ಪ್ರವೇಶಕ್ಕಾಗಿ ನಿಮ್ಮ ಮುಖಪುಟ ಪರದೆಗೆ ಸರಿಸಬಹುದು."</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"ಕೆಲಸದ ಪ್ರತಿ ಅಪ್ಲಿಕೇಶನ್ ಕಿತ್ತಳೆ ಬ್ಯಾಡ್ಜ್ ಹೊಂದಿದೆ ಮತ್ತು ನಿಮ್ಮ ಸಂಸ್ಥೆಯಿಂದ ಸುರಕ್ಷಿತವಾಗಿ ಇರಿಸಲಾಗುತ್ತದೆ. ಸುಲಭ ಪ್ರವೇಶಕ್ಕಾಗಿ ನಿಮ್ಮ ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ಗೆ ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ಸರಿಸಿ."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"ನಿಮ್ಮ ಸಂಸ್ಥೆಯ ಮೂಲಕ ನಿರ್ವಹಿಸಲಾಗಿದೆ"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"ಅಧಿಸೂಚನೆಗಳು ಮತ್ತು ಅಪ್ಲಿಕೇಶನ್‌ಗಳು ಆಫ್ ಆಗಿವೆ"</string>
 </resources>
