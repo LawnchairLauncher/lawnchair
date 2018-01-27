@@ -46,6 +46,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         setOnClickListener(this);
 
         mStartY = getTranslationY();
+        setTranslationY(Math.round(mStartY));
         mSpring = new SpringAnimation(this, new FloatPropertyCompat<AllAppsQsbLayout>("allAppsQsbLayoutSpringAnimation") {
             @Override
             public float getValue(AllAppsQsbLayout allAppsQsbLayout) {
@@ -54,7 +55,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
             @Override
             public void setValue(AllAppsQsbLayout allAppsQsbLayout, float v) {
-                allAppsQsbLayout.setTranslationY(mStartY + v);
+                allAppsQsbLayout.setTranslationY(Math.round(mStartY + v));
             }
         }, 0f);
     }
