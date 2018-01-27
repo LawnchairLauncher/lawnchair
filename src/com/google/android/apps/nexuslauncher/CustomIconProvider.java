@@ -29,8 +29,10 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class CustomIconProvider extends DynamicIconProvider implements Runnable {
     private final Context mContext;
@@ -56,19 +58,23 @@ public class CustomIconProvider extends DynamicIconProvider implements Runnable 
                     mDateOfMonth = dateOfMonth;
                 }
                 for (UserHandle user : UserManagerCompat.getInstance(context).getUserProfiles()) {
-                    LauncherModel model = LauncherAppState.getInstance(context).getModel();
                     LauncherAppsCompat apps = LauncherAppsCompat.getInstance(mContext);
+                    Set<String> packages = new HashSet<>();
                     for (Map.Entry<String, String> calendars : mIconPackCalendars.entrySet()) {
-                        ComponentName componentName = ComponentName.unflattenFromString(calendars.getKey());
+                        ComponentName componentName = ComponentName.unflattenFromString(calendars.getKey().substring(14, calendars.getKey().length() - 1));
                         if (componentName != null) {
                             String pkg = componentName.getPackageName();
                             if (!apps.getActivityList(pkg, user).isEmpty()) {
-                                model.onPackageChanged(pkg, user);
-                                List<ShortcutInfoCompat> shortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(pkg, user);
-                                if (!shortcuts.isEmpty()) {
-                                    model.updatePinnedShortcuts(pkg, shortcuts, user);
-                                }
+                                packages.add(pkg);
                             }
+                        }
+                    }
+                    LauncherModel model = LauncherAppState.getInstance(context).getModel();
+                    for (String pkg : packages) {
+                        model.onPackageChanged(pkg, user);
+                        List<ShortcutInfoCompat> shortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(pkg, user);
+                        if (!shortcuts.isEmpty()) {
+                            model.updatePinnedShortcuts(pkg, shortcuts, user);
                         }
                     }
                 }
