@@ -259,7 +259,7 @@ public abstract class VerticalSwipeController extends AnimatorListenerAdapter
         });
 
         float nextFrameProgress = Utilities.boundToRange(
-                progress + velocity * SINGLE_FRAME_MS / getShiftRange(), 0f, 1f);
+                progress + velocity * SINGLE_FRAME_MS * mProgressMultiplier, 0f, 1f);
 
         ValueAnimator anim = mCurrentAnimation.getAnimationPlayer();
         anim.setFloatValues(nextFrameProgress, targetState == mToState ? 1f : 0f);
