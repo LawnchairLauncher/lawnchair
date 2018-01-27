@@ -108,7 +108,7 @@ public class OverviewState extends LauncherState {
         float halfWidth = ws.getExpectedWidth() / 2;
         float childCenter = halfWidth -
                 scale * (halfWidth - ws.getPaddingLeft() - insets.left - childWidth / 2);
-        float translationX = pageRect.exactCenterX() - childCenter;
+        float translationX = pageRect.centerX() - childCenter;
 
         if (Utilities.isRtl(launcher.getResources())) {
             translationX -= offsetX / scale;

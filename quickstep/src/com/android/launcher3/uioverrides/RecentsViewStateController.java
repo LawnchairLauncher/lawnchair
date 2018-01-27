@@ -28,6 +28,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.PagedView;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
@@ -40,10 +41,12 @@ public class RecentsViewStateController implements StateHandler {
     private final RecentsView mRecentsView;
     private final WorkspaceCard mWorkspaceCard;
 
-    private final AnimatedFloat mTransitionProgress = new AnimatedFloat(this::applyProgress);
+    private final AnimatedFloat mTransitionProgress = new AnimatedFloat(this::onTransitionProgress);
     // The fraction representing the visibility of the RecentsView. This allows delaying the
     // overall transition while the RecentsView is being shown or hidden.
-    private final AnimatedFloat mVisibilityMultiplier = new AnimatedFloat(this::applyProgress);
+    private final AnimatedFloat mVisibilityMultiplier = new AnimatedFloat(this::onVisibilityProgress);
+
+    private boolean mIsRecentsScrollingToFirstTask;
 
     public RecentsViewStateController(Launcher launcher) {
         mLauncher = launcher;
@@ -64,6 +67,11 @@ public class RecentsViewStateController implements StateHandler {
     @Override
     public void setStateWithAnimation(final LauncherState toState,
             AnimatorSetBuilder builder, AnimationConfig config) {
+        boolean settingEnabled = Utilities.getPrefs(mLauncher)
+            .getBoolean("pref_scroll_to_first_task", false);
+        mIsRecentsScrollingToFirstTask = mLauncher.isInState(NORMAL) && toState == OVERVIEW
+                && settingEnabled;
+
         // Scroll to the workspace card before changing to the NORMAL state.
         int currPage = mRecentsView.getCurrentPage();
         if (toState == NORMAL && currPage != 0 && !config.userControlled) {
@@ -82,12 +90,13 @@ public class RecentsViewStateController implements StateHandler {
 
             @Override
             public void onAnimationStart(Animator animation) {
-                mWorkspaceCard.setWorkspaceScrollingEnabled(false);
+                mWorkspaceCard.setWorkspaceScrollingEnabled(mIsRecentsScrollingToFirstTask);
             }
 
             @Override
             public void onAnimationSuccess(Animator animator) {
                 mWorkspaceCard.setWorkspaceScrollingEnabled(toState == OVERVIEW);
+                mRecentsView.setCurrentPage(mRecentsView.getPageNearestToCenterOfScreen());
             }
         });
         builder.play(progressAnim);
@@ -127,6 +136,18 @@ public class RecentsViewStateController implements StateHandler {
     public void setTransitionProgress(float progress) {
         mTransitionProgress.cancelAnimation();
         mTransitionProgress.updateValue(progress);
+    }
+
+    private void onTransitionProgress() {
+        applyProgress();
+        if (mIsRecentsScrollingToFirstTask) {
+            int scrollForFirstTask = mRecentsView.getScrollForPage(mRecentsView.getFirstTaskIndex());
+            mRecentsView.setScrollX((int) (mTransitionProgress.value * scrollForFirstTask));
+        }
+    }
+
+    private void onVisibilityProgress() {
+        applyProgress();
     }
 
     private void applyProgress() {
