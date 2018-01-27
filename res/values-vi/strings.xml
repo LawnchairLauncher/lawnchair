@@ -133,5 +133,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Cơ quan"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Hồ sơ công việc"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Tìm ứng dụng công việc tại đây"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"Mỗi ứng dụng công việc đều có một huy hiệu màu cam cho biết ứng dụng đó được tổ chức của bạn bảo mật. Bạn có thể di chuyển các ứng dụng công việc đến Màn hình chính để truy cập dễ dàng hơn."</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Mỗi ứng dụng công việc đều có một huy hiệu màu cam và được tổ chức của bạn bảo mật. Bạn có thể di chuyển ứng dụng đến Màn hình chính để truy cập dễ dàng hơn."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Do tổ chức của bạn quản lý"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Thông báo và ứng dụng đang tắt"</string>
 </resources>

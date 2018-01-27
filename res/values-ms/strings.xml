@@ -133,5 +133,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Kerja"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profil kerja"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Temui apl kerja di sini"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"Setiap apl kerja mempunyai lencana oren yang bermaksud dipastikan selamat oleh organisasi anda. Apl kerja boleh dialihkan ke Skrin Utama anda untuk akses yang lebih mudah."</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Setiap apl kerja terdapat lencana berwarna oren dan dilindungi oleh organisasi anda. Alihkan apl ke Skrin Utama untuk akses yang lebh mudah."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Diurus oleh organisasi anda"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Pemberitahuan dan apl dimatikan"</string>
 </resources>

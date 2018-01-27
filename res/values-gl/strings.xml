@@ -133,5 +133,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Traballo"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de traballo"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Buscar aplicacións do traballo aquí"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"As aplicacións do traballo teñen unha insignia laranxa, o que significa que están protexidas pola túa organización. Pódense trasladar á pantalla de inicio para acceder a elas de forma máis fácil."</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"As aplicacións do traballo teñen unha insignia laranxa e están protexidas pola túa organización. Traslada as aplicacións á pantalla de inicio para acceder a elas de forma máis fácil."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Perfil xestionado pola túa organización"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"As notificacións e as aplicacións están desactivadas"</string>
 </resources>

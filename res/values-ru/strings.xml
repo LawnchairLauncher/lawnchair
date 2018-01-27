@@ -133,5 +133,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Рабочие"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Рабочий профиль"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Приложения для работы"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="5834430249581360068">"Рабочие приложения отмечены оранжевым значком, который подтверждает, что ваша организация гарантирует их безопасность. Для удобства вы можете перенести эти приложения на главный экран."</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Рабочие приложения отмечены оранжевым значком, который подтверждает, что ваша организация гарантирует их безопасность. Для удобства перенесите эти приложения на главный экран."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Управляется вашей организацией"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Уведомления и приложения отключены."</string>
 </resources>
