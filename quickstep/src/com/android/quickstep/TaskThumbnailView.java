@@ -28,6 +28,7 @@ import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.Rect;
 import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
@@ -106,6 +107,13 @@ public class TaskThumbnailView extends View {
     public void setDimAlpha(float dimAlpha) {
         mDimAlpha = dimAlpha;
         updateThumbnailPaintFilter();
+    }
+
+    public Rect getInsets() {
+        if (mThumbnailData != null) {
+            return mThumbnailData.insets;
+        }
+        return new Rect();
     }
 
     @Override

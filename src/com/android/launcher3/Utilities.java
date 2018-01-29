@@ -237,14 +237,25 @@ public final class Utilities {
             int cx = r.centerX();
             int cy = r.centerY();
             r.offset(-cx, -cy);
+            scaleRect(r, scale);
+            r.offset(cx, cy);
+        }
+    }
 
+    public static void scaleRect(Rect r, float scale) {
+        if (scale != 1.0f) {
             r.left = (int) (r.left * scale + 0.5f);
             r.top = (int) (r.top * scale + 0.5f);
             r.right = (int) (r.right * scale + 0.5f);
             r.bottom = (int) (r.bottom * scale + 0.5f);
-
-            r.offset(cx, cy);
         }
+    }
+
+    public static void insetRect(Rect r, Rect insets) {
+        r.left = Math.min(r.right, r.left + insets.left);
+        r.top = Math.min(r.bottom, r.top + insets.top);
+        r.right = Math.max(r.left, r.right - insets.right);
+        r.bottom = Math.max(r.top, r.bottom - insets.bottom);
     }
 
     public static float shrinkRect(Rect r, float scaleX, float scaleY) {
@@ -259,6 +270,10 @@ public final class Utilities {
             r.bottom -= deltaY;
         }
         return scale;
+    }
+
+    public static float mapRange(float value, float min, float max) {
+        return min + (value * (max - min));
     }
 
     public static boolean isSystemApp(Context context, Intent intent) {

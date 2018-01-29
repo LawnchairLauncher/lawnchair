@@ -215,6 +215,21 @@ public class RecentsView extends PagedView implements Insettable {
         return mFirstTaskIndex;
     }
 
+    public boolean isTaskViewVisible(TaskView tv) {
+        // For now, just check if it's the active task
+        return indexOfChild(tv) == getNextPage();
+    }
+
+    public TaskView getTaskView(int taskId) {
+        for (int i = getFirstTaskIndex(); i < getChildCount(); i++) {
+            TaskView tv = (TaskView) getChildAt(i);
+            if (tv.getTask().key.id == taskId) {
+                return tv;
+            }
+        }
+        return null;
+    }
+
     public void setStateController(RecentsViewStateController stateController) {
         mStateController = stateController;
     }
@@ -254,11 +269,16 @@ public class RecentsView extends PagedView implements Insettable {
         }
         setLayoutTransition(mLayoutTransition);
 
-        // Rebind all task views
+        // Rebind and reset all task views
         for (int i = tasks.size() - 1; i >= 0; i--) {
             final Task task = tasks.get(i);
             final TaskView taskView = (TaskView) getChildAt(tasks.size() - i - 1 + mFirstTaskIndex);
             taskView.bind(task);
+            taskView.setScaleX(1f);
+            taskView.setScaleY(1f);
+            taskView.setTranslationX(0f);
+            taskView.setTranslationY(0f);
+            taskView.setAlpha(1f);
             loader.loadTaskData(task);
         }
     }

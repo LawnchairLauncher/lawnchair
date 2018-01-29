@@ -32,11 +32,15 @@ public class LauncherTransitionAnimator {
     private Animator mWindowAnimator;
 
     LauncherTransitionAnimator(Animator launcherAnimator, Animator windowAnimator) {
-        mLauncherAnimator = launcherAnimator;
+        if (launcherAnimator != null) {
+            mLauncherAnimator = launcherAnimator;
+        }
         mWindowAnimator = windowAnimator;
 
         mAnimatorSet = new AnimatorSet();
-        mAnimatorSet.play(launcherAnimator);
+        if (launcherAnimator != null) {
+            mAnimatorSet.play(launcherAnimator);
+        }
         mAnimatorSet.play(windowAnimator);
     }
 
@@ -53,6 +57,8 @@ public class LauncherTransitionAnimator {
     }
 
     public void finishLauncherAnimation() {
-        mLauncherAnimator.end();
+        if (mLauncherAnimator != null) {
+            mLauncherAnimator.end();
+        }
     }
 }

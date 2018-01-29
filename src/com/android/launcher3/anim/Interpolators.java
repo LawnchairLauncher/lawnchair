@@ -50,6 +50,9 @@ public class Interpolators {
 
     public static final Interpolator OVERSHOOT_0 = new OvershootInterpolator(0);
 
+    public static final Interpolator TOUCH_RESPONSE_INTERPOLATOR =
+            new PathInterpolator(0.3f, 0f, 0.1f, 1f);
+
     /**
      * Inversion of zInterpolate, compounded with an ease-out.
      */

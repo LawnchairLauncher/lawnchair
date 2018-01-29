@@ -47,6 +47,10 @@ import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.graphics.DrawableFactory;
+import com.android.quickstep.RecentsAnimationInterpolator;
+import com.android.quickstep.RecentsAnimationInterpolator.TaskWindowBounds;
+import com.android.quickstep.RecentsView;
+import com.android.quickstep.TaskView;
 import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
@@ -70,6 +74,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     private static final String CONTROL_REMOTE_APP_TRANSITION_PERMISSION =
             "android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS";
 
+    private static final int RECENTS_LAUNCH_DURATION = 336;
     private static final int LAUNCHER_RESUME_START_DELAY = 150;
     private static final int CLOSING_TRANSITION_DURATION_MS = 350;
 
@@ -139,8 +144,18 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         // Post at front of queue ignoring sync barriers to make sure it gets
                         // processed before the next frame.
                         postAtFrontOfQueueAsynchronously(v.getHandler(), () -> {
-                            LauncherTransitionAnimator animator = new LauncherTransitionAnimator(
-                                    getLauncherAnimators(v), getWindowAnimators(v, targets));
+                            final boolean removeTrackingView;
+                            LauncherTransitionAnimator animator =
+                                    composeRecentsLaunchAnimator(v, targets);
+                            if (animator != null) {
+                                // We are animating the task view directly, do not remove it after
+                                removeTrackingView = false;
+                            } else {
+                                animator = composeAppLaunchAnimator(v, targets);
+                                // A new floating view is created for the animation, remove it after
+                                removeTrackingView = true;
+                            }
+
                             setCurrentAnimator(animator);
                             mAnimator = animator.getAnimatorSet();
                             mAnimator.addListener(new AnimatorListenerAdapter() {
@@ -148,7 +163,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                                 public void onAnimationEnd(Animator animation) {
                                     // Reset launcher to normal state
                                     v.setVisibility(View.VISIBLE);
-                                    ((ViewGroup) mDragLayer.getParent()).removeView(mFloatingView);
+                                    if (removeTrackingView) {
+                                        ((ViewGroup) mDragLayer.getParent()).removeView(
+                                                mFloatingView);
+                                    }
 
                                     mDragLayer.setAlpha(1f);
                                     mDragLayer.setTranslationY(0f);
@@ -176,6 +194,131 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             }
         }
         return getDefaultActivityLaunchOptions(launcher, v);
+    }
+
+    /**
+     * Composes the animations for a launch from the recents list if possible.
+     */
+    private LauncherTransitionAnimator composeRecentsLaunchAnimator(View v,
+            RemoteAnimationTargetCompat[] targets) {
+        // Ensure recents is actually visible
+        if (!mLauncher.isInState(LauncherState.OVERVIEW)) {
+            return null;
+        }
+
+        // Resolve the opening task id
+        int openingTaskId = -1;
+        for (RemoteAnimationTargetCompat target : targets) {
+            if (target.mode == RemoteAnimationTargetCompat.MODE_OPENING) {
+                openingTaskId = target.taskId;
+                break;
+            }
+        }
+
+        // If there is no opening task id, fall back to the normal app icon launch animation
+        if (openingTaskId == -1) {
+            return null;
+        }
+
+        // If the opening task id is not currently visible in overview, then fall back to normal app
+        // icon launch animation
+        RecentsView recentsView = mLauncher.getOverviewPanel();
+        TaskView taskView = recentsView.getTaskView(openingTaskId);
+        if (taskView == null || !recentsView.isTaskViewVisible(taskView)) {
+            return null;
+        }
+
+        // Found a visible recents task that matches the opening app, lets launch the app from there
+        return new LauncherTransitionAnimator(null, getRecentsWindowAnimator(taskView, targets));
+    }
+
+    /**
+     * @return Animator that controls the window of the opening targets for the recents launch
+     * animation.
+     */
+    private ValueAnimator getRecentsWindowAnimator(TaskView v,
+            RemoteAnimationTargetCompat[] targets) {
+        Rect taskViewBounds = new Rect();
+        mDragLayer.getDescendantRectRelativeToSelf(v, taskViewBounds);
+
+        // TODO: Use the actual target insets instead of the current thumbnail insets in case the
+        // device state has changed
+        RecentsAnimationInterpolator recentsInterpolator = new RecentsAnimationInterpolator(
+                new Rect(0, 0, mDeviceProfile.widthPx, mDeviceProfile.heightPx),
+                v.getThumbnail().getInsets(),
+                taskViewBounds, new Rect(0, v.getThumbnail().getTop(), 0, 0));
+
+        Rect crop = new Rect();
+        Matrix matrix = new Matrix();
+
+        ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
+        appAnimator.setDuration(RECENTS_LAUNCH_DURATION);
+        appAnimator.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);
+        appAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            boolean isFirstFrame = true;
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                final Surface surface = getSurface(v);
+                final long frameNumber = surface != null ? getNextFrameNumber(surface) : -1;
+                if (frameNumber == -1) {
+                    // Booo, not cool! Our surface got destroyed, so no reason to animate anything.
+                    Log.w(TAG, "Failed to animate, surface got destroyed.");
+                    return;
+                }
+                final float percent = animation.getAnimatedFraction();
+                TaskWindowBounds tw = recentsInterpolator.interpolate(percent);
+
+                v.setScaleX(tw.taskScale);
+                v.setScaleY(tw.taskScale);
+                v.setTranslationX(tw.taskX);
+                v.setTranslationY(tw.taskY);
+                // Defer fading out the view until after the app window gets faded in
+                v.setAlpha(getValue(1f, 0f, 75, 75,
+                        appAnimator.getDuration() * percent, Interpolators.LINEAR));
+
+                matrix.setScale(tw.winScale, tw.winScale);
+                matrix.postTranslate(tw.winX, tw.winY);
+                crop.set(tw.winCrop);
+
+                // Fade in the app window.
+                float alphaDelay = 0;
+                float alphaDuration = 75;
+                float alpha = getValue(0f, 1f, alphaDelay, alphaDuration,
+                        appAnimator.getDuration() * percent, Interpolators.LINEAR);
+
+                TransactionCompat t = new TransactionCompat();
+                for (RemoteAnimationTargetCompat target : targets) {
+                    if (target.mode == RemoteAnimationTargetCompat.MODE_OPENING) {
+                        t.setAlpha(target.leash, alpha);
+
+                        // TODO: This isn't correct at the beginning of the animation, but better
+                        // than nothing.
+                        matrix.postTranslate(target.position.x, target.position.y);
+                        t.setMatrix(target.leash, matrix);
+                        t.setWindowCrop(target.leash, crop);
+                        t.deferTransactionUntil(target.leash, surface, getNextFrameNumber(surface));
+                    }
+                    if (isFirstFrame) {
+                        t.show(target.leash);
+                    }
+                }
+                t.apply();
+
+                matrix.reset();
+                isFirstFrame = false;
+            }
+        });
+        return appAnimator;
+    }
+
+    /**
+     * Composes the animations for a launch from an app icon.
+     */
+    private LauncherTransitionAnimator composeAppLaunchAnimator(View v,
+            RemoteAnimationTargetCompat[] targets) {
+        return new LauncherTransitionAnimator(getLauncherAnimators(v),
+                getWindowAnimators(v, targets));
     }
 
     /**
