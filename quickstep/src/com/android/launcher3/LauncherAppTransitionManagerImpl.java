@@ -398,8 +398,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             try {
                 RemoteAnimationDefinitionCompat definition = new RemoteAnimationDefinitionCompat();
                 definition.addRemoteAnimation(WindowManagerWrapper.TRANSIT_WALLPAPER_OPEN,
-                        new RemoteAnimationAdapterCompat(getWallpaperOpenRunner(), 0,
-                                CLOSING_TRANSITION_DURATION_MS));
+                        new RemoteAnimationAdapterCompat(getWallpaperOpenRunner(),
+                                CLOSING_TRANSITION_DURATION_MS, 0 /* statusBarTransitionDelay */));
 
 //      TODO: App controlled transition for unlock to home TRANSIT_KEYGUARD_GOING_AWAY_ON_WALLPAPER
 
