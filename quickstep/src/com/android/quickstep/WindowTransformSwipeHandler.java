@@ -106,8 +106,8 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
     private final MainThreadExecutor mMainExecutor = new MainThreadExecutor();
 
-    private final Task mRunningTask;
     private final Context mContext;
+    private final int mRunningTaskId;
 
     private MultiStateCallback mStateCallback;
     private boolean mControllerStateAnimation;
@@ -131,11 +131,8 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     private Matrix mTmpMatrix = new Matrix();
 
     WindowTransformSwipeHandler(RunningTaskInfo runningTaskInfo, Context context) {
-        // TODO: We need a better way for this
-        TaskKey taskKey = new TaskKey(runningTaskInfo.id, 0, null, UserHandle.myUserId(), 0);
-        mRunningTask = new Task(taskKey, null, null, "", "", Color.BLACK, Color.BLACK,
-                true, false, false, false, null, 0, null, false);
         mContext = context;
+        mRunningTaskId = runningTaskInfo.id;
 
         WindowManagerWrapper.getInstance().getStableInsets(mStableInsets);
 
@@ -257,7 +254,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         }
 
         mRecentsView = mLauncher.getOverviewPanel();
-        mRecentsView.showTask(mRunningTask);
+        mRecentsView.showTask(mRunningTaskId);
         mWasLauncherAlreadyVisible = alreadyOnHome;
         mLauncherLayoutListener = new LauncherLayoutListener(mLauncher, this);
         mLauncher.getDragLayer().addView(mLauncherLayoutListener);
@@ -480,7 +477,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
             for (int i = mRecentsView.getFirstTaskIndex(); i < mRecentsView.getPageCount(); i++) {
                 TaskView taskView = (TaskView) mRecentsView.getPageAt(i);
                 // TODO: Match the keys directly
-                if (taskView.getTask().key.id != mRunningTask.key.id) {
+                if (taskView.getTask().key.id != mRunningTaskId) {
                     mRecentsView.snapToPage(i, QUICK_SWITCH_SNAP_DURATION);
                     taskView.postDelayed(() -> {taskView.launchTask(true);},
                             QUICK_SWITCH_SNAP_DURATION);

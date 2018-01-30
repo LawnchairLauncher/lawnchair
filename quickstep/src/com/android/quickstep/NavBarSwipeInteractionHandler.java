@@ -92,7 +92,7 @@ public class NavBarSwipeInteractionHandler extends BaseSwipeInteractionHandler i
     // animated to 1, so allow for a smooth transition.
     private final AnimatedFloat mActivityMultiplier = new AnimatedFloat(this::updateFinalShift);
 
-    private final Task mRunningTask;
+    private final int mRunningTaskId;
     private final Context mContext;
 
     private final MultiStateCallback mStateCallback;
@@ -116,13 +116,9 @@ public class NavBarSwipeInteractionHandler extends BaseSwipeInteractionHandler i
 
     NavBarSwipeInteractionHandler(RunningTaskInfo runningTaskInfo, Context context,
             @InteractionType int interactionType) {
-        // TODO: We need a better way for this
-        TaskKey taskKey = new TaskKey(runningTaskInfo.id, 0, null, UserHandle.myUserId(), 0);
-        mRunningTask = new Task(taskKey, null, null, "", "", Color.BLACK, Color.BLACK,
-                true, false, false, false, null, 0, null, false);
-
         mContext = context;
         mInteractionType = interactionType;
+        mRunningTaskId = runningTaskInfo.id;
         WindowManagerWrapper.getInstance().getStableInsets(mStableInsets);
 
         DeviceProfile dp = LauncherAppState.getIDP(mContext).getDeviceProfile(mContext);
@@ -192,7 +188,7 @@ public class NavBarSwipeInteractionHandler extends BaseSwipeInteractionHandler i
         launcher.setOnResumeCallback(this);
         mLauncher = launcher;
         mRecentsView = launcher.getOverviewPanel();
-        mRecentsView.showTask(mRunningTask);
+        mRecentsView.showTask(mRunningTaskId);
         mHotseat = mLauncher.getHotseat();
         mWasLauncherAlreadyVisible = alreadyOnHome;
 
@@ -340,18 +336,15 @@ public class NavBarSwipeInteractionHandler extends BaseSwipeInteractionHandler i
 
     @UiThread
     private void resumeLastTask() {
-        // TODO: We need a better way for this
-        TaskKey key = mRunningTask.key;
         RecentsTaskLoadPlan loadPlan = RecentsModel.getInstance(mContext).getLastLoadPlan();
         if (loadPlan != null) {
-            Task task = loadPlan.getTaskStack().findTaskWithId(key.id);
+            Task task = loadPlan.getTaskStack().findTaskWithId(mRunningTaskId);
             if (task != null) {
-                key = task.key;
+                ActivityOptions opts = ActivityOptions.makeCustomAnimation(mContext, 0, 0);
+                ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(task.key, opts,
+                        null, null);
             }
         }
-
-        ActivityOptions opts = ActivityOptions.makeCustomAnimation(mContext, 0, 0);
-        ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(key, opts, null, null);
     }
 
     public void reset() {
@@ -380,8 +373,7 @@ public class NavBarSwipeInteractionHandler extends BaseSwipeInteractionHandler i
         if (mInteractionType == INTERACTION_QUICK_SWITCH) {
             for (int i = mRecentsView.getFirstTaskIndex(); i < mRecentsView.getPageCount(); i++) {
                 TaskView taskView = (TaskView) mRecentsView.getPageAt(i);
-                // TODO: Match the keys directly
-                if (taskView.getTask().key.id != mRunningTask.key.id) {
+                if (taskView.getTask().key.id != mRunningTaskId) {
                     mRecentsView.snapToPage(i, QUICK_SWITCH_SNAP_DURATION);
                     taskView.postDelayed(() -> {taskView.launchTask(true);},
                             QUICK_SWITCH_SNAP_DURATION);
