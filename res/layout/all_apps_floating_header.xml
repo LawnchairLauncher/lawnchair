@@ -52,7 +52,7 @@
             android:fontFamily="sans-serif-medium"
             android:text="@string/all_apps_work_tab"
             android:textAllCaps="true"
-            android:textColor="@color/all_apps_work_tab_text"
+            android:textColor="@color/all_apps_tab_text"
             android:textSize="14sp" />
     </com.android.launcher3.allapps.PersonalWorkSlidingTabStrip>
 </com.android.launcher3.allapps.FloatingHeaderView>

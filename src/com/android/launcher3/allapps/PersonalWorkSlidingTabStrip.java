@@ -44,8 +44,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout {
 
     private static final String KEY_SHOWED_PEEK_WORK_TAB = "showed_peek_work_tab";
 
-    private final Paint mPersonalTabIndicatorPaint;
-    private final Paint mWorkTabIndicatorPaint;
+    private final Paint mSelectedIndicatorPaint;
     private final Paint mDividerPaint;
     private final SharedPreferences mSharedPreferences;
 
@@ -55,7 +54,6 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout {
     private int mIndicatorPosition = 0;
     private float mIndicatorOffset;
     private int mSelectedPosition = 0;
-    private boolean mIsRtl;
 
     public PersonalWorkSlidingTabStrip(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -65,14 +63,9 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout {
         mSelectedIndicatorHeight =
                 getResources().getDimensionPixelSize(R.dimen.all_apps_tabs_indicator_height);
 
-        mPersonalTabIndicatorPaint = new Paint();
-        mPersonalTabIndicatorPaint.setColor(
+        mSelectedIndicatorPaint = new Paint();
+        mSelectedIndicatorPaint.setColor(
                 Themes.getAttrColor(context, android.R.attr.colorAccent));
-
-        mWorkTabIndicatorPaint = new Paint();
-        mWorkTabIndicatorPaint.setColor(getResources().getColor(R.color.work_profile_color));
-
-        mIsRtl = Utilities.isRtl(getResources());
 
         mDividerPaint = new Paint();
         mDividerPaint.setColor(Themes.getAttrColor(context, android.R.attr.colorControlHighlight));
@@ -142,19 +135,8 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout {
         canvas.drawLine(getPaddingLeft(), y, getWidth() - getPaddingRight(), y, mDividerPaint);
 
         final float middleX = getWidth() / 2.0f;
-        if (mIndicatorLeft <= middleX) {
-            canvas.drawRect(mIndicatorLeft, getHeight() - mSelectedIndicatorHeight,
-                    middleX, getHeight(), getPaint(true /* firstHalf */));
-        }
-        if (mIndicatorRight > middleX) {
-            canvas.drawRect(middleX, getHeight() - mSelectedIndicatorHeight,
-                    mIndicatorRight, getHeight(), getPaint(false /* firstHalf */));
-        }
-    }
-
-    private Paint getPaint(boolean firstHalf) {
-        boolean isPersonal = mIsRtl ^ firstHalf;
-        return isPersonal ? mPersonalTabIndicatorPaint : mWorkTabIndicatorPaint;
+        canvas.drawRect(mIndicatorLeft, getHeight() - mSelectedIndicatorHeight,
+            mIndicatorRight, getHeight(), mSelectedIndicatorPaint);
     }
 
     public void peekWorkTabIfNecessary() {

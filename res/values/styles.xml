@@ -168,8 +168,4 @@
         <item name="android:colorControlHighlight">#DFE1E5</item>
         <item name="android:colorForeground">@color/all_apps_bg_hand_fill_dark</item>
     </style>
-
-    <style name="WorkModeSwitchTheme" parent="@style/LauncherTheme">
-        <item name="android:colorAccent">@color/work_profile_color</item>
-    </style>
 </resources>
