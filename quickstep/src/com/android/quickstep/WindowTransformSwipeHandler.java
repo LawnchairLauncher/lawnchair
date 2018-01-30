@@ -37,28 +37,31 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Looper;
 import android.os.UserHandle;
 import android.support.annotation.UiThread;
+import android.support.annotation.WorkerThread;
 import android.view.View;
+import android.view.ViewTreeObserver.OnDrawListener;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.util.Preconditions;
+import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.TouchInteractionService.InteractionType;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.recents.model.ThumbnailData;
-import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -70,17 +73,18 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
     // Launcher UI related states
     private static final int STATE_LAUNCHER_READY = 1 << 0;
-    private static final int STATE_ACTIVITY_MULTIPLIER_COMPLETE = 1 << 1;
+    private static final int STATE_LAUNCHER_DRAWN = 1 << 1;
+    private static final int STATE_ACTIVITY_MULTIPLIER_COMPLETE = 1 << 2;
 
     // Internal initialization states
-    private static final int STATE_APP_CONTROLLER_RECEIVED = 1 << 2;
+    private static final int STATE_APP_CONTROLLER_RECEIVED = 1 << 3;
 
     // Interaction finish states
-    private static final int STATE_SCALED_SNAPSHOT_RECENTS = 1 << 3;
-    private static final int STATE_SCALED_SNAPSHOT_APP = 1 << 4;
+    private static final int STATE_SCALED_SNAPSHOT_RECENTS = 1 << 4;
+    private static final int STATE_SCALED_SNAPSHOT_APP = 1 << 5;
 
     private static final int LAUNCHER_UI_STATES =
-            STATE_LAUNCHER_READY | STATE_ACTIVITY_MULTIPLIER_COMPLETE;
+            STATE_LAUNCHER_READY | STATE_LAUNCHER_DRAWN | STATE_ACTIVITY_MULTIPLIER_COMPLETE;
 
     private static final long MAX_SWIPE_DURATION = 200;
     private static final long MIN_SWIPE_DURATION = 80;
@@ -115,6 +119,8 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     private RecentsView mRecentsView;
     private QuickScrubController mQuickScrubController;
 
+    private Runnable mLauncherDrawnCallback;
+
     private boolean mWasLauncherAlreadyVisible;
 
     private float mCurrentDisplacement;
@@ -122,16 +128,14 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     private @InteractionType int mInteractionType = INTERACTION_NORMAL;
     private boolean mStartedQuickScrubFromHome;
 
-    private RecentsAnimationControllerCompat mRecentsAnimationController;
-    private RemoteAnimationTargetCompat[] mRecentsAnimationApps;
-    private boolean mRecentsAnimationInputConsumerEnabled;
+    private final RecentsAnimationWrapper mRecentsAnimationWrapper = new RecentsAnimationWrapper();
     private Matrix mTmpMatrix = new Matrix();
 
     private final InputConsumerController mInputConsumerController;
     private final InputConsumerController.TouchListener mInputConsumerTouchListener =
             (ev) -> {
                 if (ev.getActionMasked() == ACTION_UP) {
-                    onGestureInterruptEnd();
+                    // TODO: Handle touch event while the transition is in progress.
                 }
                 return true;
             };
@@ -143,7 +147,6 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                 true, false, false, false, null, 0, null, false);
         mContext = context;
         mInputConsumerController = InputConsumerController.getRecentsAnimationInputConsumer();
-
 
         WindowManagerWrapper.getInstance().getStableInsets(mStableInsets);
 
@@ -173,6 +176,15 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                 this::reset);
         mStateCallback.addCallback(STATE_LAUNCHER_READY | STATE_SCALED_SNAPSHOT_RECENTS,
                 this::reset);
+
+        mStateCallback.addCallback(STATE_LAUNCHER_READY | STATE_LAUNCHER_DRAWN,
+                mLauncherDrawnCallback);
+    }
+
+    public void setLauncherOnDrawCallback(Runnable callback) {
+        mLauncherDrawnCallback = callback;
+        mStateCallback.addCallback(STATE_LAUNCHER_READY | STATE_LAUNCHER_DRAWN,
+                mLauncherDrawnCallback);
     }
 
     private void initTransitionEndpoints(DeviceProfile dp) {
@@ -220,17 +232,35 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                     .createAnimationToNewWorkspace(OVERVIEW, accuracy);
             mLauncherTransitionController.setPlayFraction(mCurrentShift.value);
 
-            mStateCallback.setState(STATE_ACTIVITY_MULTIPLIER_COMPLETE);
+            mStateCallback.setState(STATE_ACTIVITY_MULTIPLIER_COMPLETE | STATE_LAUNCHER_DRAWN);
         } else {
+            TraceHelper.beginSection("WTS-init");
             launcher.getStateManager().goToState(OVERVIEW, false);
+            TraceHelper.partitionSection("WTS-init", "State changed");
 
             // TODO: Implement a better animation for fading in
             View rootView = launcher.getRootView();
             rootView.setAlpha(0);
-            rootView.animate().alpha(1)
-                    .setDuration(getFadeInDuration())
-                    .withEndAction(() -> mStateCallback.setState(
-                            launcher == mLauncher ? STATE_ACTIVITY_MULTIPLIER_COMPLETE : 0));
+            rootView.getViewTreeObserver().addOnDrawListener(new OnDrawListener() {
+
+                @Override
+                public void onDraw() {
+                    TraceHelper.endSection("WTS-init", "Launcher frame is drawn");
+                    rootView.post(() ->
+                            rootView.getViewTreeObserver().removeOnDrawListener(this));
+                    if (launcher != mLauncher) {
+                        return;
+                    }
+
+                    if ((mStateCallback.getState() & STATE_LAUNCHER_DRAWN) == 0) {
+                        mStateCallback.setState(STATE_LAUNCHER_DRAWN);
+                        rootView.animate().alpha(1)
+                                .setDuration(getFadeInDuration())
+                                .withEndAction(() -> mStateCallback.setState(launcher == mLauncher
+                                        ? STATE_ACTIVITY_MULTIPLIER_COMPLETE : 0));
+                    }
+                }
+            });
         }
 
         mRecentsView = mLauncher.getOverviewPanel();
@@ -334,48 +364,49 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         updateDisplacement(mCurrentDisplacement);
     }
 
-    @UiThread
+    @WorkerThread
     private void updateFinalShift() {
         if (mStartedQuickScrubFromHome) {
             return;
         }
 
         float shift = mCurrentShift.value;
-        mRectEvaluator.evaluate(shift, mSourceRect, mTargetRect);
-        float scale = (float) mCurrentRect.width() / mSourceRect.width();
-        if (mRecentsAnimationApps != null) {
-            mClipRect.left = mSourceRect.left;
-            mClipRect.top = (int) (mStableInsets.top * shift);
-            mClipRect.bottom = (int) (mDp.heightPx - (mStableInsets.bottom * shift));
-            mClipRect.right = mSourceRect.right;
 
-            mTmpMatrix.setScale(scale, scale, 0, 0);
-            mTmpMatrix.postTranslate(mCurrentRect.left - mStableInsets.left * scale * shift,
-                    mCurrentRect.top - mStableInsets.top * scale * shift);
-            TransactionCompat transaction = new TransactionCompat();
-            for (RemoteAnimationTargetCompat app : mRecentsAnimationApps) {
-                if (app.mode == MODE_CLOSING) {
-                    transaction.setMatrix(app.leash, mTmpMatrix)
-                            .setWindowCrop(app.leash, mClipRect)
-                            .show(app.leash);
+        synchronized (mRecentsAnimationWrapper) {
+            if (mRecentsAnimationWrapper.controller != null) {
+                mRectEvaluator.evaluate(shift, mSourceRect, mTargetRect);
+                float scale = (float) mCurrentRect.width() / mSourceRect.width();
+
+                mClipRect.left = mSourceRect.left;
+                mClipRect.top = (int) (mStableInsets.top * shift);
+                mClipRect.bottom = (int) (mDp.heightPx - (mStableInsets.bottom * shift));
+                mClipRect.right = mSourceRect.right;
+
+                mTmpMatrix.setScale(scale, scale, 0, 0);
+                mTmpMatrix.postTranslate(mCurrentRect.left - mStableInsets.left * scale * shift,
+                        mCurrentRect.top - mStableInsets.top * scale * shift);
+                TransactionCompat transaction = new TransactionCompat();
+                for (RemoteAnimationTargetCompat app : mRecentsAnimationWrapper.targets) {
+                    if (app.mode == MODE_CLOSING) {
+                        transaction.setMatrix(app.leash, mTmpMatrix)
+                                .setWindowCrop(app.leash, mClipRect)
+                                .show(app.leash);
+                    }
                 }
+                transaction.apply();
             }
-            transaction.apply();
         }
 
-        if (mLauncherTransitionController != null) {
-            mLauncherTransitionController.setPlayFraction(shift);
+        if (Looper.getMainLooper() == Looper.myLooper()) {
+            if (mLauncherTransitionController != null) {
+                mLauncherTransitionController.setPlayFraction(shift);
+            }
         }
     }
 
     public void setRecentsAnimation(RecentsAnimationControllerCompat controller,
             RemoteAnimationTargetCompat[] apps) {
-        mRecentsAnimationController = controller;
-        if (mRecentsAnimationInputConsumerEnabled) {
-            BackgroundExecutor.get().submit(() ->
-                    mRecentsAnimationController.setInputConsumerEnabled(true));
-        }
-        mRecentsAnimationApps = apps;
+        mRecentsAnimationWrapper.setController(controller, apps);
         mStateCallback.setState(STATE_APP_CONTROLLER_RECEIVED);
     }
 
@@ -384,12 +415,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         mInputConsumerController.registerInputConsumer();
         mInputConsumerController.setTouchListener(mInputConsumerTouchListener);
 
-        if (mRecentsAnimationController != null) {
-            BackgroundExecutor.get().submit(() ->
-                mRecentsAnimationController.setInputConsumerEnabled(true));
-        } else {
-            mRecentsAnimationInputConsumerEnabled = true;
-        }
+        mRecentsAnimationWrapper.enableInputConsumer();
     }
 
     @UiThread
@@ -415,18 +441,6 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
             }
         }
 
-        if (endShift == mCurrentShift.value) {
-            mStateCallback.setState((Float.compare(mCurrentShift.value, 0) == 0)
-                    ? STATE_SCALED_SNAPSHOT_APP : STATE_SCALED_SNAPSHOT_RECENTS);
-        } else {
-            animateToProgress(endShift, duration);
-        }
-    }
-
-    @UiThread
-    public void onGestureInterruptEnd() {
-        final float endShift = 0;
-        final long duration = MAX_SWIPE_DURATION;
         animateToProgress(endShift, duration);
     }
 
@@ -437,8 +451,9 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         anim.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationSuccess(Animator animator) {
-                mStateCallback.setState((Float.compare(mCurrentShift.value, 0) == 0)
-                        ? STATE_SCALED_SNAPSHOT_APP : STATE_SCALED_SNAPSHOT_RECENTS);
+                new MainThreadExecutor().execute(() -> mStateCallback.setState(
+                        (Float.compare(mCurrentShift.value, 0) == 0)
+                                ? STATE_SCALED_SNAPSHOT_APP : STATE_SCALED_SNAPSHOT_RECENTS));
             }
         });
         anim.start();
@@ -446,12 +461,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
     @UiThread
     private void resumeLastTask() {
-        if (mRecentsAnimationController != null) {
-            BackgroundExecutor.get().submit(() -> {
-                mRecentsAnimationController.setInputConsumerEnabled(false);
-                mRecentsAnimationController.finish(false /* toHome */);
-            });
-        }
+        mRecentsAnimationWrapper.finish(false /* toHome */);
     }
 
     public void reset() {
@@ -497,22 +507,21 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                 mQuickScrubController.snapToPageForCurrentQuickScrubSection();
             }
         } else {
-            if (mRecentsAnimationController != null) {
-                TransactionCompat transaction = new TransactionCompat();
-                for (RemoteAnimationTargetCompat app : mRecentsAnimationApps) {
-                    if (app.mode == MODE_CLOSING) {
-                        // Update the screenshot of the task
-                        final ThumbnailData thumbnail =
-                                mRecentsAnimationController.screenshotTask(app.taskId);
-                        mRecentsView.updateThumbnail(app.taskId, thumbnail);
+            synchronized (mRecentsAnimationWrapper) {
+                if (mRecentsAnimationWrapper.controller != null) {
+                    TransactionCompat transaction = new TransactionCompat();
+                    for (RemoteAnimationTargetCompat app : mRecentsAnimationWrapper.targets) {
+                        if (app.mode == MODE_CLOSING) {
+                            // Update the screenshot of the task
+                            final ThumbnailData thumbnail =
+                                    mRecentsAnimationWrapper.controller.screenshotTask(app.taskId);
+                            mRecentsView.updateThumbnail(app.taskId, thumbnail);
+                        }
                     }
+                    transaction.apply();
                 }
-                transaction.apply();
-                BackgroundExecutor.get().submit(() -> {
-                    mRecentsAnimationController.setInputConsumerEnabled(false);
-                    mRecentsAnimationController.finish(true /* toHome */);
-                });
             }
+            mRecentsAnimationWrapper.finish(true /* toHome */);
         }
     }
 

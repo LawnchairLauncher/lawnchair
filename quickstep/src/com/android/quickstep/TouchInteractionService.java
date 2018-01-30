@@ -40,6 +40,8 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
 import android.support.annotation.IntDef;
 import android.util.Log;
@@ -92,11 +94,16 @@ public class TouchInteractionService extends Service {
     public static final int INTERACTION_QUICK_SWITCH = 1;
     public static final int INTERACTION_QUICK_SCRUB = 2;
 
+    /**
+     * A background thread used for handling UI for another window.
+     */
+    private static HandlerThread sRemoteUiThread;
+
     private final IBinder mMyBinder = new IOverviewProxy.Stub() {
 
         @Override
         public void onMotionEvent(MotionEvent ev) {
-            mEventQueue.queue(ev);
+            onBinderMotionEvent(ev);
         }
 
         @Override
@@ -166,7 +173,8 @@ public class TouchInteractionService extends Service {
     private Rect mStableInsets = new Rect();
 
     private ISystemUiProxy mISystemUiProxy;
-    private Consumer<MotionEvent> mCurrentConsumer = mNoOpTouchConsumer;
+
+    private Choreographer mBackgroundThreadChoreographer;
 
     @Override
     public void onCreate() {
@@ -184,8 +192,10 @@ public class TouchInteractionService extends Service {
         // Clear the packageName as system can fail to dedupe it b/64108432
         mHomeIntent.setComponent(mLauncher).setPackage(null);
 
-        mEventQueue = new MotionEventQueue(Choreographer.getInstance(), this::handleMotionEvent);
+        mEventQueue = new MotionEventQueue(Choreographer.getInstance(), mNoOpTouchConsumer);
         sConnected = true;
+
+        initBackgroundChoreographer();
     }
 
     @Override
@@ -201,19 +211,23 @@ public class TouchInteractionService extends Service {
         return mMyBinder;
     }
 
-    private void handleMotionEvent(MotionEvent ev) {
+    private void onBinderMotionEvent(MotionEvent ev) {
         if (ev.getActionMasked() == ACTION_DOWN) {
             mRunningTask = mAM.getRunningTask();
 
             if (mRunningTask == null) {
-                mCurrentConsumer = mNoOpTouchConsumer;
+                mEventQueue.setConsumer(mNoOpTouchConsumer);
+                mEventQueue.setInterimChoreographer(null);
             } else if (mRunningTask.topActivity.equals(mLauncher)) {
-                mCurrentConsumer = getLauncherConsumer();
+                mEventQueue.setConsumer(getLauncherConsumer());
+                mEventQueue.setInterimChoreographer(null);
             } else {
-                mCurrentConsumer = mOtherActivityTouchConsumer;
+                mEventQueue.setConsumer(mOtherActivityTouchConsumer);
+                mEventQueue.setInterimChoreographer(
+                        isUsingScreenShot() ? null : mBackgroundThreadChoreographer);
             }
         }
-        mCurrentConsumer.accept(ev);
+        mEventQueue.queue(ev);
     }
 
     private void handleTouchDownOnOtherActivity(MotionEvent ev) {
@@ -235,7 +249,8 @@ public class TouchInteractionService extends Service {
                 }
                 mVelocityTracker.addMovement(ev);
                 if (mInteractionHandler != null) {
-                    mInteractionHandler.reset();
+                    final BaseSwipeInteractionHandler handler = mInteractionHandler;
+                    mMainThreadExecutor.execute(handler::reset);
                     mInteractionHandler = null;
                 }
                 mTouchThresholdCrossed = false;
@@ -298,7 +313,7 @@ public class TouchInteractionService extends Service {
                 TraceHelper.endSection("TouchInt");
 
                 finishTouchTracking();
-                mCurrentConsumer = mNoOpTouchConsumer;
+                mEventQueue.setConsumer(mNoOpTouchConsumer);
                 break;
             }
         }
@@ -312,11 +327,15 @@ public class TouchInteractionService extends Service {
         return mDisplayRotation == Surface.ROTATION_270 && mStableInsets.left > 0;
     }
 
+    private boolean isUsingScreenShot() {
+        return Utilities.getPrefs(this).getBoolean("pref_use_screenshot_animation", true);
+    }
+
     /**
      * Called when the gesture has started.
      */
     private void startTouchTracking() {
-        if (Utilities.getPrefs(this).getBoolean("pref_use_screenshot_animation", true)) {
+        if (isUsingScreenShot()) {
             // Create the shared handler
             final NavBarSwipeInteractionHandler handler =
                     new NavBarSwipeInteractionHandler(mRunningTask, this, INTERACTION_NORMAL);
@@ -343,7 +362,6 @@ public class TouchInteractionService extends Service {
             // Create the shared handler
             final WindowTransformSwipeHandler handler =
                     new WindowTransformSwipeHandler(mRunningTask, this);
-
             BackgroundExecutor.get().submit(() -> {
                 ActivityManagerWrapper.getInstance().startRecentsActivity(mHomeIntent,
                         new AssistDataReceiver() {
@@ -375,8 +393,17 @@ public class TouchInteractionService extends Service {
             // Preload the plan
             mRecentsModel.loadTasks(mRunningTask.id, null);
             mInteractionHandler = handler;
-            mInteractionHandler.initWhenReady();
-            mInteractionHandler.setGestureEndCallback(() ->  mInteractionHandler = null);
+            handler.setGestureEndCallback(() -> {
+                if (handler == mInteractionHandler) {
+                    mInteractionHandler = null;
+                }
+            });
+            handler.setLauncherOnDrawCallback(() -> {
+                if (handler == mInteractionHandler) {
+                    mEventQueue.setInterimChoreographer(null);
+                }
+            });
+            mMainThreadExecutor.execute(handler::initWhenReady);
         }
     }
 
@@ -468,7 +495,7 @@ public class TouchInteractionService extends Service {
                     case ACTION_POINTER_UP:
                     case ACTION_POINTER_DOWN:
                         if (!mTrackingStarted) {
-                            mCurrentConsumer = mNoOpTouchConsumer;
+                            mEventQueue.setConsumer(mNoOpTouchConsumer);
                         }
                         break;
                     case ACTION_MOVE: {
@@ -492,7 +519,7 @@ public class TouchInteractionService extends Service {
             }
 
             if (action == ACTION_UP || action == ACTION_CANCEL) {
-                mCurrentConsumer = mNoOpTouchConsumer;
+                mEventQueue.setConsumer(mNoOpTouchConsumer);
             }
         }
 
@@ -504,6 +531,15 @@ public class TouchInteractionService extends Service {
             ev.offsetLocation(mLocationOnScreen[0], mLocationOnScreen[1]);
             ev.setEdgeFlags(flags);
         }
+    }
+
+    private void initBackgroundChoreographer() {
+        if (sRemoteUiThread == null) {
+            sRemoteUiThread = new HandlerThread("remote-ui");
+            sRemoteUiThread.start();
+        }
+        new Handler(sRemoteUiThread.getLooper()).post(() ->
+                mBackgroundThreadChoreographer = Choreographer.getInstance());
     }
 
     public static boolean isInteractionQuick(@InteractionType int interactionType) {

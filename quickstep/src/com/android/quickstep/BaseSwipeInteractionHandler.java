@@ -15,6 +15,8 @@
  */
 package com.android.quickstep;
 
+import android.support.annotation.WorkerThread;
+
 import com.android.launcher3.states.InternalStateHandler;
 import com.android.quickstep.TouchInteractionService.InteractionType;
 
@@ -28,8 +30,10 @@ public abstract class BaseSwipeInteractionHandler extends InternalStateHandler {
 
     public void reset() {}
 
+    @WorkerThread
     public abstract void onGestureStarted();
 
+    @WorkerThread
     public abstract void onGestureEnded(float endVelocity);
 
     public abstract void updateInteractionType(@InteractionType int interactionType);
@@ -38,5 +42,6 @@ public abstract class BaseSwipeInteractionHandler extends InternalStateHandler {
 
     public abstract void onQuickScrubProgress(float progress);
 
+    @WorkerThread
     public abstract void updateDisplacement(float displacement);
 }
