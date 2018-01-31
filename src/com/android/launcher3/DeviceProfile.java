@@ -217,7 +217,7 @@ public class DeviceProfile {
         return new DeviceProfile(context, inv, size, size, widthPx, heightPx, isLandscape);
     }
 
-    DeviceProfile getMultiWindowProfile(Context context, Point mwSize) {
+    public DeviceProfile getMultiWindowProfile(Context context, Point mwSize) {
         // We take the minimum sizes of this profile and it's multi-window variant to ensure that
         // the system decor is always excluded.
         mwSize.set(Math.min(availableWidthPx, mwSize.x), Math.min(availableHeightPx, mwSize.y));
