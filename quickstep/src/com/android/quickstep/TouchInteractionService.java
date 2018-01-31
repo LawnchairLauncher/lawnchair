@@ -58,6 +58,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.model.ModelPreload;
 import com.android.launcher3.util.TraceHelper;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
@@ -195,6 +196,7 @@ public class TouchInteractionService extends Service {
         mEventQueue = new MotionEventQueue(Choreographer.getInstance(), mNoOpTouchConsumer);
         sConnected = true;
 
+        new ModelPreload().start(this);
         initBackgroundChoreographer();
     }
 
