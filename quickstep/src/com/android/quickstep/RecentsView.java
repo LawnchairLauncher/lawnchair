@@ -98,7 +98,8 @@ public class RecentsView extends PagedView implements Insettable {
     private final RecentsModel mModel;
     private int mLoadPlanId = -1;
 
-    private Task mFirstTask;
+    // Only valid until the launcher state changes to NORMAL
+    private int mRunningTaskId = -1;
 
     private Bitmap mScrim;
     private Paint mFadePaint;
@@ -240,13 +241,6 @@ public class RecentsView extends PagedView implements Insettable {
         final LayoutInflater inflater = LayoutInflater.from(getContext());
         final ArrayList<Task> tasks = new ArrayList<>(stack.getTasks());
         setLayoutTransition(null);
-
-        if (mFirstTask != null) {
-            // TODO: Handle this case here once we have a valid implementation for mFirstTask
-            if (tasks.isEmpty() || !keysEquals(tasks.get(tasks.size() - 1), mFirstTask)) {
-                // tasks.add(mFirstTask);
-            }
-        }
 
         final int requiredChildCount = tasks.size() + mFirstTaskIndex;
         for (int i = getChildCount(); i < requiredChildCount; i++) {
@@ -394,7 +388,7 @@ public class RecentsView extends PagedView implements Insettable {
     }
 
     public void reset() {
-        mFirstTask = null;
+        mRunningTaskId = -1;
         setCurrentPage(0);
     }
 
@@ -407,11 +401,7 @@ public class RecentsView extends PagedView implements Insettable {
      */
     public void reloadIfNeeded() {
         if (!mModel.isLoadPlanValid(mLoadPlanId)) {
-            int taskId = -1;
-            if (mFirstTask != null) {
-                taskId = mFirstTask.key.id;
-            }
-            mLoadPlanId = mModel.loadTasks(taskId, this::applyLoadPlan);
+            mLoadPlanId = mModel.loadTasks(mRunningTaskId, this::applyLoadPlan);
         }
     }
 
@@ -423,39 +413,28 @@ public class RecentsView extends PagedView implements Insettable {
      * is called.
      * Also scrolls the view to this task
      */
-    public void showTask(Task task) {
+    public void showTask(int runningTaskId) {
         boolean needsReload = false;
-        boolean inflateFirstChild = true;
-        if (getTaskCount() > 0) {
-            TaskView tv = (TaskView) getChildAt(mFirstTaskIndex);
-            inflateFirstChild = !keysEquals(tv.getTask(), task);
-        }
-        if (inflateFirstChild) {
+        if (getTaskCount() == 0) {
             needsReload = true;
-            setLayoutTransition(null);
             // Add an empty view for now
+            setLayoutTransition(null);
             final TaskView taskView = (TaskView) LayoutInflater.from(getContext())
                     .inflate(R.layout.task, this, false);
             addView(taskView, mFirstTaskIndex);
-            taskView.bind(task);
             setLayoutTransition(mLayoutTransition);
         }
         if (!needsReload) {
             needsReload = !mModel.isLoadPlanValid(mLoadPlanId);
         }
         if (needsReload) {
-            mLoadPlanId = mModel.loadTasks(task.key.id, this::applyLoadPlan);
+            mLoadPlanId = mModel.loadTasks(runningTaskId, this::applyLoadPlan);
         }
-        mFirstTask = task;
+        mRunningTaskId = runningTaskId;
         setCurrentPage(mFirstTaskIndex);
         if (mCurrentPage >= mFirstTaskIndex) {
             ((TaskView) getPageAt(mCurrentPage)).setIconScale(0);
         }
-    }
-
-    private static boolean keysEquals(Task t1, Task t2) {
-        // TODO: Match the keys directly
-        return t1.key.id == t2.key.id;
     }
 
     public QuickScrubController getQuickScrubController() {
