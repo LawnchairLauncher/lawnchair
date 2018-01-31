@@ -15,8 +15,6 @@
  */
 package com.android.quickstep;
 
-import static android.view.MotionEvent.ACTION_UP;
-
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.TouchInteractionService.INTERACTION_NORMAL;
@@ -62,7 +60,6 @@ import com.android.quickstep.TouchInteractionService.InteractionType;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.recents.model.ThumbnailData;
-import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TransactionCompat;
@@ -107,6 +104,8 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     // visible.
     private final AnimatedFloat mCurrentShift = new AnimatedFloat(this::updateFinalShift);
 
+    private final MainThreadExecutor mMainExecutor = new MainThreadExecutor();
+
     private final Task mRunningTask;
     private final Context mContext;
 
@@ -131,22 +130,12 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     private final RecentsAnimationWrapper mRecentsAnimationWrapper = new RecentsAnimationWrapper();
     private Matrix mTmpMatrix = new Matrix();
 
-    private final InputConsumerController mInputConsumerController;
-    private final InputConsumerController.TouchListener mInputConsumerTouchListener =
-            (ev) -> {
-                if (ev.getActionMasked() == ACTION_UP) {
-                    // TODO: Handle touch event while the transition is in progress.
-                }
-                return true;
-            };
-
     WindowTransformSwipeHandler(RunningTaskInfo runningTaskInfo, Context context) {
         // TODO: We need a better way for this
         TaskKey taskKey = new TaskKey(runningTaskInfo.id, 0, null, UserHandle.myUserId(), 0);
         mRunningTask = new Task(taskKey, null, null, "", "", Color.BLACK, Color.BLACK,
                 true, false, false, false, null, 0, null, false);
         mContext = context;
-        mInputConsumerController = InputConsumerController.getRecentsAnimationInputConsumer();
 
         WindowManagerWrapper.getInstance().getStableInsets(mStableInsets);
 
@@ -179,6 +168,10 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
         mStateCallback.addCallback(STATE_LAUNCHER_READY | STATE_LAUNCHER_DRAWN,
                 mLauncherDrawnCallback);
+    }
+
+    private void setStateOnUiThread(int stateFlag) {
+        mMainExecutor.execute(() -> mStateCallback.setState(stateFlag));
     }
 
     public void setLauncherOnDrawCallback(Runnable callback) {
@@ -307,7 +300,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         }
     }
 
-    @UiThread
+    @WorkerThread
     public void updateDisplacement(float displacement) {
         mCurrentDisplacement = displacement;
 
@@ -359,9 +352,6 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                     AnimatorPlaybackController.wrap(anim, mTransitionDragLength * 2);
             mLauncherTransitionController.setPlayFraction(mCurrentShift.value);
         }
-
-        // In case the transition length changed (which should never happen, redo everything
-        updateDisplacement(mCurrentDisplacement);
     }
 
     @WorkerThread
@@ -397,9 +387,12 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
             }
         }
 
-        if (Looper.getMainLooper() == Looper.myLooper()) {
-            if (mLauncherTransitionController != null) {
+        if (mLauncherTransitionController != null) {
+            if (Looper.getMainLooper() == Looper.myLooper()) {
                 mLauncherTransitionController.setPlayFraction(shift);
+            } else {
+                // The fling operation completed even before the launcher was drawn
+                mMainExecutor.execute(() -> mLauncherTransitionController.setPlayFraction(shift));
             }
         }
     }
@@ -407,18 +400,12 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     public void setRecentsAnimation(RecentsAnimationControllerCompat controller,
             RemoteAnimationTargetCompat[] apps) {
         mRecentsAnimationWrapper.setController(controller, apps);
-        mStateCallback.setState(STATE_APP_CONTROLLER_RECEIVED);
+        setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
     }
 
-    public void onGestureStarted() {
-        mInputConsumerController.unregisterInputConsumer();
-        mInputConsumerController.registerInputConsumer();
-        mInputConsumerController.setTouchListener(mInputConsumerTouchListener);
+    public void onGestureStarted() { }
 
-        mRecentsAnimationWrapper.enableInputConsumer();
-    }
-
-    @UiThread
+    @WorkerThread
     public void onGestureEnded(float endVelocity) {
         Resources res = mContext.getResources();
         float flingThreshold = res.getDimension(R.dimen.quickstep_fling_threshold_velocity);
@@ -451,9 +438,8 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         anim.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationSuccess(Animator animator) {
-                new MainThreadExecutor().execute(() -> mStateCallback.setState(
-                        (Float.compare(mCurrentShift.value, 0) == 0)
-                                ? STATE_SCALED_SNAPSHOT_APP : STATE_SCALED_SNAPSHOT_RECENTS));
+                setStateOnUiThread((Float.compare(mCurrentShift.value, 0) == 0)
+                        ? STATE_SCALED_SNAPSHOT_APP : STATE_SCALED_SNAPSHOT_RECENTS);
             }
         });
         anim.start();
@@ -470,7 +456,6 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         if (mGestureEndCallback != null) {
             mGestureEndCallback.run();
         }
-        mInputConsumerController.unregisterInputConsumer();
 
         // TODO: These should be done as part of ActivityOptions#OnAnimationStarted
         mLauncher.getStateManager().reapplyState();
