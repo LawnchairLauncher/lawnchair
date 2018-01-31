@@ -111,6 +111,7 @@ public class DropTargetBar extends FrameLayout
 
             lp.topMargin += grid.edgeMarginPx;
             lp.height = grid.dropTargetBarSizePx;
+            lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
         }
         setLayoutParams(lp);
         for (ButtonDropTarget button : mDropTargets) {
