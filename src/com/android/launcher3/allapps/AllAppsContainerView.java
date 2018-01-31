@@ -55,7 +55,6 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.views.BottomUserEducationView;
@@ -84,11 +83,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
 
     private SpannableStringBuilder mSearchQueryBuilder = null;
 
-    private int mNumAppsPerRow;
-    private int mNumPredictedAppsPerRow;
-
     private boolean mUsingTabs;
-    private boolean mHasPredictions = false;
     private boolean mSearchModeWhileUsingTabs = false;
 
     public AllAppsContainerView(Context context) {
@@ -237,21 +232,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-
-        if (mNumAppsPerRow != grid.inv.numColumns ||
-                mNumPredictedAppsPerRow != grid.inv.numColumns) {
-            mNumAppsPerRow = grid.inv.numColumns;
-            mNumPredictedAppsPerRow = grid.inv.numColumns;
-            for (int i = 0; i < mAH.length; i++) {
-                mAH[i].applyNumsPerRow();
-            }
-        }
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
-    @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         mSearchUiManager.preDispatchKeyEvent(event);
         return super.dispatchKeyEvent(event);
@@ -357,17 +337,12 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             mAH[AdapterHolder.MAIN].setup(mViewPager.getChildAt(0), mPersonalMatcher);
             mAH[AdapterHolder.WORK].setup(mViewPager.getChildAt(1), mWorkMatcher);
             setupWorkProfileTabs();
-            setupHeader();
         } else {
             mTabsPagerAdapter = null;
             mAH[AdapterHolder.MAIN].setup(findViewById(R.id.apps_list_view), null);
             mAH[AdapterHolder.WORK].recyclerView = null;
-            if (FeatureFlags.ALL_APPS_PREDICTION_ROW_VIEW) {
-                setupHeader();
-            } else {
-                mHeader.setVisibility(View.GONE);
-            }
         }
+        setupHeader();
 
         mAllAppsStore.registerIconContainer(mAH[AdapterHolder.MAIN].recyclerView);
         mAllAppsStore.registerIconContainer(mAH[AdapterHolder.WORK].recyclerView);
@@ -444,27 +419,8 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
                 .setOnClickListener((View view) -> mViewPager.setCurrentItem(1));
     }
 
-    public void setPredictedApps(List<ComponentKeyMapper<AppInfo>> apps) {
-        mAH[AdapterHolder.MAIN].appsList.setPredictedApps(apps);
-        boolean hasPredictions = !apps.isEmpty();
-        if (mHasPredictions != hasPredictions) {
-            mHasPredictions = hasPredictions;
-            if (FeatureFlags.ALL_APPS_PREDICTION_ROW_VIEW) {
-                setupHeader();
-            }
-        }
-    }
-
-    public AppInfo findApp(ComponentKeyMapper<AppInfo> mapper) {
-        return mAllAppsStore.getApp(mapper);
-    }
-
     public AlphabeticalAppsList getApps() {
         return mAH[AdapterHolder.MAIN].appsList;
-    }
-
-    public boolean isUsingTabs() {
-        return mUsingTabs;
     }
 
     public FloatingHeaderView getFloatingHeaderView() {
@@ -472,18 +428,12 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     }
 
     public void setupHeader() {
-        if (mHeader == null) {
-            return;
-        }
         mHeader.setVisibility(View.VISIBLE);
         mHeader.setup(mAH, mAH[AllAppsContainerView.AdapterHolder.WORK].recyclerView == null);
 
         int padding = mHeader.getMaxTranslation();
-        if (mHasPredictions && !mUsingTabs) {
-            padding += mHeader.getPaddingTop() + mHeader.getPaddingBottom();
-        }
         for (int i = 0; i < mAH.length; i++) {
-            mAH[i].paddingTopForTabs = padding;
+            mAH[i].padding.top = padding;
             mAH[i].applyPadding();
         }
     }
@@ -510,13 +460,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             if (mAH[i].recyclerView != null) {
                 mAH[i].recyclerView.onSearchResultsChanged();
             }
-        }
-    }
-
-    public void setRecyclerViewPaddingTop(int top) {
-        for (int i = 0; i < mAH.length; i++) {
-            mAH[i].padding.top = top;
-            mAH[i].applyPadding();
         }
     }
 
@@ -551,7 +494,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         final SpringAnimationHandler animationHandler;
         final AlphabeticalAppsList appsList;
         final Rect padding = new Rect();
-        int paddingTopForTabs;
         AllAppsRecyclerView recyclerView;
         boolean verticalFadingEdge;
 
@@ -582,24 +524,11 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             adapter.setIconFocusListener(focusedItemDecorator.getFocusListener());
             applyVerticalFadingEdgeEnabled(verticalFadingEdge);
             applyPadding();
-            applyNumsPerRow();
         }
 
         void applyPadding() {
             if (recyclerView != null) {
-                int paddingTop = mUsingTabs || FeatureFlags.ALL_APPS_PREDICTION_ROW_VIEW
-                        ? paddingTopForTabs : padding.top;
-                recyclerView.setPadding(padding.left, paddingTop, padding.right, padding.bottom);
-            }
-        }
-
-        void applyNumsPerRow() {
-            if (mNumAppsPerRow > 0) {
-                if (recyclerView != null) {
-                    recyclerView.setNumAppsPerRow(mLauncher.getDeviceProfile(), mNumAppsPerRow);
-                }
-                adapter.setNumAppsPerRow(mNumAppsPerRow);
-                appsList.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow);
+                recyclerView.setPadding(padding.left, padding.top, padding.right, padding.bottom);
             }
         }
 

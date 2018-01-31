@@ -101,8 +101,6 @@
         <!-- numFolderRows & numFolderColumns defaults to numRows & numColumns, if not specified -->
         <attr name="numFolderRows" format="integer" />
         <attr name="numFolderColumns" format="integer" />
-        <!-- minAllAppsPredictionColumns defaults to numColumns, if not specified -->
-        <attr name="minAllAppsPredictionColumns" format="integer" />
         <!-- numHotseatIcons defaults to numColumns, if not specified -->
         <attr name="numHotseatIcons" format="integer" />
 
