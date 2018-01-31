@@ -470,14 +470,14 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
                 float dX = getValue(0, endX, 0, 350, currentPlayTime,
                         Interpolators.AGGRESSIVE_EASE_IN_OUT);
+                float dY = (height - height * scale) / 2f;
 
                 TransactionCompat t = new TransactionCompat();
                 for (RemoteAnimationTargetCompat app : targets) {
                     if (app.mode == RemoteAnimationTargetCompat.MODE_CLOSING) {
                         t.setAlpha(app.leash, 1f - percent);
-
-                        float dY = (height - (app.clipRect.height() * scale)) / 2f;
                         matrix.postTranslate(dX, dY);
+                        matrix.postTranslate(app.position.x, app.position.y);
                         t.setMatrix(app.leash, matrix);
                     }
                     // TODO: Layer should be set only once, but there is possibly a race condition

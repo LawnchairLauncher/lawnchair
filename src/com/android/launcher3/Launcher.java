@@ -408,9 +408,7 @@ public class Launcher extends BaseActivity
         mAppTransitionManager = Utilities.getOverrideObject(LauncherAppTransitionManager.class,
                         this, R.string.app_transition_manager_class);
 
-        if (!isInMultiWindowModeCompat()) {
-            mAppTransitionManager.registerRemoteAnimations();
-        }
+        mAppTransitionManager.registerRemoteAnimations();
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onCreate(savedInstanceState);
