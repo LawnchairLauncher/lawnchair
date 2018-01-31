@@ -76,7 +76,7 @@ public class WorkspaceCard extends View implements PageCallbacks, OnClickListene
         mTranslateXPage0 = scale[1];
         mTranslateXPage1 = OverviewState
                 .getScaleAndTranslationForPageRect(mLauncher,
-                        getResources().getDimension(R.dimen.workspace_overview_offset_x),
+                        getResources().getDimension(R.dimen.workspace_overview_offset_x) / scale[0],
                         mTempRect)[1];
 
         mExtraScrollShift = 0;
