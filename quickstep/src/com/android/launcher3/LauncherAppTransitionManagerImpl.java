@@ -421,8 +421,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                                          Runnable finishedCallback) {
                 Handler handler = mLauncher.getWindow().getDecorView().getHandler();
                 postAtFrontOfQueueAsynchronously(handler, () -> {
-                    // We use a separate transition for Overview mode.
-                    if (mLauncher.isInState(LauncherState.OVERVIEW)) {
+                    if (Utilities.getPrefs(mLauncher).getBoolean("pref_use_screenshot_animation",
+                            true) && mLauncher.isInState(LauncherState.OVERVIEW)) {
+                        // We use a separate transition for Overview mode.
                         setCurrentAnimator(null);
                         finishedCallback.run();
                         return;

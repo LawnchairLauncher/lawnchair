@@ -31,12 +31,10 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Looper;
-import android.os.UserHandle;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.view.View;
@@ -57,8 +55,6 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.TouchInteractionService.InteractionType;
-import com.android.systemui.shared.recents.model.Task;
-import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -454,10 +450,12 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
             mGestureEndCallback.run();
         }
 
-        // TODO: These should be done as part of ActivityOptions#OnAnimationStarted
-        mLauncher.getStateManager().reapplyState();
-        mLauncher.setOnResumeCallback(() -> mLauncherLayoutListener.close(false));
-        mLauncherTransitionController.setPlayFraction(1);
+        if (mLauncher != null) {
+            // TODO: These should be done as part of ActivityOptions#OnAnimationStarted
+            mLauncher.getStateManager().reapplyState();
+            mLauncher.setOnResumeCallback(() -> mLauncherLayoutListener.close(false));
+            mLauncherTransitionController.setPlayFraction(1);
+        }
         clearReference();
     }
 
