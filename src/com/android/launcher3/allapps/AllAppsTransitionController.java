@@ -2,6 +2,7 @@ package com.android.launcher3.allapps;
 
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.util.SystemUiController.UI_STATE_ALL_APPS;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -10,6 +11,7 @@ import android.util.Property;
 import android.view.View;
 import android.view.animation.Interpolator;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -59,7 +61,7 @@ public class AllAppsTransitionController
 
     private final Launcher mLauncher;
     private final boolean mIsDarkTheme;
-    private final boolean mIsVerticalLayout;
+    private boolean mIsVerticalLayout;
 
     // Animation in this class is controlled by a single variable {@link mProgress}.
     // Visually, it represents top y coordinate of the all apps container if multiplied with
@@ -80,7 +82,7 @@ public class AllAppsTransitionController
         mProgress = 1f;
 
         mIsDarkTheme = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
-        mIsVerticalLayout = mLauncher.getDeviceProfile().isVerticalBarLayout();
+        onDeviceProfileChanged(mLauncher.getDeviceProfile());
     }
 
     public float getShiftRange() {
@@ -91,6 +93,10 @@ public class AllAppsTransitionController
         // Initialize values that should not change until #onDragEnd
         mHotseat.setVisibility(View.VISIBLE);
         mAppsView.setVisibility(View.VISIBLE);
+    }
+
+    public void onDeviceProfileChanged(DeviceProfile profile) {
+        mIsVerticalLayout = profile.isVerticalBarLayout();
     }
 
     /**
@@ -125,13 +131,15 @@ public class AllAppsTransitionController
             // status bar.
             boolean forceChange = shiftCurrent <= mShiftRange / 4;
             if (forceChange) {
-                mLauncher.getSystemUiController().updateUiState(
-                        SystemUiController.UI_STATE_ALL_APPS, !mIsDarkTheme);
+                mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, !mIsDarkTheme);
             } else {
-                mLauncher.getSystemUiController().updateUiState(
-                        SystemUiController.UI_STATE_ALL_APPS, 0);
+                mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, 0);
             }
-
+        } else {
+            mAppsView.setAlpha(1);
+            mLauncher.getHotseat().setTranslationY(0);
+            mLauncher.getWorkspace().getPageIndicator().setTranslationY(0);
+            mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, 0);
         }
     }
 

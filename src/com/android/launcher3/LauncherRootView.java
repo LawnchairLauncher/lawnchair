@@ -89,13 +89,17 @@ public class LauncherRootView extends InsettableFrameLayout {
 
     @Override
     public void setInsets(Rect insets) {
-        super.setInsets(insets);
+        // If the insets haven't changed, this is a no-op. Avoid unnecessary layout caused by
+        // modifying child layout params.
+        if (!insets.equals(mInsets)) {
+            super.setInsets(insets);
+        }
         setBackground(insets.top == 0 ? null
                 : Themes.getAttrDrawable(getContext(), R.attr.workspaceStatusBarScrim));
     }
 
     public void dispatchInsets() {
-        fitSystemWindows(mInsets);
+        super.setInsets(mInsets);
     }
 
     @Override

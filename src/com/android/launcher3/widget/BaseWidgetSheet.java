@@ -113,6 +113,10 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
 
     protected void onCloseComplete() {
         super.onCloseComplete();
+        clearNavBarColor();
+    }
+
+    protected void clearNavBarColor() {
         mLauncher.getSystemUiController().updateUiState(
                 SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, 0);
     }

@@ -100,6 +100,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 mRecyclerView.getPaddingRight(), insets.bottom);
         if (insets.bottom > 0) {
             setupNavBarColor();
+        } else {
+            clearNavBarColor();
         }
         requestLayout();
     }

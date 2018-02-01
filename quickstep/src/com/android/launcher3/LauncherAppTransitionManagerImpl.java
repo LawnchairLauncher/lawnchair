@@ -26,12 +26,14 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -57,6 +59,8 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
 /**
  * Manages the opening and closing app transitions from Launcher.
  */
+@TargetApi(Build.VERSION_CODES.O)
+@SuppressWarnings("unused")
 public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManager {
 
     private static final String TAG = "LauncherTransition";
@@ -94,6 +98,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         Resources res = mLauncher.getResources();
         mContentTransY = res.getDimensionPixelSize(R.dimen.content_trans_y);
         mWorkspaceTransY = res.getDimensionPixelSize(R.dimen.workspace_trans_y);
+
+        registerRemoteAnimations();
     }
 
     private void setCurrentAnimator(Animator animator) {
@@ -392,8 +398,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     /**
      * Registers remote animations used when closing apps to home screen.
      */
-    @Override
-    public void registerRemoteAnimations() {
+    private void registerRemoteAnimations() {
         if (hasControlRemoteAppTransitionPermission()) {
             try {
                 RemoteAnimationDefinitionCompat definition = new RemoteAnimationDefinitionCompat();

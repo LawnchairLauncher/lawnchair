@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
+import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_NOSENSOR;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
 
@@ -53,7 +55,9 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -215,6 +219,7 @@ public class Launcher extends BaseActivity
     @Thunk static final int NEW_APPS_ANIMATION_DELAY = 500;
 
     private LauncherAppTransitionManager mAppTransitionManager;
+    private Configuration mOldConfig;
 
     @Thunk Workspace mWorkspace;
     private View mLauncherView;
@@ -236,10 +241,6 @@ public class Launcher extends BaseActivity
 
     // UI and state for the overview panel
     private ViewGroup mOverviewPanel;
-
-    // We need to store the orientation Launcher was created with, due to a bug (b/64916689)
-    // that results in widgets being inflated in the wrong orientation.
-    private int mOrientation;
 
     @Thunk boolean mWorkspaceLoading = true;
 
@@ -310,17 +311,9 @@ public class Launcher extends BaseActivity
         TraceHelper.partitionSection("Launcher-onCreate", "super call");
 
         LauncherAppState app = LauncherAppState.getInstance(this);
+        mOldConfig = new Configuration(getResources().getConfiguration());
+        initDeviceProfile(app.getInvariantDeviceProfile());
 
-        // Load configuration-specific DeviceProfile
-        mDeviceProfile = app.getInvariantDeviceProfile().getDeviceProfile(this);
-        if (isInMultiWindowModeCompat()) {
-            Display display = getWindowManager().getDefaultDisplay();
-            Point mwSize = new Point();
-            display.getSize(mwSize);
-            mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
-        }
-
-        mOrientation = getResources().getConfiguration().orientation;
         mSharedPrefs = Utilities.getPrefs(this);
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
         mModel = app.setLauncher(this);
@@ -393,7 +386,7 @@ public class Launcher extends BaseActivity
                 ? SCREEN_ORIENTATION_UNSPECIFIED : SCREEN_ORIENTATION_NOSENSOR);
 
         setContentView(mLauncherView);
-        ((LauncherRootView) mLauncherView).dispatchInsets();
+        getRootView().dispatchInsets();
 
         // Listen for broadcasts
         IntentFilter filter = new IntentFilter();
@@ -405,16 +398,52 @@ public class Launcher extends BaseActivity
         getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
                 Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
 
-        mAppTransitionManager = Utilities.getOverrideObject(LauncherAppTransitionManager.class,
-                        this, R.string.app_transition_manager_class);
-
-        mAppTransitionManager.registerRemoteAnimations();
+        mAppTransitionManager = LauncherAppTransitionManager.newInstance(this);
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onCreate(savedInstanceState);
         }
 
         TraceHelper.endSection("Launcher-onCreate");
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        int diff = newConfig.diff(mOldConfig);
+        if ((diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0) {
+            mUserEventDispatcher = null;
+            initDeviceProfile(mDeviceProfile.inv);
+
+            // Re create transition manager as it may rely on the device profile.
+            // TODO: Remove any dynamic states from this class.
+            mAppTransitionManager = LauncherAppTransitionManager.newInstance(this);
+
+            // TODO: Link these to the callbacks
+            mAllAppsController.onDeviceProfileChanged(mDeviceProfile);
+            mDragLayer.setup(this, mDragController);
+
+            // TODO: Clear all-apps recycler view pools
+
+            getRootView().dispatchInsets();
+            getStateManager().reapplyState();
+
+            // TODO: We can probably avoid rebind when only screen size changed.
+            mModel.startLoader(mWorkspace.getNextPage());
+        }
+
+        mOldConfig.setTo(newConfig);
+        super.onConfigurationChanged(newConfig);
+    }
+
+    private void initDeviceProfile(InvariantDeviceProfile idp) {
+        // Load configuration-specific DeviceProfile
+        mDeviceProfile = idp.getDeviceProfile(this);
+        if (isInMultiWindowModeCompat()) {
+            Display display = getWindowManager().getDefaultDisplay();
+            Point mwSize = new Point();
+            display.getSize(mwSize);
+            mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
+        }
     }
 
     @Override
@@ -1216,7 +1245,7 @@ public class Launcher extends BaseActivity
         return mSharedPrefs;
     }
 
-    public int getOrientation() { return mOrientation; }
+    public int getOrientation() { return mOldConfig.orientation; }
 
     @Override
     protected void onNewIntent(Intent intent) {

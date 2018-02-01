@@ -50,11 +50,12 @@ public class AllAppsScrim extends View implements OnChangeListener, Insettable {
     private final Rect mDrawRect = new Rect();
     private final Rect mPadding = new Rect();
     private final Rect mInsets = new Rect();
-    private final DeviceProfile mGrid;
+
     private final float mRadius;
-    private final int mMinAlpha;
-    private final int mAlphaRange;
     private final int mScrimColor;
+
+    private int mMinAlpha;
+    private int mAlphaRange;
 
     private final float mShadowBlur;
     private final Bitmap mShadowBitmap;
@@ -82,14 +83,19 @@ public class AllAppsScrim extends View implements OnChangeListener, Insettable {
         mRadius = getResources().getDimension(R.dimen.all_apps_scrim_radius);
         mShadowBlur = getResources().getDimension(R.dimen.all_apps_scrim_blur);
 
-        Launcher launcher = Launcher.getLauncher(context);
-        mGrid = launcher.getDeviceProfile();
-        mFillAlpha = mMinAlpha = mGrid.isVerticalBarLayout()
-                ? MIN_ALPHA_LANDSCAPE : MIN_ALPHA_PORTRAIT;
-        mAlphaRange = MAX_ALPHA - mMinAlpha;
+        initDefaults();
+        mFillAlpha = mMinAlpha;
         mShadowBitmap = generateShadowBitmap();
 
         updateColors(mWallpaperColorInfo);
+    }
+
+    private DeviceProfile initDefaults() {
+        DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
+        mMinAlpha = grid.isVerticalBarLayout()
+                ? MIN_ALPHA_LANDSCAPE : MIN_ALPHA_PORTRAIT;
+        mAlphaRange = MAX_ALPHA - mMinAlpha;
+        return grid;
     }
 
     private Bitmap generateShadowBitmap() {
@@ -191,29 +197,32 @@ public class AllAppsScrim extends View implements OnChangeListener, Insettable {
     @Override
     public void setInsets(Rect insets) {
         mInsets.set(insets);
-        if (mGrid.isVerticalBarLayout()) {
-            mPadding.set(mGrid.workspacePadding);
+        DeviceProfile grid = initDefaults();
+        if (grid.isVerticalBarLayout()) {
+            mPadding.set(grid.workspacePadding);
             mPadding.bottom = 0;
             mPadding.left += mInsets.left;
             mPadding.top = mInsets.top;
             mPadding.right += mInsets.right;
+            setDrawRegion(0);
         } else {
+            mPadding.setEmpty();
             float scrimMargin = getResources().getDimension(R.dimen.all_apps_scrim_margin);
-            setDrawRegion(mGrid.hotseatBarSizePx + insets.bottom + scrimMargin);
+            setDrawRegion(grid.hotseatBarSizePx + insets.bottom + scrimMargin);
         }
-        updateDrawRect();
+        updateDrawRect(grid);
         invalidate();
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        updateDrawRect();
+        updateDrawRect(Launcher.getLauncher(getContext()).getDeviceProfile());
     }
 
-    private void updateDrawRect() {
+    private void updateDrawRect(DeviceProfile grid) {
         mDrawRect.bottom = getHeight();
-        if (mGrid.isVerticalBarLayout()) {
+        if (grid.isVerticalBarLayout()) {
             mDrawRect.left = (int) (mPadding.left - mShadowBlur - 0.5f);
             mDrawRect.right = (int) (getWidth() - mPadding.right + 0.5f);
         } else {

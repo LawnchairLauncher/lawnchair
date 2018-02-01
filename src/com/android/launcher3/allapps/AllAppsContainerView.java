@@ -307,19 +307,24 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
             mAH[i].padding.left = mAH[i].padding.right = leftRightPadding;
             mAH[i].applyPadding();
         }
+
+        ViewGroup.MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
         if (grid.isVerticalBarLayout()) {
-            ViewGroup.MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
             mlp.leftMargin = insets.left;
             mlp.topMargin = insets.top;
             mlp.rightMargin = insets.right;
-            setLayoutParams(mlp);
             setPadding(grid.workspacePadding.left, 0, grid.workspacePadding.right, 0);
         } else {
-            View navBarBg = findViewById(R.id.nav_bar_bg);
-            ViewGroup.LayoutParams navBarBgLp = navBarBg.getLayoutParams();
-            navBarBgLp.height = insets.bottom;
-            navBarBg.setLayoutParams(navBarBgLp);
+            mlp.leftMargin = mlp.rightMargin = mlp.topMargin = 0;
+            setPadding(0, 0, 0, 0);
         }
+        setLayoutParams(mlp);
+
+        View navBarBg = findViewById(R.id.nav_bar_bg);
+        ViewGroup.LayoutParams navBarBgLp = navBarBg.getLayoutParams();
+        navBarBgLp.height = insets.bottom;
+        navBarBg.setLayoutParams(navBarBgLp);
+
         InsettableFrameLayout.dispatchInsets(this, insets);
     }
 

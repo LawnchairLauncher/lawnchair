@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -27,6 +28,11 @@ import android.view.View;
  * Manages the opening and closing app transitions from Launcher.
  */
 public class LauncherAppTransitionManager {
+
+    public static LauncherAppTransitionManager newInstance(Context context) {
+        return Utilities.getOverrideObject(LauncherAppTransitionManager.class,
+                context, R.string.app_transition_manager_class);
+    }
 
     public Bundle getDefaultActivityLaunchOptions(Launcher launcher, View v) {
         if (Utilities.ATLEAST_MARSHMALLOW) {
@@ -57,8 +63,5 @@ public class LauncherAppTransitionManager {
 
     public Bundle getActivityLaunchOptions(Launcher launcher, View v) {
         return getDefaultActivityLaunchOptions(launcher, v);
-    }
-
-    public void registerRemoteAnimations() {
     }
 }
