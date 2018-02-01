@@ -14,21 +14,23 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<com.android.launcher3.allapps.InterceptingViewPager
+<com.android.launcher3.allapps.AllAppsPagedView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/all_apps_tabs_view_pager"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_below="@id/search_container_all_apps"
     android:layout_gravity="center_horizontal|top"
     android:layout_marginTop="@dimen/all_apps_header_tab_height"
-    android:clipChildren="false"
+    android:clipChildren="true"
     android:clipToPadding="false"
     android:descendantFocusability="afterDescendants"
-    android:paddingTop="@dimen/all_apps_header_top_padding">
+    android:paddingTop="@dimen/all_apps_header_top_padding"
+    launcher:pageIndicator="@+id/tabs" >
 
     <include layout="@layout/all_apps_rv_layout" />
 
     <include layout="@layout/all_apps_rv_layout" />
 
-</com.android.launcher3.allapps.InterceptingViewPager>
+</com.android.launcher3.allapps.AllAppsPagedView>

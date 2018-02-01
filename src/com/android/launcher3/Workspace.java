@@ -75,6 +75,7 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.graphics.PreloadIconDrawable;
+import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
 import com.android.launcher3.uioverrides.UiFactory;
@@ -100,10 +101,9 @@ import java.util.Set;
  * Each page contains a number of icons, folders or widgets the user can
  * interact with. A workspace is meant to be used with a fixed width only.
  */
-public class Workspace extends PagedView
+public class Workspace extends PagedView<WorkspacePageIndicator>
         implements DropTarget, DragSource, View.OnTouchListener,
-        DragController.DragListener, ViewGroup.OnHierarchyChangeListener,
-        Insettable, LauncherStateManager.StateHandler {
+        DragController.DragListener, Insettable, LauncherStateManager.StateHandler {
     private static final String TAG = "Launcher.Workspace";
 
     /** The value that {@link #mTransitionProgress} must be greater than for
@@ -273,9 +273,7 @@ public class Workspace extends PagedView
 
         mWallpaperOffset = new WallpaperOffsetInterpolator(this);
 
-        setOnHierarchyChangeListener(this);
         setHapticFeedbackEnabled(false);
-
         initWorkspace();
 
         // Disable multitouch across the workspace/all apps/customize tray
@@ -463,7 +461,7 @@ public class Workspace extends PagedView
     }
 
     @Override
-    public void onChildViewAdded(View parent, View child) {
+    public void onViewAdded(View child) {
         if (!(child instanceof CellLayout)) {
             throw new IllegalArgumentException("A Workspace can only have CellLayout children.");
         }
@@ -471,7 +469,7 @@ public class Workspace extends PagedView
         cl.setOnInterceptTouchListener(this);
         cl.setClickable(true);
         cl.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
-        super.onChildViewAdded(parent, child);
+        super.onViewAdded(child);
     }
 
     boolean isTouchActive() {

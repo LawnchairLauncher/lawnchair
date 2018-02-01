@@ -59,7 +59,7 @@ import java.util.ArrayList;
  * An abstraction of the original Workspace which supports browsing through a
  * sequential list of "pages"
  */
-public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarchyChangeListener {
+public abstract class PagedView<T extends View & PageIndicator> extends ViewGroup {
     private static final String TAG = "PagedView";
     private static final boolean DEBUG = false;
     protected static final int INVALID_PAGE = -1;
@@ -154,7 +154,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     // Page Indicator
     @Thunk int mPageIndicatorViewId;
-    protected PageIndicator mPageIndicator;
+    protected T mPageIndicator;
 
     // Reordering
     // We use the min scale to determine how much to expand the actually PagedView measured
@@ -224,7 +224,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         mFlingThresholdVelocity = (int) (FLING_THRESHOLD_VELOCITY * density);
         mMinFlingVelocity = (int) (MIN_FLING_VELOCITY * density);
         mMinSnapVelocity = (int) (MIN_SNAP_VELOCITY * density);
-        setOnHierarchyChangeListener(this);
         setWillNotDraw(false);
     }
 
@@ -235,9 +234,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     public void initParentViews(View parent) {
         if (mPageIndicatorViewId > -1) {
-            mPageIndicator = (PageIndicator) parent.findViewById(mPageIndicatorViewId);
+            mPageIndicator = parent.findViewById(mPageIndicatorViewId);
             mPageIndicator.setMarkersCount(getChildCount());
-            mPageIndicator.setContentDescription(getPageIndicatorDescription());
+            mPageIndicator.setPageDescription(getPageIndicatorDescription());
         }
     }
 
@@ -282,7 +281,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
     }
 
-    public PageIndicator getPageIndicator() {
+    public T getPageIndicator() {
         return mPageIndicator;
     }
 
@@ -384,7 +383,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private void updatePageIndicator() {
         // Update the page indicator (when we aren't reordering)
         if (mPageIndicator != null) {
-            mPageIndicator.setContentDescription(getPageIndicatorDescription());
+            mPageIndicator.setPageDescription(getPageIndicatorDescription());
             if (!isReordering(false)) {
                 mPageIndicator.setActiveMarker(getNextPage());
             }
@@ -748,63 +747,24 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         requestLayout();
     }
 
-    @Override
-    public void onChildViewAdded(View parent, View child) {
-        // Update the page indicator, we don't update the page indicator as we
-        // add/remove pages
-        if (mPageIndicator != null && !isReordering(false)) {
-            mPageIndicator.addMarker();
+    private void dispatchPageCountChanged() {
+        if (mPageIndicator != null) {
+            mPageIndicator.setMarkersCount(getChildCount());
         }
-
         // This ensures that when children are added, they get the correct transforms / alphas
         // in accordance with any scroll effects.
         invalidate();
     }
 
     @Override
-    public void onChildViewRemoved(View parent, View child) {
+    public void onViewAdded(View child) {
+        dispatchPageCountChanged();
+    }
+
+    @Override
+    public void onViewRemoved(View child) {
         mCurrentPage = validateNewPage(mCurrentPage);
-        invalidate();
-    }
-
-    private void removeMarkerForView() {
-        // Update the page indicator, we don't update the page indicator as we
-        // add/remove pages
-        if (mPageIndicator != null && !isReordering(false)) {
-            mPageIndicator.removeMarker();
-        }
-    }
-
-    @Override
-    public void removeView(View v) {
-        // XXX: We should find a better way to hook into this before the view
-        // gets removed form its parent...
-        removeMarkerForView();
-        super.removeView(v);
-    }
-    @Override
-    public void removeViewInLayout(View v) {
-        // XXX: We should find a better way to hook into this before the view
-        // gets removed form its parent...
-        removeMarkerForView();
-        super.removeViewInLayout(v);
-    }
-    @Override
-    public void removeViewAt(int index) {
-        // XXX: We should find a better way to hook into this before the view
-        // gets removed form its parent...
-        removeMarkerForView();
-        super.removeViewAt(index);
-    }
-    @Override
-    public void removeAllViewsInLayout() {
-        // Update the page indicator, we don't update the page indicator as we
-        // add/remove pages
-        if (mPageIndicator != null) {
-            mPageIndicator.setMarkersCount(0);
-        }
-
-        super.removeAllViewsInLayout();
+        dispatchPageCountChanged();
     }
 
     protected int getChildOffset(int index) {

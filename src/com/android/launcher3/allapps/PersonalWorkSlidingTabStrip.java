@@ -28,13 +28,13 @@ import android.widget.LinearLayout;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.util.Themes;
 
 /**
  * Supports two indicator colors, dedicated for personal and work tabs.
  */
-public class PersonalWorkSlidingTabStrip extends LinearLayout {
+public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageIndicator {
     private static final int POSITION_PERSONAL = 0;
     private static final int POSITION_WORK = 1;
 
@@ -50,6 +50,9 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout {
     private int mIndicatorPosition = 0;
     private float mIndicatorOffset;
     private int mSelectedPosition = 0;
+
+    private AllAppsContainerView mContainerView;
+    private int mLastActivePage = 0;
 
     public PersonalWorkSlidingTabStrip(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -71,13 +74,13 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout {
         mSharedPreferences = Launcher.getLauncher(getContext()).getSharedPrefs();
     }
 
-    public void updateIndicatorPosition(int position, float positionOffset) {
+    private void updateIndicatorPosition(int position, float positionOffset) {
         mIndicatorPosition = position;
         mIndicatorOffset = positionOffset;
         updateIndicatorPosition();
     }
 
-    public void updateTabTextColor(int pos) {
+    private void updateTabTextColor(int pos) {
         mSelectedPosition = pos;
         for (int i = 0; i < getChildCount(); i++) {
             Button tab = (Button) getChildAt(i);
@@ -129,8 +132,6 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout {
 
         float y = getHeight() - mDividerPaint.getStrokeWidth();
         canvas.drawLine(getPaddingLeft(), y, getWidth() - getPaddingRight(), y, mDividerPaint);
-
-        final float middleX = getWidth() / 2.0f;
         canvas.drawRect(mIndicatorLeft, getHeight() - mSelectedIndicatorHeight,
             mIndicatorRight, getHeight(), mSelectedIndicatorPaint);
     }
@@ -152,5 +153,36 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout {
             v.setPressed(true);
             v.setPressed(false);
         });
+    }
+
+    @Override
+    public void setScroll(int currentScroll, int totalScroll) {
+        if (currentScroll == totalScroll) {
+            updateIndicatorPosition(1, 0);
+        } else if (totalScroll > 0) {
+            updateIndicatorPosition(0, ((float) currentScroll) / totalScroll);
+        }
+    }
+
+    @Override
+    public void setActiveMarker(int activePage) {
+        updateTabTextColor(activePage);
+        if (mContainerView != null && mLastActivePage != activePage) {
+            mContainerView.onTabChanged(activePage);
+        }
+        mLastActivePage = activePage;
+    }
+
+    public void setContainerView(AllAppsContainerView containerView) {
+        mContainerView = containerView;
+    }
+
+    @Override
+    public void setMarkersCount(int numMarkers) { }
+
+    @Override
+    public void setPageDescription(CharSequence description) {
+        // We don't want custom page description as the tab-bar already has two tabs with their
+        // own descriptions.
     }
 }

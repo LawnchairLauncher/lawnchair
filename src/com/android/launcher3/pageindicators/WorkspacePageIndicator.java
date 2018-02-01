@@ -41,7 +41,8 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
  *
  * The fraction is 1 / number of pages and the position is based on the progress of the page scroll.
  */
-public class WorkspacePageIndicator extends PageIndicator implements Insettable, OnClickListener {
+public class WorkspacePageIndicator extends View
+        implements Insettable, OnClickListener, PageIndicator {
 
     private static final int LINE_ANIMATE_DURATION = ViewConfiguration.getScrollBarFadeDuration();
     private static final int LINE_FADE_DELAY = ViewConfiguration.getScrollDefaultDelay();
@@ -185,14 +186,18 @@ public class WorkspacePageIndicator extends PageIndicator implements Insettable,
     }
 
     @Override
-    public void setActiveMarker(int activePage) {
+    public void setActiveMarker(int activePage) { }
+
+    @Override
+    public void setMarkersCount(int numMarkers) {
+        if (Float.compare(numMarkers, mNumPagesFloat) != 0) {
+            animateToNumPages(numMarkers);
+        }
     }
 
     @Override
-    protected void onPageCountChanged() {
-        if (Float.compare(mNumPages, mNumPagesFloat) != 0) {
-            animateToNumPages(mNumPages);
-        }
+    public void setPageDescription(CharSequence description) {
+        setContentDescription(description);
     }
 
     public void setShouldAutoHide(boolean shouldAutoHide) {
