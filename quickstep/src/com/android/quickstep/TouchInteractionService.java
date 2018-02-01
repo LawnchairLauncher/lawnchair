@@ -110,6 +110,7 @@ public class TouchInteractionService extends Service {
         @Override
         public void onBind(ISystemUiProxy iSystemUiProxy) {
             mISystemUiProxy = iSystemUiProxy;
+            mRecentsModel.setSystemUiProxy(mISystemUiProxy);
         }
 
         @Override

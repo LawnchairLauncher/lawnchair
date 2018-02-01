@@ -16,22 +16,36 @@
 
 package com.android.quickstep;
 
+import android.app.ActivityOptions;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.RemoteException;
 import android.os.UserHandle;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.InstantAppResolver;
+import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.ActivityOptionsCompat;
+
+import java.util.function.Consumer;
 
 /**
  * Represents a system shortcut that can be shown for a recent task.
  */
 public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut {
+
+    private static final String TAG = "TaskSystemShortcut";
 
     protected T mSystemShortcut;
 
@@ -40,12 +54,18 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         mSystemShortcut = systemShortcut;
     }
 
+    protected TaskSystemShortcut(int iconResId, int labelResId) {
+        super(iconResId, labelResId);
+    }
+
     @Override
     public View.OnClickListener getOnClickListener(Launcher launcher, ItemInfo itemInfo) {
         return null;
     }
 
-    public View.OnClickListener getOnClickListener(final Launcher launcher, final Task task) {
+    public View.OnClickListener getOnClickListener(final Launcher launcher, final TaskView view) {
+        Task task = view.getTask();
+
         ShortcutInfo dummyInfo = new ShortcutInfo();
         dummyInfo.intent = new Intent();
         ComponentName component = task.getTopComponent();
@@ -61,16 +81,80 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         return mSystemShortcut.getOnClickListener(launcher, dummyInfo);
     }
 
-
-    public static class Widgets extends TaskSystemShortcut<SystemShortcut.Widgets> {
-        public Widgets() {
-            super(new SystemShortcut.Widgets());
-        }
-    }
-
     public static class AppInfo extends TaskSystemShortcut<SystemShortcut.AppInfo> {
         public AppInfo() {
             super(new SystemShortcut.AppInfo());
+        }
+    }
+
+    public static class SplitScreen extends TaskSystemShortcut {
+
+        private Handler mHandler;
+
+        public SplitScreen() {
+            super(R.drawable.ic_split_screen, R.string.recent_task_option_split_screen);
+            mHandler = new Handler(Looper.getMainLooper());
+        }
+
+        @Override
+        public View.OnClickListener getOnClickListener(Launcher launcher, TaskView taskView) {
+            if (launcher.getDeviceProfile().inMultiWindowMode()) {
+                return null;
+            }
+            return (v -> {
+                Task task  = taskView.getTask();
+                final ActivityOptions options = ActivityOptionsCompat.makeSplitScreenOptions(true);
+                final Consumer<Boolean> resultCallback = success -> {
+                    if (success) {
+                        launcher.<RecentsView>getOverviewPanel().removeView(taskView);
+                    }
+                };
+                ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(
+                        task.key, options, resultCallback, mHandler);
+
+                // TODO improve transition; see:
+                // DockedFirstAnimationFrameEvent
+                // RecentsTransitionHelper#composeDockAnimationSpec
+                // WindowManagerWrapper#overridePendingAppTransitionMultiThumbFuture
+            });
+        }
+    }
+
+    public static class Pin extends TaskSystemShortcut {
+
+        // Same as Settings.System.LOCK_TO_APP_ENABLED, which is hidden.
+        // TODO use call from shared lib instead
+        private static final String LOCK_TO_APP_ENABLED = "lock_to_app_enabled";
+
+        private Handler mHandler;
+
+        public Pin() {
+            super(R.drawable.ic_pin, R.string.recent_task_option_pin);
+            mHandler = new Handler(Looper.getMainLooper());
+        }
+
+        @Override
+        public View.OnClickListener getOnClickListener(Launcher launcher, TaskView taskView) {
+            ISystemUiProxy sysUiProxy = RecentsModel.getInstance(launcher).getSystemUiProxy();
+            if (sysUiProxy == null) {
+                return null;
+            }
+            if (Settings.System.getInt(launcher.getContentResolver(),
+                    LOCK_TO_APP_ENABLED, 0) == 0) {
+                return null;
+            }
+            return view -> {
+                Consumer<Boolean> resultCallback = success -> {
+                    if (success) {
+                        try {
+                            sysUiProxy.startScreenPinning(taskView.getTask().key.id);
+                        } catch (RemoteException e) {
+                            Log.w(TAG, "Failed to start screen pinning: ", e);
+                        }
+                    }
+                };
+                taskView.launchTask(true, resultCallback, mHandler);
+            };
         }
     }
 

@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Outline;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.View;
@@ -36,7 +37,6 @@ import android.widget.ImageView;
 import com.android.launcher3.R;
 import com.android.quickstep.RecentsView.PageCallbacks;
 import com.android.quickstep.RecentsView.ScrollState;
-import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskCallbacks;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -47,6 +47,7 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * A task in the Recents view.
@@ -127,6 +128,11 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     }
 
     public void launchTask(boolean animate) {
+        launchTask(animate, null, null);
+    }
+
+    public void launchTask(boolean animate, Consumer<Boolean> resultCallback,
+            Handler resultCallbackHandler) {
         if (mTask != null) {
             final ActivityOptions opts;
             if (animate) {
@@ -154,7 +160,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
                 opts = ActivityOptions.makeCustomAnimation(getContext(), 0, 0);
             }
             ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(mTask.key,
-                    opts, null, null);
+                    opts, resultCallback, resultCallbackHandler);
         }
     }
 
@@ -162,6 +168,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     public void onTaskDataLoaded(Task task, ThumbnailData thumbnailData) {
         mSnapshotView.setThumbnail(task, thumbnailData);
         mIconView.setImageDrawable(task.icon);
+        mIconView.setOnClickListener(icon -> TaskMenuView.showForTask(this));
         mIconView.setOnLongClickListener(icon -> TaskMenuView.showForTask(this));
     }
 

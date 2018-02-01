@@ -40,7 +40,6 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.shortcuts.DeepShortcutView;
-import com.android.systemui.shared.recents.model.Task;
 
 /**
  * Contains options for a recent task when long-pressing its icon.
@@ -51,9 +50,10 @@ public class TaskMenuView extends AbstractFloatingView {
 
     /** Note that these will be shown in order from top to bottom, if available for the task. */
     private static final TaskSystemShortcut[] MENU_OPTIONS = new TaskSystemShortcut[] {
-            new TaskSystemShortcut.Widgets(),
             new TaskSystemShortcut.AppInfo(),
-            new TaskSystemShortcut.Install()
+            new TaskSystemShortcut.SplitScreen(),
+            new TaskSystemShortcut.Pin(),
+            new TaskSystemShortcut.Install(),
     };
 
     private static final long OPEN_CLOSE_DURATION = 220;
@@ -62,7 +62,6 @@ public class TaskMenuView extends AbstractFloatingView {
     private TextView mTaskIconAndName;
     private AnimatorSet mOpenCloseAnimator;
     private TaskView mTaskView;
-    private View mWidgetsOptionView;
 
     public TaskMenuView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -133,21 +132,21 @@ public class TaskMenuView extends AbstractFloatingView {
         }
         mLauncher.getDragLayer().addView(this);
         mTaskView = taskView;
-        addMenuOptions(mTaskView.getTask());
+        addMenuOptions(mTaskView);
         orientAroundTaskView(mTaskView);
         post(this::animateOpen);
         return true;
     }
 
-    private void addMenuOptions(Task task) {
-        Drawable icon = task.icon.getConstantState().newDrawable();
+    private void addMenuOptions(TaskView taskView) {
+        Drawable icon = taskView.getTask().icon.getConstantState().newDrawable();
         int iconSize = getResources().getDimensionPixelSize(R.dimen.task_thumbnail_icon_size);
         icon.setBounds(0, 0, iconSize, iconSize);
         mTaskIconAndName.setCompoundDrawables(null, icon, null, null);
-        mTaskIconAndName.setText(TaskUtils.getTitle(mLauncher, task));
+        mTaskIconAndName.setText(TaskUtils.getTitle(mLauncher, taskView.getTask()));
 
         for (TaskSystemShortcut menuOption : MENU_OPTIONS) {
-            OnClickListener onClickListener = menuOption.getOnClickListener(mLauncher, task);
+            OnClickListener onClickListener = menuOption.getOnClickListener(mLauncher, taskView);
             if (onClickListener != null) {
                 addMenuOption(menuOption, onClickListener);
             }
@@ -161,10 +160,6 @@ public class TaskMenuView extends AbstractFloatingView {
         menuOptionView.getBubbleText().setText(menuOption.labelResId);
         menuOptionView.setOnClickListener(onClickListener);
         addView(menuOptionView);
-
-        if (menuOption instanceof TaskSystemShortcut.Widgets) {
-            mWidgetsOptionView = menuOptionView;
-        }
     }
 
     private void orientAroundTaskView(TaskView taskView) {
@@ -230,20 +225,5 @@ public class TaskMenuView extends AbstractFloatingView {
                 return true;
             }
         };
-    }
-
-    @Override
-    protected void onWidgetsBound() {
-        TaskSystemShortcut widgetsOption = new TaskSystemShortcut.Widgets();
-        View.OnClickListener onClickListener = widgetsOption.getOnClickListener(
-                mLauncher, mTaskView.getTask());
-
-        if (onClickListener != null && mWidgetsOptionView == null) {
-            // We didn't have any widgets cached but now there are some, so add the option.
-            addMenuOption(widgetsOption, onClickListener);
-        } else if (onClickListener == null && mWidgetsOptionView != null) {
-            // No widgets exist, but we previously added the option so remove it.
-            removeView(mWidgetsOptionView);
-        }
     }
 }

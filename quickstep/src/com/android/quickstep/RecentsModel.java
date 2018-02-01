@@ -24,6 +24,7 @@ import android.os.UserHandle;
 
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
+import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan.PreloadOptions;
 import com.android.systemui.shared.recents.model.RecentsTaskLoader;
@@ -66,6 +67,7 @@ public class RecentsModel extends TaskStackChangeListener {
     private RecentsTaskLoadPlan mLastLoadPlan;
     private int mLastLoadPlanId;
     private int mTaskChangeId;
+    private ISystemUiProxy mSystemUiProxy;
 
     private RecentsModel(Context context) {
         mContext = context;
@@ -136,5 +138,13 @@ public class RecentsModel extends TaskStackChangeListener {
 
     public RecentsTaskLoadPlan getLastLoadPlan() {
         return mLastLoadPlan;
+    }
+
+    public void setSystemUiProxy(ISystemUiProxy systemUiProxy) {
+        mSystemUiProxy = systemUiProxy;
+    }
+
+    public ISystemUiProxy getSystemUiProxy() {
+        return mSystemUiProxy;
     }
 }

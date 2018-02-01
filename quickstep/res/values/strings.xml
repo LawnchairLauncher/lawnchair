@@ -20,4 +20,10 @@
 
     <!-- Application name -->
     <string name="derived_app_name" translatable="false">Quickstep</string>
+
+    <!-- Options for recent tasks -->
+    <!-- Title for an option to enter split screen mode for a given app -->
+    <string name="recent_task_option_split_screen">Split screen</string>
+    <!-- Title for an option to keep an app pinned to the screen until it is unpinned -->
+    <string name="recent_task_option_pin">Pin</string>
 </resources>
