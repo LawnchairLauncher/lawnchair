@@ -46,6 +46,8 @@ public class Interpolators {
     public static final Interpolator AGGRESSIVE_EASE = new PathInterpolator(0.2f, 0f, 0f, 1f);
     public static final Interpolator AGGRESSIVE_EASE_IN_OUT = new PathInterpolator(0.8f,0, 0.4f, 1);
 
+    public static final Interpolator APP_CLOSE_ALPHA = new PathInterpolator(0.9f, 0, 1f, 1f);
+
     public static final Interpolator OVERSHOOT_0 = new OvershootInterpolator(0);
 
     /**
