@@ -22,10 +22,15 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.view.View.AccessibilityDelegate;
 
+import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.util.SystemUiController;
 
+import java.util.ArrayList;
+
 public abstract class BaseActivity extends Activity {
+
+    private final ArrayList<OnDeviceProfileChangeListener> mDPChangeListeners = new ArrayList<>();
 
     protected DeviceProfile mDeviceProfile;
     protected UserEventDispatcher mUserEventDispatcher;
@@ -86,5 +91,16 @@ public abstract class BaseActivity extends Activity {
 
     public boolean isStarted() {
         return mStarted;
+    }
+
+    public void addOnDeviceProfileChangeListener(OnDeviceProfileChangeListener listener) {
+        mDPChangeListeners.add(listener);
+    }
+
+    protected void dispatchDeviceProfileChanged() {
+        int count = mDPChangeListeners.size();
+        for (int i = 0; i < count; i++) {
+            mDPChangeListeners.get(i).onDeviceProfileChanged(mDeviceProfile);
+        }
     }
 }

@@ -55,7 +55,7 @@ public abstract class VerticalSwipeController extends AnimatorListenerAdapter
     private static final float SUCCESS_TRANSITION_PROGRESS = 0.5f;
 
     protected final Launcher mLauncher;
-    private final SwipeDetector mDetector;
+    protected final SwipeDetector mDetector;
     private final LauncherState mBaseState;
     private final LauncherState mTargetState;
 

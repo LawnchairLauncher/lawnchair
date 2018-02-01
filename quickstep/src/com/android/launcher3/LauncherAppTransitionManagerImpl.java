@@ -33,6 +33,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.media.midi.MidiManager.OnDeviceOpenedListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,6 +44,7 @@ import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
 
+import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.InsettableFrameLayout.LayoutParams;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.Interpolators;
@@ -61,7 +63,8 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
  */
 @TargetApi(Build.VERSION_CODES.O)
 @SuppressWarnings("unused")
-public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManager {
+public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManager
+        implements OnDeviceProfileChangeListener {
 
     private static final String TAG = "LauncherTransition";
     private static final int REFRESH_RATE_MS = 16;
@@ -78,7 +81,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
     private final DragLayer mDragLayer;
     private final Launcher mLauncher;
-    private final DeviceProfile mDeviceProfile;
+    private DeviceProfile mDeviceProfile;
 
     private final float mContentTransY;
     private final float mWorkspaceTransY;
@@ -99,7 +102,13 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         mContentTransY = res.getDimensionPixelSize(R.dimen.content_trans_y);
         mWorkspaceTransY = res.getDimensionPixelSize(R.dimen.workspace_trans_y);
 
+        mLauncher.addOnDeviceProfileChangeListener(this);
         registerRemoteAnimations();
+    }
+
+    @Override
+    public void onDeviceProfileChanged(DeviceProfile dp) {
+        mDeviceProfile = dp;
     }
 
     private void setCurrentAnimator(Animator animator) {

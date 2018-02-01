@@ -32,13 +32,16 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.BubbleTextView.BubbleTextShadowHandler;
 import com.android.launcher3.ClickShadowView;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.DropTarget.DragObject;
@@ -67,7 +70,7 @@ import java.util.Set;
  * The all apps view container.
  */
 public class AllAppsContainerView extends RelativeLayout implements DragSource,
-        View.OnLongClickListener, Insettable, BubbleTextView.BubbleTextShadowHandler {
+        OnLongClickListener, Insettable, BubbleTextShadowHandler, OnDeviceProfileChangeListener {
 
     private final Launcher mLauncher;
     private final AdapterHolder[] mAH;
@@ -103,6 +106,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         super(context, attrs, defStyleAttr);
 
         mLauncher = Launcher.getLauncher(context);
+        mLauncher.addOnDeviceProfileChangeListener(this);
 
         mSearchQueryBuilder = new SpannableStringBuilder();
 
@@ -137,6 +141,18 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         applyTouchDelegate();
+    }
+
+    @Override
+    public void onDeviceProfileChanged(DeviceProfile dp) {
+        for (AdapterHolder holder : mAH) {
+            if (holder.recyclerView != null) {
+                // Remove all views and clear the pool, while keeping the data same. After this
+                // call, all the viewHolders will be recreated.
+                holder.recyclerView.swapAdapter(holder.recyclerView.getAdapter(), true);
+                holder.recyclerView.getRecycledViewPool().clear();
+            }
+        }
     }
 
     @Override

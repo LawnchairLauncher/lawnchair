@@ -27,6 +27,7 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -36,13 +37,20 @@ import com.android.quickstep.RecentsView;
 /**
  * Extension of {@link VerticalSwipeController} to go from NORMAL to OVERVIEW.
  */
-public class EdgeSwipeController extends VerticalSwipeController {
+public class EdgeSwipeController extends VerticalSwipeController implements
+        OnDeviceProfileChangeListener {
 
     private static final Rect sTempRect = new Rect();
 
     public EdgeSwipeController(Launcher l) {
         super(l, NORMAL, OVERVIEW, l.getDeviceProfile().isVerticalBarLayout()
                 ? HORIZONTAL : VERTICAL);
+        l.addOnDeviceProfileChangeListener(this);
+    }
+
+    @Override
+    public void onDeviceProfileChanged(DeviceProfile dp) {
+        mDetector.updateDirection(dp.isVerticalBarLayout() ? HORIZONTAL : VERTICAL);
     }
 
     @Override

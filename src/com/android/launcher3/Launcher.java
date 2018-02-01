@@ -413,16 +413,7 @@ public class Launcher extends BaseActivity
         if ((diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0) {
             mUserEventDispatcher = null;
             initDeviceProfile(mDeviceProfile.inv);
-
-            // Re create transition manager as it may rely on the device profile.
-            // TODO: Remove any dynamic states from this class.
-            mAppTransitionManager = LauncherAppTransitionManager.newInstance(this);
-
-            // TODO: Link these to the callbacks
-            mAllAppsController.onDeviceProfileChanged(mDeviceProfile);
-            mDragLayer.setup(this, mDragController);
-
-            // TODO: Clear all-apps recycler view pools
+            dispatchDeviceProfileChanged();
 
             getRootView().dispatchInsets();
             getStateManager().reapplyState();

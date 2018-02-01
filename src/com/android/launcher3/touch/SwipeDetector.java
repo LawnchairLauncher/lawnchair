@@ -150,7 +150,7 @@ public class SwipeDetector {
 
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
-    private final Direction mDir;
+    private Direction mDir;
 
     private final float mTouchSlop;
 
@@ -182,6 +182,10 @@ public class SwipeDetector {
     protected SwipeDetector(float touchSlope, @NonNull Listener l, @NonNull Direction dir) {
         mTouchSlop = touchSlope;
         mListener = l;
+        mDir = dir;
+    }
+
+    public void updateDirection(Direction dir) {
         mDir = dir;
     }
 

@@ -12,17 +12,19 @@ import android.view.View;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
+import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.allapps.SearchUiManager.OnScrollRangeChangeListener;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.AllAppsScrim;
 
@@ -37,7 +39,7 @@ import com.android.launcher3.views.AllAppsScrim;
  * closer to top or closer to the page indicator.
  */
 public class AllAppsTransitionController
-        implements SearchUiManager.OnScrollRangeChangeListener, LauncherStateManager.StateHandler {
+        implements OnScrollRangeChangeListener, StateHandler, OnDeviceProfileChangeListener {
 
     public static final Property<AllAppsTransitionController, Float> ALL_APPS_PROGRESS =
             new Property<AllAppsTransitionController, Float>(Float.class, "allAppsProgress") {
@@ -82,7 +84,8 @@ public class AllAppsTransitionController
         mProgress = 1f;
 
         mIsDarkTheme = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
-        onDeviceProfileChanged(mLauncher.getDeviceProfile());
+        mIsVerticalLayout = mLauncher.getDeviceProfile().isVerticalBarLayout();
+        mLauncher.addOnDeviceProfileChangeListener(this);
     }
 
     public float getShiftRange() {
@@ -95,8 +98,16 @@ public class AllAppsTransitionController
         mAppsView.setVisibility(View.VISIBLE);
     }
 
-    public void onDeviceProfileChanged(DeviceProfile profile) {
-        mIsVerticalLayout = profile.isVerticalBarLayout();
+    @Override
+    public void onDeviceProfileChanged(DeviceProfile dp) {
+        mIsVerticalLayout = dp.isVerticalBarLayout();
+
+        if (mIsVerticalLayout) {
+            mAppsView.setAlpha(1);
+            mLauncher.getHotseat().setTranslationY(0);
+            mLauncher.getWorkspace().getPageIndicator().setTranslationY(0);
+            mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, 0);
+        }
     }
 
     /**
@@ -135,11 +146,6 @@ public class AllAppsTransitionController
             } else {
                 mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, 0);
             }
-        } else {
-            mAppsView.setAlpha(1);
-            mLauncher.getHotseat().setTranslationY(0);
-            mLauncher.getWorkspace().getPageIndicator().setTranslationY(0);
-            mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, 0);
         }
     }
 

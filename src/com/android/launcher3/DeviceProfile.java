@@ -518,4 +518,18 @@ public class DeviceProfile {
         context.orientation = orientation;
         return c.createConfigurationContext(context);
     }
+
+    /**
+     * Callback when a component changes the DeviceProfile associated with it, as a result of
+     * configuration change
+     */
+    public interface OnDeviceProfileChangeListener {
+
+        /**
+         * Called when the device profile is reassigned. Note that for layout and measurements, it
+         * is sufficient to listen for inset changes. Use this callback when you need to perform
+         * a one time operation.
+         */
+        void onDeviceProfileChanged(DeviceProfile dp);
+    }
 }
