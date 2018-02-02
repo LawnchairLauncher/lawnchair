@@ -28,13 +28,16 @@ import com.android.launcher3.Launcher;
 public class LauncherLayoutListener extends AbstractFloatingView implements Insettable {
 
     private final Launcher mLauncher;
-    private final WindowTransformSwipeHandler mHandler;
+    private WindowTransformSwipeHandler mHandler;
 
-    public LauncherLayoutListener(Launcher launcher, WindowTransformSwipeHandler handler) {
+    public LauncherLayoutListener(Launcher launcher) {
         super(launcher, null);
         mLauncher = launcher;
-        mHandler = handler;
         setVisibility(INVISIBLE);
+    }
+
+    public void setHandler(WindowTransformSwipeHandler handler) {
+        mHandler = handler;
     }
 
     @Override
@@ -45,7 +48,9 @@ public class LauncherLayoutListener extends AbstractFloatingView implements Inse
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        mHandler.onLauncherLayoutChanged();
+        if (mHandler != null) {
+            mHandler.onLauncherLayoutChanged();
+        }
     }
 
     @Override
@@ -57,7 +62,10 @@ public class LauncherLayoutListener extends AbstractFloatingView implements Inse
     protected void handleClose(boolean animate) {
         // We dont suupport animate.
         mLauncher.getDragLayer().removeView(this);
-        mHandler.layoutListenerClosed();
+
+        if (mHandler != null) {
+            mHandler.layoutListenerClosed();
+        }
     }
 
     @Override

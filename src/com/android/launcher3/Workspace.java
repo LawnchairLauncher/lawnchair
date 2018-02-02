@@ -22,7 +22,6 @@ import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_TRANSITION_M
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
-import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -48,7 +47,6 @@ import android.os.Parcelable;
 import android.os.UserHandle;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.Property;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -3354,13 +3352,13 @@ public class Workspace extends PagedView
 
     @Override
     public int getExpectedHeight() {
-        return getMeasuredHeight() <= 0
+        return getMeasuredHeight() <= 0 || !mIsLayoutValid
                 ? mLauncher.getDeviceProfile().heightPx : getMeasuredHeight();
     }
 
     @Override
     public int getExpectedWidth() {
-        return getMeasuredWidth() <= 0
+        return getMeasuredWidth() <= 0 || !mIsLayoutValid
                 ? mLauncher.getDeviceProfile().widthPx : getMeasuredWidth();
     }
 

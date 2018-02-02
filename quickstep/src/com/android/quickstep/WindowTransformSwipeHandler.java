@@ -158,19 +158,12 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                 this::reset);
         mStateCallback.addCallback(STATE_LAUNCHER_READY | STATE_SCALED_SNAPSHOT_RECENTS,
                 this::reset);
-
         mStateCallback.addCallback(STATE_LAUNCHER_READY | STATE_LAUNCHER_DRAWN,
-                mLauncherDrawnCallback);
+                this::launcherFrameDrawn);
     }
 
     private void setStateOnUiThread(int stateFlag) {
         mMainExecutor.execute(() -> mStateCallback.setState(stateFlag));
-    }
-
-    public void setLauncherOnDrawCallback(Runnable callback) {
-        mLauncherDrawnCallback = callback;
-        mStateCallback.addCallback(STATE_LAUNCHER_READY | STATE_LAUNCHER_DRAWN,
-                mLauncherDrawnCallback);
     }
 
     private void initTransitionEndpoints(DeviceProfile dp) {
@@ -206,11 +199,18 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
             int oldState = mStateCallback.getState() & ~LAUNCHER_UI_STATES;
             initStateCallbacks();
             mStateCallback.setState(oldState);
+            mLauncherLayoutListener.setHandler(null);
         }
         mLauncher = launcher;
 
         AbstractFloatingView.closeAllOpenViews(launcher, alreadyOnHome);
         mControllerStateAnimation = alreadyOnHome;
+        mWasLauncherAlreadyVisible = alreadyOnHome;
+
+        mRecentsView = mLauncher.getOverviewPanel();
+        mLauncherLayoutListener = new LauncherLayoutListener(mLauncher);
+
+        final int state;
         if (mControllerStateAnimation) {
             DeviceProfile dp = mLauncher.getDeviceProfile();
             long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
@@ -218,7 +218,8 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                     .createAnimationToNewWorkspace(OVERVIEW, accuracy);
             mLauncherTransitionController.setPlayFraction(mCurrentShift.value);
 
-            mStateCallback.setState(STATE_ACTIVITY_MULTIPLIER_COMPLETE | STATE_LAUNCHER_DRAWN);
+            state = STATE_ACTIVITY_MULTIPLIER_COMPLETE | STATE_LAUNCHER_DRAWN
+                    | STATE_LAUNCHER_READY;
         } else {
             TraceHelper.beginSection("WTS-init");
             launcher.getStateManager().goToState(OVERVIEW, false);
@@ -237,6 +238,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                     if (launcher != mLauncher) {
                         return;
                     }
+                    mStateCallback.setState(STATE_LAUNCHER_DRAWN);
 
                     if ((mStateCallback.getState() & STATE_LAUNCHER_DRAWN) == 0) {
                         mStateCallback.setState(STATE_LAUNCHER_DRAWN);
@@ -247,23 +249,41 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                     }
                 }
             });
+            state = STATE_LAUNCHER_READY;
         }
 
-        mRecentsView = mLauncher.getOverviewPanel();
         mRecentsView.showTask(mRunningTaskId);
-        mWasLauncherAlreadyVisible = alreadyOnHome;
-        mLauncherLayoutListener = new LauncherLayoutListener(mLauncher, this);
         mLauncher.getDragLayer().addView(mLauncherLayoutListener);
 
         // Optimization
-        if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+        // We are using the internal device profile as launcher may not have got the insets yet.
+        if (!mDp.isVerticalBarLayout()) {
             // All-apps search box is visible in vertical bar layout.
             mLauncher.getAppsView().setVisibility(View.GONE);
         }
 
-        onLauncherLayoutChanged();
-        mStateCallback.setState(STATE_LAUNCHER_READY);
+        mStateCallback.setState(state);
         return true;
+    }
+
+    public void setLauncherOnDrawCallback(Runnable callback) {
+        mLauncherDrawnCallback = callback;
+    }
+
+    private void launcherFrameDrawn() {
+        View rootView = mLauncher.getRootView();
+        if (rootView.getAlpha() < 1) {
+            final MultiStateCallback callback = mStateCallback;
+            rootView.animate().alpha(1)
+                    .setDuration(getFadeInDuration())
+                    .withEndAction(() -> callback.setState(STATE_ACTIVITY_MULTIPLIER_COMPLETE));
+        }
+        mLauncherLayoutListener.setHandler(this);
+        onLauncherLayoutChanged();
+
+        if (mLauncherDrawnCallback != null) {
+            mLauncherDrawnCallback.run();
+        }
     }
 
     public void updateInteractionType(@InteractionType int interactionType) {
@@ -454,7 +474,10 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
             // TODO: These should be done as part of ActivityOptions#OnAnimationStarted
             mLauncher.getStateManager().reapplyState();
             mLauncher.setOnResumeCallback(() -> mLauncherLayoutListener.close(false));
-            mLauncherTransitionController.setPlayFraction(1);
+
+            if (mLauncherTransitionController != null) {
+                mLauncherTransitionController.setPlayFraction(1);
+            }
         }
         clearReference();
     }

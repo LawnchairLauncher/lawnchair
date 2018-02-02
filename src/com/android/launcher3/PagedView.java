@@ -184,6 +184,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected final Rect mInsets = new Rect();
     protected final boolean mIsRtl;
 
+    // Similar to the platform implementation of isLayoutValid();
+    protected boolean mIsLayoutValid;
+
     public PagedView(Context context) {
         this(context, null);
     }
@@ -582,6 +585,18 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     @Override
+    public void requestLayout() {
+        mIsLayoutValid = false;
+        super.requestLayout();
+    }
+
+    @Override
+    public void forceLayout() {
+        mIsLayoutValid = false;
+        super.forceLayout();
+    }
+
+    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (getChildCount() == 0) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -624,6 +639,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     @SuppressLint("DrawAllocation")
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        mIsLayoutValid = true;
         if (getChildCount() == 0) {
             return;
         }
@@ -640,8 +656,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         int scrollOffsetLeft = mInsets.left + getPaddingLeft();
         int childLeft = scrollOffsetLeft;
 
+        boolean pageScrollChanged = false;
         if (mPageScrolls == null || childCount != mChildCountOnLastLayout) {
             mPageScrolls = new int[childCount];
+            pageScrollChanged = true;
         }
 
         for (int i = startIndex; i != endIndex; i += delta) {
@@ -658,7 +676,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 child.layout(childLeft, childTop,
                         childLeft + child.getMeasuredWidth(), childTop + childHeight);
 
-                mPageScrolls[i] = childLeft - scrollOffsetLeft;
+                final int pageScroll = childLeft - scrollOffsetLeft;
+                if (mPageScrolls[i] != pageScroll) {
+                    pageScrollChanged = true;
+                    mPageScrolls[i] = pageScroll;
+                }
 
                 childLeft += childWidth + mPageSpacing + getChildGap();
             }
@@ -693,7 +715,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             mFirstLayout = false;
         }
 
-        if (mScroller.isFinished() && mChildCountOnLastLayout != childCount) {
+        if (mScroller.isFinished() && pageScrollChanged) {
             setCurrentPage(getNextPage());
         }
         mChildCountOnLastLayout = childCount;

@@ -419,7 +419,11 @@ public class Launcher extends BaseActivity
             getStateManager().reapplyState();
 
             // TODO: We can probably avoid rebind when only screen size changed.
-            mModel.startLoader(mWorkspace.getNextPage());
+            int currentPage = mWorkspace.getNextPage();
+            if (mModel.startLoader(currentPage)) {
+                mWorkspace.setCurrentPage(currentPage);
+                setWorkspaceLoading(true);
+            }
         }
 
         mOldConfig.setTo(newConfig);
