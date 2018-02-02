@@ -122,10 +122,6 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
 
     public static class Pin extends TaskSystemShortcut {
 
-        // Same as Settings.System.LOCK_TO_APP_ENABLED, which is hidden.
-        // TODO use call from shared lib instead
-        private static final String LOCK_TO_APP_ENABLED = "lock_to_app_enabled";
-
         private Handler mHandler;
 
         public Pin() {
@@ -139,8 +135,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
             if (sysUiProxy == null) {
                 return null;
             }
-            if (Settings.System.getInt(launcher.getContentResolver(),
-                    LOCK_TO_APP_ENABLED, 0) == 0) {
+            if (!ActivityManagerWrapper.getInstance().isLockToAppEnabled()) {
                 return null;
             }
             return view -> {
