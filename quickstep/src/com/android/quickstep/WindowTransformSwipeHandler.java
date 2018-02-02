@@ -17,10 +17,10 @@ package com.android.quickstep;
 
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.quickstep.TouchInteractionService.INTERACTION_NORMAL;
-import static com.android.quickstep.TouchInteractionService.INTERACTION_QUICK_SCRUB;
-import static com.android.quickstep.TouchInteractionService.INTERACTION_QUICK_SWITCH;
-import static com.android.quickstep.TouchInteractionService.isInteractionQuick;
+import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
+import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
+import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SWITCH;
+import static com.android.quickstep.TouchConsumer.isInteractionQuick;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.animation.Animator;
@@ -54,7 +54,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.TraceHelper;
-import com.android.quickstep.TouchInteractionService.InteractionType;
+import com.android.quickstep.TouchConsumer.InteractionType;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;

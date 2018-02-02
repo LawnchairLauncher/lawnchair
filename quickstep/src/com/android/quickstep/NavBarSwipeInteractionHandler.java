@@ -15,10 +15,11 @@
  */
 package com.android.quickstep;
 
-import static com.android.quickstep.TouchInteractionService.INTERACTION_NORMAL;
-import static com.android.quickstep.TouchInteractionService.INTERACTION_QUICK_SCRUB;
-import static com.android.quickstep.TouchInteractionService.INTERACTION_QUICK_SWITCH;
-import static com.android.quickstep.TouchInteractionService.isInteractionQuick;
+
+import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
+import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
+import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SWITCH;
+import static com.android.quickstep.TouchConsumer.isInteractionQuick;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
@@ -29,10 +30,8 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Build;
-import android.os.UserHandle;
 import android.support.annotation.UiThread;
 import android.view.View;
 import android.view.ViewTreeObserver.OnPreDrawListener;
@@ -51,10 +50,9 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.TraceHelper;
-import com.android.quickstep.TouchInteractionService.InteractionType;
+import com.android.quickstep.TouchConsumer.InteractionType;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 import com.android.systemui.shared.recents.model.Task;
-import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 

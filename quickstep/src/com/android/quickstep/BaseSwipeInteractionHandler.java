@@ -18,7 +18,7 @@ package com.android.quickstep;
 import android.support.annotation.WorkerThread;
 
 import com.android.launcher3.states.InternalStateHandler;
-import com.android.quickstep.TouchInteractionService.InteractionType;
+import com.android.quickstep.TouchConsumer.InteractionType;
 
 public abstract class BaseSwipeInteractionHandler extends InternalStateHandler {
 
