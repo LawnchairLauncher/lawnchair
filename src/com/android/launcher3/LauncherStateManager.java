@@ -269,6 +269,13 @@ public class LauncherStateManager {
             // Only disable clipping if needed, otherwise leave it as previous value.
             mLauncher.getWorkspace().setClipChildren(false);
         }
+
+        // If we are still animating to launcher from an app,
+        // finish it and let this state animation take over.
+        LauncherAppTransitionManager transitionManager = mLauncher.getAppTransitionManager();
+        if (transitionManager != null) {
+            transitionManager.finishAnimation();
+        }
     }
 
     private void onStateTransitionEnd(LauncherState state) {
