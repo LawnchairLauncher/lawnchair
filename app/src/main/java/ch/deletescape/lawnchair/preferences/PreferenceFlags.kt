@@ -27,6 +27,7 @@ object PreferenceFlags {
     const val KEY_BLUR_RADIUS = "pref_blurRadius"
     const val KEY_PREF_HOTSEAT_ICON_SCALE = "pref_hotseatIconScale"
     const val KEY_PREF_HOTSEAT_HEIGHT_SCALE = "pref_hotseatHeightScale"
+    const val KEY_PREF_HOTSEAT_CUSTOM_OPACITY = "pref_hotseatCustomOpacity"
     const val KEY_PREF_ALL_APPS_ICON_SCALE = "pref_allAppsIconScale"
     const val KEY_PREF_ALL_APPS_ICON_TEXT_SCALE = "pref_allAppsIconTextScale"
     const val KEY_PREF_ALL_APPS_ICON_PADDING_SCALE = "pref_allAppsIconPaddingScale"
@@ -37,6 +38,7 @@ object PreferenceFlags {
 
     // Boolean
     const val KEY_SHOW_HIDDEN = "pref_showHidden"
+    const val KEY_HOTSEAT_SHOULD_USE_CUSTOM_OPACITY = "pref_hotseatShouldUseCustomOpacity"
     const val KEY_HOTSEAT_SHOULD_USE_EXTRACTED_COLORS = "pref_hotseatShouldUseExtractedColors"
     const val KEY_HOTSEAT_SHOULD_USE_EXTRACTED_COLORS_CACHE = KEY_HOTSEAT_SHOULD_USE_EXTRACTED_COLORS + "_cache"
     const val KEY_LIGHT_STATUS_BAR = "pref_lightStatusBar"

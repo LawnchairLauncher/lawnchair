@@ -106,6 +106,8 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                 case PreferenceFlags.KEY_PREF_ICON_SCALE:
                 case PreferenceFlags.KEY_PREF_HOTSEAT_ICON_SCALE:
                 case PreferenceFlags.KEY_PREF_HOTSEAT_HEIGHT_SCALE:
+                case PreferenceFlags.KEY_PREF_HOTSEAT_CUSTOM_OPACITY:
+                case PreferenceFlags.KEY_HOTSEAT_SHOULD_USE_CUSTOM_OPACITY:
                 case PreferenceFlags.KEY_PREF_ALL_APPS_ICON_SCALE:
                 case PreferenceFlags.KEY_PREF_ALL_APPS_ICON_PADDING_SCALE:
                 case PreferenceFlags.KEY_PREF_ICON_TEXT_SCALE:

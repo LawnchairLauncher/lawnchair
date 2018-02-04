@@ -129,6 +129,8 @@ interface IPreferenceProvider {
     val iconPackPackage: String
     val hotseatIconScale: Float
     val hotseatHeightScale: Float
+    val hotseatShouldUseCustomOpacity: Boolean
+    val hotseatCustomOpacity: Float
     val enablePhysics: Boolean
     val snowflakeSizeScale: Float
     val snowflakesNum: String
