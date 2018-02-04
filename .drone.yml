@@ -11,4 +11,5 @@ pipeline:
     - /opt/tools/android-accept-licenses.sh android update sdk --no-ui --obsolete --force
     - bash ./gradlew assembleDebug check;
 
-branches: master
+branches:
+  exclude: [ l10n_alpha2 ]
