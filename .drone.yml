@@ -1,0 +1,14 @@
+pipeline:
+  build:
+    image: runmymind/docker-android-sdk
+    secrets: [KEY_STORE, ANDROID_STORE_FILE, ANDROID_STORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD]
+    commands:
+    - echo y | android update sdk --no-ui --all --filter tools | grep 'package installed'
+    - echo y | android update sdk --no-ui --all --filter platform-tools | grep 'package installed'
+    - echo y | android update sdk --no-ui --all --filter build-tools-27.0.2 | grep 'package installed'
+    - echo y | android update sdk --no-ui --all --filter android-27 | grep 'package installed'
+    - echo y | android update sdk --no-ui --all --filter extra-google-m2repository | grep 'package installed'
+    - /opt/tools/android-accept-licenses.sh android update sdk --no-ui --obsolete --force
+    - bash ./gradlew assembleDebug check;
+
+branches: master
