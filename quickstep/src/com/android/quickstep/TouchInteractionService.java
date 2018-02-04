@@ -178,6 +178,7 @@ public class TouchInteractionService extends Service {
             mEventQueue.setInterimChoreographer(mCurrentConsumer.shouldUseBackgroundConsumer()
                     ? mBackgroundThreadChoreographer : null);
         }
+        mCurrentConsumer.preProcessMotionEvent(ev);
         mEventQueue.queue(ev);
     }
 

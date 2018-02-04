@@ -36,6 +36,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -56,11 +57,16 @@ import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 /**
  * Touch consumer for handling events originating from an activity other than Launcher
  */
 public class OtherActivityTouchConsumer extends ContextWrapper implements TouchConsumer {
     private static final String TAG = "ActivityTouchConsumer";
+
+    private static final long LAUNCHER_DRAW_TIMEOUT_MS = 150;
 
     private final RunningTaskInfo mRunningTask;
     private final RecentsModel mRecentsModel;
@@ -111,7 +117,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                     startTouchTrackingForWindowAnimation();
                 }
 
-                mVelocityTracker.addMovement(ev);
                 Display display = getSystemService(WindowManager.class).getDefaultDisplay();
                 mDisplayRotation = display.getRotation();
                 WindowManagerWrapper.getInstance().getStableInsets(mStableInsets);
@@ -127,7 +132,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                             ev.getY(newPointerIdx) - (mLastPos.y - mDownPos.y));
                     mLastPos.set(ev.getX(newPointerIdx), ev.getY(newPointerIdx));
                     mActivePointerId = ev.getPointerId(newPointerIdx);
-                    mVelocityTracker.clear();
                 }
                 break;
             }
@@ -136,7 +140,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 if (pointerIndex == INVALID_POINTER_ID) {
                     break;
                 }
-                mVelocityTracker.addMovement(ev);
                 mLastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex));
 
                 float displacement = ev.getY(pointerIndex) - mDownPos.y;
@@ -250,44 +253,60 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         // Create the shared handler
         final WindowTransformSwipeHandler handler =
                 new WindowTransformSwipeHandler(mRunningTask, this);
-        BackgroundExecutor.get().submit(() -> {
-            ActivityManagerWrapper.getInstance().startRecentsActivity(mHomeIntent,
-                    new AssistDataReceiver() {
-                        @Override
-                        public void onHandleAssistData(Bundle bundle) {
-                            // Pass to AIAI
-                        }
-                    },
-                    new RecentsAnimationListener() {
-                        public void onAnimationStart(
-                                RecentsAnimationControllerCompat controller,
-                                RemoteAnimationTargetCompat[] apps) {
-                            if (mInteractionHandler == handler) {
-                                handler.setRecentsAnimation(controller, apps);
-
-                            } else {
-                                controller.finish(false /* toHome */);
-                            }
-                        }
-
-                        public void onAnimationCanceled() {
-                            if (mInteractionHandler == handler) {
-                                handler.setRecentsAnimation(null, null);
-                            }
-                        }
-                    }, null, null);
-        });
 
         // Preload the plan
         mRecentsModel.loadTasks(mRunningTask.id, null);
         mInteractionHandler = handler;
         handler.setGestureEndCallback(this::onFinish);
+
+        CountDownLatch drawWaitLock = new CountDownLatch(1);
         handler.setLauncherOnDrawCallback(() -> {
+            drawWaitLock.countDown();
             if (handler == mInteractionHandler) {
                 switchToMainConsumer();
             }
         });
-        mMainThreadExecutor.execute(handler::initWhenReady);
+        handler.initWhenReady(mMainThreadExecutor);
+
+        Runnable startActivity = () -> ActivityManagerWrapper.getInstance()
+                .startRecentsActivity(mHomeIntent,
+                new AssistDataReceiver() {
+                    @Override
+                    public void onHandleAssistData(Bundle bundle) {
+                        // Pass to AIAI
+                    }
+                },
+                new RecentsAnimationListener() {
+                    public void onAnimationStart(
+                            RecentsAnimationControllerCompat controller,
+                            RemoteAnimationTargetCompat[] apps) {
+                        if (mInteractionHandler == handler) {
+                            handler.setRecentsAnimation(controller, apps);
+
+                        } else {
+                            controller.finish(false /* toHome */);
+                        }
+                    }
+
+                    public void onAnimationCanceled() {
+                        if (mInteractionHandler == handler) {
+                            handler.setRecentsAnimation(null, null);
+                        }
+                    }
+                }, null, null);
+
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            startActivity.run();
+            try {
+                drawWaitLock.await(LAUNCHER_DRAW_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            } catch (Exception e) {
+                // We have waited long enough for launcher to draw
+            }
+        } else {
+            // We should almost always get touch-town on background thread. This is an edge case
+            // when the background Choreographer has not yet initialized.
+            BackgroundExecutor.get().submit(startActivity);
+        }
     }
 
     /**
@@ -360,4 +379,14 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     public void onTouchTrackingComplete() { }
 
     public void switchToMainConsumer() { }
+
+    @Override
+    public void preProcessMotionEvent(MotionEvent ev) {
+        if (mVelocityTracker != null) {
+           mVelocityTracker.addMovement(ev);
+           if (ev.getActionMasked() == ACTION_POINTER_UP) {
+               mVelocityTracker.clear();
+           }
+        }
+    }
 }

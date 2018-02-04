@@ -119,6 +119,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     private boolean mWasLauncherAlreadyVisible;
 
     private float mCurrentDisplacement;
+    private boolean mGestureStarted;
 
     private @InteractionType int mInteractionType = INTERACTION_NORMAL;
     private boolean mStartedQuickScrubFromHome;
@@ -216,6 +217,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
             long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
             mLauncherTransitionController = launcher.getStateManager()
                     .createAnimationToNewWorkspace(OVERVIEW, accuracy);
+            mLauncherTransitionController.dispatchOnStart();
             mLauncherTransitionController.setPlayFraction(mCurrentShift.value);
 
             state = STATE_ACTIVITY_MULTIPLIER_COMPLETE | STATE_LAUNCHER_DRAWN
@@ -273,10 +275,15 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     private void launcherFrameDrawn() {
         View rootView = mLauncher.getRootView();
         if (rootView.getAlpha() < 1) {
-            final MultiStateCallback callback = mStateCallback;
-            rootView.animate().alpha(1)
-                    .setDuration(getFadeInDuration())
-                    .withEndAction(() -> callback.setState(STATE_ACTIVITY_MULTIPLIER_COMPLETE));
+            if (mGestureStarted) {
+                final MultiStateCallback callback = mStateCallback;
+                rootView.animate().alpha(1)
+                        .setDuration(getFadeInDuration())
+                        .withEndAction(() -> callback.setState(STATE_ACTIVITY_MULTIPLIER_COMPLETE));
+            } else {
+                rootView.setAlpha(1);
+                mStateCallback.setState(STATE_ACTIVITY_MULTIPLIER_COMPLETE);
+            }
         }
         mLauncherLayoutListener.setHandler(this);
         onLauncherLayoutChanged();
@@ -416,7 +423,9 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
     }
 
-    public void onGestureStarted() { }
+    public void onGestureStarted() {
+        mGestureStarted = true;
+    }
 
     @WorkerThread
     public void onGestureEnded(float endVelocity) {

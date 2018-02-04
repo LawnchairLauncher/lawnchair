@@ -55,4 +55,10 @@ public interface TouchConsumer extends Consumer<MotionEvent> {
     default void onQuickScrubEnd() { }
 
     default void onQuickScrubProgress(float progress) { }
+
+    /**
+     * Called on the binder thread to allow the consumer to process the motion event before it is
+     * posted on a handler thread.
+     */
+    default void preProcessMotionEvent(MotionEvent ev) { }
 }

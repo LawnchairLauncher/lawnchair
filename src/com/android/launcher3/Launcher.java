@@ -1256,7 +1256,7 @@ public class Launcher extends BaseActivity
                 && AbstractFloatingView.getTopOpenView(this) == null;
         boolean isActionMain = Intent.ACTION_MAIN.equals(intent.getAction());
         boolean internalStateHandled = InternalStateHandler
-                .handleNewIntent(this, intent, alreadyOnHome);
+                .handleNewIntent(this, intent, isStarted());
 
         if (isActionMain) {
             if (!internalStateHandled) {

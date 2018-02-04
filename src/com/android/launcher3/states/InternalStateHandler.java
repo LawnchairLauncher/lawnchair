@@ -23,6 +23,7 @@ import android.os.IBinder;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel.Callbacks;
+import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.util.Preconditions;
 
 import java.lang.ref.WeakReference;
@@ -52,9 +53,12 @@ public abstract class InternalStateHandler extends Binder {
         return intent;
     }
 
-    public final void initWhenReady() {
-        Preconditions.assertUIThread();
+    public final void initWhenReady(MainThreadExecutor executor) {
         sPendingHandler = new WeakReference<>(this);
+        executor.execute(this::initIfReadOnUIThread);
+    }
+
+    private void initIfReadOnUIThread() {
         LauncherAppState app = LauncherAppState.getInstanceNoCreate();
         if (app == null) {
             return;
@@ -76,15 +80,15 @@ public abstract class InternalStateHandler extends Binder {
     }
 
     public static boolean handleCreate(Launcher launcher, Intent intent) {
-        return handleIntent(launcher, intent, false);
+        return handleIntent(launcher, intent, false, false);
     }
 
     public static boolean handleNewIntent(Launcher launcher, Intent intent, boolean alreadyOnHome) {
-        return handleIntent(launcher, intent, alreadyOnHome);
+        return handleIntent(launcher, intent, alreadyOnHome, true);
     }
 
     private static boolean handleIntent(
-            Launcher launcher, Intent intent, boolean alreadyOnHome) {
+            Launcher launcher, Intent intent, boolean alreadyOnHome, boolean explicitIntent) {
         boolean result = false;
         if (intent != null && intent.getExtras() != null) {
             IBinder stateBinder = intent.getExtras().getBinder(EXTRA_STATE_HANDLER);
@@ -96,7 +100,7 @@ public abstract class InternalStateHandler extends Binder {
                 result = true;
             }
         }
-        if (!result) {
+        if (!result && !explicitIntent) {
             InternalStateHandler pendingHandler = sPendingHandler.get();
             if (pendingHandler != null) {
                 if (!pendingHandler.init(launcher, alreadyOnHome)) {
