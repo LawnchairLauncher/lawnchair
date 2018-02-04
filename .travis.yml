@@ -5,6 +5,7 @@ jdk: oraclejdk8
 branches:
    except:
    - l10n_alpha2
+   - alpha
 env:
   - MAJOR_MINOR=1.1.0
 android:
