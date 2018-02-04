@@ -1,6 +1,6 @@
 pipeline:
   build:
-    image: runmymind/docker-android-sdk
+    image: runmymind/docker-android-sdk:alpine-standalone
     secrets: [KEY_STORE, ANDROID_STORE_FILE, ANDROID_STORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD]
     commands:
     - bash ./gradlew assembleDebug check;
