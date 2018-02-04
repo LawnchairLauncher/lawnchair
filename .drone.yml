@@ -2,8 +2,12 @@ pipeline:
   build:
     image: runmymind/docker-android-sdk:alpine-standalone
     secrets: [KEY_STORE, ANDROID_STORE_FILE, ANDROID_STORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD]
+    environment:
+      - MAJOR_MINOR=1.1.0
     commands:
-    - bash ./gradlew assembleDebug check;
-
+      - bash ./gradlew assembleDebug check;
+      - "cp app/build/outputs/apk/debug/app-debug.apk Lawnchair-$MAJOR_MINOR.$DRONE_BUILD_NUMBER.apk"
+      - "cp app/build/outputs/mapping/debug/mapping.txt proguard-$MAJOR_MINOR.$DRONE_BUILD_NUMBER.txt"
+    
 branches:
   exclude: [ l10n_alpha2 ]
