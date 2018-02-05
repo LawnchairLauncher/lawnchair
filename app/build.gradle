@@ -28,7 +28,7 @@ if (localPropsFile.exists()) {
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '27.0.2'
+    buildToolsVersion '27.0.3'
 
     signingConfigs {
         travis {
