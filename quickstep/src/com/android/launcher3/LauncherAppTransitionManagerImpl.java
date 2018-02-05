@@ -20,6 +20,7 @@ import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS
 import static com.android.systemui.shared.recents.utilities.Utilities.getNextFrameNumber;
 import static com.android.systemui.shared.recents.utilities.Utilities.getSurface;
 import static com.android.systemui.shared.recents.utilities.Utilities.postAtFrontOfQueueAsynchronously;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -33,7 +34,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.media.midi.MidiManager.OnDeviceOpenedListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -381,7 +381,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
                 TransactionCompat t = new TransactionCompat();
                 for (RemoteAnimationTargetCompat target : targets) {
-                    if (target.mode == RemoteAnimationTargetCompat.MODE_OPENING) {
+                    if (target.mode == MODE_OPENING) {
                         t.setAlpha(target.leash, alpha);
 
                         // TODO: This isn't correct at the beginning of the animation, but better
@@ -424,6 +424,16 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         }
     }
 
+    private boolean isLauncherInSetOfOpeningTargets(RemoteAnimationTargetCompat[] targets) {
+        int launcherTaskId = mLauncher.getTaskId();
+        for (RemoteAnimationTargetCompat target : targets) {
+            if (target.mode == MODE_OPENING && target.taskId == launcherTaskId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * @return Runner that plays when user goes to Launcher
      *         ie. pressing home, swiping up from nav bar.
@@ -435,9 +445,12 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                                          Runnable finishedCallback) {
                 Handler handler = mLauncher.getWindow().getDecorView().getHandler();
                 postAtFrontOfQueueAsynchronously(handler, () -> {
-                    if (Utilities.getPrefs(mLauncher).getBoolean("pref_use_screenshot_animation",
-                            true) && mLauncher.isInState(LauncherState.OVERVIEW)) {
-                        // We use a separate transition for Overview mode.
+                    if ((Utilities.getPrefs(mLauncher).getBoolean("pref_use_screenshot_animation",
+                            true) && mLauncher.isInState(LauncherState.OVERVIEW))
+                            || !isLauncherInSetOfOpeningTargets(targets)) {
+                        // We use a separate transition for Overview mode. And we can skip the
+                        // animation in cases where Launcher is not in the set of opening targets.
+                        // This can happen when Launcher is already visible. ie. Closing a dialog.
                         setCurrentAnimator(null);
                         finishedCallback.run();
                         return;
