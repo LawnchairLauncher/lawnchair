@@ -325,8 +325,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         } else if (!isUsingScreenShot()) {
             // Since we start touch tracking on DOWN, we may reach this state without actually
             // starting the gesture. In that case, just cleanup immediately.
-            final BaseSwipeInteractionHandler handler = mInteractionHandler;
-            mMainThreadExecutor.execute(handler::reset);
+            reset();
         }
         mVelocityTracker.recycle();
         mVelocityTracker = null;

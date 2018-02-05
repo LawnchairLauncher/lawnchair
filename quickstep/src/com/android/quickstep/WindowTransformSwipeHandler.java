@@ -106,7 +106,6 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     private final int mRunningTaskId;
 
     private MultiStateCallback mStateCallback;
-    private boolean mControllerStateAnimation;
     private AnimatorPlaybackController mLauncherTransitionController;
 
     private Launcher mLauncher;
@@ -205,14 +204,13 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         mLauncher = launcher;
 
         AbstractFloatingView.closeAllOpenViews(launcher, alreadyOnHome);
-        mControllerStateAnimation = alreadyOnHome;
         mWasLauncherAlreadyVisible = alreadyOnHome;
 
         mRecentsView = mLauncher.getOverviewPanel();
         mLauncherLayoutListener = new LauncherLayoutListener(mLauncher);
 
         final int state;
-        if (mControllerStateAnimation) {
+        if (mWasLauncherAlreadyVisible) {
             DeviceProfile dp = mLauncher.getDeviceProfile();
             long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
             mLauncherTransitionController = launcher.getStateManager()
@@ -240,15 +238,8 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                     if (launcher != mLauncher) {
                         return;
                     }
-                    mStateCallback.setState(STATE_LAUNCHER_DRAWN);
 
-                    if ((mStateCallback.getState() & STATE_LAUNCHER_DRAWN) == 0) {
-                        mStateCallback.setState(STATE_LAUNCHER_DRAWN);
-                        rootView.animate().alpha(1)
-                                .setDuration(getFadeInDuration())
-                                .withEndAction(() -> mStateCallback.setState(launcher == mLauncher
-                                        ? STATE_ACTIVITY_MULTIPLIER_COMPLETE : 0));
-                    }
+                    mStateCallback.setState(STATE_LAUNCHER_DRAWN);
                 }
             });
             state = STATE_LAUNCHER_READY;
@@ -338,7 +329,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         WindowManagerWrapper.getInstance().getStableInsets(mStableInsets);
         initTransitionEndpoints(mLauncher.getDeviceProfile());
 
-        if (!mControllerStateAnimation) {
+        if (!mWasLauncherAlreadyVisible) {
             AnimatorSet anim = new AnimatorSet();
             if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
                 mLauncher.getAllAppsController().setProgress(1);
@@ -492,7 +483,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     }
 
     public void layoutListenerClosed() {
-        if (mControllerStateAnimation) {
+        if (mWasLauncherAlreadyVisible) {
             mLauncherTransitionController.setPlayFraction(1);
         }
     }
@@ -506,7 +497,6 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         if (mInteractionType == INTERACTION_QUICK_SWITCH) {
             for (int i = mRecentsView.getFirstTaskIndex(); i < mRecentsView.getPageCount(); i++) {
                 TaskView taskView = (TaskView) mRecentsView.getPageAt(i);
-                // TODO: Match the keys directly
                 if (taskView.getTask().key.id != mRunningTaskId) {
                     mRecentsView.snapToPage(i, QUICK_SWITCH_SNAP_DURATION);
                     taskView.postDelayed(() -> {taskView.launchTask(true);},
