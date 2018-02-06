@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
@@ -42,7 +43,6 @@ import android.view.ViewTreeObserver.OnDrawListener;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.MainThreadExecutor;
@@ -324,37 +324,24 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
      * Called by {@link #mLauncherLayoutListener} when launcher layout changes
      */
     public void onLauncherLayoutChanged() {
-        Hotseat hotseat = mLauncher.getHotseat();
-
         WindowManagerWrapper.getInstance().getStableInsets(mStableInsets);
         initTransitionEndpoints(mLauncher.getDeviceProfile());
 
         if (!mWasLauncherAlreadyVisible) {
-            AnimatorSet anim = new AnimatorSet();
+            float startProgress;
+            AllAppsTransitionController controller = mLauncher.getAllAppsController();
+
             if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-                mLauncher.getAllAppsController().setProgress(1);
-                ObjectAnimator shiftAnim = ObjectAnimator.ofFloat(mLauncher.getAllAppsController(),
-                        AllAppsTransitionController.ALL_APPS_PROGRESS,
-                        1, OVERVIEW.getVerticalProgress(mLauncher));
-                shiftAnim.setInterpolator(LINEAR);
-                anim.play(shiftAnim);
-
-                hotseat.setAlpha(0);
-                ObjectAnimator fadeAnim = ObjectAnimator.ofFloat(hotseat, View.ALPHA, 1);
-                fadeAnim.setInterpolator(LINEAR);
-                anim.play(fadeAnim);
+                startProgress = 1;
             } else {
-                hotseat.setTranslationY(mTransitionDragLength);
-                ObjectAnimator hotseatAnim = ObjectAnimator.ofFloat(hotseat, View.TRANSLATION_Y, 0);
-                hotseatAnim.setInterpolator(LINEAR);
-                anim.play(hotseatAnim);
-
-                View scrim = mLauncher.findViewById(R.id.all_apps_scrim);
-                scrim.setTranslationY(mTransitionDragLength);
-                ObjectAnimator scrimAnim = ObjectAnimator.ofFloat(scrim, View.TRANSLATION_Y, 0);
-                scrimAnim.setInterpolator(LINEAR);
-                anim.play(scrimAnim);
+                float scrollRange = Math.max(controller.getShiftRange(), 1);
+                startProgress = (mTransitionDragLength / scrollRange) + 1;
             }
+            AnimatorSet anim = new AnimatorSet();
+            ObjectAnimator shiftAnim = ObjectAnimator.ofFloat(controller, ALL_APPS_PROGRESS,
+                    startProgress, OVERVIEW.getVerticalProgress(mLauncher));
+            shiftAnim.setInterpolator(LINEAR);
+            anim.play(shiftAnim);
 
             // TODO: Link this animation to state animation, so that it is cancelled
             // automatically on state change
