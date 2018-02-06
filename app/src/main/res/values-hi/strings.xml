@@ -155,7 +155,7 @@
   <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
   <string name="action_move">आइटम ले जाएं</string>
   <!-- Accessibility description to move item to empty cell. -->
-  <string name="move_to_empty_cell">पंक्ति में जाएं <xliff: g example= "1" id="number">%1$d</xliff:g>कॉलम<xliff:g example= "1" id="number">%2$d</xliff:g></string>
+  <string name="move_to_empty_cell">पंक्ति में जाएं <xliff:g example= "1" id="number">%1$d</xliff:g>कॉलम<xliff:g example= "1" id="number">%2$d</xliff:g></string>
   <!-- Accessibility description to move item inside a folder. -->
   <string name="move_to_position">स्थान पर जाएं <xliff:g example="1" id="number">%1$d</xliff:g></string>
   <!-- Accessibility description to move item to the hotseat. -->
