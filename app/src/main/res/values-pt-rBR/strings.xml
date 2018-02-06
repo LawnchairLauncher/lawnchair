@@ -272,6 +272,7 @@
   <string name="num_hotseat_icons_pref_title">Número de ícones no dock</string>
   <string name="icon_scale_pref_title">Tamanho de ícones</string>
   <string name="hotseat_height_scale">Escala de altura</string>
+  <string name="hotseat_custom_opacity">Opacidade do dock</string>
   <string name="icon_text_scale_pref_title">Escala de texto dos ícones</string>
   <string name="icon_text_padding_scale_pref_title">Escala de títulos dos ícones</string>
   <string name="full_width_width_widgets_pref_title">Widgets encostam nas bordas</string>
