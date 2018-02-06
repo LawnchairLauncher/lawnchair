@@ -1,4 +1,4 @@
-# Lawnchair - [![Travis](https://img.shields.io/travis/LawnchairLauncher/Lawnchair.svg)](https://travis-ci.org/LawnchairLauncher/Lawnchair) - [![Crowdin](https://d322cqt584bo4o.cloudfront.net/lawnchairandroid/localized.svg)](http://translate.lawnchair.info) - [![Codacy grade](https://img.shields.io/codacy/grade/e2727925367548d7bbef71d54209d35b.svg)](https://www.codacy.com/app/deletescape/Lawnchair/dashboard) - [![Donate on PayPal](https://img.shields.io/badge/PayPal-Donate%20Now-brightgreen.svg)](https://paypal.me/deletescape)
+# Lawnchair - [![Builds](https://build.codebucket.de/api/badges/LawnchairLauncher/Lawnchair/status.svg)](https://build.codebucket.de/LawnchairLauncher/Lawnchair) - [![Crowdin](https://d322cqt584bo4o.cloudfront.net/lawnchairandroid/localized.svg)](http://translate.lawnchair.info) - [![Codacy grade](https://img.shields.io/codacy/grade/e2727925367548d7bbef71d54209d35b.svg)](https://www.codacy.com/app/deletescape/Lawnchair/dashboard) - [![Donate on PayPal](https://img.shields.io/badge/PayPal-Donate%20Now-brightgreen.svg)](https://paypal.me/deletescape)
 
 ![Lawnchair](banner.png)
 
