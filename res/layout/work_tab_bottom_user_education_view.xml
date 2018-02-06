@@ -20,38 +20,48 @@
     android:layout_gravity="bottom"
     android:background="?android:attr/colorAccent"
     android:elevation="2dp"
-    android:orientation="horizontal"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp">
+    android:orientation="horizontal">
+
+  <ImageView
+      android:layout_width="134dp"
+      android:layout_height="134dp"
+      android:layout_marginTop="28dp"
+      android:layout_marginLeft="20dp"
+      android:src="@drawable/work_tab_user_education"/>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="24dp"
+      android:orientation="vertical">
 
     <ImageView
-        android:layout_width="134dp"
-        android:layout_height="134dp"
-        android:layout_gravity="center_vertical"
-        android:src="@drawable/work_tab_user_education"/>
+        android:id="@+id/close_bottom_user_tip"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_gravity="right"
+        android:src="@drawable/ic_close"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="12dp"
-        android:paddingStart="24dp"
-        android:paddingTop="12dp">
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="24dp"
+        android:fontFamily="roboto-medium"
+        android:text="@string/bottom_work_tab_user_education_title"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="roboto-medium"
-            android:text="@string/bottom_work_tab_user_education_title"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:text="@string/bottom_work_tab_user_education_body"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/bottom_work_tab_user_education_body"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"/>
-    </LinearLayout>
+  </LinearLayout>
 
 </com.android.launcher3.views.BottomUserEducationView>

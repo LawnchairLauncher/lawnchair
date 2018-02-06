@@ -20,7 +20,8 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-
+import android.view.TouchDelegate;
+import android.view.View;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -34,6 +35,8 @@ public class BottomUserEducationView extends AbstractSlideInView implements Inse
 
     private final Rect mInsets = new Rect();
 
+    private View mCloseButton;
+
     public BottomUserEducationView(Context context, AttributeSet attr) {
         this(context, attr, 0);
     }
@@ -45,9 +48,17 @@ public class BottomUserEducationView extends AbstractSlideInView implements Inse
     }
 
     @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        mCloseButton = findViewById(R.id.close_bottom_user_tip);
+        mCloseButton.setOnClickListener(view -> handleClose(true));
+    }
+
+    @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         setTranslationShift(mTranslationShift);
+        expandTouchAreaOfCloseButton();
     }
 
     @Override
@@ -109,5 +120,16 @@ public class BottomUserEducationView extends AbstractSlideInView implements Inse
                         false);
         launcher.getDragLayer().addView(bottomUserEducationView);
         bottomUserEducationView.open(true);
+    }
+
+    private void expandTouchAreaOfCloseButton() {
+        Rect hitRect = new Rect();
+        mCloseButton.getHitRect(hitRect);
+        hitRect.left -= mCloseButton.getWidth();
+        hitRect.top -= mCloseButton.getHeight();
+        hitRect.right += mCloseButton.getWidth();
+        hitRect.bottom += mCloseButton.getHeight();
+        View parent = (View) mCloseButton.getParent();
+        parent.setTouchDelegate(new TouchDelegate(hitRect, mCloseButton));
     }
 }
