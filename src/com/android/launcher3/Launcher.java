@@ -788,6 +788,7 @@ public class Launcher extends BaseActivity
                     mStateManager.getState().containerType);
         }
         NotificationListener.removeNotificationsChangedListener();
+        getStateManager().moveToRestState();
     }
 
     @Override

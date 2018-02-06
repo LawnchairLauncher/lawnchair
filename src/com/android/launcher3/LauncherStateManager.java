@@ -85,6 +85,8 @@ public class LauncherStateManager {
     private LauncherState mLastStableState = NORMAL;
     private LauncherState mCurrentStableState = NORMAL;
 
+    private LauncherState mRestState;
+
     private StateListener mStateListener;
 
     public LauncherStateManager(Launcher l) {
@@ -289,10 +291,30 @@ public class LauncherStateManager {
         mLauncher.getWorkspace().setClipChildren(!state.disablePageClipping);
         mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
         mLauncher.finishAutoCancelActionMode();
+
+        if (state == NORMAL) {
+            setRestState(null);
+        }
     }
 
     public LauncherState getLastState() {
         return mLastStableState;
+    }
+
+    public void moveToRestState() {
+        if (mState.disableRestore) {
+            goToState(getRestState());
+            // Reset history
+            mLastStableState = NORMAL;
+        }
+    }
+
+    public LauncherState getRestState() {
+        return mRestState == null ? NORMAL : mRestState;
+    }
+
+    public void setRestState(LauncherState restState) {
+        mRestState = restState;
     }
 
     /**

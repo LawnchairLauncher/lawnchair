@@ -60,11 +60,21 @@ public class LauncherLayoutListener extends AbstractFloatingView implements Inse
 
     @Override
     protected void handleClose(boolean animate) {
-        // We dont suupport animate.
-        mLauncher.getDragLayer().removeView(this);
+        if (mIsOpen) {
+            mIsOpen = false;
+            // We don't support animate.
+            mLauncher.getDragLayer().removeView(this);
 
-        if (mHandler != null) {
-            mHandler.layoutListenerClosed();
+            if (mHandler != null) {
+                mHandler.layoutListenerClosed();
+            }
+        }
+    }
+
+    public void open() {
+        if (!mIsOpen) {
+            mLauncher.getDragLayer().addView(this);
+            mIsOpen = true;
         }
     }
 
