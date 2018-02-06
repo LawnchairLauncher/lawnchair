@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.allapps;
 
+import static android.view.View.MeasureSpec.UNSPECIFIED;
+
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
@@ -142,38 +144,9 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ALL_APPS_DIVIDER, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ICON, approxRows * mNumAppsPerRow);
-    }
 
-    /**
-     * Ensures that we can present a stable scrollbar for views of varying types by pre-measuring
-     * all the different view types.
-     */
-    public void preMeasureViews(AllAppsGridAdapter adapter) {
-        View icon = adapter.onCreateViewHolder(this, AllAppsGridAdapter.VIEW_TYPE_ICON).itemView;
-        final int iconHeight = icon.getLayoutParams().height;
-        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_ICON, iconHeight);
-
-        final int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(
-                getResources().getDisplayMetrics().widthPixels, View.MeasureSpec.AT_MOST);
-        final int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(
-                getResources().getDisplayMetrics().heightPixels, View.MeasureSpec.AT_MOST);
-
-        putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
-                AllAppsGridAdapter.VIEW_TYPE_ALL_APPS_DIVIDER);
-        putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
-                AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET);
-        putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
-                AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH);
-        putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
-                AllAppsGridAdapter.VIEW_TYPE_WORK_TAB_FOOTER);
-    }
-
-    private void putSameHeightFor(AllAppsGridAdapter adapter, int w, int h, int... viewTypes) {
-        View view = adapter.onCreateViewHolder(this, viewTypes[0]).itemView;
-        view.measure(w, h);
-        for (int viewType : viewTypes) {
-            mViewHeights.put(viewType, view.getMeasuredHeight());
-        }
+        mViewHeights.clear();
+        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_ICON, grid.allAppsCellHeightPx);
     }
 
     /**
@@ -452,7 +425,21 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
                     }
                 } else {
                     // Rest of the views span the full width
-                    y += mViewHeights.get(item.viewType, 0);
+                    int elHeight = mViewHeights.get(item.viewType);
+                    if (elHeight == 0) {
+                        ViewHolder holder = findViewHolderForAdapterPosition(i);
+                        if (holder == null) {
+                            holder = getAdapter().createViewHolder(this, item.viewType);
+                            getAdapter().onBindViewHolder(holder, i);
+                            holder.itemView.measure(UNSPECIFIED, UNSPECIFIED);
+                            elHeight = holder.itemView.getMeasuredHeight();
+
+                            getRecycledViewPool().putRecycledView(holder);
+                        } else {
+                            elHeight = holder.itemView.getMeasuredHeight();
+                        }
+                    }
+                    y += elHeight;
                 }
             }
             mCachedScrollPositions.put(position, y);
