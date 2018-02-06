@@ -16,10 +16,14 @@
 
 package com.android.quickstep;
 
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.UserHandle;
 import android.util.Log;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.UserManagerCompat;
 import com.android.systemui.shared.recents.model.Task;
 
 /**
@@ -27,16 +31,21 @@ import com.android.systemui.shared.recents.model.Task;
  * TODO: remove this once we switch to getting the icon and label from IconCache.
  */
 public class TaskUtils {
+
     private static final String TAG = "TaskUtils";
 
     public static CharSequence getTitle(Launcher launcher, Task task) {
-        PackageManager pm = launcher.getPackageManager();
-        try {
-            return pm.getPackageInfo(task.getTopComponent().getPackageName(), 0)
-                    .applicationInfo.loadLabel(pm);
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "Failed to get title for task " + task, e);
+        LauncherAppsCompat launcherAppsCompat = LauncherAppsCompat.getInstance(launcher);
+        UserManagerCompat userManagerCompat = UserManagerCompat.getInstance(launcher);
+        PackageManager packageManager = launcher.getPackageManager();
+        UserHandle user = UserHandle.of(task.key.userId);
+        ApplicationInfo applicationInfo = launcherAppsCompat.getApplicationInfo(
+            task.getTopComponent().getPackageName(), 0, user);
+        if (applicationInfo == null) {
+            Log.e(TAG, "Failed to get title for task " + task);
+            return "";
         }
-        return "";
+        return userManagerCompat.getBadgedLabelForUser(
+            applicationInfo.loadLabel(packageManager), user);
     }
 }

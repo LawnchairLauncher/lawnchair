@@ -70,7 +70,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         dummyInfo.intent = new Intent();
         ComponentName component = task.getTopComponent();
         dummyInfo.intent.setComponent(component);
-        dummyInfo.user = UserHandle.getUserHandleForUid(task.key.userId);
+        dummyInfo.user = UserHandle.of(task.key.userId);
         dummyInfo.title = TaskUtils.getTitle(launcher, task);
 
         return getOnClickListenerForTask(launcher, task, dummyInfo);
