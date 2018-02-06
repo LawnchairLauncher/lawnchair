@@ -22,6 +22,7 @@ import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SWITCH;
 import static com.android.quickstep.TouchConsumer.isInteractionQuick;
+import static com.android.systemui.shared.recents.utilities.Utilities.postAtFrontOfQueueAsynchronously;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.animation.Animator;
@@ -35,6 +36,7 @@ import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
@@ -78,6 +80,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     private static final int STATE_SCALED_CONTROLLER_APP = 1 << 5;
 
     private static final int STATE_HANDLER_INVALIDATED = 1 << 6;
+    private static final int STATE_GESTURE_STARTED = 1 << 7;
 
     private static final int LAUNCHER_UI_STATES =
             STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN | STATE_ACTIVITY_MULTIPLIER_COMPLETE;
@@ -147,12 +150,13 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
     private void initStateCallbacks() {
         mStateCallback = new MultiStateCallback();
+        mStateCallback.addCallback(STATE_LAUNCHER_DRAWN | STATE_GESTURE_STARTED,
+                this::initializeLauncherAnimationController);
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN,
                 this::launcherFrameDrawn);
 
         mStateCallback.addCallback(STATE_SCALED_CONTROLLER_APP | STATE_APP_CONTROLLER_RECEIVED,
                 this::resumeLastTask);
-
         mStateCallback.addCallback(STATE_SCALED_CONTROLLER_RECENTS
                         | STATE_ACTIVITY_MULTIPLIER_COMPLETE
                         | STATE_APP_CONTROLLER_RECEIVED,
@@ -173,7 +177,12 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     }
 
     private void setStateOnUiThread(int stateFlag) {
-        mMainExecutor.execute(() -> mStateCallback.setState(stateFlag));
+        Handler handler = mMainExecutor.getHandler();
+        if (Looper.myLooper() == handler.getLooper()) {
+            mStateCallback.setState(stateFlag);
+        } else {
+            postAtFrontOfQueueAsynchronously(handler, () -> mStateCallback.setState(stateFlag));
+        }
     }
 
     private void initTransitionEndpoints(DeviceProfile dp) {
@@ -292,12 +301,14 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                 mStateCallback.setState(STATE_ACTIVITY_MULTIPLIER_COMPLETE);
             }
         }
-        mLauncherLayoutListener.setHandler(this);
-        onLauncherLayoutChanged();
-
         if (mLauncherDrawnCallback != null) {
             mLauncherDrawnCallback.run();
         }
+    }
+
+    private void initializeLauncherAnimationController() {
+        mLauncherLayoutListener.setHandler(this);
+        onLauncherLayoutChanged();
     }
 
     public void updateInteractionType(@InteractionType int interactionType) {
@@ -418,6 +429,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     }
 
     public void onGestureStarted() {
+        setStateOnUiThread(STATE_GESTURE_STARTED);
         mGestureStarted = true;
     }
 
