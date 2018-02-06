@@ -560,6 +560,15 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                     invalidate();
                 }
             }
+            if (itemInfo.contentDescription != null) {
+                if (hasBadge()) {
+                    int count = mBadgeInfo.getNotificationCount();
+                    setContentDescription(getContext().getResources().getQuantityString(
+                            R.plurals.badged_app_label, count, itemInfo.contentDescription, count));
+                } else {
+                    setContentDescription(itemInfo.contentDescription);
+                }
+            }
         }
     }
 

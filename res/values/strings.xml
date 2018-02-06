@@ -132,6 +132,11 @@
     <!-- Accessibility -->
     <!-- The format string for when an app is temporarily disabled. -->
     <string name="disabled_app_label">Disabled <xliff:g id="app_name" example="Messenger">%1$s</xliff:g></string>
+    <!-- The format string for when an app has a notification dot (meaning it has associated notifications). -->
+    <plurals name="badged_app_label">
+        <item quantity="one"><xliff:g id="app_name" example="Messenger">%1$s</xliff:g>, has <xliff:g id="notification_count" example="1">%2$d</xliff:g> notification</item>
+        <item quantity="other"><xliff:g id="app_name" example="Messenger">%1$s</xliff:g>, has <xliff:g id="notification_count" example="3">%2$d</xliff:g> notifications</item>
+    </plurals>
     <skip />
 
     <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
