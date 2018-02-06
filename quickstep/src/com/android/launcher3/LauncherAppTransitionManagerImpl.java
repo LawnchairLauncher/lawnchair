@@ -33,7 +33,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.media.midi.MidiManager.OnDeviceOpenedListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -116,6 +115,14 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             mCurrentAnimator.cancel();
         }
         mCurrentAnimator = animator;
+    }
+
+    @Override
+    public void finishAnimation() {
+        if (mCurrentAnimator != null && mCurrentAnimator.isRunning()) {
+            mCurrentAnimator.end();
+        }
+        mCurrentAnimator = null;
     }
 
     /**
