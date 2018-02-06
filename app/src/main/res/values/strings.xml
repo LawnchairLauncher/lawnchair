@@ -338,7 +338,7 @@
     <string name="icon_scale_pref_title">Icon scale</string>
     <string name="hotseat_height_scale">Height scale</string>
     <string name="hotseat_custom_opacity">Dock opacity</string>
-    <string name="hotseat_uses_custom_opacity">Dock uses custom opacity</string>
+    <string name="hotseat_uses_custom_opacity">Enable custom dock opacity</string>
     <string name="icon_text_scale_pref_title">Icon text scale</string>
     <string name="icon_text_padding_scale_pref_title">Icon padding scale</string>
     <string name="full_width_width_widgets_pref_title">Full width widgets</string>
@@ -496,6 +496,6 @@
     <string name="snowflake_size_scale">Snowflake size scale</string>
     <string name="snowflakes_num">Max number of snowflakes</string>
 
-	<string name="lawnfeed_outdated_title">Lawnfeed update required</string>
+    <string name="lawnfeed_outdated_title">Lawnfeed update required</string>
     <string name="lawnfeed_outdated">A newer version of Lawnfeed is required in order to work with this version of Lawnchair.\n\nBefore installing the update you will probably need to uninstall the current version of Lawnfeed.\n\nDo you want to download it now?</string>
 </resources>
