@@ -28,9 +28,9 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">App ist nicht verfügbar</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Heruntergeladene App im abgesicherten Modus deaktiviert</string>
+  <string name="safemode_shortcut_error">Heruntergeladene Apps sind im abgesicherten Modus deaktiviert</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">Widgets im abgesicherten Modus deaktiviert</string>
+  <string name="safemode_widget_error">Widgets sind im abgesicherten Modus deaktiviert</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">Verknüpfung ist nicht verfügbar</string>
   <!-- Widgets -->
