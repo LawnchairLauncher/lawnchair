@@ -2802,6 +2802,26 @@ public class Launcher extends BaseActivity
         return super.onKeyShortcut(keyCode, event);
     }
 
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            // KEYCODE_MENU is sent by some tests, for example
+            // LauncherJankTests#testWidgetsContainerFling. Don't just remove its handling.
+            if (!mDragController.isDragging() && !mWorkspace.isSwitchingState() &&
+                    isInState(NORMAL)) {
+                // Close any open floating views.
+                AbstractFloatingView.closeAllOpenViews(this);
+
+                // Setting the touch point to (-1, -1) will show the options popup in the center of
+                // the screen.
+                mLastDispatchTouchEvent.set(-1, -1);
+                UiFactory.onWorkspaceLongPress(this, mLastDispatchTouchEvent);
+            }
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
     public static Launcher getLauncher(Context context) {
         if (context instanceof Launcher) {
             return (Launcher) context;
