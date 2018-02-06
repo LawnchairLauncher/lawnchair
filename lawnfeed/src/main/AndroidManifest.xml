@@ -25,6 +25,7 @@
             android:name=".receivers.UpdateReceiver" />
         <activity android:name=".PermissionActivity"
             android:theme="@style/Theme.Transparent"
+            android:autoRemoveFromRecents="true"
             android:launchMode="singleTask"
             android:alwaysRetainTaskState="false">
         </activity>
