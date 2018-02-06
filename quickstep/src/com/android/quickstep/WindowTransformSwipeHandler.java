@@ -45,6 +45,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -65,7 +66,7 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
 public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
     // Launcher UI related states
-    private static final int STATE_LAUNCHER_READY = 1 << 0;
+    private static final int STATE_LAUNCHER_PRESENT = 1 << 0;
     private static final int STATE_LAUNCHER_DRAWN = 1 << 1;
     private static final int STATE_ACTIVITY_MULTIPLIER_COMPLETE = 1 << 2;
 
@@ -73,11 +74,13 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     private static final int STATE_APP_CONTROLLER_RECEIVED = 1 << 3;
 
     // Interaction finish states
-    private static final int STATE_SCALED_SNAPSHOT_RECENTS = 1 << 4;
-    private static final int STATE_SCALED_SNAPSHOT_APP = 1 << 5;
+    private static final int STATE_SCALED_CONTROLLER_RECENTS = 1 << 4;
+    private static final int STATE_SCALED_CONTROLLER_APP = 1 << 5;
+
+    private static final int STATE_HANDLER_INVALIDATED = 1 << 6;
 
     private static final int LAUNCHER_UI_STATES =
-            STATE_LAUNCHER_READY | STATE_LAUNCHER_DRAWN | STATE_ACTIVITY_MULTIPLIER_COMPLETE;
+            STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN | STATE_ACTIVITY_MULTIPLIER_COMPLETE;
 
     private static final long MAX_SWIPE_DURATION = 200;
     private static final long MIN_SWIPE_DURATION = 80;
@@ -144,22 +147,29 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
     private void initStateCallbacks() {
         mStateCallback = new MultiStateCallback();
-        mStateCallback.addCallback(STATE_SCALED_SNAPSHOT_APP | STATE_APP_CONTROLLER_RECEIVED,
+        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN,
+                this::launcherFrameDrawn);
+
+        mStateCallback.addCallback(STATE_SCALED_CONTROLLER_APP | STATE_APP_CONTROLLER_RECEIVED,
                 this::resumeLastTask);
-        mStateCallback.addCallback(STATE_SCALED_SNAPSHOT_RECENTS
+
+        mStateCallback.addCallback(STATE_SCALED_CONTROLLER_RECENTS
                         | STATE_ACTIVITY_MULTIPLIER_COMPLETE
                         | STATE_APP_CONTROLLER_RECEIVED,
                 this::switchToScreenshot);
-        mStateCallback.addCallback(STATE_SCALED_SNAPSHOT_RECENTS
-                        | STATE_ACTIVITY_MULTIPLIER_COMPLETE,
-                this::animateFirstTaskIcon);
 
-        mStateCallback.addCallback(STATE_LAUNCHER_READY | STATE_SCALED_SNAPSHOT_APP,
+        mStateCallback.addCallback(STATE_SCALED_CONTROLLER_RECENTS
+                        | STATE_ACTIVITY_MULTIPLIER_COMPLETE,
+                this::setupLauncherUiAfterSwipeUpAnimation);
+
+        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_SCALED_CONTROLLER_APP,
                 this::reset);
-        mStateCallback.addCallback(STATE_LAUNCHER_READY | STATE_SCALED_SNAPSHOT_RECENTS,
+        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_SCALED_CONTROLLER_RECENTS,
                 this::reset);
-        mStateCallback.addCallback(STATE_LAUNCHER_READY | STATE_LAUNCHER_DRAWN,
-                this::launcherFrameDrawn);
+
+        mStateCallback.addCallback(STATE_HANDLER_INVALIDATED, this::invalidateHandler);
+        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
+                this::invalidateHandlerWithLauncher);
     }
 
     private void setStateOnUiThread(int stateFlag) {
@@ -203,6 +213,12 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         }
         mLauncher = launcher;
 
+        LauncherState startState = mLauncher.getStateManager().getState();
+        if (startState.disableRestore) {
+            startState = mLauncher.getStateManager().getRestState();
+        }
+        mLauncher.getStateManager().setRestState(startState);
+
         AbstractFloatingView.closeAllOpenViews(launcher, alreadyOnHome);
         mWasLauncherAlreadyVisible = alreadyOnHome;
 
@@ -219,7 +235,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
             mLauncherTransitionController.setPlayFraction(mCurrentShift.value);
 
             state = STATE_ACTIVITY_MULTIPLIER_COMPLETE | STATE_LAUNCHER_DRAWN
-                    | STATE_LAUNCHER_READY;
+                    | STATE_LAUNCHER_PRESENT;
         } else {
             TraceHelper.beginSection("WTS-init");
             launcher.getStateManager().goToState(OVERVIEW, false);
@@ -242,11 +258,11 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                     mStateCallback.setState(STATE_LAUNCHER_DRAWN);
                 }
             });
-            state = STATE_LAUNCHER_READY;
+            state = STATE_LAUNCHER_PRESENT;
         }
 
         mRecentsView.showTask(mRunningTaskId);
-        mLauncher.getDragLayer().addView(mLauncherLayoutListener);
+        mLauncherLayoutListener.open();
 
         // Optimization
         // We are using the internal device profile as launcher may not have got the insets yet.
@@ -439,7 +455,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
             @Override
             public void onAnimationSuccess(Animator animator) {
                 setStateOnUiThread((Float.compare(mCurrentShift.value, 0) == 0)
-                        ? STATE_SCALED_SNAPSHOT_APP : STATE_SCALED_SNAPSHOT_RECENTS);
+                        ? STATE_SCALED_CONTROLLER_APP : STATE_SCALED_CONTROLLER_RECENTS);
             }
         });
         anim.start();
@@ -451,36 +467,32 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     }
 
     public void reset() {
+        setStateOnUiThread(STATE_HANDLER_INVALIDATED);
+    }
+
+    private void invalidateHandler() {
         mCurrentShift.cancelAnimation();
 
         if (mGestureEndCallback != null) {
             mGestureEndCallback.run();
         }
 
-        if (mLauncher != null) {
-            // TODO: These should be done as part of ActivityOptions#OnAnimationStarted
-            mLauncher.getStateManager().reapplyState();
-            mLauncher.setOnResumeCallback(() -> mLauncherLayoutListener.close(false));
-
-            if (mLauncherTransitionController != null) {
-                mLauncherTransitionController.setPlayFraction(1);
-            }
-        }
         clearReference();
     }
 
+    private void invalidateHandlerWithLauncher() {
+        mLauncherTransitionController = null;
+        mLauncherLayoutListener.setHandler(null);
+        mLauncherLayoutListener.close(false);
+    }
+
     public void layoutListenerClosed() {
-        if (mWasLauncherAlreadyVisible) {
+        if (mWasLauncherAlreadyVisible && mLauncherTransitionController != null) {
             mLauncherTransitionController.setPlayFraction(1);
         }
     }
 
     private void switchToScreenshot() {
-        mLauncherLayoutListener.close(false);
-        View currentRecentsPage = mRecentsView.getPageAt(mRecentsView.getCurrentPage());
-        if (currentRecentsPage instanceof TaskView) {
-            ((TaskView) currentRecentsPage).animateIconToScale(1f);
-        }
         if (mInteractionType == INTERACTION_QUICK_SWITCH) {
             for (int i = mRecentsView.getFirstTaskIndex(); i < mRecentsView.getPageCount(); i++) {
                 TaskView taskView = (TaskView) mRecentsView.getPageAt(i);
@@ -514,7 +526,12 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         }
     }
 
-    private void animateFirstTaskIcon() {
+    private void setupLauncherUiAfterSwipeUpAnimation() {
+        // Re apply state in case we did something funky during the transition.
+        mLauncher.getStateManager().reapplyState();
+
+
+        // Animate ui the first icon.
         View currentRecentsPage = mRecentsView.getPageAt(mRecentsView.getCurrentPage());
         if (currentRecentsPage instanceof TaskView) {
             ((TaskView) currentRecentsPage).animateIconToScale(1f);
