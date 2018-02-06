@@ -344,9 +344,10 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     public void setTextVisible(boolean isVisible) {
-        if (mTextVisible != isVisible) {
+        CharSequence newText = isVisible ? mText : "";
+        if (mTextVisible != isVisible || !TextUtils.equals(newText, getText())) {
             mTextVisible = isVisible;
-            setText(isVisible ? mText : "");
+            setText(newText);
             if (mTextVisible) {
                 setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null);
             } else {
