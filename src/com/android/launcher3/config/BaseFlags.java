@@ -53,8 +53,6 @@ abstract class BaseFlags {
 
     // When enabled shows a work profile tab in all apps
     public static final boolean ALL_APPS_TABS_ENABLED = true;
-    // When enabled prediction row is rendered as it's own custom view
-    public static final boolean ALL_APPS_PREDICTION_ROW_VIEW = true;
 
     public static final boolean ENABLE_TWO_SWIPE_TARGETS = true;
 }

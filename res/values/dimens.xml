@@ -87,7 +87,6 @@
     <dimen name="all_apps_header_tab_height">50dp</dimen>
     <dimen name="all_apps_tabs_indicator_height">2dp</dimen>
     <dimen name="all_apps_header_top_padding">36dp</dimen>
-    <dimen name="all_apps_prediction_row_divider_height">17dp</dimen>
     <dimen name="all_apps_work_profile_tab_footer_top_padding">16dp</dimen>
     <dimen name="all_apps_work_profile_tab_footer_bottom_padding">20dp</dimen>
     <dimen name="all_apps_tabs_side_padding">12dp</dimen>

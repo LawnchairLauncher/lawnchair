@@ -56,29 +56,22 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
     // A normal icon
     public static final int VIEW_TYPE_ICON = 1 << 1;
-    // A prediction icon
-    public static final int VIEW_TYPE_PREDICTION_ICON = 1 << 2;
     // The message shown when there are no filtered results
-    public static final int VIEW_TYPE_EMPTY_SEARCH = 1 << 3;
+    public static final int VIEW_TYPE_EMPTY_SEARCH = 1 << 2;
     // The message to continue to a market search when there are no filtered results
-    public static final int VIEW_TYPE_SEARCH_MARKET = 1 << 4;
+    public static final int VIEW_TYPE_SEARCH_MARKET = 1 << 3;
 
     // We use various dividers for various purposes.  They share enough attributes to reuse layouts,
     // but differ in enough attributes to require different view types
 
     // A divider that separates the apps list and the search market button
-    public static final int VIEW_TYPE_ALL_APPS_DIVIDER = 1 << 5;
-    // The divider that separates prediction icons from the app list
-    public static final int VIEW_TYPE_PREDICTION_DIVIDER = 1 << 6;
-    public static final int VIEW_TYPE_WORK_TAB_FOOTER = 1 << 7;
+    public static final int VIEW_TYPE_ALL_APPS_DIVIDER = 1 << 4;
+    public static final int VIEW_TYPE_WORK_TAB_FOOTER = 1 << 5;
 
     // Common view type masks
-    public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER
-            | VIEW_TYPE_PREDICTION_DIVIDER;
-    public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON
-            | VIEW_TYPE_PREDICTION_ICON;
-    public static final int VIEW_TYPE_MASK_HAS_SPRINGS = VIEW_TYPE_MASK_ICON
-            | VIEW_TYPE_PREDICTION_DIVIDER;
+    public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
+    public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
+    public static final int VIEW_TYPE_MASK_HAS_SPRINGS = VIEW_TYPE_MASK_ICON;
 
 
     public interface BindViewCallback {
@@ -192,7 +185,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private final View.OnClickListener mIconClickListener;
     private final View.OnLongClickListener mIconLongClickListener;
 
-    private int mAppsPerRow;
+    private final int mAppsPerRow;
 
     private BindViewCallback mBindViewCallback;
     private OnFocusChangeListener mIconFocusListener;
@@ -222,6 +215,9 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         } else {
             mSpringAnimationHandler = null;
         }
+
+        mAppsPerRow = mLauncher.getDeviceProfile().inv.numColumns;
+        mGridLayoutMgr.setSpanCount(mAppsPerRow);
     }
 
     public SpringAnimationHandler getSpringAnimationHandler() {
@@ -238,18 +234,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
     public static boolean isViewType(int viewType, int viewTypeMask) {
         return (viewType & viewTypeMask) != 0;
-    }
-
-    /**
-     * Sets the number of apps per row.
-     */
-    public void setNumAppsPerRow(int appsPerRow) {
-        mAppsPerRow = appsPerRow;
-        mGridLayoutMgr.setSpanCount(appsPerRow);
-    }
-
-    public int getNumAppsPerRow() {
-        return mAppsPerRow;
     }
 
     public void setIconFocusListener(OnFocusChangeListener focusListener) {
@@ -284,7 +268,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case VIEW_TYPE_ICON:
-            case VIEW_TYPE_PREDICTION_ICON:
                 BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
                         R.layout.all_apps_icon, parent, false);
                 icon.setOnClickListener(mIconClickListener);
@@ -308,7 +291,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                     }
                 });
                 return new ViewHolder(searchMarketView);
-            case VIEW_TYPE_PREDICTION_DIVIDER:
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.all_apps_divider, parent, false));
@@ -324,7 +306,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public void onBindViewHolder(ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
             case VIEW_TYPE_ICON:
-            case VIEW_TYPE_PREDICTION_ICON:
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
                 BubbleTextView icon = (BubbleTextView) holder.itemView;
                 icon.reset();
@@ -427,10 +408,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
          */
         @Override
         public void update(SpringAnimation spring, ViewHolder vh) {
-            int numPredictedApps = Math.min(mAppsPerRow, mApps.getPredictedApps().size());
-            int appPosition = getAppPosition(vh.getAdapterPosition(), numPredictedApps,
-                    mAppsPerRow);
-
+            int appPosition = vh.getAdapterPosition();
             int col = appPosition % mAppsPerRow;
             int row = appPosition / mAppsPerRow;
 
@@ -470,31 +448,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                     .getSpring()
                     .setStiffness(stiffness)
                     .setDampingRatio(SPRING_DAMPING_RATIO);
-        }
-
-        /**
-         * @return The app position is the position of the app in the Adapter if we ignored all
-         * other view types.
-         *
-         * The first app is at position 0, and the first app each following row is at a
-         * position that is a multiple of {@param appsPerRow}.
-         *
-         * ie. If there are 5 apps per row, and there are two rows of apps:
-         *     0 1 2 3 4
-         *     5 6 7 8 9
-         */
-        private int getAppPosition(int position, int numPredictedApps, int appsPerRow) {
-            if (position < numPredictedApps) {
-                // Predicted apps are first in the adapter.
-                return position;
-            }
-
-            // There is at most 1 divider view between the predicted apps and the alphabetical apps.
-            int numDividerViews = numPredictedApps == 0 ? 0 : 1;
-
-            // This offset takes into consideration an incomplete row of predicted apps.
-            int numPredictedAppsOffset = appsPerRow - numPredictedApps;
-            return position + numPredictedAppsOffset - numDividerViews;
         }
 
         /**

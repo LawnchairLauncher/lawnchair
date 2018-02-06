@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.ComponentKeyMapper;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,10 +50,6 @@ public class AllAppsStore {
 
     public AppInfo getApp(ComponentKey key) {
         return mComponentToAppMap.get(key);
-    }
-
-    public AppInfo getApp(ComponentKeyMapper<AppInfo> mapper) {
-        return mapper.getItem(mComponentToAppMap);
     }
 
     /**
