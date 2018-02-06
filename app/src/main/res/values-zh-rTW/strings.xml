@@ -271,6 +271,7 @@
   <string name="num_hotseat_icons_pref_title">Dock欄上的圖示數量</string>
   <string name="icon_scale_pref_title">圖示大小</string>
   <string name="hotseat_height_scale">高度範圍</string>
+  <string name="hotseat_custom_opacity">Dock欄的不透明度</string>
   <string name="icon_text_scale_pref_title">圖示字型大小</string>
   <string name="icon_text_padding_scale_pref_title">圖示填滿範圍</string>
   <string name="full_width_width_widgets_pref_title">全寬小工具</string>

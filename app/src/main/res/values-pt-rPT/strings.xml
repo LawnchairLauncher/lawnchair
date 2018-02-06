@@ -254,9 +254,9 @@
   <string name="hotseat_uses_extracted_colors_pref_title">Doca usa cores do wallpaper</string>
   <string name="hotseat_show_arrow">Mostrar setas</string>
   <string name="hotseat_show_page_indicator">Mostrar indicador de página</string>
-  <string name="hotseat_uses_extracted_colors_pref_on">A dock vai ser colorida com a cor extraída do wallpaper</string>
+  <string name="hotseat_uses_extracted_colors_pref_on">A doca vai ser colorida com uma cor extraída o papel de parede</string>
   <string name="hotseat_uses_extracted_colors_pref_off">A doca será cinza, mas ajustada pelo brilho do wallpaper</string>
-  <string name="transparent_hotseat_pref_title">Dock transparente</string>
+  <string name="transparent_hotseat_pref_title">Doca transparente</string>
   <string name="dynamic_ui_pref_title">Extrair a cor através do wallpaper</string>
   <string name="blur_pref_title">Ativar o blur</string>
   <string name="blur_pref_summary">Aplicar efeito de desfoque em partes da interface\nNão é compatível com papeis de parede animados</string>
@@ -269,7 +269,7 @@
   <string name="all_apps_opacity_pref_title">Opacidade do drawer</string>
   <string name="num_cols_pref_title">Número de colunas</string>
   <string name="num_rows_pref_title">Número de linhas</string>
-  <string name="num_hotseat_icons_pref_title">Número de ícones da dock</string>
+  <string name="num_hotseat_icons_pref_title">Número de ícones na doca</string>
   <string name="icon_scale_pref_title">Escala dos ícones</string>
   <string name="hotseat_height_scale">Escala de altura</string>
   <string name="icon_text_scale_pref_title">Tamanho do rótulo do ícone</string>
@@ -279,13 +279,13 @@
   <string name="notification_access_pref_title">Crachás de notificação e pré-visualização</string>
   <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
   <string name="general_pref_title">Geral</string>
-  <string name="dock_pref_title">Dock</string>
+  <string name="dock_pref_title">Doca</string>
   <string name="app_drawer_pref_title">Gaveta de aplicações</string>
   <string name="pixel_ui_pref_title">Pixel UI</string>
   <string name="behavior_pref_title">Comportamento</string>
   <string name="debug_pref_title">Depuração</string>
   <string name="general_pref_summary">Ambiente de Trabalho, Doca &amp; Aplicações</string>
-  <string name="dock_pref_summary">Personalize o seu dock</string>
+  <string name="dock_pref_summary">Personalize sua doca</string>
   <string name="app_drawer_pref_summary">Personalize a sua gaveta de aplicações</string>
   <string name="pixel_ui_pref_summary">Ativar recursos exclusivos do Pixel Launcher</string>
   <string name="backup_pref_title">Cópia de Segurança</string>
@@ -404,7 +404,7 @@
   <string name="google_app_not_found">Aplicação \"Google\" não instalada</string>
   <string name="lawnfeed_incompatible">Versão incompatível do Lawnfeed instalado</string>
   <string name="set_default_launcher">Predefinir launcher</string>
-  <string name="enable_spring_pref_title">Habilitar o efeito primavera</string>
+  <string name="enable_spring_pref_title">Habilitar o efeito mola</string>
   <string name="hide_app">Ocultar aplicação</string>
   <string name="hide_app_sum">Ocultar aplicações da gaveta de aplicações</string>
   <string name="hide_app_selected">&#160;selecionada</string>
@@ -412,7 +412,7 @@
   <string name="hide_app_apply">Aplicar</string>
   <string name="unauthorized_device">Este dispositivo possui algumas ferramentas de pirataria instaladas. Por favor, desinstale-os a continuar.</string>
   <string name="hide_app_reset">Reinicializar</string>
-  <string name="two_row_dock">Duas linha de dock</string>
+  <string name="two_row_dock">Doca com duas linhas</string>
   <string name="reset_alternative_icons_title">Redefinir os ícones do app alternativo?</string>
   <string name="reset_alternative_icons">Você tem %1$d apps com ícones alternativos, quer para repô-los?</string>
   <string name="error_no_browser">Nenhuma atividade encontrada para manipular URLs</string>

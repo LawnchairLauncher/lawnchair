@@ -46,7 +46,7 @@
   <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
   <string name="all_apps_search_bar_hint">Rechercher dans les applications</string>
   <!-- Loading apps text. [CHAR_LIMIT=50] -->
-  <string name="all_apps_loading_message">Chargement des applications en cours…</string>
+  <string name="all_apps_loading_message">Chargement des applications&#8230;</string>
   <!-- No-search-results text. [CHAR_LIMIT=50] -->
   <string name="all_apps_no_search_results">Aucune application ne correspond à la requête \"<xliff:g id="QUERY">%1$s</xliff:g>\".</string>
   <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
@@ -55,7 +55,7 @@
   <!-- Error message when user has filled a page -->
   <string name="out_of_space">Plus d\'espace libre sur cette page.</string>
   <!-- Error message when user has filled the hotseat -->
-  <string name="hotseat_out_of_space">Plus d\'espace libre dans la zone de favoris</string>
+  <string name="hotseat_out_of_space">Plus d\'espace libre dans la zone des favoris.</string>
   <!-- All applications label -->
   <string name="all_apps_button_label">Liste des applications</string>
   <!-- Label for button in all applications label to go back home (to the workspace / desktop)
@@ -355,7 +355,7 @@
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <string name="pref_cat_weather">Météo</string>
   <string name="pref_weather_title">Activer la météo</string>
-  <string name="pref_weather_units">Unité météo</string>
+  <string name="pref_weather_units">Unités météo</string>
   <string name="pref_weather_city_summary">Pour de meilleurs résultats ajouter le code du pays</string>
   <string name="pref_weather_city_title">Ville</string>
   <string name="none">Aucun</string>
@@ -382,7 +382,7 @@
   <string name="about_summary_title">Résumé</string>
   <string name="about_version">Version</string>
   <string name="about_icon_designer">Designer des icônes de l\'application</string>
-  <string name="about_contributors_title">Donateurs</string>
+  <string name="about_contributors_title">Contributeurs</string>
   <string name="location_permission_warn">L\'autorisation d\'utiliser la localisation est requise pour passer à un autre fournisseur !</string>
   <string name="num_cols_drawer_pref_title">Nombre de colonnes dans le tiroir des applications</string>
   <string name="shortcut_backport_warning">Cela pourrait être lent, utilisez à vos risques et périls</string>

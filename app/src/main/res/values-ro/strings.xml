@@ -102,7 +102,7 @@
   <string name="workspace_new_page">Pagină nouă pe ecranul de pornire</string>
   <!-- Folder accessibility -->
   <!-- The format string for when a folder is opened, speaks the dimensions -->
-  <string name="folder_opened">Dosar deschis, <xliff:g id="WIDTH">%1$d</xliff:g> pe <xliff:g id="HEIGHT">%2$d</xliff:g></string>
+  <string name="folder_opened">Dosar deschis, <xliff:g id="WIDTH">%1$d</xliff:g> de <xliff:g id="HEIGHT">%2$d</xliff:g></string>
   <!-- Instruction that clicking outside will close folder -->
   <string name="folder_tap_to_close">Atingeți pentru a închide dosarul</string>
   <!-- Instruction that clicking outside will commit folder rename -->
