@@ -38,8 +38,10 @@ public abstract class BaseSwipeInteractionHandler extends InternalStateHandler {
 
     public abstract void updateInteractionType(@InteractionType int interactionType);
 
+    @WorkerThread
     public abstract void onQuickScrubEnd();
 
+    @WorkerThread
     public abstract void onQuickScrubProgress(float progress);
 
     @WorkerThread

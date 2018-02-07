@@ -190,7 +190,7 @@ public class TouchInteractionService extends Service {
                 mHomeIntent, mISystemUiProxy, mMainThreadExecutor) {
 
             @Override
-            public void switchToMainConsumer() {
+            public void switchToMainChoreographer() {
                 if (mCurrentConsumer == this) {
                     mEventQueue.setInterimChoreographer(null);
                 }

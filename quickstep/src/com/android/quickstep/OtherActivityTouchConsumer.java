@@ -157,13 +157,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                             startTouchTrackingForScreenshotAnimation();
                         }
 
-                        // Notify the handler that the gesture has actually started
-                        mInteractionHandler.onGestureStarted();
-
-                        // Notify the system that we have started tracking the event
-                        if (mISystemUiProxy != null) {
-                            executeSafely(mISystemUiProxy::onRecentsAnimationStarted);
-                        }
+                        notifyGestureStarted();
                     }
                 } else {
                     // Move
@@ -179,6 +173,16 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 finishTouchTracking();
                 break;
             }
+        }
+    }
+
+    private void notifyGestureStarted() {
+        // Notify the handler that the gesture has actually started
+        mInteractionHandler.onGestureStarted();
+
+        // Notify the system that we have started tracking the event
+        if (mISystemUiProxy != null) {
+            executeSafely(mISystemUiProxy::onRecentsAnimationStarted);
         }
     }
 
@@ -263,7 +267,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         handler.setLauncherOnDrawCallback(() -> {
             drawWaitLock.countDown();
             if (handler == mInteractionHandler) {
-                switchToMainConsumer();
+                switchToMainChoreographer();
             }
         });
         handler.initWhenReady(mMainThreadExecutor);
@@ -346,6 +350,8 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
     @Override
     public void updateTouchTracking(int interactionType) {
+        notifyGestureStarted();
+
         mMainThreadExecutor.execute(() -> {
             if (mInteractionHandler != null) {
                 mInteractionHandler.updateInteractionType(interactionType);
@@ -378,7 +384,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
     public void onTouchTrackingComplete() { }
 
-    public void switchToMainConsumer() { }
+    public void switchToMainChoreographer() { }
 
     @Override
     public void preProcessMotionEvent(MotionEvent ev) {

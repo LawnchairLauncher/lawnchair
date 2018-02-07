@@ -142,6 +142,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
     private @InteractionType int mInteractionType = INTERACTION_NORMAL;
     private boolean mStartedQuickScrubFromHome;
+    private boolean mDeferredQuickScrubEnd;
 
     private final RecentsAnimationWrapper mRecentsAnimationWrapper = new RecentsAnimationWrapper();
     private Matrix mTmpMatrix = new Matrix();
@@ -352,6 +353,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
     private void updateUiForQuickScrub() {
         mStartedQuickScrubFromHome = mWasLauncherAlreadyVisible;
+        mDeferredQuickScrubEnd = false;
         mQuickScrubController = mRecentsView.getQuickScrubController();
         mQuickScrubController.onQuickScrubStart(mStartedQuickScrubFromHome);
         animateToProgress(1f, MAX_SWIPE_DURATION);
@@ -547,7 +549,11 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     }
 
     public void reset() {
-        setStateOnUiThread(STATE_HANDLER_INVALIDATED);
+        if (mInteractionType != INTERACTION_QUICK_SCRUB) {
+            // Only invalidate the handler if we are not quick scrubbing, otherwise, it will be
+            // invalidated after the quick scrub ends
+            setStateOnUiThread(STATE_HANDLER_INVALIDATED);
+        }
     }
 
     private void invalidateHandler() {
@@ -573,6 +579,22 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     }
 
     private void switchToScreenshot() {
+        synchronized (mRecentsAnimationWrapper) {
+            if (mRecentsAnimationWrapper.controller != null) {
+                TransactionCompat transaction = new TransactionCompat();
+                for (RemoteAnimationTargetCompat app : mRecentsAnimationWrapper.targets) {
+                    if (app.mode == MODE_CLOSING) {
+                        // Update the screenshot of the task
+                        final ThumbnailData thumbnail =
+                                mRecentsAnimationWrapper.controller.screenshotTask(app.taskId);
+                        mRecentsView.updateThumbnail(app.taskId, thumbnail);
+                    }
+                }
+                transaction.apply();
+            }
+        }
+        mRecentsAnimationWrapper.finish(true /* toHome */);
+
         if (mInteractionType == INTERACTION_QUICK_SWITCH) {
             for (int i = mRecentsView.getFirstTaskIndex(); i < mRecentsView.getPageCount(); i++) {
                 TaskView taskView = (TaskView) mRecentsView.getPageAt(i);
@@ -585,31 +607,18 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
             }
         } else if (mInteractionType == INTERACTION_QUICK_SCRUB) {
             if (mQuickScrubController != null) {
-                mQuickScrubController.snapToPageForCurrentQuickScrubSection();
-            }
-        } else {
-            synchronized (mRecentsAnimationWrapper) {
-                if (mRecentsAnimationWrapper.controller != null) {
-                    TransactionCompat transaction = new TransactionCompat();
-                    for (RemoteAnimationTargetCompat app : mRecentsAnimationWrapper.targets) {
-                        if (app.mode == MODE_CLOSING) {
-                            // Update the screenshot of the task
-                            final ThumbnailData thumbnail =
-                                    mRecentsAnimationWrapper.controller.screenshotTask(app.taskId);
-                            mRecentsView.updateThumbnail(app.taskId, thumbnail);
-                        }
-                    }
-                    transaction.apply();
+                if (mDeferredQuickScrubEnd) {
+                    onQuickScrubEnd();
+                } else {
+                    mQuickScrubController.snapToPageForCurrentQuickScrubSection();
                 }
             }
-            mRecentsAnimationWrapper.finish(true /* toHome */);
         }
     }
 
     private void setupLauncherUiAfterSwipeUpAnimation() {
         // Re apply state in case we did something funky during the transition.
         mLauncher.getStateManager().reapplyState();
-
 
         // Animate ui the first icon.
         View currentRecentsPage = mRecentsView.getPageAt(mRecentsView.getCurrentPage());
@@ -619,11 +628,24 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     }
 
     public void onQuickScrubEnd() {
+        if ((mStateCallback.getState() & STATE_SCALED_CONTROLLER_RECENTS) == 0) {
+            // If we are still animating into recents, then defer until that has run to end
+            // quick scrub since we need to finish the window animation before launching the next
+            // task
+            mDeferredQuickScrubEnd = true;
+            return;
+        }
+
         if (mQuickScrubController != null) {
             mQuickScrubController.onQuickScrubEnd();
         } else {
             // TODO:
         }
+
+        // Normally this is handled in reset(), but since we are still scrubbing after the
+        // transition into recents, we need to defer the handler invalidation for quick scrub until
+        // after the gesture ends
+        setStateOnUiThread(STATE_HANDLER_INVALIDATED);
     }
 
     public void onQuickScrubProgress(float progress) {

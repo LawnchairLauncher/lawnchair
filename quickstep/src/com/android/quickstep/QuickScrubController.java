@@ -62,6 +62,7 @@ public class QuickScrubController implements OnAlarmListener {
             int snapDuration = Math.abs(page - mRecentsView.getPageNearestToCenterOfScreen())
                     * QUICKSCRUB_END_SNAP_DURATION_PER_PAGE;
             mRecentsView.snapToPage(page, snapDuration);
+            // TODO: Fix this to actually wait until page-settle
             mRecentsView.postDelayed(() -> {
                 if (page < mRecentsView.getFirstTaskIndex()) {
                     mRecentsView.getPageAt(page).performClick();
