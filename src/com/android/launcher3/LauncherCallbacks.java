@@ -71,4 +71,12 @@ public interface LauncherCallbacks {
      * Extensions points for adding / replacing some other aspects of the Launcher experience.
      */
     boolean hasSettings();
+
+    /**
+     * Called when launcher integrated quickstep and some quickstep gesture started. It can be
+     * called multiple times for a single gesture an UI or background thread.
+     *
+     * @param isVisible if Launcher was visible when the gesture started.
+     */
+    void onQuickstepGestureStarted(boolean isVisible);
 }

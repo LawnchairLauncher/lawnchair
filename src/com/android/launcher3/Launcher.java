@@ -1193,6 +1193,12 @@ public class Launcher extends BaseActivity
         }
     }
 
+    public void onQuickstepGestureStarted(boolean isVisible) {
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onQuickstepGestureStarted(isVisible);
+        }
+    }
+
     public AllAppsTransitionController getAllAppsController() {
         return mAllAppsController;
     }
