@@ -20,21 +20,29 @@ import android.view.ViewGroup;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A utility class to maintain the collection of all apps.
  */
 public class AllAppsStore {
 
+    private PackageUserKey mTempKey = new PackageUserKey(null, null);
     private final HashMap<ComponentKey, AppInfo> mComponentToAppMap = new HashMap<>();
     private final List<OnUpdateListener> mUpdateListeners = new ArrayList<>();
     private final ArrayList<ViewGroup> mIconContainers = new ArrayList<>();
+
+    private boolean mDeferUpdates = false;
+    private boolean mUpdatePending = false;
 
     public Collection<AppInfo> getApps() {
         return mComponentToAppMap.values();
@@ -50,6 +58,17 @@ public class AllAppsStore {
 
     public AppInfo getApp(ComponentKey key) {
         return mComponentToAppMap.get(key);
+    }
+
+    public void setDeferUpdates(boolean deferUpdates) {
+        if (mDeferUpdates != deferUpdates) {
+            mDeferUpdates = deferUpdates;
+
+            if (!mDeferUpdates && mUpdatePending) {
+                notifyUpdate();
+                mUpdatePending = false;
+            }
+        }
     }
 
     /**
@@ -74,6 +93,10 @@ public class AllAppsStore {
 
 
     private void notifyUpdate() {
+        if (mDeferUpdates) {
+            mUpdatePending = true;
+            return;
+        }
         int count = mUpdateListeners.size();
         for (int i = 0; i < count; i++) {
             mUpdateListeners.get(i).onAppsUpdated();
@@ -98,7 +121,26 @@ public class AllAppsStore {
         mIconContainers.remove(container);
     }
 
-    public void updateAllIcons(IconAction action) {
+    public void updateIconBadges(Set<PackageUserKey> updatedBadges) {
+        updateAllIcons((child) -> {
+            if (child.getTag() instanceof ItemInfo) {
+                ItemInfo info = (ItemInfo) child.getTag();
+                if (mTempKey.updateFromItemInfo(info) && updatedBadges.contains(mTempKey)) {
+                    child.applyBadgeState(info, true /* animate */);
+                }
+            }
+        });
+    }
+
+    public void updatePromiseAppProgress(PromiseAppInfo app) {
+        updateAllIcons((child) -> {
+            if (child.getTag() == app) {
+                child.applyProgressLevel(app.level);
+            }
+        });
+    }
+
+    private void updateAllIcons(IconAction action) {
         for (int i = mIconContainers.size() - 1; i >= 0; i--) {
             ViewGroup parent = mIconContainers.get(i);
             int childCount = parent.getChildCount();

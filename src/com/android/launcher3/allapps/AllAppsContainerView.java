@@ -116,6 +116,8 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         mAH = new AdapterHolder[2];
         mAH[AdapterHolder.MAIN] = new AdapterHolder(false /* isWork */);
         mAH[AdapterHolder.WORK] = new AdapterHolder(true /* isWork */);
+
+        mAllAppsStore.addUpdateListener(this::onAppsUpdated);
     }
 
     @Override
@@ -150,40 +152,22 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         }
     }
 
+    private void onAppsUpdated() {
+        if (FeatureFlags.ALL_APPS_TABS_ENABLED) {
+            boolean hasWorkApps = false;
+            for (AppInfo app : mAllAppsStore.getApps()) {
+                if (mWorkMatcher.matches(app, null)) {
+                    hasWorkApps = true;
+                    break;
+                }
+            }
+            rebindAdapters(hasWorkApps);
+        }
+    }
+
     @Override
     public void setPressedIcon(BubbleTextView icon, Bitmap background) {
         mTouchFeedbackView.setPressedIcon(icon, background);
-    }
-
-    /**
-     * Sets the current set of apps.
-     */
-    public void setApps(List<AppInfo> apps) {
-        boolean hasWorkProfileApp = hasWorkProfileApp(apps);
-        rebindAdapters(hasWorkProfileApp);
-        mAllAppsStore.setApps(apps);
-    }
-
-    /**
-     * Adds or updates existing apps in the list
-     */
-    public void addOrUpdateApps(List<AppInfo> apps) {
-        mAllAppsStore.addOrUpdateApps(apps);
-    }
-
-    /**
-     * Removes some apps from the list.
-     */
-    public void removeApps(List<AppInfo> apps) {
-        mAllAppsStore.removeApps(apps);
-    }
-
-    public void updatePromiseAppProgress(PromiseAppInfo app) {
-        mAllAppsStore.updateAllIcons((child) -> {
-            if (child.getTag() == app) {
-                child.applyProgressLevel(app.level);
-            }
-        });
     }
 
     /**
@@ -324,18 +308,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         InsettableFrameLayout.dispatchInsets(this, insets);
     }
 
-    public void updateIconBadges(Set<PackageUserKey> updatedBadges) {
-        PackageUserKey tempKey = new PackageUserKey(null, null);
-        mAllAppsStore.updateAllIcons((child) -> {
-            if (child.getTag() instanceof ItemInfo) {
-                ItemInfo info = (ItemInfo) child.getTag();
-                if (tempKey.updateFromItemInfo(info) && updatedBadges.contains(tempKey)) {
-                    child.applyBadgeState(info, true /* animate */);
-                }
-            }
-        });
-    }
-
     public SpringAnimationHandler getSpringAnimationHandler() {
         return mUsingTabs ? null : mAH[AdapterHolder.MAIN].animationHandler;
     }
@@ -369,17 +341,6 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         mAllAppsStore.registerIconContainer(mAH[AdapterHolder.WORK].recyclerView);
 
         applyTouchDelegate();
-    }
-
-    private boolean hasWorkProfileApp(List<AppInfo> apps) {
-        if (FeatureFlags.ALL_APPS_TABS_ENABLED) {
-            for (AppInfo app : apps) {
-                if (mWorkMatcher.matches(app, null)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     private void replaceRVContainer(boolean showTabs) {

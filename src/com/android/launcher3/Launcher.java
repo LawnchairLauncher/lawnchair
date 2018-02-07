@@ -150,7 +150,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executor;
 
 /**
  * Default launcher application.
@@ -1166,7 +1165,7 @@ public class Launcher extends BaseActivity
 
     public void updateIconBadges(final Set<PackageUserKey> updatedBadges) {
         mWorkspace.updateIconBadges(updatedBadges);
-        mAppsView.updateIconBadges(updatedBadges);
+        mAppsView.getAppsStore().updateIconBadges(updatedBadges);
 
         PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(Launcher.this);
         if (popup != null) {
@@ -2527,6 +2526,11 @@ public class Launcher extends BaseActivity
             mPendingExecutor.markCompleted();
         }
         mPendingExecutor = executor;
+        if (!isInState(ALL_APPS)) {
+            mAppsView.getAppsStore().setDeferUpdates(true);
+            mPendingExecutor.execute(() -> mAppsView.getAppsStore().setDeferUpdates(false));
+        }
+
         executor.attachTo(this);
     }
 
@@ -2588,27 +2592,11 @@ public class Launcher extends BaseActivity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void bindAllApplications(ArrayList<AppInfo> apps) {
-        if (mAppsView != null) {
-            Executor pendingExecutor = getPendingExecutor();
-            if (pendingExecutor != null && !isInState(ALL_APPS)) {
-                // Wait until the fade in animation has finished before setting all apps list.
-                pendingExecutor.execute(() -> bindAllApplications(apps));
-                return;
-            }
+        mAppsView.getAppsStore().setApps(apps);
 
-            mAppsView.setApps(apps);
-        }
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.bindAllApplications(apps);
         }
-    }
-
-    /**
-     * Returns an Executor that will run after the launcher is first drawn (including after the
-     * initial fade in animation). Returns null if the first draw has already occurred.
-     */
-    public @Nullable Executor getPendingExecutor() {
-        return mPendingExecutor != null && mPendingExecutor.canQueue() ? mPendingExecutor : null;
     }
 
     /**
@@ -2627,16 +2615,12 @@ public class Launcher extends BaseActivity
      */
     @Override
     public void bindAppsAddedOrUpdated(ArrayList<AppInfo> apps) {
-        if (mAppsView != null) {
-            mAppsView.addOrUpdateApps(apps);
-        }
+        mAppsView.getAppsStore().addOrUpdateApps(apps);
     }
 
     @Override
     public void bindPromiseAppProgressUpdated(PromiseAppInfo app) {
-        if (mAppsView != null) {
-            mAppsView.updatePromiseAppProgress(app);
-        }
+        mAppsView.getAppsStore().updatePromiseAppProgress(app);
     }
 
     @Override
@@ -2682,10 +2666,7 @@ public class Launcher extends BaseActivity
 
     @Override
     public void bindAppInfosRemoved(final ArrayList<AppInfo> appInfos) {
-        // Update AllApps
-        if (mAppsView != null) {
-            mAppsView.removeApps(appInfos);
-        }
+        mAppsView.getAppsStore().removeApps(appInfos);
     }
 
     @Override
