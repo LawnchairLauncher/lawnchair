@@ -276,7 +276,7 @@ public class LauncherStateManager {
         // finish it and let this state animation take over.
         LauncherAppTransitionManager transitionManager = mLauncher.getAppTransitionManager();
         if (transitionManager != null) {
-            transitionManager.finishAnimation();
+            transitionManager.finishLauncherAnimation();
         }
     }
 

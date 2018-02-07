@@ -16,7 +16,6 @@
 package com.android.launcher3;
 
 import android.animation.AnimatorSet;
-import android.os.Handler;
 
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 
