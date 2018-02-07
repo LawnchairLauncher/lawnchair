@@ -158,6 +158,8 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                 this::initializeLauncherAnimationController);
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN,
                 this::launcherFrameDrawn);
+        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_GESTURE_STARTED,
+                this::notifyGestureStarted);
 
         mStateCallback.addCallback(STATE_SCALED_CONTROLLER_APP | STATE_APP_CONTROLLER_RECEIVED,
                 this::resumeLastTask);
@@ -244,6 +246,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
             mStateCallback.setState(oldState);
             mLauncherLayoutListener.setHandler(null);
         }
+        mWasLauncherAlreadyVisible = alreadyOnHome;
         mLauncher = launcher;
 
         LauncherState startState = mLauncher.getStateManager().getState();
@@ -253,7 +256,6 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         mLauncher.getStateManager().setRestState(startState);
 
         AbstractFloatingView.closeAllOpenViews(launcher, alreadyOnHome);
-        mWasLauncherAlreadyVisible = alreadyOnHome;
 
         mRecentsView = mLauncher.getOverviewPanel();
         mLauncherLayoutListener = new LauncherLayoutListener(mLauncher);
@@ -483,8 +485,20 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     }
 
     public void onGestureStarted() {
+        if (mLauncher != null) {
+            notifyGestureStarted();
+        }
+
         setStateOnUiThread(STATE_GESTURE_STARTED);
         mGestureStarted = true;
+    }
+
+    /**
+     * Notifies the launcher that the swipe gesture has started. This can be called multiple times
+     * on both background and UI threads
+     */
+    private void notifyGestureStarted() {
+        mLauncher.onQuickstepGestureStarted(mWasLauncherAlreadyVisible);
     }
 
     @WorkerThread
