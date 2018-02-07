@@ -42,12 +42,6 @@ public class LauncherLayoutListener extends AbstractFloatingView implements Inse
 
     @Override
     public void setInsets(Rect insets) {
-        requestLayout();
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
         if (mHandler != null) {
             mHandler.onLauncherLayoutChanged();
         }

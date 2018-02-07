@@ -279,10 +279,11 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 new RecentsAnimationListener() {
                     public void onAnimationStart(
                             RecentsAnimationControllerCompat controller,
-                            RemoteAnimationTargetCompat[] apps) {
+                            RemoteAnimationTargetCompat[] apps, Rect homeContentInsets,
+                            Rect minimizedHomeBounds) {
                         if (mInteractionHandler == handler) {
-                            handler.setRecentsAnimation(controller, apps);
-
+                            handler.setRecentsAnimation(controller, apps, homeContentInsets,
+                                    minimizedHomeBounds);
                         } else {
                             controller.finish(false /* toHome */);
                         }
@@ -290,7 +291,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
                     public void onAnimationCanceled() {
                         if (mInteractionHandler == handler) {
-                            handler.setRecentsAnimation(null, null);
+                            handler.setRecentsAnimation(null, null, null, null);
                         }
                     }
                 }, null, null);

@@ -34,6 +34,7 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
@@ -91,10 +92,23 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
     private static final float MIN_PROGRESS_FOR_OVERVIEW = 0.5f;
 
-    private final Rect mStableInsets = new Rect();
+    // The bounds of the source app in device coordinates
+    private final Rect mSourceStackBounds = new Rect();
+    // The insets of the source app
+    private final Rect mSourceInsets = new Rect();
+    // The source app bounds with the source insets applied, in the source app window coordinates
     private final Rect mSourceRect = new Rect();
+    // The insets to be used for clipping the app window, which can be larger than mSourceInsets
+    // if the aspect ratio of the target is smaller than the aspect ratio of the source rect. In
+    // app window coordinates.
+    private final Rect mSourceWindowClipInsets = new Rect();
+    // The bounds of launcher (not including insets) in device coordinates
+    private final Rect mHomeStackBounds = new Rect();
+    // The bounds of the task view in launcher window coordinates
     private final Rect mTargetRect = new Rect();
+    // The interpolated rect from the source app rect to the target rect
     private final Rect mCurrentRect = new Rect();
+    // The clip rect in source app window coordinates
     private final Rect mClipRect = new Rect();
     private final RectEvaluator mRectEvaluator = new RectEvaluator(mCurrentRect);
     private DeviceProfile mDp;
@@ -135,16 +149,6 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     WindowTransformSwipeHandler(RunningTaskInfo runningTaskInfo, Context context) {
         mContext = context;
         mRunningTaskId = runningTaskInfo.id;
-
-        WindowManagerWrapper.getInstance().getStableInsets(mStableInsets);
-
-        DeviceProfile dp = LauncherAppState.getIDP(mContext).getDeviceProfile(mContext);
-        // TODO: If in multi window mode, dp = dp.getMultiWindowProfile()
-        dp = dp.copy(mContext);
-        // TODO: Use different insets for multi-window mode
-        dp.updateInsets(mStableInsets);
-
-        initTransitionEndpoints(dp);
         initStateCallbacks();
     }
 
@@ -187,13 +191,33 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
     private void initTransitionEndpoints(DeviceProfile dp) {
         mDp = dp;
-        RecentsView.getPageRect(dp, mContext, mTargetRect);
-        mSourceRect.set(0, 0, dp.widthPx - mStableInsets.left - mStableInsets.right,
-                dp.heightPx - mStableInsets.top - mStableInsets.bottom);
 
-        mTransitionDragLength = dp.hotseatBarSizePx + (dp.isVerticalBarLayout()
-                ? (dp.hotseatBarSidePaddingPx + (dp.isSeascape() ? mStableInsets.left : mStableInsets.right))
-                : mStableInsets.bottom);
+        mSourceRect.set(0, 0, dp.widthPx - mSourceInsets.left - mSourceInsets.right,
+                dp.heightPx - mSourceInsets.top - mSourceInsets.bottom);
+        RecentsView.getPageRect(dp, mContext, mTargetRect);
+        mTargetRect.offset(mHomeStackBounds.left - mSourceStackBounds.left,
+                mHomeStackBounds.top - mSourceStackBounds.top);
+
+        // Calculate the clip based on the target rect (since the content insets and the
+        // launcher insets may differ, so the aspect ratio of the target rect can differ
+        // from the source rect. The difference between the target rect (scaled to the
+        // source rect) is the amount to clip on each edge.
+        Rect scaledTargetRect = new Rect(mTargetRect);
+        Utilities.scaleRectAboutCenter(scaledTargetRect,
+                (float) mSourceRect.width() / mTargetRect.width());
+        scaledTargetRect.offsetTo(mSourceInsets.left, mSourceInsets.top);
+        mSourceWindowClipInsets.set(scaledTargetRect.left, scaledTargetRect.top,
+                mDp.widthPx - scaledTargetRect.right,
+                mDp.heightPx - scaledTargetRect.bottom);
+
+        Rect targetInsets = dp.getInsets();
+        mTransitionDragLength = dp.hotseatBarSizePx;
+        if (dp.isVerticalBarLayout()) {
+            int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
+            mTransitionDragLength += dp.hotseatBarSidePaddingPx + hotseatInset;
+        } else {
+            mTransitionDragLength += targetInsets.bottom;
+        }
     }
 
     private long getFadeInDuration() {
@@ -268,17 +292,13 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                 }
             });
             state = STATE_LAUNCHER_PRESENT;
+
+            // Optimization, hide the all apps view to prevent layout while initializing
+            mLauncher.getAppsView().setVisibility(View.GONE);
         }
 
         mRecentsView.showTask(mRunningTaskId);
         mLauncherLayoutListener.open();
-
-        // Optimization
-        // We are using the internal device profile as launcher may not have got the insets yet.
-        if (!mDp.isVerticalBarLayout()) {
-            // All-apps search box is visible in vertical bar layout.
-            mLauncher.getAppsView().setVisibility(View.GONE);
-        }
 
         mStateCallback.setState(state);
         return true;
@@ -351,7 +371,6 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
      * Called by {@link #mLauncherLayoutListener} when launcher layout changes
      */
     public void onLauncherLayoutChanged() {
-        WindowManagerWrapper.getInstance().getStableInsets(mStableInsets);
         initTransitionEndpoints(mLauncher.getDeviceProfile());
 
         if (!mWasLauncherAlreadyVisible) {
@@ -392,14 +411,14 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                 mRectEvaluator.evaluate(shift, mSourceRect, mTargetRect);
                 float scale = (float) mCurrentRect.width() / mSourceRect.width();
 
-                mClipRect.left = mSourceRect.left;
-                mClipRect.top = (int) (mStableInsets.top * shift);
-                mClipRect.bottom = (int) (mDp.heightPx - (mStableInsets.bottom * shift));
-                mClipRect.right = mSourceRect.right;
+                mClipRect.left = (int) (mSourceWindowClipInsets.left * shift);
+                mClipRect.top = (int) (mSourceWindowClipInsets.top * shift);
+                mClipRect.right = (int) (mDp.widthPx - (mSourceWindowClipInsets.right * shift));
+                mClipRect.bottom = (int) (mDp.heightPx - (mSourceWindowClipInsets.bottom * shift));
 
                 mTmpMatrix.setScale(scale, scale, 0, 0);
-                mTmpMatrix.postTranslate(mCurrentRect.left - mStableInsets.left * scale * shift,
-                        mCurrentRect.top - mStableInsets.top * scale * shift);
+                mTmpMatrix.postTranslate(mCurrentRect.left - mSourceInsets.left * scale * shift,
+                        mCurrentRect.top - mSourceInsets.top * scale * shift);
                 TransactionCompat transaction = new TransactionCompat();
                 for (RemoteAnimationTargetCompat app : mRecentsAnimationWrapper.targets) {
                     if (app.mode == MODE_CLOSING) {
@@ -423,7 +442,42 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     }
 
     public void setRecentsAnimation(RecentsAnimationControllerCompat controller,
-            RemoteAnimationTargetCompat[] apps) {
+            RemoteAnimationTargetCompat[] apps, Rect homeContentInsets, Rect minimizedHomeBounds) {
+        if (apps != null) {
+            // Use the top closing app to determine the insets for the animation
+            for (RemoteAnimationTargetCompat target : apps) {
+                if (target.mode == MODE_CLOSING) {
+                    DeviceProfile dp = LauncherAppState.getIDP(mContext).getDeviceProfile(mContext);
+                    if (minimizedHomeBounds != null) {
+                        mHomeStackBounds.set(minimizedHomeBounds);
+                        dp = dp.getMultiWindowProfile(mContext,
+                                new Point(minimizedHomeBounds.width(), minimizedHomeBounds.height()));
+                        dp.updateInsets(homeContentInsets);
+                    } else {
+                        mHomeStackBounds.set(new Rect(0, 0, dp.widthPx, dp.heightPx));
+                        // TODO: Workaround for an existing issue where the home content insets are
+                        // not valid immediately after rotation, just use the stable insets for now
+                        Rect insets = new Rect();
+                        WindowManagerWrapper.getInstance().getStableInsets(insets);
+                        dp.updateInsets(insets);
+                    }
+
+                    // Initialize the start and end animation bounds
+                    // TODO: Remove once platform is updated
+                    try {
+                        mSourceInsets.set(target.getContentInsets());
+                    } catch (Error e) {
+                        // TODO: Remove once platform is updated, use stable insets as fallback
+                        WindowManagerWrapper.getInstance().getStableInsets(mSourceInsets);
+                    }
+                    mSourceStackBounds.set(target.sourceContainerBounds);
+
+                    initTransitionEndpoints(dp);
+                    break;
+                }
+            }
+        }
+
         mRecentsAnimationWrapper.setController(controller, apps);
         setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
     }
