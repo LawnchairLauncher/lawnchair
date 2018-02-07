@@ -159,6 +159,10 @@ public class DragLayer extends InsettableFrameLayout {
         } else if (action == MotionEvent.ACTION_DOWN) {
             mLauncher.finishAutoCancelActionMode();
         }
+        return findActiveController(ev);
+    }
+
+    private boolean findActiveController(MotionEvent ev) {
         mActiveController = null;
 
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mLauncher);
@@ -285,8 +289,10 @@ public class DragLayer extends InsettableFrameLayout {
 
         if (mActiveController != null) {
             return mActiveController.onControllerTouchEvent(ev);
+        } else {
+            // In case no child view handled the touch event, we may not get onIntercept anymore
+            return findActiveController(ev);
         }
-        return false;
     }
 
     /**
