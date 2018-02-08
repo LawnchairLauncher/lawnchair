@@ -87,7 +87,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     private View mFloatingView;
     private boolean mIsRtl;
 
-    private Animator mCurrentAnimator;
+    private LauncherTransitionAnimator mCurrentAnimator;
 
     public LauncherAppTransitionManagerImpl(Context context) {
         mLauncher = Launcher.getLauncher(context);
@@ -109,7 +109,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         mDeviceProfile = dp;
     }
 
-    private void setCurrentAnimator(Animator animator) {
+    private void setCurrentAnimator(LauncherTransitionAnimator animator) {
         if (mCurrentAnimator != null && mCurrentAnimator.isRunning()) {
             mCurrentAnimator.cancel();
         }
@@ -117,9 +117,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     }
 
     @Override
-    public void finishAnimation() {
+    public void finishLauncherAnimation() {
         if (mCurrentAnimator != null && mCurrentAnimator.isRunning()) {
-            mCurrentAnimator.end();
+            mCurrentAnimator.finishLauncherAnimation();
         }
         mCurrentAnimator = null;
     }
@@ -139,10 +139,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         // Post at front of queue ignoring sync barriers to make sure it gets
                         // processed before the next frame.
                         postAtFrontOfQueueAsynchronously(v.getHandler(), () -> {
-                            mAnimator = new AnimatorSet();
-                            setCurrentAnimator(mAnimator);
-                            mAnimator.play(getLauncherAnimators(v));
-                            mAnimator.play(getWindowAnimators(v, targets));
+                            LauncherTransitionAnimator animator = new LauncherTransitionAnimator(
+                                    getLauncherAnimators(v), getWindowAnimators(v, targets));
+                            setCurrentAnimator(animator);
+                            mAnimator = animator.getAnimatorSet();
                             mAnimator.addListener(new AnimatorListenerAdapter() {
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
@@ -449,16 +449,16 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         return;
                     }
 
-                    mAnimator = new AnimatorSet();
-                    setCurrentAnimator(mAnimator);
+                    LauncherTransitionAnimator animator = new LauncherTransitionAnimator(
+                            getLauncherResumeAnimation(), getClosingWindowAnimators(targets));
+                    setCurrentAnimator(animator);
+                    mAnimator = animator.getAnimatorSet();
                     mAnimator.addListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             finishedCallback.run();
                         }
                     });
-                    mAnimator.play(getClosingWindowAnimators(targets));
-                    mAnimator.play(getLauncherResumeAnimation());
                     mAnimator.start();
 
                     // Because t=0 has the app icon in its original spot, we can skip the
