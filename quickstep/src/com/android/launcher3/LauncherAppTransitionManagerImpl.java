@@ -30,7 +30,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.Build;
@@ -41,13 +40,13 @@ import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
-import android.widget.ImageView;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.InsettableFrameLayout.LayoutParams;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.graphics.DrawableFactory;
 import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
@@ -85,7 +84,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     private final float mContentTransY;
     private final float mWorkspaceTransY;
 
-    private ImageView mFloatingView;
+    private View mFloatingView;
     private boolean mIsRtl;
 
     private Animator mCurrentAnimator;
@@ -243,11 +242,11 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
      */
     private AnimatorSet getIconAnimator(View v) {
         boolean isBubbleTextView = v instanceof BubbleTextView;
-        mFloatingView = new ImageView(mLauncher);
-        if (isBubbleTextView) {
+        mFloatingView = new View(mLauncher);
+        if (isBubbleTextView && v.getTag() instanceof ItemInfoWithIcon ) {
             // Create a copy of the app icon
-            Bitmap iconBitmap = ((FastBitmapDrawable) ((BubbleTextView) v).getIcon()).getBitmap();
-            mFloatingView.setImageDrawable(new FastBitmapDrawable(iconBitmap));
+            mFloatingView.setBackground(
+                    DrawableFactory.get(mLauncher).newIcon((ItemInfoWithIcon) v.getTag()));
         }
 
         // Position the floating view exactly on top of the original
