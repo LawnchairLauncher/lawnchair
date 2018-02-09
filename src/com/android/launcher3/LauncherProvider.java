@@ -54,7 +54,6 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.WorkspaceScreens;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.DbDowngradeHelper;
 import com.android.launcher3.provider.LauncherDbUtils;
@@ -116,11 +115,8 @@ public class LauncherProvider extends ContentProvider {
         mListenerHandler = new Handler(mListenerWrapper);
 
         // The content provider exists for the entire duration of the launcher main process and
-        // is the first component to get created. Initializing FileLog here ensures that it's
-        // always available in the main process.
-        FileLog.setDir(getContext().getApplicationContext().getFilesDir());
-        IconShapeOverride.apply(getContext());
-        SessionCommitReceiver.applyDefaultUserPrefs(getContext());
+        // is the first component to get created.
+        MainProcessInitializer.initialize(getContext().getApplicationContext());
         return true;
     }
 

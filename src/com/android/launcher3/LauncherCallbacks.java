@@ -37,7 +37,6 @@ public interface LauncherCallbacks {
      * Activity life-cycle methods. These methods are triggered after
      * the code in the corresponding Launcher method is executed.
      */
-    void preOnCreate();
     void onCreate(Bundle savedInstanceState);
     void onResume();
     void onStart();

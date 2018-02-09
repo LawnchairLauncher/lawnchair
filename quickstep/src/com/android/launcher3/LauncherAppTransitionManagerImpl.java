@@ -595,8 +595,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                                          Runnable finishedCallback) {
                 Handler handler = mLauncher.getWindow().getDecorView().getHandler();
                 postAtFrontOfQueueAsynchronously(handler, () -> {
-                    if ((Utilities.getPrefs(mLauncher).getBoolean("pref_use_screenshot_animation",
-                            true) && mLauncher.isInState(LauncherState.OVERVIEW))
+                    if ((Utilities.getPrefs(mLauncher)
+                            .getBoolean("pref_use_screenshot_for_swipe_up", false)
+                            && mLauncher.isInState(LauncherState.OVERVIEW))
                             || !isLauncherInSetOfOpeningTargets(targets)) {
                         // We use a separate transition for Overview mode. And we can skip the
                         // animation in cases where Launcher is not in the set of opening targets.

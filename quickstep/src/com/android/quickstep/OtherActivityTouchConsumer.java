@@ -210,7 +210,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     }
 
     private boolean isUsingScreenShot() {
-        return Utilities.getPrefs(this).getBoolean("pref_use_screenshot_animation", true);
+        return Utilities.getPrefs(this).getBoolean("pref_use_screenshot_for_swipe_up", false);
     }
 
     /**

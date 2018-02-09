@@ -294,10 +294,6 @@ public class Launcher extends BaseActivity
         }
         TraceHelper.beginSection("Launcher-onCreate");
 
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.preOnCreate();
-        }
-
         WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
         wallpaperColorInfo.setOnThemeChangeListener(this);
         overrideTheme(wallpaperColorInfo.isDark(), wallpaperColorInfo.supportsDarkText());
