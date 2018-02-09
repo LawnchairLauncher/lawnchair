@@ -93,7 +93,7 @@ public class QuickScrubController implements OnAlarmListener {
     }
 
     public void snapToPageForCurrentQuickScrubSection() {
-        goToPageWithHaptic(mRecentsView.getCurrentPage() + mQuickScrubSection);
+        goToPageWithHaptic(mRecentsView.getFirstTaskIndex() + mQuickScrubSection);
     }
 
     private void goToPageWithHaptic(int pageToGoTo) {

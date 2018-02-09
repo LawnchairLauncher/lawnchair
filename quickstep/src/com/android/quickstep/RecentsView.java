@@ -135,6 +135,7 @@ public class RecentsView extends PagedView implements Insettable {
             final TaskView taskView = (TaskView) getChildAt(i);
             if (taskView.getTask().key.id == taskId) {
                 taskView.onTaskDataLoaded(taskView.getTask(), thumbnailData);
+                taskView.setAlpha(1);
                 return;
             }
         }
@@ -467,7 +468,9 @@ public class RecentsView extends PagedView implements Insettable {
         mRunningTaskId = runningTaskId;
         setCurrentPage(mFirstTaskIndex);
         if (mCurrentPage >= mFirstTaskIndex) {
-            ((TaskView) getPageAt(mCurrentPage)).setIconScale(0);
+            TaskView currentTask = (TaskView) getPageAt(mCurrentPage);
+            currentTask.setIconScale(0);
+            currentTask.setAlpha(0);
         }
     }
 

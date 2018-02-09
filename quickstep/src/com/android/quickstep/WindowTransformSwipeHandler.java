@@ -124,6 +124,8 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     private final Rect mHomeStackBounds = new Rect();
     // The bounds of the task view in launcher window coordinates
     private final Rect mTargetRect = new Rect();
+    // Doesn't change after initialized, used as an anchor when changing mTargetRect
+    private final Rect mInitialTargetRect = new Rect();
     // The interpolated rect from the source app rect to the target rect
     private final Rect mCurrentRect = new Rect();
     // The clip rect in source app window coordinates
@@ -224,6 +226,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         RecentsView.getPageRect(dp, mContext, mTargetRect);
         mTargetRect.offset(mHomeStackBounds.left - mSourceStackBounds.left,
                 mHomeStackBounds.top - mSourceStackBounds.top);
+        mInitialTargetRect.set(mTargetRect);
 
         // Calculate the clip based on the target rect (since the content insets and the
         // launcher insets may differ, so the aspect ratio of the target rect can differ
@@ -436,7 +439,9 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
         synchronized (mRecentsAnimationWrapper) {
             if (mRecentsAnimationWrapper.controller != null) {
-                mRectEvaluator.evaluate(shift, mSourceRect, mTargetRect);
+                synchronized (mTargetRect) {
+                    mRectEvaluator.evaluate(shift, mSourceRect, mTargetRect);
+                }
                 float scale = (float) mCurrentRect.width() / mSourceRect.width();
 
                 mClipRect.left = (int) (mSourceWindowClipInsets.left * shift);
@@ -460,11 +465,28 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         }
 
         if (mLauncherTransitionController != null) {
-            if (Looper.getMainLooper() == Looper.myLooper()) {
+            Runnable runOnUi = () -> {
                 mLauncherTransitionController.setPlayFraction(shift);
+
+                // Make sure the window follows the first task if it moves, e.g. during quick scrub.
+                int firstTaskIndex = mRecentsView.getFirstTaskIndex();
+                View firstTask = mRecentsView.getPageAt(firstTaskIndex);
+                int scrollForFirstTask = mRecentsView.getScrollForPage(firstTaskIndex);
+                int offsetFromFirstTask = (scrollForFirstTask - mRecentsView.getScrollX());
+                if (offsetFromFirstTask != 0) {
+                    synchronized (mTargetRect) {
+                        mTargetRect.set(mInitialTargetRect);
+                        Utilities.scaleRectAboutCenter(mTargetRect, firstTask.getScaleX());
+                        int offsetX = (int) (offsetFromFirstTask + firstTask.getTranslationX());
+                        mTargetRect.offset(offsetX, 0);
+                    }
+                }
+            };
+            if (Looper.getMainLooper() == Looper.myLooper()) {
+                runOnUi.run();
             } else {
                 // The fling operation completed even before the launcher was drawn
-                mMainExecutor.execute(() -> mLauncherTransitionController.setPlayFraction(shift));
+                mMainExecutor.execute(runOnUi);
             }
         }
     }
