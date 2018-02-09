@@ -32,6 +32,7 @@ public class QuickScrubController implements OnAlarmListener {
 
     private static final int NUM_QUICK_SCRUB_SECTIONS = 5;
     private static final long AUTO_ADVANCE_DELAY = 500;
+    private static final int QUICKSCRUB_SNAP_DURATION_PER_PAGE = 325;
     private static final int QUICKSCRUB_END_SNAP_DURATION_PER_PAGE = 60;
 
     private Launcher mLauncher;
@@ -58,18 +59,22 @@ public class QuickScrubController implements OnAlarmListener {
         if (mRecentsView == null) {
         } else {
             int page = mRecentsView.getNextPage();
-            // Settle on the page then launch it.
-            int snapDuration = Math.abs(page - mRecentsView.getPageNearestToCenterOfScreen())
-                    * QUICKSCRUB_END_SNAP_DURATION_PER_PAGE;
-            mRecentsView.snapToPage(page, snapDuration);
-            // TODO: Fix this to actually wait until page-settle
-            mRecentsView.postDelayed(() -> {
+            Runnable launchTaskRunnable = () -> {
                 if (page < mRecentsView.getFirstTaskIndex()) {
                     mRecentsView.getPageAt(page).performClick();
                 } else {
                     ((TaskView) mRecentsView.getPageAt(page)).launchTask(true);
                 }
-            }, snapDuration);
+            };
+            int snapDuration = Math.abs(page - mRecentsView.getPageNearestToCenterOfScreen())
+                    * QUICKSCRUB_END_SNAP_DURATION_PER_PAGE;
+            if (mRecentsView.snapToPage(page, snapDuration)) {
+                // Settle on the page then launch it
+                mRecentsView.setNextPageSwitchRunnable(launchTaskRunnable);
+            } else {
+                // No page move needed, just launch it
+                launchTaskRunnable.run();
+            }
         }
     }
 
@@ -93,7 +98,9 @@ public class QuickScrubController implements OnAlarmListener {
 
     private void goToPageWithHaptic(int pageToGoTo) {
         if (pageToGoTo != mRecentsView.getNextPage()) {
-            mRecentsView.snapToPage(pageToGoTo);
+            int duration = Math.abs(pageToGoTo - mRecentsView.getNextPage())
+                    * QUICKSCRUB_SNAP_DURATION_PER_PAGE;
+            mRecentsView.snapToPage(pageToGoTo, duration);
             mRecentsView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP,
                     HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
         }

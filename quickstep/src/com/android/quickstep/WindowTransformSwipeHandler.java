@@ -41,6 +41,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver.OnDrawListener;
 
@@ -65,8 +66,12 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
+import java.util.StringJoiner;
+
 @TargetApi(Build.VERSION_CODES.O)
 public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
+    private static final String TAG = WindowTransformSwipeHandler.class.getSimpleName();
+    private static final boolean DEBUG_STATES = false;
 
     // Launcher UI related states
     private static final int STATE_LAUNCHER_PRESENT = 1 << 0;
@@ -86,8 +91,21 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     private static final int LAUNCHER_UI_STATES =
             STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN | STATE_ACTIVITY_MULTIPLIER_COMPLETE;
 
+    // For debugging, keep in sync with above states
+    private static final String[] STATES = new String[] {
+            "STATE_LAUNCHER_PRESENT",
+            "STATE_LAUNCHER_DRAWN",
+            "STATE_ACTIVITY_MULTIPLIER_COMPLETE",
+            "STATE_APP_CONTROLLER_RECEIVED",
+            "STATE_SCALED_CONTROLLER_RECENTS",
+            "STATE_SCALED_CONTROLLER_APP",
+            "STATE_HANDLER_INVALIDATED",
+            "STATE_GESTURE_STARTED"
+    };
+
     private static final long MAX_SWIPE_DURATION = 200;
     private static final long MIN_SWIPE_DURATION = 80;
+    private static final int QUICK_SWITCH_START_DURATION = 133;
     private static final int QUICK_SWITCH_SNAP_DURATION = 120;
 
     private static final float MIN_PROGRESS_FOR_OVERVIEW = 0.5f;
@@ -154,7 +172,13 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     }
 
     private void initStateCallbacks() {
-        mStateCallback = new MultiStateCallback();
+        mStateCallback = new MultiStateCallback() {
+            @Override
+            public void setState(int stateFlag) {
+                debugNewState(stateFlag);
+                super.setState(stateFlag);
+            }
+        };
         mStateCallback.addCallback(STATE_LAUNCHER_DRAWN | STATE_GESTURE_STARTED,
                 this::initializeLauncherAnimationController);
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN,
@@ -356,7 +380,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         mDeferredQuickScrubEnd = false;
         mQuickScrubController = mRecentsView.getQuickScrubController();
         mQuickScrubController.onQuickScrubStart(mStartedQuickScrubFromHome);
-        animateToProgress(1f, MAX_SWIPE_DURATION);
+        animateToProgress(1f, QUICK_SWITCH_START_DURATION);
         if (mStartedQuickScrubFromHome) {
             mLauncherLayoutListener.setVisibility(View.INVISIBLE);
         }
@@ -599,9 +623,14 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
             for (int i = mRecentsView.getFirstTaskIndex(); i < mRecentsView.getPageCount(); i++) {
                 TaskView taskView = (TaskView) mRecentsView.getPageAt(i);
                 if (taskView.getTask().key.id != mRunningTaskId) {
-                    mRecentsView.snapToPage(i, QUICK_SWITCH_SNAP_DURATION);
-                    taskView.postDelayed(() -> {taskView.launchTask(true);},
-                            QUICK_SWITCH_SNAP_DURATION);
+                    Runnable launchTaskRunnable = () -> taskView.launchTask(true);
+                    if (mRecentsView.snapToPage(i, QUICK_SWITCH_SNAP_DURATION)) {
+                        // Snap to the new page then launch it
+                        mRecentsView.setNextPageSwitchRunnable(launchTaskRunnable);
+                    } else {
+                        // No need to move page, just launch task directly
+                        launchTaskRunnable.run();
+                    }
                     break;
                 }
             }
@@ -654,5 +683,25 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         } else {
             // TODO:
         }
+    }
+
+    private synchronized void debugNewState(int stateFlag) {
+        if (!DEBUG_STATES) {
+            return;
+        }
+
+        int state = mStateCallback.getState();
+        StringJoiner currentStateStr = new StringJoiner(", ", "[", "]");
+        String stateFlagStr = "Unknown-" + stateFlag;
+        for (int i = 0; i < STATES.length; i++) {
+            if ((state & (i << i)) != 0) {
+                currentStateStr.add(STATES[i]);
+            }
+            if (stateFlag == (1 << i)) {
+                stateFlagStr = STATES[i] + " (" + stateFlag + ")";
+            }
+        }
+        Log.d(TAG, "[" + System.identityHashCode(this) + "] Adding " + stateFlagStr + " to "
+                + currentStateStr);
     }
 }

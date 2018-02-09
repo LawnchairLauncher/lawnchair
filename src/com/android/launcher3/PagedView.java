@@ -1622,7 +1622,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         return (float) Math.sin(f);
     }
 
-    protected void snapToPageWithVelocity(int whichPage, int velocity) {
+    protected boolean snapToPageWithVelocity(int whichPage, int velocity) {
         whichPage = validateNewPage(whichPage);
         int halfScreenSize = getMeasuredWidth() / 2;
 
@@ -1633,8 +1633,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (Math.abs(velocity) < mMinFlingVelocity) {
             // If the velocity is low enough, then treat this more as an automatic page advance
             // as opposed to an apparent physical response to flinging
-            snapToPage(whichPage, PAGE_SNAP_ANIMATION_DURATION);
-            return;
+            return snapToPage(whichPage, PAGE_SNAP_ANIMATION_DURATION);
         }
 
         // Here we compute a "distance" that will be used in the computation of the overall
@@ -1653,39 +1652,39 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // interpolator at zero, ie. 5. We use 4 to make it a little slower.
         duration = 4 * Math.round(1000 * Math.abs(distance / velocity));
 
-        snapToPage(whichPage, delta, duration);
+        return snapToPage(whichPage, delta, duration);
     }
 
-    public void snapToPage(int whichPage) {
-        snapToPage(whichPage, PAGE_SNAP_ANIMATION_DURATION);
+    public boolean snapToPage(int whichPage) {
+        return snapToPage(whichPage, PAGE_SNAP_ANIMATION_DURATION);
     }
 
-    public void snapToPageImmediately(int whichPage) {
-        snapToPage(whichPage, PAGE_SNAP_ANIMATION_DURATION, true, null);
+    public boolean snapToPageImmediately(int whichPage) {
+        return snapToPage(whichPage, PAGE_SNAP_ANIMATION_DURATION, true, null);
     }
 
-    public void snapToPage(int whichPage, int duration) {
-        snapToPage(whichPage, duration, false, null);
+    public boolean snapToPage(int whichPage, int duration) {
+        return snapToPage(whichPage, duration, false, null);
     }
 
-    protected void snapToPage(int whichPage, int duration, TimeInterpolator interpolator) {
-        snapToPage(whichPage, duration, false, interpolator);
+    protected boolean snapToPage(int whichPage, int duration, TimeInterpolator interpolator) {
+        return snapToPage(whichPage, duration, false, interpolator);
     }
 
-    protected void snapToPage(int whichPage, int duration, boolean immediate,
+    protected boolean snapToPage(int whichPage, int duration, boolean immediate,
             TimeInterpolator interpolator) {
         whichPage = validateNewPage(whichPage);
 
         int newX = getScrollForPage(whichPage);
         final int delta = newX - getUnboundedScrollX();
-        snapToPage(whichPage, delta, duration, immediate, interpolator);
+        return snapToPage(whichPage, delta, duration, immediate, interpolator);
     }
 
-    protected void snapToPage(int whichPage, int delta, int duration) {
-        snapToPage(whichPage, delta, duration, false, null);
+    protected boolean snapToPage(int whichPage, int delta, int duration) {
+        return snapToPage(whichPage, delta, duration, false, null);
     }
 
-    protected void snapToPage(int whichPage, int delta, int duration, boolean immediate,
+    protected boolean snapToPage(int whichPage, int delta, int duration, boolean immediate,
             TimeInterpolator interpolator) {
         whichPage = validateNewPage(whichPage);
 
@@ -1723,6 +1722,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
 
         invalidate();
+        return Math.abs(delta) > 0;
     }
 
     public void scrollLeft() {

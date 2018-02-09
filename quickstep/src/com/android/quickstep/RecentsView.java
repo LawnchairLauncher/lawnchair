@@ -75,6 +75,7 @@ public class RecentsView extends PagedView implements Insettable {
     private boolean mOverviewStateEnabled;
     private boolean mTaskStackListenerRegistered;
     private LayoutTransition mLayoutTransition;
+    private Runnable mNextPageSwitchRunnable;
 
     /**
      * TODO: Call reloadIdNeeded in onTaskStackChanged.
@@ -241,6 +242,19 @@ public class RecentsView extends PagedView implements Insettable {
     public void setOverviewStateEnabled(boolean enabled) {
         mOverviewStateEnabled = enabled;
         updateTaskStackListenerState();
+    }
+
+    public void setNextPageSwitchRunnable(Runnable r) {
+        mNextPageSwitchRunnable = r;
+    }
+
+    @Override
+    protected void onPageEndTransition() {
+        super.onPageEndTransition();
+        if (mNextPageSwitchRunnable != null) {
+            mNextPageSwitchRunnable.run();
+            mNextPageSwitchRunnable = null;
+        }
     }
 
     private void applyLoadPlan(RecentsTaskLoadPlan loadPlan) {
