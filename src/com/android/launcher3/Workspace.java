@@ -421,6 +421,7 @@ public class Workspace extends PagedView
         }
 
         updateChildrenLayersEnabled();
+        mDragInfo = null;
         mOutlineProvider = null;
         mDragSourceInternal = null;
     }
