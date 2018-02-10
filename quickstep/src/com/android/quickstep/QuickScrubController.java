@@ -19,7 +19,6 @@ package com.android.quickstep;
 import android.view.HapticFeedbackConstants;
 
 import com.android.launcher3.Alarm;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.OnAlarmListener;
 
 /**
@@ -30,26 +29,27 @@ import com.android.launcher3.OnAlarmListener;
  */
 public class QuickScrubController implements OnAlarmListener {
 
+    public static final int QUICK_SWITCH_START_DURATION = 133;
+    public static final int QUICK_SWITCH_SNAP_DURATION = 120;
+
     private static final int NUM_QUICK_SCRUB_SECTIONS = 5;
     private static final long AUTO_ADVANCE_DELAY = 500;
     private static final int QUICKSCRUB_SNAP_DURATION_PER_PAGE = 325;
     private static final int QUICKSCRUB_END_SNAP_DURATION_PER_PAGE = 60;
 
-    private Launcher mLauncher;
     private Alarm mAutoAdvanceAlarm;
     private RecentsView mRecentsView;
 
     private int mQuickScrubSection;
     private int mStartPage;
 
-    public QuickScrubController(Launcher launcher) {
-        mLauncher = launcher;
+    public QuickScrubController(RecentsView recentsView) {
+        mRecentsView = recentsView;
         mAutoAdvanceAlarm = new Alarm();
         mAutoAdvanceAlarm.setOnAlarmListener(this);
     }
 
     public void onQuickScrubStart(boolean startingFromHome) {
-        mRecentsView = mLauncher.getOverviewPanel();
         mStartPage = startingFromHome ? 0 : mRecentsView.getFirstTaskIndex();
         mQuickScrubSection = 0;
     }
@@ -89,6 +89,23 @@ public class QuickScrubController implements OnAlarmListener {
                 mAutoAdvanceAlarm.cancelAlarm();
             }
             mQuickScrubSection = quickScrubSection;
+        }
+    }
+
+    public void onQuickSwitch() {
+        for (int i = mRecentsView.getFirstTaskIndex(); i < mRecentsView.getPageCount(); i++) {
+            TaskView taskView = (TaskView) mRecentsView.getPageAt(i);
+            if (taskView.getTask().key.id != mRecentsView.getRunningTaskId()) {
+                Runnable launchTaskRunnable = () -> taskView.launchTask(true);
+                if (mRecentsView.snapToPage(i, QUICK_SWITCH_SNAP_DURATION)) {
+                    // Snap to the new page then launch it
+                    mRecentsView.setNextPageSwitchRunnable(launchTaskRunnable);
+                } else {
+                    // No need to move page, just launch task directly
+                    launchTaskRunnable.run();
+                }
+                break;
+            }
         }
     }
 

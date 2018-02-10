@@ -18,6 +18,7 @@ package com.android.quickstep;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.quickstep.QuickScrubController.QUICK_SWITCH_START_DURATION;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SWITCH;
@@ -105,8 +106,6 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
     private static final long MAX_SWIPE_DURATION = 200;
     private static final long MIN_SWIPE_DURATION = 80;
-    private static final int QUICK_SWITCH_START_DURATION = 133;
-    private static final int QUICK_SWITCH_SNAP_DURATION = 120;
 
     private static final float MIN_PROGRESS_FOR_OVERVIEW = 0.5f;
 
@@ -161,7 +160,6 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     private boolean mGestureStarted;
 
     private @InteractionType int mInteractionType = INTERACTION_NORMAL;
-    private boolean mStartedQuickScrubFromHome;
     private boolean mDeferredQuickScrubEnd;
 
     private final RecentsAnimationWrapper mRecentsAnimationWrapper = new RecentsAnimationWrapper();
@@ -379,14 +377,10 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     }
 
     private void updateUiForQuickScrub() {
-        mStartedQuickScrubFromHome = mWasLauncherAlreadyVisible;
         mDeferredQuickScrubEnd = false;
         mQuickScrubController = mRecentsView.getQuickScrubController();
-        mQuickScrubController.onQuickScrubStart(mStartedQuickScrubFromHome);
+        mQuickScrubController.onQuickScrubStart(false);
         animateToProgress(1f, QUICK_SWITCH_START_DURATION);
-        if (mStartedQuickScrubFromHome) {
-            mLauncherLayoutListener.setVisibility(View.INVISIBLE);
-        }
     }
 
     @WorkerThread
@@ -431,10 +425,6 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
     @WorkerThread
     private void updateFinalShift() {
-        if (mStartedQuickScrubFromHome) {
-            return;
-        }
-
         float shift = mCurrentShift.value;
 
         synchronized (mRecentsAnimationWrapper) {
@@ -642,19 +632,8 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         mRecentsAnimationWrapper.finish(true /* toHome */);
 
         if (mInteractionType == INTERACTION_QUICK_SWITCH) {
-            for (int i = mRecentsView.getFirstTaskIndex(); i < mRecentsView.getPageCount(); i++) {
-                TaskView taskView = (TaskView) mRecentsView.getPageAt(i);
-                if (taskView.getTask().key.id != mRunningTaskId) {
-                    Runnable launchTaskRunnable = () -> taskView.launchTask(true);
-                    if (mRecentsView.snapToPage(i, QUICK_SWITCH_SNAP_DURATION)) {
-                        // Snap to the new page then launch it
-                        mRecentsView.setNextPageSwitchRunnable(launchTaskRunnable);
-                    } else {
-                        // No need to move page, just launch task directly
-                        launchTaskRunnable.run();
-                    }
-                    break;
-                }
+            if (mQuickScrubController != null) {
+                mQuickScrubController.onQuickSwitch();
             }
         } else if (mInteractionType == INTERACTION_QUICK_SCRUB) {
             if (mQuickScrubController != null) {
