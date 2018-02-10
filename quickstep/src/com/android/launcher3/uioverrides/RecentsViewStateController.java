@@ -71,6 +71,8 @@ public class RecentsViewStateController implements StateHandler {
             .getBoolean("pref_scroll_to_first_task", false);
         mIsRecentsScrollingToFirstTask = mLauncher.isInState(NORMAL) && toState == OVERVIEW
                 && settingEnabled;
+        // TODO: Instead of animating the workspace translationX, move the contents
+        mWorkspaceCard.setWorkspaceScrollingEnabled(mIsRecentsScrollingToFirstTask);
 
         // Scroll to the workspace card before changing to the NORMAL state.
         int currPage = mRecentsView.getCurrentPage();
@@ -87,11 +89,6 @@ public class RecentsViewStateController implements StateHandler {
         progressAnim.setDuration(config.duration);
         progressAnim.setInterpolator(Interpolators.LINEAR);
         progressAnim.addListener(new AnimationSuccessListener() {
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                mWorkspaceCard.setWorkspaceScrollingEnabled(mIsRecentsScrollingToFirstTask);
-            }
 
             @Override
             public void onAnimationSuccess(Animator animator) {
