@@ -212,7 +212,6 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
 
         float translation =
                 scrollState.distanceFromScreenCenter * curveInterpolation * CURVE_FACTOR;
-        setTranslationX(translation);
 
         if (scrollState.lastScrollType == SCROLL_TYPE_WORKSPACE) {
             // Make sure that the task cards do not overlap with the workspace card
