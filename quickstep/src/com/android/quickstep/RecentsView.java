@@ -124,7 +124,7 @@ public class RecentsView extends PagedView implements Insettable {
         setClipToOutline(true);
 
         mLauncher = Launcher.getLauncher(context);
-        mQuickScrubController = new QuickScrubController(mLauncher);
+        mQuickScrubController = new QuickScrubController(this);
         mModel = RecentsModel.getInstance(context);
 
         mScrollState.isRtl = mIsRtl;
@@ -429,6 +429,10 @@ public class RecentsView extends PagedView implements Insettable {
 
     public int getTaskCount() {
         return getChildCount() - mFirstTaskIndex;
+    }
+
+    public int getRunningTaskId() {
+        return mRunningTaskId;
     }
 
     /**

@@ -44,6 +44,7 @@ import android.view.ViewConfiguration;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.model.ModelPreload;
 import com.android.launcher3.R;
@@ -218,21 +219,27 @@ public class TouchInteractionService extends Service {
         if (!target.getWindowId().isFocused()) {
             return mNoOpTouchConsumer;
         }
-        return new LauncherTouchConsumer(target);
+        return new LauncherTouchConsumer(launcher, target);
     }
 
     private class LauncherTouchConsumer implements TouchConsumer {
 
+        private final Launcher mLauncher;
         private final View mTarget;
         private final int[] mLocationOnScreen = new int[2];
         private final PointF mDownPos = new PointF();
         private final int mTouchSlop;
+        private final QuickScrubController mQuickScrubController;
 
         private boolean mTrackingStarted = false;
 
-        LauncherTouchConsumer(View target) {
+        LauncherTouchConsumer(Launcher launcher, View target) {
+            mLauncher = launcher;
             mTarget = target;
             mTouchSlop = ViewConfiguration.get(mTarget.getContext()).getScaledTouchSlop();
+
+            mQuickScrubController = mLauncher.<RecentsView>getOverviewPanel()
+                    .getQuickScrubController();
         }
 
         @Override
@@ -282,6 +289,33 @@ public class TouchInteractionService extends Service {
             ev.offsetLocation(mLocationOnScreen[0], mLocationOnScreen[1]);
             ev.setEdgeFlags(flags);
         }
+
+        @Override
+        public void updateTouchTracking(int interactionType) {
+            mMainThreadExecutor.execute(() -> {
+                if (TouchConsumer.isInteractionQuick(interactionType)) {
+                    Runnable onComplete = null;
+                    if (interactionType == INTERACTION_QUICK_SCRUB) {
+                        mQuickScrubController.onQuickScrubStart(true);
+                    } else if (interactionType == INTERACTION_QUICK_SWITCH) {
+                        onComplete = mQuickScrubController::onQuickSwitch;
+                    }
+                    mLauncher.getStateManager().goToState(LauncherState.OVERVIEW, true, 0,
+                            QuickScrubController.QUICK_SWITCH_START_DURATION, onComplete);
+                }
+            });
+        }
+
+        @Override
+        public void onQuickScrubEnd() {
+            mMainThreadExecutor.execute(mQuickScrubController::onQuickScrubEnd);
+        }
+
+        @Override
+        public void onQuickScrubProgress(float progress) {
+            mMainThreadExecutor.execute(() -> mQuickScrubController.onQuickScrubProgress(progress));
+        }
+
     }
 
     private void initBackgroundChoreographer() {

@@ -67,7 +67,6 @@ public class NavBarSwipeInteractionHandler extends BaseSwipeInteractionHandler i
 
     private static final long MAX_SWIPE_DURATION = 200;
     private static final long MIN_SWIPE_DURATION = 80;
-    private static final int QUICK_SWITCH_SNAP_DURATION = 120;
 
     // Ideal velocity for a smooth transition
     private static final float PIXEL_PER_MS = 2f;
@@ -369,14 +368,8 @@ public class NavBarSwipeInteractionHandler extends BaseSwipeInteractionHandler i
             ((TaskView) currentRecentsPage).animateIconToScale(1f);
         }
         if (mInteractionType == INTERACTION_QUICK_SWITCH) {
-            for (int i = mRecentsView.getFirstTaskIndex(); i < mRecentsView.getPageCount(); i++) {
-                TaskView taskView = (TaskView) mRecentsView.getPageAt(i);
-                if (taskView.getTask().key.id != mRunningTaskId) {
-                    mRecentsView.snapToPage(i, QUICK_SWITCH_SNAP_DURATION);
-                    taskView.postDelayed(() -> {taskView.launchTask(true);},
-                            QUICK_SWITCH_SNAP_DURATION);
-                    break;
-                }
+            if (mQuickScrubController != null) {
+                mQuickScrubController.onQuickSwitch();
             }
         } else if (mInteractionType == INTERACTION_QUICK_SCRUB) {
             if (mQuickScrubController != null) {
