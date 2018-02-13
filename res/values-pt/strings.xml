@@ -146,4 +146,5 @@
     <string name="title_disable_suggestions_prompt">Desativar sugestões de apps?</string>
     <string name="msg_disable_suggestions_prompt">As sugestões não serão exibidas na parte superior da sua lista de apps, e os dados de uso utilizados para criá-las serão permanentemente limpos.</string>
     <string name="label_turn_off_suggestions">DESATIVAR</string>
+    <string name="action_edit">Editar</string>
 </resources>

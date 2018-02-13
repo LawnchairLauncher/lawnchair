@@ -146,4 +146,7 @@
     <string name="title_disable_suggestions_prompt">Kikapcsolja az alkalmazásjavaslatokat?</string>
     <string name="msg_disable_suggestions_prompt">Nem fognak megjelenni javaslatok az alkalmazáslista tetején, a létrehozásukra felhasznált használati adatok pedig véglegesen törlődnek.</string>
     <string name="label_turn_off_suggestions">KIKAPCSOLÁS</string>
+    <string name="action_edit">Szerkesztés</string>
+  <string name="hide_app_sum">Alkalmazás elrejtése az alkalmazásfiókból</string>
+  <string name="hide_app">Alkalmazás elrejtése</string>
 </resources>

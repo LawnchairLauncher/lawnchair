@@ -146,4 +146,5 @@
     <string name="title_disable_suggestions_prompt">I-off ang mga iminumungkahing app?</string>
     <string name="msg_disable_suggestions_prompt">Hindi makikita ang mga suhestyon sa itaas ng listahan ng iyong mga app at permanenteng mabubura ang data ng paggamit na ginamit upang gawin ang mga ito.</string>
     <string name="label_turn_off_suggestions">I-OFF</string>
+    <string name="action_edit">I-edit</string>
 </resources>

@@ -146,4 +146,7 @@
     <string name="title_disable_suggestions_prompt">Απενεργοποίηση των προτάσεων εφαρμογών;</string>
     <string name="msg_disable_suggestions_prompt">Οι προτάσεις που δεν θα εμφανίζονται στο επάνω μέρος της λίστας των εφαρμογών σας και τα δεδομένα χρήσης που χρησιμοποιούνται για τη δημιουργία τους θα διαγραφούν οριστικά.</string>
     <string name="label_turn_off_suggestions">ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ</string>
+    <string name="action_edit">Επεξεργασία</string>
+  <string name="hide_app_sum">Απόκρυψη εφαρμογών από το συρτάρι εφαρμογών</string>
+  <string name="hide_app">Κρυφές εφαρμογές</string>
 </resources>

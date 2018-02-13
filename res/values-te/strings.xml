@@ -146,4 +146,5 @@
     <string name="title_disable_suggestions_prompt">అనువర్తన సూచనలను ఆఫ్ చేయాలా?</string>
     <string name="msg_disable_suggestions_prompt">సూచనలు మీ అనువర్తనాల జాబితా పైభాగంలో కనిపించవు మరియు వాటిని సృష్టించడానికి వినియోగించిన వినియోగ డేటా శాశ్వతంగా తొలగించబడుతుంది.</string>
     <string name="label_turn_off_suggestions">ఆఫ్ చేయి</string>
+    <string name="action_edit">సవరించు</string>
 </resources>

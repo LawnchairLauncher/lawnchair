@@ -146,4 +146,6 @@
     <string name="title_disable_suggestions_prompt">Вимкнути пропозиції додатків?</string>
     <string name="msg_disable_suggestions_prompt">Пропозиції не відображатимуться вгорі списку додатків. Дані, які використовувалися для створення пропозицій, буде стерто назавжди.</string>
     <string name="label_turn_off_suggestions">ВИМКНУТИ</string>
+    <string name="action_edit">Редагувати</string>
+  <string name="hide_app">Приховати програму</string>
 </resources>

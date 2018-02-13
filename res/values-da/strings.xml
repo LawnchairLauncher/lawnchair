@@ -146,4 +146,7 @@
     <string name="title_disable_suggestions_prompt">Vil du slå appforslag fra?</string>
     <string name="msg_disable_suggestions_prompt">Der vises ikke forslag øverst på din liste over apps, og de brugsdata, der anvendes til at oprette dem, slettes permanent.</string>
     <string name="label_turn_off_suggestions">SLÅ FRA</string>
+    <string name="action_edit">Rediger</string>
+  <string name="hide_app_sum">Skjul app fra oversigten</string>
+  <string name="hide_app">Skjule app</string>
 </resources>

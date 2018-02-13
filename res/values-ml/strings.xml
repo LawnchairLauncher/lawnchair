@@ -146,4 +146,5 @@
     <string name="title_disable_suggestions_prompt">ആപ്പ് നിർദ്ദേശങ്ങൾ ഓഫാക്കണോ?</string>
     <string name="msg_disable_suggestions_prompt">നിങ്ങളുടെ ആപ്സ് ലിസ്റ്റിന്റെ മുകളിൽ നിർദ്ദേശങ്ങൾ ദൃശ്യമാകില്ല, അവ സൃഷ്ടിക്കാൻ ഉപയോഗിച്ച ഉപയോഗ ഡാറ്റ ശാശ്വതമായി മായ്ക്കപ്പെടും.</string>
     <string name="label_turn_off_suggestions">ഓഫാക്കുക</string>
+    <string name="action_edit">തിരുത്തുക</string>
 </resources>

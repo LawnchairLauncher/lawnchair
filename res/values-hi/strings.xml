@@ -146,4 +146,7 @@
     <string name="title_disable_suggestions_prompt">ऐप्लिकेशन सुझाव बंद करें?</string>
     <string name="msg_disable_suggestions_prompt">सुझाव आपकी ऐप्लिकेशन सूची के शीर्ष पर नहीं दिखाई देंगे और उन्हें बनाने के लिए उपयोग किया गया उपयोग डेटा स्थायी रूप से मिटा दिया जाएगा.</string>
     <string name="label_turn_off_suggestions">बंद करें</string>
+    <string name="action_edit">संपादित करें</string>
+  <string name="hide_app_sum">एप्लिकेशन दराज से एप्लिकेशन छुपाएं</string>
+  <string name="hide_app">एप्लिकेशन छुपाएँ</string>
 </resources>

@@ -144,4 +144,6 @@
     <string name="title_disable_suggestions_prompt">Nonaktifkan saran aplikasi?</string>
     <string name="msg_disable_suggestions_prompt">Saran tidak akan muncul di bagian atas daftar aplikasi Anda, dan data penggunaan yang digunakan untuk membuatnya akan dihapus secara permanen.</string>
     <string name="label_turn_off_suggestions">NONAKTIFKAN</string>
+  <string name="hide_app_sum">Sembunyikan dari laci aplikasi</string>
+  <string name="hide_app">Sembunyikan aplikasi</string>
 </resources>

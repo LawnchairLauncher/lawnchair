@@ -146,4 +146,7 @@
     <string name="title_disable_suggestions_prompt">Disattivare i suggerimenti di app?</string>
     <string name="msg_disable_suggestions_prompt">"I suggerimenti non verranno mostrati in cima all'elenco delle tue app e i dati sull'utilizzo utilizzati per crearli verranno cancellati definitivamente."</string>
     <string name="label_turn_off_suggestions">DISATTIVA</string>
+    <string name="action_edit">Modifica</string>
+  <string name="hide_app_sum">Nascondi app dal menù delle applicazioni</string>
+  <string name="hide_app">Nascondi app</string>
 </resources>

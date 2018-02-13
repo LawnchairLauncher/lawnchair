@@ -146,4 +146,5 @@
     <string name="title_disable_suggestions_prompt">Želite li isključiti prijedloge aplikacija?</string>
     <string name="msg_disable_suggestions_prompt">Prijedlozi se neće prikazivati na vrhu popisa aplikacija, a podaci o upotrebi na temelju kojih su izrađeni trajno će se izbrisati.</string>
     <string name="label_turn_off_suggestions">ISKLJUČI</string>
+    <string name="action_edit">Uredi</string>
 </resources>
