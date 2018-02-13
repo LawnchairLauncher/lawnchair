@@ -52,6 +52,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import com.android.launcher3.Launcher.LauncherOverlay;
@@ -235,6 +236,7 @@ public class Workspace extends PagedView
     boolean mStartedSendingScrollEvents;
     float mLastOverlayScroll = 0;
     boolean mOverlayShown = false;
+    private Runnable mOnOverlayHiddenCallback;
 
     private boolean mForceDrawAdjacentPages = false;
     private boolean mPageRearrangeEnabled = false;
@@ -1163,6 +1165,10 @@ public class Workspace extends PagedView
             if (mOverlayShown) {
                 mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.SWIPE,
                         Action.Direction.RIGHT, ContainerType.WORKSPACE, -1);
+                if (mOnOverlayHiddenCallback != null) {
+                    mOnOverlayHiddenCallback.run();
+                    mOnOverlayHiddenCallback = null;
+                }
             }
             mOverlayShown = false;
         }
@@ -1186,6 +1192,59 @@ public class Workspace extends PagedView
         // device I've tried, translating the launcher causes things to get quite laggy.
         mLauncher.getDragLayer().setTranslationX(transX);
         mLauncher.getDragLayer().setAlpha(alpha);
+    }
+
+    /**
+     * Runs the given callback when the minus one overlay is hidden. Specifically, it is run
+     * when launcher's window has focus and the overlay is no longer being shown. If a callback
+     * is already present, the new callback will chain off it so both are run.
+     *
+     * @return Whether the callback was deferred.
+     */
+    public boolean runOnOverlayHidden(Runnable callback) {
+        View rootView = getRootView();
+        if (rootView.hasWindowFocus()) {
+            if (mOverlayShown) {
+                chainOverlayHiddenCallback(callback);
+                return true;
+            } else {
+                callback.run();
+                return false;
+            }
+        }
+        ViewTreeObserver observer = rootView.getViewTreeObserver();
+        if (observer != null && observer.isAlive()) {
+            observer.addOnWindowFocusChangeListener(
+                    new ViewTreeObserver.OnWindowFocusChangeListener() {
+                        @Override
+                        public void onWindowFocusChanged(boolean hasFocus) {
+                            if (hasFocus) {
+                                // Defer further if the minus one overlay is still showing.
+                                if (mOverlayShown) {
+                                    chainOverlayHiddenCallback(callback);
+                                } else {
+                                    callback.run();
+                                }
+                                observer.removeOnWindowFocusChangeListener(this);
+                            }
+                        }
+                    });
+            return true;
+        }
+        return false;
+    }
+
+    private void chainOverlayHiddenCallback(Runnable callback) {
+        if (mOnOverlayHiddenCallback == null) {
+            mOnOverlayHiddenCallback = callback;
+        } else {
+            // Chain the new callback onto the previous callback(s).
+            Runnable oldCallback = mOnOverlayHiddenCallback;
+            mOnOverlayHiddenCallback = () -> {
+                oldCallback.run();
+                callback.run();
+            };
+        }
     }
 
     @Override
