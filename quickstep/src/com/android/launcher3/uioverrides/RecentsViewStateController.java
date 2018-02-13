@@ -34,6 +34,7 @@ import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsView;
+import com.android.quickstep.TaskView;
 
 public class RecentsViewStateController implements StateHandler {
 
@@ -62,6 +63,12 @@ public class RecentsViewStateController implements StateHandler {
         mWorkspaceCard.setWorkspaceScrollingEnabled(state == OVERVIEW);
         setVisibility(state == OVERVIEW);
         setTransitionProgress(state == OVERVIEW ? 1 : 0);
+        if (state == OVERVIEW) {
+            for (int i = mRecentsView.getFirstTaskIndex(); i < mRecentsView.getPageCount(); i++) {
+                ((TaskView) mRecentsView.getPageAt(i)).resetVisualProperties();
+            }
+            mRecentsView.updateCurveProperties();
+        }
     }
 
     @Override

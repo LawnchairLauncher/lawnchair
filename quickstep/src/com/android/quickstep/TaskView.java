@@ -24,7 +24,6 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Outline;
-import android.graphics.Rect;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
@@ -32,19 +31,15 @@ import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.quickstep.RecentsView.PageCallbacks;
 import com.android.quickstep.RecentsView.ScrollState;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskCallbacks;
 import com.android.systemui.shared.recents.model.ThumbnailData;
-import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecCompat;
-import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecsFuture;
-import com.android.systemui.shared.recents.view.RecentsTransition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -120,26 +115,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         if (mTask != null) {
             final ActivityOptions opts;
             if (animate) {
-                // Calculate the bounds of the thumbnail to animate from
-                final Rect bounds = new Rect();
-                final int[] pos = new int[2];
-                mSnapshotView.getLocationInWindow(pos);
-                bounds.set(pos[0], pos[1],
-                        pos[0] + mSnapshotView.getWidth(),
-                        pos[1] + mSnapshotView.getHeight());
-                AppTransitionAnimationSpecsFuture animFuture =
-                        new AppTransitionAnimationSpecsFuture(getHandler()) {
-                            @Override
-                            public List<AppTransitionAnimationSpecCompat> composeSpecs() {
-                                ArrayList<AppTransitionAnimationSpecCompat> specs =
-                                        new ArrayList<>();
-                                specs.add(new AppTransitionAnimationSpecCompat(mTask.key.id, null,
-                                        bounds));
-                                return specs;
-                            }
-                        };
-                opts = RecentsTransition.createAspectScaleAnimation(
-                        getContext(), getHandler(), true /* scaleUp */, animFuture, null);
+                opts = Launcher.getLauncher(getContext()).getActivityLaunchOptions(this, false);
             } else {
                 opts = ActivityOptions.makeCustomAnimation(getContext(), 0, 0);
             }
@@ -178,6 +154,14 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         mIconView.setScaleY(iconScale);
     }
 
+    public void resetVisualProperties() {
+        setScaleX(1f);
+        setScaleY(1f);
+        setTranslationX(0f);
+        setTranslationY(0f);
+        setAlpha(1f);
+    }
+
     @Override
     public int onPageScroll(ScrollState scrollState) {
         float curveInterpolation =
@@ -208,7 +192,6 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         scrollState.prevPageExtraWidth = 0;
         return SCROLL_TYPE_TASK;
     }
-
 
     private static final class TaskOutlineProvider extends ViewOutlineProvider {
 

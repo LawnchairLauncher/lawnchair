@@ -39,6 +39,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
@@ -1924,7 +1925,7 @@ public class Launcher extends BaseActivity
             intent.setSourceBounds(getViewBounds(v));
             // If there is no target package, use the default intent chooser animation
             launchOptions = hasTargetPackage
-                    ? getActivityLaunchOptions(v, isInMultiWindowModeCompat())
+                    ? getActivityLaunchOptionsAsBundle(v, isInMultiWindowModeCompat())
                     : null;
         } else {
             launchOptions = null;
@@ -1979,8 +1980,13 @@ public class Launcher extends BaseActivity
         }
     }
 
+    public Bundle getActivityLaunchOptionsAsBundle(View v, boolean useDefaultLaunchOptions) {
+        ActivityOptions activityOptions = getActivityLaunchOptions(v, useDefaultLaunchOptions);
+        return activityOptions == null ? null : activityOptions.toBundle();
+    }
+
     @TargetApi(Build.VERSION_CODES.M)
-    public Bundle getActivityLaunchOptions(View v, boolean useDefaultLaunchOptions) {
+    public ActivityOptions getActivityLaunchOptions(View v, boolean useDefaultLaunchOptions) {
         return useDefaultLaunchOptions
                 ? mAppTransitionManager.getDefaultActivityLaunchOptions(this, v)
                 : mAppTransitionManager.getActivityLaunchOptions(this, v);
@@ -2004,7 +2010,7 @@ public class Launcher extends BaseActivity
         boolean useLaunchAnimation = (v != null) &&
                 !intent.hasExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION);
         Bundle optsBundle = useLaunchAnimation
-                ? getActivityLaunchOptions(v, isInMultiWindowModeCompat())
+                ? getActivityLaunchOptionsAsBundle(v, isInMultiWindowModeCompat())
                 : null;
 
         UserHandle user = item == null ? null : item.user;
