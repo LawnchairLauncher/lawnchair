@@ -34,6 +34,54 @@
         />
 
     <profile
+        launcher:name="High DPI (4x4)"
+        launcher:minWidthDps="296"
+        launcher:minHeightDps="545"
+        launcher:numRows="4"
+        launcher:numColumns="4"
+        launcher:numFolderRows="3"
+        launcher:numFolderColumns="4"
+        launcher:minAllAppsPredictionColumns="4"
+        launcher:numHotseatIcons="4"
+        launcher:iconSize="56"
+        launcher:landscapeIconSize="54"
+        launcher:iconTextSize="13.0"
+        launcher:defaultLayoutId="@xml/default_workspace_4x4"
+        />
+
+    <profile
+        launcher:name="Taimen (Display size set to Largest)"
+        launcher:minWidthDps="296"
+        launcher:minHeightDps="568"
+        launcher:numRows="5"
+        launcher:numColumns="5"
+        launcher:numFolderRows="4"
+        launcher:numFolderColumns="4"
+        launcher:minAllAppsPredictionColumns="4"
+        launcher:numHotseatIcons="5"
+        launcher:iconSize="54"
+        launcher:landscapeIconSize="48"
+        launcher:iconTextSize="13.0"
+        launcher:defaultLayoutId="@xml/default_workspace_5x5"
+        />
+
+    <profile
+        launcher:name="High DPI (5x4)"
+        launcher:minWidthDps="322"
+        launcher:minHeightDps="557"
+        launcher:numRows="4"
+        launcher:numColumns="5"
+        launcher:numFolderRows="4"
+        launcher:numFolderColumns="4"
+        launcher:minAllAppsPredictionColumns="4"
+        launcher:numHotseatIcons="5"
+        launcher:iconSize="56"
+        launcher:landscapeIconSize="54"
+        launcher:iconTextSize="13.0"
+        launcher:defaultLayoutId="@xml/default_workspace_5x5"
+        />
+
+    <profile
         launcher:name="Pixel"
         launcher:minWidthDps="387"
         launcher:minHeightDps="659"
@@ -48,24 +96,6 @@
         launcher:iconTextSize="13.0"
         launcher:defaultLayoutId="@xml/default_workspace_5x5"
         />
-
-    <!-- Bugged on 16:9 without navbar
-    <profile
-        launcher:name="Taimen (Display size set to Largest)"
-        launcher:minHeightDps="568"
-        launcher:minWidthDps="296"
-        launcher:numRows="5"
-        launcher:numColumns="5"
-        launcher:numFolderColumns="4"
-        launcher:numFolderRows="4"
-        launcher:minAllAppsPredictionColumns="4"
-        launcher:numHotseatIcons="5"
-        launcher:iconSize="54"
-        launcher:landscapeIconSize="48"
-        launcher:iconTextSize="13"
-        launcher:defaultLayoutId="@xml/default_workspace_5x5"
-        />
-    -->
 
     <profile
         launcher:name="Taimen"
@@ -85,7 +115,7 @@
 
     <profile
         launcher:name="Low DPI"
-        launcher:minWidthDps="498"
+        launcher:minWidthDps="525"
         launcher:minHeightDps="750"
         launcher:numRows="6"
         launcher:numColumns="6"
