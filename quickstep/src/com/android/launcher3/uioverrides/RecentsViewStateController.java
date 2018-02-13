@@ -139,7 +139,9 @@ public class RecentsViewStateController implements StateHandler {
         applyProgress();
         if (mIsRecentsScrollingToFirstTask) {
             int scrollForFirstTask = mRecentsView.getScrollForPage(mRecentsView.getFirstTaskIndex());
-            mRecentsView.setScrollX((int) (mTransitionProgress.value * scrollForFirstTask));
+            int scrollForPage0 = mRecentsView.getScrollForPage(0);
+            mRecentsView.setScrollX((int) (mTransitionProgress.value * scrollForFirstTask
+                    + (1 - mTransitionProgress.value) * scrollForPage0));
         }
     }
 
