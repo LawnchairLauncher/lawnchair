@@ -21,8 +21,6 @@ import android.graphics.Rect;
 import android.os.Process;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
@@ -50,7 +48,6 @@ import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
@@ -59,11 +56,7 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ItemInfoMatcher;
-import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.views.BottomUserEducationView;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * The all apps view container.
@@ -80,9 +73,8 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
 
     private SearchUiManager mSearchUiManager;
     private View mSearchContainer;
-    private InterceptingViewPager mViewPager;
+    private AllAppsPagedView mViewPager;
     private FloatingHeaderView mHeader;
-    private TabsPagerAdapter mTabsPagerAdapter;
 
     private SpannableStringBuilder mSearchQueryBuilder = null;
 
@@ -184,7 +176,7 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
     }
 
     public AllAppsRecyclerView getActiveRecyclerView() {
-        if (!mUsingTabs || mViewPager.getCurrentItem() == 0) {
+        if (!mUsingTabs || mViewPager.getNextPage() == 0) {
             return mAH[AdapterHolder.MAIN].recyclerView;
         } else {
             return mAH[AdapterHolder.WORK].recyclerView;
@@ -329,9 +321,8 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         if (mUsingTabs) {
             mAH[AdapterHolder.MAIN].setup(mViewPager.getChildAt(0), mPersonalMatcher);
             mAH[AdapterHolder.WORK].setup(mViewPager.getChildAt(1), mWorkMatcher);
-            setupWorkProfileTabs();
+            onTabChanged(mViewPager.getNextPage());
         } else {
-            mTabsPagerAdapter = null;
             mAH[AdapterHolder.MAIN].setup(findViewById(R.id.apps_list_view), null);
             mAH[AdapterHolder.WORK].recyclerView = null;
         }
@@ -355,50 +346,35 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
         int layout = showTabs ? R.layout.all_apps_tabs : R.layout.all_apps_rv_layout;
         View newView = LayoutInflater.from(getContext()).inflate(layout, this, false);
         addView(newView, index);
-        mViewPager = showTabs ? (InterceptingViewPager) newView : null;
+        if (showTabs) {
+            mViewPager = (AllAppsPagedView) newView;
+            mViewPager.initParentViews(this);
+            mViewPager.getPageIndicator().setContainerView(this);
+        } else {
+            mViewPager = null;
+        }
     }
 
     public View getRecyclerViewContainer() {
         return mViewPager != null ? mViewPager : findViewById(R.id.apps_list_view);
     }
 
-    private void setupWorkProfileTabs() {
-        if (mTabsPagerAdapter != null) {
-            return;
+    public void onTabChanged(int pos) {
+        mHeader.setMainActive(pos == 0);
+        reset();
+        applyTouchDelegate();
+        if (mAH[pos].recyclerView != null) {
+            mAH[pos].recyclerView.bindFastScrollbar();
+
+            findViewById(R.id.tab_personal)
+                    .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.MAIN));
+            findViewById(R.id.tab_work)
+                    .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.WORK));
+
         }
-        final PersonalWorkSlidingTabStrip tabs = findViewById(R.id.tabs);
-        mViewPager.setAdapter(mTabsPagerAdapter = new TabsPagerAdapter());
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                tabs.updateIndicatorPosition(position, positionOffset);
-            }
-
-            @Override
-            public void onPageSelected(int pos) {
-                tabs.updateTabTextColor(pos);
-                mHeader.setMainActive(pos == 0);
-                reset();
-                applyTouchDelegate();
-                if (mAH[pos].recyclerView != null) {
-                    mAH[pos].recyclerView.bindFastScrollbar();
-                }
-                if (pos == AdapterHolder.WORK) {
-                    BottomUserEducationView.showIfNeeded(mLauncher);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
-        mAH[AdapterHolder.MAIN].recyclerView.bindFastScrollbar();
-
-        findViewById(R.id.tab_personal)
-                .setOnClickListener((View view) -> mViewPager.setCurrentItem(0));
-        findViewById(R.id.tab_work)
-                .setOnClickListener((View view) -> mViewPager.setCurrentItem(1));
+        if (pos == AdapterHolder.WORK) {
+            BottomUserEducationView.showIfNeeded(mLauncher);
+        }
     }
 
     public AlphabeticalAppsList getApps() {
@@ -519,37 +495,4 @@ public class AllAppsContainerView extends RelativeLayout implements DragSource,
                     && verticalFadingEdge);
         }
     }
-
-    private class TabsPagerAdapter extends PagerAdapter {
-        @Override
-        public int getCount() {
-            return 2;
-        }
-
-        @Override
-        public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
-            return view == object;
-        }
-
-        @NonNull
-        @Override
-        public Object instantiateItem(@NonNull ViewGroup container, int position) {
-            if (position == 0) {
-                return mAH[AdapterHolder.MAIN].recyclerView;
-            } else {
-                return mAH[AdapterHolder.WORK].recyclerView;
-            }
-        }
-
-        @Nullable
-        @Override
-        public CharSequence getPageTitle(int position) {
-            if (position == 0) {
-                return getResources().getString(R.string.all_apps_personal_tab);
-            } else {
-                return getResources().getString(R.string.all_apps_work_tab);
-            }
-        }
-    }
-
 }
