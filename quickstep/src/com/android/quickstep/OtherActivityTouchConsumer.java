@@ -331,6 +331,10 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
             // Since we start touch tracking on DOWN, we may reach this state without actually
             // starting the gesture. In that case, just cleanup immediately.
             reset();
+
+            // Also clean up in case the system has handled the UP and canceled the animation before
+            // we had a chance to start the recents animation. In such a case, we will not receive
+            ActivityManagerWrapper.getInstance().cancelRecentsAnimation();
         }
         mVelocityTracker.recycle();
         mVelocityTracker = null;
