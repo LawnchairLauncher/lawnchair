@@ -62,6 +62,7 @@ import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.TouchConsumer.InteractionType;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TransactionCompat;
@@ -162,12 +163,16 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     private @InteractionType int mInteractionType = INTERACTION_NORMAL;
     private boolean mDeferredQuickScrubEnd;
 
+    private InputConsumerController mInputConsumer =
+            InputConsumerController.getRecentsAnimationInputConsumer();
+
     private final RecentsAnimationWrapper mRecentsAnimationWrapper = new RecentsAnimationWrapper();
     private Matrix mTmpMatrix = new Matrix();
 
     WindowTransformSwipeHandler(RunningTaskInfo runningTaskInfo, Context context) {
         mContext = context;
         mRunningTaskId = runningTaskInfo.id;
+        mInputConsumer.registerInputConsumer();
         initStateCallbacks();
     }
 
@@ -529,6 +534,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
         setStateOnUiThread(STATE_GESTURE_STARTED);
         mGestureStarted = true;
+        mRecentsAnimationWrapper.enableInputConsumer();
     }
 
     /**
@@ -600,6 +606,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         }
 
         clearReference();
+        mInputConsumer.unregisterInputConsumer();
     }
 
     private void invalidateHandlerWithLauncher() {
