@@ -1975,18 +1975,12 @@ public class Launcher extends BaseActivity
             return mAppLaunchSuccess;
         }
 
-        boolean isShortcut = Utilities.ATLEAST_MARSHMALLOW
-                && (item instanceof ShortcutInfo)
-                && (item.itemType == Favorites.ITEM_TYPE_SHORTCUT
-                || item.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)
-                && !((ShortcutInfo) item).isPromise();
-
         // Only launch using the new animation if the shortcut has not opted out (this is a
         // private contract between launcher and may be ignored in the future).
         boolean useLaunchAnimation = (v != null) &&
                 !intent.hasExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION);
         Bundle optsBundle = useLaunchAnimation
-                ? getActivityLaunchOptions(v, isShortcut || isInMultiWindowModeCompat())
+                ? getActivityLaunchOptions(v, isInMultiWindowModeCompat())
                 : null;
 
         UserHandle user = item == null ? null : item.user;
@@ -1997,6 +1991,11 @@ public class Launcher extends BaseActivity
             intent.setSourceBounds(getViewBounds(v));
         }
         try {
+            boolean isShortcut = Utilities.ATLEAST_MARSHMALLOW
+                    && (item instanceof ShortcutInfo)
+                    && (item.itemType == Favorites.ITEM_TYPE_SHORTCUT
+                    || item.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)
+                    && !((ShortcutInfo) item).isPromise();
             if (isShortcut) {
                 // Shortcuts need some special checks due to legacy reasons.
                 startShortcutIntentSafely(intent, optsBundle, item);
