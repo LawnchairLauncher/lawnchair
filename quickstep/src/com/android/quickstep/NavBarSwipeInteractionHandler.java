@@ -371,10 +371,6 @@ public class NavBarSwipeInteractionHandler extends BaseSwipeInteractionHandler i
             if (mQuickScrubController != null) {
                 mQuickScrubController.onQuickSwitch();
             }
-        } else if (mInteractionType == INTERACTION_QUICK_SCRUB) {
-            if (mQuickScrubController != null) {
-                mQuickScrubController.snapToPageForCurrentQuickScrubSection();
-            }
         }
     }
 

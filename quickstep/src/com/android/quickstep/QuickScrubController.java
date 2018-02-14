@@ -38,9 +38,10 @@ public class QuickScrubController implements OnAlarmListener {
     private static final int QUICKSCRUB_SNAP_DURATION_PER_PAGE = 325;
     private static final int QUICKSCRUB_END_SNAP_DURATION_PER_PAGE = 60;
 
-    private Alarm mAutoAdvanceAlarm;
-    private RecentsView mRecentsView;
+    private final Alarm mAutoAdvanceAlarm;
+    private final RecentsView mRecentsView;
 
+    private boolean mInQuickScrub;
     private int mQuickScrubSection;
     private int mStartPage;
 
@@ -51,32 +52,30 @@ public class QuickScrubController implements OnAlarmListener {
     }
 
     public void onQuickScrubStart(boolean startingFromHome) {
+        mInQuickScrub = true;
         mStartPage = startingFromHome ? 0 : mRecentsView.getFirstTaskIndex();
         mQuickScrubSection = 0;
     }
 
     public void onQuickScrubEnd() {
+        mInQuickScrub = false;
         mAutoAdvanceAlarm.cancelAlarm();
-        if (mRecentsView == null) {
-        } else {
-            int page = mRecentsView.getNextPage();
-            Runnable launchTaskRunnable = () -> {
-                if (page < mRecentsView.getFirstTaskIndex()) {
-                    // Call post() since we can't performClick() on a background thread.
-                    mRecentsView.post(() -> mRecentsView.getPageAt(page).performClick());
-                } else {
-                    ((TaskView) mRecentsView.getPageAt(page)).launchTask(true);
-                }
-            };
-            int snapDuration = Math.abs(page - mRecentsView.getPageNearestToCenterOfScreen())
-                    * QUICKSCRUB_END_SNAP_DURATION_PER_PAGE;
-            if (mRecentsView.snapToPage(page, snapDuration)) {
-                // Settle on the page then launch it
-                mRecentsView.setNextPageSwitchRunnable(launchTaskRunnable);
+        int page = mRecentsView.getNextPage();
+        Runnable launchTaskRunnable = () -> {
+            if (page < mRecentsView.getFirstTaskIndex()) {
+                mRecentsView.getPageAt(page).performClick();
             } else {
-                // No page move needed, just launch it
-                launchTaskRunnable.run();
+                ((TaskView) mRecentsView.getPageAt(page)).launchTask(true);
             }
+        };
+        int snapDuration = Math.abs(page - mRecentsView.getPageNearestToCenterOfScreen())
+                * QUICKSCRUB_END_SNAP_DURATION_PER_PAGE;
+        if (mRecentsView.snapToPage(page, snapDuration)) {
+            // Settle on the page then launch it
+            mRecentsView.setNextPageSwitchRunnable(launchTaskRunnable);
+        } else {
+            // No page move needed, just launch it
+            launchTaskRunnable.run();
         }
     }
 
@@ -112,7 +111,9 @@ public class QuickScrubController implements OnAlarmListener {
     }
 
     public void snapToPageForCurrentQuickScrubSection() {
-        goToPageWithHaptic(mRecentsView.getFirstTaskIndex() + mQuickScrubSection);
+        if (mInQuickScrub) {
+            goToPageWithHaptic(mRecentsView.getFirstTaskIndex() + mQuickScrubSection);
+        }
     }
 
     private void goToPageWithHaptic(int pageToGoTo) {

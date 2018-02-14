@@ -23,8 +23,6 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.quickstep.QuickScrubController.QUICK_SWITCH_START_DURATION;
-import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
-import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SWITCH;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -77,7 +75,7 @@ public class TouchInteractionService extends Service {
 
         @Override
         public void onMotionEvent(MotionEvent ev) {
-            onBinderMotionEvent(ev);
+            mEventQueue.queue(ev);
         }
 
         @Override
@@ -90,29 +88,28 @@ public class TouchInteractionService extends Service {
 
         @Override
         public void onQuickSwitch() {
-            mCurrentConsumer.updateTouchTracking(INTERACTION_QUICK_SWITCH);
+            mEventQueue.onQuickSwitch();
         }
 
         @Override
         public void onQuickScrubStart() {
-            mCurrentConsumer.updateTouchTracking(INTERACTION_QUICK_SCRUB);
+            mEventQueue.onQuickScrubStart();
             sQuickScrubEnabled = true;
         }
 
         @Override
-        public void onQuickScrubEnd() {
-            mCurrentConsumer.onQuickScrubEnd();
-            sQuickScrubEnabled = false;
+        public void onQuickScrubProgress(float progress) {
+            mEventQueue.onQuickScrubProgress(progress);
         }
 
         @Override
-        public void onQuickScrubProgress(float progress) {
-            mCurrentConsumer.onQuickScrubProgress(progress);
+        public void onQuickScrubEnd() {
+            mEventQueue.onQuickScrubEnd();
+            sQuickScrubEnabled = false;
         }
     };
 
     private final TouchConsumer mNoOpTouchConsumer = (ev) -> {};
-    private TouchConsumer mCurrentConsumer = mNoOpTouchConsumer;
 
     private static boolean sConnected = false;
     private static boolean sQuickScrubEnabled = false;
@@ -133,7 +130,10 @@ public class TouchInteractionService extends Service {
     private MotionEventQueue mEventQueue;
     private MainThreadExecutor mMainThreadExecutor;
     private ISystemUiProxy mISystemUiProxy;
+
+    private Choreographer mMainThreadChoreographer;
     private Choreographer mBackgroundThreadChoreographer;
+    private MotionEventQueue mNoOpEventQueue;
 
     @Override
     public void onCreate() {
@@ -151,7 +151,10 @@ public class TouchInteractionService extends Service {
         // Clear the packageName as system can fail to dedupe it b/64108432
         mHomeIntent.setComponent(mLauncher).setPackage(null);
 
-        mEventQueue = new MotionEventQueue(Choreographer.getInstance(), mNoOpTouchConsumer);
+        mMainThreadChoreographer = Choreographer.getInstance();
+        mNoOpEventQueue = new MotionEventQueue(mMainThreadChoreographer, mNoOpTouchConsumer);
+        mEventQueue = mNoOpEventQueue;
+
         sConnected = true;
 
         // Temporarily disable model preload
@@ -175,60 +178,32 @@ public class TouchInteractionService extends Service {
     private void onBinderPreMotionEvent(@HitTarget int downHitTarget) {
         mRunningTask = mAM.getRunningTask();
 
-        mCurrentConsumer.reset();
+        mEventQueue.reset();
+
         if (mRunningTask == null) {
-            mCurrentConsumer = mNoOpTouchConsumer;
+            mEventQueue = mNoOpEventQueue;
         } else if (mRunningTask.topActivity.equals(mLauncher)) {
-            mCurrentConsumer = getLauncherConsumer();
+            mEventQueue = getLauncherEventQueue();
         } else {
-            mCurrentConsumer = getOtherActivityConsumer();
+            mEventQueue = new MotionEventQueue(mMainThreadChoreographer,
+                    new OtherActivityTouchConsumer(this, mRunningTask, mRecentsModel,
+                    mHomeIntent, mISystemUiProxy, mMainThreadExecutor,
+                    mBackgroundThreadChoreographer));
         }
-
-        mCurrentConsumer.setDownHitTarget(downHitTarget);
-        mEventQueue.setConsumer(mCurrentConsumer);
-        mEventQueue.setInterimChoreographer(mCurrentConsumer.shouldUseBackgroundConsumer()
-                ? mBackgroundThreadChoreographer : null);
     }
 
-    private void onBinderMotionEvent(MotionEvent ev) {
-        mCurrentConsumer.preProcessMotionEvent(ev);
-        mEventQueue.queue(ev);
-    }
-
-    private TouchConsumer getOtherActivityConsumer() {
-        TouchConsumer consumer = new OtherActivityTouchConsumer(this, mRunningTask, mRecentsModel,
-                mHomeIntent, mISystemUiProxy, mMainThreadExecutor) {
-
-            @Override
-            public void switchToMainChoreographer() {
-                if (mCurrentConsumer == this) {
-                    mEventQueue.setInterimChoreographer(null);
-                }
-            }
-
-            @Override
-            public void onTouchTrackingComplete() {
-                if (mCurrentConsumer == this) {
-                    mCurrentConsumer = mNoOpTouchConsumer;
-                    mEventQueue.setConsumer(mCurrentConsumer);
-                }
-            }
-        };
-        return consumer;
-    }
-
-    private TouchConsumer getLauncherConsumer() {
-
+    private MotionEventQueue getLauncherEventQueue() {
         Launcher launcher = (Launcher) LauncherAppState.getInstance(this).getModel().getCallback();
         if (launcher == null) {
-            return mNoOpTouchConsumer;
+            return mNoOpEventQueue;
         }
 
         View target = launcher.getDragLayer();
-        return new LauncherTouchConsumer(launcher, target);
+        return new MotionEventQueue(mMainThreadChoreographer,
+                new LauncherTouchConsumer(launcher, target));
     }
 
-    private class LauncherTouchConsumer implements TouchConsumer {
+    private static class LauncherTouchConsumer implements TouchConsumer {
 
         private final Launcher mLauncher;
         private final View mTarget;
@@ -238,6 +213,7 @@ public class TouchInteractionService extends Service {
         private final QuickScrubController mQuickScrubController;
 
         private boolean mTrackingStarted = false;
+        private boolean mInvalidated = false;
 
         LauncherTouchConsumer(Launcher launcher, View target) {
             mLauncher = launcher;
@@ -250,6 +226,9 @@ public class TouchInteractionService extends Service {
 
         @Override
         public void accept(MotionEvent ev) {
+            if (mInvalidated) {
+                return;
+            }
             if (!mTarget.hasWindowFocus()) {
                 return;
             }
@@ -262,7 +241,7 @@ public class TouchInteractionService extends Service {
                     case ACTION_POINTER_UP:
                     case ACTION_POINTER_DOWN:
                         if (!mTrackingStarted) {
-                            mEventQueue.setConsumer(mNoOpTouchConsumer);
+                            mInvalidated = true;
                         }
                         break;
                     case ACTION_MOVE: {
@@ -286,7 +265,7 @@ public class TouchInteractionService extends Service {
             }
 
             if (action == ACTION_UP || action == ACTION_CANCEL) {
-                mEventQueue.setConsumer(mNoOpTouchConsumer);
+                mInvalidated = true;
             }
         }
 
@@ -301,35 +280,42 @@ public class TouchInteractionService extends Service {
 
         @Override
         public void updateTouchTracking(int interactionType) {
-            mMainThreadExecutor.execute(() -> {
-                if (TouchConsumer.isInteractionQuick(interactionType)) {
-                    Runnable action = () -> {
-                        Runnable onComplete = null;
-                        if (interactionType == INTERACTION_QUICK_SCRUB) {
-                            mQuickScrubController.onQuickScrubStart(true);
-                        } else if (interactionType == INTERACTION_QUICK_SWITCH) {
-                            onComplete = mQuickScrubController::onQuickSwitch;
-                        }
-                        mLauncher.getStateManager().goToState(OVERVIEW, true, 0,
-                                QUICK_SWITCH_START_DURATION, onComplete);
-                    };
-
-                    if (mLauncher.getWorkspace().runOnOverlayHidden(action)) {
-                        // Hide the minus one overlay so launcher can get window focus.
-                        mLauncher.onQuickstepGestureStarted(true);
+            if (mInvalidated) {
+                return;
+            }
+            if (TouchConsumer.isInteractionQuick(interactionType)) {
+                Runnable action = () -> {
+                    Runnable onComplete = null;
+                    if (interactionType == INTERACTION_QUICK_SCRUB) {
+                        mQuickScrubController.onQuickScrubStart(true);
+                    } else if (interactionType == INTERACTION_QUICK_SWITCH) {
+                        onComplete = mQuickScrubController::onQuickSwitch;
                     }
+                    mLauncher.getStateManager().goToState(OVERVIEW, true, 0,
+                            QUICK_SWITCH_START_DURATION, onComplete);
+                };
+
+                if (mLauncher.getWorkspace().runOnOverlayHidden(action)) {
+                    // Hide the minus one overlay so launcher can get window focus.
+                    mLauncher.onQuickstepGestureStarted(true);
                 }
-            });
+            }
         }
 
         @Override
         public void onQuickScrubEnd() {
-            mMainThreadExecutor.execute(mQuickScrubController::onQuickScrubEnd);
+            if (mInvalidated) {
+                return;
+            }
+            mQuickScrubController.onQuickScrubEnd();
         }
 
         @Override
         public void onQuickScrubProgress(float progress) {
-            mMainThreadExecutor.execute(() -> mQuickScrubController.onQuickScrubProgress(progress));
+            if (mInvalidated) {
+                return;
+            }
+            mQuickScrubController.onQuickScrubProgress(progress);
         }
 
     }

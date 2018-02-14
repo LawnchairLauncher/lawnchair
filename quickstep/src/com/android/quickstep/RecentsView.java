@@ -266,6 +266,8 @@ public class RecentsView extends PagedView implements Insettable {
             return;
         }
 
+        int oldChildCount = getChildCount();
+
         // Ensure there are as many views as there are tasks in the stack (adding and trimming as
         // necessary)
         final LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -295,6 +297,10 @@ public class RecentsView extends PagedView implements Insettable {
             taskView.setTranslationY(0f);
             taskView.setAlpha(1f);
             loader.loadTaskData(task);
+        }
+
+        if (oldChildCount != getChildCount()) {
+            mQuickScrubController.snapToPageForCurrentQuickScrubSection();
         }
     }
 

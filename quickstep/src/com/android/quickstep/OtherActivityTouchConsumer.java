@@ -40,6 +40,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.Choreographer;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -110,6 +111,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private final Intent mHomeIntent;
     private final ISystemUiProxy mISystemUiProxy;
     private final MainThreadExecutor mMainThreadExecutor;
+    private final Choreographer mBackgroundThreadChoreographer;
 
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
@@ -123,12 +125,13 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private @HitTarget int mDownHitTarget = HIT_TARGET_NONE;
 
     private VelocityTracker mVelocityTracker;
+    private MotionEventQueue mEventQueue;
 
     private final MetricsLogger mMetricsLogger = new MetricsLogger();
 
     public OtherActivityTouchConsumer(Context base, RunningTaskInfo runningTaskInfo,
             RecentsModel recentsModel, Intent homeIntent, ISystemUiProxy systemUiProxy,
-            MainThreadExecutor mainThreadExecutor) {
+            MainThreadExecutor mainThreadExecutor, Choreographer backgroundThreadChoreographer) {
         super(base);
         mRunningTask = runningTaskInfo;
         mRecentsModel = recentsModel;
@@ -136,6 +139,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         mVelocityTracker = VelocityTracker.obtain();
         mISystemUiProxy = systemUiProxy;
         mMainThreadExecutor = mainThreadExecutor;
+        mBackgroundThreadChoreographer = backgroundThreadChoreographer;
     }
 
     @Override
@@ -394,8 +398,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         }
         mVelocityTracker.recycle();
         mVelocityTracker = null;
-
-        onTouchTrackingComplete();
     }
 
     @Override
@@ -412,16 +414,23 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     public void updateTouchTracking(int interactionType) {
         notifyGestureStarted();
 
-        mMainThreadExecutor.execute(() -> {
+        if (isUsingScreenShot()) {
+            mMainThreadExecutor.execute(() -> {
+                if (mInteractionHandler != null) {
+                    mInteractionHandler.updateInteractionType(interactionType);
+                }
+            });
+        } else {
             if (mInteractionHandler != null) {
                 mInteractionHandler.updateInteractionType(interactionType);
             }
-        });
+        }
     }
 
     @Override
-    public boolean shouldUseBackgroundConsumer() {
-        return !isUsingScreenShot();
+    public Choreographer getIntrimChoreographer(MotionEventQueue queue) {
+        mEventQueue = queue;
+        return isUsingScreenShot() ? null : mBackgroundThreadChoreographer;
     }
 
     @Override
@@ -444,9 +453,9 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         }
     }
 
-    public void onTouchTrackingComplete() { }
-
-    public void switchToMainChoreographer() { }
+    public void switchToMainChoreographer() {
+        mEventQueue.setInterimChoreographer(null);
+    }
 
     @Override
     public void preProcessMotionEvent(MotionEvent ev) {

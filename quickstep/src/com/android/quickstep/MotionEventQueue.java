@@ -16,23 +16,43 @@
 package com.android.quickstep;
 
 import static android.view.MotionEvent.ACTION_CANCEL;
+import static android.view.MotionEvent.ACTION_MASK;
 import static android.view.MotionEvent.ACTION_MOVE;
+import static android.view.MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+
+import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
+import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SWITCH;
 
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.util.Log;
 import android.view.Choreographer;
 import android.view.MotionEvent;
 
 import com.android.systemui.shared.system.ChoreographerCompat;
 
 import java.util.ArrayList;
-import java.util.function.Consumer;
 
 /**
  * Helper class for batching input events
  */
 @TargetApi(Build.VERSION_CODES.O)
 public class MotionEventQueue {
+
+    private static final String TAG = "MotionEventQueue";
+
+    private static final int ACTION_VIRTUAL = ACTION_MASK - 1;
+
+    private static final int ACTION_QUICK_SWITCH =
+            ACTION_VIRTUAL | (1 << ACTION_POINTER_INDEX_SHIFT);
+    private static final int ACTION_QUICK_SCRUB_START =
+            ACTION_VIRTUAL | (2 << ACTION_POINTER_INDEX_SHIFT);
+    private static final int ACTION_QUICK_SCRUB_PROGRESS =
+            ACTION_VIRTUAL | (3 << ACTION_POINTER_INDEX_SHIFT);
+    private static final int ACTION_QUICK_SCRUB_END =
+            ACTION_VIRTUAL | (4 << ACTION_POINTER_INDEX_SHIFT);
+    private static final int ACTION_RESET =
+            ACTION_VIRTUAL | (5 << ACTION_POINTER_INDEX_SHIFT);
 
     private final EventArray mEmptyArray = new EventArray();
     private final Object mExecutionLock = new Object();
@@ -46,45 +66,48 @@ public class MotionEventQueue {
 
     private final Choreographer mMainChoreographer;
 
-    private Consumer<MotionEvent> mConsumer;
+    private final TouchConsumer mConsumer;
 
     private Choreographer mInterimChoreographer;
     private Choreographer mCurrentChoreographer;
 
     private Runnable mCurrentRunnable;
 
-    public MotionEventQueue(Choreographer choreographer, Consumer<MotionEvent> consumer) {
+    public MotionEventQueue(Choreographer choreographer, TouchConsumer consumer) {
         mMainChoreographer = choreographer;
         mConsumer = consumer;
 
         mCurrentChoreographer = mMainChoreographer;
         mCurrentRunnable = mMainFrameCallback;
-    }
-
-    public void setConsumer(Consumer<MotionEvent> consumer) {
-        synchronized (mExecutionLock) {
-            mConsumer = consumer;
-        }
+        setInterimChoreographerLocked(consumer.getIntrimChoreographer(this));
     }
 
     public void setInterimChoreographer(Choreographer choreographer) {
         synchronized (mExecutionLock) {
             synchronized (mArrays) {
-                mInterimChoreographer = choreographer;
-                if (choreographer == null) {
-                    mCurrentChoreographer = mMainChoreographer;
-                    mCurrentRunnable = mMainFrameCallback;
-                } else {
-                    mCurrentChoreographer = mInterimChoreographer;
-                    mCurrentRunnable = mInterimFrameCallback;
-                }
-
+                setInterimChoreographerLocked(choreographer);
                 ChoreographerCompat.postInputFrame(mCurrentChoreographer, mCurrentRunnable);
             }
         }
     }
 
+    private void  setInterimChoreographerLocked(Choreographer choreographer) {
+        mInterimChoreographer = choreographer;
+        if (choreographer == null) {
+            mCurrentChoreographer = mMainChoreographer;
+            mCurrentRunnable = mMainFrameCallback;
+        } else {
+            mCurrentChoreographer = mInterimChoreographer;
+            mCurrentRunnable = mInterimFrameCallback;
+        }
+    }
+
     public void queue(MotionEvent event) {
+        mConsumer.preProcessMotionEvent(event);
+        queueNoPreProcess(event);
+    }
+
+    private void queueNoPreProcess(MotionEvent event) {
         synchronized (mArrays) {
             EventArray array = mArrays[mCurrentIndex];
             if (array.isEmpty()) {
@@ -116,7 +139,29 @@ public class MotionEventQueue {
             int size = array.size();
             for (int i = 0; i < size; i++) {
                 MotionEvent event = array.get(i);
-                mConsumer.accept(event);
+                if (event.getActionMasked() == ACTION_VIRTUAL) {
+                    switch (event.getAction()) {
+                        case ACTION_QUICK_SWITCH:
+                            mConsumer.updateTouchTracking(INTERACTION_QUICK_SWITCH);
+                            break;
+                        case ACTION_QUICK_SCRUB_START:
+                            mConsumer.updateTouchTracking(INTERACTION_QUICK_SCRUB);
+                            break;
+                        case ACTION_QUICK_SCRUB_PROGRESS:
+                            mConsumer.onQuickScrubProgress(event.getX());
+                            break;
+                        case ACTION_QUICK_SCRUB_END:
+                            mConsumer.onQuickScrubEnd();
+                            break;
+                        case ACTION_RESET:
+                            mConsumer.reset();
+                            break;
+                        default:
+                            Log.e(TAG, "Invalid virtual event: " + event.getAction());
+                    }
+                } else {
+                    mConsumer.accept(event);
+                }
                 event.recycle();
             }
             array.clear();
@@ -133,6 +178,30 @@ public class MotionEventQueue {
             mCurrentIndex = mCurrentIndex ^ 1;
             return current;
         }
+    }
+
+    private void queueVirtualAction(int action, float progress) {
+        queueNoPreProcess(MotionEvent.obtain(0, 0, action, progress, 0, 0));
+    }
+
+    public void onQuickSwitch() {
+        queueVirtualAction(ACTION_QUICK_SWITCH, 0);
+    }
+
+    public void onQuickScrubStart() {
+        queueVirtualAction(ACTION_QUICK_SCRUB_START, 0);
+    }
+
+    public void onQuickScrubProgress(float progress) {
+        queueVirtualAction(ACTION_QUICK_SCRUB_PROGRESS, progress);
+    }
+
+    public void onQuickScrubEnd() {
+        queueVirtualAction(ACTION_QUICK_SCRUB_END, 0);
+    }
+
+    public void reset() {
+        queueVirtualAction(ACTION_RESET, 0);
     }
 
     private static class EventArray extends ArrayList<MotionEvent> {

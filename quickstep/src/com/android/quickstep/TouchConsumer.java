@@ -18,6 +18,7 @@ package com.android.quickstep;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.support.annotation.IntDef;
+import android.view.Choreographer;
 import android.view.MotionEvent;
 
 import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
@@ -48,10 +49,6 @@ public interface TouchConsumer extends Consumer<MotionEvent> {
 
     default void reset() { }
 
-    default boolean shouldUseBackgroundConsumer() {
-        return false;
-    }
-
     default void setDownHitTarget(@HitTarget int downHitTarget) { }
 
     default void updateTouchTracking(@InteractionType int interactionType) { }
@@ -65,4 +62,8 @@ public interface TouchConsumer extends Consumer<MotionEvent> {
      * posted on a handler thread.
      */
     default void preProcessMotionEvent(MotionEvent ev) { }
+
+    default Choreographer getIntrimChoreographer(MotionEventQueue queue) {
+        return null;
+    }
 }
