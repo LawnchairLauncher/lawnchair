@@ -124,7 +124,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
                 // Start the window animation on down to give more time for launcher to draw if the
                 // user didn't start the gesture over the back button
-                if (mDownHitTarget != HIT_TARGET_BACK && !isUsingScreenShot()) {
+                if (!isUsingScreenShot()) {
                     startTouchTrackingForWindowAnimation();
                 }
 
@@ -166,10 +166,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
                         if (isUsingScreenShot()) {
                             startTouchTrackingForScreenshotAnimation();
-                        } else if (mDownHitTarget == HIT_TARGET_BACK) {
-                            // If the window animation was deferred on DOWN due to it starting over
-                            // the back button, then start it now
-                            startTouchTrackingForWindowAnimation();
                         }
 
                         notifyGestureStarted();
