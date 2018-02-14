@@ -461,6 +461,9 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
         if (mLauncherTransitionController != null) {
             Runnable runOnUi = () -> {
+                if (mLauncherTransitionController == null) {
+                    return;
+                }
                 mLauncherTransitionController.setPlayFraction(shift);
 
                 // Make sure the window follows the first task if it moves, e.g. during quick scrub.
