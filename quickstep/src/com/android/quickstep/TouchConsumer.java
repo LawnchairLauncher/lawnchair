@@ -20,6 +20,8 @@ import android.os.Build;
 import android.support.annotation.IntDef;
 import android.view.MotionEvent;
 
+import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.function.Consumer;
@@ -49,6 +51,8 @@ public interface TouchConsumer extends Consumer<MotionEvent> {
     default boolean shouldUseBackgroundConsumer() {
         return false;
     }
+
+    default void setDownHitTarget(@HitTarget int downHitTarget) { }
 
     default void updateTouchTracking(@InteractionType int interactionType) { }
 

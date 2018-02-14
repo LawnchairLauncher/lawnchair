@@ -23,6 +23,9 @@ import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
 import static com.android.quickstep.RemoteRunnable.executeSafely;
+import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_BACK;
+import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_HOME;
+import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_NONE;
 
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
@@ -52,6 +55,7 @@ import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.AssistDataReceiver;
 import com.android.systemui.shared.system.BackgroundExecutor;
+import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -83,6 +87,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     private BaseSwipeInteractionHandler mInteractionHandler;
     private int mDisplayRotation;
     private Rect mStableInsets = new Rect();
+    private @HitTarget int mDownHitTarget = HIT_TARGET_NONE;
 
     private VelocityTracker mVelocityTracker;
 
@@ -99,6 +104,11 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     }
 
     @Override
+    public void setDownHitTarget(@HitTarget int downHitTarget) {
+        mDownHitTarget = downHitTarget;
+    }
+
+    @Override
     public void accept(MotionEvent ev) {
         if (mVelocityTracker == null) {
             return;
@@ -112,8 +122,9 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 mTouchSlop = ViewConfiguration.get(this).getScaledTouchSlop();
                 mTouchThresholdCrossed = false;
 
-                // Start the window animation on down to give more time for launcher to draw
-                if (!isUsingScreenShot()) {
+                // Start the window animation on down to give more time for launcher to draw if the
+                // user didn't start the gesture over the back button
+                if (mDownHitTarget != HIT_TARGET_BACK && !isUsingScreenShot()) {
                     startTouchTrackingForWindowAnimation();
                 }
 
@@ -155,6 +166,10 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
                         if (isUsingScreenShot()) {
                             startTouchTrackingForScreenshotAnimation();
+                        } else if (mDownHitTarget == HIT_TARGET_BACK) {
+                            // If the window animation was deferred on DOWN due to it starting over
+                            // the back button, then start it now
+                            startTouchTrackingForWindowAnimation();
                         }
 
                         notifyGestureStarted();

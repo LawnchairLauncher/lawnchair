@@ -35,6 +35,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.Choreographer;
 import android.view.MotionEvent;
@@ -52,6 +53,7 @@ import com.android.launcher3.model.ModelPreload;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
 
 /**
  * Service connected by system-UI for handling touch interaction.
@@ -69,6 +71,11 @@ public class TouchInteractionService extends Service {
     private static HandlerThread sRemoteUiThread;
 
     private final IBinder mMyBinder = new IOverviewProxy.Stub() {
+
+        @Override
+        public void onPreMotionEvent(@HitTarget int downHitTarget) throws RemoteException {
+            onBinderPreMotionEvent(downHitTarget);
+        }
 
         @Override
         public void onMotionEvent(MotionEvent ev) {
@@ -166,23 +173,25 @@ public class TouchInteractionService extends Service {
         return mMyBinder;
     }
 
-    private void onBinderMotionEvent(MotionEvent ev) {
-        if (ev.getActionMasked() == ACTION_DOWN) {
-            mRunningTask = mAM.getRunningTask();
+    private void onBinderPreMotionEvent(@HitTarget int downHitTarget) {
+        mRunningTask = mAM.getRunningTask();
 
-            mCurrentConsumer.reset();
-            if (mRunningTask == null) {
-                mCurrentConsumer = mNoOpTouchConsumer;
-            } else if (mRunningTask.topActivity.equals(mLauncher)) {
-                mCurrentConsumer = getLauncherConsumer();
-            } else {
-                mCurrentConsumer = getOtherActivityConsumer();
-            }
-
-            mEventQueue.setConsumer(mCurrentConsumer);
-            mEventQueue.setInterimChoreographer(mCurrentConsumer.shouldUseBackgroundConsumer()
-                    ? mBackgroundThreadChoreographer : null);
+        mCurrentConsumer.reset();
+        if (mRunningTask == null) {
+            mCurrentConsumer = mNoOpTouchConsumer;
+        } else if (mRunningTask.topActivity.equals(mLauncher)) {
+            mCurrentConsumer = getLauncherConsumer();
+        } else {
+            mCurrentConsumer = getOtherActivityConsumer();
         }
+
+        mCurrentConsumer.setDownHitTarget(downHitTarget);
+        mEventQueue.setConsumer(mCurrentConsumer);
+        mEventQueue.setInterimChoreographer(mCurrentConsumer.shouldUseBackgroundConsumer()
+                ? mBackgroundThreadChoreographer : null);
+    }
+
+    private void onBinderMotionEvent(MotionEvent ev) {
         mCurrentConsumer.preProcessMotionEvent(ev);
         mEventQueue.queue(ev);
     }
