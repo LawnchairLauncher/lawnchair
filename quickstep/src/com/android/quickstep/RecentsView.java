@@ -124,7 +124,7 @@ public class RecentsView extends PagedView implements Insettable {
         setClipToOutline(true);
 
         mLauncher = Launcher.getLauncher(context);
-        mQuickScrubController = new QuickScrubController(this);
+        mQuickScrubController = new QuickScrubController(mLauncher, this);
         mModel = RecentsModel.getInstance(context);
 
         mScrollState.isRtl = mIsRtl;

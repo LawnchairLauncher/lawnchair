@@ -58,10 +58,12 @@ public class OverviewSwipeUpController extends VerticalSwipeController {
     protected void onTransitionComplete(boolean wasFling, boolean stateChanged) {
         if (stateChanged) {
             // Transition complete. log the action
-            mLauncher.getUserEventDispatcher().logActionOnContainer(
+            mLauncher.getUserEventDispatcher().logStateChangeAction(
                     wasFling ? Touch.FLING : Touch.SWIPE,
                     Direction.UP,
-                    ContainerType.OVERVIEW,
+                    ContainerType.HOTSEAT,
+                    ContainerType.TASKSWITCHER,
+                    ContainerType.ALLAPPS,
                     mLauncher.getWorkspace().getCurrentPage());
         }
 

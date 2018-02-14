@@ -71,7 +71,7 @@ public class LoggerUtils {
         switch (action.type) {
             case Action.Type.TOUCH:
                 str += getFieldName(action.touch, Action.Touch.class);
-                if (action.touch == Action.Touch.SWIPE) {
+                if (action.touch == Action.Touch.SWIPE || action.touch == Action.Touch.FLING) {
                     str += " direction=" + getFieldName(action.dir, Action.Direction.class);
                 }
                 return str;
@@ -114,11 +114,20 @@ public class LoggerUtils {
         if (t.intentHash != 0) {
             typeStr += ", intentHash=" + t.intentHash;
         }
-        if (t.packageNameHash != 0 || t.componentHash != 0 || t.intentHash != 0) {
-            typeStr += ", predictiveRank=" + t.predictedRank;
+        if ((t.packageNameHash != 0 || t.componentHash != 0 || t.intentHash != 0) &&
+                t.itemType != ItemType.TASK) {
+            typeStr += ", predictiveRank=" + t.predictedRank + ", grid(" + t.gridX + "," + t.gridY
+                    + "), span(" + t.spanX + "," + t.spanY
+                    + "), pageIdx=" + t.pageIndex;
+
         }
-        return typeStr + ", grid(" + t.gridX + "," + t.gridY + "), span(" + t.spanX + "," + t.spanY
-                + "), pageIdx=" + t.pageIndex;
+        return typeStr;
+    }
+
+    public static Target newItemTarget(int itemType) {
+        Target t = newTarget(Target.Type.ITEM);
+        t.itemType = itemType;
+        return t;
     }
 
     public static Target newItemTarget(View v) {
