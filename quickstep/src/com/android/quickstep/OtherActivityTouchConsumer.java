@@ -397,8 +397,10 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         }
     }
 
-    private void onFinish() {
-        mInteractionHandler = null;
+    private void onFinish(BaseSwipeInteractionHandler handler) {
+        if (mInteractionHandler == handler) {
+            mInteractionHandler = null;
+        }
     }
 
     public void onTouchTrackingComplete() { }

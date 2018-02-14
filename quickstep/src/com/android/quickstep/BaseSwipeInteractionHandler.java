@@ -20,11 +20,13 @@ import android.support.annotation.WorkerThread;
 import com.android.launcher3.states.InternalStateHandler;
 import com.android.quickstep.TouchConsumer.InteractionType;
 
+import java.util.function.Consumer;
+
 public abstract class BaseSwipeInteractionHandler extends InternalStateHandler {
 
-    protected Runnable mGestureEndCallback;
+    protected Consumer<BaseSwipeInteractionHandler> mGestureEndCallback;
 
-    public void setGestureEndCallback(Runnable gestureEndCallback) {
+    public void setGestureEndCallback(Consumer<BaseSwipeInteractionHandler> gestureEndCallback) {
         mGestureEndCallback = gestureEndCallback;
     }
 
