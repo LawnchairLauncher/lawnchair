@@ -1163,12 +1163,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             if (mOverlayShown) {
                 mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.SWIPE,
                         Action.Direction.RIGHT, ContainerType.WORKSPACE, -1);
-                if (mOnOverlayHiddenCallback != null) {
-                    mOnOverlayHiddenCallback.run();
-                    mOnOverlayHiddenCallback = null;
-                }
             }
             mOverlayShown = false;
+            tryRunOverlayCallback();
         }
         float offset = 0f;
         float slip = 0f;
@@ -1193,6 +1190,24 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     /**
+     * @return false if the callback is still pending
+     */
+    private boolean tryRunOverlayCallback() {
+        if (mOnOverlayHiddenCallback == null) {
+            // Return true as no callback is pending. This is used by OnWindowFocusChangeListener
+            // to remove itself if multiple focus handles were added.
+            return true;
+        }
+        if (mOverlayShown || !hasWindowFocus()) {
+            return false;
+        }
+
+        mOnOverlayHiddenCallback.run();
+        mOnOverlayHiddenCallback = null;
+        return true;
+    }
+
+    /**
      * Runs the given callback when the minus one overlay is hidden. Specifically, it is run
      * when launcher's window has focus and the overlay is no longer being shown. If a callback
      * is already present, the new callback will chain off it so both are run.
@@ -1200,39 +1215,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      * @return Whether the callback was deferred.
      */
     public boolean runOnOverlayHidden(Runnable callback) {
-        View rootView = getRootView();
-        if (rootView.hasWindowFocus()) {
-            if (mOverlayShown) {
-                chainOverlayHiddenCallback(callback);
-                return true;
-            } else {
-                callback.run();
-                return false;
-            }
-        }
-        ViewTreeObserver observer = rootView.getViewTreeObserver();
-        if (observer != null && observer.isAlive()) {
-            observer.addOnWindowFocusChangeListener(
-                    new ViewTreeObserver.OnWindowFocusChangeListener() {
-                        @Override
-                        public void onWindowFocusChanged(boolean hasFocus) {
-                            if (hasFocus) {
-                                // Defer further if the minus one overlay is still showing.
-                                if (mOverlayShown) {
-                                    chainOverlayHiddenCallback(callback);
-                                } else {
-                                    callback.run();
-                                }
-                                observer.removeOnWindowFocusChangeListener(this);
-                            }
-                        }
-                    });
-            return true;
-        }
-        return false;
-    }
-
-    private void chainOverlayHiddenCallback(Runnable callback) {
         if (mOnOverlayHiddenCallback == null) {
             mOnOverlayHiddenCallback = callback;
         } else {
@@ -1243,6 +1225,21 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 callback.run();
             };
         }
+        if (!tryRunOverlayCallback()) {
+            ViewTreeObserver observer = getViewTreeObserver();
+            if (observer != null && observer.isAlive()) {
+                observer.addOnWindowFocusChangeListener(
+                        new ViewTreeObserver.OnWindowFocusChangeListener() {
+                            @Override
+                            public void onWindowFocusChanged(boolean hasFocus) {
+                                if (tryRunOverlayCallback() && observer.isAlive()) {
+                                    observer.removeOnWindowFocusChangeListener(this);
+                                }
+                            }});
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override

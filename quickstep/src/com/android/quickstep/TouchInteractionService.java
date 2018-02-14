@@ -21,6 +21,9 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
+
+import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.quickstep.QuickScrubController.QUICK_SWITCH_START_DURATION;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SWITCH;
 
@@ -41,14 +44,11 @@ import android.view.Choreographer;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.ViewTreeObserver;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherState;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.model.ModelPreload;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
@@ -304,20 +304,21 @@ public class TouchInteractionService extends Service {
         public void updateTouchTracking(int interactionType) {
             mMainThreadExecutor.execute(() -> {
                 if (TouchConsumer.isInteractionQuick(interactionType)) {
-                    if (mLauncher.getWorkspace().runOnOverlayHidden(
-                            () -> updateTouchTracking(interactionType))) {
+                    Runnable action = () -> {
+                        Runnable onComplete = null;
+                        if (interactionType == INTERACTION_QUICK_SCRUB) {
+                            mQuickScrubController.onQuickScrubStart(true);
+                        } else if (interactionType == INTERACTION_QUICK_SWITCH) {
+                            onComplete = mQuickScrubController::onQuickSwitch;
+                        }
+                        mLauncher.getStateManager().goToState(OVERVIEW, true, 0,
+                                QUICK_SWITCH_START_DURATION, onComplete);
+                    };
+
+                    if (mLauncher.getWorkspace().runOnOverlayHidden(action)) {
                         // Hide the minus one overlay so launcher can get window focus.
                         mLauncher.onQuickstepGestureStarted(true);
-                        return;
                     }
-                    Runnable onComplete = null;
-                    if (interactionType == INTERACTION_QUICK_SCRUB) {
-                        mQuickScrubController.onQuickScrubStart(true);
-                    } else if (interactionType == INTERACTION_QUICK_SWITCH) {
-                        onComplete = mQuickScrubController::onQuickSwitch;
-                    }
-                    mLauncher.getStateManager().goToState(LauncherState.OVERVIEW, true, 0,
-                            QuickScrubController.QUICK_SWITCH_START_DURATION, onComplete);
                 }
             });
         }
