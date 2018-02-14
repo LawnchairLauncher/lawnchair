@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2015 The Android Open Source Project
+     Copyright (C) 2018 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -17,5 +17,10 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
        android:shape="rectangle">
     <solid android:color="?android:attr/colorPrimary" />
-    <corners android:radius="@dimen/bg_round_rect_radius" />
+    <corners
+        android:topLeftRadius="@dimen/bg_round_rect_radius"
+        android:topRightRadius="@dimen/bg_round_rect_radius"
+        android:bottomLeftRadius="0dp"
+        android:bottomRightRadius="0dp"
+        />
 </shape>

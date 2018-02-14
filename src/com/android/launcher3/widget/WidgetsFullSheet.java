@@ -115,6 +115,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mGradientView.setVisibility(View.INVISIBLE);
             widthUsed = 0;
         } else {
+            mGradientView.setVisibility(View.VISIBLE);
             Rect padding = mLauncher.getDeviceProfile().workspacePadding;
             widthUsed = Math.max(padding.left + padding.right,
                     2 * (mInsets.left + mInsets.right));
