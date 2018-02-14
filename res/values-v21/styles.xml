@@ -25,4 +25,7 @@
         <item name="android:statusBarColor">#00000000</item>
         <item name="android:navigationBarColor">#00000000</item>
     </style>
+    <style name="WidgetContainerTheme.Dark" parent="LauncherThemeDark">
+        <item name="android:colorPrimaryDark">#616161</item> <!-- Gray 700 -->
+    </style>
 </resources>
