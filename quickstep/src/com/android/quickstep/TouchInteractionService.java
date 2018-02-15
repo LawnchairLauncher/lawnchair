@@ -48,6 +48,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -86,6 +87,9 @@ public class TouchInteractionService extends Service {
             mRecentsModel.setSystemUiProxy(mISystemUiProxy);
             RemoteRunnable.executeSafely(() -> mISystemUiProxy.setRecentsOnboardingText(
                     getResources().getString(R.string.recents_swipe_up_onboarding)));
+            Launcher launcher = (Launcher) LauncherAppState.getInstance(
+                    TouchInteractionService.this).getModel().getCallback();
+            UiFactory.onLauncherStateOrFocusChanged(launcher);
         }
 
         @Override

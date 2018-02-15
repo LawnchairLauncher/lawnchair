@@ -69,8 +69,8 @@ public class UiFactory {
     }
 
     public static void onLauncherStateOrFocusChanged(Launcher launcher) {
-        OverviewInteractionState.setBackButtonVisible(launcher, !launcher.isInState(NORMAL)
-                || !launcher.hasWindowFocus());
+        OverviewInteractionState.setBackButtonVisible(launcher, launcher == null
+                || !launcher.isInState(NORMAL) || !launcher.hasWindowFocus());
     }
 
     public static Bitmap createFromRenderer(int width, int height, boolean forceSoftwareRenderer,

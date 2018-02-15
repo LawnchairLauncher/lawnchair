@@ -18,9 +18,13 @@ package com.android.quickstep;
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_HIDE_BACK_BUTTON;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.android.launcher3.util.UiThreadHelper;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 
 /**
@@ -36,11 +40,35 @@ import com.android.systemui.shared.recents.ISystemUiProxy;
 public class OverviewInteractionState {
 
     private static final String TAG = "OverviewFlags";
+    private static final Handler sUiHandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            updateOverviewInteractionFlag((Context) msg.obj, msg.what, msg.arg1 == 1);
+        }
+    };
+    private static final Handler sBackgroundHandler = new Handler(
+            UiThreadHelper.getBackgroundLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            ISystemUiProxy systemUiProxy = (ISystemUiProxy) msg.obj;
+            int flags = msg.what;
+            try {
+                systemUiProxy.setInteractionState(flags);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Unable to update overview interaction flags", e);
+            }
+        }
+    };
 
     private static int sFlags;
 
     public static void setBackButtonVisible(Context context, boolean visible) {
-        updateOverviewInteractionFlag(context, FLAG_HIDE_BACK_BUTTON, !visible);
+        updateFlagOnUi(context, FLAG_HIDE_BACK_BUTTON, !visible);
+    }
+
+    private static void updateFlagOnUi(Context context, int flag, boolean enabled) {
+        sUiHandler.removeMessages(flag);
+        sUiHandler.sendMessage(sUiHandler.obtainMessage(flag, enabled ? 1 : 0, 0, context));
     }
 
     private static void updateOverviewInteractionFlag(Context context, int flag, boolean enabled) {
@@ -55,10 +83,9 @@ public class OverviewInteractionState {
             Log.w(TAG, "Unable to update overview interaction flags; not bound to service");
             return;
         }
-        try {
-            systemUiProxy.setInteractionState(sFlags);
-        } catch (RemoteException e) {
-            Log.w(TAG, "Unable to update overview interaction flags", e);
+        // If we aren't already setting these flags, do so now on the background thread.
+        if (!sBackgroundHandler.hasMessages(sFlags)) {
+            sBackgroundHandler.sendMessage(sBackgroundHandler.obtainMessage(sFlags, systemUiProxy));
         }
     }
 }
