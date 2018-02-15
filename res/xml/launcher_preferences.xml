@@ -89,11 +89,7 @@
         <Preference
             android:key="about_app_version"
             android:title="@string/about_app_version"
-            android:persistent="false">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="@string/app_releases_url" />
-        </Preference>
+            android:persistent="false" />
 
         <Preference
             android:key="app_info"
@@ -101,7 +97,7 @@
             android:persistent="false">
             <intent
                 android:action="android.settings.APPLICATION_DETAILS_SETTINGS"
-                android:data="package:com.google.android.apps.nexuslauncher" />
+                android:data="package:ch.deletescape.lawnchair" />
         </Preference>
 
     </PreferenceScreen>

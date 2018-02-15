@@ -64,7 +64,8 @@
         android:fullBackupOnly="true"
         android:fullBackupContent="@xml/backupscheme"
         android:hardwareAccelerated="true"
-        android:icon="@drawable/ic_launcher_home"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/derived_app_name"
         android:theme="@style/LauncherTheme"
         android:largeHeap="@bool/config_largeHeap"
@@ -117,7 +118,7 @@
         -->
         <provider
             android:name="com.android.launcher3.LauncherProvider"
-            android:authorities="com.google.android.apps.nexuslauncher.settings"
+            android:authorities="ch.deletescape.lawnchair.settings"
             android:exported="true"
             android:writePermission="com.google.android.apps.nexuslauncher.permission.WRITE_SETTINGS"
             android:readPermission="com.google.android.apps.nexuslauncher.permission.READ_SETTINGS" />
@@ -142,7 +143,7 @@
             </intent-filter>
         </receiver>
         <provider
-            android:authorities="com.google.android.apps.nexuslauncher.appssearch"
+            android:authorities="ch.deletescape.lawnchair.appssearch"
             android:exported="true"
             android:name="com.google.android.apps.nexuslauncher.search.AppSearchProvider" />
 
