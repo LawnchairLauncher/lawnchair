@@ -493,6 +493,15 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
+    public void startLoaderForResultsIfNotLoaded(LoaderResults results) {
+        synchronized (mLock) {
+            if (!isModelLoaded()) {
+                Log.d(TAG, "Workspace not loaded, loading now");
+                startLoaderForResults(results);
+            }
+        }
+    }
+
     /**
      * Loads the workspace screen ids in an ordered list.
      */
