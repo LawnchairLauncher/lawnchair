@@ -156,7 +156,8 @@ public class TouchInteractionService extends Service {
         mEventQueue = new MotionEventQueue(Choreographer.getInstance(), mNoOpTouchConsumer);
         sConnected = true;
 
-        new ModelPreload().start(this);
+        // Temporarily disable model preload
+        // new ModelPreload().start(this);
         initBackgroundChoreographer();
     }
 
