@@ -251,7 +251,7 @@ public class TouchInteractionService extends Service {
 
         @Override
         public void accept(MotionEvent ev) {
-            if (!mTarget.getWindowId().isFocused()) {
+            if (!mTarget.hasWindowFocus()) {
                 return;
             }
             int action = ev.getActionMasked();
