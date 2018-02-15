@@ -175,6 +175,7 @@ public class LauncherStateManager {
         mConfig.reset();
 
         if (!animated) {
+            preOnStateTransitionStart();
             onStateTransitionStart(state);
             for (StateHandler handler : getStateHandlers()) {
                 handler.setState(state);
@@ -231,6 +232,8 @@ public class LauncherStateManager {
 
     protected AnimatorSet createAnimationToNewWorkspaceInternal(final LauncherState state,
             AnimatorSetBuilder builder, final Runnable onCompleteRunnable) {
+        preOnStateTransitionStart();
+
         for (StateHandler handler : getStateHandlers()) {
             builder.startTag(handler);
             handler.setStateWithAnimation(state, builder, mConfig);
@@ -269,6 +272,15 @@ public class LauncherStateManager {
         return mConfig.mCurrentAnimation;
     }
 
+    private void preOnStateTransitionStart() {
+        // If we are still animating to launcher from an app,
+        // finish it and let this state animation take over.
+        LauncherAppTransitionManager transitionManager = mLauncher.getAppTransitionManager();
+        if (transitionManager != null) {
+            transitionManager.finishLauncherAnimation();
+        }
+    }
+
     private void onStateTransitionStart(LauncherState state) {
         mState.onStateDisabled(mLauncher);
         mState = state;
@@ -278,13 +290,6 @@ public class LauncherStateManager {
         if (state.disablePageClipping) {
             // Only disable clipping if needed, otherwise leave it as previous value.
             mLauncher.getWorkspace().setClipChildren(false);
-        }
-
-        // If we are still animating to launcher from an app,
-        // finish it and let this state animation take over.
-        LauncherAppTransitionManager transitionManager = mLauncher.getAppTransitionManager();
-        if (transitionManager != null) {
-            transitionManager.finishLauncherAnimation();
         }
     }
 
