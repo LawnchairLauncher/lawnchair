@@ -371,11 +371,7 @@ public class Launcher extends BaseActivity
         // For handling default keys
         setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 
-        // On large interfaces, or on devices that a user has specifically enabled screen rotation,
-        // we want the screen to auto-rotate based on the current orientation
-        setRequestedOrientation(mRotationEnabled
-                ? SCREEN_ORIENTATION_UNSPECIFIED : SCREEN_ORIENTATION_NOSENSOR);
-
+        updateRequestedOrientation();
         setContentView(mLauncherView);
         getRootView().dispatchInsets();
 
@@ -396,6 +392,13 @@ public class Launcher extends BaseActivity
         }
 
         TraceHelper.endSection("Launcher-onCreate");
+    }
+
+    public void updateRequestedOrientation() {
+        // On large interfaces, or on devices that a user has specifically enabled screen rotation,
+        // we want the screen to auto-rotate based on the current orientation
+        setRequestedOrientation(mRotationEnabled
+                ? SCREEN_ORIENTATION_UNSPECIFIED : SCREEN_ORIENTATION_NOSENSOR);
     }
 
     @Override

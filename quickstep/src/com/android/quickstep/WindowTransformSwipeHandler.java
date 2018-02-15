@@ -33,6 +33,7 @@ import android.animation.RectEvaluator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -279,6 +280,10 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         }
         mWasLauncherAlreadyVisible = alreadyOnHome;
         mLauncher = launcher;
+
+        // For the duration of the gesture, set the screen orientation to BEHIND to ensure that we
+        // do not rotate mid-quickscrub
+        mLauncher.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_BEHIND);
 
         LauncherState startState = mLauncher.getStateManager().getState();
         if (startState.disableRestore) {
@@ -616,6 +621,9 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         mLauncherTransitionController = null;
         mLauncherLayoutListener.setHandler(null);
         mLauncherLayoutListener.close(false);
+
+        // Restore the requested orientation to the user preference after the gesture has ended
+        mLauncher.updateRequestedOrientation();
     }
 
     public void layoutListenerClosed() {
