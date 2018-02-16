@@ -62,7 +62,7 @@ public abstract class VerticalSwipeController extends AnimatorListenerAdapter
     private boolean mNoIntercept;
 
     private AnimatorPlaybackController mCurrentAnimation;
-    protected LauncherState mToState;
+    private LauncherState mToState;
 
     private float mStartProgress;
     // Ratio of transition process [0, 1] to drag displacement (px)
