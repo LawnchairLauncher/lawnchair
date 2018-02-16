@@ -281,9 +281,9 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         mWasLauncherAlreadyVisible = alreadyOnHome;
         mLauncher = launcher;
 
-        // For the duration of the gesture, set the screen orientation to BEHIND to ensure that we
-        // do not rotate mid-quickscrub
-        mLauncher.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_BEHIND);
+        // For the duration of the gesture, lock the screen orientation to ensure that we do not
+        // rotate mid-quickscrub
+        mLauncher.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
 
         LauncherState startState = mLauncher.getStateManager().getState();
         if (startState.disableRestore) {
