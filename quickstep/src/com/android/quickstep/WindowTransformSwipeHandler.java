@@ -595,7 +595,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
     @UiThread
     private void resumeLastTask() {
-        mRecentsAnimationWrapper.finish(false /* toHome */);
+        mRecentsAnimationWrapper.finish(false /* toHome */, null);
     }
 
     public void reset() {
@@ -647,21 +647,21 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                 transaction.apply();
             }
         }
-        mRecentsAnimationWrapper.finish(true /* toHome */);
-
-        if (mInteractionType == INTERACTION_QUICK_SWITCH) {
-            if (mQuickScrubController != null) {
-                mQuickScrubController.onQuickSwitch();
-            }
-        } else if (mInteractionType == INTERACTION_QUICK_SCRUB) {
-            if (mQuickScrubController != null) {
-                if (mDeferredQuickScrubEnd) {
-                    onQuickScrubEnd();
-                } else {
-                    mQuickScrubController.snapToPageForCurrentQuickScrubSection();
+        mRecentsAnimationWrapper.finish(true /* toHome */, () -> {
+            if (mInteractionType == INTERACTION_QUICK_SWITCH) {
+                if (mQuickScrubController != null) {
+                    mQuickScrubController.onQuickSwitch();
+                }
+            } else if (mInteractionType == INTERACTION_QUICK_SCRUB) {
+                if (mQuickScrubController != null) {
+                    if (mDeferredQuickScrubEnd) {
+                        onQuickScrubEnd();
+                    } else {
+                        mQuickScrubController.snapToPageForCurrentQuickScrubSection();
+                    }
                 }
             }
-        }
+        });
     }
 
     private void setupLauncherUiAfterSwipeUpAnimation() {

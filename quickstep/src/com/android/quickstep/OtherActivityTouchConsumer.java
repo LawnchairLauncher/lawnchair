@@ -21,10 +21,7 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
-
 import static com.android.quickstep.RemoteRunnable.executeSafely;
-import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_BACK;
-import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_HOME;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_NONE;
 
 import android.app.ActivityManager.RunningTaskInfo;

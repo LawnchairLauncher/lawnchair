@@ -20,6 +20,7 @@ import android.view.HapticFeedbackConstants;
 
 import com.android.launcher3.Alarm;
 import com.android.launcher3.OnAlarmListener;
+import com.android.launcher3.Utilities;
 
 /**
  * Responds to quick scrub callbacks to page through and launch recent tasks.
@@ -61,7 +62,8 @@ public class QuickScrubController implements OnAlarmListener {
             int page = mRecentsView.getNextPage();
             Runnable launchTaskRunnable = () -> {
                 if (page < mRecentsView.getFirstTaskIndex()) {
-                    mRecentsView.getPageAt(page).performClick();
+                    // Call post() since we can't performClick() on a background thread.
+                    mRecentsView.post(() -> mRecentsView.getPageAt(page).performClick());
                 } else {
                     ((TaskView) mRecentsView.getPageAt(page)).launchTask(true);
                 }
@@ -114,6 +116,7 @@ public class QuickScrubController implements OnAlarmListener {
     }
 
     private void goToPageWithHaptic(int pageToGoTo) {
+        pageToGoTo = Utilities.boundToRange(pageToGoTo, mStartPage, mRecentsView.getPageCount() - 1);
         if (pageToGoTo != mRecentsView.getNextPage()) {
             int duration = Math.abs(pageToGoTo - mRecentsView.getNextPage())
                     * QUICKSCRUB_SNAP_DURATION_PER_PAGE;
