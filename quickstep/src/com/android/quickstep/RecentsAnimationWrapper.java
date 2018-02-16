@@ -15,6 +15,9 @@
  */
 package com.android.quickstep;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -39,12 +42,18 @@ public class RecentsAnimationWrapper {
         }
     }
 
-    public void finish(boolean toHome) {
+    /**
+     * @param onFinishComplete A callback that runs on the UI thread.
+     */
+    public void finish(boolean toHome, Runnable onFinishComplete) {
         BackgroundExecutor.get().submit(() -> {
             synchronized (this) {
                 if (controller != null) {
                     controller.setInputConsumerEnabled(false);
                     controller.finish(toHome);
+                    if (onFinishComplete != null) {
+                        new Handler(Looper.getMainLooper()).post(onFinishComplete);
+                    }
                 }
             }
         });

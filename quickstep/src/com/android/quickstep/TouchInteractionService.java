@@ -21,7 +21,6 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
-
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.quickstep.QuickScrubController.QUICK_SWITCH_START_DURATION;
 import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
@@ -49,7 +48,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
-import com.android.launcher3.model.ModelPreload;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
