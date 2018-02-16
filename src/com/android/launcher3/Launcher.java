@@ -855,12 +855,6 @@ public class Launcher extends BaseActivity
         }
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        mStateManager.onWindowFocusChanged();
-    }
-
     public interface LauncherOverlay {
 
         /**

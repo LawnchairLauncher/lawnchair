@@ -303,12 +303,6 @@ public class LauncherStateManager {
         if (state == NORMAL) {
             setRestState(null);
         }
-
-        UiFactory.onLauncherStateOrFocusChanged(mLauncher);
-    }
-
-    public void onWindowFocusChanged() {
-        UiFactory.onLauncherStateOrFocusChanged(mLauncher);
     }
 
     public LauncherState getLastState() {
