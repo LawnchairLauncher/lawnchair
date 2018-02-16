@@ -16,7 +16,6 @@
 
 package com.android.launcher3.uioverrides;
 
-import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 
 import android.graphics.Bitmap;
@@ -62,6 +61,4 @@ public class UiFactory {
     }
 
     public static void resetOverview(Launcher launcher) { }
-
-    public static void onLauncherStateOrFocusChanged(Launcher launcher) { }
 }
