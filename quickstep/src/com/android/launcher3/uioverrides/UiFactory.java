@@ -16,12 +16,11 @@
 
 package com.android.launcher3.uioverrides;
 
-import android.content.pm.PackageManager;
+import static com.android.launcher3.LauncherState.NORMAL;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PointF;
-import android.os.Bundle;
-import android.view.View;
 import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.Launcher;
@@ -29,6 +28,7 @@ import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.util.TouchController;
+import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.RecentsView;
 import com.android.systemui.shared.recents.view.RecentsTransition;
 
@@ -66,6 +66,11 @@ public class UiFactory {
 
     public static void onWorkspaceLongPress(Launcher launcher, PointF touchPoint) {
         OptionsPopupView.show(launcher, touchPoint.x, touchPoint.y);
+    }
+
+    public static void onLauncherStateOrFocusChanged(Launcher launcher) {
+        OverviewInteractionState.setBackButtonVisible(launcher, !launcher.isInState(NORMAL)
+                || !launcher.hasWindowFocus());
     }
 
     public static Bitmap createFromRenderer(int width, int height, boolean forceSoftwareRenderer,
