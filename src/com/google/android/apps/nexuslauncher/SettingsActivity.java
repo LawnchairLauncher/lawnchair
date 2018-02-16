@@ -46,7 +46,7 @@ public class SettingsActivity extends com.android.launcher3.SettingsActivity imp
     }
 
     public static class MySettingsFragment extends com.android.launcher3.SettingsActivity.LauncherSettingsFragment
-            implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
+            implements Preference.OnPreferenceChangeListener {
         private CustomIconPreference mIconPackPref;
         private Context mContext;
 
@@ -63,11 +63,6 @@ public class SettingsActivity extends com.android.launcher3.SettingsActivity imp
             try {
                 PackageInfo packageInfo = packageManager.getPackageInfo(mContext.getPackageName(), 0);
                 findPreference(APP_VERSION_PREF).setSummary(packageInfo.versionName);
-                if (SmartspaceController.get(mContext).cY()) {
-                    findPreference(SMARTSPACE_PREF).setOnPreferenceClickListener(this);
-                } else {
-                    getPreferenceScreen().removePreference(findPreference("pref_smartspace"));
-                }
             } catch (PackageManager.NameNotFoundException ex) {
                 Log.e("SettingsActivity", "Unable to load my own package info", ex);
             }
@@ -121,15 +116,6 @@ public class SettingsActivity extends com.android.launcher3.SettingsActivity imp
                     confirmationFragment.setTargetFragment(this, 0);
                     confirmationFragment.show(getFragmentManager(), preference.getKey());
                     break;
-            }
-            return false;
-        }
-
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            if (SMARTSPACE_PREF.equals(preference.getKey())) {
-                SmartspaceController.get(mContext).cZ();
-                return true;
             }
             return false;
         }
