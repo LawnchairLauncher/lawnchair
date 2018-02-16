@@ -432,6 +432,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         boolean isBelowCenterY = lp.topMargin < centerY;
         x.setDuration(isBelowCenterY ? 500 : 233);
         y.setDuration(isBelowCenterY ? 233 : 500);
+        x.setInterpolator(Interpolators.AGGRESSIVE_EASE);
+        y.setInterpolator(Interpolators.AGGRESSIVE_EASE);
         appIconAnimatorSet.play(x);
         appIconAnimatorSet.play(y);
 
@@ -444,18 +446,18 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         ObjectAnimator sY = ObjectAnimator.ofFloat(mFloatingView, View.SCALE_Y, 1f, scale);
         sX.setDuration(500);
         sY.setDuration(500);
+        sX.setInterpolator(Interpolators.EXAGGERATED_EASE);
+        sY.setInterpolator(Interpolators.EXAGGERATED_EASE);
         appIconAnimatorSet.play(sX);
         appIconAnimatorSet.play(sY);
 
         // Fade out the app icon.
         ObjectAnimator alpha = ObjectAnimator.ofFloat(mFloatingView, View.ALPHA, 1f, 0f);
-        alpha.setStartDelay(17);
-        alpha.setDuration(33);
+        alpha.setStartDelay(32);
+        alpha.setDuration(50);
+        alpha.setInterpolator(Interpolators.LINEAR);
         appIconAnimatorSet.play(alpha);
 
-        for (Animator a : appIconAnimatorSet.getChildAnimations()) {
-            a.setInterpolator(Interpolators.AGGRESSIVE_EASE);
-        }
         return appIconAnimatorSet;
     }
 
@@ -516,9 +518,9 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
 
                 // Fade in the app window.
                 float alphaDelay = 0;
-                float alphaDuration = 50;
+                float alphaDuration = 60;
                 float alpha = getValue(0f, 1f, alphaDelay, alphaDuration,
-                        appAnimator.getDuration() * percent, Interpolators.AGGRESSIVE_EASE);
+                        appAnimator.getDuration() * percent, Interpolators.LINEAR);
 
                 // Animate the window crop so that it starts off as a square, and then reveals
                 // horizontally.
