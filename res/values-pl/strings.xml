@@ -60,6 +60,12 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"To aplikacja systemowa i nie można jej odinstalować."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Folder bez nazwy"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> jest wyłączona"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="few"><xliff:g id="APP_NAME_2">%1$s</xliff:g> – <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> powiadomienia</item>
+      <item quantity="many"><xliff:g id="APP_NAME_2">%1$s</xliff:g> – <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> powiadomień</item>
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> – <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> powiadomienia</item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g> – <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> powiadomienie</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"Strona %1$d z %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Ekran główny %1$d z %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Nowa strona ekranu głównego"</string>
@@ -131,7 +137,7 @@
     <string name="notification_dismissed" msgid="6002233469409822874">"Powiadomienie odrzucone"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Osobiste"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Praca"</string>
-    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profil do pracy"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profil służbowy"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Aplikacje do pracy"</string>
     <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Każda aplikacja do pracy ma pomarańczową plakietkę, a o jej bezpieczeństwo dba Twoja organizacja. Aplikacje można przenieść na ekran główny, by były łatwiej dostępne."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Profil zarządzany przez Twoją organizację"</string>

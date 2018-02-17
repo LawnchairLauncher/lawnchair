@@ -60,6 +60,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ນີ້ແມ່ນແອັບຯຂອງລະບົບ ແລະບໍ່ສາມາດຖອນການຕິດຕັ້ງອອກໄດ້."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"ໂຟນເດີຍັງບໍ່ຖືກຕັ້ງຊື່"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"ປິດການນຳໃຊ້ <xliff:g id="APP_NAME">%1$s</xliff:g> ແລ້ວ"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, ມີ <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ການແຈ້ງເຕືອນ</item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g>, ມີ <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> ການແຈ້ງເຕືອນ</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"ໜ້າ %1$d ຈາກ %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"ໜ້າຈໍຫຼັກ %1$d ໃນ %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"ໜ້າ​ຂອງ​ໜ້າ​ຈໍ​ຫຼັກ​ໃໝ່"</string>

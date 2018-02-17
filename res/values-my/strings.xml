@@ -60,6 +60,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ဤအပ်ပလီကေးရှင်းမှာ စစ်စတန်ပိုင်းဆိုင်ရာ အပ်ပလီကေးရှင်းဖြစ်ပါသည်။ ထုတ်ပစ်၍ မရပါ"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"အမည်မရှိအကန့်"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> ကို ပိတ်ထားသည်"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> တွင် အကြောင်းကြားချက် <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ခု ရှိသည်</item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g> တွင် အကြောင်းကြားချက် <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> ခု ရှိသည်</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"စာမျက်နှာ %1$d မှ %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"ပင်မစာမျက်နှာ %1$d မှ %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"ပင်မမျက်နှာပြင် စာမျက်နှာသစ်"</string>

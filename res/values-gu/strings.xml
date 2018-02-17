@@ -60,6 +60,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"આ એક સિસ્ટમ ઍપ્લિકેશન છે અને અનઇન્સ્ટોલ કરી શકાતી નથી."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"અનામી ફોલ્ડર"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> અક્ષમ કરી"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>ના <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> નોટિફિકેશન છે</item>
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>ના <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> નોટિફિકેશન છે</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"%2$d માંથી %1$d પૃષ્ઠ"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%2$d માંથી %1$d હોમ સ્ક્રીન"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"નવું હોમ સ્ક્રીન પૃષ્ઠ"</string>

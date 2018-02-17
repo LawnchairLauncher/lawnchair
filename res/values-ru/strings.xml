@@ -33,7 +33,7 @@
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Чтобы выбрать виджет или использовать специальные действия, нажмите на него дважды и не отпускайте."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d x %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Ширина %1$d, высота %2$d"</string>
-    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Нажмите и удерживайте, чтобы добавить вручную"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Нажмите и удерживайте, чтобы добавить вручную."</string>
     <string name="place_automatically" msgid="8064208734425456485">"Добавить автоматически"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Поиск приложений"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Загрузка приложений…"</string>
@@ -60,6 +60,12 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Это системное приложение, его нельзя удалить."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Папка без названия"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Приложение <xliff:g id="APP_NAME">%1$s</xliff:g> отключено"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="one">В приложении \"<xliff:g id="APP_NAME_2">%1$s</xliff:g>\" <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> уведомление</item>
+      <item quantity="few">В приложении \"<xliff:g id="APP_NAME_2">%1$s</xliff:g>\" <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> уведомления</item>
+      <item quantity="many">В приложении \"<xliff:g id="APP_NAME_2">%1$s</xliff:g>\" <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> уведомлений</item>
+      <item quantity="other">В приложении \"<xliff:g id="APP_NAME_2">%1$s</xliff:g>\" <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> уведомления</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"Стр. %1$d из %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Главные экран %1$d из %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Новый экран"</string>

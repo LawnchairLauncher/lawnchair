@@ -60,6 +60,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Hii ni programu ya mfumo na haiwezi kuondolewa."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Folda isiyo na jina"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> imezimwa"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, ina arifa <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g></item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g>, ina arifa <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g></item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"Ukurasa%1$d wa %2$d"</string>
     <!-- String.format failed for translation -->
     <!-- no translation found for workspace_scroll_format (8458889198184077399) -->

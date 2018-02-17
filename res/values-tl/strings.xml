@@ -60,6 +60,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Isa itong app ng system at hindi maaaring i-uninstall."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Walang Pangalang Folder"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Naka-disable ang <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="one">May <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> notification ang <xliff:g id="APP_NAME_2">%1$s</xliff:g></item>
+      <item quantity="other">May <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> na notification ang <xliff:g id="APP_NAME_2">%1$s</xliff:g></item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"Pahina %1$d ng %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Home screen %1$d ng %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Bagong page ng home screen"</string>

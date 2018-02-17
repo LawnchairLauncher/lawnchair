@@ -60,6 +60,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"這是系統應用程式，不可解除安裝。"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"未命名的資料夾"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"已停用 <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>，有 <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> 則通知</item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g>，有 <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> 則通知</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"第 %1$d 頁，共 %2$d 頁"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"主螢幕：第 %1$d 頁，共 %2$d 頁"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"新的主畫面頁面"</string>

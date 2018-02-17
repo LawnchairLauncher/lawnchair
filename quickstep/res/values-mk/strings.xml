@@ -21,6 +21,5 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_split_screen" msgid="5353188922202653570">"Поделен екран"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Прикачување"</string>
-    <!-- no translation found for recents_swipe_up_onboarding (1025535041275136564) -->
-    <skip />
+    <string name="recents_swipe_up_onboarding" msgid="1025535041275136564">"Повлечете нагоре од дното за да ги смените апликациите"</string>
 </resources>
