@@ -29,6 +29,13 @@ android {
         debug {
             minifyEnabled false
         }
+
+        optimized {
+            initWith debug
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+                    'proguard.flags'
+        }
     }
 
     productFlavors {
