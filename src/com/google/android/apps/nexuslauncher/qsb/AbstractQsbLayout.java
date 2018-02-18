@@ -34,6 +34,7 @@ import com.android.launcher3.graphics.ShadowGenerator.Builder;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 
 public abstract class AbstractQsbLayout extends FrameLayout implements LauncherLayoutChangeListener, OnClickListener, OnSharedPreferenceChangeListener {
+    protected final static String GOOGLE_QSB = "com.google.android.googlequicksearchbox";
     protected final NexusLauncherActivity mActivity;
     protected int mColor;
     protected View mMicIconView;
@@ -183,20 +184,22 @@ public abstract class AbstractQsbLayout extends FrameLayout implements LauncherL
     }
 
     protected void fallbackSearch(String action) {
-        final String GoogleQSB = "com.google.android.googlequicksearchbox";
         try {
             getContext().startActivity(new Intent(action)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                    .setPackage(GoogleQSB));
+                    .setPackage(GOOGLE_QSB));
         } catch (ActivityNotFoundException e) {
             try {
-                getContext().getPackageManager().getPackageInfo(GoogleQSB, 0);
+                getContext().getPackageManager().getPackageInfo(GOOGLE_QSB, 0);
                 LauncherAppsCompat.getInstance(getContext())
-                        .showAppDetailsForProfile(new ComponentName(GoogleQSB, ".SearchActivity"), Process.myUserHandle());
+                        .showAppDetailsForProfile(new ComponentName(GOOGLE_QSB, ".SearchActivity"), Process.myUserHandle());
             } catch (PackageManager.NameNotFoundException ignored) {
-                getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com")));
+                noGoogleAppSearch();
             }
         }
+    }
+
+    protected void noGoogleAppSearch() {
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String str) {

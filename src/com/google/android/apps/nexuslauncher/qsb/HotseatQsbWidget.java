@@ -13,6 +13,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -130,6 +131,12 @@ public class HotseatQsbWidget extends AbstractQsbLayout {
                         }
                     }, null, 0, null, null);
         }
+    }
+
+    @Override
+    protected void noGoogleAppSearch() {
+        getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com")));
+        playQsbAnimation();
     }
 
     private void playAnimation(boolean hideWorkspace, boolean longDuration) {
