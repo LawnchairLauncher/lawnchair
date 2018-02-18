@@ -106,7 +106,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 }
             }
 
-            mPrefHide.setChecked(CustomAppFilter.isHiddenApp(context, mComponentName));
+            mPrefHide.setChecked(CustomAppFilter.isHiddenApp(context, mComponentName, mPackageName));
 
             mPrefPack.setOnPreferenceChangeListener(this);
             mPrefHide.setOnPreferenceChangeListener(this);
@@ -116,22 +116,13 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             boolean enabled = (boolean) newValue;
             Launcher launcher = Launcher.getLauncher(getActivity());
-            String[] pkgs = new String[] { mPackageName };
             switch (preference.getKey()) {
                 case PREF_PACK:
                     CustomIconProvider.setAppState(launcher, mComponentName, enabled);
-                    CustomIconUtils.reloadIcons(launcher, pkgs[0]);
+                    CustomIconUtils.reloadIcons(launcher, mPackageName);
                     break;
                 case PREF_HIDE:
-                    CustomAppFilter.setComponentNameState(launcher, mComponentName, !enabled);
-                    LauncherAppsCompat apps = LauncherAppsCompat.getInstance(launcher);
-                    LauncherModel model = launcher.getModel();
-                    for (UserHandle user : UserManagerCompat.getInstance(launcher).getUserProfiles()) {
-                        if (!apps.getActivityList(pkgs[0], user).isEmpty()) {
-                            model.onPackagesUnavailable(pkgs, user, false);
-                            model.onPackagesAvailable(pkgs, user, false);
-                        }
-                    }
+                    CustomAppFilter.setComponentNameState(launcher, mComponentName, mPackageName, enabled);
                     break;
             }
             return true;

@@ -4,12 +4,14 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.TwoStatePreference;
@@ -17,7 +19,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.launcher3.R;
-import com.google.android.apps.nexuslauncher.smartspace.SmartspaceController;
 
 public class SettingsActivity extends com.android.launcher3.SettingsActivity implements PreferenceFragment.OnPreferenceStartFragmentCallback {
     public final static String ICON_PACK_PREF = "pref_icon_pack";
@@ -101,11 +102,21 @@ public class SettingsActivity extends com.android.launcher3.SettingsActivity imp
             switch (preference.getKey()) {
                 case ICON_PACK_PREF:
                     if (!CustomIconUtils.getCurrentPack(mContext).equals(newValue)) {
-                        if (((String) newValue).isEmpty()) {
-                            CustomAppFilter.emptyAppFilter(mContext);
-                        }
-                        CustomIconProvider.clearDisabledApps(mContext);
+                        final ProgressDialog applyingDialog = ProgressDialog.show(mContext,
+                                null /* title */,
+                                mContext.getString(R.string.state_loading),
+                                true /* indeterminate */,
+                                false /* cancelable */);
+
+                        CustomIconUtils.setCurrentPack(getActivity(), (String) newValue);
                         CustomIconUtils.applyIconPackAsync(mContext);
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                applyingDialog.cancel();
+                            }
+                        }, 1000);
                     }
                     return true;
                 case SHOW_PREDICTIONS_PREF:
