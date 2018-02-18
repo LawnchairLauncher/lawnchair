@@ -372,6 +372,11 @@ public class LauncherModel extends BroadcastReceiver
         enqueueModelUpdateTask(new ShortcutsChangedTask(packageName, shortcuts, user, false));
     }
 
+    public void onPackagesReload(UserHandle user) {
+        enqueueModelUpdateTask(new PackageUpdatedTask(
+                PackageUpdatedTask.OP_RELOAD, user));
+    }
+
     /**
      * Call from the handler for ACTION_PACKAGE_ADDED, ACTION_PACKAGE_REMOVED and
      * ACTION_PACKAGE_CHANGED.
