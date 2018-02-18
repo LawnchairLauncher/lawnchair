@@ -149,4 +149,5 @@
     <string name="action_edit">Bewerken</string>
   <string name="hide_app_sum">App verbergen in het app-overzicht</string>
   <string name="hide_app">App verbergen</string>
+    <string name="icon_shape_rounded_square">Vierkant met ronde hoeken</string>
 </resources>

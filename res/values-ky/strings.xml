@@ -144,4 +144,5 @@
     <string name="title_disable_suggestions_prompt">Колдонмо сунуштары өчүрүлсүнбү?</string>
     <string name="msg_disable_suggestions_prompt">Колдонмолор тизмесинин башында сунуштар көрсөтүлбөйт жана аларды түзүүгө керектүү дайындар биротоло тазаланат.</string>
     <string name="label_turn_off_suggestions">ӨЧҮРҮҮ</string>
+    <string name="icon_shape_rounded_square">Бурчтары тегеректелген чарчы</string>
 </resources>

@@ -149,4 +149,5 @@
     <string name="action_edit">Szerkesztés</string>
   <string name="hide_app_sum">Alkalmazás elrejtése az alkalmazásfiókból</string>
   <string name="hide_app">Alkalmazás elrejtése</string>
+    <string name="icon_shape_rounded_square">Lekerekített sarkú négyzet</string>
 </resources>

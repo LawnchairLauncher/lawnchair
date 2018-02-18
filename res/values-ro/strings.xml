@@ -149,4 +149,5 @@
     <string name="action_edit">Editare</string>
   <string name="hide_app_sum">Ascunde aplicații în lista aplicaţiilor</string>
   <string name="hide_app">Ascundere aplicaţie</string>
+    <string name="icon_shape_rounded_square">Pătrat rotunjit</string>
 </resources>

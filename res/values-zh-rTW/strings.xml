@@ -149,4 +149,5 @@
     <string name="action_edit">編輯</string>
   <string name="hide_app_sum">從應用程式清單中隱藏應用程式</string>
   <string name="hide_app">隱藏應用程式</string>
+    <string name="icon_shape_rounded_square">圓角正方形</string>
 </resources>

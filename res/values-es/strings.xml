@@ -149,4 +149,5 @@
     <string name="action_edit">Editar</string>
   <string name="hide_app_sum">Ocultar aplicación del cajón de aplicaciones</string>
   <string name="hide_app">Ocultar aplicación</string>
+    <string name="icon_shape_rounded_square">Cuadrado redondeado</string>
 </resources>

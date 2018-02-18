@@ -144,4 +144,5 @@
     <string name="title_disable_suggestions_prompt">ປິດການແນະນຳແອັບໄວ້ບໍ?</string>
     <string name="msg_disable_suggestions_prompt">ການແນະນຳຈະບໍ່ປາກົດຢູ່ເທິງສຸດຂອງລາຍຊື່ແອັບຂອງທ່ານ ແລະ ຂໍ້ມູນການນຳໃຊ້ທີ່ໃຊ້ເພື່ອສ້າງພວກມັນຈະຖືກລຶບອອກຖາວອນ.</string>
     <string name="label_turn_off_suggestions">ປິດໄວ້</string>
+    <string name="icon_shape_rounded_square">ສີ່ຫຼ່ຽມຂອບມົນ</string>
 </resources>

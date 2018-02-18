@@ -147,4 +147,5 @@
     <string name="msg_disable_suggestions_prompt">建議將不會在應用程式清單上方顯示，而用作提供建議的使用資料將會永久清除。</string>
     <string name="label_turn_off_suggestions">關閉</string>
     <string name="action_edit">編輯</string>
+    <string name="icon_shape_rounded_square">圓角正方形</string>
 </resources>

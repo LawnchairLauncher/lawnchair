@@ -144,4 +144,5 @@
     <string name="title_disable_suggestions_prompt">Vala iziphakamiso zohlelo lokusebenza?</string>
     <string name="msg_disable_suggestions_prompt">Iziphakamiso ngeke zivele ngaphezulu kohlu lwezinhlelo zakho zokusebenza, futhi idatha yokusetshenziswa esetshenziselwe ukuzidala izosulwa ingunaphakade.</string>
     <string name="label_turn_off_suggestions">VALA</string>
+    <string name="icon_shape_rounded_square">Isikwele esijikelezayo</string>
 </resources>

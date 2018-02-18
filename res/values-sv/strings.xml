@@ -149,4 +149,5 @@
     <string name="action_edit">Redigera</string>
   <string name="hide_app_sum">Dölj app från app lådan</string>
   <string name="hide_app">Dölj app</string>
+    <string name="icon_shape_rounded_square">Rundad kvadrat</string>
 </resources>

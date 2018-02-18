@@ -149,4 +149,5 @@
     <string name="action_edit">Modifica</string>
   <string name="hide_app_sum">Nascondi app dal menù delle applicazioni</string>
   <string name="hide_app">Nascondi app</string>
+    <string name="icon_shape_rounded_square">Quadrato arrotondato</string>
 </resources>

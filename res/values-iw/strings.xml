@@ -149,4 +149,5 @@
     <string name="action_edit">ערוך</string>
   <string name="hide_app_sum">הסתר אפליקציה ממגירת האפליקציות</string>
   <string name="hide_app">הסתר אפליקציה</string>
+    <string name="icon_shape_rounded_square">ריבוע בעל פינות מעוגלות</string>
 </resources>

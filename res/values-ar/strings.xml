@@ -149,4 +149,5 @@
     <string name="action_edit">تحرير</string>
   <string name="hide_app_sum">إخفاء من قائمة البرامج</string>
   <string name="hide_app">إخفاء التطبيق</string>
+    <string name="icon_shape_rounded_square">مربّع دائري</string>
 </resources>

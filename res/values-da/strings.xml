@@ -149,4 +149,5 @@
     <string name="action_edit">Rediger</string>
   <string name="hide_app_sum">Skjul app fra oversigten</string>
   <string name="hide_app">Skjule app</string>
+    <string name="icon_shape_rounded_square">Kvadrat med runde hjørner</string>
 </resources>

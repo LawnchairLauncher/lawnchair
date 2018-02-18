@@ -147,4 +147,5 @@
     <string name="msg_disable_suggestions_prompt">Prijedlozi se neće prikazivati na vrhu popisa aplikacija, a podaci o upotrebi na temelju kojih su izrađeni trajno će se izbrisati.</string>
     <string name="label_turn_off_suggestions">ISKLJUČI</string>
     <string name="action_edit">Uredi</string>
+    <string name="icon_shape_rounded_square">Zaobljeni kvadrat</string>
 </resources>

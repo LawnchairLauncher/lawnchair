@@ -149,4 +149,5 @@
     <string name="action_edit">Επεξεργασία</string>
   <string name="hide_app_sum">Απόκρυψη εφαρμογών από το συρτάρι εφαρμογών</string>
   <string name="hide_app">Κρυφές εφαρμογές</string>
+    <string name="icon_shape_rounded_square">Στρογγυλεμένο τετράγωνο</string>
 </resources>

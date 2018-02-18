@@ -144,4 +144,5 @@
     <string name="title_disable_suggestions_prompt">ઍપ્લિકેશન સૂચનો બંધ કરીએ?</string>
     <string name="msg_disable_suggestions_prompt">તમારી ઍપ્લિકેશનોની સૂચિની ટોચ પર સૂચનો દેખાશે નહીં અને તેમને બનાવવા માટે ઉપયોગમાં લેવાયેલ વપરાશ ડેટા કાયમ માટે કાઢી નાખવામાં આવશે.</string>
     <string name="label_turn_off_suggestions">બંધ કરો</string>
+    <string name="icon_shape_rounded_square">ગોળાકાર ચોરસ</string>
 </resources>

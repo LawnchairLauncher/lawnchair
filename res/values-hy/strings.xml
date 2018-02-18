@@ -144,4 +144,5 @@
     <string name="title_disable_suggestions_prompt">Անջատե՞լ առաջարկները:</string>
     <string name="msg_disable_suggestions_prompt">Առաջարկությունները ձեր հավելվածների ցանկի վերևում չեն հայտնվի, իսկ դրանք ստեղծելու համար օգտագործված տվյալները մեկընդմիշտ կջնջվեն:</string>
     <string name="label_turn_off_suggestions">ԱՆՋԱՏԵԼ</string>
+    <string name="icon_shape_rounded_square">Շրջանակաձև քառակուսի</string>
 </resources>

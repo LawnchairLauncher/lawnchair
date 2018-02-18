@@ -146,4 +146,5 @@
     <string name="label_turn_off_suggestions">NONAKTIFKAN</string>
   <string name="hide_app_sum">Sembunyikan dari laci aplikasi</string>
   <string name="hide_app">Sembunyikan aplikasi</string>
+    <string name="icon_shape_rounded_square">Persegi membulat</string>
 </resources>

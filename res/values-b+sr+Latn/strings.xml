@@ -144,4 +144,5 @@
     <string name="title_disable_suggestions_prompt">Želite li da isključite predloge aplikacija?</string>
     <string name="msg_disable_suggestions_prompt">Predlozi se neće prikazivati u vrhu liste aplikacija i podaci o korišćenju koji su korišćeni za njihovo pravljenje će biti trajno obrisani.</string>
     <string name="label_turn_off_suggestions">ISKLJUČI</string>
+    <string name="icon_shape_rounded_square">Kvadrat zaobljenih uglova</string>
 </resources>

@@ -149,4 +149,5 @@
     <string name="action_edit">Редактировать</string>
   <string name="hide_app_sum">Скрыть приложение из меню</string>
   <string name="hide_app">Скрыть приложение</string>
+    <string name="icon_shape_rounded_square">Квадрат с закругленными углами</string>
 </resources>

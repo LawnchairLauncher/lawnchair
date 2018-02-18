@@ -146,4 +146,5 @@
     <string name="title_disable_suggestions_prompt">Ungependa kuzima mapendekezo ya programu?</string>
     <string name="msg_disable_suggestions_prompt">Mapendekezo hayataonekana juu ya orodha ya programu zako, na data ya matumizi iliyotumika kuyaunda itafutwa kabisa.</string>
     <string name="label_turn_off_suggestions">ZIMA</string>
+    <string name="icon_shape_rounded_square">Mraba wenye pembe duara</string>
 </resources>

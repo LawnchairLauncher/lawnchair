@@ -148,4 +148,5 @@
     <string name="label_turn_off_suggestions">ВИМКНУТИ</string>
     <string name="action_edit">Редагувати</string>
   <string name="hide_app">Приховати програму</string>
+    <string name="icon_shape_rounded_square">Заокруглений квадрат</string>
 </resources>

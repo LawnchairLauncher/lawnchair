@@ -149,4 +149,5 @@
     <string name="action_edit">Düzenle</string>
   <string name="hide_app_sum">Uygulamayı uygulama çekmecesinden gizle</string>
   <string name="hide_app">Uygulama gizle</string>
+    <string name="icon_shape_rounded_square">Yuvarlanmış kare</string>
 </resources>

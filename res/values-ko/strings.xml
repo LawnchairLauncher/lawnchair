@@ -149,4 +149,5 @@
     <string name="action_edit">편집</string>
   <string name="hide_app_sum">앱 서랍에서 앱 숨기기</string>
   <string name="hide_app">앱 숨기기</string>
+    <string name="icon_shape_rounded_square">모서리가 둥근 정사각형</string>
 </resources>

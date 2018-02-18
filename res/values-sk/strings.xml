@@ -149,4 +149,5 @@
     <string name="action_edit">Upraviť</string>
   <string name="hide_app_sum">Skryť aplikáciu zo zoznamu aplikácií</string>
   <string name="hide_app">Skryť aplikáciu</string>
+    <string name="icon_shape_rounded_square">Okrúhly štvorec</string>
 </resources>

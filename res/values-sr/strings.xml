@@ -146,4 +146,5 @@
     <string name="label_turn_off_suggestions">ИСКЉУЧИ</string>
   <string name="hide_app_sum">Сакриј апликацију из апликације drawer-а</string>
   <string name="hide_app">Сакриј апликацију</string>
+    <string name="icon_shape_rounded_square">Квадрат заобљених углова</string>
 </resources>

@@ -144,4 +144,5 @@
     <string name="title_disable_suggestions_prompt">Апп-н зөвлөмжийг унтраах уу?</string>
     <string name="msg_disable_suggestions_prompt">Таны апп-н жагсаалтын дээр зөвлөмж гарч ирэхгүй бөгөөд тэдгээрийг үүсгэхэд ашигладаг хэрэглээний өгөгдөл бүрмөсөн устах болно.</string>
     <string name="label_turn_off_suggestions">УНТРААХ</string>
+    <string name="icon_shape_rounded_square">Мохоо дөрвөлжин</string>
 </resources>
