@@ -15,6 +15,7 @@ public class SearchThread implements SearchAlgorithm, Handler.Callback {
     private final Handler mHandler;
     private final Context mContext;
     private final Handler mUiHandler;
+    private boolean mInterruptActiveRequests;
 
     public SearchThread(Context context) {
         mContext = context;
@@ -50,6 +51,7 @@ public class SearchThread implements SearchAlgorithm, Handler.Callback {
     }
 
     public void cancel(boolean interruptActiveRequests) {
+        mInterruptActiveRequests = interruptActiveRequests;
         mHandler.removeMessages(100);
         if (interruptActiveRequests) {
             mUiHandler.removeMessages(200);
@@ -71,8 +73,10 @@ public class SearchThread implements SearchAlgorithm, Handler.Callback {
                 break;
             }
             case 200: {
-                SearchResult searchResult = (SearchResult) message.obj;
-                searchResult.mCallbacks.onSearchResult(searchResult.mQuery, searchResult.mApps);
+                if (!mInterruptActiveRequests) {
+                    SearchResult searchResult = (SearchResult) message.obj;
+                    searchResult.mCallbacks.onSearchResult(searchResult.mQuery, searchResult.mApps);
+                }
                 break;
             }
         }
