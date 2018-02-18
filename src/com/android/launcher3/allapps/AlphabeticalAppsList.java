@@ -16,14 +16,20 @@
 package com.android.launcher3.allapps;
 
 import android.content.Context;
+import android.content.pm.LauncherActivityInfo;
 import android.os.Process;
+import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.IconCache;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
+import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.discovery.AppDiscoveryAppInfo;
 import com.android.launcher3.discovery.AppDiscoveryItem;
@@ -624,11 +630,24 @@ public class AlphabeticalAppsList {
             return mApps;
         }
 
+        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(mLauncher);
+        final UserHandle user = android.os.Process.myUserHandle();
+        final IconCache iconCache = LauncherAppState.getInstance(mLauncher).getIconCache();
         ArrayList<AppInfo> result = new ArrayList<>();
+        boolean quietMode = UserManagerCompat.getInstance(mLauncher).isQuietModeEnabled(user);
         for (ComponentKey key : mSearchResults) {
             AppInfo match = mComponentToAppMap.get(key);
             if (match != null) {
                 result.add(match);
+            } else {
+                for (LauncherActivityInfo info : launcherApps.getActivityList(key.componentName.getPackageName(), user)) {
+                    if (info.getComponentName().equals(key.componentName)) {
+                        final AppInfo appInfo = new AppInfo(info, user, quietMode);
+                        iconCache.getTitleAndIcon(appInfo, false);
+                        result.add(appInfo);
+                        break;
+                    }
+                }
             }
         }
 

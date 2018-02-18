@@ -13,6 +13,7 @@ import android.os.UserHandle;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.graphics.DrawableFactory;
@@ -80,7 +81,9 @@ public class CustomIconUtils {
                 UserManagerCompat userManagerCompat = UserManagerCompat.getInstance(context);
                 LauncherModel model = LauncherAppState.getInstance(context).getModel();
 
-                if (CustomIconUtils.getCurrentPack(context).isEmpty()) {
+                boolean noPack = CustomIconUtils.getCurrentPack(context).isEmpty();
+                Utilities.getPrefs(context).edit().putBoolean(DefaultAppSearchAlgorithm.SEARCH_HIDDEN_APPS, !noPack).apply();
+                if (noPack) {
                     CustomAppFilter.resetAppFilter(context);
                 }
                 for (UserHandle user : userManagerCompat.getUserProfiles()) {

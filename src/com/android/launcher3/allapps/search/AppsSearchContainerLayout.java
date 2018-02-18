@@ -131,7 +131,7 @@ public class AppsSearchContainerLayout extends FrameLayout
         mAppsRecyclerView.addOnScrollListener(mElevationController);
         mAdapter = (AllAppsGridAdapter) mAppsRecyclerView.getAdapter();
         mSearchBarController.initialize(
-                new DefaultAppSearchAlgorithm(appsList.getApps()), mSearchInput, mLauncher, this);
+                new DefaultAppSearchAlgorithm(getContext(), appsList.getApps()), mSearchInput, mLauncher, this);
     }
 
     @Override
