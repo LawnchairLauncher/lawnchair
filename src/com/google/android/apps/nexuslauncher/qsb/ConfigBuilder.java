@@ -121,12 +121,13 @@ public class ConfigBuilder {
         final int n = cp.getHeight() - cp.getPaddingTop() - cp.getPaddingBottom() + 20;
         final Bitmap mShadowBitmap = cp.mShadowBitmap;
         final int n2 = (mShadowBitmap.getWidth() - n) / 2;
-        final int n3 = (cp.getHeight() - mShadowBitmap.getHeight()) / 2;
-        remoteViews.setViewPadding(R.layout.all_apps_discovery_loading_divider, cp.getPaddingLeft() - n2, n3, cp.getPaddingRight() - n2, n3);
+        final int verticalPadding = (cp.getHeight() - mShadowBitmap.getHeight()) / 2;
+        remoteViews.setViewPadding(R.id.qsb_background_container, cp.getPaddingLeft() - n2, verticalPadding, cp.getPaddingRight() - n2, verticalPadding);
         final Bitmap bitmap = Bitmap.createBitmap(mShadowBitmap, 0, 0, mShadowBitmap.getWidth() / 2, mShadowBitmap.getHeight());
+        final Bitmap bitmap2 = Bitmap.createBitmap(mShadowBitmap, (mShadowBitmap.getWidth() - 20) / 2, 0, 20, mShadowBitmap.getHeight());
         remoteViews.setImageViewBitmap(R.id.qsb_background_1, bitmap);
+        remoteViews.setImageViewBitmap(R.id.qsb_background_2, bitmap2);
         remoteViews.setImageViewBitmap(R.id.qsb_background_3, bitmap);
-        remoteViews.setImageViewBitmap(R.id.qsb_background_2, Bitmap.createBitmap(mShadowBitmap, (mShadowBitmap.getWidth() - 20) / 2, 0, 20, mShadowBitmap.getHeight()));
         if (cp.mMicIconView.getVisibility() != View.VISIBLE) {
             remoteViews.setViewVisibility(R.id.mic_icon, View.INVISIBLE);
         }
@@ -154,7 +155,6 @@ public class ConfigBuilder {
         cl.ey = "search_box_template";
         cn.putParcelable(cl.ey, cb());
         cl.ew = R.id.g_icon;
-        final c_search cl = this.cl;
         int ex;
         if (cp.mMicIconView.getVisibility() != View.VISIBLE) {
             ex = 0;
