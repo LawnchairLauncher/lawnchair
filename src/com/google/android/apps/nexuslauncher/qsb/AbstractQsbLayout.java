@@ -120,7 +120,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements LauncherL
     public void draw(Canvas canvas) {
         if (mShadowBitmap == null) {
             int iconBitmapSize = LauncherAppState.getIDP(getContext()).iconBitmapSize;
-            mShadowBitmap = createBitmap(((float) iconBitmapSize) * 0.010416667f, ((float) iconBitmapSize) * 0.020833334f, mColor);
+            mShadowBitmap = createBitmap(((float) iconBitmapSize) / 96f, ((float) iconBitmapSize) / 48f, mColor);
         }
         loadDimensions(mShadowBitmap, canvas);
         super.draw(canvas);
@@ -141,9 +141,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements LauncherL
         drawWithDimensions(bitmap, canvas, 0, i2, paddingLeft, paddingLeft + ((float) i2));
         float width2 = ((float) (getWidth() - getPaddingRight())) + f;
         drawWithDimensions(bitmap, canvas, i2, width, width2 - ((float) i2), width2);
-        Bitmap bitmap2 = bitmap;
-        Canvas canvas2 = canvas;
-        drawWithDimensions(bitmap2, canvas2, i2 - 5, i2 + 5, paddingLeft + ((float) i2), width2 - ((float) i2));
+        drawWithDimensions(bitmap, canvas, i2 - 5, i2 + 5, paddingLeft + ((float) i2), width2 - ((float) i2));
     }
 
     private void drawWithDimensions(Bitmap bitmap, Canvas canvas, int srcLeft, int srcRight, float destLeft, float destRight) {
