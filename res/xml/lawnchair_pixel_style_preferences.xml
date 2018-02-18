@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceScreen
+        android:key="pref_smartspace"
+        android:title="@string/smartspace_preferences_in_settings"
+        android:summary="@string/smartspace_preferences_in_settings_desc"
+        android:persistent="false"
+        />
+
+    <SwitchPreference
+        android:key="pref_enable_minus_one"
+        android:title="@string/title_show_google_app"
+        android:summary="@string/pref_show_google_now_summary"
+        android:defaultValue="true"
+        />
+
+    <SwitchPreference
+        android:key="pref_show_predictions"
+        android:title="@string/title_app_suggestions"
+        android:summary="@string/summary_app_suggestions"
+        android:defaultValue="true"
+        />
+</PreferenceScreen>

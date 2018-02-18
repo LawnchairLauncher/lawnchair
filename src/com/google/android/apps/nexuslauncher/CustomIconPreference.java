@@ -33,7 +33,7 @@ public class CustomIconPreference extends ListPreference {
         super.onPrepareDialogBuilder(builder);
     }
 
-    void reloadIconPacks() {
+    public void reloadIconPacks() {
         Context context = getContext();
         HashMap<String, CharSequence> packList = CustomIconUtils.getPackProviders(context);
 

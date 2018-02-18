@@ -1,4 +1,5 @@
 buildscript {
+    ext.kotlin_version = '1.2.21'
     repositories {
         mavenCentral()
         jcenter()
@@ -7,10 +8,12 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.1'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.google.protobuf'
 
 android {
@@ -105,6 +108,7 @@ dependencies {
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
     androidTestCompile "com.android.support:support-annotations:${SUPPORT_LIBS_VERSION}"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 protobuf {

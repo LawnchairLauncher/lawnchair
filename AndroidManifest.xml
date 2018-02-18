@@ -101,7 +101,7 @@
         The settings activity. When extending keep the intent filter present
         -->
         <activity
-            android:name="com.google.android.apps.nexuslauncher.SettingsActivity"
+            android:name="ch.deletescape.lawnchair.settings.ui.SettingsActivity"
             android:label="@string/settings_button_text"
             android:theme="@style/SettingsTheme"
             android:autoRemoveFromRecents="true">

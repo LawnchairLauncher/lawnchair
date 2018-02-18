@@ -340,4 +340,13 @@
     <string name="label_turn_off_suggestions">TURN OFF</string>
 
     <string name="app_name_lawnchair">Lawnchair</string>
+    <string name="pixel_style_pref_title">Pixel style</string>
+    <string name="about_title">About</string>
+    <string name="about_summary_title">Summary</string>
+    <string name="about_text">Lawnchair is a launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
+    <string name="about_version">Version</string>
+    <string name="about_changelog">Changelog</string>
+    <string name="about_contributors_title">Contributors</string>
+    <string name="about_icon_designer">App Icon Designer</string>
+    <string name="ui_pref_title">UI</string>
 </resources>
