@@ -21,10 +21,12 @@
     <style name="WidgetContainerTheme" parent="@android:style/Theme.Material.Settings">
         <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
         <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="bottomSheetNavBarColor">#00000000</item>
     </style>
     <style name="WidgetContainerTheme.Dark" parent="LauncherThemeDark">
         <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
         <item name="android:colorPrimaryDark">#616161</item> <!-- Gray 700 -->
+        <item name="bottomSheetNavBarColor">#00000000</item>
     </style>
 
 </resources>

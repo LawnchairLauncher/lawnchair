@@ -260,6 +260,15 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
         int rightInset = insets.right - mInsets.right;
         int bottomInset = insets.bottom - mInsets.bottom;
         mInsets.set(insets);
+
+        if (!Utilities.ATLEAST_OREO && !mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+            View navBarBg = findViewById(R.id.nav_bar_bg);
+            ViewGroup.LayoutParams navBarBgLp = navBarBg.getLayoutParams();
+            navBarBgLp.height = bottomInset;
+            navBarBg.setLayoutParams(navBarBgLp);
+            bottomInset = 0;
+        }
+
         setPadding(getPaddingLeft() + leftInset, getPaddingTop(),
                 getPaddingRight() + rightInset, getPaddingBottom() + bottomInset);
     }

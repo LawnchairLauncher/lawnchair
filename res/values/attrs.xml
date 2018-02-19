@@ -148,4 +148,7 @@
     <!-- Pixel -->
     <attr name="gIcon" format="reference" />
     <attr name="micIcon" format="reference" />
+
+    <!-- Custom -->
+    <attr name="bottomSheetNavBarColor" format="color" />
 </resources>
