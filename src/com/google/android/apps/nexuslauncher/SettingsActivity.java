@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -26,6 +27,7 @@ public class SettingsActivity extends com.android.launcher3.SettingsActivity imp
     public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
     public final static String SMARTSPACE_PREF = "pref_smartspace";
     public final static String APP_VERSION_PREF = "about_app_version";
+    private final static String GOOGLE_APP = "com.google.android.googlequicksearchbox";
 
     @Override
     protected void onCreate(final Bundle bundle) {
@@ -68,6 +70,15 @@ public class SettingsActivity extends com.android.launcher3.SettingsActivity imp
                 Log.e("SettingsActivity", "Unable to load my own package info", ex);
             }
 
+            try {
+                ApplicationInfo applicationInfo = mContext.getPackageManager().getApplicationInfo(GOOGLE_APP, 0);
+                if (!applicationInfo.enabled) {
+                    throw new PackageManager.NameNotFoundException();
+                }
+            } catch (PackageManager.NameNotFoundException ignored) {
+                getPreferenceScreen().removePreference(findPreference(SettingsActivity.ENABLE_MINUS_ONE_PREF));
+            }
+
             mIconPackPref = (CustomIconPreference) findPreference(ICON_PACK_PREF);
             mIconPackPref.setOnPreferenceChangeListener(this);
 
@@ -77,8 +88,8 @@ public class SettingsActivity extends com.android.launcher3.SettingsActivity imp
         private String getDisplayGoogleTitle() {
             CharSequence charSequence = null;
             try {
-                Resources resourcesForApplication = mContext.getPackageManager().getResourcesForApplication("com.google.android.googlequicksearchbox");
-                int identifier = resourcesForApplication.getIdentifier("title_google_home_screen", "string", "com.google.android.googlequicksearchbox");
+                Resources resourcesForApplication = mContext.getPackageManager().getResourcesForApplication(GOOGLE_APP);
+                int identifier = resourcesForApplication.getIdentifier("title_google_home_screen", "string", GOOGLE_APP);
                 if (identifier != 0) {
                     charSequence = resourcesForApplication.getString(identifier);
                 }
