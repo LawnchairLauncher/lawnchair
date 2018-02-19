@@ -23,7 +23,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.os.UserHandle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 
@@ -101,8 +100,11 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
             if (launcher.getDeviceProfile().inMultiWindowMode()) {
                 return null;
             }
+            final Task task  = taskView.getTask();
+            if (!task.isDockable) {
+                return null;
+            }
             return (v -> {
-                Task task  = taskView.getTask();
                 final ActivityOptions options = ActivityOptionsCompat.makeSplitScreenOptions(true);
                 final Consumer<Boolean> resultCallback = success -> {
                     if (success) {
