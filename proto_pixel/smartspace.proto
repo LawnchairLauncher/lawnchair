@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-option java_package = "com.google.android.apps.nexuslauncher.smartspace.nano";
+option java_package = "com.google.android.apps.nexuslauncher.smartspace";
 option java_outer_classname = "SmartspaceProto";
 
 package nano;
