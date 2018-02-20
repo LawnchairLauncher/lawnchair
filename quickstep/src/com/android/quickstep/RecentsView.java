@@ -478,9 +478,7 @@ public class RecentsView extends PagedView implements Insettable {
         mRunningTaskId = runningTaskId;
         setCurrentPage(mFirstTaskIndex);
         if (mCurrentPage >= mFirstTaskIndex) {
-            TaskView currentTask = (TaskView) getPageAt(mCurrentPage);
-            currentTask.setIconScale(0);
-            currentTask.setAlpha(0);
+            getPageAt(mCurrentPage).setAlpha(0);
         }
     }
 

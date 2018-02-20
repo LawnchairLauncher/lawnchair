@@ -569,6 +569,14 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
      */
     private void notifyGestureStarted() {
         mLauncher.onQuickstepGestureStarted(mWasLauncherAlreadyVisible);
+
+        mMainExecutor.execute(() -> {
+            // Prepare to animate the first icon.
+            View currentRecentsPage = mRecentsView.getPageAt(mRecentsView.getCurrentPage());
+            if (currentRecentsPage instanceof TaskView) {
+                ((TaskView) currentRecentsPage).setIconScale(0f);
+            }
+        });
     }
 
     @WorkerThread
@@ -673,7 +681,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         // Re apply state in case we did something funky during the transition.
         mLauncher.getStateManager().reapplyState();
 
-        // Animate ui the first icon.
+        // Animate the first icon.
         View currentRecentsPage = mRecentsView.getPageAt(mRecentsView.getCurrentPage());
         if (currentRecentsPage instanceof TaskView) {
             ((TaskView) currentRecentsPage).animateIconToScale(1f);
