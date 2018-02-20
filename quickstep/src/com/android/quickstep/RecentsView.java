@@ -16,6 +16,10 @@
 
 package com.android.quickstep;
 
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.quickstep.TaskView.CURVE_FACTOR;
+import static com.android.quickstep.TaskView.CURVE_INTERPOLATOR;
+
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -53,10 +57,6 @@ import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.ArrayList;
-
-import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.quickstep.TaskView.CURVE_FACTOR;
-import static com.android.quickstep.TaskView.CURVE_INTERPOLATOR;
 
 /**
  * A list of recent tasks.
@@ -107,6 +107,8 @@ public class RecentsView extends PagedView implements Insettable {
     private Shader mFadeShader;
     private Matrix mFadeMatrix;
     private boolean mScrimOnLeft;
+
+    private boolean mFirstTaskIconScaledDown = false;
 
     public RecentsView(Context context) {
         this(context, null);
@@ -298,6 +300,7 @@ public class RecentsView extends PagedView implements Insettable {
             taskView.setAlpha(1f);
             loader.loadTaskData(task);
         }
+        applyIconScale(false /* animate */);
 
         if (oldChildCount != getChildCount()) {
             mQuickScrubController.snapToPageForCurrentQuickScrubSection();
@@ -484,6 +487,26 @@ public class RecentsView extends PagedView implements Insettable {
 
     public QuickScrubController getQuickScrubController() {
         return mQuickScrubController;
+    }
+
+    public void setFirstTaskIconScaledDown(boolean isScaledDown, boolean animate) {
+        if (mFirstTaskIconScaledDown == isScaledDown) {
+            return;
+        }
+        mFirstTaskIconScaledDown = isScaledDown;
+        applyIconScale(animate);
+    }
+
+    private void applyIconScale(boolean animate) {
+        float scale = mFirstTaskIconScaledDown ? 0 : 1;
+        TaskView firstTask = (TaskView) getChildAt(mFirstTaskIndex);
+        if (firstTask != null) {
+            if (animate) {
+                firstTask.animateIconToScale(scale);
+            } else {
+                firstTask.setIconScale(scale);
+            }
+        }
     }
 
     @Override

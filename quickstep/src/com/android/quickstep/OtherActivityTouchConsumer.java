@@ -21,6 +21,7 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
+
 import static com.android.quickstep.RemoteRunnable.executeSafely;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_BACK;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_NONE;
@@ -211,7 +212,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
                         notifyGestureStarted();
                     }
-                } else {
+                } else if (mInteractionHandler != null) {
                     // Move
                     mInteractionHandler.updateDisplacement(displacement - mStartDisplacement);
                 }
@@ -322,7 +323,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 switchToMainChoreographer();
             }
         });
-        handler.initWhenReady(mMainThreadExecutor);
+        handler.initWhenReady();
 
         Runnable startActivity = () -> ActivityManagerWrapper.getInstance()
                 .startRecentsActivity(mHomeIntent,
@@ -338,7 +339,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                             RemoteAnimationTargetCompat[] apps, Rect homeContentInsets,
                             Rect minimizedHomeBounds) {
                         if (mInteractionHandler == handler) {
-                            handler.setRecentsAnimation(controller, apps, homeContentInsets,
+                            handler.onRecentsAnimationStart(controller, apps, homeContentInsets,
                                     minimizedHomeBounds);
                         } else {
                             controller.finish(false /* toHome */);
@@ -357,7 +358,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
                     public void onAnimationCanceled() {
                         if (mInteractionHandler == handler) {
-                            handler.setRecentsAnimation(null, null, null, null);
+                            handler.onRecentsAnimationCanceled();
                         }
                     }
                 }, null, null);
@@ -381,7 +382,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
      * the animation can still be running.
      */
     private void finishTouchTracking() {
-        if (mTouchThresholdCrossed) {
+        if (mTouchThresholdCrossed && mInteractionHandler != null) {
             mVelocityTracker.computeCurrentVelocity(1000,
                     ViewConfiguration.get(this).getScaledMaximumFlingVelocity());
 

@@ -24,7 +24,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.MainThreadExecutor;
-import com.android.launcher3.util.Preconditions;
 
 import java.lang.ref.WeakReference;
 
@@ -38,7 +37,7 @@ public abstract class InternalStateHandler extends Binder {
 
     public static final String EXTRA_STATE_HANDLER = "launcher.state_handler";
 
-    private static WeakReference<InternalStateHandler> sPendingHandler = new WeakReference<>(null);
+    private static final Scheduler sScheduler = new Scheduler();
 
     /**
      * Initializes the handler when the launcher is ready.
@@ -53,30 +52,12 @@ public abstract class InternalStateHandler extends Binder {
         return intent;
     }
 
-    public final void initWhenReady(MainThreadExecutor executor) {
-        sPendingHandler = new WeakReference<>(this);
-        executor.execute(this::initIfReadOnUIThread);
-    }
-
-    private void initIfReadOnUIThread() {
-        LauncherAppState app = LauncherAppState.getInstanceNoCreate();
-        if (app == null) {
-            return;
-        }
-        Callbacks cb = app.getModel().getCallback();
-        if (!(cb instanceof Launcher)) {
-            return;
-        }
-        Launcher launcher = (Launcher) cb;
-        if (!init(launcher, launcher.isStarted())) {
-            sPendingHandler.clear();
-        }
+    public final void initWhenReady() {
+        sScheduler.schedule(this);
     }
 
     public void clearReference() {
-        if (sPendingHandler.get() == this) {
-            sPendingHandler.clear();
-        }
+        sScheduler.clearReference(this);
     }
 
     public static boolean handleCreate(Launcher launcher, Intent intent) {
@@ -101,14 +82,53 @@ public abstract class InternalStateHandler extends Binder {
             }
         }
         if (!result && !explicitIntent) {
-            InternalStateHandler pendingHandler = sPendingHandler.get();
-            if (pendingHandler != null) {
-                if (!pendingHandler.init(launcher, alreadyOnHome)) {
-                    sPendingHandler.clear();
-                }
-                result = true;
-            }
+            result = sScheduler.initIfPending(launcher, alreadyOnHome);
         }
         return result;
+    }
+
+    private static class Scheduler implements Runnable {
+
+        private WeakReference<InternalStateHandler> mPendingHandler = new WeakReference<>(null);
+        private MainThreadExecutor mMainThreadExecutor;
+
+        public synchronized void schedule(InternalStateHandler handler) {
+            mPendingHandler = new WeakReference<>(handler);
+            if (mMainThreadExecutor == null) {
+                mMainThreadExecutor = new MainThreadExecutor();
+            }
+            mMainThreadExecutor.execute(this);
+        }
+
+        @Override
+        public void run() {
+            LauncherAppState app = LauncherAppState.getInstanceNoCreate();
+            if (app == null) {
+                return;
+            }
+            Callbacks cb = app.getModel().getCallback();
+            if (!(cb instanceof Launcher)) {
+                return;
+            }
+            Launcher launcher = (Launcher) cb;
+            initIfPending(launcher, launcher.isStarted());
+        }
+
+        public synchronized boolean initIfPending(Launcher launcher, boolean alreadyOnHome) {
+            InternalStateHandler pendingHandler = mPendingHandler.get();
+            if (pendingHandler != null) {
+                if (!pendingHandler.init(launcher, alreadyOnHome)) {
+                    mPendingHandler.clear();
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public synchronized void clearReference(InternalStateHandler handler) {
+            if (mPendingHandler.get() == handler) {
+                mPendingHandler.clear();
+            }
+        }
     }
 }

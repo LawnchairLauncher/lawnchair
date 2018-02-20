@@ -19,7 +19,6 @@ package com.android.quickstep;
 import static com.android.quickstep.RecentsView.SCROLL_TYPE_TASK;
 import static com.android.quickstep.RecentsView.SCROLL_TYPE_WORKSPACE;
 
-import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.app.ActivityOptions;
 import android.content.Context;
@@ -28,7 +27,6 @@ import android.graphics.Outline;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Property;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
@@ -68,23 +66,9 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
 
     private static final long SCALE_ICON_DURATION = 120;
 
-    private static final Property<TaskView, Float> SCALE_ICON_PROPERTY =
-            new Property<TaskView, Float>(Float.TYPE, "scale_icon") {
-                @Override
-                public Float get(TaskView taskView) {
-                    return taskView.mIconScale;
-                }
-
-                @Override
-                public void set(TaskView taskView, Float iconScale) {
-                    taskView.setIconScale(iconScale);
-                }
-            };
-
     private Task mTask;
     private TaskThumbnailView mSnapshotView;
     private ImageView mIconView;
-    private float mIconScale = 1f;
 
     public TaskView(Context context) {
         this(context, null);
@@ -185,16 +169,13 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
     }
 
     public void animateIconToScale(float scale) {
-        ObjectAnimator.ofFloat(this, SCALE_ICON_PROPERTY, scale)
-                .setDuration(SCALE_ICON_DURATION).start();
+        mIconView.animate().scaleX(scale).scaleY(scale).setDuration(SCALE_ICON_DURATION).start();
     }
 
     protected void setIconScale(float iconScale) {
-        mIconScale = iconScale;
-        if (mIconView != null) {
-            mIconView.setScaleX(mIconScale);
-            mIconView.setScaleY(mIconScale);
-        }
+        mIconView.animate().cancel();
+        mIconView.setScaleX(iconScale);
+        mIconView.setScaleY(iconScale);
     }
 
     @Override

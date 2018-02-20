@@ -239,6 +239,7 @@ public class Launcher extends BaseActivity
 
     @Thunk boolean mWorkspaceLoading = true;
 
+    private OnStartCallback mOnStartCallback;
     private OnResumeCallback mOnResumeCallback;
 
     private ViewOnDrawExecutor mPendingExecutor;
@@ -794,6 +795,10 @@ public class Launcher extends BaseActivity
         super.onStart();
         FirstFrameAnimatorHelper.setIsVisible(true);
 
+        if (mOnStartCallback != null) {
+            mOnStartCallback.onLauncherStart(this);
+            mOnStartCallback = null;
+        }
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onStart();
         }
@@ -2175,6 +2180,10 @@ public class Launcher extends BaseActivity
         mOnResumeCallback = callback;
     }
 
+    public void setOnStartCallback(OnStartCallback callback) {
+        mOnStartCallback = callback;
+    }
+
     /**
      * Implementation of the method from LauncherModel.Callbacks.
      */
@@ -2879,5 +2888,13 @@ public class Launcher extends BaseActivity
     public interface OnResumeCallback {
 
         void onLauncherResume();
+    }
+
+    /**
+     * Callback for listening for onStart
+     */
+    public interface OnStartCallback {
+
+        void onLauncherStart(Launcher launcher);
     }
 }
