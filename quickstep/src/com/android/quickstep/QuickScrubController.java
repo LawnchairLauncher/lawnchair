@@ -33,7 +33,9 @@ public class QuickScrubController implements OnAlarmListener {
     public static final int QUICK_SWITCH_START_DURATION = 133;
     public static final int QUICK_SWITCH_SNAP_DURATION = 120;
 
-    private static final int NUM_QUICK_SCRUB_SECTIONS = 5;
+    private static final boolean ENABLE_AUTO_ADVANCE = true;
+    private static final int NUM_QUICK_SCRUB_SECTIONS = 3;
+    private static final long INITIAL_AUTO_ADVANCE_DELAY = 1000;
     private static final long AUTO_ADVANCE_DELAY = 500;
     private static final int QUICKSCRUB_SNAP_DURATION_PER_PAGE = 325;
     private static final int QUICKSCRUB_END_SNAP_DURATION_PER_PAGE = 60;
@@ -44,22 +46,28 @@ public class QuickScrubController implements OnAlarmListener {
     private boolean mInQuickScrub;
     private int mQuickScrubSection;
     private int mStartPage;
+    private boolean mHasAlarmRun;
 
     public QuickScrubController(RecentsView recentsView) {
         mRecentsView = recentsView;
-        mAutoAdvanceAlarm = new Alarm();
-        mAutoAdvanceAlarm.setOnAlarmListener(this);
+        if (ENABLE_AUTO_ADVANCE) {
+            mAutoAdvanceAlarm = new Alarm();
+            mAutoAdvanceAlarm.setOnAlarmListener(this);
+        }
     }
 
     public void onQuickScrubStart(boolean startingFromHome) {
         mInQuickScrub = true;
         mStartPage = startingFromHome ? 0 : mRecentsView.getFirstTaskIndex();
         mQuickScrubSection = 0;
+        mHasAlarmRun = false;
     }
 
     public void onQuickScrubEnd() {
         mInQuickScrub = false;
-        mAutoAdvanceAlarm.cancelAlarm();
+        if (ENABLE_AUTO_ADVANCE) {
+            mAutoAdvanceAlarm.cancelAlarm();
+        }
         int page = mRecentsView.getNextPage();
         Runnable launchTaskRunnable = () -> {
             if (page < mRecentsView.getFirstTaskIndex()) {
@@ -84,10 +92,13 @@ public class QuickScrubController implements OnAlarmListener {
         if (quickScrubSection != mQuickScrubSection) {
             int pageToGoTo = mRecentsView.getNextPage() + quickScrubSection - mQuickScrubSection;
             goToPageWithHaptic(pageToGoTo);
-            if (quickScrubSection == NUM_QUICK_SCRUB_SECTIONS || quickScrubSection == 0) {
-                mAutoAdvanceAlarm.setAlarm(AUTO_ADVANCE_DELAY);
-            } else {
-                mAutoAdvanceAlarm.cancelAlarm();
+            if (ENABLE_AUTO_ADVANCE) {
+                if (quickScrubSection == NUM_QUICK_SCRUB_SECTIONS || quickScrubSection == 0) {
+                    mAutoAdvanceAlarm.setAlarm(mHasAlarmRun
+                            ? AUTO_ADVANCE_DELAY : INITIAL_AUTO_ADVANCE_DELAY);
+                } else {
+                    mAutoAdvanceAlarm.cancelAlarm();
+                }
             }
             mQuickScrubSection = quickScrubSection;
         }
@@ -136,6 +147,9 @@ public class QuickScrubController implements OnAlarmListener {
         } else if (mQuickScrubSection == 0 && currPage > mStartPage) {
             goToPageWithHaptic(currPage - 1);
         }
-        mAutoAdvanceAlarm.setAlarm(AUTO_ADVANCE_DELAY);
+        mHasAlarmRun = true;
+        if (ENABLE_AUTO_ADVANCE) {
+            mAutoAdvanceAlarm.setAlarm(AUTO_ADVANCE_DELAY);
+        }
     }
 }
