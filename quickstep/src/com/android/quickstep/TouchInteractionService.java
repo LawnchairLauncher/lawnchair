@@ -192,7 +192,7 @@ public class TouchInteractionService extends Service {
             mEventQueue = new MotionEventQueue(mMainThreadChoreographer,
                     new OtherActivityTouchConsumer(this, mRunningTask, mRecentsModel,
                     mHomeIntent, mISystemUiProxy, mMainThreadExecutor,
-                    mBackgroundThreadChoreographer));
+                    mBackgroundThreadChoreographer, downHitTarget));
         }
     }
 

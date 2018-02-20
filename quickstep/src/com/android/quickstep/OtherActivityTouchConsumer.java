@@ -22,6 +22,7 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 import static com.android.quickstep.RemoteRunnable.executeSafely;
+import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_BACK;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_NONE;
 
 import android.app.ActivityManager.RunningTaskInfo;
@@ -131,7 +132,8 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
     public OtherActivityTouchConsumer(Context base, RunningTaskInfo runningTaskInfo,
             RecentsModel recentsModel, Intent homeIntent, ISystemUiProxy systemUiProxy,
-            MainThreadExecutor mainThreadExecutor, Choreographer backgroundThreadChoreographer) {
+            MainThreadExecutor mainThreadExecutor, Choreographer backgroundThreadChoreographer,
+            @HitTarget int downHitTarget) {
         super(base);
         mRunningTask = runningTaskInfo;
         mRecentsModel = recentsModel;
@@ -140,10 +142,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         mISystemUiProxy = systemUiProxy;
         mMainThreadExecutor = mainThreadExecutor;
         mBackgroundThreadChoreographer = backgroundThreadChoreographer;
-    }
-
-    @Override
-    public void setDownHitTarget(@HitTarget int downHitTarget) {
         mDownHitTarget = downHitTarget;
     }
 
@@ -163,7 +161,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
                 // Start the window animation on down to give more time for launcher to draw if the
                 // user didn't start the gesture over the back button
-                if (!isUsingScreenShot()) {
+                if (!isUsingScreenShot() && mDownHitTarget != HIT_TARGET_BACK) {
                     startTouchTrackingForWindowAnimation(ev.getEventTime());
                 }
 
@@ -205,6 +203,10 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
 
                         if (isUsingScreenShot()) {
                             startTouchTrackingForScreenshotAnimation();
+                        } else if (mDownHitTarget == HIT_TARGET_BACK) {
+                            // If we deferred starting the window animation on touch down, then
+                            // start tracking now
+                            startTouchTrackingForWindowAnimation(ev.getEventTime());
                         }
 
                         notifyGestureStarted();
