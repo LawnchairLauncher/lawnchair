@@ -233,6 +233,11 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val transparentHotseat by BooleanPref(FeatureFlags.KEY_PREF_TRANSPARENT_HOTSEAT, false)
     override val enableDynamicUi by BooleanPref(FeatureFlags.KEY_PREF_ENABLE_DYNAMIC_UI, false)
     override val enableBlur by BooleanPref(FeatureFlags.KEY_PREF_ENABLE_BLUR, false)
+    override fun enableBlur(enable: Boolean) {
+        sharedPrefs.edit()
+                .putBoolean(FeatureFlags.KEY_PREF_ENABLE_BLUR, enable)
+                .apply()
+    }
     override val useWhiteGoogleIcon by BooleanPref(FeatureFlags.KEY_PREF_WHITE_GOOGLE_ICON, false)
     override val ayyMatey by BooleanPref(PreferenceFlags.KEY_AYY_MATEY, false)
     override fun migrateThemePref(context: Context) {
