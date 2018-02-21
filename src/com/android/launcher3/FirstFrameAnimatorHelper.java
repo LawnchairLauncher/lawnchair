@@ -73,13 +73,7 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
             view.getViewTreeObserver().removeOnDrawListener(sGlobalDrawListener);
         }
 
-        TraceHelper.beginSection("TICK");
-        sGlobalDrawListener = new ViewTreeObserver.OnDrawListener() {
-                public void onDraw() {
-                    sGlobalFrameCounter++;
-                    TraceHelper.partitionSection("TICK", "Frame drawn");
-                }
-            };
+        sGlobalDrawListener = () -> sGlobalFrameCounter++;
         view.getViewTreeObserver().addOnDrawListener(sGlobalDrawListener);
         sVisible = true;
     }

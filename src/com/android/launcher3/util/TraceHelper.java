@@ -15,12 +15,16 @@
  */
 package com.android.launcher3.util;
 
+import static android.util.Log.VERBOSE;
+import static android.util.Log.isLoggable;
+
 import android.os.SystemClock;
 import android.os.Trace;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.util.MutableLong;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 
 /**
@@ -31,7 +35,8 @@ import com.android.launcher3.config.FeatureFlags;
  */
 public class TraceHelper {
 
-    private static final boolean ENABLED = FeatureFlags.IS_DOGFOOD_BUILD;
+    private static final boolean FORCE_LOG = Utilities.IS_DEBUG_DEVICE;
+    private static final boolean ENABLED = FORCE_LOG || FeatureFlags.IS_DOGFOOD_BUILD;
 
     private static final boolean SYSTEM_TRACE = false;
     private static final ArrayMap<String, MutableLong> sUpTimes = ENABLED ? new ArrayMap<>() : null;
@@ -40,7 +45,7 @@ public class TraceHelper {
         if (ENABLED) {
             MutableLong time = sUpTimes.get(sectionName);
             if (time == null) {
-                time = new MutableLong(Log.isLoggable(sectionName, Log.VERBOSE) ? 0 : -1);
+                time = new MutableLong((FORCE_LOG || isLoggable(sectionName, VERBOSE)) ? 0 : -1);
                 sUpTimes.put(sectionName, time);
             }
             if (time.value >= 0) {

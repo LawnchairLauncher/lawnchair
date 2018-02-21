@@ -37,6 +37,7 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Choreographer;
 import android.view.MotionEvent;
 import android.view.View;
@@ -47,6 +48,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.uioverrides.UiFactory;
+import com.android.launcher3.util.TraceHelper;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -57,6 +59,15 @@ import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
  */
 @TargetApi(Build.VERSION_CODES.O)
 public class TouchInteractionService extends Service {
+
+    private static final SparseArray<String> sMotionEventNames;
+
+    static {
+        sMotionEventNames = new SparseArray<>(3);
+        sMotionEventNames.put(ACTION_DOWN, "ACTION_DOWN");
+        sMotionEventNames.put(ACTION_UP, "ACTION_UP");
+        sMotionEventNames.put(ACTION_CANCEL, "ACTION_CANCEL");
+    }
 
     public static final int EDGE_NAV_BAR = 1 << 8;
 
@@ -71,12 +82,19 @@ public class TouchInteractionService extends Service {
 
         @Override
         public void onPreMotionEvent(@HitTarget int downHitTarget) throws RemoteException {
+            TraceHelper.beginSection("SysUiBinder");
             onBinderPreMotionEvent(downHitTarget);
+            TraceHelper.partitionSection("SysUiBinder", "Down target " + downHitTarget);
         }
 
         @Override
         public void onMotionEvent(MotionEvent ev) {
             mEventQueue.queue(ev);
+
+            String name = sMotionEventNames.get(ev.getActionMasked());
+            if (name != null){
+                TraceHelper.partitionSection("SysUiBinder", name);
+            }
         }
 
         @Override
@@ -93,12 +111,14 @@ public class TouchInteractionService extends Service {
         @Override
         public void onQuickSwitch() {
             mEventQueue.onQuickSwitch();
+            TraceHelper.endSection("SysUiBinder", "onQuickSwitch");
         }
 
         @Override
         public void onQuickScrubStart() {
             mEventQueue.onQuickScrubStart();
             sQuickScrubEnabled = true;
+            TraceHelper.partitionSection("SysUiBinder", "onQuickScrubStart");
         }
 
         @Override
@@ -109,6 +129,7 @@ public class TouchInteractionService extends Service {
         @Override
         public void onQuickScrubEnd() {
             mEventQueue.onQuickScrubEnd();
+            TraceHelper.endSection("SysUiBinder", "onQuickScrubEnd");
             sQuickScrubEnabled = false;
         }
     };
