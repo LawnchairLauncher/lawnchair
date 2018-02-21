@@ -32,6 +32,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.LauncherEvent;
@@ -158,9 +159,23 @@ public class UserEventDispatcher {
         dispatchUserEvent(event, intent);
     }
 
+    public void logTaskLaunch(int action, int direction, ComponentName componentName){
+        LauncherEvent event = newLauncherEvent(newTouchAction(action), // TAP or SWIPE
+                newTarget(Target.Type.ITEM));
+        if (action == Action.Touch.SWIPE || action == Action.Touch.FLING) {
+            event.action.dir = direction;
+        }
+        event.srcTarget[0].itemType = LauncherLogProto.ItemType.TASK;
+        fillComponentInfo(event.srcTarget[0], componentName);
+        dispatchUserEvent(event, null);
+    }
+
     protected void fillIntentInfo(Target target, Intent intent) {
         target.intentHash = intent.hashCode();
-        ComponentName cn = intent.getComponent();
+        fillComponentInfo(target, intent.getComponent());
+    }
+
+    private void fillComponentInfo(Target target, ComponentName cn) {
         if (cn != null) {
             target.packageNameHash = (mUuidStr + cn.getPackageName()).hashCode();
             target.componentHash = (mUuidStr + cn.flattenToString()).hashCode();
@@ -176,19 +191,29 @@ public class UserEventDispatcher {
         dispatchUserEvent(event, null);
     }
 
-    public void logActionCommand(int command, int containerType) {
-        logActionCommand(command, newContainerTarget(containerType));
+    public void logActionCommand(int command, Target srcTarget) {
+        logActionCommand(command, srcTarget, null);
     }
 
-    public void logActionCommand(int command, Target target) {
-        LauncherEvent event = newLauncherEvent(newCommandAction(command), target);
+    public void logActionCommand(int command, int srcContainerType, int dstContainerType) {
+        logActionCommand(command, newContainerTarget(srcContainerType),
+                dstContainerType >=0 ? newContainerTarget(dstContainerType) : null);
+    }
+
+    public void logActionCommand(int command, Target srcTarget, Target dstTarget) {
+        LauncherEvent event = newLauncherEvent(newCommandAction(command), srcTarget);
+        if (dstTarget != null) {
+            event.destTarget = new Target[1];
+            event.destTarget[0] = dstTarget;
+            event.action.isStateChange = true;
+        }
         dispatchUserEvent(event, null);
     }
 
     /**
      * TODO: Make this function work when a container view is passed as the 2nd param.
      */
-    public void logActionCommand(int command, View itemView, int containerType) {
+    public void logActionCommand(int command, View itemView, int srcContainerType) {
         LauncherEvent event = newLauncherEvent(newCommandAction(command),
                 newItemTarget(itemView), newTarget(Target.Type.CONTAINER));
 
@@ -196,22 +221,39 @@ public class UserEventDispatcher {
             // TODO: Remove the following two lines once fillInLogContainerData can take in a
             // container view.
             event.srcTarget[0].type = Target.Type.CONTAINER;
-            event.srcTarget[0].containerType = containerType;
+            event.srcTarget[0].containerType = srcContainerType;
         }
         dispatchUserEvent(event, null);
     }
 
     public void logActionOnControl(int action, int controlType) {
-        logActionOnControl(action, controlType, null);
+        logActionOnControl(action, controlType, null, -1);
+    }
+
+    public void logActionOnControl(int action, int controlType, int parentContainerType) {
+        logActionOnControl(action, controlType, null, parentContainerType);
     }
 
     public void logActionOnControl(int action, int controlType, @Nullable View controlInContainer) {
+        logActionOnControl(action, controlType, controlInContainer, -1);
+    }
+
+    public void logActionOnControl(int action, int controlType, @Nullable View controlInContainer,
+                                   int parentContainerType) {
         final LauncherEvent event = controlInContainer == null
                 ? newLauncherEvent(newTouchAction(action), newTarget(Target.Type.CONTROL))
                 : newLauncherEvent(newTouchAction(action), newTarget(Target.Type.CONTROL),
                         newTarget(Target.Type.CONTAINER));
         event.srcTarget[0].controlType = controlType;
-        fillInLogContainerData(event, controlInContainer);
+        if (controlInContainer != null) {
+            fillInLogContainerData(event, controlInContainer);
+        }
+        if (parentContainerType >= 0) {
+            event.srcTarget[1].containerType = parentContainerType;
+        }
+        if (action == Action.Touch.DRAGDROP) {
+            event.actionDurationMillis = SystemClock.uptimeMillis() - mActionDurationMillis;
+        }
         dispatchUserEvent(event, null);
     }
 
@@ -232,10 +274,35 @@ public class UserEventDispatcher {
         event.action.dir = dir;
         event.srcTarget[0].pageIndex = pageIndex;
         dispatchUserEvent(event, null);
+    }
 
-        if (action == Action.Touch.SWIPE) {
-            resetElapsedContainerMillis();
+    /**
+     * Used primarily for swipe up and down when state changes when swipe up happens from the
+     * navbar bezel, the {@param srcChildContainerType} is NAVBAR and
+     * {@param srcParentContainerType} is either one of the two
+     * (1) WORKSPACE: if the launcher the foreground activity
+     * (2) APP: if another app was the foreground activity
+     */
+    public void logStateChangeAction(int action, int dir, int srcChildTargetType,
+                                     int srcParentContainerType, int dstContainerType,
+                                     int pageIndex) {
+        LauncherEvent event;
+        if (srcChildTargetType == LauncherLogProto.ItemType.TASK) {
+            event = newLauncherEvent(newTouchAction(action),
+                    newItemTarget(srcChildTargetType),
+                    newContainerTarget(srcParentContainerType));
+        } else {
+            event = newLauncherEvent(newTouchAction(action),
+                    newContainerTarget(srcChildTargetType),
+                    newContainerTarget(srcParentContainerType));
         }
+        event.destTarget = new Target[1];
+        event.destTarget[0] = newContainerTarget(dstContainerType);
+        event.action.dir = dir;
+        event.action.isStateChange = true;
+        event.srcTarget[0].pageIndex = pageIndex;
+        dispatchUserEvent(event, null);
+        resetElapsedContainerMillis("state changed");
     }
 
     public void logActionOnItem(int action, int dir, int itemType) {
@@ -257,7 +324,7 @@ public class UserEventDispatcher {
         provider.fillInLogContainerData(icon, info, event.srcTarget[0], event.srcTarget[1]);
         dispatchUserEvent(event, null);
 
-        resetElapsedContainerMillis();
+        resetElapsedContainerMillis("deep shortcut open");
     }
 
     /* Currently we are only interested in whether this event happens or not and don't
@@ -290,9 +357,15 @@ public class UserEventDispatcher {
 
     /**
      * Currently logs following containers: workspace, allapps, widget tray.
+     * @param reason
      */
-    public final void resetElapsedContainerMillis() {
+    public final void resetElapsedContainerMillis(String reason) {
         mElapsedContainerMillis = SystemClock.uptimeMillis();
+        if (!IS_VERBOSE) {
+            return;
+        }
+        Log.d(TAG, "resetElapsedContainerMillis reason=" + reason);
+
     }
 
     public final void resetElapsedSessionMillis() {
@@ -321,13 +394,13 @@ public class UserEventDispatcher {
             log += "\n Destination " + getTargetsStr(ev.destTarget);
         }
         log += String.format(Locale.US,
-                "\n Elapsed container %d ms session %d ms action %d ms",
+                "\n Elapsed container %d ms, session %d ms, action %d ms",
                 ev.elapsedContainerMillis,
                 ev.elapsedSessionMillis,
                 ev.actionDurationMillis);
         log += "\n isInLandscapeMode " + ev.isInLandscapeMode;
         log += "\n isInMultiWindowMode " + ev.isInMultiWindowMode;
-        log += "\n";
+        log += "\n\n";
         Log.d(TAG, log);
     }
 

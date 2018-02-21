@@ -31,6 +31,10 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.touch.SwipeDetector;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.RecentsView;
 import com.android.quickstep.TaskView;
@@ -70,6 +74,7 @@ public class OverviewSwipeController extends AnimatorListenerAdapter
     private float mDisplacementShift;
     private float mProgressMultiplier;
     private float mEndDisplacement;
+    private int mStartingTarget;
 
     private TaskView mTaskBeingDragged;
 
@@ -120,7 +125,6 @@ public class OverviewSwipeController extends AnimatorListenerAdapter
             // calling the callbacks.
             final int directionsToDetectScroll;
             boolean ignoreSlopWhenSettling = false;
-
             if (mCurrentAnimation != null) {
                 directionsToDetectScroll = SwipeDetector.DIRECTION_BOTH;
                 ignoreSlopWhenSettling = true;
@@ -139,12 +143,15 @@ public class OverviewSwipeController extends AnimatorListenerAdapter
                         // The tile can be dragged down to open the task.
                         mTaskBeingDragged = (TaskView) view;
                         directionsToDetectScroll = SwipeDetector.DIRECTION_BOTH;
+                        mStartingTarget = LauncherLogProto.ItemType.TASK;
                     } else if (isEventOverHotseat(ev)) {
                         // The hotseat is being dragged
                         directionsToDetectScroll = SwipeDetector.DIRECTION_POSITIVE;
                         mSwipeDownEnabled = false;
+                        mStartingTarget = ContainerType.HOTSEAT;
                     } else {
                         mNoIntercept = true;
+                        mStartingTarget = ContainerType.WORKSPACE;
                         return false;
                     }
                 }
@@ -249,8 +256,9 @@ public class OverviewSwipeController extends AnimatorListenerAdapter
     @Override
     public void onDragEnd(float velocity, boolean fling) {
         final boolean goingToEnd;
-
+        final int logAction;
         if (fling) {
+            logAction = Touch.FLING;
             boolean goingUp = velocity < 0;
             if (!goingUp && !mSwipeDownEnabled) {
                 goingToEnd = false;
@@ -269,6 +277,7 @@ public class OverviewSwipeController extends AnimatorListenerAdapter
                 goingToEnd = true;
             }
         } else {
+            logAction = Touch.SWIPE;
             goingToEnd = mCurrentAnimation.getProgressFraction() > SUCCESS_TRANSITION_PROGRESS;
         }
 
@@ -280,7 +289,7 @@ public class OverviewSwipeController extends AnimatorListenerAdapter
                 progress + velocity * SINGLE_FRAME_MS / Math.abs(mEndDisplacement), 0f, 1f);
 
 
-        mCurrentAnimation.setEndAction(() -> onCurrentAnimationEnd(goingToEnd));
+        mCurrentAnimation.setEndAction(() -> onCurrentAnimationEnd(goingToEnd, logAction));
 
         ValueAnimator anim = mCurrentAnimation.getAnimationPlayer();
         anim.setFloatValues(nextFrameProgress, goingToEnd ? 1f : 0f);
@@ -289,18 +298,27 @@ public class OverviewSwipeController extends AnimatorListenerAdapter
         anim.start();
     }
 
-    private void onCurrentAnimationEnd(boolean wasSuccess) {
-        // TODO: Might be a good time to log something.
+    private void onCurrentAnimationEnd(boolean wasSuccess, int logAction) {
         if (mTaskBeingDragged == null) {
             LauncherState state = wasSuccess ?
                     (mCurrentAnimationIsGoingUp ? ALL_APPS : NORMAL) : OVERVIEW;
             mLauncher.getStateManager().goToState(state, false);
+
         } else if (wasSuccess) {
             if (mCurrentAnimationIsGoingUp) {
                 mRecentsView.onTaskDismissed(mTaskBeingDragged);
             } else {
                 mTaskBeingDragged.launchTask(false);
+                mLauncher.getUserEventDispatcher().logTaskLaunch(logAction,
+                        Direction.DOWN, mTaskBeingDragged.getTask().getTopComponent());
             }
+        }
+        if (mTaskBeingDragged == null || (wasSuccess && mCurrentAnimationIsGoingUp)) {
+            mLauncher.getUserEventDispatcher().logStateChangeAction(logAction,
+                    mCurrentAnimationIsGoingUp ? Direction.UP : Direction.DOWN,
+                    mStartingTarget, ContainerType.TASKSWITCHER,
+                    mLauncher.getStateManager().getState().containerType,
+                    mRecentsView.getCurrentPage());
         }
         mDetector.finishedScrolling();
         mTaskBeingDragged = null;

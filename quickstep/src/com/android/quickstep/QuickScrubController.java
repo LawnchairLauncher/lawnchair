@@ -19,8 +19,13 @@ package com.android.quickstep;
 import android.view.HapticFeedbackConstants;
 
 import com.android.launcher3.Alarm;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.OnAlarmListener;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 /**
  * Responds to quick scrub callbacks to page through and launch recent tasks.
@@ -42,13 +47,15 @@ public class QuickScrubController implements OnAlarmListener {
 
     private final Alarm mAutoAdvanceAlarm;
     private final RecentsView mRecentsView;
+    private final Launcher mLauncher;
 
     private boolean mInQuickScrub;
     private int mQuickScrubSection;
     private int mStartPage;
     private boolean mHasAlarmRun;
 
-    public QuickScrubController(RecentsView recentsView) {
+    public QuickScrubController(Launcher launcher, RecentsView recentsView) {
+        mLauncher = launcher;
         mRecentsView = recentsView;
         if (ENABLE_AUTO_ADVANCE) {
             mAutoAdvanceAlarm = new Alarm();
@@ -61,6 +68,7 @@ public class QuickScrubController implements OnAlarmListener {
         mStartPage = startingFromHome ? 0 : mRecentsView.getFirstTaskIndex();
         mQuickScrubSection = 0;
         mHasAlarmRun = false;
+        mLauncher.getUserEventDispatcher().resetActionDurationMillis();
     }
 
     public void onQuickScrubEnd() {
@@ -85,6 +93,9 @@ public class QuickScrubController implements OnAlarmListener {
             // No page move needed, just launch it
             launchTaskRunnable.run();
         }
+        mLauncher.getUserEventDispatcher().logActionOnControl(Touch.DRAGDROP,
+                ControlType.QUICK_SCRUB_BUTTON, null, mStartPage == 0 ?
+                        ContainerType.WORKSPACE : ContainerType.APP);
     }
 
     public void onQuickScrubProgress(float progress) {
@@ -119,6 +130,9 @@ public class QuickScrubController implements OnAlarmListener {
                 break;
             }
         }
+        mLauncher.getUserEventDispatcher().logActionOnControl(Touch.FLING,
+                ControlType.QUICK_SCRUB_BUTTON, null, mStartPage == 0 ?
+                        ContainerType.WORKSPACE : ContainerType.APP);
     }
 
     public void snapToPageForCurrentQuickScrubSection() {

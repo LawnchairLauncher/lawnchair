@@ -40,7 +40,7 @@ public class OverviewState extends LauncherState {
             | FLAG_DISABLE_RESTORE;
 
     public OverviewState(int id) {
-        super(id, ContainerType.WORKSPACE, OVERVIEW_TRANSITION_MS, STATE_FLAGS);
+        super(id, ContainerType.TASKSWITCHER, OVERVIEW_TRANSITION_MS, STATE_FLAGS);
     }
 
     @Override

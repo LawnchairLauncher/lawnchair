@@ -784,7 +784,7 @@ public class Launcher extends BaseActivity
 
         if (!mAppLaunchSuccess) {
             getUserEventDispatcher().logActionCommand(Action.Command.STOP,
-                    mStateManager.getState().containerType);
+                    mStateManager.getState().containerType, -1);
         }
         NotificationListener.removeNotificationsChangedListener();
         getStateManager().moveToRestState();
@@ -1285,7 +1285,8 @@ public class Launcher extends BaseActivity
                 } else if (alreadyOnHome) {
                     Target target = newContainerTarget(mStateManager.getState().containerType);
                     target.pageIndex = mWorkspace.getCurrentPage();
-                    ued.logActionCommand(Action.Command.HOME_INTENT, target);
+                    ued.logActionCommand(Action.Command.HOME_INTENT, target,
+                            newContainerTarget(ContainerType.WORKSPACE));
                 }
 
                 // In all these cases, only animate if we're already on home
@@ -1661,7 +1662,8 @@ public class Launcher extends BaseActivity
             topView.onBackPressed();
         } else if (!isInState(NORMAL)) {
             LauncherState lastState = mStateManager.getLastState();
-            ued.logActionCommand(Action.Command.BACK, mStateManager.getState().containerType);
+            ued.logActionCommand(Action.Command.BACK, mStateManager.getState().containerType,
+                    lastState.containerType);
             mStateManager.goToState(lastState);
         } else {
             // Back button is a no-op here, but give at least some feedback for the button press
@@ -1687,7 +1689,7 @@ public class Launcher extends BaseActivity
 
         if (v instanceof Workspace) {
             if (isInState(OVERVIEW)) {
-                getUserEventDispatcher().logActionOnContainer(LauncherLogProto.Action.Type.TOUCH,
+                getUserEventDispatcher().logActionOnContainer(LauncherLogProto.Action.Touch.TAP,
                         LauncherLogProto.Action.Direction.NONE,
                         LauncherLogProto.ContainerType.OVERVIEW, mWorkspace.getCurrentPage());
                 mStateManager.goToState(NORMAL);
@@ -1698,7 +1700,7 @@ public class Launcher extends BaseActivity
         if (v instanceof CellLayout) {
             if (isInState(OVERVIEW)) {
                 int page = mWorkspace.indexOfChild(v);
-                getUserEventDispatcher().logActionOnContainer(LauncherLogProto.Action.Type.TOUCH,
+                getUserEventDispatcher().logActionOnContainer(LauncherLogProto.Action.Touch.TAP,
                         LauncherLogProto.Action.Direction.NONE,
                         LauncherLogProto.ContainerType.OVERVIEW, page);
                 mWorkspace.snapToPageFromOverView(page);

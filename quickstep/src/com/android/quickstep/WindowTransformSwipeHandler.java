@@ -59,6 +59,10 @@ import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
+
+import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.TouchConsumer.InteractionType;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -621,6 +625,30 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         }
 
         animateToProgress(endShift, duration);
+        int direction = Direction.UP;
+        if (mLauncher.getDeviceProfile().isLandscape) {
+            direction = Direction.LEFT;
+            if (mLauncher.getDeviceProfile().isSeascape()) {
+                direction = Direction.RIGHT;
+            }
+        }
+        int dstContainerType = LauncherLogProto.ContainerType.TASKSWITCHER;
+        if (Float.compare(endShift, 0) == 0) {
+            direction = Direction.DOWN;
+            if (mLauncher.getDeviceProfile().isLandscape) {
+                direction = Direction.RIGHT;
+                if (mLauncher.getDeviceProfile().isSeascape()) {
+                    direction = Direction.LEFT;
+                }
+            }
+            dstContainerType = LauncherLogProto.ContainerType.APP;
+        }
+        mLauncher.getUserEventDispatcher().logStateChangeAction(
+                isFling ? Touch.FLING : Touch.SWIPE, direction,
+                LauncherLogProto.ContainerType.NAVBAR,
+                LauncherLogProto.ContainerType.APP,
+                dstContainerType,
+                0);
     }
 
     /** Animates to the given progress, where 0 is the current app and 1 is overview. */

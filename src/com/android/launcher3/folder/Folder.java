@@ -522,7 +522,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         onCompleteRunnable = new Runnable() {
             @Override
             public void run() {
-                mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
+                mLauncher.getUserEventDispatcher().resetElapsedContainerMillis("folder opened");
             }
         };
         anim.addListener(new AnimatorListenerAdapter() {

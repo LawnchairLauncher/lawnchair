@@ -50,10 +50,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.FloatRange;
 import com.android.launcher3.util.TouchController;
-import com.android.quickstep.RecentsModel;
-import com.android.quickstep.RecentsView;
 import com.android.quickstep.TouchInteractionService;
-import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 
 import java.util.ArrayList;
 
@@ -371,9 +368,12 @@ public class TwoStepSwipeController extends AnimatorListenerAdapter
     private void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
         if (targetState != mFromState) {
             // Transition complete. log the action
-            mLauncher.getUserEventDispatcher().logActionOnContainer(logAction,
+            mLauncher.getUserEventDispatcher().logStateChangeAction(logAction,
                     mToState == ALL_APPS ? Direction.UP : Direction.DOWN,
-                    mStartContainerType, mLauncher.getWorkspace().getCurrentPage());
+                    mStartContainerType,
+                    mFromState.containerType,
+                    mToState.containerType,
+                    mLauncher.getWorkspace().getCurrentPage());
         }
         clearState();
 
