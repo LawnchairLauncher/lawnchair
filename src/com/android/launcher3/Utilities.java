@@ -31,6 +31,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadObjectException;
@@ -230,6 +231,19 @@ public final class Utilities {
         sLoc1[0] += (v1.getMeasuredWidth() * v1.getScaleX()) / 2;
         sLoc1[1] += (v1.getMeasuredHeight() * v1.getScaleY()) / 2;
         return new int[] {sLoc1[0] - sLoc0[0], sLoc1[1] - sLoc0[1]};
+    }
+
+    public static void scaleRectFAboutCenter(RectF r, float scale) {
+        if (scale != 1.0f) {
+            float cx = r.centerX();
+            float cy = r.centerY();
+            r.offset(-cx, -cy);
+            r.left = r.left * scale;
+            r.top = r.top * scale ;
+            r.right = r.right * scale;
+            r.bottom = r.bottom * scale;
+            r.offset(cx, cy);
+        }
     }
 
     public static void scaleRectAboutCenter(Rect r, float scale) {
