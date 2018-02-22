@@ -240,7 +240,7 @@ public class UserEventDispatcher {
 
     public void logActionOnControl(int action, int controlType, @Nullable View controlInContainer,
                                    int parentContainerType) {
-        final LauncherEvent event = controlInContainer == null
+        final LauncherEvent event = (controlInContainer == null && parentContainerType < 0)
                 ? newLauncherEvent(newTouchAction(action), newTarget(Target.Type.CONTROL))
                 : newLauncherEvent(newTouchAction(action), newTarget(Target.Type.CONTROL),
                         newTarget(Target.Type.CONTAINER));
