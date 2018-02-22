@@ -444,11 +444,7 @@ public class LauncherModel extends BroadcastReceiver
             if (mCallbacks != null && mCallbacks.get() != null) {
                 final Callbacks oldCallbacks = mCallbacks.get();
                 // Clear any pending bind-runnables from the synchronized load process.
-                mUiExecutor.execute(new Runnable() {
-                            public void run() {
-                                oldCallbacks.clearPendingBinds();
-                            }
-                        });
+                mUiExecutor.execute(oldCallbacks::clearPendingBinds);
 
                 // If there is already one running, tell it to stop.
                 stopLoader();

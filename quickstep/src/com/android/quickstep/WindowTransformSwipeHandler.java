@@ -742,7 +742,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                         if (taskView != null) {
                             // Defer finishing the animation until the next launcher frame with the
                             // new thumbnail
-                            ViewOnDrawExecutor executor = new ViewOnDrawExecutor(mMainExecutor) {
+                            ViewOnDrawExecutor executor = new ViewOnDrawExecutor() {
                                 @Override
                                 public void onViewDetachedFromWindow(View v) {
                                     if (!isCompleted()) {

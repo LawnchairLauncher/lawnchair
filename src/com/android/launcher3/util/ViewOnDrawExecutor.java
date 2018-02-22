@@ -34,19 +34,13 @@ public class ViewOnDrawExecutor implements Executor, OnDrawListener, Runnable,
         OnAttachStateChangeListener {
 
     private final ArrayList<Runnable> mTasks = new ArrayList<>();
-    private final Executor mExecutor;
 
     private Launcher mLauncher;
     private View mAttachedView;
     private boolean mCompleted;
-    private boolean mIsExecuting;
 
     private boolean mLoadAnimationCompleted;
     private boolean mFirstDrawCompleted;
-
-    public ViewOnDrawExecutor(Executor executor) {
-        mExecutor = executor;
-    }
 
     public void attachTo(Launcher launcher) {
         attachTo(launcher, launcher.getWorkspace(), true /* waitForLoadAnimation */);
@@ -89,13 +83,6 @@ public class ViewOnDrawExecutor implements Executor, OnDrawListener, Runnable,
         mAttachedView.post(this);
     }
 
-    /**
-     * Returns whether the executor is still queuing tasks and hasn't yet executed them.
-     */
-    public boolean canQueue() {
-        return !mIsExecuting && !mCompleted;
-    }
-
     public void onLoadAnimationCompleted() {
         mLoadAnimationCompleted = true;
         if (mAttachedView != null) {
@@ -107,7 +94,6 @@ public class ViewOnDrawExecutor implements Executor, OnDrawListener, Runnable,
     public void run() {
         // Post the pending tasks after both onDraw and onLoadAnimationCompleted have been called.
         if (mLoadAnimationCompleted && mFirstDrawCompleted && !mCompleted) {
-            mIsExecuting = true;
             runAllTasks();
         }
     }
@@ -115,7 +101,6 @@ public class ViewOnDrawExecutor implements Executor, OnDrawListener, Runnable,
     public void markCompleted() {
         mTasks.clear();
         mCompleted = true;
-        mIsExecuting = false;
         if (mAttachedView != null) {
             mAttachedView.getViewTreeObserver().removeOnDrawListener(this);
             mAttachedView.removeOnAttachStateChangeListener(this);
@@ -132,7 +117,7 @@ public class ViewOnDrawExecutor implements Executor, OnDrawListener, Runnable,
 
     protected void runAllTasks() {
         for (final Runnable r : mTasks) {
-            mExecutor.execute(r);
+            r.run();
         }
         markCompleted();
     }
