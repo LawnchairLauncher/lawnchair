@@ -29,15 +29,16 @@ import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MOD
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.RectEvaluator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Matrix;
+import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -66,6 +67,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.TouchConsumer.InteractionType;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.recents.utilities.RectFEvaluator;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -102,7 +104,6 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     private static final int STATE_QUICK_SCRUB_START = 1 << 12;
     private static final int STATE_QUICK_SCRUB_END = 1 << 13;
 
-
     private static final int LAUNCHER_UI_STATES =
             STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN | STATE_ACTIVITY_MULTIPLIER_COMPLETE
             | STATE_LAUNCHER_STARTED;
@@ -135,22 +136,21 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     // The insets of the source app
     private final Rect mSourceInsets = new Rect();
     // The source app bounds with the source insets applied, in the source app window coordinates
-    private final Rect mSourceRect = new Rect();
+    private final RectF mSourceRect = new RectF();
+    // The bounds of the task view in launcher window coordinates
+    private final RectF mTargetRect = new RectF();
+    // Doesn't change after initialized, used as an anchor when changing mTargetRect
+    private final RectF mInitialTargetRect = new RectF();
     // The insets to be used for clipping the app window, which can be larger than mSourceInsets
     // if the aspect ratio of the target is smaller than the aspect ratio of the source rect. In
     // app window coordinates.
-    private final Rect mSourceWindowClipInsets = new Rect();
+    private final RectF mSourceWindowClipInsets = new RectF();
+
     // The bounds of launcher (not including insets) in device coordinates
     private final Rect mHomeStackBounds = new Rect();
-    // The bounds of the task view in launcher window coordinates
-    private final Rect mTargetRect = new Rect();
-    // Doesn't change after initialized, used as an anchor when changing mTargetRect
-    private final Rect mInitialTargetRect = new Rect();
-    // The interpolated rect from the source app rect to the target rect
-    private final Rect mCurrentRect = new Rect();
     // The clip rect in source app window coordinates
     private final Rect mClipRect = new Rect();
-    private final RectEvaluator mRectEvaluator = new RectEvaluator(mCurrentRect);
+    private final RectFEvaluator mRectFEvaluator = new RectFEvaluator();
     private DeviceProfile mDp;
     private int mTransitionDragLength;
 
@@ -254,10 +254,14 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
     private void initTransitionEndpoints(DeviceProfile dp) {
         mDp = dp;
+        mSourceRect.set(mSourceInsets.left, mSourceInsets.top,
+                mSourceStackBounds.width() - mSourceInsets.right,
+                mSourceStackBounds.height() - mSourceInsets.bottom);
 
-        mSourceRect.set(0, 0, dp.widthPx - mSourceInsets.left - mSourceInsets.right,
-                dp.heightPx - mSourceInsets.top - mSourceInsets.bottom);
-        RecentsView.getPageRect(dp, mContext, mTargetRect);
+        Rect tempRect = new Rect();
+        RecentsView.getPageRect(dp, mContext, tempRect);
+
+        mTargetRect.set(tempRect);
         mTargetRect.offset(mHomeStackBounds.left - mSourceStackBounds.left,
                 mHomeStackBounds.top - mSourceStackBounds.top);
         mInitialTargetRect.set(mTargetRect);
@@ -266,13 +270,16 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         // launcher insets may differ, so the aspect ratio of the target rect can differ
         // from the source rect. The difference between the target rect (scaled to the
         // source rect) is the amount to clip on each edge.
-        Rect scaledTargetRect = new Rect(mTargetRect);
-        Utilities.scaleRectAboutCenter(scaledTargetRect,
-                (float) mSourceRect.width() / mTargetRect.width());
-        scaledTargetRect.offsetTo(mSourceInsets.left, mSourceInsets.top);
-        mSourceWindowClipInsets.set(scaledTargetRect.left, scaledTargetRect.top,
-                mDp.widthPx - scaledTargetRect.right,
-                mDp.heightPx - scaledTargetRect.bottom);
+        RectF scaledTargetRect = new RectF(mTargetRect);
+        Utilities.scaleRectFAboutCenter(scaledTargetRect,
+                mSourceRect.width() / mTargetRect.width());
+        scaledTargetRect.offsetTo(mSourceRect.left, mSourceRect.top);
+        mSourceWindowClipInsets.set(
+                Math.max(scaledTargetRect.left, 0),
+                Math.max(scaledTargetRect.top, 0),
+                Math.max(mSourceStackBounds.width() - scaledTargetRect.right, 0),
+                Math.max(mSourceStackBounds.height() - scaledTargetRect.bottom, 0));
+        mSourceRect.set(scaledTargetRect);
 
         Rect targetInsets = dp.getInsets();
         mTransitionDragLength = dp.hotseatBarSizePx;
@@ -481,19 +488,20 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
         synchronized (mRecentsAnimationWrapper) {
             if (mRecentsAnimationWrapper.controller != null) {
+                RectF currentRect;
                 synchronized (mTargetRect) {
-                    mRectEvaluator.evaluate(shift, mSourceRect, mTargetRect);
+                    currentRect = mRectFEvaluator.evaluate(shift, mSourceRect, mTargetRect);
                 }
-                float scale = (float) mCurrentRect.width() / mSourceRect.width();
 
                 mClipRect.left = (int) (mSourceWindowClipInsets.left * shift);
                 mClipRect.top = (int) (mSourceWindowClipInsets.top * shift);
-                mClipRect.right = (int) (mDp.widthPx - (mSourceWindowClipInsets.right * shift));
-                mClipRect.bottom = (int) (mDp.heightPx - (mSourceWindowClipInsets.bottom * shift));
+                mClipRect.right = (int)
+                        (mSourceStackBounds.width() - (mSourceWindowClipInsets.right * shift));
+                mClipRect.bottom = (int)
+                        (mSourceStackBounds.height() - (mSourceWindowClipInsets.bottom * shift));
 
-                mTmpMatrix.setScale(scale, scale, 0, 0);
-                mTmpMatrix.postTranslate(mCurrentRect.left - mSourceInsets.left * scale * shift,
-                        mCurrentRect.top - mSourceInsets.top * scale * shift);
+                mTmpMatrix.setRectToRect(mSourceRect, currentRect, ScaleToFit.FILL);
+
                 TransactionCompat transaction = new TransactionCompat();
                 for (RemoteAnimationTargetCompat app : mRecentsAnimationWrapper.targets) {
                     if (app.mode == MODE_CLOSING) {
@@ -521,8 +529,8 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
                 if (offsetFromFirstTask != 0) {
                     synchronized (mTargetRect) {
                         mTargetRect.set(mInitialTargetRect);
-                        Utilities.scaleRectAboutCenter(mTargetRect, firstTask.getScaleX());
-                        int offsetX = (int) (offsetFromFirstTask + firstTask.getTranslationX());
+                        Utilities.scaleRectFAboutCenter(mTargetRect, firstTask.getScaleX());
+                        float offsetX = offsetFromFirstTask + firstTask.getTranslationX();
                         mTargetRect.offset(offsetX, 0);
                     }
                 }
