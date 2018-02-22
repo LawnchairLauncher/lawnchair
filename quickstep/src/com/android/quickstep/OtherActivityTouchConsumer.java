@@ -230,6 +230,9 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     }
 
     private void notifyGestureStarted() {
+        if (mInteractionHandler == null) {
+            return;
+        }
         // Notify the handler that the gesture has actually started
         mInteractionHandler.onGestureStarted();
 
@@ -275,7 +278,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         // Preload the plan
         mRecentsModel.loadTasks(mRunningTask.id, null);
         mInteractionHandler = handler;
-        mInteractionHandler.setGestureEndCallback(this::onFinish);
+        mInteractionHandler.setGestureEndCallback(mEventQueue::reset);
     }
 
     private Bitmap getCurrentTaskSnapshot() {
@@ -314,7 +317,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         // Preload the plan
         mRecentsModel.loadTasks(mRunningTask.id, null);
         mInteractionHandler = handler;
-        handler.setGestureEndCallback(this::onFinish);
+        handler.setGestureEndCallback(mEventQueue::reset);
 
         CountDownLatch drawWaitLock = new CountDownLatch(1);
         handler.setLauncherOnDrawCallback(() -> {
@@ -408,8 +411,8 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         // Clean up the old interaction handler
         if (mInteractionHandler != null) {
             final BaseSwipeInteractionHandler handler = mInteractionHandler;
-            mMainThreadExecutor.execute(handler::reset);
             mInteractionHandler = null;
+            mMainThreadExecutor.execute(handler::reset);
         }
     }
 
@@ -447,12 +450,6 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
     public void onQuickScrubProgress(float progress) {
         if (mInteractionHandler != null) {
             mInteractionHandler.onQuickScrubProgress(progress);
-        }
-    }
-
-    private void onFinish(BaseSwipeInteractionHandler handler) {
-        if (mInteractionHandler == handler) {
-            mInteractionHandler = null;
         }
     }
 

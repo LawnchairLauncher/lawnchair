@@ -688,7 +688,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         mCurrentShift.cancelAnimation();
 
         if (mGestureEndCallback != null) {
-            mGestureEndCallback.accept(this);
+            mGestureEndCallback.run();
         }
 
         clearReference();

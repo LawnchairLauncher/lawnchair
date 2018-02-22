@@ -347,7 +347,7 @@ public class NavBarSwipeInteractionHandler extends BaseSwipeInteractionHandler i
     public void reset() {
         mCurrentShift.cancelAnimation();
         if (mGestureEndCallback != null) {
-            mGestureEndCallback.accept(this);
+            mGestureEndCallback.run();
         }
     }
 
