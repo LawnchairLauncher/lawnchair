@@ -162,9 +162,9 @@ public class InvariantDeviceProfile {
         int largeSide = Math.max(realSize.x, realSize.y);
 
         landscapeProfile = new DeviceProfile(context, this, smallestSize, largestSize,
-                largeSide, smallSide, true /* isLandscape */);
+                largeSide, smallSide, true /* isLandscape */, false /* isMultiWindowMode */);
         portraitProfile = new DeviceProfile(context, this, smallestSize, largestSize,
-                smallSide, largeSide, false /* isLandscape */);
+                smallSide, largeSide, false /* isLandscape */, false /* isMultiWindowMode */);
 
         // We need to ensure that there is enough extra space in the wallpaper
         // for the intended parallax effects

@@ -97,7 +97,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
 
         @Override
         public View.OnClickListener getOnClickListener(Launcher launcher, TaskView taskView) {
-            if (launcher.getDeviceProfile().inMultiWindowMode()) {
+            if (launcher.getDeviceProfile().isMultiWindowMode) {
                 return null;
             }
             final Task task  = taskView.getTask();

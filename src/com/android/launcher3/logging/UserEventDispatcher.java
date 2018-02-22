@@ -27,6 +27,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
@@ -65,8 +66,7 @@ public class UserEventDispatcher {
             FeatureFlags.IS_DOGFOOD_BUILD && Utilities.isPropertyEnabled(LogConfig.USEREVENT);
     private static final String UUID_STORAGE = "uuid";
 
-    public static UserEventDispatcher newInstance(Context context, boolean isInLandscapeMode,
-            boolean isInMultiWindowMode) {
+    public static UserEventDispatcher newInstance(Context context, DeviceProfile dp) {
         SharedPreferences sharedPrefs = Utilities.getDevicePrefs(context);
         String uuidStr = sharedPrefs.getString(UUID_STORAGE, null);
         if (uuidStr == null) {
@@ -75,8 +75,8 @@ public class UserEventDispatcher {
         }
         UserEventDispatcher ued = Utilities.getOverrideObject(UserEventDispatcher.class,
                 context.getApplicationContext(), R.string.user_event_dispatcher_class);
-        ued.mIsInLandscapeMode = isInLandscapeMode;
-        ued.mIsInMultiWindowMode = isInMultiWindowMode;
+        ued.mIsInLandscapeMode = dp.isVerticalBarLayout();
+        ued.mIsInMultiWindowMode = dp.isMultiWindowMode;
         ued.mUuidStr = uuidStr;
         return ued;
     }

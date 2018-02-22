@@ -128,7 +128,7 @@ public class EdgeSwipeController extends VerticalSwipeController implements
 
             // Add user event logging for launcher pipeline
             int direction = Direction.UP;
-            if (mLauncher.getDeviceProfile().isLandscape) {
+            if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
                 direction = Direction.LEFT;
                 if (mLauncher.getDeviceProfile().isSeascape()) {
                     direction = Direction.RIGHT;

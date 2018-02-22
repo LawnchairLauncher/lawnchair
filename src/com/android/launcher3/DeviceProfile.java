@@ -40,7 +40,9 @@ public class DeviceProfile {
     public final boolean transposeLayoutWithOrientation;
 
     // Device properties in current orientation
-    public final boolean isLandscape;
+    private final boolean isLandscape;
+    public final boolean isMultiWindowMode;
+
     public final int widthPx;
     public final int heightPx;
     public final int availableWidthPx;
@@ -121,10 +123,11 @@ public class DeviceProfile {
 
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
             Point minSize, Point maxSize,
-            int width, int height, boolean isLandscape) {
+            int width, int height, boolean isLandscape, boolean isMultiWindowMode) {
 
         this.inv = inv;
         this.isLandscape = isLandscape;
+        this.isMultiWindowMode = isMultiWindowMode;
 
         Resources res = context.getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
@@ -214,7 +217,8 @@ public class DeviceProfile {
 
     public DeviceProfile copy(Context context) {
         Point size = new Point(availableWidthPx, availableHeightPx);
-        return new DeviceProfile(context, inv, size, size, widthPx, heightPx, isLandscape);
+        return new DeviceProfile(context, inv, size, size, widthPx, heightPx, isLandscape,
+                isMultiWindowMode);
     }
 
     public DeviceProfile getMultiWindowProfile(Context context, Point mwSize) {
@@ -226,7 +230,7 @@ public class DeviceProfile {
         // and heightPx = availableHeightPx because Launcher uses the InvariantDeviceProfiles'
         // widthPx and heightPx values where it's needed.
         DeviceProfile profile = new DeviceProfile(context, inv, mwSize, mwSize, mwSize.x, mwSize.y,
-                isLandscape);
+                isLandscape, true);
 
         // If there isn't enough vertical cell padding with the labels displayed, hide the labels.
         float workspaceCellPaddingY = profile.getCellSize().y - profile.iconSizePx
@@ -288,7 +292,7 @@ public class DeviceProfile {
                 + Utilities.calculateTextHeight(iconTextSizePx);
         int cellYPadding = (getCellSize().y - cellHeightPx) / 2;
         if (iconDrawablePaddingPx > cellYPadding && !isVerticalLayout
-                && !inMultiWindowMode()) {
+                && !isMultiWindowMode) {
             // Ensures that the label is closer to its corresponding icon. This is not an issue
             // with vertical bar layout or multi-window mode since the issue is handled separately
             // with their calls to {@link #adjustToHideWorkspaceLabels}.
@@ -503,14 +507,10 @@ public class DeviceProfile {
         }
     }
 
-    public boolean inMultiWindowMode() {
-        return this != inv.landscapeProfile && this != inv.portraitProfile;
-    }
-
     public boolean shouldIgnoreLongPressToOverview(float touchX) {
         boolean touchedLhsEdge = mInsets.left == 0 && touchX < edgeMarginPx;
         boolean touchedRhsEdge = mInsets.right == 0 && touchX > (widthPx - edgeMarginPx);
-        return !inMultiWindowMode() && (touchedLhsEdge || touchedRhsEdge);
+        return !isMultiWindowMode && (touchedLhsEdge || touchedRhsEdge);
     }
 
     private static Context getContext(Context c, int orientation) {
