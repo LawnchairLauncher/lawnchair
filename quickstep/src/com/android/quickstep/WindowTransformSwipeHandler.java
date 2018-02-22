@@ -46,7 +46,9 @@ import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnDrawListener;
+import android.view.ViewTreeObserver.OnPreDrawListener;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
@@ -67,6 +69,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.TraceHelper;
+import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.quickstep.TouchConsumer.InteractionType;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.recents.utilities.RectFEvaluator;
@@ -214,21 +217,23 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_GESTURE_STARTED,
                 this::notifyGestureStarted);
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_STARTED
-                | STATE_GESTURE_CANCELLED, this::resetStateForAnimationCancel);
+                        | STATE_GESTURE_CANCELLED,
+                this::resetStateForAnimationCancel);
 
-        mStateCallback.addCallback(STATE_SCALED_CONTROLLER_APP | STATE_APP_CONTROLLER_RECEIVED,
+        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_APP_CONTROLLER_RECEIVED
+                        | STATE_SCALED_CONTROLLER_APP,
                 this::resumeLastTask);
-        mStateCallback.addCallback(STATE_SCALED_CONTROLLER_RECENTS
-                | STATE_ACTIVITY_MULTIPLIER_COMPLETE | STATE_APP_CONTROLLER_RECEIVED,
+        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_APP_CONTROLLER_RECEIVED
+                        | STATE_ACTIVITY_MULTIPLIER_COMPLETE
+                        | STATE_SCALED_CONTROLLER_RECENTS,
                 this::switchToScreenshot);
-
-        mStateCallback.addCallback(STATE_SCALED_CONTROLLER_RECENTS
-                        | STATE_ACTIVITY_MULTIPLIER_COMPLETE,
+        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_APP_CONTROLLER_RECEIVED
+                        | STATE_ACTIVITY_MULTIPLIER_COMPLETE
+                        | STATE_SCALED_CONTROLLER_RECENTS
+                        | STATE_SWITCH_TO_SCREENSHOT_COMPLETE,
                 this::setupLauncherUiAfterSwipeUpAnimation);
 
         mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_SCALED_CONTROLLER_APP,
-                this::reset);
-        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_SCALED_CONTROLLER_RECENTS,
                 this::reset);
 
         mStateCallback.addCallback(STATE_HANDLER_INVALIDATED, this::invalidateHandler);
@@ -718,22 +723,47 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
     }
 
     private void switchToScreenshot() {
+        boolean finishTransitionPosted = false;
+        final Runnable finishTransitionRunnable = () -> {
+            synchronized (mRecentsAnimationWrapper) {
+                mRecentsAnimationWrapper.finish(true /* toHome */,
+                        () -> setStateOnUiThread(STATE_SWITCH_TO_SCREENSHOT_COMPLETE));
+            }
+        };
         synchronized (mRecentsAnimationWrapper) {
             if (mRecentsAnimationWrapper.controller != null) {
                 TransactionCompat transaction = new TransactionCompat();
                 for (RemoteAnimationTargetCompat app : mRecentsAnimationWrapper.targets) {
                     if (app.mode == MODE_CLOSING) {
                         // Update the screenshot of the task
-                        final ThumbnailData thumbnail =
+                        ThumbnailData thumbnail =
                                 mRecentsAnimationWrapper.controller.screenshotTask(app.taskId);
-                        mRecentsView.updateThumbnail(app.taskId, thumbnail);
+                        TaskView taskView = mRecentsView.updateThumbnail(app.taskId, thumbnail);
+                        if (taskView != null) {
+                            // Defer finishing the animation until the next launcher frame with the
+                            // new thumbnail
+                            ViewOnDrawExecutor executor = new ViewOnDrawExecutor(mMainExecutor) {
+                                @Override
+                                public void onViewDetachedFromWindow(View v) {
+                                    if (!isCompleted()) {
+                                        runAllTasks();
+                                    }
+                                }
+                            };
+                            executor.attachTo(mLauncher, taskView,
+                                    false /* waitForLoadAnimation */);
+                            executor.execute(finishTransitionRunnable);
+                            finishTransitionPosted = true;
+                        }
                     }
                 }
                 transaction.apply();
             }
         }
-        mRecentsAnimationWrapper.finish(true /* toHome */,
-                () -> setStateOnUiThread(STATE_SWITCH_TO_SCREENSHOT_COMPLETE));
+        if (!finishTransitionPosted) {
+            // If we haven't posted the transition end runnable, run it now
+            finishTransitionRunnable.run();
+        }
         doLogGesture(true /* toLauncher */);
     }
 
@@ -743,6 +773,8 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
 
         // Animate the first icon.
         mRecentsView.setFirstTaskIconScaledDown(false /* isScaledDown */, true /* animate */);
+
+        reset();
     }
 
     public void onQuickScrubEnd() {
