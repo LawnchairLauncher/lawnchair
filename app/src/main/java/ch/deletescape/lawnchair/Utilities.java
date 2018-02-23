@@ -1113,19 +1113,11 @@ public final class Utilities {
     }
 
     public static void restartLauncher(Context context) {
-        PackageManager pm = context.getPackageManager();
-        Intent startActivity = pm.getLaunchIntentForPackage(context.getPackageName());
+        Intent startActivity = new Intent(context, Launcher.class);
+        startActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(startActivity);
+        ((Activity) context).finish();
 
-        startActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        // Create a pending intent so the application is restarted after System.exit(0) was called.
-        // We use an AlarmManager to call this intent in 100ms
-        PendingIntent mPendingIntent = PendingIntent.getActivity(context, 0, startActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-
-        // Kill the application
-        System.exit(0);
     }
 
     public static int getNumberOfHotseatRows(Context context){
