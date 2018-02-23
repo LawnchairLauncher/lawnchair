@@ -1072,7 +1072,7 @@ public final class Utilities {
             }
         }
 
-        return BLACKLISTED_APPLICATIONS.length == 0 || false;
+        return BLACKLISTED_APPLICATIONS.length == 0;
     }
 
     public static void showOutdatedLawnfeedPopup(final Context context) {
