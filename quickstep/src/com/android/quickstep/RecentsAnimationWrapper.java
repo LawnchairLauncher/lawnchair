@@ -15,6 +15,7 @@
  */
 package com.android.quickstep;
 
+import com.android.launcher3.util.TraceHelper;
 import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -31,6 +32,7 @@ public class RecentsAnimationWrapper {
 
     public synchronized void setController(
             RecentsAnimationControllerCompat controller, RemoteAnimationTargetCompat[] targets) {
+        TraceHelper.partitionSection("RecentsController", "Set controller " + controller);
         this.controller = controller;
         this.targets = targets;
 
@@ -46,6 +48,8 @@ public class RecentsAnimationWrapper {
     public void finish(boolean toHome, Runnable onFinishComplete) {
         BackgroundExecutor.get().submit(() -> {
             synchronized (this) {
+                TraceHelper.endSection("RecentsController",
+                        "Finish " + controller + ", toHome=" + toHome);
                 if (controller != null) {
                     controller.setInputConsumerEnabled(false);
                     controller.finish(toHome);
@@ -62,6 +66,8 @@ public class RecentsAnimationWrapper {
         if (mInputConsumerEnabled) {
             BackgroundExecutor.get().submit(() -> {
                 synchronized (this) {
+                    TraceHelper.partitionSection("RecentsController",
+                            "Enabling consumer on " + controller);
                     if (controller != null) {
                         controller.setInputConsumerEnabled(true);
                     }

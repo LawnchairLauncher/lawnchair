@@ -328,6 +328,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
         });
         handler.initWhenReady();
 
+        TraceHelper.beginSection("RecentsController");
         Runnable startActivity = () -> ActivityManagerWrapper.getInstance()
                 .startRecentsActivity(mHomeIntent,
                 new AssistDataReceiver() {
@@ -342,9 +343,11 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                             RemoteAnimationTargetCompat[] apps, Rect homeContentInsets,
                             Rect minimizedHomeBounds) {
                         if (mInteractionHandler == handler) {
+                            TraceHelper.partitionSection("RecentsController", "Received");
                             handler.onRecentsAnimationStart(controller, apps, homeContentInsets,
                                     minimizedHomeBounds);
                         } else {
+                            TraceHelper.endSection("RecentsController", "Finishing no handler");
                             controller.finish(false /* toHome */);
                         }
 
@@ -360,6 +363,8 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                     }
 
                     public void onAnimationCanceled() {
+                        TraceHelper.endSection("RecentsController",
+                                "Cancelled: " + mInteractionHandler);
                         if (mInteractionHandler == handler) {
                             handler.onRecentsAnimationCanceled();
                         }
