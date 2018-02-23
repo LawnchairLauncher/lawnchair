@@ -25,9 +25,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.util.Themes;
 
@@ -47,12 +47,12 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     private int mSelectedIndicatorHeight;
     private int mIndicatorLeft = -1;
     private int mIndicatorRight = -1;
-    private int mIndicatorPosition = 0;
-    private float mIndicatorOffset;
+    private float mScrollOffset;
     private int mSelectedPosition = 0;
 
     private AllAppsContainerView mContainerView;
     private int mLastActivePage = 0;
+    private boolean mIsRtl;
 
     public PersonalWorkSlidingTabStrip(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -72,11 +72,11 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
                 getResources().getDimensionPixelSize(R.dimen.all_apps_divider_height));
 
         mSharedPreferences = Launcher.getLauncher(getContext()).getSharedPrefs();
+        mIsRtl = Utilities.isRtl(getResources());
     }
 
-    private void updateIndicatorPosition(int position, float positionOffset) {
-        mIndicatorPosition = position;
-        mIndicatorOffset = positionOffset;
+    private void updateIndicatorPosition(float scrollOffset) {
+        mScrollOffset = scrollOffset;
         updateIndicatorPosition();
     }
 
@@ -92,30 +92,21 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         updateTabTextColor(mSelectedPosition);
-        updateIndicatorPosition(mIndicatorPosition, mIndicatorOffset);
+        updateIndicatorPosition(mScrollOffset);
     }
 
     private void updateIndicatorPosition() {
-        final View tab = getChildAt(mIndicatorPosition);
-        int left, right;
-
-        if (tab != null && tab.getWidth() > 0) {
-            left = tab.getLeft();
-            right = tab.getRight();
-
-            if (mIndicatorOffset > 0f && mIndicatorPosition < getChildCount() - 1) {
-                // Draw the selection partway between the tabs
-                View nextTitle = getChildAt(mIndicatorPosition + 1);
-                left = (int) (mIndicatorOffset * nextTitle.getLeft() +
-                        (1.0f - mIndicatorOffset) * left);
-                right = (int) (mIndicatorOffset * nextTitle.getRight() +
-                        (1.0f - mIndicatorOffset) * right);
-            }
-        } else {
-            left = right = -1;
+        int left = -1, right = -1;
+        final View leftTab = getLeftTab();
+        if (leftTab != null) {
+            left = (int) (leftTab.getLeft() + leftTab.getWidth() * mScrollOffset);
+            right = left + leftTab.getWidth();
         }
-
         setIndicatorPosition(left, right);
+    }
+
+    private View getLeftTab() {
+        return mIsRtl ? getChildAt(1) : getChildAt(0);
     }
 
     private void setIndicatorPosition(int left, int right) {
@@ -140,7 +131,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         if (mSharedPreferences.getBoolean(KEY_SHOWED_PEEK_WORK_TAB, false)) {
             return;
         }
-        if (mIndicatorPosition != POSITION_PERSONAL) {
+        if (mLastActivePage != POSITION_PERSONAL) {
             return;
         }
         highlightWorkTab();
@@ -157,11 +148,8 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
 
     @Override
     public void setScroll(int currentScroll, int totalScroll) {
-        if (currentScroll == totalScroll) {
-            updateIndicatorPosition(1, 0);
-        } else if (totalScroll > 0) {
-            updateIndicatorPosition(0, ((float) currentScroll) / totalScroll);
-        }
+        float scrollOffset = ((float) currentScroll) / totalScroll;
+        updateIndicatorPosition(scrollOffset);
     }
 
     @Override
