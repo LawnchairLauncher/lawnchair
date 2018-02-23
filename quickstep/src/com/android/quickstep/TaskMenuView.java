@@ -144,6 +144,7 @@ public class TaskMenuView extends AbstractFloatingView {
         icon.setBounds(0, 0, iconSize, iconSize);
         mTaskIconAndName.setCompoundDrawables(null, icon, null, null);
         mTaskIconAndName.setText(TaskUtils.getTitle(mLauncher, taskView.getTask()));
+        mTaskIconAndName.setOnClickListener(v -> close(true));
 
         for (TaskSystemShortcut menuOption : MENU_OPTIONS) {
             OnClickListener onClickListener = menuOption.getOnClickListener(mLauncher, taskView);
