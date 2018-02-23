@@ -1132,7 +1132,7 @@ public final class Utilities {
 
         new AlertDialog.Builder(context)
             .setTitle(R.string.reset_alternative_icons_title)
-            .setMessage(String.format(context.getString(R.string.reset_alternative_icons), appsList.size()))
+            .setMessage(String.format(String.valueOf(context.getString(R.string.reset_alternative_icons)), appsList.size()))
             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
