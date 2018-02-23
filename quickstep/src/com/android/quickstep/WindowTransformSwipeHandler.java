@@ -290,12 +290,11 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         mSourceRect.set(scaledTargetRect);
 
         Rect targetInsets = dp.getInsets();
-        mTransitionDragLength = dp.hotseatBarSizePx;
         if (dp.isVerticalBarLayout()) {
             int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
-            mTransitionDragLength += dp.hotseatBarSidePaddingPx + hotseatInset;
+            mTransitionDragLength = dp.hotseatBarSizePx + dp.hotseatBarSidePaddingPx + hotseatInset;
         } else {
-            mTransitionDragLength += targetInsets.bottom;
+            mTransitionDragLength = dp.heightPx - tempRect.bottom;
         }
     }
 
