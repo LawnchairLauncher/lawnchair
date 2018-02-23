@@ -16,18 +16,24 @@
 package com.android.quickstep;
 
 import android.annotation.TargetApi;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Looper;
 import android.os.UserHandle;
+import android.util.LruCache;
 
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.systemui.shared.recents.ISystemUiProxy;
+import com.android.systemui.shared.recents.model.IconLoader;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan.PreloadOptions;
 import com.android.systemui.shared.recents.model.RecentsTaskLoader;
+import com.android.systemui.shared.recents.model.TaskKeyLruCache;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.TaskStackChangeListener;
@@ -75,7 +81,15 @@ public class RecentsModel extends TaskStackChangeListener {
         Resources res = context.getResources();
         mRecentsTaskLoader = new RecentsTaskLoader(mContext,
                 res.getInteger(R.integer.config_recentsMaxThumbnailCacheSize),
-                res.getInteger(R.integer.config_recentsMaxIconCacheSize), 0);
+                res.getInteger(R.integer.config_recentsMaxIconCacheSize), 0) {
+
+            @Override
+            protected IconLoader createNewIconLoader(Context context,
+                    TaskKeyLruCache<Drawable> iconCache,
+                    LruCache<ComponentName, ActivityInfo> activityInfoCache) {
+                return new NormalizedIconLoader(context, iconCache, activityInfoCache);
+            }
+        };
         mRecentsTaskLoader.startLoader(mContext);
 
         mMainThreadExecutor = new MainThreadExecutor();

@@ -29,6 +29,8 @@ import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Property;
 import android.util.SparseArray;
 
@@ -303,5 +305,31 @@ public class FastBitmapDrawable extends Drawable {
             mPaint.setColorFilter(null);
         }
         invalidateSelf();
+    }
+
+    @Override
+    public ConstantState getConstantState() {
+        return new MyConstantState(mBitmap, mIconColor);
+    }
+
+    private static class MyConstantState extends ConstantState {
+        private final Bitmap mBitmap;
+        private final int mIconColor;
+
+
+        public MyConstantState(Bitmap bitmap, int color) {
+            mBitmap = bitmap;
+            mIconColor = color;
+        }
+
+        @Override
+        public Drawable newDrawable() {
+            return new FastBitmapDrawable(mBitmap, mIconColor);
+        }
+
+        @Override
+        public int getChangingConfigurations() {
+            return 0;
+        }
     }
 }
