@@ -110,6 +110,7 @@ import ch.deletescape.lawnchair.util.PackageManagerHelper;
 public final class Utilities {
 
     private static final String TAG = "Launcher.Utilities";
+    private static final String LAUNCHER_RESTART_KEY = "launcher_restart_key";
 
     private static final Rect sOldBounds = new Rect();
     private static final Canvas sCanvas = new Canvas();
@@ -1108,11 +1109,14 @@ public final class Utilities {
     }
 
     public static void restartLauncher(Context context) {
-        Intent startActivity = new Intent(context, Launcher.class);
-        startActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        context.startActivity(startActivity);
-        ((Activity) context).finish();
-
+        Intent restartIntent = new Intent(context, Launcher.class);
+        restartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        restartIntent.putExtra(LAUNCHER_RESTART_KEY, restartIntent);
+        context.startActivity(restartIntent);
+        if (context instanceof Activity) {
+            ((Activity) context).finish();
+        }
+        System.exit(0);
     }
 
     public static int getNumberOfHotseatRows(Context context){
