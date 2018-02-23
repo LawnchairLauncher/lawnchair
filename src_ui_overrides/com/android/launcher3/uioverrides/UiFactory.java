@@ -64,4 +64,8 @@ public class UiFactory {
     public static void resetOverview(Launcher launcher) { }
 
     public static void onLauncherStateOrFocusChanged(Launcher launcher) { }
+
+    public static void onStart(Launcher launcher) { }
+
+    public static void onTrimMemory(Launcher launcher, int level) { }
 }

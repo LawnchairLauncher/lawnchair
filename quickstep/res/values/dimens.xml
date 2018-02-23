@@ -25,6 +25,9 @@
     <dimen name="task_fade_length">20dp</dimen>
     <dimen name="recents_page_spacing">10dp</dimen>
 
+    <!-- The speed in dp/s at which the user needs to be scrolling in recents such that we start
+             loading full resolution screenshots. -->
+    <dimen name="recents_fast_fling_velocity">600dp</dimen>
 
     <dimen name="quickstep_fling_threshold_velocity">500dp</dimen>
     <dimen name="quickstep_fling_min_velocity">250dp</dimen>

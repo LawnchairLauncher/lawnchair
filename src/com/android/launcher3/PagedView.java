@@ -552,7 +552,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 // Notify the user when the page changes
                 announceForAccessibility(getCurrentPageDescription());
             }
-            return true;
         }
         return false;
     }

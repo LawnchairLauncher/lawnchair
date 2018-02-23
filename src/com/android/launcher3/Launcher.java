@@ -829,6 +829,7 @@ public class Launcher extends BaseActivity
             mScrimAnimator.start();
         }
         mShouldFadeInScrim = false;
+        UiFactory.onStart(this);
     }
 
     @Override
@@ -2171,6 +2172,7 @@ public class Launcher extends BaseActivity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onTrimMemory(level);
         }
+        UiFactory.onTrimMemory(this, level);
     }
 
     @Override

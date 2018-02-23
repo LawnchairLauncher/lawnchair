@@ -26,6 +26,7 @@ import android.animation.LayoutTransition.TransitionListener;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -84,6 +85,8 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
     private boolean mTaskStackListenerRegistered;
     private LayoutTransition mLayoutTransition;
     private Runnable mNextPageSwitchRunnable;
+
+    private float mFastFlingVelocity;
 
     /**
      * TODO: Call reloadIdNeeded in onTaskStackChanged.
@@ -199,7 +202,9 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        Resources res = getResources();
         mFirstTaskIndex = getPageCount();
+        mFastFlingVelocity = res.getDimensionPixelSize(R.dimen.recents_fast_fling_velocity);
     }
 
     @Override
@@ -327,8 +332,10 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
         }
         while (getChildCount() > requiredChildCount) {
             final TaskView taskView = (TaskView) getChildAt(getChildCount() - 1);
+            final Task task = taskView.getTask();
             removeView(taskView);
-            loader.unloadTaskData(taskView.getTask());
+            loader.unloadTaskData(task);
+            loader.getHighResThumbnailLoader().onTaskInvisible(task);
         }
         setLayoutTransition(mLayoutTransition);
 
@@ -439,11 +446,21 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
     @Override
     protected boolean computeScrollHelper() {
         boolean scrolling = super.computeScrollHelper();
+        boolean isFlingingFast = false;
         updateCurveProperties();
         if (scrolling || (mTouchState == TOUCH_STATE_SCROLLING)) {
+            if (scrolling) {
+                // Check if we are flinging quickly to disable high res thumbnail loading
+                isFlingingFast = mScroller.getCurrVelocity() > mFastFlingVelocity;
+            }
+
             // After scrolling, update the visible task's data
             loadVisibleTaskData();
         }
+
+        // Update the high res thumbnail loader
+        RecentsTaskLoader loader = mModel.getRecentsTaskLoader();
+        loader.getHighResThumbnailLoader().setFlingingFast(isFlingingFast);
         return scrolling;
     }
 
@@ -488,10 +505,12 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
             if (visible) {
                 if (!mPrevVisibleTasks.get(i)) {
                     loader.loadTaskData(task);
+                    loader.getHighResThumbnailLoader().onTaskVisible(task);
                 }
             } else {
                 if (mPrevVisibleTasks.get(i)) {
                     loader.unloadTaskData(task);
+                    loader.getHighResThumbnailLoader().onTaskInvisible(task);
                 }
             }
             mPrevVisibleTasks.put(i, visible);
