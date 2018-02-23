@@ -20,9 +20,13 @@ LOCAL_PATH := $(call my-dir)
 # Prebuilt Java Libraries
 #
 include $(CLEAR_VARS)
-LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := \
-    libSharedSystemUI:quickstep/libs/sysui_shared.jar
-include $(BUILD_MULTI_PREBUILT)
+LOCAL_MODULE := libSharedSystemUI
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_CLASS := JAVA_LIBRARIES
+LOCAL_SRC_FILES := quickstep/libs/sysui_shared.jar
+LOCAL_UNINSTALLABLE_MODULE := true
+LOCAL_SDK_VERSION := current
+include $(BUILD_PREBUILT)
 
 #
 # Build rule for Launcher3 app.
