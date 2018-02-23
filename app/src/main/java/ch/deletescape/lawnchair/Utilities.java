@@ -16,11 +16,8 @@
 
 package ch.deletescape.lawnchair;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -106,8 +103,6 @@ import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 import ch.deletescape.lawnchair.util.IconNormalizer;
 import ch.deletescape.lawnchair.util.PackageManagerHelper;
-
-import static ch.deletescape.lawnchair.util.PackageManagerHelper.isAppEnabled;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
