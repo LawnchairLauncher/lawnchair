@@ -18,10 +18,10 @@ package com.google.android.apps.nexuslauncher;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.UserHandle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
@@ -30,10 +30,7 @@ import android.widget.TextView;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
-import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.widget.WidgetsBottomSheet;
 
@@ -94,7 +91,8 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             Context context = getActivity();
             CustomDrawableFactory factory = (CustomDrawableFactory) DrawableFactory.get(context);
 
-            boolean enable = factory.packCalendars.containsKey(mComponentName) || factory.packComponents.containsKey(mComponentName);
+            ComponentName componentName = itemInfo.getTargetComponent();
+            boolean enable = factory.packCalendars.containsKey(componentName) || factory.packComponents.containsKey(componentName);
             mPrefPack.setEnabled(enable);
             mPrefPack.setChecked(enable && CustomIconProvider.isEnabledForApp(context, mComponentName));
             if (enable) {

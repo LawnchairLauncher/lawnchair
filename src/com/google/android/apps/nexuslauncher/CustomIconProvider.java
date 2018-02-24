@@ -60,15 +60,10 @@ public class CustomIconProvider extends DynamicIconProvider {
                 DeepShortcutManager shortcutManager = DeepShortcutManager.getInstance(context);
                 for (UserHandle user : UserManagerCompat.getInstance(context).getUserProfiles()) {
                     Set<String> packages = new HashSet<>();
-                    for (String key : mFactory.packCalendars.keySet()) {
-                        if (key.startsWith("ComponentInfo") && key.length() >= 15) {
-                            ComponentName componentName = ComponentName.unflattenFromString(key.substring(14, key.length() - 1));
-                            if (componentName != null) {
-                                String pkg = componentName.getPackageName();
-                                if (!apps.getActivityList(pkg, user).isEmpty()) {
-                                    packages.add(pkg);
-                                }
-                            }
+                    for (ComponentName componentName : mFactory.packCalendars.keySet()) {
+                        String pkg = componentName.getPackageName();
+                        if (!apps.getActivityList(pkg, user).isEmpty()) {
+                            packages.add(pkg);
                         }
                     }
                     for (String pkg : packages) {
@@ -91,9 +86,9 @@ public class CustomIconProvider extends DynamicIconProvider {
         mFactory.ensureInitialLoadComplete();
 
         String packageName = launcherActivityInfo.getApplicationInfo().packageName;
-        String component = launcherActivityInfo.getComponentName().toString();
+        ComponentName component = launcherActivityInfo.getComponentName();
         Drawable drawable = null;
-        if (isEnabledForApp(mContext, component)) {
+        if (isEnabledForApp(mContext, component.toString())) {
             PackageManager pm = mContext.getPackageManager();
             if (mFactory.packCalendars.containsKey(component)) {
                 try {
