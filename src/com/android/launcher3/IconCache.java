@@ -828,6 +828,10 @@ public class IconCache {
         }
     }
 
+    public IconProvider getIconProvider() {
+        return mIconProvider;
+    }
+
     private class ActivityInfoProvider extends Provider<LauncherActivityInfo> {
 
         private final Intent mIntent;

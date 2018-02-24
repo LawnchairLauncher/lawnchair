@@ -347,9 +347,19 @@
     <string name="about_changelog">Changelog</string>
     <string name="about_contributors_title">Contributors</string>
     <string name="about_icon_designer">App Icon Designer</string>
-    <string name="ui_pref_title">UI</string>
+    <string name="pixel_ui_pref_title">Theme</string>
     <string name="action_edit">Edit</string>
     <string name="hide_app_sum">Hide app from the app drawer</string>
     <string name="hide_app">Hide app</string>
     <string name="icon_shape_rounded_square">Rounded square</string>
+    <string name="pixel_ui_pref_summary">Theme different elements</string>
+    <string name="app_drawer_pref_title">App drawer</string>
+    <string name="app_drawer_pref_summary">Customize your app drawer</string>
+    <string name="general_pref_title">Desktop</string>
+    <string name="general_pref_summary">Customize your desktop</string>
+    <string name="about_pref_summary">Get to know about the Lawnchair team</string>
+    <string name="hidden_app">Hide apps</string>
+    <string name="hide_app_selected">&#160; hidden</string>
+    <string name="hide_app_reset">Reset</string>
+    <string name="hide_app_apply">Apply</string>
 </resources>

@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Looper
+import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherFiles
 import com.android.launcher3.MainThreadExecutor
+import com.android.launcher3.compat.UserManagerCompat
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 import kotlin.reflect.KProperty
@@ -188,14 +190,6 @@ class LawnchairPreferences(val context: Context) {
 
     private interface MutablePrefDelegate<T> {
         operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T)
-    }
-
-    fun registerOnSharedPreferenceChangeListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
-        sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
-    }
-
-    fun unregisterOnSharedPreferenceChangeListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
-        sharedPrefs.unregisterOnSharedPreferenceChangeListener(listener)
     }
 
     companion object {

@@ -47,21 +47,21 @@ public class CustomAppFilter extends NexusAppFilter {
         }
         setHiddenApps(context, hiddenApps);
 
-        LauncherModel model = Launcher.getLauncher(context).getModel();
-        for (UserHandle user : UserManagerCompat.getInstance(context).getUserProfiles()) {
-            model.onPackagesReload(user);
-        }
+//        LauncherModel model = Launcher.getLauncher(context).getModel();
+//        for (UserHandle user : UserManagerCompat.getInstance(context).getUserProfiles()) {
+//            model.onPackagesReload(user);
+//        }
     }
 
     static boolean isHiddenApp(Context context, String comp, String pkg) {
         return getHiddenApps(context).contains(comp) != CustomIconUtils.isPackProvider(context, pkg);
     }
 
-    private static Set<String> getHiddenApps(Context context) {
+    public static Set<String> getHiddenApps(Context context) {
         return new HashSet<>(Utilities.getPrefs(context).getStringSet(HIDE_APPS_PREF, new HashSet<String>()));
     }
 
-    private static void setHiddenApps(Context context, Set<String> hiddenApps) {
+    public static void setHiddenApps(Context context, Set<String> hiddenApps) {
         SharedPreferences.Editor editor = Utilities.getPrefs(context).edit();
         editor.putStringSet(HIDE_APPS_PREF, hiddenApps);
         editor.apply();

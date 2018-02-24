@@ -149,6 +149,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
+import ch.deletescape.lawnchair.LawnchairPreferencesChangeHandler;
+
 import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_APPS;
 import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_WIDGETS;
 
@@ -347,6 +349,7 @@ public class Launcher extends BaseActivity
     }
 
     private RotationPrefChangeHandler mRotationPrefChangeHandler;
+    private LawnchairPreferencesChangeHandler mLawnchairPrefChangeHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -462,6 +465,8 @@ public class Launcher extends BaseActivity
             mRotationPrefChangeHandler = new RotationPrefChangeHandler();
             mSharedPrefs.registerOnSharedPreferenceChangeListener(mRotationPrefChangeHandler);
         }
+        mLawnchairPrefChangeHandler = new LawnchairPreferencesChangeHandler(this);
+        mSharedPrefs.registerOnSharedPreferenceChangeListener(mLawnchairPrefChangeHandler);
 
         if (PinItemDragListener.handleDragRequest(this, getIntent())) {
             // Temporarily enable the rotation
@@ -1841,6 +1846,7 @@ public class Launcher extends BaseActivity
         if (mRotationPrefChangeHandler != null) {
             mSharedPrefs.unregisterOnSharedPreferenceChangeListener(mRotationPrefChangeHandler);
         }
+        mSharedPrefs.unregisterOnSharedPreferenceChangeListener(mLawnchairPrefChangeHandler);
 
         try {
             mAppWidgetHost.stopListening();
