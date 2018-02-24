@@ -23,6 +23,7 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.google.android.apps.nexuslauncher.clock.CustomClock;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -101,7 +102,11 @@ public class CustomIconProvider extends DynamicIconProvider {
                 } catch (PackageManager.NameNotFoundException ignored) {
                 }
             } else if (mFactory.packComponents.containsKey(component)) {
+                int drawableId = mFactory.packComponents.get(component);
                 drawable = pm.getDrawable(mFactory.iconPack, mFactory.packComponents.get(component), null);
+                if (Utilities.ATLEAST_OREO && mFactory.packClocks.containsKey(drawableId)) {
+                    drawable = CustomClock.getClock(mContext, drawable, mFactory.packClocks.get(drawableId), iconDpi);
+                }
             }
         }
 

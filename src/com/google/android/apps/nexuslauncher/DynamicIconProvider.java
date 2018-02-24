@@ -103,9 +103,10 @@ public class DynamicIconProvider extends IconProvider {
                 if (dayResId != 0) {
                     drawable = resourcesForApplication.getDrawableForDensity(dayResId, iconDpi);
                 }
-            } catch (NameNotFoundException e) {
+            } catch (NameNotFoundException ignored) {
             }
         } else if (!flattenDrawable &&
+                Utilities.ATLEAST_OREO &&
                 DynamicClock.DESK_CLOCK.equals(launcherActivityInfo.getComponentName()) &&
                 Process.myUserHandle().equals(launcherActivityInfo.getUser())) {
             drawable = DynamicClock.getClock(mContext, iconDpi);
