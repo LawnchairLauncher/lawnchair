@@ -21,6 +21,7 @@ import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.LooperExecutor;
+import com.google.android.apps.nexuslauncher.clock.CustomClock;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -129,7 +130,7 @@ public class CustomIconUtils {
         }
     }
 
-    static void parsePack(Map<ComponentName, Integer> packComponents, Map<ComponentName, String> packCalendars, PackageManager pm, String iconPack) {
+    static void parsePack(CustomDrawableFactory factory, PackageManager pm, String iconPack) {
         try {
             Resources res = pm.getResourcesForApplication(iconPack);
             int resId = res.getIdentifier("appfilter", "xml", iconPack);
@@ -142,8 +143,9 @@ public class CustomIconUtils {
                 XmlResourceParser parseXml = pm.getXml(iconPack, resId, null);
                 while (parseXml.next() != XmlPullParser.END_DOCUMENT) {
                     if (parseXml.getEventType() == XmlPullParser.START_TAG) {
-                        boolean isCalendar = parseXml.getName().equals("calendar");
-                        if (isCalendar || parseXml.getName().equals("item")) {
+                        String name = parseXml.getName();
+                        boolean isCalendar = name.equals("calendar");
+                        if (isCalendar || name.equals("item")) {
                             String componentName = parseXml.getAttributeValue(null, "component");
                             String drawableName = parseXml.getAttributeValue(null, isCalendar ? "prefix" : "drawable");
                             if (componentName != null && drawableName != null && componentName.startsWith(compStart) && componentName.endsWith(compEnd)) {
@@ -151,13 +153,27 @@ public class CustomIconUtils {
                                 ComponentName parsed = ComponentName.unflattenFromString(componentName);
                                 if (parsed != null) {
                                     if (isCalendar) {
-                                        packCalendars.put(parsed, drawableName);
+                                        factory.packCalendars.put(parsed, drawableName);
                                     } else {
                                         int drawableId = res.getIdentifier(drawableName, "drawable", iconPack);
                                         if (drawableId != 0) {
-                                            packComponents.put(parsed, drawableId);
+                                            factory.packComponents.put(parsed, drawableId);
                                         }
                                     }
+                                }
+                            }
+                        } else if (name.equals("dynamic-clock")) {
+                            String drawableName = parseXml.getAttributeValue(null, "drawable");
+                            if (drawableName != null) {
+                                int drawableId = res.getIdentifier(drawableName, "drawable", iconPack);
+                                if (drawableId != 0) {
+                                    factory.packClocks.put(drawableId, new CustomClock.Metadata(
+                                            parseXml.getAttributeIntValue(null, "hourLayerIndex", -1),
+                                            parseXml.getAttributeIntValue(null, "minuteLayerIndex", -1),
+                                            parseXml.getAttributeIntValue(null, "secondLayerIndex", -1),
+                                            parseXml.getAttributeIntValue(null, "defaultHour", 0),
+                                            parseXml.getAttributeIntValue(null, "defaultMinute", 0),
+                                            parseXml.getAttributeIntValue(null, "defaultSecond", 0)));
                                 }
                             }
                         }
