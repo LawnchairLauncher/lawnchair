@@ -111,7 +111,9 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
     private boolean mScrimOnLeft;
 
     private boolean mFirstTaskIconScaledDown = false;
-    private SparseBooleanArray mPrevVisibleTasks = new SparseBooleanArray();
+
+    // Keeps track of the previously known visible tasks for purposes of loading/unloading task data
+    private SparseBooleanArray mHasVisibleTaskData = new SparseBooleanArray();
 
     public RecentsView(Context context) {
         this(context, null);
@@ -217,6 +219,20 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
     }
 
     @Override
+    public void onViewRemoved(View child) {
+        super.onViewRemoved(child);
+
+        // Clear the task data for the removed child if it was visible
+        Task task = ((TaskView) child).getTask();
+        if (mHasVisibleTaskData.get(task.key.id)) {
+            mHasVisibleTaskData.delete(task.key.id);
+            RecentsTaskLoader loader = mModel.getRecentsTaskLoader();
+            loader.unloadTaskData(task);
+            loader.getHighResThumbnailLoader().onTaskInvisible(task);
+        }
+    }
+
+    @Override
     public void setInsets(Rect insets) {
         mInsets.set(insets);
         DeviceProfile dp = Launcher.getLauncher(getContext()).getDeviceProfile();
@@ -295,7 +311,6 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
     }
 
     private void applyLoadPlan(RecentsTaskLoadPlan loadPlan) {
-        final RecentsTaskLoader loader = mModel.getRecentsTaskLoader();
         TaskStack stack = loadPlan != null ? loadPlan.getTaskStack() : null;
         if (stack == null) {
             removeAllViews();
@@ -317,12 +332,12 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
         }
         while (getChildCount() > requiredChildCount) {
             final TaskView taskView = (TaskView) getChildAt(getChildCount() - 1);
-            final Task task = taskView.getTask();
             removeView(taskView);
-            loader.unloadTaskData(task);
-//            loader.getHighResThumbnailLoader().onTaskInvisible(task);
         }
         setLayoutTransition(mLayoutTransition);
+
+        // Unload existing visible task data
+        unloadVisibleTaskData();
 
         // Rebind and reset all task views
         for (int i = requiredChildCount - 1; i >= 0; i--) {
@@ -333,8 +348,8 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
             taskView.resetVisualProperties();
         }
         updateCurveProperties();
-        // Reload the set of visible task's data
-        mPrevVisibleTasks.clear();
+
+        // Update the set of visible task's data
         loadVisibleTaskData();
         applyIconScale(false /* animate */);
 
@@ -421,7 +436,7 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
 
         // Update the high res thumbnail loader
         RecentsTaskLoader loader = mModel.getRecentsTaskLoader();
-//        loader.getHighResThumbnailLoader().setFlingingFast(isFlingingFast);
+        loader.getHighResThumbnailLoader().setFlingingFast(isFlingingFast);
         return scrolling;
     }
 
@@ -453,28 +468,48 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
      * Iterates through all thet asks, and loads the associated task data for newly visible tasks,
      * and unloads the associated task data for tasks that are no longer visible.
      */
-    private void loadVisibleTaskData() {
+    public void loadVisibleTaskData() {
         RecentsTaskLoader loader = mModel.getRecentsTaskLoader();
         int centerPageIndex = getPageNearestToCenterOfScreen();
         int lower = Math.max(0, centerPageIndex - 2);
         int upper = Math.min(centerPageIndex + 2, getChildCount() - 1);
-        for (int i = 0; i < getChildCount(); i++) {
+        int numChildren = getChildCount();
+
+        // Update the task data for the in/visible children
+        for (int i = 0; i < numChildren; i++) {
             TaskView taskView = (TaskView) getChildAt(i);
             Task task = taskView.getTask();
             boolean visible = lower <= i && i <= upper;
             if (visible) {
-                if (!mPrevVisibleTasks.get(i)) {
+                if (!mHasVisibleTaskData.get(task.key.id)) {
                     loader.loadTaskData(task);
-//                    loader.getHighResThumbnailLoader().onTaskVisible(task);
+                    loader.getHighResThumbnailLoader().onTaskVisible(task);
                 }
+                mHasVisibleTaskData.put(task.key.id, visible);
             } else {
-                if (mPrevVisibleTasks.get(i)) {
+                if (mHasVisibleTaskData.get(task.key.id)) {
                     loader.unloadTaskData(task);
-//                    loader.getHighResThumbnailLoader().onTaskInvisible(task);
+                    loader.getHighResThumbnailLoader().onTaskInvisible(task);
                 }
+                mHasVisibleTaskData.delete(task.key.id);
             }
-            mPrevVisibleTasks.put(i, visible);
         }
+    }
+
+    /**
+     * Unloads any associated data from the currently visible tasks
+     */
+    private void unloadVisibleTaskData() {
+        RecentsTaskLoader loader = mModel.getRecentsTaskLoader();
+        for (int i = 0; i < mHasVisibleTaskData.size(); i++) {
+            if (mHasVisibleTaskData.valueAt(i)) {
+                TaskView taskView = getTaskView(mHasVisibleTaskData.keyAt(i));
+                Task task = taskView.getTask();
+                loader.unloadTaskData(task);
+                loader.getHighResThumbnailLoader().onTaskInvisible(task);
+            }
+        }
+        mHasVisibleTaskData.clear();
     }
 
     public void onTaskDismissed(TaskView taskView) {
@@ -486,12 +521,9 @@ public class RecentsView extends PagedView implements Insettable, OnSharedPrefer
     }
 
     public void reset() {
+        unloadVisibleTaskData();
         mRunningTaskId = -1;
         setCurrentPage(0);
-    }
-
-    public int getRunningTaskId() {
-        return mRunningTaskId;
     }
 
     /**

@@ -756,11 +756,13 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     @Override
     public void onViewAdded(View child) {
+        super.onViewAdded(child);
         dispatchPageCountChanged();
     }
 
     @Override
     public void onViewRemoved(View child) {
+        super.onViewRemoved(child);
         mCurrentPage = validateNewPage(mCurrentPage);
         dispatchPageCountChanged();
     }
