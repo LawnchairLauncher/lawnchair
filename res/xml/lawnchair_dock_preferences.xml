@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:key="pref_hideDockGradient"
+        android:title="@string/hide_dock_gradient"
+        android:defaultValue="false"
+        android:persistent="true"
+        />
+</PreferenceScreen>

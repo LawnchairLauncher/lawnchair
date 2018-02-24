@@ -362,4 +362,7 @@
     <string name="hide_app_selected">&#160; hidden</string>
     <string name="hide_app_reset">Reset</string>
     <string name="hide_app_apply">Apply</string>
+    <string name="hide_dock_gradient">Hide gradient</string>
+    <string name="dock_pref_summary">Customize your dock</string>
+    <string name="dock_pref_title">Dock</string>
 </resources>

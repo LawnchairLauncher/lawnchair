@@ -33,7 +33,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -208,7 +207,7 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
 
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
             addPreferencesFromResource(getContent());
-            if (getContent() == R.xml.lawnchair_ui_preferences) {
+            if (getContent() == R.xml.lawnchair_desktop_preferences) {
                 ContentResolver resolver = getActivity().getContentResolver();
 
                 // Setup allow rotation preference

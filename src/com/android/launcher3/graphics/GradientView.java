@@ -38,6 +38,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
+
 /**
  * Draws a translucent radial gradient background from an initial state with progress 0.0 to a
  * final state with progress 1.0;
@@ -75,7 +77,8 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
         this.mMaskHeight = Utilities.pxFromDp(ALPHA_MASK_HEIGHT_DP, dm);
         this.mMaskWidth = Utilities.pxFromDp(ALPHA_MASK_WIDTH_DP, dm);
         Launcher launcher = Launcher.getLauncher(context);
-        this.mAlphaStart = launcher.getDeviceProfile().isVerticalBarLayout() ? 0 : 100;
+        boolean hideDockGradient = LawnchairPreferences.Companion.getInstance(context).getHideDockGradient();
+        this.mAlphaStart = launcher.getDeviceProfile().isVerticalBarLayout() || hideDockGradient ? 0 : 100;
         this.mScrimColor = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
         this.mWallpaperColorInfo = WallpaperColorInfo.getInstance(launcher);
         mAlphaColors = getResources().getInteger(R.integer.extracted_color_gradient_alpha);

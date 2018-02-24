@@ -14,6 +14,8 @@ import kotlin.reflect.KProperty
 
 class LawnchairPreferences(val context: Context) {
 
+    val hideDockGradient by BooleanPref(defaultValue = false)
+
     private inner class MutableStringPref(key: String? = null, defaultValue: String = "") :
             StringPref(key, defaultValue), MutablePrefDelegate<String> {
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: String) {

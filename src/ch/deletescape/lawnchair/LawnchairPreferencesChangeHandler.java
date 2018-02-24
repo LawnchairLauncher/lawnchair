@@ -33,6 +33,9 @@ public class LawnchairPreferencesChangeHandler implements SharedPreferences.OnSh
             case CustomAppFilter.HIDE_APPS_PREF:
                 reloadApps();
                 break;
+            case "pref_hideDockGradient":
+                recreate();
+                break;
         }
     }
 }

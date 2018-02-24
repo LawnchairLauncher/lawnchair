@@ -24,7 +24,13 @@
         android:icon="@drawable/ic_desktop"
         android:summary="@string/general_pref_summary"
         android:title="@string/general_pref_title"
-        app:content="@xml/lawnchair_ui_preferences" />
+        app:content="@xml/lawnchair_desktop_preferences" />
+
+    <ch.deletescape.lawnchair.settings.ui.SubPreference
+        android:icon="@drawable/ic_dock"
+        android:summary="@string/dock_pref_summary"
+        android:title="@string/dock_pref_title"
+        app:content="@xml/lawnchair_dock_preferences" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:icon="@drawable/ic_app_drawer"
