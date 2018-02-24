@@ -26,9 +26,12 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.launcher3.AppInfo;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.graphics.DrawableFactory;
@@ -51,6 +54,10 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         super.populateAndShow(itemInfo);
         ((TextView) findViewById(R.id.title)).setText(itemInfo.title);
         ((PrefsFragment) mFragmentManager.findFragmentById(R.id.sheet_prefs)).loadForApp(itemInfo);
+
+        if (itemInfo instanceof ItemInfoWithIcon) {
+            ((ImageView) findViewById(R.id.icon)).setImageBitmap(((ItemInfoWithIcon) itemInfo).iconBitmap);
+        }
     }
 
     @Override

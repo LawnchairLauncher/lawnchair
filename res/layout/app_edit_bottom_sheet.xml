@@ -25,6 +25,12 @@
     android:layout_gravity="bottom"
     android:theme="?attr/widgetsTheme">
 
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"/>
+
     <TextView
         style="@style/TextTitle"
         android:id="@+id/title"
