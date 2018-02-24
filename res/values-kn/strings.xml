@@ -146,4 +146,6 @@
     <string name="title_disable_suggestions_prompt">ಅಪ್ಲಿಕೇಶನ್ ಸಲಹೆಗಳನ್ನು ಆಫ್‌ ಮಾಡುವುದೇ?</string>
     <string name="msg_disable_suggestions_prompt">ನಿಮ್ಮ ಅಪ್ಲಿಕೇಶನ್‌ಗಳ ಪಟ್ಟಿಯ ಮೇಲ್ಭಾಗದಲ್ಲಿ ಸಲಹೆಗಳು ಕಾಣಿಸುವುದಿಲ್ಲ. ಹೀಗಾಗಿ ಅವುಗಳ ರಚನೆಗೆ ಬಳಕೆಮಾಡಿರುವ ಬಳಕೆ ಡೇಟಾ ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಿಹೋಗುವುದು.</string>
     <string name="label_turn_off_suggestions">ಆಫ್</string>
+    <string name="action_edit">ಸಂಪಾದಿಸಿ</string>
+    <string name="icon_shape_rounded_square">ಚೌಕವನ್ನು ದುಂಡಾಗಿಸಲಾಗಿದೆ</string>
 </resources>

@@ -146,4 +146,8 @@
     <string name="title_disable_suggestions_prompt">Chcete návrhy aplikací vypnout?</string>
     <string name="msg_disable_suggestions_prompt">Na začátku seznamu aplikací se nebudou zobrazovat návrhy a údaje o využití, na základě kterých byly návrhy vytvářeny, budou trvale vymazány.</string>
     <string name="label_turn_off_suggestions">VYPNOUT</string>
+    <string name="action_edit">Upravit</string>
+  <string name="hide_app_sum">Skrýt aplikaci v seznamu aplikací</string>
+  <string name="hide_app">Skrýt aplikaci</string>
+    <string name="icon_shape_rounded_square">Zaoblený čtverec</string>
 </resources>

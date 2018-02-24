@@ -146,4 +146,6 @@
     <string name="title_disable_suggestions_prompt">Vil du slå av appanbefalinger?</string>
     <string name="msg_disable_suggestions_prompt">Du finner ikke lenger anbefalinger øverst på applisten din, og brukerdataene som ble brukt til oppretting, slettes permanent.</string>
     <string name="label_turn_off_suggestions">SLÅ AV</string>
+    <string name="action_edit">Rediger</string>
+    <string name="icon_shape_rounded_square">Avrundet kvadrat</string>
 </resources>

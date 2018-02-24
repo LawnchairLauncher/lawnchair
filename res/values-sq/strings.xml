@@ -144,4 +144,5 @@
     <string name="title_disable_suggestions_prompt">Të çaktivizohen sugjerimet e aplikacioneve?</string>
     <string name="msg_disable_suggestions_prompt">"Sugjerimet nuk shfaqen në krye të listës së aplikacioneve dhe të dhënat e përdorimit që përdoren për t'i krijuar ato do të fshihen në mënyrë të përhershme."</string>
     <string name="label_turn_off_suggestions">ÇAKTIVIZO</string>
+    <string name="icon_shape_rounded_square">Katror i rrumbullakosur</string>
 </resources>

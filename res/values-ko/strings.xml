@@ -146,4 +146,8 @@
     <string name="title_disable_suggestions_prompt">앱 추천을 사용 중지할까요?</string>
     <string name="msg_disable_suggestions_prompt">추천사항이 앱 목록 상단에 표시되지 않으며 추천에 반영된 사용 데이터는 영구 삭제됩니다.</string>
     <string name="label_turn_off_suggestions">사용 중지</string>
+    <string name="action_edit">편집</string>
+  <string name="hide_app_sum">앱 서랍에서 앱 숨기기</string>
+  <string name="hide_app">앱 숨기기</string>
+    <string name="icon_shape_rounded_square">모서리가 둥근 정사각형</string>
 </resources>

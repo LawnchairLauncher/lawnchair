@@ -146,4 +146,8 @@
     <string name="title_disable_suggestions_prompt">App-suggesties uitschakelen?</string>
     <string name="msg_disable_suggestions_prompt">Er worden geen suggesties weergegeven boven aan je lijst met apps en de gebruiksgegevens op basis waarvan ze worden gemaakt, worden definitief verwijderd.</string>
     <string name="label_turn_off_suggestions">UITSCHAKELEN</string>
+    <string name="action_edit">Bewerken</string>
+  <string name="hide_app_sum">App verbergen in het app-overzicht</string>
+  <string name="hide_app">App verbergen</string>
+    <string name="icon_shape_rounded_square">Vierkant met ronde hoeken</string>
 </resources>

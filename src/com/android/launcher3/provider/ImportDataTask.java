@@ -132,7 +132,7 @@ public class ImportDataTask {
         String profileId = Long.toString(UserManagerCompat.getInstance(mContext)
                 .getSerialNumberForUser(Process.myUserHandle()));
 
-        boolean createEmptyRowOnFirstScreen;
+        boolean createEmptyRowOnFirstScreen = false;
         if (FeatureFlags.QSB_ON_FIRST_SCREEN) {
             try (Cursor c = mContext.getContentResolver().query(mOtherFavoritesUri, null,
                     // get items on the first row of the first screen

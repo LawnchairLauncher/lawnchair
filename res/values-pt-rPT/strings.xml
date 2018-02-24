@@ -144,4 +144,7 @@
     <string name="title_disable_suggestions_prompt">Pretende desativar as sugestões de aplicações?</string>
     <string name="msg_disable_suggestions_prompt">Não são apresentadas sugestões na parte superior da lista de aplicações e os dados de utilização utilizados para as criar são apagados de forma permanente.</string>
     <string name="label_turn_off_suggestions">DESATIVAR</string>
+  <string name="hide_app_sum">Ocultar aplicações da gaveta de aplicações</string>
+  <string name="hide_app">Ocultar aplicação</string>
+    <string name="icon_shape_rounded_square">Quadrado arredondado</string>
 </resources>

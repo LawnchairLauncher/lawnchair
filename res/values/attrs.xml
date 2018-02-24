@@ -149,8 +149,12 @@
     <attr name="gIcon" format="reference" />
     <attr name="micIcon" format="reference" />
 
+    <!-- Lawnchair -->
     <declare-styleable name="SubPreference">
         <attr name="content" format="reference" />
         <attr name="longClickContent" format="reference" />
     </declare-styleable>
+
+    <!-- Custom -->
+    <attr name="bottomSheetNavBarColor" format="color" />
 </resources>

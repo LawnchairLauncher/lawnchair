@@ -46,6 +46,9 @@ public abstract class SystemShortcut extends ItemInfo {
     public abstract View.OnClickListener getOnClickListener(final Launcher launcher,
             final ItemInfo itemInfo);
 
+    public static class Edit extends com.google.android.apps.nexuslauncher.CustomEditShortcut {
+    }
+
     public static class Widgets extends SystemShortcut {
 
         public Widgets() {

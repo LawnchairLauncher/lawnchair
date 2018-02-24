@@ -146,4 +146,8 @@
     <string name="title_disable_suggestions_prompt">Uygulama önerileri kapatılsın mı?</string>
     <string name="msg_disable_suggestions_prompt">Öneriler, uygulama listenizin üst kısmında görünmeyecek ve bunları oluşturmak için kullanılan kullanım verileri kalıcı olarak silinecek.</string>
     <string name="label_turn_off_suggestions">KAPAT</string>
+    <string name="action_edit">Düzenle</string>
+  <string name="hide_app_sum">Uygulamayı uygulama çekmecesinden gizle</string>
+  <string name="hide_app">Uygulama gizle</string>
+    <string name="icon_shape_rounded_square">Yuvarlanmış kare</string>
 </resources>

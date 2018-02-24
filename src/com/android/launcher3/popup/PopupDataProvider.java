@@ -17,6 +17,8 @@
 package com.android.launcher3.popup;
 
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.pm.LauncherApps;
 import android.service.notification.StatusBarNotification;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -29,6 +31,8 @@ import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.shortcuts.DeepShortcutManagerBackport;
+import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageUserKey;
@@ -51,6 +55,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
 
     /** Note that these are in order of priority. */
     private static final SystemShortcut[] SYSTEM_SHORTCUTS = new SystemShortcut[] {
+            new SystemShortcut.Edit(),
             new SystemShortcut.AppInfo(),
             new SystemShortcut.Widgets(),
     };
@@ -223,6 +228,16 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             return Collections.EMPTY_LIST;
         }
 
+        if (Utilities.ATLEAST_MARSHMALLOW && !Utilities.ATLEAST_NOUGAT_MR1) {
+            List<String> ids = new ArrayList<>();
+            for (ShortcutInfoCompat compat : DeepShortcutManagerBackport.getForPackage(mLauncher,
+                    (LauncherApps) mLauncher.getSystemService(Context.LAUNCHER_APPS_SERVICE),
+                    info.getTargetComponent(),
+                    info.getTargetComponent().getPackageName())) {
+                ids.add(compat.getId());
+            }
+            return ids;
+        }
         List<String> ids = mDeepShortcutMap.get(new ComponentKey(component, info.user));
         return ids == null ? Collections.EMPTY_LIST : ids;
     }

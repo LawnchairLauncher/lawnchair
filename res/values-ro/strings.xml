@@ -146,4 +146,8 @@
     <string name="title_disable_suggestions_prompt">Dezactivați sugestiile de aplicații?</string>
     <string name="msg_disable_suggestions_prompt">Sugestiile nu vor apărea la începutul listei de aplicații, iar datele despre utilizare folosite pentru a le crea vor fi șterse definitiv.</string>
     <string name="label_turn_off_suggestions">DEZACTIVAȚI</string>
+    <string name="action_edit">Editare</string>
+  <string name="hide_app_sum">Ascunde aplicații în lista aplicaţiilor</string>
+  <string name="hide_app">Ascundere aplicaţie</string>
+    <string name="icon_shape_rounded_square">Pătrat rotunjit</string>
 </resources>

@@ -146,4 +146,6 @@
     <string name="title_disable_suggestions_prompt">ปิดคำแนะนำเกี่ยวกับแอปใช่ไหม</string>
     <string name="msg_disable_suggestions_prompt">คำแนะนำจะไม่ปรากฏขึ้นที่ด้านบนของรายการแอป และข้อมูลการใช้งานที่ใช้ในการสร้างคำแนะนำจะถูกลบทิ้งถาวร</string>
     <string name="label_turn_off_suggestions">ปิด</string>
+    <string name="action_edit">แก้ไข</string>
+    <string name="icon_shape_rounded_square">สี่เหลี่ยมจัตุรัสขอบมน</string>
 </resources>

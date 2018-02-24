@@ -146,4 +146,8 @@
     <string name="title_disable_suggestions_prompt">האם לכבות הצעות לאפליקציות?</string>
     <string name="msg_disable_suggestions_prompt">הצעות לא יופיעו בחלק העליון של רשימת האפליקציות, ונתוני השימוש שבעזרתם יוצרים אותן יימחקו לתמיד.</string>
     <string name="label_turn_off_suggestions">כבה</string>
+    <string name="action_edit">ערוך</string>
+  <string name="hide_app_sum">הסתר אפליקציה ממגירת האפליקציות</string>
+  <string name="hide_app">הסתר אפליקציה</string>
+    <string name="icon_shape_rounded_square">ריבוע בעל פינות מעוגלות</string>
 </resources>

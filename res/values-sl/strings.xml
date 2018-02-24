@@ -146,4 +146,6 @@
     <string name="title_disable_suggestions_prompt">Želite izklopiti predloge za aplikacije?</string>
     <string name="msg_disable_suggestions_prompt">Predlogi ne bodo prikazani na vrhu seznama aplikacij, podatki o prenesenih podatkih, uporabljeni pri njihovem ustvarjanju, pa bodo trajno izbrisani.</string>
     <string name="label_turn_off_suggestions">IZKLOP</string>
+    <string name="action_edit">Uredi</string>
+    <string name="icon_shape_rounded_square">Zaobljen kvadrat</string>
 </resources>

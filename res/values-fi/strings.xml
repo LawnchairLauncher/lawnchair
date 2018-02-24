@@ -146,4 +146,8 @@
     <string name="title_disable_suggestions_prompt">Poistetaanko sovellusehdotukset käytöstä?</string>
     <string name="msg_disable_suggestions_prompt">Ehdotuksia ei näytetä sovellusluettelosi yläosassa. Niiden luomiseen käytetyt tiedot poistetaan pysyvästi.</string>
     <string name="label_turn_off_suggestions">POISTA KÄYTÖSTÄ</string>
+    <string name="action_edit">Muokkaa</string>
+  <string name="hide_app_sum">Piilota sovellus sovellusvalikosta</string>
+  <string name="hide_app">Piilota sovellus</string>
+    <string name="icon_shape_rounded_square">Pyöreäkulmainen neliö</string>
 </resources>

@@ -144,4 +144,5 @@
     <string name="title_disable_suggestions_prompt">Queres desactivar as suxestións de aplicacións?</string>
     <string name="msg_disable_suggestions_prompt">As suxestións non aparecerán na parte superior da lista de aplicacións e os datos de uso utilizados para crealas eliminaranse permanentemente.</string>
     <string name="label_turn_off_suggestions">DESACTIVAR</string>
+    <string name="icon_shape_rounded_square">Cadrado redondeado</string>
 </resources>

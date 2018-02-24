@@ -34,6 +34,7 @@ import com.android.launcher3.graphics.ShadowGenerator.Builder;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 
 public abstract class AbstractQsbLayout extends FrameLayout implements LauncherLayoutChangeListener, OnClickListener, OnSharedPreferenceChangeListener {
+    protected final static String GOOGLE_QSB = "com.google.android.googlequicksearchbox";
     protected final NexusLauncherActivity mActivity;
     protected int mColor;
     protected View mMicIconView;
@@ -120,7 +121,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements LauncherL
     public void draw(Canvas canvas) {
         if (mShadowBitmap == null) {
             int iconBitmapSize = LauncherAppState.getIDP(getContext()).iconBitmapSize;
-            mShadowBitmap = createBitmap(((float) iconBitmapSize) * 0.010416667f, ((float) iconBitmapSize) * 0.020833334f, mColor);
+            mShadowBitmap = createBitmap(((float) iconBitmapSize) / 96f, ((float) iconBitmapSize) / 48f, mColor);
         }
         loadDimensions(mShadowBitmap, canvas);
         super.draw(canvas);
@@ -141,9 +142,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements LauncherL
         drawWithDimensions(bitmap, canvas, 0, i2, paddingLeft, paddingLeft + ((float) i2));
         float width2 = ((float) (getWidth() - getPaddingRight())) + f;
         drawWithDimensions(bitmap, canvas, i2, width, width2 - ((float) i2), width2);
-        Bitmap bitmap2 = bitmap;
-        Canvas canvas2 = canvas;
-        drawWithDimensions(bitmap2, canvas2, i2 - 5, i2 + 5, paddingLeft + ((float) i2), width2 - ((float) i2));
+        drawWithDimensions(bitmap, canvas, i2 - 5, i2 + 5, paddingLeft + ((float) i2), width2 - ((float) i2));
     }
 
     private void drawWithDimensions(Bitmap bitmap, Canvas canvas, int srcLeft, int srcRight, float destLeft, float destRight) {
@@ -185,20 +184,22 @@ public abstract class AbstractQsbLayout extends FrameLayout implements LauncherL
     }
 
     protected void fallbackSearch(String action) {
-        final String GoogleQSB = "com.google.android.googlequicksearchbox";
         try {
             getContext().startActivity(new Intent(action)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                    .setPackage(GoogleQSB));
+                    .setPackage(GOOGLE_QSB));
         } catch (ActivityNotFoundException e) {
             try {
-                getContext().getPackageManager().getPackageInfo(GoogleQSB, 0);
+                getContext().getPackageManager().getPackageInfo(GOOGLE_QSB, 0);
                 LauncherAppsCompat.getInstance(getContext())
-                        .showAppDetailsForProfile(new ComponentName(GoogleQSB, ".SearchActivity"), Process.myUserHandle());
+                        .showAppDetailsForProfile(new ComponentName(GOOGLE_QSB, ".SearchActivity"), Process.myUserHandle());
             } catch (PackageManager.NameNotFoundException ignored) {
-                getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com")));
+                noGoogleAppSearch();
             }
         }
+    }
+
+    protected void noGoogleAppSearch() {
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String str) {

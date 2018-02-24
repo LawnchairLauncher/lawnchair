@@ -142,6 +142,7 @@
                 <action android:name="com.google.android.apps.nexuslauncher.UPDATE_SMARTSPACE" />
             </intent-filter>
         </receiver>
+        <receiver android:name="com.google.android.apps.nexuslauncher.qsb.LongClickReceiver" />
         <provider
             android:authorities="ch.deletescape.lawnchair.appssearch"
             android:exported="true"

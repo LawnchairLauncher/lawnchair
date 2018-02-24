@@ -146,4 +146,8 @@
     <string name="title_disable_suggestions_prompt">Chcete vypnúť odporúčania aplikácií?</string>
     <string name="msg_disable_suggestions_prompt">Na začiatku zoznamu aplikácií sa nebudú zobrazovať odporúčania a údaje o využití, na základe ktorých boli vytvorené, budú trvalo vymazané.</string>
     <string name="label_turn_off_suggestions">VYPNÚŤ</string>
+    <string name="action_edit">Upraviť</string>
+  <string name="hide_app_sum">Skryť aplikáciu zo zoznamu aplikácií</string>
+  <string name="hide_app">Skryť aplikáciu</string>
+    <string name="icon_shape_rounded_square">Okrúhly štvorec</string>
 </resources>

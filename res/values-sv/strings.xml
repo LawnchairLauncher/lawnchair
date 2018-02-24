@@ -146,4 +146,8 @@
     <string name="title_disable_suggestions_prompt">Vill du stänga av appförslag?</string>
     <string name="msg_disable_suggestions_prompt">Förslag visas inte längst upp i applistan och användaruppgifterna som används för att skapa dem raderas permanent.</string>
     <string name="label_turn_off_suggestions">INAKTIVERA</string>
+    <string name="action_edit">Redigera</string>
+  <string name="hide_app_sum">Dölj app från app lådan</string>
+  <string name="hide_app">Dölj app</string>
+    <string name="icon_shape_rounded_square">Rundad kvadrat</string>
 </resources>

@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-option java_package = "com.google.android.apps.nexuslauncher.search.nano";
+option java_package = "com.google.android.apps.nexuslauncher.search";
 option java_outer_classname = "SearchProto";
 
 package nano;

@@ -32,6 +32,13 @@ android {
         debug {
             minifyEnabled false
         }
+
+        optimized {
+            initWith debug
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+                    'proguard.flags'
+        }
     }
 
     productFlavors {
@@ -49,6 +56,7 @@ android {
         main {
             res.srcDirs = ['res']
             java.srcDirs = ['src']
+            aidl.srcDirs = ['src']
             assets.srcDirs = ['assets']
             manifest.srcFile 'AndroidManifest-common.xml'
             proto {
@@ -124,6 +132,8 @@ protobuf {
                         option "java_package=launcher_log_extension.proto|com.android.launcher3.userevent.nano"
                         option "java_package=launcher_log.proto|com.android.launcher3.userevent.nano"
                         option "java_package=launcher_dump.proto|com.android.launcher3.model.nano"
+                        option "java_package=search.proto|com.google.android.apps.nexuslauncher.search.nano"
+                        option "java_package=smartspace.proto|com.google.android.apps.nexuslauncher.smartspace.nano"
                         option "enum_style=java"
                     }
                 }

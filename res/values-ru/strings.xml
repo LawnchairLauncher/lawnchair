@@ -146,4 +146,8 @@
     <string name="title_disable_suggestions_prompt">Не показывать рекомендуемые приложения?</string>
     <string name="msg_disable_suggestions_prompt">Рекомендуемые приложения не будут показываться в начале списка. Данные, связанные с этой функцией, будут удалены.</string>
     <string name="label_turn_off_suggestions">ОТКЛЮЧИТЬ</string>
+    <string name="action_edit">Редактировать</string>
+  <string name="hide_app_sum">Скрыть приложение из меню</string>
+  <string name="hide_app">Скрыть приложение</string>
+    <string name="icon_shape_rounded_square">Квадрат с закругленными углами</string>
 </resources>

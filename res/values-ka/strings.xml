@@ -144,4 +144,5 @@
     <string name="title_disable_suggestions_prompt">გსურთ აპების შეთავაზებების გამორთვა?</string>
     <string name="msg_disable_suggestions_prompt">შეთავაზებები არ გამოჩნდება თქვენი აპების სიის თავში, ხოლო გამოყენების მონაცემები, რომელთა მეშვეობითაც ისინი შეიქმნა, სამუდამოდ წაიშლება.</string>
     <string name="label_turn_off_suggestions">გამორთვა</string>
+    <string name="icon_shape_rounded_square">მომრგვალებული კვადრატი</string>
 </resources>

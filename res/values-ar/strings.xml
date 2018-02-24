@@ -146,4 +146,8 @@
     <string name="title_disable_suggestions_prompt">هل تريد إيقاف تشغيل اقتراحات التطبيقات؟</string>
     <string name="msg_disable_suggestions_prompt">لن تظهر الاقتراحات في أعلى قائمة التطبيقات، وسيتم محو بيانات الاستخدام المستخدمة لإنشائها نهائيًا.</string>
     <string name="label_turn_off_suggestions">إيقاف</string>
+    <string name="action_edit">تحرير</string>
+  <string name="hide_app_sum">إخفاء من قائمة البرامج</string>
+  <string name="hide_app">إخفاء التطبيق</string>
+    <string name="icon_shape_rounded_square">مربّع دائري</string>
 </resources>

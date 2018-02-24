@@ -2605,7 +2605,7 @@ public class Launcher extends BaseActivity
                     String id = ((ShortcutInfo) info).getDeepShortcutId();
                     String packageName = intent.getPackage();
                     DeepShortcutManager.getInstance(this).startShortcut(
-                            packageName, id, intent.getSourceBounds(), optsBundle, info.user);
+                            packageName, id, intent, optsBundle, info.user);
                 } else {
                     // Could be launching some bookkeeping activity
                     startActivity(intent, optsBundle);

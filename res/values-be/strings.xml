@@ -144,4 +144,5 @@
     <string name="title_disable_suggestions_prompt">Выключыць прапановы праграм?</string>
     <string name="msg_disable_suggestions_prompt">Прапановы не будуць паказвацца ўверсе спіса праграм, а даныя пра выкарыстанне, якія выкарыстоўваліся для іх стварэння, будуць сцёрты.</string>
     <string name="label_turn_off_suggestions">ВЫКЛЮЧЫЦЬ</string>
+    <string name="icon_shape_rounded_square">Квадрат са скругленымі вугламі</string>
 </resources>

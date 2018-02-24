@@ -69,6 +69,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
     public static final int OP_SUSPEND = 5; // package suspended
     public static final int OP_UNSUSPEND = 6; // package unsuspended
     public static final int OP_USER_AVAILABILITY_CHANGE = 7; // user available/unavailable
+    public static final int OP_RELOAD = 8; // clears cache
 
     private final int mOp;
     private final UserHandle mUser;
@@ -147,6 +148,10 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 // We want to update all packages for this user.
                 matcher = ItemInfoMatcher.ofUser(mUser);
                 appsList.updateDisabledFlags(matcher, flagOp);
+                break;
+            case OP_RELOAD:
+                if (DEBUG) Log.d(TAG, "mAllAppsList.reloadPackages");
+                appsList.reloadPackages(context, mUser);
                 break;
         }
 

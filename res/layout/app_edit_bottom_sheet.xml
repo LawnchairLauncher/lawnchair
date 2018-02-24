@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<com.android.launcher3.widget.WidgetsBottomSheet
+<com.google.android.apps.nexuslauncher.CustomBottomSheet
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -42,14 +42,15 @@
         android:fontFamily="sans-serif"
         android:textColor="?android:attr/textColorTertiary"
         android:textSize="14sp"
-        android:text="@string/long_press_widget_to_add"/>
+        android:text="@string/action_edit" />
 
-    <include layout="@layout/widgets_scroll_container"
-         android:id="@+id/widgets"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_marginTop="45dp"
-         android:layout_marginBottom="40dp"/>
+    <fragment
+        android:id="@+id/sheet_prefs"
+        android:name="com.google.android.apps.nexuslauncher.CustomBottomSheet$PrefsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="40dp" />
 
     <View
         android:id="@+id/nav_bar_bg"
@@ -59,4 +60,4 @@
         android:layout_gravity="bottom"
         android:focusable="false"  />
 
-</com.android.launcher3.widget.WidgetsBottomSheet>
+</com.google.android.apps.nexuslauncher.CustomBottomSheet>

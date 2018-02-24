@@ -146,4 +146,8 @@
     <string name="title_disable_suggestions_prompt">"Désactiver les suggestions d'applications ?"</string>
     <string name="msg_disable_suggestions_prompt">"Les suggestions ne s'afficheront pas en haut de votre liste d'applications, et les données d'utilisation employées pour les créer seront supprimées définitivement."</string>
     <string name="label_turn_off_suggestions">DÉSACTIVER</string>
+    <string name="action_edit">Modifier</string>
+  <string name="hide_app_sum">Masquer l\'application de la liste des applications</string>
+  <string name="hide_app">Masquer app</string>
+    <string name="icon_shape_rounded_square">Carré arrondi</string>
 </resources>

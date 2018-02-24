@@ -146,4 +146,8 @@
     <string name="title_disable_suggestions_prompt">Wyłączyć sugerowane aplikacje?</string>
     <string name="msg_disable_suggestions_prompt">Sugestie nie będą pojawiać się u góry listy Twoich aplikacji, a dane o użytkowaniu służące do ich utworzenia zostaną trwale usunięte.</string>
     <string name="label_turn_off_suggestions">WYŁĄCZ</string>
+    <string name="action_edit">Edytuj</string>
+  <string name="hide_app_sum">Ukryj aplikacje z listy</string>
+  <string name="hide_app">Ukryj aplikacje</string>
+    <string name="icon_shape_rounded_square">Zaokrąglony kwadrat</string>
 </resources>

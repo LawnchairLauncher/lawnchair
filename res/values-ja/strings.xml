@@ -146,4 +146,8 @@
     <string name="title_disable_suggestions_prompt">おすすめのアプリを非表示にしますか？</string>
     <string name="msg_disable_suggestions_prompt">おすすめがアプリリストの上部に表示されなくなり、おすすめの作成に使用される利用データが完全に消去されます。</string>
     <string name="label_turn_off_suggestions">非表示にする</string>
+    <string name="action_edit">編集</string>
+  <string name="hide_app_sum">ドロワーからアプリを非表示にする</string>
+  <string name="hide_app">アプリを隠す</string>
+    <string name="icon_shape_rounded_square">ラウンデッド スクエア</string>
 </resources>

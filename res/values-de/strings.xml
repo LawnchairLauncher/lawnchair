@@ -146,4 +146,8 @@
     <string name="title_disable_suggestions_prompt">App-Vorschläge deaktivieren?</string>
     <string name="msg_disable_suggestions_prompt">Vorschläge werden nicht oben in deiner Apps-Liste angezeigt und die zu deiner Erstellung verwendeten Nutzungsdaten werden endgültig gelöscht.</string>
     <string name="label_turn_off_suggestions">DEAKTIVIEREN</string>
+    <string name="action_edit">Bearbeiten</string>
+  <string name="hide_app_sum">App in der App-Liste ausblenden</string>
+  <string name="hide_app">App ausblenden</string>
+    <string name="icon_shape_rounded_square">Abgerundetes Quadrat</string>
 </resources>

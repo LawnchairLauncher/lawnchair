@@ -146,4 +146,8 @@
     <string name="title_disable_suggestions_prompt">Tắt đề xuất ứng dụng?</string>
     <string name="msg_disable_suggestions_prompt">Các đề xuất sẽ không hiển thị ở đầu danh sách ứng dụng của bạn và dữ liệu sử dụng đã được dùng để tạo các đề xuất này sẽ bị xóa vĩnh viễn.</string>
     <string name="label_turn_off_suggestions">TẮT</string>
+    <string name="action_edit">Sửa</string>
+  <string name="hide_app_sum">Ẩn khỏi ngăn chứa ứng dụng</string>
+  <string name="hide_app">Ẩn ứng dụng</string>
+    <string name="icon_shape_rounded_square">Hình vuông có các góc được bo góc</string>
 </resources>

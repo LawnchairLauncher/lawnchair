@@ -146,4 +146,8 @@
     <string name="title_disable_suggestions_prompt">"Vols desactivar els suggeriments d'aplicacions?"</string>
     <string name="msg_disable_suggestions_prompt">"Els suggeriments no es mostraran a la part superior de la llista d'aplicacions, i les dades d'ús utilitzades per crear-los s'esborraran permanentment."</string>
     <string name="label_turn_off_suggestions">DESACTIVA</string>
+    <string name="action_edit">Edita</string>
+  <string name="hide_app_sum">Amaga l\'aplicació del calaix</string>
+  <string name="hide_app">Amaga l\'aplicació</string>
+    <string name="icon_shape_rounded_square">Quadrat arrodonit</string>
 </resources>

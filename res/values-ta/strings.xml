@@ -144,4 +144,5 @@
     <string name="title_disable_suggestions_prompt">பயன்பாட்டுப் பரிந்துரைகளை முடக்கவா?</string>
     <string name="msg_disable_suggestions_prompt">பயன்பாட்டுப் பட்டியலின் மேலே பரிந்துரைகள் தோன்றாது, மேலும் அவற்றை உருவாக்குவதற்குப் பயன்படுத்தப்படும் உபயோகத் தரவு நிரந்தரமாக அழிக்கப்படும்.</string>
     <string name="label_turn_off_suggestions">முடக்கு</string>
+    <string name="icon_shape_rounded_square">வளைந்த மூலைகளுடன் சதுரம்</string>
 </resources>
