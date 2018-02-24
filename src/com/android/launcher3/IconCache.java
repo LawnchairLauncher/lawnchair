@@ -59,6 +59,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
+import ch.deletescape.lawnchair.EditableItemInfo;
+import ch.deletescape.lawnchair.LawnchairPreferences;
+
 /**
  * Cache of application icons.  Icons can be made from any thread.
  */
@@ -81,6 +84,7 @@ public class IconCache {
     public static class CacheEntry {
         public Bitmap icon;
         public CharSequence title = "";
+        public CharSequence originalTitle = null;
         public CharSequence contentDescription = "";
         public boolean isLowResIcon;
     }
@@ -482,6 +486,12 @@ public class IconCache {
 
     private void applyCacheEntry(CacheEntry entry, ItemInfoWithIcon info) {
         info.title = Utilities.trim(entry.title);
+        if (info instanceof EditableItemInfo) {
+            ((EditableItemInfo) info).setOriginalTitle(info.title);
+            String newTitle = ((EditableItemInfo) info).getTitle(mContext);
+            if (newTitle != null)
+                info.title = newTitle;
+        }
         info.contentDescription = entry.contentDescription;
         info.iconBitmap = entry.icon == null ? getDefaultIcon(info.user) : entry.icon;
         info.usingLowResIcon = entry.isLowResIcon;
@@ -553,6 +563,23 @@ public class IconCache {
                 if (info != null) {
                     entry.title = info.getLabel();
                     entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
+                }
+            }
+
+            entry.originalTitle = entry.title;
+        }
+
+        // TODO: move this to ShortcutInfo when it supports editing
+        if (!(entry instanceof EditableItemInfo)) {
+            String newName = LawnchairPreferences.Companion.getInstance(mContext)
+                    .getCustomAppName().get(componentName);
+            if (newName != null) {
+                entry.title = newName;
+            } else {
+                if (entry.originalTitle != null) {
+                    entry.title = entry.originalTitle;
+                } else {
+                    entry.originalTitle = entry.title;
                 }
             }
         }

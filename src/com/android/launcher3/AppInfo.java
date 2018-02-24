@@ -27,10 +27,16 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import ch.deletescape.lawnchair.EditableItemInfo;
+import ch.deletescape.lawnchair.LawnchairPreferences;
+
 /**
  * Represents an app in AllAppsView.
  */
-public class AppInfo extends ItemInfoWithIcon {
+public class AppInfo extends ItemInfoWithIcon implements EditableItemInfo {
 
     public static final int FLAG_SYSTEM_UNKNOWN = 0;
     public static final int FLAG_SYSTEM_YES = 1 << 0;
@@ -42,6 +48,8 @@ public class AppInfo extends ItemInfoWithIcon {
     public Intent intent;
 
     public ComponentName componentName;
+
+    public CharSequence originalTitle;
 
     /**
      * {@see ShortcutInfo#isDisabled}
@@ -90,6 +98,7 @@ public class AppInfo extends ItemInfoWithIcon {
     public AppInfo(AppInfo info) {
         super(info);
         componentName = info.componentName;
+        originalTitle = Utilities.trim(info.originalTitle);
         title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
         isDisabled = info.isDisabled;
@@ -123,5 +132,32 @@ public class AppInfo extends ItemInfoWithIcon {
     @Override
     public boolean isDisabled() {
         return isDisabled != 0;
+    }
+
+    @NotNull
+    @Override
+    public String getDefaultTitle(@NotNull Context context) {
+        return (String) originalTitle;
+    }
+
+    @Nullable
+    @Override
+    public String getTitle(@NotNull Context context) {
+        return LawnchairPreferences.Companion.getInstance(context).getCustomAppName().get(getTargetComponent());
+    }
+
+    @Override
+    public void setTitle(@NotNull Context context, @Nullable String title) {
+        LawnchairPreferences.Companion.getInstance(context).getCustomAppName().set(getTargetComponent(), title);
+    }
+
+    public void setOriginalTitle(CharSequence originalTitle) {
+        this.originalTitle = originalTitle;
+    }
+
+    @Nullable
+    @Override
+    public CharSequence getOriginalTitle() {
+        return originalTitle;
     }
 }

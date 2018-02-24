@@ -27,9 +27,16 @@ public class LawnchairPreferencesChangeHandler implements SharedPreferences.OnSh
         }
     }
 
+    private void reloadAll() {
+        Launcher.getLauncher(mLauncher).getModel().forceReload();
+    }
+
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         switch (key) {
+            case "pref_appNameMap":
+                reloadAll();
+                break;
             case CustomAppFilter.HIDE_APPS_PREF:
                 reloadApps();
                 break;

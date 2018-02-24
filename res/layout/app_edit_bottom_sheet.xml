@@ -40,6 +40,18 @@
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="24sp"/>
 
+    <EditText
+        style="@style/TextTitle"
+        android:id="@+id/edit_title"
+        android:background="@android:color/transparent"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:singleLine="true"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="24sp"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

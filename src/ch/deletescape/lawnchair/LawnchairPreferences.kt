@@ -194,6 +194,10 @@ class LawnchairPreferences(val context: Context) {
         operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T)
     }
 
+    var appNameMap by MutableStringPref(defaultValue = "{}")
+
+    val customAppName = CustomAppName(this)
+
     companion object {
 
         @SuppressLint("StaticFieldLeak")

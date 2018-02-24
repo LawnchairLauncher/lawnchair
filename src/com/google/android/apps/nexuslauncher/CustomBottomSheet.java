@@ -26,6 +26,8 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
 import android.util.AttributeSet;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,8 +39,14 @@ import com.android.launcher3.R;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.widget.WidgetsBottomSheet;
 
+import ch.deletescape.lawnchair.EditableItemInfo;
+import ch.deletescape.lawnchair.LawnchairPreferences;
+
 public class CustomBottomSheet extends WidgetsBottomSheet {
     private FragmentManager mFragmentManager;
+    private EditText mEditTitle;
+    private String mPreviousTitle;
+    private ItemInfo mItemInfo;
 
     public CustomBottomSheet(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -52,11 +60,24 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
     @Override
     public void populateAndShow(ItemInfo itemInfo) {
         super.populateAndShow(itemInfo);
-        ((TextView) findViewById(R.id.title)).setText(itemInfo.title);
+        mItemInfo = itemInfo;
+
+        TextView title = findViewById(R.id.title);
+        title.setText(itemInfo.title);
         ((PrefsFragment) mFragmentManager.findFragmentById(R.id.sheet_prefs)).loadForApp(itemInfo);
 
         if (itemInfo instanceof ItemInfoWithIcon) {
             ((ImageView) findViewById(R.id.icon)).setImageBitmap(((ItemInfoWithIcon) itemInfo).iconBitmap);
+        }
+        if (itemInfo instanceof EditableItemInfo) {
+            mPreviousTitle = ((EditableItemInfo) itemInfo).getTitle(getContext());
+            if (mPreviousTitle == null)
+                mPreviousTitle = "";
+            mEditTitle = findViewById(R.id.edit_title);
+            mEditTitle.setHint(((EditableItemInfo) itemInfo).getDefaultTitle(getContext()));
+            mEditTitle.setText(mPreviousTitle);
+            mEditTitle.setVisibility(VISIBLE);
+            title.setVisibility(View.GONE);
         }
     }
 
@@ -65,6 +86,15 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         Fragment pf = mFragmentManager.findFragmentById(R.id.sheet_prefs);
         if (pf != null) {
             mFragmentManager.beginTransaction().remove(pf).commitAllowingStateLoss();
+        }
+        if (mEditTitle != null) {
+            String newTitle = mEditTitle.getText().toString();
+            if (!newTitle.equals(mPreviousTitle)) {
+                if (newTitle.equals(""))
+                    newTitle = null;
+                LawnchairPreferences.Companion.getInstance(getContext()).getCustomAppName()
+                        .set(mItemInfo.getTargetComponent(), newTitle);
+            }
         }
         super.onDetachedFromWindow();
     }
