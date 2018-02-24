@@ -1,5 +1,6 @@
 package com.google.android.apps.nexuslauncher;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -128,11 +129,16 @@ public class CustomIconUtils {
         }
     }
 
-    static void parsePack(Map<String, Integer> packComponents, Map<String, String> packCalendars, PackageManager pm, String iconPack) {
+    static void parsePack(Map<ComponentName, Integer> packComponents, Map<ComponentName, String> packCalendars, PackageManager pm, String iconPack) {
         try {
             Resources res = pm.getResourcesForApplication(iconPack);
             int resId = res.getIdentifier("appfilter", "xml", iconPack);
             if (resId != 0) {
+                String compStart = "ComponentInfo{";
+                int compStartlength = compStart.length();
+                String compEnd = "}";
+                int compEndLength = compEnd.length();
+
                 XmlResourceParser parseXml = pm.getXml(iconPack, resId, null);
                 while (parseXml.next() != XmlPullParser.END_DOCUMENT) {
                     if (parseXml.getEventType() == XmlPullParser.START_TAG) {
@@ -140,13 +146,17 @@ public class CustomIconUtils {
                         if (isCalendar || parseXml.getName().equals("item")) {
                             String componentName = parseXml.getAttributeValue(null, "component");
                             String drawableName = parseXml.getAttributeValue(null, isCalendar ? "prefix" : "drawable");
-                            if (componentName != null && drawableName != null) {
-                                if (isCalendar) {
-                                    packCalendars.put(componentName, drawableName);
-                                } else {
-                                    int drawableId = res.getIdentifier(drawableName, "drawable", iconPack);
-                                    if (drawableId != 0) {
-                                        packComponents.put(componentName, drawableId);
+                            if (componentName != null && drawableName != null && componentName.startsWith(compStart) && componentName.endsWith(compEnd)) {
+                                componentName = componentName.substring(compStartlength, componentName.length() - compEndLength);
+                                ComponentName parsed = ComponentName.unflattenFromString(componentName);
+                                if (parsed != null) {
+                                    if (isCalendar) {
+                                        packCalendars.put(parsed, drawableName);
+                                    } else {
+                                        int drawableId = res.getIdentifier(drawableName, "drawable", iconPack);
+                                        if (drawableId != 0) {
+                                            packComponents.put(parsed, drawableId);
+                                        }
                                     }
                                 }
                             }

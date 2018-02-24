@@ -1,6 +1,7 @@
 package com.google.android.apps.nexuslauncher;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,8 +24,8 @@ public class CustomDrawableFactory extends DynamicDrawableFactory implements Run
     private boolean mRegistered = false;
 
     String iconPack;
-    final Map<String, Integer> packComponents = new HashMap<>();
-    final Map<String, String> packCalendars = new HashMap<>();
+    final Map<ComponentName, Integer> packComponents = new HashMap<>();
+    final Map<ComponentName, String> packCalendars = new HashMap<>();
 
     private Semaphore waiter = new Semaphore(0);
 
