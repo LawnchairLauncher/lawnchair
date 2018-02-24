@@ -16,11 +16,8 @@
 
 package ch.deletescape.lawnchair;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -107,14 +104,13 @@ import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 import ch.deletescape.lawnchair.util.IconNormalizer;
 import ch.deletescape.lawnchair.util.PackageManagerHelper;
 
-import static ch.deletescape.lawnchair.util.PackageManagerHelper.isAppEnabled;
-
 /**
  * Various utilities shared amongst the Launcher's classes.
  */
 public final class Utilities {
 
     private static final String TAG = "Launcher.Utilities";
+    private static final String LAUNCHER_RESTART_KEY = "launcher_restart_key";
 
     private static final Rect sOldBounds = new Rect();
     private static final Canvas sCanvas = new Canvas();
@@ -1072,7 +1068,7 @@ public final class Utilities {
             }
         }
 
-        return BLACKLISTED_APPLICATIONS.length == 0 || false;
+        return BLACKLISTED_APPLICATIONS.length == 0;
     }
 
     public static void showOutdatedLawnfeedPopup(final Context context) {
@@ -1113,18 +1109,13 @@ public final class Utilities {
     }
 
     public static void restartLauncher(Context context) {
-        PackageManager pm = context.getPackageManager();
-        Intent startActivity = pm.getLaunchIntentForPackage(context.getPackageName());
-
-        startActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        // Create a pending intent so the application is restarted after System.exit(0) was called.
-        // We use an AlarmManager to call this intent in 100ms
-        PendingIntent mPendingIntent = PendingIntent.getActivity(context, 0, startActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-
-        // Kill the application
+        Intent restartIntent = new Intent(context, Launcher.class);
+        restartIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        restartIntent.putExtra(LAUNCHER_RESTART_KEY, restartIntent);
+        context.startActivity(restartIntent);
+        if (context instanceof Activity) {
+            ((Activity) context).finish();
+        }
         System.exit(0);
     }
 
