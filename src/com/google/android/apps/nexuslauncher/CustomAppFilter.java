@@ -20,11 +20,7 @@ public class CustomAppFilter extends NexusAppFilter {
 
     @Override
     public boolean shouldShowApp(ComponentName componentName) {
-        if (CustomIconUtils.getCurrentPack(mContext).isEmpty()) {
-            return super.shouldShowApp(componentName);
-        } else {
-            return !isHiddenApp(mContext, componentName.toString(), componentName.getPackageName());
-        }
+        return !isHiddenApp(mContext, componentName.toString(), componentName.getPackageName());
     }
 
     static void resetAppFilter(Context context) {
@@ -50,10 +46,10 @@ public class CustomAppFilter extends NexusAppFilter {
 
     @SuppressWarnings("ConstantConditions") // This can't be null anyway
     public static Set<String> getHiddenApps(Context context) {
-        return Utilities.getLawnchairPrefs(context).getHiddenAppSet();
+        return new HashSet<>(Utilities.getLawnchairPrefs(context).getHiddenAppSet());
     }
 
     public static void setHiddenApps(Context context, Set<String> hiddenApps) {
-        Utilities.getLawnchairPrefs(context).setHiddenAppSet(new HashSet<>(hiddenApps));
+        Utilities.getLawnchairPrefs(context).setHiddenAppSet(hiddenApps);
     }
 }
