@@ -1,8 +1,6 @@
 pipeline:
   changelog:
     image: lawnchairlauncher/drone-changelog:latest
-    environment:
-      - MAJOR_MINOR=alpha
     output: changelog.txt
     when:
       event: push
