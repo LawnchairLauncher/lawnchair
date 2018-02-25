@@ -6,6 +6,7 @@ pipeline:
       event: push
   build:
     image: runmymind/docker-android-sdk:alpine-standalone
+    secrets: [ awareness_api_key, store_password, key_password ]
     environment:
       - MAJOR_MINOR=alpha
       - SEPERATOR='-'
@@ -16,6 +17,7 @@ pipeline:
       - bash ./gradlew assembleDebug check;
   telegram:
     image: lawnchairlauncher/docker-telegram:latest
+    secrets: [ bot_token, channel_id ]
     when:
       event: push
       status: success
