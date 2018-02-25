@@ -50,6 +50,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -57,6 +58,7 @@ import android.os.StrictMode;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -158,7 +160,7 @@ public class Launcher extends Activity
     private static final int REQUEST_EDIT_ICON = 14;
 
     private static final float BOUNCE_ANIMATION_TENSION = 1.3f;
-    
+
     private static final int SOFT_INPUT_MODE_DEFAULT =
             WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN;
     private static final int SOFT_INPUT_MODE_ALL_APPS =
@@ -366,6 +368,22 @@ public class Launcher extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         FeatureFlags.INSTANCE.loadThemePreference(this);
         Utilities.setupPirateLocale(this);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && !Utilities.hasStoragePermission(this)) {
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                final Launcher _this = this;
+                DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface di, int i) {
+                        Utilities.requestStoragePermission(_this);
+                    }
+                };
+                new AlertDialog.Builder(this).setTitle(R.string.title_storage_permission_required)
+                        .setMessage(R.string.content_storage_permission_required).setPositiveButton(android.R.string.ok, listener)
+                        .setCancelable(false).show();
+            }
+        }
+
         super.onCreate(savedInstanceState);
 
         setScreenOrientation();

@@ -83,6 +83,7 @@ interface IPreferenceProvider {
     val transparentHotseat: Boolean
     val enableDynamicUi: Boolean
     val enableBlur: Boolean
+    fun enableBlur(enable: Boolean)
     val enableVibrancy: Boolean
     val useWhiteGoogleIcon: Boolean
     val useRoundSearchBar: Boolean
