@@ -5,6 +5,11 @@ pipeline:
       - MAJOR_MINOR=1.1.0
     commands:
       - bash ./gradlew assembleDebug check;
+  telegram:
+    image: lawnchairlauncher/docker-telegram:latest
+    when:
+      event: push
+      status: success
 
 branches:
-  include: [ alpha ]
+  include: alpha
