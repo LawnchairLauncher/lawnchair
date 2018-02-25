@@ -2,6 +2,8 @@ pipeline:
   changelog:
     image: lawnchairlauncher/drone-changelog:latest
     output: changelog.txt
+    when:
+      event: push
   build:
     image: runmymind/docker-android-sdk:alpine-standalone
     environment:
@@ -10,4 +12,4 @@ pipeline:
       - bash ./gradlew assembleDebug check;
 
 branches:
-  include: [ alpha ]
+  include: alpha
