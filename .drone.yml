@@ -9,7 +9,7 @@ pipeline:
     secrets: [ awareness_api_key, store_password, key_password ]
     environment:
       - MAJOR_MINOR=alpha
-      - SEPERATOR='-'
+      - SEPERATOR="-"
       - TRAVIS=true
       - TRAVIS_BUILD_NUMBER=${DRONE_BUILD_NUMBER}
       - TRAVIS_EVENT_TYPE=${DRONE_BUILD_EVENT}
