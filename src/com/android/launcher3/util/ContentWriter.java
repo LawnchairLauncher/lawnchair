@@ -79,6 +79,11 @@ public class ContentWriter {
         return this;
     }
 
+    public ContentWriter put(String key, byte[] value) {
+        mValues.put(key, value);
+        return this;
+    }
+
     public ContentWriter putIcon(Bitmap value, UserHandle user) {
         mIcon = value;
         mUser = user;

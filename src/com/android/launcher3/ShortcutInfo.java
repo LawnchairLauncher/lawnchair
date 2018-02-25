@@ -20,18 +20,26 @@ import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.text.TextUtils;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.ContentWriter;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import ch.deletescape.lawnchair.EditableItemInfo;
+import ch.deletescape.lawnchair.LawnchairPreferences;
 
 /**
  * Represents a launchable icon on the workspaces and in folders.
  */
-public class ShortcutInfo extends ItemInfoWithIcon {
+public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
 
     public static final int DEFAULT = 0;
 
@@ -130,6 +138,8 @@ public class ShortcutInfo extends ItemInfoWithIcon {
      * The installation progress [0-100] of the package that this shortcut represents.
      */
     private int mInstallProgress;
+
+    CharSequence originalTitle;
 
     public ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
@@ -249,5 +259,50 @@ public class ShortcutInfo extends ItemInfoWithIcon {
             return pkg == null ? null : new ComponentName(pkg, IconCache.EMPTY_CLASS_NAME);
         }
         return cn;
+    }
+
+    private void updateDatabase(Context context, String title, Bitmap icon, boolean updateIcon) {
+        ModelWriter.modifyItemInDatabase(context, this, title, icon, updateIcon);
+    }
+
+    public void onLoadTitleAlias(Context context, String titleAlias) {
+        if (getOriginalTitle() == null)
+            setOriginalTitle(title);
+        if (titleAlias == null) {
+            titleAlias = LawnchairPreferences.Companion.getInstance(context)
+                    .getCustomAppName().get(getTargetComponent());
+            if (titleAlias == null) {
+                titleAlias = (String) originalTitle;
+            }
+        }
+        title = titleAlias;
+    }
+
+    @Nullable
+    @Override
+    public String getTitle(@NotNull Context context) {
+        return (String) (title != null && !title.equals(originalTitle) ? title : null);
+    }
+
+    @Override
+    public void setTitle(@NotNull Context context, @Nullable String title) {
+        updateDatabase(context, title, null, false);
+    }
+
+    @NotNull
+    @Override
+    public String getDefaultTitle(@NotNull Context context) {
+        return (String) (originalTitle != null ? originalTitle : title);
+    }
+
+    @Nullable
+    @Override
+    public CharSequence getOriginalTitle() {
+        return originalTitle;
+    }
+
+    @Override
+    public void setOriginalTitle(CharSequence originalTitle) {
+        this.originalTitle = originalTitle;
     }
 }

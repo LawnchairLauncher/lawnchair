@@ -277,6 +277,8 @@ public class LoaderTask implements Runnable {
                         LauncherSettings.Favorites.RANK);
                 final int optionsIndex = c.getColumnIndexOrThrow(
                         LauncherSettings.Favorites.OPTIONS);
+                final int titleAliasIndex = c.getColumnIndexOrThrow(
+                        LauncherSettings.Favorites.TITLE_ALIAS);
 
                 final LongSparseArray<UserHandle> allUsers = c.allUsers;
                 final LongSparseArray<Boolean> quietMode = new LongSparseArray<>();
@@ -311,6 +313,7 @@ public class LoaderTask implements Runnable {
                 LauncherAppWidgetInfo appWidgetInfo;
                 Intent intent;
                 String targetPkg;
+                String titleAlias;
 
                 FolderIconPreviewVerifier verifier =
                         new FolderIconPreviewVerifier(mApp.getInvariantDeviceProfile());
@@ -337,6 +340,7 @@ public class LoaderTask implements Runnable {
                                     ShortcutInfo.FLAG_DISABLED_QUIET_USER : 0;
                             ComponentName cn = intent.getComponent();
                             targetPkg = cn == null ? intent.getPackage() : cn.getPackageName();
+                            titleAlias = c.getString(titleAliasIndex);
 
                             if (!Process.myUserHandle().equals(c.user)) {
                                 if (c.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
@@ -511,6 +515,7 @@ public class LoaderTask implements Runnable {
                             if (info != null) {
                                 c.applyCommonProperties(info);
 
+                                info.onLoadTitleAlias(context, titleAlias);
                                 info.intent = intent;
                                 info.rank = c.getInt(rankIndex);
                                 info.spanX = 1;

@@ -23,13 +23,15 @@
     android:background="?android:attr/colorPrimary"
     android:elevation="@dimen/deep_shortcuts_elevation"
     android:layout_gravity="bottom"
+    android:id="@+id/content"
     android:theme="?attr/widgetsTheme">
 
     <ImageView
         android:id="@+id/icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="4dp"/>
 
     <TextView
         style="@style/TextTitle"
@@ -38,7 +40,8 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:textColor="?android:attr/textColorPrimary"
-        android:textSize="24sp"/>
+        android:textSize="24sp"
+        android:layout_marginBottom="32dp"/>
 
     <EditText
         style="@style/TextTitle"
@@ -50,24 +53,14 @@
         android:gravity="center_horizontal"
         android:singleLine="true"
         android:textColor="?android:attr/textColorPrimary"
-        android:textSize="24sp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:paddingTop="4dp"
-        android:fontFamily="sans-serif"
-        android:textColor="?android:attr/textColorTertiary"
-        android:textSize="14sp"
-        android:text="@string/action_edit" />
+        android:textSize="24sp"
+        android:layout_marginBottom="32dp"/>
 
     <fragment
         android:id="@+id/sheet_prefs"
         android:name="com.google.android.apps.nexuslauncher.CustomBottomSheet$PrefsFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:layout_marginBottom="40dp" />
 
     <View

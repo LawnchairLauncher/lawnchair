@@ -27,6 +27,7 @@ import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,6 +36,7 @@ import com.android.launcher3.AppInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.widget.WidgetsBottomSheet;
@@ -64,7 +66,15 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
         TextView title = findViewById(R.id.title);
         title.setText(itemInfo.title);
-        ((PrefsFragment) mFragmentManager.findFragmentById(R.id.sheet_prefs)).loadForApp(itemInfo);
+        if (itemInfo instanceof AppInfo || itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+            ((PrefsFragment) mFragmentManager.findFragmentById(R.id.sheet_prefs)).loadForApp(itemInfo);
+        } else {
+            mFragmentManager.beginTransaction()
+                    .remove(mFragmentManager.findFragmentById(R.id.sheet_prefs))
+                    .commitAllowingStateLoss();
+
+            ((ViewGroup) findViewById(R.id.content)).removeView(findViewById(R.id.sheet_prefs));
+        }
 
         if (itemInfo instanceof ItemInfoWithIcon) {
             ((ImageView) findViewById(R.id.icon)).setImageBitmap(((ItemInfoWithIcon) itemInfo).iconBitmap);
@@ -92,8 +102,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             if (!newTitle.equals(mPreviousTitle)) {
                 if (newTitle.equals(""))
                     newTitle = null;
-                LawnchairPreferences.Companion.getInstance(getContext()).getCustomAppName()
-                        .set(mItemInfo.getTargetComponent(), newTitle);
+                ((EditableItemInfo) mItemInfo).setTitle(getContext(), newTitle);
             }
         }
         super.onDetachedFromWindow();

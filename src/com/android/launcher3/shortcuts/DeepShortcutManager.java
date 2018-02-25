@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ch.deletescape.lawnchair.EditableItemInfo;
+
 /**
  * Performs operations related to deep shortcuts, such as querying for them, pinning them, etc.
  */
@@ -74,6 +76,10 @@ public class DeepShortcutManager {
                 && ((com.android.launcher3.ShortcutInfo) info).hasPromiseIconUi();
         return info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
                 && !info.isDisabled() && !isItemPromise;
+    }
+
+    public static boolean supportsEdit(ItemInfo info) {
+        return info instanceof EditableItemInfo || supportsShortcuts(info);
     }
 
     public boolean wasLastCallSuccess() {

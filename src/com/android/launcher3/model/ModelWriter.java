@@ -20,11 +20,13 @@ import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherProvider;
@@ -32,10 +34,12 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LooperExecutor;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.Executor;
@@ -186,6 +190,20 @@ public class ModelWriter {
                 .put(Favorites.SCREEN, item.screenId);
 
         mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
+    }
+
+    private void executeUpdateItem(ItemInfo item, ContentWriter writer) {
+        mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
+    }
+
+    public static void modifyItemInDatabase(Context context, final ItemInfo item, String alias, Bitmap bitmap, boolean updateIcon) {
+        final ContentWriter writer = new ContentWriter(context);
+        writer.put(Favorites.TITLE_ALIAS, alias);
+        if (updateIcon)
+            writer.put(LauncherSettings.Favorites.CUSTOM_ICON, Utilities.flattenBitmap(bitmap));
+
+        LauncherAppState.getInstance(context).getLauncher().getModelWriter().executeUpdateItem(item, writer);
+        LauncherAppState.getInstance(context).getModel().forceReload();
     }
 
     /**

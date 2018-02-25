@@ -137,7 +137,7 @@ public class AppInfo extends ItemInfoWithIcon implements EditableItemInfo {
     @NotNull
     @Override
     public String getDefaultTitle(@NotNull Context context) {
-        return (String) originalTitle;
+        return (String) (originalTitle != null ? originalTitle : title);
     }
 
     @Nullable

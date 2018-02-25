@@ -487,7 +487,8 @@ public class IconCache {
     private void applyCacheEntry(CacheEntry entry, ItemInfoWithIcon info) {
         info.title = Utilities.trim(entry.title);
         if (info instanceof EditableItemInfo) {
-            ((EditableItemInfo) info).setOriginalTitle(info.title);
+            if (((EditableItemInfo) info).getOriginalTitle() == null)
+                ((EditableItemInfo) info).setOriginalTitle(info.title);
             String newTitle = ((EditableItemInfo) info).getTitle(mContext);
             if (newTitle != null)
                 info.title = newTitle;
@@ -569,20 +570,6 @@ public class IconCache {
             entry.originalTitle = entry.title;
         }
 
-        // TODO: move this to ShortcutInfo when it supports editing
-        if (!(entry instanceof EditableItemInfo)) {
-            String newName = LawnchairPreferences.Companion.getInstance(mContext)
-                    .getCustomAppName().get(componentName);
-            if (newName != null) {
-                entry.title = newName;
-            } else {
-                if (entry.originalTitle != null) {
-                    entry.title = entry.originalTitle;
-                } else {
-                    entry.originalTitle = entry.title;
-                }
-            }
-        }
         return entry;
     }
 
