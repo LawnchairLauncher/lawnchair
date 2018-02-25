@@ -965,15 +965,13 @@ public final class Utilities {
         StringBuilder builder = new StringBuilder();
         String[] lines = BuildConfig.CHANGELOG.split("\n");
         for (String line : lines) {
-            if (line.startsWith("Merge pull request")) continue;
             if (line.contains("[no ci]")) {
                 line = line.replace("[no ci]", "");
             }
-            builder
-                    .append("- ")
-                    .append(line.trim())
-                    .append('\n');
+
+            builder.append(line.trim()).append('\n');
         }
+
         builder.deleteCharAt(builder.lastIndexOf("\n"));
         return builder.toString();
     }
