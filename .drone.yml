@@ -2,9 +2,17 @@ pipeline:
   build:
     image: runmymind/docker-android-sdk:alpine-standalone
     environment:
-      - MAJOR_MINOR=1.1.0
+      - MAJOR_MINOR=alpha
+      - SEPERATOR='-'
+      - TRAVIS=true
+      - TRAVIS_BUILD_NUMBER=${DRONE_BUILD_NUMBER}
     commands:
       - bash ./gradlew assembleDebug check;
+  telegram:
+    image: lawnchairlauncher/docker-telegram:latest
+    when:
+      event: push
+      status: success
 
 branches:
-  include: [ alpha ]
+  include: alpha
