@@ -2,19 +2,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 def getChangelog = { ->
-    def commitRange = System.getenv("TRAVIS_COMMIT_RANGE")
-    if (commitRange) {
-        if (System.getenv("TRAVIS_TAG")) {
-            def tag = System.getenv("TRAVIS_TAG")
-            commitRange = ('git describe --abbrev=0 --tags ' +  tag + '^').execute().text.trim() + '..' + tag
-        }
-
-        def stdout = new ByteArrayOutputStream()
-        exec {
-            commandLine 'git', 'log', '--format=%s', commitRange
-            standardOutput = stdout
-        }
-        return stdout.toString().trim().replace("\n", "\\n").replace("\"", "\\\"")
+    File changelogFile = project.rootProject.file('changelog.txt')
+    if (changelogFile.exists()) {
+        def changelog = changelogFile.text
+        return changelog.trim().replace("\n", "\\n").replace("\"", "\\\"")
     } else {
         return null
     }

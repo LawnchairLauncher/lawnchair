@@ -1,4 +1,7 @@
 pipeline:
+  changelog:
+    image: lawnchairlauncher/drone-changelog:latest
+    output: changelog.txt
   build:
     image: runmymind/docker-android-sdk:alpine-standalone
     environment:
