@@ -240,6 +240,17 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                             iconBadgingPref, resolver, getFragmentManager());
                     mIconBadgingObserver.register(NOTIFICATION_BADGING, NOTIFICATION_ENABLED_LISTENERS);
                 }
+            } else if (getContent() == R.xml.lawnchair_pixel_style_preferences) {
+                findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
+                findPreference(ENABLE_MINUS_ONE_PREF).setTitle(getDisplayGoogleTitle());
+
+                if (SmartspaceController.get(mContext).cY()) {
+                    findPreference(SMARTSPACE_PREF).setOnPreferenceClickListener(this);
+                } else {
+                    getPreferenceScreen().removePreference(findPreference(SMARTSPACE_PREF));
+                }
+
+                findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
 
                 Preference iconShapeOverride = findPreference(IconShapeOverride.KEY_PREFERENCE);
                 if (iconShapeOverride != null) {
@@ -252,17 +263,6 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
 
                 mIconPackPref = (CustomIconPreference) findPreference(ICON_PACK_PREF);
                 mIconPackPref.setOnPreferenceChangeListener(this);
-            } else if (getContent() == R.xml.lawnchair_pixel_style_preferences) {
-                findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
-                findPreference(ENABLE_MINUS_ONE_PREF).setTitle(getDisplayGoogleTitle());
-
-                if (SmartspaceController.get(mContext).cY()) {
-                    findPreference(SMARTSPACE_PREF).setOnPreferenceClickListener(this);
-                } else {
-                    getPreferenceScreen().removePreference(findPreference(SMARTSPACE_PREF));
-                }
-
-                findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
             } else if (getContent() == R.xml.lawnchair_about_preferences) {
                 findPreference("about_version").setSummary(BuildConfig.VERSION_NAME);
             }
