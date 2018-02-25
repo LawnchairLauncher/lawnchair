@@ -365,4 +365,6 @@
     <string name="hide_dock_gradient">Hide gradient</string>
     <string name="dock_pref_summary">Customize your dock</string>
     <string name="dock_pref_title">Dock</string>
+    <string name="hide_all_apps_icon_labels_pref_title">Hide icon labels in drawer</string>
+    <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
 </resources>

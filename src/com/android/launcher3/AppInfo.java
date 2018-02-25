@@ -31,7 +31,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import ch.deletescape.lawnchair.EditableItemInfo;
-import ch.deletescape.lawnchair.LawnchairPreferences;
 
 /**
  * Represents an app in AllAppsView.
@@ -143,12 +142,12 @@ public class AppInfo extends ItemInfoWithIcon implements EditableItemInfo {
     @Nullable
     @Override
     public String getTitle(@NotNull Context context) {
-        return LawnchairPreferences.Companion.getInstance(context).getCustomAppName().get(getTargetComponent());
+        return Utilities.getLawnchairPrefs(context).getCustomAppName().get(getTargetComponent());
     }
 
     @Override
     public void setTitle(@NotNull Context context, @Nullable String title) {
-        LawnchairPreferences.Companion.getInstance(context).getCustomAppName().set(getTargetComponent(), title);
+        Utilities.getLawnchairPrefs(context).getCustomAppName().set(getTargetComponent(), title);
     }
 
     public void setOriginalTitle(CharSequence originalTitle) {

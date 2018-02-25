@@ -34,7 +34,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import ch.deletescape.lawnchair.EditableItemInfo;
-import ch.deletescape.lawnchair.LawnchairPreferences;
 
 /**
  * Represents a launchable icon on the workspaces and in folders.
@@ -269,8 +268,7 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
         if (getOriginalTitle() == null)
             setOriginalTitle(title);
         if (titleAlias == null) {
-            titleAlias = LawnchairPreferences.Companion.getInstance(context)
-                    .getCustomAppName().get(getTargetComponent());
+            titleAlias = Utilities.getLawnchairPrefs(context).getCustomAppName().get(getTargetComponent());
             if (titleAlias == null) {
                 titleAlias = (String) originalTitle;
             }

@@ -1,86 +1,158 @@
 package ch.deletescape.lawnchair
 
 import android.annotation.SuppressLint
+import android.content.ComponentName
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Looper
-import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherFiles
 import com.android.launcher3.MainThreadExecutor
-import com.android.launcher3.compat.UserManagerCompat
+import org.json.JSONObject
+import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
+import kotlin.collections.HashMap
 import kotlin.reflect.KProperty
 
-class LawnchairPreferences(val context: Context) {
+class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
 
-    val hideDockGradient by BooleanPref(defaultValue = false)
+    private val onChangeMap: MutableMap<String, () -> Unit> = HashMap()
+    private var onChangeCallback: LawnchairPreferencesChangeCallback? = null
+    private val sharedPrefs: SharedPreferences = getSharedPrefs()
 
-    private inner class MutableStringPref(key: String? = null, defaultValue: String = "") :
-            StringPref(key, defaultValue), MutablePrefDelegate<String> {
+    private val doNothing = { }
+    private val recreate = { recreate() }
+    private val reloadApps = { reloadApps() }
+    private val reloadAll = { reloadAll() }
+
+    val hideDockGradient by BooleanPref("pref_hideDockGradient", false, recreate)
+    val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
+    val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
+    var hiddenAppSet by MutableStringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
+    val customAppName = object : MutableMapPref<ComponentName, String>("pref_appNameMap", reloadAll) {
+        override fun flattenKey(key: ComponentName) = key.flattenToString()
+        override fun unflattenKey(key: String) = ComponentName.unflattenFromString(key)
+        override fun flattenValue(value: String) = value
+        override fun unflattenValue(value: String) = value
+    }
+
+    private fun recreate() {
+        onChangeCallback?.recreate()
+    }
+
+    private fun reloadApps() {
+        onChangeCallback?.reloadApps()
+    }
+
+    private fun reloadAll() {
+        onChangeCallback?.reloadAll()
+    }
+
+    inner abstract class MutableMapPref<K, V>(private val prefKey: String, onChange: () -> Unit = doNothing) {
+        private val valueMap = HashMap<K, V>()
+
+        init {
+            val obj = JSONObject(sharedPrefs.getString(prefKey, "{}"))
+            obj.keys().forEach {
+                valueMap[unflattenKey(it)] = unflattenValue(obj.getString(it))
+            }
+            if (onChange !== doNothing) {
+                onChangeMap[prefKey] = onChange
+            }
+        }
+
+        open fun flattenKey(key: K) = key.toString()
+        abstract fun unflattenKey(key: String): K
+
+        open fun flattenValue(value: V) = value.toString()
+        abstract fun unflattenValue(value: String): V
+
+        operator fun set(key: K, value: V?) {
+            if (value != null) {
+                valueMap[key] = value
+            } else {
+                valueMap.remove(key)
+            }
+            val obj = JSONObject()
+            valueMap.entries.forEach {
+                obj.put(flattenKey(it.key), flattenValue(it.value))
+            }
+            @SuppressLint("CommitPrefEdits")
+            val editor = if (bulkEditing) editor!! else sharedPrefs.edit()
+            editor.putString(prefKey, obj.toString())
+            if (!bulkEditing)
+                commitOrApply(editor, blockingEditing)
+        }
+
+        operator fun get(key: K): V? {
+            return valueMap[key]
+        }
+    }
+
+
+    private inner class MutableStringPref(key: String, defaultValue: String = "", onChange: () -> Unit = doNothing) :
+            StringPref(key, defaultValue, onChange), MutablePrefDelegate<String> {
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: String) {
             edit { putString(getKey(property), value) }
         }
     }
 
-    private inner open class StringPref(key: String? = null, defaultValue: String = "") :
-            PrefDelegate<String>(key, defaultValue) {
+    private inner open class StringPref(key: String, defaultValue: String = "", onChange: () -> Unit = doNothing) :
+            PrefDelegate<String>(key, defaultValue, onChange) {
         override fun getValue(thisRef: Any?, property: KProperty<*>): String = sharedPrefs.getString(getKey(property), defaultValue)
     }
 
-    private inner class MutableStringSetPref(key: String? = null, defaultValue: Set<String>? = null) :
-            StringSetPref(key, defaultValue), MutablePrefDelegate<Set<String>?> {
+    private inner class MutableStringSetPref(key: String, defaultValue: Set<String>? = null, onChange: () -> Unit = doNothing) :
+            StringSetPref(key, defaultValue, onChange), MutablePrefDelegate<Set<String>?> {
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: Set<String>?) {
             edit { putStringSet(getKey(property), value) }
         }
     }
 
-    private inner open class StringSetPref(key: String? = null, defaultValue: Set<String>? = null) :
-            PrefDelegate<Set<String>?>(key, defaultValue) {
+    private inner open class StringSetPref(key: String, defaultValue: Set<String>? = null, onChange: () -> Unit = doNothing) :
+            PrefDelegate<Set<String>?>(key, defaultValue, onChange) {
         override fun getValue(thisRef: Any?, property: KProperty<*>): Set<String>? = sharedPrefs.getStringSet(getKey(property), defaultValue)
     }
 
-    private inner class MutableIntPref(key: String? = null, defaultValue: Int = 0) :
-            IntPref(key, defaultValue), MutablePrefDelegate<Int> {
+    private inner class MutableIntPref(key: String, defaultValue: Int = 0, onChange: () -> Unit = doNothing) :
+            IntPref(key, defaultValue, onChange), MutablePrefDelegate<Int> {
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) {
             edit { putInt(getKey(property), value) }
         }
     }
 
-    private inner open class IntPref(key: String? = null, defaultValue: Int = 0) :
-            PrefDelegate<Int>(key, defaultValue) {
+    private inner open class IntPref(key: String, defaultValue: Int = 0, onChange: () -> Unit = doNothing) :
+            PrefDelegate<Int>(key, defaultValue, onChange) {
         override fun getValue(thisRef: Any?, property: KProperty<*>): Int = sharedPrefs.getInt(getKey(property), defaultValue)
     }
 
-    private inner class MutableFloatPref(key: String? = null, defaultValue: Float = 0f) :
-            FloatPref(key, defaultValue), MutablePrefDelegate<Float> {
+    private inner class MutableFloatPref(key: String, defaultValue: Float = 0f, onChange: () -> Unit = doNothing) :
+            FloatPref(key, defaultValue, onChange), MutablePrefDelegate<Float> {
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: Float) {
             edit { putFloat(getKey(property), value) }
         }
     }
 
-    private inner open class FloatPref(key: String? = null, defaultValue: Float = 0f) :
-            PrefDelegate<Float>(key, defaultValue) {
+    private inner open class FloatPref(key: String, defaultValue: Float = 0f, onChange: () -> Unit = doNothing) :
+            PrefDelegate<Float>(key, defaultValue, onChange) {
         override fun getValue(thisRef: Any?, property: KProperty<*>): Float = sharedPrefs.getFloat(getKey(property), defaultValue)
     }
 
-    private inner class MutableBooleanPref(key: String? = null, defaultValue: Boolean = false) :
+    private inner class MutableBooleanPref(key: String, defaultValue: Boolean = false) :
             BooleanPref(key, defaultValue), MutablePrefDelegate<Boolean> {
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: Boolean) {
             edit { putBoolean(getKey(property), value) }
         }
     }
 
-    private inner open class BooleanPref(key: String? = null, defaultValue: Boolean = false) :
-            PrefDelegate<Boolean>(key, defaultValue) {
+    private inner open class BooleanPref(key: String, defaultValue: Boolean = false, onChange: () -> Unit = doNothing) :
+            PrefDelegate<Boolean>(key, defaultValue, onChange) {
         override fun getValue(thisRef: Any?, property: KProperty<*>): Boolean = sharedPrefs.getBoolean(getKey(property), defaultValue)
     }
 
     // ----------------
     // Helper functions and class
     // ----------------
-
-    private val sharedPrefs: SharedPreferences = getSharedPrefs()
 
     fun getPrefKey(key: String) = "pref_$key"
 
@@ -176,7 +248,14 @@ class LawnchairPreferences(val context: Context) {
         endBulkEdit()
     }
 
-    private abstract inner class PrefDelegate<T>(val key: String?, val defaultValue: T) {
+    private abstract inner class PrefDelegate<T>(val key: String, val defaultValue: T, onChange: () -> Unit) {
+
+        init {
+            if (onChange !== doNothing) {
+                onChangeMap[key] = onChange
+            }
+        }
+
         abstract operator fun getValue(thisRef: Any?, property: KProperty<*>): T
 
         protected inline fun edit(body: SharedPreferences.Editor.() -> Unit) {
@@ -187,6 +266,7 @@ class LawnchairPreferences(val context: Context) {
                 commitOrApply(editor, blockingEditing)
         }
 
+        @Suppress("USELESS_ELVIS")
         internal fun getKey(property: KProperty<*>) = key ?: getPrefKey(property.name)
     }
 
@@ -194,9 +274,19 @@ class LawnchairPreferences(val context: Context) {
         operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T)
     }
 
-    var appNameMap by MutableStringPref(defaultValue = "{}")
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String) {
+        onChangeMap[key]?.invoke()
+    }
 
-    val customAppName = CustomAppName(this)
+    fun registerCallback(callback: LawnchairPreferencesChangeCallback) {
+        sharedPrefs.registerOnSharedPreferenceChangeListener(this)
+        onChangeCallback = callback
+    }
+
+    fun unregisterCallback() {
+        sharedPrefs.unregisterOnSharedPreferenceChangeListener(this)
+        onChangeCallback = null
+    }
 
     companion object {
 

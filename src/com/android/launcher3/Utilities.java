@@ -67,6 +67,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ch.deletescape.lawnchair.LawnchairPreferences;
+
 /**
  * Various utilities shared amongst the Launcher's classes.
  */
@@ -653,6 +655,10 @@ public final class Utilities {
         HashSet<T> hashSet = new HashSet<>(1);
         hashSet.add(elem);
         return hashSet;
+    }
+
+    public static LawnchairPreferences getLawnchairPrefs(Context context) {
+        return LawnchairPreferences.Companion.getInstance(context);
     }
 
 }

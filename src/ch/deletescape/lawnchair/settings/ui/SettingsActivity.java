@@ -99,7 +99,7 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                     .commit();
         }
 
-        sharedPrefs = LawnchairPreferences.Companion.getInstance(this);
+        sharedPrefs = Utilities.getLawnchairPrefs(this);
         updateUpButton();
     }
 
@@ -240,7 +240,7 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                             iconBadgingPref, resolver, getFragmentManager());
                     mIconBadgingObserver.register(NOTIFICATION_BADGING, NOTIFICATION_ENABLED_LISTENERS);
                 }
-            } else if (getContent() == R.xml.lawnchair_pixel_style_preferences) {
+            } else if (getContent() == R.xml.lawnchair_theme_preferences) {
                 findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
                 findPreference(ENABLE_MINUS_ONE_PREF).setTitle(getDisplayGoogleTitle());
 

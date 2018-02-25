@@ -18,7 +18,7 @@
         android:title="@string/pixel_ui_pref_title"
         android:summary="@string/pixel_ui_pref_summary"
         android:icon="@drawable/ic_ui"
-        app:content="@xml/lawnchair_pixel_style_preferences" />
+        app:content="@xml/lawnchair_theme_preferences" />
 
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:icon="@drawable/ic_desktop"

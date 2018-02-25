@@ -6,4 +6,10 @@
         android:title="@string/hide_app"
         android:summary="@string/hide_app_sum"
         android:fragment="ch.deletescape.lawnchair.preferences.HiddenAppsFragment" />
+
+    <SwitchPreference
+        android:key="pref_hideAllAppsAppLabels"
+        android:title="@string/hide_all_apps_icon_labels_pref_title"
+        android:defaultValue="false"
+        android:persistent="true" />
 </PreferenceScreen>

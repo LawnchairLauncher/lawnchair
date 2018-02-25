@@ -61,6 +61,8 @@ import java.text.NumberFormat;
  */
 public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
 
+    private boolean mHideText;
+
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
     private static final int DISPLAY_FOLDER = 2;
@@ -152,14 +154,17 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
         int display = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
         int defaultIconSize = grid.iconSizePx;
         if (display == DISPLAY_WORKSPACE) {
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
+            mHideText = Utilities.getLawnchairPrefs(context).getHideAppLabels();
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
         } else if (display == DISPLAY_ALL_APPS) {
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
+            mHideText = Utilities.getLawnchairPrefs(context).getHideAllAppsAppLabels();
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
         } else if (display == DISPLAY_FOLDER) {
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.folderChildTextSizePx);
+            mHideText = Utilities.getLawnchairPrefs(context).getHideAppLabels();
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, mHideText ? 0 : grid.folderChildTextSizePx);
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
             defaultIconSize = grid.folderChildIconSizePx;
         }
@@ -220,7 +225,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
         FastBitmapDrawable iconDrawable = DrawableFactory.get(getContext()).newIcon(icon, info);
         iconDrawable.setIsDisabled(info.isDisabled());
         setIcon(iconDrawable);
-        setText(info.title);
+        if (!mHideText)
+            setText(info.title);
         if (info.contentDescription != null) {
             setContentDescription(info.isDisabled()
                     ? getContext().getString(R.string.disabled_app_label, info.contentDescription)

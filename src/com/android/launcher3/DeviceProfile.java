@@ -42,6 +42,8 @@ public class DeviceProfile {
         void onLauncherLayoutChanged();
     }
 
+    private Context mContext;
+
     public final InvariantDeviceProfile inv;
 
     // Device properties
@@ -155,6 +157,7 @@ public class DeviceProfile {
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
             Point minSize, Point maxSize,
             int width, int height, boolean isLandscape) {
+        mContext = context;
 
         this.inv = inv;
         this.isLandscape = isLandscape;
@@ -358,8 +361,8 @@ public class DeviceProfile {
         iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
         iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
 
-        cellHeightPx = iconSizePx + iconDrawablePaddingPx
-                + Utilities.calculateTextHeight(iconTextSizePx);
+        int textHeight = Utilities.calculateTextHeight(iconTextSizePx);
+        cellHeightPx = iconSizePx + iconDrawablePaddingPx + textHeight;
         int cellYPadding = (getCellSize().y - cellHeightPx) / 2;
         if (iconDrawablePaddingPx > cellYPadding && !isVerticalBarLayout()
                 && !inMultiWindowMode()) {
@@ -404,6 +407,13 @@ public class DeviceProfile {
         folderBackgroundOffset = -iconDrawablePaddingPx;
         folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
         folderIconPreviewPadding = res.getDimensionPixelSize(R.dimen.folder_preview_padding);
+
+        if (Utilities.getLawnchairPrefs(mContext).getHideAppLabels()) {
+            cellHeightPx -= textHeight;
+        }
+        if (Utilities.getLawnchairPrefs(mContext).getHideAllAppsAppLabels()) {
+            allAppsCellHeightPx -= textHeight;
+        }
     }
 
     private void updateAvailableFolderCellDimensions(DisplayMetrics dm, Resources res) {
