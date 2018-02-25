@@ -21,6 +21,8 @@ before_install:
   - chmod a+x ./scripts/changelog.sh
   - chmod a+x ./scripts/s3-upload.sh
   - git fetch --tags
+before_script:
+  - bash scripts/changelog.sh > changelog.txt
 script:
   - bash ./gradlew assembleDebug check;
   - bash ./gradlew app:assembleRelease check;
