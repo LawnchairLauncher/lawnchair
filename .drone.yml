@@ -16,7 +16,7 @@ pipeline:
     commands:
       - bash ./gradlew assembleDebug check;
   telegram:
-    image: lawnchairlauncher/docker-telegram:latest
+    image: lawnchairlauncher/drone-telegram:latest
     secrets: [ bot_token, channel_id ]
     when:
       event: push
