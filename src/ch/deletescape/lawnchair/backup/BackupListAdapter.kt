@@ -120,11 +120,11 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
         }
 
         override fun onClick(v: View) {
-            callbacks?.openRestore(adapterPosition)
+            callbacks?.openRestore(adapterPosition - 1)
         }
 
         override fun onLongClick(v: View?): Boolean {
-            callbacks?.openEdit(adapterPosition)
+            callbacks?.openEdit(adapterPosition - 1)
             return true
         }
     }
