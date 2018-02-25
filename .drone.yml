@@ -1,8 +1,17 @@
 pipeline:
+  changelog:
+    image: lawnchairlauncher/drone-changelog:latest
+    output: changelog.txt
+    when:
+      event: push
   build:
     image: runmymind/docker-android-sdk:alpine-standalone
     environment:
-      - MAJOR_MINOR=1.1.0
+      - MAJOR_MINOR=alpha
+      - SEPERATOR='-'
+      - TRAVIS=true
+      - TRAVIS_BUILD_NUMBER=${DRONE_BUILD_NUMBER}
+      - TRAVIS_EVENT_TYPE=${DRONE_BUILD_EVENT}
     commands:
       - bash ./gradlew assembleDebug check;
   telegram:
