@@ -8,7 +8,6 @@ branches:
    - alpha
 env:
   - MAJOR_MINOR=1.1.0
-  - SEPERATOR='.'
 android:
   components:
     - tools
