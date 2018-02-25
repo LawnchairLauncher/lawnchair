@@ -15,3 +15,4 @@ gradle/
 build/
 gradlew*
 .DS_Store
+captures/

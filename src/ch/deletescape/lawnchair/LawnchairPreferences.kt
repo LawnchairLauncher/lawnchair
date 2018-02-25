@@ -4,13 +4,16 @@ import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Looper
 import com.android.launcher3.LauncherFiles
 import com.android.launcher3.MainThreadExecutor
+import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.reflect.KProperty
 
@@ -35,6 +38,9 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         override fun flattenValue(value: String) = value
         override fun unflattenValue(value: String) = value
     }
+    val recentBackups = object : MutableListPref<Uri>("pref_recentBackups", doNothing) {
+        override fun unflattenValue(value: String) = Uri.parse(value)
+    }
 
     private fun recreate() {
         onChangeCallback?.recreate()
@@ -48,7 +54,63 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         onChangeCallback?.reloadAll()
     }
 
-    inner abstract class MutableMapPref<K, V>(private val prefKey: String, onChange: () -> Unit = doNothing) {
+    abstract inner class MutableListPref<T>(private val prefKey: String, onChange: () -> Unit = doNothing) {
+        private val valueList = ArrayList<T>()
+
+        init {
+            val arr = JSONArray(sharedPrefs.getString(prefKey, "[]"))
+            (0 until arr.length()).mapTo(valueList) { unflattenValue(arr.getString(it)) }
+            if (onChange != doNothing) {
+                onChangeMap[prefKey] = onChange
+            }
+        }
+
+        fun toList() = ArrayList<T>(valueList)
+
+        open fun flattenValue(value: T) = value.toString()
+        abstract fun unflattenValue(value: String): T
+
+        operator fun get(position: Int): T {
+            return valueList[position]
+        }
+
+        operator fun set(position: Int, value: T) {
+            valueList[position] = value
+            saveChanges()
+        }
+
+        fun add(value: T) {
+            valueList.add(value)
+            saveChanges()
+        }
+
+        fun add(position: Int, value: T) {
+            valueList.add(position, value)
+            saveChanges()
+        }
+
+        fun remove(value: T) {
+            valueList.remove(value)
+            saveChanges()
+        }
+
+        fun removeAt(position: Int) {
+            valueList.removeAt(position)
+            saveChanges()
+        }
+
+        private fun saveChanges() {
+            val arr = JSONArray()
+            valueList.forEach { arr.put(flattenValue(it)) }
+            @SuppressLint("CommitPrefEdits")
+            val editor = if (bulkEditing) editor!! else sharedPrefs.edit()
+            editor.putString(prefKey, arr.toString())
+            if (!bulkEditing)
+                commitOrApply(editor, blockingEditing)
+        }
+    }
+
+    abstract inner class MutableMapPref<K, V>(private val prefKey: String, onChange: () -> Unit = doNothing) {
         private val valueMap = HashMap<K, V>()
 
         init {
@@ -60,6 +122,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
                 onChangeMap[prefKey] = onChange
             }
         }
+
+        fun toMap() = HashMap<K, V>(valueMap)
 
         open fun flattenKey(key: K) = key.toString()
         abstract fun unflattenKey(key: String): K
@@ -73,10 +137,12 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
             } else {
                 valueMap.remove(key)
             }
+            saveChanges()
+        }
+
+        private fun saveChanges() {
             val obj = JSONObject()
-            valueMap.entries.forEach {
-                obj.put(flattenKey(it.key), flattenValue(it.value))
-            }
+            valueMap.entries.forEach { obj.put(flattenKey(it.key), flattenValue(it.value)) }
             @SuppressLint("CommitPrefEdits")
             val editor = if (bulkEditing) editor!! else sharedPrefs.edit()
             editor.putString(prefKey, obj.toString())

@@ -69,6 +69,7 @@ import com.google.android.apps.nexuslauncher.CustomIconPreference;
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceController;
 
 import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.backup.BackupListActivity;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation

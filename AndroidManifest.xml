@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 /*
 **
 ** Copyright 2008, The Android Open Source Project
@@ -17,14 +16,17 @@
 ** limitations under the License.
 */
 -->
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.launcher3">
-    <uses-sdk android:targetSdkVersion="23" android:minSdkVersion="21"/>
+
+    <uses-sdk
+        android:minSdkVersion="21"
+        android:targetSdkVersion="23" />
     <!--
     Manifest entries specific to Launcher3. This is merged with AndroidManifest-common.xml.
     Refer comments around specific entries on how to extend individual components.
     -->
+
 
     <!--
     Permissions required for read/write access to the workspace data. These permission name
@@ -33,16 +35,16 @@
     -->
     <permission
         android:name="com.google.android.apps.nexuslauncher.permission.READ_SETTINGS"
-        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
-        android:protectionLevel="normal"
+        android:description="@string/permdesc_read_settings"
         android:label="@string/permlab_read_settings"
-        android:description="@string/permdesc_read_settings"/>
+        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
+        android:protectionLevel="normal" />
     <permission
         android:name="com.google.android.apps.nexuslauncher.permission.WRITE_SETTINGS"
-        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
-        android:protectionLevel="signatureOrSystem"
+        android:description="@string/permdesc_write_settings"
         android:label="@string/permlab_write_settings"
-        android:description="@string/permdesc_write_settings"/>
+        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
+        android:protectionLevel="signatureOrSystem" />
 
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
     <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
@@ -53,24 +55,28 @@
     <permission
         android:name="com.google.android.apps.nexuslauncher.permission.QSB"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
-        android:protectionLevel="signatureOrSystem"/>
+        android:protectionLevel="signatureOrSystem" />
+
     <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.QSB" />
 
     <!-- Custom -->
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:backupAgent="com.android.launcher3.LauncherBackupAgent"
-        android:fullBackupOnly="true"
+        android:backupAgent=".LauncherBackupAgent"
         android:fullBackupContent="@xml/backupscheme"
+        android:fullBackupOnly="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/derived_app_name"
-        android:theme="@style/LauncherTheme"
         android:largeHeap="@bool/config_largeHeap"
         android:restoreAnyVersion="true"
-        android:supportsRtl="true" >
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/LauncherTheme">
 
         <!--
         Main launcher activity. When extending only change the name, and keep all the
@@ -78,35 +84,35 @@
         -->
         <activity
             android:name="com.google.android.apps.nexuslauncher.NexusLauncherActivity"
-            android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
-            android:stateNotNeeded="true"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="nosensor"
             android:configChanges="keyboard|keyboardHidden|navigation"
+            android:enabled="true"
+            android:launchMode="singleTask"
             android:resizeableActivity="true"
             android:resumeWhilePausing="true"
+            android:screenOrientation="nosensor"
+            android:stateNotNeeded="true"
             android:taskAffinity=""
-            android:enabled="true">
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.MONKEY"/>
+                <category android:name="android.intent.category.MONKEY" />
                 <category android:name="android.intent.category.LAUNCHER_APP" />
             </intent-filter>
         </activity>
 
-        <!--
-        The settings activity. When extending keep the intent filter present
-        -->
+        <!-- The settings activity. When extending keep the intent filter present -->
         <activity
             android:name="ch.deletescape.lawnchair.settings.ui.SettingsActivity"
+            android:autoRemoveFromRecents="true"
             android:label="@string/settings_button_text"
-            android:theme="@style/SettingsTheme"
-            android:autoRemoveFromRecents="true">
+            android:theme="@style/SettingsTheme">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -117,38 +123,41 @@
         represent the package name.
         -->
         <provider
-            android:name="com.android.launcher3.LauncherProvider"
+            android:name=".LauncherProvider"
             android:authorities="ch.deletescape.lawnchair.settings"
             android:exported="true"
-            android:writePermission="com.google.android.apps.nexuslauncher.permission.WRITE_SETTINGS"
-            android:readPermission="com.google.android.apps.nexuslauncher.permission.READ_SETTINGS" />
+            android:readPermission="com.google.android.apps.nexuslauncher.permission.READ_SETTINGS"
+            android:writePermission="com.google.android.apps.nexuslauncher.permission.WRITE_SETTINGS" />
 
-        <!--
-        Pixel
-        -->
+        <!-- Pixel -->
         <activity
             android:name="com.google.android.apps.nexuslauncher.search.AppLaunchActivity"
             android:theme="@android:style/Theme.NoDisplay">
             <intent-filter android:priority="1">
-                <action android:name="com.google.android.apps.nexuslauncher.search.APP_LAUNCH"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="com.google.android.apps.nexuslauncher.search.APP_LAUNCH" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
                 <data
                     android:mimeType="vnd.android.cursor.dir/vnd.android.search.suggest"
-                    android:scheme="content"/>
+                    android:scheme="content" />
             </intent-filter>
         </activity>
+
         <receiver android:name="com.google.android.apps.nexuslauncher.smartspace.SmartspaceBroadcastReceiver">
             <intent-filter>
                 <action android:name="com.google.android.apps.nexuslauncher.UPDATE_SMARTSPACE" />
             </intent-filter>
         </receiver>
         <receiver android:name="com.google.android.apps.nexuslauncher.qsb.LongClickReceiver" />
-        <provider
-            android:authorities="ch.deletescape.lawnchair.appssearch"
-            android:exported="true"
-            android:name="com.google.android.apps.nexuslauncher.search.AppSearchProvider" />
 
-        <!-- ENABLE_FOR_TESTING
+        <provider
+            android:name="com.google.android.apps.nexuslauncher.search.AppSearchProvider"
+            android:authorities="ch.deletescape.lawnchair.appssearch"
+            android:exported="true" />
+
+        <!--
+        ENABLE_FOR_TESTING
 
         <activity
             android:name="com.android.launcher3.testing.LauncherExtension"
@@ -193,8 +202,18 @@
         </activity>
 
         <service android:name="com.android.launcher3.testing.MemoryTracker" />
-
         -->
 
+        <activity
+            android:name="ch.deletescape.lawnchair.backup.BackupListActivity"
+            android:label="@string/backups"
+            android:theme="@style/SettingsTheme.Backup"
+            android:parentActivityName="ch.deletescape.lawnchair.settings.ui.SettingsActivity"/>
+        <activity
+            android:name="ch.deletescape.lawnchair.backup.NewBackupActivity"
+            android:label="@string/new_backup"
+            android:theme="@style/SettingsTheme.Backup"
+            android:parentActivityName="ch.deletescape.lawnchair.backup.BackupListActivity"/>
     </application>
+
 </manifest>

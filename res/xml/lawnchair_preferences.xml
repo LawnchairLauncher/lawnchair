@@ -38,6 +38,16 @@
         android:title="@string/app_drawer_pref_title"
         app:content="@xml/lawnchair_app_drawer_preferences" />
 
+    <Preference
+        android:key="backups"
+        android:title="@string/backups"
+        android:summary="@string/backup_pref_summary"
+        android:icon="@drawable/ic_import_export">
+        <intent
+            android:targetPackage="ch.deletescape.lawnchair"
+            android:targetClass="ch.deletescape.lawnchair.backup.BackupListActivity"/>
+    </Preference>
+
     <ch.deletescape.lawnchair.settings.ui.SubPreference
         android:title="@string/about_title"
         android:summary="@string/about_pref_summary"

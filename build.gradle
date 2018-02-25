@@ -103,12 +103,17 @@ repositories {
 
 final String SUPPORT_LIBS_VERSION = '27.0.2'
 dependencies {
+    compile "com.android.support:appcompat-v7:${SUPPORT_LIBS_VERSION}"
+    compile "com.android.support:cardview-v7:${SUPPORT_LIBS_VERSION}"
+    compile "com.android.support:design:${SUPPORT_LIBS_VERSION}"
     compile "com.android.support:support-v4:${SUPPORT_LIBS_VERSION}"
     compile "com.android.support:support-dynamic-animation:${SUPPORT_LIBS_VERSION}"
     compile "com.android.support:recyclerview-v7:${SUPPORT_LIBS_VERSION}"
     compile "com.android.support:palette-v7:${SUPPORT_LIBS_VERSION}"
+    compile 'com.github.florent37:fiftyshadesof:1.0.0'
     compile 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
 
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
     androidTestCompile "org.mockito:mockito-core:1.9.5"
     androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
@@ -141,3 +146,5 @@ protobuf {
         }
     }
 }
+
+apply plugin: 'kotlin-android-extensions'

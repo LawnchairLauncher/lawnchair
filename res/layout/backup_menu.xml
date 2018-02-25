@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/action_new_backup"
+        android:foreground="?selectableItemBackground"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:drawablePadding="16dp"
+            android:drawableStart="@drawable/ic_backup"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:text="@string/new_backup" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/action_restore_backup"
+        android:foreground="?selectableItemBackground"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:drawablePadding="16dp"
+            android:drawableStart="@drawable/ic_restore"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:text="@string/restore_backup" />
+    </android.support.v7.widget.CardView>
+</LinearLayout>
