@@ -29,44 +29,45 @@ import android.os.UserHandle;
 
 import com.android.launcher3.R;
 
+import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ShortcutInfoCompatBackport extends ShortcutInfoCompat {
     private final Context mContext;
     private final String mPackageName;
+    private final ComponentName mActivity;
+
     private final String mId;
-    private final String mAction;
+    private final boolean mEnabled;
     private final Integer mIcon;
     private final String mShortLabel;
     private final String mLongLabel;
-    private final ComponentName mTargetActivity;
-    private final boolean mUseTargetActivity;
-    private final Uri mData;
-    private final String mTargetPackage;
-    private final boolean mEnabled;
+    private final String mDisabledMessage;
+
+    private final Intent mIntent;
 
     public ShortcutInfoCompatBackport(Context context, Resources resources, String packageName, ComponentName activity, XmlResourceParser parseXml) throws XmlPullParserException, IOException {
         super(null);
         mContext = context;
         mPackageName = packageName;
+        mActivity = activity;
 
         HashMap<String, String> xmlData = new HashMap<>();
-        for (int i = 0; i < parseXml.getAttributeCount(); i++) {
-            xmlData.put(parseXml.getAttributeName(i), parseXml.getAttributeValue(i));
-        }
-        parseXml.nextToken();
         for (int i = 0; i < parseXml.getAttributeCount(); i++) {
             xmlData.put(parseXml.getAttributeName(i), parseXml.getAttributeValue(i));
         }
 
         mId = xmlData.get("shortcutId");
 
-        mAction = xmlData.containsKey("action") ?
-                xmlData.get("action") :
-                Intent.ACTION_MAIN;
+        mEnabled = !xmlData.containsKey("enabled") || xmlData.get("enabled").toLowerCase().equals("true");
+
+        mIcon = xmlData.containsKey("icon") ?
+                Integer.valueOf(xmlData.get("icon").substring(1)) :
+                0;
 
         mShortLabel = xmlData.containsKey("shortcutShortLabel") ?
                 resources.getString(Integer.valueOf(xmlData.get("shortcutShortLabel").substring(1))) :
@@ -76,24 +77,60 @@ public class ShortcutInfoCompatBackport extends ShortcutInfoCompat {
                 resources.getString(Integer.valueOf(xmlData.get("shortcutLongLabel").substring(1))) :
                 mShortLabel;
 
-        mTargetPackage = xmlData.containsKey("targetPackage") ?
-                xmlData.get("targetPackage") :
+        mDisabledMessage = xmlData.containsKey("shortcutDisabledMessage") ?
+                resources.getString(Integer.valueOf(xmlData.get("shortcutDisabledMessage").substring(1))) :
+                "";
+
+        HashMap<String, String> xmlDataIntent = new HashMap<>();
+        HashMap<String, String> xmlDataExtras = new HashMap<>();
+        HashMap<String, String> extras = new HashMap<>();
+        int startDepth = parseXml.getDepth();
+        do {
+            if (parseXml.nextToken() == XmlPullParser.START_TAG) {
+                String xmlName = parseXml.getName();
+                if (xmlName.equals("intent")) {
+                    xmlDataIntent.clear();
+                    extras.clear();
+                    for (int i = 0; i < parseXml.getAttributeCount(); i++) {
+                        xmlDataIntent.put(parseXml.getAttributeName(i), parseXml.getAttributeValue(i));
+                    }
+                } else if (xmlName.equals("extra")) {
+                    xmlDataExtras.clear();
+                    for (int i = 0; i < parseXml.getAttributeCount(); i++) {
+                        xmlDataExtras.put(parseXml.getAttributeName(i), parseXml.getAttributeValue(i));
+                    }
+                    if (xmlDataExtras.containsKey("name") && xmlDataExtras.containsKey("value")) {
+                        extras.put(xmlDataExtras.get("name"), xmlDataExtras.get("value"));
+                    }
+                }
+            }
+        } while (parseXml.getDepth() > startDepth);
+
+        String action = xmlDataIntent.containsKey("action") ?
+                xmlDataIntent.get("action") :
+                Intent.ACTION_MAIN;
+
+        String targetPackage = xmlDataIntent.containsKey("targetPackage") ?
+                xmlDataIntent.get("targetPackage") :
                 mPackageName;
 
-        mUseTargetActivity = xmlData.containsKey("targetClass");
-        mTargetActivity = mUseTargetActivity ?
-                new ComponentName(getPackage(), xmlData.get("targetClass")) :
-                activity;
-
-        mIcon = xmlData.containsKey("icon") ?
-                Integer.valueOf(xmlData.get("icon").substring(1)) :
-                0;
-
-        mData = xmlData.containsKey("data") ?
-                Uri.parse(xmlData.get("data")) :
+        Uri data = xmlDataIntent.containsKey("data") ?
+                Uri.parse(xmlDataIntent.get("data")) :
                 null;
 
-        mEnabled = !xmlData.containsKey("enabled") || xmlData.get("enabled").toLowerCase().equals("true");
+        mIntent = new Intent(action)
+                .setPackage(targetPackage)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME)
+                .putExtra(EXTRA_SHORTCUT_ID, mId)
+                .setData(data);
+
+        if (xmlDataIntent.containsKey("targetClass")) {
+            mIntent.setComponent(new ComponentName(targetPackage, xmlDataIntent.get("targetClass")));
+        }
+
+        for (Map.Entry<String, String> entry : extras.entrySet()) {
+            mIntent.putExtra(entry.getKey(), entry.getValue());
+        }
     }
 
     public Drawable getIcon(int density) {
@@ -109,17 +146,12 @@ public class ShortcutInfoCompatBackport extends ShortcutInfoCompat {
 
     @Override
     public Intent makeIntent() {
-        return new Intent(mAction)
-                .setComponent(mUseTargetActivity ? getActivity() : null)
-                .setPackage(getPackage())
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME)
-                .putExtra(EXTRA_SHORTCUT_ID, getId())
-                .setData(mData);
+        return mIntent;
     }
 
     @Override
     public String getPackage() {
-        return mTargetPackage;
+        return mIntent.getPackage();
     }
 
     @Override
@@ -139,7 +171,7 @@ public class ShortcutInfoCompatBackport extends ShortcutInfoCompat {
 
     @Override
     public ComponentName getActivity() {
-        return mTargetActivity;
+        return mIntent.getComponent() == null ? mActivity : mIntent.getComponent();
     }
 
     @Override
@@ -174,7 +206,7 @@ public class ShortcutInfoCompatBackport extends ShortcutInfoCompat {
 
     @Override
     public CharSequence getDisabledMessage() {
-        return "Disabled";
+        return mDisabledMessage;
     }
 
     @Override
