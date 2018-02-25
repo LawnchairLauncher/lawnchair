@@ -7,7 +7,7 @@ def getChangelog = { ->
         def changelog = changelogFile.text
         return changelog.trim().replace("\n", "\\n").replace("\"", "\\\"")
     } else {
-        return null
+        return "No changelog found!"
     }
 }
 
