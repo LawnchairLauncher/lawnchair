@@ -304,12 +304,11 @@ public class Launcher extends BaseActivity
 
         LauncherAppState app = LauncherAppState.getInstance(this);
         mOldConfig = new Configuration(getResources().getConfiguration());
+        mModel = app.setLauncher(this);
         initDeviceProfile(app.getInvariantDeviceProfile());
 
         mSharedPrefs = Utilities.getPrefs(this);
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
-        mModel = app.setLauncher(this);
-        mModelWriter = mModel.getWriter(mDeviceProfile.isVerticalBarLayout());
         mIconCache = app.getIconCache();
         mAccessibilityDelegate = new LauncherAccessibilityDelegate(this);
 
@@ -434,6 +433,7 @@ public class Launcher extends BaseActivity
             display.getSize(mwSize);
             mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
         }
+        mModelWriter = mModel.getWriter(mDeviceProfile.isVerticalBarLayout());
     }
 
     @Override
