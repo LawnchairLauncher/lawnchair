@@ -334,7 +334,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 new AssistDataReceiver() {
                     @Override
                     public void onHandleAssistData(Bundle bundle) {
-                        // Pass to AIAI
+                        mRecentsModel.preloadAssistData(mRunningTask.id, bundle);
                     }
                 },
                 new RecentsAnimationListener() {
