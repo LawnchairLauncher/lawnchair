@@ -55,6 +55,7 @@ public class TaskThumbnailView extends View {
 
     private final Matrix mMatrix = new Matrix();
 
+    private Task mTask;
     private ThumbnailData mThumbnailData;
     protected BitmapShader mBitmapShader;
 
@@ -83,6 +84,7 @@ public class TaskThumbnailView extends View {
      * Updates this thumbnail.
      */
     public void setThumbnail(Task task, ThumbnailData thumbnailData) {
+        mTask = task;
         mPaint.setColor(task == null ? Color.BLACK : task.colorBackground | 0xFF000000);
 
         if (thumbnailData != null && thumbnailData.thumbnail != null) {
@@ -189,7 +191,7 @@ public class TaskThumbnailView extends View {
             mPaint.setShader(shader);
         }
 
-        mOverlay.setTaskInfo(mThumbnailData, mMatrix);
+        mOverlay.setTaskInfo(mTask, mThumbnailData, mMatrix);
         invalidate();
     }
 

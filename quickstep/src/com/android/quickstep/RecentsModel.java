@@ -22,12 +22,16 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Looper;
 import android.os.UserHandle;
+import android.support.annotation.WorkerThread;
 import android.util.LruCache;
+import android.util.SparseArray;
 
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
+import com.android.launcher3.util.Preconditions;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.IconLoader;
 import com.android.systemui.shared.recents.model.RecentsTaskLoadPlan;
@@ -38,6 +42,7 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
@@ -66,6 +71,9 @@ public class RecentsModel extends TaskStackChangeListener {
         return INSTANCE;
     }
 
+    private final SparseArray<Bundle> mCachedAssistData = new SparseArray<>(1);
+    private final ArrayList<AssistDataListener> mAssistDataListeners = new ArrayList<>();
+
     private final Context mContext;
     private final RecentsTaskLoader mRecentsTaskLoader;
     private final MainThreadExecutor mMainThreadExecutor;
@@ -74,6 +82,7 @@ public class RecentsModel extends TaskStackChangeListener {
     private int mLastLoadPlanId;
     private int mTaskChangeId;
     private ISystemUiProxy mSystemUiProxy;
+    private boolean mClearAssistCacheOnStackChange = true;
 
     private RecentsModel(Context context) {
         mContext = context;
@@ -144,6 +153,13 @@ public class RecentsModel extends TaskStackChangeListener {
     @Override
     public void onTaskStackChanged() {
         mTaskChangeId++;
+
+        Preconditions.assertUIThread();
+        if (mClearAssistCacheOnStackChange) {
+            mCachedAssistData.clear();
+        } else {
+            mClearAssistCacheOnStackChange = true;
+        }
     }
 
     public boolean isLoadPlanValid(int resultId) {
@@ -160,5 +176,41 @@ public class RecentsModel extends TaskStackChangeListener {
 
     public ISystemUiProxy getSystemUiProxy() {
         return mSystemUiProxy;
+    }
+
+    @WorkerThread
+    public void preloadAssistData(int taskId, Bundle data) {
+        mMainThreadExecutor.execute(() -> {
+            mCachedAssistData.put(taskId, data);
+            // We expect a stack change callback after the assist data is set. So ignore the
+            // very next stack change callback.
+            mClearAssistCacheOnStackChange = false;
+
+            int count = mAssistDataListeners.size();
+            for (int i = 0; i < count; i++) {
+                mAssistDataListeners.get(i).onAssistDataReceived(taskId);
+            }
+        });
+    }
+
+    public Bundle getAssistData(int taskId) {
+        Preconditions.assertUIThread();
+        return mCachedAssistData.get(taskId);
+    }
+
+    public void addAssistDataListener(AssistDataListener listener) {
+        mAssistDataListeners.add(listener);
+    }
+
+    public void removeAssistDataListener(AssistDataListener listener) {
+        mAssistDataListeners.remove(listener);
+    }
+
+    /**
+     * Callback for receiving assist data
+     */
+    public interface AssistDataListener {
+
+        void onAssistDataReceived(int taskId);
     }
 }
