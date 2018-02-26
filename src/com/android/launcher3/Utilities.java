@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -68,6 +70,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.backup.RestoreBackupActivity;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -661,4 +664,36 @@ public final class Utilities {
         return LawnchairPreferences.Companion.getInstance(context);
     }
 
+    public static void restartLauncher(Context context) {
+        PackageManager pm = context.getPackageManager();
+        Intent startActivity = pm.getLaunchIntentForPackage(context.getPackageName());
+
+        startActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        restartLauncher(context, startActivity);
+    }
+
+    public static void restartLauncher(Context context, Intent startActivity) {
+        // Create a pending intent so the application is restarted after System.exit(0) was called.
+        // We use an AlarmManager to call this intent in 100ms
+        PendingIntent mPendingIntent = PendingIntent.getActivity(context, 0, startActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+
+        // Kill the application
+        killLauncher();
+    }
+
+    public static void killLauncher() {
+        System.exit(0);
+    }
+
+    public static void checkRestoreSuccess(Context context) {
+        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
+        if (prefs.getRestoreSuccess()) {
+            prefs.setRestoreSuccess(false);
+            context.startActivity(new Intent(context, RestoreBackupActivity.class)
+                .putExtra(RestoreBackupActivity.EXTRA_SUCCESS, true));
+        }
+    }
 }

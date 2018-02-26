@@ -1,6 +1,7 @@
 package ch.deletescape.lawnchair.backup
 
 import android.content.Context
+import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +29,16 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
         backupList.add(0, backup)
         backupMetaLoaderList.add(0, LawnchairBackup.MetaLoader(backup))
         notifyDataSetChanged()
+    }
+
+    fun removeItem(position: Int) {
+        backupList.removeAt(position)
+        backupMetaLoaderList.removeAt(position)
+        notifyItemRemoved(position + 1)
+    }
+
+    fun toUriList(): List<Uri> {
+        return backupList.map { it -> it.uri }
     }
 
     operator fun get(position: Int) = backupList[position]

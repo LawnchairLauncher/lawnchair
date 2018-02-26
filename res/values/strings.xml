@@ -386,4 +386,12 @@
     <string name="backup_remove_from_recents">Remove from list</string>
     <string name="backup_share">Share</string>
     <string name="backup_pref_summary">Backup/restore your settings and homescreen</string>
+    <string name="backup_timestamp">Created at</string>
+    <string name="backup_restoring">Restoring backup</string>
+    <string name="backup_restarting">Restarting</string>
+    <string name="restore_contents">Restore contents</string>
+    <string name="restore_success">Restore success</string>
+    <string name="backup_failed">Backup failed</string>
+    <string name="restore_failed">Restore failed</string>
+    <string name="restore_read_meta_fail">Invalid backup file</string>
 </resources>

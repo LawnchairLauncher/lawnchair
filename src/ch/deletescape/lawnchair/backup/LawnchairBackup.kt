@@ -8,6 +8,7 @@ import android.os.AsyncTask
 import android.os.Environment
 import android.util.Log
 import com.android.launcher3.LauncherFiles
+import com.android.launcher3.Utilities
 import org.json.JSONArray
 import java.io.*
 import java.text.SimpleDateFormat
@@ -36,12 +37,59 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
                 break
             }
         } catch (t: Throwable) {
-            Log.e(TAG, "Unable to read meta for $uri", t)
+            Log.e(TAG, "Failed to restore $uri", t)
         } finally {
             zipIs.close()
             inStream.close()
             pfd.close()
             return meta
+        }
+    }
+
+    fun restore(contents: Int): Boolean {
+        val contextWrapper = ContextWrapper(context)
+        val dbFile = contextWrapper.getDatabasePath(LauncherFiles.LAUNCHER_DB)
+        val dir = contextWrapper.cacheDir.parent
+        val settingsFile = File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml")
+
+        val pfd = context.contentResolver.openFileDescriptor(uri, "r")
+        val inStream = FileInputStream(pfd.fileDescriptor)
+        val zipIs = ZipInputStream(inStream)
+        val data = ByteArray(BUFFER)
+        var entry: ZipEntry?
+        var success = false
+        try {
+            while (true) {
+                entry = zipIs.nextEntry
+                if (entry == null) break
+                Log.d(TAG, "Found entry ${entry.name}")
+                val file = if (entry.name == dbFile.name) {
+                    if (contents and INCLUDE_HOMESCREEN == 0) continue
+                    dbFile
+                } else if (entry.name == settingsFile.name) {
+                    if (contents and INCLUDE_SETTINGS == 0) continue
+                    settingsFile
+                } else {
+                    continue
+                }
+                val out = FileOutputStream(file)
+                Log.d(TAG, "Restoring ${entry.name} to ${file.absolutePath}")
+                var count: Int
+                while (true) {
+                    count = zipIs.read(data, 0, BUFFER)
+                    if (count == -1) break
+                    out.write(data, 0, count)
+                }
+                out.close()
+            }
+            success = true
+        } catch (t: Throwable) {
+            Log.e(TAG, "Unable to read meta for $uri", t)
+        } finally {
+            zipIs.close()
+            inStream.close()
+            pfd.close()
+            return success
         }
     }
 
@@ -113,7 +161,7 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
             return folder
         }
 
-        fun create(context: Context, name: String, location: Uri, contents: Int) {
+        fun create(context: Context, name: String, location: Uri, contents: Int): Boolean {
             val contextWrapper = ContextWrapper(context)
             val files: MutableList<File> = ArrayList()
             if (contents or INCLUDE_HOMESCREEN != 0) {
@@ -124,37 +172,47 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
                 files.add(File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml"))
             }
 
+            Utilities.getLawnchairPrefs(context).blockingEdit { restoreSuccess = true }
             val pfd = context.contentResolver.openFileDescriptor(location, "w")
             val outStream = FileOutputStream(pfd.fileDescriptor)
             val out = ZipOutputStream(BufferedOutputStream(outStream))
             val data = ByteArray(BUFFER)
-            val metaEntry = ZipEntry(Meta.FILE_NAME)
-            out.putNextEntry(metaEntry)
-            out.write(getMeta(name, contents).toString().toByteArray())
-            files.forEach { file ->
-                val input = BufferedInputStream(FileInputStream(file), BUFFER)
-                val entry = ZipEntry(file.name)
-                out.putNextEntry(entry)
-                var count: Int
-                while (true) {
-                    count = input.read(data, 0, BUFFER)
-                    if (count == -1) break
-                    out.write(data, 0, count)
+            var success = false
+            try {
+                val metaEntry = ZipEntry(Meta.FILE_NAME)
+                out.putNextEntry(metaEntry)
+                out.write(getMeta(name, contents).toString().toByteArray())
+                files.forEach { file ->
+                    val input = BufferedInputStream(FileInputStream(file), BUFFER)
+                    val entry = ZipEntry(file.name)
+                    out.putNextEntry(entry)
+                    var count: Int
+                    while (true) {
+                        count = input.read(data, 0, BUFFER)
+                        if (count == -1) break
+                        out.write(data, 0, count)
+                    }
+                    input.close()
                 }
-                input.close()
+                success = true
+            } catch (t: Throwable) {
+                Log.e(TAG, "Failed to create backup", t)
+            } finally {
+                out.close()
+                outStream.close()
+                pfd.close()
+                Utilities.getLawnchairPrefs(context).blockingEdit { restoreSuccess = false }
+                return success
             }
-            out.close()
-            outStream.close()
-            pfd.close()
         }
 
-        fun getMeta(name: String, contents: Int) = Meta(
+        private fun getMeta(name: String, contents: Int) = Meta(
                 name = name,
                 contents = contents,
                 timestamp = getTimestamp()
         )
 
-        fun getTimestamp(): String {
+        private fun getTimestamp(): String {
             val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm:ss", Locale.US)
             return simpleDateFormat.format(Date())
         }

@@ -34,13 +34,22 @@ class NewBackupActivity : AppCompatActivity() {
     private val progress by lazy { findViewById<View>(R.id.progress) }
 
     private var backupUri = Uri.parse("/")
+    private var inProgress = false
+        set(value) {
+            if (value) {
+                supportActionBar?.setDisplayShowHomeEnabled(false)
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            } else {
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            }
+            field = value
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_backup)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         backupName.setText(getTimestamp())
@@ -93,6 +102,10 @@ class NewBackupActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        if (!inProgress) super.onBackPressed()
+    }
+
     @SuppressLint("StaticFieldLeak")
     private inner class CreateBackupTask(val context: Context) : AsyncTask<Void, Void, Boolean>() {
 
@@ -103,6 +116,8 @@ class NewBackupActivity : AppCompatActivity() {
             startButton.visibility = View.GONE
 
             progress.visibility = View.VISIBLE
+
+            inProgress = true
         }
 
         override fun doInBackground(vararg params: Void?): Boolean {
@@ -116,20 +131,24 @@ class NewBackupActivity : AppCompatActivity() {
             if (backupWallpaper.isChecked) {
                 contents = contents or LawnchairBackup.INCLUDE_WALLPAPER
             }
-            LawnchairBackup.create(
+            return LawnchairBackup.create(
                     context = context,
                     name = backupName.text.toString(),
                     location = backupUri,
                     contents = contents
             )
-            return true
         }
 
-        override fun onPostExecute(result: Boolean?) {
+        override fun onPostExecute(result: Boolean) {
             super.onPostExecute(result)
 
-            setResult(Activity.RESULT_OK, Intent().setData(backupUri))
-            finish()
+            if (result) {
+                setResult(Activity.RESULT_OK, Intent().setData(backupUri))
+                finish()
+            } else {
+                inProgress = false
+                Snackbar.make(findViewById(R.id.content), R.string.backup_failed, Snackbar.LENGTH_SHORT).show()
+            }
         }
 
     }

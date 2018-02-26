@@ -492,6 +492,8 @@ public class Launcher extends BaseActivity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onCreate(savedInstanceState);
         }
+
+        Utilities.checkRestoreSuccess(this);
     }
 
     @Override

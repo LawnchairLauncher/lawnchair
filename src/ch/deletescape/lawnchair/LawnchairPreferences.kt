@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Looper
+import android.preference.PreferenceManager
 import com.android.launcher3.LauncherFiles
 import com.android.launcher3.MainThreadExecutor
 import org.json.JSONArray
@@ -38,9 +39,11 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         override fun flattenValue(value: String) = value
         override fun unflattenValue(value: String) = value
     }
-    val recentBackups = object : MutableListPref<Uri>("pref_recentBackups", doNothing) {
+    val recentBackups = object : MutableListPref<Uri>(
+            PreferenceManager.getDefaultSharedPreferences(context), "pref_recentBackups") {
         override fun unflattenValue(value: String) = Uri.parse(value)
     }
+    var restoreSuccess by MutableBooleanPref("pref_restoreSuccess", false)
 
     private fun recreate() {
         onChangeCallback?.recreate()
@@ -54,11 +57,16 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         onChangeCallback?.reloadAll()
     }
 
-    abstract inner class MutableListPref<T>(private val prefKey: String, onChange: () -> Unit = doNothing) {
+    abstract inner class MutableListPref<T>(private val prefs: SharedPreferences,
+                                            private val prefKey: String,
+                                            onChange: () -> Unit = doNothing) {
+
+        constructor(prefKey: String, onChange: () -> Unit = doNothing) : this(sharedPrefs, prefKey, onChange)
+
         private val valueList = ArrayList<T>()
 
         init {
-            val arr = JSONArray(sharedPrefs.getString(prefKey, "[]"))
+            val arr = JSONArray(prefs.getString(prefKey, "[]"))
             (0 until arr.length()).mapTo(valueList) { unflattenValue(arr.getString(it)) }
             if (onChange != doNothing) {
                 onChangeMap[prefKey] = onChange
@@ -99,11 +107,21 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
             saveChanges()
         }
 
+        fun contains(value: T): Boolean {
+            return valueList.contains(value)
+        }
+
+        fun replaceWith(newList: List<T>) {
+            valueList.clear()
+            valueList.addAll(newList)
+            saveChanges()
+        }
+
         private fun saveChanges() {
             val arr = JSONArray()
             valueList.forEach { arr.put(flattenValue(it)) }
             @SuppressLint("CommitPrefEdits")
-            val editor = if (bulkEditing) editor!! else sharedPrefs.edit()
+            val editor = prefs.edit()
             editor.putString(prefKey, arr.toString())
             if (!bulkEditing)
                 commitOrApply(editor, blockingEditing)
@@ -204,8 +222,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         override fun getValue(thisRef: Any?, property: KProperty<*>): Float = sharedPrefs.getFloat(getKey(property), defaultValue)
     }
 
-    private inner class MutableBooleanPref(key: String, defaultValue: Boolean = false) :
-            BooleanPref(key, defaultValue), MutablePrefDelegate<Boolean> {
+    private inner class MutableBooleanPref(key: String, defaultValue: Boolean = false, onChange: () -> Unit = doNothing) :
+            BooleanPref(key, defaultValue, onChange), MutablePrefDelegate<Boolean> {
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: Boolean) {
             edit { putBoolean(getKey(property), value) }
         }

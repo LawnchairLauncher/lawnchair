@@ -93,6 +93,7 @@
             android:resizeableActivity="true"
             android:resumeWhilePausing="true"
             android:screenOrientation="nosensor"
+            android:excludeFromRecents="true"
             android:stateNotNeeded="true"
             android:taskAffinity=""
             android:windowSoftInputMode="adjustPan">
@@ -102,6 +103,7 @@
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.MONKEY" />
+                <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.LAUNCHER_APP" />
             </intent-filter>
         </activity>
