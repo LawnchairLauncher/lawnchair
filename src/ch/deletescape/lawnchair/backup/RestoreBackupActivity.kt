@@ -182,6 +182,7 @@ class RestoreBackupActivity : AppCompatActivity(), LawnchairBackup.MetaLoader.Ca
         startButton.visibility = View.GONE
         progress.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
+        progressText.visibility = View.VISIBLE
         successIcon.visibility = View.VISIBLE
         successIcon.setImageDrawable(getDrawable(icon))
         progressText.setText(text)

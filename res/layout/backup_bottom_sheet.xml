@@ -33,6 +33,7 @@
         android:text="@string/restore_backup" />
 
     <View
+        android:id="@+id/divider"
         android:background="?android:listDivider"
         android:layout_width="match_parent"
         android:layout_height="1dp" />

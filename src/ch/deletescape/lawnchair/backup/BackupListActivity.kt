@@ -19,6 +19,11 @@ class BackupListActivity : AppCompatActivity(), BackupListAdapter.Callbacks {
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.recyclerView) }
     private val adapter by lazy { BackupListAdapter(this) }
 
+    private val restoreBackup by lazy { bottomSheetView.findViewById<View>(R.id.action_restore_backup) }
+    private val shareBackup by lazy { bottomSheetView.findViewById<View>(R.id.action_share_backup) }
+    private val removeBackup by lazy { bottomSheetView.findViewById<View>(R.id.action_remove_backup_from_list) }
+    private val divider by lazy { bottomSheetView.findViewById<View>(R.id.divider) }
+
     private val bottomSheetView by lazy {
         layoutInflater.inflate(R.layout.backup_bottom_sheet,
                 findViewById(android.R.id.content), false)
@@ -34,15 +39,15 @@ class BackupListActivity : AppCompatActivity(), BackupListAdapter.Callbacks {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        bottomSheetView.findViewById<View>(R.id.action_restore_backup).setOnClickListener {
+        restoreBackup.setOnClickListener {
             bottomSheet.dismiss()
             openRestore(currentPosition)
         }
-        bottomSheetView.findViewById<View>(R.id.action_share_backup).setOnClickListener {
+        shareBackup.setOnClickListener {
             bottomSheet.dismiss()
             shareBackup(currentPosition)
         }
-        bottomSheetView.findViewById<View>(R.id.action_remove_backup_from_list).setOnClickListener {
+        removeBackup.setOnClickListener {
             bottomSheet.dismiss()
             removeItem(currentPosition)
         }
@@ -64,7 +69,8 @@ class BackupListActivity : AppCompatActivity(), BackupListAdapter.Callbacks {
     override fun openRestore() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
         intent.addCategory(Intent.CATEGORY_OPENABLE)
-        intent.type = "application/lawnchair-backup"
+        intent.type = LawnchairBackup.MIME_TYPE
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, LawnchairBackup.EXTRA_MIME_TYPES)
         startActivityForResult(intent, 2)
     }
 
@@ -76,10 +82,13 @@ class BackupListActivity : AppCompatActivity(), BackupListAdapter.Callbacks {
 
     override fun openEdit(position: Int) {
         currentPosition = position
-        adapter[position].meta?.apply {
-            bottomSheetView.findViewById<TextView>(android.R.id.title).text = name
-            bottomSheet.show()
-        }
+        val visibility = if (adapter[position].meta != null) View.VISIBLE else View.GONE
+        restoreBackup.visibility = visibility
+        shareBackup.visibility = visibility
+        divider.visibility = visibility
+        bottomSheetView.findViewById<TextView>(android.R.id.title).text =
+                adapter[position].meta?.name ?: getString(R.string.backup_invalid)
+        bottomSheet.show()
     }
 
     private fun removeItem(position: Int) {
@@ -91,7 +100,7 @@ class BackupListActivity : AppCompatActivity(), BackupListAdapter.Callbacks {
         val shareTitle = getString(R.string.backup_share_title)
         val shareText = getString(R.string.backup_share_text)
         val shareIntent = Intent(Intent.ACTION_SEND)
-        shareIntent.type = "application/lawnchair-backup"
+        shareIntent.type = LawnchairBackup.MIME_TYPE
         shareIntent.putExtra(Intent.EXTRA_STREAM, adapter[position].uri)
         shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareTitle)
         shareIntent.putExtra(Intent.EXTRA_TEXT, shareText)
@@ -109,7 +118,6 @@ class BackupListActivity : AppCompatActivity(), BackupListAdapter.Callbacks {
             if (resultData != null) {
                 adapter.addItem(LawnchairBackup(this, resultData.data))
                 saveChanges()
-                Utilities.getLawnchairPrefs(this).recentBackups.add(0, resultData.data)
             }
         } else if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
             if (resultData != null) {
