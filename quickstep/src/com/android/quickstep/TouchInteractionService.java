@@ -239,6 +239,7 @@ public class TouchInteractionService extends Service {
 
         private boolean mTrackingStarted = false;
         private boolean mInvalidated = false;
+        private boolean mHadWindowFocusOnDown;
 
         LauncherTouchConsumer(Launcher launcher, View target) {
             mLauncher = launcher;
@@ -254,14 +255,12 @@ public class TouchInteractionService extends Service {
             if (mInvalidated) {
                 return;
             }
-            if (!mTarget.hasWindowFocus()) {
-                return;
-            }
             int action = ev.getActionMasked();
             if (action == ACTION_DOWN) {
                 mTrackingStarted = false;
                 mDownPos.set(ev.getX(), ev.getY());
-            } else if (!mTrackingStarted) {
+                mHadWindowFocusOnDown = mTarget.hasWindowFocus();
+            } else if (!mTrackingStarted && mHadWindowFocusOnDown) {
                 switch (action) {
                     case ACTION_POINTER_UP:
                     case ACTION_POINTER_DOWN:
