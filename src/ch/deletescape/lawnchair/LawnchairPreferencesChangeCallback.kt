@@ -16,4 +16,8 @@ class LawnchairPreferencesChangeCallback(private val launcher: Launcher) {
     fun reloadAll() {
         launcher.model.forceReload()
     }
+
+    fun restart() {
+        launcher.scheduleRestart()
+    }
 }

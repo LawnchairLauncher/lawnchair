@@ -28,10 +28,18 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val recreate = { recreate() }
     private val reloadApps = { reloadApps() }
     private val reloadAll = { reloadAll() }
+    private val restart = { restart() }
 
+    // Desktop
+    val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
+
+    // Dock
     val hideDockGradient by BooleanPref("pref_hideDockGradient", false, recreate)
+
+    // Drawer
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
     val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
+
     var hiddenAppSet by MutableStringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     val customAppName = object : MutableMapPref<ComponentName, String>("pref_appNameMap", reloadAll) {
         override fun flattenKey(key: ComponentName) = key.flattenToString()
@@ -55,6 +63,10 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
     private fun reloadAll() {
         onChangeCallback?.reloadAll()
+    }
+
+    private fun restart() {
+        onChangeCallback?.restart()
     }
 
     abstract inner class MutableListPref<T>(private val prefs: SharedPreferences,

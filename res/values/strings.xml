@@ -396,4 +396,6 @@
     <string name="restore_read_meta_fail">Invalid backup file</string>
     <string name="backup_share_title">Share backup</string>
     <string name="backup_share_text">Lawnchair backup file</string>
+    <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
+    <string name="full_width_width_widgets_pref_title">Full width widgets</string>
 </resources>

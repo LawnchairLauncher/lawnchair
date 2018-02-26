@@ -36,4 +36,11 @@
         android:persistent="true"
         android:title="@string/hide_icon_labels_pref_title" />
 
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="pref_fullWidthWidgets"
+        android:persistent="true"
+        android:summary="@string/full_width_widgets_pref_summary"
+        android:title="@string/full_width_width_widgets_pref_title" />
+
 </PreferenceScreen>

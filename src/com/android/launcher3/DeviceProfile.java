@@ -185,8 +185,9 @@ public class DeviceProfile {
         defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
         desiredWorkspaceLeftRightMarginPx = isVerticalBarLayout() ? 0 : edgeMarginPx;
-        cellLayoutPaddingLeftRightPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
+        cellLayoutPaddingLeftRightPx = (!isVerticalBarLayout() &&
+                Utilities.getLawnchairPrefs(mContext).getAllowFullWidthWidgets()) ? 0
+                : res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
         cellLayoutBottomPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_bottom_padding);
         pageIndicatorSizePx = res.getDimensionPixelSize(
@@ -537,7 +538,9 @@ public class DeviceProfile {
             }
         } else {
             int paddingBottom = hotseatBarSizePx + pageIndicatorSizePx;
-            if (isTablet) {
+            if (Utilities.getLawnchairPrefs(mContext).getAllowFullWidthWidgets()) {
+                padding.set(0, 0, 0, paddingBottom);
+            } else if (isTablet) {
                 // Pad the left and right of the workspace to ensure consistent spacing
                 // between all icons
                 int width = getCurrentWidth();

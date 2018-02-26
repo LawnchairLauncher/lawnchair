@@ -350,6 +350,7 @@ public class Launcher extends BaseActivity
 
     private RotationPrefChangeHandler mRotationPrefChangeHandler;
     private LawnchairPreferencesChangeCallback mLawnchairPrefChangeCallback;
+    private boolean mRestart = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1061,6 +1062,9 @@ public class Launcher extends BaseActivity
             mLauncherCallbacks.onResume();
         }
 
+        if (mRestart) {
+            Utilities.restartLauncher(this);
+        }
     }
 
     @Override
@@ -4020,6 +4024,14 @@ public class Launcher extends BaseActivity
             }
         }
         return super.onKeyShortcut(keyCode, event);
+    }
+
+    public void scheduleRestart() {
+        if (mPaused) {
+            mRestart = true;
+        } else {
+            Utilities.restartLauncher(this);
+        }
     }
 
     public static CustomAppWidget getCustomAppWidget(String name) {

@@ -108,6 +108,14 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
     }
 
     @Override
+    public void setAppWidget(int appWidgetId, AppWidgetProviderInfo info) {
+        super.setAppWidget(appWidgetId, info);
+        if (info != null && Utilities.getLawnchairPrefs(getContext()).getAllowFullWidthWidgets()) {
+            setPadding(0, 0, 0, 0);
+        }
+    }
+
+    @Override
     protected View getErrorView() {
         return mInflater.inflate(R.layout.appwidget_error, this, false);
     }
