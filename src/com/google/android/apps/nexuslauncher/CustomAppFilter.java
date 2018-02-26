@@ -9,8 +9,9 @@ import com.android.launcher3.Utilities;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CustomAppFilter extends NexusAppFilter {
-    public final static String HIDE_APPS_PREF = "hidden-app-set";
+import ch.deletescape.lawnchair.LawnchairAppFilter;
+
+public class CustomAppFilter extends LawnchairAppFilter {
     private final Context mContext;
 
     public CustomAppFilter(Context context) {
@@ -20,13 +21,12 @@ public class CustomAppFilter extends NexusAppFilter {
 
     @Override
     public boolean shouldShowApp(ComponentName componentName) {
-        return !isHiddenApp(mContext, componentName.toString(), componentName.getPackageName());
+        return super.shouldShowApp(componentName) &&
+                !isHiddenApp(mContext, componentName.toString(), componentName.getPackageName());
     }
 
     static void resetAppFilter(Context context) {
-        SharedPreferences.Editor editor = Utilities.getPrefs(context).edit();
-        editor.putStringSet(HIDE_APPS_PREF, new HashSet<String>());
-        editor.apply();
+        Utilities.getLawnchairPrefs(context).setHiddenAppSet(new HashSet<String>());
     }
 
     static void setComponentNameState(Context context, String comp, String pkg, boolean hidden) {
