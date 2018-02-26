@@ -21,7 +21,6 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.view.View;
 
 /**
@@ -34,7 +33,7 @@ public class LauncherAppTransitionManager {
                 context, R.string.app_transition_manager_class);
     }
 
-    public Bundle getDefaultActivityLaunchOptions(Launcher launcher, View v) {
+    public ActivityOptions getDefaultActivityLaunchOptions(Launcher launcher, View v) {
         if (Utilities.ATLEAST_MARSHMALLOW) {
             int left = 0, top = 0;
             int width = v.getMeasuredWidth(), height = v.getMeasuredHeight();
@@ -49,23 +48,27 @@ public class LauncherAppTransitionManager {
                     height = bounds.height();
                 }
             }
-            return ActivityOptions.makeClipRevealAnimation(v, left, top, width, height)
-                    .toBundle();
+            return ActivityOptions.makeClipRevealAnimation(v, left, top, width, height);
         } else if (Utilities.ATLEAST_LOLLIPOP_MR1) {
             // On L devices, we use the device default slide-up transition.
             // On L MR1 devices, we use a custom version of the slide-up transition which
             // doesn't have the delay present in the device default.
             return ActivityOptions.makeCustomAnimation(launcher, R.anim.task_open_enter,
-                    R.anim.no_anim).toBundle();
+                    R.anim.no_anim);
         }
         return null;
     }
 
-    public Bundle getActivityLaunchOptions(Launcher launcher, View v) {
+    public ActivityOptions getActivityLaunchOptions(Launcher launcher, View v) {
         return getDefaultActivityLaunchOptions(launcher, v);
     }
 
     /** Cancels the current Launcher transition animation */
     public void finishLauncherAnimation() {
+    }
+
+    public boolean isAnimating() {
+        // We don't know when the activity options are being used.
+        return false;
     }
 }

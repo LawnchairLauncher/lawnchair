@@ -17,6 +17,7 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.quickstep.TaskView.CURVE_FACTOR;
 import static com.android.quickstep.TaskView.CURVE_INTERPOLATOR;
 
@@ -221,8 +222,8 @@ public class RecentsView extends PagedView implements Insettable {
     }
 
     public boolean isTaskViewVisible(TaskView tv) {
-        // For now, just check if it's the active task
-        return indexOfChild(tv) == getNextPage();
+        // For now, just check if it's the active task or an adjacent task
+        return Math.abs(indexOfChild(tv) - getNextPage()) <= 1;
     }
 
     public TaskView getTaskView(int taskId) {
@@ -294,13 +295,10 @@ public class RecentsView extends PagedView implements Insettable {
             final Task task = tasks.get(i);
             final TaskView taskView = (TaskView) getChildAt(tasks.size() - i - 1 + mFirstTaskIndex);
             taskView.bind(task);
-            taskView.setScaleX(1f);
-            taskView.setScaleY(1f);
-            taskView.setTranslationX(0f);
-            taskView.setTranslationY(0f);
-            taskView.setAlpha(1f);
+            taskView.resetVisualProperties();
             loader.loadTaskData(task);
         }
+        updateCurveProperties();
         applyIconScale(false /* animate */);
 
         if (oldChildCount != getChildCount()) {
@@ -402,7 +400,7 @@ public class RecentsView extends PagedView implements Insettable {
     /**
      * Scales and adjusts translation of adjacent pages as if on a curved carousel.
      */
-    private void updateCurveProperties() {
+    public void updateCurveProperties() {
         if (getPageCount() == 0 || getPageAt(0).getMeasuredWidth() == 0) {
             return;
         }

@@ -46,9 +46,7 @@ import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnDrawListener;
-import android.view.ViewTreeObserver.OnPreDrawListener;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
@@ -62,11 +60,9 @@ import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
-
 import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.ViewOnDrawExecutor;
@@ -359,7 +355,7 @@ public class WindowTransformSwipeHandler extends BaseSwipeInteractionHandler {
         AbstractFloatingView.closeAllOpenViews(mLauncher, mWasLauncherAlreadyVisible);
 
 
-        if (mWasLauncherAlreadyVisible) {
+        if (mWasLauncherAlreadyVisible && !mLauncher.getAppTransitionManager().isAnimating()) {
             DeviceProfile dp = mLauncher.getDeviceProfile();
             long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
             mLauncherTransitionController = mLauncher.getStateManager()

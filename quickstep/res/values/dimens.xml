@@ -37,4 +37,7 @@
     <!-- Launcher app transition -->
     <dimen name="content_trans_y">25dp</dimen>
     <dimen name="workspace_trans_y">80dp</dimen>
+    <dimen name="recents_adjacent_trans_x">120dp</dimen>
+    <dimen name="recents_adjacent_trans_y">80dp</dimen>
+    <fraction name="recents_adjacent_scale">150%</fraction>
 </resources>

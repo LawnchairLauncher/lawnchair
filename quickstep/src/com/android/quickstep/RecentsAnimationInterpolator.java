@@ -53,12 +53,15 @@ public class RecentsAnimationInterpolator {
     private Rect mTaskInsets;
     private Rect mThumbnail;
 
-    private float mTaskScale;
+    private float mInitialTaskScale;
+    private float mInitialTaskTranslationX;
+    private float mFinalTaskScale;
     private Rect mScaledTask;
     private Rect mTargetTask;
     private Rect mSrcWindow;
 
-    public RecentsAnimationInterpolator(Rect window, Rect insets, Rect task, Rect taskInsets) {
+    public RecentsAnimationInterpolator(Rect window, Rect insets, Rect task, Rect taskInsets,
+            float taskScale, float taskTranslationX) {
         mWindow = window;
         mInsets = insets;
         mTask = task;
@@ -68,16 +71,18 @@ public class RecentsAnimationInterpolator {
 
         mThumbnail = new Rect(task);
         Utilities.insetRect(mThumbnail, taskInsets);
-        mTaskScale = (float) mInsetWindow.width() / mThumbnail.width();
+        mInitialTaskScale = taskScale;
+        mInitialTaskTranslationX = taskTranslationX;
+        mFinalTaskScale = (float) mInsetWindow.width() / mThumbnail.width();
         mScaledTask = new Rect(task);
-        Utilities.scaleRectAboutCenter(mScaledTask, mTaskScale);
+        Utilities.scaleRectAboutCenter(mScaledTask, mFinalTaskScale);
         Rect finalScaledTaskInsets = new Rect(taskInsets);
-        Utilities.scaleRect(finalScaledTaskInsets, mTaskScale);
+        Utilities.scaleRect(finalScaledTaskInsets, mFinalTaskScale);
         mTargetTask = new Rect(mInsetWindow);
         mTargetTask.offsetTo(window.top + insets.top - finalScaledTaskInsets.top,
                 window.left + insets.left - finalScaledTaskInsets.left);
 
-        float initialWinScale = 1f / mTaskScale;
+        float initialWinScale = 1f / mFinalTaskScale;
         Rect scaledWindow = new Rect(mInsetWindow);
         Utilities.scaleRectAboutCenter(scaledWindow, initialWinScale);
         Rect scaledInsets = new Rect(insets);
@@ -89,13 +94,14 @@ public class RecentsAnimationInterpolator {
 
     public TaskWindowBounds interpolate(float t) {
         mTmpTaskWindowBounds.taskScale = Utilities.mapRange(t,
-                1, (float) mInsetWindow.width() / mThumbnail.width());
+                mInitialTaskScale, mFinalTaskScale);
         mTmpTaskWindowBounds.taskX = Utilities.mapRange(t,
-                0, mTargetTask.left - mScaledTask.left);
+                mInitialTaskTranslationX, mTargetTask.left - mScaledTask.left);
         mTmpTaskWindowBounds.taskY = Utilities.mapRange(t,
                 0, mTargetTask.top - mScaledTask.top);
 
-        mTmpTaskWindowBounds.winScale = mTmpTaskWindowBounds.taskScale / mTaskScale;
+        float taskScale = Utilities.mapRange(t, 1, mFinalTaskScale);
+        mTmpTaskWindowBounds.winScale = taskScale / mFinalTaskScale;
         mTmpTaskWindowBounds.winX = Utilities.mapRange(t,
                 mSrcWindow.left, 0);
         mTmpTaskWindowBounds.winY = Utilities.mapRange(t,
