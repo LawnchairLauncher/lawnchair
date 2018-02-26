@@ -89,11 +89,11 @@
             android:clearTaskOnLaunch="true"
             android:configChanges="keyboard|keyboardHidden|navigation"
             android:enabled="true"
+            android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:resizeableActivity="true"
             android:resumeWhilePausing="true"
             android:screenOrientation="nosensor"
-            android:excludeFromRecents="true"
             android:stateNotNeeded="true"
             android:taskAffinity=""
             android:windowSoftInputMode="adjustPan">
@@ -212,17 +212,22 @@
             android:name="ch.deletescape.lawnchair.backup.BackupListActivity"
             android:label="@string/backups"
             android:parentActivityName="ch.deletescape.lawnchair.settings.ui.SettingsActivity"
-            android:theme="@style/SettingsTheme.Backup" />
+            android:theme="@style/SettingsTheme.V2" />
         <activity
             android:name="ch.deletescape.lawnchair.backup.NewBackupActivity"
             android:label="@string/new_backup"
             android:parentActivityName="ch.deletescape.lawnchair.backup.BackupListActivity"
-            android:theme="@style/SettingsTheme.Backup" />
+            android:theme="@style/SettingsTheme.V2" />
         <activity
             android:name="ch.deletescape.lawnchair.backup.RestoreBackupActivity"
             android:label="@string/restore_backup"
             android:parentActivityName="ch.deletescape.lawnchair.backup.BackupListActivity"
-            android:theme="@style/SettingsTheme.Backup" />
+            android:theme="@style/SettingsTheme.V2" />
+        <activity
+            android:name="ch.deletescape.lawnchair.settings.ui.AboutActivity"
+            android:label="@string/about"
+            android:parentActivityName="ch.deletescape.lawnchair.settings.ui.SettingsActivity"
+            android:theme="@style/SettingsTheme.V2" />
     </application>
 
 </manifest>

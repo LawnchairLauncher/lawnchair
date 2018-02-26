@@ -43,15 +43,20 @@
         android:title="@string/backups"
         android:summary="@string/backup_pref_summary"
         android:icon="@drawable/ic_import_export">
+
         <intent
             android:targetPackage="ch.deletescape.lawnchair"
             android:targetClass="ch.deletescape.lawnchair.backup.BackupListActivity"/>
     </Preference>
 
-    <ch.deletescape.lawnchair.settings.ui.SubPreference
+    <Preference
         android:title="@string/about_title"
         android:summary="@string/about_pref_summary"
-        android:icon="@drawable/ic_information"
-        app:content="@xml/lawnchair_about_preferences" />
+        android:icon="@drawable/ic_information">
+
+        <intent
+            android:targetPackage="ch.deletescape.lawnchair"
+            android:targetClass="ch.deletescape.lawnchair.settings.ui.AboutActivity"/>
+    </Preference>
 
 </PreferenceScreen>

@@ -85,7 +85,6 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
     public final static String SHOW_PREDICTIONS_PREF = "pref_show_predictions";
     public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
     public final static String SMARTSPACE_PREF = "pref_smartspace";
-    public final static String APP_VERSION_PREF = "about_app_version";
 
     private LawnchairPreferences sharedPrefs;
 
@@ -264,8 +263,6 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
 
                 mIconPackPref = (CustomIconPreference) findPreference(ICON_PACK_PREF);
                 mIconPackPref.setOnPreferenceChangeListener(this);
-            } else if (getContent() == R.xml.lawnchair_about_preferences) {
-                findPreference("about_version").setSummary(BuildConfig.VERSION_NAME);
             }
         }
 

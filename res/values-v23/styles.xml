@@ -7,7 +7,7 @@
         <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:colorAccent">@color/colorAccent</item>
     </style>
-    <style name="SettingsTheme.Backup" parent="@style/Theme.AppCompat.Light.NoActionBar">
+    <style name="SettingsTheme.V2" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowLightStatusBar">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
