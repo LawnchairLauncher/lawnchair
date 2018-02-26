@@ -157,7 +157,7 @@ public class OtherActivityTouchConsumer extends ContextWrapper implements TouchC
                 mActivePointerId = ev.getPointerId(0);
                 mDownPos.set(ev.getX(), ev.getY());
                 mLastPos.set(mDownPos);
-                mTouchSlop = ViewConfiguration.get(this).getScaledTouchSlop();
+                mTouchSlop = ViewConfiguration.get(this).getScaledPagingTouchSlop();
                 mTouchThresholdCrossed = false;
 
                 // Start the window animation on down to give more time for launcher to draw if the
