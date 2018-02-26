@@ -34,13 +34,13 @@
     name in the permissions. eq com.mypackage.permission.READ_SETTINGS
     -->
     <permission
-        android:name="com.google.android.apps.nexuslauncher.permission.READ_SETTINGS"
+        android:name="ch.deletescape.lawnchair.permission.READ_SETTINGS"
         android:description="@string/permdesc_read_settings"
         android:label="@string/permlab_read_settings"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
         android:protectionLevel="normal" />
     <permission
-        android:name="com.google.android.apps.nexuslauncher.permission.WRITE_SETTINGS"
+        android:name="ch.deletescape.lawnchair.permission.WRITE_SETTINGS"
         android:description="@string/permdesc_write_settings"
         android:label="@string/permlab_write_settings"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
@@ -50,14 +50,16 @@
     <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
     <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.READ_SETTINGS" />
     <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="ch.deletescape.lawnchair.permission.READ_SETTINGS" />
+    <uses-permission android:name="ch.deletescape.lawnchair.permission.WRITE_SETTINGS" />
 
     <!-- Pixel -->
     <permission
-        android:name="com.google.android.apps.nexuslauncher.permission.QSB"
+        android:name="ch.deletescape.lawnchair.permission.QSB"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
         android:protectionLevel="signatureOrSystem" />
 
-    <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.QSB" />
+    <uses-permission android:name="ch.deletescape.lawnchair.permission.QSB" />
 
     <!-- Custom -->
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
@@ -126,8 +128,8 @@
             android:name=".LauncherProvider"
             android:authorities="ch.deletescape.lawnchair.settings"
             android:exported="true"
-            android:readPermission="com.google.android.apps.nexuslauncher.permission.READ_SETTINGS"
-            android:writePermission="com.google.android.apps.nexuslauncher.permission.WRITE_SETTINGS" />
+            android:readPermission="ch.deletescape.lawnchair.permission.READ_SETTINGS"
+            android:writePermission="ch.deletescape.lawnchair.permission.WRITE_SETTINGS" />
 
         <!-- Pixel -->
         <activity
@@ -207,13 +209,18 @@
         <activity
             android:name="ch.deletescape.lawnchair.backup.BackupListActivity"
             android:label="@string/backups"
-            android:theme="@style/SettingsTheme.Backup"
-            android:parentActivityName="ch.deletescape.lawnchair.settings.ui.SettingsActivity"/>
+            android:parentActivityName="ch.deletescape.lawnchair.settings.ui.SettingsActivity"
+            android:theme="@style/SettingsTheme.Backup" />
         <activity
             android:name="ch.deletescape.lawnchair.backup.NewBackupActivity"
             android:label="@string/new_backup"
-            android:theme="@style/SettingsTheme.Backup"
-            android:parentActivityName="ch.deletescape.lawnchair.backup.BackupListActivity"/>
+            android:parentActivityName="ch.deletescape.lawnchair.backup.BackupListActivity"
+            android:theme="@style/SettingsTheme.Backup" />
+        <activity
+            android:name="ch.deletescape.lawnchair.backup.RestoreBackupActivity"
+            android:label="@string/restore_backup"
+            android:parentActivityName="ch.deletescape.lawnchair.backup.BackupListActivity"
+            android:theme="@style/SettingsTheme.Backup" />
     </application>
 
 </manifest>
