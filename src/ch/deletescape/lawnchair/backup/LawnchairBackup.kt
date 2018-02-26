@@ -144,7 +144,7 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
 
             const val VERSION = 1
 
-            const val FILE_NAME = "meta"
+            const val FILE_NAME = "lcbkp"
 
             @Suppress("unused")
             private const val VERSION_INDEX = 0
@@ -172,7 +172,7 @@ class LawnchairBackup(val context: Context, val uri: Uri) {
 
         const val BUFFER = 2018
 
-        const val EXTENSION = "lawnchairbackup"
+        const val EXTENSION = "shed"
         const val MIME_TYPE = "application/vnd.lawnchair.backup"
         val EXTRA_MIME_TYPES = arrayOf(MIME_TYPE, "application/x-zip", "application/octet-stream")
 
