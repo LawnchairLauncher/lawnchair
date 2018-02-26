@@ -40,6 +40,7 @@ class BackupListActivity : AppCompatActivity(), BackupListAdapter.Callbacks {
         }
         bottomSheetView.findViewById<View>(R.id.action_share_backup).setOnClickListener {
             bottomSheet.dismiss()
+            shareBackup(currentPosition)
         }
         bottomSheetView.findViewById<View>(R.id.action_remove_backup_from_list).setOnClickListener {
             bottomSheet.dismiss()
@@ -63,7 +64,7 @@ class BackupListActivity : AppCompatActivity(), BackupListAdapter.Callbacks {
     override fun openRestore() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
         intent.addCategory(Intent.CATEGORY_OPENABLE)
-        intent.type = "application/lawnchair"
+        intent.type = "application/lawnchair-backup"
         startActivityForResult(intent, 2)
     }
 
@@ -81,9 +82,20 @@ class BackupListActivity : AppCompatActivity(), BackupListAdapter.Callbacks {
         }
     }
 
-    fun removeItem(position: Int) {
+    private fun removeItem(position: Int) {
         adapter.removeItem(position)
         saveChanges()
+    }
+
+    private fun shareBackup(position: Int) {
+        val shareTitle = getString(R.string.backup_share_title)
+        val shareText = getString(R.string.backup_share_text)
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.type = "application/lawnchair-backup"
+        shareIntent.putExtra(Intent.EXTRA_STREAM, adapter[position].uri)
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareTitle)
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareText)
+        startActivity(Intent.createChooser(shareIntent, shareTitle))
     }
 
     private fun saveChanges() {

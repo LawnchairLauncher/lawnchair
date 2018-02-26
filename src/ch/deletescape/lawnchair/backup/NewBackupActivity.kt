@@ -57,7 +57,7 @@ class NewBackupActivity : AppCompatActivity() {
         startButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
             intent.addCategory(Intent.CATEGORY_OPENABLE)
-            intent.type = "application/lawnchair"
+            intent.type = "application/lawnchair-backup"
             intent.putExtra(Intent.EXTRA_TITLE, "${backupName.text}.lawnchairbackup")
             startActivityForResult(intent, 1)
         }

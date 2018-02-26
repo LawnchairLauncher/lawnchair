@@ -394,4 +394,6 @@
     <string name="backup_failed">Backup failed</string>
     <string name="restore_failed">Restore failed</string>
     <string name="restore_read_meta_fail">Invalid backup file</string>
+    <string name="backup_share_title">Share backup</string>
+    <string name="backup_share_text">Lawnchair backup file</string>
 </resources>
