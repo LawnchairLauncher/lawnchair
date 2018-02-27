@@ -42,9 +42,8 @@
                 android:id="@+id/versionText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
                 android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="@+id/textView"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView"
                 app:layout_constraintStart_toEndOf="@+id/textView"
                 tools:text="2.0.0" />
 

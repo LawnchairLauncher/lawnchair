@@ -222,6 +222,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
     <style name="SettingsTheme.V2.ActionBar" parent="SettingsTheme.V2">
         <item name="android:textColorSecondary">?attr/colorAccent</item>

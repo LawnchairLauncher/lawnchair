@@ -26,11 +26,9 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.SystemClock;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.Preference.OnPreferenceChangeListener;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.v7.preference.ListPreference;
+import android.support.v7.preference.Preference;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -142,7 +140,7 @@ public class IconShapeOverride {
         }
     }
 
-    private static class PreferenceChangeHandler implements OnPreferenceChangeListener {
+    private static class PreferenceChangeHandler implements Preference.OnPreferenceChangeListener {
 
         private final Context mContext;
 

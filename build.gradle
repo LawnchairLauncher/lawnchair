@@ -110,6 +110,8 @@ dependencies {
     compile "com.android.support:support-dynamic-animation:${SUPPORT_LIBS_VERSION}"
     compile "com.android.support:recyclerview-v7:${SUPPORT_LIBS_VERSION}"
     compile "com.android.support:palette-v7:${SUPPORT_LIBS_VERSION}"
+    compile "com.android.support:preference-v7:${SUPPORT_LIBS_VERSION}"
+    compile "com.android.support:preference-v14:${SUPPORT_LIBS_VERSION}"
     compile 'com.github.florent37:fiftyshadesof:1.0.0'
     compile 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
 

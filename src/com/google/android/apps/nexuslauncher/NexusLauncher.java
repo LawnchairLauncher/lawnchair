@@ -30,6 +30,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
+
 public class NexusLauncher {
     private final Launcher fB;
     public final LauncherCallbacks fA;

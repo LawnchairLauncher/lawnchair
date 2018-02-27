@@ -42,7 +42,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static com.android.launcher3.SettingsActivity.NOTIFICATION_BADGING;
+import static ch.deletescape.lawnchair.settings.ui.SettingsActivity.NOTIFICATION_BADGING;
 
 /**
  * A {@link NotificationListenerService} that sends updates to its

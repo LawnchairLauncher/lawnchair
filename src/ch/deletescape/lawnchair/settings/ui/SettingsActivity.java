@@ -18,14 +18,9 @@
 package ch.deletescape.lawnchair.settings.ui;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -37,12 +32,18 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.TwoStatePreference;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.ListPreference;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.TwoStatePreference;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,7 +54,6 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import com.android.launcher3.BuildConfig;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.LauncherModel;
@@ -69,12 +69,11 @@ import com.google.android.apps.nexuslauncher.CustomIconPreference;
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceController;
 
 import ch.deletescape.lawnchair.LawnchairPreferences;
-import ch.deletescape.lawnchair.backup.BackupListActivity;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
  */
-public class SettingsActivity extends Activity implements PreferenceFragment.OnPreferenceStartFragmentCallback {
+public class SettingsActivity extends AppCompatActivity implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     private static final String ICON_BADGING_PREFERENCE_KEY = "pref_icon_badging";
     /** Hidden field Settings.Secure.NOTIFICATION_BADGING */
     public static final String NOTIFICATION_BADGING = "notification_badging";
@@ -91,11 +90,14 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_settings);
+
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
         if (savedInstanceState == null) {
             // Display the fragment as the main content.
-            getFragmentManager().beginTransaction()
-                    .replace(android.R.id.content, new LauncherSettingsFragment())
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content, new LauncherSettingsFragment())
                     .commit();
         }
 
@@ -104,18 +106,18 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
     }
 
     @Override
-    public boolean onPreferenceStartFragment(PreferenceFragment caller, Preference preference) {
+    public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference preference) {
         Fragment fragment = Fragment.instantiate(this, preference.getFragment(), preference.getExtras());
         if (fragment instanceof DialogFragment) {
-            ((DialogFragment) fragment).show(getFragmentManager(), preference.getKey());
+            ((DialogFragment) fragment).show(getSupportFragmentManager(), preference.getKey());
         } else {
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             setTitle(preference.getTitle());
             transaction.setCustomAnimations(R.animator.fly_in, R.animator.fade_out, R.animator.fade_in, R.animator.fly_out);
-            transaction.replace(android.R.id.content, fragment);
+            transaction.replace(R.id.content, fragment);
             transaction.addToBackStack("PreferenceFragment");
             transaction.commit();
-            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         return true;
     }
@@ -127,7 +129,7 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
     }
 
     private void updateUpButton() {
-        getActionBar().setDisplayHomeAsUpEnabled(getFragmentManager().getBackStackEntryCount() != 0);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(getFragmentManager().getBackStackEntryCount() != 0);
     }
 
     @Override
@@ -139,16 +141,7 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
         return super.onOptionsItemSelected(item);
     }
 
-    private abstract static class BaseFragment extends PreferenceFragment implements AdapterView.OnItemLongClickListener {
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            View view = super.onCreateView(inflater, container, savedInstanceState);
-            if (view == null) return null;
-            ListView listView = view.findViewById(android.R.id.list);
-            listView.setOnItemLongClickListener(this);
-            return view;
-        }
+    private abstract static class BaseFragment extends PreferenceFragmentCompat implements AdapterView.OnItemLongClickListener {
 
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -178,6 +171,10 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
+        }
+
+        @Override
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.lawnchair_preferences);
         }
 
@@ -206,8 +203,15 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
             mContext = getActivity();
 
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
-            addPreferencesFromResource(getContent());
             if (getContent() == R.xml.lawnchair_desktop_preferences) {
+                findPreference(ENABLE_MINUS_ONE_PREF).setTitle(getDisplayGoogleTitle());
+
+                if (SmartspaceController.get(mContext).cY()) {
+                    findPreference(SMARTSPACE_PREF).setOnPreferenceClickListener(this);
+                } else {
+                    getPreferenceScreen().removePreference(findPreference(SMARTSPACE_PREF));
+                }
+
                 ContentResolver resolver = getActivity().getContentResolver();
 
                 // Setup allow rotation preference
@@ -241,17 +245,6 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                     mIconBadgingObserver.register(NOTIFICATION_BADGING, NOTIFICATION_ENABLED_LISTENERS);
                 }
             } else if (getContent() == R.xml.lawnchair_theme_preferences) {
-                findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
-                findPreference(ENABLE_MINUS_ONE_PREF).setTitle(getDisplayGoogleTitle());
-
-                if (SmartspaceController.get(mContext).cY()) {
-                    findPreference(SMARTSPACE_PREF).setOnPreferenceClickListener(this);
-                } else {
-                    getPreferenceScreen().removePreference(findPreference(SMARTSPACE_PREF));
-                }
-
-                findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
-
                 Preference iconShapeOverride = findPreference(IconShapeOverride.KEY_PREFERENCE);
                 if (iconShapeOverride != null) {
                     if (IconShapeOverride.isSupported(getActivity())) {
@@ -263,7 +256,14 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
 
                 mIconPackPref = (CustomIconPreference) findPreference(ICON_PACK_PREF);
                 mIconPackPref.setOnPreferenceChangeListener(this);
+            } else if (getContent() == R.xml.lawnchair_app_drawer_preferences) {
+                findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
             }
+        }
+
+        @Override
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            addPreferencesFromResource(getContent());
         }
 
         private String getDisplayGoogleTitle() {
@@ -383,8 +383,8 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
 
     public static class SuggestionConfirmationFragment extends DialogFragment implements DialogInterface.OnClickListener {
         public void onClick(final DialogInterface dialogInterface, final int n) {
-            if (getTargetFragment() instanceof PreferenceFragment) {
-                Preference preference = ((PreferenceFragment) getTargetFragment()).findPreference(SHOW_PREDICTIONS_PREF);
+            if (getTargetFragment() instanceof PreferenceFragmentCompat) {
+                Preference preference = ((PreferenceFragmentCompat) getTargetFragment()).findPreference(SHOW_PREDICTIONS_PREF);
                 if (preference instanceof TwoStatePreference) {
                     ((TwoStatePreference) preference).setChecked(false);
                 }
@@ -476,7 +476,7 @@ public class SettingsActivity extends Activity implements PreferenceFragment.OnP
                         .putExtra(":settings:fragment_args_key", cn.flattenToString());
                 preference.getContext().startActivity(intent);
             } else {
-                new com.android.launcher3.SettingsActivity.NotificationAccessConfirmation().show(mFragmentManager, "notification_access");
+                new SettingsActivity.NotificationAccessConfirmation().show(mFragmentManager, "notification_access");
             }
             return true;
         }

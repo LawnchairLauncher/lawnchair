@@ -20,6 +20,7 @@
         android:layout_centerInParent="true"
         android:layout_gravity="center_vertical"
         android:layout_margin="8dp"
+        android:textColor="?android:textColorPrimary"
         android:textSize="18sp" />
 
     <CheckBox

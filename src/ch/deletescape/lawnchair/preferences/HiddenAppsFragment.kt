@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.os.Bundle
 import android.os.Process
-import android.app.Fragment
+import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log

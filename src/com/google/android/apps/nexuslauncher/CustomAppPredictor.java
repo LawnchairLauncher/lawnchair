@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
+
 public class CustomAppPredictor extends UserEventDispatcher implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final int MAX_PREDICTIONS = 10;
     private static final int BOOST_ON_OPEN = 7;

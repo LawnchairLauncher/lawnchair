@@ -15,6 +15,8 @@ import com.google.android.libraries.launcherclient.GoogleNow;
 
 import java.util.List;
 
+import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
+
 public class NexusLauncherActivity extends Launcher {
     private final static String PREF_IS_RELOAD = "pref_reload_workspace";
     private NexusLauncher mLauncher;

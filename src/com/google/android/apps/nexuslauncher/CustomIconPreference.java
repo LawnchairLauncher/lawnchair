@@ -1,8 +1,7 @@
 package com.google.android.apps.nexuslauncher;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.preference.ListPreference;
+import android.support.v7.preference.ListPreference;
 import android.util.AttributeSet;
 
 import com.android.launcher3.R;
@@ -28,9 +27,9 @@ public class CustomIconPreference extends ListPreference {
     }
 
     @Override
-    protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
+    protected void onClick() {
         reloadIconPacks();
-        super.onPrepareDialogBuilder(builder);
+        super.onClick();
     }
 
     public void reloadIconPacks() {

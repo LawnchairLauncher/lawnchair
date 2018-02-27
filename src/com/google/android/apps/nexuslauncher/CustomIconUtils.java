@@ -67,13 +67,11 @@ public class CustomIconUtils {
     }
 
     static String getCurrentPack(Context context) {
-        return Utilities.getPrefs(context).getString(SettingsActivity.ICON_PACK_PREF, "");
+        return Utilities.getLawnchairPrefs(context).getIconPack();
     }
 
     static void setCurrentPack(Context context, String pack) {
-        SharedPreferences.Editor edit = Utilities.getPrefs(context).edit();
-        edit.putString(SettingsActivity.ICON_PACK_PREF, pack);
-        edit.apply();
+        Utilities.getLawnchairPrefs(context).setIconPack(pack);
     }
 
     static void applyIconPackAsync(final Context context) {

@@ -30,6 +30,9 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val reloadAll = { reloadAll() }
     private val restart = { restart() }
 
+    // Theme
+    var iconPack by MutableStringPref("pref_icon_pack", "", doNothing)
+
     // Desktop
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
 

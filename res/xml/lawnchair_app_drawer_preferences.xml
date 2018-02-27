@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <SwitchPreference
+        android:key="pref_show_predictions"
+        android:title="@string/title_app_suggestions"
+        android:summary="@string/summary_app_suggestions"
+        android:defaultValue="true"
+        />
+
     <Preference
         android:key="pref_hiddenApps"
-        android:title="@string/hide_app"
-        android:summary="@string/hide_app_sum"
+        android:title="@string/hide_apps"
+        android:summary="@string/hide_apps_sum"
         android:fragment="ch.deletescape.lawnchair.preferences.HiddenAppsFragment" />
 
     <SwitchPreference
