@@ -75,13 +75,14 @@ public abstract class BaseItemDragListener extends InternalStateHandler implemen
     }
 
     @Override
-    public void init(Launcher launcher, boolean alreadyOnHome) {
+    public boolean init(Launcher launcher, boolean alreadyOnHome) {
         AbstractFloatingView.closeAllOpenViews(launcher, alreadyOnHome);
         launcher.getStateManager().goToState(NORMAL, alreadyOnHome /* animated */);
         launcher.getDragLayer().setOnDragListener(this);
 
         mLauncher = launcher;
         mDragController = launcher.getDragController();
+        return false;
     }
 
     @Override
@@ -176,7 +177,4 @@ public abstract class BaseItemDragListener extends InternalStateHandler implemen
             mLauncher.getDragLayer().setOnDragListener(null);
         }
     }
-
-    @Override
-    public void onLauncherResume() { }
 }

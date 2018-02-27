@@ -17,6 +17,10 @@ public class ShortcutKey extends ComponentKey {
         super(new ComponentName(packageName, id), user);
     }
 
+    public ShortcutKey(ComponentName componentName, UserHandle user) {
+        super(componentName, user);
+    }
+
     public String getId() {
         return componentName.getClassName();
     }

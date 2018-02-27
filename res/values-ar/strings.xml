@@ -33,8 +33,8 @@
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"انقر نقرًا مزدوجًا مع الاستمرار لاختيار أداة أو استخدم الإجراءات المخصصة."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"‏العرض %1$d الطول %2$d"</string>
-    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"المس مع الاستمرار للإضافة يدويًا"</string>
-    <string name="place_automatically" msgid="8064208734425456485">"إضافة تلقائيًا"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"انقر مع الاستمرار لإضافة العنصر يدويًا"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"الإضافة تلقائيًا"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"بحث في التطبيقات"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"جارٍ تحميل التطبيقات…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"لم يتم العثور على أي تطبيقات تتطابق مع \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
@@ -60,6 +60,14 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"هذا تطبيق نظام وتتعذر إزالته."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"مجلد بدون اسم"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"تم تعطيل <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="zero"><xliff:g id="APP_NAME_2">%1$s</xliff:g>، به <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> إشعار</item>
+      <item quantity="two"><xliff:g id="APP_NAME_2">%1$s</xliff:g>، به إشعاران (<xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g>)</item>
+      <item quantity="few"><xliff:g id="APP_NAME_2">%1$s</xliff:g>، به <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> إشعارات</item>
+      <item quantity="many"><xliff:g id="APP_NAME_2">%1$s</xliff:g>، به <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> إشعارًا</item>
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>، به <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> إشعار</item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g>، به <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> إشعار</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"‏الصفحة %1$d من %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"‏الشاشة الرئيسية %1$d من %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"صفحة الشاشة الرئيسية الجديدة"</string>
@@ -129,4 +137,11 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"هناك <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> اختصار و<xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> إشعار عن <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"تجاهل"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"تم تجاهل الإشعار"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"شخصية"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"للعمل"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"الملف الشخصي للعمل"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"البحث عن تطبيقات العمل هنا"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"يحتوي كل تطبيق للعمل على شارة برتقالية اللون ويظل تحت حماية مؤسستك. يمكنك نقل التطبيقات إلى شاشتك الرئيسية لتسهيل الوصول."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"ملف شخصي للعمل تديره مؤسستك"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"الإشعارات والتطبيقات متوقفة."</string>
 </resources>

@@ -9,12 +9,12 @@ import android.content.pm.LauncherActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.graphics.Color;
 import android.os.Process;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.provider.ProviderTestRule;
-import android.support.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppFilter;
@@ -27,6 +27,7 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherProvider;
+import com.android.launcher3.graphics.BitmapInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.TestLauncherProvider;
@@ -208,7 +209,7 @@ public class BaseModelUpdateTaskTestCase {
             CacheEntry entry = mCache.get(new ComponentKey(componentName, user));
             if (entry == null) {
                 entry = new CacheEntry();
-                entry.icon = getDefaultIcon(user);
+                getDefaultIcon(user).applyTo(entry);
             }
             return entry;
         }
@@ -216,6 +217,7 @@ public class BaseModelUpdateTaskTestCase {
         public void addCache(ComponentName key, String title) {
             CacheEntry entry = new CacheEntry();
             entry.icon = newIcon();
+            entry.color = Color.RED;
             entry.title = title;
             mCache.put(new ComponentKey(key, Process.myUserHandle()), entry);
         }
@@ -225,8 +227,8 @@ public class BaseModelUpdateTaskTestCase {
         }
 
         @Override
-        protected Bitmap makeDefaultIcon(UserHandle user) {
-            return newIcon();
+        protected BitmapInfo makeDefaultIcon(UserHandle user) {
+            return BitmapInfo.fromBitmap(newIcon());
         }
     }
 }

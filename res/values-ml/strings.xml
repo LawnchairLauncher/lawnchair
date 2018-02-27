@@ -60,6 +60,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ഇതൊരു സിസ്‌റ്റം അപ്ലിക്കേഷനായതിനാൽ അൺഇൻസ്‌റ്റാളുചെയ്യാനാവില്ല."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"പേരുനൽകാത്ത ഫോൾഡർ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> പ്രവർത്തനരഹിതമാക്കി"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>-ന്, <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> അറിയിപ്പുകൾ ഉണ്ട്</item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g>-ന്, <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> അറിയിപ്പ് ഉണ്ട്</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"പേജ് %1$d / %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"ഹോം സ്‌ക്രീൻ %1$d / %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"പുതിയ ഹോം സ്ക്രീൻ പേജ്"</string>
@@ -129,4 +133,11 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> ആപ്പിനായുള്ള <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> കുറുക്കുവഴികളും <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> അറിയിപ്പുകളും"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"നിരസിക്കുക"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"അറിയിപ്പ് നിരസിച്ചു"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"വ്യക്തിപരം"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"ജോലി"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"ഔദ്യോഗിക പ്രൊഫൈൽ"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"ഔദ്യോഗിക ആപ്പുകൾ ഇവിടെ കണ്ടെത്തുക"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"എല്ലാ ഔദ്യോഗിക ആപ്പിനും ഓറഞ്ച് നിറത്തിലുള്ള ഒരു ബാഡ്‌ജ് ഉണ്ട്, നിങ്ങളുടെ സ്ഥാപനം അത് സുരക്ഷിതമായി സൂക്ഷിക്കുന്നു. എളുപ്പത്തിൽ ആക്സസ് ചെയ്യാൻ ആപ്പുകളെ ഹോം സ്‌ക്രീനിലേക്ക് നീക്കുക."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"നിങ്ങളുടെ സ്ഥാപനം നിയന്ത്രിക്കുന്നത്"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"അറിയിപ്പുകളും ആപ്പുകളും ഓഫാണ്"</string>
 </resources>

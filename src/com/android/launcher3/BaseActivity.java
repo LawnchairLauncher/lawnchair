@@ -22,14 +22,21 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.view.View.AccessibilityDelegate;
 
+import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.util.SystemUiController;
 
+import java.util.ArrayList;
+
 public abstract class BaseActivity extends Activity {
+
+    private final ArrayList<OnDeviceProfileChangeListener> mDPChangeListeners = new ArrayList<>();
 
     protected DeviceProfile mDeviceProfile;
     protected UserEventDispatcher mUserEventDispatcher;
     protected SystemUiController mSystemUiController;
+
+    private boolean mStarted;
 
     public DeviceProfile getDeviceProfile() {
         return mDeviceProfile;
@@ -41,8 +48,7 @@ public abstract class BaseActivity extends Activity {
 
     public final UserEventDispatcher getUserEventDispatcher() {
         if (mUserEventDispatcher == null) {
-            mUserEventDispatcher = UserEventDispatcher.newInstance(this,
-                    mDeviceProfile.isLandscape, isInMultiWindowModeCompat());
+            mUserEventDispatcher = UserEventDispatcher.newInstance(this, mDeviceProfile);
         }
         return mUserEventDispatcher;
     }
@@ -68,5 +74,32 @@ public abstract class BaseActivity extends Activity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onStart() {
+        mStarted = true;
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        mStarted = false;
+        super.onStop();
+    }
+
+    public boolean isStarted() {
+        return mStarted;
+    }
+
+    public void addOnDeviceProfileChangeListener(OnDeviceProfileChangeListener listener) {
+        mDPChangeListeners.add(listener);
+    }
+
+    protected void dispatchDeviceProfileChanged() {
+        int count = mDPChangeListeners.size();
+        for (int i = 0; i < count; i++) {
+            mDPChangeListeners.get(i).onDeviceProfileChanged(mDeviceProfile);
+        }
     }
 }

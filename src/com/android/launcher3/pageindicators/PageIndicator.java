@@ -15,42 +15,16 @@
  */
 package com.android.launcher3.pageindicators;
 
-import android.content.Context;
-import android.util.AttributeSet;
-import android.widget.FrameLayout;
-
 /**
  * Base class for a page indicator.
  */
-public abstract class PageIndicator extends FrameLayout {
+public interface PageIndicator {
 
-    protected int mNumPages = 1;
+    void setScroll(int currentScroll, int totalScroll);
 
-    public PageIndicator(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        setWillNotDraw(false);
-    }
+    void setActiveMarker(int activePage);
 
-    public void setScroll(int currentScroll, int totalScroll) {}
+    void setMarkersCount(int numMarkers);
 
-    public void setActiveMarker(int activePage) {}
-
-    public void addMarker() {
-        mNumPages++;
-        onPageCountChanged();
-    }
-
-    public void removeMarker() {
-        mNumPages--;
-        onPageCountChanged();
-    }
-
-    public void setMarkersCount(int numMarkers) {
-        mNumPages = numMarkers;
-        onPageCountChanged();
-    }
-
-    protected void onPageCountChanged() {}
-
-    public void setShouldAutoHide(boolean shouldAutoHide) {}
+    void setPageDescription(CharSequence description);
 }

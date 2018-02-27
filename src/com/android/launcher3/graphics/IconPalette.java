@@ -18,12 +18,7 @@ package com.android.launcher3.graphics;
 
 import android.app.Notification;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 
@@ -41,37 +36,10 @@ public class IconPalette {
     private static final float MIN_PRELOAD_COLOR_SATURATION = 0.2f;
     private static final float MIN_PRELOAD_COLOR_LIGHTNESS = 0.6f;
 
-    private static IconPalette sBadgePalette;
-    private static IconPalette sFolderBadgePalette;
-
-    public final int dominantColor;
-    public final int backgroundColor;
-    public final ColorMatrixColorFilter backgroundColorMatrixFilter;
-    public final ColorMatrixColorFilter saturatedBackgroundColorMatrixFilter;
-    public final int textColor;
-    public final int secondaryColor;
-
-    private IconPalette(int color, boolean desaturateBackground) {
-        dominantColor = color;
-        backgroundColor = desaturateBackground ? getMutedColor(dominantColor, 0.87f) : dominantColor;
-        ColorMatrix backgroundColorMatrix = new ColorMatrix();
-        Themes.setColorScaleOnMatrix(backgroundColor, backgroundColorMatrix);
-        backgroundColorMatrixFilter = new ColorMatrixColorFilter(backgroundColorMatrix);
-        if (!desaturateBackground) {
-            saturatedBackgroundColorMatrixFilter = backgroundColorMatrixFilter;
-        } else {
-            // Get slightly more saturated background color.
-            Themes.setColorScaleOnMatrix(getMutedColor(dominantColor, 0.54f), backgroundColorMatrix);
-            saturatedBackgroundColorMatrixFilter = new ColorMatrixColorFilter(backgroundColorMatrix);
-        }
-        textColor = getTextColorForBackground(backgroundColor);
-        secondaryColor = getLowContrastColor(backgroundColor);
-    }
-
     /**
      * Returns a color suitable for the progress bar color of preload icon.
      */
-    public int getPreloadProgressColor(Context context) {
+    public static int getPreloadProgressColor(Context context, int dominantColor) {
         int result = dominantColor;
 
         // Make sure that the dominant color has enough saturation to be visible properly.
@@ -84,37 +52,6 @@ public class IconPalette {
             result = Color.HSVToColor(hsv);
         }
         return result;
-    }
-
-    public static IconPalette fromDominantColor(int dominantColor, boolean desaturateBackground) {
-        return new IconPalette(dominantColor, desaturateBackground);
-    }
-
-    /**
-     * Returns an IconPalette based on the badge_color in colors.xml.
-     * If that color is Color.TRANSPARENT, then returns null instead.
-     */
-    public static @Nullable IconPalette getBadgePalette(Resources resources) {
-        int badgeColor = resources.getColor(R.color.badge_color);
-        if (badgeColor == Color.TRANSPARENT) {
-            // Colors will be extracted per app icon, so a static palette won't work.
-            return null;
-        }
-        if (sBadgePalette == null) {
-            sBadgePalette = fromDominantColor(badgeColor, false);
-        }
-        return sBadgePalette;
-    }
-
-    /**
-     * Returns an IconPalette based on the folder_badge_color in colors.xml.
-     */
-    public static @NonNull IconPalette getFolderBadgePalette(Resources resources) {
-        if (sFolderBadgePalette == null) {
-            int badgeColor = resources.getColor(R.color.folder_badge_color);
-            sFolderBadgePalette = fromDominantColor(badgeColor, false);
-        }
-        return sFolderBadgePalette;
     }
 
     /**
@@ -208,30 +145,8 @@ public class IconPalette {
         return ColorUtils.LABToColor(low, a, b);
     }
 
-    private static int getMutedColor(int color, float whiteScrimAlpha) {
+    public static int getMutedColor(int color, float whiteScrimAlpha) {
         int whiteScrim = ColorUtils.setAlphaComponent(Color.WHITE, (int) (255 * whiteScrimAlpha));
         return ColorUtils.compositeColors(whiteScrim, color);
-    }
-
-    private static int getTextColorForBackground(int backgroundColor) {
-        return getLighterOrDarkerVersionOfColor(backgroundColor, 4.5f);
-    }
-
-    private static int getLowContrastColor(int color) {
-        return getLighterOrDarkerVersionOfColor(color, 1.5f);
-    }
-
-    private static int getLighterOrDarkerVersionOfColor(int color, float contrastRatio) {
-        int whiteMinAlpha = ColorUtils.calculateMinimumAlpha(Color.WHITE, color, contrastRatio);
-        int blackMinAlpha = ColorUtils.calculateMinimumAlpha(Color.BLACK, color, contrastRatio);
-        int translucentWhiteOrBlack;
-        if (whiteMinAlpha >= 0) {
-            translucentWhiteOrBlack = ColorUtils.setAlphaComponent(Color.WHITE, whiteMinAlpha);
-        } else if (blackMinAlpha >= 0) {
-            translucentWhiteOrBlack = ColorUtils.setAlphaComponent(Color.BLACK, blackMinAlpha);
-        } else {
-            translucentWhiteOrBlack = Color.WHITE;
-        }
-        return ColorUtils.compositeColors(translucentWhiteOrBlack, color);
     }
 }

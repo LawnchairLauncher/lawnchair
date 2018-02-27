@@ -16,6 +16,8 @@
 
 package com.android.launcher3.dragndrop;
 
+import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
@@ -45,13 +47,11 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.uioverrides.UiFactory;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
 
@@ -90,9 +90,6 @@ public class DragLayer extends InsettableFrameLayout {
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
     private final PageCutOutScrimDrawable mPageCutOutScrim;
 
-    // Handles all apps pull up interaction
-    private AllAppsTransitionController mAllAppsController;
-
     protected TouchController[] mControllers;
     private TouchController mActiveController;
     /**
@@ -113,11 +110,9 @@ public class DragLayer extends InsettableFrameLayout {
         mPageCutOutScrim.setCallback(this);
     }
 
-    public void setup(Launcher launcher, DragController dragController,
-            AllAppsTransitionController allAppsTransitionController) {
+    public void setup(Launcher launcher, DragController dragController) {
         mLauncher = launcher;
         mDragController = dragController;
-        mAllAppsController = allAppsTransitionController;
         mControllers = UiFactory.createTouchControllers(mLauncher);
     }
 
@@ -156,17 +151,18 @@ public class DragLayer extends InsettableFrameLayout {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         int action = ev.getAction();
 
-        if (action == MotionEvent.ACTION_DOWN) {
-            // Cancel discovery bounce animation when a user start interacting on anywhere on
-            // dray layer even if mAllAppsController is NOT the active controller.
-            // TODO: handle other input other than touch
-            mAllAppsController.cancelDiscoveryAnimation();
-        } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
             if (mTouchCompleteListener != null) {
                 mTouchCompleteListener.onTouchComplete();
             }
             mTouchCompleteListener = null;
+        } else if (action == MotionEvent.ACTION_DOWN) {
+            mLauncher.finishAutoCancelActionMode();
         }
+        return findActiveController(ev);
+    }
+
+    private boolean findActiveController(MotionEvent ev) {
         mActiveController = null;
 
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mLauncher);
@@ -233,7 +229,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     private void sendTapOutsideFolderAccessibilityEvent(boolean isEditingName) {
         int stringId = isEditingName ? R.string.folder_tap_to_rename : R.string.folder_tap_to_close;
-        Utilities.sendCustomAccessibilityEvent(
+        sendCustomAccessibilityEvent(
                 this, AccessibilityEvent.TYPE_VIEW_FOCUSED, getContext().getString(stringId));
     }
 
@@ -293,8 +289,10 @@ public class DragLayer extends InsettableFrameLayout {
 
         if (mActiveController != null) {
             return mActiveController.onControllerTouchEvent(ev);
+        } else {
+            // In case no child view handled the touch event, we may not get onIntercept anymore
+            return findActiveController(ev);
         }
-        return false;
     }
 
     /**
@@ -373,10 +371,13 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     @Override
-    public void setInsets(Rect insets) {
-        super.setInsets(insets);
-        setBackground(insets.top == 0 ? null
-                : Themes.getAttrDrawable(getContext(), R.attr.workspaceStatusBarScrim));
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        ev.offsetLocation(getTranslationX(), 0);
+        try {
+            return super.dispatchTouchEvent(ev);
+        } finally {
+            ev.offsetLocation(-getTranslationX(), 0);
+        }
     }
 
     @Override
@@ -800,6 +801,6 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     public interface TouchCompleteListener {
-        public void onTouchComplete();
+        void onTouchComplete();
     }
 }

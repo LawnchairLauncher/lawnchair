@@ -68,6 +68,7 @@ enum ItemType {
   SEARCHBOX = 6;
   EDITTEXT = 7;
   NOTIFICATION = 8;
+  TASK = 9;         // Each page of Recents UI (QuickStep)
 }
 
 // Used to define what type of container a Target would represent.
@@ -78,11 +79,14 @@ enum ContainerType {
   FOLDER = 3;
   ALLAPPS = 4;
   WIDGETS = 5;
-  OVERVIEW = 6;
+  OVERVIEW = 6;   // Zoomed out workspace (without QuickStep)
   PREDICTION = 7;
   SEARCHRESULT = 8;
   DEEPSHORTCUTS = 9;
   PINITEM = 10;    // confirmation screen
+  NAVBAR = 11;
+  TASKSWITCHER = 12; // Recents UI Container (QuickStep)
+  APP = 13; // Foreground activity is another app (QuickStep)
 }
 
 // Used to define what type of control a Target would represent.
@@ -100,6 +104,7 @@ enum ControlType {
   HOME_INTENT = 10; // Deprecated, use enum Command instead
   BACK_BUTTON = 11; // Deprecated, use enum Command instead
   // GO_TO_PLAYSTORE
+  QUICK_SCRUB_BUTTON = 12;
 }
 
 // Used to define the action component of the LauncherEvent.
@@ -141,6 +146,7 @@ message Action {
   optional Command command = 4;
   // Log if the action was performed on outside of the container
   optional bool is_outside = 5;
+  optional bool is_state_change = 6;
 }
 
 //
@@ -150,7 +156,6 @@ message Action {
 //
 message LauncherEvent {
   required Action action = 1;
-
   // List of targets that touch actions can be operated on.
   repeated Target src_target = 2;
   repeated Target dest_target = 3;

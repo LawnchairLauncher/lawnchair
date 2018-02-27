@@ -141,10 +141,11 @@ public class RecyclerViewFastScroller extends View {
     }
 
     public void setRecyclerView(BaseRecyclerView rv, TextView popupView) {
-        mRv = rv;
-        if (mOnScrollListener != null) {
+        if (mRv != null && mOnScrollListener != null) {
             mRv.removeOnScrollListener(mOnScrollListener);
         }
+        mRv = rv;
+
         mRv.addOnScrollListener(mOnScrollListener = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -321,7 +322,7 @@ public class RecyclerViewFastScroller extends View {
      * Returns whether the specified point is inside the thumb bounds.
      */
     private boolean isNearThumb(int x, int y) {
-        int offset = y - mRv.getScrollBarTop() - mThumbOffsetY;
+        int offset = y - mThumbOffsetY;
 
         return x >= 0 && x < getWidth() && offset >= 0 && offset <= mThumbHeight;
     }

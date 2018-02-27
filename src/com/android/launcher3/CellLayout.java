@@ -60,6 +60,7 @@ import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.ParcelableSparseArray;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -106,7 +107,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     final PreviewBackground mFolderLeaveBehind = new PreviewBackground();
 
     private static final int[] BACKGROUND_STATE_ACTIVE = new int[] { android.R.attr.state_active };
-    private static final int[] BACKGROUND_STATE_DEFAULT = new int[0];
+    private static final int[] BACKGROUND_STATE_DEFAULT = EMPTY_STATE_SET;
     private final Drawable mBackground;
 
     // These values allow a fixed measurement to be set on the CellLayout.
@@ -844,10 +845,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     @Override
     protected boolean verifyDrawable(Drawable who) {
         return super.verifyDrawable(who) || (who == mBackground);
-    }
-
-    public void setShortcutAndWidgetAlpha(float alpha) {
-        mShortcutsAndWidgets.setAlpha(alpha);
     }
 
     public ShortcutAndWidgetContainer getShortcutsAndWidgets() {

@@ -16,10 +16,10 @@
 
 package com.android.launcher3.accessibility;
 
-import android.content.Context;
+import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
+
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityManager;
 
 import com.android.launcher3.Launcher;
 
@@ -59,11 +59,6 @@ public class DragViewStateAnnouncer implements Runnable {
     }
 
     public static DragViewStateAnnouncer createFor(View v) {
-        if (((AccessibilityManager) v.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE))
-                .isEnabled()) {
-            return new DragViewStateAnnouncer(v);
-        } else {
-            return null;
-        }
+        return isAccessibilityEnabled(v.getContext()) ? new DragViewStateAnnouncer(v) : null;
     }
 }

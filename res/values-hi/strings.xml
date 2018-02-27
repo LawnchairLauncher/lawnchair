@@ -60,6 +60,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"यह एक सिस्टम ऐप्लिकेशन है और इसे अनइंस्टॉल नहीं किया जा सकता."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"अनामित फ़ोल्डर"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> अक्षम है"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g> की <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> सूचनाएं हैं</item>
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> की <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> सूचनाएं हैं</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"पेज %2$d में से %1$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"होम स्क्रीन %2$d में से %1$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"नया होम स्‍क्रीन पेज"</string>
@@ -72,7 +76,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"शॉर्टकट"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"वॉलपेपर"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"होम पेज की सेटिंग"</string>
-    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपके व्यवस्थापक द्वारा अक्षम"</string>
+    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपके एडमिन ने बंद किया हुआ है"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"खास जानकारी"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"होमस्क्रीन घुमाने की अनुमति दें"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फ़ोन घुुमाए जाने पर"</string>
@@ -129,4 +133,11 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> के लिए <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> शॉर्टकट और <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> सूचनाएं हैं"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"खारिज करें"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"सूचना को खारिज किया गया"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"निजी ऐप"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"काम से जुड़े ऐप"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"कार्य प्रोफ़ाइल"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"काम से जुड़े सभी ऐप्लिकेशन यहां पाएं"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"काम से जुड़े हर ऐप्लिकेशन पर एक नारंगी रंग का बैज (निशान) होता है जिसकी सुरक्षा आपका संगठन करता है. आसानी से इस्तेमाल करने के लिए ऐप्लिकेशन को अपनी होम स्क्रीन पर ले जाएं."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"आपका संगठन प्रबंधित कर रहा है"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"सूचनाएं और ऐप्लिकेशन बंद हैं"</string>
 </resources>

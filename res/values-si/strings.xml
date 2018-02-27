@@ -60,6 +60,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"මෙය පද්ධති යෙදුමක් වන අතර අස්ථාපනය කළ නොහැක."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"නම් නොකළ ෆෝල්ඩරය"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> අබල කෙරිණි"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, දැනුම්දීම් <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g>ක් ඇත</item>
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, දැනුම්දීම් <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g>ක් ඇත</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"%2$d හි %1$d පිටුව"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"මුල් පිටු තිරය %2$d හි %1$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"නව මුල් පිටුව"</string>
@@ -129,4 +133,11 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> සඳහා කෙටි මං <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>ක් සහ දැනුම්දීම් <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g>ක්"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ඉවතලන්න"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"දැනුම්දීම ඉවතලන ලදී"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"පුද්ගලික"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"කාර්යාලය"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"කාර්යාල පැතිකඩ"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"මෙහි කාර්යාල යෙදුම් සොයා ගන්න"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"සෑම කාර්යාල යෙදුමකම තැඹිලි ලාංඡනයක් ඇත ඇති අතර එය ඔබේ සංවිධානය විසින් සුරක්ෂිතව තබා ගනී. වඩා පහසුවෙන් පිවිසීමට යෙදුම් ඔබගේ මුල් පිටු තිරය වෙත ගෙන යන්න."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"ඔබේ සංවිධානය විසින් කළමනාකරණය කරනු ලැබේ"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"දැනුම්දීම් සහ යෙදුම් ක්‍රියාවිරහිතයි"</string>
 </resources>

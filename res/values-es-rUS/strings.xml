@@ -60,6 +60,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Esta es una aplicación del sistema y no se puede desinstalar."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Carpeta sin nombre"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Se inhabilitó <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> tiene <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> notificaciones</item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g> tiene <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> notificación</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"Página %1$d de %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Pantalla principal %1$d de %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Nueva página en la pantalla principal"</string>
@@ -129,4 +133,11 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> accesos directos y <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> notificaciones de <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Descartar"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Se descartó la notificación"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personales"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"Laborales"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de trabajo"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Apps de trabajo"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"Cada app de trabajo tiene una insignia naranja y está protegida por tu organización. Mueve las apps a la pantalla principal para acceder a ellas con mayor facilidad."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Administrado por tu organización"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Las notificaciones y las apps están desactivadas"</string>
 </resources>

@@ -150,7 +150,7 @@ public class SwipeDetector {
 
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
-    private final Direction mDir;
+    private Direction mDir;
 
     private final float mTouchSlop;
 
@@ -182,6 +182,10 @@ public class SwipeDetector {
     protected SwipeDetector(float touchSlope, @NonNull Listener l, @NonNull Direction dir) {
         mTouchSlop = touchSlope;
         mListener = l;
+        mDir = dir;
+    }
+
+    public void updateDirection(Direction dir) {
         mDir = dir;
     }
 
@@ -286,6 +290,16 @@ public class SwipeDetector {
         }
     }
 
+    /**
+     * Returns if the start drag was towards the positive direction or negative.
+     *
+     * @see #setDetectableScrollConditions(int, boolean)
+     * @see #DIRECTION_BOTH
+     */
+    public boolean wasInitialTouchPositive() {
+        return mSubtractDisplacement < 0;
+    }
+
     private boolean reportDragging() {
         if (mDisplacement != mLastDisplacement) {
             if (DBG) {
@@ -336,7 +350,7 @@ public class SwipeDetector {
     /**
      * Returns the linear interpolation between two values
      */
-    private static float interpolate(float from, float to, float alpha) {
+    public static float interpolate(float from, float to, float alpha) {
         return (1.0f - alpha) * from + alpha * to;
     }
 

@@ -60,6 +60,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"இது அமைப்பு பயன்பாடு என்பதால் நிறுவல் நீக்கம் செய்ய முடியாது."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"பெயரிடப்படாத கோப்புறை"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> முடக்கப்பட்டது"</string>
+    <plurals name="badged_app_label" formatted="false" msgid="7948068486082879291">
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> பயன்பாட்டில், <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> அறிவிப்புகள் வந்துள்ளன</item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g> பயன்பாட்டில், <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> அறிவிப்பு வந்துள்ளது</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"பக்கம் %1$d / %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"முகப்புத் திரை %1$d of %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"புதிய முகப்புத் திரை பக்கம்"</string>
@@ -129,4 +133,11 @@
     <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> பயன்பாட்டிற்கான <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> குறுக்குவழிகளும் <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> அறிவிப்புகளும் உள்ளன"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"நிராகரி"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"அறிவிப்பு நிராகரிக்கப்பட்டது"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"தனிப்பட்டவை"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"பணி"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"பணி விவரம்"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"பணி ஆப்ஸை இங்கு காணலாம்"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="1485375451542813426">"ஒவ்வொரு பணிப் பயன்பாடும் ஆரஞ்சு நிற பேட்ஜைக் கொண்டிருக்கும். இவை, உங்கள் நிறுவனத்தால் பாதுகாப்பாக வைக்கப்பட்டுள்ளன. இந்த ஆப்ஸை எளிதாக அணுக, முகப்புத் திரைக்கு நகர்த்திக்கொள்ளவும்."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"உங்கள் நிறுவனம் நிர்வகிக்கிறது"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"ஆப்ஸும் அறிவிப்புகளும் ஆஃப் செய்யப்பட்டுள்ளன"</string>
 </resources>

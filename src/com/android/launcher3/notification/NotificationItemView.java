@@ -18,6 +18,7 @@ package com.android.launcher3.notification;
 
 import android.app.Notification;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.view.MotionEvent;
@@ -114,12 +115,12 @@ public class NotificationItemView {
         }
     }
 
-    public void updateHeader(int notificationCount, @Nullable IconPalette palette) {
+    public void updateHeader(int notificationCount, int iconColor) {
         mHeaderCount.setText(notificationCount <= 1 ? "" : String.valueOf(notificationCount));
-        if (palette != null) {
+        if (Color.alpha(iconColor) > 0) {
             if (mNotificationHeaderTextColor == Notification.COLOR_DEFAULT) {
                 mNotificationHeaderTextColor =
-                        IconPalette.resolveContrastColor(mContext, palette.dominantColor,
+                        IconPalette.resolveContrastColor(mContext, iconColor,
                                 Themes.getAttrColor(mContext, R.attr.popupColorPrimary));
             }
             mHeaderText.setTextColor(mNotificationHeaderTextColor);

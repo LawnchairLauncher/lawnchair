@@ -162,7 +162,7 @@ public class LoaderResults {
         // This ensures that the first screen is immediately visible (eg. during rotation)
         // In case of !validFirstPage, bind all pages one after other.
         final Executor deferredExecutor =
-                validFirstPage ? new ViewOnDrawExecutor(mUiExecutor) : mainExecutor;
+                validFirstPage ? new ViewOnDrawExecutor() : mainExecutor;
 
         mainExecutor.execute(new Runnable() {
             @Override

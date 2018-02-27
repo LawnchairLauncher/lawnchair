@@ -16,7 +16,7 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
-import static com.android.launcher3.Utilities.isAccessibilityEnabled;
+import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 
 import android.graphics.Rect;
 import android.view.View;
@@ -36,10 +36,11 @@ public class OverviewState extends LauncherState {
     // The percent to shrink the workspace during overview mode
     private static final float SCALE_FACTOR = 0.7f;
 
-    private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE;
+    private static final int STATE_FLAGS = FLAG_SHOW_SCRIM | FLAG_MULTI_PAGE |
+            FLAG_DISABLE_PAGE_CLIPPING;
 
     public OverviewState(int id) {
-        super(id, ContainerType.WORKSPACE, OVERVIEW_TRANSITION_MS, 1f, STATE_FLAGS);
+        super(id, ContainerType.WORKSPACE, OVERVIEW_TRANSITION_MS, STATE_FLAGS);
     }
 
     @Override
@@ -50,15 +51,19 @@ public class OverviewState extends LauncherState {
 
         int overviewButtonBarHeight = OverviewPanel.getButtonBarHeight(launcher);
         int scaledHeight = (int) (SCALE_FACTOR * ws.getNormalChildHeight());
-        Rect workspacePadding = grid.getWorkspacePadding(null);
-        int workspaceTop = insets.top + workspacePadding.top;
-        int workspaceBottom = ws.getViewportHeight() - insets.bottom - workspacePadding.bottom;
+        int workspaceTop = insets.top + grid.workspacePadding.top;
+        int workspaceBottom = ws.getHeight() - insets.bottom - grid.workspacePadding.bottom;
         int overviewTop = insets.top;
-        int overviewBottom = ws.getViewportHeight() - insets.bottom - overviewButtonBarHeight;
+        int overviewBottom = ws.getHeight() - insets.bottom - overviewButtonBarHeight;
         int workspaceOffsetTopEdge =
                 workspaceTop + ((workspaceBottom - workspaceTop) - scaledHeight) / 2;
         int overviewOffsetTopEdge = overviewTop + (overviewBottom - overviewTop - scaledHeight) / 2;
-        return new float[] {SCALE_FACTOR, -workspaceOffsetTopEdge + overviewOffsetTopEdge };
+        return new float[] {SCALE_FACTOR, 0, -workspaceOffsetTopEdge + overviewOffsetTopEdge };
+    }
+
+    @Override
+    public float getHoseatAlpha(Launcher launcher) {
+        return 0;
     }
 
     @Override

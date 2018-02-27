@@ -54,6 +54,7 @@ import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherModel;
@@ -61,13 +62,13 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.accessibility.ShortcutMenuAccessibilityDelegate;
+import com.android.launcher3.anim.RevealOutlineAnimation;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
-import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.TriangleShape;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.notification.NotificationInfo;
@@ -85,6 +86,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 import static com.android.launcher3.notification.NotificationMainView.NOTIFICATION_ITEM_INFO;
 import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS;
 import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS_IF_NOTIFICATIONS;
@@ -340,15 +342,17 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         updateDividers();
 
         // Add the arrow.
-        final int arrowHorizontalOffset = getResources().getDimensionPixelSize(isAlignedWithStart()
-                ? R.dimen.popup_arrow_horizontal_offset_start
-                : R.dimen.popup_arrow_horizontal_offset_end);
+        final Resources res = getResources();
+        final int arrowCenterOffset = res.getDimensionPixelSize(isAlignedWithStart()
+                ? R.dimen.popup_arrow_horizontal_center_start
+                : R.dimen.popup_arrow_horizontal_center_end);
+        final int halfArrowWidth = res.getDimensionPixelSize(R.dimen.popup_arrow_width) / 2;
         mLauncher.getDragLayer().addView(mArrow);
         DragLayer.LayoutParams arrowLp = (DragLayer.LayoutParams) mArrow.getLayoutParams();
         if (mIsLeftAligned) {
-            mArrow.setX(getX() + arrowHorizontalOffset);
+            mArrow.setX(getX() + arrowCenterOffset - halfArrowWidth);
         } else {
-            mArrow.setX(getX() + getMeasuredWidth() - arrowHorizontalOffset);
+            mArrow.setX(getX() + getMeasuredWidth() - arrowCenterOffset - halfArrowWidth);
         }
 
         if (Gravity.isVertical(mGravity)) {
@@ -434,9 +438,6 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             x = rightAlignedX;
         }
         mIsLeftAligned = x == leftAlignedX;
-        if (mIsRtl) {
-            x -= dragLayer.getWidth() - width;
-        }
 
         // Offset x so that the arrow and shortcut icons are center-aligned with the original icon.
         int iconWidth = mOriginalIcon.getWidth()
@@ -528,8 +529,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
         // enforce contained is within screen
         DragLayer dragLayer = mLauncher.getDragLayer();
-        if (getTranslationX() + l < 0 ||
-                getTranslationX() + r > dragLayer.getWidth()) {
+        if (getTranslationX() + l < 0 || getTranslationX() + r > dragLayer.getWidth()) {
             // If we are still off screen, center horizontally too.
             mGravity |= Gravity.CENTER_HORIZONTAL;
         }
@@ -573,7 +573,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             @Override
             public void onAnimationEnd(Animator animation) {
                 mOpenCloseAnimator = null;
-                Utilities.sendCustomAccessibilityEvent(
+                sendCustomAccessibilityEvent(
                         PopupContainerWithArrow.this,
                         AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
                         getContext().getString(R.string.action_deep_shortcut));
@@ -650,7 +650,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 // reopen the container to ensure measurements etc. all work out. While this could
                 // be quite janky, in practice the user would typically see a small flicker as the
                 // animation restarts partway through, and this is a very rare edge case anyway.
-                ((PopupContainerWithArrow) getParent()).close(false);
+                close(false);
                 PopupContainerWithArrow.showForIcon(mOriginalIcon);
             }
         } else if (onClickListener == null && widgetsView != null) {
@@ -658,7 +658,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             if (mSystemShortcutContainer != this) {
                 mSystemShortcutContainer.removeView(widgetsView);
             } else {
-                ((PopupContainerWithArrow) getParent()).close(false);
+                close(false);
                 PopupContainerWithArrow.showForIcon(mOriginalIcon);
             }
         }
@@ -743,11 +743,11 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     }
 
     private void updateNotificationHeader() {
-        ItemInfo itemInfo = (ItemInfo) mOriginalIcon.getTag();
+        ItemInfoWithIcon itemInfo = (ItemInfoWithIcon) mOriginalIcon.getTag();
         BadgeInfo badgeInfo = mLauncher.getPopupDataProvider().getBadgeInfoForItem(itemInfo);
         if (mNotificationItemView != null && badgeInfo != null) {
-            IconPalette palette = mOriginalIcon.getBadgePalette();
-            mNotificationItemView.updateHeader(badgeInfo.getNotificationCount(), palette);
+            mNotificationItemView.updateHeader(
+                    badgeInfo.getNotificationCount(), itemInfo.iconColor);
         }
     }
 
@@ -811,10 +811,10 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             return;
         }
         mEndRect.setEmpty();
+        if (getOutlineProvider() instanceof RevealOutlineAnimation) {
+            ((RevealOutlineAnimation) getOutlineProvider()).getOutline(mEndRect);
+        }
         if (mOpenCloseAnimator != null) {
-            Outline outline = new Outline();
-            getOutlineProvider().getOutline(this, outline);
-            outline.getRect(mEndRect);
             mOpenCloseAnimator.cancel();
         }
         mIsOpen = false;

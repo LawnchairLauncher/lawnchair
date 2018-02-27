@@ -143,13 +143,15 @@ public class PackageManagerHelper {
         return false;
     }
 
-    public static Intent getMarketIntent(String packageName) {
+    public Intent getMarketIntent(String packageName) {
         return new Intent(Intent.ACTION_VIEW)
                 .setData(new Uri.Builder()
                         .scheme("market")
                         .authority("details")
                         .appendQueryParameter("id", packageName)
-                        .build());
+                        .build())
+                .putExtra(Intent.EXTRA_REFERRER, new Uri.Builder().scheme("android-app")
+                        .authority(mContext.getPackageName()).build());
     }
 
     /**

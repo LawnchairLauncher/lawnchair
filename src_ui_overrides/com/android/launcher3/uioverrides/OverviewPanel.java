@@ -17,7 +17,6 @@ package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.WorkspaceStateTransitionAnimation.NO_ANIM_PROPERTY_SETTER;
 
-import android.animation.AnimatorSet;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -37,7 +36,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceStateTransitionAnimation.AnimatedPropertySetter;
 import com.android.launcher3.WorkspaceStateTransitionAnimation.PropertySetter;
-import com.android.launcher3.anim.AnimationLayerSet;
+import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.widget.WidgetsFullSheet;
@@ -159,7 +159,7 @@ public class OverviewPanel extends LinearLayout implements Insettable, View.OnCl
                 .setPackage(getContext().getPackageName());
         intent.setSourceBounds(mLauncher.getViewBounds(v));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getContext().startActivity(intent, mLauncher.getActivityLaunchOptions(v));
+        getContext().startActivity(intent, mLauncher.getActivityLaunchOptionsAsBundle(v, false));
     }
 
     @Override
@@ -168,19 +168,13 @@ public class OverviewPanel extends LinearLayout implements Insettable, View.OnCl
     }
 
     @Override
-    public void setStateWithAnimation(LauncherState toState, AnimationLayerSet layerViews,
-            AnimatorSet anim, AnimationConfig config) {
-        setState(toState, new AnimatedPropertySetter(config.duration, layerViews, anim));
+    public void setStateWithAnimation(LauncherState toState,
+            AnimatorSetBuilder builder, AnimationConfig config) {
+        setState(toState, new AnimatedPropertySetter(config.duration, builder));
     }
 
     private void setState(LauncherState state, PropertySetter setter) {
-        boolean isOverview = state == LauncherState.OVERVIEW;
-        float finalHotseatAlpha = isOverview ? 0 : 1;
-
-        setter.setViewAlpha(null, this, isOverview ? 1 : 0);
-        setter.setViewAlpha(
-                mLauncher.getWorkspace().createHotseatAlphaAnimator(finalHotseatAlpha),
-                mLauncher.getHotseat(), finalHotseatAlpha);
+        setter.setViewAlpha(this, 1f - state.getHoseatAlpha(mLauncher), Interpolators.ACCEL);
     }
 
     public static int getButtonBarHeight(Launcher launcher) {

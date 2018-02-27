@@ -18,21 +18,19 @@ package com.android.launcher3;
 
 import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
-import android.content.Context;
-import android.content.res.Resources;
 import android.util.Property;
 import android.view.View;
-import android.view.accessibility.AccessibilityManager;
 
+import com.android.launcher3.LauncherState.PageAlphaProvider;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
-import com.android.launcher3.anim.AnimationLayerSet;
+import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 
 /**
@@ -97,28 +95,23 @@ public class WorkspaceStateTransitionAnimation {
     private final Launcher mLauncher;
     private final Workspace mWorkspace;
 
-    private final boolean mWorkspaceFadeInAdjacentScreens;
-
     private float mNewScale;
 
     public WorkspaceStateTransitionAnimation(Launcher launcher, Workspace workspace) {
         mLauncher = launcher;
         mWorkspace = workspace;
-
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        Resources res = launcher.getResources();
-        mWorkspaceScrimAlpha = res.getInteger(R.integer.config_workspaceScrimAlpha);
-        mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
+        mWorkspaceScrimAlpha = launcher.getResources()
+                .getInteger(R.integer.config_workspaceScrimAlpha);
     }
 
     public void setState(LauncherState toState) {
         setWorkspaceProperty(toState, NO_ANIM_PROPERTY_SETTER);
     }
 
-    public void setStateWithAnimation(LauncherState toState, AnimatorSet anim,
-            AnimationLayerSet layerViews, AnimationConfig config) {
+    public void setStateWithAnimation(LauncherState toState, AnimatorSetBuilder builder,
+            AnimationConfig config) {
         AnimatedPropertySetter propertySetter =
-                new AnimatedPropertySetter(config.duration, layerViews, anim);
+                new AnimatedPropertySetter(config.duration, builder);
         setWorkspaceProperty(toState, propertySetter);
     }
 
@@ -130,20 +123,23 @@ public class WorkspaceStateTransitionAnimation {
      * Starts a transition animation for the workspace.
      */
     private void setWorkspaceProperty(LauncherState state, PropertySetter propertySetter) {
-        float[] scaleAndTranslationY = state.getWorkspaceScaleAndTranslation(mLauncher);
-        mNewScale = scaleAndTranslationY[0];
-        final float finalWorkspaceTranslationY = scaleAndTranslationY[1];
-
-        int toPage = mWorkspace.getPageNearestToCenterOfScreen();
+        float[] scaleAndTranslation = state.getWorkspaceScaleAndTranslation(mLauncher);
+        mNewScale = scaleAndTranslation[0];
+        PageAlphaProvider pageAlphaProvider = state.getWorkspacePageAlphaProvider(mLauncher);
         final int childCount = mWorkspace.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            applyChildState(state, (CellLayout) mWorkspace.getChildAt(i), i, toPage,
+            applyChildState(state, (CellLayout) mWorkspace.getChildAt(i), i, pageAlphaProvider,
                     propertySetter);
         }
 
         propertySetter.setFloat(mWorkspace, SCALE_PROPERTY, mNewScale, Interpolators.ZOOM_IN);
+        propertySetter.setFloat(mWorkspace, View.TRANSLATION_X,
+                scaleAndTranslation[1], Interpolators.ZOOM_IN);
         propertySetter.setFloat(mWorkspace, View.TRANSLATION_Y,
-                finalWorkspaceTranslationY, Interpolators.ZOOM_IN);
+                scaleAndTranslation[2], Interpolators.ZOOM_IN);
+
+        propertySetter.setViewAlpha(mLauncher.getHotseat(), state.getHoseatAlpha(mLauncher),
+                pageAlphaProvider.interpolator);
 
         // Set scrim
         propertySetter.setInt(mLauncher.getDragLayer().getScrim(), DRAWABLE_ALPHA,
@@ -151,32 +147,26 @@ public class WorkspaceStateTransitionAnimation {
     }
 
     public void applyChildState(LauncherState state, CellLayout cl, int childIndex) {
-        applyChildState(state, cl, childIndex, mWorkspace.getPageNearestToCenterOfScreen(),
+        applyChildState(state, cl, childIndex, state.getWorkspacePageAlphaProvider(mLauncher),
                 NO_ANIM_PROPERTY_SETTER);
     }
 
     private void applyChildState(LauncherState state, CellLayout cl, int childIndex,
-            int centerPage, PropertySetter propertySetter) {
-        propertySetter.setInt(cl.getScrimBackground(),
-                DRAWABLE_ALPHA, state.hasScrim ? 255 : 0, Interpolators.ZOOM_IN);
+            PageAlphaProvider pageAlphaProvider, PropertySetter propertySetter) {
+        float pageAlpha = pageAlphaProvider.getPageAlpha(childIndex);
+        int drawableAlpha = Math.round(pageAlpha * (state.hasScrim ? 255 : 0));
 
-        // Only animate the page alpha when we actually fade pages
-        if (mWorkspaceFadeInAdjacentScreens) {
-            float finalAlpha = state == LauncherState.NORMAL && childIndex != centerPage ? 0 : 1f;
-            propertySetter.setFloat(cl.getShortcutsAndWidgets(), View.ALPHA,
-                    finalAlpha, Interpolators.ZOOM_IN);
-        }
+        propertySetter.setInt(cl.getScrimBackground(),
+                DRAWABLE_ALPHA, drawableAlpha, Interpolators.ZOOM_IN);
+        propertySetter.setFloat(cl.getShortcutsAndWidgets(), View.ALPHA,
+                pageAlpha, pageAlphaProvider.interpolator);
     }
 
     public static class PropertySetter {
 
-        public void setViewAlpha(Animator anim, View view, float alpha) {
-            if (anim != null) {
-                anim.end();
-                return;
-            }
+        public void setViewAlpha(View view, float alpha, TimeInterpolator interpolator) {
             view.setAlpha(alpha);
-            AlphaUpdateListener.updateVisibility(view, isAccessibilityEnabled(view));
+            AlphaUpdateListener.updateVisibility(view, isAccessibilityEnabled(view.getContext()));
         }
 
         public <T> void setFloat(T target, Property<T, Float> property, float value,
@@ -188,39 +178,27 @@ public class WorkspaceStateTransitionAnimation {
                 TimeInterpolator interpolator) {
             property.set(target, value);
         }
-
-        protected boolean isAccessibilityEnabled(View v) {
-            AccessibilityManager am = (AccessibilityManager)
-                    v.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-            return am.isEnabled();
-        }
     }
 
     public static class AnimatedPropertySetter extends PropertySetter {
 
         private final long mDuration;
-        private final AnimationLayerSet mLayerViews;
-        private final AnimatorSet mStateAnimator;
+        private final AnimatorSetBuilder mStateAnimator;
 
-        public AnimatedPropertySetter(
-                long duration, AnimationLayerSet layerView, AnimatorSet anim) {
+        public AnimatedPropertySetter(long duration, AnimatorSetBuilder builder) {
             mDuration = duration;
-            mLayerViews = layerView;
-            mStateAnimator = anim;
+            mStateAnimator = builder;
         }
 
         @Override
-        public void setViewAlpha(Animator anim, View view, float alpha) {
-            if (anim == null) {
-                if (view.getAlpha() == alpha) {
-                    return;
-                }
-                anim = ObjectAnimator.ofFloat(view, View.ALPHA, alpha);
-                anim.addListener(new AlphaUpdateListener(view, isAccessibilityEnabled(view)));
+        public void setViewAlpha(View view, float alpha, TimeInterpolator interpolator) {
+            if (view.getAlpha() == alpha) {
+                return;
             }
-
-            anim.setDuration(mDuration).setInterpolator(getFadeInterpolator(alpha));
-            mLayerViews.addView(view);
+            ObjectAnimator anim = ObjectAnimator.ofFloat(view, View.ALPHA, alpha);
+            anim.addListener(new AlphaUpdateListener(
+                    view, isAccessibilityEnabled(view.getContext())));
+            anim.setDuration(mDuration).setInterpolator(interpolator);
             mStateAnimator.play(anim);
         }
 

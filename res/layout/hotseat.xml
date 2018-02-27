@@ -22,5 +22,6 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        launcher:containerType="hotseat" />
+        launcher:containerType="hotseat"
+        android:importantForAccessibility="no" />
 </com.android.launcher3.Hotseat>

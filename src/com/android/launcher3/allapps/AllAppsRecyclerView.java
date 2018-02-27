@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.allapps;
 
+import static android.view.View.MeasureSpec.UNSPECIFIED;
+
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
@@ -28,10 +30,10 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.launcher3.BaseRecyclerView;
-import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
@@ -52,8 +54,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
 
     private AlphabeticalAppsList mApps;
     private AllAppsFastScrollHelper mFastScrollHelper;
-    private int mNumAppsPerRow;
-    private int mUserProfileTabContentHeight;
+    private final int mNumAppsPerRow;
 
     // The specific view heights that we use to calculate scroll
     private SparseIntArray mViewHeights = new SparseIntArray();
@@ -103,6 +104,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         mOverScrollHelper = new OverScrollHelper();
         mPullDetector = new SwipeDetector(getContext(), mOverScrollHelper, SwipeDetector.VERTICAL);
         mPullDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_BOTH, true);
+
+        mNumAppsPerRow = LauncherAppState.getIDP(context).numColumns;
     }
 
     public void setSpringAnimationHandler(SpringAnimationHandler springAnimationHandler) {
@@ -127,65 +130,23 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     public void setApps(AlphabeticalAppsList apps, boolean usingTabs) {
         mApps = apps;
         mFastScrollHelper = new AllAppsFastScrollHelper(this, apps);
-        mUserProfileTabContentHeight = usingTabs
-                ? Launcher.getLauncher(getContext()).getDeviceProfile().allAppsCellHeightPx : 0;;
     }
 
     public AlphabeticalAppsList getApps() {
         return mApps;
     }
 
-    /**
-     * Sets the number of apps per row in this recycler view.
-     */
-    public void setNumAppsPerRow(DeviceProfile grid, int numAppsPerRow) {
-        mNumAppsPerRow = numAppsPerRow;
+    private void updatePoolSize() {
+        DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
         RecyclerView.RecycledViewPool pool = getRecycledViewPool();
         int approxRows = (int) Math.ceil(grid.availableHeightPx / grid.allAppsIconSizePx);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH, 1);
-        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER, 1);
+        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ALL_APPS_DIVIDER, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ICON, approxRows * mNumAppsPerRow);
-        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON, mNumAppsPerRow);
-        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER, 1);
-    }
 
-    /**
-     * Ensures that we can present a stable scrollbar for views of varying types by pre-measuring
-     * all the different view types.
-     */
-    public void preMeasureViews(AllAppsGridAdapter adapter) {
-        View icon = adapter.onCreateViewHolder(this, AllAppsGridAdapter.VIEW_TYPE_ICON).itemView;
-        final int iconHeight = icon.getLayoutParams().height;
-        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_ICON, iconHeight);
-        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON, iconHeight);
-
-        final int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(
-                getResources().getDisplayMetrics().widthPixels, View.MeasureSpec.AT_MOST);
-        final int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(
-                getResources().getDisplayMetrics().heightPixels, View.MeasureSpec.AT_MOST);
-
-        putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
-                AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER,
-                AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER);
-        putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
-                AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET);
-        putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
-                AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH);
-        if (FeatureFlags.DISCOVERY_ENABLED) {
-            putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
-                    AllAppsGridAdapter.VIEW_TYPE_APPS_LOADING_DIVIDER);
-            putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
-                    AllAppsGridAdapter.VIEW_TYPE_DISCOVERY_ITEM);
-        }
-    }
-
-    private void putSameHeightFor(AllAppsGridAdapter adapter, int w, int h, int... viewTypes) {
-        View view = adapter.onCreateViewHolder(this, viewTypes[0]).itemView;
-        view.measure(w, h);
-        for (int viewType : viewTypes) {
-            mViewHeights.put(viewType, view.getMeasuredHeight());
-        }
+        mViewHeights.clear();
+        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_ICON, grid.allAppsCellHeightPx);
     }
 
     /**
@@ -237,6 +198,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         updateEmptySearchBackgroundBounds();
+        updatePoolSize();
     }
 
     @Override
@@ -244,19 +206,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         if (mApps.hasFilter()) {
             targetParent.containerType = ContainerType.SEARCHRESULT;
         } else {
-            if (v instanceof BubbleTextView) {
-                BubbleTextView icon = (BubbleTextView) v;
-                int position = getChildPosition(icon);
-                if (position != NO_POSITION) {
-                    List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
-                    AlphabeticalAppsList.AdapterItem item = items.get(position);
-                    if (item.viewType == AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON) {
-                        targetParent.containerType = ContainerType.PREDICTION;
-                        target.predictedRank = item.rowAppIndex;
-                        return;
-                    }
-                }
-            }
             targetParent.containerType = ContainerType.ALLAPPS;
         }
     }
@@ -265,7 +214,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         // Always scroll the view to the top so the user can see the changed results
         scrollToTop();
 
-        if (mApps.shouldShowEmptySearch()) {
+        if (mApps.hasNoFilteredResults()) {
             if (mEmptySearchBackground == null) {
                 mEmptySearchBackground = DrawableFactory.get(getContext())
                         .getAllAppsBackground(getContext());
@@ -362,6 +311,9 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
      */
     @Override
     public void onUpdateScrollbar(int dy) {
+        if (mApps == null) {
+            return;
+        }
         List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
 
         // Skip early if there are no items or we haven't been measured
@@ -473,7 +425,21 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
                     }
                 } else {
                     // Rest of the views span the full width
-                    y += mViewHeights.get(item.viewType, 0);
+                    int elHeight = mViewHeights.get(item.viewType);
+                    if (elHeight == 0) {
+                        ViewHolder holder = findViewHolderForAdapterPosition(i);
+                        if (holder == null) {
+                            holder = getAdapter().createViewHolder(this, item.viewType);
+                            getAdapter().onBindViewHolder(holder, i);
+                            holder.itemView.measure(UNSPECIFIED, UNSPECIFIED);
+                            elHeight = holder.itemView.getMeasuredHeight();
+
+                            getRecycledViewPool().putRecycledView(holder);
+                        } else {
+                            elHeight = holder.itemView.getMeasuredHeight();
+                        }
+                    }
+                    y += elHeight;
                 }
             }
             mCachedScrollPositions.put(position, y);
@@ -488,18 +454,11 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     @Override
     protected int getAvailableScrollHeight() {
         return getPaddingTop() + getCurrentScrollY(getAdapter().getItemCount(), 0)
-                - getHeight() + getPaddingBottom() + mUserProfileTabContentHeight;
+                - getHeight() + getPaddingBottom();
     }
 
     public int getScrollBarTop() {
-        return super.getScrollBarTop() + mUserProfileTabContentHeight;
-    }
-
-    /**
-     * Returns the height of the fast scroll bar
-     */
-    public int getScrollbarTrackHeight() {
-        return super.getScrollbarTrackHeight() + mUserProfileTabContentHeight;
+        return getResources().getDimensionPixelOffset(R.dimen.all_apps_header_top_padding);
     }
 
     public RecyclerViewFastScroller getScrollbar() {
