@@ -42,7 +42,6 @@ import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.widget.WidgetsBottomSheet;
 
 import ch.deletescape.lawnchair.EditableItemInfo;
-import ch.deletescape.lawnchair.LawnchairPreferences;
 
 public class CustomBottomSheet extends WidgetsBottomSheet {
     private FragmentManager mFragmentManager;

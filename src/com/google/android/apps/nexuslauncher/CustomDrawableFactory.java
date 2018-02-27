@@ -78,6 +78,7 @@ public class CustomDrawableFactory extends DynamicDrawableFactory implements Run
 
         packComponents.clear();
         packCalendars.clear();
+        packClocks.clear();
         if (CustomIconUtils.isPackProvider(mContext, iconPack)) {
             CustomIconUtils.parsePack(this, mContext.getPackageManager(), iconPack);
         }
