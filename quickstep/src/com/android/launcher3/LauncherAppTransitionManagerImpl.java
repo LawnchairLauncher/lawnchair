@@ -21,6 +21,7 @@ import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS
 import static com.android.systemui.shared.recents.utilities.Utilities.getNextFrameNumber;
 import static com.android.systemui.shared.recents.utilities.Utilities.getSurface;
 import static com.android.systemui.shared.recents.utilities.Utilities.postAtFrontOfQueueAsynchronously;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 import android.animation.Animator;
@@ -427,17 +428,19 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
      */
     private LauncherTransitionAnimator composeAppLaunchAnimator(View v,
             RemoteAnimationTargetCompat[] targets) {
-        return new LauncherTransitionAnimator(getLauncherAnimators(v),
+        return new LauncherTransitionAnimator(getLauncherAnimators(v, targets),
                 getWindowAnimators(v, targets));
     }
 
     /**
      * @return Animators that control the movements of the Launcher and icon of the opening target.
      */
-    private AnimatorSet getLauncherAnimators(View v) {
+    private AnimatorSet getLauncherAnimators(View v, RemoteAnimationTargetCompat[] targets) {
         AnimatorSet launcherAnimators = new AnimatorSet();
-        launcherAnimators.play(getLauncherContentAnimator(false /* show */));
         launcherAnimators.play(getIconAnimator(v));
+        if (launcherIsATargetWithMode(targets, MODE_CLOSING)) {
+            launcherAnimators.play(getLauncherContentAnimator(false /* show */));
+        }
         return launcherAnimators;
     }
 
@@ -498,8 +501,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         mFloatingView = new View(mLauncher);
         if (isBubbleTextView && v.getTag() instanceof ItemInfoWithIcon ) {
             // Create a copy of the app icon
-            mFloatingView.setBackground(
-                    DrawableFactory.get(mLauncher).newIcon((ItemInfoWithIcon) v.getTag()));
+            ItemInfoWithIcon info = (ItemInfoWithIcon) v.getTag();
+            FastBitmapDrawable d = DrawableFactory.get(mLauncher).newIcon(info);
+            d.setIsDisabled(info.isDisabled());
+            mFloatingView.setBackground(d);
         }
 
         // Position the floating view exactly on top of the original
@@ -685,10 +690,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         }
     }
 
-    private boolean isLauncherInSetOfOpeningTargets(RemoteAnimationTargetCompat[] targets) {
+    private boolean launcherIsATargetWithMode(RemoteAnimationTargetCompat[] targets, int mode) {
         int launcherTaskId = mLauncher.getTaskId();
         for (RemoteAnimationTargetCompat target : targets) {
-            if (target.mode == MODE_OPENING && target.taskId == launcherTaskId) {
+            if (target.mode == mode && target.taskId == launcherTaskId) {
                 return true;
             }
         }
@@ -709,7 +714,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                     if ((Utilities.getPrefs(mLauncher)
                             .getBoolean("pref_use_screenshot_for_swipe_up", false)
                             && mLauncher.isInState(LauncherState.OVERVIEW))
-                            || !isLauncherInSetOfOpeningTargets(targets)) {
+                            || !launcherIsATargetWithMode(targets, MODE_OPENING)) {
                         // We use a separate transition for Overview mode. And we can skip the
                         // animation in cases where Launcher is not in the set of opening targets.
                         // This can happen when Launcher is already visible. ie. Closing a dialog.
