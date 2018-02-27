@@ -244,7 +244,7 @@
   <string name="widgets_bottom_sheet_title">%1$s ウィジェット</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair はTill Kottmann（ deletescape としても知られています）によって作成されたランチャーアプリです。AOSP の Launcher3 に基づいて出来ています。</string>
-  <string name="about_title">About</string>
+  <string name="about_title">アプリについて</string>
   <string name="about_pref_summary">Lawnchair チームについてもっと知りましょう</string>
   <string name="changelog_title">ビルド #%d のための変更履歴</string>
   <string name="week_day_format">%1$s, %2$s</string>
@@ -411,16 +411,16 @@
   <string name="hide_app_apply">適用</string>
   <string name="unauthorized_device">このデバイスにはいくつかの海賊版や著作権侵害を助長するアプリがインストールされています。続行するにはアンインストールを行ってください。</string>
   <string name="hide_app_reset">リセット</string>
-  <string name="two_row_dock">ドックを2行表示にする</string>
+  <string name="two_row_dock">ドックを2行で表示する</string>
   <string name="reset_alternative_icons_title">別のアプリアイコンをリセットしますか？</string>
   <string name="reset_alternative_icons">アイコンが変更されているアプリが %1$d 個有ります。リセットしますか？</string>
   <string name="error_no_browser">URLを処理するアクティビティが見つかりません</string>
   <string name="snowfall_title">雪を降らす</string>
   <string name="enable_snowfall_title">ホーム画面に雪を降らす</string>
-  <string name="enable_snowfall_summary">パフォーマンスに影響を及ぼす場合も有ります</string>
+  <string name="enable_snowfall_summary">パフォーマンスに影響を及ぼす場合が有ります</string>
   <string name="snowfall_enabled">雪よ降れ降れ、もっと降れ！</string>
-  <string name="snowflake_size_scale">雪結晶の大きさ</string>
-  <string name="snowflakes_num">雪結晶の最大降雪量</string>
+  <string name="snowflake_size_scale">雪の大きさを調整</string>
+  <string name="snowflakes_num">降雪量の調整</string>
   <string name="lawnfeed_outdated_title">Lawnfeedの更新が必要です</string>
   <string name="lawnfeed_outdated">このバージョンのLawnchairを使用するには、新しいバージョンのLawnfeedが必要です。\n\nアップデートをインストールする前に、現在のバージョンのLawnfeedをアンインストールする必要があります。\n\n今すぐダウンロードしますか？</string>
 </resources>

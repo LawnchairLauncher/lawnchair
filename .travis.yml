@@ -5,6 +5,7 @@ jdk: oraclejdk8
 branches:
    except:
    - l10n_alpha2
+   - alpha
 env:
   - MAJOR_MINOR=1.1.0
 android:
@@ -20,6 +21,8 @@ before_install:
   - chmod a+x ./scripts/changelog.sh
   - chmod a+x ./scripts/s3-upload.sh
   - git fetch --tags
+before_script:
+  - bash scripts/changelog.sh > changelog.txt
 script:
   - bash ./gradlew assembleDebug check;
   - bash ./gradlew app:assembleRelease check;
@@ -37,11 +40,6 @@ before_deploy:
 deploy:
   - provider: script
     skip_cleanup: true
-    script: scripts/deploy-telegram.sh
-    on:
-      branch: alpha
-  - provider: script
-    skip_cleanup: true
     script: scripts/deploy-s3.sh
     on:
       branch: beta
@@ -50,6 +48,12 @@ deploy:
     script: scripts/deploy-s3.sh
     on:
       tags: true
+  - provider: releases
+    skip_cleanup: true
+    api_key: $GITHUB_OAUTH_TOKEN
+    file: "Lawnchair-$MAJOR_MINOR.$TRAVIS_BUILD_NUMBER.apk"
+    on:
+      branch: beta
   - provider: releases
     skip_cleanup: true
     api_key: $GITHUB_OAUTH_TOKEN

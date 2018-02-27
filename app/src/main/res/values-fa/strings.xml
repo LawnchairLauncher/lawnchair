@@ -257,17 +257,22 @@
   <string name="pref_iconLabelsInTwoLines">نمایش برچسب آیکن‌ها در دو خط</string>
   <string name="white_google_icon_pref_title">استفاده از آیکن گوگل سفید</string>
   <string name="all_apps_opacity_pref_title">شفافیت منوی اپلیکیشن‌ها</string>
+  <string name="num_cols_pref_title">تعداد ستون ها</string>
+  <string name="num_rows_pref_title">تعداد ردیف ها</string>
   <string name="pixel_ui_pref_title">تم</string>
   <string name="export_db_title">پایگاه داده</string>
   <string name="import_db_title">پایگاه داده</string>
   <string name="export_prefs_title">تنظیمات</string>
   <string name="import_prefs_title">تنظیمات</string>
+  <string name="test_title">بررسی</string>
+  <string name="visibility">دید</string>
   <string name="edit_icon_reset">بازنشانی</string>
   <string name="theme_pref_title">تم</string>
   <string name="theme_black">سیاه</string>
   <!-- Import/Export Strings -->
   <string name="backup_import_title">بازیابی</string>
   <string name="backup_export_title">پشتیبان</string>
+  <string name="imexport_no_backup_found">هیچ فایل پشتیبانی یافت نشد</string>
   <!-- Default units to use, either 'metric' or 'imperial' -->
   <string name="none">هیچ‌کدام</string>
   <string name="folder">پوشه</string>

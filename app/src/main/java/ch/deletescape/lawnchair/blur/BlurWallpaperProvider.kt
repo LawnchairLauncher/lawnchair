@@ -5,6 +5,7 @@ import android.app.WallpaperManager
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
+import android.os.Build
 import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
@@ -70,6 +71,10 @@ class BlurWallpaperProvider(context: Context) {
 
     private fun updateWallpaper() {
         val launcher = LauncherAppState.getInstance().launcher
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && !Utilities.hasStoragePermission(context)){
+            Utilities.getPrefs(context).enableBlur(false)
+            return
+        }
         val enabled = mWallpaperManager.wallpaperInfo == null && Utilities.getPrefs(context).enableBlur
         if (enabled != isEnabled || enabledFlag != sEnabledFlag) {
             launcher.scheduleKill()

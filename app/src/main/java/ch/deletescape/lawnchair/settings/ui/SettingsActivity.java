@@ -66,12 +66,12 @@ public class SettingsActivity extends AppCompatActivity implements
         PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static IPreferenceProvider sharedPrefs;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FeatureFlags.INSTANCE.applyDarkTheme(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+        Utilities.setupPirateLocale(this);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_settings);

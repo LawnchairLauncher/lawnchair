@@ -28,9 +28,9 @@
   <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
   <string name="activity_not_available">App ist nicht verfügbar</string>
   <!-- SafeMode shortcut error string -->
-  <string name="safemode_shortcut_error">Heruntergeladene App im abgesicherten Modus deaktiviert</string>
+  <string name="safemode_shortcut_error">Heruntergeladene Apps sind im abgesicherten Modus deaktiviert</string>
   <!-- SafeMode widget error string -->
-  <string name="safemode_widget_error">Widgets im abgesicherten Modus deaktiviert</string>
+  <string name="safemode_widget_error">Widgets sind im abgesicherten Modus deaktiviert</string>
   <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
   <string name="shortcut_not_available">Verknüpfung ist nicht verfügbar</string>
   <!-- Widgets -->
@@ -343,11 +343,11 @@
   <string name="backup_export_title">Sicherung</string>
   <string name="settings_export_success">Einstellungen erfolgreich gesichert</string>
   <string name="db_export_success">Datenbank erfolgreich gesichert</string>
-  <string name="settings_import_success">Einstellungen wurden erfolgreich wiederhergestellt</string>
+  <string name="settings_import_success">Einstellungen erfolgreich wiederhergestellt</string>
   <string name="db_import_success">Datenbank erfolgreich wiederhergestellt</string>
-  <string name="export_error">Konnte kein Backup erstellen</string>
+  <string name="export_error">Konnte keine Sicherung erstellen</string>
   <string name="import_error">Konnte nicht wiederherstellen</string>
-  <string name="imexport_no_backup_found">Kein Backup gefunden</string>
+  <string name="imexport_no_backup_found">Keine Sicherung gefunden</string>
   <string name="imexport_external_storage_unreadable">Externer Speicher ist nicht lesbar (Berechtigung in den Einstellungen erforderlich)</string>
   <string name="imexport_external_storage_unwritable">Externer Speicher ist nicht beschreibbar (Berechtigung in den Einstellungen erforderlich)</string>
   <string name="units_metric">Metrisch</string>
@@ -406,7 +406,7 @@
   <string name="set_default_launcher">Standard-Launcher einstellen</string>
   <string name="enable_spring_pref_title">Aktiviere den Spring-Effekt</string>
   <string name="hide_app">App ausblenden</string>
-  <string name="hide_app_sum">App in der App-Übersicht ausblenden</string>
+  <string name="hide_app_sum">App in der App-Liste ausblenden</string>
   <string name="hide_app_selected">&#160;ausgewählt</string>
   <string name="hidden_app">Ausgeblendete App</string>
   <string name="hide_app_apply">Anwenden</string>

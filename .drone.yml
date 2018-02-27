@@ -1,0 +1,25 @@
+pipeline:
+  changelog:
+    image: lawnchairlauncher/drone-changelog:latest
+    output: changelog.txt
+    when:
+      event: push
+  build:
+    image: runmymind/docker-android-sdk:alpine-standalone
+    secrets: [ awareness_api_key, store_password, key_password ]
+    environment:
+      - MAJOR_MINOR=alpha
+      - TRAVIS=true
+      - TRAVIS_BUILD_NUMBER=${DRONE_BUILD_NUMBER}
+      - TRAVIS_EVENT_TYPE=${DRONE_BUILD_EVENT}
+    commands:
+      - bash ./gradlew assembleDebug check;
+  telegram:
+    image: lawnchairlauncher/drone-telegram:latest
+    secrets: [ bot_token, channel_id ]
+    when:
+      event: push
+      status: success
+
+branches:
+  include: alpha

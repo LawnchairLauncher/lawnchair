@@ -1,11 +1,14 @@
-# Lawnchair - [![Travis](https://img.shields.io/travis/LawnchairLauncher/Lawnchair.svg)](https://travis-ci.org/LawnchairLauncher/Lawnchair) - [![Crowdin](https://d322cqt584bo4o.cloudfront.net/lawnchairandroid/localized.svg)](http://translate.lawnchair.info) - [![Codacy grade](https://img.shields.io/codacy/grade/e2727925367548d7bbef71d54209d35b.svg)](https://www.codacy.com/app/deletescape/Lawnchair/dashboard) - [![Donate on PayPal](https://img.shields.io/badge/PayPal-Donate%20Now-brightgreen.svg)](https://paypal.me/deletescape)
+# Lawnchair - [![Builds](https://build.codebucket.de/api/badges/LawnchairLauncher/Lawnchair/status.svg)](https://build.codebucket.de/LawnchairLauncher/Lawnchair) - [![Crowdin](https://d322cqt584bo4o.cloudfront.net/lawnchairandroid/localized.svg)](http://translate.lawnchair.info) - [![Codacy grade](https://img.shields.io/codacy/grade/e2727925367548d7bbef71d54209d35b.svg)](https://www.codacy.com/app/deletescape/Lawnchair/dashboard) - [![Donate on PayPal](https://img.shields.io/badge/PayPal-Donate%20Now-brightgreen.svg)](https://paypal.me/deletescape)
 
 ![Lawnchair](banner.png)
 
 Lawnchair is a free, open source launcher aiming at bringing Pixel Launcher features to many devices. 
 Download now!
 
-<a href="https://play.google.com/store/apps/details?id=ch.deletescape.lawnchair.plah"><img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" height="60" alt="Play Store" /></a>
+<a href="https://play.google.com/store/apps/details?id=ch.deletescape.lawnchair.plah">
+<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" height="70" alt="Get it on Google Play"/></a>
+<a href="https://f-droid.org/packages/ch.deletescape.lawnchair.plah/" target="_blank">
+<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="70"/></a>
 
 ## Now what does this cost?
 

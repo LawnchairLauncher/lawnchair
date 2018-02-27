@@ -163,13 +163,13 @@
   <!-- Accessibility confirmation for item move. -->
   <string name="item_moved">Elemento spostato</string>
   <!-- Accessibility description to move item into an existing folder. -->
-  <string name="add_to_folder">Aggiungi alla cartella: <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="add_to_folder">Aggiungi alla cartella: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
   <!-- Accessibility description to move item into an existing folder containing an app. -->
-  <string name="add_to_folder_with_app">Aggiungi a cartella con <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="add_to_folder_with_app">Aggiungi a cartella con <xliff:g example="Messenger" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for item added to folder. -->
   <string name="added_to_folder">Elemento aggiunto alla cartella</string>
   <!-- Accessibility description to create folder with another item. -->
-  <string name="create_folder_with">Crea cartella con: <xliff:g id="NAME">%1$s</xliff:g></string>
+  <string name="create_folder_with">Crea cartella con: <xliff:g example="Game" id="name">%1$s</xliff:g></string>
   <!-- Accessibility confirmation for folder created. -->
   <string name="folder_created">Cartella creata</string>
   <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
@@ -191,11 +191,11 @@
   <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
   <string name="action_decrease_height">Riduci altezza</string>
   <!-- Accessibility confirmation for widget resize. -->
-  <string name="widget_resized">Widget ridimensionato a larghezza <xliff:g id="NUMBER_0">%1$s</xliff:g>, altezza <xliff:g id="NUMBER_1">%2$s</xliff:g></string>
+  <string name="widget_resized">Widget ridimensionato a larghezza <xliff:g example="2" id="number">%1$d</xliff:g> altezza <xliff:g example="1" id="number">%2$d</xliff:g></string>
   <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
-  <string name="action_deep_shortcut">Scorciatoie</string>
+  <string name="action_deep_shortcut">Collegamenti</string>
   <!-- Accessibility description for the shortcuts menu shown for an app. -->
-  <string name="shortcuts_menu_description"><xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> scorciatoie per <xliff:g id="APP_NAME">%2$s</xliff:g></string>
+  <string name="shortcuts_menu_description"><xliff:g example="3" id="number_of_shortcuts">%1$d</xliff:g> collegamenti per <xliff:g example="Messenger" id="app_name">%2$s</xliff:g></string>
   <string name="edit_drop_target_label">Modifica</string>
   <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
   <string name="wallpaper_instructions">Imposta sfondo</string>
@@ -215,13 +215,13 @@
             eg. 1 selected [CHAR LIMIT=30] -->
   <plurals name="number_of_items_selected">
     <item quantity="one">%1$d selezionato</item>
-    <item quantity="other">%1$d selezionati</item>
+    <item quantity="other">%1$d selezionato</item>
   </plurals>
   <!-- Accessibility string used as a label for a particular wallpaper in the Wallpaper Picker list.
          e.g. "Wallpaper 3 of 10" -->
-  <string name="wallpaper_accessibility_name">Sfondo %1$d di %2$d</string>
+  <string name="wallpaper_accessibility_name">Sfondo %1$d su %2$d</string>
   <!-- Accessibility string used to announce that a wallpaper has been selected. -->
-  <string name="announce_selection">Elemento selezionato: <xliff:g id="LABEL">%1$s</xliff:g></string>
+  <string name="announce_selection">Elemento selezionato <xliff:g example="Wallpaper 3 of 10" id="label">%1$s</xliff:g></string>
   <!-- Label on button to delete wallpaper(s) -->
   <string name="wallpaper_delete">Elimina</string>
   <!-- Label on button in Wallpaper Picker to pick an image -->
@@ -237,15 +237,15 @@
   <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
   <string name="which_wallpaper_option_home_screen_and_lock_screen">Schermata home e schermata di blocco</string>
   <string name="title_show_google_app">Mostra %1$s</string>
-  <string name="title_show_google_app_default">Mostra l\'app Google</string>
+  <string name="title_show_google_app_default">Mostra Google app</string>
   <string name="label_search">Ricerca</string>
   <string name="label_voice_search">Ricerca vocale</string>
-  <string name="shortcuts_menu_with_notifications_description">%1$d scorciatoie e%2$d notifiche per %3$s</string>
+  <string name="shortcuts_menu_with_notifications_description">%1$d collegamenti e %2$d notifiche per %3$s</string>
   <string name="notifications_header">Notifiche</string>
   <string name="widgets_bottom_sheet_title">%1$s widgets</string>
   <!-- About Lawnchair -->
   <string name="about_text">Lawnchair è un Launcher creato da Till Kottmann (aka deletescape). E\' basato su Launcher3 da AOSP.</string>
-  <string name="about_title">Info</string>
+  <string name="about_title">Informazioni</string>
   <string name="about_pref_summary">Conosci il Team di Lawnchair</string>
   <string name="changelog_title">Cambiamenti nella versione #%d</string>
   <string name="week_day_format">%1$s, %2$s</string>

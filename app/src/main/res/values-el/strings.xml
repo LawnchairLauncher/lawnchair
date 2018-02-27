@@ -36,7 +36,7 @@
   <string name="shortcut_not_available">Η συντόμευση δεν είναι διαθέσιμη</string>
   <!-- Widgets -->
   <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-  <string name="long_press_widget_to_add">Αγγίξτε &amp; παρατεταμένα για να πάρετε ένα γραφικό στοιχείο.</string>
+  <string name="long_press_widget_to_add">Αγγίξτε παρατεταμένα για να πάρετε ένα γραφ.στοιχ.</string>
   <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
   <string name="long_accessible_way_to_add">Πατήστε δύο φορές παρατεταμένα για επιλογή γραφικού στοιχείου ή χρήση προσαρμοσμένων ενεργειών.</string>
   <!-- The format string for the dimensions of a widget in the drawer -->
@@ -245,7 +245,7 @@
   <string name="notifications_header">Ειδοποιήσεις</string>
   <string name="widgets_bottom_sheet_title">Γραφικό στοιχείο %1$s.</string>
   <!-- About Lawnchair -->
-  <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
+  <string name="about_text">Ο Lawnchair είναι μια εφαρμογή εκκίνησης που δημιουργήθηκε από τον Till Kottmann (γνωστός και ως deletescape). Βασίζεται στον εκκινητή Launcher3 του ανοιχτού κώδικα λειτουργικού συστήματος Android (AOSP).</string>
   <string name="about_title">Σχετικά με</string>
   <string name="about_pref_summary">Ενημέρωση σχετικά με την ομάδα του Lawnchair</string>
   <string name="changelog_title">Αρχείο καταγραφής αλλαγών της έκδοσης #%d</string>

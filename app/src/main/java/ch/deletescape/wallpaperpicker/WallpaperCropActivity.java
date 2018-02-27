@@ -41,6 +41,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.wallpaperpicker.BitmapRegionTileSource.BitmapSource;
 import ch.deletescape.wallpaperpicker.BitmapRegionTileSource.BitmapSource.InBitmapProvider;
 import ch.deletescape.wallpaperpicker.common.CropAndSetWallpaperTask;
@@ -82,6 +83,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
         mLoaderThread.start();
         mLoaderHandler = new Handler(mLoaderThread.getLooper(), this);
 
+        Utilities.setupPirateLocale(this);
         init();
     }
 

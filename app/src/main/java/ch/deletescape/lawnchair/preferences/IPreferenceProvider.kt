@@ -83,6 +83,7 @@ interface IPreferenceProvider {
     val transparentHotseat: Boolean
     val enableDynamicUi: Boolean
     val enableBlur: Boolean
+    fun enableBlur(enable: Boolean)
     val enableVibrancy: Boolean
     val useWhiteGoogleIcon: Boolean
     val useRoundSearchBar: Boolean
@@ -129,9 +130,12 @@ interface IPreferenceProvider {
     val iconPackPackage: String
     val hotseatIconScale: Float
     val hotseatHeightScale: Float
+    val hotseatShouldUseCustomOpacity: Boolean
+    val hotseatCustomOpacity: Float
     val enablePhysics: Boolean
     val snowflakeSizeScale: Float
     val snowflakesNum: String
+    val ayyMatey: Boolean
 
     // -----------------
     // GENERAL - BITS

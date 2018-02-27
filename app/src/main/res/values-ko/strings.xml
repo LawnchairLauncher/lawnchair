@@ -401,6 +401,7 @@
   <string name="lock_desktop">바탕화면 잠금</string>
   <string name="lawnfeed_not_found">Lawnfeed가 설치 되지 않았습니다.</string>
   <string name="google_app_not_found">Google 앱이 설치 되지 않았습니다.</string>
+  <string name="lawnfeed_incompatible">호환되지 않는 Lawnfeed 버전이 설치되어있습니다.</string>
   <string name="set_default_launcher">기본 런처 설정</string>
   <string name="enable_spring_pref_title">스프링 효과 사용</string>
   <string name="hide_app">앱 숨기기</string>
@@ -413,4 +414,13 @@
   <string name="two_row_dock">두행 독 사용</string>
   <string name="reset_alternative_icons_title">대체 아이콘을 재설정 하겠습니까?</string>
   <string name="reset_alternative_icons">대체 아이콘으로 설정 된 %1$d개의 앱을 재 설정 하 시겠습니까?</string>
+  <string name="error_no_browser">URL을 처리하기위한 작업을 찾을수가 없음</string>
+  <string name="snowfall_title">눈 내리기</string>
+  <string name="enable_snowfall_title">홈화면에서 눈 내리기 효과 활성화</string>
+  <string name="enable_snowfall_summary">성능이 저하되는 문제가 발생할 수 있습니다.</string>
+  <string name="snowfall_enabled">\"눈아 내려라, 눈아 내려, 눈아 내려!\"</string>
+  <string name="snowflake_size_scale">눈송이 크기</string>
+  <string name="snowflakes_num">최대 눈송이 수</string>
+  <string name="lawnfeed_outdated_title">Lawnfeed 업데이트가 필요합니다.</string>
+  <string name="lawnfeed_outdated">현 버전의 Lawnchair와 연동하기위해서 새로운 버전의 Lawnfeed가 필요합니다.\n\n업데이트를 설치하기전에 현 버전의Lawnfeed를 삭제해야할것입니다.\n\n지금 다운로드 하시겠습니까?</string>
 </resources>

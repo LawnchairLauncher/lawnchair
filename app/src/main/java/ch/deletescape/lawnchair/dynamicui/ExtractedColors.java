@@ -206,6 +206,11 @@ public class ExtractedColors {
                 hotseatColor = ColorUtils.setAlphaComponent(FeatureFlags.INSTANCE.useDarkTheme(FeatureFlags.DARK_ALLAPPS) ? Color.BLACK : Color.WHITE, (int) (0.25f * 255));
             }
         }
+        boolean useCustomOpacity = Utilities.getPrefs(context).getHotseatShouldUseCustomOpacity();
+        if (useCustomOpacity) {
+            float customOpacity = Utilities.getPrefs(context).getHotseatCustomOpacity();
+            hotseatColor = ColorUtils.setAlphaComponent(hotseatColor, (int) (customOpacity * 255));
+        }
         return hotseatColor;
     }
 
