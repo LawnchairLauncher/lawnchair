@@ -4,6 +4,15 @@ pipeline:
     output: changelog.txt
     when:
       event: push
+  restore-cache:
+    image: drillster/drone-volume-cache:latest
+    restore: true
+    mount:
+      - "$HOME/.gradle/caches/"
+      - "$HOME/.gradle/wrapper/"
+      - "$HOME/.android/build-cache"
+    volumes:
+      - /tmp/cache:/cache
   build:
     image: runmymind/docker-android-sdk:alpine-standalone
     secrets: [ awareness_api_key, store_password, key_password ]
@@ -20,6 +29,15 @@ pipeline:
     when:
       event: push
       status: success
+  rebuild-cache:
+    image: drillster/drone-volume-cache:latest
+    rebuild: true
+    mount:
+      - "$HOME/.gradle/caches/"
+      - "$HOME/.gradle/wrapper/"
+      - "$HOME/.android/build-cache"
+    volumes:
+      - /tmp/cache:/cache
 
 branches:
   include: alpha
