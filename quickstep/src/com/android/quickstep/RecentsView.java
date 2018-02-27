@@ -23,6 +23,8 @@ import static com.android.quickstep.TaskView.CURVE_INTERPOLATOR;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -62,13 +64,15 @@ import java.util.ArrayList;
 /**
  * A list of recent tasks.
  */
-public class RecentsView extends PagedView implements Insettable {
+public class RecentsView extends PagedView implements Insettable, OnSharedPreferenceChangeListener {
 
     private static final Rect sTempStableInsets = new Rect();
 
     public static final int SCROLL_TYPE_NONE = 0;
     public static final int SCROLL_TYPE_TASK = 1;
     public static final int SCROLL_TYPE_WORKSPACE = 2;
+
+    private static final String PREF_FLIP_RECENTS = "pref_flip_recents";
 
     private final Launcher mLauncher;
     private QuickScrubController mQuickScrubController;
@@ -130,7 +134,23 @@ public class RecentsView extends PagedView implements Insettable {
         mQuickScrubController = new QuickScrubController(mLauncher, this);
         mModel = RecentsModel.getInstance(context);
 
-        mScrollState.isRtl = mIsRtl;
+        onSharedPreferenceChanged(Utilities.getPrefs(context), PREF_FLIP_RECENTS);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        if (s.equals(PREF_FLIP_RECENTS)) {
+            mIsRtl = Utilities.isRtl(getResources());
+            if (sharedPreferences.getBoolean(PREF_FLIP_RECENTS, false)) {
+                mIsRtl = !mIsRtl;
+            }
+            setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
+            mScrollState.isRtl = mIsRtl;
+        }
+    }
+
+    public boolean isRtl() {
+        return mIsRtl;
     }
 
     public TaskView updateThumbnail(int taskId, ThumbnailData thumbnailData) {
@@ -172,12 +192,14 @@ public class RecentsView extends PagedView implements Insettable {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         updateTaskStackListenerState();
+        Utilities.getPrefs(getContext()).registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         updateTaskStackListenerState();
+        Utilities.getPrefs(getContext()).unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override

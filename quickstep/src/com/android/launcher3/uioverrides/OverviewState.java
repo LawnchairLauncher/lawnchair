@@ -26,7 +26,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.RecentsView;
@@ -111,7 +110,7 @@ public class OverviewState extends LauncherState {
                 scale * (halfWidth - ws.getPaddingLeft() - insets.left - childWidth / 2);
         float translationX = pageRect.centerX() - childCenter;
 
-        if (Utilities.isRtl(launcher.getResources())) {
+        if (launcher.<RecentsView>getOverviewPanel().isRtl()) {
             translationX -= offsetX / scale;
         } else {
             translationX += offsetX / scale;

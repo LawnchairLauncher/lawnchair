@@ -259,6 +259,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         int launchedTaskIndex = recentsView.indexOfChild(v);
         int centerTaskIndex = recentsView.getCurrentPage();
         boolean launchingCenterTask = launchedTaskIndex == centerTaskIndex;
+        boolean isRtl = recentsView.isRtl();
         if (launchingCenterTask) {
             if (launchedTaskIndex - 1 >= recentsView.getFirstTaskIndex()) {
                 TaskView adjacentPage1 = (TaskView) recentsView.getPageAt(launchedTaskIndex - 1);
@@ -267,7 +268,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                                 new PropertyListBuilder()
                                         .scale(adjacentPage1.getScaleX() * mRecentsScale)
                                         .translationY(mRecentsTransY)
-                                        .translationX(mIsRtl ? mRecentsTransX : -mRecentsTransX)
+                                        .translationX(isRtl ? mRecentsTransX : -mRecentsTransX)
                                         .build());
                 launcherAnimator.play(adjacentTask1ScaleAndTranslate);
             }
@@ -278,7 +279,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                                 new PropertyListBuilder()
                                         .scale(adjacentTask2.getScaleX() * mRecentsScale)
                                         .translationY(mRecentsTransY)
-                                        .translationX(mIsRtl ? -mRecentsTransX : mRecentsTransX)
+                                        .translationX(isRtl ? -mRecentsTransX : mRecentsTransX)
                                         .build());
                 launcherAnimator.play(adjacentTask2ScaleAndTranslate);
             }
@@ -290,7 +291,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                     LauncherAnimUtils.ofPropertyValuesHolder(centerTask,
                             new PropertyListBuilder()
                                     .scale(v.getScaleX())
-                                    .translationX(mIsRtl ? -translationX : translationX)
+                                    .translationX(isRtl ? -translationX : translationX)
                                     .build());
             launcherAnimator.play(centerTaskParallaxToRight);
             int otherAdjacentTaskIndex = centerTaskIndex + (centerTaskIndex - launchedTaskIndex);
@@ -302,7 +303,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                         LauncherAnimUtils.ofPropertyValuesHolder(otherAdjacentTask,
                                 new PropertyListBuilder()
                                         .translationX(otherAdjacentTask.getTranslationX()
-                                                + (mIsRtl ? -translationX : translationX))
+                                                + (isRtl ? -translationX : translationX))
                                         .build());
                 launcherAnimator.play(otherAdjacentTaskParallaxToRight);
             }
@@ -745,7 +746,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         Matrix matrix = new Matrix();
         float height = mLauncher.getDeviceProfile().heightPx;
         float width = mLauncher.getDeviceProfile().widthPx;
-        float endX = (Utilities.isRtl(mLauncher.getResources()) ? -width : width) * 1.16f;
+        float endX = (mLauncher.<RecentsView>getOverviewPanel().isRtl() ? -width : width) * 1.16f;
 
         ValueAnimator closingAnimator = ValueAnimator.ofFloat(0, 1);
         closingAnimator.setDuration(CLOSING_TRANSITION_DURATION_MS);

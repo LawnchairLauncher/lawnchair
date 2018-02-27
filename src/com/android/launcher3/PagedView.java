@@ -182,7 +182,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     private static final Rect sTmpRect = new Rect();
 
     protected final Rect mInsets = new Rect();
-    protected final boolean mIsRtl;
+    protected boolean mIsRtl;
 
     // Similar to the platform implementation of isLayoutValid();
     protected boolean mIsLayoutValid;
