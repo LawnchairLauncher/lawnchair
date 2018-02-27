@@ -1892,6 +1892,14 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 getNextPage() + 1, getChildCount());
     }
 
+    protected float getDownMotionX() {
+        return mDownMotionX;
+    }
+
+    protected float getDownMotionY() {
+        return mDownMotionY;
+    }
+
     @Override
     public boolean onHoverEvent(android.view.MotionEvent event) {
         return true;
