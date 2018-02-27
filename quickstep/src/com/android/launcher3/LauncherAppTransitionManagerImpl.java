@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.systemui.shared.recents.utilities.Utilities.getNextFrameNumber;
 import static com.android.systemui.shared.recents.utilities.Utilities.getSurface;
@@ -323,9 +322,6 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         launcherAnimator.play(recenterWorkspace);
         CellLayout currentWorkspacePage = (CellLayout) workspace.getPageAt(
                 workspace.getCurrentPage());
-        Animator hideWorkspaceScrim = ObjectAnimator.ofInt(
-                currentWorkspacePage.getScrimBackground(), DRAWABLE_ALPHA, 0);
-        launcherAnimator.play(hideWorkspaceScrim);
 
         launcherAnimator.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);
         launcherAnimator.setDuration(RECENTS_LAUNCH_DURATION);
