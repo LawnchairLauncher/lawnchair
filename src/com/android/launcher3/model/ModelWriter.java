@@ -32,6 +32,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LooperExecutor;
@@ -46,6 +47,7 @@ import java.util.concurrent.Executor;
 public class ModelWriter {
 
     private static final String TAG = "ModelWriter";
+    public static final boolean DEBUG_DELETE = true;
 
     private final Context mContext;
     private final BgDataModel mBgDataModel;
@@ -243,14 +245,21 @@ public class ModelWriter {
      * Removes the specified items from the database
      */
     public void deleteItemsFromDatabase(final Iterable<? extends ItemInfo> items) {
-        mWorkerExecutor.execute(new Runnable() {
-            public void run() {
-                for (ItemInfo item : items) {
-                    final Uri uri = Favorites.getContentUri(item.id);
-                    mContext.getContentResolver().delete(uri, null, null);
+        if (DEBUG_DELETE) {
+            // Log it on the colling thread to get the proper stack trace
+            FileLog.d(TAG, "Starting item deletion", new Exception());
+            for (ItemInfo item : items) {
+                FileLog.d(TAG, "deleting item " + item);
+            }
+            FileLog.d(TAG, "Finished deleting items");
+        }
 
-                    mBgDataModel.removeItem(mContext, item);
-                }
+        mWorkerExecutor.execute(() -> {
+            for (ItemInfo item : items) {
+                final Uri uri = Favorites.getContentUri(item.id);
+                mContext.getContentResolver().delete(uri, null, null);
+
+                mBgDataModel.removeItem(mContext, item);
             }
         });
     }
@@ -259,17 +268,20 @@ public class ModelWriter {
      * Remove the specified folder and all its contents from the database.
      */
     public void deleteFolderAndContentsFromDatabase(final FolderInfo info) {
-        mWorkerExecutor.execute(new Runnable() {
-            public void run() {
-                ContentResolver cr = mContext.getContentResolver();
-                cr.delete(LauncherSettings.Favorites.CONTENT_URI,
-                        LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
-                mBgDataModel.removeItem(mContext, info.contents);
-                info.contents.clear();
+        if (DEBUG_DELETE) {
+            // Log it on the colling thread to get the proper stack trace
+            FileLog.d(TAG, "Deleting folder " + info, new Exception());
+        }
 
-                cr.delete(LauncherSettings.Favorites.getContentUri(info.id), null, null);
-                mBgDataModel.removeItem(mContext, info);
-            }
+        mWorkerExecutor.execute(() -> {
+            ContentResolver cr = mContext.getContentResolver();
+            cr.delete(LauncherSettings.Favorites.CONTENT_URI,
+                    LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
+            mBgDataModel.removeItem(mContext, info.contents);
+            info.contents.clear();
+
+            cr.delete(LauncherSettings.Favorites.getContentUri(info.id), null, null);
+            mBgDataModel.removeItem(mContext, info);
         });
     }
 

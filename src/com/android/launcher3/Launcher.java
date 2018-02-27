@@ -408,6 +408,11 @@ public class Launcher extends BaseActivity
         if ((diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0) {
             mUserEventDispatcher = null;
             initDeviceProfile(mDeviceProfile.inv);
+            FileLog.d(TAG, "Config changed, my orientation=" +
+                    getResources().getConfiguration().orientation +
+                    ", new orientation=" + newConfig.orientation +
+                    ", old orientation=" + mOldConfig.orientation +
+                    ", isTransposed=" + mDeviceProfile.isVerticalBarLayout());
             dispatchDeviceProfileChanged();
 
             getRootView().dispatchInsets();
@@ -2752,18 +2757,20 @@ public class Launcher extends BaseActivity
                     writer.println(prefix + "    " + tag.toString());
                 }
             }
-
-            try {
-                FileLog.flushAll(writer);
-            } catch (Exception e) {
-                // Ignore
-            }
         }
 
         writer.println(prefix + "Misc:");
         writer.print(prefix + "\tmWorkspaceLoading=" + mWorkspaceLoading);
         writer.print(" mPendingRequestArgs=" + mPendingRequestArgs);
         writer.println(" mPendingActivityResult=" + mPendingActivityResult);
+        writer.println(" deviceProfile isTransposed=" + getDeviceProfile().isVerticalBarLayout());
+        writer.println(" orientation=" + getResources().getConfiguration().orientation);
+
+        try {
+            FileLog.flushAll(writer);
+        } catch (Exception e) {
+            // Ignore
+        }
 
         mModel.dumpState(prefix, fd, writer, args);
 
