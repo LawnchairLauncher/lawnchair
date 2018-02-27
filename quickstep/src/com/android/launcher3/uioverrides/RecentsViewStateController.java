@@ -75,7 +75,7 @@ public class RecentsViewStateController implements StateHandler {
     public void setStateWithAnimation(final LauncherState toState,
             AnimatorSetBuilder builder, AnimationConfig config) {
         boolean settingEnabled = Utilities.getPrefs(mLauncher)
-            .getBoolean("pref_scroll_to_first_task", false);
+            .getBoolean("pref_scroll_to_first_task_default_true", true);
         mIsRecentsScrollingToFirstTask = mLauncher.isInState(NORMAL) && toState == OVERVIEW
                 && settingEnabled;
         // TODO: Instead of animating the workspace translationX, move the contents
